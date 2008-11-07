@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.3 2008/02/25 21:02:42 agrimstrup Exp $
+# @(#) $Id: CommonNC.py,v 1.4 2008/11/07 15:35:57 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,7 +25,7 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.3 2008/02/25 21:02:42 agrimstrup Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.4 2008/11/07 15:35:57 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -34,6 +34,7 @@ import re
 from ACSErrTypeCommonImpl         import CORBAProblemExImpl
 from ACSErr                       import NameValue
 import CosNotifyChannelAdmin
+import NotifyMonitoringExt
 import acscommon
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba      import getORB
@@ -272,7 +273,7 @@ class CommonNC:
         #Get at the Notification Service first.
         try:
             channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
-            channel_factory = channel_factory._narrow(CosNotifyChannelAdmin.EventChannelFactory)
+            channel_factory = channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
         except Exception, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
@@ -284,11 +285,21 @@ class CommonNC:
 
         #Create the actual channel.
         try:
-            (self.evtChan, chan_id) = channel_factory.create_channel(self.configQofS(),
-                                                                     self.configAdminProps())
+            self.evtChan = channel_factory.create_named_channel(self.configQofS(),
+                                                                self.configAdminProps(),
+                                                                chan_id,
+                                                                self.channelName)
             #make the NRI happy
             chan_id = None
             
+        except AttributeError, e:
+            print_exc()
+            raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
+                                                      self.channelName),
+                                            NameValue("reason",
+                                                      "Invalid channel factory"),
+                                            NameValue("exception",
+                                                      str(e))])
         except Exception, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
