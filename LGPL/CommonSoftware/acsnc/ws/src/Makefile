@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.63 2008/10/14 17:26:23 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.64 2008/11/07 05:59:55 cparedes Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -31,6 +31,7 @@ USER_CFLAGS =
 USER_LIB    =  	-lbaci \
 		-lmaci \
 		-lTAO_CosNotification \
+        -lTAO_CosNotification_MC_Ext \
 		-lRepeatGuard \
         -lacstime
 
