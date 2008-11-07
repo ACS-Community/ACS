@@ -2,7 +2,6 @@
  *    ALMA - Atacama Large Millimiter Array
  *    (c) European Southern Observatory, 2002
  *    Copyright by ESO (in the framework of the ALMA collaboration)
- *    and Cosylab 2002, All rights reserved
  *
  *    This library is free software; you can redistribute it and/or
  *    modify it under the terms of the GNU Lesser General Public
@@ -25,7 +24,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,6 +36,7 @@ import alma.acs.logging.io.IOLogsHelper;
 import alma.acs.logging.io.SaveFileChooser;
 
 import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.client.cache.LogCacheException;
 
 /**
  * Extends the <code>LogEntryTableModelBase</code> adding I/O, deletion of logs
@@ -68,14 +67,10 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		private Thread deleterThread=null;
 		
 		/** 
-		 * The queue with the keys of the logs to delete
-		 */
-		private LinkedBlockingQueue<Integer> logsToDelete = new LinkedBlockingQueue<Integer>();
-		
-		/** 
 		 * Signal the thread to terminate
 		 */
 		private volatile boolean terminateThread=false;
+
 		
 		/**
 		 * Constructor
@@ -105,56 +100,67 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		}
 		
 		/** 
-		 * The thread to delete logs
+		 * The thread to delete logs.
+		 * <P>
+		 * The table is notified about the deletion of the logs but logs are removed
+		 * from the data structures of the model later by a dedicated thread
 		 */
 		public void run() {
-			int sz;
 			while (!terminateThread) {
-				for (int t=0; t<TIME_INTERVAL && !terminateThread; t ++) {
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						break;
-					}
-				}
-				if (terminateThread) {
-					return;
-				}
-				// Do not do anything if the application is paused 
-				if (loggingClient.isPaused()) {
+				
+				try {
+					Thread.sleep(1000*TIME_INTERVAL);
+				} catch (InterruptedException e) {
 					continue;
 				}
-				sz =rows.size();
-				if (maxLog>0 && sz>maxLog && (deleterThread==null || (deleterThread!=null && !deleterThread.isAlive()))) {
-					 deleterThread = new Thread("LogTableDataModel.LogDeleter") {
-						public void run() {
-							deleteLogs();		
-						}
-					};
-					deleterThread.setDaemon(true);
-					deleterThread.start();
+				// Do not do anything if the application is paused 
+				if (loggingClient.isPaused() || maxLog<=0) {
+					continue;
 				}
-			}
-		}
-		
-		/**
-		 * Delete all the logs exceeding the max number of logs
-		 * 
-		 */
-		private void deleteLogs() {
-			synchronized (LogTableDataModel.this) {
-				int numOfLogsToRemove = rows.size()-maxLog;
-				try {
-					Integer[] removed = new Integer[numOfLogsToRemove];
-					for (int t=0; t<numOfLogsToRemove; t++) {
-						removed[t]=rows.remove(0);
+				
+				// Is there another delete in progress?
+				// If yes then wait for it to terminate
+				if (deleterThread!=null) {
+					try {
+						deleterThread.join();	
+					} catch (InterruptedException e) {
+						continue;
 					}
-					allLogs.deleteLogs(removed);
-					fireTableRowsDeleted(0, numOfLogsToRemove-1);
-				} catch (Exception e) {
-					System.out.println("Error deleting a collection of logs from thread: "+e.getMessage());
-					e.printStackTrace();
 				}
+				
+				Integer[] keys=null;
+				int removed=0;
+				synchronized (rowsToAdd) {
+					synchronized (rows) {
+						removed= rows.size()-maxLog;
+						if (removed>0) {
+							keys = new Integer[removed];
+							for (int t=0; t<removed; t++) {
+								keys[t]=rows.get(t);
+							}
+							rows.removeFirstEntries(removed);
+						}
+					}
+				}
+				if (removed<=0) {
+					continue;
+				}
+				fireTableRowsDeleted(0, removed-1);
+				
+				class DeleteFromCache implements Runnable {
+					private final Integer[] keys;
+					public DeleteFromCache(Integer[] k) {
+						keys=k;
+					}
+					public void run() {
+						deleteLogs(keys);	
+					}
+				}
+				
+				deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");
+				deleterThread.setDaemon(true);
+				deleterThread.start();
+				keys=null;
 			}
 		}
 	}
@@ -472,4 +478,27 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 
 	 public void setSortComparator(int index, boolean ascending) {
 	 }
+	 
+	 /**
+	 * Delete the first <code>logsToDelete</code> logs from the data structures
+	 * of the model.
+	 * 
+	 * @param The keys to remove from the cache
+	 */
+	private void deleteLogs(Integer[] keys) {
+		if (keys==null || keys.length==0) {
+			throw new IllegalArgumentException("Nothing to delete!");
+		}
+		for (Integer key: keys) {
+			if (key!=null) {
+				try {
+					allLogs.deleteLog(key);
+				} catch (LogCacheException e) {
+					System.err.println("Exception deleting key="+key+": "+e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 }
