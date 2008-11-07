@@ -324,11 +324,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             		databaseDlg.setVisible(true);
             	}
             } else if (e.getSource() == menuBar.getClearLogsMenuItem() || e.getSource()==toolBar.getClearLogsBtn()) {
-				SwingUtilities.invokeLater(new Thread("ClearAll") {
-					public void run() {
+            	Thread t = new Thread("LoggingClient.clearAll") {
+            		public void run() {
 						getLCModel1().clearAll();
 					}
-				});
+            	};
+            	t.setDaemon(true);
+            	t.start();
             } else if (e.getSource() == menuBar.getExitMenuItem()) {
             	if (logFrame!=null) {
         			// The application is executed in stand-alone mode
