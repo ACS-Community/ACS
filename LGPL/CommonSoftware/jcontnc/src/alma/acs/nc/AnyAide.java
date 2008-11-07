@@ -430,8 +430,7 @@ class AnyAide {
 				Object[] args = { any };
 				returnValue = extract.invoke(null, args);
 			} catch (Exception ex) {
-				m_logger.severe("Failed to extract enum!");
-				ex.printStackTrace();
+				m_logger.log(Level.SEVERE, "Failed to extract enum!", ex);
 			}
 			break;
 
