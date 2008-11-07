@@ -1,3 +1,23 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2002
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
 package alma.acs.logging.table;
 
 import java.util.Calendar;
@@ -10,7 +30,6 @@ import javax.swing.table.AbstractTableModel;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.Field;
 
 /**
@@ -18,6 +37,7 @@ import com.cosylab.logging.engine.log.ILogEntry.Field;
  * <P>
  * This model can be reused by log tables with reduced functionalities like the error
  * browsers. 
+ * 
  * 
  * @author acaproni
  *
@@ -35,10 +55,6 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 *
 	 */
 	public class TableUpdater extends Thread {
-		/**
-		 * <code>true</code> if some logs have been added/removed from the model 
-		 */
-		public volatile boolean changed=false;
 		
 		/**
 		 * Signal the thread to terminate
@@ -76,14 +92,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				} catch (InterruptedException ie) {
 					continue;
 				}
-				if (changed) {
-					changed=false;
-					try {
-						fireTableDataChanged();
-					} catch (Throwable t) {
-						// This exception could happen while deleting asynchronously
-					}
-				}
+				// Are there are new logs to add?
+				flushLogs();
 			}
 		}
 	}
@@ -98,12 +108,25 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * <P>
 	 * This vector stores the key of each log shown in the table.
 	 */
-	protected Vector<Integer> rows = new Vector<Integer>(10000,2048);
+	protected RowEntries rows = new RowEntries(10000);
+	
+	/**
+	 * The vector of logs to add in the rows.
+	 * <P>
+	 * Newly arrived logs are added to this vector and flushed into 
+	 * <code>rows</code> by the <code>TableUpdater</code> thread.
+	 */
+	protected Vector<Integer> rowsToAdd = new Vector<Integer>();
 	
 	/**
 	 * The thread to refresh the content of the table
 	 */
 	protected TableUpdater tableUpdater;
+	
+	/**
+	 * <code>true</code> if the model has been closed
+	 */
+	private boolean closed=false;
 	
 	/**
 	 * Constructor
@@ -137,7 +160,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 */
 	@Override
 	public int getRowCount() {
-		return rows.size();
+		synchronized (rows) {
+			return rows.size();	
+		}
 	}
 
 	/**
@@ -151,7 +176,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		switch (column) {
 		case 1: {// TIMESTAMP
 				try {
-					return new Date(allLogs.getLogTimestamp(rows.get(row)));
+					synchronized(rows) {
+						return new Date(allLogs.getLogTimestamp(rows.get(row)));
+					}
 				} catch (Exception e) {
 					// This can happen because deletion of logs is done asynchronously
 					return null;
@@ -159,7 +186,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		}
 		case 2: { // ENTRYTYPE
 			try {
-				return allLogs.getLogType(rows.get(row));
+				synchronized(rows) {
+					return allLogs.getLogType(rows.get(row));
+				}
 			} catch (Exception e) {
 				// This can happen because deletion of logs is done asynchronously
 				return null;
@@ -171,7 +200,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				return null;
 			} 
 			if (column == 0) {
-				return new Boolean(log.hasDatas());
+				return Boolean.valueOf(log.hasDatas());
 			} else {
 				return log.getField(Field.values()[column-1]);
 			}
@@ -185,8 +214,10 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @param row The row of the table containing the log
 	 * @return The log in the passed row
 	 */
-	public ILogEntry getVisibleLogEntry(int row) {
-		 assert row>=0 && row<rows.size();
+	public synchronized ILogEntry getVisibleLogEntry(int row) {
+		 if (closed) {
+			 return null;
+		 }
 		 try {
 			 ILogEntry ret;
 			 synchronized (rows) {
@@ -194,8 +225,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			 }
 			 return ret;
 		 } catch (Exception e) {
-			// This can happen because deletion of logs is done asynchronously
-			 return null;
+			System.out.println("What here? "+e.getMessage());
+			e.printStackTrace();
+			return null;
 		 }
 	 }
 	
@@ -205,10 +237,15 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	public synchronized void clearAll() {
 	    if (allLogs != null) {
 	    	try {
-	    		synchronized(rows) {
-	    			int sz =rows.size();
-	    			rows.removeAllElements();
-	    			fireTableRowsDeleted(0, sz-1);
+	    		synchronized (rowsToAdd) {
+		    		synchronized(rows) {
+		    			if (!rows.isEmpty()) {
+		    				int sz =rows.size();
+		    				rows.clear();
+		    				fireTableRowsDeleted(0, sz-1);
+		    			}
+		    		}
+		    		rowsToAdd.removeAllElements();
 	    		}
 	    		allLogs.clear();
 	    	} catch (LogCacheException e) {
@@ -269,6 +306,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	  * 	    <code>-1</code> if the key is not in the vector
 	  */
 	 public synchronized int findKeyPos(Integer key) {
+		 if (key==null) {
+			 throw new IllegalArgumentException("The key can't be null");
+		 }
 		 return rows.indexOf(key);
 	 }
 	 
@@ -311,23 +351,58 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	}
 	
 	/**
-	 * Adds the log to the list. Logs are always appended at the end of the list.
+	 * Adds the log to the table.
+	 * <P>
+	 * To avoid updating the table very frequently, the logs to add are immediately 
+	 * inserted in the <code>LogCache</code> but their insertion in the table is delayed 
+	 * and done by the <code>TableUpdater</code> thread.
+	 * <BR>
+	 * For this reason each log is inserted in the temporary vector <code>rowsToAdd</code> 
+	 * that will be flushed into <code>rows</code> by the thread.
 	 * 
 	 * @param log The log to add
 	 */
 	public synchronized void appendLog(ILogEntry log) {
+		if (closed) {
+			return;
+		}
 		try {
 			//checkLogNumber();
-			int key=allLogs.add(log);
-			synchronized (rows) {
-				rows.add(key);
+			Integer key=Integer.valueOf(allLogs.add(log));
+			synchronized (rowsToAdd) {
+				rowsToAdd.add(key);
 			}
 		} catch (LogCacheException lce) {
 			System.err.println("Exception caught while inserting a new log entry in cache:");
 			System.err.println(lce.getLocalizedMessage());
 			lce.printStackTrace(System.err);
 		}
-		tableUpdater.changed=true;
+	}
+	
+	/**
+	 * Flush the logs from the temporary vector into the table.
+	 * <P>
+	 * New logs are appended in the temporary vector <code>rowsToAdd</code> to limit 
+	 * the frequency of updating the table model.
+	 * This method flushes the logs from the temporary vector into the model vector 
+	 * (<code>rows</code>).
+	 */
+	private void flushLogs() {
+		int added=0;
+		int first=0;
+		synchronized (rowsToAdd) {
+			if (!rowsToAdd.isEmpty()) {
+				added=rowsToAdd.size();
+				synchronized (rows) {
+					first=rows.size();
+					rows.addAll(rowsToAdd);
+				}
+				rowsToAdd.clear();
+			}
+		}
+		if (added>0) {
+			fireTableRowsInserted(first, first+added-1);
+		}
 	}
 	
 	/**
@@ -353,9 +428,11 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
+		closed=true;
 		if (tableUpdater!=null) {
 			tableUpdater.close(sync);
 			tableUpdater=null;
 		}
+		clearAll();
 	}
 }
