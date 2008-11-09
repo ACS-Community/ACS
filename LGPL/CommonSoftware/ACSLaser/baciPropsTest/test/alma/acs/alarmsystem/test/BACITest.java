@@ -103,7 +103,6 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 			getContainerServices().releaseComponent(COMPONENT_NAME);
 			testComponent=null;
 		}
-		Helper.m_nContext = null;
 		super.tearDown();
 	}
 	
