@@ -3,12 +3,15 @@
 1 - AlarmSystemClient built
 1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
-1 - suppressRemoteLogging called
 1 - AlarmSevice instance IOR: ...
 1 - log4j:WARN No appenders could be found for logger (cern.laser.client.services.selection.AlarmSelectionHandler).
 1 - log4j:WARN Please initialize the log4j system properly.
+1 - suppressRemoteLogging called
 1 - AlarmSevice instance IOR: ...
 1 - AlarmSevice instance IOR: ...
+1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.xxx' Service='NotifyEventChannelFactory' ]
 1 - ******************************
 1 - Msg is: 
 1 - 
