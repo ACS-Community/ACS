@@ -4,7 +4,7 @@
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] component 'alma.acsjms.test.PubSubTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
-1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Attempting to create the TOPIC.TEST channel.
+1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] acs-jms message received
