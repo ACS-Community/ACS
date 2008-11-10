@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.65 2008/10/31 09:44:05 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.66 2008/11/10 11:03:33 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.65 2008/10/31 09:44:05 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.66 2008/11/10 11:03:33 bjeram Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1260,6 +1260,7 @@ LoggingProxy::sendCache()
 void
 LoggingProxy::sendCacheInternal()
 {
+	// TBD: I think that we do not need m_sendingPending anymore, because thee is just one thread that sends.
 	if (m_sendingPending)
 		return;
 
@@ -1473,13 +1474,15 @@ LoggingProxy::sendCacheInternal()
         // we have to unlock before we do a remote call to prevent a deadlock
         // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
         // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
-        // successfully sent
-        successfullySent();
-
         // successfully sent, clear cache
         m_cache.clear();
         ace_mon.release();
         m_logger->write_records(anys);
+
+        // here we have to acquire the mutex again. Should be done in better way.
+        ace_mon.acquire();
+        // successfully sent
+        successfullySent();
 
 	}else{
 	    // fill anys
@@ -1495,20 +1498,24 @@ LoggingProxy::sendCacheInternal()
             delete *iter;
         }
         // we have to unlock before we do a remote call to prevent a deadlock
-        // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
+        // this is just temporary solution. We have to solve in better way the problem in case if we can not send
+        // logs to logging system
         // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
-        // successfully sent
-        successfullySent();
-
         // successfully sent, clear cache
         m_cache.clear();
         ace_mon.release();
         m_logger->write_records(anys);
+
+        // here we have to acquire the mutex again to protect successfullySent. Should be done in better way.
+        ace_mon.acquire();
+        // successfully sent
+        successfullySent();
 	}//if-else
     }
     catch(...)
 	{
-    	//TBD: this is now not protected!!!
+    	//TBD: this is now protected!!!
+    	ace_mon.acquire();
 	    failedToSend();
 	// this can cause dead-loop (when new log record causes sent action...)
 	//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendCache) Unexpected exception occured while sending to the Centralized Logger");
@@ -1533,8 +1540,18 @@ LoggingProxy::sendRecord(CORBA::Any &record)
       anys.length(1);
       anys[0] = record;
 
+      // we have to unlock before we do a remote call to prevent a deadlock
+      // this is just temporary solution. We have to solve in better way the problem in case if we can not send
+      // logs to logging system
+      // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
+      // successfully sent
+
+
+      ace_mon.release();
       m_logger->write_records(anys);
 
+      // here we have to acquire the mutex again. Should be done in better way.
+      ace_mon.acquire();
       // successfully sent
       successfullySent();
 
@@ -1542,6 +1559,8 @@ LoggingProxy::sendRecord(CORBA::Any &record)
     }
   catch(...)
     {
+	  //TBD: here we have to lock again, but it has to be done in better way
+	  ace_mon.acquire();
       failedToSend();
       // this can cause dead-loop
       //ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendRecord) Unexpected exception occured while sending to the Centralized Logger");
