@@ -42,6 +42,12 @@ import alma.acs.util.IsoDateFormat;
 import alma.acscommon.NC_KIND;
 
 
+/**
+ * Tests creation of notification channels and usage of the TAO notification extensions 
+ * that were introduced to fix the race conditions described in COMP-2808.
+ * 
+ * @author hsommer
+ */
 public class HelperTest extends ComponentClientTestCase
 {
 	private HelperWithChannelCreationSynch helper;
@@ -95,7 +101,8 @@ public class HelperTest extends ComponentClientTestCase
 	
 	/**
 	 * Creates and destroys a test channel.
-	 * Also tests creating a second instance of that channel after the first one has been created, to check for the NameAlreadyUsed ex.
+	 * Also tests creating a second instance of that channel after the first one has been created, 
+	 * to check for the NameAlreadyUsed ex.
 	 */
 	public void testCreateChannel() throws Exception {
 		String channelName = "singleChannel";
@@ -142,7 +149,7 @@ public class HelperTest extends ComponentClientTestCase
 	 * This eliminates jitter from thread creation, thread starting, and contact with the naming service, all happening before actual channel creation.
 	 */
 	public void testConcurrentChannelCreation() throws Exception {
-		String channelName = "anotherSingleChannel"; // one channel tried to be created multiple times
+		String channelName = "testChannelForConcurrentCreation"; // one channel tried to be created concurrently
 		
 		assertChannel(false, channelName);
 
@@ -215,7 +222,77 @@ public class HelperTest extends ComponentClientTestCase
 		}
 	}
 	
+	/**
+	 * One step up from {@link #testConcurrentChannelCreation()}, here we test concurrent calls to 
+	 * {@link Helper#getNotificationChannel(String, String, String)} which are supposed to handle the 
+	 * <code>NameAlreadyUsed</code> exception by making those later threads wait until the channel has 
+	 * been created for the first thread, then sharing the channel object.
+	 */
+	public void testConcurrentChannelRetrieval() throws Throwable {
+		final String channelName = "testChannelForConcurrentRetrieval"; // one channel to be retrieved concurrently
+		assertChannel(false, channelName);
 
+		class ChannelRetriever implements Callable<EventChannel> {
+			private final String channelName;
+			private final CountDownLatch synchStart;
+			ChannelRetriever(String channelName, CountDownLatch synchStart) {
+				this.channelName = channelName;
+				this.synchStart = synchStart;
+			}
+			public EventChannel call() throws Exception {
+				String factoryName = helper.getNotificationFactoryNameForChannel(channelName);
+				return helper.getNotificationChannel(channelName, NC_KIND.value, factoryName, synchStart);
+			}
+		}
+		// we need at least two threads, but more threads may improve collision chances
+		final int numCreators = 3;
+		assertTrue(numCreators >= 2);
+		
+		ExecutorService pool = Executors.newFixedThreadPool(numCreators, getContainerServices().getThreadFactory());
+		CountDownLatch synchCreationStart = new CountDownLatch(numCreators);
+		
+		List<Future<EventChannel>> results = new ArrayList<Future<EventChannel>>();
+
+		// check the results
+		EventChannel uniqueChannel = null;
+		try {
+			// Run the threads that request the same channel
+			for (int i = 0; i < numCreators; i++) {
+				results.add(pool.submit(new ChannelRetriever(channelName, synchCreationStart)));
+			}
+			// wait for all threads to finish. Waiting here instead of waiting on the future.get() calls
+			// has the advantage that we can exit this method with a fail() without leaving an ongoing channel creation behind.
+			pool.shutdown();
+			assertTrue(pool.awaitTermination(30, TimeUnit.SECONDS));
+			
+			for (Future<EventChannel> future : results) {
+				try {
+					EventChannel threadResult = future.get();
+					// we only get here if threadResult != null, otherwise ex
+					if (uniqueChannel != null) {
+						assertTrue(uniqueChannel._is_equivalent(threadResult));
+					}
+					uniqueChannel = threadResult;
+				} 
+				catch (ExecutionException ex) {
+					throw ex.getCause();
+				}
+				catch (AssertionFailedError ex) {
+					throw ex;
+				}
+				catch (Throwable thr) {
+					fail("Unexpected exception "+ thr.toString());
+				}
+			}
+			m_logger.info("All concurrent calls to getNotificationChannel got the same channel object.");
+		} 
+		finally {
+			if (uniqueChannel != null) {
+				helper.destroyNotificationChannel(channelName, NC_KIND.value, uniqueChannel);
+			}
+		}
+		
+	}
 
 	
 	/////////////////////////////
@@ -307,6 +384,13 @@ public class HelperTest extends ComponentClientTestCase
 			this.synch = synch;
 			return super.createNotificationChannel(channelName, channelKind, notifyFactoryName);
 		}
+		
+		protected EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName, CountDownLatch synch)
+				throws AcsJException {
+			this.synch = synch;
+			return super.getNotificationChannel(channelName, channelKind, notifyFactoryName);
+		}
+
 	}
 	
 }
