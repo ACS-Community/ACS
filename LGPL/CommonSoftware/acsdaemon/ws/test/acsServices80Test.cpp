@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.4 2008/11/04 17:49:36 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.5 2008/11/10 20:04:46 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -67,11 +67,15 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
     void done (const ::ACSErr::Completion & comp) {
       if (startup) {
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
+ACE_OS::sleep(30);
+        ACE_CString managerRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getManagerPort(1).c_str() + "/Manager";
+        daemon->set_manager_reference(managerRef.c_str()); 
+
 //        printf("Please, press a key to start shutting down the services!");
 //        getchar();
 	ACE_OS::sleep(3);
         ACS_SHORT_LOG((LM_INFO, "SHUTTING DOWN THE SERVICES."));
-        daemon->stop_services(services_definition, ptr());
+        //daemon->stop_services(services_definition, ptr());
         startup = false;
       } else {
         ACS_SHORT_LOG((LM_INFO, "DONE SHUTTING DOWN SERVICES."));
@@ -254,7 +258,6 @@ main (int argc, char *argv[])
 			ACS_SHORT_LOG((LM_ERROR, "Failed to narrow reference '%s'.", daemonRef.c_str()));
 			return -1;
 		}
-
 
                 ACS_SHORT_LOG((LM_INFO, "BUILDING SERVICE DEFINITION."));
 

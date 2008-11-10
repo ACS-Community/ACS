@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.3 2008/11/04 18:18:39 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.4 2008/11/10 20:04:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -101,8 +101,8 @@ void ServiceController::requestComplete(Request *request) {
 
 bool ServiceController::setState(acsdaemon::ServiceState istate) {
     bool stopped = state != acsdaemon::NOT_EXISTING && istate == acsdaemon::NOT_EXISTING;
-    if (state != istate) { // NOTE initially clear (non-active) state will be sent (to clear any old state)
-    //if (state == acsdaemon::RUNNING && istate != acsdaemon::RUNNING || state == acsdaemon::DEGRADED && istate != acsdaemon::RUNNING && istate != acsdaemon::DEGRADED) {
+    /* on state change... */
+    if (state != istate) {
         fireAlarm(istate);
     }
     state = istate;
@@ -175,10 +175,13 @@ bool ControlledServiceRequest::execute() {
 bool ImpRequest::execute() {
     ACS_SHORT_LOG ((LM_INFO, "Executing: '%s'.", command.c_str()));
     ACE_OS::system(command.c_str());
+    if (controller->getContext()->getManagerReference())
+	controller->setManagerReference(controller->getContext()->getManagerReference());
     return true;
 }
 
-ImpRequest::ImpRequest(ACSServiceRequestType itype, ACSServiceType iservice) {
+ImpRequest::ImpRequest(ImpController *icontroller, ACSServiceRequestType itype, ACSServiceType iservice) :
+	controller(icontroller) {
     // for now only itype=START_SERVICE is supported
     command = ACE_CString(acsServices[iservice].impexec);
 }
@@ -190,7 +193,7 @@ ImpController::ImpController(ACSDaemonContext *icontext, ACSServiceType iservice
 }
 
 ControlledServiceRequest *ImpController::createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback) {
-    return new ControlledServiceRequest(this, new ImpRequest(itype, service), itype == STOP_SERVICE);
+    return new ControlledServiceRequest(this, new ImpRequest(this, itype, service), itype == STOP_SERVICE);
 }
 
 acsdaemon::ServiceState ImpController::getActualState() {
@@ -201,6 +204,9 @@ acsdaemon::ServiceState ImpController::getActualState() {
             ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' for Imp '%s'!", corbaloc.c_str(), acsServices[service].impname));
             return acsdaemon::DEFUNCT;
         }
+
+        obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
+
         acsdaemon::ImpBase_var imp = acsdaemon::ImpBase::_narrow(obj.in());
         if (CORBA::is_nil(imp.in())) {
             ACS_SHORT_LOG((LM_INFO, "Imp '%s' is defunct.", acsServices[service].impname));
@@ -221,9 +227,35 @@ acsdaemon::ServiceState ImpController::getActualState() {
     }
 }
 
+void ImpController::setManagerReference(const char * ref) {
+    try {
+        ACS_SHORT_LOG((LM_DEBUG, "Setting manager reference '%s' to Imp with Corba URI '%s'.", ref, corbaloc.c_str()));
+        CORBA::Object_var obj = getContext()->getORB()->string_to_object(corbaloc.c_str());
+        if (CORBA::is_nil(obj.in())) {
+            ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' for Imp '%s'!", corbaloc.c_str(), acsServices[service].impname));
+            return;
+        }
+
+        obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
+
+        acsdaemon::ImpBase_var imp = acsdaemon::ImpBase::_narrow(obj.in());
+        if (CORBA::is_nil(imp.in())) {
+            ACS_SHORT_LOG((LM_INFO, "Imp reference '%s' is not valid.", acsServices[service].impname));
+            return;
+        }
+
+        imp->set_manager_reference(ref);
+        ACS_SHORT_LOG((LM_DEBUG, "Manager reference set to Imp '%s'.", acsServices[service].impname));
+        return;
+    } catch(CORBA::Exception &ex) {
+        ACS_SHORT_LOG((LM_ERROR, "Failed to contact Imp '%s'.", acsServices[service].impname));
+        return;
+    }
+}
+
 /*************************** ACSServiceController *****************************/
 
-ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc) {
+ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc), alarmSystemInitialized(false) {
     char str[256];
     const ACSService *service = &acsServices[idesc->getACSService()];
     std::string port = service->svcport == NULL ? service->namedsvcport(idesc->getInstanceNumber(), idesc->getName()) : service->svcport(idesc->getInstanceNumber());
@@ -232,6 +264,8 @@ ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServic
 }
 
 ACSServiceController::~ACSServiceController() {
+    if (alarmSystemInitialized)
+        ACSAlarmSystemInterfaceFactory::done();
     delete desc;
 }
 
@@ -268,16 +302,61 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
     }
 }
 
+bool ACSServiceController::setState(acsdaemon::ServiceState istate) {
+    bool stopped = state != acsdaemon::NOT_EXISTING && istate == acsdaemon::NOT_EXISTING;
+    /* on state change... and anytime when alarm system is not initialized to force inicialization and sending current state */
+    if (state != istate || !alarmSystemInitialized) {
+        fireAlarm(istate);
+    }
+    state = istate;
+    return stopped;
+}
+
 void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
+    if (!alarmSystemInitialized)
+    {
+        // no reference yet, noop
+        if (!getContext()->getManagerReference())
+	   return;
+   
+        try {
+           ACE_CString managerReference = getContext()->getManagerReference();
+           ACS_SHORT_LOG((LM_INFO, "Initializing Alarm System using manager reference '%s'.", managerReference.c_str()));
+           CORBA::Object_var obj = getContext()->getORB()->string_to_object(managerReference.c_str());
+           if (CORBA::is_nil(obj.in())) {
+               ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' as manager reference!", managerReference.c_str()));
+               return;
+           }
+
+           obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
+
+	   ::maci::Manager_var manager = ::maci::Manager::_narrow(obj.in());
+           if (manager.ptr() == ::maci::Manager::_nil()) {
+               ACS_SHORT_LOG((LM_INFO, "Manager reference '%s' is not valid.", managerReference.c_str()));
+               return;
+           }
+
+           if (alarmSystemInitialized = ACSAlarmSystemInterfaceFactory::init(manager.in())) {
+               ACS_SHORT_LOG((LM_INFO, "Alarm System initialized."));
+           }
+	   else {
+               ACS_SHORT_LOG((LM_INFO, "Alarm System initialization failed."));
+	       return;
+           }
+       } catch (...) {
+           // TODO special exception handling?
+           ACS_SHORT_LOG((LM_INFO, "Failed to initialize Alarm System."));
+           return;
+       }
+    } 
+
     // constants we will use when creating the fault
     std::string family = "Services";
-    std::string member = desc->getACSServiceName();;
-    int code = (int)state; 
+    std::string member = desc->getACSServiceName();
+    int code = 0; //(int)state; 
     
     // create a Properties object and configure it
     acsalarm::Properties props;
-    props.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, "prefix");
-    props.setProperty(faultState::ASI_SUFFIX_PROPERTY_STRING, "suffix");
     props.setProperty("host", desc->getHost());
     std::stringstream out;
     out << desc->getInstanceNumber();
@@ -327,9 +406,22 @@ ServiceController *ACSDaemonContext::getImpController(ACSServiceType service) {
         impcontrollers = new ServiceController*[ACS_SERVICE_TYPES];
         memset(impcontrollers, 0, sizeof(ServiceController*) * ACS_SERVICE_TYPES);
     }
-    if (impcontrollers[service] == NULL) impcontrollers[service] = new ImpController(this, service);
+    if (impcontrollers[service] == NULL)
+	impcontrollers[service] = new ImpController(this, service);
     m_mutex->release();
     return impcontrollers[service];
+}
+
+void ACSDaemonContext::setImpControllersManagerReference(const char * ref) {
+    //m_mutex->acquire();
+    if (impcontrollers == NULL)
+       return;
+
+    for (int i = 0; i < ACS_SERVICE_TYPES; i++)
+       if (impcontrollers[i])
+           ((ImpController*)impcontrollers[i])->setManagerReference(ref);
+
+    //m_mutex->release();
 }
 
 ServiceController *ACSDaemonContext::getACSServiceController(ACSServiceRequestDescription *desc) {
@@ -360,7 +452,6 @@ ServiceController *ACSDaemonContext::getACSServiceController(ACSServiceRequestDe
 void ACSDaemonContext::initialize(CORBA::ORB_ptr iorb) {
     ACS_SHORT_LOG((LM_DEBUG, "Initializing ACSDaemonContext!"));
     orb = iorb;
-//    ACSAlarmSystemInterfaceFactory::init(NULL);
     acsQoS::init(orb);
     reqproc->resume();
     ctrl->resume();
@@ -371,7 +462,6 @@ void ACSDaemonContext::dispose(CORBA::ORB_ptr iorb) {
     ctrl->exit();
     reqproc->exit();
     acsQoS::done();
-//    ACSAlarmSystemInterfaceFactory::done();
 }
 
 void ACSDaemonContext::processRequest(ACSServiceRequestTarget target, ACSServiceRequestType type, ACSServiceRequestDescription *desc, acsdaemon::DaemonCallback_ptr callback) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx, acsdaemonErrType::ServiceNotRunningEx)) {

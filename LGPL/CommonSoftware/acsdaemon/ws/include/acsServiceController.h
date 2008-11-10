@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.1 2008/10/28 10:45:19 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.2 2008/11/10 20:04:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,27 +55,28 @@ class ControllerThread : public ACS::Thread {
 class ControlledServiceRequest;
 
 class ServiceController {
-  private:
+  protected:
     ACSDaemonContext *context;
     bool autorestart;
     ACE_Thread_Mutex *m_mutex;
     acsdaemon::ServiceState state;
     bool active;
     Request *startreq, *stopreq; // last request in queue (either start or stop, not both)
+
     friend class ControlledServiceRequest;
     // called once the request returned by createControlledServiceRequest begins stopping the service
     void stopping();
     // called once the request returned by createControlledServiceRequest is complete
     void requestComplete(Request *request);
-    bool setState(acsdaemon::ServiceState istate);
+    virtual bool setState(acsdaemon::ServiceState istate);
   protected:
     virtual ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL) = 0;
     virtual acsdaemon::ServiceState getActualState() = 0;
     virtual void fireAlarm(acsdaemon::ServiceState state) = 0;
-    ACSDaemonContext *getContext() { return context; }
   public:
     ServiceController(ACSDaemonContext *icontext, bool iautorestart);
     virtual ~ServiceController();
+    ACSDaemonContext *getContext() { return context; }
     void restart();
     bool start(acsdaemon::DaemonCallback_ptr callback = NULL) ACE_THROW_SPEC ((acsdaemonErrType::ServiceAlreadyRunningEx));
     void stop(acsdaemon::DaemonCallback_ptr callback = NULL) ACE_THROW_SPEC ((acsdaemonErrType::ServiceNotRunningEx));
@@ -96,14 +97,17 @@ class ControlledServiceRequest : public Request {
     ~ControlledServiceRequest();
 };
 
+class ImpController;
+
 class ImpRequest : public Request {
   private:
+    ImpController *controller;
     ACE_CString command;
   protected:
     void abort() {}
     bool execute();
   public:
-    ImpRequest(ACSServiceRequestType itype, ACSServiceType iservice);
+    ImpRequest(ImpController *icontroller, ACSServiceRequestType itype, ACSServiceType iservice);
 };
 
 class ImpController : public ServiceController {
@@ -117,15 +121,18 @@ class ImpController : public ServiceController {
   public:
     ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart = true);
     ACSServiceType getACSService() { return service; }
+    void setManagerReference(const char * ref);
 };
 
 class ACSServiceController : public ServiceController {
   private:
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;
+    bool alarmSystemInitialized;
   protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
     acsdaemon::ServiceState getActualState();
+    virtual bool setState(acsdaemon::ServiceState istate);
     void fireAlarm(acsdaemon::ServiceState state);
   public:
     ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart);
@@ -144,6 +151,8 @@ class ACSDaemonContext {
     std::map<const char *, ServiceController **> acsservicecontrollersmap;
     ServiceController *getImpController(ACSServiceType service);
     ServiceController *getACSServiceController(ACSServiceRequestDescription *desc);
+    ACE_CString managerReference;
+    void setImpControllersManagerReference(const char * ref);
   public:
     ACSDaemonContext(std::string name);
     ~ACSDaemonContext();
@@ -154,6 +163,8 @@ class ACSDaemonContext {
     CORBA::ORB_ptr getORB() { return orb; }
     void checkControllers();
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
+    void setManagerReference(const char * ref) { managerReference = ref; setImpControllersManagerReference(ref); };
+    const char * getManagerReference() const { return managerReference.is_empty() ? NULL : managerReference.c_str(); }
 };
 
 
