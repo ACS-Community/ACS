@@ -401,7 +401,13 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			}
 		}
 		if (added>0) {
-			fireTableRowsInserted(first, first+added-1);
+			try {
+				fireTableRowsInserted(first, first+added-1);
+			} catch (Exception e) {
+				// This can happen while deleting and adding logs at
+				// the same time.
+				// It seems enough to mask this exception
+			}
 		}
 	}
 	
