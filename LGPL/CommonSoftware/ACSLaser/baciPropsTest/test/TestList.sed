@@ -10,3 +10,4 @@ s/<nanos>[0-9]*<.nanos>/<nanos>......./g
 s/AlarmSevice instance IOR.*/AlarmSevice instance IOR: .../g
 s/Time:.*/Time: xx.xx/g
 s/Manager login done, handle .* obtained./Manager login done, handle xxxxxx obtained./g
+s/ChannelName='[^']*'/ChannelName='xxx'/g
