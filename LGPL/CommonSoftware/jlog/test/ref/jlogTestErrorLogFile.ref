@@ -7,8 +7,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] logged out from manager.
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to destroy all POAs and the ORB
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] POAs and ORB destroyed successfully.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] POA activated
@@ -18,8 +16,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] logged out from manager.
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to destroy all POAs and the ORB
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] POAs and ORB destroyed successfully.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] POA activated
@@ -29,8 +25,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] logged out from manager.
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to destroy all POAs and the ORB
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] POAs and ORB destroyed successfully.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] POA activated
@@ -40,8 +34,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] logged out from manager.
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] about to destroy all POAs and the ORB
-1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] POAs and ORB destroyed successfully.
 1 - 
 1 - 
 1 - OK (4 tests)
