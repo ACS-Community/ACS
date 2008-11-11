@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.5 2008/11/10 20:04:46 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.6 2008/11/11 09:10:52 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -67,15 +67,15 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
     void done (const ::ACSErr::Completion & comp) {
       if (startup) {
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
-ACE_OS::sleep(30);
-        ACE_CString managerRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getManagerPort(1).c_str() + "/Manager";
+        
+	ACE_CString managerRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getManagerPort(1).c_str() + "/Manager";
         daemon->set_manager_reference(managerRef.c_str()); 
 
 //        printf("Please, press a key to start shutting down the services!");
 //        getchar();
-	ACE_OS::sleep(3);
+	ACE_OS::sleep(5);
         ACS_SHORT_LOG((LM_INFO, "SHUTTING DOWN THE SERVICES."));
-        //daemon->stop_services(services_definition, ptr());
+        daemon->stop_services(services_definition, ptr());
         startup = false;
       } else {
         ACS_SHORT_LOG((LM_INFO, "DONE SHUTTING DOWN SERVICES."));
@@ -266,11 +266,12 @@ main (int argc, char *argv[])
 		sdb->add_interface_repository(DAEMONHOST, false, false); // still waits for interface repository startup
 		sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_notification_service("LoggingNotifyEventChannelFactory", DAEMONHOST);
+		sdb->add_notification_service("AlarmNotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_xml_cdb(DAEMONHOST, true, "/alma/ACS-7.0/acsdata/config/defaultCDB");
 		sdb->add_logging_service(DAEMONHOST, "Log");
 		sdb->add_acs_log(DAEMONHOST);
 		sdb->add_manager(DAEMONHOST, "", true);
-		
+
 		printf("SERVICE DEFINITION XML:\n%s\n", sdb->get_services_definition());
                 cb.daemon = daemon;
                 cb.services_definition = sdb->get_services_definition();
