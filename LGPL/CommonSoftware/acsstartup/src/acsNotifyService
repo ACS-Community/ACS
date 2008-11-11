@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.5 2008/11/06 09:37:29 cparedes Exp $"
+# "@(#) $Id: acsNotifyService,v 1.6 2008/11/11 13:59:12 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -295,7 +295,7 @@ then
 
   if [ "X" = "X$CL_NS_TYPE" ]
   then
-    ORBOPTS="$ORBOPTS -ORBDebug -ORBDebugLevel 1"
+    ORBOPTS="$ORBOPTS"
   else
     ORBOPTS="$ORBOPTS -Factory $NOTIFY_EVENT_CHANNEL_FACTORY"
   fi
