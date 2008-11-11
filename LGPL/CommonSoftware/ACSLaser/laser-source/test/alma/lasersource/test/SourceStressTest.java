@@ -215,7 +215,6 @@ public class SourceStressTest extends ComponentClientTestCase {
 	protected void tearDown() throws Exception {
 		m_consumer.disconnect();
 		ACSAlarmSystemInterfaceFactory.done();
-		Helper.m_nContext = null;
 		super.tearDown();
 	}
 	

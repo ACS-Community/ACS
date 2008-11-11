@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.8 2008/02/06 10:00:48 msekoran Exp $
+ * @version $Id: SendTest.java,v 1.9 2008/11/11 16:04:16 gchiozzi Exp $
  * @since    
  */
 
@@ -131,7 +131,6 @@ public class SendTest extends ComponentClientTestCase {
 		m_consumer.disconnect();
 		ACSAlarmSystemInterfaceFactory.done();
 		m_logger.info("tearDown: done clearing NC consumer and alarm factory.");
-		Helper.m_nContext = null;
 		super.tearDown();
 	}
 	
