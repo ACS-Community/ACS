@@ -5,14 +5,17 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
       <_ Name="DDS_SIMPLE_EXAMPLE" Code="simpleExampleDDSImpl"
+		                             ImplLang="cpp"
                            Type="IDL:alma/DDS_SIMPLE_EXAMPLE/simpleExample:1.0"
                            Container="Container"/>
 
       <_ Name="NC_SUPPLIER" Code="NCBenchmarkImpl"
-                             Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
-                             Container="Container"/>
+		                      ImplLang="cpp"
+                            Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
+                            Container="Container"/>
 
       <_ Name="NC_DDS_SUPPLIER" Code="DDSNCBenchmarkImpl"
+		                          ImplLang="cpp"
                              Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
                              Container="Container"/>
 

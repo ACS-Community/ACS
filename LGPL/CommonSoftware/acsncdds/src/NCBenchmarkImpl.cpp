@@ -16,25 +16,25 @@ void NCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 {
 	ACS_TRACE("NCBenchmarkSupplierImpl::runTest()");
 	struct timeval time;
-	nc::SimpleSupplier *supp = 0;
-	supp = new nc::SimpleSupplier(NC_BENCHMARK::CHANNEL_NAME, this);
+	nc::SimpleSupplier *sup_p = 0;
+	sup_p = new nc::SimpleSupplier(NC_BENCHMARK::CHANNEL_NAME, this);
 	NC_BENCHMARK::Message m;
 	
 	m.seqnum=1;
 	m.time=1;
-	m.data.length(16);
+	m.data.length(8132);
 
-	for(int i=0;i<100;i++){
+	for(unsigned int i=0;i<duration;i++){
 		m.seqnum=i;
 		gettimeofday(&time,NULL);
 		m.time= (long long)time.tv_sec*1000000L + time.tv_usec;
-		supp->publishData<NC_BENCHMARK::Message>(m);
-		sleep(1);
+		sup_p->publishData<NC_BENCHMARK::Message>(m);
+		usleep((long)(1000000/freq));
 	}
 
-	if(supp){
-		supp->disconnect();
-		supp=0;
+	if(sup_p){
+		sup_p->disconnect();
+		sup_p=0;
 	}
 }
 

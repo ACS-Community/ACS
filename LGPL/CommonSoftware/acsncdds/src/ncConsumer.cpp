@@ -8,8 +8,7 @@ void myHandlerFunction(NC_BENCHMARK::Message m, void *other)
 	struct timeval time;
 	gettimeofday(&time, NULL);
 	long long t = (long long)time.tv_sec*1000000L + time.tv_usec;
-	std::cout << "Arrived message number: " << m.seqnum 
-		<< " latency: " << t - m.time << std::endl;
+	std::cout << t - m.time << std::endl;
 }
 
 int main(int argc, char ** argv)
@@ -27,8 +26,8 @@ int main(int argc, char ** argv)
 
 	cons->consumerReady();
 
-	ACE_Time_Value tv(100);
-	client.run();
+	ACE_Time_Value tv(120);
+	client.run(tv);
 
 	client.logout();
 	ACE_OS::sleep(5);

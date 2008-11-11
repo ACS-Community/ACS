@@ -18,16 +18,19 @@ void DDSNCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 	ACS_TRACE("DDSNCBenchmarkSupplierImpl::runTest");
 	ACS_NEW_DDS_PUBLISHER(pub_p, NC_BENCHMARK::Message, 
 			NC_BENCHMARK::CHANNEL_NAME);
+	ACS_NEW_DDS_PUBLISHER(pub_p2, NC_BENCHMARK::Message,
+			NC_BENCHMARK::CHANNEL_NAME);
 
 	struct timeval time;
 	NC_BENCHMARK::Message m;
+	m.data.length(8192);
 
-	for(int i=0;i<100;i++){
+	for(unsigned int i=0;i<duration;i++){
 		m.seqnum=i;
 		gettimeofday(&time,NULL);
 		m.time= (long long)time.tv_sec*1000000L + time.tv_usec;
 		PUBLISH_DATA(pub_p, NC_BENCHMARK::Message, m);
-		sleep(1);
+		usleep((long)(1000000/freq));
 	}
 
 	pub_p->disconnect();

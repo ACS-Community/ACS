@@ -6,9 +6,10 @@
 #include <dds/DCPS/Service_Participant.h>
 #include <dds/DCPS/Marked_Default_Qos.h>
 #include <dds/DCPS/transport/framework/TheTransportFactory.h>
+#include <dds/DCPS/transport/framework/TransportImpl.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpConfiguration.h>
 
-static unsigned int DOMAIN_ID=411;
+const unsigned int DOMAIN_ID=411;
 
 namespace ddsnc{
 
@@ -21,9 +22,11 @@ namespace ddsnc{
  * @see DDSPublisher
  * @see DDSSubscriber
  */	
+	
 	class DDSHelper{
 		private:
 		void setTopicName(const char* topicName);
+		void init(const char* channelName, const char* DCPSInfoRepoLoc);
 		/*int argc;
 		const ACE_TCHAR* argv[];*/
 
@@ -35,24 +38,29 @@ namespace ddsnc{
 		DDS::Topic_var topic;
 		char* partitionName;
 		char* topicName;
-		bool initialized; /**< a flag, shows the initialization status 
+		bool initialized; /**< a flag that shows the initialization status 
 								  of the class*/
+
+		/**
+		 * Constructor for DDSHelper, this constructor will be set the
+		 * location of DCPSInfoRepo to corbaloc:iiop:127.0.0.1:3999/DCPSInfoRepo
+		 *
+		 * @param channelName the name of the channel that will be mapped to a
+		 * partition.
+		 * 
+		 */
+		DDSHelper(const char *channelName);
 
 		/**
 		 * Constructor for DDSHelper
 		 *
-		 * @param channelName the name of the channel with format
-		 * partition_topic. If not _ character detected the partition QoS
-		 * will be the default (It will not have partition filtering)
-		 * 
-		 * @param argv the number of arguments to initialize the ORB
-		 * for DDS.
+		 * @param channelName the name of the channel that will be mapped to a
+		 * partition.
 		 *
-		 * @param argc the array of arguments required to initialize the ORB
-		 * for DDS. In general the arguments must be: <br>
-		 * -ORBSvcConf transport_config_file -DCPSConfigFile app_config_file
+		 * @param DCPSInfoRepoLoc address of the DCPSInfoRepo. The address
+		 * must be a format supported by TAO
 		 */
-		DDSHelper(const char *channelName);
+		DDSHelper(const char* channelName, const char* DCPSInfoRepoLoc);		
 		
 		/**
 		 * Destructor for DDSHelper before free the varibales it call to
@@ -63,6 +71,15 @@ namespace ddsnc{
 		 */
 		virtual ~DDSHelper();
 		int createParticipant();
+
+		/**
+		 *	Locates a Transport id not in use and assign it to transport_impl_id.
+		 *	The transport configuration is automatically configured by TAO
+		 *	pluggable framework.
+		 *	
+		 */
+		//Maybe this method could generate a race condition. It's neccessary to
+		//test more.
 		void initializeTransport();
 
 		/**
