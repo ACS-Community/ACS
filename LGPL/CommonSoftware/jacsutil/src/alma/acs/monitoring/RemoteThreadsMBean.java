@@ -26,10 +26,10 @@ import javax.management.openmbean.CompositeData;
 /**
  * MBean interface representing a set of threads of a remote java process. In
  * order to have all the threading information fo the JVM, the implementation
- * should use the {@link <code>ThreadMXBean</code>} platform MXBean to get all
+ * should use the {@link ThreadMXBean} platform MXBean to get all
  * the necessary information.<br/>
  * 
- * All the methods returning {@link <code>CompositeData</code>} arrays 
+ * All the methods returning {@link CompositeData} arrays 
  * actually return {@link java.lang.management.ThreadInfo} objects transformed
  * into <code>CompositeData</code> ones. Since <code>ThreadInfo</code> is not 
  * serializable, then <code>CompositeData</code> type must be used to get the 
