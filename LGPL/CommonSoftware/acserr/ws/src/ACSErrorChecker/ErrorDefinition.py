@@ -1,4 +1,4 @@
-# @(#) $Id: ErrorDefinition.py,v 1.6 2006/02/03 15:01:36 acaproni Exp $
+# @(#) $Id: ErrorDefinition.py,v 1.7 2008/11/12 15:13:11 acaproni Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ErrorDefinition.py,v 1.6 2006/02/03 15:01:36 acaproni Exp $"
+# "@(#) $Id: ErrorDefinition.py,v 1.7 2008/11/12 15:13:11 acaproni Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -174,11 +174,13 @@ def parseFile(fileName):
     parser.EndElementHandler = end_element
     parser.CharacterDataHandler = char_data
     
-    #Parse the file one line at a time (so we avoid to parse an entire file 
+    #Parse the file one line at a time (in order to avoid parsing an entire file 
     # if it is not an error definition file
     line=inF.readline()
     while line!="" and (theTag==None or theTag=="Type" or theTag=="ErrorCode" or theTag=="Code" or theTag=="Member"):
         line=inF.readline()
+        if line==None or line=="":
+            continue
         parser.Parse(line,line=="")
     
     #Close the input file
