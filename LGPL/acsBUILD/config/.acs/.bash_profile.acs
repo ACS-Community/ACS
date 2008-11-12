@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.77 2008/10/16 10:02:04 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.78 2008/11/12 15:18:04 bjeram Exp $"
 #
 #
 #
@@ -781,7 +781,12 @@ fi
 if [ "$OSYSTEM" = "SunOS" ]
 then
 
-    LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
+   if  [ X"$DDS_ROOT" != X ]
+   then
+	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -810,6 +815,11 @@ then
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
        LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$DDS_ROOT" != X ]
+   then
+	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
    fi
 
    if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
