@@ -9,7 +9,12 @@
                            Type="IDL:alma/DDS_SIMPLE_EXAMPLE/simpleExample:1.0"
                            Container="Container"/>
 
-      <_ Name="NC_SUPPLIER" Code="NCBenchmarkImpl"
+      <_ Name="NC_SIMPLE_EXAMPLE" Code="simpleExampleNCImpl"
+		                             ImplLang="cpp"
+                           Type="IDL:alma/DDS_SIMPLE_EXAMPLE/simpleExample:1.0"
+                           Container="Container"/>
+      
+		<_ Name="NC_SUPPLIER" Code="NCBenchmarkImpl"
 		                      ImplLang="cpp"
                             Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
                             Container="Container"/>

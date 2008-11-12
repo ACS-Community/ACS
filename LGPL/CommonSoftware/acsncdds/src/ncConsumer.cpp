@@ -32,5 +32,8 @@ int main(int argc, char ** argv)
 	client.logout();
 	ACE_OS::sleep(5);
 
+	cons->disconnect();
+	cons = 0;
+	
 	return 0;
 }

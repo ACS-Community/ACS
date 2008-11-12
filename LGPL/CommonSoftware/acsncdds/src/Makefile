@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2008/10/29 20:54:15 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.8 2008/11/12 08:39:29 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -61,13 +61,18 @@ USER_LIB = -lACE \
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = simpleExampleDDSClient ncConsumer ddsSubscriber
+EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber
 EXECUTABLES_L   = 
 
 # <brief description of xxxxx program>
 simpleExampleDDSClient_OBJECTS   = 	simpleExampleDDSClient
 simpleExampleDDSClient_LDFLAGS   =  
 simpleExampleDDSClient_LIBS      =  acsddsnc maciClient SimpleExampleStubs acsddsncTypeSupport
+
+# <brief description of xxxxx program>
+simpleExampleNCClient_OBJECTS   = 	simpleExampleNCClient
+simpleExampleNCClient_LDFLAGS   =  
+simpleExampleNCClient_LIBS      =  acsnc maciClient SimpleExampleStubs 
 
 # <brief description of xxxxx program>
 ncConsumer_OBJECTS   = 	ncConsumer
@@ -98,7 +103,7 @@ INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc acsddsncTypeSupport simpleExampleDDSImpl NCBenchmarkImpl DDSNCBenchmarkImpl
+LIBRARIES       = acsddsnc acsddsncTypeSupport simpleExampleNCImpl simpleExampleDDSImpl NCBenchmarkImpl DDSNCBenchmarkImpl
 LIBRARIES_L     =
 
 #
@@ -111,8 +116,12 @@ acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp ACE
 simpleExampleDDSImpl_OBJECTS = simpleExampleDDSImpl
 simpleExampleDDSImpl_LIBS    = SimpleExampleStubs acsddsncTypeSupport acsddsnc 
 
+# <brief description of simpleExample library>
+simpleExampleNCImpl_OBJECTS = simpleExampleNCImpl
+simpleExampleNCImpl_LIBS    = SimpleExampleStubs acsnc 
+
 #
-# <brief description of NCBenchmarkImple library>
+# <brief description of NCBenchmarkImpl library>
 NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
 NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs acsnc
 
