@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.71 2008/10/09 07:57:41 cparedes Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.72 2008/11/13 01:57:44 cparedes Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -100,19 +100,9 @@ Consumer::init(CORBA::ORB_ptr orb)
     // Must call resolveNamingService B-4 resolveNotifyChannel!
     // using activator's orb
     resolveNamingService(orb);
-    
-    if(resolveNotifyChannel()==false)
-	{
-	ACS_SHORT_LOG((LM_INFO,"Creating Notification Channel for the '%s' channel!",
-		       channelName_mp));
-	
-	// Resolve the notify factory
-	resolveNotificationFactory();
-	
-	// Create NC
-	createNotificationChannel( );
-	}
-    
+    // Create the NC
+    if(!resolveInternalNotificationChannel())
+        ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //create consumer corba objects
     createConsumer();
 }

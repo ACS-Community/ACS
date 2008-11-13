@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.79 2008/10/14 19:52:10 bjeram Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.80 2008/11/13 01:57:44 cparedes Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -99,17 +99,8 @@ Supplier::init(CORBA::ORB_ptr orb)
 
     // If a notification channel already exists, then use it, otherwise
     // Create the NC
-    if(resolveNotifyChannel()==false)
-	{
-	ACS_SHORT_LOG((LM_INFO,"Creating Notification Channel for the '%s' channel!",
-		       channelName_mp));
-
-	// Resolve the notify factory
-	resolveNotificationFactory();
-
-	// Create NC
-	createNotificationChannel( );
-	}
+    if(!resolveInternalNotificationChannel())
+        ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //Finally we can create the supplier admin, consumer proxy, etc.
     createSupplier();
 }

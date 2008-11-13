@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.71 2008/11/06 09:45:35 cparedes Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.72 2008/11/13 01:57:44 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -118,6 +118,15 @@ class Helper
     bool 
     resolveNotifyChannel();
 
+    /**
+     * This is used by Comsumers and Suppliers to get the notification channel.
+     * It first tries to resolved and if it fails, it tries to create it.
+     * If it fails to create it, it waits 2 seconds and tries again, 20 times.
+     * If it still fails, returns false
+     *   
+     **/
+    bool resolveInternalNotificationChannel();
+
     /**  
      *  Helper method designed to eliminate "xxx::" from a passed string where "xxx" is some
      *  namespace.  Designed to access the stringified name of an "ICD event".
@@ -177,6 +186,8 @@ class Helper
 		return notificationServiceName_mp;
 	}
 
+
+
     /**
      * Utility method.
      * Try to resolve the Notify factory from the Naming service.
@@ -204,6 +215,11 @@ class Helper
     createNotificationChannel();
 
     /**
+     * Destructor is protected.
+     */
+    virtual ~Helper();
+
+    /**
      * Utility method.
      * Returns quality of service properties used to create a notification channel.
      * Override this method if the defaults are insufficient.
@@ -227,10 +243,6 @@ class Helper
     virtual const CosNotification::AdminProperties 
     getAdminProps();    
     
-    /**
-     * Destructor is protected.
-     */
-    virtual ~Helper();
 
     /**
      *  A naming context (i.e., Naming Service reference)
@@ -324,10 +336,5 @@ class Helper
  }; 
 
 #endif /*!_H*/
-
-
-
-
-
 
 

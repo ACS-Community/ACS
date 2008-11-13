@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.78 2008/11/06 09:45:35 cparedes Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.79 2008/11/13 01:57:44 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -172,7 +172,7 @@ Helper::resolveNotificationFactory()
     //first a simple sanity check to ensure the naming service is up and running
     if(CORBA::is_nil(namingContext_m.in()) == true)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel!",
+	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel, Naming Context is nil!",
 		       channelName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
 	throw err.getCORBAProblemEx();
@@ -185,7 +185,7 @@ Helper::resolveNotificationFactory()
         //double-check to ensure it's not a nil reference
         if(CORBA::is_nil(corbaObj.in()) == true)
         {
-            ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel!",
+            ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory error occured for the '%s' channel, Corba Object of the resolve of Naming Context is nil!",
                    channelName_mp));
             CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
             throw err.getCORBAProblemEx();
@@ -219,7 +219,7 @@ Helper::resolveNotificationFactory()
 	{
         //most likely some exception like the notification service is not registered
         //with the naming service.  nothing can be done
-        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory() error occured for the '%s' channel!",
+        ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotificationFactory() error occured for the '%s' channel!, unknown error on resolveNotificationFactory",
                    channelName_mp));
         CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotificationFactory");
         throw err.getCORBAProblemEx();
@@ -239,7 +239,7 @@ Helper::createNotificationChannel()
         //we will try with the standard implementation
         if(CORBA::is_nil(notifyFactoryOld_m.in()) == true)
         {
-	        ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+	        ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Default Notify factory is nil!",
 		       channelName_mp));
 	        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	        throw err.getCORBAProblemEx();
@@ -258,7 +258,7 @@ Helper::createNotificationChannel()
 	//ensure it's a valid reference
 	if(CORBA::is_nil(notifyChannel_m.in()) == true)
 	{
-	    ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+	    ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Notify Channel is nil!",
 			   channelName_mp));
 	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	    throw err.getCORBAProblemEx();
@@ -272,7 +272,7 @@ Helper::createNotificationChannel()
    //sanity check to make sure the naming service is really there
    if(CORBA::is_nil(namingContext_m.in()) == true)
        {
-       ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+       ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Naming Context is nil!",
            channelName_mp));
        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
        throw err.getCORBAProblemEx();
@@ -280,6 +280,16 @@ Helper::createNotificationChannel()
    //really bind the reference here
    namingContext_m->rebind(name, notifyChannel_m.in());
 	}
+    catch(NotifyMonitoringExt::NameAlreadyUsed e){
+	    ACS_SHORT_LOG((LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, the name is already used!",
+		       channelName_mp));
+        throw e;
+    }
+    catch(NotifyMonitoringExt::NameMapError e){
+	    ACS_SHORT_LOG((LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, Name Map Error!",
+		       channelName_mp));
+        throw e;
+    }
     catch(CORBAProblemEx)
 	{
 	//exception thrown by us...OK to rethrow
@@ -290,7 +300,7 @@ Helper::createNotificationChannel()
     catch(...)
 	{
 	//lots of things could have caused this (bad QoS props, admin props, etc.)
-	ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel!",
+	ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, unknown error on createNotificationChannel!",
 			   channelName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
 	throw err.getCORBAProblemEx();
@@ -326,6 +336,34 @@ Helper::getAdminProps()
     ACS_TRACE("Helper::getAdminProps");
     return nc::CDBProperties::getCDBAdminProps(channelName_mp);
 }
+
+bool Helper::resolveInternalNotificationChannel(){
+
+    ACS_TRACE("HelperTest::resolveInternalNotificationChannel");
+
+    int retryNumberAttempts = 20;
+    int retrySleepSec = 2;
+    bool existNotifyChannel = resolveNotifyChannel();
+    if(!existNotifyChannel)
+        resolveNotificationFactory();
+
+    while(!existNotifyChannel && retryNumberAttempts >= 0){
+        try{
+            createNotificationChannel();
+        }catch(NotifyMonitoringExt::NameAlreadyUsed){
+            ACS_SHORT_LOG((LM_INFO,"NC '%s' seems to be getting created. Will wait and try again in %d seconds.", channelName_mp, retrySleepSec));
+        }catch(NotifyMonitoringExt::NameMapError){
+            ACS_SHORT_LOG((LM_WARNING,"*** TODO check what this NameMapError means!!!"));
+        }catch(...){
+            ACS_SHORT_LOG((LM_WARNING,""));
+        }
+        retryNumberAttempts--;
+        sleep(retrySleepSec);
+        existNotifyChannel = resolveNotifyChannel();
+    }
+    return existNotifyChannel;
+}
+
 //-----------------------------------------------------------------------------
 bool
 Helper::resolveNotifyChannel()

@@ -3,66 +3,89 @@
 #include <baciThread.h>
 #include <acsutilPorts.h>
 #include <maciSimpleClient.h>
-#include <orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExtC.h>
 #include "acsncCDBProperties.h"
-//#include "testChannelCreation.h"
+#include "acsncHelperTest.h"
  using namespace baci;
 
 LoggingProxy *g_logger = 0;
-int nWorker = 0;
 maci::SimpleClient c;
+int nWorker = 0;
+std::string channelName1("singleChannel1");
+std::string channelName2("singleChannel2");
 
-static void worker (void* param)
+bool nc::HelperTest::m_useMutex = true;
+const char* hostname = 0;
+
+static void creation_worker (void* param)
 {   
-    nWorker++;
-    ACS_SHORT_LOG((LM_INFO, "worker number %d", nWorker));
     BACIThreadParameter* baciParameter = (BACIThreadParameter*)param;
 
     BACIThread* myself = baciParameter->getBACIThread();
 
     if (BACIThread::InitThread) BACIThread::InitThread(myself->getName().c_str());
-    
-    ACE_TCHAR corbalocRef[240];
-    const char* hostname = 0;
-    hostname = ACSPorts::getIP();
-    ACE_OS::sprintf(corbalocRef, "corbaloc::%s:%s/NameService", hostname, ACSPorts::getNamingServicePort().c_str());
-  
-    CORBA::Object_var obj = c.getORB()->string_to_object(corbalocRef);
-    CosNaming::NamingContext_var namingContext = CosNaming::NamingContext::_narrow(obj.in());
-    
-    CosNaming::Name name(1);
-    name.length(1);
-    name[0].id = CORBA::string_dup (acscommon::NOTIFICATION_FACTORY_NAME);
-	CORBA::Object_var corbaObj = namingContext->resolve(name);
-	if(CORBA::is_nil(corbaObj.in()) == true)
-    {
-        ACS_SHORT_LOG((LM_ERROR, "resolve NotificationFactory error occured"));
-        return;
-    }
-
-	NotifyMonitoringExt::EventChannelFactory_var notifyFactory = NotifyMonitoringExt::EventChannelFactory::_narrow(corbaObj.in());
-	if(CORBA::is_nil(notifyFactory.in()) == true)
-    {
-        ACS_SHORT_LOG((LM_ERROR, "narrow new NotificationFactory error occured"));
-        return;
-    }
-   
-    CosNotification::QoSProperties initial_qos;
-    CosNotification::AdminProperties initial_admin;
-    CosNotifyChannelAdmin::ChannelID id;
+    ACS_SHORT_LOG((LM_INFO, "Creation worker number %d", nWorker));
+    nc::HelperTest * helper;
+    nWorker++;
+    char** myCache = (char**)malloc(10000);
+    myCache[0] = (char*)malloc(10000);
+    myCache[1] = (char*)malloc(10000);
+    myCache[2] = (char*)malloc(10000);
+    sprintf(myCache[0],"Worker_%s",myself->getName().c_str());
+    sprintf(myCache[1],"-ORBInitRef");
+    sprintf(myCache[2],"NameService=corbaloc::%s:3001",hostname);
+    helper = new nc::HelperTest(channelName1.c_str(), 3, myCache );  
     try{
-        CosNotifyChannelAdmin::EventChannel_var ec =
-            notifyFactory->create_named_channel(initial_qos,
-                                         initial_admin,
-                                         id,
-                                       "mychannel");
-    }catch(NotifyMonitoringExt::NameAlreadyUsed ex){
-        ACS_SHORT_LOG((LM_ERROR, "NameAlreadyUsed Exception received on worker number %d", nWorker));
-    }catch (...){
-         ACS_SHORT_LOG((LM_INFO, "Unknown Exception throwed."));
-    }
-        ACE_Thread::yield();
+        helper->createNotificationChannel();
+        if(helper->resolveNotifyChannel()){
+            //log with error level to show on ref file (default level is 5
+            ACS_SHORT_LOG((LM_ERROR,"NC '%s' was created for thread '%s'",channelName1.c_str(), myself->getName().c_str())); 
+        }else{
+            ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created for thread '%s' for an unknown reason",channelName1.c_str(), myself->getName().c_str()));  
+         }
+        
+    }catch(NotifyMonitoringExt::NameAlreadyUsed e){
+        ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created for thread '%s'",channelName1.c_str(), myself->getName().c_str()));  
+       }
+    
+    if (BACIThread::DoneThread) BACIThread::DoneThread();
 
+    delete baciParameter;
+    myself->setStopped();
+
+}
+
+static void get_or_creation_worker (void* param)
+{   
+    BACIThreadParameter* baciParameter = (BACIThreadParameter*)param;
+
+    BACIThread* myself = baciParameter->getBACIThread();
+
+    if (BACIThread::InitThread) BACIThread::InitThread(myself->getName().c_str());
+    ACS_SHORT_LOG((LM_INFO, "Get or creation worker number %d", nWorker));
+    nc::HelperTest * helper;
+    nWorker++;
+    char** myCache = (char**)malloc(100);
+    myCache[0] = (char*)malloc(10000);
+    myCache[1] = (char*)malloc(10000);
+    myCache[2] = (char*)malloc(10000);
+    sprintf(myCache[0],"Worker_%s",myself->getName().c_str());
+    sprintf(myCache[1],"-ORBInitRef");
+    sprintf(myCache[2],"NameService=corbaloc::%s:3001",hostname);
+    helper = new nc::HelperTest(channelName2.c_str(), 3, myCache );  
+    if(!helper->resolveInternalNotificationChannel()){
+        ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved for thread '%s'", channelName2.c_str(), myself->getName().c_str()));  
+    }else{ 
+       //log with error level to show on ref file (default level is 5
+        ACS_SHORT_LOG((LM_ERROR,"NC '%s' was created/resolved for thread %s",channelName2.c_str(), myself->getName().c_str()));  
+       }
+
+    if(CORBA::is_nil(helper->getNotifyChannel())){
+        ACS_SHORT_LOG((LM_ERROR,"Thread '%s' couldn't get the channel '%s'", myself->getName().c_str(), channelName2.c_str()));  
+    }else{
+            //log with error level to show on ref file (default level is 5
+        ACS_SHORT_LOG((LM_ERROR, "Thread '%s' got the channel '%s' properly", myself->getName().c_str(), channelName2.c_str()));
+    }
+    
     if (BACIThread::DoneThread) BACIThread::DoneThread();
 
     delete baciParameter;
@@ -78,22 +101,56 @@ int main(int argc, char* argv[])
     LoggingProxy::init(m_logger);
     LoggingProxy::ProcessName(argv[0]);
     LoggingProxy::ThreadName("main");
-
+  
+    hostname = ACSPorts::getIP();
     c.init(argc,argv);
     c.login();
+
     g_logger = m_logger;
     BACIThreadManager * threadManager_p = new BACIThreadManager();
+    ACS_SHORT_LOG((LM_INFO, "Starting."));
+    //Creating threads for create channel
+    int nCreationThreads = 4;
+    BACIThread * creationThreads[nCreationThreads];
+    std::string s;
+    int i;
+    for(i = 0; i < nCreationThreads; i++){
+        std::stringstream ss;
+        ss << "Test_creation_thread_";
+        ss << (i+1);
+        ss >> s;
+        ACS_SHORT_LOG((LM_INFO, "Creating '%s' thread", s.c_str()));
+        creationThreads[i]=threadManager_p->create(s.c_str(),
+                            (void*)creation_worker, (void*)0);
+    }
 
-    BACIThread * thread1 = threadManager_p->create("Test thread 1",
-                          (void*)worker, (void*)0);
-    BACIThread * thread2 = threadManager_p->create("Test thread 2",
-                          (void*)worker, (void*)0);
-    thread1->resume();
-    thread2->resume();
+    for(i = 0; i < nCreationThreads; i++){
+        creationThreads[i]->resume();
+    }
+    //Creating threads for Get or create channel
+    int nGetOrCreationThreads = 4;
+    BACIThread * getOrCreationThreads[nGetOrCreationThreads];
+    for(i = 0; i < nGetOrCreationThreads; i++){
+        std::stringstream ss;
+        ss << "Test_get_or_creation_thread_";
+        ss << (i+1);
+        ss >> s;
+        ACS_SHORT_LOG((LM_INFO, "Creating '%s' thread", s.c_str()));
+        getOrCreationThreads[i]=threadManager_p->create(s.c_str(),
+                            (void*)get_or_creation_worker, (void*)0);
+    }
 
+    for(i = 0; i < nGetOrCreationThreads; i++){
+        getOrCreationThreads[i]->resume();
+    }
     ACS_SHORT_LOG((LM_INFO, "Spawned."));
 
-    ACE_OS::sleep(10);
+    if(nc::HelperTest::m_useMutex){
+        sleep(20);
+        ACS_SHORT_LOG((LM_INFO, "Broadcasting to all threads"));
+        nc::HelperTest::m_tester_condition.broadcast();        
+    }
+    ACE_OS::sleep(30);
 
     ACS_SHORT_LOG((LM_INFO, "Stopping."));
 
