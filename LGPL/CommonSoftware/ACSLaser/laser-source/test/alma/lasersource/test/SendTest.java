@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.9 2008/11/11 16:04:16 gchiozzi Exp $
+ * @version $Id: SendTest.java,v 1.10 2008/11/13 10:26:11 hsommer Exp $
  * @since    
  */
 
@@ -29,10 +29,6 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
@@ -43,7 +39,6 @@ import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.Consumer;
-import alma.acs.nc.Helper;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -102,20 +97,11 @@ public class SendTest extends ComponentClientTestCase {
 
 			m_logger.info("alarm system initialized.");
 
-			// Due to some problem with NC libs, the Consumer creation hangs
-			// when the second test gets executed.
-			// Going back to a simple TestCase that uses a ComponentClient (instead of writing a ComponentClientTestCase)
-			// would resolve this issue. 
-			// In order to fix it, we just provoke a timeout so that the other tests can run afterwards.
-			Future<Consumer> consumerCtorFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory()).submit(
-					new Callable<Consumer>() {
-						public Consumer call() throws Exception {
-							// Register this object as a consumer of ACSJMSMessageEntity events.
-							return new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, contSvcs);
-						}
-					});
-			m_consumer = consumerCtorFuture.get(10, TimeUnit.SECONDS); // will throw a TimeoutException if the call hangs
-			
+		// If the Consumer ctor hangs again, we have to investigate more about http://jira.alma.cl/browse/COMP-2153
+		// and perhaps go back to rev. 1.9 and create the Consumer in a separate thread with timeout.
+		// For now, the hope is that this spurious problem got resolved by changing the NC Helper.m_nContext field
+		// (which is a reference to the naming service) from a static field to an object member.
+			m_consumer = new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, contSvcs);
 			m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
 			m_consumer.consumerReady();
 			m_logger.info("NC consumer installed on channel " + m_channelName);

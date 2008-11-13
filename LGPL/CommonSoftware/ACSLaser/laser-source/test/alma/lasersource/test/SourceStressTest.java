@@ -181,21 +181,12 @@ public class SourceStressTest extends ComponentClientTestCase {
 		assertNotNull(getContainerServices());
 		
 		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
-		
-		
-		// Due to some problem with NC libs, the Consumer creation hangs
-		// when the second test gets executed.
-		// Going back to a simple TestCase that uses a ComponentClient (instead of writing a ComponentClientTestCase)
-		// would resolve this issue. 
-		// In order to fix it, we just provoke a timeout so that the other tests can run afterwards.
-		Future<Consumer> consumerCtorFuture = Executors.newSingleThreadExecutor(getContainerServices().getThreadFactory()).submit(
-				new Callable<Consumer>() {
-					public Consumer call() throws Exception {
-						// Register this object as a consumer of ACSJMSMessageEntity events.
-						return new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
-					}
-				});
-		m_consumer = consumerCtorFuture.get(10, TimeUnit.SECONDS); // will throw a TimeoutException if the call hangs
+
+		// If the Consumer ctor hangs again, we have to investigate more about http://jira.alma.cl/browse/COMP-2153
+		// and perhaps go back to rev. 1.10 and create the Consumer in a separate thread with timeout.
+		// For now, the hope is that this spurious problem got resolved by changing the NC Helper.m_nContext field
+		// (which is a reference to the naming service) from a static field to an object member.
+		m_consumer = new Consumer(m_channelName, alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, getContainerServices());
 		
 		assertNotNull("Error instantiating the consumer",m_consumer);
 		m_consumer.addSubscription(com.cosylab.acs.jms.ACSJMSMessageEntity.class, this);
