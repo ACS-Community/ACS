@@ -21,6 +21,8 @@
  */
 package alma.acs.alarmsystem.test;
 
+import java.util.logging.Level;
+
 import org.omg.CORBA.Object;
 
 import cern.laser.client.data.Alarm;
@@ -29,7 +31,6 @@ import cern.laser.client.services.selection.LaserSelectionException;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.nc.Helper;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.alarmsystem.clients.SourceClient;
 import alma.alarmsystem.clients.source.SourceListener;
@@ -123,7 +124,7 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 	 */
 	@Override
 	public void faultStateReceived(FaultState faultState) {
-		System.out.println("Source alarm received: <"+faultState.getFamily()+", "+faultState.getMember()+", "+faultState.getCode()+"> "+faultState.getDescriptor());
+		m_logger.info("Source alarm received: <"+faultState.getFamily()+", "+faultState.getMember()+", "+faultState.getCode()+"> "+faultState.getDescriptor());
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 	 */
 	@Override
 	public void onAlarm(Alarm alarm) {
-		System.out.println("Alarm from categories: <"+alarm.getAlarmId()+"> ACTIVE="+alarm.getStatus().isActive());
+		m_logger.info("Alarm from categories: <"+alarm.getAlarmId()+"> ACTIVE="+alarm.getStatus().isActive());
 	}
 
 	/**
@@ -143,7 +144,6 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 	 */
 	@Override
 	public void onException(LaserSelectionException e) {
-		System.out.println("LaserSelectionException: "+e.getMessage());
-		e.printStackTrace();
+		m_logger.log(Level.WARNING, "LaserSelectionException: ", e);
 	}
 }

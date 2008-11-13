@@ -37,7 +37,7 @@ public class BACIDoublePropertyTest extends BACITest {
 	 * Constructor
 	 */
 	public BACIDoublePropertyTest() throws Exception {
-		super("BACIPropertyTest");
+		super("BACIDoublePropertyTest");
 	}
 	
 	/**
@@ -47,47 +47,63 @@ public class BACIDoublePropertyTest extends BACITest {
 	 * @throws Exception
 	 */
 	public void testRODouble() throws Exception {
-		// No alarms
+		m_logger.info("Test: No alarms");
 		testComponent.setDoubleVar((float)0.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+		
 		// HIGH ON
+		m_logger.info("Test: HIGH ON");
 		testComponent.setDoubleVar((float)400.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// HIGH OFF
+		m_logger.info("Test: HIGH OFF");
 		testComponent.setDoubleVar((float)340.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// HIGH ON
+		m_logger.info("Test: HIGH ON");
 		testComponent.setDoubleVar((float)400.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// HIGH OFF
+		m_logger.info("Test: HIGH OFF");
 		testComponent.setDoubleVar((float)0.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// LOW ON
+		m_logger.info("Test: LOW ON");
 		testComponent.setDoubleVar((float)-200.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// LOW OFF
+		m_logger.info("Test: LOW OFF");
 		testComponent.setDoubleVar((float)-90.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// LOW ON
+		m_logger.info("Test: LOW ON");
 		testComponent.setDoubleVar((float)-200.0);
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {}
+
 		// LOW OFF
+		m_logger.info("Test: LOW OFF");
 		testComponent.setDoubleVar((float)0.0);
 		try {
 			Thread.sleep(20000);
