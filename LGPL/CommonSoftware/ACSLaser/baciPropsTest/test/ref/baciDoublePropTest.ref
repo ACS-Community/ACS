@@ -1,36 +1,80 @@
+1 - ----------T--:--:--.--- DEBUG [acsStartJava] ACS Name Service: corbaloc::xxxxxxx:yyyy/NameService
+1 - ----------T--:--:--.--- DEBUG [acsStartJava] Running the following command:
 1 - 
+1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] -------------------------------
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] Connecting to source channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] Source channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES connected
 1 - AlarmSystemClient built
-1 - Ignoring call to ClientLogManager#init: already initialized!
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] Getting AlarmService
+1 - ----------T--:--:--.--- FINE [BACITest:BACIDoublePropertyTest#testRODouble] component AlarmService retrieved successfully.
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] AlarmService connected
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] Alarm system type: CERN
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] cmw-mom/acs-jms initialized
+1 - ----------T--:--:--.--- FINE [laser-client] ready to talk with components!
 1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
+1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - suppressRemoteLogging called
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] User generated
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] UserHandler succesfully built
+1 - ----------T--:--:--.--- FINE [laser-client] component AlarmService retrieved successfully.
 1 - AlarmSevice instance IOR: ...
-1 - log4j:WARN No appenders could be found for logger (cern.laser.client.services.selection.AlarmSelectionHandler).
-1 - log4j:WARN Please initialize the log4j system properly.
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIDoublePropertyTest#testRODouble] Getting the selection handler
 1 - AlarmSevice instance IOR: ...
+1 - ----------T--:--:--.--- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
 1 - AlarmSevice instance IOR: ...
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='15' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='18' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='21' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
 1 - ******************************
 1 - Msg is: 
 1 - 
 1 - ******************************
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- FINE [BACITest:BACIDoublePropertyTest#testRODouble] component TEST_COMPONENT retrieved successfully.
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: No alarms
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH ON
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH OFF
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH ON
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH OFF
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: LOW ON
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: LOW OFF
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: LOW ON
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: LOW OFF
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' has successfully released  a component with curl=AlarmService
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' has successfully released  a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- FINE [BACITest:BACIDoublePropertyTest#testRODouble] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [BACITest:BACIDoublePropertyTest#testRODouble] logged out from manager.
 1 - 
 1 - 
 1 - OK (1 test)

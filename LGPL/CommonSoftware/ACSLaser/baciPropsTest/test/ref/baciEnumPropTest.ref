@@ -1,26 +1,55 @@
+1 - ----------T--:--:--.--- DEBUG [acsStartJava] ACS Name Service: corbaloc::xxxxxxx:yyyy/NameService
+1 - ----------T--:--:--.--- DEBUG [acsStartJava] Running the following command:
 1 - 
+1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] -------------------------------
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] Connecting to source channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] component 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' requested AdvancedContainerServices
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] Source channel CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES connected
 1 - AlarmSystemClient built
-1 - Ignoring call to ClientLogManager#init: already initialized!
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] Getting AlarmService
+1 - ----------T--:--:--.--- FINE [BACITest:BACIEnumPropertyTest#testROEnum] component AlarmService retrieved successfully.
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] AlarmService connected
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] Alarm system type: CERN
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] cmw-mom/acs-jms initialized
+1 - ----------T--:--:--.--- FINE [laser-client] ready to talk with components!
 1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
-1 - AlarmSevice instance IOR: ...
+1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - suppressRemoteLogging called
-1 - log4j:WARN No appenders could be found for logger (cern.laser.client.services.selection.AlarmSelectionHandler).
-1 - log4j:WARN Please initialize the log4j system properly.
+1 - ----------T--:--:--.--- FINE [laser-client] component AlarmService retrieved successfully.
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] User generated
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] UserHandler succesfully built
 1 - AlarmSevice instance IOR: ...
+1 - ----------T--:--:--.--- DEBUG [BACITest:BACIEnumPropertyTest#testROEnum] Getting the selection handler
+1 - AlarmSevice instance IOR: ...
+1 - ----------T--:--:--.--- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
 1 - AlarmSevice instance IOR: ...
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='38' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
 1 - ******************************
 1 - Msg is: 
 1 - 
 1 - ******************************
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
-1 - Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
-1 - Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- FINE [BACITest:BACIEnumPropertyTest#testROEnum] component TEST_COMPONENT retrieved successfully.
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- DEBUG [laser-client_2] acs-jms message received
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released  a component with curl=AlarmService
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
+1 - ----------T--:--:--.--- FINE [BACITest:BACIEnumPropertyTest#testROEnum] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [BACITest:BACIEnumPropertyTest#testROEnum] logged out from manager.
 1 - 
 1 - 
 1 - OK (1 test)
