@@ -5,4 +5,5 @@ s/Thread=\"[a-z,A-Z,0-9,:, ]*\"/Thread=xxxxxxxxx/g
 s/LoggingChannelBin/Logging-Channel-Name (please see .out.orig for original name)/g
 s/LoggingChannel/Logging-Channel-Name (please see .out.orig for original name)/g
 s/Line="[0-9]*"/Line="---"/g
+s/Line="-[0-9]*"/Line="---"/g
 
