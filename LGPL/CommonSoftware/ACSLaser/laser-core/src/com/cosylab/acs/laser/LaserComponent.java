@@ -204,12 +204,14 @@ public class LaserComponent extends ComponentImplBase
 		try {
 			alarmDAO.loadAlarms();
 		} catch (Exception ace) {
-			throw new ComponentLifecycleException("Error initializing alarms",ace);
+			System.err.println("Error loading alarms: "+ace.getMessage());
+			ace.printStackTrace(System.err);
+			logger.log(AcsLogLevel.ERROR,"Error loading alarms from CDB",ace);
 		}
 		try {
 			categoryDAO.loadCategories();
 		} catch (Exception ex) {
-			throw new ComponentLifecycleException("Error loading categories",ex);
+			logger.log(AcsLogLevel.ERROR,"Error loading categories from CDB",ex);
 		}
 		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
 		sourceDAO.setConfAccessor(conf);
@@ -322,7 +324,7 @@ public class LaserComponent extends ComponentImplBase
 										alarmMessageProcessor.process(message);
 									} catch (Exception e) {
 										// XXX what to do???
-										logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage());
+										logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage(),e);
 										e.printStackTrace();
 									}
 								}
