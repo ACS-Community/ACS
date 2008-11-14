@@ -57,7 +57,9 @@ import junit.framework.TestCase;
  */
 public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListener, ACSRemoteRawLogListener {
 
-	// The timeout to wait before giving up waiting for logs
+	/**
+	 * The timeout (secs) to wait before giving up waiting for logs
+	 */
 	private final int TIMEOUT = 60;
 	
 	// The header and footer to create log to fill the caches
@@ -269,7 +271,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		int logsInQueue=0;
 		while (timeout<TIMEOUT && logRetieval.hasPendingEntries()) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(250);
 			} catch (InterruptedException ie) {
 				continue;
 			}
@@ -279,6 +281,14 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 				timeout++;
 			}
 		}
+		// We need to wait some more time because there is a critical race
+		// between the time the entry is removed from the EmgineCache
+		// and the time it is sent to listeners.
+		//
+		// @see EngineCache.size()
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException ie) { }
 		return timeout>=TIMEOUT;
 	}
 	
