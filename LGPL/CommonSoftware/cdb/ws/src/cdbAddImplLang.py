@@ -138,7 +138,7 @@ def addImplLang(lang, rootContainers, filename):
     	newfile.close()
 
 def usage():
-    print "Add ImplLang to Container xml CDB files when is missing"
+    print "Add ImplLang to Container and Component xml CDB files when is missing"
     print ""
     print "Usage cdbAddImplLang.py [OPTIONS]"
     print ""
@@ -147,7 +147,7 @@ def usage():
     print "   -v	prints information"
     print "   -n	it doesn't execute the changes, it is used along with -v to just print"
     print "   -b	it creates backup for the files"
-    print "   -h	it creates backup for the files"
+    print "   -h	it shows this message"
     print "   --containers	it modified only containers"
     print "   --components	it modified only components"
     print "   -a	it modified component and containers"
