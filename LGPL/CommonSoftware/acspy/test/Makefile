@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.41 2008/11/06 16:13:02 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.42 2008/11/18 00:01:39 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,11 @@
 #    None
 #------------------------------------------------------------------------
 
-PY_SCRIPTS_L =	acspyTestACSComponent \
+PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
+		acspyTestUnitTimeHelper \
+		acspyTestUnitCDBAccess \
+		acspyTestUnitACSHandler \
+		acspyTestACSComponent \
 		acspyTestAcsCORBA \
 		acspyTestBaci \
 		acspyTestCallbacks \
@@ -60,6 +64,8 @@ PY_SCRIPTS_L =	acspyTestACSComponent \
 		acspyTestSupplier acspyTestConsumer acspyTestQoSTimeout
 
 PY_PACKAGES = acspytestImpl acspyTestQoSImpl
+
+PY_PACKAGES_L = UnitTests
 
 SCRIPTS_L = acspyTATPrologue
 
@@ -92,7 +98,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ acspytestImpl/*~ acspyTestQoSImpl/*~
+	$(RM) *~ acspytestImpl/*~ acspyTestQoSImpl/*~ UnitTests/*~
 	$(RM) tatlogs
 	$(RM) tmp
 	@echo " . . . clean done"

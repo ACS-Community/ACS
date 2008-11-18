@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.5 2008/11/10 20:08:55 agrimstrup Exp $
+# @(#) $Id: CommonNC.py,v 1.6 2008/11/18 00:01:39 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,7 +25,7 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.5 2008/11/10 20:08:55 agrimstrup Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.6 2008/11/18 00:01:39 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -226,10 +226,24 @@ class CommonNC:
         #can be done.
         try:
             obj = self.nt.getObject(self.channelName, self.getChannelKind())
-            self.evtChan = obj._narrow(CosNotifyChannelAdmin.EventChannel)
+            self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
         except:
-            self.createNotificationChannel()
-            self.logger.logInfo('Created new channel.')    
+            try:
+                self.createNotificationChannel()
+                self.logger.logInfo('Created new channel.')
+            except CORBAProblemExImpl, e:
+                if e.getData('exception') == ['NotifyMonitoringExt.NameAlreadyUsed()']:
+                    while True:
+                        try:
+                            obj = self.nt.getObject(self.channelName, self.getChannelKind())
+                            self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
+                        except:
+                            pass
+                        if self.evtChan is not None:
+                            break
+                else:
+                    raise
+
     #------------------------------------------------------------------------------
     def destroyNotificationChannel(self):
         '''
@@ -291,11 +305,6 @@ class CommonNC:
             #make the NRI happy
             chan_id = None
             
-	except NotifyMonitoringExt.NameAlreadyUsed:
-            print "Channel already exists"
-            obj = self.nt.getObject(self.channelName, self.getChannelKind())
-            self.evtChan = obj._narrow(CosNotifyChannelAdmin.EventChannel)
-            return
         except AttributeError, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",

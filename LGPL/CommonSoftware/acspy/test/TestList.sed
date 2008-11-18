@@ -19,3 +19,4 @@ s/RTContext: ([0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/Process=[0-9]*/Process=xxx/g
 s/File "\/.*\/\(.*\)", line [0-9]*/File "\1", line xxx/g
+s/Ran [0-9]* tests in [0-9].[0-9]*s/Ran xx tests in x.xxxs/g

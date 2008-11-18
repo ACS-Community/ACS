@@ -1,0 +1,181 @@
+1 - ACSFormatter initialized ... ok
+1 - ACSFormatter formats a log record with a data dictionary attribute correctly ... ok
+1 - ACSFormatter formats a log record with a data list attribute correctly ... ok
+1 - ACSFormatter formats a log record with an empty data dictionary attribute correctly ... ok
+1 - ACSFormatter formats a log record with an empty data list attribute correctly ... ok
+1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
+1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
+1 - ACSHandler initialized ... ok
+1 - ACSHandler initialized with no periodic flush thread ... ok
+1 - ACSHandler initialized when acsLogSvc not available ... ok
+1 - ACSHandler flushes buffer correctly ... ok
+1 - ACSHandler handles exceptions correctly when flushing buffer ... ok
+1 - ACSHandler flushes buffer when message priority greater than threshold arrives ... ok
+1 - ACSHandler writes log messages to a file ... ok
+1 - ACSHandler creates singleton file handler when necessary ... ok
+1 - ACSHandler drops new messages when pending message queue is full ... ok
+1 - ACSHandler drops low priority messages when message queue is full ... ok
+1 - ACSHandler returns cached CORBA logging service ... ok
+1 - ACSHandler reloads CORBA logging service when cache is empty ... ok
+1 - ACSHandler sends Log messages at the appropriate levels ... ok
+1 - ACSHandler sends errortrace messages at the appropriate levels ... ok
+1 - ACSHandler sends logWithAudience messages at the appropriate levels ... ok
+1 - ACSHandler sends logWithPriority messages at the appropriate levels ... ok
+1 - ACSHandler sends logWithPriority messages at the appropriate levels with bad context ... ok
+1 - ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source ... ok
+1 - ACSHandler flushes when capacity is reached ... ok
+1 - ACSHandler flushes when high priority message is received ... ok
+1 - ACSLogRecord initialized with nested name ... ok
+1 - ACSLogRecord initialized with simple name ... ok
+1 - test_configAdminProps_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_configQofS_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC createNotificationChannel configures event channel correctly ... ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.channelName)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNotification.UnsupportedAdmin(None)
+1 - UnsupportedAdmin: CosNotification.UnsupportedAdmin(admin_err=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.channelName)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNotification.UnsupportedQoS(None)
+1 - UnsupportedQoS: CosNotification.UnsupportedQoS(qos_err=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.channelName)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise NotifyMonitoringExt.NameAlreadyUsed(None)
+1 - NameAlreadyUsed: NotifyMonitoringExt.NameAlreadyUsed()
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.channelName)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise NotifyMonitoringExt.NameMapError(None)
+1 - NameMapError: NotifyMonitoringExt.NameMapError()
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.NotFound(None, None)
+1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.CannotProceed(None, None)
+1 - CannotProceed: CosNaming.NamingContext.CannotProceed(cxt=None, rest_of_name=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.InvalidName()
+1 - InvalidName: CosNaming.NamingContext.InvalidName()
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.NotFound(None, None)
+1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in createNotificationChannel
+1 -     (self.evtChan, chan_id) = channel_factory.create_named_channel(self.configQofS(),
+1 - AttributeError: 'NoneType' object has no attribute 'create_named_channel'
+1 - ok
+1 - CommonNC destroyNotificationChannel returns the expected value when successful ... ok
+1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
+1 -     self.nt.delObject(self.channelName, self.getChannelKind())
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.CannotProceed(None, None)
+1 - CannotProceed: CosNaming.NamingContext.CannotProceed(cxt=None, rest_of_name=None)
+1 - ok
+1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
+1 -     self.nt.delObject(self.channelName, self.getChannelKind())
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.InvalidName()
+1 - InvalidName: CosNaming.NamingContext.InvalidName()
+1 - ok
+1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
+1 -     self.nt.delObject(self.channelName, self.getChannelKind())
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
+1 -     raise CosNaming.NamingContext.NotFound(None, None)
+1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
+1 - ok
+1 - CommonNC channel domain is correct ... ok
+1 - CommonNC channel kind is correct ... ok
+1 - test_getNotificationFactoryNameForChannel_channelFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_channelNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_default (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_domainFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_domainNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_getNotificationFactoryNameForChannel_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC getNotificationFactoryName returns default ... ok
+1 - CommonNC getNotificationFactoryName returns non-default ... ok
+1 - test_initCORBA (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 -   File "CommonNC.py", line xxx, in initCORBA
+1 -     self.nt = NameTree.nameTree(getORB())
+1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in nameTree_side_effect
+1 -     raise RuntimeError("NameTree Fault")
+1 - RuntimeError: NameTree Fault
+1 - ok
+1 - test_initCORBA_noChannel (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_noChannelDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - test_initCORBA_noNamingService (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
+1 - CommonNC default initialization ... ok
+1 - CommonNC initialization with domain ... ok
+1 - CommonNC initialization with default domain ... ok
+1 - getTimeStamp reports correct ACS timestamp for a known value ... ok
+1 - TimeUtil.duration2py handles long values correctly ... ok
+1 - TimeUtil.duration2py handles negative values correctly ... ok
+1 - TimeUtil.duration2py handles 0 value correctly ... ok
+1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
+1 - TimeUtil.epoch2py handles long values correctly ... ok
+1 - TimeUtil.epoch2py handles negative values correctly ... ok
+1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
+1 - TimeUtil.py2duration handles negative values correctly ... ok
+1 - TimeUtil.py2duration handles 0 value correctly ... ok
+1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
+1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
+1 - TimeUtil.py2epoch handles negative values correctly ... ok
+1 - Handler initialized ... ok
+1 - Handler nested element with attributes ... ok
+1 - Handler nested element with no attributes ... ok
+1 - Handler nested different element with no attributes ... ok
+1 - Handler nested different element with no attributes ... ok
+1 - Handler element with attributes ... ok
+1 - Handler element with no attributes ... ok
+1 - Access initialized ... ok
+1 - Access retrieve CDB String ... ok
+1 - Access retrieve CDB String from cache ... ok
+1 - Access retrieve attributes from lower level element that has no attributes ... ok
+1 - Access retrieve attributes from lower level element that has attributes ... ok
+1 - Access retrieve attributes from top level element ... ok
+1 - 
+1 - ----------------------------------------------------------------------
+1 - Ran xx tests in x.xxxs
+1 - 
+1 - OK

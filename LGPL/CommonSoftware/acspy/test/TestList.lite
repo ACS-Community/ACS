@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.25 2008/11/06 16:13:02 agrimstrup Exp $"
+# "@(#) $Id: TestList.lite,v 1.26 2008/11/18 00:01:39 agrimstrup Exp $"
 #
 # TestList
 #
@@ -31,17 +31,19 @@
 SOURCE acspyTATEnvironment
 PROLOGUE acspyTATPrologue
 #-------------------------------------------------------------------
-0   testQoSTimeout      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
+0   UnitTests           "acsutilTATTestRunner python test_all.py"
+
+1   testQoSTimeout      "acsutilAwaitContainerStart -py pyContainer" "@SLEEP 15" \
 			"acsutilTATTestRunner acspyTestQoSTimeout" "@SLEEP 25" \
 			"acsutilTATTestRunner acsStopContainer pyContainer"
 
-1   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
+2   ClientMin           "acsutilTATTestRunner acspyTestClientMinimum"
 
-2   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
+3   ACSComponent        "acsutilTATTestRunner acspyTestACSComponent"
 
-3   ACSCorba            "acsutilTATTestRunner acspyTestAcsCORBA"
+4   ACSCorba            "acsutilTATTestRunner acspyTestAcsCORBA"
 
-4   Logging             "acsutilTATTestRunner acspyTestLogging"
+5   Logging             "acsutilTATTestRunner acspyTestLogging"
 
 6   CDB                 "acsutilTATTestRunner acspyTestCDB"
 

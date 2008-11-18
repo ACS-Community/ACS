@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitCDBAccess.py,v 1.1 2008/03/27 19:12:44 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitCDBAccess.py,v 1.2 2008/11/18 00:01:39 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitCDBAccess.py,v 1.1 2008/03/27 19:12:44 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitCDBAccess.py,v 1.2 2008/11/18 00:01:39 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -34,7 +34,8 @@ import CDB
 
 fakeFunc = { 'get_DAO': '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' }
 
-mockCDB = mock.Mock(fakeFunc,CDB._objref_DAL)
+mockCDB = mock.Mock(spec=CDB._objref_DAL)
+mockCDB.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
 
 def mockcdb():
     return mockCDB
@@ -141,10 +142,10 @@ class CDBAccessCheck(unittest.TestCase):
     def testGetFieldCache(self):
         """Access retrieve CDB String from cache"""
         str = self.a.getField('MACI/Container')
-        baseline = mockCDB.getAllCalls()
+        baseline = mockCDB.method_calls
         str2 = self.a.getField('MACI/Container')
         self.assertEqual(str, str2)
-        self.assertEqual(baseline, mockCDB.getAllCalls())
+        self.assertEqual(baseline, mockCDB.method_calls)
 
     def testGetTopElement(self):
         """Access retrieve attributes from top level element"""

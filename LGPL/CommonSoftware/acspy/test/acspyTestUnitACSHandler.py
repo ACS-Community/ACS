@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitACSHandler.py,v 1.5 2008/11/18 00:01:39 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.4 2008/05/07 22:23:25 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitACSHandler.py,v 1.5 2008/11/18 00:01:39 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -44,13 +44,13 @@ import Acspy.Common.ACSHandler as ACSHandler
 
 # In order to run without actually using the CORBA interfaces, we need to
 # create a mock ACSLog.LogSvc object.  
-methdict = {}
-for meth in [x for x in ACSLog._objref_LogSvc.__methods__]:
-    methdict[meth] = None
-methdict['__repr__'] = "ACSLog.LogSvc"
-methdict['__str__'] = "ACSLog.LogSvc"
+## methdict = {}
+## for meth in [x for x in ACSLog._objref_LogSvc.__methods__]:
+##     methdict[meth] = None
+## methdict['__repr__'] = "ACSLog.LogSvc"
+## methdict['__str__'] = "ACSLog.LogSvc"
 
-mockLogSvc = mock.Mock(methdict)
+mockLogSvc = mock.Mock(spec=ACSLog._objref_LogSvc)
 
 # Replacing the acsLogSvc call ensures that we are using the mock object
 # in all situations
@@ -208,7 +208,7 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = ACSHandler.ACSLogRecord("Sample", 75, "/path/to/file.py", 100, "Unknown", None, None)
         h.sendLog(lr)
         
-        self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[-len(keys)+1:]])
+        self.assertEquals(expected, [ n[0] for n in mockLogSvc.method_calls[-len(keys)+1:]])
 
     def testSendLogErrorTrace(self):
         """ACSHandler sends errortrace messages at the appropriate levels"""
@@ -221,9 +221,9 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
         h.sendLog(lr)
-        logcall = mockLogSvc.mockGetAllCalls()[-1]
-        self.assertEquals("logErrorWithPriority", logcall.getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(1))
+        logcall = mockLogSvc.method_calls[-1]
+        self.assertEquals("logErrorWithPriority", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][1])
 
     def testSendLogWithAudience(self):
         """ACSHandler sends logWithAudience messages at the appropriate levels"""
@@ -234,9 +234,9 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
         h.sendLog(lr)
-        logcall = mockLogSvc.mockGetAllCalls()[-1]
-        self.assertEquals("logWithAudience", logcall.getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
+        logcall = mockLogSvc.method_calls[-1]
+        self.assertEquals("logWithAudience", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0])
 
     def testSendLogWithPriority(self):
         """ACSHandler sends logWithPriority messages at the appropriate levels"""
@@ -249,13 +249,13 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
         h.sendLog(lr)
-        logcall = mockLogSvc.mockGetAllCalls()[-1]
-        self.assertEquals("logWithPriority", logcall.getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
-        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
-        self.assertEquals(ctxt, logcall.getParam(3))
-        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
-        self.assertEquals(srcinf, logcall.getParam(4))
+        logcall = mockLogSvc.method_calls[-1]
+        self.assertEquals("logWithPriority", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0])
+        self.assertEquals(True, isinstance(logcall[1][3], ACSLog.RTContext))
+        self.assertEquals(ctxt, logcall[1][3])
+        self.assertEquals(True, isinstance(logcall[1][4], ACSLog.SourceInfo))
+        self.assertEquals(srcinf, logcall[1][4])
 
     def testSendLogWithPriorityNoContextorSource(self):
         """ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source"""
@@ -266,14 +266,14 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
         h.sendLog(lr)
-        logcall = mockLogSvc.mockGetAllCalls()[-1]
-        self.assertEquals("logWithPriority", logcall.getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
-        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
-        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
+        logcall = mockLogSvc.method_calls[-1]
+        self.assertEquals("logWithPriority", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0])
+        self.assertEquals(True, isinstance(logcall[1][3], ACSLog.RTContext))
+        self.assertEquals(True, isinstance(logcall[1][4], ACSLog.SourceInfo))
 
     def testSendLogWithPriorityBadContextandSource(self):
-        """ACSHandler sends logWithPriority messages at the appropriate levels"""
+        """ACSHandler sends logWithPriority messages at the appropriate levels with bad context"""
         import Acspy.Common.Log
         l = Acspy.Common.Log.Logger('test')
         h = ACSHandler.ACSHandler()
@@ -281,13 +281,13 @@ class ACSHandlerCheck(unittest.TestCase):
         lr = l.makeRecord("Sample", Acspy.Common.Log.LEVELS[8], "/path/to/file.py",
                                      100, 'ErrorTrace', (), None, 'dummy', extras)
         h.sendLog(lr)
-        logcall = mockLogSvc.mockGetAllCalls()[-1]
-        self.assertEquals("logWithPriority", logcall.getName())
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall.getParam(0))
-        self.assertEquals(True, isinstance(logcall.getParam(3), ACSLog.RTContext))
-        self.assertEquals(False, logcall.getParam(3) is None)
-        self.assertEquals(True, isinstance(logcall.getParam(4), ACSLog.SourceInfo))
-        self.assertEquals(False, logcall.getParam(4) is None)
+        logcall = mockLogSvc.method_calls[-1]
+        self.assertEquals("logWithPriority", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0])
+        self.assertEquals(True, isinstance(logcall[1][3], ACSLog.RTContext))
+        self.assertEquals(False, logcall[1][3] is None)
+        self.assertEquals(True, isinstance(logcall[1][4], ACSLog.SourceInfo))
+        self.assertEquals(False, logcall[1][4] is None)
 
     def testShouldFlushCapacity(self):
         """ACSHandler flushes when capacity is reached"""
@@ -314,15 +314,15 @@ class ACSHandlerCheck(unittest.TestCase):
     def testFlushToFile(self):
         """ACSHandler writes log messages to a file"""
         h = ACSHandler.ACSHandler()
-        h.file_handler = mock.Mock([],logging.Handler)
+        h.file_handler = mock.Mock(spec=logging.Handler)
         lr = ACSHandler.ACSLogRecord("Nested.Name", "TRACE", "/path/to/file.py", 100, "Test text", [], None)
         h.flushToFile(lr)
-        self.assertEqual('handle',h.file_handler.mockGetAllCalls()[0].getName())
+        self.assertEqual('handle',h.file_handler.method_calls[0][0])
 
     def testFlushToFileNoHandler(self):
         """ACSHandler creates singleton file handler when necessary"""
         def mockInitFileHandler(self):
-            self.file_handler = mock.Mock([],logging.FileHandler)
+            self.file_handler = mock.Mock(spec=logging.FileHandler)
         holdmethod = ACSHandler.ACSHandler.initFileHandler
         ACSHandler.ACSHandler.initFileHandler = mockInitFileHandler 
         h = ACSHandler.ACSHandler()
@@ -339,7 +339,7 @@ class ACSHandlerCheck(unittest.TestCase):
         h.buffer = [ lr, lr ]
         expected = [ 'logInfo' , 'logInfo' ]
         h.flush()
-        self.assertEquals(expected, [ n.getName() for n in mockLogSvc.mockGetAllCalls()[-2:]])
+        self.assertEquals(expected, [ n[0] for n in mockLogSvc.method_calls[-2:]])
 
     def testFlushException(self):
         """ACSHandler handles exceptions correctly when flushing buffer"""
@@ -347,12 +347,12 @@ class ACSHandlerCheck(unittest.TestCase):
         holdSendLog = ACSHandler.ACSHandler.sendLog
         ACSHandler.ACSHandler.sendLog = mockSendLog
         h = ACSHandler.ACSHandler()
-        h.file_handler = mock.Mock([],logging.Handler)
+        h.file_handler = mock.Mock(spec=logging.Handler)
         lr = ACSHandler.ACSLogRecord("Nested.Name", logging.INFO, "/path/to/file.py", 100, "Test text", None, None)
         h.buffer = [ lr, lr ]
         expected = [ 'handle' , 'handle' ]
         h.flush()
-        self.assertEquals(expected, [ n.getName() for n in h.file_handler.mockGetAllCalls()[-2:]])
+        self.assertEquals(expected, [ n[0] for n in h.file_handler.method_calls[-2:]])
         ACSHandler.ACSHandler.sendLog = holdSendLog
 
     def testFullLogQueue(self):
