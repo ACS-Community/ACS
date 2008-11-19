@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestLogLevelsComp.py,v 1.10 2008/10/20 16:03:28 eallaert Exp $"
+# "@(#) $Id: TestLogLevelsComp.py,v 1.11 2008/11/19 15:22:22 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -92,14 +92,13 @@ class TestLogLevelsComp(contLogTest__POA.TestLogLevelsComp,  #CORBA stubs for ID
         mylogger.acshandler.capacity = 0
 
         # give client time to get ready for logs
-        sleep(0.500)
+        sleep(0.250)
         for l in levels:
             try:
-                if l != 99:
-                    mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
+                mylogger.logAtLevel(l, "dummy log message for core level %d/%s" % (l, getLevelName(l)))
             except:
                 pass
-        mylogger.logAtLevel(levels[-2], "===last log message===")
+        mylogger.logAtLevel(levels[-1], "===last log message===")
         # Python seems to sends logs in packets of 10 logs, so add 9 messages to
         # ensure all the above logs get sent across right now.
         ##for i in range(1,10):
