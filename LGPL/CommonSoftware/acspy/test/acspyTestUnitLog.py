@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.5 2008/11/18 00:01:39 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.6 2008/11/19 00:45:11 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.5 2008/11/18 00:01:39 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.6 2008/11/19 00:45:11 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -61,12 +61,6 @@ Acspy.Util.ACSCorba.acsLogSvc = mockACSLogSvc
 # These imports are dependent on the acsLogSvc so they could not be made
 # until the replacement was completed.
 import Acspy.Common.Log as Log
-
-mockACSHandler = mock.Mock(spec=Log.ACSHandler)
-def mockACSHandlerFactory(cap=None, disp=None, batch=None):
-    return mockACSHandler
-Log.ACSHandler = mockACSHandlerFactory
-
 import Acspy.Common.ErrorTrace
 
 
@@ -244,6 +238,7 @@ class LoggerClassCheck(unittest.TestCase):
         Log.setBatchSize(0)
 
     def tearDown(self):
+        pass
         Log.setBatchSize(10)
     
     def testLoggerInit(self):
@@ -257,76 +252,6 @@ class LoggerClassCheck(unittest.TestCase):
         self.assertEquals([self.mylogger.stdouthandler, self.mylogger.acshandler], self.mylogger.handlers)
         self.assertEquals(None, self.mylogger.parent)
 
-    def testLogErrorTrace(self):
-        """Logger class ErrorTrace logging with default priority"""
-        et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
-        self.mylogger.logErrorTrace(et)
-        print mockLogSvc.called
-        print mockACSHandler.called
-        logcall = mockLogSvc.method_calls
-        self.assertEquals("logErrorWithPriority", logcall)
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][1])
-
-    def testLogErrorTraceInvalidPriority(self):
-        """Logger class ErrorTrace logging with an invalid priority"""
-        et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
-        self.assertRaises(KeyError, self.mylogger.logErrorTrace, et, 25)
-
-    def testLogTypeSafe(self):
-        """Logger class Type-safe logging"""
-        msg = "LogTypeSafe Message"
-        ctxt = ACSLog.RTContext('a','b','c','d','e')
-        src = ACSLog.SourceInfo('a','b','c')
-        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, ctxt, src, None)
-        logcall = mockLogSvc.method_calls
-        print logcall
-        self.assertEquals("logWithPriority", logcall)
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall)
-        self.assertEquals(msg, logcall)
-        self.assertEquals(True, isinstance(logcall, ACSLog.RTContext))
-        self.assertEquals(ctxt, logcall)
-        self.assertEquals(True, isinstance(logcall, ACSLog.SourceInfo))
-        self.assertEquals(src, logcall)
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-
-    def testLogTypeSafeNoContextorSource(self):
-        """Logger class Type-safe logging"""
-        msg = "LogTypeSafe Message"
-        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, None, None, None)
-        logcall = mockLogSvc.method_calls
-        self.assertEquals("logWithPriority", logcall)
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall)
-        self.assertEquals(msg, logcall)
-        self.assertEquals(True, isinstance(logcall, ACSLog.RTContext))
-        self.assertEquals(True, isinstance(logcall, ACSLog.SourceInfo))
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-        
-    def testLogTypeSafeInvalidPriority(self):
-        """Logger class Type-safe logging with invalid priority"""
-        msg = "LogTypeSafe Message"
-        ts = TimeUtil().py2epoch(time.time()).value
-        self.assertRaises(KeyError, self.mylogger.logTypeSafe, 25, ts, msg, None, None, None)
-
-    def testLogNotSoTypeSafe(self):
-        """Logger class Not So Type-safe logging"""
-        msg = "LogNotSoTypeSafe Message"
-        self.mylogger.logNotSoTypeSafe(ACSLog.ACS_LOG_ERROR, msg)
-        logcall = mockLogSvc.method_calls
-        self.assertEquals("logWithAudience", logcall)
-        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall)
-        self.assertEquals(msg, logcall)
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-        self.assertEquals("", logcall)
-        
-    def testLogNotSoTypeSafeInvalidPriority(self):
-        """Logger class Not So Type-safe logging with invalid priority"""
-        msg = "LogTypeSafe Message"
-        self.assertRaises(KeyError, self.mylogger.logNotSoTypeSafe, 25, msg)
 
     def testSetLevels(self):
         """Logger class set log levels to user-defined levels"""
@@ -477,6 +402,75 @@ class LoggerFunctionCheck(unittest.TestCase):
         self.verifyOutput(self.mylogger.acshandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "<msg>Emergency Message</msg>")
         self.verifyOutput(self.mylogger.stdouthandler, Log.LEVELS[ACSLog.ACS_LOG_DEBUG], "<msg>Emergency Message</msg>")
         
+    def testLogErrorTrace(self):
+        """Logger class ErrorTrace logging with default priority"""
+        et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
+        self.mylogger.logErrorTrace(et)
+        logcall = self.mylogger.acshandler.method_calls[-1]
+        self.assertEquals("handle", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0].priority)
+        self.assertEquals(et, logcall[1][0].errortrace)
+
+    def testLogErrorTraceInvalidPriority(self):
+        """Logger class ErrorTrace logging with an invalid priority"""
+        et = Acspy.Common.ErrorTrace.ErrorTrace(1,1)
+        self.assertRaises(KeyError, self.mylogger.logErrorTrace, et, 25)
+
+    def testLogTypeSafe(self):
+        """Logger class Type-safe logging"""
+        msg = "LogTypeSafe Message"
+        ctxt = ACSLog.RTContext('a','b','c','d','e')
+        src = ACSLog.SourceInfo('a','b','c')
+        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, ctxt, src, None)
+        logcall = self.mylogger.acshandler.method_calls[-1]
+        self.assertEquals("handle", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0].priority)
+        self.assertEquals(msg, logcall[1][0].msg)
+        self.assertEquals(True, isinstance(logcall[1][0].rtCont, ACSLog.RTContext))
+        self.assertEquals(ctxt, logcall[1][0].rtCont)
+        self.assertEquals(True, isinstance(logcall[1][0].srcInfo, ACSLog.SourceInfo))
+        self.assertEquals(src, logcall[1][0].srcInfo)
+        self.assertEquals("", logcall[1][0].audience)
+        self.assertEquals("", logcall[1][0].array)
+        self.assertEquals("", logcall[1][0].antenna)
+
+    def testLogTypeSafeNoContextorSource(self):
+        """Logger class Type-safe logging with no context or source"""
+        msg = "LogTypeSafe Message"
+        self.mylogger.logTypeSafe(ACSLog.ACS_LOG_ERROR, None, msg, None, None, None)
+        logcall = self.mylogger.acshandler.method_calls[-1]
+        self.assertEquals("handle", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0].priority)
+        self.assertEquals(msg, logcall[1][0].msg)
+        self.assertEquals(True, logcall[1][0].rtCont is None)
+        self.assertEquals(True, logcall[1][0].srcInfo is None)
+        self.assertEquals("", logcall[1][0].audience)
+        self.assertEquals("", logcall[1][0].array)
+        self.assertEquals("", logcall[1][0].antenna)
+        
+    def testLogTypeSafeInvalidPriority(self):
+        """Logger class Type-safe logging with invalid priority"""
+        msg = "LogTypeSafe Message"
+        ts = TimeUtil().py2epoch(time.time()).value
+        self.assertRaises(KeyError, self.mylogger.logTypeSafe, 25, ts, msg, None, None, None)
+
+    def testLogNotSoTypeSafe(self):
+        """Logger class Not So Type-safe logging"""
+        msg = "LogNotSoTypeSafe Message"
+        self.mylogger.logNotSoTypeSafe(ACSLog.ACS_LOG_ERROR, msg)
+        logcall = self.mylogger.acshandler.method_calls[-1]
+        self.assertEquals("handle", logcall[0])
+        self.assertEquals(ACSLog.ACS_LOG_ERROR, logcall[1][0].priority)
+        self.assertEquals(msg, logcall[1][0].msg)
+        self.assertEquals("", logcall[1][0].audience)
+        self.assertEquals("", logcall[1][0].array)
+        self.assertEquals("", logcall[1][0].antenna)
+        
+    def testLogNotSoTypeSafeInvalidPriority(self):
+        """Logger class Not So Type-safe logging with invalid priority"""
+        msg = "LogTypeSafe Message"
+        self.assertRaises(KeyError, self.mylogger.logNotSoTypeSafe, 25, msg)
+
     def testLogAtLevel(self):
         """Logger class User-specified level logging"""
 #        self.mylogger.setLevels(maci.LoggingConfigurable.LogLevels(False,0, 0))
@@ -727,7 +721,7 @@ class DispatchPacketCheck(unittest.TestCase):
         self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
         self.logger.logEmergency("Dispatch Sent")
         self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
-        self.assertEquals('logEmergency',mockLogSvc.method_calls[-1][0])
+        self.assertEquals('logEmergency',Log.CENTRALHANDLER.logSvc.method_calls[-1][0])
 
     def testBufferingandDispatch(self):
         """DispatchPacketCheck clears sends pending messages before priority message"""
@@ -737,8 +731,8 @@ class DispatchPacketCheck(unittest.TestCase):
         self.assertEquals(1, len(Log.CENTRALHANDLER.buffer))
         self.logger.logAlert("Dispatch Sent")
         self.assertEquals(0, len(Log.CENTRALHANDLER.buffer))
-        self.assertEquals('logNotice',mockLogSvc.method_calls[-2][0])
-        self.assertEquals('logAlert',mockLogSvc.method_calls[-1][0])
+        self.assertEquals('logNotice',Log.CENTRALHANDLER.logSvc.method_calls[-2][0])
+        self.assertEquals('logAlert',Log.CENTRALHANDLER.logSvc.method_calls[-1][0])
         
 class PeriodicFlushCheck(unittest.TestCase):
     """Check the lifecycle operation of the periodic flushing thread"""
