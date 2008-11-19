@@ -221,8 +221,8 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 
 				expectant.clearLogs();
 				m_logger.info("Will call 'logDummyMessages' on component " + componentName);
-				//testComp.logDummyMessages(sendLogLevels);
-				testComp.logDummyMessages(centralLogLevels);
+				testComp.logDummyMessages(sendLogLevels);
+				//testComp.logDummyMessages(centralLogLevels);
 				m_logger.info("Will wait " + waitTimeSeconds + " seconds to receive (some of) these log messages.");
 				LogSeriesExpectant.LogList logRecordsReceived = expectant.awaitLogRecords(loggerName, waitTimeSeconds);
 
@@ -231,13 +231,8 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 					System.out.println("(level=" + logRecord.getLevel().acsCoreLevel.value + ") " + logRecord.getMessage());
 				}
 
-				// there are a couple of issues with OFF (99):
-				// - if minLogLevelCentral is set to OFF (99), logs with level EMERGENCY (11) still get through
-				//   on Java, while for C++ no level seems to be blocked. 
-				// - messages with level OFF get recorded as having level EMERGENCY (for Java) or TRACE (for C++)
-				// I.e. assertions will fail for the above reasons.
 				if (minLogLevelCentral > maxLogLevel) {
-					//assertEquals(maxLogLevel, logRecordsReceived.getMinLogLevel());
+					// minLogLevelCentral must be set to OFF - no logs should get through
 					assertEquals(0, logRecordsReceived.size());
 				}
 				else {
@@ -247,8 +242,23 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 					assertEquals(maxLogLevel, logRecordsReceived.getMaxLogLevel());
 				}
 				
-				// logging a msg at level OFF should lead to an error, independent from central level 
-				//testComp.logDummyMessages(offLogLevels);
+				// logging a msg at level OFF should lead to an exception, independent from central level 
+				try {
+					// if next method does not produce the exception we expect, throw another one.
+					testComp.logDummyMessages(offLogLevels);
+					throw new Exception("Sending a log with level OFF did get through !?!?");
+				} catch (org.omg.CORBA.UNKNOWN ex) {
+					if (ex.getLocalizedMessage().startsWith("Server-side Exception: java.lang.IllegalArgumentException")) {
+						System.out.println("Got illegal argument exception for attempting to send log with level OFF, as expected.");
+					}
+					else {
+						// The exception we got is not the one expected
+						throw ex;
+					}
+				} catch (Exception ex) {
+					System.out.println("Caught exception " + ex + "\nException msg: " + ex.getLocalizedMessage());
+				}
+				
 				
 				//System.out.println("Finished testing level " + level);
 			}
