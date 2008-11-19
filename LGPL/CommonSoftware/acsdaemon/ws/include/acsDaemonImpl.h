@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.6 2008/11/13 23:46:44 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.7 2008/11/19 11:03:09 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -158,6 +158,7 @@ ACSDaemonServiceImpl<T>::ACSDaemonServiceImpl (LoggingProxy &logProxy, bool isPr
 
     m_blockTermination = false;
 
+    ACS_CHECK_LOGGER;
     // daemon is a standalone process, replace global logger with named logger
     Logging::Logger::setGlobalLogger(getNamedLogger(handler.getName()));
 
