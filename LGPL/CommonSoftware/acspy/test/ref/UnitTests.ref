@@ -1,10 +1,3 @@
-1 - ACSFormatter initialized ... ok
-1 - ACSFormatter formats a log record with a data dictionary attribute correctly ... ok
-1 - ACSFormatter formats a log record with a data list attribute correctly ... ok
-1 - ACSFormatter formats a log record with an empty data dictionary attribute correctly ... ok
-1 - ACSFormatter formats a log record with an empty data list attribute correctly ... ok
-1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
-1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
 1 - ACSHandler initialized ... ok
 1 - ACSHandler initialized with no periodic flush thread ... ok
 1 - ACSHandler initialized when acsLogSvc not available ... ok
@@ -25,8 +18,103 @@
 1 - ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source ... ok
 1 - ACSHandler flushes when capacity is reached ... ok
 1 - ACSHandler flushes when high priority message is received ... ok
+1 - Handler initialized ... ok
+1 - Handler nested element with attributes ... ok
+1 - Handler nested element with no attributes ... ok
+1 - Handler nested different element with no attributes ... ok
+1 - Handler nested different element with no attributes ... ok
+1 - Handler element with attributes ... ok
+1 - Handler element with no attributes ... ok
+1 - NoLoggerCheck getLoggerNames when no loggers requested ... ok
+1 - NoLoggerCheck logger search with no key ... ok
+1 - NoLoggerCheck logger search with non-existing key ... ok
+1 - SeveralLoggerCheck search with parent key ... ok
+1 - SeveralLoggerCheck search with the nested child's name as key ... ok
+1 - SeveralLoggerCheck search with part of an exising key ... ok
+1 - SeveralLoggerCheck Levels changes on all loggers using default level ... ok
+1 - SeveralLoggerCheck getLoggerNames returns all known loggers ... ok
+1 - SeveralLoggerCheck getLoggerNames returns correct logger names when requested with filtering ... ok
+1 - SeveralLoggerCheck Changing a logger's levels does not affect other loggers ... ok
+1 - SeveralLoggerCheck messages are logged only once for nested loggers ... ----------T--:--:--.--- child testNestedOutput - Nested Message
+1 - ok
+1 - SeveralLoggerCheck Search with non-existing key ... ok
+1 - TimeUtil.duration2py handles long values correctly ... ok
+1 - TimeUtil.duration2py handles negative values correctly ... ok
+1 - TimeUtil.duration2py handles 0 value correctly ... ok
+1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
+1 - TimeUtil.epoch2py handles long values correctly ... ok
+1 - TimeUtil.epoch2py handles negative values correctly ... ok
+1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
+1 - TimeUtil.py2duration handles negative values correctly ... ok
+1 - TimeUtil.py2duration handles 0 value correctly ... ok
+1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
+1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
+1 - TimeUtil.py2epoch handles negative values correctly ... ok
+1 - Logger class get log levels when Default ... ok
+1 - Logger class default initialization is correct ... ok
+1 - Logger class creates logging records correctly ... ok
+1 - Logger class creates logging records correctly ... ok
+1 - Logger class creates logging records correctly ... ok
+1 - Logger class set log levels to user-defined levels ... ok
+1 - Logger class set log levels to using Default from user-defined level ... ok
+1 - Logger class set log levels for valid inputs ... ok
 1 - ACSLogRecord initialized with nested name ... ok
 1 - ACSLogRecord initialized with simple name ... ok
+1 - Logger class Alert level logging ... ok
+1 - Logger class User-specified level logging ... ok
+1 - Logger class Critical level logging ... ok
+1 - Logger class Debug level logging ... ok
+1 - Logger class Emergency level logging ... ok
+1 - Logger class Error level logging ... ok
+1 - Logger class ErrorTrace logging with default priority ... ok
+1 - Logger class ErrorTrace logging with an invalid priority ... ok
+1 - Logger class Info level logging ... ok
+1 - Logger class Not So Type-safe logging ... ok
+1 - Logger class Not So Type-safe logging with invalid priority ... ok
+1 - Logger class Notice level logging ... ok
+1 - Logger class Trace level logging ... ok
+1 - Logger class Type-safe logging ... ok
+1 - Logger class Type-safe logging with invalid priority ... ok
+1 - Logger class Type-safe logging with no context or source ... ok
+1 - Logger class Warning level logging ... ok
+1 - Logger class XML logging ... ok
+1 - EnvVariable default values are correctly set when environment variables not defined ... FAIL
+1 - PeriodicFlushCheck is correct and consistent after import. ... ok
+1 - PeriodicFlushCheck flushing thread start and stops correctly. ... ok
+1 - PeriodicFlushCheck only one thread is created if start is called twice. ... ok
+1 - PeriodicFlushCheck updates flush interval correctly ... ok
+1 - PeriodicFlushCheck flush thread stopped when invalid interval is set ... ok
+1 - ACSFormatter initialized ... ok
+1 - ACSFormatter formats a log record with a data dictionary attribute correctly ... ok
+1 - ACSFormatter formats a log record with a data list attribute correctly ... ok
+1 - ACSFormatter formats a log record with an empty data dictionary attribute correctly ... ok
+1 - ACSFormatter formats a log record with an empty data list attribute correctly ... ok
+1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
+1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
+1 - LogLevel ACSLog log levels map to correct logging values ... ok
+1 - LogLevel numeric log levels map to correct logging values ... ok
+1 - LogLevel Logging values map to correct numeric log levels ... ok
+1 - LogLevel EMERGENCY level is correctly defined in logging module ... ok
+1 - LogLevel NOTICE level is correctly defined in logging module ... ok
+1 - LogLevel OFF level is correctly defined in logging module ... ok
+1 - LogLevel TRACE level is correctly defined in logging module ... ok
+1 - LogLevel ALERT level is correctly defined in logging module ... ok
+1 - Log after import is correctly configured ... ok
+1 - OneLoggerCheck unnamed logger request ... ok
+1 - OneLoggerCheck unnamed logger found by search ... ok
+1 - OneLoggerCheck names list has unnamed logger when filtered by unnamed logger ... ok
+1 - Log changes log batch size correctly ... ok
+1 - Log handles batch size greater than capacity correctly ... ok
+1 - Log handles lowest and highest immediate dispatch level correctly ... ok
+1 - Log initializes handlers correctly ... ok
+1 - Log handles invalid batch size correctly ... ok
+1 - Log handles invalid queue capacity correctly ... ok
+1 - Log sets log queue capacity correctly ... ok
+1 - Log sets default handlers levels correctly for valid inputs ... ok
+1 - Log handles invalid log levels correctly ... ok
+1 - Log sets immediate dispatch level correctly ... ok
+1 - Log handles undefined immediate dispatch level correctly ... ok
+1 - getTimeStamp reports correct ACS timestamp for a known value ... ok
 1 - test_configAdminProps_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
@@ -148,26 +236,11 @@
 1 - CommonNC default initialization ... ok
 1 - CommonNC initialization with domain ... ok
 1 - CommonNC initialization with default domain ... ok
-1 - getTimeStamp reports correct ACS timestamp for a known value ... ok
-1 - TimeUtil.duration2py handles long values correctly ... ok
-1 - TimeUtil.duration2py handles negative values correctly ... ok
-1 - TimeUtil.duration2py handles 0 value correctly ... ok
-1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
-1 - TimeUtil.epoch2py handles long values correctly ... ok
-1 - TimeUtil.epoch2py handles negative values correctly ... ok
-1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
-1 - TimeUtil.py2duration handles negative values correctly ... ok
-1 - TimeUtil.py2duration handles 0 value correctly ... ok
-1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
-1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
-1 - TimeUtil.py2epoch handles negative values correctly ... ok
-1 - Handler initialized ... ok
-1 - Handler nested element with attributes ... ok
-1 - Handler nested element with no attributes ... ok
-1 - Handler nested different element with no attributes ... ok
-1 - Handler nested different element with no attributes ... ok
-1 - Handler element with attributes ... ok
-1 - Handler element with no attributes ... ok
+1 - EnvVariable Stdout value is correct when ACS_LOG_STDOUT environment variable is set ... ok
+1 - DispatchPacketCheck messages buffer correctly ... ok
+1 - DispatchPacketCheck clears sends pending messages before priority message ... ok
+1 - DispatchPacketCheck messages buffer correctly ... ok
+1 - EnvVariable Central value is correct when ACS_LOG_CENTRAL environment variable is set ... ok
 1 - Access initialized ... ok
 1 - Access retrieve CDB String ... ok
 1 - Access retrieve CDB String from cache ... ok
@@ -175,7 +248,14 @@
 1 - Access retrieve attributes from lower level element that has attributes ... ok
 1 - Access retrieve attributes from top level element ... ok
 1 - 
+1 - ======================================================================
+1 - FAIL: EnvVariable default values are correctly set when environment variables not defined
+1 - ----------------------------------------------------------------------
+1 -   File "acspyTestUnitLog.py", line xxx, in testDefaultValues
+1 -     self.assertEquals(False, environ.has_key('ACS_LOG_STDOUT'))
+1 - AssertionError: False != True
+1 - 
 1 - ----------------------------------------------------------------------
 1 - Ran xx tests in x.xxxs
 1 - 
-1 - OK
+1 - FAILED (failures=1)
