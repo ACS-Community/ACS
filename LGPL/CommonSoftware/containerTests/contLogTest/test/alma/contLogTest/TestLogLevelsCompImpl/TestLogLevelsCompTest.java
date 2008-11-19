@@ -244,19 +244,28 @@ public class TestLogLevelsCompTest extends ComponentClientTestCase
 				
 				// logging a msg at level OFF should lead to an exception, independent from central level 
 				try {
-					// if next method does not produce the exception we expect, throw another one.
 					testComp.logDummyMessages(offLogLevels);
-					throw new Exception("Sending a log with level OFF did get through !?!?");
-				} catch (org.omg.CORBA.UNKNOWN ex) {
+					// C++ containers don't seem to be able to throw exception in this case 
+					m_logger.info("Sending a log with level OFF did not throw exception.");
+					// Consume the log that says it is the last log message, unless the current level is OFF
+					if (minLogLevelCentral <= maxLogLevel) {
+						logRecordsReceived = expectant.awaitLogRecords(loggerName, waitTimeSeconds);
+						assertEquals(1, logRecordsReceived.size());
+					}
+				} 
+				catch (org.omg.CORBA.UNKNOWN ex) {
 					if (ex.getLocalizedMessage().startsWith("Server-side Exception: java.lang.IllegalArgumentException")) {
+						// Obviously the case for Java
 						System.out.println("Got illegal argument exception for attempting to send log with level OFF, as expected.");
+					}
+					else if (ex.getLocalizedMessage().startsWith("Server-side Exception: null")) {
+						// This is what Python does
+						System.out.println("Got exception for attempting to send log with level OFF, as expected.");
 					}
 					else {
 						// The exception we got is not the one expected
 						throw ex;
 					}
-				} catch (Exception ex) {
-					System.out.println("Caught exception " + ex + "\nException msg: " + ex.getLocalizedMessage());
 				}
 				
 				
