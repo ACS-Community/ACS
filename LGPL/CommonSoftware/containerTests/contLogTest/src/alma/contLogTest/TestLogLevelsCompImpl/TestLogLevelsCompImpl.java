@@ -154,11 +154,11 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 	 */
 	public void logDummyMessages(int[] coreLevels) throws IllegalArgumentEx {
 		// add a minor delay to be sure receiving side is all set-up and ready
-		//try {
-			//Thread.sleep(150);
-		//}
-		//catch (InterruptedException ex) {
-		//}
+		try {
+			Thread.sleep(150);
+		}
+		catch (InterruptedException ex) {
+		}
 		AcsLogLevel acsLogLevel = null;
 		for (int coreLevel : coreLevels) {
 			String name;
