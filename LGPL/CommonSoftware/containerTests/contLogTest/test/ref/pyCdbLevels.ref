@@ -55,6 +55,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 3 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -68,6 +69,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 4 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -80,6 +82,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 5 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -91,6 +94,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 6 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -101,6 +105,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 8 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -110,6 +115,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 9 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -118,6 +124,7 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 10 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
@@ -125,19 +132,22 @@
 1 - (level=10) logDummyMessages - dummy log message for core level 10/ALERT
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 11 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 2 records from logger TESTLOG6
 1 - (level=11) logDummyMessages - dummy log message for core level 11/EMERGENCY
 1 - (level=11) logDummyMessages - ===last log message===
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set default log level for container aragornContainer to 99 to be used by component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG6
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
 1 - Got 0 records from logger TESTLOG6
+1 - Got exception for attempting to send log with level OFF, as expected.
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to release component TESTLOG6
-1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG6
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] about to log out from manager...
 1 - <timestamp> FINE [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] logged out from manager.
