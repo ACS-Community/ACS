@@ -153,6 +153,12 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 	 * @see alma.contLogTest.LogLevelsOperations#logDummyMessagesForAllLevels()
 	 */
 	public void logDummyMessages(int[] coreLevels) throws IllegalArgumentEx {
+		// add a minor delay to be sure receiving side is all set-up and ready
+		//try {
+			//Thread.sleep(150);
+		//}
+		//catch (InterruptedException ex) {
+		//}
 		AcsLogLevel acsLogLevel = null;
 		for (int coreLevel : coreLevels) {
 			String name;
@@ -166,7 +172,7 @@ public class TestLogLevelsCompImpl implements ComponentLifecycle, TestLogLevelsC
 		}
 		acsLogLevel = AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY);
 		m_logger.log(acsLogLevel, "===last log message===");
-		LOG_TEST_DummyMessage.log(m_logger, "A beautiful name with a cherry on top", "Dr. F. Amous");
+		//LOG_TEST_DummyMessage.log(m_logger, "A beautiful name with a cherry on top", "Dr. F. Amous");
 	}
 }
 
