@@ -1,0 +1,20 @@
+HOW to run this test:
+
+- First add the function setContainerName to 
+alma.acs.component.ComponentQueryDescriptor
+
+- Then on the machine that you want to run the manager:
+%> tat -nc -v makeEnv
+
+- In every machine with containers, n1 = initial number, n2= last number, manager_machine = manager hostname:
+%>export MANAGER_REFERENCE=corbaloc::<manager_machine>:3000/Manager
+%>./startJavaContainers.sh <n1> <n2>
+It will start containers javaContainern1, javaContainer(n1+1), ... , javaContainern2
+
+- Run 
+%> acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.managertest.client.managerClientTest > tmp/results.txt 2>&1
+
+- Wait until last command finish, and then run
+%>tat -nc -v cleanEnv
+
+- Examine tmp/acsStart and tmp/results.txt
