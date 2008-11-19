@@ -1,6 +1,6 @@
 1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
 1 - <timestamp> [GlobalLogger - ] Container: frodoContainer
-1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG1':
+1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG2':
 1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
 1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
 1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
@@ -8,7 +8,7 @@
 1 - <timestamp> [GlobalLogger - ] Done all.
 2 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
 2 - <timestamp> [GlobalLogger - ] Container: frodoContainer
-2 - <timestamp> [GlobalLogger - ] 	Log levels for logger 'TESTLOG1':
+2 - <timestamp> [GlobalLogger - ] 	Log levels for logger 'TESTLOG2':
 2 - <timestamp> [GlobalLogger - ] 		useDefault      : false
 2 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
 2 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9

@@ -1,131 +1,122 @@
-1 - <timestamp> [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::<IP address>:<port>/Manager'
-1 - <timestamp> [GlobalLogger - ] Container: myDefaultJavaTestContainer
-1 - <timestamp> [GlobalLogger - ] 	Setting levels for logger 'TESTLOG1':
-1 - <timestamp> [GlobalLogger - ] 		useDefault      : false
-1 - <timestamp> [GlobalLogger - ] 		minLogLevel     : 8
-1 - <timestamp> [GlobalLogger - ] 		minLogLevelLocal: 9
-1 - <timestamp> [GlobalLogger - ] 	... done.
-1 - <timestamp> [GlobalLogger - ] Done all.
-2 -  -D TEST_COMP_NAMES=TESTLOG1 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-2 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-2 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 2, 2, 8, 8, 9
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
-2 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest] authenticate called: id=XXX; question=Identify yourself
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 2
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 11 records from logger TESTLOG1
-2 - (level=2) dummy log message for core level 2/TRACE
-2 - (level=3) dummy log message for core level 3/DEBUG
-2 - (level=4) dummy log message for core level 4/INFO
-2 - (level=5) dummy log message for core level 5/NOTICE
-2 - (level=6) dummy log message for core level 6/WARNING
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 3
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 10 records from logger TESTLOG1
-2 - (level=3) dummy log message for core level 3/DEBUG
-2 - (level=4) dummy log message for core level 4/INFO
-2 - (level=5) dummy log message for core level 5/NOTICE
-2 - (level=6) dummy log message for core level 6/WARNING
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 4
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 9 records from logger TESTLOG1
-2 - (level=4) dummy log message for core level 4/INFO
-2 - (level=5) dummy log message for core level 5/NOTICE
-2 - (level=6) dummy log message for core level 6/WARNING
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 5
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 8 records from logger TESTLOG1
-2 - (level=5) dummy log message for core level 5/NOTICE
-2 - (level=6) dummy log message for core level 6/WARNING
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 6
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 7 records from logger TESTLOG1
-2 - (level=6) dummy log message for core level 6/WARNING
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 8
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 6 records from logger TESTLOG1
-2 - (level=8) dummy log message for core level 8/ERROR
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 9
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 5 records from logger TESTLOG1
-2 - (level=9) dummy log message for core level 9/CRITICAL
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 10
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 4 records from logger TESTLOG1
-2 - (level=10) dummy log message for core level 10/ALERT
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 11
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 3 records from logger TESTLOG1
-2 - (level=11) dummy log message for core level 11/EMERGENCY
-2 - (level=11) dummy log message for core level 99/OFF
-2 - (level=11) ===last log message===
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 99
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
-2 - Got 0 records from logger TESTLOG1
-2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
-2 - 
-2 - Time: <seconds>
-2 - 
-2 - OK (2 tests)
-2 - 
+1 -  -D TEST_COMP_NAMES=TESTLOG1 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+1 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] levels from component's getLevels method and LoggingConfigurable: 2, 2, 8, 8, 9
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
+1 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] -------------------------------
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] ComponentClientTestCase#setUp()
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] authenticate called: id=XXX; question=Identify yourself
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 2
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 10 records from logger TESTLOG1
+1 - (level=2) dummy log message for core level 2/TRACE
+1 - (level=3) dummy log message for core level 3/DEBUG
+1 - (level=4) dummy log message for core level 4/INFO
+1 - (level=5) dummy log message for core level 5/NOTICE
+1 - (level=6) dummy log message for core level 6/WARNING
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 3
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 9 records from logger TESTLOG1
+1 - (level=3) dummy log message for core level 3/DEBUG
+1 - (level=4) dummy log message for core level 4/INFO
+1 - (level=5) dummy log message for core level 5/NOTICE
+1 - (level=6) dummy log message for core level 6/WARNING
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 4
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 8 records from logger TESTLOG1
+1 - (level=4) dummy log message for core level 4/INFO
+1 - (level=5) dummy log message for core level 5/NOTICE
+1 - (level=6) dummy log message for core level 6/WARNING
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 5
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 7 records from logger TESTLOG1
+1 - (level=5) dummy log message for core level 5/NOTICE
+1 - (level=6) dummy log message for core level 6/WARNING
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 6
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 6 records from logger TESTLOG1
+1 - (level=6) dummy log message for core level 6/WARNING
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 8
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 5 records from logger TESTLOG1
+1 - (level=8) dummy log message for core level 8/ERROR
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 9
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 4 records from logger TESTLOG1
+1 - (level=9) dummy log message for core level 9/CRITICAL
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 10
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 3 records from logger TESTLOG1
+1 - (level=10) dummy log message for core level 10/ALERT
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 11
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 2 records from logger TESTLOG1
+1 - (level=11) dummy log message for core level 11/EMERGENCY
+1 - (level=11) ===last log message===
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Set individual log level for component TESTLOG1 (running in container myDefaultJavaTestContainer) to 99
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will call 'logDummyMessages' on component TESTLOG1
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] Will wait <N> seconds to receive (some of) these log messages.
+1 - Got 0 records from logger TESTLOG1
+1 - Got illegal argument exception for attempting to send log with level OFF, as expected.
+1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testLoggingConfigurableCentralLogLevels] client 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' has successfully released  a component with curl=TESTLOG1
+1 - 
+1 - Time: <seconds>
+1 - 
+1 - OK (2 tests)
+1 - 
