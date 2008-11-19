@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acscontainerdaemon.cpp,v 1.6 2007/11/13 19:49:30 agrimstrup Exp $"
+* "@$Id: acscontainerdaemon.cpp,v 1.7 2008/11/19 11:02:44 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * agrimstr 2007-11-07 refactored to use daemon implementation template class
 */
 
-static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.6 2007/11/13 19:49:30 agrimstrup Exp $";
+static char *rcsId="@ $Id: acscontainerdaemon.cpp,v 1.7 2008/11/19 11:02:44 msekoran Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acsDaemonImpl.h>
@@ -37,6 +37,9 @@ acsDaemonImpl<ACSContainerHandlerImpl>* g_daemon = 0;  // Reference used by sign
 
 void TerminationSignalHandler(int)
 {
+    LoggingProxy * logger = new LoggingProxy(0, 0, 31);
+    LoggingProxy::init(logger);
+    LoggingProxy::ThreadName("termination");
     if (g_daemon)
 	g_daemon->shutdown();
 }
