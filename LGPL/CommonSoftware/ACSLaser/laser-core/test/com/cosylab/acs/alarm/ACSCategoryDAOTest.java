@@ -54,6 +54,7 @@ public class ACSCategoryDAOTest extends ComponentClientTestCase
 		assertNotNull("Got a null ConfigurationAccessor", conf);
 		
 		alarmDAO=new ACSAlarmDAOImpl(getContainerServices().getLogger());
+		alarmDAO.setConfAccessor(conf);
 		assertNotNull("AlarmDAO is null", alarmDAO);
 		categoryDAO = new ACSCategoryDAOImpl(getContainerServices().getLogger(),alarmDAO);
 		assertNotNull("category DAO is null", categoryDAO);
