@@ -59,6 +59,9 @@ import com.cosylab.acs.laser.dao.xml.CategoryDefinitions;
 import com.cosylab.acs.laser.dao.xml.CategoryLinksToCreate;
 
 import alma.acs.alarmsystem.generated.Categories;
+import alma.alarmsystem.core.alarms.LaserCoreAlarms;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 
 /**
  * Read the categories from the CDB.
@@ -268,12 +271,12 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 	
 	/**
 	 * Load the categories from the CDB.
-	 * 
+	 * <P>
 	 * Loads all the category from the CDB and build an internal
 	 * representation of category.
 	 * The category is also added to all the alarms having the
 	 * fault family specified in the XML.
-	 * 
+	 * <P>
 	 * All the categories derive from ROOT that is built here
 	 * as default (in this way the user does ot need to add the ROOT
 	 * entry in the CDB).
@@ -380,6 +383,8 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 				}
 			}
 		}
+		// Assign core alarms to ROOT category
+		assignCategoryOfCoreAlarms();
 		// Log a message if no category has been defined in the CDB
 		if (defaultCategory==null) {
 			logger.log(AcsLogLevel.WARNING,"No default category defined in CDB");
@@ -388,7 +393,20 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 			assignDefaultCategory(defaultCategory);
 		}
 
-                return daoCategory;
+        return daoCategory;
+	}
+	
+	/**
+	 * Assign core alarms to the root category.
+	 * 
+	 * @see LaserCoreAlarms
+	 * @see LaserCoreFaultState
+	 * @see LaserCoreFaultCodes
+	 */
+	private void assignCategoryOfCoreAlarms() {
+		String[] coreIds = LaserCoreFaultState.getCoreAlarmIds();
+		Category rootCategory=getCategoryByPath("ROOT");
+		assignCategoryToAlarms(rootCategory, LaserCoreFaultState.FaultFamily);
 	}
 	
 	/**
