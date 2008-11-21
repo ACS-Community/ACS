@@ -24,9 +24,9 @@ package com.cosylab.acs.laser;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.jms.JMSException;
@@ -58,6 +58,8 @@ import alma.alarmsystem.Source;
 import alma.alarmsystem.Status;
 import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
 
 import cern.laser.business.cache.AlarmCacheListener;
@@ -78,6 +80,7 @@ import cern.laser.business.definition.data.CategoryDefinition;
 import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.business.definition.data.AlarmDefinition;
 import cern.laser.business.ProcessingController;
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 import com.cosylab.acs.jms.ACSJMSTopic;
 import com.cosylab.acs.jms.ACSJMSTopicConnectionFactory;
@@ -92,7 +95,7 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 
 public class LaserComponent extends ComponentImplBase
-		implements AlarmServiceOperations {
+		implements AlarmServiceOperations, MessageListener{
 	ContainerServices contSvcs;
 	
 	Logger logger=null;
@@ -134,20 +137,33 @@ public class LaserComponent extends ComponentImplBase
 	ACSAlarmCacheImpl alarmCache;
 
 	ACSJMSTopicConnectionFactory defaultTopicConnectionFactory;
+	
+	/**
+	 * If an error happens during initialization, the alarm service
+	 * sends one or more alarms.
+	 * <P>
+	 * In case of errors during startup <code>initialize()</code> adds alarm
+	 * in this vector.
+	 * When the component becomes operation, <code>execute()</code> send all the
+	 * alarms in the <code>coreAlarms</code> vector.
+	 */
+	private Vector<LaserCoreFaultCodes> coreAlarms = new Vector<LaserCoreFaultCodes>(); 
 
 	public void initialize(ContainerServices cont)
 			throws ComponentLifecycleException {
 		super.initialize(cont);
+		
 		if (cont==null) {
 			throw new ComponentLifecycleException("Invalid null ContainerServices in initialize");
 		}
+		
 		this.contSvcs = cont;
 		this.logger=contSvcs.getLogger();
 		
 		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(cont);
 
 		TopicConnection tc;
-		TopicSession ts;
+		TopicSession ts=null;
 		
 		try {
 			tc = defaultTopicConnectionFactory
@@ -168,7 +184,7 @@ public class LaserComponent extends ComponentImplBase
 							if (message instanceof TextMessage) {
 								try {
 									logger.log(AcsLogLevel.DEBUG,"Received a JMS message");
-								} catch(Exception e) {}
+								} catch(Throwable t) {}
 							} else {
 								logger.log(AcsLogLevel.DEBUG,"Received a non text JMS message");
 							}
@@ -181,17 +197,22 @@ public class LaserComponent extends ComponentImplBase
 						}
 					});
 			logger.log(AcsLogLevel.DEBUG,"JMS initialized");
-		} catch (JMSException e) {
-			logger.log(AcsLogLevel.ERROR,"Error initializing JMS");
-			throw new ComponentLifecycleException("Failed to initialize JMS", e);
+		} catch (Throwable t) {
+			System.err.println("Error initing JMS, "+t.getMessage());
+			t.printStackTrace(System.err);
+			logger.log(AcsLogLevel.ERROR,"Error initializing JMS",t);
+			coreAlarms.add(LaserCoreFaultCodes.JMS_INIT);
 		}
 		
 
-		ConfigurationAccessor conf;
+		ConfigurationAccessor conf=null;
 		try {
 			conf = ConfigurationAccessorFactory.getInstance(cont);
-		} catch (AcsJContainerServicesEx e) {
-			throw new ComponentLifecycleException("Failed to get CDB", e);
+		} catch (Throwable t) {
+			System.err.println("Error getting CDB: "+t.getMessage());
+			t.printStackTrace(System.err);
+			logger.log(AcsLogLevel.ERROR,"Error getting CDB",t);
+			coreAlarms.add(LaserCoreFaultCodes.CDB_UNAVAILABLE);
 		}
 
 		adminUserDAO = new ACSAdminUserDAOImpl();
@@ -203,15 +224,19 @@ public class LaserComponent extends ComponentImplBase
 		
 		try {
 			alarmDAO.loadAlarms();
-		} catch (Exception ace) {
-			System.err.println("Error loading alarms: "+ace.getMessage());
-			ace.printStackTrace(System.err);
-			logger.log(AcsLogLevel.ERROR,"Error loading alarms from CDB",ace);
+		} catch (Throwable t) {
+			System.err.println("Error loading alarms: "+t.getMessage());
+			t.printStackTrace(System.err);
+			logger.log(AcsLogLevel.ERROR,"Error loading alarms from CDB",t);
+			coreAlarms.add(LaserCoreFaultCodes.ALARMS_CDB);
 		}
 		try {
 			categoryDAO.loadCategories();
-		} catch (Exception ex) {
-			logger.log(AcsLogLevel.ERROR,"Error loading categories from CDB",ex);
+		} catch (Throwable t) {
+			System.err.println("Error loading categories: "+t.getMessage());
+			t.printStackTrace(System.err);
+			logger.log(AcsLogLevel.ERROR,"Error loading categories from CDB",t);
+			coreAlarms.add(LaserCoreFaultCodes.CATEGORIES_CDB);
 		}
 		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
 		sourceDAO.setConfAccessor(conf);
@@ -313,26 +338,64 @@ public class LaserComponent extends ComponentImplBase
 							.createSubscriber(topicAdminCacheLoader);
 			
 					subscriberAdminCacheLoader
-							.setMessageListener(new MessageListener() {
-								public synchronized void onMessage(Message message) {
-									if (message instanceof TextMessage) {
-										logger.log(AcsLogLevel.DEBUG,"Received a source message");
-									} else {
-										logger.log(AcsLogLevel.DEBUG,"Received a non text source message");
-									}
-									try {
-										alarmMessageProcessor.process(message);
-									} catch (Exception e) {
-										// XXX what to do???
-										logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage(),e);
-										e.printStackTrace();
-									}
-								}
-							});
-				} catch (JMSException e) {
-					throw new ComponentLifecycleException("Failed to init JMS listeners: "+e.getMessage(), e);
+							.setMessageListener(this);
+				} catch (Throwable t) {
+					System.err.println("Error setting source listener: "+t.getMessage());
+					t.printStackTrace(System.err);
+					logger.log(AcsLogLevel.ERROR,"Error setting the source listener",t);
+					coreAlarms.add(LaserCoreFaultCodes.SOURCE_LISTENER);
 				}
 			}
+		}
+		
+		
+	}
+	
+	/**
+	 * Sent alarm services alarms.
+	 * <P>
+	 * The alarms generated by the alarm service are injected in the
+	 * component by executing the <code>onMessage</code>
+	 * 
+	 * @param alarms The alarms to send 
+	 *  			 <code>alarms</code> can be <code>null</code> or empty;
+	 */
+	public void sentCoreAlarms(Vector<LaserCoreFaultCodes> alarms) {
+		if (alarms==null || alarms.isEmpty()) {
+			return;
+		}
+		for (LaserCoreFaultCodes alarm: alarms) {
+			System.out.println("Sending core alar of type: "+alarm);
+			logger.log(AcsLogLevel.ALERT, "Laser core alarm <"+LaserCoreFaultState.FaultFamily+", "+LaserCoreFaultState.FaultMember+", "+alarm.faultCode+">");
+			FaultState fs = LaserCoreFaultState.createFaultState(alarm, true);
+			Message msg;
+			try {
+				msg= LaserCoreFaultState.createJMSMessage(fs, contSvcs);
+			} catch (Throwable t) {
+				System.err.println("Error creating a core alarm of type "+alarm);
+				t.printStackTrace(System.err);
+				logger.log(AcsLogLevel.ERROR,"Error creating a core alarm of type "+alarm);
+				continue;
+			}
+			onMessage(msg);
+		}
+	}
+	
+	/**
+	 * @see MessageListener
+	 */
+	public synchronized void onMessage(Message message) {
+		if (message instanceof TextMessage) {
+			logger.log(AcsLogLevel.DEBUG,"Received a source message");
+		} else {
+			logger.log(AcsLogLevel.DEBUG,"Received a non text source message");
+		}
+		try {
+			alarmMessageProcessor.process(message);
+		} catch (Exception e) {
+			// XXX what to do???
+			logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage(),e);
+			e.printStackTrace();
 		}
 	}
 
@@ -340,6 +403,7 @@ public class LaserComponent extends ComponentImplBase
 		super.execute();
 		heartbeat.start();
 		ProcessingController.getInstance().startProcessing();
+		sentCoreAlarms(coreAlarms);
 	}
 
 	public void cleanUp() {
