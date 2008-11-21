@@ -21,15 +21,14 @@ package alma.acs.lasercore.test;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Vector;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
 
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.container.ContainerServices;
 import alma.acs.lasercore.test.stress.CategoryClient;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
-import alma.alarmsystem.Alarm;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
@@ -86,29 +85,58 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 		}
 	}
 	
-	// FF and FM of the published states
+	/**
+	 * FF of the published states
+	 */
 	private static final String FF = "TEST";
+	
+	/**
+	 * FM of the published states
+	 */
 	private static final String FM = "Member";
 	
-	// The number of alarms to publish
+	/**
+	 *  The number of alarms to publish
+	 */
 	private static final int NUM_ALARMS_TO_SEND = 1000;
 	
-	// The random number generator to create FMs
+	/**
+	 * The random number generator to create FMs
+	 */
 	private static Random rnd = new Random(System.currentTimeMillis());
 	
-	// The source
+	/**
+	 *  The source
+	 */
 	private ACSAlarmSystemInterface alarmSource;
-
-	// The category client
+	
+	/**
+	 *  The category client
+	 */
 	private CategoryClient categoryClient;
 	
-	// The fault states to publish
+	/**
+	 * The fault states to publish
+	 */
 	private MiniFaultState[] statesToPublish;
 	
-	// The number of active FS published
+	/**
+	 *  Container services
+	 */
+	private ContainerServices contSvcs;
+	
+	/**
+	 * The number of active FS published
+	 */
 	private int activeFS=0;
 	
 	private static int count=0;
+	
+	/**
+	 * The vector with the alarms received from the categories.
+	 * The key is the alarm ID
+	 */
+	private HashMap<String,AlarmView> alarms = new HashMap<String,AlarmView>();
 	
 	/**
 	 * Constructor
@@ -118,22 +146,22 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 		super("StressTest");
 	}
 	
-	// The vector with the alarms received from the categories
-	// The kei is the alarm ID
-	private HashMap<String,AlarmView> alarms = new HashMap<String,AlarmView>(); 
+	 
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		assertNotNull(getContainerServices());
 		
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
+		contSvcs = getContainerServices();
+		assertNotNull(contSvcs);
+		
+		ACSAlarmSystemInterfaceFactory.init(contSvcs);
 		
 		alarmSource = ACSAlarmSystemInterfaceFactory.createSource();
 		assertNotNull("Error instantiating the source",alarmSource);
 		
 		// Connect the categories
-		categoryClient= new CategoryClient(getContainerServices());
+		categoryClient= new CategoryClient(contSvcs);
 		assertNotNull(categoryClient);
 		categoryClient.addAlarmListener(this);
 		categoryClient.connect();
