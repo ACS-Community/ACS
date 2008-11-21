@@ -177,6 +177,7 @@ public class CategoryClient {
 		for (CategorySubscriber cat: consumers) {
 			cat.close();
 		}
+		releaseAlarmServiceComponent();
 	}
 	
 	/**
@@ -229,7 +230,6 @@ public class CategoryClient {
 		if (categories==null || categories.length==0) {
 			contSvc.getLogger().log(AcsLogLevel.INFO,"No alarm categories to subscribe to");
 		}
-		releaseAlarmServiceComponent();
 	}
 	
 	/**
