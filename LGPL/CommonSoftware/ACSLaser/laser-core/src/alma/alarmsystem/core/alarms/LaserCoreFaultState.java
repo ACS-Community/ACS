@@ -209,4 +209,17 @@ public class LaserCoreFaultState {
 		textMessage.setText(XMLMessageHelper.marshal(asiMessage));
 		return textMessage;
 	}
+	
+	/**
+	 * Return the Ids of all the laser core alarms
+	 * 
+	 * @return The array with the Ids of all the core alarms
+	 */
+	public static String[] getCoreAlarmIds() {
+		String[] ret = new String[LaserCoreFaultCodes.values().length];
+		for (int t=0; t<LaserCoreFaultCodes.values().length; t++) {
+			ret[t]=FaultFamily+":"+FaultMember+":"+LaserCoreFaultCodes.values()[t].faultCode;
+		}
+		return ret;
+	}
 }
