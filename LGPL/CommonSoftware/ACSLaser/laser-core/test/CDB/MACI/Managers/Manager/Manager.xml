@@ -14,7 +14,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
            >
 	<Startup>
-		<cdb:_ string="AlarmService"/> 
+		<!-- cdb:_ string="AlarmService"/ --> 
 	</Startup> 
 	<ServiceComponents>
 		<cdb:_ string="Log"/>
