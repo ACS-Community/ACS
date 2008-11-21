@@ -33,6 +33,8 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 
 /**
  * Test the alarm definitions read from the CDB
@@ -76,7 +78,7 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		}
 		
 		/**
-		 * Check if the passed string is a defined ID
+		 * Check if the passed string is a defined ID.
 		 * 
 		 * @param id The ID to check
 		 * @return
@@ -84,6 +86,16 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		public static boolean exist(String id) {
 			for (AlarmTriplets triplet: AlarmTriplets.values()) {
 				if (triplet.ID.equals(id)) {
+					return true;
+				}
+			}
+			// Is the ID of a laser core alarm?
+			String[] coreIds = new String[LaserCoreFaultCodes.values().length];
+			for (int t=0; t<LaserCoreFaultCodes.values().length; t++) {
+				coreIds[t]=LaserCoreFaultState.FaultFamily+":"+LaserCoreFaultState.FaultMember+":"+LaserCoreFaultCodes.values()[t].faultCode;
+			}
+			for (String str: coreIds) {
+				if (str.equals(id)) {
 					return true;
 				}
 			}
@@ -149,11 +161,12 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		
 		// There are 7 alarms defined in the CDB 
 		// 5 alarms plus 2 defaults for TEST
-		assertEquals(7, ids.length);
+		// We have to consider the laser core alarms too...
+		assertEquals(7+LaserCoreFaultCodes.values().length, ids.length);
 		
 		// Check if all the triplets exist
 		for (String id: ids) {
-			assertTrue(AlarmTriplets.exist(id));
+			assertTrue(id+" alarmID does not exist",AlarmTriplets.exist(id));
 		}
 	}
 	
