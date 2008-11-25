@@ -27,9 +27,9 @@ import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.ContainerDaemon;
 import alma.acsdaemon.ContainerDaemonHelper;
-import alma.acsdaemon.DaemonCallback;
-import alma.acsdaemon.DaemonCallbackHelper;
-import alma.acsdaemon.DaemonCallbackPOA;
+import alma.acsdaemon.DaemonSequenceCallback;
+import alma.acsdaemon.DaemonSequenceCallbackHelper;
+import alma.acsdaemon.DaemonSequenceCallbackPOA;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
 import de.mud.ssh.SshWrapper;
@@ -651,16 +651,16 @@ public class Executor {
 		
 		try {
 			final BlockingQueue<Completion> sync = new ArrayBlockingQueue<Completion>(1);
-			DaemonCallbackPOA daemonCallbackImpl = new DaemonCallbackPOA() {
+			DaemonSequenceCallbackPOA daemonCallbackImpl = new DaemonSequenceCallbackPOA() {
 				public void done(Completion comp) {
 					sync.add(comp);
 				}
-				public void working(Completion comp) {
+				public void working(String service, String host, short instance_number, Completion comp) {
 					// @TODO negotiate with daemon module developers 
 					//       what intermittent data should be sent when, if at all.
 				}
 			};
-			DaemonCallback daemonCallback = DaemonCallbackHelper.narrow(
+			DaemonSequenceCallback daemonCallback = DaemonSequenceCallbackHelper.narrow(
 					acsCorba.activateOffShoot(daemonCallbackImpl, acsCorba.getRootPOA()) );
 			if (startStop == true) {
 				daemon.start_acs(daemonCallback, (short)instance, cmdFlags);
