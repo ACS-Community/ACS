@@ -41,7 +41,7 @@ void usage(const char *argv)
 	("\t   -a, --additional    passthrough options for startACS. Put options between \"\"\n");
 }
 
-class StartCallback : public POA_acsdaemon::DaemonCallback
+class StartCallback : public POA_acsdaemon::DaemonSequenceCallback
 {
   public:
    /**
@@ -61,14 +61,20 @@ class StartCallback : public POA_acsdaemon::DaemonCallback
 
     /*************************** CORBA interface *****************************/
 
-    virtual void working(const ACSErr::Completion& c)
+    virtual void working (
+        const char * service,
+        const char * host,
+        ::CORBA::Short instance_number,
+        const ::ACSErr::Completion & c)
     {
-	ACSErr::CompletionImpl comp = c;
-	comp.log();
+	ACS_SHORT_LOG((LM_INFO, "Start %s service status:", service));
+        ACSErr::CompletionImpl comp = c;
+        comp.log();
     }
 
     virtual void done (const ACSErr::Completion& c)
     {
+	ACS_SHORT_LOG((LM_INFO, "Start ACS request completed:"));
 	ACSErr::CompletionImpl comp = c;
 	comp.log();
 	complete = true;
@@ -80,7 +86,7 @@ class StartCallback : public POA_acsdaemon::DaemonCallback
     }
 
   protected:
-    bool complete;
+    volatile bool complete;
 
 };
 
@@ -144,10 +150,10 @@ int main(int argc, char *argv[])
 	CORBA::PolicyList policy_list;
 	policy_list.length(5);
 	policy_list[0] = root_poa->create_request_processing_policy(PortableServer::USE_DEFAULT_SERVANT);
-	policy_list[1] =  root_poa->create_id_uniqueness_policy(PortableServer::MULTIPLE_ID);
+	policy_list[1] = root_poa->create_id_uniqueness_policy(PortableServer::MULTIPLE_ID);
 	policy_list[2] = root_poa->create_id_assignment_policy(PortableServer::USER_ID); 
 	policy_list[3] = root_poa->create_servant_retention_policy(PortableServer::NON_RETAIN); 
-	policy_list[4] =  root_poa->create_lifespan_policy(PortableServer::PERSISTENT);
+	policy_list[4] = root_poa->create_lifespan_policy(PortableServer::PERSISTENT);
       
 	// create a ACSDaemon POA with policies 
 	PortableServer::POA_var poa = root_poa->create_POA("DaemonCallback", poa_manager.in(), policy_list);
@@ -223,7 +229,7 @@ int main(int argc, char *argv[])
 	}
 
 	// @todo implement support for callback and wait for completion call
-	acsdaemon::DaemonCallback_var dummyCallback = sc->_this();
+	acsdaemon::DaemonSequenceCallback_var dummyCallback = sc->_this();
 	ACS_SHORT_LOG((LM_INFO, "Calling start_acs(%d, %s, dummyCallback).", instance,
 		       additional.c_str()));
 	daemon->start_acs(dummyCallback.in(), instance, additional.c_str());

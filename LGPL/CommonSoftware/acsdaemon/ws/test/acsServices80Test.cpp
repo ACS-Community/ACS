@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.6 2008/11/11 09:10:52 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.7 2008/11/25 23:56:00 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -263,14 +263,15 @@ main (int argc, char *argv[])
 
 		acsdaemon::ServiceDefinitionBuilder *sdb = daemon->create_service_definition_builder(1);
 		sdb->add_naming_service(DAEMONHOST);
-		sdb->add_interface_repository(DAEMONHOST, false, false); // still waits for interface repository startup
+		sdb->add_interface_repository(DAEMONHOST, false, false);
 		sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_notification_service("LoggingNotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_notification_service("AlarmNotifyEventChannelFactory", DAEMONHOST);
-		sdb->add_xml_cdb(DAEMONHOST, true, "/alma/ACS-7.0/acsdata/config/defaultCDB");
+                sdb->add_notification_service("ArchiveNotifyEventChannelFactory", DAEMONHOST);
 		sdb->add_logging_service(DAEMONHOST, "Log");
 		sdb->add_acs_log(DAEMONHOST);
-		sdb->add_manager(DAEMONHOST, "", true);
+                sdb->add_xml_cdb(DAEMONHOST, true, getenv("ACS_CDB"));
+                sdb->add_manager(DAEMONHOST, "", true);
 
 		printf("SERVICE DEFINITION XML:\n%s\n", sdb->get_services_definition());
                 cb.daemon = daemon;

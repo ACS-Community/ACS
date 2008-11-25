@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.13 2008/10/28 13:54:15 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.14 2008/11/25 23:56:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -465,9 +465,35 @@ void ACSServicesHandlerImpl::stop_interface_repository (
     context->processRequest(IMP, STOP_SERVICE, desc, callback);
 }
 
+std::string
+ACSServicesHandlerImpl::getServices(short instance_number, bool recovery)
+{
+    std::string host = ACSPorts::getIP();
+    #define DAEMONHOST host.c_str()
+
+    acsdaemon::ServiceDefinitionBuilder *sdb = this->create_service_definition_builder(instance_number);
+    sdb->add_naming_service(DAEMONHOST);
+    sdb->add_interface_repository(DAEMONHOST, true, false);
+    sdb->add_notification_service("NotifyEventChannelFactory", DAEMONHOST);
+    sdb->add_notification_service("LoggingNotifyEventChannelFactory", DAEMONHOST);
+    sdb->add_notification_service("ArchiveNotifyEventChannelFactory", DAEMONHOST);
+    sdb->add_notification_service("AlarmNotifyEventChannelFactory", DAEMONHOST);
+    sdb->add_logging_service(DAEMONHOST, "Log");
+    sdb->add_acs_log(DAEMONHOST);
+    sdb->add_xml_cdb(DAEMONHOST, recovery, getenv("ACS_CDB"));
+    sdb->add_manager(DAEMONHOST, "", recovery);
+    
+    #undef DAEMONHOST
+
+    CORBA::String_var defs = sdb->get_services_definition();
+    std::string services = defs.in();
+    sdb->close();
+    return services;
+}
+
 void
 ACSServicesHandlerImpl::start_acs (
-    acsdaemon::DaemonCallback_ptr callback,
+    acsdaemon::DaemonSequenceCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
   )
@@ -476,14 +502,14 @@ ACSServicesHandlerImpl::start_acs (
     ::ACSErrTypeCommon::BadParameterEx
   ))
 {
-//    char *commandline = prepareCommand("acsStart", instance_number, false, NULL, additional_command_line, true);
-//    execCommand(commandline, callback, reqproc);
+    bool recovery = additional_command_line && ACE_OS::strstr(additional_command_line, "-r");
+    this->start_services(getServices(instance_number, false).c_str(), recovery, callback);
 }
 
 
 void
 ACSServicesHandlerImpl::stop_acs (
-    acsdaemon::DaemonCallback_ptr callback,
+    acsdaemon::DaemonSequenceCallback_ptr callback,
     ::CORBA::Short instance_number,
     const char * additional_command_line
   )
@@ -492,9 +518,7 @@ ACSServicesHandlerImpl::stop_acs (
     ::ACSErrTypeCommon::BadParameterEx
   ))
 {
-//    ACE_CString str = " -noShutdownLocalContainers";
-//    char *commandline = prepareCommand("acsStop", instance_number, false, NULL, (additional_command_line + str).c_str(), true);
-//    execCommand(commandline, callback, reqproc);
+    this->stop_services(getServices(instance_number, false).c_str(), callback);
 }
 
 

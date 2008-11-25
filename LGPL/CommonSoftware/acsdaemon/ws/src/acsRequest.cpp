@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.5 2008/11/04 14:50:55 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.6 2008/11/25 23:55:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -178,7 +178,7 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
     char buffer[64];
     sprintf(buffer, "%s %s -b %d", acsServices[service].script, request_type == START_SERVICE ? "-k -s" : "-k", instance_number);
     ACE_CString commandline = buffer;
-    if (loadir && service == INTERFACE_REPOSITORY) commandline = commandline + " -l";
+    if (!loadir && service == INTERFACE_REPOSITORY) commandline = commandline + " -noloadIFR";
     if (wait && request_type == START_SERVICE) commandline = commandline + " -w";
     if (recovery && (service == CDB || service == MANAGER)) commandline = commandline + " -r";
     if (name != NULL && service == NOTIFICATION_SERVICE) commandline = commandline + " -n " + name;

@@ -36,7 +36,7 @@ usage(const char *argv)
 }
 
 
-class StopCallback : public POA_acsdaemon::DaemonCallback
+class StopCallback : public POA_acsdaemon::DaemonSequenceCallback
 {
   public:
    /**
@@ -56,14 +56,20 @@ class StopCallback : public POA_acsdaemon::DaemonCallback
 
     /*************************** CORBA interface *****************************/
 
-    virtual void working(const ACSErr::Completion& c)
+    virtual void working (
+        const char * service,
+        const char * host,
+        ::CORBA::Short instance_number,
+        const ::ACSErr::Completion & c)
     {
+        ACS_SHORT_LOG((LM_INFO, "Stop %s service status:", service));
 	ACSErr::CompletionImpl comp = c;
 	comp.log();
     }
 
     virtual void done (const ACSErr::Completion& c)
     {
+        ACS_SHORT_LOG((LM_INFO, "Stop ACS request completed:"));
 	ACSErr::CompletionImpl comp = c;
 	comp.log();
 	complete = true;
@@ -75,7 +81,7 @@ class StopCallback : public POA_acsdaemon::DaemonCallback
     }
 
   protected:
-    bool complete;
+    volatile bool complete;
 
 };
 
@@ -217,7 +223,7 @@ int main(int argc, char *argv[])
         }
 
         // @todo implement support for callback and wait for completion call
-	acsdaemon::DaemonCallback_var dummyCallback = sc->_this();
+	acsdaemon::DaemonSequenceCallback_var dummyCallback = sc->_this();
 	ACS_SHORT_LOG((LM_INFO, "Calling stop_acs(%d, %s, dummyCallback).", instance,
 		       additional.c_str()));
 	daemon->stop_acs(dummyCallback.in(), instance, additional.c_str());

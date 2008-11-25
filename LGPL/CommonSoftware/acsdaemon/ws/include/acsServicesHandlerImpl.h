@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.9 2008/11/10 20:04:46 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.10 2008/11/25 23:55:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -162,7 +162,12 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
      * Return the port where this services handler listens for connections
      */
     std::string getPort();
-    
+   
+    /**
+     * Returns ACS services definition (common set of servies).
+     */
+    std::string getServices(short instance_number, bool recovery);
+ 
     /*************************** CORBA interface *****************************/
 
     ::acsdaemon::ServiceDefinitionBuilder_ptr create_service_definition_builder (
@@ -323,7 +328,7 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
       ));
     
     void start_acs (
-        acsdaemon::DaemonCallback_ptr callback,
+        acsdaemon::DaemonSequenceCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
@@ -333,7 +338,7 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
       ));
     
     void stop_acs (
-        acsdaemon::DaemonCallback_ptr callback,
+        acsdaemon::DaemonSequenceCallback_ptr callback,
         ::CORBA::Short instance_number,
         const char * additional_command_line
       )
