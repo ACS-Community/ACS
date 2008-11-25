@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.17 2008/11/10 20:05:05 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.18 2008/11/25 23:49:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -790,7 +790,7 @@ module acsdaemon
 		 * @endhtmlonly
 		 */
 		void start_acs( 
-				in DaemonCallback callback,
+				in DaemonSequenceCallback callback,
 				in short instance_number, 
 				in string flags)
 			raises (ACSErrTypeCommon::BadParameterEx);
@@ -805,7 +805,7 @@ module acsdaemon
 		 * @endhtmlonly
 		 */
 		void stop_acs(
-				in DaemonCallback callback,
+				in DaemonSequenceCallback callback,
 				in short instance_number, 
 				in string flags)
 			raises (ACSErrTypeCommon::BadParameterEx);
