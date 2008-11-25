@@ -6,6 +6,8 @@
 
 using namespace ddsnc;
 
+static bool factories_init = false;
+
 DDSHelper::DDSHelper(const char* channelName)
 {
 	init(channelName, "corbaloc:iiop:127.0.0.1:3999/DCPSInfoRepo");
@@ -19,14 +21,18 @@ DDSHelper::DDSHelper(const char* channelName, const char *DCPSInfoRepoLoc)
 void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 {
 	int argc;
-	char* argv[5];
-	argc=5;
+	char* argv[7];
+	argc=7;
 
 	argv[0] = strdup("Participant");
 	argv[1] = strdup("-DCPSInforepo");
 	argv[2] = strdup(DCPSInfoRepoLoc);
+	//DCPS Debug Level
 	argv[3] = strdup("-DCPSDebugLevel");
 	argv[4] = strdup("0");
+	//Transport Debug Level
+	argv[5] = strdup("-DCPSTransportDebugLevel");
+	argv[6] = strdup("0");
 
 	std::cerr << "Registering TransportImpl" << std::endl;
 /* Fedora 8 systems have a problem with next line of code. If the component is
@@ -40,6 +46,7 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 //			"static DCPS_SimpleTcpLoader \"-type SimpleTcp\"");
 
 	transport_impl_id=1;
+	factories_init = true;
 
 	try{
 		OpenDDS::DCPS::SimpleTcpGenerator* generator;
@@ -108,10 +115,22 @@ void DDSHelper::initializeTransport(){
 
 	}
 	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
-		transport_impl_id++;
-		initializeTransport();	
-		//transport_impl=TheTransportFactory->obtain(transport_impl_id);
+//		transport_impl_id++;
+//		initializeTransport();	
+		transport_impl=TheTransportFactory->obtain(transport_impl_id);
 	}
+
+	std::cerr << "Transport ID:" << transport_impl_id << std::endl;
+
+	OpenDDS::DCPS::TransportConfiguration_rch config =
+		TheTransportFactory->get_configuration(transport_impl_id);
+	OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
+		dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
+
+	::std::cerr << "TCP Address: "<< 
+		tcp_config->local_address_str_ << ::std::endl;
+
+	std::cerr << "Finishing configuration" << std::endl;
 
 }
 
@@ -151,6 +170,7 @@ void DDSHelper::disconnect()
 {
 	std::cerr<< "DDSHelper::disconnect()"<<std::endl;
 	if(initialized==true){
+		std::cerr<< "DDSHelper::disconnect()"<<std::endl;
 		participant->delete_contained_entities();
 		dpf->delete_participant(participant.in());
 		TheTransportFactory->release(transport_impl_id);
@@ -165,4 +185,12 @@ DDSHelper::~DDSHelper()
 	disconnect();
 	free(partitionName);
 	free(topicName);
+}
+
+void DDSHelper::cleanUp()
+{
+	if (factories_init){
+		TheTransportFactory->release();
+		TheServiceParticipant->shutdown();
+	}
 }

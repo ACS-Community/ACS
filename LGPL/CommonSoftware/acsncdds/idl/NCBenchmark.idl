@@ -9,7 +9,7 @@
 module NC_BENCHMARK{
 
 	const short MAX_MSG_LENGTH = 16384;
-	const string CHANNEL_NAME = "benchmark_test";
+	const string CHANNEL_NAME = "simple_example";
 
 #pragma DCPS_DATA_TYPE "NC_BENCHMARK::Message"
 

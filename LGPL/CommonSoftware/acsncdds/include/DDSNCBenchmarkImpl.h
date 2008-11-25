@@ -20,6 +20,8 @@ class DDSNCBenchmarkSupplierImpl :
 		virtual void runTest(::CORBA::ULong freq, ::CORBA::ULong duration) 
 			throw (CORBA::SystemException);
 
+		virtual void cleanUp();
+
 		virtual ~DDSNCBenchmarkSupplierImpl();
 };
 

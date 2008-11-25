@@ -18,8 +18,6 @@ void DDSNCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 	ACS_TRACE("DDSNCBenchmarkSupplierImpl::runTest");
 	ACS_NEW_DDS_PUBLISHER(pub_p, NC_BENCHMARK::Message, 
 			NC_BENCHMARK::CHANNEL_NAME);
-	ACS_NEW_DDS_PUBLISHER(pub_p2, NC_BENCHMARK::Message,
-			NC_BENCHMARK::CHANNEL_NAME);
 
 	struct timeval time;
 	NC_BENCHMARK::Message m;
@@ -30,9 +28,11 @@ void DDSNCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 		gettimeofday(&time,NULL);
 		m.time= (long long)time.tv_sec*1000000L + time.tv_usec;
 		PUBLISH_DATA(pub_p, NC_BENCHMARK::Message, m);
-		usleep((long)(1000000/freq));
+		if(freq!=0)
+			usleep((long)(1000000/freq));
 	}
 
+	sleep(5);
 	pub_p->disconnect();
 	delete pub_p;
 
@@ -42,6 +42,12 @@ DDSNCBenchmarkSupplierImpl::~DDSNCBenchmarkSupplierImpl()
 {
 
 }
+
+void DDSNCBenchmarkSupplierImpl::cleanUp()
+{
+	ddsnc::DDSHelper::cleanUp();
+}
+
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>

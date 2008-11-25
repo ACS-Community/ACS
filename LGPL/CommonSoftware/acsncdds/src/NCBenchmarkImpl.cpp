@@ -20,16 +20,15 @@ void NCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 	sup_p = new nc::SimpleSupplier(NC_BENCHMARK::CHANNEL_NAME, this);
 	NC_BENCHMARK::Message m;
 	
-	m.seqnum=1;
-	m.time=1;
-	m.data.length(8132);
+	m.data.length(8192);
 
 	for(unsigned int i=0;i<duration;i++){
 		m.seqnum=i;
 		gettimeofday(&time,NULL);
 		m.time= (long long)time.tv_sec*1000000L + time.tv_usec;
 		sup_p->publishData<NC_BENCHMARK::Message>(m);
-		usleep((long)(1000000/freq));
+		if(freq!=0)
+			usleep((long)(1000000/freq));
 	}
 
 	if(sup_p){

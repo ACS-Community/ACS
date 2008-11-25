@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2008/11/12 08:39:29 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.9 2008/11/25 21:41:04 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -61,7 +61,7 @@ USER_LIB = -lACE \
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber
+EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber ncSlowConsumer ddsSlowSubscriber
 EXECUTABLES_L   = 
 
 # <brief description of xxxxx program>
@@ -83,6 +83,16 @@ ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
 ddsSubscriber_OBJECTS   = ddsSubscriber
 ddsSubscriber_LDFLAGS   = 
 ddsSubscriber_LIBS      = acsddsnc NCBenchmarkStubs acsddsncTypeSupport
+
+# <brief description of xxxxx program>
+ncSlowConsumer_OBJECTS   = 	ncSlowConsumer
+ncSlowConsumer_LDFLAGS   =  
+ncSlowConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
+
+# <brief description of xxxxx program>
+ddsSlowSubscriber_OBJECTS   = ddsSlowSubscriber
+ddsSlowSubscriber_LDFLAGS   = 
+ddsSlowSubscriber_LIBS      = acsddsnc NCBenchmarkStubs acsddsncTypeSupport
 
 # <brief description of xxxxx program>
 #xxxxx_OBJECTS   = 	

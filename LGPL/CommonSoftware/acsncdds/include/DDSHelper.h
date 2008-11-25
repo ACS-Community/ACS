@@ -112,6 +112,8 @@ namespace ddsnc{
 		void disconnect();
 		DDS::TopicQos topicQos;
 
+		static void cleanUp();
+
 	};
 }
 

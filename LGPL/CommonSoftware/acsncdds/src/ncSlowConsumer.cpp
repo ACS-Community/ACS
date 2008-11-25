@@ -8,6 +8,7 @@ void myHandlerFunction(NC_BENCHMARK::Message m, void *other)
 	struct timeval time;
 	gettimeofday(&time, NULL);
 	long long t = (long long)time.tv_sec*1000000L + time.tv_usec;
+	usleep(1000000);
 	std::cout << m.seqnum << "," << t - m.time << std::endl;
 }
 
@@ -32,8 +33,5 @@ int main(int argc, char ** argv)
 	client.logout();
 	ACE_OS::sleep(5);
 
-	cons->disconnect();
-	cons = 0;
-	
 	return 0;
 }
