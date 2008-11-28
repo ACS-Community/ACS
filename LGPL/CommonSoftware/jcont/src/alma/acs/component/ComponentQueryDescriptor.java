@@ -44,6 +44,7 @@ public class ComponentQueryDescriptor
 	public static final String ANY = COMPONENT_SPEC_ANY.value; 
 	
 	private String m_compName;	
+	private String m_contName;	
 	private String m_compType;
 	
 //  these fields we want to hide for now...	
@@ -53,6 +54,7 @@ public class ComponentQueryDescriptor
 	public ComponentQueryDescriptor()
 	{
 		m_compName = ANY;
+		m_contName = ANY;
 		m_compType = ANY;
 	}
 	
@@ -72,6 +74,16 @@ public class ComponentQueryDescriptor
 		m_compName = compName;		
 	}
 	
+	public String getContainerName()
+	{
+		return m_contName;		
+	}
+	
+	public void setContainerName(String contName)
+	{
+		m_contName = contName;		
+	}
+
 	public String getComponentType()
 	{
 		return m_compType;		
@@ -98,7 +110,7 @@ public class ComponentQueryDescriptor
 		corbaSpec.component_name = (m_compName != null ? m_compName : ANY);
 		corbaSpec.component_type = (m_compType != null ? m_compType : ANY);
 		corbaSpec.component_code = ANY;
-		corbaSpec.container_name = ANY;
+		corbaSpec.container_name = (m_contName != null ? m_contName : ANY);
 
 		return corbaSpec;
 	}
