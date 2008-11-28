@@ -20,7 +20,7 @@
 package alma.demo.test.client;
 
 import java.util.logging.Logger;
-import alma.acs.component.client.ComponentClient;
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.LoggingConsumer;
 
 /**
@@ -29,23 +29,23 @@ import alma.acs.nc.LoggingConsumer;
  * 
  * @author hsommer Nov 21, 2002 5:53:05 PM
  */
-public class LoggingConsumerTest extends ComponentClient
+public class LoggingConsumerTest extends ComponentClientTestCase
 {
+    private LoggingConsumer m_consumer = null;
+    private int count_m = 0;
+    private int magicNumber = 11;
     /**
-     * @param logger
-     * @param managerLoc
-     * @param clientName
-     * @throws Exception
      */
-    public LoggingConsumerTest(Logger logger, String managerLoc, String clientName)
-	throws Exception 
+    public LoggingConsumerTest() throws Exception 
 	{
-	    super(logger, managerLoc, clientName);
+	    super("LoggingConsumerTest");
 	    
-	    m_consumer = new LoggingConsumer(getContainerServices(), this);
-	    m_consumer.consumerReady();
 	}
-    
+
+    protected void setUp() throws Exception { 
+        super.setUp();   
+    }
+ 
     public void receive(String xml)
 	{
 	    m_logger.info("receive method: xml=" + xml);
@@ -57,29 +57,17 @@ public class LoggingConsumerTest extends ComponentClient
     
     public void tearDown() throws Exception
 	{
-	    m_consumer.disconnect();
-
-	    if(count_m==magicNumber)
-		{
-		System.out.println("Test passed!");
-		}
-	    else
-		{
-		System.out.println("Test failed!");
-		}
 	    super.tearDown();
 	}
     
-    private LoggingConsumer m_consumer = null;
-    private int count_m = 0;
-    private int magicNumber = 11;
     
     /**
      * Checks whether the Java property 'ACS.manager' is set and calls the
      * other methods from this class.
      */
-    public static void main(String[] args) {
-	String managerLoc = System.getProperty("ACS.manager");
+    public void testReceive()  throws Exception{
+
+/*	String managerLoc = System.getProperty("ACS.manager");
 	if (managerLoc == null) 
 	    {
 	    System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
@@ -98,19 +86,23 @@ public class LoggingConsumerTest extends ComponentClient
 	    }
 	
 	//sleep 15 seconds
+*/	
 	
-	
-	if (hlc != null) {
+	    m_consumer = new LoggingConsumer(getContainerServices(), this);
+	    m_consumer.consumerReady();
+//	if (hlc != null) {
 	try 
 	    {
 	    Thread.sleep(15000);
-	    hlc.tearDown();
+	    //hlc.tearDown();
 	    }
 	catch (Exception e1) 
 	    {
 	    // bad luck
 	    }
-	}
+//	}
+	    m_consumer.disconnect();
+        assertEquals(count_m,magicNumber);
     }
 }
 
