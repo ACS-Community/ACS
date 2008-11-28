@@ -31,7 +31,7 @@ echo $CDB_LIST |
     for path in ${array[@]}
     do
       if [ X"$path" != X ]; then
-        #grep -R encoding $path | grep "\.xml" | grep -v "ISO-8859-1"
+        grep -R encoding $path | grep "\.xml" | grep -v "ISO-8859-1"
         grep -R encoding $path | grep "\.xsd" | grep -v "ISO-8859-1"
       fi
       done
