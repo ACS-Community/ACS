@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.18 2008/11/25 23:49:15 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.19 2008/12/01 11:54:28 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -354,7 +354,7 @@ module acsdaemon
 		 * <br><hr>
 		 * @endhtmlonly
 		 */
-		void shutdown();
+		oneway void shutdown();
 	};
 
 
