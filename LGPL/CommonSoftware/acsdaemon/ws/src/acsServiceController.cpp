@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.4 2008/11/10 20:04:46 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.5 2008/12/01 13:39:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,7 +69,7 @@ void ControllerThread::runLoop() ACE_THROW_SPEC ((CORBA::SystemException, ::ACSE
         m_mutex->acquire();
         ACE_Time_Value waittime(ACE_OS::gettimeofday() + TIME_PERIOD);
         m_wait->wait(&waittime);
-        if (!running) break;
+        if (!running) { m_mutex->release(); break; }
         context->checkControllers();
         m_mutex->release();
     }

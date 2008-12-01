@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.21 2008/10/29 17:31:01 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.22 2008/12/01 13:39:56 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -43,7 +43,8 @@ EXECUTABLES     = acsservicesdaemon acsservicesdaemonStop \
                   acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsdaemonStartAcs \
                   acsdaemonStopAcs acsdaemonStatusAcs \
-                  acscontainerdaemonSmartStart acscontainerdaemonStop
+                  acscontainerdaemonSmartStart acscontainerdaemonStop \
+                  acsdaemonImpStop
 EXECUTABLES_L   = 
 
 #
@@ -101,6 +102,9 @@ acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType
 acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController
 acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
+acsdaemonImpStop_OBJECTS   =       acsdaemonImpStop
+acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonStubs
+
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -123,7 +127,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = acsdaemonImpStopAll
 SCRIPTS_L       =
 
 #

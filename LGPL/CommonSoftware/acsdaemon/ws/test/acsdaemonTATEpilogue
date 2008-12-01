@@ -21,9 +21,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsdaemonTATEpilogue,v 1.1 2007/10/31 14:13:29 ntroncos Exp $"
+# "@(#) $Id: acsdaemonTATEpilogue,v 1.2 2008/12/01 13:39:56 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # 
 echo " ****************** TATEpilogue *************** "
+
+acsdaemonImpStopAll
+
+echo "*** done ***"

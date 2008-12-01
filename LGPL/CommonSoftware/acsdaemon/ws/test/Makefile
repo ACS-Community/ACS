@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2008/11/04 10:02:44 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.6 2008/12/01 13:39:56 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -212,6 +212,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	@rm *.log
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 

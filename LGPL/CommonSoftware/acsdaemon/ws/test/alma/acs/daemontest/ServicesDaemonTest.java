@@ -59,7 +59,7 @@ public class ServicesDaemonTest extends TestCase
 	
 	private ServicesDaemon daemon;
 	private String host;
-	private short instanceNumber = 2;//(short) ACSPorts.getBasePort();
+	private short instanceNumber = (short) ACSPorts.getBasePort();
 
 	public ServicesDaemonTest() throws Exception {
 		super(namePrefix);
@@ -111,7 +111,7 @@ public class ServicesDaemonTest extends TestCase
 			throw ex;
 		}
 
-		host = "localhost"; //or "alma78.hq.eso.org" for Heiko on eclipse
+		host = ACSPorts.getIP(); //or "alma78.hq.eso.org" for Heiko on eclipse
 		
 		daemon = getServicesDaemon(host);
 	}
@@ -308,8 +308,8 @@ public class ServicesDaemonTest extends TestCase
 			// start CDB and wait till it's up
 			daemonCallbackImpl_1.prepareWaitForDone("CDB");
 			daemon.start_xml_cdb(dcb_1, instanceNumber, false, ""); // TODO try explicit path ($ACS_CDB replacement)
-			assertTrue("Failed to start CDB in 10 s", 
-					daemonCallbackImpl_1.waitForDone(10, TimeUnit.SECONDS));
+			assertTrue("Failed to start CDB in 15 s", 
+					daemonCallbackImpl_1.waitForDone(15, TimeUnit.SECONDS));
 			assertCDB();
 			
 			// start manager and wait till it's up

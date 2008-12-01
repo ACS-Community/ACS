@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.6 2008/11/25 23:55:59 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.7 2008/12/01 13:39:56 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@ void RequestProcessorThread::runLoop() ACE_THROW_SPEC ((CORBA::SystemException, 
     while (running) {
         m_mutex->acquire();
         if (pending.empty()) m_wait->wait();
-        if (!running) break;
+        if (!running) { m_mutex->release(); break; }
         nowreq = pending.front();
         pending.pop();
         m_mutex->release();
