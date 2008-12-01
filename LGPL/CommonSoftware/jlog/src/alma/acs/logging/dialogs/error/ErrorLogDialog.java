@@ -356,4 +356,17 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		};
 		SwingUtilities.invokeLater(ratio);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.Window#dispose()
+	 */
+	@Override
+	public void dispose() {
+		if (outFile!=null) {
+			outFile.close();
+		}
+		super.dispose();
+	}
+	
+	
 }
