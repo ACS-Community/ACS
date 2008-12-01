@@ -112,6 +112,11 @@ public class ErrorLogFile extends TimerTask {
 	 * 
 	 */
 	private boolean fileError=false;
+	
+	/**
+	 * <code>true</code> if the object has been closed
+	 */
+	private boolean closed=false;
 
 	
 	/**
@@ -201,6 +206,9 @@ public class ErrorLogFile extends TimerTask {
 		if (str==null || str.length()==0) {
 			throw new IllegalArgumentException("The string to write can't be null nor empty");
 		}
+		if (closed) {
+			return;
+		}
 		if (fileError && !retryOnError) {
 			return;
 		}
@@ -266,11 +274,21 @@ public class ErrorLogFile extends TimerTask {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			timer.cancel();
-			clear();
+			close();
 		} finally {
 			super.finalize();
 		}
+	}
+	
+	/**
+	 * Close clear the file and stop the timer.
+	 * <P>
+	 * This is the last method to execute.
+	 */
+	public synchronized void close() {
+		closed=true;
+		timer.cancel();
+		clear();
 	}
 
 	/**
