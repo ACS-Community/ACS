@@ -408,12 +408,10 @@ public class LaserComponent extends ComponentImplBase
 
 	public void cleanUp() {
 		heartbeat.stop();
-		super.cleanUp();
 	}
 
 	public void aboutToAbort() {
 		heartbeat.stop();
-		super.aboutToAbort();
 	}
 	
 	/************************** CoreService **************************/
