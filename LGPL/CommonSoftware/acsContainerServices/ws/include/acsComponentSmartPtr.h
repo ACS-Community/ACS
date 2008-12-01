@@ -2,23 +2,23 @@
 #define ACSSMARTPOINTER_H
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) National Research Council of Canada, 2007 
-* 
+* (c) National Research Council of Canada, 2007
+*
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
 * License as published by the Free Software Foundation; either
 * version 2.1 of the License, or (at your option) any later version.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 * Lesser General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.4 2008/05/22 19:39:16 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.5 2008/12/01 22:24:33 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@ namespace maci {
 /**
  *  Storage Policy class for Component Pointers.
  *  In addition to storing the pointer to the component being managed by
- *  the smart pointer, this class caches information needed when the 
+ *  the smart pointer, this class caches information needed when the
  *  component is finally released.
  */
 template <class T, class H>
@@ -60,27 +60,27 @@ class ComponentStorage
     typedef T* StoredType;    // the type of the pointee_ object
     typedef T* PointerType;   // type returned by operator->
     typedef T& ReferenceType; // type returned by operator*
-    
+
     /**
      * Default Constructor
      */
     ComponentStorage() : handle(0), sticky(true), pointee_(Default())
-	{}
+        {}
 
     /**
      * Constructor that stores default management values with a live pointer.
      */
     ComponentStorage(const StoredType& p) : handle(0), sticky(true), pointee_(p)
         {}
-    
-    // The storage policy doesn't initialize the stored pointer 
+
+    // The storage policy doesn't initialize the stored pointer
     // which will be initialized by the OwnershipPolicy's Clone fn
     /**
      * Copy Constructor
      */
     ComponentStorage(const ComponentStorage& rhs) : handle(rhs.handle), sticky(rhs.sticky), pointee_(0)
         {}
-    
+
     /**
      * Copy Constructor for ClientStores of other types.
      * We don't allow copying of different types, so the attributes are set to default values.
@@ -88,7 +88,7 @@ class ComponentStorage
     template <typename U, typename V>
     ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(true), pointee_(0)
         {}
-    
+
     /**
      * SetValues
      * Set the attribute values for the Component being managed.  This is a support
@@ -99,22 +99,22 @@ class ComponentStorage
      * @param p is a pointer to the component that will be managed.
      */
     void setValues(H *h, bool s, const StoredType& p)
-	{
+        {
             handle = h;
-	    sticky = s;
-	    pointee_ = p;
-	};
+            sticky = s;
+            pointee_ = p;
+        };
 
     /**
      * Member Access Operator
      */
     PointerType operator->() const { return pointee_; }
-    
+
     /**
      * Dereference Operator
      */
     ReferenceType operator*() const { return *pointee_; }
-    
+
     /**
      * Swap
      * Exchange values with another instance of ComponentStorage.
@@ -122,11 +122,11 @@ class ComponentStorage
      */
     void Swap(ComponentStorage& rhs)
         {
-	    std::swap(pointee_, rhs.pointee_);
-	    std::swap(sticky, rhs.sticky);
-	    std::swap(handle, rhs.handle);
-	}
-    
+            std::swap(pointee_, rhs.pointee_);
+            std::swap(sticky, rhs.sticky);
+            std::swap(handle, rhs.handle);
+        }
+
     // Accessors
     /**
      * GetImpl.
@@ -134,21 +134,21 @@ class ComponentStorage
      */
     friend inline PointerType GetImpl(const ComponentStorage& sp)
         { return sp.pointee_; }
-    
+
     /**
      * GetImplRef.
      * Retrieve the Component reference from its storage object.
      */
     friend inline const StoredType& GetImplRef(const ComponentStorage& sp)
         { return sp.pointee_; }
-    
+
     /**
      * GetImplRef.
      * Retrieve the Component reference from its storage object.
      */
     friend inline StoredType& GetImplRef(ComponentStorage& sp)
         { return sp.pointee_; }
-    
+
   protected:
 
     /**
@@ -157,28 +157,28 @@ class ComponentStorage
      */
     void Destroy()
         {
-	    try
-		{
-	        if (handle && sticky)
-		    {
-		    handle->releaseComponent(pointee_->name());
-	            }
-	        }
-	    catch(maciErrType::CannotReleaseComponentExImpl& ex)
-		{
-		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
-			(LM_ERROR, "Unable to release component"));
-		}
-	    catch(...) 
-		{
- 		ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
-			 (LM_ERROR, "Unexpected exception caught when releasing component."));
-		}
-	}    
+            try
+                {
+                if (handle && pointee_ && sticky)
+                    {
+                    handle->releaseComponent(pointee_->name());
+                    }
+                }
+            catch(maciErrType::CannotReleaseComponentExImpl& ex)
+                {
+                ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+                        (LM_ERROR, "Unable to release component"));
+                }
+            catch(...)
+                {
+                ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+                         (LM_ERROR, "Unexpected exception caught when releasing component."));
+                }
+        }
     // Default value to initialize the pointer
     static StoredType Default()
         { return 0; }
-    
+
   private:
     // Data
     H *handle;
@@ -199,14 +199,14 @@ class ContainerServices;
 // The Loki Library
 // Copyright (c) 2001 by Andrei Alexandrescu
 // This code accompanies the book:
-// Alexandrescu, Andrei. "Modern C++ Design: Generic Programming and Design 
+// Alexandrescu, Andrei. "Modern C++ Design: Generic Programming and Design
 //     Patterns Applied". Copyright (c) 2001. Addison-Wesley.
-// Permission to use, copy, modify, distribute and sell this software for any 
-//     purpose is hereby granted without fee, provided that the above copyright 
-//     notice appear in all copies and that both that copyright notice and this 
+// Permission to use, copy, modify, distribute and sell this software for any
+//     purpose is hereby granted without fee, provided that the above copyright
+//     notice appear in all copies and that both that copyright notice and this
 //     permission notice appear in supporting documentation.
-// The author or Addison-Wesley Longman make no representations about the 
-//     suitability of this software for any purpose. It is provided "as is" 
+// The author or Addison-Wesley Longman make no representations about the
+//     suitability of this software for any purpose. It is provided "as is"
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -218,7 +218,7 @@ template
     class ConversionPolicy = Loki::DisallowConversion,
     template <class> class CheckingPolicy = Loki::NoCheck,
     template <class,class> class StoragePolicy = ComponentStorage,
-    template<class> class ConstnessPolicy = Loki::LOKI_DEFAULT_CONSTNESS 
+    template<class> class ConstnessPolicy = Loki::LOKI_DEFAULT_CONSTNESS
 >
 class SmartPtr
     : public StoragePolicy<T,H>
@@ -230,20 +230,20 @@ class SmartPtr
     typedef OwnershipPolicy<typename StoragePolicy<T,H>::PointerType> OP;
     typedef CheckingPolicy<typename StoragePolicy<T,H>::StoredType> KP;
     typedef ConversionPolicy CP;
-    
+
   public:
     typedef typename ConstnessPolicy<T>::Type* ConstPointerType;
     typedef typename ConstnessPolicy<T>::Type& ConstReferenceType;
-    
+
     typedef typename SP::PointerType PointerType;
     typedef typename SP::StoredType StoredType;
     typedef typename SP::ReferenceType ReferenceType;
-    
+
     typedef typename Loki::Select<OP::destructiveCopy,SmartPtr, const SmartPtr>::Result CopyArg;
-    
+
     private:
         struct NeverMatched;
-       
+
 #ifdef LOKI_SMARTPTR_CONVERSION_CONSTRUCTOR_POLICY
         typedef typename Loki::Select< CP::allow, const StoredType&, NeverMatched>::Result ImplicitArg;
         typedef typename Loki::Select<!CP::allow, const StoredType&, NeverMatched>::Result ExplicitArg;
@@ -256,20 +256,20 @@ class SmartPtr
 
         SmartPtr()
         { KP::OnDefault(GetImpl(*this)); }
-        
+
         /**
-	 * Constructor.
-	 * Create a smart pointer for the component described.
-	 * @param name is the name of the component.
-	 * @param m is the reference of the manager used to manage the connection.
-	 * @param h is the handle of the requestor of the component
-	 * @param s is the flag indicating if the reference is sticky.
-	 @ @param p is the pointer to the component.
-	*/
+         * Constructor.
+         * Create a smart pointer for the component described.
+         * @param name is the name of the component.
+         * @param m is the reference of the manager used to manage the connection.
+         * @param h is the handle of the requestor of the component
+         * @param s is the flag indicating if the reference is sticky.
+         @ @param p is the pointer to the component.
+        */
         SmartPtr(H* h, bool s, T* p)
-	{
-	    setValues(h, s, p);
-	}
+        {
+            setValues(h, s, p);
+        }
 
         explicit
         SmartPtr(ExplicitArg p) : SP(p)
@@ -313,7 +313,7 @@ class SmartPtr
         SmartPtr(Loki::RefToValue<SmartPtr> rhs)
         : SP(rhs), OP(rhs), KP(rhs), CP(rhs)
         {}
-        
+
         operator Loki::RefToValue<SmartPtr>()
         { return Loki::RefToValue<SmartPtr>(*this); }
 
@@ -340,7 +340,7 @@ class SmartPtr
             temp.Swap(*this);
             return *this;
         }
-        
+
         template
         <
             typename T1,
@@ -357,7 +357,7 @@ class SmartPtr
             temp.Swap(*this);
             return *this;
         }
-        
+
         void Swap(SmartPtr& rhs)
         {
             OP::Swap(rhs);
@@ -365,7 +365,7 @@ class SmartPtr
             KP::Swap(rhs);
             SP::Swap(rhs);
         }
-        
+
         ~SmartPtr()
         {
             if (OP::Release(GetImpl(*static_cast<SP*>(this))))
@@ -373,13 +373,13 @@ class SmartPtr
                 SP::Destroy();
             }
         }
-        
+
         friend inline void Release(SmartPtr& sp, typename SP::StoredType& p)
         {
             p = GetImplRef(sp);
             GetImplRef(sp) = SP::Default();
         }
-        
+
         friend inline void Reset(SmartPtr& sp, typename SP::StoredType p)
         { SmartPtr(p).Swap(sp); }
 
@@ -419,13 +419,13 @@ class SmartPtr
             KP::OnDereference(GetImplRef(*this));
             return SP::operator*();
         }
-        
+
         ConstReferenceType operator*() const
         {
             KP::OnDereference(GetImplRef(*this));
             return SP::operator*();
         }
-        
+
         bool operator!() const // Enables "if (!sp) ..."
         { return GetImpl(*this) == 0; }
 
@@ -529,7 +529,7 @@ class SmartPtr
             Tester(int) {}
             void dummy() {}
         };
-        
+
         typedef void (Tester::*unspecified_boolean_type_)();
 
         typedef typename Loki::Select<CP::allow, Tester, unspecified_boolean_type_>::Result
@@ -548,11 +548,11 @@ class SmartPtr
         {
             Insipid(PointerType) {}
         };
-        
+
         typedef typename Loki::Select<CP::allow, PointerType, Insipid>::Result
             AutomaticConversionResult;
-    
-    public:        
+
+    public:
         operator AutomaticConversionResult() const
         { return GetImpl(*this); }
 };
@@ -620,7 +620,7 @@ class SmartPtr
     inline bool operator!=(const SmartPtr<T, H, OP, CP, KP, SP, CNP >& lhs,
         U* rhs)
     { return !(lhs == rhs); }
-    
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  operator!= for lhs = raw pointer, rhs = SmartPtr
 ///  \ingroup SmartPointerGroup
@@ -704,7 +704,7 @@ class SmartPtr
     inline bool operator>(const SmartPtr<T, H, OP, CP, KP, SP, CNP >& lhs,
         U* rhs)
     { return rhs < lhs; }
-        
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  operator> for lhs = raw pointer, rhs = SmartPtr
 ///  \ingroup SmartPointerGroup
@@ -724,7 +724,7 @@ class SmartPtr
     inline bool operator>(U* lhs,
         const SmartPtr<T, H, OP, CP, KP, SP, CNP >& rhs)
     { return rhs < lhs; }
-  
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  operator<= for lhs = SmartPtr, rhs = raw pointer
 ///  \ingroup SmartPointerGroup
@@ -744,7 +744,7 @@ class SmartPtr
     inline bool operator<=(const SmartPtr<T, H, OP, CP, KP, SP, CNP >& lhs,
         U* rhs)
     { return !(rhs < lhs); }
-        
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  operator<= for lhs = raw pointer, rhs = SmartPtr
 ///  \ingroup SmartPointerGroup
@@ -784,7 +784,7 @@ class SmartPtr
     inline bool operator>=(const SmartPtr<T, H, OP, CP, KP, SP, CNP >& lhs,
         U* rhs)
     { return !(lhs < rhs); }
-        
+
 ////////////////////////////////////////////////////////////////////////////////
 ///  operator>= for lhs = raw pointer, rhs = SmartPtr
 ///  \ingroup SmartPointerGroup
