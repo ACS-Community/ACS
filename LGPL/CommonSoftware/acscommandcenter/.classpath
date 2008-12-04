@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry excluding="README" kind="src" path="test"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/jta.jar"/>
 	<classpathentry kind="lib" path="lib/jManagerConfig.jar"/>
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
@@ -40,5 +39,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT"/>
+	<classpathentry kind="lib" path="/80-acscommandcenter/lib/trilead-ssh2-build213.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -65,7 +65,7 @@ public class ExecuteAcs {
 	/**
 	 * @return an array {manager_host, manager_port}
 	 */
-	public String[] startRemote(NativeCommand.Listener listener) throws Throwable {
+	public boolean startRemote(NativeCommand.Listener listener) throws Throwable {
 
 		String host = runModel.getRemoteHost();
 		String username = runModel.getRemoteAccount();
@@ -73,13 +73,7 @@ public class ExecuteAcs {
 
 		Tool t = ToolManager.getBuiltinTool("Acs_startRemote");
 		String command = ToolManager.generateCommand(t, runModel);
-		Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
-
-		// since we can't find out where the manager runs effectively
-		// (by e.g. parsing its output), we make our best guess..
-		String acsBasePort = runModel.getScriptBase();
-		ACSPorts ports = ACSPorts.globalInstance(MiscUtils.parseInt(acsBasePort));
-		return new String[]{host, ports.giveManagerPort()};
+		return Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
 	}
 
 	//

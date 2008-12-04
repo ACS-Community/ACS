@@ -146,7 +146,7 @@ public class ExecuteManager {
     // ========================================================================================
     //
 
-    public String[] startRemote(NativeCommand.Listener listener) throws Throwable {
+    public boolean startRemote(NativeCommand.Listener listener) throws Throwable {
 
         String host = runModel.getRemoteHost();
         String username = runModel.getRemoteAccount();
@@ -154,13 +154,7 @@ public class ExecuteManager {
 
         Tool t = ToolManager.getBuiltinTool("Manager_startRemote");
         String command = ToolManager.generateCommand(t, runModel);
-        Executor.remote(username, password, command, t.getExpectedOutput(),
-                listener, host);
-
-        String acsBasePort = runModel.getScriptBase();
-        ACSPorts ports = ACSPorts.globalInstance(MiscUtils
-                .parseInt(acsBasePort));
-        return new String[] { host, ports.giveManagerPort()};
+        return Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
     }
 
     public void stopRemote(NativeCommand.Listener listener) throws Throwable {
@@ -171,8 +165,7 @@ public class ExecuteManager {
 
         Tool t = ToolManager.getBuiltinTool("Manager_stopRemote");
         String command = ToolManager.generateCommand(t, runModel);
-        Executor.remote(username, password, command, t.getExpectedOutput(),
-                listener, host);
+        Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
     }
 
 }

@@ -9,8 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Logger;
 
-import javax.swing.tree.TreeNode;
-
 import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
@@ -39,6 +37,11 @@ import alma.maciErrType.NoPermissionEx;
 public class MaciSupervisor implements IMaciSupervisor {
 
 
+	protected String name = null;
+	protected String managerLoc = null;
+	protected ORB orb = null;
+	protected Logger log = null;
+	
 
 	/**
 	 * Creates a MaciSupervisor running on the given ORB, it will connect to the specified
@@ -312,12 +315,8 @@ public class MaciSupervisor implements IMaciSupervisor {
 			throw new CannotRetrieveManagerException("orb delivered null-reference for manager-location " + managerLoc);
 		}
 
-		// instantiate client (only once, please)
-		if (adminIF == null)
-			adminIF = acImpl._this(orb); // <-- throws "port occupied"
-
-		administratorClientInfo = managerRef.login(adminIF);
-
+		Administrator admin = acImpl.asCorbaObject(orb); // <-- may throw "port occupied"
+		administratorClientInfo = managerRef.login(admin);
 
 		log.info("connected to manager (" + getManagerLocation() + ") as "+administratorClientInfo.h +" (= 0x"+Integer.toHexString(administratorClientInfo.h) +")");
 	}
@@ -576,8 +575,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 			throw new UnknownErrorException(exc);
 			
 		} finally {
-			infoShouldBeRefreshed = false;
-			fireTreeModelChange(maciInfo.managerNode);
+			maciInfo.nodeStructureChanged(maciInfo.managerNode);
 		}
 		
 	}
@@ -590,27 +588,6 @@ public class MaciSupervisor implements IMaciSupervisor {
 		maciInfo.clientNode.removeAllChildren();
 	}
 	
-	
-
-	/**
-	 * assigned in constructor
-	 */
-	protected String name = null;
-
-	/**
-	 * assigned in constructor
-	 */
-	protected String managerLoc = null;
-	
-	/**
-	 * 
-	 */
-	protected Logger log = null;
-
-	/**
-	 * assigned in initialize()
-	 */
-	protected ORB orb = null;
 
 	/**
 	 * assigned in connectToManager()
@@ -641,7 +618,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 	/**
 	 * The 'refresh needed' flag used by the lazy-refresh timer task.
 	 */
-	protected boolean infoShouldBeRefreshed;
+	protected volatile boolean infoShouldBeRefreshed;
 
 
 
@@ -729,24 +706,12 @@ public class MaciSupervisor implements IMaciSupervisor {
 		return location;
 	}
 
-	/**
-	 * Will notify all tree listeners that the tree under the specified node has massively
-	 * changed.
-	 * 
-	 * @param node the root node of a modified subtree
-	 */
-	protected void fireTreeModelChange (TreeNode node) {
-		if (maciInfo != null)
-			maciInfo.nodeStructureChanged(node);
-	}
-
 
 
 	// ==================================================================
 	// Administrator Client Implementation
 	// ==================================================================
 
-	protected Administrator adminIF;
 	
 	/**
 	 * assigned in connectToManager(). unassigned in disconnectFromManager(). This means,
@@ -766,8 +731,15 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 */
 	protected class AdministratorImplementation extends AdministratorPOA {
 
-    	private final long startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());		
-        private long executionId = -1; 
+		private Administrator asCorbaObject;
+
+		// instantiate client, make sure we call _this() only once
+		// to allow the manager to re-identify us on a re-login.
+		protected Administrator asCorbaObject (ORB orb) {
+			if (asCorbaObject == null)
+				asCorbaObject = _this(orb); // <-- may throw "port occupied"
+			return asCorbaObject;
+		}
 
 		// ===== Incoming Notifications =====
 
@@ -819,7 +791,7 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * requested and not yet released)
 		 */
 		public void components_available (ComponentInfo[] arg0) {
-			log.finer("components_available() received");
+			log.finest("components_available() received");
 		}
 
 		/**
@@ -827,15 +799,15 @@ public class MaciSupervisor implements IMaciSupervisor {
 		 * requested and not yet released)
 		 */
 		public void components_unavailable (String[] arg0) {
-			log.finer("components_unavailable() received");
+			log.finest("components_unavailable() received");
 		}
 
 		public void component_activated(ComponentInfo info, long timestamp, long execution_id) {
-//			log.finer("component_activated() received");
+			log.finest("component_activated() received");
 		}
 
 		public void component_deactivated(int h, long timestamp) {
-//			log.finer("component_deactivated() received");
+			log.finest("component_deactivated() received");
 		}
 		
 
@@ -846,6 +818,9 @@ public class MaciSupervisor implements IMaciSupervisor {
 			log.finer("name() received");
 			return name;
 		}
+
+    	private final long startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());		
+      private long executionId = -1; 
 
 		public AuthenticationData authenticate (long execution_id, String question) {
 			log.finer("authenticate() received");

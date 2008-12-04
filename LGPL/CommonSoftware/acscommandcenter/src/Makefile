@@ -80,10 +80,9 @@ DEBUG= on
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =      ../lib/j2ssh-core-0.2.6.jar \
-					 ../lib/JavaOnlyAcsConfig.jar \
+INSTALL_FILES = ../lib/JavaOnlyAcsConfig.jar \
 					 ../lib/jnlp.jar \
-					 ../lib/jta.jar \
+					 ../lib/trilead-ssh2-build213.jar \
 					 ../lib/AcsCommandCenterHelp.jar
 
 

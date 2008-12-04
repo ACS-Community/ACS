@@ -1148,8 +1148,8 @@ public class TabPanel extends JPanel {
 						managerStarted();
 					} else {
 						flowDialog.prepareShow("Starting Acs", remoteFlowPanel);
-						master.controller.executeAcs.startRemote(master.giveOutputListener2("Acs"));
-						managerStarted();
+						if (master.controller.executeAcs.startRemote(master.giveOutputListener2("Acs")))
+							managerStarted();
 					}
 					break;
 
@@ -1297,8 +1297,8 @@ public class TabPanel extends JPanel {
 
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Starting Manager", remoteFlowPanel);
-					master.controller.executeManager.startRemote(master.giveOutputListener2("Manager"));
-					managerStarted();
+					if (master.controller.executeManager.startRemote(master.giveOutputListener2("Manager")))
+						managerStarted();
 					break;
 
 				case ModeType.JAVA_TYPE :

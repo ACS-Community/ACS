@@ -4,9 +4,9 @@
 package alma.acs.commandcenter.engine;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -32,7 +32,10 @@ import alma.acsdaemon.DaemonSequenceCallbackHelper;
 import alma.acsdaemon.DaemonSequenceCallbackPOA;
 import alma.acsdaemon.ServicesDaemon;
 import alma.acsdaemon.ServicesDaemonHelper;
-import de.mud.ssh.SshWrapper;
+
+import com.trilead.ssh2.ChannelCondition;
+import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.Session;
 
 /**
  * @author mschilli
@@ -60,11 +63,15 @@ public class Executor {
    
    // ==========================================================================
 
-   static public void remote(String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
+   /**
+    * @return false - if this failed gracefully
+    * @throws IOException - if this failed severely
+    */
+   static public boolean remote(String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
    	if (useNativeSSH()) {
-   		remoteNative(username, password, command, endMark, listener, host);
+   		return remoteNative(username, password, command, endMark, listener, host);
    	} else {
-   		remotePortable(username, password, command, endMark, listener, host);
+   		return remotePortable(username, password, command, endMark, listener, host);
    	}
    }
    
@@ -76,24 +83,20 @@ public class Executor {
    	}
    }
    
-   //static public void remoteDown(int ticket) throws IOException {}
-   
-   
+ 
    ////////////////////////////////////////////////////////////////////
    // ------------------ Remote with SSH library ------------------- //
    ////////////////////////////////////////////////////////////////////
-   
-   
-   static protected Vector<SshClient> clients = new Vector<SshClient>();
+
+
+   static protected Vector<Connection> connections = new Vector<Connection>();
+   static protected Vector<Session> sessions = new Vector<Session>();
 
    /**
-    * @return a ticket that can later be passed to remoteDown()
-    * @throws IOException
+    * @return false - if this failed gracefully
+    * @throws IOException - if this failed severely
     */
-   static private int remotePortable(String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws IOException {
-
-      if (disableRemote)
-         return 0;
+   static private boolean remotePortable(String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws IOException {
 
       if (listener == null) {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
@@ -103,174 +106,156 @@ public class Executor {
       try {
          remoteFlow.reset(null);
 
-         int port = 22;
-         SshClient client = new SshClient();
-
-         int ticket = clients.size();
-         clients.add(client);
-
-         // int port = 23;
-         // TelnetWrapper ssh = new TelnetWrapper();
-
-         client.connect(host, port);
+         // connect
+         // --------
+			Connection conn = new Connection(host);
+			connections.add(conn);
+			conn.connect();
          remoteFlow.success(RemoteFlow.CONNECT);
 
-         client.login(username, password);
-         // there's no feedback at this point whether login succeeded
-
-         
-
-         //TODO(msc) if done this way, output will not be delivered until task ends. use a thread instead.
-			String output = client.waitfor(new String[] { "$ ", "> " });
+         // login
+         // ------
+         boolean isAuthenticated = conn.authenticateWithPassword(username, password);
+			if (isAuthenticated == false)
+				throw new IOException("Authentication failed");
          remoteFlow.success(RemoteFlow.LOG_IN);
 
-			if (output != null) {
-				listener.stdoutWritten((NativeCommand) null, output);
-			}
-         log.finest("STDOUT:"+output);
+         // send command
+         // -------------
+         Session sess = conn.openSession();
+         sessions.add(sess);
 
-         client.setPrompt(null); // make sure send() returns instantly
+         /* msc 2008-11:
+          * We're passing the command as an argument to ssh, just like typing
+          * > ssh 127.0.0.1 "env" 
+          * on the commandline. This opens a non-login shell on the remote host
+          * which (thank you bash) won't parse the .bash_profile but only the .bashrc!
+          * Now unfortunately the usual setup for accounts on Alma machines is to
+          * have the ACS settings defined in .bash_profile. The optimal way around
+          * this would be to run a real login shell here by allocating a terminal,
+          * and then deal with all the input output/stuff ourselves. I'm trying here
+          * to get away with something cheaper: Explicitly source the .bash_profile
+          * before running the command.
+          */
+         command = ". ~/.bash_profile ; " + command;
 
-         log.fine("Now sending: '" + command + "'");
-
-         client.send(command);
+         log.info("Now sending: '" + command + "'");
+         sess.execCommand(command);
          remoteFlow.success(RemoteFlow.SEND_COMMAND);
 
-         // ----
-         String[] any = new String[100];
-         for (int i = 0; i < 100; i++) {
-            any[i] = new String(new char[] {(char) i });
-         }
-         // ----
-         
-         StringRingBuffer searchBuff = null;
+         // read output, scan for endmark
+         // ----------------------------
+         SearchBuffer searchStdout = null;
+         SearchBuffer searchStderr = null;
          if (endMark != null) {
-         	searchBuff = new StringRingBuffer(endMark.length());
+         	searchStdout = new SearchBuffer(endMark);
+         	searchStderr = new SearchBuffer(endMark);
          }
-         
-         process : for (;;) {
-            output = null;
-            try{
-          //String out = client.waitfor(new String[] { normal, abnorm, runnin, "Starting Manager");
-            output = client.waitfor(any);
-            }catch(SocketException exc) {
-               // a socket exception occurs when the client disconnects
-               // in response to a call to its disconnect() method.
-               // in that case, the exception is nothing bad: it's just annoying.
-               if (client.disconnectRequested)
-               	return ticket;
-               else
-               // in any other case, the exception is unexpected.
-                  throw exc;
-            }
-            
-            log.finest("STDOUT:"+output);
-            
-				// detect false alarm: some ssh-servers send null-output
-				if (output != null) {
-				
-					listener.stdoutWritten((NativeCommand) null, output);
 
-	            // don't know which output would identify the error case
-	            //            if (out.endsWith(abnorm)) {
-	            //               remoteFlow.failure("abnormal termination");
-	            //               break;
-	            //            }
-	
-	            if (endMark != null) {
-			            for (int i = 0; i < output.length(); i++) {
-			               searchBuff.add(output.charAt(i));
-		               if (searchBuff.equals(endMark)) {
-		                  remoteFlow.success(RemoteFlow.COMPLETE);
-		                  break process;
-		               }
-		            }
-	            }
+			InputStream stdout = sess.getStdout();
+			InputStream stderr = sess.getStderr();
+			byte[] buffer = new byte[8192];
+
+			while (true) {
+				if (stdout.available() == 0 && stderr.available() == 0) {
+					/* Even though currently there is no data available, it may be that new data arrives
+					 * and the session's underlying channel is closed before we call waitForCondition().
+					 * This means that EOF and STDOUT_DATA (or STDERR_DATA, or both) may be set together. */
+					
+					int conditions = sess.waitForCondition(
+							ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA | ChannelCondition.EOF, //
+							10*1000); // allow several seconds
+
+					if ((conditions & ChannelCondition.TIMEOUT) != 0) {
+						throw new IOException("Timeout while waiting for data from peer");
+					}
+
+					if ((conditions & ChannelCondition.EOF) != 0) {
+						/* The remote side won't send us further data ... */
+						if ((conditions & (ChannelCondition.STDOUT_DATA | ChannelCondition.STDERR_DATA)) == 0) {
+							/* ... and we have consumed all data in the local arrival window. */
+							break;
+						}
+					}
+
+					/* At this point, either STDOUT_DATA or STDERR_DATA, (or both) is set. */
 				}
 
-         }
+				/* If you below use "if" instead of "while", then the way the output appears on the local
+				 * stdout and stder streams is more "balanced". Addtionally reducing the buffer size
+				 * will also improve the interleaving, but performance will slightly suffer.
+				 * OKOK, that all matters only if you get HUGE amounts of stdout and stderr data =)
+				 */
+				if (stdout.available() > 0) {
+					int len = stdout.read(buffer);
+					listener.stdoutWritten(null, new String(buffer, 0, len));
 
-         return ticket;
+					if (searchStdout != null)
+						if (searchStdout.add(buffer, 0, len)) {
+							remoteFlow.success(RemoteFlow.COMPLETE);
+							break;
+						}
+				}
+
+				if (stderr.available() > 0) {
+					int len = stderr.read(buffer);
+					// msc 2008-11: porting to a different ssh library. this should of course
+					// call stderrWritten() but i don't want to change the original behavior.
+					listener.stdoutWritten(null, new String(buffer, 0, len));
+					
+					if (searchStderr != null)
+						if (searchStderr.add(buffer, 0, len)) {
+							remoteFlow.success(RemoteFlow.COMPLETE);
+							break;
+						}
+				}
+
+			}
+			
+			return true;
+
       } catch (IOException exc) {
          remoteFlow.failure(exc);
-         throw exc;
+         // we kind of expect IOExceptions and it should be enough 
+         // to show them in the flow dialog. so we don't rethrow them.
+         /* throw exc; */
+         return false;
       }
    }
 
    /**
-    * Shuts down all ssh-clients that may still be active
-    */
-   static private void remoteDownAllPortable() {
-       if (disableRemote)
-           return;
+	 * Shuts down all ssh-sessions and -connections that may still be active.
+	 */
+	static private void remoteDownAllPortable () {
 
-       for (int i=0; i<clients.size(); i++) {
-           try {
-               remoteDownPortable(i);
-           }catch(IOException exc) {
-               log.fine("could not disconnect "+clients.get(i));
-           }
-       }
-    }
-   
-   /**
-    * Shuts down the specified ssh-client.
-    * @param ticket a ticket as returned by method <code>remote()</code>
-    * @throws IOException   if disconnect fails
-    */
-   static private void remoteDownPortable(int ticket) throws IOException {
-      if (disableRemote)
-         return;
+		for (Session sess : sessions) {
+			try {
+				sess.close();
+				log.fine("closed " + sess);
 
-      SshWrapper client = null;
-      client = (SshWrapper) clients.get(ticket);
-      client.disconnect();
-      log.fine("disconnected "+client);
-   }
+			} catch (Exception exc) {
+				log.fine("could not close " + sess);
+			}
+		}
 
+		for (Connection conn : connections) {
+			try {
+				conn.close();
+				log.fine("closed " + conn);
+
+			} catch (Exception exc) {
+				log.fine("could not close " + conn);
+			}
+		}
+	}
 
    
-   /**
-    * Trivial extension of class SshWrapper with a more verbose toString() implementation.
-    * Moreover it allows to distinguish whether a Socket exception in method waitFor() is
-    * something serious or just an ordinary consequence of calling disconnect().
-    */
-   protected static class SshClient extends SshWrapper {
-       protected String host;
-       protected int port;
-       
-       @Override
-		public void connect(String host, int port) throws IOException {
-           this.disconnectRequested = false;
-           this.host = host;
-           this.port = port;
-           super.connect(host, port);
-       }
-
-       @Override
-		public String toString() {
-           return "SSH Client on host '"+host+"', port '"+port+"'";
-       }
-
-       /** used to distinct the case where a socket exception thrown
-        * in the client.waitFor() method (which indicates there's no
-        * connection) should be ignored since disconnection was indeed wanted.
-        */
-       protected boolean disconnectRequested;
-       
-       @Override
-		public void disconnect() throws IOException {
-         this.disconnectRequested = true;
-         super.disconnect();
-      }
-      
-   }
 
 
    public static class RemoteFlow extends Flow {
       static final String CONNECT = "Connect";
       static final String LOG_IN = "Log In";
-      static final String SEND_COMMAND = "Send the Command";
+      static final String SEND_COMMAND = "Send Command";
       static final String COMPLETE = "Command Completion";
       {
          consistsOf(null, new String[] { CONNECT, LOG_IN, SEND_COMMAND, COMPLETE });
@@ -284,11 +269,12 @@ public class Executor {
    
    static private Vector<NativeCommand> remoteNativeTasks = new Vector<NativeCommand>();
    
-   static private void remoteNative(String username, final String password, final String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
+   /**
+    * @return false - if this failed gracefully
+    * @throws Throwable - if this failed severely
+    */
+   static private boolean remoteNative(String username, final String password, final String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
       
-   	if (disableRemote)
-         return;
-
       remoteFlow.reset(null);
 
       if (listener == null) {
@@ -350,6 +336,7 @@ public class Executor {
       } else {
 
       	remoteFlow.success(RemoteFlow.COMPLETE);
+      	return true;
       }
          
    }
@@ -781,8 +768,81 @@ public class Executor {
    	}
    }
 
-   
-   
+
+   /**
+    * Helper class for stream parsing, this doesn't bear the overhead
+    * of util class StringRingBuffer.
+    */
+   static class SearchBuffer {
+
+   	byte[] search;
+		byte[] data;
+		int next = 0;
+		boolean isFillingUp = true;
+
+		SearchBuffer (String searched) {
+			search = searched.getBytes();
+			data = new byte[search.length];
+		}
+
+		/**
+		 * Convenience method for feeding bytes into this buffer. 
+		 * @return whether the search-expression was found
+		 */
+		boolean add (byte[] bytes, final int off, final int len) {
+			for (int i=off; i<off+len; i++) {
+				if (add (bytes[i]))
+					return true;
+			}
+			return false;
+		}
+
+		/**
+		 * @param b - a newly incoming byte
+		 * @return whether the byte made the search-expression complete
+		 */
+		boolean add (byte b) {
+			
+			// fill new character into this
+			// -----------------------------
+			data[next] = b;
+
+			next += 1;
+			if (next == data.length)
+				next = 0;
+
+			if (isFillingUp && next == 0)
+				isFillingUp = false;
+
+
+			// compare this with searched
+			// ---------------------------
+			if (isFillingUp)
+				return false;
+
+			int idx;
+			int otherIdx = 0;
+
+			idx = next;
+			while (idx < data.length) {
+				if (data[idx] != search[otherIdx])
+					return false;
+				idx++;
+				otherIdx++;
+			}
+
+			idx = 0;
+			while (idx < next) {
+				if (data[idx] != search[otherIdx])
+					return false;
+				idx++;
+				otherIdx++;
+			}
+			return true;
+		}
+
+   }
+
 
 }
 

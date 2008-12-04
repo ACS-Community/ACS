@@ -124,6 +124,18 @@ public class DefaultChecklistPanel extends JPanel implements FlowListener {
 			s.statusF.setText(errText);
 			s.statusF.setIcon(errIcon);
 		}
+		
+		if (info instanceof Throwable) {
+			String text = "";
+			Throwable t = (Throwable) info;
+			do {
+				text += t.toString() + "\n";
+				t = t.getCause();
+			} while (t != null);
+
+			info = text;
+		}
+
 		infoF.setText(String.valueOf(info));
 	}
 
