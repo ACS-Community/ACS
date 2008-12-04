@@ -2,8 +2,7 @@
 <html><head><title>User Guide - Acs Command Center</title>
 
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-<link rel="stylesheet" href="style.css" type="text/css">
-</head>
+<link rel="stylesheet" href="style.css" type="text/css"></head>
 <body style="background-color: rgb(255, 255, 255);" lang="EN-US" link="#0000ff" vlink="#800080">
 <br>
 <table class="MsoNormalTable" style="width: 585pt;" border="0" cellpadding="0" cellspacing="0" width="780">
@@ -347,12 +346,23 @@ Command Center supports different&nbsp;variants:<span style="font-style: italic;
 a)</span> P<span style="font-style: italic;">latform-independent
 ssh</span> is
 self-contained within Acs Command Center, and you get it "for free"
-without the need to configure anything. It has&nbsp;certain
-limitations, however: in particular, it&nbsp;only supports
+without the need to configure anything. However, it&nbsp;only supports
 user/password authentication. This means, when you want to start/stop
 Acs on a remote host, you have to provide a valid accountname and a
 password for the remote host. The platform-independent variant is the
-default.<br>
+default. Also, please note the following:
+<br><ul>
+<li>A command executed through ssh doesn't commonly run with the environment
+that a login shell gives you. While a login shell usually sources the <code>.bash_profile</code>, a remote
+command sources only <code>.bashrc</code>. This may mean the command doesn't find the environment it needs to run.</li>
+<li>One possible solution is for you to have <code>.bash_profile</code> as a symbolic link to <code>.bashrc</code>.</li>
+<li>However, since the usual setup on Alma machines is to define the environment settings for Acs in
+<code>.bash_profile</code> (directly, and by sourcing the Acs bash profile), Acs Command Center will explicitly
+source your  <code>.bash_profile</code> before running a command through ssh.</li>
+<li>The result is that <code>.bashrc</code> will be sourced first, then <code>.bash_profile</code>,
+which may again source <code>.bashrc</code>.</li>
+</ul>
+
 <span style="font-weight: bold;"><br>
 b)</span> <span style="font-style: italic;">Native
 ssh</span>, on the other hand, makes use of an <span style="font-style: italic;">ssh</span> program already
