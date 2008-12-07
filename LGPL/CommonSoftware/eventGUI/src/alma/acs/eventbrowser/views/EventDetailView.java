@@ -1,7 +1,7 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.action.Action;
@@ -9,14 +9,21 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
@@ -26,7 +33,6 @@ import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.Consumer;
 import alma.acs.util.StopWatch;
 
 public class EventDetailView extends ViewPart {
@@ -37,6 +43,7 @@ public class EventDetailView extends ViewPart {
 	private static final int NUMBER_TO_DELETE = 200;	// When memory is low, delete this many rows from start of table
 	
 	private TableViewer viewer;
+	private EventTypeFilter tableFilter;
 	private ArrayList<AdminConsumer> consumers;
 
 	private EventModel em;
@@ -66,8 +73,15 @@ public class EventDetailView extends ViewPart {
 		}
 
 		logger = em.getLogger();
-//		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-//				| SWT.V_SCROLL | SWT.VIRTUAL);
+		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.verticalSpacing = 0;
+		parent.setLayout(gridLayout);
+		
+		buildCustomToolBar(parent);
+		
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
 		Table table = viewer.getTable();
@@ -114,6 +128,9 @@ public class EventDetailView extends ViewPart {
 		col.setText("# Events this type");
 		col.setWidth(50);
 		col.setAlignment(SWT.LEFT);
+		
+
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
 
 		viewer.setContentProvider(new EventDetailViewContentProvider());
 		// viewer.setComparator(new ServiceViewerComparator());
@@ -200,6 +217,43 @@ public class EventDetailView extends ViewPart {
 			}
 		}
 		th.start();
+	}
+	
+	private void buildCustomToolBar(Composite parent) {
+		Composite customToolBar = new Composite(parent, SWT.NONE);
+		customToolBar.setLayout(new RowLayout(SWT.HORIZONTAL));
+		buildTextFilter(customToolBar);
+	}
+	
+	private void buildTextFilter(Composite customToolBar) {
+		final Text text = new Text(customToolBar, SWT.BORDER);
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				if (tableFilter != null) {
+					viewer.removeFilter(tableFilter);
+				}
+				tableFilter = new EventTypeFilter() {
+
+					@Override
+					public boolean select(Viewer viewer, Object parentElement,
+							Object element) {
+						if (text.getText().trim().equals("")) {
+							return true;
+						}
+						EventData row = (EventData)element;
+						String column = row.getEventTypeName();
+						if (column.toUpperCase(Locale.ENGLISH).contains(text.getText().
+										toUpperCase(Locale.ENGLISH))) {
+							return true;
+						}
+						return false;
+					}
+				};
+
+				viewer.addFilter(tableFilter);
+				viewer.refresh();			
+			}
+		});
 	}
 
 	private void hookContextMenu() {
