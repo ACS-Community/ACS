@@ -12,6 +12,7 @@ import org.omg.CORBA.TypeCodePackage.BadKind;
 import org.omg.DynamicAny.DynAny;
 import org.omg.DynamicAny.DynAnyFactory;
 import org.omg.DynamicAny.DynEnum;
+import org.omg.DynamicAny.DynSequence;
 import org.omg.DynamicAny.DynStruct;
 import org.omg.DynamicAny.NameValuePair;
 import org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode;
@@ -151,6 +152,11 @@ public class EventPropertySource implements IPropertySource {
 					System.out.println(nvp[i].id+" "+ nvp[i].value);
 				}
 				break;
+				
+			case TCKind._tk_sequence:
+				DynSequence dsq = (DynSequence)da;
+				String seqName = path+dsq.type().name();
+				propertyValues.put(path, "IDL sequences not implemented yet; found: "+seqName);
 
 			default:
 				propertyValues.put(path, "Unimplemented type: " + da.type().kind().toString());
