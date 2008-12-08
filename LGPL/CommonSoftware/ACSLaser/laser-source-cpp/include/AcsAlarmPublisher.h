@@ -7,10 +7,10 @@
 namespace laserSource
 {
 	/*
-	 * Concrete alarm publisher which uses ACS Notification Channel 
+	 * Concrete alarm publisher which uses ACS Notification Channel
 	 * for communication mechanism to send alarms to the laser alarm server.
 	 * The Notification-Service-related functionality is encapsulated in
-	 * a separate class (which is used by this class), AlarmSupplier. 
+	 * a separate class (which is used by this class), AlarmSupplier.
 	 */
 	class AcsAlarmPublisher
 	{
@@ -23,10 +23,24 @@ namespace laserSource
 			 * @param msg the ASIMessage to publish.
 			 */
 			virtual bool publishAlarm(acsalarm::ASIMessage msg);
-	
+
 		private:
 			AlarmSupplier * alarmSupplier;
 			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
+
+			/**
+			 * Get the NameService from the manager
+			 */
+			CosNaming::NamingContext_var getNamingService();
+
+			/**
+			 * The reference to the naming service is shared between different instances
+			 * otherwise it is retrieved from the manager for each published alarm
+			 *
+			 * This variable must not be used directly. The naming service should be
+			 * accessed by calling getNamingService()
+			 */
+			static CosNaming::NamingContext_var naming_v;
 	};
 };
 
