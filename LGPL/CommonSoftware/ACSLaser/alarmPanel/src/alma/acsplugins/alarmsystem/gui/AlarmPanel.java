@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.21 2008/10/30 14:33:55 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.22 2008/12/09 15:36:29 acaproni Exp $
  * @since    
  */
 
@@ -32,6 +32,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 
 import alma.acs.container.ContainerServices;
@@ -379,5 +380,26 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public CategoryClient getCategoryClient() {
 		return categoryClient;
+	}
+	
+	/**
+	 * A method to send alarms to the GUI outside of the alarm service.
+	 * <P>
+	 * At the present it is used by the OMC GUI to send alarms before the alarm
+	 * service is started.
+	 * 
+	 * @deprecated this method will be deleted when the alarm system will run as a daemon 
+	 * 				or as an ACS service.
+	 * 
+	 * @param alarm The alarm to show in the table (can't be <code>null</code>)
+	 * @throws Exception In case the alarm is not well formed
+	 * 
+	 * 
+	 */
+	public synchronized void addSpecialAlarm(Alarm alarm) throws Exception {
+		if (alarm==null || alarm.getAlarmId()==null || alarm.getAlarmId().isEmpty()) {
+			throw new Exception("The alarm cant'be null and must have a valid ID!");
+		}
+		model.onAlarm(alarm);
 	}
 }
