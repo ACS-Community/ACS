@@ -24,9 +24,13 @@
  */
  
   
-// $Author: msekoran $
-// $Date: 2008/03/28 13:05:33 $
+// $Author: hsommer $
+// $Date: 2008/12/11 10:25:34 $
 // $Log: RepeatGuardLoggerTest.java,v $
+// Revision 1.3  2008/12/11 10:25:34  hsommer
+// Tests the basic functioning of this class, and the correct derivation of test class/method names in the produced log record.
+// TODO: write some tests that actually test the repeat guard functionality (the previous version did not verify this at all)
+//
 // Revision 1.2  2008/03/28 13:05:33  msekoran
 // Java code cleanup.
 //
@@ -41,13 +45,13 @@ package alma.acs.logging;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 
 import junit.framework.TestCase;
 
+import alma.acs.testsupport.LogRecordCollectingLogger;
+
 /**
- * @author cparedes 
- *
  */
 public class RepeatGuardLoggerTest extends TestCase {
 
@@ -55,20 +59,29 @@ public class RepeatGuardLoggerTest extends TestCase {
 		super(name);
 	}
 	
-	/* simple test only, RepeatGuard is throughly tested in RepeatGuardTest */
-	public void testRepeatGuardLogger() throws InterruptedException {
-	    Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("RepeatGuardLoggerTest", true);
-	    
-	    RepeatGuardLogger guardbl = new RepeatGuardLogger(1, TimeUnit.SECONDS, 10);
-        
-        logger.log(Level.INFO,"Simple test.");
+	/**
+	 * @TODO test more, also factory methods and deprecated methods
+	 */
+	public void testRepeatGuardLogger() throws Exception {
+		// our AcsLogger (that is to be guarded by the tested RepeatGuardLogger) 
+		// we construct around a LogRecordCollectingLogger, so that we can verify the detected 
+		// class name, line-of-code etc directly inside this test
+		LogRecordCollectingLogger logger0 = LogRecordCollectingLogger.getCollectingLogger(getClass().getName());
+		AcsLogger logger1 = AcsLogger.fromJdkLogger(logger0, null);
 
-        for(int i=0;i<50;i++)
-        {
-	        guardbl.log(logger, Level.INFO, "Log A without incrementing");
-	        guardbl.log(logger, Level.INFO, "Log B without incrementing");
-	        guardbl.logAndIncrement(logger, Level.INFO, "Log C with incrementing");
-	    }
+		RepeatGuardLogger logger2 = new RepeatGuardLogger(logger1, 1, TimeUnit.SECONDS, 10);
+
+		logger2.log(Level.INFO, "Simple test.");
+		LogRecord[] records = logger0.getCollectedLogRecords();
+		assertEquals(1, records.length);
+		assertEquals("alma.acs.logging.RepeatGuardLoggerTest", records[0].getSourceClassName());
+		assertEquals("testRepeatGuardLogger", records[0].getSourceMethodName());
+
+//		for (int i = 0; i < 50; i++) {
+//			guardbl.log(logger, Level.INFO, "Log A without incrementing");
+//			guardbl.log(logger, Level.INFO, "Log B without incrementing");
+//			guardbl.logAndIncrement(logger, Level.INFO, "Log C with incrementing");
+//		}
 	}
 
 }
