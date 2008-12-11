@@ -1,0 +1,11 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: acsContainerServicesTATEnvironment,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# agrimstrup 2008-12-11  created
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP

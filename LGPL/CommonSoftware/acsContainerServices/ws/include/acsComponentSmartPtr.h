@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.5 2008/12/01 22:24:33 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.6 2008/12/11 23:31:57 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -272,11 +272,15 @@ class SmartPtr
         }
 
         explicit
-        SmartPtr(ExplicitArg p) : SP(p)
-        { KP::OnInit(GetImpl(*this)); }
+        SmartPtr(ExplicitArg p)
+        {
+	    throw std::invalid_argument("Attempt to instantiate SmartPtr with no ContainerService or Client reference.");
+	}
 
-        SmartPtr(ImplicitArg p) : SP(p)
-        { KP::OnInit(GetImpl(*this)); }
+        SmartPtr(ImplicitArg p)
+        { 
+	    throw std::invalid_argument("Attempt to instantiate SmartPtr with no ContainerService or Client reference.");
+	}
 
         SmartPtr(CopyArg& rhs)
         : SP(rhs), OP(rhs), KP(rhs), CP(rhs)
@@ -320,7 +324,10 @@ class SmartPtr
         SmartPtr& operator=(CopyArg& rhs)
         {
             SmartPtr temp(rhs);
-            temp.Swap(*this);
+	    if (rhs.handle == 0)
+	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+	    else 
+	      temp.Swap(*this);
             return *this;
         }
 
@@ -337,7 +344,10 @@ class SmartPtr
         SmartPtr& operator=(const SmartPtr<T1, H1, OP1, CP1, KP1, SP1, CNP1 >& rhs)
         {
             SmartPtr temp(rhs);
-            temp.Swap(*this);
+	    if (rhs.handle == 0)
+	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+	    else 
+	      temp.Swap(*this);
             return *this;
         }
 
@@ -354,7 +364,10 @@ class SmartPtr
         SmartPtr& operator=(SmartPtr<T1, H1, OP1, CP1, KP1, SP1, CNP1 >& rhs)
         {
             SmartPtr temp(rhs);
-            temp.Swap(*this);
+	    if (rhs.handle == 0)
+	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+	    else 
+	      temp.Swap(*this);
             return *this;
         }
 
