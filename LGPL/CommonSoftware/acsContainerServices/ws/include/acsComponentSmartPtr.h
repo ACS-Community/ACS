@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.6 2008/12/11 23:31:57 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.7 2008/12/12 23:23:18 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -148,6 +148,13 @@ class ComponentStorage
      */
     friend inline StoredType& GetImplRef(ComponentStorage& sp)
         { return sp.pointee_; }
+
+    /**
+     * isValid
+     * Return true if handle is a valid pointer
+     */
+    bool inline isValid(const ComponentStorage& sp)
+    { return sp.handle != (H *)0; }
 
   protected:
 
@@ -324,7 +331,7 @@ class SmartPtr
         SmartPtr& operator=(CopyArg& rhs)
         {
             SmartPtr temp(rhs);
-	    if (rhs.handle == 0)
+	    if (!isValid(rhs))
 	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
 	    else 
 	      temp.Swap(*this);
@@ -344,7 +351,7 @@ class SmartPtr
         SmartPtr& operator=(const SmartPtr<T1, H1, OP1, CP1, KP1, SP1, CNP1 >& rhs)
         {
             SmartPtr temp(rhs);
-	    if (rhs.handle == 0)
+	    if (!isValid(rhs))
 	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
 	    else 
 	      temp.Swap(*this);
@@ -364,7 +371,7 @@ class SmartPtr
         SmartPtr& operator=(SmartPtr<T1, H1, OP1, CP1, KP1, SP1, CNP1 >& rhs)
         {
             SmartPtr temp(rhs);
-	    if (rhs.handle == 0)
+	    if (!isValid(rhs))
 	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
 	    else 
 	      temp.Swap(*this);
