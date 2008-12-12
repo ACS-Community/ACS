@@ -120,7 +120,7 @@ USER_IDL =
 #
 JARFILES= acsGUIutil
 acsGUIutil_DIRS= alma dartboard
-jjj_EXTRAS= 
+acsGUIutil_EXTRAS= dartboard/*.png
 #
 # java sources in Jarfile on/off
 DEBUG= 
