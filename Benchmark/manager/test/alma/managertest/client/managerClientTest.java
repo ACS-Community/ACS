@@ -14,7 +14,10 @@ import alma.managertest.DummyComponent;
 import alma.managertest.DummyComponentHelper;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServicesBase;
-import alma.acs.component.ComponentQueryDescriptor;
+import si.ijs.maci.ComponentInfo;
+import si.ijs.maci.ComponentSpec;
+import si.ijs.maci.COMPONENT_SPEC_ANY;
+
 
 public class managerClientTest extends ComponentClientTestCase
 {
@@ -56,21 +59,25 @@ public class managerClientTest extends ComponentClientTestCase
 	    }
 	    public Boolean call() throws Exception {
 
-    		ComponentQueryDescriptor spec = new ComponentQueryDescriptor();
-    		spec.setComponentType("IDL:alma/managertest/DummyComponent:1.0");
 		int j;
 		String compName,contName;
+        ComponentSpec corbaSpec = new ComponentSpec();
+        corbaSpec.component_type = "IDL:alma/managertest/DummyComponent:1.0";
+        corbaSpec.component_code = COMPONENT_SPEC_ANY.value; 
 		for(int i=0; i<components;i++){
 		    j = sequenceNumber.getAndIncrement();
 		    compName = compNameHeader+(j+1);
 		    contName = "javaContainer"+ (j%containers + 1);
-	    	    spec.setComponentName(compName);
-		    spec.setContainerName(contName);
-		    //System.out.println("CARLI - i="+i+" j="+j);
+            corbaSpec.component_name = compName; 
+            corbaSpec.container_name = contName;
 	            //we just loose this reference
 		    try{
-		    DummyComponent d  = DummyComponentHelper.narrow(getContainerServices().getDynamicComponent(spec, false));
-		    if (d == null) return false;
+            ComponentInfo cInfo = null;
+		    //Using AcsManagerProxy directly to set the value of Container
+            cInfo = m_acsManagerProxy.get_dynamic_component(m_acsManagerProxy.getManagerHandle(), corbaSpec, false);
+            DummyComponent d  = DummyComponentHelper.narrow(cInfo.reference);
+
+            if (d == null) return false;
 		    d.doNothing();
 
 		    }catch(Exception e){
