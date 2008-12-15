@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.7 2008/12/12 23:23:18 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.8 2008/12/15 17:51:05 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -277,17 +277,6 @@ class SmartPtr
         {
             setValues(h, s, p);
         }
-
-        explicit
-        SmartPtr(ExplicitArg p)
-        {
-	    throw std::invalid_argument("Attempt to instantiate SmartPtr with no ContainerService or Client reference.");
-	}
-
-        SmartPtr(ImplicitArg p)
-        { 
-	    throw std::invalid_argument("Attempt to instantiate SmartPtr with no ContainerService or Client reference.");
-	}
 
         SmartPtr(CopyArg& rhs)
         : SP(rhs), OP(rhs), KP(rhs), CP(rhs)

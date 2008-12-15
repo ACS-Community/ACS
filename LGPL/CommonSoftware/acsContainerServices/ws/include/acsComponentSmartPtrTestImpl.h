@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.h,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.h,v 1.2 2008/12/15 17:51:05 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,8 +48,6 @@ class smartptrtest : public CPPUNIT_NS :: TestFixture
 {
     CPPUNIT_TEST_SUITE (smartptrtest);
     CPPUNIT_TEST (defaultConstructorTest);
-    CPPUNIT_TEST (defaultConstructorWithAssignmentTest);
-    CPPUNIT_TEST (pointerConstructorTest);
     CPPUNIT_TEST (parmConstructorTest);
     CPPUNIT_TEST (copyConstructorTest);
     CPPUNIT_TEST (assignmentOperatorTest);
@@ -61,8 +59,6 @@ class smartptrtest : public CPPUNIT_NS :: TestFixture
 
     protected:
         void defaultConstructorTest (void);
-        void defaultConstructorWithAssignmentTest (void);
-        void pointerConstructorTest (void);
         void parmConstructorTest (void);
         void copyConstructorTest (void);
         void assignmentOperatorTest (void);

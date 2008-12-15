@@ -3,20 +3,6 @@
 1 - 
 1 - 
 1 -  : OK
-1 - smartptrtest::defaultConstructorWithAssignmentTest
-1 - 
-1 - Exception received
-1 - 
-1 - 
-1 - 
-1 -  : OK
-1 - smartptrtest::pointerConstructorTest
-1 - 
-1 - Exception received
-1 - 
-1 - 
-1 - 
-1 -  : OK
 1 - smartptrtest::parmConstructorTest
 1 - 
 1 - 
@@ -35,4 +21,4 @@
 1 - 
 1 - 
 1 -  : OK
-1 - OK (6)
+1 - OK (4)

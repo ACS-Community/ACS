@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.2 2008/12/15 17:51:05 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.2 2008/12/15 17:51:05 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsComponentSmartPtrTestImpl.h"
@@ -99,36 +99,6 @@ void smartptrtest :: defaultConstructorTest (void)
     CPPUNIT_ASSERT_EQUAL ((maci::MockContainerServices *)foo.handle, (maci::MockContainerServices *)0);
     CPPUNIT_ASSERT_EQUAL (foo.sticky, true);
     CPPUNIT_ASSERT_EQUAL ((MockComponent *)foo.pointee_, (MockComponent *)0);
-}
-
-void smartptrtest :: defaultConstructorWithAssignmentTest (void)
-{
-    ACE_CString cname("Foo");
-
-    MockComponent *c = mcs->getComponent<MockComponent>(cname.c_str());
-    try {
-      maci::SmartPtr<MockComponent> foo = c;
-      CPPUNIT_FAIL("Expected exception not thrown.");
-    }
-    catch (std::invalid_argument)
-    {
-      std::cout << "Exception received" << std::endl;
-    }
-}
-
-void smartptrtest :: pointerConstructorTest (void)
-{
-    ACE_CString cname("Foo");
-
-    MockComponent *c = mcs->getComponent<MockComponent>(cname.c_str());
-    try {
-      maci::SmartPtr<MockComponent> foo(c);
-      CPPUNIT_FAIL("Expected exception not thrown.");
-    }
-    catch (std::invalid_argument)
-    {
-      std::cout << "Exception received" << std::endl;
-    }
 }
 
 void smartptrtest :: parmConstructorTest (void)
