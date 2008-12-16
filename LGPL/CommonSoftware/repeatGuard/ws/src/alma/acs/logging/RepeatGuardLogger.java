@@ -24,8 +24,13 @@
  */
 
 // $Author: hsommer $
-// $Date: 2008/12/11 10:20:06 $
+// $Date: 2008/12/16 16:39:31 $
 // $Log: RepeatGuardLogger.java,v $
+// Revision 1.4  2008/12/16 16:39:31  hsommer
+// - renamed logAndIncrement(Level, String, Throwable) to "log(..)" to be consistent with the other methods that also don't mention the incrementing in their name
+// - improved javadoc
+// - new method isLoggingEnabled to allow using more exotic Logger API methods or batches of logs controlled by this one RepeatGuardLogger
+//
 // Revision 1.3  2008/12/11 10:20:06  hsommer
 // - Fixed a bug that caused the class and method name and the line-of-code to be inferred from this RepeatGuardLogger itself instead of from the client class that actually does the logging.
 // - For that fix to work, an AcsLogger instead of a JDK Logger must be passed to the existing (and now deprecated) methods "log(Logger logger, Level priority, String message)", "logAndIncrement(Logger logger, Level priority, String message)"
@@ -100,6 +105,7 @@ public class RepeatGuardLogger {
 	 * @param interval Time interval (in <code>timeUnit</code> units).
 	 * @param timeUnit Time unit of <code>interval</code> parameter.
 	 * @param maxRepetitions Maximum number of skipped repetitions.
+	 * @throws IllegalArgumentException if interval <= 0 && maxRepetitions <= 0
 	 */
 	public RepeatGuardLogger(AcsLogger logger, long interval, TimeUnit timeUnit, int maxRepetitions) {
 		guard = new RepeatGuard(interval, timeUnit, maxRepetitions);
@@ -109,6 +115,7 @@ public class RepeatGuardLogger {
 	
 	/**
 	 * Factory method for a repeat guard logger which only uses a timer, regardless of the number of skipped logs.
+	 * @throws IllegalArgumentException if interval <= 0
 	 * @see #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)
 	 */
 	public static RepeatGuardLogger createTimeBasedRepeatGuardLogger(AcsLogger logger, long interval, TimeUnit timeUnit) {
@@ -117,6 +124,7 @@ public class RepeatGuardLogger {
 	
 	/**
 	 * Factory method for a repeat guard logger which only uses a counter of skipped logs, regardless of the time passed since the last log.
+	 * @throws IllegalArgumentException if maxRepetitions <= 0
 	 * @see #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)
 	 */
 	public static RepeatGuardLogger createCounterBasedRepeatGuardLogger(AcsLogger logger, int maxRepetitions) {
@@ -131,7 +139,8 @@ public class RepeatGuardLogger {
 	 * (i.e. if <code>maxRepetitions</code> <= 0),
 	 * or if you want to cheat and log something without advancing the counter which does not really
 	 * make sense as you could just as well use the logger directly.
-	 * @deprecated since ACS 8.0.0. Use {@link #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)} instead.
+	 * @deprecated since ACS 8.0.0. Use {@link #log(Level, String)} instead, 
+	 *             or {@link #isLoggingEnabled()} if you need to log a batch of messages together controlled by one repeat guard. 
 	 */
 	public void log(Logger logger, Level priority, String message) {
 		if (guard.check()) {
@@ -142,11 +151,12 @@ public class RepeatGuardLogger {
 		}
 	}
 
+	
 	/**
 	 * @param logger
 	 * @param priority
 	 * @param message
-	 * @deprecated since ACS 8.0.0. Use {@link #logAndIncrement(Level, String)} or {@link #logAndIncrement(Logger, Level, String, Throwable) instead.
+	 * @deprecated since ACS 8.0.0. Use {@link #log(Level, String)} or {@link #log(Logger, Level, String, Throwable)} instead.
 	 */
 	public void logAndIncrement(Logger logger, Level priority, String message) {
 		if (guard.checkAndIncrement()) {
@@ -160,10 +170,11 @@ public class RepeatGuardLogger {
 	/**
 	 * Logs the message at the given level, unless the internal <code>RepeatGuard</code> prevents this based on the timer and/or log record counter.
 	 * If a log record counter is active, it will be advanced, which corresponds to {@link RepeatGuard#checkAndIncrement()}.
-	 * (Note that following the same terminology as {@link RepeatGuard}, this methods would have to be called <code>logAndIncrement</code>;
+	 * (Note that following the same terminology as {@link RepeatGuard}, this method would have to be called <code>logAndIncrement</code>;
 	 * it is simply called <code>log</code> though because here we don't support the variant of having a counter enabled without using it.)
 	 * <p>
-	 * Requires the logger to be set in ctor {@link #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)} 
+	 * Requires the logger to be set in the ctor {@link #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)}
+	 * or in one of the static factory methods, 
 	 * which will become the only choice once the deprecated methods are removed.
 	 * 
 	 * @see Logger#log(Level, String)
@@ -179,11 +190,11 @@ public class RepeatGuardLogger {
 	}
 	
 	/**
-	 * Same as {@link #log(Level, String) but with additional <code>Throwable</code> to be logged.
+	 * Same as {@link #log(Level, String)} but with additional <code>Throwable</code> to be logged.
 	 * @see Logger#log(Level, String, Throwable)
 	 * @since ACS 8.0.0
 	 */
-	public void logAndIncrement(Level level, String message, Throwable thr) {
+	public void log(Level level, String message, Throwable thr) {
 		if (logger == null) {
 			throw new IllegalStateException("logger must not be null. Use ctor that accepts an AcsLogger!");
 		}
@@ -192,4 +203,27 @@ public class RepeatGuardLogger {
 		}
 	}
 	
+	/**
+	 * Checks if the internal repeat guard allows a log.
+	 * This method is an alternative to the various <code>log</code> methods to be used if
+	 * <ol>
+	 * <li>You want the repeat guard to skip or enable different log messages together (all or none).
+	 * <li>You want to use specialized methods of the guarded Logger, such as {@link Logger#log(java.util.logging.LogRecord)},
+	 *     which are not exposed by this <code>RepeatGuardLogger</code>
+	 * </ol>
+	 * In either of these cases, simply surround a call to the normal logger with an <br>
+	 * <code>if (isLoggingEnabled()) {myLogger.blabla}</code>.
+	 * <p>
+	 * The internal log counter (if present) will be incremented the same way as for one call to, say, {@linkplain #log(Level, String)}.
+	 * <p>
+	 * Note that you might be better off using {@link RepeatGuard} directly if this method is the only one you need from this <code>RepeatGuardLogger</code>. 
+	 * Using this method makes sense though for a mix of logs, some to be made via the <code>RepeatGuardLogger.log</code> methods, 
+	 * and others directly via the logger surrounded by a call to this <code>isLoggingEnabled</code> 
+	 * @return true if the counter/timer allows a log message (or a batch of log messages that must appear together)
+	 */
+	public boolean isLoggingEnabled() {
+		return guard.checkAndIncrement();
+	}
+	
+
 }
