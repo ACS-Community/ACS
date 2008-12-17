@@ -106,7 +106,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = ASIMessage
 
 # 
 # IDL Files and flags
@@ -116,7 +116,7 @@ IDL_TAO_FLAGS =
 USER_IDL =
 
 #Generated code
-CASTOR_GENERATED= ASIConfiguration ASIMessage
+CASTOR_GENERATED= ASIConfiguration ../config/CDB/schemas/ASIMessage
 ASIConfiguration_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.configuration
 ASIMessage_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.message
 
