@@ -239,4 +239,12 @@ public class UserPropsTest extends ComponentClientTestCase implements AlarmSelec
 		}
 		
 	}
+
+	/*
+	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
+	 */
+	@Override
+	public void sourceXMLMsgReceived(String asiMessage) {
+		// Nothing to do here
+	}
 }
