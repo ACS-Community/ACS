@@ -27,10 +27,21 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  *
  */
 public interface SourceListener {
+	
 	/**
-	 * An alarm has been received from the source NC
+	 * An alarm has been received from the source NC.
 	 * 
 	 * @param alarm The alarm received from a source
 	 */
 	public void faultStateReceived(FaultState faultState);
+	
+	/**
+	 * An XML has been received from the source NC.
+	 * <P>
+	 * The XML follows the ASIMessage.xsd schema definition and therefore
+	 * it might have one or more fault states.
+	 * 
+	 * @param asiMessage The ASIMessage received from an alarm source
+	 */
+	public void sourceXMLMsgReceived(String asiMessage);
 }
