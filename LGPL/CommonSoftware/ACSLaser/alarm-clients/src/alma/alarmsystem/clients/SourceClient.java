@@ -99,6 +99,7 @@ public class SourceClient {
 			e.printStackTrace();
 			return;
 		}
+		dispatchXMLASIMessage(msg.text);
 		for (FaultState fs: faultStates) {
 			dispatchFaultState(fs);
 		}
@@ -146,7 +147,24 @@ public class SourceClient {
 	}
 	
 	/**
-	 * This method is called by categories when a new message arrives and dispatches
+	 * This method, called when a new XML message arrives, dispatches
+	 * string to the listeners.
+	 * 
+	 * @param msg The XML string to send to the listeners
+	 */
+	private synchronized void dispatchXMLASIMessage(String msg) {
+		if (msg==null) {
+			throw new IllegalArgumentException("The message to dispatch can't be null");
+		}
+		synchronized(listeners) {
+			for (SourceListener listener: listeners) {
+				listener.sourceXMLMsgReceived(msg);
+			}
+		}
+	}
+	
+	/**
+	 * This method, called when a new message arrives, dispatches
 	 * the alarm to the listeners.
 	 * 
 	 * @param newAlarm The alarm to send to the listeners
