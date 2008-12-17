@@ -146,4 +146,10 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 	public void onException(LaserSelectionException e) {
 		m_logger.log(Level.WARNING, "LaserSelectionException: ", e);
 	}
+
+	/**
+	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
+	 */
+	@Override
+	public void sourceXMLMsgReceived(String asiMessage) {}
 }

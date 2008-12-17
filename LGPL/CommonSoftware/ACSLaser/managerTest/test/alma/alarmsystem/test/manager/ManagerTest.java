@@ -188,4 +188,10 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		managertest.close();
 		System.out.println("Done");
 	}
+
+	/**
+	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
+	 */
+	@Override
+	public void sourceXMLMsgReceived(String asiMessage) {}
 }
