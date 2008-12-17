@@ -51,4 +51,10 @@ public class SourceTable extends JTable implements SourceListener {
 	public void faultStateReceived(FaultState faultState) {
 		model.addFS(faultState);
 	}
+
+	/**
+	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
+	 */
+	@Override
+	public void sourceXMLMsgReceived(String asiMessage) {}
 }
