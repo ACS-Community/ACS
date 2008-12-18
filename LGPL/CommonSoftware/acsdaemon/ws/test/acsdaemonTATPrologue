@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsdaemonTATPrologue,v 1.1 2007/10/31 14:13:29 ntroncos Exp $"
+# "@(#) $Id: acsdaemonTATPrologue,v 1.2 2008/12/18 12:33:33 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -30,6 +30,7 @@ echo " ****************** TATPrologue ************* "
 
 export ACS_CDB=$PWD
 export ACS_LOG_STDOUT=4
+export ACS_INSTANCE=0
 
 # To be sure, deletes the recovery file before starting
 acsdataClean
