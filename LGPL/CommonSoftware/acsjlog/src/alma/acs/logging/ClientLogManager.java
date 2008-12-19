@@ -522,12 +522,12 @@ public class ClientLogManager implements LogConfigSubscriber
                 else { 
                 	logQueueLock.lock(); // we keep the above get_service call outside this locked section in order to not block shutdown() too long
 //System.out.println("ClientLogManager#initRemoteLogging got the logQueue lock");
-                	if (logQueue == null) {
-                		// this can happen if shutdown or suppressRemoteLogging is called concurrently
-                		System.out.println("Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.");
-                		return false;
-                	}
                 	try {
+                    	if (logQueue == null) {
+                    		// this can happen if shutdown or suppressRemoteLogging is called concurrently
+                    		System.out.println("Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.");
+                    		return false;
+                    	}
 	                    if (count > 1) {
 	                        // all is fine, but we report the difficulty
 	                        m_internalLogger.info("Connected to central log service after initial failure. ");
