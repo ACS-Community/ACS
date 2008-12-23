@@ -120,7 +120,7 @@ public class EventPropertySource implements IPropertySource {
 				switch (elementType) {
 				case TCKind._tk_double:
 					for (int j = 0; j < numDisplayElements; j++) {
-						String dname = path+j;
+						String dname = path+"["+j+"]";
 						double value = da.current_component().get_double();
 						pdlist.add(new TextPropertyDescriptor(dname, dname));
 						propertyValues.put(dname, new Double(value));
