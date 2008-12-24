@@ -1,6 +1,6 @@
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2004 
+* (c) European Southern Observatory, 2004
 *
 *This library is free software; you can redistribute it and/or
 *modify it under the terms of the GNU Lesser General Public
@@ -16,21 +16,21 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.107 2008/08/21 15:30:52 bjeram Exp $"
+* "@(#) $Id: baciValue.i,v 1.108 2008/12/24 10:31:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram 2003-02-13 strings are (should) be hold as ACE_CString (setType has been changed to delete ACE_CString and BACIValue constructor for const char* has been changed too)
 * almamgr 2002-02-05 Removed ## concatenation characters in macros.
-* almamgr 2002-02-05 created 
+* almamgr 2002-02-05 created
 * msekoran  2001/07/26  fixed string type
-* msekoran  2001/03/02  created 
+* msekoran  2001/03/02  created
 */
 
 // --------------------------[ Constructors ]------------------------------
 
 inline BACIValue::BACIValue() :
-    type_m(type_null), 
+    type_m(type_null),
     whyNull_m(VALUE_UNINITIALIZED),
     isEnum_m(false)
 {
@@ -39,7 +39,7 @@ inline BACIValue::BACIValue() :
 }
 
 inline BACIValue::BACIValue(const BACIValue::Type type, const unsigned long bound) :
-  type_m(type_null), 
+  type_m(type_null),
   whyNull_m(VALUE_UNINITIALIZED),
   isEnum_m(false)
 {
@@ -62,6 +62,7 @@ inline void BACIValue::reset()
 {
   // destroy and reinitialize
   setType(type_null);
+  isEnum_m = false;
   whyNull_m = VALUE_UNINITIALIZED;
   ptr_m.bound = 0;
   ptr_m.pointer = 0;
@@ -95,7 +96,7 @@ inline BACIValue::BACIValue(const char *value) :
 }
 
 
-inline 
+inline
 BACIValue::BACIValue(const ACE_CString &value) :
     type_m(type_string),
     isEnum_m(false)
@@ -144,7 +145,7 @@ CONSTRUCTOR(stringSeq, BACIstringSeq)
 
 inline BACIValue::~BACIValue()
 {
-  setType(type_null); 
+  setType(type_null);
 }
 
 // -----------------[ Set type, assignment operators ]----------------------
@@ -195,7 +196,7 @@ DESTROY_PTR_TYPE(stringSeq, BACIstringSeq)
 	  break;
         }
     }
-  
+
   // set & allocate if needed
   type_m = _type;
   if(type_m == type_null)
@@ -274,8 +275,8 @@ inline BACIValue& BACIValue::operator=(const BACIValue &value)
 	  ptr_m.pointer = 0;
 	else
 	{
-	  if (ptr_m.pointer!=0) 
-	      { 
+	  if (ptr_m.pointer!=0)
+	      {
 	      delete[] static_cast<ACE_TCHAR*>(ptr_m.pointer);
 	      }
 	  ACE_TCHAR * str_p = new ACE_TCHAR[ACE_OS::strlen((const ACE_TCHAR*)value.ptr_m.pointer)+1];
@@ -295,7 +296,7 @@ ASSIGN_PTR_TYPE(doubleSeq, BACIdoubleSeq)
 ASSIGN_PTR_TYPE(floatSeq, BACIfloatSeq)
 ASSIGN_PTR_TYPE(longSeq, BACIlongSeq)
 ASSIGN_PTR_TYPE(stringSeq, BACIstringSeq)
-         
+
     default:
       break;
     }
@@ -309,7 +310,7 @@ ASSIGN_PTR_TYPE(stringSeq, BACIstringSeq)
 // ------------------------------------------------------------------------
 /**
  * Helper macro.
- */ 
+ */
 #define COMPARE_EQUALS_INLINE_TYPE(ty, realType)                           \
     case ( type_##ty ):                                                    \
       return (*( realType *)inlineData_m == *( realType *) value.inlineData_m   ); \
@@ -371,7 +372,7 @@ COMPARE_EQUALS_SEQ_PTR_TYPE(stringSeq, BACIstringSeq)
 
 #undef COMPARE_EQUALS_PTR_TYPE
 #undef COMPARE_EQUALS_INLINE_TYPE
-  
+
 // ------------------------------------------------------------------------
 /**
  * Helper macro.
@@ -421,11 +422,11 @@ COMPARE_LESS_OR_EQUAL_INLINE_TYPE(uLongLong, BACIuLongLong)
 
 #undef COMPARE_LESS_OR_EQUAL_PTR_TYPE
 #undef COMPARE_LESS_OR_EQUAL_INLINE_TYPE
-  
+
 // ------------------------------------------------------------------------
 /**
  * Helper macro.
- */ 
+ */
 #define COMPARE_LESS_INLINE_TYPE(ty, realType)                            \
     case ( type_##ty ):                                                   \
       return (*( realType *)inlineData_m < *( realType *)value.inlineData_m); \
@@ -519,12 +520,12 @@ inline bool BACIValue::lessThanDelta(const BACIValue &value, const BACIValue &de
 
 
   switch(type_m)
-    {  
+    {
 /*TBdeleted
     case (type_pattern) : {
 
     return (*(BACIpattern*)inlineData_m == *(BACIpattern*)value.inlineData_m);
-    break; 
+    break;
     }
 */
 /// User defined
@@ -539,7 +540,7 @@ LESS_THAN_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq, double, BACIdouble)
 LESS_THAN_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq, float, BACIfloat)
 LESS_THAN_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
 /// LESS_THAN_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq, string, BACIstring)
-  
+
     default:
       return false;
     }
@@ -603,15 +604,15 @@ inline realType BACIValue::ty##Value() const \
 /// User defined
 
 inline char* BACIValue::getValue(const char ** v) const
-{  
+{
     ACE_UNUSED_ARG(v);
-    return const_cast<char*>(stringValue()); 
+    return const_cast<char*>(stringValue());
 }
 
 inline char* BACIValue::getValue(char ** v) const
-{ 
+{
     ACE_UNUSED_ARG(v);
-    return const_cast<char*>(stringValue()); 
+    return const_cast<char*>(stringValue());
 }
 
 inline const ACE_TCHAR* BACIValue::stringValue() const
@@ -621,7 +622,7 @@ inline const ACE_TCHAR* BACIValue::stringValue() const
   else
     return (const ACE_TCHAR*)ptr_m.pointer;
 }
- 
+
 ACCESSOR_INLINE_TYPE(double, BACIdouble)
 ACCESSOR_INLINE_TYPE(float, BACIfloat)
 ACCESSOR_INLINE_TYPE(long, BACIlong)
@@ -699,7 +700,7 @@ inline bool BACIValue::stringValue(const char *value)
 	}
 	return true;
 }
- 
+
 MUTATOR_INLINE_TYPE(double, BACIdouble)
 MUTATOR_INLINE_TYPE(float, BACIfloat)
 MUTATOR_INLINE_TYPE(long, BACIlong)
@@ -722,7 +723,7 @@ inline bool BACIValue::pointerValue(void * value)
        return false;
 
   ptr_m.pointer = value;
-  return true;   
+  return true;
 }
 
 /*___oOo___*/
