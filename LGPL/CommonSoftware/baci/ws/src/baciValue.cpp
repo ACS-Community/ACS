@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.cpp,v 1.110 2008/08/21 15:30:52 bjeram Exp $"
+* "@(#) $Id: baciValue.cpp,v 1.111 2008/12/29 08:34:43 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram    2003/01/08  since gcc 2.7.2 (vxWorks) does not support calls like Value<double>() I've changed accessor function to T getValue(T*) and I've also changed mutator function to setValue (to be consistent)
 * bjeram    2002/12/20  added template implementation for mutator and accessor functions (tmp)
 * msekoran  2001/07/26  fixed string type
-* msekoran  2001/03/03  created 
+* msekoran  2001/03/03  created
 */
 
 #include <vltPort.h>
@@ -36,7 +36,7 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.110 2008/08/21 15:30:52 bjeram Exp $")
+ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.111 2008/12/29 08:34:43 bjeram Exp $")
 
  using namespace baci;
 
@@ -51,7 +51,7 @@ realType BACIValue::getValue(realType *n)  const          \
     if (n) *n = *(( realType *)inlineData_m);           \
     return *(( realType *)inlineData_m);         \
   } \
-}   
+}
 
 #define ACCESSOR_PTR_TYPE(ty, realType)        \
 realType BACIValue::getValue(realType *n) const \
@@ -66,15 +66,15 @@ realType BACIValue::getValue(realType *n) const \
 }
 
 
-ACE_CString BACIValue::getValue(ACE_CString *n) const 
-{                                              
-  if (type_m != type_string ){                     
-    n = 0; 
-    return ACE_CString();                                  
-  }else{                                         
-    if (n) *n = ACE_CString( (( ACE_TCHAR *)ptr_m.pointer) ); 
-    return ACE_CString( (( ACE_TCHAR *)ptr_m.pointer) );      
-  } 
+ACE_CString BACIValue::getValue(ACE_CString *n) const
+{
+  if (type_m != type_string ){
+    n = 0;
+    return ACE_CString();
+  }else{
+    if (n) *n = ACE_CString( (( ACE_TCHAR *)ptr_m.pointer) );
+    return ACE_CString( (( ACE_TCHAR *)ptr_m.pointer) );
+  }
 }
 
 ACCESSOR_INLINE_TYPE(double, BACIdouble)
@@ -116,19 +116,19 @@ bool BACIValue::setValue(const realType &value) \
   return true;                                            \
 }
 
-bool BACIValue::setValue(const ACE_CString &value) 
+bool BACIValue::setValue(const ACE_CString &value)
 {
-  if (type_m != type_string )                                 
-    if (!setType(type_string))                             
-       return false;                                     
-  
+  if (type_m != type_string )
+    if (!setType(type_string))
+       return false;
+
   if (ptr_m.pointer) delete (ACE_TCHAR*)ptr_m.pointer;
   //ptr_m.pointer = new ACE_CString(value);
   ACE_TCHAR * str;// = new ACE_TCHAR[ACE_OS::strlen(value.length())+1];
   str = value.rep();
   ptr_m.pointer = str;
-                                     
-  return true;                                           
+
+  return true;
 }
 MUTATOR_INLINE_TYPE(double, BACIdouble)
 MUTATOR_INLINE_TYPE(float, BACIfloat)
@@ -153,33 +153,34 @@ const ACE_CString BACIValue::typeName[] = {
     "pointer",
     "string",
     "double",
-    "float",
     "long",
     "pattern",
     "doubleSeq",
-    "floatSeq",
     "longSeq",
     "longLong",
     "uLongLong",
-    "longString",
+    "stringSeq",
+    "float",
+    "floatSeq",
     "enum"
   };
- 
+
 /// Archive support only three types (long, double, string)
 const ACE_CString BACIValue::archiveTypeName[] = {
     "invalid",
     "invalid",
     "string",
     "double",
-    "float",
     "long",
-    "long",
+    "pattern",
     "doubleSeq",   // !!! not supported by logging (yet)
-    "floatSeq",    // ?? 
     "longSeq",
     "longLong",
     "uLongLong",
-    "longString"
+    "stringSeq",
+    "float",
+    "floatSeq",
+    "enum"
   };
 
 // ----------------------------------------------------------------------
@@ -189,7 +190,7 @@ const ACE_CString BACIValue::archiveTypeName[] = {
     if (specifyType) os << "<" << BACIValue::typeName[ type_##ty ] << ">";   \
     (ostream&)os << *(( realType *)inlineData_m) << '\0';                      \
     value = os.str().c_str();                                      \
-    return true; 
+    return true;
 
 #define OUTPUT_PTR_TYPE_WITH_BOUND(ty, realType)          \
   case ( type_##ty ):                                     \
@@ -202,7 +203,7 @@ const ACE_CString BACIValue::archiveTypeName[] = {
        }                                                  \
     (ostream&)os << *(( realType *)ptr_m.pointer) << '\0';  \
     value = os.str().c_str();                  \
-    return true; 
+    return true;
 
 #define OUTPUT_PTR_SEQ_TYPE_WITH_BOUND(ty, realType)           \
   case ( type_##ty ):                                          \
@@ -238,14 +239,14 @@ BACIValue::enumValue() const
     return any_m;
 }
 
-CORBA::Any 
+CORBA::Any
 BACIValue::getValue(CORBA::Any *v) const
 {
     return any_m;
 }
 
 //replaced BACIpatter with int
-bool 
+bool
 BACIValue::enumValue(const BACIpattern &value, const CORBA::Any &anyVal)
 {
     if (patternValue(value)==true)
@@ -261,7 +262,7 @@ BACIValue::enumValue(const BACIpattern &value, const CORBA::Any &anyVal)
 }
 //tobe deleted
 /*
-bool 
+bool
 BACIValue::setValue(const BACIpattern &value, const CORBA::Any &anyVal)
 {
     if (setValue(value)==true)
@@ -278,7 +279,7 @@ BACIValue::setValue(const BACIpattern &value, const CORBA::Any &anyVal)
 */
 //------------------------------------------------------------------
 
-bool BACIValue::toString(ACE_CString &value, bool specifyType) const 
+bool BACIValue::toString(ACE_CString &value, bool specifyType) const
 {
   //unsigned int i;
   std::ostringstream os;
@@ -322,7 +323,7 @@ bool BACIValue::toString(ACE_CString &value, bool specifyType) const
       return ty##Value(tmp);                                   \
     }
 
-bool BACIValue::fromString(const ACE_CString value, bool specifyType) 
+bool BACIValue::fromString(const ACE_CString value, bool specifyType)
 {
 
   ACE_CString strType;
@@ -331,12 +332,12 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
   const char *szContent;
   unsigned long ulBound = 0;
 
-  if (specifyType) 
+  if (specifyType)
     {
       int nPos0 = value.find('<');
       int nPos1 = value.find(':');
       int nPos2 = value.find('>');
-      
+
       if((nPos1 != ACE_CString::npos) && (nPos1 < (nPos2-1)))
 		ulBound = atoi(value.substr(nPos1+1, nPos2-nPos1-1).c_str());
       else
@@ -361,9 +362,9 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
   // special threathment for string (no conversion needed)
   if(strType.compare(BACIValue::typeName[type_string]) == 0)
     {
-      if ((ulBound != 0) && (strContent.length() > ulBound)) 
+      if ((ulBound != 0) && (strContent.length() > ulBound))
 	return false;
-      if(!setType(type_string, ulBound)) 
+      if(!setType(type_string, ulBound))
 	return 0;
       return stringValue(szContent);
     }
@@ -384,36 +385,36 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
 // ------------------------------------------------------------------------
 void
 BACIValue::getAny(CORBA::Any &any) const
-{   
+{
     switch(type_m)
 	{
 	// No-value. Can also be used to imply special meaning.
 	case type_null:
-	    //in this case - it's safe to do nothing and tk_null will be 
+	    //in this case - it's safe to do nothing and tk_null will be
 	    //used
 	    break;
-	    
-	    // Not really a type. This is just a void pointer used to pass any user-defined 
+
+	    // Not really a type. This is just a void pointer used to pass any user-defined
 	    // structures as a BACI Action parameter. <b>THIS COULD NOT BE USED AS BACI TYPE!</b>
 	case type_pointer:
-	    //in this case - it's safe to do nothing and tk_null will be 
+	    //in this case - it's safe to do nothing and tk_null will be
 	    //used
 	    break;
-	    
+
 	    // A string.
 	case type_string:
 	    any <<= this->getValue((char **)0);
-	    break;   
-	    
+	    break;
+
 	    // A IEEE 8-byte floating point number.
 	case type_double:
 	    any <<= this->doubleValue();
-	    break;    
-	    
+	    break;
+
 	    // 32-bit signed integer.
 	case type_long:
 	    any <<= this->longValue();
-	    break;      
+	    break;
 
 	    // A bit former pattern.
 	case type_uLongLong /*type_pattern*/:
@@ -423,57 +424,57 @@ BACIValue::getAny(CORBA::Any &any) const
 		//it's already in any format.
 		any = any_m;
 		}
-	    else 
+	    else
 		{
 		any <<= this->patternValue();
 		}
 
-	    break;   
-	    
+	    break;
+
 	    // Sequence of double-s.
 	case type_doubleSeq:
 	    any <<= this->doubleSeqValue();
-	    break; 
-	    
+	    break;
+
 	    // Sequencs of long-s.
 	case type_longSeq:
 	    any <<= this->longSeqValue();
-	    break;   
-	    
+	    break;
+
 	    // 64-bit signed integer.
 	case type_longLong:
 	    any <<= this->longLongValue();
-	    break; 
-	    
+	    break;
+
 /*TBdeleted	    // 64-bit unsigned integer.
 	case type_uLongLong:
 	    any <<= this->uLongLongValue();
-	    break; 
-*/    
+	    break;
+*/
 	    // Sequence of string-s.
 	case type_stringSeq:
 	    any <<= this->stringSeqValue();
 	    break;
-	    
+
 	    // A IEEE 4-byte floating point number.
 	case type_float:
 	    any <<= this->floatValue();
 	    break;
-	    
+
 	    // Sequence of float-s.
 	case type_floatSeq:
 	    any <<= this->floatSeqValue();
 	    break;
-	 
+
 	    // Have no idea how this could occur but just in case...
 	default:
 	    ACS_SHORT_LOG((LM_ERROR, "BACIValue::getAny - type not supported!"));
 	    break;
-	 
+
 	}
 
     return;
-}    
+}
 
 
 // ------------------[ Stream extraction ]-----------------------
@@ -483,7 +484,7 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 
 #ifndef MAKE_VXWORKS
 // for some reason does not work for VxWorks !!!!
-    // get length 
+    // get length
     is.seekg (0, ios::end);
     int length = is.tellg();
     is.seekg (0, ios::beg);
@@ -510,7 +511,7 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 
     // copy
     data = (const char*)buffer;
-#ifdef MAKE_VXWORKS    
+#ifdef MAKE_VXWORKS
     is.clear();
 #endif
     // delete buffer
@@ -524,6 +525,9 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 // REVISION HISTORY:
 //
 // $Log: baciValue.cpp,v $
+// Revision 1.111  2008/12/29 08:34:43  bjeram
+// aligned BACIValue::typeName and BACIValue::archiveTypeName with BACIValue::Type enum.
+//
 // Revision 1.110  2008/08/21 15:30:52  bjeram
 // after increasing size of pattern from 32 to 64 bits (COMP-2146) there is not anymore difference between unsingle long long and patter
 //
