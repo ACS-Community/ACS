@@ -72,7 +72,7 @@ import alma.tools.idlgen.IDLComponentTester;
 public class ComponentHelperGeneratorProxy
 {
 	// key = interface name , value = interface node
-	private Map m_interfaceMap;
+	private Map<String, IdlInterface> m_interfaceMap;
 	
 	private JavaPackageScout m_packageScout;
 
@@ -102,7 +102,7 @@ public class ComponentHelperGeneratorProxy
 	 */
 	public void setOriginalParseTree(IdlObject root, String rootPackage)
 	{
-		HashMap interfaceMap = new HashMap();
+		HashMap<String, IdlInterface> interfaceMap = new HashMap<String, IdlInterface>();
 		collectACSComponents(root, interfaceMap);
 		m_interfaceMap = interfaceMap;
 		
@@ -131,7 +131,7 @@ public class ComponentHelperGeneratorProxy
 
 	/**
 	 * Traverses the tree under <code>node</code> and puts all interface nodes into the map
-	 * if the interface has ACSComponent as an acestor.
+	 * if the interface has ACSComponent as an ancestor.
 	 * @param node  IDL parse tree node
 	 * @param interfaceMap  will get interfaces (key=name, value=IdlObject)
 	 */
@@ -171,11 +171,11 @@ public class ComponentHelperGeneratorProxy
 	 */
 	public void generateComponentHelperCode()
 	{		
-		for (Iterator iter = m_interfaceMap.keySet().iterator(); iter.hasNext();)
+		for (Iterator<String> iter = m_interfaceMap.keySet().iterator(); iter.hasNext();)
 		{
-			String interfaceName = (String) iter.next();
-						
-			IdlInterface idlInterface = (IdlInterface) m_interfaceMap.get(interfaceName);
+			String interfaceName = iter.next();
+
+			IdlInterface idlInterface = m_interfaceMap.get(interfaceName);
 			String idlPackageName = m_packageScout.getPackage(idlInterface);
 			
 			// the name might have changed between invocations of setOriginalParseTree
