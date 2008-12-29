@@ -110,9 +110,12 @@ public class IdlTreeManipulator
 		boolean isXmlAffected = false;
 
 		// since ACS 3.0, ignore interfaces that don't inherit from ACS::ACSComponent
-		if (node.kind() == IdlType.e_interface && !IDLComponentTester.isACSComponent((IdlInterface) node))
-		{
-			return false;
+		// since ACS 8.0.1, include also ACS::OffShoot interfaces
+		if (node.kind() == IdlType.e_interface) {
+			IdlInterface idlInterface = (IdlInterface) node;
+			if (!IDLComponentTester.isACSComponent(idlInterface) && !IDLComponentTester.isACSOffshoot(idlInterface)) {
+				return false;
+			}
 		}
 
 		// identifier node?

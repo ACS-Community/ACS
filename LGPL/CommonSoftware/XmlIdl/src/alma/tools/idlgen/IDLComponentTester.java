@@ -37,8 +37,9 @@ public class IDLComponentTester
 {
 
 	public static final String ACSCOMPONENT_IDLTYPE = "IDL:alma/ACS/ACSComponent:1.0";
+	public static final String ACSOFFSHOOT_IDLTYPE = "IDL:alma/ACS/OffShoot:1.0";
 	
-	private static HashMap s_allInterfaces;
+	private static HashMap<String, IdlInterface> s_allInterfaces;
 	
 	
 	/**
@@ -50,7 +51,7 @@ public class IDLComponentTester
 	 */
 	public static void collectInterfaces(IdlObject root)
 	{
-		s_allInterfaces = new HashMap(); 
+		s_allInterfaces = new HashMap<String, IdlInterface>(); 
 		collectInterfaces(root, s_allInterfaces);
 	}
 	
@@ -59,12 +60,12 @@ public class IDLComponentTester
 	 * @param node  IDL parse tree node
 	 * @param interfaceMap  will get interfaces (key=IdlInterface#name, value=IdlInterface)
 	 */	
-	private static void collectInterfaces(IdlObject node, HashMap interfaceMap)
+	private static void collectInterfaces(IdlObject node, HashMap<String, IdlInterface> interfaceMap)
 	{
 		if (node.kind() == IdlType.e_interface)
 		{
 			// keep the name separate because it is "volatile"
-			interfaceMap.put(node.name(), node);
+			interfaceMap.put(node.name(), (IdlInterface)node);
 		}
 		else
 		{
@@ -78,9 +79,17 @@ public class IDLComponentTester
 			// important to reset -- otherwise we'll get an ArrayIndexOutOfBounds ex later 
 			// while traversing the tree in JavaPackageScout# 
 			node.reset();
-		}		
+		}
 	}
 	
+	public static boolean isACSComponent(IdlInterface interfaceNode) {
+		return isACSInterface(interfaceNode, ACSCOMPONENT_IDLTYPE);
+	}
+	
+	public static boolean isACSOffshoot(IdlInterface interfaceNode) {
+		return isACSInterface(interfaceNode, ACSOFFSHOOT_IDLTYPE);
+	}
+
 	/**
 	 * Calls {@link IdlInterface#getInheritance()} recursively on <code>interfaceNode</code>
 	 * and returns true if <code>IDL:alma/ACS/ACSComponent:1.0</code> 
@@ -88,18 +97,18 @@ public class IDLComponentTester
 	 * <p>
 	 * The method {@link #collectInterfaces(IdlObject)} must be called before this method.  
 	 */
-	public static boolean isACSComponent(IdlInterface interfaceNode) 
+	protected static boolean isACSInterface(IdlInterface interfaceNode, String acsInterfaceId) 
 	{
 		if (s_allInterfaces == null)
 		{
 			throw new NullPointerException("must first call #collectInterfaces before calling #isACSComponent");
 		}
 		
-		boolean isACSComponent = false;
+		boolean isACSInterface = false;
 		
-		if (interfaceNode.getId().equals(ACSCOMPONENT_IDLTYPE))
+		if (interfaceNode.getId().equals(acsInterfaceId))
 		{
-			isACSComponent = true;
+			isACSInterface = true;
 		}
 		else
 		{
@@ -108,12 +117,12 @@ public class IDLComponentTester
 			
 			for (Iterator iter = inheritance.iterator(); iter.hasNext();)
 			{
-				IdlInterface inheritedIF = (IdlInterface) iter.next();							
+				IdlInterface inheritedIF = (IdlInterface) iter.next();
 
 				// because of some bug or ugly feature of OpenORB, we can't just ask the 
 				// base interface for its base interfaces (would claim to not have any...)
 				// As a workaround, we take the IdlInterface object from the map.
-				IdlInterface realInheritedIF = (IdlInterface) s_allInterfaces.get(inheritedIF.name());
+				IdlInterface realInheritedIF = s_allInterfaces.get(inheritedIF.name());
 				
 				if (realInheritedIF == null)
 				{
@@ -121,15 +130,13 @@ public class IDLComponentTester
 				}
 				
 				// recursion
-				if (isACSComponent(realInheritedIF))
+				if (isACSInterface(realInheritedIF, acsInterfaceId))
 				{
-					isACSComponent = true;
+					isACSInterface = true;
 					break;
 				}
 			}
 		}
-		return isACSComponent;
+		return isACSInterface;
 	}
-	
-
 }
