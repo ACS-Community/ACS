@@ -39,7 +39,7 @@ import alma.tools.idlgen.comphelpgen.ComponentHelperGeneratorProxy;
  * for use with XML binding classes.
  * The generated code will be similar but different from the output of a regular CORBA IDL compiler.  
  * IDL interfaces, structs, etc. that contain a field or parameter of type <code>XmlEntityStruct</code>
- * will be compiled into source code that contains a corresponding XML binding class.  
+ * will be compiled into source code that contains a corresponding XML binding class. 
  * <p>
  * In collaboration with the other classes from this package, this class 
  * performs the following steps for each IDL file specified:
@@ -170,11 +170,11 @@ public class XmlIdlCompiler
 		{
 			compHelpGen = new ComponentHelperGeneratorProxy(compHelperOutDir, IdlCompiler.verbose);
 		}
-		else if (IdlCompiler.verbose)	
+		else if (IdlCompiler.verbose)
 		{
 			System.out.println("no code generation for component helper classes was selected...");
 		}
-				
+
 
 		// -- build parse tree --
 		

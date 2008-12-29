@@ -294,7 +294,7 @@ public class JavaGenerator extends IdlToJava
 	 * According to the OMG IDL2Java mapping, <i>Typedefs for types that are neither arrays nor sequences 
 	 * are unwound to their original type until a simple IDL type or user-defined IDL type 
 	 * (of the non typedef variety) is encountered. Holder classes are generated for 
-	 * sequence and array typedefs only. The unwound type’s Holder class is used for the other cases.</i>
+	 * sequence and array typedefs only. The unwound type's Holder class is used for the other cases.</i>
 	 * <p>
 	 * A <code>SchedBlock</code> typedef would not get its own SchedBlockHolder according to the mapping rules,
 	 * but <code>EntityStructHolder</code> would be used instead.
