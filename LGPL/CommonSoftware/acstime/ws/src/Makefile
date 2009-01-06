@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2007/09/24 16:19:24 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.25 2009/01/06 19:49:23 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -26,19 +26,7 @@ DEBUG=on
 
 #
 # additional include and library search paths
-PYTHON_INC_DIR  = $(shell if [ -d $(PYTHON_ROOT)/include/python2.5 ];  then \
-                     echo $(PYTHON_ROOT)/include/python2.5; \
-                   elif [ -d $(PYTHON_ROOT)/include/python2.4 ];  then \
-                     echo $(PYTHON_ROOT)/include/python2.4; \
-	           elif [ -d $(PYTHON_ROOT)/include/python2.3 ];  then \
-	             echo $(PYTHON_ROOT)/include/python2.3; \
-	           elif [ -d $(PYTHON_ROOT)/include/python2.2 ];  then \
-	             echo $(PYTHON_ROOT)/include/python2.2; \
-                   else \
-                     echo "Python version is not 2.4, 2.3 or 2.2"; \
-		   fi;)
-
-USER_INC = -I$(PYTHON_INC_DIR)
+USER_INC = -I$(PYTHONINC)
 #USER_LIB = 
 
 #
