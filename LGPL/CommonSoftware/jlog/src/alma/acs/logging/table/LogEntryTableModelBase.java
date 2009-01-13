@@ -92,8 +92,14 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 				} catch (InterruptedException ie) {
 					continue;
 				}
-				// Are there are new logs to add?
-				flushLogs();
+				// Refresh the content of the table before refreshing
+				try {
+					updateTableEntries();
+				} catch (Throwable t) {
+					// This thread never fails!
+					System.err.println("Error in thread "+getName()+": "+t.getMessage());
+					t.printStackTrace(System.err);
+				}
 			}
 		}
 	}
@@ -225,8 +231,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			 }
 			 return ret;
 		 } catch (Exception e) {
-			System.out.println("What here? "+e.getMessage());
-			e.printStackTrace();
+			 // This can happen because deletion/adding of logs is asynchronous
+			 // We can return null and safely ignore this exception
 			return null;
 		 }
 	 }
@@ -380,12 +386,23 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	}
 	
 	/**
+	 * Update the table entries before refreshing the table
+	 * 
+	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
+	 */
+	protected void updateTableEntries() {
+		flushLogs();
+	}
+	
+	/**
 	 * Flush the logs from the temporary vector into the table.
 	 * <P>
 	 * New logs are appended in the temporary vector <code>rowsToAdd</code> to limit 
 	 * the frequency of updating the table model.
 	 * This method flushes the logs from the temporary vector into the model vector 
 	 * (<code>rows</code>).
+	 * 
+	 * @return <code>true</code> if at least one log has been added to the model
 	 */
 	private void flushLogs() {
 		int added=0;
@@ -401,13 +418,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			}
 		}
 		if (added>0) {
-			try {
-				fireTableRowsInserted(first, first+added-1);
-			} catch (Exception e) {
-				// This can happen while deleting and adding logs at
-				// the same time.
-				// It seems enough to mask this exception
-			}
+			fireTableRowsInserted(first, rows.size()-1);
 		}
 	}
 	

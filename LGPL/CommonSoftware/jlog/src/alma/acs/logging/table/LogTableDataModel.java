@@ -45,125 +45,6 @@ import com.cosylab.logging.client.cache.LogCacheException;
  * @author: Ales Pucelj (ales.pucelj@kgb.ijs.si)
  */
 public class LogTableDataModel extends LogEntryTableModelBase {
-	/**
-	 * The class contains a thread to delete asynchronously
-	 * the logs running at low priority.
-	 * The thread runs once awhile as specified by the TIME_INTERVAL 
-	 * local variable.
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	public class LogDeleter extends Thread {
-		/** 
-		 * The time interval between two iteration of the thread
-		 */
-		private final int TIME_INTERVAL=30;
-		
-		/**
-		 * The thread to delete logs
-		 * The deletion must be done asynchronously to avoid blocking the GUI
-		 */
-		private Thread deleterThread=null;
-		
-		/** 
-		 * Signal the thread to terminate
-		 */
-		private volatile boolean terminateThread=false;
-
-		
-		/**
-		 * Constructor
-		 *
-		 */
-		public LogDeleter() {
-			super("LogDeleter");
-		}
-		
-		/**
-		 * Terminate the thread
-		 * 
-		 * @param sync If it is true wait the termination of the thread before returning
-		 */
-		public void close(boolean sync) {
-			terminateThread=true;
-			interrupt();
-			if (sync) {
-				while (this.isAlive()) {
-					try {
-						Thread.sleep(125);
-					} catch (InterruptedException ie) {
-						continue;
-					}
-				}
-			}
-		}
-		
-		/** 
-		 * The thread to delete logs.
-		 * <P>
-		 * The table is notified about the deletion of the logs but logs are removed
-		 * from the data structures of the model later by a dedicated thread
-		 */
-		public void run() {
-			while (!terminateThread) {
-				
-				try {
-					Thread.sleep(1000*TIME_INTERVAL);
-				} catch (InterruptedException e) {
-					continue;
-				}
-				// Do not do anything if the application is paused 
-				if (loggingClient.isPaused() || maxLog<=0) {
-					continue;
-				}
-				
-				// Is there another delete in progress?
-				// If yes then wait for it to terminate
-				if (deleterThread!=null) {
-					try {
-						deleterThread.join();	
-					} catch (InterruptedException e) {
-						continue;
-					}
-				}
-				
-				Integer[] keys=null;
-				int removed=0;
-				synchronized (rowsToAdd) {
-					synchronized (rows) {
-						removed= rows.size()-maxLog;
-						if (removed>0) {
-							keys = new Integer[removed];
-							for (int t=0; t<removed; t++) {
-								keys[t]=rows.get(t);
-							}
-							rows.removeFirstEntries(removed);
-						}
-					}
-				}
-				if (removed<=0) {
-					continue;
-				}
-				fireTableRowsDeleted(0, removed-1);
-				
-				class DeleteFromCache implements Runnable {
-					private final Integer[] keys;
-					public DeleteFromCache(Integer[] k) {
-						keys=k;
-					}
-					public void run() {
-						deleteLogs(keys);	
-					}
-				}
-				
-				deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");
-				deleterThread.setDaemon(true);
-				deleterThread.start();
-				keys=null;
-			}
-		}
-	}
     
     /** 
      * The LoggingClient that owns this table model
@@ -201,16 +82,33 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	private long timeFrame=0;
 	
 	/**
-	 * The thread to delete the logs asynchronously
+	 * The time interval between 2 removal of logs from the table
 	 */
-	private LogDeleter logDeleter;
+	private final int DELETION_INTERVAL_TIME=30*1000;
+	
+	/**
+	 * The thread removing logs from the cache.
+	 * <P>
+	 * During a deletion of logs, logs are immediately removed by the table 
+	 * (i.e. from the <code>rows</code> vector) but they are removed from the cache
+	 * by this thread. 
+	 */
+	private Thread deleterThread=null;
+	
+	/**
+	 * The time to check for deletion.
+	 * <P>
+	 * The deletion is triggered by the calling of <code>updateTableEntries()</code>
+	 * by {@link LogEntryTableModelBase.TableUpdater}.
+	 * 
+	 */
+	private long nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
 	
 	/**
 	 * Returns whether the saving/loading of the file has been cancelled or not that reflects on the
 	 * status of the JToggleButton of the GUI. If canceled, then the button should be released. 
 	 */
 	public final boolean getSuspended() {
-	
 		return isSuspended;	
 	}
 	
@@ -223,10 +121,6 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 			throw new IllegalArgumentException("Invalid null LoggingClient");
 		}
 		this.loggingClient=client;
-		
-		logDeleter=new LogDeleter();
-		logDeleter.setPriority(Thread.MIN_PRIORITY);
-		logDeleter.start();
 	}
 	
 	/**
@@ -454,12 +348,6 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 * @param sync If it is true wait the termination of the threads before returning
 	 */
 	public void close(boolean sync) {
-		if (logDeleter!=null) {
-			logDeleter.interrupt();
-			logDeleter.close(sync);
-			logDeleter=null;
-		}
-		
 		if (ioHelper!=null) {
 			ioHelper.done();
 			ioHelper=null;
@@ -499,6 +387,73 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Update the table entries before refreshing the table
+	 * 
+	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
+	 */
+	@Override
+	protected void updateTableEntries() {
+		super.updateTableEntries();
+		if (System.currentTimeMillis()>nextDeletionCheckTime) {
+			deleteLogsFromTable();
+		}
+	}
+	
+	
+	private void deleteLogsFromTable() {
+		// Do not delete logs if the application is paused 
+		if (loggingClient.isPaused() || maxLog<=0) {
+			nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
+			return;
+		}	
+		
+		// Is there another delete in progress?
+		// If yes then skip this iteration
+		if (deleterThread!=null && deleterThread.isAlive()) {
+			nextDeletionCheckTime=System.currentTimeMillis()+1000;
+			return;
+		}
+		
+		Integer[] keys=null;
+		int removed=0;
+		synchronized (rowsToAdd) {
+			synchronized (rows) {
+				removed= rows.size()-maxLog;
+				if (removed>0) {
+					keys = new Integer[removed];
+					for (int t=0; t<removed; t++) {
+						keys[t]=rows.get(t);
+					}
+					rows.removeFirstEntries(removed);
+				} 
+			}
+		}
+		
+		class DeleteFromCache implements Runnable {
+			private final Integer[] keys;
+			public DeleteFromCache(Integer[] k) {
+				keys=k;
+			}
+			public void run() {
+				deleteLogs(keys);
+			}
+		}
+		
+		
+		nextDeletionCheckTime=System.currentTimeMillis()+DELETION_INTERVAL_TIME;
+		if (removed<=0) {
+			return;
+		}
+		fireTableRowsDeleted(0, removed-1);
+		
+		deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");
+		deleterThread.setDaemon(true);
+		deleterThread.start();
+		keys=null;	
+		
 	}
 
 }
