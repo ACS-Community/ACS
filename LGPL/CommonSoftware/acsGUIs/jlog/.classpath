@@ -21,11 +21,12 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/lcEngine.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="lib" path="/jlogEngine/lib/lcEngine.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
