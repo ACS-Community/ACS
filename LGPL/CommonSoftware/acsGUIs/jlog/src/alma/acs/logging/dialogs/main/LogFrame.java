@@ -36,6 +36,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
+import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -96,8 +97,10 @@ public class LogFrame extends JFrame implements WindowListener {
 		
 		//	Load the filters (if any)
 		if (filterFile!=null) {
+			FiltersVector filters = new FiltersVector();
 			try {
-				loggingClient.getLogEntryTable().getFilters().loadFilters(filterFile,true,null);
+				filters.loadFilters(filterFile, true, null);
+				loggingClient.getLogEntryTable().setFilters(filters, false);
 			} catch (Throwable t) {
 				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
 			}
