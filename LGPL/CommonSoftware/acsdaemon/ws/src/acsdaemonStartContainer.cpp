@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.13 2008/06/27 11:41:07 msekoran Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.14 2009/01/15 11:51:59 hsommer Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -30,8 +30,8 @@ static struct option long_options[] = {
         {"instance",    required_argument, 0, 'i'},
         {"host",        required_argument, 0, 'H'},
         {"daemon",      required_argument, 0, 'd'},
-        {"additional",   required_argument, 0, 'a'},
-        {"modifier",   optional_argument, 0, 'm'},
+        {"additional",  required_argument, 0, 'a'},
+        {"modifier",    optional_argument, 0, 'm'},
         {0, 0, 0, '\0'}};
 
 void 
@@ -39,13 +39,13 @@ usage(const char *argv)
 {
     ACE_OS::printf ("\n\tusage: %s {-h} -i INSTANCE -t TYPE -c CONTAINER [-d DAEMONREF] [-H HOST] [-m TYPE-MODIFIER] [-a more options]", argv);
     ACE_OS::printf ("\t   -h, --help         show this help message\n");
-    ACE_OS::printf ("\t   -t, --type         container type: cpp, java, java-archive, py\n");
-    ACE_OS::printf ("\t   -c, --container     container name\n");
+    ACE_OS::printf ("\t   -t, --type         container type: cpp, java, py\n");
+    ACE_OS::printf ("\t   -c, --container    container name\n");
     ACE_OS::printf ("\t   -i, --instance     ACS instance to use\n");
     ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
-    ACE_OS::printf ("\t   -a, --additional    passthrough options for startContaner. Put option between \"\"\n");
-    ACE_OS::printf ("\t   -m, --modifier    type modifier for the container.  More than one can be specified.\n");
+    ACE_OS::printf ("\t   -a, --additional   passthrough options for startContaner. Put option between \"\"\n");
+    ACE_OS::printf ("\t   -m, --modifier     type modifier for the container (e.g. archiveContainer).  More than one can be specified.\n");
 }
 
 int
