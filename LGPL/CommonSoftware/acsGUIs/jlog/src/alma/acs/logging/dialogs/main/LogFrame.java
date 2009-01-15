@@ -32,7 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
@@ -60,13 +59,14 @@ public class LogFrame extends JFrame implements WindowListener {
 	private ShutdownHook shutdownHook;
 	
 	/**
-	 * Constructor
-	 * Creates the main window and setup the panel with the controls.
+	 * Constructor: creates the main window and setup the panel with the controls.
 	 * 
 	 * @param filterFile A file of filters to load
-	 *                   It can be null if there are no filters to load
+	 *                   It can be <code>null</code> if there are no filters to load
+	 * @param engineFilterFile A file of filters to set in the engine
+	 * 					It can be <code>null</code> if there are no filters to load in the engine
 	 * @param logFile A file of logs to load
-	 *                It can be null if there are no logs to load
+	 *                It can be <code>null</code> if there are no logs to load
 	 * @param discardLevel The discard level to set in the engine; 
 	 *                     If <code>null</code> the level in the engine is not set and the default is used
 	 * @param doNotConnect If <code>true</code> do not try to connect to ACS (i.e. start offline)
@@ -74,7 +74,8 @@ public class LogFrame extends JFrame implements WindowListener {
 	 *                  otherwise the default is used
 	 */
 	public LogFrame(
-			File filterFile, 
+			File filterFile,
+			File engineFilterFile, 
 			String logFileName, 
 			LogTypeHelper discardLevel, 
 			boolean doNotConnect, 
@@ -95,7 +96,7 @@ public class LogFrame extends JFrame implements WindowListener {
         pack();
 		setVisible(true);
 		
-		//	Load the filters (if any)
+		//	Load the filters in the table (if any)
 		if (filterFile!=null) {
 			FiltersVector filters = new FiltersVector();
 			try {
@@ -103,6 +104,17 @@ public class LogFrame extends JFrame implements WindowListener {
 				loggingClient.getLogEntryTable().setFilters(filters, false);
 			} catch (Throwable t) {
 				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading filters", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		
+		// Set the filters in the engine
+		if (engineFilterFile!=null) {
+			FiltersVector filters = new FiltersVector();
+			try {
+				filters.loadFilters(engineFilterFile, true, null);
+				loggingClient.getEngine().setFilters(filters, false);
+			} catch (Throwable t) {
+				JOptionPane.showMessageDialog(null, "Error: "+t.getMessage(), "Error loading engine filters", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		
@@ -155,16 +167,22 @@ public class LogFrame extends JFrame implements WindowListener {
 		// First check if there are parameter in the command line
 		
 		/** 
-		 * If it is null then the user specified a file name in the
+		 * If it is not <code>null</code> then the user specified a file name in the
 		 * command line
 		 */
 		String initLogFileName = null;
 		
 		/** 
-		 * If it is null then the user specified a filter file name in the
+		 * If it is not <code>null</code> then the user specified a filter file name in the
 		 * command line
 		 */
 		String initFilterFileName = null;
+		
+		/** 
+		 * If it is not <code>null</code> then the user specified an engine  filter 
+		 * file name in the command line
+		 */
+		String initEngineFilterFileName = null;
 		
 		/**
 		 *  <code>true</code> if the user do not want the logging client tries to connect to ACS 
@@ -185,9 +203,9 @@ public class LogFrame extends JFrame implements WindowListener {
 		LogTypeHelper initialDiscardLevel=LoggingClient.DEFAULT_DISCARDLEVEL;
 		
 		// First check if there are parameter in the command line
-		if (args.length>7) {
+		if (args.length>9) {
 			// Wrong number of params
-			printUsage("cmd line too long");
+			printUsage("Cmd line too long");
 			System.exit(-1);
 		} else if (args.length>0) {
 			// Retrieve the params
@@ -204,6 +222,20 @@ public class LogFrame extends JFrame implements WindowListener {
 					} else {
 						// -f was the last param in the cmd
 						printUsage("No filter file name after "+args[t-1]);
+						System.exit(-1);
+					}
+				} else if (args[t].equals("-e") || args[t].equals("--engineFilter")){
+					t++;
+					if (t<args.length) {
+						initEngineFilterFileName=args[t];
+						System.out.println("Using engine filter file "+initEngineFilterFileName);
+					} else if (initEngineFilterFileName!=null) {
+						// A filter file for the engine was already defined
+						printUsage("Two engine filter file names in cmd line");
+						System.exit(-1);
+					} else {
+						// -e was the last param in the cmd
+						printUsage("No engine filter file name after "+args[t-1]);
 						System.exit(-1);
 					}
 				} else if (args[t].compareTo("-d")==0 || args[t].compareTo("--discard")==0) {
@@ -261,11 +293,16 @@ public class LogFrame extends JFrame implements WindowListener {
 		File filterFile = null;
 		if (initFilterFileName!=null) {
 			filterFile = new File(initFilterFileName);
-			if (!filterFile.exists()) {
-				System.err.println("Filter file "+initFilterFileName+" does not exist!");
+			if (!filterFile.canRead()) {
+				System.err.println("Filter file "+initFilterFileName+" is unreadable!");
 				System.exit(-1);
 			}
-			if (!filterFile.canRead()) {
+		}
+		
+		File engineFilterFile = null;
+		if (initEngineFilterFileName!=null) {
+			engineFilterFile = new File(initEngineFilterFileName);
+			if (!engineFilterFile.canRead()) {
 				System.err.println("Filter file "+initFilterFileName+" is unreadable!");
 				System.exit(-1);
 			}
@@ -276,27 +313,38 @@ public class LogFrame extends JFrame implements WindowListener {
 			// Create the frame
 			class FrameLauncher extends Thread {
 				File f;
+				File ef;
 				String name;
 				boolean offline;
 				LogTypeHelper discard;
 				boolean noLimit;
-				public FrameLauncher(File fltFile, String initFileName, LogTypeHelper initDiscard, boolean noACS, boolean unlimit) {
+				public FrameLauncher(
+						File fltFile, 
+						File engfltFile, 
+						String initFileName, 
+						LogTypeHelper initDiscard, 
+						boolean noACS, 
+						boolean unlimit) {
 					f=fltFile;
+					ef=engfltFile;
 					name=initFileName;
 					discard=initDiscard;
 					offline=noACS;
 					noLimit=unlimit;
 				}
 				public void run() {
-					new LogFrame(f,name,discard,offline,noLimit);
+					new LogFrame(f,ef,name,discard,offline,noLimit);
 				}
 			}
-			SwingUtilities.invokeLater(new FrameLauncher(filterFile,initLogFileName,initialDiscardLevel,doNotConnect,unlimited));
-		}
-		catch (Throwable exception)
-		{
+			SwingUtilities.invokeLater(new FrameLauncher(
+					filterFile,
+					engineFilterFile,
+					initLogFileName,
+					initialDiscardLevel,
+					doNotConnect,unlimited));
+		} catch (Throwable exception) {
 			System.err.println("Exception occurred in main() of LoggingFrame");
-			exception.printStackTrace(System.out);
+			exception.printStackTrace(System.err);
 		}
 	}
 	
@@ -311,7 +359,7 @@ public class LogFrame extends JFrame implements WindowListener {
 			System.out.println("Wrong parameters: "+errorMsg);
 		}
 		System.out.println("USAGE:");
-		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName] [(-d|--discard) (NONE|discard level)] [-dnc|--DoNotConnect] [-u||--unlimited]\n");
+		System.out.println("jlog [logFileName] [(-f|--filter) filterFileName] [(-e|--engineFilter) filterFileName][(-d|--discard) (NONE|discard level)] [-dnc|--DoNotConnect] [-u||--unlimited]\n");
 	}
 	
 	/**
