@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.1 2008/11/18 00:01:39 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.2 2009/01/15 23:20:56 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,6 +25,7 @@
 #
 
 #--REGULAR IMPORTS-------------------------------------------------------------
+import sys
 import unittest
 import mock
 import CORBA
@@ -92,7 +93,12 @@ class TestCommonNC(unittest.TestCase):
     
     def setUp(self):
         self.nc = CommonNC("Channel", mock.Mock())
+        self.original = sys.stderr
+        sys.stderr = mock.Mock(spec=sys.stderr)
 
+    def tearDown(self):
+        sys.stderr = self.original
+        
     @mock.patch_object(Acspy.Nc.CommonNC,'cdb_channel_config_exists', mockNotExists)
     def test_configAdminProps_noconfig(self):
         """CommonNC configAdminProps returns expected value when no CDB configuration defined"""

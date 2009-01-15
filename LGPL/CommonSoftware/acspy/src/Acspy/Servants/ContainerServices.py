@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.28 2007/12/07 17:03:13 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -161,10 +161,7 @@ class ContainerServices:
         Raises: Nothing
         '''
         if not self.__logger:
-            if self.__contname:
-                self.__logger = getLogger(".".join([self.__contname, self.__name]))
-            else:
-                self.__logger = getLogger(self.__name)
+            self.__logger = getLogger(self.__name)
         return self.__logger
     #--------------------------------------------------------------------------
     def getComponent(self,

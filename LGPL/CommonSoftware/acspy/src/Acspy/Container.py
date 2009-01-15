@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.40 2008/11/04 10:48:14 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -543,20 +543,12 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             for cfg in logconfig:
                 if cfg["Name"] == name:
                     try:
-                        # Environment variable takes precedence over CDB configuration
-                        if 'ACS_LOG_CENTRAL' in environ:
-                            centrallevel = int(environ['ACS_LOG_CENTRAL'])
-                        else:
-                            centrallevel = int(cfg['minLogLevel'])
+                        centrallevel = int(cfg['minLogLevel'])
                     except KeyError:
                         # No value was supplied so default is used
                         centrallevel = defaultlevels.minLogLevel
                     try:
-                        # Environment variable takes precedence over CDB configuration
-                        if 'ACS_LOG_STDOUT' in environ:
-                            locallevel = int(environ['ACS_LOG_STDOUT'])
-                        else:
-                            locallevel = int(cfg['minLogLevelLocal'])
+                        locallevel = int(cfg['minLogLevelLocal'])
                     except KeyError:
                         # No value was supplied so default is used
                         locallevel = defaultlevels.minLogLevelLocal
