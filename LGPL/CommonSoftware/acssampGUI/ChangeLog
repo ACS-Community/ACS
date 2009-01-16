@@ -1,7 +1,232 @@
-1008-08-27 13:04  rtobar
+2008-12-26 13:49  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java:
+	  Improving documenation and in line comments
+
+2008-12-26 04:10  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java:
+	  Changes in the correlator to add a mean aproximation for the
+	  missing values
+
+2008-12-26 03:42  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java:
+	  Uploading new version of the SSG, using the new sampling data
+	  handler (FilePrinter + SamplingDataCorrelator)
+
+2008-12-26 03:30  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java: Now
+	  the data correlator uses minimal space to corralate the data.
+
+2008-12-26 02:21  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java: First
+	  implementation of the Data Correlator. This allows to combine
+	  multiples files into one in which the timestamps are correlated
+	  among them.
+
+2008-12-26 02:20  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/FilePrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/core/DataItem.java: Minor changes
+	  in documentation
+
+2008-12-25 20:42  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/FilePrinter.java: Uploading first
+	  implementation of the FilePrinter. This one allows to prints just
+	  in time as the data arrives, to a file.
+
+2008-12-25 15:55  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/WidgetPrinter.java: Lots of new
+	  documentation and code clean up.
+
+2008-12-12 03:56  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java: Just some
+	  formatting
+
+2008-12-12 02:41  rtobar
+
+	* /test/Makefile, /test/TestList.lite, /test/samplingSystemUI.sh,
+	  /test/testSamplingSystemUI.sh: Moved samplingSystemUI.sh ->
+	  testSamplingSystemUI.sh
+
+2008-12-10 14:35  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Changing the
+	  default frequency from 100 to 10Hz
+
+2008-10-29 20:22  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Enabling freq
+	  and sampTime in BeanGrouper when it cannot start any sample
+
+2008-10-29 20:06  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java: verification of
+	  frecuency and time, only numbers
+
+2008-10-29 15:59  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Frecuency field
+	  change to 100 if user input is not a number
+
+2008-10-28 18:11  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SampTool.java: Added IDL type of
+	  Sampling Managers component to error message when none is found
+
+2008-10-27 15:08  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java: Using acsutil
+	  package classes instead of the Java ones
+
+2008-10-13 18:57  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java: Changing the
+	  filename extension addition from the Close method, to the
+	  initilize method.
+
+2008-10-07 22:53  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java: Problem with the
+	  .csv extension file apparentely fixed.
+
+2008-09-29 02:21  rtobar
+
+	* /idl/sampledComp.idl, /test/TATPrologue: Added security
+	  preprocessor directives on IDL file
+
+2008-09-29 01:39  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /src/cl/utfsm/samplingSystemUI/DataPrinter.java,
+	  /src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /src/cl/utfsm/samplingSystemUI/MemoryPrinter.java: Returning
+	  sampling counter to 0 when stopping sampling
+
+2008-09-29 01:24  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Not printing
+	  component/property on file header when not available
+
+2008-09-29 00:56  rtobar
+
+	* /src/Makefile: INSTALL_FILES modified on Makefile
+
+2008-09-29 00:52  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Missed a little
+	  diff
+
+2008-09-27 22:33  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java: Fixed bug FS#110
+	  - Contents on generated file on SSG, adding a check step to see
+	  if there is data to output in that timestamp.
+	  Also fixed the missing underscore in the filename.
+
+2008-09-27 22:19  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java: Bug FS#110,
+	  Conents on generated file on SSG Fixed. Created a new method in
+	  the FileHelper class that allows to cleanup its content, avoiding
+	  the extra columns creation.
+
+2008-09-26 18:00  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Scroll bar
+	  with good behaviour :)
+
+2008-09-26 17:51  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Enabling time of
+	  sampling and frequency of sampling text fields after stoping
+	  the current sampling group
+
+2008-09-26 17:23  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Correct
+	  extension on status file for SSG
+
+2008-09-17 01:14  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Fixed name
+	  of sampling file
+
+2008-09-17 01:08  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/RegexFormatter.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Changed
+	  JFormatedTextField for a simple JTextField, and added focus
+	  listener
+
+2008-09-17 00:27  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/RegexFormatter.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Adding a
+	  filename restriction for SampGroups. Only Alphanumeric and
+	  underscore can be accepted
+
+2008-09-10 21:09  ahoffsta
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /src/cl/utfsm/samplingSystemUI/FileHelper.java,
+	  /src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: The
+	  filename of the files, now start with the Sampling Group name.
+	  This code is an option to the default naming style, but the code
+	  uses this form now.
+
+2008-09-09 19:42  rtobar
+
+	* /src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Changed "mins"
+	  to "min" on BeanGrouper
+
+2008-09-02 04:21  rtobar
+
+	* /test/TATPrologue: Fixing a typo...
+
+2008-09-01 03:00  rtobar
+
+	* /include/sampledCompImpl.h, /test/sampledCompImpl.cpp: Using
+	  ACS_CString instead of just string. Removing some warning on the
+	  compilation
+
+2008-08-29 21:07  rtobar
+
+	* /include/sampledCompImpl.h, /test/sampledCompImpl.cpp: Compliant
+	  with Compilation on ACS VM
+
+2008-08-27 13:04  rtobar
+
 	* /include/sampledCompImpl.h: Explicitly added <string> to
-	sampledCompImpl.h (it didn't compiled on the standard test environment
-	of ACS)
+	  sampledCompImpl.h (it didn't compiled on the
+	  standard test environment of ACS)
+
+2008-08-19 22:29  rtobar
+
+	* /ChangeLog: Changelog with svn comments
+
+2008-08-19 21:50  rtobar
+
+	* /lib/python: Deleted unnecessary directory
 
 2008-08-19 21:27  rtobar
 
@@ -1069,4 +1294,4 @@
 	  the ssg-legacy
 	  repo.
 
-"@(#) $Id: ChangeLog,v 1.3 2008/08/27 14:02:42 rtobar Exp $"
+"@(#) $Id: ChangeLog,v 1.4 2009/01/16 21:48:42 ahoffsta Exp $"

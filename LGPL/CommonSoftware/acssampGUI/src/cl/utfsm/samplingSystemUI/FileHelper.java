@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import alma.acs.util.IsoDateFormat;
@@ -12,6 +11,14 @@ import alma.acs.util.UTCUtility;
 
 import cl.utfsm.samplingSystemUI.core.DataItem;
 
+/** Takes the data from the sampling groups and dumps it in correlated timestamps.
+ * 
+ * This class allows takes the ArrayLists that contains the data from a Sampling Group, <br />
+ * and when indicated so by the dumpToFile method, start the writing to a preestablished file.
+ * 
+ * @author javarias, abaltra
+ * @author  Arturo Hoffstadt Urrutia <ahoffsta[AT]inf.utfsm.cl>
+ */
 public class FileHelper {
 	
 	private String filename="";
@@ -19,51 +26,86 @@ public class FileHelper {
 	private FileWriter file;
 	private BufferedWriter writer;
 	private String header;
-	private int c[];
 	private ArrayList<ArrayList<DataItem>> data;
 	
+	
+	/**
+	 * Default constructor. Initialize the data array with empty values.
+	 */
 	public FileHelper(){
 		data = new ArrayList<ArrayList<DataItem>>();
 	}
-
+	
+	/**
+	 * Overloaded constructor that sets the prefix/group of the Sampling Group.
+	 * @param group
+	 */
 	public FileHelper( String group ){
 		data = new ArrayList<ArrayList<DataItem>>();
 		this.group = group;
 	}
-	
+
+	/**
+	 * Adds a Sampling Set to the array containing some (or all) the data to be printed to file.
+	 * @param samp Sampling Set (data from one property), to be added to the set of data to be printed to the file.
+	 */
 	public void addSamplingSet(ArrayList<DataItem> samp){
 		data.add(samp);
 	}
 	
+	/**
+	 * Re initialize the data, erasing everything.
+	 */
 	public void removeSamplingSets(){
 		data = new ArrayList<ArrayList<DataItem>>();
 	}
 	
+	/**
+	 * Sets the header that will be printed at the beginning of the file.
+	 * @param header Header of the content of the file. Is a resume of the properties.
+	 */
 	public void setHeaderFile(String header){
 		this.header=header;
 	}
 	
-	public void dumpToFile(long frequency){
-		dumpToFile(frequency,0.5);
+	/**
+	 * Sets the prefix for the filename. Usually the sampling group name.
+	 * @param prefix
+	 */
+	public void setFilePrefix( String prefix ){
+		this.group = prefix;
 	}
-	
+		
+	/**
+	 * @return Name of the file which the data will be dumped.
+	 */
 	public String getFileName(){
 		return filename;
 	}
 
-	public void setFilePrefix( String prefix ){
-		this.group = prefix;
-	}
-	
 	public void initialize(int freq){
 
 		IsoDateFormat fo = new IsoDateFormat();
-    		if( group == "" )
-                        filename = "samp_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
-                else
-                        filename = group+"_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
+		if( group == "" )
+			filename = "samp_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
+		else
+			filename = group+"_"+10000000L/freq+"_"+fo.format(new Date()) +".csv";
 	}
 	
+	/**
+	 * Start the dumping process.
+	 * @param frequency Frequency at which the data is to be separated in the printout file. 
+	 */
+	public void dumpToFile(long frequency){
+		dumpToFile(frequency,0.5);
+	}
+	
+	/**
+	 * Start the dumping process. This method should only be called if you know what you are doing.<br /> 
+	 * Setting the prec lower will get leaks of data, and setting it higher, will get you duplicated data.
+	 * @param frequency Frequency at which the data is to be separated in the printout file.
+	 * @param prec How much of the Frequency will each entry take as a valid interval of time to look forward and backward for data.
+	 */
 	public void dumpToFile(long frequency, double prec){
 
 		IsoDateFormat formater = new IsoDateFormat();
@@ -71,8 +113,7 @@ public class FileHelper {
 		boolean done = false;
 		frequency=10000000L/frequency;
 		long w = (long) (frequency*prec);
-		c=new
-		int[data.size()];
+		int [] c= new int[data.size()];
 		openFile();
 		try {
 			writer.write(header+"\n");
@@ -89,7 +130,8 @@ public class FileHelper {
 					continue;
 				}
 				DataItem item = data.get(i).get(c[i]);
-				if((item.getTime()>=(timestamp-w)) && (item.getTime()<=(timestamp+w))){
+				if((item.getTime()>=(timestamp-w)) && 
+				   (item.getTime()<=(timestamp+w))) {
 					line+=";"+item.getValue();
 					c[i]++;
 					dataPresent = true;
@@ -127,9 +169,13 @@ public class FileHelper {
 		}
 	}
 	
+	/**
+	 * Open the file with the filename specificated in the object.
+	 */
 	private void openFile(){
 		try {
-			file=new FileWriter(filename);
+	 	file=new FileWriter(filename);
+	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

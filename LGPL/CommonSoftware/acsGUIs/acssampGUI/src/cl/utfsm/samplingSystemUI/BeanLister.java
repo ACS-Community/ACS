@@ -68,6 +68,7 @@ public class BeanLister extends SamplingWidget{
 		jLabel4.setText("0");
 	}
 
+	
 	public void setComponentAvailable(boolean tmp, String reason) {
 		if( tmp == false ) {
 			jLabel1.setForeground(Color.RED);

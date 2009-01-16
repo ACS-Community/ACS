@@ -1,12 +1,12 @@
 /**
- *      @author Julio Araya (jaray[at]alumnos.inf.utfsm.cl) &
- *      Nicolas Troncoso (ntroncos[at]alumnos.inf.utfsm.cl)
+ *      @author Julio Araya (jaray[at]alumnos.inf.utfsm.cl)
+ *      @author Nicolas Troncoso (ntroncos[at]alumnos.inf.utfsm.cl)
  **/
 
 package cl.utfsm.samplingSystemUI.core;
 
 /**
-* Class that contains the current result of the analized Component. Also compares the current DataItem with an object.
+* Class that contains the current result of the analyzed Component. Also compares the current DataItem with an object.
 */
 public class DataItem {
 	long time=0;
@@ -14,7 +14,7 @@ public class DataItem {
 
 	/**
 	* Constructor, initializes the time and value variables.
-	* @param nTime Time (in miliseconds) since last sampling
+	* @param nTime Time (in milliseconds) since last sampling
 	* @param nValue Value obtained of a given sample on nTime
 	*/
 	public DataItem(long nTime, double nValue) {

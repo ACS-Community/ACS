@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.6 2008/10/09 08:40:18 cparedes Exp $"
+* "@(#) $Id: sampledCompImpl.h,v 1.7 2009/01/16 21:48:42 ahoffsta Exp $"
 *
 */
 

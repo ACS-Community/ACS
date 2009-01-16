@@ -16,7 +16,7 @@ import cl.utfsm.samplingSystemUI.core.ThreadCommunicator;
 
 public abstract class DataPrinter extends SamplingManagerUITool{
 	
-	protected long frecuency=100000; //set frecuency default to 100Hz
+	protected long frecuency=1000000; //set frequency default to 10Hz
 	protected long reportRate=1;
 	protected String component;
 	protected String property;
@@ -80,13 +80,9 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	public abstract void postProcessing();
 	
 	/**
-	 * 
-	 * @param frecuency
-	 * @param reportRate
-	 * @param component
-	 * @param property
-	 * @throws CouldntAccessComponentEx 
-	 * @throws TypeNotSupportedEx 
+	 * Starts the sampling, connecting to ACS Manager and the Sampling Manager.
+	 * @throws CouldntAccessComponentEx Component wasn't available at the time.
+	 * @throws TypeNotSupportedEx Sampling Manager specific exception. Some types are currently not supported in acssamp.
 	 */
 	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx {
 		samp = new Sampler();
@@ -147,6 +143,19 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	}
 	
 	/**
+	 * Allows to handle whether a component is or isn't available to be sampled.
+	 * @param available True if the component is currently available.
+	 * @param reason A explanation of the cause why the component isn't available.
+	 */
+	public void setComponentAvailable(boolean available, String reason) {
+		componentAvailable = available;
+	}
+	
+	public boolean isComponentAvailable() {
+		return componentAvailable;
+	}
+	
+	/**
 	 * Thread class for receive data from one notification channel. <br/>
 	 * For each time that is called {@startSample} is created a new instance of
 	 * this class.
@@ -154,8 +163,6 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	 * @see startSample
 	 * 
 	 * @author Jorge Avarias <javarias[at]inf.utfsm.cl>
-	 *  
-	 *
 	 */
 	class Sampler extends Thread {
 		
@@ -194,14 +201,6 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 				}
 			}
 		}
-	}
-
-	public void setComponentAvailable(boolean available, String reason) {
-		componentAvailable = available;
-	}
-	
-	public boolean isComponentAvailable() {
-		return componentAvailable;
-	}
+	}	
 
 }

@@ -14,6 +14,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import javax.swing.JOptionPane;
 import java.awt.event.FocusEvent;
@@ -27,7 +28,7 @@ import javax.swing.JTextField;
 
 /**
  * Class that works as a displayable container of sampling items. It has an internal state to check
- * if it's selected to be sampled (a checkbox) and N samples, wich will start parallel to one another 
+ * if it's selected to be sampled (a check-box) and N samples, which will start parallel to one another 
  * once the "Start Sample(s)" button from the GUI is pressed 
  */
 public class BeanGrouper extends JPanel {
@@ -48,6 +49,7 @@ public class BeanGrouper extends JPanel {
 	private FileHelper toFile;
 	private boolean isStopped=true;
 	private SamplingSystemGUI ssg = null;
+	private Date startTimestamp;
 	
 	/**
 	 * This is the default constructor
@@ -61,19 +63,18 @@ public class BeanGrouper extends JPanel {
 
 	/**
 	 * This is the overloaded constructor that allows to save the Sampling Group name
+	 * @param ssg The Sampling Group this BeanGrouper is attached to.
+	 * @param group The name of the Sampling Group this BeanGrouper is grouping.
 	 */
 	public BeanGrouper(SamplingSystemGUI ssg, String group) {
 		super();
 		this.ssg = ssg;
-		toFile=new FileHelper();
-		toFile.setFilePrefix( group );
+		toFile=new FileHelper(group);
 		initialize();
 	}
 
 	/**
-	 * This method initializes this
-	 * 
-	 * @return void
+	 * This method initializes the GUI.
 	 */
 	private void initialize() {
 		this.setBorder(javax.swing.border.LineBorder.createBlackLineBorder());
@@ -192,8 +193,9 @@ public class BeanGrouper extends JPanel {
 	private JTextField getFreqTextField() {
 		if(freqTextField==null){
 			freqTextField=new JTextField();
-			freqTextField.setText("100");
+			freqTextField.setText("10");
 			freqTextField.setPreferredSize(new Dimension(50, 19));
+
 			freqTextField.addFocusListener(new FocusListener() {
 
 				public void focusGained(FocusEvent e) {
@@ -232,7 +234,7 @@ public class BeanGrouper extends JPanel {
 		if (jCheckBox == null) {
 			jCheckBox = new JLabel();
 			jCheckBox.setText("  SampGroup");
-			/*jCheckBox.addActionListener(new java.awt.event.ActionListener() {
+			/*jCheckBox.addFocusListener(new FocusListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					if(ready2samp)ready2samp = false;
 					else ready2samp = true;
@@ -283,7 +285,7 @@ public class BeanGrouper extends JPanel {
 	}
 
 	/**
-	 * This method adds a new sample (represented as a BeanListe) into this class. This class should be able to hold
+	 * This method adds a new sample (represented as a BeanLister) into this class. This class should be able to hold
 	 * N samples inside itself.
 	 * @param w
 	 */
@@ -298,6 +300,13 @@ public class BeanGrouper extends JPanel {
 		updateLabel();
 		jPanel.validate();
 		samplers.add(w);
+	}
+	
+	public void addSamp(String component, String property) {
+		FilePrinter w = new FilePrinter(ssg);
+		w.setComponent(component);
+		w.setProperty(property);
+		addSamp(w);
 	}
 	
 	public void updateLabel(){
@@ -315,7 +324,9 @@ public class BeanGrouper extends JPanel {
 		} catch (NumberFormatException ex) {
 			// Shouldn't happen
 		}
-
+		
+		startTimestamp = new Date();
+		
 		setjLabel("Sampling to file: " + toFile.getFileName());
 		freq = Integer.parseInt(getFreqTextField().getText());
 		for(DataPrinter wp : samplers){
@@ -402,13 +413,6 @@ public class BeanGrouper extends JPanel {
 		}
 		return startSampleButton;
 	}
-
-	public void addSamp(String component, String property) {
-		MemoryPrinter w = new MemoryPrinter(ssg);
-		w.setComponent(component);
-		w.setProperty(property);
-		addSamp(w);
-	}
 	
 	public boolean checkIfExists(String component, String property) {
 		
@@ -425,27 +429,45 @@ public class BeanGrouper extends JPanel {
 		isStopped=true;
 		jStopButton.setEnabled(false);
 		startSampleButton.setEnabled(true);
-		String header ="Time";
-		toFile.removeSamplingSets();
+		
+//		String header ="Time";
+//		toFile.removeSamplingSets();
+		SamplingDataCorrelator sdc = new SamplingDataCorrelator(getJCheckBox().getText(), Integer.parseInt(getFreqTextField().getText()), startTimestamp);
 		for(DataPrinter i : samplers) {
 			i.stopSampling();
 			if( i.isComponentAvailable() == true ) {
-				toFile.addSamplingSet(i.getSamples());
-				header+=";"+i.getComponent()+"."+i.getProperty();
+				sdc.addSamplingSet(((FilePrinter)i).getFilename());
+				//System.out.println("Adding: " + ((FilePrinter)i).getFilename());
 			}
+//				toFile.addSamplingSet(i.getSamples());
+//				header+=";"+i.getComponent()+"."+i.getProperty();
+//			}
 		}
-		toFile.setHeaderFile(header);
-		toFile.dumpToFile(Integer.parseInt(getFreqTextField().getText()));
+		sdc.dumpToFile();
+//		toFile.setHeaderFile(header);
+//		toFile.dumpToFile(Integer.parseInt(getFreqTextField().getText()));
 	}
 
+	/**
+	 * Class in charge of stopping the Sampling for all the DataPrinter objects that composes the BeanGrouper<br />
+	 * A parameters consistings in minutes has to be passed to the constructor, and after that time has passed <br />
+	 * the thread stops the sampling.
+	 */
 	class Watchdog extends Thread{
 		private long sleepTime;
 		
+		/**
+		 * Sets the period of time in which this BeanGrouper will sample, and sets to maximum this thread priority.
+		 * @param mins
+		 */
 		public Watchdog(int mins){
 			this.setPriority(Thread.MAX_PRIORITY);
 			sleepTime=mins*60*1000;
 		}
 		
+		/**
+		 * Starts the thread right away putting it to sleep for the minutes needed. Then, stops the sampling in the BeanGrouper.
+		 */
 		public void run() {
 			try {
 				Thread.sleep(sleepTime);
