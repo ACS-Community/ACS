@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.7 2009/01/15 23:20:56 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.8 2009/01/16 00:12:54 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.7 2009/01/15 23:20:56 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.8 2009/01/16 00:12:54 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -340,6 +340,7 @@ class LoggerFunctionCheck(unittest.TestCase):
         outrecord = logcall[1]
         self.assertEquals(level, outrecord[0].levelno)
         self.assertEquals(msg, outrecord[0].msg)
+        self.assertEquals(__file__, outrecord[0].filename)
         
     def testLogTrace(self):
         """Logger class Trace level logging"""

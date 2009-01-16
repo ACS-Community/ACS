@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.43 2008/10/24 19:02:41 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.44 2009/01/16 00:12:54 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.43 2008/10/24 19:02:41 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.44 2009/01/16 00:12:54 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -51,7 +51,7 @@ from logging.handlers import MemoryHandler
 from traceback import print_exc
 from socket import gethostname
 import time
-from os import getpid
+import os
 from traceback import extract_stack
 from atexit import register
 import sched
@@ -65,6 +65,16 @@ from Acspy.Common.TimeHelper import TimeUtil
 #--CORBA STUBS-----------------------------------------------------------------
 import ACSLog
 #--GLOBALS---------------------------------------------------------------------
+
+#
+# _srcfile is used when walking the stack to check when we've got the first
+# caller stack frame.
+#
+if __file__[-4:].lower() in ['.pyc', '.pyo']:
+    _srcfile = __file__[:-4] + '.py'
+else:
+    _srcfile = __file__
+_srcfile = os.path.normcase(_srcfile)
 
 #------------------------------------------------------------------------------
 logging.TRACE = logging.NOTSET + 1
@@ -766,6 +776,23 @@ class Logger(logging.Logger):
         '''
         return maci.LoggingConfigurable.LogLevels(self.usingDefault, RLEVELS[self.acshandler.level],
                                                   RLEVELS[self.stdouthandler.level])
+    #------------------------------------------------------------------------
+    def findCaller(self):
+        """
+        Find the stack frame of the caller so that we can note the source
+        file name, line number and function name.
+        """
+        f = logging.currentframe().f_back
+        rv = "(unknown file)", 0, "(unknown function)"
+        while hasattr(f, "f_code"):
+            co = f.f_code
+            filename = os.path.normcase(co.co_filename)
+            if filename == _srcfile:
+                f = f.f_back
+                continue
+            rv = (filename, f.f_lineno, co.co_name)
+            break
+        return rv
     #------------------------------------------------------------------------
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         """
