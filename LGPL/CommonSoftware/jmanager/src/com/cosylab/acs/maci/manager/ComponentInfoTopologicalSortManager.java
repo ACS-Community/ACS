@@ -5,8 +5,10 @@
 package com.cosylab.acs.maci.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -314,6 +316,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 	 * @param	containerInfo	container to inform
 	 * @param	handles			ordered list of component handles
 	 */
+	private Map pendingContainerNotifications = new HashMap();
 	private void notifyContainerShutdownOrder(ContainerInfo containerInfo, int[] handles)
 	{
 		
@@ -322,6 +325,7 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 		 */		
 		class ContainerSetShutdownOrderTask implements Runnable
 		{
+			private boolean done = false;
 			private int[] handles;
 			private ContainerInfo containerInfo;
 			
@@ -330,35 +334,93 @@ public class ComponentInfoTopologicalSortManager implements Runnable {
 				this.containerInfo = containerInfo;
 				this.handles = handles;
 			}
+
+			/**
+			 * Add new notification. This will keep only the latest one.
+			 * @param handles
+			 * @return <code>true<code> if notification is being accepted
+			 */
+			public synchronized boolean addNotification(int[] handles)
+			{
+				if (done)
+					return false;
+				
+				this.handles = handles;
+				return true;
+			}
 			
 			public void run()
 			{
 				final int MAX_RETRIES = 3;
-				
+
 				for (int retries = 0; retries < MAX_RETRIES; retries++)
 				{
+					int[] hs = null;
 					try
 					{
-						(containerInfo.getContainer()).set_component_shutdown_order(handles);
-						break;
+						synchronized (this)
+						{
+							hs = handles;
+						}
+
+						(containerInfo.getContainer()).set_component_shutdown_order(hs);
+						
+						synchronized (this)
+						{
+							if (handles == hs)
+							{
+								// no new handles, done...
+								done = true;
+								break;
+							}
+							else
+							{
+								// all OK, new handles, reset retries
+								retries = 0;
+								continue;
+							}
+						}
 					}
 					catch (RemoteException re)
 					{
 						logger.log(Level.SEVERE, 
 								"RemoteException caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", re);
 					}
+					catch (Throwable ex)
+					{
+						logger.log(Level.SEVERE, 
+								"Unhandled exception caught while invoking 'Container.set_component_shutdown_order' on "+containerInfo+".", ex);
+					}
+					
+					// decrease retries, if we have a new set of handles
+					synchronized (this)
+					{
+						if (handles != hs)
+							retries--;
+					}					
+				}
+				
+			}
+		}
+
+		
+		synchronized (pendingContainerNotifications)
+		{
+			// get or create task
+			ContainerSetShutdownOrderTask task = (ContainerSetShutdownOrderTask)pendingContainerNotifications.get(containerInfo);
+			if (task == null || !task.addNotification(handles))
+			{
+				// spawn new task which surely does not block
+				try
+				{
+					threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
+				} catch (RejectedExecutionException ree) {
+					// noop (threadPool) most likely in shutdown state
 				}
 			}
 		}
 
 
-		// spawn new task which surely does not block
-		try
-		{
-			threadPool.execute(new ContainerSetShutdownOrderTask(containerInfo, handles));
-		} catch (RejectedExecutionException ree) {
-			// noop (threadPool) most likely in shutdown state
-		}
 	}
 
 }
