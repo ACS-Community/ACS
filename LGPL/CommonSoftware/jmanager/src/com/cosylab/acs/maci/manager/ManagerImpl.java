@@ -1881,7 +1881,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		/****************************************************************/
-
+		
+		logger.log(Level.FINE,"Client with handle '" + HandleHelper.toString(info.getHandle()) + "' has logged in.");
+		
 		return info;
 	}
 
