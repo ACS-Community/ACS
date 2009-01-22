@@ -290,13 +290,13 @@ else
   unzip -oj mock-0.4.0.zip mock-0.4.0/mock.py mock-0.4.0/testcase.py mock-0.4.0/testutils.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
 fi
 
-if [ ! -e ../PRODUCTS/generateDS-1.14g.tar.gz ]
+if [ ! -e ../PRODUCTS/generateDS-1.15c.tar.gz ]
 then
   echo Error: generateDS sources are missing
 else
   echo "== Installing generateDS"
-  tar -zxvf generateDS-1.14g.tar.gz
-  pushd generateDS-1.14g
+  tar -zxvf generateDS-1.15g.tar.gz
+  pushd generateDS-1.15g
   python setup.py install 
   popd
 fi
@@ -330,6 +330,17 @@ else
   echo "== Installing Pythoscope"
   tar -zxvf pythoscope-0.3.2.tar.gz
   pushd pythoscope-0.3.2
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/lxml-2.1.5.tar.gz ]
+then
+  echo Error: Pythoscope sources are missing
+else
+  echo "== Installing lxml"
+  tar -zxvf lxml-2.1.5.tar.gz
+  pushd lxml-2.1.5
   python setup.py install 
   popd
 fi
