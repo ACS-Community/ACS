@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: contNcTestCounterSupplier.py,v 1.1 2008/05/23 12:53:45 eallaert Exp $
+# @(#) $Id: contNcTestCounterSupplier.py,v 1.2 2009/01/22 19:55:05 jslopez Exp $
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) Associated Universities Inc., 2002 
@@ -72,6 +72,7 @@ def usage():
 if __name__ == "__main__":
 
     # set the defaults
+    myString = "Dummy content"
     initVal = 1
     lastVal = 20
     period = 0.5
@@ -121,13 +122,13 @@ if __name__ == "__main__":
             flag = False
         else:
             flag = True
-        g.publishEvent(COUNTER.statusBlockEvent(COUNTER.ON, val, lastVal, changeVal, flag, period))
+	g.publishEvent(COUNTER.statusBlockEvent(COUNTER.ON, myString, val, lastVal, changeVal, flag, period))
         LOGGER.logInfo("Counting ongoing with period %.3fs up to %d, now %d" % (period,  lastVal, val) )
         val = val + 1
         sleep(period)
         
     # Tell consumers this is the last event
-    g.publishEvent(COUNTER.statusBlockEvent(COUNTER.OFF, lastVal, lastVal, changeVal, True, period))
+    g.publishEvent(COUNTER.statusBlockEvent(COUNTER.OFF, myString, lastVal, lastVal, changeVal, True, period))
     LOGGER.logInfo("Counter stopped, last value %d" % val)
     # As this will be the main process in the tat-test, we should take care that we
     # don't exit earlier than the consumer process has had an opportunity to log
