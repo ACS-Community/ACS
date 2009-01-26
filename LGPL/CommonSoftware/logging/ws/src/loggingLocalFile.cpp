@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLocalFile.cpp,v 1.34 2003/03/14 10:24:49 rgeorgie Exp $"
+* "@(#) $Id: loggingLocalFile.cpp,v 1.35 2009/01/26 06:45:26 cparedes Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,13 +97,13 @@ LocalFileLogger::close (void)
     return 0;
 }
 
-int
+ssize_t
 LocalFileLogger::log (ACE_Log_Record &log_record)
 {
     return log(log_record.priority(), log_record.msg_data());
 }
 
-int
+ssize_t
 LocalFileLogger::log (int priority, const ACE_TCHAR * msg)
 {
     ACE_UNUSED_ARG(priority);
@@ -135,6 +135,9 @@ LocalFileLogger::getDestination()
 // REVISION HISTORY:
 //
 // $Log: loggingLocalFile.cpp,v $
+// Revision 1.35  2009/01/26 06:45:26  cparedes
+// Changing from int to ssize_t
+//
 // Revision 1.34  2003/03/14 10:24:49  rgeorgie
 // LGPL
 //

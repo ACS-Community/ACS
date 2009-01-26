@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingRemoteSyslog.cpp,v 1.36 2004/10/27 22:06:48 dfugate Exp $"
+* "@(#) $Id: loggingRemoteSyslog.cpp,v 1.37 2009/01/26 06:45:26 cparedes Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -84,13 +84,13 @@ RemoteSyslogLogger::close (void)
     return 0;
 }
 
-int
+ssize_t
 RemoteSyslogLogger::log (ACE_Log_Record &log_record)
 {
     return log(log_record.priority(), log_record.msg_data());
 }
 
-int
+ssize_t
 RemoteSyslogLogger::log (int pri, const ACE_TCHAR * msg)
 {
     if (!msg)
@@ -170,6 +170,9 @@ RemoteSyslogLogger::getDestination()
 // REVISION HISTORY:
 //
 // $Log: loggingRemoteSyslog.cpp,v $
+// Revision 1.37  2009/01/26 06:45:26  cparedes
+// Changing from int to ssize_t
+//
 // Revision 1.36  2004/10/27 22:06:48  dfugate
 // Removed CORBA::string_free's related to ACSPorts::getIP as these are no longer needed.
 //

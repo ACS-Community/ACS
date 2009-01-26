@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingCacheLogger.h,v 1.35 2005/04/05 23:35:00 dfugate Exp $"
+ * "@(#) $Id: loggingCacheLogger.h,v 1.36 2009/01/26 06:45:26 cparedes Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -62,10 +62,10 @@ class logging_EXPORT CacheLogger : public ACE_Log_Msg_Backend
     /// ACE_Log_Record with msg_data and priority set.
     /// Logs the record's msg_data() and maps ACE priority to syslog priority.
     /// ACE_Log_Record.msg_data() copies message (performacne concern).
-    virtual int log (ACE_Log_Record &log_record) = 0;
+    virtual ssize_t log (ACE_Log_Record &log_record) = 0;
     
     /// Send log.
-    virtual int log (int priority, const ACE_TCHAR * msg) = 0;
+    virtual ssize_t log (int priority, const ACE_TCHAR * msg) = 0;
     
     /// Returns identification string, e.g. "Local syslog".
     virtual const ACE_TCHAR * getIdentification() = 0;

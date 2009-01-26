@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingRemoteSyslog.h,v 1.34 2003/03/14 10:24:37 rgeorgie Exp $"
+* "@(#) $Id: loggingRemoteSyslog.h,v 1.35 2009/01/26 06:45:26 cparedes Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -113,10 +113,10 @@ public:
     /// ACE_Log_Record with msg_data and priority set.
     /// Logs the record's msg_data() and maps ACE priority to syslog priority.
     /// ACE_Log_Record.msg_data() copies message (performacne concern).
-    virtual int log (ACE_Log_Record &log_record);
+    virtual ssize_t log (ACE_Log_Record &log_record);
 
     /// Send log.
-    virtual int log (int priority, const ACE_TCHAR * msg);
+    virtual ssize_t log (int priority, const ACE_TCHAR * msg);
      
     /// Returns identification string, e.g. "Remote syslog".
     virtual const ACE_TCHAR * getIdentification();
@@ -147,6 +147,9 @@ public:
 // REVISION HISTORY:
 //
 // $Log: loggingRemoteSyslog.h,v $
+// Revision 1.35  2009/01/26 06:45:26  cparedes
+// Changing from int to ssize_t
+//
 // Revision 1.34  2003/03/14 10:24:37  rgeorgie
 // LGPL
 //
