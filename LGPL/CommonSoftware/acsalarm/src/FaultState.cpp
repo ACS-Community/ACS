@@ -196,7 +196,7 @@ string FaultState::toXML(int amountToIndent)
   * @param faultFamily the fault family.
   */
 void  FaultState::setFamily(const string & faultFamily) {
-	unsigned int pos;
+	size_t pos;
 	string nonConstFaultFamily(faultFamily);
 	do
 	{
@@ -215,7 +215,7 @@ void  FaultState::setFamily(const string & faultFamily) {
   * @param member the fault member.
 */
 void  FaultState::setMember(const string & newFaultMember) {
-	unsigned int pos;
+	size_t pos;
 	string nonConstFaultMember(newFaultMember);
 	do 
 	{
