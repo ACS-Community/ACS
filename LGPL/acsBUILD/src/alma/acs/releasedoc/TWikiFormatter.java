@@ -12,29 +12,12 @@ import java.util.StringTokenizer;
 import alma.acs.releasedoc.Cvs2clXmlEntry.EntryFile;
 import alma.acs.util.XmlNormalizer;
 
-//2007-08-03 09:45  hsommer
-//
-//* Makefile: added logLevelGUI
-//
-//2007-08-03 09:41  hsommer
-//
-//* LGPL/CommonSoftware/logLevelGUI/src/:
-//  alma/acs/gui/loglevel/LogLevelFrame.java,
-//  alma/acs/gui/loglevel/LogLevelPanel.java,
-//  alma/acs/gui/loglevel/LogLevelWinAdapter.java,
-//  alma/acs/gui/loglevel/leveldlg/LogLevelDlg.java,
-//  alma/acs/gui/loglevel/leveldlg/LogLevelModel.java,
-//  alma/acs/gui/loglevel/leveldlg/LogLevelTable.java,
-//  alma/acs/gui/loglevel/leveldlg/LogTypeCellRenderer.java,
-//  alma/acs/gui/loglevel/tree/AdministratorClient.java,
-//  alma/acs/gui/loglevel/tree/LogLvlTree.java,
-//  alma/acs/gui/loglevel/tree/LogLvlTreeModel.java,
-//  alma/acs/gui/loglevel/tree/ManagerBusyDlg.java,
-//  alma/acs/gui/loglevel/tree/TreeMouseListener.java,
-//  alma/acs/gui/loglevel/tree/TreePopupMenu.java, logLevelPanel:
-//  merged from GUI2-2007-06-B
-//  
-  
+
+/**
+ * Produces output in twiki format which can be pasted to the release notes ChangeLog pages,
+ * such as http://almasw.hq.eso.org/almasw/bin/view/ACS/ChangeLog-7_0_2.
+ * @author hsommer
+ */
 public class TWikiFormatter
 {
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -109,6 +92,7 @@ public class TWikiFormatter
 			}
 			output += " \n";
 		}
+		// @TODO perhaps use <blockquote> around the message for indenting, instead of the silly bullet.
 		output += "   * " + formatMessage("     ", entry.getMessage()) + " \n";
 		System.out.println(output);
 	}
@@ -129,20 +113,41 @@ public class TWikiFormatter
 	 * @TODO: try to use <code>&lt;noautolink&gt;</code> pair around our text and stop masking individual words
 	 */
 	protected String maskWikiWords(String msgLine) {
-		StringTokenizer wordTok = new StringTokenizer(msgLine);
+		StringTokenizer wordTok = new StringTokenizer(msgLine, " (", true);
 		String ret = "";
 		while (wordTok.hasMoreTokens()) {
 			String word = wordTok.nextToken();
 			if (isWikiWord(word)) {
 				ret += "!";
 			}
-			ret += word + " ";
+			ret += word;
 		}		
 		return ret;
 	}
 	
+	/**
+	 * @param word
+	 */
 	protected boolean isWikiWord(String word) {
-		if (word.length() > 2 && Character.isUpperCase(word.charAt(0)) && Character.isLowerCase(word.charAt(1))) {				
+		if (word == null || word.length() <= 2) {
+			return false;
+		}
+		
+		// skip leading '(' and uppercase chars
+		boolean hasLeadingUppercase = false;
+		int pos = 0;
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.charAt(i);
+			if (Character.isUpperCase(word.charAt(i))) {
+				hasLeadingUppercase = true;
+			}
+			else {
+				break;
+			}
+			pos++;
+		}
+
+		if (hasLeadingUppercase && pos < word.length() && Character.isLowerCase(word.charAt(pos))) {
 			for (int i = 2; i < word.length(); i++) {
 				if (Character.isUpperCase(word.charAt(i))) {
 					// got a wiki word
