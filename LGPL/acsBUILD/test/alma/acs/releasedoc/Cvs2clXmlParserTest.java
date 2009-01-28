@@ -29,8 +29,19 @@ public class Cvs2clXmlParserTest extends TestCase
 		TWikiFormatter formatter = new TWikiFormatter();
 		assertTrue(formatter.isWikiWord("LoggingConfigurableLevelTranslator"));
 		assertTrue(formatter.isWikiWord("NamingContext"));
+		assertTrue(formatter.isWikiWord("ACSCoreLevel"));
+		assertTrue(formatter.isWikiWord("IOLogsHelper.java"));
+		assertFalse(formatter.isWikiWord(""));
+		assertFalse(formatter.isWikiWord("AAA"));
+		assertFalse(formatter.isWikiWord("alllower"));
 		assertFalse(formatter.isWikiWord("soStupid"));
 		assertFalse(formatter.isWikiWord("ALL_UPPER"));
+	}
+	
+	public void testMaskWikiWords() {
+		TWikiFormatter formatter = new TWikiFormatter();
+		String out = formatter.maskWikiWords("Made MyCollocatedDummy1 immortal (KeepAliveTime=-1) (some more text in parentheses)");
+		assertEquals("Made !MyCollocatedDummy1 immortal (!KeepAliveTime=-1) (some more text in parentheses)", out);
 	}
 	
 //	public void testFormatWikiMessage() {
