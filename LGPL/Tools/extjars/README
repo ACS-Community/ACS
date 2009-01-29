@@ -58,6 +58,10 @@ tablelayout.jar		 tablelayout-1.0		 (4)
 
 xalan.jar                xalan 2.7.0                     (1b)
 
+hibernate-common-annotations.jar	hibernate-annotations-3.4.0.GA
+hibernate-annotations.jar		hibernate-annotations-3.4.0.GA
+ejb3-peristence.jar			hibernate-annotations-3.4.0.GA
+
 Licences
 -----------------------------------------------------------------------
 (1)			The Apache Software License, Version 1.1
