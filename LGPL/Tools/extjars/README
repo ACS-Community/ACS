@@ -62,6 +62,8 @@ hibernate-common-annotations.jar	hibernate-annotations-3.4.0.GA
 hibernate-annotations.jar		hibernate-annotations-3.4.0.GA
 ejb3-peristence.jar			hibernate-annotations-3.4.0.GA
 
+hsqldb.jar               hsqldb-1.8.0.10
+
 Licences
 -----------------------------------------------------------------------
 (1)			The Apache Software License, Version 1.1
