@@ -61,6 +61,7 @@ xalan.jar                xalan 2.7.0                     (1b)
 hibernate-common-annotations.jar	hibernate-annotations-3.4.0.GA
 hibernate-annotations.jar		hibernate-annotations-3.4.0.GA
 ejb3-peristence.jar			hibernate-annotations-3.4.0.GA
+hibernate-cglib-repack-2.1_3.jar	hibernate-distribution-3.3.1.GA
 
 hsqldb.jar               hsqldb-1.8.0.10
 
