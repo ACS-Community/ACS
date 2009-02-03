@@ -52,7 +52,7 @@ configuration parameters.</xs:documentation>
 		</xs:attribute>
 		<xs:attribute name="ContainerPingInterval" type="xs:double" use="optional" default="30.0">
 			<xs:annotation>
-				<xs:documentation>The Manager pings periodically containers to check they are healthy. This is an heartbeat checking. The time interval for the heartbeat check is specified here in seconds.</xs:documentation>
+				<xs:documentation>The Manager pings periodically all containers to check if they are healthy. The time interval for this heartbeat check is specified here in seconds, as a default for all containers. It can be overridden for a specific container using the optional attribute Container.PingInterval</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="ServerThreads" type="xs:int" use="optional" default="10">

@@ -86,6 +86,11 @@ The ACS daemon that starts the container must understand the modifiers in order 
 				<xs:documentation>How many times the Container shall try to contact the Manager upon startup before bailing out. 0 means forever. In a stable system, the Manager is normally already available when Containers are started up. Specific needs might trigger the necessity to trim this parameter.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="PingInterval" type="xs:int" use="optional">
+			<xs:annotation>
+				<xs:documentation>The Manager pings periodically all containers to check if they are healthy. The time interval in seconds for this heartbeat check can be specified here, to override Manager#ContainerPingInterval which is the default for all containers.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="DALtype" type="xs:string" use="optional" default="DAL">
 			<xs:annotation>
 				<xs:documentation>ACS provides a plugin mechanism to use different implementations of configuration database. This attribute allows to specify the name of the desired implementation. All applications and systems using the standard ACS CDB do not have to change the attribute. Special systems with the need of integrating a different configuration database might use this feature.</xs:documentation>
