@@ -1,4 +1,4 @@
-# @(#) $Id: Consumer.py,v 1.19 2008/02/25 21:02:42 agrimstrup Exp $
+# @(#) $Id: Consumer.py,v 1.20 2009/02/05 21:57:22 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ This module includes classes to be used as Consumers for the CORBA Notification
 service.
 '''
 
-__revision__ = "$Id: Consumer.py,v 1.19 2008/02/25 21:02:42 agrimstrup Exp $"
+__revision__ = "$Id: Consumer.py,v 1.20 2009/02/05 21:57:22 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -229,7 +229,9 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
     #--------------------------------------------------------------------------
     def suspend(self):
         '''
-        Stop receiving structured events.
+        Stop receiving structured events.  All events published on this
+        channel will not be processed by this Consumer instance, but will
+        be queued for later delivery by the Supplier.  
 
         Parameters: None
         
@@ -248,7 +250,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
     #--------------------------------------------------------------------------
     def resume(self):
         '''
-        Resume receiving structured events.
+        Resume receiving structured events.  All events queued by the Supplier
+        will be forwarded to this Consumer instance.
 
         Parameters: None
         
