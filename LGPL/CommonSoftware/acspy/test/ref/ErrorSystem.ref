@@ -191,8 +191,8 @@
 1 - Exception: fake python exception
 1 - ; )
 1 - 
-1 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-1 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+1 - ----------T--:--:--.--- Error Test Error Trace
+1 - ----------T--:--:--.--- Error Test Error Trace
 1 - ErrorTrace (TimeStamp=xxxx,
 1 - getData('no data set'): []
 1 - getData('name'): ['value']

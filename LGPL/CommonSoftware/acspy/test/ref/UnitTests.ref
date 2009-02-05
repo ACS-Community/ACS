@@ -1,55 +1,116 @@
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ----------T--:--:--.--- child testNestedOutput - Nested Message
+1 - ----------T--:--:--.--- UnitTestContainer getCDBInfo - No container information found in the CDB
+1 - ----------T--:--:--.--- UnitTestContainer __init__ - Container UnitTestContainer waiting for requests
 1 - ACSHandler initialized ... ok
+1 - ok
 1 - ACSHandler initialized with no periodic flush thread ... ok
+1 - SeveralLoggerCheck Search with non-existing key ... ok
 1 - ACSHandler initialized when acsLogSvc not available ... ok
+1 - TimeUtil.duration2py handles long values correctly ... ok
 1 - ACSHandler flushes buffer correctly ... ok
+1 - TimeUtil.duration2py handles negative values correctly ... ok
 1 - ACSHandler handles exceptions correctly when flushing buffer ... ok
+1 - TimeUtil.duration2py handles 0 value correctly ... ok
 1 - ACSHandler flushes buffer when message priority greater than threshold arrives ... ok
+1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
 1 - ACSHandler writes log messages to a file ... ok
+1 - TimeUtil.epoch2py handles long values correctly ... ok
 1 - ACSHandler creates singleton file handler when necessary ... ok
+1 - TimeUtil.epoch2py handles negative values correctly ... ok
 1 - ACSHandler drops new messages when pending message queue is full ... ok
+1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
 1 - ACSHandler drops low priority messages when message queue is full ... ok
+1 - TimeUtil.py2duration handles negative values correctly ... ok
 1 - ACSHandler returns cached CORBA logging service ... ok
+1 - TimeUtil.py2duration handles 0 value correctly ... ok
 1 - ACSHandler reloads CORBA logging service when cache is empty ... ok
+1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
 1 - ACSHandler sends Log messages at the appropriate levels ... ok
+1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
 1 - ACSHandler sends errortrace messages at the appropriate levels ... ok
+1 - TimeUtil.py2epoch handles negative values correctly ... ok
 1 - ACSHandler sends logWithAudience messages at the appropriate levels ... ok
+1 - test_configureComponentLogger (test_Acspy_Container.TestContainer) ... ok
 1 - ACSHandler sends logWithPriority messages at the appropriate levels ... ok
+1 - test_configureComponentLogger_centralEnv (test_Acspy_Container.TestContainer) ... ok
 1 - ACSHandler sends logWithPriority messages at the appropriate levels with bad context ... ok
+1 - test_configureComponentLogger_localEnv (test_Acspy_Container.TestContainer) ... ok
 1 - ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source ... ok
+1 - test_configureComponentLogger_partialCentral (test_Acspy_Container.TestContainer) ... ok
 1 - ACSHandler flushes when capacity is reached ... ok
+1 - test_configureComponentLogger_partialLocal (test_Acspy_Container.TestContainer) ... ok
 1 - ACSHandler flushes when high priority message is received ... ok
+1 - test_configureComponentLogger_unknown (test_Acspy_Container.TestContainer) ... ok
+1 - Container's default log levels are correct ... ok
 1 - Handler initialized ... ok
 1 - Handler nested element with attributes ... ok
+1 - test_get_logLevels (test_Acspy_Container.TestContainer) ... ok
+1 - Container log levels are correct when no CDB info present ... ok
 1 - Handler nested element with no attributes ... ok
+1 - Exception is thrown when log levels are requested for undefined logger ... ok
 1 - Handler nested different element with no attributes ... ok
 1 - Handler nested different element with no attributes ... ok
+1 - test_get_logger_names (test_Acspy_Container.TestContainer) ... ok
+1 - Container list of named loggers is correct when no CDB info present ... ok
 1 - Handler element with attributes ... ok
 1 - Handler element with no attributes ... ok
+1 - test_refresh_logging_config (test_Acspy_Container.TestContainer) ... ok
+1 - ACSError getErrorTrace returns trace when defined ... ok
+1 - Container log levels are reset correctly when no CDB info or environment vars are present ... ok
+1 - ACSError getErrorTrace returns expected value when no trace defined ... ok
+1 - Container log levels are reset correctly when no CDB info and ACS_LOG_CENTRAL is present ... ok
+1 - ACSError initialized with defaults ... ok
+1 - Container log levels are reset correctly when no CDB info and ACS_LOG_STDOUT is present ... ok
+1 - ACSError initialized from CORBA Exception ... ok
+1 - Container's default log levels are set correctly ... ok
+1 - ACSError initialized from Completion ... ok
+1 - Log levels for a named logger are set correctly ... ok
+1 - ACSError initialized without create and no trace or previous error ... ok
+1 - Exception is thrown when attempt to set log levels on an undefined logger ... ok
+1 - ErrorTraceHelper Print produces output for a single trace ... ok
+1 - pyExceptionToCORBA creates CORBA exception from Python exception ... ok
+1 - ErrorTraceHelper Print produces no output for empty trace ... ok
 1 - NoLoggerCheck getLoggerNames when no loggers requested ... ok
+1 - ErrorTraceHelper Print produces output for a nested trace ... ok
 1 - NoLoggerCheck logger search with no key ... ok
+1 - ErrorTraceHelper errorTraceToString creates formatted message ... ok
 1 - NoLoggerCheck logger search with non-existing key ... ok
+1 - ErrorTraceHelper getData returns expected value when matched ... ok
 1 - SeveralLoggerCheck search with parent key ... ok
+1 - ErrorTraceHelper getData returns expected value for empty list ... ok
 1 - SeveralLoggerCheck search with the nested child's name as key ... ok
+1 - ErrorTraceHelper getData returns expected value for failed search ... ok
 1 - SeveralLoggerCheck search with part of an exising key ... ok
+1 - ErrorTraceHelper getData returns expected values for multiple match ... ok
 1 - SeveralLoggerCheck Levels changes on all loggers using default level ... ok
+1 - ErrorTraceHelper getErrorTrace returns expected error trace when requested ... ok
 1 - SeveralLoggerCheck getLoggerNames returns all known loggers ... ok
+1 - ErrorTraceHelper getErrorTrace throws exception when no error_trace is defined ... ok
 1 - SeveralLoggerCheck getLoggerNames returns correct logger names when requested with filtering ... ok
+1 - ErrorTraceHelper getNext returns expected value for nested error trace ... ok
 1 - SeveralLoggerCheck Changing a logger's levels does not affect other loggers ... ok
-1 - SeveralLoggerCheck messages are logged only once for nested loggers ... ----------T--:--:--.--- child testNestedOutput - Nested Message
-1 - ok
-1 - SeveralLoggerCheck Search with non-existing key ... ok
-1 - TimeUtil.duration2py handles long values correctly ... ok
-1 - TimeUtil.duration2py handles negative values correctly ... ok
-1 - TimeUtil.duration2py handles 0 value correctly ... ok
-1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
-1 - TimeUtil.epoch2py handles long values correctly ... ok
-1 - TimeUtil.epoch2py handles negative values correctly ... ok
-1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
-1 - TimeUtil.py2duration handles negative values correctly ... ok
-1 - TimeUtil.py2duration handles 0 value correctly ... ok
-1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
-1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
-1 - TimeUtil.py2epoch handles negative values correctly ... ok
+1 - ErrorTraceHelper getNext returns expected value for single error trace ... ok
+1 - SeveralLoggerCheck messages are logged only once for nested loggers ... ContainerStatusMsg: Startup ends
+1 - ErrorTraceHelper isOK returns correct value for non-error report ... ok
+1 - ErrorTraceHelper isOK returns correct value for non-zero errorCode ... ok
+1 - ErrorTraceHelper isOK returns correct value for non-zero errorType ... ok
+1 - ErrorTraceHelper log records messages on stdout and ACS logger ... ok
+1 - ErrorTraceHelper log does nothing for empty error traces ... ok
+1 - ErrorTraceHelper initializes with default ... ok
+1 - ErrorTraceHelper initializes with provided trace ... ok
+1 - ErrorTraceHelper printET outputs formatted message ... ok
+1 - ErrorTraceHelper setData updates pair in a populated list ... ok
+1 - ErrorTraceHelper setData adds pair to empty list ... ok
+1 - ErrorTraceHelper setData adds pair to a populated list ... ok
+1 - ErrorTraceHelper setError sets error code and type ... ok
+1 - ErrorTraceHelper setError throws exception with default values ... ok
+1 - ErrorTraceHelper setError throws exception with undefined error code ... ok
+1 - ErrorTraceHelper setError throws exception with undefined error type ... ok
 1 - Logger class get log levels when Default ... ok
 1 - Logger class default initialization is correct ... ok
 1 - Logger class creates logging records correctly ... ok
@@ -78,7 +139,7 @@
 1 - Logger class Type-safe logging with no context or source ... ok
 1 - Logger class Warning level logging ... ok
 1 - Logger class XML logging ... ok
-1 - EnvVariable default values are correctly set when environment variables not defined ... FAIL
+1 - EnvVariable default values are correctly set when environment variables not defined ... ok
 1 - PeriodicFlushCheck is correct and consistent after import. ... ok
 1 - PeriodicFlushCheck flushing thread start and stops correctly. ... ok
 1 - PeriodicFlushCheck only one thread is created if start is called twice. ... ok
@@ -91,6 +152,8 @@
 1 - ACSFormatter formats a log record with an empty data list attribute correctly ... ok
 1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
 1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
+1 - ErrorTrace initializes with provided data ... ok
+1 - ErrorTrace initializes with default ... ok
 1 - LogLevel ACSLog log levels map to correct logging values ... ok
 1 - LogLevel numeric log levels map to correct logging values ... ok
 1 - LogLevel Logging values map to correct numeric log levels ... ok
@@ -114,105 +177,33 @@
 1 - Log handles invalid log levels correctly ... ok
 1 - Log sets immediate dispatch level correctly ... ok
 1 - Log handles undefined immediate dispatch level correctly ... ok
+1 - addComplHelperMethods addData added and functions ... ok
+1 - addComplHelperMethods getCode added and functions ... ok
+1 - addComplHelperMethods getTimeStamp added and functions ... ok
+1 - addComplHelperMethods getType added and functions ... ok
+1 - addComplHelperMethods isErrorFree added and functions if error defined ... ok
+1 - addComplHelperMethods getTimeStamp added and functions if no error ... ok
+1 - addComplHelperMethods log added and functions ... ok
+1 - addComplHelperMethods log added and functions ... ok
 1 - getTimeStamp reports correct ACS timestamp for a known value ... ok
 1 - test_configAdminProps_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_configQofS_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - CommonNC createNotificationChannel configures event channel correctly ... ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.channelName)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNotification.UnsupportedAdmin(None)
-1 - UnsupportedAdmin: CosNotification.UnsupportedAdmin(admin_err=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.channelName)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNotification.UnsupportedQoS(None)
-1 - UnsupportedQoS: CosNotification.UnsupportedQoS(qos_err=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.channelName)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise NotifyMonitoringExt.NameAlreadyUsed(None)
-1 - NameAlreadyUsed: NotifyMonitoringExt.NameAlreadyUsed()
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.channelName)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise NotifyMonitoringExt.NameMapError(None)
-1 - NameMapError: NotifyMonitoringExt.NameMapError()
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.NotFound(None, None)
-1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.CannotProceed(None, None)
-1 - CannotProceed: CosNaming.NamingContext.CannotProceed(cxt=None, rest_of_name=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.InvalidName()
-1 - InvalidName: CosNaming.NamingContext.InvalidName()
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     self.nt.putObject(self.channelName, self.getChannelKind(), self.evtChan)
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.NotFound(None, None)
-1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in createNotificationChannel
-1 -     (self.evtChan, chan_id) = channel_factory.create_named_channel(self.configQofS(),
-1 - AttributeError: 'NoneType' object has no attribute 'create_named_channel'
-1 - ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad Admin) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad QoS) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel ... ok
+1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel ... ok
+1 - CommonNC createNotificationChannel throws correct exception when no EventChannelFactory defined ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Cannot Proceed) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Invalid Name) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Not Found) ... ok
+1 - CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory ... ok
 1 - CommonNC destroyNotificationChannel returns the expected value when successful ... ok
-1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
-1 -     self.nt.delObject(self.channelName, self.getChannelKind())
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.CannotProceed(None, None)
-1 - CannotProceed: CosNaming.NamingContext.CannotProceed(cxt=None, rest_of_name=None)
-1 - ok
-1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
-1 -     self.nt.delObject(self.channelName, self.getChannelKind())
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.InvalidName()
-1 - InvalidName: CosNaming.NamingContext.InvalidName()
-1 - ok
-1 -   File "CommonNC.py", line xxx, in destroyNotificationChannel
-1 -     self.nt.delObject(self.channelName, self.getChannelKind())
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in side_effect
-1 -     raise CosNaming.NamingContext.NotFound(None, None)
-1 - NotFound: CosNaming.NamingContext.NotFound(why=None, rest_of_name=None)
-1 - ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(CannotProceed) ... ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(InvalidName) ... ok
+1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(NotFound) ... ok
 1 - CommonNC channel domain is correct ... ok
 1 - CommonNC channel kind is correct ... ok
 1 - test_getNotificationFactoryNameForChannel_channelFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
@@ -224,12 +215,7 @@
 1 - CommonNC getNotificationFactoryName returns default ... ok
 1 - CommonNC getNotificationFactoryName returns non-default ... ok
 1 - test_initCORBA (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 -   File "CommonNC.py", line xxx, in initCORBA
-1 -     self.nt = NameTree.nameTree(getORB())
-1 -   File "test_Acspy_Nc_CommonNC.py", line xxx, in nameTree_side_effect
-1 -     raise RuntimeError("NameTree Fault")
-1 - RuntimeError: NameTree Fault
-1 - ok
+1 - test_initCORBA_nameTreeEx (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noChannel (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noChannelDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
 1 - test_initCORBA_noNamingService (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
@@ -248,14 +234,7 @@
 1 - Access retrieve attributes from lower level element that has attributes ... ok
 1 - Access retrieve attributes from top level element ... ok
 1 - 
-1 - ======================================================================
-1 - FAIL: EnvVariable default values are correctly set when environment variables not defined
-1 - ----------------------------------------------------------------------
-1 -   File "acspyTestUnitLog.py", line xxx, in testDefaultValues
-1 -     self.assertEquals(False, environ.has_key('ACS_LOG_STDOUT'))
-1 - AssertionError: False != True
-1 - 
 1 - ----------------------------------------------------------------------
 1 - Ran xx tests in x.xxxs
 1 - 
-1 - FAILED (failures=1)
+1 - OK

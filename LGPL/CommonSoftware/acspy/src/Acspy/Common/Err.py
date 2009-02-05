@@ -1,4 +1,4 @@
-# @(#) $Id: Err.py,v 1.20 2007/02/21 09:02:16 nbarriga Exp $
+# @(#) $Id: Err.py,v 1.21 2009/02/05 17:42:13 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,13 +27,12 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Err.py,v 1.20 2007/02/21 09:02:16 nbarriga Exp $"
+__revision__ = "$Id: Err.py,v 1.21 2009/02/05 17:42:13 agrimstrup Exp $"
 
 #------------------------------------------------------------------------------
 import ACSErr
 import ACSLog
 
-from Acspy.Common.Log        import getLogger
 from Acspy.Common.TimeHelper import TimeUtil
 from Acspy.Common.ErrorTrace import ErrorTraceHelper, ErrorTrace
 
@@ -84,7 +83,6 @@ class ACSError(ErrorTraceHelper):
             nvSeq = []
         
         # Get a Logger instance
-        self.logger = getLogger("Acspy.Common.Err.ACSError")
         self.timehelper = TimeUtil()
         
         #If create has not been changed by the developer we create a new error trace
@@ -196,12 +194,12 @@ def addComplHelperMethods(compl_obj):
         
     compl_obj.__dict__['isErrorFree'] = _isErrorFree
     #------------------------------------
-    def _log(priority = ACSLog.ACS_LOG_ERROR):
+    def _log(logger, priority = ACSLog.ACS_LOG_ERROR):
         '''
         Logs the Completion.
         '''
 	if len(compl_obj.previousError)!=0:
-        	ErrorTraceHelper(compl_obj.previousError[0]).log()
+        	ErrorTraceHelper(compl_obj.previousError[0]).log(logger, priority)
 
     compl_obj.__dict__['log'] = _log
     #------------------------------------

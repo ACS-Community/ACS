@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyTestError.py,v 1.20 2007/01/25 12:37:39 nbarriga Exp $
+# @(#) $Id: acspyTestError.py,v 1.21 2009/02/05 17:42:13 agrimstrup Exp $
 ###############################################################################
 """
 Tests the Python Error system.
@@ -30,8 +30,9 @@ Tests the Python Error system.
 import ACSErrTypePythonNative
 import ACSErrTypePythonNativeImpl
 import ACSErr
-import  ACSLog
+import ACSLog
 from Acspy.Common.Err import pyExceptionToCORBA
+from Acspy.Common.Log import getLogger
 
 ###############################################################################
 def fakeCORBAMethod():
@@ -144,6 +145,7 @@ def fakeCORBAMethodNew():
 
 ###############################################################################
 if __name__ == "__main__":
+    logger = getLogger('Error Test')
     print "--main1-------------------------------------------------"
     try:
         fakeClientFunction()
@@ -158,8 +160,8 @@ if __name__ == "__main__":
     print ""
     print "Grep me out", helperException.getErrorTrace()
     print "Grep me out", helperException.getNext()
-    helperException.log()
-    helperException.log(ACSLog.ACS_LOG_DEBUG)
+    helperException.log(logger)
+    helperException.log(logger, ACSLog.ACS_LOG_DEBUG)
     print "Grep me out", helperException.isOK()
     helperException.addData("name", "value")
     print "getData('no data set'):", helperException.getData("no data set")

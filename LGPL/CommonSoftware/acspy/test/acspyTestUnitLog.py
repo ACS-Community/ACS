@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.8 2009/01/16 00:12:54 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.9 2009/02/05 17:42:13 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,11 +25,12 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.8 2009/01/16 00:12:54 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.9 2009/02/05 17:42:13 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
 from os import environ
+import os.path
 import time
 import sched
 import threading
@@ -335,12 +336,14 @@ class LoggerFunctionCheck(unittest.TestCase):
         pass
     
     def verifyOutput(self, handler, level, msg):
+        dirn,fn = os.path.split(__file__)
+        tfn,ext = os.path.splitext(fn)
         logcall = handler.method_calls[-1]
         self.assertEquals("handle", logcall[0])
         outrecord = logcall[1]
         self.assertEquals(level, outrecord[0].levelno)
         self.assertEquals(msg, outrecord[0].msg)
-        self.assertEquals(__file__, outrecord[0].filename)
+        self.assertEquals(tfn, os.path.splitext(outrecord[0].filename)[0])
         
     def testLogTrace(self):
         """Logger class Trace level logging"""

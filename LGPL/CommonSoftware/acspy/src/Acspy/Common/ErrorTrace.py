@@ -31,7 +31,6 @@ import ACSErr
 import acstime
 import ACSLog
 
-from Acspy.Common.Log        import getLogger
 from Acspy.Common.Log        import stdoutOk
 from Acspy.Common.TimeHelper import getTimeStamp, TimeUtil
 
@@ -85,7 +84,7 @@ class ErrorTraceHelper:
             return None
         
     #--------------------------------------------------------------------------
-    def log(self, priority = ACSLog.ACS_LOG_ERROR):
+    def log(self, logger, priority = ACSLog.ACS_LOG_ERROR):
         '''
         Logs errortrace information into the ACS logging system.
 
@@ -105,7 +104,7 @@ class ErrorTraceHelper:
             self.Print()
             
 	if self.getErrorTrace() != None:
-		getLogger("Acspy.Common.Err.ErrorTraceHelper").logErrorTrace(self.getErrorTrace(), priority)
+		logger.logErrorTrace(self.getErrorTrace(), priority)
 
         
     #--------------------------------------------------------------------------
@@ -437,13 +436,13 @@ class ErrorTraceHelper:
         
         Returns: Nothing
 
-        Raises: Nothing
+        Raises: ValueError if invalid parameters are given
         '''
         if error_code != None and error_type != None:
             self.getErrorTrace().errorCode = long(error_code)
             self.getErrorTrace().errorType = long(error_type)
         else:
-            getLogger("Acspy.Common.Err.ErrorTraceHelper").logAlert('Bad parameters')
+            raise ValueError('Bad parameters')
     #--------------------------------------------------------------------------
     def setSeverity(self, severity):
         '''
@@ -565,6 +564,7 @@ class ErrorTrace(ACSErr.ErrorTrace, ErrorTraceHelper):
                                     new_except.getErrorCode(),
                                     description = new_except.getDescription(),
                                     level = 2, sourceobject=sourceObject)
+
 		#Now modify some fields
 		new_et.file=tuple_tb[0][0]
 		new_et.lineNum=tuple_tb[0][1]
