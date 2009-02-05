@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.19 2008/08/29 15:01:47 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.20 2009/02/05 17:27:05 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -223,6 +223,7 @@ echo " Installing on $build_OS version $build_OSV"
 
 if [     ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.3"  \
      -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
    ]
 then
