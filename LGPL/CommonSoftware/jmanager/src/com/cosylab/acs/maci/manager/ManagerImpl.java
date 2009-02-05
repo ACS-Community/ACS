@@ -887,7 +887,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// register container to the heartbeat manager
 			PingTimerTask task = new PingTimerTask(this, logger, clientInfo, alarmSource);
 			containerInfo.setTask(task);
-			heartbeatTask.schedule(task, 0, containerPingInterval);
+			heartbeatTask.schedule(task, 0, containerInfo.getPingInterval());
 	    }
 
 	    // administrators
@@ -2567,21 +2567,25 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// add generated key
 			    h |= (random.nextInt(0x100)) << 16;
-
+			    
 				// create new container info
-				containerInfo = new TimerTaskContainerInfo(h, name, container);
+				containerInfo = new TimerTaskContainerInfo(h, name, container, containerPingInterval);
                 DAOProxy dao = getContainersDAOProxy();
                 if (dao != null)
                 {
                 	String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
-                	containerInfo.setImplLang(impLang);                
+                	containerInfo.setImplLang(impLang);
+                	
+                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true);
+                	if (pingInterval >= 1000)	// safety limit
+                		containerInfo.setPingInterval(pingInterval);
                 }
 				clientInfo = containerInfo.createClientInfo();
 
 				// register container to the heartbeat manager
 				PingTimerTask task = new PingTimerTask(this, logger, clientInfo, alarmSource);
 				containerInfo.setTask(task);
-				heartbeatTask.schedule(task, containerPingInterval, containerPingInterval);
+				heartbeatTask.schedule(task, containerInfo.getPingInterval(), containerInfo.getPingInterval());
 
 				// !!! ACID - register AddContainerCommand
 				executeCommand(new ContainerCommandSet(handle, containerInfo));

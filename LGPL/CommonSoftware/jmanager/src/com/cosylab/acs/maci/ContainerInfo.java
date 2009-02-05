@@ -51,22 +51,29 @@ public class ContainerInfo implements Serializable
      * Manage the implementation language name
      */
     private ImplementationLanguage ImplLang;
+    
+    /**
+     * Ping interval in ms.
+     */
+    private long pingInterval;
 
 	/**
 	 * Creates an instance of ContainerInfo with all necesarry data.
 	 * @param handle	handle of the container.
 	 * @param name		name of the container.
 	 * @param container	container itself.
+	 * @param pingInterval ping interval in ms.
 	 * 
 	 * @see #handle
 	 * @see #name 
 	 * @see #container
 	 */
-	public ContainerInfo(int handle, String name, Container container)
+	public ContainerInfo(int handle, String name, Container container, long pingInterval)
 	{
 		this.handle = handle;
 		this.name = name;
 		this.container = container;
+		this.pingInterval = pingInterval;
 		this.components = new IntArray();
         this.ImplLang = ImplementationLanguage.not_specified;
 	}
@@ -175,6 +182,20 @@ public class ContainerInfo implements Serializable
 	public void setComponents(IntArray components)
 	{
 		this.components = components;
+	}
+
+	/**
+	 * @return the pingInterval
+	 */
+	public long getPingInterval() {
+		return pingInterval;
+	}
+
+	/**
+	 * @param pingInterval the pingInterval to set
+	 */
+	public void setPingInterval(long pingInterval) {
+		this.pingInterval = pingInterval;
 	}
 
 	/**

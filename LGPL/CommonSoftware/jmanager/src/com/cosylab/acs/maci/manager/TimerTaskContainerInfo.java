@@ -31,10 +31,11 @@ public class TimerTaskContainerInfo extends ContainerInfo
 	 * @param handle
 	 * @param name
 	 * @param container
+	 * @param pingInterval
 	 */
-	public TimerTaskContainerInfo(int handle, String name, Container container)
+	public TimerTaskContainerInfo(int handle, String name, Container container, long pingInterval)
 	{
-		super(handle, name, container);
+		super(handle, name, container, pingInterval);
 	}
 
 	/**
