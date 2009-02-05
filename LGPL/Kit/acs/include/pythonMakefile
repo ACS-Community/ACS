@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.81 2007/07/02 14:37:13 mzampare Exp $"
+# "@(#) $Id: pythonMakefile,v 1.82 2009/02/05 19:15:40 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -194,7 +194,7 @@ ifneq ($(strip $(PY_PACKAGES)),)
 		    $(ECHO) ".PHONY : install_pp_$${member}" >>$(FILE);\
 		    $(ECHO) "install_pp_$${member}:  \$$(addprefix $(LIB)/python/site-packages/,  \$$($${member}_FILES)) " >>$(FILE);\
                     $(ECHO) "" >>$(FILE);\
-		    for dir in `find $${member} -type d -depth ! -name CVS`; \
+		    for dir in `find $${member} -depth -type d ! -name CVS`; \
 			do \
                     $(ECHO) "# copy python source from ../lib into INTROOT $${dir}" >>$(FILE);\
 		    $(ECHO) "$(LIB)/python/site-packages/$${dir}/%.py: ../lib/python/site-packages/$${dir}/%.py " >>$(FILE);\
