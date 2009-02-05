@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrACSbaseExImpl.h,v 1.9 2006/08/08 11:15:22 bjeram Exp $"
+* "@(#) $Id: acserrACSbaseExImpl.h,v 1.10 2009/02/05 09:29:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,9 +39,9 @@
 namespace ACSErr 
 {
 
-/*
-class ErrorTraceForBaseEx
-is just continer for errotrace. It is here because errotrace of baseX has to beinitalized before its referenc is sent to ErrorTraceHelper
+/**
+ *class ErrorTraceForBaseEx
+ * is just continer for errotrace. It is here because errotrace of baseX has to beinitalized before its referenc is sent to ErrorTraceHelper
  */
 
 class ErrorTraceForBaseEx
@@ -56,7 +56,7 @@ class ErrorTraceForBaseEx
    ErrorTrace m_errorTrace;  
 };
 
-/*
+/**
  this class shall not be instantiated by user but only bt the derived classes
 */
 
