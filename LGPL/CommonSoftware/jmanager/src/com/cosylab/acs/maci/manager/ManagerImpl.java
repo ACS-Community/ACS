@@ -2576,7 +2576,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 	String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
                 	containerInfo.setImplLang(impLang);
                 	
-                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true);
+                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true)*1000;
                 	if (pingInterval >= 1000)	// safety limit
                 		containerInfo.setPingInterval(pingInterval);
                 }
