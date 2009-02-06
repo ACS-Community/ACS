@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupProcesses,v 1.5 2008/11/10 06:05:15 cparedes Exp $"
+# "@(#) $Id: acsstartupProcesses,v 1.6 2009/02/06 16:54:56 jschwarz Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -185,7 +185,7 @@ COMMAND=$1
 PID=
 
 #Get a list containing all the process IDs of the command
-COMMAND_PIDS=`pgrep  -f $COMMAND |awk '{print $1}'`
+COMMAND_PIDS=`pgrep  -f -l $COMMAND |grep -w $COMMAND | awk '{print $1}'`
 
 #cycle through the list killing each pid
 for PID in $COMMAND_PIDS
