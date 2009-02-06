@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.53 2008/06/27 06:25:59 cparedes Exp $"
+# "@(#) $Id: acsStartJava,v 1.54 2009/02/06 17:48:14 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -69,6 +69,7 @@ INSTALL_ROOT=`echo $INTLIST | awk -F: '{print $1}'`
 # These will contain the parsing results (CL_XXX, CL = command line)
 #
 CL_ENDORSED=
+CL_CLIENTVM=
 CL_NOEXPORT=
 CL_MANAGERREF=
 CL_BASEPORT=
@@ -81,13 +82,12 @@ CL_NCL=
 CL_DEBUGPORT=
 CL_NODIRECTORY=
 CL_VMTOOLS=
-CL_JVMOPTIONS=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=jvmOption:,help,endorsed,noexport,managerReference:,baseport:,jarpath:,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools
-SHORTOPTS=hm:b:D:j:v:
+LONGOPTS=help,endorsed,clientVM,noexport,managerReference:,baseport:,jarpath:,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools
+SHORTOPTS=hm:b:D:j:
 
 #
 # Usage info. Be nice and keep this up-to-date!
@@ -97,7 +97,8 @@ function printUsage {
    echo ""
 	echo "Usage: `basename $0` [OPTIONS]  java_class  main_args"
 	echo "Options: "
-	echo "   -endorsed                                        try this on xml parser errors"
+	echo "   -endorsed                                        includes jar files under lib/endorsed/ (try this on xml parser errors)"
+	echo "   -clientVM                                        uses JVM options suitable for small client applications"
 	echo "   -noexport                                        try this on environment variable errors"
 	echo "   -m | -managerReference MGR                       the corbaloc of your favorite manager"
 	echo "   -b | -baseport INSTANCE                          the acs instance (0-9) you want to use"
@@ -110,7 +111,6 @@ function printUsage {
 	echo "   -debugport PORT                                  the port on which a remote debugger may access the JVM"
 	echo "   -noDirectory                                     do not create an acs instance directory"
 	echo "   -vmtools                                         start JVM Tools together with the application"
-	echo "   -v | -jvmOption option [-jvmOption option]       an option for the JVM"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE		if is not set, take the HOST to contruct it. Used if not given as parameter"
@@ -159,6 +159,7 @@ while :
 do
 	case "$1" in
 	--endorsed)         CL_ENDORSED=true ;;
+	--clientVM)         CL_CLIENTVM=true ;;
 	--noexport)         CL_NOEXPORT=true ;;
 	--managerReference) CL_MANAGERREF=$2 ; shift ;;
 	-m)                 CL_MANAGERREF=$2 ; shift ;;
@@ -175,8 +176,6 @@ do
 	--vmtools)          CL_VMTOOLS=true ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
-	-v)                 CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
-	--jvmOption)        CL_JVMOPTIONS=$CL_JVMOPTIONS\ $2 ; shift ;;
 	--) break ;;
 	esac
 	shift
@@ -289,11 +288,10 @@ function export {
 
 
 
-
 ACS_LOG_INFO "acsStartJava" "Starting Java/abeans application: $@"
 #
 # Checks if the first parameter is -endorsed
-# This force using the endorsed libraries, 
+# This forces using the endorsed libraries, 
 # that by default are not used
 #
 JAVA_ENDORSED=""
@@ -518,20 +516,44 @@ if [ "$CL_VMTOOLS" ] ; then
 fi
 ### ---------- End of "vmtools" handling -------------
 
-###
-### ------------- "JVM options" handling -----------------
-###
-if [ "$CL_JVMOPTIONS" ] ; then
-	JAVA_PUREFLAGS="$JAVA_PUREFLAGS $CL_JVMOPTIONS"
-fi
-### ---------- End of "JVM options" handling -------------
 
+###
+### -------------- JVM memory settings -------------------
+###
+# The default is to use settings appropriate for server JVMs in Alma.
+# By specifying the "-clientVM" option for acsStartJava, some less server-sided configuration will be used.
+# Only for very specific needs, users can specify their own settings directly in the env var JAVA_OPTIONS_MEMORY 
+# which will be used instead of the default server or client settings.
+#
+# TODO Decide about setting heap memory limits via -Xms -Xmx, and how a user can override them without affecting the GC options.
+#
+if [ X"$JAVA_OPTIONS_MEMORY" = X ]
+then
+    if [ "$CL_CLIENTVM" ]
+    then
+        JAVA_OPTIONS_MEMORY="-client"
+    else
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime"
+    fi
 
-ACS_LOG_DEBUG "acsStartJava" "Running the following command:"
+    # Since ACS 7.0.2 we get dumps for OutOfMemoryError
+    # see http://jira.alma.cl/browse/COMP-3061 about JVM crash when XX:HeapDumpPath is empty
+    JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
+    if [ X"$ACS_TMP" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP"
+    fi
     
-if [ X"$MAKE_PURE" = Xon ]; then
-   JAVA_PUREFLAGS="-Xint -Xrunpagent:-OUT=["mempro.jpt"]"
+    # Since ACS 8.0 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME
+    if [ X"$JVM_GC_LOG_NAME" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_NAME.gclog"
+    fi
 fi
+
+JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_MEMORY"
+### ----------- End of JVM memory settings ---------------
+
+
+
 
 #
 # Print information about actually used JVM, such as
@@ -543,20 +565,22 @@ then
 	JAVA_OPTIONS="$JAVA_OPTIONS -showversion"
 fi
 
+
 # While building the JAVA_COMMAND_LINE, we assume that the variables do not contain spaces,
 # or if they do, that they contain also quotes where necessary (see e.g. dealing with the
 # -D option above while parsing this script's options/arguments). To get rid of these
 # eventual quote characters, we need an "eval" of this JAVA_COMMAND_LINE instead of
 # a mere execution.
-JAVA_COMMAND_LINE="java $JAVA_PUREFLAGS -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=$ACS_TMP $JAVA_OPTIONS $LAUNCHER $@"
+JAVA_COMMAND_LINE="java -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -Dabeans.home=$ACS_ABEANS_CONFIG -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
+ACS_LOG_DEBUG "acsStartJava" "Running the following command:"
 ACS_LOG_DEBUG "acsStartJava" "$JAVA_COMMAND_LINE"
+# TODO: or should we also log the final argument list (including those args inferred by the JVM) using -XX:+PrintCommandLineFlags, when ACS_LOG_STDOUT <= 2?
 
 #
 # .... and finally executes the Java command line
 #      storing the JVM return code
 #
-
 eval $JAVA_COMMAND_LINE
 JVM_RETURN_CODE=$?
 
