@@ -20,14 +20,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: jlog,v 1.32 2008/09/02 14:20:05 acaproni Exp $"
+# "@(#) $Id: jlog,v 1.33 2009/02/09 10:43:06 hsommer Exp $"
 #
 #acsStartJava com.cosylab.logging.LoggingClient
 
 #
 # GCH 2006-12-14
 # JLog needs a special xmlparser when using
-# Oracle and trying to retreives logs from the ARCHIVE
+# Oracle and trying to retrieve logs from the ARCHIVE
 # We first search to see if it exist and, in case, we add it.
 #
 OracleXmlParser="lib/oracle/xmlparserv2.jar"
@@ -37,4 +37,8 @@ then
     echo "Adding ORACLE XML parser jar to classpath: $OracleXmlParserPath/$OracleXmlParser"
     CLASSPATH=$CLASSPATH:$OracleXmlParserPath/$OracleXmlParser
 fi
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "jlog.gclog". 
+export JVM_GC_LOG_NAME=jlog
+
 acsStartJava -v -Xms32m -v -Xmx512m --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
