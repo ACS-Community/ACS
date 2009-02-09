@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.54 2009/02/06 17:48:14 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.55 2009/02/09 09:37:59 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -521,9 +521,10 @@ fi
 ### -------------- JVM memory settings -------------------
 ###
 # The default is to use settings appropriate for server JVMs in Alma.
-# By specifying the "-clientVM" option for acsStartJava, some less server-sided configuration will be used.
-# Only for very specific needs, users can specify their own settings directly in the env var JAVA_OPTIONS_MEMORY 
-# which will be used instead of the default server or client settings.
+# By specifying the "-clientVM" option for acsStartJava, some less server-sided configuration will be used (currently nothing but the JVM choice for the -client switch).
+#
+# Only for very specific needs, users may supply their own settings directly in the env var JAVA_OPTIONS_MEMORY
+# which will be used instead of the default server or client settings and will also override all GC settings.
 #
 # TODO Decide about setting heap memory limits via -Xms -Xmx, and how a user can override them without affecting the GC options.
 #
@@ -533,7 +534,13 @@ then
     then
         JAVA_OPTIONS_MEMORY="-client"
     else
-        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime"
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode"
+        
+    fi
+
+    # Since ACS 8.0 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME
+    if [ X"$JVM_GC_LOG_NAME" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_NAME.gclog -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX+PrintTenuringDistribution"
     fi
 
     # Since ACS 7.0.2 we get dumps for OutOfMemoryError
@@ -543,10 +550,6 @@ then
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP"
     fi
     
-    # Since ACS 8.0 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME
-    if [ X"$JVM_GC_LOG_NAME" != X ]; then
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_NAME.gclog"
-    fi
 fi
 
 JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_MEMORY"
