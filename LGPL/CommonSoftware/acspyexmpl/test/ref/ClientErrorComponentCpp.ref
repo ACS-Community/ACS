@@ -16,14 +16,14 @@
 1 - ----------T--:--:--.--- [cppContainer - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libbaci.so'.
-1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Centralized Logger.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Logging into the Manager...
@@ -37,12 +37,19 @@
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
-2 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activate_component] Component 'ERRORCOMP_CPP' activated.
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6b: completionFromCompletion with depth 3
@@ -124,6 +131,7 @@
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+1 - ----------T--:--:--.--- [ERRORCOMP_CPP - ErrorComponent::displayMessage] Hello World
 2 -             Severity=Error,
 2 -             Severity=Error,
 2 -             Severity=Error,
@@ -303,25 +311,17 @@
 2 -                         Severity=Error,
 2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 - 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activate_component] Component 'ERRORCOMP_CPP' activated.
-1 - ----------T--:--:--.--- [ERRORCOMP_CPP - ErrorComponent::displayMessage] Hello World
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: OPERATIONAL -> DESTROYING
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'ERRORCOMP_CPP' etherealized.
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libacsexmplErrorComponentImpl.so'.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::logout] Logging out from the Manager.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::logout] Logged out from the Manager.
 1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container stopping...
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Container stopped.
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libbaci.so'.
 1 - /somepath/libbaci.so
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libbaci.so'.

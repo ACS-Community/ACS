@@ -124,13 +124,13 @@ class ClientErrorComponent:
             acsPrintExcDebug()
             displayMessageEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             displayMessageEx.setErrorDesc("badMethod has thrown a CORBA exception")
-            displayMessageEx.log()
+            displayMessageEx.log(self.logger)
             
         except:
             acsPrintExcDebug()
             displayMessageEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             displayMessageEx.setErrorDesc("badMethod has thrown an UNEXPECTED exception")
-            displayMessageEx.log()
+            displayMessageEx.log(self.logger)
     
     def TestReceiveRemoteException(self):
         '''
@@ -159,7 +159,7 @@ class ClientErrorComponent:
         except ACSErrTypeCommon.GenericErrorEx, ex:
             badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex)
             badMethodEx.setErrorDesc("badMethod has thrown the expected exception")
-            badMethodEx.log()
+            badMethodEx.log(self.logger)
             
             self.eh.value(badMethodEx.getTimeStamp())
             tString = self.eh.toString(acstime.TSArray, "", 0, 0)
@@ -170,7 +170,7 @@ class ClientErrorComponent:
             acsPrintExcDebug()
             badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             badMethodEx.setErrorDesc("badMethod has thrown a CORBA exception")
-            badMethodEx.log()
+            badMethodEx.log(self.logger)
 
             self.eh.value(badMethodEx.getTimeStamp())
             tString = self.eh.toString(acstime.TSArray, "", 0, 0)
@@ -180,7 +180,7 @@ class ClientErrorComponent:
             acsPrintExcDebug()
             badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             badMethodEx.setErrorDesc("badMethod has thrown an UNEXPECTED exception")
-            badMethodEx.log()
+            badMethodEx.log(self.logger)
 
             self.eh.value(badMethodEx.getTimeStamp())
             tString = self.eh.toString(acstime.TSArray, "", 0, 0)
@@ -217,7 +217,7 @@ class ClientErrorComponent:
 		 self.logger.logInfo("Completion Ok, without error trace")
 	    else:
 		 self.logger.logInfo("Completion with error trace (UNEXPECTED)")
-		 comp.log()
+		 comp.log(self.logger)
 
 	    # ERROR completion with an error trace inside.
             self.logger.logInfo("Example 2b: Calls a method that returns an Error completion, of depth 3.")
@@ -228,7 +228,7 @@ class ClientErrorComponent:
 		 self.logger.logInfo("Completion Ok, without error trace (UNEXPECTED)")
 	    else:
 		 self.logger.logInfo("Completion with error trace")
-		 comp2.log()
+		 comp2.log(self.logger)
         
         except CORBA.SystemException, ex:
         
@@ -236,12 +236,12 @@ class ClientErrorComponent:
             acsPrintExcDebug()
             displayMessageEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             displayMessageEx.setErrorDesc("completionFromException has thrown an UNEXPECTED CORBA exception")
-            displayMessageEx.log()
+            displayMessageEx.log(self.logger)
 	except:
             acsPrintExcDebug()
             badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl()
             badMethodEx.setErrorDesc("completionFromException has thrown an UNEXPECTED exception")
-            badMethodEx.log()
+            badMethodEx.log(self.logger)
 
     def testExceptionFromCompletion(self):
         '''
@@ -257,11 +257,11 @@ class ClientErrorComponent:
         except ACSErrTypeCommon.GenericErrorEx, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: shouldn't have thrown an exception")
-            ex2.log()
+            ex2.log(self.logger)
         except Exception, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: exceptionFromCompletion has thrown an UNKNOWN exception")
-            ex2.log()
+            ex2.log(self.logger)
 
         self.logger.logInfo("Example 3b: ExceptionFromCompletion with depth 3")
         try:
@@ -270,11 +270,11 @@ class ClientErrorComponent:
         except ACSErrTypeCommon.GenericErrorEx, ex:
             ex2=ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex,create=0)
             self.logger.logInfo("OK: ACSErrTypeCommon.GenericErrorEx exception thrown")
-            ex2.log()
+            ex2.log(self.logger)
         except Exception, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: exceptionFromCompletion has thrown an UNKNOWN exception")
-            ex2.log()
+            ex2.log(self.logger)
         
 
     def testTypeException(self):
@@ -291,11 +291,11 @@ class ClientErrorComponent:
         except ACSErrTypeCommon.GenericErrorEx, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: shouldn't have thrown an exception")
-            ex2.log()
+            ex2.log(self.logger)
         except Exception, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: typeException has thrown an UNKNOWN exception")
-            ex2.log()
+            ex2.log(self.logger)
 
         self.logger.logInfo("Example 4b: TypeException with depth 3")
         try:
@@ -304,11 +304,11 @@ class ClientErrorComponent:
         except ACSErrTypeCommon.ACSErrTypeCommonEx, ex:
             ex2=ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex,create=0)
             self.logger.logInfo("OK: ACSErrTypeCommonEx exception thrown")
-            ex2.log()
+            ex2.log(self.logger)
         except Exception, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: typeException has thrown an UNKNOWN exception")
-            ex2.log()
+            ex2.log(self.logger)
 
 
     def testCORBASystemException(self):
@@ -326,11 +326,11 @@ class ClientErrorComponent:
         except CORBA.SystemException, ex:
             ex2 = ACSErrTypeCommonImpl.GenericErrorExImpl(exception=ex)
             self.logger.logInfo("OK: CORBA.SystemException exception received")
-            ex2.log()
+            ex2.log(self.logger)
         except Exception, ex:
             ex2=ACSErrTypeCommonImpl.UnexpectedExceptionExImpl(exception=ex)
             ex2.addData("ErrorDesc","UNEXPECTED: corbaSystemException has thrown an UNKNOWN exception")
-            ex2.log()
+            ex2.log(self.logger)
 
 
     def testCompletionFromCompletion(self):
@@ -347,7 +347,7 @@ class ClientErrorComponent:
         except Exception, ex:
             ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
             ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
-            ex2.log()
+            ex2.log(self.logger)
         
         addComplHelperMethods(comp)
 
@@ -355,7 +355,7 @@ class ClientErrorComponent:
             self.logger.logInfo("Completion Ok, without error trace")
         else:
             self.logger.logInfo("Completion with error trace (UNEXPECTED)")
-            comp.log()
+            comp.log(self.logger)
 
         self.logger.logInfo("Example 6b: completionFromCompletion with depth 3")
         try:
@@ -363,7 +363,7 @@ class ClientErrorComponent:
         except Exception, ex:
             ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
             ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
-            ex2.log()
+            ex2.log(self.logger)
         
         addComplHelperMethods(comp)
 
@@ -371,7 +371,7 @@ class ClientErrorComponent:
             self.logger.logInfo("UNEXPECTED: Completion without error trace")
         else:
             self.logger.logInfo("OK: Completion with error trace")
-            comp.log()
+            comp.log(self.logger)
 
         
 
@@ -392,7 +392,7 @@ class ClientErrorComponent:
         except Exception, ex:
             ex2 = ACSErrTypeCommonImpl.UnknownExImpl(exception=ex)
             ex2.addData("ErrorDesc","completionFromCompletion has thrown an UNEXPECTED exception")
-            ex2.log()
+            ex2.log(self.logger)
         
         addComplHelperMethods(comp)
 
@@ -400,7 +400,7 @@ class ClientErrorComponent:
             self.logger.logInfo("Completion Ok, without error trace")
         else:
             self.logger.logInfo("Completion with error trace (UNEXPECTED)")
-            comp.log()
+            comp.log(self.logger)
 
 #-----------------------------------------------------------------------------  
 if __name__=="__main__":
@@ -430,7 +430,7 @@ if __name__=="__main__":
         # any exception.
         badMethodEx = ACSErrTypeCommonImpl.GenericErrorExImpl(exception = ex)
         badMethodEx.setErrorDesc("Examples of error handling have thrown an ACS exception")
-        badMethodEx.log()
+        badMethodEx.log(self.logger)
     
     except Exception, ex:
         # We should never get here, because the methods in the example
@@ -438,7 +438,7 @@ if __name__=="__main__":
         # any exception.
         badMethodEx = pyExceptionToCORBA(ex)
         badMethodEx.setData("Reason", "Examples of error handling have thrown an UNEXPECTED exception")
-        badMethodEx.log()
+        badMethodEx.log(self.logger)
         
     else:
         del clientErrorComponent

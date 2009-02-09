@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acspyexmplHelloWorldError.py,v 1.10 2006/03/30 16:58:36 dfugate Exp $
+# @(#) $Id: acspyexmplHelloWorldError.py,v 1.11 2009/02/09 18:56:50 agrimstrup Exp $
 #------------------------------------------------------------------------------
 
 '''
@@ -64,7 +64,7 @@ except ACSErrTypeCommon.UnknownEx, e:
     simpleClient.getLogger().logCritical("Caught an ACSException...don't worry because this SHOULD happen.")
     helperException = ACSErrTypeCommonImpl.UnknownExImpl(exception=e)
     helperException.Print()
-    helperException.log()
+    helperException.log(simpleClient.getLogger())
     # Release it
     simpleClient.releaseComponent("HELLOWORLD1")
 

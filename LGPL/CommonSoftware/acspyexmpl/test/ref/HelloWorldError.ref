@@ -1,4 +1,4 @@
-1 - ----------T--:--:--.--- Common.Err.ErrorTraceHelper Error Trace
+1 - ----------T--:--:--.--- Python Client Error Trace
 1 - ----------T--:--:--.--- Python Client Main - Caught an ACSException...don't worry because this SHOULD happen.
 1 - ----------T--:--:--.--- Python Client Main - Trying to invoke bad method
 1 - ErrorTrace (TimeStamp=xxxx,
