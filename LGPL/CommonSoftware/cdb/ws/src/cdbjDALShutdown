@@ -24,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDALShutdown,v 1.36 2009/02/09 10:24:40 hsommer Exp $"
+# "@(#) $Id: cdbjDALShutdown,v 1.37 2009/02/09 12:06:00 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -107,7 +107,7 @@ if [ "$CL_HELP" ] ; then
    printUsage
    echo ""
    echo "Calling to DALShutdown whit -h option and exit"
-   acsStartJava -client com.cosylab.cdb.DALShutdown -h
+   acsStartJava -clientVM com.cosylab.cdb.DALShutdown -h
    exit $EC_OK
 fi
 ############################################################
@@ -136,7 +136,7 @@ fi
 shift;
 
 #issue the CORBA shutdown command
-acsStartJava -client com.cosylab.cdb.DALShutdown -d $CL_DAL_REFERENCE $*
+acsStartJava -clientVM com.cosylab.cdb.DALShutdown -d $CL_DAL_REFERENCE $*
 
 if [ -e $CDB_PIDFILE ]
 then

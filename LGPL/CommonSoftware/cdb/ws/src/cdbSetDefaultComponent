@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbSetDefaultComponent,v 1.5 2009/02/09 10:24:40 hsommer Exp $"
+# "@(#) $Id: cdbSetDefaultComponent,v 1.6 2009/02/09 12:06:00 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -126,7 +126,7 @@ if [ "$CL_HELP" ] ; then
    printUsage
    echo ""
    echo "Calling to CDBDefault whit -h option and exit"
-   acsStartJava -endorsed -client com.cosylab.cdb.CDBDefault -h
+   acsStartJava -endorsed -clientVM com.cosylab.cdb.CDBDefault -h
    exit $EC_OK
 fi
 ############################################################
@@ -154,5 +154,5 @@ fi
 
 shift;
 
-acsStartJava -endorsed -client com.cosylab.cdb.CDBDefault $CL_IDL_TYPE $CL_INSTANCE_NAME -d $CL_DAL_REFERENCE $*
+acsStartJava -endorsed -clientVM com.cosylab.cdb.CDBDefault $CL_IDL_TYPE $CL_INSTANCE_NAME -d $CL_DAL_REFERENCE $*
 
