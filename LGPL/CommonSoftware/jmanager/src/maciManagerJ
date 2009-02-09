@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.46 2008/03/07 12:31:57 hsommer Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.47 2009/02/09 12:17:59 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -156,7 +156,12 @@ then
      ACS_FEDERATION="$ACS_FEDERATION -DACS.federationDirectory=$ACS_FEDERATION_DIRECTORY"
 fi
 
-              
+#
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "jmanager.gclog".
+# @TODO: When using several federated manager instances, we'll have to ensure that the jmanager.gclog files don't interfere with each other!
+#
+export JVM_GC_LOG_NAME=jmanager
+
 #
 # The easiest would be to delegate the rest to acsStartJava
 # as in the following commented command line.

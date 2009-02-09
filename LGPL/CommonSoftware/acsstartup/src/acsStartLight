@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# @(#) $Id: acsStartLight,v 1.9 2008/04/10 05:24:41 cparedes Exp $
+# @(#) $Id: acsStartLight,v 1.10 2009/02/09 12:14:22 hsommer Exp $
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -204,7 +204,9 @@ ACS_LOG_DEBUG "acsStartLight" "Using Container name: $contname"
 sanitycheckCdb
 
 
-### go
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "acsStartLight.gclog". 
+export JVM_GC_LOG_NAME=acsStartLight
 
+### go (The class alma.acs.startup.AcsStartLight comes from module acscommandcenter)
 acsStartJava -endorsed -DACS.cdbpath=$cdbschemapath alma.acs.startup.AcsStartLight $acsinstance $cdbroot $contname
 
