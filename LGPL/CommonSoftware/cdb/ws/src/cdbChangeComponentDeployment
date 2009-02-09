@@ -21,17 +21,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbChangeComponentDeployment,v 1.1 2006/03/02 10:40:44 cparedes Exp $"
+# "@(#) $Id: cdbChangeComponentDeployment,v 1.2 2009/02/09 10:24:40 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # gchiozzi 2002-12-05 created
 
-# Hanlding of PORT should be implemented.
+# Handling of PORT should be implemented.
 # -raw option after point name retuns raw XML
-acsStartJava -endorsed com.cosylab.cdb.CDBChangeDeployment $1 $2 $3
-
-
-
-
+acsStartJava -endorsed -client com.cosylab.cdb.CDBChangeDeployment $1 $2 $3
 

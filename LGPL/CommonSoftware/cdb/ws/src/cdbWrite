@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbWrite,v 1.1 2006/12/25 02:01:44 cparedes Exp $"
+# "@(#) $Id: cdbWrite,v 1.2 2009/02/09 10:24:40 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -123,7 +123,7 @@ if [ "$CL_HELP" ] ; then
    printUsage
    echo ""
    echo "Calling to DALWrite whit -h option and exit"
-   acsStartJava -endorsed com.cosylab.cdb.DALWrite -h
+   acsStartJava -endorsed -client com.cosylab.cdb.DALWrite -h
    exit $EC_OK
 fi
 ############################################################
@@ -153,5 +153,5 @@ shift;
 
 # Hanlding of PORT should be implemented.
 # -raw option after point name retuns raw XML
-acsStartJava -endorsed com.cosylab.cdb.DALWrite $CL_CURL $CL_FIELD $CL_VALUE -d $CL_DAL_REFERENCE $CL_RAW $*
+acsStartJava -endorsed -client com.cosylab.cdb.DALWrite $CL_CURL $CL_FIELD $CL_VALUE -d $CL_DAL_REFERENCE $CL_RAW $*
 
