@@ -290,13 +290,13 @@ else
   unzip -oj mock-0.4.0.zip mock-0.4.0/mock.py mock-0.4.0/testcase.py mock-0.4.0/testutils.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
 fi
 
-if [ ! -e ../PRODUCTS/generateDS-1.15c.tar.gz ]
+if [ ! -e ../PRODUCTS/generateDS-1.15d.tar.gz ]
 then
   echo Error: generateDS sources are missing
 else
   echo "== Installing generateDS"
-  tar -zxvf generateDS-1.15g.tar.gz
-  pushd generateDS-1.15g
+  tar -zxvf generateDS-1.15d.tar.gz
+  pushd generateDS-1.15d
   python setup.py install 
   popd
 fi
