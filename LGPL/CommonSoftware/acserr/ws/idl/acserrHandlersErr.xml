@@ -21,7 +21,7 @@
      shortDescription="Unspecified std::exception"
      description="An unspecified std::exception was thrown. This means that an exception was thrown but the exception is not listed in the function specification."
 >
-	<Member name="What" type="string" description="Name of std::exception got calling what method."/>
+	<Member name="What" type="string" description="Name of std::exception got from what method."/>
 </ErrorCode>
 <ErrorCode name="UnspecifiedUnknownException"
      shortDescription="Unspecified Unknown exception"
@@ -38,6 +38,12 @@
 >
 	<Member name="CORBAExName" type="string" description="Name of
 	CORBA exception"/>
+</ErrorCode>
+<ErrorCode name="UncaughtSTDException"
+     shortDescription="Uncaught std::exception"
+     description="An uncaught std::exception was thrown"
+>
+	<Member name="What" type="string" description="Name of std::exception got from what method!"/>
 </ErrorCode>
 <ErrorCode name="UncaughtUnknownException"
      shortDescription="Uncaught Unknown exception"
