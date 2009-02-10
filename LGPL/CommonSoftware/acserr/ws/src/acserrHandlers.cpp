@@ -1,24 +1,24 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.4 2008/10/27 13:35:54 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.5 2009/02/10 07:29:25 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
-* bjeram  yyyy-mm-dd  created 
+* bjeram  yyyy-mm-dd  created
 */
 
 #include "vltPort.h"
 #include "acserrHandlers.h"
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.4 2008/10/27 13:35:54 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.5 2009/02/10 07:29:25 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 using namespace acserrHandlersErr;
 
 // this class it is used just to inform acserrUncaughtExHandler
-// from UnspecifiedEhHandler, in other words to hide ACSbaseExImpl 
+// from UnspecifiedEhHandler, in other words to hide ACSbaseExImpl
 // = to prevent that exception is porpagated through the call chain where unspecified exception was thrown
 class UnspecException {
   public:
@@ -38,9 +38,9 @@ void acserrUnspecifiedExHandler()
 	}
     catch (ACSErr::ACSbaseExImpl &_ex)
 	{
-	UnspecifiedACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__, 
+	UnspecifiedACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__,
 					      "acserrUnspecifiedExHandler", ACSErr::Emergency);
-	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be loged
+	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be logged
 	}
     catch (CORBA::Exception &ce)
 	{
@@ -49,6 +49,13 @@ void acserrUnspecifiedExHandler()
 	ex.setCORBAExName(ce._name());
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler
 	}
+    catch(std::exception &stdex)
+      {
+        UnspecifiedSTDExceptionExImpl ex(__FILE__, __LINE__,
+            "acserrUnspecifiedExHandler", ACSErr::Emergency);
+        ex.setWhat(stdex.what());
+        throw UnspecException(ex); // pass to the acserrUncaughtExHandler
+      }
     catch (...)
 	{
 	UnspecifiedUnknownExceptionExImpl ex(__FILE__, __LINE__,
@@ -85,6 +92,13 @@ void acserrUncaughtExHandler()
 	ex.setCORBAExName(ce._name());
   	ex.log();
 	}
+    catch(std::exception &stdex)
+    {
+      UncaughtSTDExceptionExImpl ex(__FILE__, __LINE__,
+                                    "acserrUncaughtExHandler", ACSErr::Emergency);
+      ex.setWhat(stdex.what());
+      ex.log();
+    }
     catch (...)
 	{
 	UncaughtUnknownExceptionExImpl ex(__FILE__, __LINE__,
