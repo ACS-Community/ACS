@@ -42,7 +42,7 @@ import org.omg.CORBA.SystemException;
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
  * TODO temporary implementation - real caching (DAL wide, not per CharacteristicModelImpl instance) has to be implemented
  * TODO what about reconnection then... is persistent DAL server enough?
- * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
 // TODO to be fully implemented, cached, etc.
@@ -307,7 +307,51 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			throw new NoSuchCharacteristic(name, modelName);
 		}
 	}
+	
+	/**
+	 * Read sequence double characteristic.
+	 * @param name	characteristic name.
+	 * @throws NoSuchCharacteristic is thrown if characterstic does not exist.
+	 */
+	public float[] getFloatSeq(String name)
+		throws NoSuchCharacteristic
+	{
+		// TODO temporary implementation
+		try
+		{
+			double[] temp = dao.get_double_seq(prefix+name);
+			float[] ret = new float[temp.length];
+			
+			for(int i=0;i<temp.length;i++){				
+				ret[i] = (float)temp[i];	
+			}
+			return ret;
+			
+		}
+		catch (Throwable th)
+		{
+			throw new NoSuchCharacteristic(name, modelName);
+		}
+	}
 
+	/**
+	 * Read sequence double characteristic.
+	 * @param name	characteristic name.
+	 * @throws NoSuchCharacteristic is thrown if characterstic does not exist.
+	 */
+	public int[] getLongSeq(String name)
+		throws NoSuchCharacteristic
+	{
+		// TODO temporary implementation
+		try
+		{
+			return dao.get_long_seq(prefix+name);
+		}
+		catch (Throwable th)
+		{
+			throw new NoSuchCharacteristic(name, modelName);
+		}
+	}
 	/**
 	 * Read sequence string characteristic.
 	 * @param name	characteristic name.
