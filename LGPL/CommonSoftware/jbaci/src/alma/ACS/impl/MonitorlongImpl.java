@@ -63,7 +63,7 @@ public class MonitorlongImpl
 	 * @see alma.ACS.MonitorlongOperations#get_value_trigger(IntHolder, BooleanHolder)
 	 */
 
-	@Override
+
 	public void get_value_trigger(IntHolder delta, BooleanHolder enable) {
 		// TODO Auto-generated method stub
 		delta.value = ((Integer)getValueTrigger(enable)).intValue();
@@ -74,7 +74,7 @@ public class MonitorlongImpl
 	 * @see alma.ACS.MonitorlongOperations#set_value_trigger(int, boolean)
 	 */
 	
-	@Override
+
 	public void set_value_trigger(int delta, boolean enable) {
 		// TODO Auto-generated method stub
 		setValueTrigger(new Integer((int) delta), enable);

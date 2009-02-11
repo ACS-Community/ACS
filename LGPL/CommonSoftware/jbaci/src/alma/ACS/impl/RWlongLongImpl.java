@@ -93,24 +93,24 @@ public class RWlongLongImpl
 	/**
 	 * @see alma.ACS.PlongOperations#create_monitor(alma.ACS.CBlong, alma.ACS.CBDescIn)
 	 */
-	public Monitorlong create_monitor(CBlong callback, CBDescIn descIn) {
+	public MonitorlongLong create_monitor(CBlongLong callback, CBDescIn descIn) {
 		return create_postponed_monitor(0, callback, descIn);
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#create_postponed_monitor(long, alma.ACS.CBlong, alma.ACS.CBDescIn)
 	 */
-	public Monitorlong create_postponed_monitor(
+	public MonitorlongLong create_postponed_monitor(
 		long startTime,
-		CBlong callback,
+		CBlongLong callback,
 		CBDescIn descIn) {
 			
 		// create monitor and its servant
-		MonitorlongImpl monitorImpl = new MonitorlongImpl(this, callback, descIn, startTime);
-		MonitorlongPOATie monitorTie = new MonitorlongPOATie(monitorImpl);
+		MonitorlongLongImpl monitorImpl = new MonitorlongLongImpl(this, callback, descIn, startTime);
+		MonitorlongLongPOATie monitorTie = new MonitorlongLongPOATie(monitorImpl);
 
 		// register and activate		
-		return MonitorlongHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
+		return MonitorlongLongHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
 
@@ -124,7 +124,7 @@ public class RWlongLongImpl
 	/**
 	 * @see alma.ACS.PlongOperations#get_async(alma.ACS.CBlong, alma.ACS.CBDescIn)
 	 */
-	public void get_async(CBlong arg0, CBDescIn arg1) {
+	public void get_async(CBlongLong arg0, CBDescIn arg1) {
 		getAsync(arg0, arg1);
 	}
 
@@ -133,9 +133,9 @@ public class RWlongLongImpl
 	 */
 	public int get_history(
 		int arg0,
-		longSeqHolder arg1,
+		longLongSeqHolder arg1,
 		TimeSeqHolder arg2) {
-		arg1.value = (int[])getHistory(arg0, arg2);
+		arg1.value = (long[])getHistory(arg0, arg2);
 		return arg1.value.length;
 	}
 
@@ -282,31 +282,7 @@ public class RWlongLongImpl
 		}
 	}
 
-	@Override
-	public MonitorlongLong create_monitor(CBlongLong cb, CBDescIn desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public MonitorlongLong create_postponed_monitor(long start_time,
-			CBlongLong cb, CBDescIn desc) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void get_async(CBlongLong cb, CBDescIn desc) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int get_history(int n_last_values, longLongSeqHolder vs,
-			TimeSeqHolder ts) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 }
 

@@ -190,6 +190,7 @@ public class ROlongSeqImpl
 			completionHolder.value = CompletionUtil.generateCompletion(cpa);
 			// return default value in case of error
 			//return default_value();
+			return new int[1];
 		}
 	}
 

@@ -120,7 +120,7 @@ public class RWdoubleSeqImpl
 	/**
 	 * @see alma.ACS.PdoubleOperations#get_async(alma.ACS.CBdouble, alma.ACS.CBDescIn)
 	 */
-	public void get_async(CBdouble arg0, CBDescIn arg1) {
+	public void get_async(CBdoubleSeq arg0, CBDescIn arg1) {
 		getAsync(arg0, arg1);
 	}
 
@@ -284,10 +284,6 @@ public class RWdoubleSeqImpl
 	 * @see alma.ACS.RWdoubleOperations#set_async(CBdoubleSeq,CBDescIn)
 	 */
 	
-	@Override
-	public void get_async(CBdoubleSeq cb, CBDescIn desc) {
-		// TODO Auto-generated method stub
-		getAsync(cb,desc);
-	}
+
 
 }

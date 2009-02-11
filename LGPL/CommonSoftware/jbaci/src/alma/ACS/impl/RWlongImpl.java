@@ -250,48 +250,21 @@ public class RWlongImpl
 	/**
 	 * @see alma.ACS.RWlongOperations#set_async(long, alma.ACS.CBvoid, alma.ACS.CBDescIn)
 	 */
-	public void set_async(long value, CBvoid callback, CBDescIn descIn) {
-		setAsync(new Long(value), callback, descIn);
+	public void set_async(int value, CBvoid callback, CBDescIn descIn) {
+		setAsync(new Integer(value), callback, descIn);
 	}
 
 	/**
 	 * @see alma.ACS.RWlongOperations#set_nonblocking(long)
 	 */
-	public void set_nonblocking(long value) {
-		setNonblocking(new Long(value));
+	public void set_nonblocking(int value) {
+		setNonblocking(new Integer(value));
 	}
 
 	/**
 	 * @see alma.ACS.RWlongOperations#set_sync(long)
 	 */
-	public Completion set_sync(long value) {
-		try
-		{
-			return setSync(new Long(value));
-		}
-		catch (AcsJException acsex)
-		{
-			AcsJCouldntPerformActionEx cpa =
-				new AcsJCouldntPerformActionEx("Failed to set value", acsex);
-			return CompletionUtil.generateCompletion(cpa);
-		}
-	}
-
-	@Override
-	public void set_async(int value, CBvoid cb, CBDescIn desc) {
-		// TODO Auto-generated method stub
-		setAsync(new Integer(value), cb, desc);
-	}
-
-	@Override
-	public void set_nonblocking(int value) {
-		// TODO Auto-generated method stub
-		setNonblocking(new Integer(value));
-	}
-
-	@Override
 	public Completion set_sync(int value) {
-		// TODO Auto-generated method stub
 		try
 		{
 			return setSync(new Integer(value));
@@ -303,6 +276,8 @@ public class RWlongImpl
 			return CompletionUtil.generateCompletion(cpa);
 		}
 	}
+
+
 
 }
 
