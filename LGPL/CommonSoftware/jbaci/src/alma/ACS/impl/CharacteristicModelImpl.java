@@ -24,12 +24,19 @@ package alma.ACS.impl;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CosPropertyService.PropertySet;
-
 import alma.ACS.CharacteristicModelOperations;
 import alma.ACS.NoSuchCharacteristic;
 
+
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
+
+//cmenay
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
+import java.util.ArrayList;
+import java.util.regex.*;
+import org.omg.CORBA.SystemException;
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
@@ -91,8 +98,30 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 */
 	public Any get_characteristic_by_name(String name)
 		throws NoSuchCharacteristic {
-		// TODO NO_IMPLEMENT
-		throw new NO_IMPLEMENT();
+	//cmenay
+		 try{
+                 String  strVal  = dao.get_string(name);
+                 Any value_p = null;
+                 value_p.insert_string(strVal);
+                return value_p;
+         }
+		 catch (CDBFieldDoesNotExistEx fde){
+                NoSuchCharacteristic nsc = null;
+                nsc.characteristic_name = name;
+                nsc.component_name = modelName;
+                throw nsc;
+         }
+
+		 catch (SystemException se){
+			 throw se;
+		 } 
+		 
+		 
+		 catch (WrongCDBDataTypeEx wct) {
+			//log? (cmenay)
+		}
+		 
+		throw new NoSuchCharacteristic();
 	}
 
 	/**
@@ -100,6 +129,27 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 */
 	public String[] find_characteristic(String wildcard) {
 		// TODO NO_IMPLEMENT
+		//cmenay
+		try {
+			String[] allSeq; 
+			allSeq = dao.get_string_seq("");
+			int max;
+			max = allSeq.length;
+			ArrayList arrSeq = null;
+			
+			Pattern checker = Pattern.compile(wildcard);
+			for(int i=0;i<max;i++){
+				if ( checker.split(allSeq[i]).length>0 )
+					   arrSeq.add(allSeq[i]);
+					
+			}
+			return (String[])arrSeq.toArray();
+			
+		} catch (CDBFieldDoesNotExistEx e) {
+		//log?
+		} catch (WrongCDBDataTypeEx e) {
+		//log?
+		}
 		throw new NO_IMPLEMENT();
 	}
 
@@ -107,8 +157,18 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 * @see alma.ACS.CharacteristicModelOperations#get_all_characteristics()
 	 */
 	public PropertySet get_all_characteristics() {
-		// TODO NO_IMPLEMENT
+		
 		throw new NO_IMPLEMENT();
+		//PropertySet ps = null;
+		//PropertiesHolder ph = null;
+		//PropertiesIteratorHolder pih = null;
+		//ps.get_all_properties(0, ph, pih);
+		//psf.
+		//return ps.;
+
+		
+		
+		
 	}
 
 	/*********************** [ Helpers ] ***********************/
@@ -189,6 +249,27 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 		}
 	}
 
+	/**
+	 * Read double characteristic.
+	 * @param name	characteristic name.
+	 * @throws NoSuchCharacteristic is thrown if characterstic does not exist.
+	 */
+	
+	//cmenay
+	public float getFloat(String name)
+		throws NoSuchCharacteristic
+	{
+		// TODO temporary implementation
+		try
+		{
+			return (float)dao.get_double(prefix+name);
+		}
+		catch (Throwable th)
+		{
+			throw new NoSuchCharacteristic(name, modelName);
+		}
+	}
+	
 	/**
 	 * Read sequence long characteristic.
 	 * @param name	characteristic name.
