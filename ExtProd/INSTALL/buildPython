@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.18 2008/08/07 21:13:17 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.19 2009/02/11 17:16:47 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -159,7 +159,7 @@ then
    cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/local/include,\1$TCLTK_ROOT/include,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/X11R6/include,g" >> Modules/Setup.dist.tmp
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    if [ "$DISTRO" = "RHLX" -a \( "$REL" ="7.2" -o  "$REL" = "7.3" \) ]
@@ -170,7 +170,7 @@ then
    fi
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/X11R6/lib,g" >> Modules/Setup.dist.tmp
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    cat Modules/Setup.dist | sed "s,^#\(\W*-l\)X11,\1X11,g" >> Modules/Setup.dist.tmp

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.14 2008/08/08 22:57:56 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.15 2009/02/11 17:16:47 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -36,6 +36,11 @@ clean :
 	rm -rf ../PRODUCTS/pexpect-2.3
 	rm -rf ../PRODUCTS/pychecker-0.8.17
 	rm -rf ../PRODUCTS/setuptools-0.6c8
+	rm -rf ../PRODUCTS/lxml-2.1.5
+	rm -rf ../PRODUCTS/generateDS-1.15d
+	rm -rf ../PRODUCTS/pythoscope-0.3.2
+	rm -rf ../PRODUCTS/snakefood-1.3.1
+	rm -rf ../PRODUCTS/figleaf-latest
 #	rm -rf ../PRODUCTS/ipython-0.8.1
 #	rm -rf ../PRODUCTS/ipython1-saw
 #	rm -rf ../PRODUCTS/Twisted-2.5.0
