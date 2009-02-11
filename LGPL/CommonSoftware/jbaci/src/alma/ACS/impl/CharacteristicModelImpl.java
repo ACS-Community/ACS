@@ -147,10 +147,12 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			
 		} catch (CDBFieldDoesNotExistEx e) {
 		//log?
+			return new String[0];
 		} catch (WrongCDBDataTypeEx e) {
 		//log?
+			return new String[0];
 		}
-		throw new NO_IMPLEMENT();
+	
 	}
 
 	/**
