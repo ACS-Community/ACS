@@ -37,6 +37,12 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
 
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+import org.omg.CORBA.SystemException;
+
 /**
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
  * TODO temporary implementation - real caching (DAL wide, not per CharacteristicModelImpl instance) has to be implemented

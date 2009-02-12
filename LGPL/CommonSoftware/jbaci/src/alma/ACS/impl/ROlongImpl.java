@@ -35,7 +35,6 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROlongOperations; //cmenay
 import alma.ACS.Subscription;
 import alma.ACS.TimeSeqHolder;
-import alma.ACS.doubleSeqHolder;
 import alma.ACS.longSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;

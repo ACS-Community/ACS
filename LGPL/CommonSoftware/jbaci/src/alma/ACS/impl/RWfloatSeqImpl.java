@@ -30,7 +30,6 @@ import alma.ACS.Monitorfloat;
 import alma.ACS.MonitorfloatHelper;
 import alma.ACS.MonitorfloatPOATie;
 import alma.ACS.NoSuchCharacteristic;
-import alma.ACS.RWfloatOperations;
 import alma.ACS.RWfloatSeqOperations;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.floatSeqSeqHolder;

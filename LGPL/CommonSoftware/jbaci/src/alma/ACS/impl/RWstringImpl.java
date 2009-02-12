@@ -135,14 +135,17 @@ public class RWstringImpl
 	public Completion set_sync(String value) {
 		try
 		{
-			return setSync(new String(value));
+			return setSync(value);
 		}
 		catch (AcsJException acsex)
 		{
-			AcsJCouldntPerformActionEx cpa =
-				new AcsJCouldntPerformActionEx("Failed to set value", acsex);
-			return CompletionUtil.generateCompletion(cpa);
+			AcsJCouldntPerformActionEx cpa = new AcsJCouldntPerformActionEx("Failed to set value",acsex);	
+			return CompletionUtil.generateCompletion(cpa);		
+		//	AcsJCouldntPerformActionEx cpa = new AcsJCouldntPerformActionEx();
+		//	return CompletionUtil.generateCompletion(cpa);
+		
 		}
+				
 	}
 
 

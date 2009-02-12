@@ -23,7 +23,6 @@ package alma.ACS.impl;
 
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
-import alma.ACS.CBdouble;
 import alma.ACS.CBdoubleSeq; //change
 import alma.ACS.CBvoid;
 import alma.ACS.Callback;
