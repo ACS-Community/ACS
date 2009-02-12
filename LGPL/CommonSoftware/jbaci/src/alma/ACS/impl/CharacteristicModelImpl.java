@@ -21,23 +21,21 @@
 
 package alma.ACS.impl;
 
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.CORBA.SystemException;
 import org.omg.CosPropertyService.PropertySet;
+
 import alma.ACS.CharacteristicModelOperations;
 import alma.ACS.NoSuchCharacteristic;
-
+import alma.cdbErrType.CDBFieldDoesNotExistEx;
+import alma.cdbErrType.WrongCDBDataTypeEx;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
-
-//cmenay
-import alma.cdbErrType.CDBFieldDoesNotExistEx;
-import alma.cdbErrType.WrongCDBDataTypeEx;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.regex.*;
-import org.omg.CORBA.SystemException;
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
