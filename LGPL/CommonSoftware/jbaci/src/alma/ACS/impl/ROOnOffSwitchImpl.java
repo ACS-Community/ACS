@@ -53,7 +53,7 @@ import alma.ACS.OnOffSwitch;//added
 import alma.ACS.Subscription;//added
 import alma.ACS.Condition;
 import alma.ACS.Alarmpattern;
-
+import alma.ACS.AlarmBool;
 /**
  * Implementation of <code>alma.ACS.ROdouble</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>

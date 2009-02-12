@@ -46,7 +46,9 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-
+//logs
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.cosylab.CDB.DAL;
 
 /**
@@ -86,13 +88,21 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * Number of threads in thread pool.
 	 */
 	private static final int MAX_POOL_THREADS = 10;
+	
+	//logs
+	private Logger m_logger;
 
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#initialize(alma.acs.container.ContainerServices)
 	 */
+
+	
 	public void initialize(ContainerServices containerServices)
 		throws ComponentLifecycleException {
 		super.initialize(containerServices);
+
+		//get the logger
+		m_logger = getComponentContainerServices().getLogger();
 
 		try
 		{
@@ -151,6 +161,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 				catch (Throwable th)
 				{
 					// TODO or even log here
+					m_logger.log(Level.WARNING, "jBaci::CharacteristicComponentImpl::cleanUp - Error while destroying the properties.");
 					th.printStackTrace();
 				}
 			}
@@ -221,6 +232,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			catch (Throwable th)
 			{
 				// TODO log
+				m_logger.log(Level.WARNING, "jBaci::CharacteristicComponentImpl::registerProperty - No resources to register the new property.");
 				throw new NO_RESOURCES(th.getMessage());
 			}
 		}
@@ -260,7 +272,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			}
 			catch (Throwable th)
 			{
-				// TODO log
+				m_logger.log(Level.WARNING, "jBaci::CharacteristicComponentImpl::unregisterProperty - Error when trying to deactivate a property.");
 				th.printStackTrace();
 			}
 		}

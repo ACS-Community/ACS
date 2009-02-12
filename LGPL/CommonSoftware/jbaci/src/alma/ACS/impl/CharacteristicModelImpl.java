@@ -35,6 +35,7 @@ import com.cosylab.CDB.DAO;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.regex.*;
 import org.omg.CORBA.SystemException;
 
