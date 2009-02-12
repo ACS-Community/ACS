@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2005/01/31 21:45:24 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.6 2009/02/12 12:52:40 msekoran Exp $"
 #
 # Makefile of jbaci
 #
@@ -143,7 +143,7 @@ USER_IDL =
 JARFILES = jbaci
 jbaci_DIRS = alma
 jbaci_EXTRAS =
-USER_JFLAGS=-source 1.4
+USER_JFLAGS=
 
 #
 # man pages to be done
