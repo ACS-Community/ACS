@@ -24,5 +24,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.5.2.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
