@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 import alma.acs.eventbrowser.Application;
 
-public class EventDetailViewContentProvider implements IStructuredContentProvider {
+public class EventListViewContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public void dispose() {

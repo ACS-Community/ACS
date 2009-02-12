@@ -73,7 +73,7 @@ public class PopulateEventList {
 					//display.asyncExec(r);
 					try {
 						Thread.sleep(1000);
-						//					System.out.println("Event detail iteration " + ++i);
+						//					System.out.println("Event list iteration " + ++i);
 						//					System.out.println("Queue has "
 						//							+ Application.equeue.remainingCapacity()
 						//							+ " slots left.");

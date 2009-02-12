@@ -32,7 +32,7 @@ import org.eclipse.ui.part.ViewPart;
 import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
 
-public class EventDetailView extends ViewPart {
+public class EventListView extends ViewPart {
 
 	private TableViewer viewer;
 	private EventTypeFilter tableFilter;
@@ -45,10 +45,10 @@ public class EventDetailView extends ViewPart {
 	
 	private Logger logger;
 
-	public static final String ID = "alma.acs.eventbrowser.views.eventdetail";
+	public static final String ID = "alma.acs.eventbrowser.views.eventlist";
 
 
-	public EventDetailView() {
+	public EventListView() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -120,7 +120,7 @@ public class EventDetailView extends ViewPart {
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
 
-		viewer.setContentProvider(new EventDetailViewContentProvider());
+		viewer.setContentProvider(new EventListViewContentProvider());
 		// viewer.setComparator(new ServiceViewerComparator());
 		getSite().setSelectionProvider(viewer); // In order to be able to display event detail
 		viewer.setInput(getViewSite());

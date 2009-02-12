@@ -38,10 +38,10 @@
       </view>
       <view
             allowMultiple="true"
-            class="alma.acs.eventbrowser.views.EventDetailView"
+            class="alma.acs.eventbrowser.views.EventListView"
             icon="icons/sample.gif"
-            id="alma.acs.eventbrowser.views.eventdetail"
-            name="Event Details"
+            id="alma.acs.eventbrowser.views.eventlist"
+            name="Event List"
             restorable="true">
       </view>
    </extension>
@@ -90,6 +90,18 @@
       <extension
             point="org.eclipse.ui.startup">
          <startup></startup>
+      </extension>
+      <extension
+            id="product"
+            point="org.eclipse.core.runtime.products">
+         <product
+               application="eventGUI.application"
+               name="ALMA ACS Event Browser">
+            <property
+                  name="appName"
+                  value="ALMA ACS Event Browser">
+            </property>
+         </product>
       </extension>
 
 </plugin>
