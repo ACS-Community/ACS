@@ -42,11 +42,11 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = acsjlog slf4j-acs-1.5.2
+JARFILES = acsjlog acsjlogSLF4j
 acsjlog_DIRS =  alma
 acsjlog_EXTRAS = almalogging.properties
 
-slf4j-acs-1.5.2_DIRS = org
+acsjlogSLF4j_DIRS = org
 
 #
 # Scripts (public and local)
