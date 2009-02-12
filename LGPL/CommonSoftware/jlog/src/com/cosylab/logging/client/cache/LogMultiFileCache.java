@@ -91,24 +91,40 @@ import com.cosylab.logging.engine.log.ILogEntry;
 */
 public class LogMultiFileCache  implements ILogMap {
 	
-	// These two constants define the maximum size of the log file.
+	/**
+	 * The name of the property defining the max size of each fileof the cache
+	 */
 	public static final String FILEMAXSIZE_PROPERTY_NAME = "jlog.cache.fileMaxSize";
-	public static final long DEFAULT_FILEMAXSIZE = 1000000;
 	
-	// Flag activating some info prints   
+	/**
+	 * The default max size of each file of the cache
+	 */
+	public static final long DEFAULT_FILEMAXSIZE = 10000000;
+	
+	/**
+	 * Flag activating some info prints   
+	 */
 	private boolean debugTrace=false;
 
-	// This vector implement a table whose recods are specified by the
-	// class LogFileTableRecord.
+	/**
+	 * This vector implement a table whose records are specified by the
+	 * class LogFileTableRecord.
+	 */
 	private long fileMaxSize;
 
-	// The vector of objects describing the buffers on disk
+	/**
+	 * The vector of objects describing the buffers on disk
+	 */
 	private Vector<MultiFileTableRecord> logFileTable= new Vector<MultiFileTableRecord>();
 	
-	// The number of logs in cache
+	/**
+	 * The number of logs in cache
+	 */
 	private volatile int logsInCache=0;
 	
-	// The ID (i.e. the key) identifying each log
+	/**
+	 * The ID (i.e. the key) identifying each log
+	 */
 	private int ID=-1;
 
 	/**
@@ -127,7 +143,6 @@ public class LogMultiFileCache  implements ILogMap {
 	 * Prints trace info if traceDebug flag is true
 	 * 
 	 */
-	
 	private void printDebugTrace(String traceInfo) {
 		if (debugTrace) {
 			System.out.println(traceInfo); 
@@ -267,8 +282,6 @@ public class LogMultiFileCache  implements ILogMap {
 		
 		return ID;
 	}
-	
-	
 	
 	/**
 	 * Delete a log with the given key. 
