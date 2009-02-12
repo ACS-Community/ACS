@@ -256,17 +256,41 @@ public class RWOnOffSwitchImpl
 	}
 
 	public OnOffSwitch[] allStates() {
-		//added
+		try {
+			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
+			OnOffSwitch[] ret = new OnOffSwitch[tmp.length];
+			 for (int i=0; i<tmp.length; i++)
+			        ret[i] = OnOffSwitch.from_int(i);
+			        
+			 return ret;
+			
+		} catch (NoSuchCharacteristic e) {
+		//noop
+		}
+		
 		return null;
 	}
 
 	public Condition[] condition() {
-		//added
+		try {
+			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
+			Condition[] ret = new Condition[tmp.length];
+			for(int i=0;i<tmp.length;i++){
+				ret[i] = Condition.from_int(tmp[i]);
+			}
+		
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
 		return null;
 	}
 
 	public String[] statesDescription() {
-		//added
+		try {
+			return characteristicModelImpl.getStringSeq("statesDescription");
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
 		return null;
 	}
 

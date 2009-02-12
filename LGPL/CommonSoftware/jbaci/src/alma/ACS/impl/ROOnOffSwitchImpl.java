@@ -94,14 +94,43 @@ public class ROOnOffSwitchImpl
 	 * @see alma.ACS.ROdoubleOperations#alarm_high_off()
 	 */
 	public OnOffSwitch[] alarm_off() {
-		return new OnOffSwitch[1];
+		try {
+			int[] temp = characteristicModelImpl.getIntegerSeq("alarm_off");
+			OnOffSwitch[] ret = new OnOffSwitch[temp.length];
+			
+			for (int i=0;i<temp.length;i++){
+				ret[i] = OnOffSwitch.from_int(temp[i]);
+				
+				return ret;
+			}
+			
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
+			
+			return null;
+		
 	}
 
 	/**
 	 * @see alma.ACS.ROdoubleOperations#alarm_high_on()
 	 */
 	public OnOffSwitch[] alarm_on() {
-		return new OnOffSwitch[1];
+		try {
+			int[] temp = characteristicModelImpl.getIntegerSeq("alarm_on");
+			OnOffSwitch[] ret = new OnOffSwitch[temp.length];
+			
+			for (int i=0;i<temp.length;i++){
+				ret[i] = OnOffSwitch.from_int(temp[i]);
+				
+				return ret;
+			}
+			
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
+			
+			return null;
 	}
 
 
@@ -242,17 +271,41 @@ public class ROOnOffSwitchImpl
 	}
 
 	public OnOffSwitch[] allStates() {
-		//added
+		try {
+			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
+			OnOffSwitch[] ret = new OnOffSwitch[tmp.length];
+			 for (int i=0; i<tmp.length; i++)
+			        ret[i] = OnOffSwitch.from_int(i);
+			        
+			 return ret;
+			
+		} catch (NoSuchCharacteristic e) {
+		//noop
+		}
+		
 		return null;
 	}
 
 	public Condition[] condition() {
-		//added
+		try {
+			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
+			Condition[] ret = new Condition[tmp.length];
+			for(int i=0;i<tmp.length;i++){
+				ret[i] = Condition.from_int(tmp[i]);
+			}
+		
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
 		return null;
 	}
 
 	public String[] statesDescription() {
-		//added
+		try {
+			return characteristicModelImpl.getStringSeq("statesDescription");
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
 		return null;
 	}
 
