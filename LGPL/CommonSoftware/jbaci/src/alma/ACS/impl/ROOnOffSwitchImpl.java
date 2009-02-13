@@ -87,7 +87,7 @@ public class ROOnOffSwitchImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Double(characteristicModelImpl.getDouble(name));
+		return new Integer(characteristicModelImpl.getInteger(name));
 	}
 
 	/**
@@ -141,8 +141,11 @@ public class ROOnOffSwitchImpl
 	public Subscription new_subscription_AlarmEnum(
 		Alarmpattern arg0,
 		CBDescIn arg1) {
+		
+			//this.minTimerTrigger
+			return null;
 		// TODO NO_IMPLEMENT
-		throw new NO_IMPLEMENT();
+		//MonitorenumpropEventDispatcher
 	}
 
 	/**
