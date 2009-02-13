@@ -50,132 +50,133 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		super(name);
 	}
 
-    protected void setUp() throws Exception {
-        clientLogManager = ClientLogManager.getAcsLogManager();
-    }
+	protected void setUp() throws Exception {
+		clientLogManager = ClientLogManager.getAcsLogManager();
+	}
 
-    protected void tearDown() throws Exception {
-        clientLogManager.shutdown(true);
-    }
+	protected void tearDown() throws Exception {
+		clientLogManager.shutdown(true);
+	}
 
-    public void testLoggerStructure() {
-        Logger containerLogger = clientLogManager.getLoggerForContainer("test");
-        assertNotNull(containerLogger);
-        Logger acsRemoteLogger = containerLogger.getParent();
-        assertNotNull(acsRemoteLogger);
-        assertFalse(acsRemoteLogger.getUseParentHandlers());
-        Logger rootLogger = acsRemoteLogger.getParent();
-        assertNotNull(rootLogger);
-        assertNull(rootLogger.getParent());
-                
-        Handler[] handlers = containerLogger.getHandlers();
-        assertTrue(handlers.length == 2);
-        StdOutConsoleHandler localHandler = null;
-        AcsLoggingHandler remoteHandler = null;
-        for (Handler handler : handlers) {
+	public void testLoggerStructure() {
+		Logger containerLogger = clientLogManager.getLoggerForContainer("test");
+		assertNotNull(containerLogger);
+		Logger acsRemoteLogger = containerLogger.getParent();
+		assertNotNull(acsRemoteLogger);
+		assertFalse(acsRemoteLogger.getUseParentHandlers());
+		Logger rootLogger = acsRemoteLogger.getParent();
+		assertNotNull(rootLogger);
+		assertNull(rootLogger.getParent());
+
+		Handler[] handlers = containerLogger.getHandlers();
+		assertTrue(handlers.length == 2);
+		StdOutConsoleHandler localHandler = null;
+		AcsLoggingHandler remoteHandler = null;
+		for (Handler handler : handlers) {
 			if (handler instanceof StdOutConsoleHandler) {
 				localHandler = (StdOutConsoleHandler) handler;
-			} 
-			else if (handler instanceof AcsLoggingHandler) {
+			} else if (handler instanceof AcsLoggingHandler) {
 				remoteHandler = (AcsLoggingHandler) handler;
-			} 
-			else {
+			} else {
 				fail("Unexpected handler type " + handler.getClass().getName() + " encountered.");
-			}		
+			}
 		}
-        assertNotNull(localHandler);
-        assertNotNull(remoteHandler);
-        Formatter localFormatter = localHandler.getFormatter();
-        assertTrue("localFormatter should not be of type " + localFormatter.getClass().getName(), localFormatter instanceof ConsoleLogFormatter);
+		assertNotNull(localHandler);
+		assertNotNull(remoteHandler);
+		Formatter localFormatter = localHandler.getFormatter();
+		assertTrue("localFormatter should not be of type " + localFormatter.getClass().getName(),
+				localFormatter instanceof ConsoleLogFormatter);
 
-        Handler[] parentHandlers = acsRemoteLogger.getHandlers();
-        assertTrue(parentHandlers.length == 0);
-        assertEquals(AcsLogLevel.TRACE, remoteHandler.getLevel());
-        
-        containerLogger.info("I'm a good pedigree logger.");
-    }
+		Handler[] parentHandlers = acsRemoteLogger.getHandlers();
+		assertTrue(parentHandlers.length == 0);
+		assertEquals(AcsLogLevel.TRACE, remoteHandler.getLevel());
+
+		containerLogger.info("I'm a good pedigree logger.");
+	}
 
     
     public void testLoggerNameUniqueness() {
-    	AcsLogger compLogger1 = clientLogManager.getLoggerForComponent("component");
-    	assertEquals("component", compLogger1.getLoggerName());
-    	AcsLogger compLogger2 = clientLogManager.getLoggerForComponent("component_1");
-    	assertEquals("component_1", compLogger2.getLoggerName());
-    	AcsLogger compLogger3 = clientLogManager.getLoggerForComponent("component");
-    	assertSame(compLogger1, compLogger3); // reuse for same name and same logger type
-    	AcsLogger orbLogger1 = clientLogManager.getLoggerForCorba("component", false); // what a stupid name for an orb logger!
-    	assertEquals("component_2", orbLogger1.getLoggerName());
-    	AcsLogger containerLogger1 = clientLogManager.getLoggerForContainer("component"); // what a stupid name for a container logger!
-    	assertEquals("component_3", containerLogger1.getLoggerName());
-    }
-    
-    
-    public void testShutdown() {
-        Logger containerLogger = clientLogManager.getLoggerForContainer("test");
-        containerLogger.info("---------- testShutdown -----------");
-        clientLogManager.shutdown(true);
-        // should still log locally
-        containerLogger.info("testShutdown: now with local handler only.");
-        
-        // must survive another call to shutdown after this in tearDown()
-    }
+		AcsLogger compLogger1 = clientLogManager.getLoggerForComponent("component");
+		assertEquals("component", compLogger1.getLoggerName());
+		AcsLogger compLogger2 = clientLogManager.getLoggerForComponent("component_1");
+		assertEquals("component_1", compLogger2.getLoggerName());
+		AcsLogger compLogger3 = clientLogManager.getLoggerForComponent("component");
+		assertSame(compLogger1, compLogger3); // reuse for same name and same logger type
+		AcsLogger orbLogger1 = clientLogManager.getLoggerForCorba("component", false); // what a stupid name for an orb logger!
+		assertEquals("component_2", orbLogger1.getLoggerName());
+		AcsLogger containerLogger1 = clientLogManager.getLoggerForContainer("component"); // what a stupid name for a container logger!
+		assertEquals("component_3", containerLogger1.getLoggerName());
+	}
 
-    /**
-     * <ol>
-     * <li>Logs stupid messages to a container logger, while 
-     *     {@link ClientLogManager#initRemoteLogging(org.omg.CORBA.ORB, Manager, int, boolean)} has not been called.
-     * <li>Calls {@link ClientLogManager#suppressRemoteLogging()}
-     * <li>Forces garbage collection, and verifies that the previously filled log record queue 
-     *     gets finalized within a reasonable time.
-     * <li>While or after waiting for queue finalization, we log more messages to the same container logger, 
-     *     just to see that it doesn't fail (should be local-only).
-     * </ol>
-     * The ClientLogManager shutdown called in method tearDown is an important part of this test.
-     * @throws Exception
-     */
-    public void testSuppressRemoteLoggingAndCheckGC() throws Exception {
-        final CyclicBarrier sync = new CyclicBarrier(2); 
-    	
-        // use a special ClientLogManager that has a queue with smart finalize method,
-        // so that we can detect GC
-        ClientLogManager specialClientLogManager = new ClientLogManager() {
-            protected void prepareRemoteLogging() {
-                logQueue = new DispatchingLogQueue() {
-                    protected void finalize() throws Exception {
+	public void testShutdown() {
+		Logger containerLogger = clientLogManager.getLoggerForContainer("test");
+		containerLogger.info("---------- testShutdown -----------");
+		clientLogManager.shutdown(true);
+		// should still log locally
+		containerLogger.info("testShutdown: now with local handler only.");
+
+		// must survive another call to shutdown after this in tearDown()
+	}
+
+	/**
+	 * <ol>
+	 * <li>Logs stupid messages to a container logger, while
+	 * {@link ClientLogManager#initRemoteLogging(org.omg.CORBA.ORB, Manager, int, boolean)} has not been called.
+	 * <li>Calls {@link ClientLogManager#suppressRemoteLogging()}
+	 * <li>Forces garbage collection, and verifies that the previously filled log record queue gets finalized within a
+	 * reasonable time.
+	 * <li>While or after waiting for queue finalization, we log more messages to the same container logger, just to see
+	 * that it doesn't fail (should be local-only).
+	 * </ol>
+	 * The ClientLogManager shutdown called in method tearDown is an important part of this test.
+	 * 
+	 * @throws Exception
+	 */
+	public void testSuppressRemoteLoggingAndCheckGC() throws Exception {
+		final CyclicBarrier sync = new CyclicBarrier(2);
+
+		// use a special ClientLogManager that has a queue with smart finalize method,
+		// so that we can detect GC
+		ClientLogManager specialClientLogManager = new ClientLogManager() {
+			protected void prepareRemoteLogging() {
+				logQueue = new DispatchingLogQueue() {
+					protected void finalize() throws Exception {
 						System.out.println("*************** DispatchingLogQueue getting finalized. ************");
 						if (sync == null) {
-							System.err.println("The final local variable 'sync' appeared as 'null' in the finalizer thread. " 
-									+ "So far this only happened in certain Eclipse JVMs. "  
-									+ "Turning it into a member variable would solve the problem."); 
+							System.err.println("The final local variable 'sync' appeared as 'null' in the finalizer thread. "
+											+ "So far this only happened in certain Eclipse JVMs. "
+											+ "Turning it into a member variable would solve the problem.");
+						} else {
+							sync.await();
 						}
-						sync.await();
-                    }
-                };
-                super.prepareRemoteLogging();
-            }            
-        };
-        Logger contLog1 = specialClientLogManager.getLoggerForContainer("contLog1");
-        for (int i = 0; i < 400; i++) {
-            contLog1.info("stupid queued message number " + i);
-        }
-        specialClientLogManager.suppressRemoteLogging();
-        System.gc();
-//        System.runFinalization();
-        
-        for (int i = 0; i < 50; i++) {
-            contLog1.info("stupid local message number " + i);
-        }
-        try {
-        	if (sync.getNumberWaiting() == 0) {
-        		System.out.println("Local logging finished before LogQueue#finalize was called, despite an earlier call to System.gc(). "  
-        				+ "Now waiting for at most 20 seconds...");
-        	}
-            sync.await(20, TimeUnit.SECONDS);
-        } catch (TimeoutException e) {
-            fail("The disabled log queue was not garbage collected. Probably some bad code changes have created an immortal reference to it, which should be removed.");
-        }
-    }
-    
+					}
+				};
+				super.prepareRemoteLogging();
+			}
+		};
+		Logger contLog1 = specialClientLogManager.getLoggerForContainer("contLog1");
+		for (int i = 0; i < 400; i++) {
+			contLog1.info("stupid queued message number " + i);
+		}
+		specialClientLogManager.suppressRemoteLogging();
+		System.gc();
+		// System.runFinalization();
+
+		for (int i = 0; i < 50; i++) {
+			contLog1.info("stupid local message number " + i);
+		}
+		try {
+			if (sync.getNumberWaiting() == 0) {
+				System.out
+						.println("Local logging finished before LogQueue#finalize was called, despite an earlier call to System.gc(). "
+								+ "Now waiting for at most 20 seconds...");
+			}
+			sync.await(20, TimeUnit.SECONDS);
+		} catch (TimeoutException e) {
+			fail("The disabled log queue was not garbage collected. Probably some bad code changes have created an immortal reference to it, which should be removed.");
+		}
+	}
+
 	/**
 	 */
 	public void testSuppressCorbaRemoteLogging() {
@@ -219,5 +220,58 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		
 		assertEquals(4, loggerNames.size()); 
 	}
+	
+	/**
+	 * As of ACS 8.0.0, it is not possible to configure application loggers via the CDB.
+	 * This test demonstrates how to do it programmatically, as a workaround.
+	 */
+	public void testConfigureApplicationLogger() {
 		
+		LogConfig sharedLogConfig = clientLogManager.getLogConfig();
+
+		// Set default log levels before creating the application logger
+		AcsLogLevelDefinition localLevel = AcsLogLevelDefinition.WARNING;
+		AcsLogLevelDefinition remoteLevel = AcsLogLevelDefinition.CRITICAL;
+		sharedLogConfig.setDefaultMinLogLevelLocal(localLevel);
+		sharedLogConfig.setDefaultMinLogLevel(remoteLevel);
+		
+		// get the logger
+		AcsLogger applLogger = clientLogManager.getLoggerForApplication("testApplicationLogger", true);
+		
+		// verify levels set on handlers
+		assertLogLevels(applLogger, localLevel, remoteLevel);
+		
+		// change the default log levels
+		localLevel = AcsLogLevelDefinition.INFO;
+		remoteLevel = AcsLogLevelDefinition.TRACE;
+		sharedLogConfig.setDefaultMinLogLevelLocal(localLevel);
+		sharedLogConfig.setDefaultMinLogLevel(remoteLevel);
+		assertLogLevels(applLogger, localLevel, remoteLevel);
+
+		assertLogLevels(applLogger, localLevel, remoteLevel);
+	}
+	
+	/**
+	 * Checks that an AcsLogger has local and remote handlers configured with the correct levels.
+	 */
+	private void assertLogLevels(AcsLogger logger, AcsLogLevelDefinition expectedLocalLevel, AcsLogLevelDefinition expectedRemoteLevel) {
+		Handler[] handlers = logger.getHandlers();
+		assertTrue(handlers.length == 2);
+		StdOutConsoleHandler localHandler = null;
+		AcsLoggingHandler remoteHandler = null;
+		for (Handler handler : handlers) {
+			if (handler instanceof StdOutConsoleHandler) {
+				localHandler = (StdOutConsoleHandler) handler;
+			} else if (handler instanceof AcsLoggingHandler) {
+				remoteHandler = (AcsLoggingHandler) handler;
+			} else {
+				fail("Unexpected handler type " + handler.getClass().getName() + " encountered.");
+			}
+		}
+		assertNotNull(localHandler);
+		assertNotNull(remoteHandler);
+
+		assertEquals(AcsLogLevel.fromAcsCoreLevel(expectedLocalLevel), localHandler.getLevel());
+		assertEquals(AcsLogLevel.fromAcsCoreLevel(expectedRemoteLevel), remoteHandler.getLevel());
+	}
 }
