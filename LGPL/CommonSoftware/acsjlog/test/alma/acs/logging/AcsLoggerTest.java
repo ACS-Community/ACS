@@ -6,11 +6,9 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
-import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.logging.domainspecific.AntennaContextLogger;
 import alma.acs.logging.domainspecific.ArrayContextLogger;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.acs.testsupport.TestLogger;
 import alma.log_audience.OPERATOR;
 
