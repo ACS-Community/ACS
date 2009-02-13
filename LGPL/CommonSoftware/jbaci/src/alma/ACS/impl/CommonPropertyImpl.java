@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import alma.acs.container.ContainerServices;
+
+
 import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.PortableServer.Servant;
@@ -60,7 +65,11 @@ import alma.acs.exceptions.AcsJException;
 public abstract class CommonPropertyImpl
 	extends TypelessPropertyImpl implements CallbackDispatcher
 	{
-
+	/**
+	 * Logger variable
+	 */
+	private Logger m_logger;
+	
 	/**
 	 * Default timer trigger (in 100ns units).
 	 */
@@ -163,7 +172,9 @@ public abstract class CommonPropertyImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
+		
 		this(propertyType, name, parentComponent, new MemoryDataAccess());
+		m_logger = parentComponent.getComponentContainerServices().getLogger();
 	}
 
 	/**
@@ -185,6 +196,7 @@ public abstract class CommonPropertyImpl
 		this.propertyType = propertyType;
 		this.dataAccess = dataAccess;
 		
+		m_logger = parentComponent.getComponentContainerServices().getLogger();
 		// TODO to be configurable
 		historySize = 32;
 		
@@ -200,11 +212,13 @@ public abstract class CommonPropertyImpl
 			{
 				CompletionHolder completionHolder = CompletionUtil.createCompletionHolder();
 				dataAccess.set(defaultValue, completionHolder);
-				// TODO error log (only warning)
+			
 			}
 			catch (Throwable th)
 			{
-				// TODO error log (only warning)
+				// TODO log
+				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::CommonPropertyImpl - Cannot create Completion Holder");
+				throw new NO_RESOURCES(th.getMessage());
 			}
 		}
 		
@@ -213,6 +227,7 @@ public abstract class CommonPropertyImpl
 		
 		// create history monitor
 		registerMonitor(new HistoryMonitorImpl(this), null);
+		
 	}
 
 	/**
@@ -269,8 +284,9 @@ public abstract class CommonPropertyImpl
 				}
 				catch (Throwable th)
 				{
-					// TODO or even log here
-					th.printStackTrace();
+					// TODO log
+					m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::destroy - cannot destroy monitorArray[].");
+					throw new NO_RESOURCES(th.getMessage());
 				}
 			}
 		}
@@ -347,8 +363,9 @@ public abstract class CommonPropertyImpl
 					Array.setChar(historyValue, historyPosition, ((Character)value).charValue());
 					
 				else
-					// TODO log "Unhandled primitive" error - should never happen
-					System.err.println("Unhandled primitive."); 
+					// TODO log "Unhandled primitive"
+					m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::addValueToHistory - Unhandled primitive.");
+				    throw new NO_RESOURCES("Unhandled primitive"); 
 					
 			}
 			else
@@ -512,6 +529,7 @@ public abstract class CommonPropertyImpl
 			catch (Throwable th)
 			{
 				// TODO log
+				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::registerMonitor - Cannot activate Off Shoot with the monitorServant.");
 				throw new NO_RESOURCES(th.getMessage());
 			}
 		}
@@ -551,7 +569,8 @@ public abstract class CommonPropertyImpl
 			catch (Throwable th)
 			{
 				// TODO log
-				th.printStackTrace();
+				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::unregisterMonitor - Cannot deactivate Off Shoot with monitorServant");
+				throw new NO_RESOURCES(th.getMessage());
 			}
 		}
 	}
@@ -644,6 +663,8 @@ public abstract class CommonPropertyImpl
 		catch (Throwable th) 
 		{
 			// TODO log
+			m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::setNonblocking - Cannot setSync the value.");
+			throw new NO_RESOURCES(th.getMessage());
 		}
 	}
 
