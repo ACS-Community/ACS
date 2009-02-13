@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.8 2009/02/13 22:32:15 ahoffsta Exp $"
+# "@(#) $Id: Makefile,v 1.9 2009/02/13 22:57:28 ahoffsta Exp $"
 #
 # Makefile of ........
 #
@@ -171,7 +171,7 @@ INS_ROOT_DIR   =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES = ../lib/miglayout-3.5.5.jar ../lib/jfreechart-1.0.10.jar
+INSTALL_FILES = ../lib/miglayout-3.5.5.jar ../lib/jfreechart-1.0.10.jar ../lib/jcommon-1.0.13.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
