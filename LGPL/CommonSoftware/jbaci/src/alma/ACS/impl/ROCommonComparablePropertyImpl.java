@@ -51,6 +51,11 @@ public abstract class ROCommonComparablePropertyImpl extends CommonComparablePro
 	 * Alarm high off value.
 	 */
 	protected Object alarmHighOff;
+	
+	/**
+	 * Alarm timer trigger.
+	 */
+	protected int alarmTimerTrig; //added
 
 	/**
 	 * Constructor with memory data access.
@@ -99,6 +104,8 @@ public abstract class ROCommonComparablePropertyImpl extends CommonComparablePro
 			alarmLowOff = readPropertyTypeCharacteristic("alarm_low_off");
 			alarmHighOn = readPropertyTypeCharacteristic("alarm_high_on");
 			alarmHighOff = readPropertyTypeCharacteristic("alarm_high_off");
+			alarmTimerTrig = (int) (characteristicModelImpl.getDouble("alarm_timer_trig") * 10000000L); //added
+
 		}
 		catch (Throwable t)
 		{
