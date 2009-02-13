@@ -44,13 +44,21 @@
             name="Event List"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            class="alma.acs.eventbrowser.views.EventDetailView"
+            icon="icons/sample.gif"
+            id="alma.acs.eventbrowser.views.eventdetail"
+            name="Event Details"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
             targetID="org.eclipse.ui.resourcePerspective">
          <view
-               id="alma.acs.eventbrowser.views.ServiceSummary"
+               id="alma.acs.eventbrowser.views.servicesummary"
                ratio="0.5"
                relationship="right"
                relative="org.eclipse.ui.views.TaskList">
