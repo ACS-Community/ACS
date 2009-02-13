@@ -14,12 +14,7 @@ import alma.ACSErrTypeCommon.TypeNotSupportedEx;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
 
-import cl.utfsm.samplingSystemUI.DataPrinter.Sampler;
-import cl.utfsm.samplingSystemUI.core.AcsInformationException;
 import cl.utfsm.samplingSystemUI.core.DataItem;
-import cl.utfsm.samplingSystemUI.core.SampDetail;
-import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
-import cl.utfsm.samplingSystemUI.core.SamplingManagerUITool;
 
 /**
  * Printer class that acts takes the data that comming from the sampling manager, and do something with it. <br />
@@ -33,7 +28,6 @@ public class FilePrinter extends DataPrinter {
 	private String filename="";
 	private FileWriter file;
 	private BufferedWriter writer;
-	private String header;
 	private IsoDateFormat formater;
 	private boolean stopped;
 
@@ -101,7 +95,7 @@ public class FilePrinter extends DataPrinter {
 				}
 			}
 				
-			widget.updateValues(item.getTime(), item.getValue());
+			widget.updateValues(item.getTime(), item.getValue(), 0);
 			String line = "" + formater.format(new Date(UTCUtility.utcOmgToJava(item.getTime()))) + ";"+ item.getValue();
 			try {
 				writer.write(line + "\n");
@@ -113,17 +107,17 @@ public class FilePrinter extends DataPrinter {
 	
 	public void setComponent(String component) {
 		super.setComponent(component);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 
 	public void setProperty(String property) {
 		super.setProperty(property);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 	
 	public void setComponentAvailable(boolean available,String reason) {
 		super.setComponentAvailable(available,reason);
-		widget.setComponentAvailable(available,reason);
+		widget.setComponentAvailable(available,reason, 0);
 	}
 	
 	private boolean openFile(){

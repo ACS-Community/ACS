@@ -1,18 +1,11 @@
-/**
- * @author Alejandro Baltra <abaltra@alumnos.inf.utfsm.cl>
- * @author Rodrigo Tobar <rtobar@inf.utfsm.cl>
- * @author Jorge Avarias <javarias@inf.utfsm.cl>
- */
-
 package cl.utfsm.samplingSystemUI;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -21,38 +14,56 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 
 /**
+ * Displays the GUI for a Sampling Group, allowing plotting and control of its functions.
+ * 
  * Class that works as a displayable container of sampling items. It has an internal state to check
  * if it's selected to be sampled (a check-box) and N samples, which will start parallel to one another 
- * once the "Start Sample(s)" button from the GUI is pressed 
+ * once the "Start Sample(s)" button from the GUI is pressed. 
+ * 
+ * @author Alejandro Baltra <abaltra@alumnos.inf.utfsm.cl>
+ * @author Rodrigo Tobar <rtobar@inf.utfsm.cl>
+ * @author Jorge Avarias <javarias@inf.utfsm.cl>
+ * @author Arturo Hoffstadt <ahoffsta@inf.utfsm.cl>
  */
-public class BeanGrouper extends JPanel {
+public class BeanGrouper extends JFrame implements WindowListener{
 
 	private static final long serialVersionUID = 1L;
-	private JLabel jCheckBox = null;
-	private JLabel jLabel = null;
-	private JPanel jPanel = null;
-	private JButton jStopButton = null;
-	private JButton jCloseButton = null;
+	
+	private SamplingSystemGUI ssg = null;
+	
+	//GUI Widgets
+	private JPanel jPanel = null; // Contains the BeanWidgets.
+	private JButton startButton = null;
+	private JButton stopButton = null;
+	private JLabel fileNameLabel = null;	
 	private JLabel frecuencyLabel = null;
 	private JTextField freqTextField = null;
 	private JLabel timeSampLabel = null;
 	private JTextField timeSampTextField = null;
+	private JLabel timeWindowLabel = null;
+	private JTextField timeWindowTextField = null;
+	
+	//For program control
 	private ArrayList<DataPrinter> samplers = null;
-	private boolean ready2samp = false;
-	private JButton startSampleButton = null;
+	private boolean ready2samp = false;	
 	private FileHelper toFile;
-	private boolean isStopped=true;
-	private SamplingSystemGUI ssg = null;
+	private boolean isStopped=true;	
 	private Date startTimestamp;
+	private String group; 
 	
 	/**
 	 * This is the default constructor
+	 * @param ssg The Sampling Group this BeanGrouper is attached to.
 	 */
 	public BeanGrouper(SamplingSystemGUI ssg) {
 		super();
@@ -71,83 +82,121 @@ public class BeanGrouper extends JPanel {
 		this.ssg = ssg;
 		toFile=new FileHelper(group);
 		initialize();
+		this.group = group;
 	}
 
 	/**
-	 * This method initializes the GUI.
+	 * This method initializes the GUI, setting up the layout.
 	 */
 	private void initialize() {
-		this.setBorder(javax.swing.border.LineBorder.createBlackLineBorder());
-		this.setLayout(new GridBagLayout());
+		this.setMinimumSize( new Dimension( 750, 550) );
+		this.setLayout(new MigLayout("", // Layout Constraints
+				"[]5[]5[][]10[][]10[][]", // Column Constraints
+				"[center]5[]5[]" // Row Constraints
+				) );
+		//First row only has the Plot
+		this.add(getJPanel(), "span" );
 		
-		GridBagConstraints gridBagConstraints = new GridBagConstraints();
-		Insets insets = new Insets(5,5,5,5);
+		//Second Row
+		this.add(getStartButton());
+		this.add(getStopButton());		
+		this.add(getFrequencyLabel());
+		this.add(getFreqTextField());
+		this.add(getTimeSampLabel());
+		this.add(getTimeSampTextField());
+		this.add(getTimeWindowLabel());
+		this.add(getTimeWindowTextField(), "wrap");
 		
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.weightx = 1;
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
-		this.add(getJCheckBox(), gridBagConstraints);
+		this.add(getFileNameLabel(), "span");
 		
-		gridBagConstraints.anchor = GridBagConstraints.EAST;
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.insets = insets;
-		this.add(getStartSampleButton(), gridBagConstraints);
-		gridBagConstraints.gridx = 2;
-		this.add(getStopButton(), gridBagConstraints);
-		gridBagConstraints.gridx = 3;
-		this.add(getCloseSamplingButton(), gridBagConstraints);
-		gridBagConstraints.gridy=1;
-		gridBagConstraints.gridx=0;
-		this.add(getFrequencyLabel(),gridBagConstraints);
-		gridBagConstraints.gridx=1;
-		gridBagConstraints.anchor = GridBagConstraints.WEST;
-		this.add(getFreqTextField(),gridBagConstraints);
-		gridBagConstraints.gridx=2;
-		this.add(getTimeSampLabel(),gridBagConstraints);
-		gridBagConstraints.gridx=3;
-		this.add(getTimeSampTextField(), gridBagConstraints);
-		gridBagConstraints.gridy=4;
-		gridBagConstraints.gridx=0;
-		gridBagConstraints.gridwidth=3;
-		this.add(getjLabel(),gridBagConstraints);
-		gridBagConstraints.anchor = GridBagConstraints.EAST;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridwidth = 3;
-		gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-		this.add(getJPanel(), gridBagConstraints);
-
 		this.getStopButton().setEnabled(false);
+		
+		this.setTitle("Plotting Sampling Group: "+ group);
+		this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		addWindowListener(this);
 		
 		samplers = new ArrayList<DataPrinter>();
 	}
-
-	private JButton getCloseSamplingButton(){
-		if(jCloseButton==null){
-			jCloseButton=new JButton();
-			jCloseButton.setText("X");
-			jCloseButton.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					if(!isStopped)
-						stopSample();
-					ssg.deleteFromStatus(samplers,getCheckName());
-					Container dad = BeanGrouper.this.getParent();
-					dad.remove(BeanGrouper.this);
-					dad.repaint();
-					dad.validate();
-					dad.getParent().validate();
+	
+	/**
+	 * This method initializes startButton<br>
+	 * This JButton when click do a lot of effects, among them:<br>
+	 * - Enabling and Disabling the corresponding widgets in the GUI.<br>
+	 * - Initialize the FileHelper Object, which is used to store data to file.<br>
+	 * - Starts the Sample 	
+	 * @return javax.swing.JButton Reference to the Start Button.
+	 */
+	private JButton getStartButton() {
+		if (startButton == null) {
+			startButton = new JButton();
+			startButton.setText("Start");
+			startButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					stopButton.setEnabled(true);
+					startButton.setEnabled(false);
+					getFreqTextField().setEnabled(false);
+					getTimeSampTextField().setEnabled(false);
+					try{
+						Integer.parseInt(getFreqTextField().getText());
+					}catch(NumberFormatException ex){
+						getFreqTextField().setText("100");
+					}
+					toFile.initialize(Integer.parseInt(getFreqTextField().getText()));
+					startSample();
 				}
 			});
 		}
-		return jCloseButton;
+		return startButton;
 	}
 	
+	/**
+	 * Initializes the Stop Button, and also performs on click, the stop of the Sampling.
+	 * @return javax.swing.JButton Reference to the Stop Button
+	 */
+	private JButton getStopButton() {
+		
+		if (stopButton == null) {
+			stopButton = new JButton("Stop");
+			stopButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					// Stop the samples
+					stopSample();
+					
+					// Enable/disable buttons
+					timeSampTextField.setEnabled(true);
+					freqTextField.setEnabled(true);
+					stopButton.setEnabled(false);
+				}
+			});
+		}
+		
+		return stopButton;
+	}
+
+	/**
+	 * Initializes the Label that says "Sampling time:"
+	 * @return javax.swing.JLabel Reference to the Label.
+	 */
+	private JLabel getTimeSampLabel() {
+		if(timeSampLabel==null){
+			timeSampLabel=new JLabel();
+			timeSampLabel.setText("Sampling time (min):");
+		}
+		return timeSampLabel;
+	}
+	
+	/**
+	 * Initializes the TextField that will allow to input the desired Sampling Time for the Sampling Group.<br>
+	 * By default the value is 0, which means infinite time (or until stop button is pressed).<br>
+	 * Also checks for its correctness when the value changes.
+	 * @return javax.swing.JTextField Reference to the Text Field containing the number.
+	 */ 
 	private JTextField getTimeSampTextField() {
 		if(timeSampTextField == null){
 			timeSampTextField = new JTextField();
 			timeSampTextField.setText("0");
-			timeSampTextField.setPreferredSize(new Dimension(50,19));
+			timeSampTextField.setMinimumSize(new Dimension(50,19));
 			timeSampTextField.addFocusListener(new FocusListener() {
 
 				public void focusGained(FocusEvent e) {
@@ -168,33 +217,95 @@ public class BeanGrouper extends JPanel {
 		}
 		return timeSampTextField;
 	}
-
-	private JLabel getTimeSampLabel() {
-		if(timeSampLabel==null){
-			timeSampLabel=new JLabel();
-			timeSampLabel.setText("Sampling time (min):");
+	
+	/**
+	 * Initializes the Label that says "Time Window:"
+	 * @return javax.swing.JLabel Reference to the Label.
+	 */
+	private JLabel getTimeWindowLabel() {
+		if(timeWindowLabel==null){
+			timeWindowLabel=new JLabel();
+			timeWindowLabel.setText("Time Window (min):");
 		}
-		return timeSampLabel;
+		return timeWindowLabel;
+	}
+	
+	/**
+	 * Initializes the TextField that will allow to input the desired Time Window for the Sampling Group.<br>
+	 * By default the value is 10, which means 10 minutes.<br>
+	 * Also checks for its correctness when the value changes.
+	 * @return javax.swing.JTextField Reference to the Text Field containing the number.
+	 */ 
+	private JTextField getTimeWindowTextField() {
+		if(timeWindowTextField == null){
+			timeWindowTextField = new JTextField();
+			timeWindowTextField.setText("0");
+			timeWindowTextField.setMinimumSize(new Dimension(50,19));
+			timeWindowTextField.addFocusListener(new FocusListener() {
+
+				public void focusGained(FocusEvent e) {
+					// Do nothing special :)
+				}
+
+				public void focusLost(FocusEvent e) {
+					if( !timeWindowTextField.getText().matches("^([0-9])+$") ) {
+						JOptionPane.showConfirmDialog(BeanGrouper.this,
+								"Time window '" + timeWindowTextField.getText() + "' is invalid.\nPlease use only numeric characters.",
+								"Invalid time window.",
+								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+						timeWindowTextField.setText("0");
+						timeWindowTextField.grabFocus();
+					}
+				}
+			});
+		}
+		return timeWindowTextField;
 	}
 
-	private JLabel getjLabel(){
-		if(jLabel == null){
-			jLabel = new JLabel();
-			jLabel.setText("Sampling to:");
+	/**
+	 * Initializes the Label that says "Sampling To:"
+	 * @return javax.swing.JLabel Reference to the Label.
+	 */
+	private JLabel getFileNameLabel(){
+		if(fileNameLabel == null){
+			fileNameLabel = new JLabel();
+			fileNameLabel.setText("Sampling to:");
 			//jLabel.setText(toFile.getFileName());
 		}
-		return jLabel;
+		return fileNameLabel;
 	}
 	
-	private void setjLabel(String text){
-		jLabel.setText(text);
+	/**
+	 * Sets the File Name where the information will be stored.
+	 * @param text String containing the filename.
+	 */
+	private void setFileNameLabel(String text){
+		fileNameLabel.setText(text);
 	}
 	
+	/**
+	 * Initializes the Frequency Label
+	 * @return javax.swing.JLabel Reference to the Label says "Frequency".
+	 */
+	private JLabel getFrequencyLabel() {
+		if(frecuencyLabel==null){
+			frecuencyLabel=new JLabel();
+			frecuencyLabel.setText("Frequency (Hz): ");
+		}
+		return frecuencyLabel;
+	}
+	
+	/**
+	 * Initializes the TextField that will allow to input the desired Frequency for the Sampling Group.<br>
+	 * By default the value is 10 Hz.<br>
+	 * Also checks for its correctness when the value changes.
+	 * @return javax.swing.JTextField Reference to the Text Field containing the number.
+	 */
 	private JTextField getFreqTextField() {
 		if(freqTextField==null){
 			freqTextField=new JTextField();
 			freqTextField.setText("10");
-			freqTextField.setPreferredSize(new Dimension(50, 19));
+			freqTextField.setMinimumSize( new Dimension(50, 19) );
 
 			freqTextField.addFocusListener(new FocusListener() {
 
@@ -217,96 +328,63 @@ public class BeanGrouper extends JPanel {
 		return freqTextField;
 	}
 
-	private JLabel getFrequencyLabel() {
-		if(frecuencyLabel==null){
-			frecuencyLabel=new JLabel();
-			frecuencyLabel.setText("Frequency (Hz): ");
-		}
-		return frecuencyLabel;
-	}
-
 	/**
-	 * This method initializes jCheckBox	
+	 * This method initializes jPanel, which will contains the BeanLister widgets (in this case, Plots)
 	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */
-	private JLabel getJCheckBox() {
-		if (jCheckBox == null) {
-			jCheckBox = new JLabel();
-			jCheckBox.setText("  SampGroup");
-			/*jCheckBox.addFocusListener(new FocusListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if(ready2samp)ready2samp = false;
-					else ready2samp = true;
-				}
-					}                                                                                                                                            	
-					}
-
-
-
-			});*/
-		}
-		return jCheckBox;
-	}
-
-	private JButton getStopButton() {
-		
-		if (jStopButton == null) {
-			jStopButton = new JButton("Stop sampling");
-			jStopButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					jCloseButton.setEnabled(true);
-					
-					// Stop the samples
-					stopSample();
-					
-					// Enable/disable buttons
-					timeSampTextField.setEnabled(true);
-					freqTextField.setEnabled(true);
-					jStopButton.setEnabled(false);
-				}
-			});
-		}
-		
-		return jStopButton;
-	}
-	
-	/**
-	 * This method initializes jPanel	
-	 * 	
-	 * @return javax.swing.JPanel	
+	 * @return javax.swing.JPanel Reference to the JPanel containing the BeanLister.
 	 */
 	private JPanel getJPanel() {
 		if (jPanel == null) {
 			jPanel = new JPanel();
-			jPanel.setLayout(new GridBagLayout());
+			jPanel.setLayout( new GridBagLayout() );
 		}
 		return jPanel;
 	}
 
 	/**
-	 * This method adds a new sample (represented as a BeanLister) into this class. This class should be able to hold
-	 * N samples inside itself.
-	 * @param w
+	 * This method adds a new sample (represented as a {@link DataPrinter}) into this class.<br>
+	 * This class should be able to hold N samples inside itself. <br>
+	 * - First, the {@link BeanLister} widget contained by the {@link DataPrinter} is added to the jPanel<br>
+	 * - Second, the {@link DataPrinter} is added to the list of samplers.
+	 * @param w The Printer Object that is used to represent a sampling by its own.
 	 */
-
-	public void addSamp(DataPrinter w){
+	private void addSamp(DataPrinter w){
 		GridBagConstraints tmp = new GridBagConstraints();
 		tmp.anchor = GridBagConstraints.NORTHWEST;
 		tmp.fill = GridBagConstraints.HORIZONTAL;
 		tmp.gridy = jPanel.getComponentCount();
 		tmp.weightx = 1;
-		jPanel.add((JPanel)w.getWidget(),tmp);
+		//Only add one BeanLister, as the other ones, will be the same.
+		if( samplers.size() == 0 ){
+			jPanel.add( (JPanel)w.getWidget(), tmp);
+		}		
 		updateLabel();
 		jPanel.validate();
 		samplers.add(w);
 	}
 	
+	/**
+	 * This method ads to the Sampling Group, a new sample. This method is used by <br>
+	 * {@link SamplingSystemGUI} to add Sampling to the Sampling Group, represented by {@link BeanGrouper}.<br>
+	 * - Creates a {@link PlotPrinter}, which extends from {@link DataPrinter}.
+	 * - Set the Components and Properties to the PlotPrinter
+	 * - Adds this new Sample to the Sampling Group using the other addSamp method. 
+	 * @param component Name of the Component containing the property to be sampled.
+	 * @param property Name of the Property to be sampled.
+	 */
 	public void addSamp(String component, String property) {
-		FilePrinter w = new FilePrinter(ssg);
+		//TODO: Check for presence of 1 or more, and reassign the BeanLister for each one.
+		//TODO: Also assign a unique number to each one, to allow them to know their "line" in the plot
+		PlotPrinter w;
+		if( samplers.size() == 0){
+			w = new PlotPrinter(ssg);
+		}else{
+			w = new PlotPrinter(ssg, (PlotWidget)samplers.get(0).getWidget() , samplers.size() );
+		}
 		w.setComponent(component);
 		w.setProperty(property);
 		addSamp(w);
+		
 	}
 	
 	public void updateLabel(){
@@ -327,7 +405,7 @@ public class BeanGrouper extends JPanel {
 		
 		startTimestamp = new Date();
 		
-		setjLabel("Sampling to file: " + toFile.getFileName());
+		setFileNameLabel("Sampling to file: " + toFile.getFileName());
 		freq = Integer.parseInt(getFreqTextField().getText());
 		for(DataPrinter wp : samplers){
 			wp.setFrecuency(freq);
@@ -342,9 +420,8 @@ public class BeanGrouper extends JPanel {
 		}
 
 		if( isStopped ) {
-			jCloseButton.setEnabled(true);
-			jStopButton.setEnabled(false);
-			startSampleButton.setEnabled(true);
+			stopButton.setEnabled(false);
+			startButton.setEnabled(true);
 			freqTextField.setEnabled(true);
 			timeSampTextField.setEnabled(true);
 			return;
@@ -373,47 +450,18 @@ public class BeanGrouper extends JPanel {
 	 * Generic setter for the Group name
 	 * @param name Name of the group
 	 */
-	public void setCheckName(String name){
-		jCheckBox.setText(name);
+	public void setGroupName(String name){
+		this.group = name;
 	}
 	
 	/**
 	 * Generic getter for the group name
 	 * @return The name of group.
 	 */
-	public String getCheckName(){
-		return jCheckBox.getText();
+	public String getGroupName(){
+		return group;
 	}
 
-	/**
-	 * This method initializes startSampleButton	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getStartSampleButton() {
-		if (startSampleButton == null) {
-			startSampleButton = new JButton();
-			startSampleButton.setText("Start sampling");
-			startSampleButton.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					jCloseButton.setEnabled(false);
-					jStopButton.setEnabled(true);
-					startSampleButton.setEnabled(false);
-					getFreqTextField().setEnabled(false);
-					getTimeSampTextField().setEnabled(false);
-					try{
-						Integer.parseInt(getFreqTextField().getText());
-					}catch(NumberFormatException ex){
-						getFreqTextField().setText("100");
-					}
-					toFile.initialize(Integer.parseInt(getFreqTextField().getText()));
-					startSample();
-				}
-			});
-		}
-		return startSampleButton;
-	}
-	
 	public boolean checkIfExists(String component, String property) {
 		
 		for (Iterator iter = samplers.iterator(); iter.hasNext();) {
@@ -427,16 +475,16 @@ public class BeanGrouper extends JPanel {
 
 	private void stopSample(){
 		isStopped=true;
-		jStopButton.setEnabled(false);
-		startSampleButton.setEnabled(true);
+		stopButton.setEnabled(false);
+		startButton.setEnabled(true);
 		
 //		String header ="Time";
 //		toFile.removeSamplingSets();
-		SamplingDataCorrelator sdc = new SamplingDataCorrelator(getJCheckBox().getText(), Integer.parseInt(getFreqTextField().getText()), startTimestamp);
+		SamplingDataCorrelator sdc = new SamplingDataCorrelator(group, Integer.parseInt(getFreqTextField().getText()), startTimestamp);
 		for(DataPrinter i : samplers) {
 			i.stopSampling();
 			if( i.isComponentAvailable() == true ) {
-				sdc.addSamplingSet(((FilePrinter)i).getFilename());
+				sdc.addSamplingSet(((PlotPrinter)i).getFilename());
 				//System.out.println("Adding: " + ((FilePrinter)i).getFilename());
 			}
 //				toFile.addSamplingSet(i.getSamples());
@@ -478,4 +526,47 @@ public class BeanGrouper extends JPanel {
 			}
 		}
 	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void windowClosing(WindowEvent e) {
+        if(!isStopped)
+        	stopSample();
+		ssg.deleteBeanGrouper(samplers,getGroupName());
+    }
 }

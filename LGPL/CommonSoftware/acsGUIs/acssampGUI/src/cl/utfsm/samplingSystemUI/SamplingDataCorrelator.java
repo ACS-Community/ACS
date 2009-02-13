@@ -69,12 +69,11 @@ public class SamplingDataCorrelator {
 	public void addSamplingSet( String filename ){
 		BufferedReader br = openReadOnly(filename);
 		String line = null;
-		String date = null;
 		try {
 			if( ( line = br.readLine() ) != null ){
 				StringTokenizer st = new StringTokenizer( line , ";" );
 				while( st.hasMoreTokens() ){
-					date = st.nextToken();
+					st.nextToken();
 					headers.add(st.nextToken());
 				}
 			}

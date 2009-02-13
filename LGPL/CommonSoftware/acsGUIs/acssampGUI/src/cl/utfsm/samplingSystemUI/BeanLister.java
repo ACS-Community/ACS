@@ -56,12 +56,12 @@ public class BeanLister extends SamplingWidget{
 		this.add(jLabel4,gbc);
 	}
 
-	public void updateValues(long time, double value) {
+	public void updateValues(long time, double value, int position) {
 		timeLabel.setText(Long.toString(time));
 		jLabel4.setText(Double.toString(value));
 	}
 	
-	public void setValues(String component, String property){
+	public void setValues(String component, String property, int position){
 		jLabel1.setText(component);
 		jLabel2.setText(property);
 		timeLabel.setText("0"); 
@@ -69,7 +69,7 @@ public class BeanLister extends SamplingWidget{
 	}
 
 	
-	public void setComponentAvailable(boolean tmp, String reason) {
+	public void setComponentAvailable(boolean tmp, String reason, int position) {
 		if( tmp == false ) {
 			jLabel1.setForeground(Color.RED);
 			jLabel2.setForeground(Color.RED);

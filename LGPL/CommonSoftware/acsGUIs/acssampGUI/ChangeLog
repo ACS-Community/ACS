@@ -1,3 +1,116 @@
+2009-02-13 08:34  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/BeanLister.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/BeanMemoryWidget.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/FilePrinter.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/MemoryPrinter.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/WidgetPrinter.java: Fixing
+	  the whole redefinition of the IGraphicarUpdate Interface.
+	  Adding the Time Window selector interface.
+
+2009-02-13 06:11  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/PlotWidget.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: -
+	  The close button was replased by an windowListener in the
+	  BeanGrouper.
+	  - UI Beatuficiation
+	  - Antialias turned off on graphics (performance issue)
+
+2009-02-12 20:52  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/IGraphicalUpdater.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/PlotPrinter.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/PlotWidget.java: Plotting
+	  from various properties already supported.
+	  Can be added dinamically.
+
+2009-02-12 06:58  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  Refactoring of BeanGrouper to accomodate the modifications to the
+	  GUI.
+
+2009-01-29 02:35  rtobar
+
+	* /trunk/src/sampTool: Changing lines on sampTool
+
+2009-01-29 02:28  rtobar
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  About window in the center of screen
+
+2009-01-29 02:18  rtobar
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/FilePrinter.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SampTool.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java:
+	  Little code cleanup (stripped some warnings here and there...)
+
+2009-01-21 03:39  rtobar
+
+	* /trunk/src/cl/utfsm/example: Deleted unnecessary old package
+
+2009-01-21 03:39  rtobar
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  SamplingSystemUI was using deprecated API / adding call to
+	  dispose() on BeanGrouper's
+
+2009-01-21 03:31  rtobar
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/PlotWidget.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  Added close button for "About" window / resized it
+
+2009-01-20 15:19  rtobar
+
+	* /trunk/src/Makefile,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/img,
+	  /trunk/src/cl/utfsm/samplingSystemUI/img/alma-utfsm.png: About
+	  window with ALMA-UTFSM image :)
+
+2009-01-16 20:43  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  Makeup of the SSG main window
+
+2009-01-16 01:14  rtobar
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: -
+	  Just a little customization of the About panel
+
+2009-01-15 22:37  ahoffsta
+
+	* /trunk/lib/jfreechart-1.0.10.jar, /trunk/src/Makefile,
+	  /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/PlotPrinter.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/PlotWidget.java: First
+	  approach to plotting.
+	  * Added the JFreeChart Dependency
+	  * PlotPrinter is the handler for the Plotting. It passes the data
+	  to PlotWidget.
+	  * PlotWidget is the Graphical Presentation of this mode of GUI.
+	  In this case, it includes a graphic.
+	  At the time, this is functional only for one property. Still
+	  always dump to file.
+
+2009-01-14 09:40  ahoffsta
+
+	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  /trunk/src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java:
+	  Initial Modifications for the new GUI.
+	  * The SSG window has now only the necessary to add
+	  SamplingGroups.
+	  * BeanGroupers are now JFrame (and separate windows).
+	  * Still has the same funcionality.
+
 2008-12-26 13:49  ahoffsta
 
 	* /src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java:
@@ -1294,4 +1407,4 @@
 	  the ssg-legacy
 	  repo.
 
-"@(#) $Id: ChangeLog,v 1.4 2009/01/16 21:48:42 ahoffsta Exp $"
+"@(#) $Id: ChangeLog,v 1.5 2009/02/13 22:32:15 ahoffsta Exp $"

@@ -28,7 +28,7 @@ public class WidgetPrinter extends DataPrinter {
 	 */
 	public void setComponent(String component) {
 		super.setComponent(component);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 
 	/** 
@@ -40,7 +40,7 @@ public class WidgetPrinter extends DataPrinter {
 	 */
 	public void setProperty(String property) {
 		super.setProperty(property);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 
 	/** 
@@ -48,7 +48,7 @@ public class WidgetPrinter extends DataPrinter {
 	 * @see cl.utfsm.samplingSystemUI.DataPrinter#updateValue(cl.utfsm.samplingSystemUI.core.DataItem)
 	 */
 	protected synchronized void updateValue(DataItem item) {
-		widget.updateValues(item.getTime(),item.getValue());
+		widget.updateValues(item.getTime(),item.getValue(), 0);
 	}
 
 	/**

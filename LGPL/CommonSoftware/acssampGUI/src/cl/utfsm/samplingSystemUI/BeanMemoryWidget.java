@@ -50,19 +50,19 @@ public class BeanMemoryWidget extends SamplingWidget {
 			
 	}
 
-	public void updateValues(long time, double value) {
+	public void updateValues(long time, double value, int position) {
 		samples++;
 		if(samples%100==0)
 			SamplingSizeLabel.setText("Sampling size: "+ samples+"+");
 
 	}
 
-	public void setValues(String component, String property) {
+	public void setValues(String component, String property, int position) {
 		componentLabel.setText(component);
 		propertyLabel.setText(property);
 	}
 
-	public void setComponentAvailable(boolean tmp, String reason) {
+	public void setComponentAvailable(boolean tmp, String reason, int position) {
 		if( tmp == true ) {
 			componentLabel.setForeground(Color.BLACK);
 			propertyLabel.setForeground(Color.BLACK);

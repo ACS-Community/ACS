@@ -27,7 +27,7 @@ public class MemoryPrinter extends DataPrinter {
 		samplesCounter++;
 		//if(samplesCounter%1000==0)
 		//	System.out.println("MemoryPrinter size: " + samplesCounter);
-		widget.updateValues(item.getTime(), item.getValue());
+		widget.updateValues(item.getTime(), item.getValue(), 0);
 	}
 
 	/**
@@ -40,12 +40,12 @@ public class MemoryPrinter extends DataPrinter {
 
 	public void setComponent(String component) {
 		super.setComponent(component);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 
 	public void setProperty(String property) {
 		super.setProperty(property);
-		widget.setValues(component, property);
+		widget.setValues(component, property, 0);
 	}
 
 	public ArrayList<DataItem> getSamples() {
@@ -54,6 +54,6 @@ public class MemoryPrinter extends DataPrinter {
 	
 	public void setComponentAvailable(boolean available,String reason) {
 		super.setComponentAvailable(available,reason);
-		widget.setComponentAvailable(available,reason);
+		widget.setComponentAvailable(available,reason, 0);
 	}
 }

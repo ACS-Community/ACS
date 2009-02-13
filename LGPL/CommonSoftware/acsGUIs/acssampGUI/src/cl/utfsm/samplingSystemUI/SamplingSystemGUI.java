@@ -4,6 +4,9 @@ import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -27,14 +31,24 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Main Widget class, and starting point for the SSG Software. Controls the main flow of the software.
+ * <p>
+ * SamplingSystemGUI ask for a Sampling Manager, then tries to load a status file, and then presents
+ * a window with the Components and Properties available for sampling.<br>
+ * If there was a status file, SamplingSystemGUI will load it, and open the Sampling Groups as recorded.
+ * 
+ * @author Jorge Avarias <javarias@inf.utfsm.cl>
+ * @author Rodrigo Tobar <rtobar@inf.utfsm.cl>
+ * @author Alejandro Baltra <abaltra@alumnos.inf.utfsm.cl>
+ * @author Arturo Hoffstadt <ahoffsta@inf.utfsm.cl>
+ */
 public class SamplingSystemGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -42,91 +56,156 @@ public class SamplingSystemGUI extends JFrame {
 	public String MAN_NAME = "SAMP1";
 	private final static String DEFAULT_STATUS_FILENAME = "default.ssgst";
 	
-	private JPanel jContentPane = null;
-
-	private JMenuBar SSGMenuBar = null;
-	private JMenu FileMenu = null;
-	private JMenu AboutMenu = null;
-	private JMenuItem FileMenuExitButton = null;
-
-	private JSplitPane ComponentListerContainer = null;
-
-	private JPanel jPanel = null;
-
-	private JComboBox ComponentBox1 = null;
-
-	private JComboBox PropertyBox1 = null;
-
 	private LinkedList<List<String>> propList;
 	private String[] compList = null;
-
+	private ArrayList<SerializableProperty> status;
+	private ArrayList<BeanGrouper> BeanGrouperList;
+	
+	// Menu Widgets
+	private JMenuBar SSGMenuBar = null;
+	private JMenu FileMenu = null;
+	private JMenuItem FileMenuSelectSMButton = null;
+	private JMenuItem FileMenuLoadStatusButton = null;
+	private JMenuItem FileMenuSaveStatusButton = null;	
+	private JMenuItem FileMenuExitButton = null;
+	private JMenu HelpMenu = null;
+	private JMenuItem HelpMenuAboutButton = null;
+	
+	// Component and Property Selection and Adding
+	private JPanel PropertyAddPanel = null;
+	private JLabel componentLabel = null;
+	private JComboBox ComponentComboBox = null;
+	private JLabel propertyLabel = null;
+	private JComboBox PropertyComboBox = null;
+	private JLabel groupLabel = null;
+	private JTextField groupTextField = null;
 	private JButton addSampleButton = null;
 	
-	private JLabel groupLabel = null;
-
-	private JScrollPane jScrollPane = null;
-
-	private JPanel jPanel21 = null;
-
-	private JTextField jTextField = null;
-	
-	private ArrayList<SerializableProperty> status;
-
-	private JMenuItem jMenuItem = null;
-
-	private JMenuItem jMenuItem1 = null;
-
-	private JMenuItem jMenuItem2 = null;
+	/**
+	 * This is the default constructor. It start the initialization of the window.
+	 */
+	public SamplingSystemGUI() {
+		super();
+		BeanGrouperList = new ArrayList<BeanGrouper>();
+		initialize();
+	}
 	
 	/**
-	 * This method initializes SSGMenuBar	
-	 * 	
+	 * This method initializes this GUI 
+	 * @return void
+	 */
+	private void initialize() {
+		this.setLocation(0, 0);
+		this.setJMenuBar(getSSGMenuBar());
+		this.setLayout( new GridLayout(1,1,10,10) );
+		this.setContentPane( this.getPropertyAddPanel() );
+		this.setMinimumSize( getPropertyAddPanel().getSize() );
+		this.setTitle("Sampling System GUI");
+		//TODO: Leave a border from the contentpane to the window border.
+	}
+	
+	/**
+	 * This method initializes SSGMenuBar
 	 * @return javax.swing.JMenuBar	
 	 */
 	private JMenuBar getSSGMenuBar() {
 		if (SSGMenuBar == null) {
 			SSGMenuBar = new JMenuBar();
 			SSGMenuBar.add(getFileMenu());
-			SSGMenuBar.add(getAboutMenu());
+			SSGMenuBar.add(getHelpMenu());
 		}
 		return SSGMenuBar;
 	}
 
 	/**
 	 * This method initializes FileMenu	
-	 * 	
 	 * @return javax.swing.JMenu	
 	 */
 	private JMenu getFileMenu() {
 		if (FileMenu == null) {
 			FileMenu = new JMenu();
 			FileMenu.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			FileMenu.setName("UpperMenu");
+			FileMenu.setName("FileMenu");
 			FileMenu.setText("File");
-			FileMenu.add(getJMenuItem1());
-			FileMenu.add(getJMenuItem());
-			FileMenu.add(getJMenuItem2());
+			FileMenu.add(getFileMenuSelectSMButton());
+			FileMenu.add(getFileMenuLoadStatusButton());
+			FileMenu.add(getFileMenuSaveStatusButton());
 			FileMenu.add(getFileMenuExitButton());
 		}
 		return FileMenu;
 	}
 
 	/**
-	 * This method initializes AboutMenu	
-	 * 	
-	 * @return javax.swing.JMenu	
+	 * This method initializes FileMenuSelectSMButton	
+	 * @return javax.swing.JMenuItem	
 	 */
-	private JMenu getAboutMenu() {
-		if (AboutMenu == null) {
-			AboutMenu = new JMenu();
-			AboutMenu.setText("About");
+	private JMenuItem getFileMenuSelectSMButton() {
+		if (FileMenuSelectSMButton == null) {
+			FileMenuSelectSMButton = new JMenuItem();
+			FileMenuSelectSMButton.setText("Choose Sampling Manager");
+			FileMenuSelectSMButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					String s = (String)JOptionPane.showInputDialog(SamplingSystemGUI.this,
+							"Please Select a Sampling Manager",
+							"Sampling Manager Selection",
+							JOptionPane.PLAIN_MESSAGE,
+							null,
+							(Object[])SampTool.getSamplingManagers(),
+							MAN_NAME);
+					if( s != null && !s.trim().equals("") )
+						SamplingSystemGUI.this.MAN_NAME = s;
+				}
+			});
 		}
-		return AboutMenu;
+		return FileMenuSelectSMButton;
 	}
 
 	/**
+	 * This method initializes FileMenuLoadStatusButton	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getFileMenuLoadStatusButton() {
+		if (FileMenuLoadStatusButton == null) {
+			FileMenuLoadStatusButton = new JMenuItem();
+			FileMenuLoadStatusButton.setText("Load GUI Status");
+			FileMenuLoadStatusButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+				    JFileChooser chooser = new JFileChooser();
+				    Filter filter = new Filter();
+				    chooser.setFileFilter(filter);
+				    int returnVal = chooser.showOpenDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+				    	readStatusFile(chooser.getSelectedFile().getAbsolutePath(),false);
+				    }
+				}
+			});
+		}
+		return FileMenuLoadStatusButton;
+	}
+	
+	/**
+	 * This method initializes FileMenuSaveStatusButton	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getFileMenuSaveStatusButton() {
+		if (FileMenuSaveStatusButton == null) {
+			FileMenuSaveStatusButton = new JMenuItem();
+			FileMenuSaveStatusButton.setText("Save GUI status");
+			FileMenuSaveStatusButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+				    JFileChooser chooser = new JFileChooser();
+				    int returnVal = chooser.showSaveDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+				    	writeStatusFile(chooser.getSelectedFile().getAbsolutePath() + ".ssgst");
+				    }
+				}
+			});
+		}
+		return FileMenuSaveStatusButton;
+	}
+	
+	/**
 	 * This method initializes FileMenuExitButton	
-	 * 	
 	 * @return javax.swing.JMenuItem	
 	 */
 	private JMenuItem getFileMenuExitButton() {
@@ -141,69 +220,134 @@ public class SamplingSystemGUI extends JFrame {
 		}
 		return FileMenuExitButton;
 	}
-
+	
 	/**
-	 * This method initializes ComponentListerContainer	
-	 * 	
-	 * @return javax.swing.JSplitPane	
+	 * This method initializes HelpMenu	
+	 * @return javax.swing.JMenu	
 	 */
-	private JSplitPane getComponentListerContainer() {
-		if (ComponentListerContainer == null) {
-			ComponentListerContainer = new JSplitPane();
-			ComponentListerContainer.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-			ComponentListerContainer.setRightComponent(getJScrollPane());
-			ComponentListerContainer.setLeftComponent(getJPanel());
-			ComponentListerContainer.setDividerLocation(310);
+	private JMenu getHelpMenu() {
+		if (HelpMenu == null) {
+			HelpMenu = new JMenu();
+			FileMenu.setName("HelpMenu");
+			HelpMenu.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			HelpMenu.setText("Help");
+			HelpMenu.add(getHelpMenuAboutButton());
 		}
-		return ComponentListerContainer;
+		return HelpMenu;
 	}
-
+	
 	/**
-	 * This method initializes jPanel	
-	 * 	
+	 * This method initializes FileMenuSelectSMButton	
+	 * @return javax.swing.JMenuItem	
+	 */
+	private JMenuItem getHelpMenuAboutButton() {
+		if (HelpMenuAboutButton == null) {
+			HelpMenuAboutButton = new JMenuItem();
+			HelpMenuAboutButton.setText("About...");
+			HelpMenuAboutButton.addActionListener(new java.awt.event.ActionListener() {
+				
+				private JFrame aboutWindow;
+				
+				private JFrame getAboutWindow() {
+					
+					if( aboutWindow == null ) {
+						String url = "http://alma.inf.utfsm.cl/twiki4/bin/view/ACS/SamplingSystem";
+						String message = "<html>Sampling System GUI v1.1<br>" +
+						   "This software is released under <b>LGPL</b> license.<br>" +
+					       "SSG was developed by the ALMA-UTFSM Team.</html>";
+						String messageUrl = "<html>Please refer to <u><font color=#0000ff>" + url + "</font></u><br>" +
+					       "for more information.</html>";
+						
+						aboutWindow = new JFrame("About");
+						JLabel aboutLabel = new JLabel(message);
+						JLabel urlLabel   = new JLabel(messageUrl);
+						JLabel imageLabel = new JLabel(new ImageIcon(getClass().getClassLoader().getResource("cl/utfsm/samplingSystemUI/img/alma-utfsm.png")));
+						JButton closeButton = new JButton("Close");
+						
+						closeButton.addActionListener(new java.awt.event.ActionListener(){
+
+							public void actionPerformed(ActionEvent e) {
+								aboutWindow.setVisible(false);
+								aboutWindow.dispose();
+							}
+							
+						});
+						
+						aboutWindow.getContentPane().setLayout(new GridBagLayout());
+						GridBagConstraints constraints = new GridBagConstraints();
+						constraints.insets = new Insets(0,10,0,10);
+						constraints.anchor = GridBagConstraints.WEST;
+						aboutWindow.getContentPane().add(aboutLabel,constraints);
+						constraints.anchor = GridBagConstraints.EAST;
+						aboutWindow.getContentPane().add(imageLabel,constraints);
+						constraints.gridwidth=2;
+						constraints.gridy = 2;
+						constraints.insets.top = 10;
+						constraints.insets.bottom = 10;
+						aboutWindow.getContentPane().add(urlLabel,constraints);
+						constraints.gridy = 3;
+						constraints.anchor = GridBagConstraints.EAST;
+						constraints.insets.top = 0;
+						aboutWindow.getContentPane().add(closeButton,constraints);
+						
+					}
+					
+					return aboutWindow;
+				};
+				
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					aboutWindow = getAboutWindow();
+					aboutWindow.setMinimumSize( new Dimension(550,250) );
+					aboutWindow.setSize( getContentPane().getSize() );
+					aboutWindow.setLocationRelativeTo(null);
+					aboutWindow.setResizable(false);
+					aboutWindow.setVisible(true);
+				}
+			});
+		}
+		return HelpMenuAboutButton;
+	}
+	
+	/**
+	 * This method initializes PropertyAddPanel	
 	 * @return javax.swing.JPanel	
 	 */
-	private JPanel getJPanel() {
-		if (jPanel == null) {
-			jPanel = new JPanel();
-			jPanel.setLayout(new MigLayout("","","[]10[]10[]10[]"));
-			jPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			jPanel.setPreferredSize(new Dimension(180, 34));
-			jPanel.add(getComponentBox1(),"wrap, span 2");
-			jPanel.add(getPropertyBox1(),"wrap, span 2");
-			jPanel.add(getgroupLabel());
-			jPanel.add(getJTextField(), "wrap");
-			jPanel.add(getAddSampleButton(), "wrap, span 2");
+	private JPanel getPropertyAddPanel() {
+		if (PropertyAddPanel == null) {
+			PropertyAddPanel = new JPanel();
+			PropertyAddPanel.setLayout(new MigLayout("", // Layout Constraints
+					"[right]10[]", // Column Constraints
+					"[]10[]10[]10[]" // Row Constraints
+					) );
+			//PropertyAddPanel.setLayout( new GridLayout( 4,2, 10, 10 ) );
+			PropertyAddPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			PropertyAddPanel.setSize( new Dimension(310, 180) );
+			PropertyAddPanel.add( getComponentLabel() );
+			PropertyAddPanel.add( getComponentComboBox(), "wrap" );
+			PropertyAddPanel.add( getPropertyLabel() );
+			PropertyAddPanel.add( getPropertyComboBox(), "wrap" );
+			PropertyAddPanel.add( getGroupLabel() );
+			PropertyAddPanel.add( getGroupTextField(), "wrap" );
+			PropertyAddPanel.add( getAddSampleButton(), "span" );
 		}
-		return jPanel;
+		return PropertyAddPanel;
 	}
 
 	/**
-	 * This method initializes groupLabel
-	 * @return javax.swing.JLabel
-	 */
-	private JLabel getgroupLabel() {
-		if (groupLabel == null) {
-			groupLabel = new JLabel("Sampling group:");
-		}
-		return groupLabel;
-	}
-
-	/**
-	 * This method initializes ComponentBox1	
+	 * This method initializes ComponentComboBox	
 	 * 	
 	 * @return javax.swing.JComboBox	
 	 */
-	private JComboBox getComponentBox1() {
-		if (ComponentBox1 == null) {
-			ComponentBox1 = new JComboBox();
-			ComponentBox1.setPreferredSize(new Dimension(270, 24));
-			ComponentBox1.setSize(ComponentBox1.getPreferredSize());
-			ComponentBox1.addItemListener(new java.awt.event.ItemListener() {
+	private JComboBox getComponentComboBox() {
+		if (ComponentComboBox == null) {
+			ComponentComboBox = new JComboBox();
+			ComponentComboBox.setPreferredSize(new Dimension(270, 24));
+			ComponentComboBox.setSize(ComponentComboBox.getPreferredSize());
+			ComponentComboBox.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
-					PropertyBox1.setEnabled(true);
+					PropertyComboBox.setEnabled(true);
 					String comp = e.getItem().toString();
-					PropertyBox1.removeAllItems();
+					PropertyComboBox.removeAllItems();
 					for(int i=0; i<compList.length;i++){
 						/* We find the component. We show the
 						 * properties for it. If we do not have them,
@@ -214,39 +358,37 @@ public class SamplingSystemGUI extends JFrame {
 								propList.add(i,SampTool.getPropsForComponent(compList[i]));
 
 							try{
-								fillPropertyBox1(propList.get(i));
+								fillPropertyComboBox(propList.get(i));
 							}catch(IndexOutOfBoundsException ex){
-								PropertyBox1.removeAllItems();
-								PropertyBox1.setEnabled(false);
+								PropertyComboBox.removeAllItems();
+								PropertyComboBox.setEnabled(false);
 							}
 					//System.out.println(comp);
 						}
 					}
-					if(PropertyBox1.getItemCount()==0)addSampleButton.setEnabled(false);
+					if(PropertyComboBox.getItemCount()==0)addSampleButton.setEnabled(false);
 					else addSampleButton.setEnabled(true);
 				}
 			});
 		}
-		return ComponentBox1;
+		return ComponentComboBox;
 	}
 
 	/**
-	 * This method initializes PropertyBox1	
-	 * 	
+	 * This method initializes PropertyComboBox	
 	 * @return javax.swing.JComboBox	
 	 */
-	private JComboBox getPropertyBox1() {
-		if (PropertyBox1 == null) {
-			PropertyBox1 = new JComboBox();
-			PropertyBox1.setPreferredSize(new Dimension(270, 24));
-			PropertyBox1.setSize(PropertyBox1.getPreferredSize());
+	private JComboBox getPropertyComboBox() {
+		if (PropertyComboBox == null) {
+			PropertyComboBox = new JComboBox();
+			PropertyComboBox.setPreferredSize(new Dimension(270, 24));
+			PropertyComboBox.setSize(PropertyComboBox.getPreferredSize());
 		}
-		return PropertyBox1;
+		return PropertyComboBox;
 	}
 
 	/**
 	 * This method initializes addSampleButton	
-	 * 	
 	 * @return javax.swing.JButton	
 	 */
 	private JButton getAddSampleButton() {
@@ -256,10 +398,10 @@ public class SamplingSystemGUI extends JFrame {
 			addSampleButton.setText("Add Sample");
 			addSampleButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					if(jTextField.getText().trim().equalsIgnoreCase("")) return;
-					String component = ComponentBox1.getSelectedItem().toString();
-					String property = PropertyBox1.getSelectedItem().toString();
-					String group = jTextField.getText();
+					if(groupTextField.getText().trim().equalsIgnoreCase("")) return;
+					String component = ComponentComboBox.getSelectedItem().toString();
+					String property = PropertyComboBox.getSelectedItem().toString();
+					String group = groupTextField.getText();
 					
 					SerializableProperty p = new SerializableProperty();
 					p.setComponent(component);
@@ -276,27 +418,98 @@ public class SamplingSystemGUI extends JFrame {
 		}
 		return addSampleButton;
 	}
-
 	
+	/**
+	 * This method initializes groupLabel
+	 * @return javax.swing.JLabel
+	 */
+	private JLabel getGroupLabel() {
+		if (groupLabel == null) {
+			groupLabel = new JLabel("Sampling group:");
+		}
+		return groupLabel;
+	}
+
+	/**
+	 * This method initializes groupLabel
+	 * @return javax.swing.JLabel
+	 */
+	private JLabel getComponentLabel() {
+		if (componentLabel == null) {
+			componentLabel = new JLabel("Component:");
+		}
+		return componentLabel;
+	}
+	
+	/**
+	 * This method initializes groupLabel
+	 * @return javax.swing.JLabel
+	 */
+	private JLabel getPropertyLabel() {
+		if (propertyLabel == null) {
+			propertyLabel = new JLabel("Property:");
+		}
+		return propertyLabel;
+	}
+	
+	/**
+	 * This method initializes groupTextField
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getGroupTextField() {
+		if (groupTextField == null) {
+			groupTextField = new JTextField();
+			groupTextField.setPreferredSize(new Dimension(100, 19));
+			groupTextField.setToolTipText("Sampling Group where to add the new Sample. Only alphanumeric and underscore characters.");
+			groupTextField.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			groupTextField.setHorizontalAlignment(JTextField.LEFT);
+			groupTextField.setText("SampGroup");
+			groupTextField.addFocusListener(new FocusListener() {
+				public void focusGained(FocusEvent e) {
+					// Do nothing special :)
+				}
+				public void focusLost(FocusEvent e) {
+					if( !groupTextField.getText().matches("^([a-z]|[A-Z]|[0-9]|_)+$") ) {
+						JOptionPane.showConfirmDialog(SamplingSystemGUI.this,
+								"Group name '" + groupTextField.getText() + "' is invalid.\nPlease use only alphanumeric characters and/or underscores.",
+								"Invalid group name",
+								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
+						groupTextField.setText("");
+						groupTextField.grabFocus();
+					}
+				}
+			}
+			);
+			}
+		return groupTextField;
+	}
+	
+	/**
+	 * Adds a Property to a SamplingGroup, creating its BeanGrouper
+	 * @param component Component that contains the Property to be sampled.
+	 * @param property Property to be sampled.
+	 * @param group SamplingGroup at which the property is to be added.
+	 * @return Whether or not the property was added to the sampling group.
+	 */
 	private boolean addToSampling(String component, String property, String group){
-		
 		boolean added;
 		BeanGrouper bg = groupExists(group);
 
 		/* If there is no group with this name, we create it */
 		if (bg == null){
 			bg = new BeanGrouper(this,group);
-			bg.setCheckName(group);
+			bg.setGroupName(group);
 			bg.addSamp(component, property);
-			jPanel21.add(bg,"growx, dock north");
+			BeanGrouperList.add(bg);
 			added = true;
+			bg.setVisible(true);
 		}
 		/* Else, we check if component/property is already added */
 		else {
 			if( bg.checkIfExists(component, property) ) {
 				JOptionPane.showMessageDialog(this,  
 						"Component " + component + " with property " + property +
-						"\nhas been already added to the sample list for group " + bg.getCheckName(), 
+						"\nhas been already added to the sample list for group " + bg.getGroupName(), 
 						"Already added",
 						JOptionPane.WARNING_MESSAGE );
 				added = false;
@@ -306,180 +519,25 @@ public class SamplingSystemGUI extends JFrame {
 				added = true;
 			}
 		}
-		
-		jPanel21.validate();
-		jScrollPane.validate();
 		return added;
 	}
-
+	
 	/**
-	 * This method initializes jScrollPane	
-	 * 	
-	 * @return javax.swing.JScrollPane	
+	 * Checks if a BeanGrouper with the groupName exists
+	 * @param groupName Name of the SamplingGroup to be searched.
+	 * @return Whether or not the SamplingGroup exits.
 	 */
-	private JScrollPane getJScrollPane() {
-		if (jScrollPane == null) {
-			jScrollPane = new JScrollPane();
-			jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-			jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-			jScrollPane.setViewportView(getJPanel21());
-		}
-		return jScrollPane;
-	}
-
-	/**
-	 * This method initializes jPanel21	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */
-	 private JPanel getJPanel21() {
-		if (jPanel21 == null) {
-			jPanel21 = new JPanel();
-			jPanel21.setLayout(new MigLayout("","[grow]",""));
-			jPanel21.setBackground(new java.awt.Color(100,100,100));
-			jPanel21.setVisible(true);
-		}
-		return jPanel21;
-	}
-
-	/**
-	 * This method initializes jTextField	
-	 * 	
-	 * @return javax.swing.JTextField	
-	 */
-	private JTextField getJTextField() {
-		if (jTextField == null) {
-			jTextField = new JTextField();
-			jTextField.setPreferredSize(new Dimension(100, 19));
-			jTextField.setToolTipText("Sampling Group where to add the new Sample. Only alphanumeric and underscore characters.");
-			jTextField.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			jTextField.setHorizontalAlignment(JTextField.LEFT);
-			jTextField.setText("SampGroup");
-			jTextField.addFocusListener(new FocusListener() {
-
-				public void focusGained(FocusEvent e) {
-					// Do nothing special :)
-				}
-
-				public void focusLost(FocusEvent e) {
-					if( !jTextField.getText().matches("^([a-z]|[A-Z]|[0-9]|_)+$") ) {
-						JOptionPane.showConfirmDialog(SamplingSystemGUI.this,
-								"Group name '" + jTextField.getText() + "' is invalid.\nPlease use only alphanumeric characters and/or underscores.",
-								"Invalid group name",
-								JOptionPane.PLAIN_MESSAGE,JOptionPane.WARNING_MESSAGE);
-						jTextField.setText("");
-						jTextField.grabFocus();
-					}
+	private BeanGrouper groupExists(String groupName){
+		if( BeanGrouperList.isEmpty() )
+			return null;
+		else{
+			for( BeanGrouper bg : BeanGrouperList ){
+				if( bg.getGroupName().toString().equalsIgnoreCase(groupName)){
+					return bg; 
 				}
 			}
-			);
-			}
-		return jTextField;
-	}
-
-	/**
-	 * This method initializes jMenuItem	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getJMenuItem() {
-		if (jMenuItem == null) {
-			jMenuItem = new JMenuItem();
-			jMenuItem.setText("Save GUI status");
-			jMenuItem.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-				    JFileChooser chooser = new JFileChooser();
-				    int returnVal = chooser.showSaveDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	writeStatusFile(chooser.getSelectedFile().getAbsolutePath() + ".ssgst");
-				    }
-				}
-			});
 		}
-		return jMenuItem;
-	}
-
-	/**
-	 * This method initializes jMenuItem1	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getJMenuItem1() {
-		if (jMenuItem1 == null) {
-			jMenuItem1 = new JMenuItem();
-			jMenuItem1.setText("Choose Sampling Manager");
-			jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					String s = (String)JOptionPane.showInputDialog(SamplingSystemGUI.this,
-							"Please Select a Sampling Manager",
-							"Sampling Manager Selection",
-							JOptionPane.PLAIN_MESSAGE,
-							null,
-							(Object[])SampTool.getSamplingManagers(),
-							MAN_NAME);
-					if( s != null && !s.trim().equals("") )
-						SamplingSystemGUI.this.MAN_NAME = s;
-				}
-			});
-		}
-		return jMenuItem1;
-	}
-
-	/**
-	 * This method initializes jMenuItem2	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getJMenuItem2() {
-		if (jMenuItem2 == null) {
-			jMenuItem2 = new JMenuItem();
-			jMenuItem2.setText("Load GUI Status");
-			jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-				    JFileChooser chooser = new JFileChooser();
-				    Filter filter = new Filter();
-				    chooser.setFileFilter(filter);
-				    int returnVal = chooser.showOpenDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	readStatusFile(chooser.getSelectedFile().getAbsolutePath(),false);
-				    }
-				}
-			});
-		}
-		return jMenuItem2;
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				SamplingSystemGUI thisClass = new SamplingSystemGUI();
-				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setVisible(true);
-			}
-		});
-	}
-
-	/**
-	 * This is the default constructor
-	 */
-	public SamplingSystemGUI() {
-		super();
-		initialize();
-	}
-
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
-	private void initialize() {
-		this.setSize(900, 400);
-		this.setJMenuBar(getSSGMenuBar());
-		this.setContentPane(getJContentPane());
-		this.setTitle("Sampling System GUI");
+		return null;
 	}
 
 	public void loadWindow(){
@@ -511,83 +569,24 @@ public class SamplingSystemGUI extends JFrame {
 		readStatusFile(true);
 	}
 	
-	/**
-	 * This method initializes jContentPane
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.fill = GridBagConstraints.BOTH;
-			gridBagConstraints5.gridy = 0;
-			gridBagConstraints5.weightx = 1.0;
-			gridBagConstraints5.weighty = 1.0;
-			gridBagConstraints5.gridx = 0;
-			jContentPane = new JPanel();
-			jContentPane.setLayout(new GridBagLayout());
-			jContentPane.add(getComponentListerContainer(), gridBagConstraints5);
-		}
-		return jContentPane;
-	}
-	
 	public void fillWidgets(String[] components, LinkedList<List<String>> properties){
 		this.propList = properties;
 		this.compList = components;
-		fillComponentBox1(components);
+		fillComponentComboBox(components);
 	}
 	
-	private void fillComponentBox1(String[] components){
-		ComponentBox1.removeAllItems();
+	private void fillComponentComboBox(String[] components){
+		ComponentComboBox.removeAllItems();
 		for(int i=0;i<components.length;i++)
-			ComponentBox1.addItem(components[i]);
+			ComponentComboBox.addItem(components[i]);
 	}
 	
-/*	private void fillComponentBox2(String[] components){
-		ComponentBox2.removeAllItems();
-		for(int i=0;i<components.length;i++)
-			ComponentBox2.addItem(components[i]);
-	}*/
-	
-	private void fillPropertyBox1(List<String> prop){
-		PropertyBox1.removeAllItems();
-		/*if (prop.isEmpty()){
-			ComponentBox2.removeAllItems();
-			PropertyBox2.removeAllItems();
-			disableAll();
-			return;
-		}*/
-		PropertyBox1.setEnabled(true);
+	private void fillPropertyComboBox(List<String> prop){
+		PropertyComboBox.removeAllItems();
+		PropertyComboBox.setEnabled(true);
 		addSampleButton.setEnabled(true);
 		for(String s:prop)
-			PropertyBox1.addItem(s);
-	}
-	/*
-	private void fillPropertyBox2(List<String> prop){
-		PropertyBox2.removeAllItems();
-		if (prop.isEmpty()){
-			jButton1.setEnabled(false);
-			return;
-		}
-		PropertyBox2.setEnabled(true);
-		jButton1.setEnabled(true);
-		for(String s:prop)
-			PropertyBox2.addItem(s);
-	}
-	
-	private void disableAll(){
-		PropertyBox1.setEnabled(false);
-		addSampleButton.setEnabled(false);
-		
-		ComponentBox2.setEnabled(false);
-		PropertyBox2.setEnabled(false);
-		jButton1.setEnabled(false);
-;	}*/
-	
-	private BeanGrouper groupExists(String groupName){
-		for(int i=0; i<jPanel21.getComponentCount();i++)
-			if (((BeanGrouper)jPanel21.getComponent(i)).getCheckName().toString().equalsIgnoreCase(groupName)) return ((BeanGrouper)jPanel21.getComponent(i));
-		return null;
+			PropertyComboBox.addItem(s);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -598,7 +597,12 @@ public class SamplingSystemGUI extends JFrame {
 			fis = new FileInputStream(filename);
 			in = new ObjectInputStream(fis);
 			if(startup){
-				int n = JOptionPane.showConfirmDialog(this, "An old status file has been found\nWould you like to load it?", "Old status file found", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				int n = JOptionPane.showConfirmDialog(this,
+						"An old status file has been found\nWould you like to load it?", 
+						"Old status file found", 
+						JOptionPane.YES_NO_OPTION, 
+						JOptionPane.INFORMATION_MESSAGE
+						);
 				if(n!=0){
 					in.close();
 					return;
@@ -624,7 +628,6 @@ public class SamplingSystemGUI extends JFrame {
 		ObjectOutputStream out = null;
 		if( status.size() == 0 )
 			return;
-		
 		try {
 			fos = new FileOutputStream(filename);
 			out = new ObjectOutputStream(fos);
@@ -646,8 +649,7 @@ public class SamplingSystemGUI extends JFrame {
 	 * @param samplers The given sampler list
 	 * @param group The belonging sampling group for the given samplers
 	 */
-	public void deleteFromStatus(ArrayList<DataPrinter> samplers, String group) {
-		
+	public synchronized void deleteBeanGrouper(ArrayList<DataPrinter> samplers, String group) {
 		for(DataPrinter dp : samplers )
 			for(SerializableProperty sp : status ) {
 				if( sp.getComponent().equals(dp.component) &&
@@ -657,6 +659,24 @@ public class SamplingSystemGUI extends JFrame {
 					break;
 				}
 		}
+		for( BeanGrouper bg : BeanGrouperList ){
+			if( bg.getGroupName().toString().equalsIgnoreCase(group)){
+				bg.setVisible(false);
+				BeanGrouperList.remove(bg);
+				bg.dispose();
+				break;
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater( new Runnable(){
+			public void run(){
+				SamplingSystemGUI thisClass = new SamplingSystemGUI();
+				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				thisClass.setVisible(true);
+			}
+		});
 	}
 }
 
