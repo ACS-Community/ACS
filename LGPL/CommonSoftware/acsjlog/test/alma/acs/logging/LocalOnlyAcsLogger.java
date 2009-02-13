@@ -23,10 +23,10 @@ public class LocalOnlyAcsLogger extends AcsLogger {
 	
 	private LocalOnlyAcsLogger(String namespace, LogConfig testLogConfig) {
 		super(namespace, null, new LogConfig());
-        addLoggerClass(LocalOnlyAcsLogger.class); 
+		addLoggerClass(LocalOnlyAcsLogger.class); 
 	}
 
-	public static LocalOnlyAcsLogger getInstance(String namespace, Level level) {
+	public static synchronized LocalOnlyAcsLogger getInstance(String namespace, Level level) {
 		if (instance == null) {
 			LogConfig testLogConfig = new LogConfig();
 			testLogConfig.setDefaultMinLogLevelLocal(AcsLogLevel.getNativeLevel(level).getAcsLevel());
