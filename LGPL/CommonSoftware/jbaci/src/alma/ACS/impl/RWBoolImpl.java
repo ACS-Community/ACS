@@ -33,6 +33,7 @@ import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitor;
 import alma.ACS.Monitorpattern;
+import alma.ACS.MonitorpatternHelper;
 import alma.ACS.MonitorpatternPOATie;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.RWBoolOperations;
@@ -173,7 +174,7 @@ public class RWBoolImpl
 		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
 
 		// register and activate		
-		return MonitorfloatHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
+		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
 

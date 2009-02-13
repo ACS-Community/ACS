@@ -34,17 +34,13 @@ import alma.ACS.CBpattern;
 import alma.ACS.Callback;
 import alma.ACS.Condition;
 import alma.ACS.Monitor;
-import alma.ACS.MonitorfloatHelper;
-import alma.ACS.MonitorfloatPOATie;
 import alma.ACS.Monitorpattern;
 import alma.ACS.MonitorpatternHelper;
 import alma.ACS.MonitorpatternPOATie;
 import alma.ACS.NoSuchCharacteristic;
-import alma.ACS.OnOffSwitch;
 import alma.ACS.ROBoolOperations;
 import alma.ACS.Subscription;
 import alma.ACS.TimeSeqHolder;
-import alma.ACS.patternSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
 import alma.ACS.jbaci.CompletionUtil;
 import alma.ACS.jbaci.DataAccess;
@@ -160,14 +156,35 @@ public class ROBoolImpl
 	 * @see alma.ACS.PBoolOperations#allStates()
 	 */
 	public Bool[] allStates() {
-		throw new NO_IMPLEMENT();
+		try {
+			String[] tmp = characteristicModelImpl.getStringSeq("statesDescription");
+			Bool[] ret = new Bool[tmp.length];
+			 for (int i=0; i<tmp.length; i++)
+			        ret[i] = Bool.from_int(i);
+			        
+			 return ret;
+			
+		} catch (NoSuchCharacteristic e) {
+		//noop
+		}
+		return null;
 	}
 
 	/**
 	 * @see alma.ACS.PBoolOperations#condition()
 	 */
 	public Condition[] condition() {
-		throw new NO_IMPLEMENT();
+		try {
+			int [] tmp = characteristicModelImpl.getLongSeq("statesDescription");
+			Condition[] ret = new Condition[tmp.length];
+			for(int i=0;i<tmp.length;i++){
+				ret[i] = Condition.from_int(tmp[i]);
+			}
+		
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
+		return null;
 	}
 
 
@@ -188,7 +205,7 @@ public class ROBoolImpl
 		MonitorpatternPOATie monitorTie = new MonitorpatternPOATie(monitorImpl);
 
 		// register and activate		
-		return MonitorfloatHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
+		return MonitorpatternHelper.narrow(this.registerMonitor(monitorImpl, monitorTie));
 	
 	}
 
@@ -229,7 +246,12 @@ public class ROBoolImpl
 	 * @see alma.ACS.PBoolOperations#statesDescription()
 	 */
 	public String[] statesDescription() {
-		throw new NO_IMPLEMENT();
+		try {
+			return characteristicModelImpl.getStringSeq("statesDescription");
+		} catch (NoSuchCharacteristic e) {
+			//noop
+		}
+		return null;
 	}
 
 	/**
