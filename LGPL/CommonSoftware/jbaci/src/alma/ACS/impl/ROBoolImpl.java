@@ -59,7 +59,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public class ROboolImpl
+public class ROBoolImpl
 	extends ROCommonPropertyImpl
 	implements ROBoolOperations {
 
@@ -69,7 +69,7 @@ public class ROboolImpl
 	 * @param parentComponent
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROboolImpl(
+	public ROBoolImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
@@ -83,7 +83,7 @@ public class ROboolImpl
 	 * @param dataAccess
 	 * @throws PropertyInitializationFailed
 	 */
-	public ROboolImpl(
+	public ROBoolImpl(
 		String name,
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
