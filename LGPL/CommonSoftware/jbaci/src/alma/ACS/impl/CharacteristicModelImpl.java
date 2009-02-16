@@ -36,12 +36,9 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
+import alma.acs.container.*;
 
-import alma.cdbErrType.CDBFieldDoesNotExistEx;
-import alma.cdbErrType.WrongCDBDataTypeEx;
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-import org.omg.CORBA.SystemException;
+
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
@@ -53,6 +50,7 @@ import org.omg.CORBA.SystemException;
 // TODO to be fully implemented, cached, etc.
 public class CharacteristicModelImpl implements CharacteristicModelOperations {
 
+	private ContainerServices m_container;
 	/**
 	 * Model name (used to determine CDB lookup).
 	 */
@@ -106,12 +104,13 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	//cmenay
 		 try{
                  String  strVal  = dao.get_string(name);
-                 Any value_p = null;
+                 Any value_p = m_container.getAdvancedContainerServices().getAny();
                  value_p.insert_string(strVal);
                 return value_p;
+             //   AcsCorba.g
          }
 		 catch (CDBFieldDoesNotExistEx fde){
-                NoSuchCharacteristic nsc = null;
+                NoSuchCharacteristic nsc = new NoSuchCharacteristic();
                 nsc.characteristic_name = name;
                 nsc.component_name = modelName;
                 throw nsc;
@@ -140,7 +139,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			allSeq = dao.get_string_seq("");
 			int max;
 			max = allSeq.length;
-			ArrayList arrSeq = null;
+			ArrayList arrSeq = new ArrayList();
 			
 			Pattern checker = Pattern.compile(wildcard);
 			for(int i=0;i<max;i++){
