@@ -31,12 +31,12 @@ import org.omg.CosPropertyService.PropertySet;
 
 import alma.ACS.CharacteristicModelOperations;
 import alma.ACS.NoSuchCharacteristic;
+import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
-import alma.acs.container.*;
 
 
 
@@ -50,12 +50,17 @@ import alma.acs.container.*;
 // TODO to be fully implemented, cached, etc.
 public class CharacteristicModelImpl implements CharacteristicModelOperations {
 
+	//for create an Any (i don't know any other method!)
 	private ContainerServices m_container;
+	public void lendContainerServices(ContainerServices c){
+		m_container = c;
+	}
+	
+	
 	/**
 	 * Model name (used to determine CDB lookup).
 	 */
 	protected String modelName;
-
 	/**
 	 * CDB DAO.
 	 */
@@ -101,13 +106,19 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 */
 	public Any get_characteristic_by_name(String name)
 		throws NoSuchCharacteristic {
+		
+
 	//cmenay
+
 		 try{
-                 String  strVal  = dao.get_string(name);
-                 Any value_p = m_container.getAdvancedContainerServices().getAny();
-                 value_p.insert_string(strVal);
-                return value_p;
-             //   AcsCorba.g
+			String strVal = new String();
+			 strVal  = dao.get_string(name);
+			 //I needed the getAny() to create a new Any, since a constructor for
+			 // Any (i.e: new Any() ), doesn't exist
+			 Any value_p = m_container.getAdvancedContainerServices().getAny();
+			 value_p.insert_string(strVal);
+			 return value_p;
+
          }
 		 catch (CDBFieldDoesNotExistEx fde){
                 NoSuchCharacteristic nsc = new NoSuchCharacteristic();
@@ -122,7 +133,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 		 
 		 
 		 catch (WrongCDBDataTypeEx wct) {
-			//log? (cmenay)
+				
 		}
 		 
 		throw new NoSuchCharacteristic();
@@ -142,12 +153,13 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			ArrayList arrSeq = new ArrayList();
 			
 			Pattern checker = Pattern.compile(wildcard);
-			for(int i=0;i<max;i++){
-				if ( checker.split(allSeq[i]).length>0 )
-					   arrSeq.add(allSeq[i]);
-					
-			}
-			return (String[])arrSeq.toArray();
+
+			//TODO wildcards matcher
+			String[] ret = new String[max];
+			for(int i=0;i<max;i++)
+				ret[i]=allSeq[i];
+			
+			return ret;
 			
 		} catch (CDBFieldDoesNotExistEx e) {
 		//log?
