@@ -48,7 +48,6 @@ import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 //logs
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.cosylab.CDB.DAL;
 
 /**
@@ -89,8 +88,6 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 */
 	private static final int MAX_POOL_THREADS = 10;
 	
-	//logs
-	private Logger m_logger;
 
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#initialize(alma.acs.container.ContainerServices)
