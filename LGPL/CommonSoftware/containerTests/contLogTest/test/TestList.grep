@@ -1,2 +1,3 @@
 Local file logger: Cache saved to 
 Failed to read GIOP message
+Caught a ConcurrentModificationException from ORB shutdown. This should be harmless, see known JacORB bug
