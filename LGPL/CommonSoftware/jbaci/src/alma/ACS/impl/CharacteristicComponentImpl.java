@@ -312,6 +312,9 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 */
 	public Any get_characteristic_by_name(String name)
 		throws NoSuchCharacteristic {
+		//for create the Any
+		characteristicModelImpl.lendContainerServices(m_containerServices);
+		
 		return characteristicModelImpl.get_characteristic_by_name(name);
 	}
 
@@ -319,7 +322,9 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * @see alma.ACS.CharacteristicModelOperations#find_characteristic(java.lang.String)
 	 */
 	public String[] find_characteristic(String wildcard) {
+		
 		return characteristicModelImpl.find_characteristic(wildcard);
+
 	}
 
 	/**
