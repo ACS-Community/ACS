@@ -16,12 +16,13 @@ import alma.acs.util.UTCUtility;
 import cl.utfsm.samplingSystemUI.core.DataItem;
 
 /**
- * This class correlates various sampling sets, and outputs them in a nicely cvs file.
+ * This class correlates various sampling sets through time, and outputs them in a nicely csv file.
+ * 
  * This class takes various Sampling Data file outputs, which are passed through the addSamplingSet method.
  * Once finished adding Sampling Set, just call the dumpToFile method, and the data will be correlated.
  * Please notice that the usage of memory is minimal and has to be kept whis way.
- * @author ahoffsta
- *
+ * 
+ * @author Arturo Hoffstadt Urrutia <ahoffsta@inf.utfsm.cl>
  */
 public class SamplingDataCorrelator {
 	
@@ -55,7 +56,7 @@ public class SamplingDataCorrelator {
 		this.frequency = frequency;
 		this.startTimestamp = startTimestamp;
 		formater = new IsoDateFormat();
-		filename = "" + this.group + "_" + this.frequency + "_" + formater.format( this.startTimestamp ) + ".csv";
+		filename = "" + this.group.replace('/', '-') + "_" + this.frequency + "_" + formater.format( this.startTimestamp ) + ".csv";
 		//System.out.println( "Filename is: " + filename );
 		header = "\"Timestamp in ISO Format\"";
 		meanQty = 4;
