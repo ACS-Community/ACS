@@ -34,6 +34,7 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
+import alma.ACS.jbaci.UtilsWildcards;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
@@ -151,13 +152,18 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			int max;
 			max = allSeq.length;
 			ArrayList arrSeq = new ArrayList();
-			
-			Pattern checker = Pattern.compile(wildcard);
+			UtilsWildcards uw = new UtilsWildcards();
 
-			//TODO wildcards matcher
-			String[] ret = new String[max];
 			for(int i=0;i<max;i++)
-				ret[i]=allSeq[i];
+				if( uw.wildcardFit(allSeq[i],wildcard))
+					arrSeq.add(allSeq[i]);
+			if (arrSeq.isEmpty())
+				throw new CDBFieldDoesNotExistEx();
+			
+			String[] ret = new String[arrSeq.size()];
+			
+			for(int i=0;i<arrSeq.size();i++)
+				ret[i]=arrSeq.get(i).toString();
 			
 			return ret;
 			
