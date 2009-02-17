@@ -146,6 +146,9 @@ public class PropertyImpl implements PropertyOperations {
 	 */
 	public Any get_characteristic_by_name(String name)
 		throws NoSuchCharacteristic {
+		//the same thing has to be added here, maybe I can use the parentComponent 
+		//method directly (so i don't have to repeat this line again)
+		characteristicModelImpl.lendContainerServices(parentComponent.getComponentContainerServices());
 		return characteristicModelImpl.get_characteristic_by_name(name);
 	}
 
