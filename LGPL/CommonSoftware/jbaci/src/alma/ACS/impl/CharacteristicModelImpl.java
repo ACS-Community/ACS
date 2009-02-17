@@ -22,7 +22,6 @@
 package alma.ACS.impl;
 
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_IMPLEMENT;
@@ -31,10 +30,10 @@ import org.omg.CosPropertyService.PropertySet;
 
 import alma.ACS.CharacteristicModelOperations;
 import alma.ACS.NoSuchCharacteristic;
+import alma.ACS.jbaci.UtilsWildcards;
 import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
-import alma.ACS.jbaci.UtilsWildcards;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
