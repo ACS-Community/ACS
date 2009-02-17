@@ -328,18 +328,24 @@ public abstract class CommonPropertyImpl
 		if (historySize == 0)
 			return;
 		
+
 		synchronized (historyValue)
 		{
 			// add			
 			historyTime[historyPosition] = timestamp;
-			
-			// historyValue[historyPosition] = value;
+
+	
+ 			// historyValue[historyPosition] = value;
 			if (propertyType.isPrimitive())
 			{
+				System.out.println(propertyType.toString());
+				System.out.println(double.class.toString());
 				// primitives are really ugly to handle
 				// order must match probability...
-				if (propertyType.isAssignableFrom(double.class))
-					Array.setDouble(historyValue, historyPosition, ((Double)value).doubleValue());
+				//if (propertyType.isAssignableFrom(double.class))
+			
+				if(propertyType.isAssignableFrom(double.class))
+				     Array.setDouble(historyValue, historyPosition, ((Double)value).doubleValue());
 					
 				else if (propertyType.isAssignableFrom(int.class))
 					Array.setInt(historyValue, historyPosition, ((Integer)value).intValue());
@@ -363,9 +369,10 @@ public abstract class CommonPropertyImpl
 					Array.setChar(historyValue, historyPosition, ((Character)value).charValue());
 					
 				else
-					// TODO log "Unhandled primitive"
+				{
 					m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::addValueToHistory - Unhandled primitive.");
 				    throw new NO_RESOURCES("Unhandled primitive"); 
+				}
 					
 			}
 			else
