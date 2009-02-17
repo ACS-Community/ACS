@@ -112,7 +112,11 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 
 		 try{
 			String strVal = new String();
-			 strVal  = dao.get_string(name);
+			if (prefix=="")	
+				strVal = dao.get_string(name);
+			else
+				strVal = dao.get_string(prefix+name);
+
 			 //I needed the getAny() to create a new Any, since a constructor for
 			 // Any (i.e: new Any() ), doesn't exist
 			 Any value_p = m_container.getAdvancedContainerServices().getAny();
@@ -147,7 +151,11 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 		//cmenay
 		try {
 			String[] allSeq; 
-			allSeq = dao.get_string_seq("");
+				if (prefix=="")	
+					allSeq = dao.get_string_seq("");
+				else
+					allSeq = dao.get_string_seq(prefix);
+			
 			int max;
 			max = allSeq.length;
 			ArrayList arrSeq = new ArrayList();
