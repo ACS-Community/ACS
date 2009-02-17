@@ -565,8 +565,7 @@ ROproperty.alarm_high_on();
 	public void testGetCharacteristicByName() throws NoSuchCharacteristic {
 		try
 		{
-			ROproperty.get_characteristic_by_name("format");
-			fail("NO_IMPLEMENT exception expected");
+			ROproperty.get_characteristic_by_name("readback");
 		}
 		catch (NO_IMPLEMENT ex)
 		{
@@ -578,7 +577,6 @@ ROproperty.alarm_high_on();
 		try
 		{
 			ROproperty.find_characteristic("format");
-			fail("NO_IMPLEMENT exception expected");
 		}
 		catch (NO_IMPLEMENT ex)
 		{
