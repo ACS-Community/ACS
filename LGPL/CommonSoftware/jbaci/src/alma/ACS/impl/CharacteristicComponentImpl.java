@@ -99,7 +99,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		super.initialize(containerServices);
 
 		//get the logger
-		m_logger = getComponentContainerServices().getLogger();
+		//m_logger = getComponentContainerServices().getLogger();
 
 		try
 		{
@@ -314,8 +314,11 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		throws NoSuchCharacteristic {
 		//for create the Any
 		characteristicModelImpl.lendContainerServices(m_containerServices);
-		
+		Any ret = characteristicModelImpl.get_characteristic_by_name(name);
+		if(ret!=null)
 		return characteristicModelImpl.get_characteristic_by_name(name);
+		else 
+			throw new NoSuchCharacteristic();
 	}
 
 	/**
