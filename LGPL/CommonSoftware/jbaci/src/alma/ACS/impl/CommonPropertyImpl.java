@@ -338,8 +338,6 @@ public abstract class CommonPropertyImpl
  			// historyValue[historyPosition] = value;
 			if (propertyType.isPrimitive())
 			{
-				System.out.println(propertyType.toString());
-				System.out.println(double.class.toString());
 				// primitives are really ugly to handle
 				// order must match probability...
 				//if (propertyType.isAssignableFrom(double.class))
