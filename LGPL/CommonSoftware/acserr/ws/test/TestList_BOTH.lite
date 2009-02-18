@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_BOTH.lite,v 1.38 2005/04/10 03:44:42 dfugate Exp $"
+# "@(#) $Id: TestList_BOTH.lite,v 1.39 2009/02/18 00:41:16 agrimstrup Exp $"
 #
 # TestList
 #
@@ -35,4 +35,5 @@ ENVIRONMENT lcuTat LCU
 3 ACSErrorTestClient	"startAcserrTest.sh acserrTestServer s1" "@SLEEP 20" "acserrTestRun.sh acserrTestClient s1 10 1 10"
 4 ACSErrorTestDepth   	"startAcserrTest.sh acserrTestServer s2" "@SLEEP 20" "acserrTestRun.sh acserrTestCheckDepth s2 50 1 1" 
 5 addDataTest 		"startAcserrTest.sh addDataTest"
+6 UnitTest     "acsutilTATTestRunner python test_AES2Py.py"
 #___o0o___
