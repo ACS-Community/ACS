@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.36 2008/09/18 08:49:29 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.37 2009/02/18 10:14:21 acaproni Exp $
  * @since    
  */
 
@@ -376,9 +376,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				tempStr=cache.pop(250);
 			} catch (InterruptedException ie) {
 				continue;
-			} catch (Exception e) {
-				System.err.println("Exception from cache.pop: "+e.getMessage());
-				e.printStackTrace();
+			} catch (Throwable t) {
+				System.err.println("Exception from cache.pop: "+t.getMessage());
+				t.printStackTrace();
 				continue;
 			}
 			if (tempStr==null) {
@@ -390,11 +390,11 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 				if (!binaryFormat) {
 					try {
 						log = parser.parse(tempStr);
-					} catch (Exception e) {
+					} catch (Throwable t) {
 						listenersDispatcher.publishError(tempStr);
 						listenersDispatcher.publishReport(tempStr);
-						System.err.println("Exception parsing a log: "+e.getMessage());
-						e.printStackTrace(System.err);
+						System.err.println("Exception parsing a log: "+t.getMessage());
+						t.printStackTrace(System.err);
 						continue;
 					}
 					publishLog(tempStr, log);
@@ -403,11 +403,11 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 					try {
 						log=CacheUtils.fromCacheString(tempStr);
 						xmlStr=log.toXMLString();
-					} catch (Exception e) {
+					} catch (Throwable t) {
 						listenersDispatcher.publishError(tempStr);
 						listenersDispatcher.publishReport(tempStr);
-						System.err.println("Exception parsing a log: "+e.getMessage());
-						e.printStackTrace(System.err);
+						System.err.println("Exception parsing a log: "+t.getMessage());
+						t.printStackTrace(System.err);
 						continue;
 					}
 					readCounter++;
@@ -430,10 +430,26 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	 */
 	private void publishLog(String xmlLog, ILogEntry log) {
 		if (xmlLog!=null) {
-			listenersDispatcher.publishRawLog(xmlLog);
+			try {
+				listenersDispatcher.publishRawLog(xmlLog);
+			} catch (Throwable t) {
+				System.err.println("Error publishing XML log ["+xmlLog+"]: log lost!");
+				t.printStackTrace(System.err);
+				try {
+					listenersDispatcher.publishReport(xmlLog);
+				} catch (Throwable t2) {}
+			}
 		}
 		if (log!=null && match(log)) {
-			listenersDispatcher.publishLog(log);
+			try {
+				listenersDispatcher.publishLog(log);
+			} catch (Throwable t) {
+				System.err.println("Error publishing log ["+log.toString()+"]: log lost!");
+				t.printStackTrace(System.err);
+				try {
+					listenersDispatcher.publishReport(log.toString());
+				} catch (Throwable t2) {}
+			}
 		} 
 	}
 	
