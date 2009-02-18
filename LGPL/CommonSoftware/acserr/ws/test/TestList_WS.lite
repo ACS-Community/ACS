@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.37 2006/04/26 15:32:27 hsommer Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.38 2009/02/18 00:36:46 agrimstrup Exp $"
 #
 # TestList
 #
@@ -35,4 +35,5 @@ SOURCE acserrTATEnvironment
 4 ACSErrorTestDepth   	"startAcserrTest.sh acserrTestServer s2" "@SLEEP 20" "acserrTestRun.sh acserrTestCheckDepth s2 50 1 1" 
 5 addDataTest 		"startAcserrTest.sh addDataTest"
 6 testJUnitACSERRnoRuntime "testJUnitACSERRnoRuntime"
+7 UnitTest     "acsutilTATTestRunner python test_AES2Py.py"
 #___o0o___

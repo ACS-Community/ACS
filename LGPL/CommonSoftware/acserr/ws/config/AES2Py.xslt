@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/acserr:Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.20 2007/05/23 08:55:56 nbarriga Exp $
+# @(#) $Id: AES2Py.xslt,v 1.21 2009/02/18 00:36:46 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -347,64 +347,15 @@ class BaseException:
     Some form of custom documentation goes here...
     '''
     #-----------------------------------------------------------------
-    def __init__(self,
-                 nvSeq = None,
-                 exception = None,
-                 create = 0,
-                 severity = None):
+    def __init__(self):
         '''
         Constructor
         
         An instance of this class is derived from ACSErr.Completion. 
         It provides many helper methods from Acspy.Common.Err.
         
-        There are three different combinations of keyword parameter
-        uses that make sense here:
-            
-            __init__()
-              Using the default values creates a new Completion which 
-              does not include any previous error traces
-            
-            __init__(exception=acsException)
-              Specifying a previous ACS Error System exception without
-              changing the value of create creates a new Completion which
-              does in fact include previous error traces from
-              acsException.
-            
-            __init__(exception=acsException, create=0)
-              Used to reconstruct acsException without adding any
-              new error trace information.
-
-            nvSeq default keyword parameter
-              This sequence of name/values is only used when a new 
-              Completion is being created. In simple terms, the only
-              time you can use it is when the create keyword parameter
-              has the value of 1
-
-            severity default keyword parameter
-              This CORBA type corresponds to ACSErr.Severity. The
-              only time you can use it is when the create keyword parameter
-              has the value of 1
-
-        Parameters:
-        - nvSeq is a sequence of ACSErr.NameValue pairs used to add
-        additional information about the Completion. Only used when
-        create has a value of 1
-        - exception is an ACS Error System based CORBA exception. 
-	Provide this to extract previous error trace information and put this into
-        the new object being constructed
-        - create is a boolean value which defines whether or not traceback
-        information should be extracted from the call to create this Completion
-        and added to it's error trace. If you're simply trying to recreate
-        a remote CORBA exception locally and figure out 
-        what went wrong most likely you want create to have a value of 0. 
-        However, if you intend on returning the Completion a value of 1 makes 
-        more sense.
-        - severity is used to set the severity of the completion. Only used when
-        create has a value of 1/True
+        Parameters: None
         '''
-        if nvSeq == None:
-            nvSeq = []
         self.shortDescription = "</xsl:text>
         <xsl:value-of select="@shortDescription"/>
         <xsl:text>"
@@ -418,17 +369,23 @@ class BaseException:
                            <xsl:text>.</xsl:text>
                            <xsl:value-of select="@name"/>
                           <xsl:text>,
-                          exception,
+                          None,
                           description,
-                          nvSeq,
-                          create,
-                          severity)
+                          [],
+                          0,
+                          None)
 
         #Create the CORBA object
         ACSErr.Completion.__init__(self,
                                    getTimeStamp().value,
-                                   0,
-                                   0,
+                                   ACSErr.</xsl:text>
+                                   <xsl:value-of select="../@name"/>
+                                   <xsl:text>,
+                                   </xsl:text>
+                                   <xsl:value-of select="../@name"/>
+                                   <xsl:text>.</xsl:text>
+                                   <xsl:value-of select="@name"/>
+                                   <xsl:text>,
                                    [])
         return
 
@@ -439,10 +396,10 @@ class BaseException:
         return self.shortDescription
 
     def getErrorCode(self):
-        return 0
+        return self.code
 
     def getErrorType(self):
-        return 0
+        return self.type
 
 </xsl:text>
 <xsl:text>
