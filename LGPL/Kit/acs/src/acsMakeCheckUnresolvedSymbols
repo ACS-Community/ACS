@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.5 2007/03/05 14:54:31 pmurphy Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.6 2009/02/18 20:53:39 rmarson Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -126,7 +126,7 @@ if ($ush =~ /csh/) {            # Ick ick!  Note that a google search for
                                 # "csh programming considered harmful".
                                 # This circumvention may not work.  If
                                 # not, then put in an error here instead.
-    $cmd = "bash -c 'ld $mylib $opt_o 2>&1' ";
+    $cmd = "bash -c 'ld $mylib -o $opt_o 2>&1' ";
     if ($opt_l) {
         $cmd = "bash -c 'ldd $mylib 2>&1' ";
     }
