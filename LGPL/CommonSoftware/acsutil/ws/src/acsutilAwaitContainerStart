@@ -1,5 +1,29 @@
 #!/bin/bash
 #--------------------------------------------------
+
+# A helpful message describing how this command works
+function printUsage
+{
+	echo "Usage: `basename $0` [OPTIONS] type_of_container name_of_container"
+	echo "Wait for the named container to start."
+	echo ""
+	echo "Options:"
+	echo "-h, --help      Prints this message and exits"
+	
+}
+
+if [ "$1" = "-h" -o "$1" = "--help" ] ; then
+    printUsage;
+    exit 0;
+fi
+
+if [ "$#" -ne "2" ] ; then
+	echo "Error: wrong number of parameters provided"
+    printUsage;
+    exit 1;
+fi
+
+# Now the actual work gets done
 #first need to figure out $ACS_TMP
 if [ "$ACS_TMP" = "" ]
 then 

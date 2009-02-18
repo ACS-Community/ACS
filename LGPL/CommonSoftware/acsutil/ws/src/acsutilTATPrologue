@@ -2,6 +2,18 @@
 #A general purpose script designed to be used as the prologue
 #for most tat modular tests
 
+# Usage info. Be nice and keep this up-to-date!
+function printUsage 
+{
+   echo "Usage: `basename $0` [OPTIONS]"
+   echo "Start a TAT session"
+   echo ""
+   echo "Options: "
+   echo "  --noloadifr                         Do not load the Interface Repository."
+   echo "  -l, --log                           Save the ACS logging output to a file"
+   echo "  -h, --help                          Prints this message and exits."
+}
+
 #
 # These will contain the parsing results (CL_XXX, CL = command line)
 #
@@ -11,8 +23,8 @@ CL_LOG=
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=noloadifr,log
-SHORTOPTS=l
+LONGOPTS=noloadifr,log,help
+SHORTOPTS=lh
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -35,6 +47,8 @@ do
 	--noloadifr)                  CL_LOADIFR="--noloadifr" ;;
 	--log)                        CL_LOG=true ;;
 	-l)                           CL_LOG=true ;;
+	--help)                       printUsage ; exit 0 ;;
+	-h)                           printUsage ; exit 0 ;;
 	--) break ;;
 	esac
 	shift
