@@ -23,16 +23,16 @@ package alma.ACS.impl;
 
 import org.omg.CORBA.NO_IMPLEMENT;
 
-import alma.ACS.Alarmlong; //cmenay
+import alma.ACS.Alarmlong;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
-import alma.ACS.CBlong; //cmenay
+import alma.ACS.CBlong; 
 import alma.ACS.Callback;
 import alma.ACS.MonitorlongHelper;
-import alma.ACS.MonitorlongPOATie; //cmenay
+import alma.ACS.MonitorlongPOATie;
 import alma.ACS.Monitorlong;
 import alma.ACS.NoSuchCharacteristic;
-import alma.ACS.ROlongOperations; //cmenay
+import alma.ACS.ROlongOperations;
 import alma.ACS.Subscription;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.longSeqHolder;
@@ -103,21 +103,20 @@ public class ROlongImpl
 	}
 
 	/**
-	 * @see alma.ACS.ROdoubleOperations#alarm_low_off()
+	 * @see alma.ACS.ROlongOperations#alarm_low_off()
 	 */
 	public int alarm_low_off() {
 		return ((Integer)alarmLowOff).intValue();
 	}
 
-	/**
-	 * @see alma.ACS.ROdoubleOperations#alarm_low_on()
-	 */
+	
+
 	public int alarm_low_on() {
 		return ((Integer)alarmLowOn).intValue();
 	}
 
 	/**
-	 * @see alma.ACS.ROdoubleOperations#new_subscription_Alarm(alma.ACS.Alarmdouble, alma.ACS.CBDescIn)
+	 * @see alma.ACS.ROlongOperations#new_subscription_Alarm(alma.ACS.Alarmlong, alma.ACS.CBDescIn)
 	 */
 	public Subscription new_subscription_Alarm(
 		Alarmlong arg0,
@@ -127,14 +126,14 @@ public class ROlongImpl
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#create_monitor(alma.ACS.CBdouble, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PlongOperations#create_monitor(alma.ACS.CBdouble, alma.ACS.CBDescIn)
 	 */
 	public Monitorlong create_monitor(CBlong callback, CBDescIn descIn) {
 		return create_postponed_monitor(0, callback, descIn);
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#create_postponed_monitor(long, alma.ACS.CBdouble, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PlongOperations#create_postponed_monitor(long, alma.ACS.CBdouble, alma.ACS.CBDescIn)
 	 */
 	public Monitorlong create_postponed_monitor(
 		long startTime,
@@ -151,21 +150,21 @@ public class ROlongImpl
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#default_value()
+	 * @see alma.ACS.PlongOperations#default_value()
 	 */
 	public int default_value() {
 		return ((Integer)defaultValue).intValue();
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#get_async(alma.ACS.CBdouble, alma.ACS.CBDescIn)
+	 * @see alma.ACS.PlongOperations#get_async(alma.ACS.CBdouble, alma.ACS.CBDescIn)
 	 */
 	public void get_async(CBlong arg0, CBDescIn arg1) {
 		getAsync(arg0, arg1);
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#get_history(int, alma.ACS.doubleSeqHolder, alma.ACS.TimeSeqHolder)
+	 * @see alma.ACS.PlongOperations#get_history(int, alma.ACS.doubleSeqHolder, alma.ACS.TimeSeqHolder)
 	 */
 	public int get_history(
 		int arg0,
@@ -176,7 +175,7 @@ public class ROlongImpl
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#get_sync(alma.ACSErr.CompletionHolder)
+	 * @see alma.ACS.PlongOperations#get_sync(alma.ACSErr.CompletionHolder)
 	 */
 	public int get_sync(CompletionHolder completionHolder) {
 		try
@@ -194,28 +193,28 @@ public class ROlongImpl
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#graph_max()
+	 * @see alma.ACS.PlongOperations#graph_max()
 	 */
 	public int graph_max() {
 		return ((Integer)graphMax).intValue();
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#graph_min()
+	 * @see alma.ACS.PlongOperations#graph_min()
 	 */
 	public int graph_min() {
 		return ((Integer)graphMin).intValue();
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#min_delta_trigger()
+	 * @see alma.ACS.PlongOperations#min_delta_trigger()
 	 */
 	public int min_delta_trigger() {
 		return ((Integer)minDeltaTrigger).intValue();
 	}
 
 	/**
-	 * @see alma.ACS.PdoubleOperations#min_step()
+	 * @see alma.ACS.PlongOperations#min_step()
 	 */
 	public int min_step() {
 		return ((Integer)minStep).intValue();
@@ -240,7 +239,7 @@ public class ROlongImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#sum(java.lang.Object, java.lang.Object, boolean)
 	 */
 	public Object sum(Object value1, Object value2, boolean substract) {
-		double val2 = ((Integer)value2).intValue();
+		int val2 = ((Integer)value2).intValue();
 		if (substract)
 			val2 = -val2;
 		return new Integer((int) (((Integer)value1).intValue() + val2));

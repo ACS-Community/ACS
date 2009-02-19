@@ -57,7 +57,6 @@ public class MonitorlongLongImpl
 
 
 	public void get_value_trigger(LongHolder delta, BooleanHolder enable) {
-		// TODO Auto-generated method stub
 		delta.value = ((Long)getValueTrigger(enable)).longValue();
 		
 	}
@@ -70,7 +69,6 @@ public class MonitorlongLongImpl
 		setValueTrigger(new Long((long) delta), enable);
 		
 	}
-
 
 
 
