@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.6 2009/02/18 20:53:39 rmarson Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.7 2009/02/19 10:11:55 eallaert Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -77,16 +77,16 @@ $usage = "Usage: $myname library.so [opts]\n\n" .
     "Options:\n\n" .
     " -h          show this message\n" .
     " -l          Use 'ldd' to only show 'not found' libraries\n" .
-    " -o {file}   Output to {file} instead of a.out\n" .
+    " -o {file}   Output to {file} instead of CheckUnresolvedSymbols-DELETEME.out\n" .
     " -n          Do not print headers or summary in output\n" .
     " -q          Ultra Quiet mode, only use status return\n" .
-    " -s          Save (do not delete) output file (a.out or -o ...)\n" .
+    " -s          Save (do not delete) output file\n" .
     " -v          Debug mode (more verbose output, cancels -q)\n" .
     " -w          Warn about unresolved modules, but exit with success.";
 
 # Options! Options!  Must have options!
 
-getopts('hlno:qvw') || die($usage);
+getopts('hlno:qsvw') || die($usage);
 if ($opt_h) {
     printf $usage;
     exit;
@@ -230,8 +230,8 @@ if ($nundef > 0) {
     }
     if (!$opt_s && !$opt_l) {   # See if we have to clean up.
                                 # NOTE: no undefined symbols usually means the
-                                # a.out or $opt_o file got created.  It seems
-                                # not to be created otherwise.
+                                # CheckUnresolvedSymbols-DELETEME.out or $opt_o file
+                                # got created. It seems not to be created otherwise.
         if ( -f $opt_o) {
             printf STDERR "$myname: found $opt_o, deleting it...\n" if ($opt_v);
             unlink($opt_o);
