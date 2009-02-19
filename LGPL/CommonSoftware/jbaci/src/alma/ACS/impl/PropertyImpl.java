@@ -163,6 +163,7 @@ public class PropertyImpl implements PropertyOperations {
 	 * @see alma.ACS.CharacteristicModelOperations#get_all_characteristics()
 	 */
 	public PropertySet get_all_characteristics() {
+		characteristicModelImpl.lendContainerServices(parentComponent.getComponentContainerServices());
 		return characteristicModelImpl.get_all_characteristics();
 	}
 
