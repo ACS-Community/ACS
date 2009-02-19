@@ -28,27 +28,22 @@ import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosPropertyService.*;
+import org.omg.CosPropertyService.MultipleExceptions;
+import org.omg.CosPropertyService.Property;
+import org.omg.CosPropertyService.PropertySet;
+import org.omg.CosPropertyService.PropertySetPOATie;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
-import org.omg.PortableServer.POAPackage.ServantNotActive;
-import org.omg.PortableServer.POAPackage.WrongPolicy;
 
-import alma.ACS.jbaci.PropertySetImpl;
 import alma.ACS.CharacteristicModelOperations;
-import alma.ACS.MonitorHelper;
-import alma.ACS.MonitordoubleHelper;
-import alma.ACS.MonitordoublePOATie;
 import alma.ACS.NoSuchCharacteristic;
+import alma.ACS.jbaci.PropertySetImpl;
 import alma.ACS.jbaci.UtilsWildcards;
 import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
-import alma.ACS.jbaci.PropertySetImpl;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 
-import org.omg.CosPropertyService.PropertySetPOATie;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
 
@@ -217,7 +212,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 					p[i] = new Property(allSeq[i],a);
 				}
 
-				//dangerous methods!!
+				//dangerous methods!! 
 				 ORB orb = m_container.getAdvancedContainerServices().getORB();
 				 POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 			     rootpoa.the_POAManager().activate();
