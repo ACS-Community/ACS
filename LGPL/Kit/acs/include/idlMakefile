@@ -1,11 +1,12 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.112 2007/05/14 10:01:36 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.113 2009/02/19 10:09:54 eallaert Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# almamgr 2003-08-26 Modified to support native exceptions: added TAO_IDLGLAGS+= -Ge 1
+# eallaert 2009-02-19 Fixed bug for install_idl target (COMP-3112)
+# almamgr  2003-08-26 Modified to support native exceptions: added TAO_IDLGLAGS+= -Ge 1
 # gchiozzi 2003-06-04 Added sleep of 2 seconds before calling javac.
 # gchiozzi 2003-03-04 Replace Orbacus with JacORB
 # gchiozzi 2003-03-04 Renamed variable ORBACUS_IDL as JAVA_IDL
@@ -195,7 +196,7 @@ clean_idl:
 		done
 	-$(AT)if [ -f $(PWD)/.idl-compilation-start ]; then \
 	cd ../lib/python/site-packages;\
-	find . ! -name . -type d -depth -newer $(PWD)/.idl-compilation-start ! -newer $(PWD)/.idl-compilation-end -exec $(RM) {} \; ; \
+	find . -depth ! -name . -type d -newer $(PWD)/.idl-compilation-start ! -newer $(PWD)/.idl-compilation-end -exec $(RM) {} \; ; \
 	find . -type f -newer $(PWD)/.idl-compilation-start ! -newer $(PWD)/.idl-compilation-end -exec $(RM) {} \;   ;\
 	cd $(PWD) ; \
 	$(RM) .idl-compilation-start .idl-compilation-end ;\
@@ -205,7 +206,7 @@ clean_idl:
 
 
 ifeq ($(call mustBuild,C++),true)
-TO_BE_INSTALLED = $(foreach member, $(IDL_FILES), $(VLTTOP)/idl/$(shell (cd ../idl; find . -name $(member).idl | tail -1 )) $(VLTTOP)/include/$(member)C.h $(VLTTOP)/include/$(member)C.inl $(VLTTOP)/include/$(member)S.h $(VLTTOP)/include/$(member)S.inl $(VLTTOP)/include/$(member)S_T.h $(VLTTOP)/include/$(member)S_T.inl $(VLTTOP)/include/$(member)S_T.cpp)
+TO_BE_INSTALLED = $(foreach member, $(IDL_FILES), $(VLTTOP)/idl/$(shell (cd ../idl; find . -name $(member).idl | grep -v /CVS/ | tail -1 )) $(VLTTOP)/include/$(member)C.h $(VLTTOP)/include/$(member)C.inl $(VLTTOP)/include/$(member)S.h $(VLTTOP)/include/$(member)S.inl $(VLTTOP)/include/$(member)S_T.h $(VLTTOP)/include/$(member)S_T.inl $(VLTTOP)/include/$(member)S_T.cpp)
 
 ifndef MAKE_VXWORKS
 TO_BE_INSTALLED += $(foreach member, $(IDL_FILES), $(VLTTOP)/lib/lib$(member)Stubs.a $(VLTTOP)/lib/lib$(member)Stubs.so )
