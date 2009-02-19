@@ -334,6 +334,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * @see alma.ACS.CharacteristicModelOperations#get_all_characteristics()
 	 */
 	public PropertySet get_all_characteristics() {
+		characteristicModelImpl.lendContainerServices(m_containerServices);
 		return characteristicModelImpl.get_all_characteristics();
 	}
 
