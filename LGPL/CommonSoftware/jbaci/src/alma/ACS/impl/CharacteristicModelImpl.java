@@ -25,19 +25,32 @@ import java.util.ArrayList;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
-import org.omg.CosPropertyService.PropertySet;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CosPropertyService.*;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
+import org.omg.PortableServer.POAPackage.ServantNotActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
 
+import alma.ACS.jbaci.PropertySetImpl;
 import alma.ACS.CharacteristicModelOperations;
+import alma.ACS.MonitorHelper;
+import alma.ACS.MonitordoubleHelper;
+import alma.ACS.MonitordoublePOATie;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.jbaci.UtilsWildcards;
 import alma.acs.container.ContainerServices;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
+import alma.ACS.jbaci.PropertySetImpl;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 
+import org.omg.CosPropertyService.PropertySetPOATie;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DAO;
-
 
 
 /**
@@ -189,17 +202,50 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 */
 	public PropertySet get_all_characteristics() {
 		
-		throw new NO_IMPLEMENT();
-		//PropertySet ps = null;
-		//PropertiesHolder ph = null;
-		//PropertiesIteratorHolder pih = null;
-		//ps.get_all_properties(0, ph, pih);
-		//psf.
-		//return ps.;
 
-		
-		
-		
+			String[] allSeq; 
+			
+			try {
+				
+				if (prefix=="")	
+					allSeq = dao.get_string_seq("");
+				else
+					allSeq = dao.get_string_seq(prefix);
+				Property[] p = new Property[allSeq.length];
+				for (int i=0;i<allSeq.length;i++){
+					Any a = get_characteristic_by_name(allSeq[i]);
+					p[i] = new Property(allSeq[i],a);
+				}
+
+				//dangerous methods!!
+				 ORB orb = m_container.getAdvancedContainerServices().getORB();
+				 POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+			     rootpoa.the_POAManager().activate();
+
+				PropertySetImpl psetImpl = new PropertySetImpl(p);
+				PropertySetPOATie psetTie = new PropertySetPOATie(psetImpl,rootpoa);
+
+				return psetTie._this(orb);
+
+			} catch (CDBFieldDoesNotExistEx e) {
+
+			} catch (WrongCDBDataTypeEx e) {
+
+			} catch (NoSuchCharacteristic e) {
+				
+			} catch (MultipleExceptions e) {
+				
+			} catch (InvalidName e) {
+
+			} catch (AdapterInactive e) {
+
+			} catch (NullPointerException e){
+				System.out.println( e);
+			}
+
+				
+
+		throw new NO_IMPLEMENT();
 	}
 
 	/*********************** [ Helpers ] ***********************/
