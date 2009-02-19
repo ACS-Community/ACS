@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2005/01/04 20:24:32 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.4 2009/02/19 08:55:10 cparedes Exp $"
 #
 # Makefile of ........
 #
@@ -19,8 +19,8 @@
 
 SHELL=/bin/bash
 PLATFORM := $(shell uname)
-XERCES_VER = src_2_6_0
-XERCES_MAJOR_VER = 26
+XERCES_VER = src_2_8_0
+XERCES_MAJOR_VER = 28
 export XERCESCROOT=$(CURDIR)/xerces-c-$(XERCES_VER)
 
 
