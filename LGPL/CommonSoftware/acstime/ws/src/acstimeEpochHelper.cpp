@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeEpochHelper.cpp,v 1.21 2008/10/09 07:31:16 cparedes Exp $
+/* @(#) $Id: acstimeEpochHelper.cpp,v 1.22 2009/02/20 19:16:19 agrimstrup Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -836,7 +836,6 @@ EpochHelper::toString(acstime::TimeSystem ts, const char* format, const CORBA::L
 	format++;
 	}
 
-    ostr << ends;       // str() does NOT append '\0', do it now
     return ostr.str(); 
 }
 

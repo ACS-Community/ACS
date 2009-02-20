@@ -1,4 +1,4 @@
-/* @(#) $Id: acstimeDurationHelper.cpp,v 1.15 2008/10/09 07:31:16 cparedes Exp $
+/* @(#) $Id: acstimeDurationHelper.cpp,v 1.16 2009/02/20 19:16:19 agrimstrup Exp $
  *
  * Copyright (C) 2001
  * Associated Universities, Inc. Washington DC, USA.
@@ -442,7 +442,6 @@ DurationHelper::toString(const char *format)
         m_microSec(ostr);
         }
 
-    ostr << ends;       // str() does NOT append '\0', do it now
     return ostr.str(); 
 }
 

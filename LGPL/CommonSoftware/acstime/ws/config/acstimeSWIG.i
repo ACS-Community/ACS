@@ -1,5 +1,7 @@
 %module acstimeSWIG
+%include "std_string.i"
 %{
+#include <string>
 #include "acstimeC.h"
 #include "ACSTimeError.h"
 #include "acstimeTimeUtil.h"
@@ -52,7 +54,7 @@ class TimeUtil
     void operator= (const TimeUtil&);
 };
 //////////////////////////////
-class DurationHelper : TimeUtil
+class DurationHelper : public TimeUtil
 {
   public:    
     DurationHelper(const acstime::Duration &duration);
@@ -102,7 +104,7 @@ class DurationHelper : TimeUtil
 
     DurationHelper& operator/=(const unsigned long long &divider);
     
-    char* toString(const char *format)
+    std::string toString(const char *format)
 	throw(ACSTimeError::ArgErrorExImpl);
     
     void fromString(const char *duration)
@@ -114,7 +116,7 @@ class DurationHelper : TimeUtil
     void operator= (const DurationHelper&);
 };
 //////////////////////////////////////
-class EpochHelper : TimeUtil
+class EpochHelper : public TimeUtil
 {
   public:
     EpochHelper(const acstime::Epoch &epoch); 
@@ -156,7 +158,7 @@ class EpochHelper : TimeUtil
     double toUTCdate(long int array2TAI, long int TAI2UTC);
     double toJulianYear(long int array2TAI, long int TAI2UTC);
 
-    char* toString(acstime::TimeSystem, const char*, const long int array2TAI, const long int TAI2UTC)
+    std::string toString(acstime::TimeSystem, const char*, const long int array2TAI, const long int TAI2UTC)
 	throw(ACSTimeError::ArgErrorExImpl);
     void fromString(acstime::TimeSystem, const char*)
 	throw(ACSTimeError::ArgErrorExImpl);
