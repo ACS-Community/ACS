@@ -8,21 +8,24 @@ import junit.framework.TestCase;
 
 public class ParallelExecutorTest extends TestCase
 {
-//	private ParallelExecutor parallelExecutor;
-	
 	public void testParallelExecutor() throws Exception {
-		int num = 2;
+		
 		ThreadFactory tf = new DaemonThreadFactory("ParallelExecutorTest");
-		CountDownLatch sharedExecutionVerifier = new CountDownLatch(num);
 		ParallelExecutor parallelExecutor = new ParallelExecutor(tf);
-		for (int i = 0; i < 2; i++) {
+
+		int num = 300;
+		// Set up <num> threads to be executed at once
+		CountDownLatch sharedExecutionVerifier = new CountDownLatch(num);
+		for (int i = 0; i < num; i++) {
 			parallelExecutor.scheduleForExecution(new TestRunnable(i, sharedExecutionVerifier), 1000);
 		}
-		assertEquals(2, sharedExecutionVerifier.getCount());		
+		assertEquals(num, sharedExecutionVerifier.getCount());
 
+		// execute these threads
 		parallelExecutor.execute();
+		
 		// the run() methods of our TestRunnable should soon decrement the sharedExecutionVerifier counter
-		assertTrue("Unexpected timeout", sharedExecutionVerifier.await(2, TimeUnit.SECONDS));
+		assertTrue("Unexpected timeout", sharedExecutionVerifier.await(10, TimeUnit.SECONDS));
 	}
 
 	private static class TestRunnable implements Runnable {
