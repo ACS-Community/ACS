@@ -20,6 +20,7 @@
  */
 package alma.acs.logging.table;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
@@ -159,6 +160,23 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	@Override
 	public final int getColumnCount() {
 		return Field.values().length+1;
+	}
+	
+	/**
+	 * @return The number of files used by the cache
+	 */
+	public int numberOfUsedFiles() {
+		return allLogs.getNumberOfCacheFiles();
+	}
+	
+	/**
+	 * 
+	 * @return The amount of disk space used by the files of the cache
+	 * @throws IOException In case of error getting the size of at least 
+	 * 					   one of the used cache files
+	 */
+	public long usedDiskSpace() throws IOException {
+		return allLogs.getFilesSize();
 	}
 
 	/**
