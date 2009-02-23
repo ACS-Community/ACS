@@ -31,18 +31,36 @@ import com.cosylab.logging.LoggingClient;
 public class StatsDlg extends JDialog implements ActionListener {
 	
 	/**
+	 * The string shown when it is not possible to get a value
+	 * from the system
+	 */
+	private static final String NotAvailable= "N/A";
+	
+	/**
 	 * The interval (msec) between iterations while monitoring
 	 */
 	private final int MONITORING_INTERVAL = 1000;
 	
-	private JLabel totNumOfLogsLbl = new JLabel("N/A");
-	private JLabel visibleLogsLbl  = new JLabel("N/A");
-	private JLabel hiddenLogsLbl = new JLabel("N/A");
-	private JLabel availMemLbl = new JLabel("N/A");
-	private JLabel usedMemLbl = new JLabel("N/A");
-	private JLabel timeFrameLbl = new JLabel("N/A");
-	private JLabel inRateLbl = new JLabel("N/A");
-	private JLabel outRateLbl = new JLabel("N/A");
+	private JLabel totNumOfLogsLbl = new JLabel(NotAvailable);
+	private JLabel visibleLogsLbl  = new JLabel(NotAvailable);
+	private JLabel hiddenLogsLbl = new JLabel(NotAvailable);
+	private JLabel availMemLbl = new JLabel(NotAvailable);
+	private JLabel usedMemLbl = new JLabel(NotAvailable);
+	private JLabel timeFrameLbl = new JLabel(NotAvailable);
+	private JLabel inRateLbl = new JLabel(NotAvailable);
+	private JLabel outRateLbl = new JLabel(NotAvailable);
+	
+	/**
+	 * The number of the cache files (it refers to the cache of jlog
+	 * and not to the cache of the engine)
+	 */
+	private JLabel numOfCacheFiles  = new JLabel(NotAvailable);
+	
+	/**
+	 * The disk space used by all the files of the cache 
+	 * (it refers to the cache of jlog and not to the cache of the engine)
+	 */
+	private JLabel diskSpace = new JLabel(NotAvailable);
 	
 	private JButton closeBtn = new JButton("Close");
 	private JButton refreshBtn = new JButton("Refresh");
@@ -83,7 +101,7 @@ public class StatsDlg extends JDialog implements ActionListener {
 		this.setBounds(50, 35, 100, 100);
 		JPanel mainPnl = new JPanel(new BorderLayout());
 		
-		JPanel valuesPnl = new JPanel(new GridLayout(8,1));
+		JPanel valuesPnl = new JPanel(new GridLayout(10,1));
 		
 		// Add the num of logs
 		JPanel numOfLogsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -114,6 +132,18 @@ public class StatsDlg extends JDialog implements ActionListener {
 		usedMemPnl.add(new JLabel("Used memory: "));
 		usedMemPnl.add(usedMemLbl);
 		valuesPnl.add(usedMemPnl);
+		
+		// Add the number of the files of cache
+		JPanel usedCacheFiles = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		usedCacheFiles.add(new JLabel("Number of files of cache: "));
+		usedCacheFiles.add(numOfCacheFiles);
+		valuesPnl.add(usedCacheFiles);
+		
+		// Add the disk space used by the files of the cache
+		JPanel usedDiskSpace = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		usedDiskSpace.add(new JLabel("Disk space used by the cache: "));
+		usedDiskSpace.add(diskSpace);
+		valuesPnl.add(usedDiskSpace);
 		
 		// Add the time frame
 		JPanel timeFramePnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -190,6 +220,8 @@ public class StatsDlg extends JDialog implements ActionListener {
 			long hidLogs;
 			long availMem;
 			long totMem;
+			String diskSize;
+			int totCacheFiles;
 			String timeFrameStr;
 			String inputRateStr;
 			String outputRateStr;
@@ -199,6 +231,8 @@ public class StatsDlg extends JDialog implements ActionListener {
 				hiddenLogsLbl.setText(Long.valueOf(hidLogs).toString());
 				availMemLbl.setText(""+(availMem/1024)+"Kb");
 		        usedMemLbl.setText(""+((totMem-availMem)/1024)+"Kb");
+		        diskSpace.setText(diskSize);
+		        numOfCacheFiles.setText(""+totCacheFiles);
 		        timeFrameLbl.setText(timeFrameStr);
 		        inRateLbl.setText(inputRateStr);
 		        outRateLbl.setText(outputRateStr);
@@ -210,6 +244,15 @@ public class StatsDlg extends JDialog implements ActionListener {
 		refresher.totLogs = logging.getLogEntryTable().getLCModel().totalLogNumber();
 		refresher.visLogs = logging.getLogEntryTable().getViewRowCount();
 		refresher.hidLogs = refresher.totLogs-refresher.visLogs;
+		try {
+			refresher.diskSize= ""+logging.getLogEntryTable().getLCModel().usedDiskSpace();	
+		} catch (Throwable t) {
+			System.err.println("Error getting the used disk space: "+t.getMessage());
+			t.printStackTrace(System.err);
+			refresher.diskSize=NotAvailable;
+		}
+		refresher.totCacheFiles=logging.getLogEntryTable().getLCModel().numberOfUsedFiles();
+		
 		Runtime rt = Runtime.getRuntime();
 		refresher.availMem = rt.freeMemory();
 		refresher.totMem = rt.totalMemory();
