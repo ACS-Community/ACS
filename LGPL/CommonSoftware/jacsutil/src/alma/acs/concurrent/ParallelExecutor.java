@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Helper class that allows tests (but also other code) to be executed concurrently.
- * One of the advantages of using this class is that it synchronizes the actual execution of all threads,
- * while simple creation and starting of threads does not guarantee that these threads run after {@link Thread#start()} returns.
+ * Unlike {@link java.util.concurrent.Executor}, this class synchronizes the actual execution of all threads,
+ * while the simple creation and starting of threads does not guarantee that these threads run after {@link Thread#start()} returns.
  * 
  * Thus using this class should be particularly helpful for "mean" tests that try to bombard a tested class with parallel calls,
  * all arriving in the smallest possible time window.
