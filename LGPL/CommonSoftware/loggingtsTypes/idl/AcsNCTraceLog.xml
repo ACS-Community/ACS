@@ -110,5 +110,27 @@
 		<Member name="EventName" type="string" description="Name of the processed event." />
 	</LogDefinition>
 	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_OK"
+		shortDescription="Event successfully received, ready to be processed"
+		description="Event successfully received, ready to be processed."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_FAIL"
+		shortDescription="Failed to receive event, won't be processed"
+		description="Failed to receive event. Failed to convert event data,  won't be processed."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>	
+	
 </LogDefinitionType>
 
