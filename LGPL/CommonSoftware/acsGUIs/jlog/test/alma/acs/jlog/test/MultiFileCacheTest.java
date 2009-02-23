@@ -216,7 +216,7 @@ public class MultiFileCacheTest extends TestCase {
 		for (ILogEntry log: logCollection) {
 			cache.add(log);
 		}
-		assertTrue(cache.getActiveCacheFiles()>0);
+		assertTrue(cache.getNumberOfCacheFiles()>0);
 		assertEquals(Integer.valueOf(0), cache.getFirstLog());
 		assertEquals(Integer.valueOf(999), cache.getLastLog());
 		
@@ -231,7 +231,7 @@ public class MultiFileCacheTest extends TestCase {
 		System.out.println("First "+cache.getFirstLog()+", Last "+cache.getLastLog());
 		cache.printFileTableInfo();
 		assertEquals(0, cache.getSize());
-		assertEquals(0, cache.getActiveCacheFiles());
+		assertEquals(0, cache.getNumberOfCacheFiles());
 	}
 	
 	/**
@@ -278,7 +278,7 @@ public class MultiFileCacheTest extends TestCase {
 		
 		cache.clear();
 		assertEquals(0, cache.getSize());
-		assertEquals(0, cache.getActiveCacheFiles());
+		assertEquals(0, cache.getNumberOfCacheFiles());
 		assertNull(cache.getFirstLog());
 		assertNull(cache.getLastLog());
 	}
