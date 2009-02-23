@@ -106,7 +106,7 @@ public class ROpatternImpl
 	 * @see alma.ACS.PpatternOperations#default_value()
 	 */
 	public long default_value() {
-		return ((Long)defaultValue).longValue();
+		return ((Integer)defaultValue).intValue();
 	}
 
 	/**
