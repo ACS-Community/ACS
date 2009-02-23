@@ -63,7 +63,7 @@ public class ROlongImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(long.class, name, parentComponent);
+		super(int.class, name, parentComponent);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ROlongImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(long.class, name, parentComponent, dataAccess);
+		super(int.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class ROlongImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Long(characteristicModelImpl.getLong(name));
+		return new Integer(characteristicModelImpl.getInteger(name));
 	}
 
 	/**

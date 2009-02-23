@@ -60,7 +60,7 @@ public class RWlongImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(long.class, name, parentComponent);
+		super(int.class, name, parentComponent);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class RWlongImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(long.class, name, parentComponent, dataAccess);
+		super(int.class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class RWlongImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return new Long(characteristicModelImpl.getLong(name));
+		return new Integer(characteristicModelImpl.getInteger(name));
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class RWlongImpl
 	public int get_sync(CompletionHolder completionHolder) {
 		try
 		{
-			return ((Long)getSync(completionHolder)).intValue();
+			return ((Integer)getSync(completionHolder)).intValue();
 		}
 		catch (AcsJException acsex)
 		{
@@ -156,28 +156,28 @@ public class RWlongImpl
 	 * @see alma.ACS.PlongOperations#graph_max()
 	 */
 	public int graph_max() {
-		return ((Long)graphMax).intValue();
+		return ((Integer)graphMax).intValue();
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#graph_min()
 	 */
 	public int graph_min() {
-		return ((Long)graphMin).intValue();
+		return ((Integer)graphMin).intValue();
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#min_delta_trigger()
 	 */
 	public int min_delta_trigger() {
-		return ((Long)minDeltaTrigger).intValue();
+		return ((Integer)minDeltaTrigger).intValue();
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#min_step()
 	 */
 	public int min_step() {
-		return ((Long)minStep).intValue();
+		return ((Integer)minStep).intValue();
 	}
 
 
@@ -225,10 +225,10 @@ public class RWlongImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#sum(java.lang.Object, java.lang.Object, boolean)
 	 */
 	public Object sum(Object value1, Object value2, boolean substract) {
-		long val2 = ((Long)value2).longValue();
+		int val2 = ((Integer)value2).intValue();
 		if (substract)
 			val2 = -val2;
-		return new Long(((Long)value1).longValue() + val2);
+		return new Integer(((Integer)value1).intValue() + val2);
 	}
 
 
@@ -237,14 +237,14 @@ public class RWlongImpl
 	 * @see alma.ACS.RWlongOperations#max_value()
 	 */
 	public int max_value() {
-		return ((Long)maxValue).intValue();
+		return ((Integer)maxValue).intValue();
 	}
 
 	/**
 	 * @see alma.ACS.RWlongOperations#min_value()
 	 */
 	public int min_value() {
-		return ((Long)minValue).intValue();
+		return ((Integer)minValue).intValue();
 	}
 
 	/**
