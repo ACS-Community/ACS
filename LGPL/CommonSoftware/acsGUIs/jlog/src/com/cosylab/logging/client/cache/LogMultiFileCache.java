@@ -475,7 +475,8 @@ public class LogMultiFileCache  implements ILogMap {
 	}
 
 	/**
-	 * Return the current size of the log file
+	 * Return the size of the last log file used by the cache
+	 * (it is here for testing purposes)
 	 *
 	 * @see 
 	 */
@@ -497,6 +498,21 @@ public class LogMultiFileCache  implements ILogMap {
 		}
 		
 		return fileSize;
+	}
+	
+	/**
+	 * Return the disk space used by all the files of the cache.
+	 * 
+	 * @return The disk space used by all the files of the cache 
+	 * @throws IOException In case of error getting the size of one of 
+	 * 					   the files
+	 */
+	public synchronized long getFilesSize() throws IOException {
+		long ret=0;
+		for (MultiFileTableRecord mftb: logFileTable) {
+			ret+=mftb.getFileSize();
+		}
+		return ret;
 	}
 	
 	/**
@@ -549,7 +565,7 @@ public class LogMultiFileCache  implements ILogMap {
 	/**
 	 * @return the number of the files used by the cache
 	 */
-	public int getActiveCacheFiles() {
+	public int getNumberOfCacheFiles() {
 		return logFileTable.size();
 	}
 	
