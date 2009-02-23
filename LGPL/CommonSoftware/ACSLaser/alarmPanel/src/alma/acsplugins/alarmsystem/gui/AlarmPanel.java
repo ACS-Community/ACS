@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.22 2008/12/09 15:36:29 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.23 2009/02/23 16:37:30 acaproni Exp $
  * @since    
  */
 
@@ -289,7 +289,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	/**
 	 * Connect
 	 */
-	public synchronized void connect() {
+	public void connect() {
 		if (connecting || closed) {
 			return;
 		}
@@ -348,7 +348,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	/**
 	 * Disconnect
 	 */
-	public synchronized void disconnect() {
+	public void disconnect() {
 		statusLine.stop();
 		model.setCategoryClient(null);
 		// wait until the connect thread terminates (if it is running)
