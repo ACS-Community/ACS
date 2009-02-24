@@ -123,6 +123,7 @@ public class ROdoubleImpl
 		Alarmdouble arg0,
 		CBDescIn arg1) {
 		// TODO NO_IMPLEMENT
+		
 		throw new NO_IMPLEMENT();
 	}
 

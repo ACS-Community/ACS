@@ -63,7 +63,7 @@ public class ROlongSeqImpl
 		String name,
 		CharacteristicComponentImpl parentComponent)
 		throws PropertyInitializationFailed {
-		super(long[].class, name, parentComponent);
+		super(int[].class, name, parentComponent);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ROlongSeqImpl
 		CharacteristicComponentImpl parentComponent,
 		DataAccess dataAccess)
 		throws PropertyInitializationFailed {
-		super(long[].class, name, parentComponent, dataAccess);
+		super(int[].class, name, parentComponent, dataAccess);
 	}
 
 	/**
@@ -85,35 +85,35 @@ public class ROlongSeqImpl
 	 */
 	public Object readPropertyTypeCharacteristic(String name)
 		throws NoSuchCharacteristic {
-		return (characteristicModelImpl.getLongSeq(name));
+		return (characteristicModelImpl.getIntegerSeq(name));
 	}
 
 	/**
 	 * @see alma.ACS.ROlongSeqOperations#alarm_high_off()
 	 */
 	public int alarm_high_off() {
-		return ((Integer)alarmHighOff).intValue();
+		return ((int[])alarmHighOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROlongSeqOperations#alarm_high_on()
 	 */
 	public int alarm_high_on() {
-		return ((Integer)alarmHighOn).intValue();
+		return ((int[])alarmHighOn)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROlongSeqOperations#alarm_low_off()
 	 */
 	public int alarm_low_off() {
-		return ((Integer)alarmLowOff).intValue();
+		return ((int[])alarmLowOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROlongSeqOperations#alarm_low_on()
 	 */
 	public int alarm_low_on() {
-		return ((Integer)alarmLowOn).intValue();
+		return ((int[])alarmLowOn)[0];
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class ROlongSeqImpl
 	 * @see alma.ACS.PlongSeqOperations#default_value()
 	 */
 	public int default_value() {
-		return ((Integer)defaultValue).intValue();
+		return ((int[])defaultValue)[0];
 	}
 
 	/**
@@ -198,28 +198,28 @@ public class ROlongSeqImpl
 	 * @see alma.ACS.PlongSeqOperations#graph_max()
 	 */
 	public int graph_max() {
-		return ((Integer)graphMax).intValue();
+		return ((int[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongSeqOperations#graph_min()
 	 */
 	public int graph_min() {
-		return ((Integer)graphMin).intValue();
+		return ((int[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongSeqOperations#min_delta_trigger()
 	 */
 	public int min_delta_trigger() {
-		return ((Integer)minDeltaTrigger).intValue();
+		return ((int[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongSeqOperations#min_step()
 	 */
 	public int min_step() {
-		return ((Integer)minStep).intValue();
+		return ((int[])minStep)[0];
 	}
 
 
@@ -234,7 +234,7 @@ public class ROlongSeqImpl
 	 * @see alma.ACS.CommonComparablePropertyImpl#noDelta(java.lang.Object)
 	 */
 	public boolean noDelta(Object value) {
-		return ((Long)value).longValue() == 0;
+		return ((Integer)value).intValue() == 0;
 	}
 
 	/**

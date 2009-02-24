@@ -92,28 +92,28 @@ public class ROdoubleSeqImpl
 	 * @see alma.ACS.ROdoubleSeqOperations#alarm_high_off()
 	 */
 	public double alarm_high_off() {
-		return ((Double)alarmHighOff).doubleValue();
+		return ((double[])alarmHighOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROdoubleSeqOperations#alarm_high_on()
 	 */
 	public double alarm_high_on() {
-		return ((Double)alarmHighOn).doubleValue();
+		return ((double[])alarmHighOn)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROdoubleSeqOperations#alarm_low_off()
 	 */
 	public double alarm_low_off() {
-		return ((Double)alarmLowOff).doubleValue();
+		return ((double[])alarmLowOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROdoubleSeqOperations#alarm_low_on()
 	 */
 	public double alarm_low_on() {
-		return ((Double)alarmLowOn).doubleValue();
+		return ((double[])alarmLowOn)[0];
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class ROdoubleSeqImpl
 	 * @see alma.ACS.PdoubleSeqOperations#default_value()
 	 */
 	public double default_value() {
-		return ((Double)defaultValue).doubleValue();
+		return ((double[])defaultValue)[0];
 	}
 
 	/**
@@ -197,28 +197,28 @@ public class ROdoubleSeqImpl
 	 * @see alma.ACS.PdoubleSeqOperations#graph_max()
 	 */
 	public double graph_max() {
-		return ((Double)graphMax).doubleValue();
+		return ((double[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleSeqOperations#graph_min()
 	 */
 	public double graph_min() {
-		return ((Double)graphMin).doubleValue();
+		return ((double[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleSeqOperations#min_delta_trigger()
 	 */
 	public double min_delta_trigger() {
-		return ((Double)minDeltaTrigger).doubleValue();
+		return ((double[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleSeqOperations#min_step()
 	 */
 	public double min_step() {
-		return ((Double)minStep).doubleValue();
+		return ((double[])minStep)[0];
 	}
 
 

@@ -113,7 +113,7 @@ public class RWdoubleSeqImpl
 	 * @see alma.ACS.PdoubleOperations#default_value()
 	 */
 	public double default_value() {
-		return ((Double)defaultValue).doubleValue();
+		return ((double[])defaultValue)[0];
 	}
 
 	/**
@@ -159,28 +159,28 @@ public class RWdoubleSeqImpl
 	 * @see alma.ACS.PdoubleOperations#graph_max()
 	 */
 	public double graph_max() {
-		return ((Double)graphMax).doubleValue();
+		return ((double[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleOperations#graph_min()
 	 */
 	public double graph_min() {
-		return ((Double)graphMin).doubleValue();
+		return ((double[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleOperations#min_delta_trigger()
 	 */
 	public double min_delta_trigger() {
-		return ((Double)minDeltaTrigger).doubleValue();
+		return ((double[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PdoubleOperations#min_step()
 	 */
 	public double min_step() {
-		return ((Double)minStep).doubleValue();
+		return ((double[])minStep)[0];
 	}
 
 
@@ -240,14 +240,14 @@ public class RWdoubleSeqImpl
 	 * @see alma.ACS.RWdoubleOperations#max_value()
 	 */
 	public double max_value() {
-		return ((Double)maxValue).doubleValue();
+		return ((double[])maxValue)[0];
 	}
 
 	/**
 	 * @see alma.ACS.RWdoubleOperations#min_value()
 	 */
 	public double min_value() {
-		return ((Double)minValue).doubleValue();
+		return ((double[])minValue)[0];
 	}
 
 	/**

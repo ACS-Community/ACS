@@ -113,7 +113,7 @@ public class RWfloatSeqImpl
 	 * @see alma.ACS.PfloatOperations#default_value()
 	 */
 	public float default_value() {
-		return ((Float)defaultValue).floatValue();
+		return ((float[])defaultValue)[0];
 	}
 
 	/**
@@ -158,28 +158,28 @@ public class RWfloatSeqImpl
 	 * @see alma.ACS.PfloatOperations#graph_max()
 	 */
 	public float graph_max() {
-		return ((Float)graphMax).floatValue();
+		return ((float[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatOperations#graph_min()
 	 */
 	public float graph_min() {
-		return ((Float)graphMin).floatValue();
+		return ((float[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatOperations#min_delta_trigger()
 	 */
 	public float min_delta_trigger() {
-		return ((Float)minDeltaTrigger).floatValue();
+		return ((float[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatOperations#min_step()
 	 */
 	public float min_step() {
-		return ((Float)minStep).floatValue();
+		return ((float[])minStep)[0];
 	}
 
 
@@ -239,14 +239,14 @@ public class RWfloatSeqImpl
 	 * @see alma.ACS.RWfloatOperations#max_value()
 	 */
 	public float max_value() {
-		return ((Float)maxValue).floatValue();
+		return ((float[])maxValue)[0];
 	}
 
 	/**
 	 * @see alma.ACS.RWfloatOperations#min_value()
 	 */
 	public float min_value() {
-		return ((Float)minValue).floatValue();
+		return ((float[])minValue)[0];
 	}
 
 	/**

@@ -92,28 +92,28 @@ public class ROfloatSeqImpl
 	 * @see alma.ACS.ROfloatSeqOperations#alarm_high_off()
 	 */
 	public float alarm_high_off() {
-		return ((Float)alarmHighOff).floatValue();
+		return ((float[])alarmHighOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROfloatSeqOperations#alarm_high_on()
 	 */
 	public float alarm_high_on() {
-		return ((Float)alarmHighOn).floatValue();
+		return ((float[])alarmHighOn)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROfloatSeqOperations#alarm_low_off()
 	 */
 	public float alarm_low_off() {
-		return ((Float)alarmLowOff).floatValue();
+		return ((float[])alarmLowOff)[0];
 	}
 
 	/**
 	 * @see alma.ACS.ROfloatSeqOperations#alarm_low_on()
 	 */
 	public float alarm_low_on() {
-		return ((Float)alarmLowOn).floatValue();
+		return ((float[])alarmLowOn)[0];
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class ROfloatSeqImpl
 	 * @see alma.ACS.PfloatSeqOperations#default_value()
 	 */
 	public float default_value() {
-		return ((Float)defaultValue).floatValue();
+		return ((float[])defaultValue)[0];
 	}
 
 	/**
@@ -198,28 +198,28 @@ public class ROfloatSeqImpl
 	 * @see alma.ACS.PfloatSeqOperations#graph_max()
 	 */
 	public float graph_max() {
-		return ((Float)graphMax).floatValue();
+		return ((float[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatSeqOperations#graph_min()
 	 */
 	public float graph_min() {
-		return ((Float)graphMin).floatValue();
+		return ((float[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatSeqOperations#min_delta_trigger()
 	 */
 	public float min_delta_trigger() {
-		return ((Float)minDeltaTrigger).floatValue();
+		return ((float[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PfloatSeqOperations#min_step()
 	 */
 	public float min_step() {
-		return ((Float)minStep).floatValue();
+		return ((float[])minStep)[0];
 	}
 
 

@@ -113,7 +113,7 @@ public class RWlongSeqImpl
 	 * @see alma.ACS.PlongOperations#default_value()
 	 */
 	public int default_value() {
-		return ((Integer)defaultValue).intValue();
+		return ((int[])defaultValue)[0];
 	}
 
 	/**
@@ -154,8 +154,7 @@ public class RWlongSeqImpl
 			completionHolder.value = CompletionUtil.generateCompletion(cpa);
 			// return default value in case of error
 			// return default_value(); <- not valid, because ir a int not an int[]
-			int[] nullArray = null;
-			return nullArray;
+			return new int[1];
 		}
 	}
 
@@ -163,28 +162,28 @@ public class RWlongSeqImpl
 	 * @see alma.ACS.PlongOperations#graph_max()
 	 */
 	public int graph_max() {
-		return ((Integer)graphMax).intValue();
+		return ((int[])graphMax)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#graph_min()
 	 */
 	public int graph_min() {
-		return ((Integer)graphMin).intValue();
+		return ((int[])graphMin)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#min_delta_trigger()
 	 */
 	public int min_delta_trigger() {
-		return ((Integer)minDeltaTrigger).intValue();
+		return ((int[])minDeltaTrigger)[0];
 	}
 
 	/**
 	 * @see alma.ACS.PlongOperations#min_step()
 	 */
 	public int min_step() {
-		return ((Integer)minStep).intValue();
+		return ((int[])minStep)[0];
 	}
 
 
@@ -244,14 +243,14 @@ public class RWlongSeqImpl
 	 * @see alma.ACS.RWlongOperations#max_value()
 	 */
 	public int max_value() {
-		return ((Integer)maxValue).intValue();
+		return ((int[])maxValue)[0];
 	}
 
 	/**
 	 * @see alma.ACS.RWlongOperations#min_value()
 	 */
 	public int min_value() {
-		return ((Integer)minValue).intValue();
+		return ((int[])minValue)[0];
 	}
 
 	/**
