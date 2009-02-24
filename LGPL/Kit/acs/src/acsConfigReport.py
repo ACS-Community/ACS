@@ -569,8 +569,9 @@ commands.getoutput('echo "********* /etc/hosts content ********<br>" >> ./report
 commands.getoutput('echo "*************************************</h1>" >> ./report.html')
 commands.getoutput('echo " <br>" >> ./report.html')
 if os.access('/etc/hosts',os.F_OK) == True:
-    input = open('/etc/hosts','r')
-    s = input.readlines()
+    tmpFile = open('/etc/hosts','r')
+    s = tmpFile.readlines()
+    tmpFile.close()
     for line in s:
         commands.getoutput('echo "'+line+'<br>" >>  ./report.html')
 else:
