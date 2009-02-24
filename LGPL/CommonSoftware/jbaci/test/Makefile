@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.9 2006/11/06 08:06:01 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.10 2009/02/24 22:03:08 cmenay Exp $"
 #
 # Makefile of jbaci
 #
@@ -86,7 +86,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = dispatchActionTest PropertyDoubleTest BuildingTest jbaciTATPrologue 
+SCRIPTS_L       = dispatchActionTest PropertyDoubleTest BuildingTest jbaciTATPrologue PropertyLongTest  
 
 #
 # TCL scripts (public and local)
@@ -132,7 +132,7 @@ PANELS_L =
 #
 # IDL Files and flags
 #
-IDL_FILES = testSimpleMasterComponent
+IDL_FILES = testSimpleMasterComponent testLongTestingComponent testSeqTestingComponent
 IDL_TAO_FLAGS =
 USER_IDL = 
 #
