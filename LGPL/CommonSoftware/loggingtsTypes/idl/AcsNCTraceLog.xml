@@ -123,7 +123,7 @@
 	
 	<LogDefinition
 		logName="LOG_NC_EventReceive_FAIL"
-		shortDescription="Failed to receive event, won't be processed"
+		shortDescription="Failed to receive event, it won't be processed"
 		description="Failed to receive event. Failed to convert event data, it won't be processed."
 		priority="DEBUG"
 		audience="Developer">
