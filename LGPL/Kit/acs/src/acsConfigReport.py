@@ -51,7 +51,7 @@ import getopt
 import commands
 import acsConfigReportModule.acsToolsVariablesVersion
 import string
-import re
+import platform
 
 ###################################
 # Command line argument parsing
@@ -104,11 +104,9 @@ if tmp_os == 'Linux':
 release=commands.getoutput(command)
 
 # Retrieve the RH release number
-releaseNumGroups=re.match(r"(\D*)(\d+)(\.*)(\D*)(\d*)(\D*)", release)
-if releaseNumGroups.group(5) != '':
-    releaseNum=str(releaseNumGroups.group(2))+'_'+str(releaseNumGroups.group(5))
-else:
-    releaseNum=str(releaseNumGroups.group(2))
+distroName, distroVersion, distroRelease = platform.dist()
+releaseNum=distroName + '-' + str(distroVersion)
+
 
 # We accept both Red Hat and Scientific Linux
 standardRedHat=release.count("Red Hat") or release.count("Scientific Linux")
@@ -130,7 +128,7 @@ if generate == True:
    if standardRedHat == False:
       print 'No Red Hat or Scientific Linux distribution!!!'
    else:
-      rpmFilename='./acsPackageInfo-RH-' + releaseNum + '.rpmref'
+      rpmFilename='./acsPackageInfo-' + releaseNum + '.rpmref'
       rpmCommand='rpm -q -a | sort > '+ rpmFilename
       output=commands.getoutput(rpmCommand)
       print ' '
@@ -156,7 +154,7 @@ if standardRedHat == False:
    rpmFilename=rpmDefaultFilename
    print 'No Red Hat distribution!!! Using default file:' + rpmFilename
 else:
-   rpmFilename='./acsPackageInfo-RH-' + releaseNum + '.rpmref'
+   rpmFilename='./acsPackageInfo-' + releaseNum + '.rpmref'
    print rpmFilename
 
 rpmrefPath=os.getenv('PWD')+'/../config/' + rpmFilename
