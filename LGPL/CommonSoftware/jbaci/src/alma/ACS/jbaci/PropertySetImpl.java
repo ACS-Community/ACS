@@ -167,43 +167,74 @@ public class PropertySetImpl extends PropertySetPOA
 	}
 
 	public boolean delete_all_properties() {
-		// TODO Auto-generated method stub
+		//A client could invoke get_number_of_properties to determine how many
+		//properties remain. Then invoke get_all_property_names to extract the property
+		//names remaining. A separate invocation of delete_property for each such property
+		//name is necessary to determine the specific exception.
+		/*int i = get_number_of_properties();
+		String[] names = get_all_property_names(0,null,null);
+		
+		for(int a = 0;a <=i;a++ ){
+			
+				delete_property(names[a]);
+			
+		}
+		*/
 		return false;
+		
 	}
 
 	public void delete_properties(String[] arg0) throws MultipleExceptions {
-		// TODO Auto-generated method stub
+		//Deletes the properties defined in the property_names parameter. This is a batch
+		//operation that returns the MultipleExceptions exception if any delete failed.
 		
 	}
 
 	public void delete_property(String arg0) throws FixedProperty, PropertyNotFound, InvalidPropertyName {
-		// TODO Auto-generated method stub
+		//Deletes the specified property if it exists from a PropertySet.
 		
 	}
 
 	public void get_all_properties(int arg0, PropertiesHolder arg1, PropertiesIteratorHolder arg2) {
-		// TODO Auto-generated method stub
+		//Returns all of the properties defined in the PropertySet. If more than how_many
+		//properties are found, then the remaining properties are returned in Iterator
 		
 	}
 
 	public void get_all_property_names(int arg0, PropertyNamesHolder arg1, PropertyNamesIteratorHolder arg2) {
-		// TODO Auto-generated method stub
+		//Returns all of the property names currently defined in the PropertySet. If the
+		//PropertySet contains more than how_many property names, then the remaining
+		//property names are put into the PropertyNamesIterator.
 		
 	}
 
 	public int get_number_of_properties() {
-		// TODO Auto-generated method stub
-		return 0;
+		return propMap.size();
 	}
 
 	public boolean get_properties(String[] arg0, PropertiesHolder arg1) {
-		// TODO Auto-generated method stub
+		//Returns the values of the properties listed in property_names.
+		//When the boolean flag is true, the Properties parameter contains valid values for all
+		//requested property names. If false, then all properties with a value of type tk_void
+		//may have failed due to PropertyNotFound or InvalidPropertyName.
+		//A separate invocation of get_property for each such property name is necessary to
+		//determine the specific exception or to verify that tk_void is the correct any
+		//TypeCode for that property name.
+		//This approach was taken to avoid a complex, hard to program structure to carry mixed
+		//results.
 		return false;
 	}
 
-	public Any get_property_value(String arg0) throws PropertyNotFound, InvalidPropertyName {
-		// TODO Auto-generated method stub
-		return null;
+	public Any get_property_value(String name) throws PropertyNotFound, InvalidPropertyName {
+		//Returns the value of a property in the PropertySet.
+		Any p = null;
+		if(propMap.containsKey(name)){
+			p =  (Any)propMap.get(name) ;
+		} 
+		else{
+			throw new PropertyNotFound();
+		}
+		return p;
 	}
 
 	public boolean is_property_defined(String arg0) throws InvalidPropertyName {
