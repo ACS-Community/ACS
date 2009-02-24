@@ -266,6 +266,8 @@ commands.getoutput('echo "***** ACS Configuration Report *****<br>" >> ./report.
 commands.getoutput('echo "************************************</h1>" >> ./report.html')
 commands.getoutput('echo " <br>" >> ./report.html')
 commands.getoutput('echo "Hostname: '+commands.getoutput('hostname')+'<br>" >>  ./report.html')
+commands.getoutput('echo "User: '+commands.getoutput('echo $USER')+'<br>" >>  ./report.html')
+commands.getoutput('echo "Shell: '+commands.getoutput('echo $SHELL')+'<br>" >>  ./report.html')
 commands.getoutput('echo "Time: '+commands.getoutput('export TZ=UTC; date')+'<br>" >>  ./report.html')
 commands.getoutput('echo " <br>" >> ./report.html')
 
@@ -560,7 +562,19 @@ commands.getoutput('echo "'+command.ljust(23)+' = '+result_command+'<br>" >>  ./
 
 if tmp_LD_LIBRARY_PATH != result_command:
    commands.getoutput('echo "<font color=#ff0000>'+my_string.ljust(23)+' = '+tmp_LD_LIBRARY_PATH+'</font><br>" >>  ./report.html')
-
+   
+commands.getoutput('echo " " >> ./report.html')
+commands.getoutput('echo "<h1>*************************************<br>" >> ./report.html')
+commands.getoutput('echo "********* /etc/hosts content ********<br>" >> ./report.html')
+commands.getoutput('echo "*************************************</h1>" >> ./report.html')
+commands.getoutput('echo " <br>" >> ./report.html')
+if os.access('/etc/hosts',os.F_OK) == True:
+    input = open('/etc/hosts','r')
+    s = input.readlines()
+    for line in s:
+        commands.getoutput('echo "'+line+'<br>" >>  ./report.html')
+else:
+    commands.getoutput('echo "<font color=#ff0000> File does not exist! </font><br>" >>  ./report.html')
 
 ##############################################
 # RPM Analysis
