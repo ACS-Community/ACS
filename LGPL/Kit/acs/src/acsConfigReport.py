@@ -155,7 +155,6 @@ if standardRedHat == False:
    print 'No Red Hat distribution!!! Using default file:' + rpmFilename
 else:
    rpmFilename='./acsPackageInfo-' + releaseNum + '.rpmref'
-   print rpmFilename
 
 rpmrefPath=os.getenv('PWD')+'/../config/' + rpmFilename
 fileExistence=os.access(rpmrefPath,os.F_OK)
