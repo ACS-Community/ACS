@@ -157,7 +157,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
                 ('JAVA_ENDORSED','--DUMP--'),\
-                ('JAVA_HOME','/usr/java/jdk1.6.0_02'),\
+                ('JAVA_HOME','/usr/java/jdk1.6.0_07'),\
                 ('JAVA_ORB','--DUMP--'),\
                 ('MANAGER_REFERENCE','--DUMP--' ),\
                 ('NAMESERVICE_REFERENCE','--DUMP--'),\
@@ -165,7 +165,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('OMNI_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni'),\
                 ('OMNIORB_CONFIG','$OMNI_ROOT/config'),\
                 ('PYTHON_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python'),\
-                ('TCLTK_ROOT','/alma/ACS-7.0/tcltk'),\
+                ('TCLTK_ROOT','/alma/ACS-8.0/tcltk'),\
                 ('INTROOT','--DUMP--'),\
                 ('INTLIST','--DUMP--'),\
                 ('ACSROOT','--DUMP--'),\
