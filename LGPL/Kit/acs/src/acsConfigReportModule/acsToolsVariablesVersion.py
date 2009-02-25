@@ -41,30 +41,30 @@
 #
 
 
-basic_tools = [('gcc','gcc --version','3.4.6'),\
-              ('binutils','ld --version','2.15.92.0.2'),\
-              ('make','make --version','3.80'),\
-              ('awk','awk --version','3.1.3'),\
-              ('gdb','gdb  -version','6.3.0.0'),\
+basic_tools = [('gcc','gcc --version','4.1.2'),\
+              ('binutils','ld --version','2.17.50.0.6-9.el5'),\
+              ('make','make --version','3.81'),\
+              ('awk','awk --version','3.1.5'),\
+              ('gdb','gdb  -version','6.8-27.el5'),\
               ('flex','flex --version','2.5.4'),\
-              ('bison','bison --version','1.875c'),\
-              ('gzip','gzip --version','1.3.3'),\
-              ('emacs','emacs -version','21.3.1'),\
-              ('sed','sed --version','4.1.2'),\
+              ('bison','bison --version','2.3'),\
+              ('gzip','gzip --version','1.3.5'),\
+              ('emacs','emacs -version','21.4.1'),\
+              ('sed','sed --version','4.1.5'),\
               ('rcs','rcs -V','5.7'),\
               ('unzip','unzip -v','UnZip 5.52'),\
-              ('tar','tar  --version','1.14'),\
+              ('tar','tar  --version','1.15.1'),\
               ('expect','expect -version','expect version 5.43.0'),\
               ('rman','rman -version | awk "{ print \$1, \$2 }"','PolyglotMan v3.1'),\
-              ('cvs','cvs --version','1.11.17'),\
+              ('cvs','cvs --version','1.11.22'),\
               ('perl','perl -v','v5.8'),\
               ('zip','zip -h','Zip 2.3'),\
-              ('texinfo','info --version','4.7'),\
+              ('texinfo','info --version','4.8'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.6.0_02-b05)'),\
-              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.15'),\
-              ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.15'),\
+              ('java','java -version','(build 1.6.0_07'),\
+              ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.19'),\
+              ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.19'),\
               ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
               ('incr TK','echo "puts [package require Itk]; exit" | tclsh','3.4'),\
               ('iwidgets','echo "puts [package require Iwidgets]; exit" | tclsh','4.0.2'),\
