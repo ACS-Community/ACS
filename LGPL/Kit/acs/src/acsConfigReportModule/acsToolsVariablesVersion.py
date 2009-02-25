@@ -108,12 +108,12 @@ basic_tools_RH9 = [('gcc','gcc --version','3.3'),\
               ('snack','echo "puts [package require snack]; exit" | seqWish','2.2')]
 
 
-other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.1'),\
-              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.6.1'),\
+other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.5'),\
+              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.6.5'),\
               ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
-              ('Ant','$ANT_HOME/bin/ant -version','1.7.0'),\
-              ('doxygen','doxygen --version','1.3.8'),\
-              ('python','python -V','2.5.1'),\
+              ('Ant','$ANT_HOME/bin/ant -version','1.7.1'),\
+              ('doxygen','doxygen --version','1.4.7'),\
+              ('python','python -V','2.5.2'),\
               ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.12'),\
               ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni/; ls THIS_IS_OMNIORB_4_1_0','THIS_IS_OMNIORB_4_1_0')\
                ]
