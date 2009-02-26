@@ -2492,7 +2492,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			while (h != 0)
 		    {
 		    	ContainerInfo loggedContainerInfo = (ContainerInfo)containers.get(h);
-				// containers are persistant and this will not work
+				// containers are persistent and this will not work
 				//if (container.equals(loggedContainerInfo.getContainer()))
 				if (name.equals(loggedContainerInfo.getName()))
 				{
@@ -2567,7 +2567,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// add generated key
 			    h |= (random.nextInt(0x100)) << 16;
-			    
+
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container, containerPingInterval);
                 DAOProxy dao = getContainersDAOProxy();
@@ -6620,7 +6620,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// wait for login
 		//
 
-		final int CONTAINER_STARTUP_TIMEOUT = 15000; // 15 seconds
+		// HSO: raised timeout from 15 sec to 2 min because of increased usage of autostart containers,
+		//      where container start times get extremely long when started in parallel on one machine.
+		//      TODO: Refactor manager interface to use callbacks for component getter methods, 
+		//            to not block the manager ORB threads with long-lasting container starts.
+		final int CONTAINER_STARTUP_TIMEOUT = 120000;
 
 		// notify about new container login
 		synchronized (containerLoggedInMonitor)
