@@ -37,71 +37,70 @@ import alma.xmljbind.test.obsproject.ObsProject;
 import alma.xmljbind.test.obsproposal.ObsProposal;
 
 /**
- * Test helper class that manages sample XML files, 
- * the unmarshaling to Castor classes, and marshalling back to files.
+ * Test helper class that manages sample XML files, the unmarshaling to Castor classes, and marshalling back to files.
  * 
- * @author hsommer
- * created Mar 1, 2005 12:02:37 PM
+ * @author hsommer created Mar 1, 2005 12:02:37 PM
  */
-public class XmlInOut {
-    
-    private File module_dir;    
-    
-    // todo: more flexible
-    private static final String pathToXmlSamples = "test/data/xml_instances_fake/";
+public class XmlInOut
+{
 
-    
-    public XmlInOut() {
-        String baseDirPath = System.getProperty("module.dir");
-        if (baseDirPath != null) {
-            module_dir = new File(baseDirPath);
-        }
-        else {
-            module_dir = new File(System.getProperty("user.dir"));
-        }        
-    }
-    
-    
-    public ObsProposal unmarshalObsProposal(String xmlFileName) throws FileNotFoundException, MarshalException, ValidationException {
-        File xmlFile = new File(module_dir, pathToXmlSamples + xmlFileName);
-        Reader xmlReader = new FileReader(xmlFile);
-        Unmarshaller unm = new Unmarshaller(ObsProposal.class);
-        unm.setValidation(false);
-        ObsProposal oprop = (ObsProposal) unm.unmarshal(xmlReader);
-        return oprop;
-    }
+	private File module_dir;
 
-    public ObsProject unmarshalObsProject(String xmlFileName) throws FileNotFoundException, MarshalException, ValidationException  {
-        File xmlFile = new File(module_dir, pathToXmlSamples + xmlFileName);
-        Reader xmlReader = new FileReader(xmlFile);
-        ObsProject oproj = (ObsProject) ObsProject.unmarshalObsProject(xmlReader);
-        return oproj;
-    }
-    
-    
-    public String marshalObsProposalToFile(ObsProposal prop, String originalXmlFilename) throws MarshalException, ValidationException, IOException {
-        String filename = getRemarshaledFilename(originalXmlFilename);
-        File xmlFile = new File(module_dir, pathToXmlSamples + filename);
-        
-        Marshaller m = new Marshaller(new FileWriter(xmlFile));
-        m.setNamespaceMapping("tprj", "AlmaTest/ObsProject");
-        m.marshal(prop);
+	// todo: more flexible
+	private static final String pathToXmlSamples = "test/data/xml_instances_fake/";
 
-        return filename;
-    }
-    
-    public String marshalObsProjectToFile(ObsProject proj, String originalXmlFilename) throws MarshalException, ValidationException, IOException {
-        String filename = getRemarshaledFilename(originalXmlFilename);
-        File xmlFile = new File(module_dir, pathToXmlSamples + filename);
-        
-        Marshaller m = new Marshaller(new FileWriter(xmlFile));
-//        m.setNamespaceMapping("tprj", "AlmaTest/ObsProject");
-        m.marshal(proj);
+	public XmlInOut() {
+		String baseDirPath = System.getProperty("module.dir");
+		if (baseDirPath != null) {
+			module_dir = new File(baseDirPath);
+		} else {
+			module_dir = new File(System.getProperty("user.dir"));
+		}
+	}
 
-        return filename;
-    }
-    
-    private String getRemarshaledFilename(String filename) {
-        return filename.substring(0, filename.lastIndexOf(".xml")) + "_remarshalled.xml"; 
-    }
+	public ObsProposal unmarshalObsProposal(String xmlFileName) 
+			throws FileNotFoundException, MarshalException, ValidationException {
+		File xmlFile = new File(module_dir, pathToXmlSamples + xmlFileName);
+		Reader xmlReader = new FileReader(xmlFile);
+		Unmarshaller unm = new Unmarshaller(ObsProposal.class);
+		unm.setValidation(false);
+		ObsProposal oprop = (ObsProposal) unm.unmarshal(xmlReader);
+		return oprop;
+	}
+
+	public ObsProject unmarshalObsProject(String xmlFileName) 
+			throws FileNotFoundException, MarshalException, ValidationException {
+		File xmlFile = new File(module_dir, pathToXmlSamples + xmlFileName);
+		Reader xmlReader = new FileReader(xmlFile);
+		ObsProject oproj = ObsProject.unmarshalObsProject(xmlReader);
+		return oproj;
+	}
+
+	public String marshalObsProposalToFile(ObsProposal prop, String originalXmlFilename) 
+			throws MarshalException, ValidationException, IOException {
+		String filename = getRemarshaledFilename(originalXmlFilename);
+		File xmlFile = new File(module_dir, pathToXmlSamples + filename);
+
+		Marshaller m = new Marshaller(new FileWriter(xmlFile));
+		m.setNamespaceMapping("tprj", "AlmaTest/ObsProject");
+		m.marshal(prop);
+
+		return filename;
+	}
+
+	public String marshalObsProjectToFile(ObsProject proj, String originalXmlFilename) 
+			throws MarshalException, ValidationException, IOException {
+		String filename = getRemarshaledFilename(originalXmlFilename);
+		File xmlFile = new File(module_dir, pathToXmlSamples + filename);
+
+		Marshaller m = new Marshaller(new FileWriter(xmlFile));
+		// m.setNamespaceMapping("tprj", "AlmaTest/ObsProject");
+		m.marshal(proj);
+
+		return filename;
+	}
+
+	private String getRemarshaledFilename(String filename) {
+		return filename.substring(0, filename.lastIndexOf(".xml")) + "_remarshalled.xml";
+	}
 }
