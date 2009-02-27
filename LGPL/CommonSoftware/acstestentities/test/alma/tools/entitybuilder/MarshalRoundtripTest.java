@@ -27,27 +27,27 @@ import alma.xmljbind.test.obsproject.ObsProject;
 import alma.xmljbind.test.obsproposal.ObsProposal;
 
 /**
- * @author hsommer
- * created Mar 1, 2005 11:58:49 AM
+ * @author hsommer created Mar 1, 2005 11:58:49 AM
  */
-public class MarshalTest extends TestCase {
+public class MarshalRoundtripTest extends TestCase
+{
+	private XmlInOut xmlInOut;
 
-    private XmlInOut xmlInOut;
+	protected void setUp() throws Exception {
+		xmlInOut = new XmlInOut();
+	}
 
-    protected void setUp() throws Exception {
-        xmlInOut = new XmlInOut();
-    }
-    
-    public void testMarshalObsProposal() throws Exception {
-        String xmlFilename = "ObsProposal1.xml";
-        ObsProposal oprop = xmlInOut.unmarshalObsProposal(xmlFilename);
-        xmlInOut.marshalObsProposalToFile(oprop, xmlFilename);
-    }
-    
-    public void testMarshalObsProject() throws Exception {
-        String xmlFilename = "ObsProject1.xml";
-        ObsProject oprj = xmlInOut.unmarshalObsProject(xmlFilename);
-        xmlInOut.marshalObsProjectToFile(oprj, xmlFilename);
-    }
-    
+	public void testMarshalObsProposal() throws Exception {
+		String xmlFilename = "ObsProposal1.xml";
+		ObsProposal oprop = xmlInOut.unmarshalObsProposal(xmlFilename);
+		oprop.validate();
+		xmlInOut.marshalObsProposalToFile(oprop, xmlFilename);
+	}
+
+	public void testMarshalObsProject() throws Exception {
+		String xmlFilename = "ObsProject1.xml";
+		ObsProject oprj = xmlInOut.unmarshalObsProject(xmlFilename);
+		xmlInOut.marshalObsProjectToFile(oprj, xmlFilename);
+	}
+
 }
