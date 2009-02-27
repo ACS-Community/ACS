@@ -5,7 +5,7 @@
     xmlns:tprj="AlmaTest/ObsProject" 
     xmlns:tval="AlmaTest/ValueTypes" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="AlmaTest/ObsProject Z:\CVSPRJ\ACS\LGPL\CommonSoftware\acstestentities\idl\TestObsProject.xsd"    
+    xsi:schemaLocation="AlmaTest/ObsProject Z:\CVSPRJ\ACS\LGPL\CommonSoftware\acstestentities\idl\TestObsProject.xsd"
     >
     <tprj:ObsPlan entityPartId="ID000100">
         <tprj:status>String</tprj:status>
@@ -39,10 +39,10 @@
         <tprj:FlowControl>
             <tprj:controlScript>String</tprj:controlScript>
         </tprj:FlowControl>
-        <tprj:SchedBlockRef entityId="939393" documentVersion="1" entityTypeName="SchedBlock"/>
+        <tprj:SchedBlockRef entityId="uid://x0/x1/x3" documentVersion="1" entityTypeName="SchedBlock"/>
     </tprj:ObsPlan>
-    <ObsProposalEntity schemaVersion="String" timestamp="String" entityId="73763653" documentVersion="String" entityTypeName="ObsProposal" entityIdEncrypted="String"/>
-    <ObsProjectRef entityId="myTestProject0001" documentVersion="String" entityTypeName="ObsProject" partId="NCName"/>
+    <ObsProposalEntity schemaVersion="String" timestamp="String" entityId="uid://x0/x1/x2" documentVersion="String" entityTypeName="ObsProposal" entityIdEncrypted="String"/>
+    <ObsProjectRef entityId="uid://x0/x1/x1" documentVersion="String" entityTypeName="ObsProject" partId="NCName"/>
     <title>String</title>
     <PI>String</PI>
     <version>0</version>
