@@ -35,6 +35,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 /**
  * Implementation of <code>alma.ACS.Property</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
 public class PropertyImpl implements PropertyOperations {
@@ -180,7 +181,7 @@ public class PropertyImpl implements PropertyOperations {
 		if (propertyDesc == null)
 		{
 			// TODO CORBA reference to this property to be set, PropertySet
-			propertyDesc =	new PropertyDesc(null, name, null);
+			propertyDesc =	new PropertyDesc(null, name, get_all_characteristics());
 		}
 		
 		return propertyDesc; 

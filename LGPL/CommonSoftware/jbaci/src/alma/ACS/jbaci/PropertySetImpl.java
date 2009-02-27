@@ -17,6 +17,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
+/**
+ * Implementation of comparable common property, i.e. type of <code>java.lang.Object</code>.
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
+ * @version $id$
+ */
 package alma.ACS.jbaci;
 
 import java.util.ArrayList;
@@ -238,7 +244,6 @@ public class PropertySetImpl extends PropertySetPOA
 	}
 
 	public boolean is_property_defined(String arg0) throws InvalidPropertyName {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

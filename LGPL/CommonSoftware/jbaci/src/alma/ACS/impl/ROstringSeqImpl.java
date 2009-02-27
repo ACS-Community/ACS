@@ -111,7 +111,7 @@ public class ROstringSeqImpl
 	 * @see alma.ACS.PstringSeqOperations#default_value()
 	 */
 	public String[] default_value() {
-		return (String[])defaultValue;
+		return ((String[])defaultValue);
 	}
 
 	/**

@@ -1,7 +1,9 @@
 package alma.ACS.jbaci;
-
-//cmenay
-//reimplementation of the C++ acsutilWildcard.cpp created by Matej.
+/**
+ * reimplementation of the C++ acsutilWildcard.cpp created by Matej.
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
+ */
 public class UtilsWildcards
 {
 	

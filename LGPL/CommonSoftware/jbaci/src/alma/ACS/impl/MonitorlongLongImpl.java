@@ -32,6 +32,8 @@ import alma.ACS.MonitorlongLongOperations;
 /**
  * Implementation of <code>alma.ACS.Monitorlong</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 public class MonitorlongLongImpl

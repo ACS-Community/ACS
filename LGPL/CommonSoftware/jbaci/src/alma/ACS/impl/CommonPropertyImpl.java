@@ -216,7 +216,7 @@ public abstract class CommonPropertyImpl
 			}
 			catch (Throwable th)
 			{
-				// TODO log
+
 				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::CommonPropertyImpl - Cannot create Completion Holder");
 				throw new NO_RESOURCES(th.getMessage());
 			}
@@ -334,13 +334,10 @@ public abstract class CommonPropertyImpl
 			// add			
 			historyTime[historyPosition] = timestamp;
 
-	
- 			// historyValue[historyPosition] = value;
+
 			if (propertyType.isPrimitive())
 			{
-				// primitives are really ugly to handle
-				// order must match probability...
-				//if (propertyType.isAssignableFrom(double.class))
+
 			
 				if(propertyType.isAssignableFrom(double.class))
 				     Array.setDouble(historyValue, historyPosition, ((Double)value).doubleValue());
@@ -533,7 +530,7 @@ public abstract class CommonPropertyImpl
 			}
 			catch (Throwable th)
 			{
-				// TODO log
+
 				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::registerMonitor - Cannot activate Off Shoot with the monitorServant.");
 				throw new NO_RESOURCES(th.getMessage());
 			}
@@ -573,7 +570,7 @@ public abstract class CommonPropertyImpl
 			}
 			catch (Throwable th)
 			{
-				// TODO log
+
 				m_logger.log(Level.WARNING, "jBaci::CommonPropertyImpl::unregisterMonitor - Cannot deactivate Off Shoot with monitorServant");
 				throw new NO_RESOURCES(th.getMessage());
 			}

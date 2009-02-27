@@ -28,6 +28,8 @@ import alma.ACS.jbaci.PropertyInitializationFailed;
 /**
  * Implementation of read-only common comparable property, i.e. type of <code>java.lang.Object</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 public abstract class ROCommonComparablePropertyImpl extends CommonComparablePropertyImpl {
@@ -99,7 +101,6 @@ public abstract class ROCommonComparablePropertyImpl extends CommonComparablePro
 		
 		try
 		{
-			// TODO: there is also an attribute alarm_timer_trig
 			alarmLowOn = readPropertyTypeCharacteristic("alarm_low_on");
 			alarmLowOff = readPropertyTypeCharacteristic("alarm_low_off");
 			alarmHighOn = readPropertyTypeCharacteristic("alarm_high_on");

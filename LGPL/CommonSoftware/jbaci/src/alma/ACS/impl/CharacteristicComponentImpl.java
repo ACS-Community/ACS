@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.NO_RESOURCES;
@@ -46,13 +47,14 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-//logs
-import java.util.logging.Level;
+
 import com.cosylab.CDB.DAL;
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicComponentImpl</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 public class CharacteristicComponentImpl extends ComponentImplBase
@@ -98,8 +100,6 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		throws ComponentLifecycleException {
 		super.initialize(containerServices);
 
-		//get the logger
-		//m_logger = getComponentContainerServices().getLogger();
 
 		try
 		{
@@ -294,12 +294,12 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 					propertyDescriptors[i] = ((PropertyImpl)iter.next()).getPropertyDescriptor(); 
 			}
 						
-			// TODO CORBA reference to this component to be set, PropertySet
-			characteristicComponentDesc =
+			// TODO CORBA reference to this component to be set
 				new CharacteristicComponentDesc(null,
-				   							    m_instanceName,
-												propertyDescriptors,
-											    null);
+						    m_instanceName,
+						propertyDescriptors,
+					    get_all_characteristics());
+
 		}
 		
 		return characteristicComponentDesc; 

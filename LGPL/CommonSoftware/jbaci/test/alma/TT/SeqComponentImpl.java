@@ -24,53 +24,38 @@ package alma.TT;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import alma.ACS.CBDescIn;
-import alma.ACS.CBvoid;
-import alma.ACS.ROdouble;
 import alma.ACS.ROdoubleSeq;
 import alma.ACS.ROdoubleSeqHelper;
 import alma.ACS.ROdoubleSeqPOATie;
-import alma.ACS.ROfloat;
 import alma.ACS.ROfloatSeq;
 import alma.ACS.ROfloatSeqHelper;
 import alma.ACS.ROfloatSeqPOATie;
-import alma.ACS.ROlong;
-import alma.ACS.ROlongHelper;
-import alma.ACS.ROlongPOATie;
 import alma.ACS.ROlongSeq;
 import alma.ACS.ROlongSeqHelper;
 import alma.ACS.ROlongSeqPOATie;
 import alma.ACS.ROpattern;
 import alma.ACS.ROpatternHelper;
 import alma.ACS.ROpatternPOATie;
-import alma.ACS.RWdouble;
 import alma.ACS.RWdoubleSeq;
 import alma.ACS.RWdoubleSeqHelper;
 import alma.ACS.RWdoubleSeqPOATie;
-import alma.ACS.RWfloat;
 import alma.ACS.RWfloatSeq;
 import alma.ACS.RWfloatSeqHelper;
 import alma.ACS.RWfloatSeqPOATie;
-import alma.ACS.RWlong;
-import alma.ACS.RWlongHelper;
-import alma.ACS.RWlongPOATie;
 import alma.ACS.RWlongSeq;
 import alma.ACS.RWlongSeqHelper;
 import alma.ACS.RWlongSeqPOATie;
 import alma.ACS.impl.CharacteristicComponentImpl;
 import alma.ACS.impl.ROdoubleSeqImpl;
 import alma.ACS.impl.ROfloatSeqImpl;
-import alma.ACS.impl.ROlongImpl;
 import alma.ACS.impl.ROlongSeqImpl;
 import alma.ACS.impl.ROpatternImpl;
 import alma.ACS.impl.RWdoubleSeqImpl;
 import alma.ACS.impl.RWfloatSeqImpl;
-import alma.ACS.impl.RWlongImpl;
 import alma.ACS.impl.RWlongSeqImpl;
 import alma.ACS.jbaci.DataAccess;
 import alma.ACS.jbaci.DataAccessSupport;
 import alma.ACS.jbaci.MemoryDataAccess;
-import alma.ACS.jbaci.ReflectionBACIAction;
 import alma.ACSErr.CompletionHolder;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentLifecycleException;
@@ -79,7 +64,7 @@ import alma.acs.exceptions.AcsJException;
 
 /**
  * Implementation of <code>test.jbaci.SimpleMasterComponent</code>.
- * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
 public class SeqComponentImpl extends CharacteristicComponentImpl 

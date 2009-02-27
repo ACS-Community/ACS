@@ -22,7 +22,6 @@
 package alma.ACS.impl;
 
 import org.omg.CORBA.NO_IMPLEMENT;
-import org.omg.CORBA.NO_RESOURCES;
 
 import alma.ACS.Alarmpattern;
 import alma.ACS.Bool;
@@ -52,7 +51,8 @@ import alma.acs.exceptions.AcsJException;
 
 /**
  * Implementation of <code>alma.ACS.ROpattern</code>.
- * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 public class ROBoolImpl

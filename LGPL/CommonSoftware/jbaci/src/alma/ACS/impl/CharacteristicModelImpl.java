@@ -52,7 +52,9 @@ import com.cosylab.CDB.DAO;
  * Implementation of <code>alma.ACS.CharacteristicModel</code>.
  * TODO temporary implementation - real caching (DAL wide, not per CharacteristicModelImpl instance) has to be implemented
  * TODO what about reconnection then... is persistent DAL server enough?
+ * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 // TODO to be fully implemented, cached, etc.
@@ -155,7 +157,6 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	 * @see alma.ACS.CharacteristicModelOperations#find_characteristic(java.lang.String)
 	 */
 	public String[] find_characteristic(String wildcard) {
-		// TODO NO_IMPLEMENT
 		//cmenay
 		try {
 			String[] allSeq; 
@@ -183,10 +184,8 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			return ret;
 			
 		} catch (CDBFieldDoesNotExistEx e) {
-		//log?
 			return new String[0];
 		} catch (WrongCDBDataTypeEx e) {
-		//log?
 			return new String[0];
 		}
 	
@@ -272,7 +271,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public long getLong(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return (long)dao.get_long(prefix+name);
@@ -310,7 +309,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public double getDouble(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return dao.get_double(prefix+name);
@@ -350,7 +349,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public int[] getIntegerSeq(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return dao.get_long_seq(prefix+name);
@@ -369,7 +368,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public double[] getDoubleSeq(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return dao.get_double_seq(prefix+name);
@@ -388,7 +387,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public float[] getFloatSeq(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			double[] temp = dao.get_double_seq(prefix+name);
@@ -414,7 +413,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public int[] getLongSeq(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return dao.get_long_seq(prefix+name);
@@ -432,7 +431,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 	public String[] getStringSeq(String name)
 		throws NoSuchCharacteristic
 	{
-		// TODO temporary implementation
+
 		try
 		{
 			return dao.get_string_seq(prefix+name);

@@ -48,7 +48,9 @@ import alma.acs.exceptions.AcsJException;
 /**
  * Implementation of <code>alma.ACS.ROdoubleSeq</code>.
  * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
- * @version $id$
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
+ * * @version $id$
  */
 public class ROdoubleSeqImpl
 	extends ROCommonComparablePropertyImpl

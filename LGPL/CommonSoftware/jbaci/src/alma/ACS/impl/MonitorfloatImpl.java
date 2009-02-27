@@ -31,6 +31,8 @@ import alma.ACS.MonitorfloatOperations;
 /**
  * Implementation of <code>alma.ACS.Monitorfloat</code>.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
+ * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+ * @author <a href="mailto:cmaureirATinf.utfsm.cl">Cristian Maureira</a>
  * @version $id$
  */
 public class MonitorfloatImpl

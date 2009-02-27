@@ -19,8 +19,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  */
 
-
-
 package alma.TT;
 
 import java.util.logging.Logger;
@@ -28,16 +26,16 @@ import java.util.logging.Logger;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 
-/** 
- * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
+/**
+ * @author alma-component-helper-generator-tool
  */
-public class SeqComponentImplHelper extends ComponentHelper
+public class LongComponentImplHelper extends ComponentHelper
 {
 	/**
 	 * Passes a logger to the callback object.
 	 * @param containerLogger
 	 */
-	public SeqComponentImplHelper(Logger containerLogger)
+	public LongComponentImplHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}
@@ -49,7 +47,7 @@ public class SeqComponentImplHelper extends ComponentHelper
 	 */
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new SeqComponentImpl();
+		return new LongComponentImpl();
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class SeqComponentImplHelper extends ComponentHelper
 	 */
 	protected Class _getPOATieClass()
 	{
-		return SeqComponentPOATie.class;
+		return LongComponentPOATie.class;
 	}
 
 	/**
@@ -69,7 +67,7 @@ public class SeqComponentImplHelper extends ComponentHelper
 	 */
 	protected Class _getOperationsInterface()
 	{
-		return SeqComponentOperations.class;
+		return LongComponentOperations.class;
 	}
 
 }
