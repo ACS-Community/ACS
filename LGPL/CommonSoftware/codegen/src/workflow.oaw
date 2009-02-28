@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workflow>
+	<bean class="oaw.uml2.Setup" standardUML2Setup="true"/>
+	<component class="oaw.emf.XmiReader">
+		<modelFile value="ALMA_Subsystem.uml"/>
+		<outputSlot value="model"/>
+	</component>
+	
+	<component class="org.openarchitectureware.check.CheckComponent">
+		<metaModel id="mm" class="oaw.uml2.UML2MetaModel">
+		</metaModel>
+		<checkFile value="constraints"/>
+		<emfAllChildrenSlot value="model"/>
+	</component>
+
+	<component id="dirCleaner" 
+		class="oaw.workflow.common.DirectoryCleaner"
+		directory="src-gen"/>
+
+	<component id="gen" class="oaw.xpand2.Generator" skipOnErrors="true">
+		<metaModel class="oaw.uml2.UML2MetaModel"/>
+		<genPath value="src-gen"/>
+		<expand value="templates::Root::Root FOR model"/>
+		<beautifier class="oaw.xpand2.output.JavaBeautifier"/>
+	</component> 
+</workflow>

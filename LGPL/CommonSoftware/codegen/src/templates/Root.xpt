@@ -1,0 +1,5 @@
+«IMPORT FSMJava»
+
+«DEFINE Root FOR uml::Model»
+  «EXPAND FSMJava::Root FOREACH allOwnedElements().typeSelect(uml::StateMachine)»
+«ENDDEFINE»
