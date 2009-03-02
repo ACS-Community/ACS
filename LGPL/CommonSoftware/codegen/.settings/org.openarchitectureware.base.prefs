@@ -1,0 +1,4 @@
+#Thu Feb 12 10:04:44 UTC 2009
+eclipse.preferences.version=1
+metamodelContributor=org.openarchitectureware.uml2.Uml2MetamodelContributor,org.openarchitectureware.EmfMetamodelContributor
+project.specific.metamodel=true
