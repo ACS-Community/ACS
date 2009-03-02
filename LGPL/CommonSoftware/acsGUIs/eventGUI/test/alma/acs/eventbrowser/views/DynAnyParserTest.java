@@ -24,7 +24,10 @@ public class DynAnyParserTest extends TestCase {
 	private EventModel em;
 	private DynAnyParser parser;
 	
+	private Logger logger;
+	
 	private pttDataEvent pde;
+	private String eventName;
 	private StructuredEvent se;
 	private Any eventAny;
 
@@ -32,26 +35,43 @@ public class DynAnyParserTest extends TestCase {
 		super(name);
 		try {
 			em = EventModel.getInstance();
-			em.getLogger();
+			logger = em.getLogger();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Couldn't create the Event Model.");
 		}
+		seCreator = new StructuredEventCreator(em.getContainerServices());
+	}
+	
+	/** Contents of ptt data event:
+	 *     const long actuatorSpaceLength = 2952;
+     *     struct actuatorSpace
+     *     {
+     *           double ptt[actuatorSpaceLength];
+     *     };
+     *
+	 * 	public tdem.TDEM_TOPICS.actuatorSpace setpoint;
+	 *  public tdem.TDEM_TOPICS.actuatorSpace readback;
+	 *  public int key;
+	 *  public long timestamp;
+	 */
+	public void testPttDataEventParsing() {
 		pde = new pttDataEvent(new actuatorSpace(new double[2952]), new actuatorSpace(new double[2952]), 25, 32L);
 		try {
-			seCreator = new StructuredEventCreator(em.getContainerServices());
 			se = seCreator.createEvent(pde);
 		} catch (AcsJException e) {
 			e.printStackTrace();
-			fail("Couldn't create Structured Event from pttDataEvent structure");
+			fail("Couldn't create structured event for pttDataEvent");
 		}
+		eventName = se.header.fixed_header.event_type.type_name;
 		eventAny = se.filterable_data[0].value;
-	}
-	
-	public void testBasicParsing() {
-		parser = new DynAnyParser(eventAny);
-		parser.getParsedResults();
-
+		StopWatch sw = new StopWatch(logger);
+		parser = new DynAnyParser(eventAny, eventName);
+		ParsedAnyData[] pResults = parser.getParsedResults();
+		sw.logLapTime("parse this eventAny");
+		for (int i = 0; i<pResults.length; i++) {
+			System.out.println(pResults[i].getName()+" "+pResults[i].getType()+" "+pResults[i].getValue());
+		}
 	}
 
 	protected void setUp() throws Exception {
