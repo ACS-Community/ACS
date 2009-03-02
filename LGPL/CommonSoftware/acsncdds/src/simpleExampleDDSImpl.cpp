@@ -15,9 +15,10 @@ SimpleExampleDDSImpl::SimpleExampleDDSImpl(const ACE_CString &name,
 void SimpleExampleDDSImpl::sendMessage() throw (::CORBA::SystemException)
 {
 	ACS_TRACE("SimpleExampleDDSImpl::sendMessage");
-	ACS_NEW_DDS_PUBLISHER(pub_p, DDS_SIMPLE_EXAMPLE::simpleMessage, 
-			DDS_SIMPLE_EXAMPLE::CHANNEL_NAME);
-
+//	ACS_NEW_DDS_PUBLISHER(pub_p, DDS_SIMPLE_EXAMPLE::simpleMessage, 
+//			DDS_SIMPLE_EXAMPLE::CHANNEL_NAME);
+	ddsnc::DDSPublisher *pub_p = 
+		new ddsnc::DDSPublisher(DDS_SIMPLE_EXAMPLE::CHANNEL_NAME);
 	DDS_SIMPLE_EXAMPLE::simpleMessage m;
 	m.seqnum=1;
 

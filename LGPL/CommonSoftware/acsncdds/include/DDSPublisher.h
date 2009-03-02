@@ -13,46 +13,19 @@ namespace ddsnc{
 	 * that is specific to the data type defined
 	 * in the idl and registered in the topic.
 	 * 
-	 * @tparam DWVAR <type>DataWriter_var class
 	 * @see DDSHelper
 	 * @author Jorge Avarias <javarias[at]inf.utfsm.cl>
 	 */
-	template<class DWVAR>
+//	template<class DWVAR>
 	class DDSPublisher : public ::ddsnc::DDSHelper{
 		private:
 		DDS::Publisher_var pub;
 		OpenDDS::DCPS::PublisherImpl *pub_impl;
 		DDS::DataWriter_var dw;
-		DWVAR dataWriter;	
+//		DWVAR dataWriter;	
 		DDS::InstanceHandle_t handler;
 
-		int attachToTransport()
-		{
-			OpenDDS::DCPS::AttachStatus status =
-				pub_impl->attach_transport(transport_impl.in());
-			if (status != OpenDDS::DCPS::ATTACH_OK) {
-				std::string status_str;
-				switch (status) {
-					case OpenDDS::DCPS::ATTACH_BAD_TRANSPORT:
-						status_str = "ATTACH_BAD_TRANSPORT";
-						break;
-					case OpenDDS::DCPS::ATTACH_ERROR:
-						status_str = "ATTACH_ERROR";
-						break;
-					case OpenDDS::DCPS::ATTACH_INCOMPATIBLE_QOS:
-						status_str = "ATTACH_INCOMPATIBLE_QOS";
-						break;
-					default:
-						status_str = "Unknown Status";
-						break;
-				}
-				::std::cerr << "Failed to attach to the transport. Status == "
-					<< status_str.c_str() << ::std::endl;
-				return 1;
-			}
-			return 0;
-
-		}
+		int attachToTransport();
 
 		/**
 		 * Create the participant, initialize the publisher with the partition
@@ -62,30 +35,7 @@ namespace ddsnc{
 		 * the data writer QoS to default.
 		 *
 		 */
-		void initialize()
-		{
-			std::cerr<< "DDSPublisher::initialize()"<<std::endl;
-			createParticipant();
-			if (CORBA::is_nil (participant.in()))
-				std::cerr << "Participant is nil" << std::endl;
-
-			if(partitionName!=NULL){
-				participant->get_default_publisher_qos(pubQos);
-				pubQos.partition.name.length(1);
-				pubQos.partition.name[0]=CORBA::string_dup(partitionName);
-			}
-			initializeTransport();
-			createPublisher();
-
-			pub->get_default_datawriter_qos (dwQos);
-			dwQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
-			dwQos.reliability.max_blocking_time.sec = 1;
-			dwQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
-			dwQos.history.depth = 100;
-			
-			dwQos.durability.kind = ::DDS::TRANSIENT_LOCAL_DURABILITY_QOS;
-			dwQos.durability.service_cleanup_delay.sec = 10;
-		}
+		void initialize();
 
 		/**
 		 * Initialize the DataWriter with QoS
@@ -93,65 +43,28 @@ namespace ddsnc{
 		 * @tparam <type>DataWriter class
 		 * @see dwQos
 		 */
-		template <class DW> void initializeDataWriter()
-		{
-			dw = pub->create_datawriter(topic.in(),
-					dwQos,  DDS::DataWriterListener::_nil());
-			if(CORBA::is_nil(dw.in())){
-				std::cerr << "create datawriter failed" << std::endl;
-			}
-			dataWriter = DW::_narrow(dw.in());
-		}
+		void initializeDataWriter();
 
 		/**
 		 * Creates the publisher with default QoS or Qos with a partition
 		 *
 		 * @see initialize()
 		 */
-		int createPublisher()
-		{
-			std::cerr << "DDSPublisher::createPublisher" << std::endl;
-
-			if(partitionName==NULL){
-				pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
-						DDS::PublisherListener::_nil());
-				std::cerr << "Creating Publisher with default Qos" << std::endl;
-			}
-			
-			else{
-				pub = participant->create_publisher(pubQos,
-						DDS::PublisherListener::_nil());
-				std::cerr << "Creating Publisher with partition " << partitionName 
-					<< std::endl;
-			}
-
-			if(CORBA::is_nil(pub.in())){
-				std::cerr << "create publisher failed" << std::endl;
-				return 1;
-			}
-
-			pub_impl= dynamic_cast<OpenDDS::DCPS::PublisherImpl*>(pub.in());
-			if(pub_impl == NULL){
-				std::cerr << "Failed to obtain publisher servant" << std::endl;
-				return 1;
-			}
-			return attachToTransport();
-		}
+		int createPublisher();
 
 		protected:
 		DDS::PublisherQos pubQos;
 
-
 		public:
 		DDS::DataWriterQos dwQos; /**< Data Writer Qos, can be modified according
-											 OpenDDS API, the Qos properties will be 
-											 applied when is called publishData for
-											 first time and they cannot be changed after
-											 that.
+		OpenDDS API, the Qos properties will be 
+		applied when is called publishData for
+		first time and they cannot be changed after
+		that.
 
-											 @see initializeDataWriter()
-											 @see publishData(D data)
-											 */
+		@see initializeDataWriter()
+		@see publishData(D data)
+		*/
 		
 		/**
 		 * Constructor for DDSPublisher class, initializes the common
@@ -182,7 +95,7 @@ namespace ddsnc{
  * @tparam TSV <type>TypeSupport_var class 
  * @tparam TSI <type>TypeSupportImpl class
  */ 
-		template <class D, class DW, class TSV, class TSI>
+		template <class D, class DW, class DWVAR, class TSV, class TSI>
 			void publishData(D data)
 			{
 				if(initialized==false){
@@ -195,10 +108,11 @@ namespace ddsnc{
 					initializeTopic(ts->get_type_name());
 					if(CORBA::is_nil(topic.in()))
 							std::cerr<< "Topic is nil" << std::endl;
-					initializeDataWriter<DW>();
-					handler = dataWriter->_cxx_register(data);
+					initializeDataWriter();
 					initialized=true;
 				}
+				DWVAR dataWriter = DW::_narrow(dw.in());
+				handler = dataWriter->_cxx_register(data);
 				dataWriter->write(data,handler);
 			}
 
@@ -210,13 +124,14 @@ namespace ddsnc{
 	};
 }
 
-#define ACS_NEW_DDS_PUBLISHER(publisher_p, idlStruct, channelName) \
-	ddsnc::DDSPublisher<idlStruct##DataWriter_var> *publisher_p = 0; \
-	publisher_p = new ddsnc::DDSPublisher<idlStruct##DataWriter_var>(channelName);
+//#define ACS_NEW_DDS_PUBLISHER(publisher_p, idlStruct, channelName) \
+//	ddsnc::DDSPublisher<idlStruct##DataWriter_var> *publisher_p = 0; \
+//	publisher_p = new ddsnc::DDSPublisher<idlStruct##DataWriter_var>(channelName);
 
 #define PUBLISH_DATA(publisher_p, idlStruct, message) \
 { \
 	publisher_p->publishData<idlStruct, idlStruct##DataWriter, \
+	idlStruct##DataWriter_var, \
 	idlStruct##TypeSupport_var, idlStruct##TypeSupportImpl> (message); \
 }
 #endif

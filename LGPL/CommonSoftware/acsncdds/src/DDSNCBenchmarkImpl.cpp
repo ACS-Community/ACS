@@ -16,8 +16,10 @@ void DDSNCBenchmarkSupplierImpl::runTest(::CORBA::ULong freq,
 		::CORBA::ULong duration) throw (::CORBA::SystemException)
 {
 	ACS_TRACE("DDSNCBenchmarkSupplierImpl::runTest");
-	ACS_NEW_DDS_PUBLISHER(pub_p, NC_BENCHMARK::Message, 
-			NC_BENCHMARK::CHANNEL_NAME);
+//	ACS_NEW_DDS_PUBLISHER(pub_p, NC_BENCHMARK::Message, 
+//			NC_BENCHMARK::CHANNEL_NAME);
+	ddsnc::DDSPublisher *pub_p = 
+		new ddsnc::DDSPublisher(NC_BENCHMARK::CHANNEL_NAME);
 
 	struct timeval time;
 	NC_BENCHMARK::Message m;

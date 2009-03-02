@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2008/11/25 21:41:04 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.10 2009/03/02 21:52:12 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -118,7 +118,7 @@ LIBRARIES_L     =
 
 #
 # <brief description of acsddsnc library>
-acsddsnc_OBJECTS  = DDSHelperImpl DDSSubscriberImpl DataReaderListenerImpl
+acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl
 acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp ACE
 
 #
