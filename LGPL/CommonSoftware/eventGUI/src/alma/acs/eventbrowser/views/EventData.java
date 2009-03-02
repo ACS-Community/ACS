@@ -2,7 +2,11 @@ package alma.acs.eventbrowser.views;
 
 import org.omg.CORBA.Any;
 
-public class EventData {
+public class EventData implements java.io.Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8199180183031190929L;
 	/*
 	 * "Time "+timeStamp+" "+m_channelName+" "+component+" "+count+" "+channelEventCount+" "
 			+" "+evtTypeName+" "+evtCounter.get(evtTypeName)

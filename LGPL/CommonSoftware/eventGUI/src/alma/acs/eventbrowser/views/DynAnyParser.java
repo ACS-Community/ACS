@@ -1,7 +1,6 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.TCKind;
@@ -22,13 +21,14 @@ public class DynAnyParser {
 	
 	private final DynAnyFactory daFactory;
 	private DynAny dynAny = null;
-	private ArrayList<ParsedAnyData> pdlist = new ArrayList<ParsedAnyData>(10);
-	private HashMap<String, Object> propertyValues = new HashMap<String, Object>(10);
+	private ArrayList<ParsedAnyData> pdlist = new ArrayList<ParsedAnyData>(100);
+	private String eventName;
 
-	public DynAnyParser(Any anyToParse) {
+	public DynAnyParser(Any anyToParse, String eventName) {
 		daFactory = EventModel.getDynAnyFactory();
 		try {
 			dynAny = daFactory.create_dyn_any(anyToParse);
+			this.eventName = eventName;
 		} catch (InconsistentTypeCode e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -38,61 +38,66 @@ public class DynAnyParser {
 	}
 
 	public ParsedAnyData[] getParsedResults() {
-		// TODO Auto-generated method stub
 		parseEventAny(dynAny, "");
 		return pdlist.toArray(new ParsedAnyData[0]);
 	}
 
 	private ParsedAnyData[] parseEventAny(DynAny dynAny2, String path) {
 		DynAny da = dynAny2;
-		String tcKindString = "";
 		int tcKind = da.type().kind().value();
 		ParsedAnyData entry = new ParsedAnyData(path,"","");
 		try {
-//			String daName = da.type().name();
-//			String qualName = path+daName;
 			switch (tcKind) {
 
 			case TCKind._tk_short:
 				entry.setType("short");
 				entry.setValue((new Short(da.get_short())).toString());
-//				pdlist.add(new ParsedAnyData(path,"short",(new Short(da.get_short())).toString()));
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_long:
 				entry.setType("long");
 				entry.setValue(""+da.get_long());
-//				propertyValues.put(path, new Integer(da.get_long()));
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_longlong:
 				entry.setType("longlong");
 				entry.setValue(""+da.get_longlong());
-//				propertyValues.put(path, new Long(da.get_longlong()));
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_ulonglong:
 				entry.setType("ulonglong");
 				entry.setValue(""+da.get_ulonglong());
-//				propertyValues.put(path, new Long(da.get_ulonglong()));
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_string:
 				entry.setType("string");
 				entry.setValue(da.get_string());
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_boolean:
 				entry.setType("boolean");
 				entry.setValue(""+da.get_boolean());
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_float:
-				propertyValues.put(path, new Float(da.get_float()));
+				entry.setType("float");
+				entry.setValue(""+da.get_float());
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_double:
-				propertyValues.put(path, new Double(da.get_double()));
+				entry.setType("double");
+				entry.setValue(""+da.get_double());
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_enum:
-				propertyValues.put(path, ((DynEnum)da).get_as_string());
+				entry.setType("enum");
+				entry.setValue(((DynEnum)da).get_as_string());
+				pdlist.add(entry);
 				break;
 			case TCKind._tk_array:
-				System.out.println("Array found at: "+path);
-				System.out.println("   with size: "+da.component_count());
+				entry.setType("array");
+				entry.setValue("size: "+da.component_count());
+				pdlist.add(entry);
 				int numDisplayElements = Math.min(da.component_count(),5);
 				int elementType = da.type().content_type().kind().value();
 				switch (elementType) {
@@ -100,26 +105,26 @@ public class DynAnyParser {
 					for (int j = 0; j < numDisplayElements; j++) {
 						String dname = path+"["+j+"]";
 						double value = da.current_component().get_double();
-						pdlist.add(new ParsedAnyData(dname,"double",(new Double(value)).toString()));
-						System.out.println("dname = "+dname+" value = "+value);
+						pdlist.add(new ParsedAnyData(dname,"double",(""+value)));
 						da.next();
 					}
 					break;
 					default:
-						propertyValues.put(path, "Unimplemented type for array: "+elementType);
+						pdlist.add(new ParsedAnyData(path, "Unimplemented type for array: "+elementType,"Unknown"));
 				}
-				System.out.println("   content type: "+elementType);
-				if (elementType == TCKind._tk_double) System.out.println("...and it's a double!");
 				break;
 			case TCKind._tk_struct:
 			case TCKind._tk_except:
 				DynStruct ds = (DynStruct)da;
-				String structName = path+ds.type().name();
-// TODO				pdlist.add(new TextPropertyDescriptor(path+"struct name", "Struct Name"));
-				propertyValues.put(path+"struct name", structName);
+				String structName = ds.type().name();
+				entry.setType("struct");
+				if (path.equals("")) {
+					entry.setName(eventName);
+				}
+				pdlist.add(entry);
 				for (int i = 0; i < ds.component_count(); i++) {
-					String dname = path+ds.current_member_name();
-// TODO					pdlist.add(new TextPropertyDescriptor(dname, dname));
+					String dname = ds.current_member_name();
+					pdlist.add(new ParsedAnyData(dname, "element of "+structName, ""));
 					parseEventAny(ds.current_component(), dname);
 					ds.next();
 				}
@@ -133,10 +138,13 @@ public class DynAnyParser {
 			case TCKind._tk_sequence:
 				DynSequence dsq = (DynSequence)da;
 				String seqName = path+dsq.type().name();
-				propertyValues.put(path, "IDL sequences not implemented yet; found: "+seqName);
+				entry.setType("sequence"+seqName); // TODO: Straighten this out
+				entry.setValue("IDL sequences not implemented yet");
 
 			default:
-				propertyValues.put(path, "Unimplemented type: " + da.type().kind().toString());
+				entry.setType(da.type().kind().toString());
+				entry.setValue("Unimplemented type");
+				pdlist.add(entry);
 				break;
 			}
 		} catch (TypeMismatch e) {
