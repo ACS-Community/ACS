@@ -340,7 +340,7 @@ public class ManagerEngine
 		// set orb
 		federationDirectoryProperties.put("java.naming.corba.orb", orb);
 		manager.initializeFederation(federationDirectoryProperties);
-		
+
 		// initialize remote logging
 		new Thread(new Runnable() {
 			public void run()
@@ -349,6 +349,7 @@ public class ManagerEngine
 			}
 		}, "Remote logging initializer").start();
 		
+		manager.initializationDone();
 	}
 
 	/**

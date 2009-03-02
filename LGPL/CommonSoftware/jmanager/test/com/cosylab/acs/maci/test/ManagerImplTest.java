@@ -151,7 +151,7 @@ public class ManagerImplTest extends TestCase
 			TestAdministrator client = new TestAdministrator(administratorName);
 			ClientInfo info = manager.login(client);
 			ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", false);
-			assertEquals(12, infos.length);
+			assertEquals(13, infos.length);
 			
 			boolean thereisDefault = false;
 			for (int i=0 ; i< infos.length; i++)
@@ -4229,6 +4229,32 @@ public class ManagerImplTest extends TestCase
 
 	}
 
+	public void testOnDemandContainerStartupComponents() throws Throwable
+	{
+		TestDaemon daemon = new TestDaemon(manager, false);
+		transport.registerDeamon("test", daemon);
+
+		// this one starts startup components on auto-start containers
+		manager.initializationDone();
+		
+		try { Thread.sleep(STARTUP_COBS_SLEEP_TIME_MS * 3); } catch (InterruptedException ie) {}
+
+		TestAdministrator client = new TestAdministrator(administratorName);
+		ClientInfo info = manager.login(client);
+		
+		assertTrue(info.getHandle() != 0);
+
+		// there should be one Component activated
+		ComponentInfo[] infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
+		assertEquals(1, infos.length);
+		assertEquals("DEMANDER2", infos[0].getName());
+
+		// check if container is logged in
+		ContainerInfo[] infos2 = manager.getContainerInfo(info.getHandle(), new int[0], "OnDemandContainer2");
+		assertNotNull(infos2);
+		assertEquals(1, infos2.length);
+	}
+	
 	public void testOnDemandContainer() throws Throwable
 	{
 		TestDaemon daemon = new TestDaemon(manager, false);

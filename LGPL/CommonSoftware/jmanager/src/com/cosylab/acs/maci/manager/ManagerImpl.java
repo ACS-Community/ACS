@@ -47,6 +47,7 @@ import org.prevayler.Prevayler;
 import org.prevayler.implementation.AbstractPrevalentSystem;
 import org.prevayler.implementation.SnapshotPrevayler;
 
+import si.ijs.maci.ClientOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.acs.util.ACSPorts;
@@ -59,8 +60,6 @@ import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponen
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-
-import si.ijs.maci.ClientOperations;
 
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Administrator;
@@ -952,6 +951,18 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 	}
 
+	/**
+	 * Called from client code after all manager inicialization is done.
+	 */
+	public void initializationDone()
+	{
+		threadPool.execute(new Runnable() {
+			public void run() {
+				autoStartComponents();
+			}
+		});
+	}
+	
 	/**
 	 * Returns the handle of the Manager.
 	 * @return int	handle of the Manager.
@@ -2567,7 +2578,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				// add generated key
 			    h |= (random.nextInt(0x100)) << 16;
-
+			    
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container, containerPingInterval);
                 DAOProxy dao = getContainersDAOProxy();
@@ -2711,7 +2722,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// if container name matches, add activation request
 					if (containerInfo.getName().equals(containerName))
 					{
-						activationRequests.put(startup[i], managerHandle);
 						try
 						{
 							URI curl = CURLHelper.createURI(startup[i]);
@@ -2725,6 +2735,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							}
 
 							activationRequestsList.add(curl);
+							activationRequests.put(startup[i], managerHandle);
 						}
 						catch (URISyntaxException usi)
 						{
@@ -2785,7 +2796,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						else if (!containerInfo.getName().equals(componentContainer))
 							continue;
 
-						activationRequests.put(name, managerHandle);
 						try
 						{
 							URI curl = CURLHelper.createURI(name);
@@ -2799,6 +2809,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							}
 
 							activationRequestsList.add(curl);
+							activationRequests.put(name, managerHandle);
 						}
 						catch (URISyntaxException usi)
 						{
@@ -2885,10 +2896,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 								// put to activation list
 								else
 								{
-									activationRequests.put(name, reactivateHandle);
 									try
 									{
 										activationRequestsList.add(CURLHelper.createURI(name));
+										activationRequests.put(name, reactivateHandle);
 									}
 									catch (URISyntaxException usi)
 									{
@@ -3278,6 +3289,175 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (requireTopologySort)
 			topologySortManager.notifyTopologyChange(containerInfo.getHandle());
 
+	}
+
+	/**
+	 * Checks for autostart components that are to be hosed by autostart containers.
+	 */
+	private void autoStartComponents()
+	{
+		// order is important, preserve it
+		LinkedHashSet activationRequestsList = new LinkedHashSet();
+
+		// get CDB access daos
+		DAOProxy dao = getManagerDAOProxy();
+		DAOProxy componentsDAO = getComponentsDAOProxy();
+		DAOProxy containersDAO = getContainersDAOProxy();
+
+		// no data
+		if (componentsDAO == null || containersDAO == null)
+			return;
+
+		//
+		// autostart components (Manager.Startup array) - TODO to be removed (left for backward compatibility)
+		//
+		if (dao != null)
+		{
+
+			try
+			{
+				// query startup components and add them to a list of candidates
+				String[] startup = dao.get_string_seq("Startup");
+
+				for (int i = 0; i < startup.length; i++)
+				{
+					// TODO simulator test workaround
+					if (startup[i].length() == 0)
+						continue;
+
+					activationRequestsList.add(startup[i]);
+				}
+			}
+			catch (Throwable th)
+			{
+				logger.log(Level.WARNING, "Failed to retrieve list of startup components.", th);
+			}
+
+		}
+
+		//
+		// autostart components (<component>.Autostart attribute)
+		//
+		final String TRUE_STRING = "true";
+		{
+
+			try
+			{
+				// get names of all components
+				/*String[] ids =*/ componentsDAO.get_field_data("");  // TODO here to check if CDB is available
+			    String[] ids = getComponentsList();
+
+				// test names
+				for (int i = 0; i < ids.length; i++)
+				{
+					// read name
+					String name = ids[i]; //readStringCharacteristics(componentsDAO, ids[i]+"/Name");
+					if (name == null)
+					{
+						logger.log(Level.WARNING,"Misconfigured CDB, there is no name of component '"+ids[i]+"' defined.");
+						continue;
+					}
+
+					// read autostart silently
+					String autostart = readStringCharacteristics(componentsDAO, ids[i]+"/Autostart", true);
+					if (autostart == null)
+					{
+						logger.log(Level.WARNING,"Misconfigured CDB, there is no autostart attribute of component '"+ids[i]+"' defined.");
+						continue;
+					}
+					else if (autostart.equalsIgnoreCase(TRUE_STRING))
+					{
+							activationRequestsList.add(name);
+					}
+				}
+			}
+			catch (Throwable ex)
+			{
+				logger.log(Level.WARNING, "Failed to retrieve list of components.", ex);
+			}
+
+		}
+
+		// now gather list of all containers to be started up (they will autostart components by default)
+		// by filtering out all components that are not hosted by auto-start containers
+		// leave only components that have "*" listed as container
+		LinkedHashSet startupContainers = new LinkedHashSet();
+		Iterator iterator = activationRequestsList.iterator();
+		while (iterator.hasNext())
+		{
+			String name = (String)iterator.next();
+
+			try
+			{
+				
+				// get container
+				String containerName = readStringCharacteristics(componentsDAO, name+"/Container", true);
+				if (containerName == null)
+				{
+					iterator.remove();
+					continue;
+				}
+				else if (containerName.equals(ComponentSpec.COMPSPEC_ANY))
+				{
+					// leave it in the list
+					continue;
+				}
+				
+				// get it's deploy info
+				String host = readStringCharacteristics(containersDAO, containerName + "/DeployInfo/Host", true);
+				if (host != null)
+					startupContainers.add(containerName);
+	
+				// remove (or is it auto-started by starting a container or is it not hosted by auto-start container)
+				iterator.remove();
+			}
+			catch (Throwable ex)
+			{
+				logger.log(Level.WARNING, "Failed to retrieve list of components.", ex);
+			}
+		}		
+		
+		
+		int activated = 0;
+		
+		// autostart containers
+		iterator = startupContainers.iterator();
+		while (iterator.hasNext())
+		{
+			String containerName = (String)iterator.next();
+			try
+			{
+				startUpContainer(containerName);
+			}
+			catch (Throwable ex)
+			{
+				logger.log(Level.WARNING, "Failed to auto-start container to auto-start components.", ex);
+			}
+		}
+		
+		// activate startup components (no container specified)
+		StatusHolder status = new StatusHolder();
+		iterator = activationRequestsList.iterator();
+		while (iterator.hasNext())
+		{
+			String name = (String)iterator.next();
+			try
+			{
+                URI uri = CURLHelper.createURI(name);
+
+				internalRequestComponent(this.getHandle(), uri, status);
+
+				if (status.getStatus() != ComponentStatus.COMPONENT_ACTIVATED)
+					logger.log(Level.FINE, "Failed to auto-activate requested component '"+name+"', reason: '"+status.getStatus()+"'.");
+				else
+					activated++;
+			}
+			catch (Throwable ex)
+			{
+				CoreException ce = new CoreException("Failed to request component '"+name+"'.", ex);
+				reportException(ce);
+			}
+		}
 	}
 
 	/**
