@@ -45,6 +45,9 @@
   <_ Name="DEMANDER"	Code="acsexmplPS"	Type="IDL:alma/PS/PowerSupply:1.0"	Container="OnDemandContainer"
   			Default="false"		Autostart="false"  ImplLang="cpp" />
 
+  <_ Name="DEMANDER2"    Code="acsexmplPS"       Type="IDL:alma/PS/PowerSupply:1.0"      Container="OnDemandContainer2"
+                        Default="false"         Autostart="true"  ImplLang="cpp" />
+
 </Components>
 
 
