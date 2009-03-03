@@ -19,9 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2009/03/02 15:33:52 ahoffsta Exp $"
+# "@(#) $Id: Makefile,v 1.2 2009/03/03 13:22:46 hsommer Exp $"
 #
-# Makefile of hibernate 
+# Makefile of oAW 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -37,12 +37,22 @@
 #
 # jar files to be installed
 #----------------------------
-# The files: 
-#    ../lib/openorb-1.3.0.jar ../lib/openorb_tools-1.3.0.jar
-# are part of the openORB distribution, but shall NOT be installed,
-# because they would collide with JacORB
-INSTALL_FILES = ../lib/org.openarchitectureware.adapter.emf.check_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.base_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.check.editor_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.core.emftools_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.core.expressions_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.core.workflow_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.core.xpand2_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.dependencies_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.emftools_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.uml2.adapter_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.uml2.adapter.plugin_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.util.stdlib_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.util.uml2ecore_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.workflow_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.xpand2.editor_4.3.1.20081222-1600PRD.jar ../lib/org.openarchitectureware.xtend.editor_4.3.1.20081222-1600PRD.jar
-
+INSTALL_FILES = ../lib/org.openarchitectureware.adapter.emf.check_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.base_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.check.editor_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.core.emftools_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.core.expressions_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.core.workflow_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.core.xpand2_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.dependencies_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.emftools_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.uml2.adapter_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.uml2.adapter.plugin_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.util.stdlib_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.util.uml2ecore_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.workflow_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.xpand2.editor_4.3.1.20081222-1600PRD.jar \
+				../lib/org.openarchitectureware.xtend.editor_4.3.1.20081222-1600PRD.jar
 
 #
 #>>>>> END OF standard rules
