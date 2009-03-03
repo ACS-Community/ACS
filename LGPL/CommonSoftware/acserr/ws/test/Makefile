@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.67 2009/02/18 00:36:46 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.68 2009/03/03 17:33:36 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -125,7 +125,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS_L	= acserrTestRun.sh startAcserrTest.sh testJUnitACSERRnoRuntime
+SCRIPTS_L	= acserrTestRun.sh startAcserrTest.sh testJUnitACSERRnoRuntime pythonTest
 SCRIPTS		= 
 
 PY_MODULES_L = test_AES2Py
