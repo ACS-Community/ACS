@@ -228,10 +228,14 @@ public class ExecuteContainer {
    	 String[] contMods = runModel.getContainerTypeModifiers();
        int instance = MiscUtils.parseInt(runModel.getContainerScriptBase());
 		
-		boolean startStop = false;
-		String cmdFlags = "";
+       String mgrHost = runModel.getContainerAgainstManagerHost();
+       String mgrPort = runModel.getContainerAgainstManagerPort();
+       String mgrLoc  = AcsLocations.convertToManagerLocation(mgrHost, mgrPort);
+       String cmdFlags = "-m "+mgrLoc;
+		 
+       boolean startStop = false;
 
-		Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, contMods, cmdFlags, listener);
+		 Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, contMods, cmdFlags, listener);
 	}
 
 
