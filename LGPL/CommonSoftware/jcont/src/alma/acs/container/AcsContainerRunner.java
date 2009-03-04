@@ -141,24 +141,26 @@ public class AcsContainerRunner
 	private void run(String[] args) throws AcsJContainerEx
 	{
 		StopWatch containerStartWatch = new StopWatch();
-		
-        // just a temp logger
+
+		// just a temp logger
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AcsContainerRunner", true);
 		String argsString = "";
 		for (String arg : args) {
 			argsString += arg + " ";
 		}
 		m_logger.log(Level.INFO, "AcsContainerRunner#run with arguments " + argsString);
-                
+
 		setOptions(args);
-		
-        embeddedRunner = new AcsEmbeddedContainerRunner(false, m_useRecoveryMode);        
-        embeddedRunner.setContainerName(m_containerName);
-        embeddedRunner.setManagerLoc(m_managerLoc);
-        
-        // now that embeddedRunner knows the container name, we get switch to the real logger  
-        m_logger = embeddedRunner.getContainerLogger();
-        m_acsCorba = new AcsCorba(m_logger);
+
+		embeddedRunner = new AcsEmbeddedContainerRunner(false, m_useRecoveryMode);
+		embeddedRunner.setContainerName(m_containerName);
+		embeddedRunner.setManagerLoc(m_managerLoc);
+
+		checkReadyToRun();
+
+		// now that embeddedRunner knows the container name, we can switch to the real logger  
+		m_logger = embeddedRunner.getContainerLogger();
+		m_acsCorba = new AcsCorba(m_logger);
 
         if (initialSleeptimeMillis > 0) {
         	m_logger.fine("Container will sleep for " + initialSleeptimeMillis + " ms, e.g. to allow remote debuggers to attach at this early stage.");
@@ -168,9 +170,7 @@ public class AcsContainerRunner
             	m_logger.info("Woken up too early from initial-delay sleep.");
             }
         }
-        
-		checkReadyToRun();
-		
+
 		m_acsCorba.initCorba(args, m_containerPort);	
 		m_acsCorba.runCorba();
 		
@@ -338,55 +338,14 @@ public class AcsContainerRunner
 			ex.setContextInfo("incorrect or missing arguments.");
 			throw ex;
 		}
-		
-		
-		//*************** parse for other options ***********************
-		//  // use trick to handle extra container name parameter
-		//  // so that get_opts() will work
-		//  ACE_Get_Opt get_opts (argc, &argv[1], "drp:m:");
-		//  bool usageAlreadyShown = false;
-		//  int c;
-		//
-		//  while ((c = get_opts ()) != -1)
-		//    switch (c)
-		//      {
-		//      case 'd':  // debug flag.
-		//	TAO_debug_level++;
-		//	break;
-		//      case 'r':  // recovery switch
-		//	this->m_recovery = true;
-		//	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::parseArgs", (LM_INFO, "Recovery mode enabled."));
-		//	break;
-		//#ifndef ACS_HAS_WIN32
-		//      case 'p':
-		//	this->m_pid_file_name = get_opts.optarg;
-		//	break;
-		//#endif
-		//      case 'm':
-		//	this->m_manager_ref = get_opts.optarg;
-		//	break;
-		//      case '?':
-		//      default:
-		//	if (!usageAlreadyShown)
-		//	  {
-		//	    showUsage(argc, argv);
-		//	    usageAlreadyShown=true;
-		//	  }
-		//      }
-		//  return 0;
-		//      // parse args for opts
-		//      parseArgs(m_argc, m_argv);
-		//
 	}
-    
-    protected void checkReadyToRun() throws AcsJContainerEx {
-        String msg = null;
-        if (m_containerPort <= 0)
-        {
-            msg = "no container port specified; ";
-        }
-        embeddedRunner.checkReadyToRun(msg);    
-    }
 
-    
+	protected void checkReadyToRun() throws AcsJContainerEx {
+		String msg = null;
+		if (m_containerPort <= 0) {
+			msg = "no container port specified; ";
+		}
+		embeddedRunner.checkReadyToRun(msg);
+	}
+
 }
