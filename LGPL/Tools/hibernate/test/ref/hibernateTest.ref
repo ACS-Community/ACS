@@ -1,5 +1,5 @@
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.hibernate.test.Test
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner alma.hibernate.test.Test
+1 - 
 1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [org.hibernate.cfg.annotations.Version] Hibernate Annotations 3.4.0.GA
 1 - ----------T--:--:--.--- INFO [org.hibernate.cfg.Environment] Hibernate 3.3.1.GA
