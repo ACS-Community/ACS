@@ -105,8 +105,8 @@ public class TabPanel extends JPanel {
 	JButton btnMoveContainerUp;
 	JButton btnMoveContainerDown;
 
-	MyRadioButton chkLocalScript = new MyRadioButton("Localhost");
-	MyRadioButton chkRemoteScript = new MyRadioButton("Remote");
+	MyRadioButton chkLocalScript = new MyRadioButton("Localhost (= single-machine project)");
+	MyRadioButton chkRemoteScript = new MyRadioButton("Remote (= distributed project)");
 	JCheckBox chkUseDaemons;
 	JCheckBox chkUseNativeSsh;
 
@@ -147,8 +147,8 @@ public class TabPanel extends JPanel {
 		buttonGroup1.add(chkLocalScript);
 		buttonGroup1.add(chkRemoteScript);
 
-		chkLocalScript.setToolTipText("Run Acs scripts like acsStart on your local host");
-		chkRemoteScript.setToolTipText("Connect to a remote host and run the Acs scripts there");
+		chkLocalScript.setToolTipText("Run all of Acs on a single machine (localhost)");
+		chkRemoteScript.setToolTipText("Run a distributed Acs on multiple hosts");
 
 		chkLocalScript.setName("chk_Local");
 		chkRemoteScript.setName("chk_Remote");
