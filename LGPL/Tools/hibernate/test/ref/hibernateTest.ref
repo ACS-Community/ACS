@@ -119,7 +119,6 @@
 1 - ----------T--:--:--.--- INFO [org.hibernate.cfg.SettingsFactory] Named query checking : enabled
 1 - ----------T--:--:--.--- INFO [org.hibernate.impl.SessionFactoryImpl] building session factory
 1 - ----------T--:--:--.--- FINE [org.hibernate.impl.SessionFactoryImpl] Session factory constructed with filter configurations : {}
-1 - , java.vm.name=Java HotSpot(TM) xxx VM, ACS.repository=corbaloc::xxxx:xxxx/InterfaceRepository, file.encoding=UTF-8, org.omg.CORBA.ORBClass=org.jacorb.orb.ORB, ACS.data=/alma/ACS-8.0/acsdata, acs.system.classpath.jardirs=../lib:/diska/home/almadev/introot/lib:/alma/ACS-8.0/ACSSW/lib, java.specification.version=1.6, hibernate.show_sql=true}
 1 - ----------T--:--:--.--- FINE [org.hibernate.persister.entity.AbstractEntityPersister] Static SQL for entity: alma.hibernate.test.SubEntity
 1 - ----------T--:--:--.--- FINE [org.hibernate.persister.entity.AbstractEntityPersister]  Insert 0: insert into sub_entity_table (name, parentId, subId) values (?, ?, ?)
 1 - ----------T--:--:--.--- FINE [org.hibernate.persister.entity.AbstractEntityPersister]  Snapshot select: select subentity_.subId, subentity_.name as name1_, subentity_.parentId as parentId1_ from sub_entity_table subentity_ where subentity_.subId=?

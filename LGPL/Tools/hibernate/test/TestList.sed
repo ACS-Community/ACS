@@ -14,4 +14,3 @@ s/JacORB threads average        (idle\/stress): [0-9]\+\.[0-9]\+\/[0-9]\+\.[0-9]
 s/Total number of JacORB threads: [0-9]\+/Total number of JacORB threads: xx/g
 s/Total number of ACS threads: [0-9]\+/Total number of ACS threads: xx/g
 s/org.jacorb.poa.RequestProcessor[ \t]\+WAITING[ \t]\+[0-9]\+/org.jacorb.poa.RequestProcessor                   WAITING        xx/g
-s/java.vm.name=Java HotSpot(TM) [a-z,A-Z]* VM/java.vm.name=Java HotSpot(TM) xxx VM/g
