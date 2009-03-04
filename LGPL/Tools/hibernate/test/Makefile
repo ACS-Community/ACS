@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.1 2009/02/12 11:46:58 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.2 2009/03/04 12:00:04 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -78,7 +78,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	$(RM) tmp	
+	$(RM) tmp
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
