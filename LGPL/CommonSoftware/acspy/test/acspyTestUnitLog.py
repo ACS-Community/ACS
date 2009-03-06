@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acspyTestUnitLog.py,v 1.9 2009/02/05 17:42:13 agrimstrup Exp $"
+# "@(#) $Id: acspyTestUnitLog.py,v 1.10 2009/03/06 16:54:56 cparedes Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: acspyTestUnitLog.py,v 1.9 2009/02/05 17:42:13 agrimstrup Exp $"
+__revision__ = "$Id: acspyTestUnitLog.py,v 1.10 2009/03/06 16:54:56 cparedes Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -307,7 +307,7 @@ class LoggerClassCheck(unittest.TestCase):
                         'msg', 'exc_info', 'funcName', 'relativeCreated', 'levelname', 'msecs']
         rv = self.mylogger.makeRecord('foo', Log.LEVELS[ACSLog.ACS_LOG_INFO], '/path/to/file.py',
                                       596, 'Main - Text', (), None, 'logInfo', {})
-        self.assertEqual(expectedkeys, rv.__dict__.keys())
+        self.assertEqual(expectedkeys.sort(), rv.__dict__.keys().sort())
         
     def testMakeRecordExtras(self):
         """Logger class creates logging records correctly"""
