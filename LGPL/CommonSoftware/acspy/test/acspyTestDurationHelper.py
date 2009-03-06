@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# @(#) $Id: acspyTestDurationHelper.py,v 1.2 2004/08/18 21:15:39 dfugate Exp $
+# @(#) $Id: acspyTestDurationHelper.py,v 1.3 2009/03/06 15:04:39 cparedes Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -37,7 +37,7 @@ print "----------------------"
 d1 = DurationHelper(0x7FFFFFFFFFFFFFFA)
 print d1.toString("")
 print "----------------------"
-d1.value(0L)
+d1.value((long)0L)
 print d1.toString("")
 print "----------------------"
 #For some reason or another, this test taken from the C++ modular test of acstime
