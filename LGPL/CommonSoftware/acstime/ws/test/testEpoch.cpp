@@ -1,4 +1,4 @@
-// @(#) $Id: testEpoch.cpp,v 1.14 2006/09/01 02:20:54 cparedes Exp $
+// @(#) $Id: testEpoch.cpp,v 1.15 2009/03/06 14:48:27 cparedes Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -646,41 +646,43 @@ int main(int argc,char *argv[])
 	delete e1;
 	e1 = new EpochHelper();
 	long long dividend = 1LL;
+	long double seconds = 1000ULL;
 
-	e1->value(1000ULL);
+	e1->value(seconds);
 	eout.value = 1ULL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << eout.value;
 	e1->modulo(eout);
 	cout << ", New value:" << e1->value().value << endl;
 
-	e1->value(1000ULL);
+	e1->value(seconds);
 	eout.value = 11ULL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << eout.value;
 	e1->modulo(eout);
 	cout << ", New value:" << e1->value().value << endl;
 
-	e1->value(1000ULL);
+	e1->value(seconds);
 	dividend = 1LL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << dividend;
 	d1 = *e1 % dividend;
 	cout << ", DurationHelper value:" << d1->value().value << endl;
 	delete d1;
 	
-	e1->value(1000ULL);
+	e1->value(seconds);
 	dividend = 11LL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << dividend;
 	d1 = *e1 % dividend;
 	cout << ", DurationHelper value:" << d1->value().value << endl;
 	delete d1;
 
-	e1->value(1ULL);
+	seconds = 1ULL;
+	e1->value(seconds);
 	dividend = 1000LL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << dividend;
 	d1 = dividend % *e1;
 	cout << ", DurationHelper value:" << d1->value().value << endl;
 	delete d1;
-	
-	e1->value(11ULL);
+   	seconds = 11ULL;	
+	e1->value(seconds);
 	dividend = 1000LL;
 	cout << "Epoch value:" <<e1->value().value << ", Modulo operand:" << dividend;
 	d1 = dividend % *e1;
