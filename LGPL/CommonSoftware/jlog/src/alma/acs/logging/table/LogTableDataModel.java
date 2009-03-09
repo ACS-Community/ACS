@@ -231,7 +231,8 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				len=(int)f.length();
 			}
 		} catch (Exception fnfe) {
-			System.err.println("Exception creating the reader: "+fileName);
+			JOptionPane.showInternalMessageDialog(loggingClient.getLogEntryTable(), fnfe.getMessage(), "Error opening "+fileName, JOptionPane.ERROR_MESSAGE);
+			fnfe.printStackTrace();
 			return;
 		}
 		getIOHelper().loadLogs(br,loggingClient,loggingClient,len);
