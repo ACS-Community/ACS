@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: javaMakefile,v 1.76 2006/04/03 12:05:24 mzampare Exp $"
+# "@(#) $Id: javaMakefile,v 1.77 2009/03/09 14:51:09 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -183,12 +183,12 @@ clean_java:
 do_java:  do_names_check do_components_check $(TMP_DEP_JAR) $(TMP_DEP_C_JAR)
 	$(AT) for member in $(foreach name, $(JARFILES_LIST), $(name) ); \
 		do \
-		make -f ../object/$${member}.djar ../lib/$${member}.jar;\
+		make -f ../object/$${member}.djar ../lib/$${member}.jar ||  exit ;\
 		done
 	$(AT) for member in $(foreach name, $(C_JARFILES_LIST), $(name) ); \
 		do \
 		echo "== Making $${member} component jarfile ";\
-		make -f ../object/$${member}.dcjar ../lib/$(ACS_CO)/$${member}.jar;\
+		make -f ../object/$${member}.dcjar ../lib/$(ACS_CO)/$${member}.jar || exit ;\
 		done
 #
 # this ugly thing should not stay in here.
