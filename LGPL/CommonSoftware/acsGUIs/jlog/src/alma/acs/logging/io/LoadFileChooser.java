@@ -61,7 +61,7 @@ public class LoadFileChooser extends LogsFileChooser implements ActionListener {
 	 * @param client The <code>LoggingClient</code> invoking this file chooser
 	 */
 	public LoadFileChooser(File currentDir,String title, String[] extensions, LoggingClient client) {
-		super(title, currentDir);
+		super(title, currentDir,true);
 		if (client==null) {
 			throw new IllegalArgumentException("Invalid null LoggingClient!");
 		}

@@ -66,7 +66,7 @@ public class SaveFileChooser extends LogsFileChooser implements ActionListener {
 	 * @param currentDirectoryPath The path of the current folder
 	 */
 	public SaveFileChooser(String title, File currentDir) {
-		super(title,currentDir);
+		super(title,currentDir,false);
 		initialize(currentDir);
 		setTitle(title);
 		setModal(true);

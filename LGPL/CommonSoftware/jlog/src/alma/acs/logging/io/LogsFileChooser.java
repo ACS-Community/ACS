@@ -48,14 +48,21 @@ public class LogsFileChooser extends JDialog implements ActionListener {
 	 * 
 	 * @param title The tile of the dialog
 	 * @param currentDir The dir whose content is shown at startup
+	 * @param load <code>true</code> if the file chooser is used to load,
+	 * 			<code>false</code> otherwise
 	 */
-	public LogsFileChooser(String title, File currentDir) {
+	public LogsFileChooser(String title, File currentDir, boolean load) {
 		super();
 		setTitle(title);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		fileChooser = new JFileChooser(currentDir);
 		fileChooser.addActionListener(this);
+		if (load) {
+			fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
+		} else {
+			fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
+		}
 	}
 	
 	/**
