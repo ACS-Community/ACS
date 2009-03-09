@@ -77,12 +77,13 @@ public class FileChooserFilter extends FileFilter {
 	 */
 	@Override
 	public String getDescription() {
-		StringBuilder ret = new StringBuilder("Filtering based on ");
+		StringBuilder ret = new StringBuilder("Files of type ");
 		for (String str: extensions) {
+			ret.append('*');
 			ret.append(str);
 			ret.append(' ');
 		}
-		return null;
+		return ret.toString();
 	}
 
 }
