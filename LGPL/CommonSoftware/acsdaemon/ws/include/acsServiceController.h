@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.2 2008/11/10 20:04:46 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.3 2009/03/10 08:48:10 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,6 +31,7 @@
 #include "acsRequest.h"
 #include <acsThreadManager.h>
 #include <map>
+#include <string>
 
 const ACE_Time_Value TIME_PERIOD(60);
 
@@ -59,8 +60,8 @@ class ServiceController {
     ACSDaemonContext *context;
     bool autorestart;
     ACE_Thread_Mutex *m_mutex;
-    acsdaemon::ServiceState state;
-    bool active;
+    volatile acsdaemon::ServiceState state;
+    volatile bool active;
     Request *startreq, *stopreq; // last request in queue (either start or stop, not both)
 
     friend class ControlledServiceRequest;
@@ -148,7 +149,7 @@ class ACSDaemonContext {
     ACE_Thread_Mutex *m_mutex;
     ServiceController **impcontrollers;
     ServiceController **acsservicecontrollers;
-    std::map<const char *, ServiceController **> acsservicecontrollersmap;
+    std::map<std::string, ServiceController **> acsservicecontrollersmap;
     ServiceController *getImpController(ACSServiceType service);
     ServiceController *getACSServiceController(ACSServiceRequestDescription *desc);
     ACE_CString managerReference;
