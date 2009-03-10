@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: jlog,v 1.33 2009/02/09 10:43:06 hsommer Exp $"
+# "@(#) $Id: jlog,v 1.34 2009/03/10 17:18:48 hsommer Exp $"
 #
 #acsStartJava com.cosylab.logging.LoggingClient
 
@@ -41,4 +41,4 @@ fi
 # Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "jlog.gclog". 
 export JVM_GC_LOG_NAME=jlog
 
-acsStartJava -v -Xms32m -v -Xmx512m --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
+acsStartJava -maxHeapSize 512m --noDirectory alma.acs.logging.dialogs.main.LogFrame $*
