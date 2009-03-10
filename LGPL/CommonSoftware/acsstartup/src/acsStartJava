@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.56 2009/02/09 17:14:17 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.57 2009/03/10 17:16:36 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -68,14 +68,16 @@ INSTALL_ROOT=`echo $INTLIST | awk -F: '{print $1}'`
 #
 # These will contain the parsing results (CL_XXX, CL = command line)
 #
-CL_ENDORSED=
 CL_CLIENTVM=
+CL_MAXHEAPSIZE=
+CL_THREADSTACKSIZE=
 CL_NOEXPORT=
 CL_MANAGERREF=
 CL_BASEPORT=
 CL_JAVAPROPS=
 CL_HELP=
 CL_JARPATH=
+CL_ENDORSED=
 CL_JARS=
 CL_NAC=
 CL_NCL=
@@ -86,7 +88,7 @@ CL_VMTOOLS=
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,endorsed,clientVM,noexport,managerReference:,baseport:,jarpath:,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools
+LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools
 SHORTOPTS=hm:b:D:j:
 
 #
@@ -97,13 +99,16 @@ function printUsage {
    echo ""
 	echo "Usage: `basename $0` [OPTIONS]  java_class  main_args"
 	echo "Options: "
-	echo "   -endorsed                                        includes jar files under lib/endorsed/ (try this on xml parser errors)"
 	echo "   -clientVM                                        uses JVM options suitable for small client applications"
+	echo "   -maxHeapSize size                                Sets the max JVM heap size, with same unit format as the java -Xmx option, e.g. 256m or 2g"
+	echo "   -threadStackSize size                            Sets the java thread stack size, with same unit format"
+	echo "                                                       as the java -Xss / -XX:ThreadStackSize options, e.g. 128k or 1m"
 	echo "   -noexport                                        try this on environment variable errors"
 	echo "   -m | -managerReference MGR                       the corbaloc of your favorite manager"
 	echo "   -b | -baseport INSTANCE                          the acs instance (0-9) you want to use"
 	echo "   -D PROP=VAL [-D PROP=VAL ...]                    system property definitions to pass to the JVM"
 	echo "   -j | -jarpath someDir/lib[:someOtherDir/lib]     allows developer to set directories where jar files can be found"
+	echo "   -endorsed                                        includes jar files under lib/endorsed/ (try this on xml parser errors)"
 	echo "   -addToClasspath someJar.jar[:someOtherJar.jar]   allows developer to pick special jar files to be added to the \$CLASSPATH"
 	echo "   -noAutoClasspath                                 do not generate automatically the CLASSPATH adding all jar files in the jarpath. "
 	echo "   -noClassLoader                                   do not use the special ACS class loader to find the jar files,"
@@ -113,12 +118,17 @@ function printUsage {
 	echo "   -vmtools                                         start JVM Tools together with the application"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
-	echo "   MANAGER_REFERENCE		if is not set, take the HOST to contruct it. Used if not given as parameter"
-	echo "   ACS_NAME_SERVICE		if is not set, take the computer where Manager is located"
-	echo "   ACS_INTERFACE_REPOSITORY	if is not set, take the computer where Manager is located"
-	echo "   ACS_ABEANS_CONFIG		if is not set, creates default values for configuration files directory "
-	echo "				(\$ACSDATA/config/abeans/Config)"
+	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
+	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -client, -maxHeapSize, -threadStackSize and don't add any default memory"
+	echo "                                                       and garbage collector settings; instead pass through the settings from this variable."
+	echo "   ACS_NAME_SERVICE         if is not set, take the computer where Manager is located"
+	echo "   ACS_INTERFACE_REPOSITORY if is not set, take the computer where Manager is located"
+	echo "   ACS_ABEANS_CONFIG        if is not set, creates default values for configuration files directory "
+	echo "                          (\$ACSDATA/config/abeans/Config)"
 }
+
+
+
 
 #
 # Run getopt (posixly_correct needed). We run twice:
@@ -160,6 +170,8 @@ do
 	case "$1" in
 	--endorsed)         CL_ENDORSED=true ;;
 	--clientVM)         CL_CLIENTVM=true ;;
+	--maxHeapSize)      CL_MAXHEAPSIZE=$2 ; shift ;;
+	--threadStackSize)  CL_THREADSTACKSIZE=$2 ; shift ;;
 	--noexport)         CL_NOEXPORT=true ;;
 	--managerReference) CL_MANAGERREF=$2 ; shift ;;
 	-m)                 CL_MANAGERREF=$2 ; shift ;;
@@ -524,9 +536,9 @@ fi
 # By specifying the "-clientVM" option for acsStartJava, some less server-sided configuration will be used (currently nothing but the JVM choice for the -client switch).
 #
 # Only for very specific needs, users may supply their own settings directly in the env var JAVA_OPTIONS_MEMORY
-# which will be used instead of the default server or client settings and will also override all GC settings.
+# which will be used instead of the default server or client settings and will also override all GC settings, -maxHeapSize and -threadStackSize.
 #
-# TODO Decide about setting heap memory limits via -Xms -Xmx, and how a user can override them without affecting the GC options.
+# TODO Decide about setting a default heap memory limit (-Xmx) in case the user does not pass the -maxHeapSize option. Otherwise JVM uses 64 MB
 #
 if [ X"$JAVA_OPTIONS_MEMORY" = X ]
 then
@@ -535,7 +547,14 @@ then
         JAVA_OPTIONS_MEMORY="-client"
     else
         JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode"
-        
+    fi
+
+    # Since ACS 8.0 we support dedicated options for JVM heap size and thread stack size (instead of accepting the generic -jvmOption)
+    if [ X"$CL_MAXHEAPSIZE" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xmx$CL_MAXHEAPSIZE"
+    fi
+    if [ X"$CL_THREADSTACKSIZE" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xss$CL_THREADSTACKSIZE"
     fi
 
     # Since ACS 8.0 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME
@@ -549,10 +568,10 @@ then
     if [ X"$ACS_TMP" != X ]; then
         JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP"
     fi
-    
 fi
 
 JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_MEMORY"
+
 ### ----------- End of JVM memory settings ---------------
 
 
