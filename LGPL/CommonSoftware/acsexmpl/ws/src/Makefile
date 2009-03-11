@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.137 2007/03/06 08:47:50 agrimstrup Exp $" 
+# "@(#) $Id: Makefile,v 1.138 2009/03/11 16:44:42 hsommer Exp $" 
 #
 # Makefile of ........
 #
@@ -327,8 +327,6 @@ IDL_FILES = 	acsexmplPowerSupply \
                 acsexmplErrorComponent
 USER_IDL = 
 
-
-ABEANS = acsexmplPowerSupply
 #
 #>>>>> END OF standard rules
 
@@ -358,7 +356,7 @@ all:	do_all
 clean : clean_all 
 	$(RM) *~ ../include/*~ ../idl/*~ ../*~ ../../*~ core
 	$(RM) ../doc/html
-	$(RM) tmp.txt acsexmplbeans.jar ../doc/abeans.log
+	$(RM) tmp.txt acsexmplbeans.jar
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
