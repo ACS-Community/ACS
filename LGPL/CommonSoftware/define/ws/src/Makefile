@@ -39,10 +39,6 @@
 DEBUG = on
 COMPONENT_HELPERS=on
 
-# 
-# ABEANS classes
-# 
-ABEANS = xmlentity archive_pingable_if archive_xmlstore_if 
 
 # 
 # XML schema files and includes

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.25 2009/01/06 19:49:23 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.26 2009/03/11 16:56:42 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -151,8 +151,6 @@ CDB_SCHEMAS = CLOCK
 IDL_FILES = acstime
 IDL_TAO_FLAGS =
 USER_IDL =
-
-ABEANS=ACSTimeError acstime
 
 #ACS Error System target
 ACSERRDEF = ACSTimeError

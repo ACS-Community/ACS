@@ -19,7 +19,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 #  MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.17 2006/10/24 12:00:53 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.18 2009/03/11 17:01:41 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -105,10 +105,6 @@ IDL_FILES = acssamp
 IDL_TAO_FLAGS =
 USER_IDL =
 
-#
-# ABEANS
-#
-ABEANS = acssamp
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
