@@ -2,7 +2,7 @@
 
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.19 2005/07/06 00:05:28 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.20 2009/03/11 17:08:51 hsommer Exp $" 
 #
 # Makefile of ........
 #
@@ -119,10 +119,6 @@ PY_SCRIPTS = mountSimple mountCallback acscourseMountSupplier acscourseMountCons
 
 PY_PACKAGES = ACSCOURSE_MOUNTImpl
 
-#
-# Jar files for Abeans
-#
-ABEANS = ACSErrTypeACSCourse acscourseMount
 
 #
 #>>>>> END OF standard rules
@@ -158,10 +154,6 @@ endif
 all:	do_all
 	@echo " . . . 'all' done" 
 
-#
-# Also deletes jar files for Abeans
-# TODO: This will be integrated in the ACS Makefile
-#
 clean : clean_all 
 	$(RM) *~ ../include/*~ ../idl/*~ ../*~ ../../*~ ../doc/html/* core
 	$(RM) tmp.txt 
