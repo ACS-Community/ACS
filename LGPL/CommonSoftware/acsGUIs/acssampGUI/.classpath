@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="alma/acssampGUI/**" kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
@@ -17,11 +16,16 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/abeansACSPlug.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acssamp.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/acssampAbeans.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommonAbeans.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jfree-jcommon-1.0.10.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jfreechart-1.0.6.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/miglayout-3.5.5.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
