@@ -1,4 +1,4 @@
-// @(#) $Id: testDuration.cpp,v 1.7 2009/03/06 14:48:27 cparedes Exp $
+// @(#) $Id: testDuration.cpp,v 1.8 2009/03/13 10:05:37 bjeram Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -208,7 +208,7 @@ int main(int argc,char *argv[])
     cout << "New tests for operators here:" << endl << endl;
     {
     d1 = new DurationHelper();
-    long double seconds =  1000LL; 
+    ACS::TimeInterval seconds =  1000LL; 
     d1->value(seconds);
     dout.value = 1LL;
     cout << "Duration value:" <<d1->value().value << ", Modulo operand:" << dout.value;

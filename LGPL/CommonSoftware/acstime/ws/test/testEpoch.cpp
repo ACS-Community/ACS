@@ -1,4 +1,4 @@
-// @(#) $Id: testEpoch.cpp,v 1.15 2009/03/06 14:48:27 cparedes Exp $
+// @(#) $Id: testEpoch.cpp,v 1.16 2009/03/13 10:05:37 bjeram Exp $
 //
 // Copyright (C) 2001
 // Associated Universities, Inc. Washington DC, USA.
@@ -646,7 +646,7 @@ int main(int argc,char *argv[])
 	delete e1;
 	e1 = new EpochHelper();
 	long long dividend = 1LL;
-	long double seconds = 1000ULL;
+	ACS::Time seconds = 1000ULL;
 
 	e1->value(seconds);
 	eout.value = 1ULL;
