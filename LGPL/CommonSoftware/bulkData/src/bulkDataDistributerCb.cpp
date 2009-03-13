@@ -131,6 +131,7 @@ int BulkDataDistributerCb::handle_destroy (void)
 int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &)
 {
     //ACS_TRACE("BulkDataDistributerCb::receive_frame");
+    //cout << "BulkDataDistributerCb::receive_frame - state_m: " << state_m << endl;
 
     working_m = true;
 

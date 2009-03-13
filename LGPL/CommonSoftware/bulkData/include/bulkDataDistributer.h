@@ -127,6 +127,10 @@ namespace AcsBulkdata
 
 	virtual bool isRecvConnected (const ACE_CString& receiverName);
 
+	virtual bool isSenderConnected (const ACE_CString& receiverName);
+
+	virtual bool isReceiverConnected (const ACE_CString& receiverName);
+
 	virtual void distSendStart (ACE_CString& flowName, CORBA::ULong flowNumber);
 
 	virtual int distSendDataHsk (ACE_CString& flowName, ACE_Message_Block * frame_p, CORBA::ULong flowNumber);

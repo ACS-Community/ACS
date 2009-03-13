@@ -97,6 +97,16 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
     
     try
 	{
+	CORBA::Boolean isSenderConn = distributer.isSenderConnected(receiverObj_p->name());
+	if(isSenderConn)
+	    {
+	    CORBA::Boolean isRecvConn = distributer.isReceiverConnected(receiverObj_p->name()); 
+	    if(isRecvConn)
+		{
+		return;
+		}
+	    }
+
 	receiverObj_p->openReceiver();
 
 	bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();

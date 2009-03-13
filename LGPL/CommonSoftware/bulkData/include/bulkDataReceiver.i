@@ -78,6 +78,12 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
 
     try
 	{
+	if (!CORBA::is_nil(sepB_p.in()))
+	    {
+	    // delete old stuff
+	    deleteFepsB();
+	    deleteSepB();
+	    }
 	sepB_p = createSepB();
 
 	ACE_CString flowName = "Flow1";
@@ -125,7 +131,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
     bulkdata::Connection conn = checkFlowCallbacks();
     recvConfig_p->connectionState = conn;
     if(conn == bulkdata::CONNECTED) // state CONNECTED, nothing is created on the receiver side
-	{
+	{							       
 	//return; // in case of CONNECTED state new sep and fep(s) are created on receiver side
 	          // uncomment the return to use the old ones
 	}
@@ -138,6 +144,12 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	    return;
 	    }
 
+	if (!CORBA::is_nil(sepB_p.in()))
+	    {
+	    // delete old stuff
+	    deleteFepsB();
+	    deleteSepB();
+	    }
 	sepB_p = createSepB();
 
 	FepsCfgB localStruct;
@@ -611,6 +623,8 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteSepB()
 	if (sepRefCount_p != 0) sepRefCount_p->_remove_ref();
 	sepRefCount_p=0;
 	}
+
+    sepB_p = AVStreams::StreamEndPoint_B::_nil();
 }
 
 
