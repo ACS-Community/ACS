@@ -92,16 +92,12 @@ public class LoadSwitchesPanel extends JPanel {
 	public void checkControlsState() {
 		// Clear and disable the disconnectCB if the engine is already
 		// disconnected
-		if (!loggingClient.isConnected()) {
-			disconnectCB.setSelected(false);
-			disconnectCB.setEnabled(false);
-		}
+		disconnectCB.setSelected(loggingClient.isConnected());
+		disconnectCB.setEnabled(loggingClient.isConnected());
 		
 		// Clear and disable the clearLogsCB if there are no logs in the table
-		if (loggingClient.getLCModel1().totalLogNumber()==0) {
-			clearLogsCB.setEnabled(false);
-			clearLogsCB.setSelected(false);
-		}
+		clearLogsCB.setEnabled(loggingClient.getLCModel1().totalLogNumber()!=0);
+		clearLogsCB.setSelected(loggingClient.getLCModel1().totalLogNumber()!=0);
 	}
 	
 	/**
