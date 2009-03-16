@@ -60,7 +60,6 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
-import com.sun.java.swing.plaf.motif.MotifBorders.BevelBorder;
 
 /**
  * A class to setup a query to submit to the DB
@@ -597,6 +596,8 @@ public class QueryDlg extends JDialog implements ActionListener {
 			setLocation(loggingPos);
 			toFront();
 		}
+		// Refresh the state of the switches to disconnec and clear the table
+		guiSwitches.checkControlsState();
 	}
 	
 	/**
