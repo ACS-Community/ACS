@@ -296,6 +296,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
     private LogFrame logFrame=null;
     
     /**
+     * The following property is set if logs runs in debug mode
+     */
+    private static final String DEBUG_MODE_PROPERTY="alma.acs.jlog.debugMode";
+    
+    /**
+     * <code>true</code> if jlog runs in debug mode
+     */
+    private final boolean debugMode=Boolean.getBoolean(DEBUG_MODE_PROPERTY);
+    
+    /**
      * <code>containerServices</code> is always set while running as OMC plugin.
      * <P>
      * It is used to avoid creating a new ORB when one is already available.
@@ -1769,6 +1779,13 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public ContainerServicesBase getContainerServices() {
 		return containerServices;
+	}
+	
+	/**
+	 * @return <code>true</code> if jlog runs in debug mode
+	 */
+	public boolean inDebugMode() {
+		return debugMode;
 	}
 }
 
