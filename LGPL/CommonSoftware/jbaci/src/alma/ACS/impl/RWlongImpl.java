@@ -208,9 +208,9 @@ public class RWlongImpl
 		try
 		{	
 			if (type == CallbackDispatcher.DONE_TYPE)
-				((CBlong)callback).done((int) ((Long)value).longValue(), completion, desc);
+				((CBlong)callback).done((int) ((Integer)value).intValue(), completion, desc);
 			else if (type == CallbackDispatcher.WORKING_TYPE)
-				((CBlong)callback).working((int) ((Long)value).longValue(), completion, desc);
+				((CBlong)callback).working((int) ((Integer)value).intValue(), completion, desc);
 			else 
 				return false;
 				
