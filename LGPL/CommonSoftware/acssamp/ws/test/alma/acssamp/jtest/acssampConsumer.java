@@ -17,12 +17,11 @@ import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
 
-import abeans.models.acs.baci.util.TimeConverter;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
+import alma.acs.util.UTCUtility;
 import alma.acsnc.EventDescription;
 import alma.acssamp.SampObjPackage.SampDataBlock;
 import alma.acssamp.SampObjPackage.SampDataBlockSeqHelper;
@@ -105,7 +104,7 @@ public class acssampConsumer extends Consumer {
 				double extVal = sampledData[i].sampVal.extract_double();
 				System.out.println("VALUE: " + extVal);
 
-				long javaTime = TimeConverter.toJava(timeVal);
+				long javaTime = UTCUtility.utcOmgToJava(timeVal);
 				//model.addPoint((double)timeVal/1000.0,extVal);
 				//model.addPoint((double)javaTime/1000.0,extVal);
 			}
