@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.52 2005/11/11 08:56:45 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.53 2009/03/17 14:27:23 hsommer Exp $"
 #
 # Makefile of Abeans
 #
@@ -97,7 +97,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = baciModel
+SCRIPTS_L       = 
 
 #
 # man pages to be done
@@ -122,8 +122,7 @@ ASCII_TO_MIF =
 #
 # Jarfiles and their directories
 #
-JARFILES = abeansACSPlug abeansR2Components
-abeansACSPlug_DIRS = abeans
+JARFILES = abeansR2Components
 abeansR2Components_DIRS = com/cosylab/gui/components/r2
 
 USER_JFLAGS = -source 1.4 
@@ -133,7 +132,7 @@ USER_JFLAGS = -source 1.4
 # other files to be installed
 #----------------------------
 
-INSTALL_FILES = ../lib/abeansBaciModel.jar ../lib/abeansvep.zip ../lib/abeansplugin.jar
+INSTALL_FILES =
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -164,13 +163,11 @@ endif
 #
 # TARGETS
 # -------
-all:	generate do_all vep
+all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	$(RM) ../*~ ../*/*~
-	$(RM) ../lib/abeansBaciModel.jar
-	$(RM) ../lib/abeansplugin.jar
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
@@ -180,18 +177,6 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
-	@echo " . . . copying configuration files"
-	-@gtar -cf - --exclude="CVS" -C ../config abeans  | gtar -xf - -C $(ACSDATA)/config; \
-	         chmod $(P755) $(ACSDATA)/config/abeans;
 	@echo " . . . installation done"
 
-generate :
-	@sh ./baciModel
-
-vep : #../lib/abeansplugin.jar
-	@echo "== Creating Eclipse VEP plugin: abeansvep.zip"
-# copy to lib
-	@cp abeansvep/plugins/com.cosylab.abeans.vep_3.1.1/abeansplugin.jar ../lib
-#	@cd abeansvep; zip -qr ../../lib/abeansvep.zip plugins
-	@echo " . . . done."
 #___oOo___
