@@ -1,14 +1,10 @@
 package com.cosylab.gui.components.r2;
 
+import java.lang.reflect.Modifier;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
-/**
- * Creation date: (23.10.2001 19:33:13)
- * @author: 
- */
-import java.lang.reflect.*;
+import alma.acs.util.UTCUtility;
 
 public class DataFormatter {
   public static int MAX_RECURSION_LEVEL = 25;
@@ -291,7 +287,7 @@ public static String unpackReturnValue(Object value, String start, int level,boo
 									// msekoran - ACS timestamp support (this is really not clean solution)
 									if (curField.getName().equals("timeStamp") && curField.getDeclaringClass().getName().equals("alma.ACSErr.Completion"))
 									{
-										long javaTime = abeans.models.acs.baci.util.TimeConverter.toJava(curField.getLong(value)); 
+										long javaTime = UTCUtility.utcOmgToJava(curField.getLong(value)); 
 										result.append(df.format(new Date(javaTime)));
 									}
 									else
