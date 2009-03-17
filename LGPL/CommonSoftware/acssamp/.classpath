@@ -10,7 +10,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/backport-util-concurrent.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
@@ -19,18 +18,18 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="lib" path="ws/lib/acssamp.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/abeansACSPlug.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
