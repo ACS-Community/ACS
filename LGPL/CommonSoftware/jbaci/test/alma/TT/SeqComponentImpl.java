@@ -67,7 +67,7 @@ import alma.acs.exceptions.AcsJException;
  * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
-public class SeqComponentImpl extends CharacteristicComponentImpl 
+public class SeqComponentImpl extends CharacteristicComponentImpl  
 	implements SeqComponentOperations {
 
 
