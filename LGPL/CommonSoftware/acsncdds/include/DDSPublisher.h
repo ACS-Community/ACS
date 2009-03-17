@@ -124,9 +124,11 @@ namespace ddsnc{
 	};
 }
 
+/*
 //#define ACS_NEW_DDS_PUBLISHER(publisher_p, idlStruct, channelName) \
 //	ddsnc::DDSPublisher<idlStruct##DataWriter_var> *publisher_p = 0; \
 //	publisher_p = new ddsnc::DDSPublisher<idlStruct##DataWriter_var>(channelName);
+*/
 
 #define PUBLISH_DATA(publisher_p, idlStruct, message) \
 { \
