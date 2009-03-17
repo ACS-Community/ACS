@@ -1,6 +1,6 @@
 2 - starting acspyexmplClientErrorComponent
 2 - Creating ClientErrorComponent
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 -  --endorsed -D ACS.manager=corbaloc::xxxx:xxxx/Manager -- alma.acs.container.AcsContainerRunner -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer
 1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/somepath
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName javaContainer 
@@ -302,3 +302,4 @@
 1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...
+

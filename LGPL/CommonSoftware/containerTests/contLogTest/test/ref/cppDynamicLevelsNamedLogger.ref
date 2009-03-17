@@ -1,5 +1,5 @@
 1 -  -D TEST_COMP_NAMES=TESTLOG4 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 1 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
@@ -120,3 +120,4 @@
 1 - 
 1 - OK (2 tests)
 1 - 
+

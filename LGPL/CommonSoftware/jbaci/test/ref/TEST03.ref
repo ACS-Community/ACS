@@ -1,5 +1,5 @@
 1 - === Starting BuildingTest JUnit test
-1 - INFO - Starting Java/abeans application: alma.acsexmplBuilding.BuildingTest
+1 - INFO - Starting Java application: alma.acsexmplBuilding.BuildingTest
 1 - INFO - Using endorsed jar files in: -Djava.endorsed.dirs=/home/almadev/introot/lib/endorsed:/alma/ACS-6.0/ACSSW/lib/endorsed:
 1 - Initializing CORBA...
 1 - CORBA initialized.
@@ -34,3 +34,4 @@
 1 - [jacorb.poa] INFO : POA RootPOA destroyed
 1 - CORBA finalized.
 1 - === dispatchAction BuildingTest test completed
+

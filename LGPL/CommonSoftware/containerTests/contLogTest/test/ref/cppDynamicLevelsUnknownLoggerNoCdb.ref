@@ -10,7 +10,7 @@
 1 - <timestamp> [GlobalLogger - ] Done all.
 1 - user exception, ID 'IDL:alma/maciErrType/LoggerDoesNotExistEx:1.0'
 1 - 
-2 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+2 - <timestamp> INFO [acsStartJava] Starting Java application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 2 - .<timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
 2 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] component 'alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest' requested AdvancedContainerServices
@@ -131,3 +131,4 @@
 2 - 
 2 - OK (2 tests)
 2 - 
+

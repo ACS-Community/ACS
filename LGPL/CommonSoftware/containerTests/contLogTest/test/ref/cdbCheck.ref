@@ -1,6 +1,6 @@
 1 - Searching for schema files in: <pwd>/../config/CDB/schemas:<pwd>/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas
 1 -  --noDirectory --endorsed -D ACS.tmp=<ACSDATA>/tmp -D ACS.config_path=<ACS-/INT-ROOT> -D ACS.cdbpath=<pwd>/../config/CDB/schemas:<pwd>/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas:<ACS-/INT-ROOT>/config/CDB/schemas -- cl.utfsm.cdbChecker.CDBChecker
-1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: cl.utfsm.cdbChecker.CDBChecker
+1 - <timestamp> INFO [acsStartJava] Starting Java application: cl.utfsm.cdbChecker.CDBChecker
 1 - <timestamp> INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=<ACS-/INT-ROOT>/lib/endorsed:
 1 - 
 1 - 
@@ -11,3 +11,4 @@
 1 - 
 1 - CDBChecker exiting. No errors found
 1 - 
+

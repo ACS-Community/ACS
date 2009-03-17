@@ -1,5 +1,5 @@
 1 -  -- alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTAUTOCPPCHAR 50 CHAR
-1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTAUTOCPPCHAR 50 CHAR
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents TESTAUTOCPPCHAR 50 CHAR
 1 - .<timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] -------------------------------
 1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] ComponentClientTestCase#setUp()
 1 - <timestamp> INFO [alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents#testGetGivenComponents] client 'alma.lifecycleTest.TestLifeCycleCompImpl.TestMultipleComponents' has successfully released  a component with curl=TESTAUTOCPPCHAR11
@@ -57,3 +57,4 @@
 1 - 
 1 - OK (1 test)
 1 - 
+

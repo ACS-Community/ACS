@@ -1,5 +1,5 @@
 1 -  -D TEST_COMP_NAMES=TESTLOG6 -- alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
-1 - <timestamp> INFO [acsStartJava] Starting Java/abeans application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
+1 - <timestamp> INFO [acsStartJava] Starting Java application: alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest
 1 - .<timestamp> DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] -------------------------------
 1 - <timestamp> INFO [alma.contLogTest.TestLogLevelsCompImpl.TestLogLevelsCompTest#testGetLevels] ComponentClientTestCase#setUp()
@@ -156,3 +156,4 @@
 1 - 
 1 - OK (2 tests)
 1 - 
+
