@@ -27,6 +27,8 @@ import alma.ACS.CBfloatPOA;
 import alma.ACS.CBlongPOA;
 import alma.ACS.CBvoidPOA;
 import alma.ACS.Monitordouble;
+import alma.ACS.Monitorfloat;
+import alma.ACS.Monitorlong;
 import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.ROdouble;
 import alma.ACS.ROfloat;
@@ -36,6 +38,8 @@ import alma.ACS.RWfloat;
 import alma.ACS.RWlong;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.doubleSeqHolder;
+import alma.ACS.floatSeqHolder;
+import alma.ACS.longSeqHolder;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 import alma.PS.PowerSupply;
@@ -933,14 +937,14 @@ public void testGetAsyncFloatRW() {
 	
 }
 	
-	public void testSetAsync() {
-		/*
+public void testSetAsyncLongRW() {
+		
 		
 		CBvoidImpl cb = new CBvoidImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 		synchronized(cb)
 		{
-			RWproperty.set_async(500.0,cb._this(orb), descIn);
+			RWpropertyLong.set_async(500,cb._this(orb), descIn);
 			try
 			{
 				// wait for 5s
@@ -960,14 +964,82 @@ public void testGetAsyncFloatRW() {
 		// TODO check value
 		
 		CompletionHolder completionHolder = new CompletionHolder();
-		double value = RWproperty.get_sync(completionHolder);
-		assertEquals(500.0, value, 0.0);
-		*/
+		int value = RWpropertyLong.get_sync(completionHolder);
+		assertEquals(500, value, 0);
+		
 		
 	}
 
-	public void testGetHistory() {
-		/*
+public void testSetAsyncDoubleRW() {
+	
+	
+	CBvoidImpl cb = new CBvoidImpl();
+	CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+	synchronized(cb)
+	{
+		RWpropertyDouble.set_async(500.0,cb._this(orb), descIn);
+		try
+		{
+			// wait for 5s
+			cb.wait(5000);
+		}
+		catch (InterruptedException ie) {}
+	}
+		
+	// only 1 response is expected
+	//assertEquals(1, cb.getResponseQueue().size());
+	//CBResponse response = (CBResponse)cb.getResponseQueue().firstElement();
+	
+	// check reponse type
+	//assertEquals(CBResponse.DONE_TYPE, response.type);
+	
+	// check value
+	// TODO check value
+	
+	CompletionHolder completionHolder = new CompletionHolder();
+	double value = RWpropertyDouble.get_sync(completionHolder);
+	assertEquals(500.0, value, 0);
+	
+	
+}
+
+public void testSetAsyncFloatRW() {
+	
+	
+	CBvoidImpl cb = new CBvoidImpl();
+	CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+	synchronized(cb)
+	{
+		RWpropertyFloat.set_async( (float)500.0,cb._this(orb), descIn);
+		try
+		{
+			// wait for 5s
+			cb.wait(5000);
+		}
+		catch (InterruptedException ie) {}
+	}
+		
+	// only 1 response is expected
+	//assertEquals(1, cb.getResponseQueue().size());
+	//CBResponse response = (CBResponse)cb.getResponseQueue().firstElement();
+	
+	// check reponse type
+	//assertEquals(CBResponse.DONE_TYPE, response.type);
+	
+	// check value
+	// TODO check value
+	
+	CompletionHolder completionHolder = new CompletionHolder();
+	double value = RWpropertyFloat.get_sync(completionHolder);
+	assertEquals(500.0, value, 0.001);
+	
+	
+}
+
+
+
+	public void testGetHistoryDouble() {
+		
 		// wait until history fills
 		try
 		{
@@ -978,7 +1050,7 @@ public void testGetAsyncFloatRW() {
 
 		doubleSeqHolder dsh = new doubleSeqHolder();
 		TimeSeqHolder tsh = new TimeSeqHolder();
-		int len = ROproperty.get_history(5, dsh, tsh);
+		int len = ROpropertyDouble.get_history(5, dsh, tsh);
 		assertEquals(5, len);
 		assertEquals(dsh.value.length, tsh.value.length);
 		
@@ -987,18 +1059,68 @@ public void testGetAsyncFloatRW() {
 			System.out.println("[" + i + "] (" + 
 								new java.util.Date(UTCUtility.utcOmgToJava(tsh.value[i])) + 
 							   ") "+dsh.value[i]);
-							   */
+							   
+			
+	}
+	
+	public void testGetHistoryLong() {
+		
+		// wait until history fills
+		try
+		{
+			// 7 sec
+			Thread.sleep(7000);
+		}
+		catch (InterruptedException ie) {}
+
+		longSeqHolder lsh = new longSeqHolder();
+		TimeSeqHolder tsh = new TimeSeqHolder();
+		int len = ROpropertyLong.get_history(5, lsh, tsh);
+		assertEquals(5, len);
+		assertEquals(lsh.value.length, tsh.value.length);
+		
+		// TODO tmp
+		for (int i = 0; i < lsh.value.length; i++)
+			System.out.println("[" + i + "] (" + 
+								new java.util.Date(UTCUtility.utcOmgToJava(tsh.value[i])) + 
+							   ") "+lsh.value[i]);
+							   
+			
+	}
+	
+public void testGetHistoryFloat() {
+		
+		// wait until history fills
+		try
+		{
+			// 7 sec
+			Thread.sleep(7000);
+		}
+		catch (InterruptedException ie) {}
+
+		floatSeqHolder fsh = new floatSeqHolder();
+		TimeSeqHolder tsh = new TimeSeqHolder();
+		int len = ROpropertyFloat.get_history(5, fsh, tsh);
+		assertEquals(5, len);
+		assertEquals(fsh.value.length, tsh.value.length);
+		
+		// TODO tmp
+		for (int i = 0; i < fsh.value.length; i++)
+			System.out.println("[" + i + "] (" + 
+								new java.util.Date(UTCUtility.utcOmgToJava(tsh.value[i])) + 
+							   ") "+fsh.value[i]);
+							   
 			
 	}
 
-	public void testCreateMonitor() {
-		/*
+	public void testCreateMonitorLong() {
+		
 		// TODO do test with null callback ;)
 		// TODO implement...
-		CBdoubleImpl cb = new CBdoubleImpl();
+		CBlongImpl cb = new CBlongImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 
-		Monitordouble monitor = ROproperty.create_monitor(cb._this(orb), descIn);
+		Monitorlong monitor = ROpropertyLong.create_monitor(cb._this(orb), descIn);
 		try
 		{
 			// 10.5 sec
@@ -1022,95 +1144,25 @@ public void testGetAsyncFloatRW() {
 		
 		// TODO test if done was called
 		 
-		 */
+		 
 	}
-
-	public void testOnChangeMonitor() {
-		/*
+	
+public void testCreateMonitorDouble() {
+		
+		// TODO do test with null callback ;)
 		// TODO implement...
 		CBdoubleImpl cb = new CBdoubleImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 
-		Monitordouble monitor = ROproperty.create_monitor(cb._this(orb), descIn);
-		// disable on time trigger
-		monitor.set_timer_trigger(0);
-
+		Monitordouble monitor = ROpropertyDouble.create_monitor(cb._this(orb), descIn);
 		try
 		{
-			// sleep for 5 sec
-			Thread.sleep(3000);
+			// 10.5 sec
+			Thread.sleep(10500);
 		}
 		catch (InterruptedException ie) {}
 
-		// TODO monitors should not come
-
-
-		// every change test
-		monitor.set_value_trigger(0, true);
-		
-		// TODO change value here... 
-		// ups RO monitor ;)
-		// !!! TMP - tested with backdoor via alarm_high_on()...
-		ROproperty.alarm_high_on();
-		
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie) {}
-
-
-
-
-
-
-		// disable test
-		monitor.set_value_trigger(0, false);
-
-		ROproperty.alarm_high_on();
-		
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie) {}
-
-		monitor.set_value_trigger(0, true);
-
-		ROproperty.alarm_high_on();
-
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie) {}
-		
-System.out.println("------");
-
-		// disable test
-		monitor.suspend();
-
-		ROproperty.alarm_high_on();
-
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie) {}
-
-		/// ... this should revive it
-		monitor.resume();
-
-
-System.out.println("------");
-
-ROproperty.alarm_high_on();
-
-		try
-		{
-			Thread.sleep(3000);
-		}
-		catch (InterruptedException ie) {}
+		// TODO test 10 calls, sync monitors
 
 		synchronized(cb)
 		{
@@ -1126,8 +1178,313 @@ ROproperty.alarm_high_on();
 		
 		// TODO test if done was called
 		 
-		 */
+		 
 	}
+
+public void testCreateMonitorFloat() {
+	
+	// TODO do test with null callback ;)
+	// TODO implement...
+	CBfloatImpl cb = new CBfloatImpl();
+	CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+
+	Monitorfloat monitor = ROpropertyFloat.create_monitor(cb._this(orb), descIn);
+	try
+	{
+		// 10.5 sec
+		Thread.sleep(10500);
+	}
+	catch (InterruptedException ie) {}
+
+	// TODO test 10 calls, sync monitors
+
+	synchronized(cb)
+	{
+		try
+		{
+			monitor.destroy();
+
+			// wait for 3s
+			cb.wait(3000);
+		}
+		catch (InterruptedException ie) {}
+	}
+	
+	// TODO test if done was called
+	 
+	 
+}
+
+
+	public void testOnChangeMonitorLong() {
+		
+		// TODO implement...
+		CBlongImpl cb = new CBlongImpl();
+		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+
+		Monitorlong monitor = ROpropertyLong
+				.create_monitor(cb._this(orb), descIn);
+		// disable on time trigger
+		monitor.set_timer_trigger(0);
+
+		try {
+			// sleep for 5 sec
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// TODO monitors should not come
+
+		// every change test
+		monitor.set_value_trigger(0, true);
+
+		// TODO change value here...
+		// ups RO monitor ;)
+		// !!! TMP - tested with backdoor via alarm_high_on()...
+		ROpropertyLong.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// disable test
+		monitor.set_value_trigger(0, false);
+
+		ROpropertyLong.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		monitor.set_value_trigger(0, true);
+
+		ROpropertyLong.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		System.out.println("------");
+
+		// disable test
+		monitor.suspend();
+
+		ROpropertyLong.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// / ... this should revive it
+		monitor.resume();
+
+		System.out.println("------");
+
+		ROpropertyLong.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		synchronized (cb) {
+			try {
+				monitor.destroy();
+
+				// wait for 3s
+				cb.wait(3000);
+			} catch (InterruptedException ie) {
+			}
+		}
+
+		// TODO test if done was called
+		 
+		 
+	}
+	
+public void testOnChangeMonitorDouble() {
+		
+		// TODO implement...
+		CBdoubleImpl cb = new CBdoubleImpl();
+		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+
+		Monitordouble monitor = ROpropertyDouble
+				.create_monitor(cb._this(orb), descIn);
+		// disable on time trigger
+		monitor.set_timer_trigger(0);
+
+		try {
+			// sleep for 5 sec
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// TODO monitors should not come
+
+		// every change test
+		monitor.set_value_trigger(0, true);
+
+		// TODO change value here...
+		// ups RO monitor ;)
+		// !!! TMP - tested with backdoor via alarm_high_on()...
+		ROpropertyDouble.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// disable test
+		monitor.set_value_trigger(0, false);
+
+		ROpropertyDouble.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		monitor.set_value_trigger(0, true);
+
+		ROpropertyDouble.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		System.out.println("------");
+
+		// disable test
+		monitor.suspend();
+
+		ROpropertyDouble.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		// / ... this should revive it
+		monitor.resume();
+
+		System.out.println("------");
+
+		ROpropertyDouble.alarm_high_on();
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ie) {
+		}
+
+		synchronized (cb) {
+			try {
+				monitor.destroy();
+
+				// wait for 3s
+				cb.wait(3000);
+			} catch (InterruptedException ie) {
+			}
+		}
+
+		// TODO test if done was called
+		 
+		 
+	}
+
+public void testOnChangeMonitorFloat() {
+	
+	// TODO implement...
+	CBfloatImpl cb = new CBfloatImpl();
+	CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
+
+	Monitorfloat monitor = ROpropertyFloat
+			.create_monitor(cb._this(orb), descIn);
+	// disable on time trigger
+	monitor.set_timer_trigger(0);
+
+	try {
+		// sleep for 5 sec
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	// TODO monitors should not come
+
+	// every change test
+	monitor.set_value_trigger(0, true);
+
+	// TODO change value here...
+	// ups RO monitor ;)
+	// !!! TMP - tested with backdoor via alarm_high_on()...
+	ROpropertyFloat.alarm_high_on();
+
+	try {
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	// disable test
+	monitor.set_value_trigger(0, false);
+
+	ROpropertyFloat.alarm_high_on();
+
+	try {
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	monitor.set_value_trigger(0, true);
+
+	ROpropertyFloat.alarm_high_on();
+
+	try {
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	System.out.println("------");
+
+	// disable test
+	monitor.suspend();
+
+	ROpropertyFloat.alarm_high_on();
+
+	try {
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	// / ... this should revive it
+	monitor.resume();
+
+	System.out.println("------");
+
+	ROpropertyFloat.alarm_high_on();
+
+	try {
+		Thread.sleep(3000);
+	} catch (InterruptedException ie) {
+	}
+
+	synchronized (cb) {
+		try {
+			monitor.destroy();
+
+			// wait for 3s
+			cb.wait(3000);
+		} catch (InterruptedException ie) {
+		}
+	}
+
+	// TODO test if done was called
+	 
+	 
+}
 
 	public void testCreatePostponedMonitor() {
 		
