@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2009/03/02 21:52:12 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.11 2009/03/17 13:35:07 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -305,7 +305,7 @@ clean_dds:
 	rm -rf $(DDS_IDL_FILES).idl $(DDS_TYPE_IDLS)
 
 install_dds: $(DDS_TYPES_IDLS)
-	cp $(DDS_INCLUDE_FILES) $(INTROOT)/include
+	cp $(DDS_INCLUDE_FILES) $(INSTALL_ROOT)/include
 #	$(foreach file, $(DDS_INCLUDE_FILES), chmod 775 $(file))
 
 #___oOo___
