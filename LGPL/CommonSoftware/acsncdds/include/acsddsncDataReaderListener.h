@@ -60,7 +60,7 @@ class ACSDDSNCDataReaderListener :
 				//::std::cerr << "SampleInfo.sample_rank = " << si.sample_rank << ::std::endl;
 				//::std::cerr << "SampleInfo.instance_state = " << si.instance_state << ::std::endl;
 				if (si.valid_data == 1){
-					(*templateFunction_mp)(message, 0);
+					(*templateFunction_mp)(message, handlerParam_mp);
 				}else if (si.instance_state == DDS::NOT_ALIVE_DISPOSED_INSTANCE_STATE){
 					::std::cerr << "instance is disposed" << ::std::endl;
 				}else if (si.instance_state == DDS::NOT_ALIVE_NO_WRITERS_INSTANCE_STATE){

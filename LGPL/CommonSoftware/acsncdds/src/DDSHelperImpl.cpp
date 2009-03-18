@@ -83,13 +83,14 @@ int DDSHelper::createParticipant(){
 	participant = dpf->create_participant(DOMAIN_ID,
 			PARTICIPANT_QOS_DEFAULT,
 			DDS::DomainParticipantListener::_nil());
-	
-	std::cerr << "Created the participant" << std::endl;
 
 	if (CORBA::is_nil(participant.in())){
 		std::cerr << "Create Participant Failed." << std::endl;
 		return 1;
 	}
+	
+	std::cerr << "Created the participant" << std::endl;
+	
 	return 0;
 }
 
@@ -115,9 +116,9 @@ void DDSHelper::initializeTransport(){
 
 	}
 	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
-//		transport_impl_id++;
-//		initializeTransport();	
-		transport_impl=TheTransportFactory->obtain(transport_impl_id);
+		transport_impl_id++;
+		initializeTransport();	
+//		transport_impl=TheTransportFactory->obtain(transport_impl_id);
 	}
 
 	std::cerr << "Transport ID:" << transport_impl_id << std::endl;
