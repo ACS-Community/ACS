@@ -2,7 +2,6 @@ TEST_RUNNER_REPORT
 Running the following command:
 Starting Java application
 Using endorsed jar files in: -Djava.endorsed.dirs=
-ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
@@ -29,4 +28,3 @@ Waiting for the container
 Local file logger
 GlobalLogger
 alma.acs.testsupport.tat.TATJUnitRunner
-

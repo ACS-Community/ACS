@@ -1,8 +1,6 @@
 ACS Manager:
 ACS Interface Repository:
 java -classpath
-ACS abeans configuration directory:
-ACS abeans configuration directory
 Time:
 export
 Starting Java application
@@ -16,4 +14,3 @@ failed to flush logging queue because remote logging service has not been made a
 [jacorb.poa]
 endorsed
 user.dir
-

@@ -7,15 +7,12 @@ Time:
 XTRADYNE Technologies
 www.jacorb.org
 Connected to
-ACS abeans configuration directory:
 Using naming reference
 POA RootPOA
 export
 ERROR: Abnormal connection termination
 Starting Java application:
--D abeans.home
 \[jacorb\.poa\] INFO : Using server ID 
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 \[jacorb\.poa\] INFO : oid:
 object is activated
-

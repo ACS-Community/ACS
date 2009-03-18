@@ -1,7 +1,6 @@
 Running the following command:
 Starting Java application
 Using endorsed jar files in: -Djava.endorsed.dirs=
-ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
@@ -12,4 +11,3 @@ INTROOT =
 ACSROOT = 
 Total time
 JacORB/lib
-

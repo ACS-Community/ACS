@@ -1,5 +1,4 @@
 java -classpath
-ACS abeans configuration directory
 start generating a helper classes
 ACS Manager:
 ACS Interface Repository:
@@ -12,4 +11,3 @@ ComponentHelperInfo
 export
 Starting Java application:
 -D user.dir=
-

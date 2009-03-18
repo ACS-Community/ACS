@@ -2,7 +2,6 @@ ACS Manager:
 ACS Interface Repository:
 java -classpath
 ^. - [jJ]ava
-ACS abeans configuration directory
 Time:
 export
 endorsed
@@ -24,4 +23,3 @@ about to release component
 activated
  Failed to get MACI/Channels DAO from CDB
  ##
-

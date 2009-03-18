@@ -2,7 +2,6 @@ Running the following command:
 Starting Java application
 ^[jJ]ava
 Using endorsed jar files in: -Djava.endorsed.dirs=
-ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
@@ -12,4 +11,3 @@ SourceInfo:
 local manager from
 export
 alma.acs.testsupport.tat.TATJUnitRunner
-

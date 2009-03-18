@@ -1,5 +1,4 @@
 java -classpath
-ACS abeans configuration directory
 Time:
 export
 Starting Java application
@@ -10,4 +9,3 @@ INFO
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 Local file logger: Cache saved to
-

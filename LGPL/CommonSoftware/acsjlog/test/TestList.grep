@@ -1,6 +1,5 @@
 Starting Java application
 Using endorsed jar files
-ACS abeans configuration directory: 
 exported 
 ACS Manager: corbaloc::
 ACS Name Service: 
@@ -9,4 +8,3 @@ Running the following command:
 java -classpath 
 1 - Time:
 Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
-

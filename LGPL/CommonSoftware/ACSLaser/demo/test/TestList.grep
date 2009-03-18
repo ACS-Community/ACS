@@ -7,7 +7,6 @@ has not defined the Timeout for the component
 export
 Starting Java application
 endorsed
-ACS abeans configuration directory
 ACS Name Service
 Running the following command:
 java  -classpath
@@ -21,4 +20,3 @@ retrieved successfully
 about to release component
 has successfully released
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-

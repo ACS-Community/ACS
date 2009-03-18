@@ -5,7 +5,6 @@ lcuboot: open
 DAL root is
 Time:
 Connected to
-ACS abeans configuration directory:
 export
 Local file logger: Cache saved to
 -classpath

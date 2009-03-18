@@ -7,14 +7,11 @@ class CosNaming.NotFound
 Running the following command:
 Starting Java application
 Using endorsed jar files in: -Djava.endorsed.dirs=
-ACS abeans configuration directory:
 ACS Manager: corbaloc::
 ACS Name Service: corbaloc::
 ACS Interface Repository: corbaloc::
 LogConfig was initialized, but not from CDB settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-www.jacorb.org
-The JacORB project
 \[jacorb@
 java -classpath
 Logging to ACS log server.
@@ -31,7 +28,6 @@ DAL root is
 java -classpath
 Time:
 Connected to
-ACS abeans configuration directory:
 Using naming reference
 Retrying to connect to
 Abnormal connection termination
@@ -53,4 +49,3 @@ object is activated
 object is deactivated
 servant is etherealized
 name service error resolving
-

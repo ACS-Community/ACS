@@ -2,7 +2,6 @@ ACS Manager:
 ACS Interface Repository:
 java -classpath
 ^. - [jJ]ava
-ACS abeans configuration directory
 Time:
 export
 Starting Java application
@@ -17,4 +16,3 @@ INFO
 endorsed
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 activated
-
