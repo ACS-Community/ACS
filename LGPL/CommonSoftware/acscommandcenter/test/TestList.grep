@@ -1,4 +1,4 @@
-Starting Java/abeans application
+Starting Java application
 Using endorsed jar files in: 
 ACS Manager: 
 ACS Interface Repository: 
@@ -37,3 +37,4 @@ Connecting with
 sys-package-mgr
 alma.acs.testsupport.tat.TATJUnitRunner
 TEST_RUNNER_REPORT
+

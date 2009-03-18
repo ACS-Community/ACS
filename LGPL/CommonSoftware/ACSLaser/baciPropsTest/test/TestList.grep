@@ -6,7 +6,7 @@ ACS abeans configuration directory
 Time:
 export
 endorsed
-Starting Java/abeans application
+Starting Java application
 -D user.dir=
 Jlog will use cache for
 Connected
@@ -24,3 +24,4 @@ about to release component
 activated
  Failed to get MACI/Channels DAO from CDB
  ##
+

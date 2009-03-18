@@ -1,8 +1,9 @@
 java -classpath
-Starting Java/abeans application: 
+Starting Java application: 
 Time:
 export
 FINEST
 FINER
 FINE
 getAdvancedContainerServices
+

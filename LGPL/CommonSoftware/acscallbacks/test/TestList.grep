@@ -5,8 +5,9 @@ exported
 FINER: Resource 
 Using endorsed jar files in
 Connected to
-Starting Java/abeans application
+Starting Java application
 corbaloc
 Running the following command:
 alma.acs.testsupport.tat.TATJUnitRunner
 TEST_RUNNER_REPORT
+

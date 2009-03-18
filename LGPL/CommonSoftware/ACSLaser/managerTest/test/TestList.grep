@@ -5,7 +5,7 @@ java -classpath
 ACS abeans configuration directory
 Time:
 export
-Starting Java/abeans application
+Starting Java application
 -D user.dir=
 Jlog will use cache for
 Connected
@@ -17,3 +17,4 @@ INFO
 endorsed
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 activated
+

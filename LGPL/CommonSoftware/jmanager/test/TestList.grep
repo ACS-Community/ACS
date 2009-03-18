@@ -6,9 +6,10 @@ Using naming reference
 Retrying to connect to
 export
 -D abeans.home=
-Starting Java/abeans application:
+Starting Java application:
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
 Logging configuration has been initialized, but not from CDB settings.
 Bound ID: InterfaceRepository
 jacorb@CDB
+

@@ -1,4 +1,4 @@
-Starting Java/abeans application
+Starting Java application
 Using endorsed jar files
 ACS abeans configuration directory: 
 exported 
@@ -9,3 +9,4 @@ Running the following command:
 java -classpath 
 1 - Time:
 Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
+

@@ -1,7 +1,7 @@
 maci::MACIHelper::resolveManager
 endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.jconttest.ComponentTestclient
 --endorsed
-Starting Java/abeans application
+Starting Java application
 Using endorsed jar files in
 DEBUG \[acsStartJava\] ACS
 DEBUG \[acsStartJava\] exported
@@ -20,3 +20,4 @@ Local file logger: Cache saved to
 Waiting for the container to really shutdown
 ^. - Time: [0-9]+.[0-9]+
 ^. - $
+

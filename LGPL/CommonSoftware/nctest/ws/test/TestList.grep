@@ -5,7 +5,7 @@ Grep me out
 name service error resolving
 class CosNaming.NotFound
 Running the following command:
-Starting Java/abeans application
+Starting Java application
 Using endorsed jar files in: -Djava.endorsed.dirs=
 ACS abeans configuration directory:
 ACS Manager: corbaloc::
@@ -53,3 +53,4 @@ object is activated
 object is deactivated
 servant is etherealized
 name service error resolving
+

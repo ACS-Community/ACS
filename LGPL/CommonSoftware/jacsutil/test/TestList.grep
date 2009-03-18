@@ -1,6 +1,6 @@
 TEST_RUNNER_REPORT
 Running the following command:
-Starting Java/abeans application
+Starting Java application
 Using endorsed jar files in: -Djava.endorsed.dirs=
 ACS abeans configuration directory:
 ACS Manager: corbaloc::

@@ -1,5 +1,5 @@
 Running the following command:
-Starting Java/abeans application
+Starting Java application
 ^[jJ]ava
 Using endorsed jar files in: -Djava.endorsed.dirs=
 ACS abeans configuration directory:
@@ -12,3 +12,4 @@ SourceInfo:
 local manager from
 export
 alma.acs.testsupport.tat.TATJUnitRunner
+

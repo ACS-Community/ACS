@@ -5,7 +5,7 @@ ACS abeans configuration directory:
 ACS abeans configuration directory
 Time:
 export
-Starting Java/abeans application
+Starting Java application
 -D user.dir=
 Jlog will use cache for
 JacORB
@@ -13,3 +13,4 @@ Gerald Brose
 Connected
 failed to flush logging queue because remote logging service has not been made available
 <Info
+
