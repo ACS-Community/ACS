@@ -1,3 +1,0 @@
-plugs=ACS
-#plugs=Simulator CDBDAL ACS
-abeans.core.defaults.ConsoleLoggingPolicy=ALL

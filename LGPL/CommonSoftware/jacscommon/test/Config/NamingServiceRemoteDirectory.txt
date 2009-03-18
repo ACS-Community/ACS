@@ -1,2 +1,0 @@
-debug=true
-reference=iiop://localhost:4000/
