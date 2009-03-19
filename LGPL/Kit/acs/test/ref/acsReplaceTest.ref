@@ -1,0 +1,8 @@
+1 - Replacing strings in acsReplaceTestfile....
+1 - 
+1 - Done
+1 - 
+1 - 1c1,2
+1 - < This is a text file with just @REPLACEME line.
+1 - ---
+1 - > This is a text file with just one line.
