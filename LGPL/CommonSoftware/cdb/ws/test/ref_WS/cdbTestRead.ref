@@ -1233,4 +1233,3 @@
 1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components/NotExist' ]
 1 - 	at alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(AcsJCDBRecordDoesNotExistEx.java:xx)
 1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:xx)
-

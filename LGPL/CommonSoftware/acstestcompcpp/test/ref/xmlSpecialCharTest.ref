@@ -16,4 +16,3 @@
 1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxx:xxxx/CDB
 1 - ----------T--:--:--.--- INFO [ClearCache] clear_cache is invoked for all curls
-
