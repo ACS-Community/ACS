@@ -8700,8 +8700,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void readManagerConfiguration()
 	{
-		enableHandleMonitoring = System.getProperties().contains(NAME_HANDLE_MONITORING);
-		
+		enableHandleMonitoring = System.getProperties().containsKey(NAME_HANDLE_MONITORING);
+
 		DAOProxy managerDAO = getManagerDAOProxy();
 		if (managerDAO == null)
 			return;
