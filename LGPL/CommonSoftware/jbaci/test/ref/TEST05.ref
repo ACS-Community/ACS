@@ -1,0 +1,6 @@
+1 - === Starting PropertySeqTest JUnit test
+1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.TT.PropertySeqTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.acs.testsupport.tat.TATJUnitRunner alma.TT.PropertySeqTest
+1 - TEST_RUNNER_REPORT success/total: 30/30
+1 - JUnit test run succeeded
+1 - === dispatchAction PropertySeq test completed
