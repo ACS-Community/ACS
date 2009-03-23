@@ -20,14 +20,16 @@ import org.prevayler.PrevalentSystem;
 public class ContainerCommandDeallocate implements Command {
 	
 	private final int handle;
+	private final int fullHandle;
 	private final WhyUnloadedReason reason;
 	
 	/**
 	 * Constructor for AddCOBCommand.
 	 */
-	public ContainerCommandDeallocate(int handle, WhyUnloadedReason reason) {
+	public ContainerCommandDeallocate(int handle, int fullHandle, WhyUnloadedReason reason) {
 		super();
 		this.handle = handle;
+		this.fullHandle = fullHandle;
 		this.reason = reason;
 	}
 
@@ -35,7 +37,7 @@ public class ContainerCommandDeallocate implements Command {
 	 * @see Command#execute(PrevalentSystem)
 	 */
 	public Serializable execute(PrevalentSystem system) throws Exception {
-		((ManagerImpl)system).logHandleRelease(handle | HandleConstants.CONTAINER_MASK, reason);
+		((ManagerImpl)system).logHandleRelease(fullHandle, reason);
 		((ManagerImpl)system).getContainers().deallocate(handle);
 		return null;
 	}

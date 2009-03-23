@@ -2990,7 +2990,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						removeComponentOwner(componentInfo.getHandle(), owners[j]);
 
 					// ... and deallocate
-					executeCommand(new ComponentCommandDeallocate(componentInfo.getHandle() & HANDLE_MASK, WhyUnloadedReason.REMOVED));
+					executeCommand(new ComponentCommandDeallocate(componentInfo.getHandle() & HANDLE_MASK, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
 					executeCommand(new UnavailableComponentCommandRemove(componentInfo.getName()));
 
 					// remove component from container component list
@@ -3322,7 +3322,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 						// !!! ACID 3
 						// ... and deallocate
-						executeCommand(new ComponentCommandDeallocate(handle, WhyUnloadedReason.REMOVED));
+						executeCommand(new ComponentCommandDeallocate(handle, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
 						//components.deallocate(handle);
 
 						requireTopologySort = true;
@@ -3735,7 +3735,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			containerInfo = (TimerTaskContainerInfo)containers.get(handle);
 
 			// !!! ACID - RemoveContainerCommand
-			executeCommand(new ContainerCommandDeallocate(handle,
+			executeCommand(new ContainerCommandDeallocate(handle, id,
 									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//containers.deallocate(handle);
@@ -3833,7 +3833,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			clientInfo = (TimerTaskClientInfo)clients.get(handle);
 
 			// !!! ACID - RemoveClientCommand
-			executeCommand(new ClientCommandDeallocate(handle,
+			executeCommand(new ClientCommandDeallocate(handle, id,
 									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//clients.deallocate(handle);
@@ -3880,7 +3880,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			clientInfo = (TimerTaskClientInfo)administrators.get(handle);
 
 			// !!! ACID - RemoveAdministratorCommand
-			executeCommand(new AdministratorCommandDeallocate(handle, 
+			executeCommand(new AdministratorCommandDeallocate(handle, id,
 									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//administrators.deallocate(handle);
@@ -6040,7 +6040,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// !!! ACID 3
 				if (!reactivate)
-					executeCommand(new ComponentCommandDeallocate(h, 
+					executeCommand(new ComponentCommandDeallocate(h, h | COMPONENT_MASK,
 											timeoutError ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED, true));
 					//components.deallocate(h, true);
 			}
@@ -6100,7 +6100,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// !!! ACID 3
 					// cancel preallocation
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REMOVED, true));
+						executeCommand(new ComponentCommandDeallocate(h, componentInfo.getHandle(), WhyUnloadedReason.REMOVED, true));
 						//components.deallocate(h, true);
 
 					bcex = new AcsJCannotGetComponentEx();
@@ -6118,13 +6118,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// !!! ACID 3
 					// deallocate old
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REPLACED, true));
+						executeCommand(new ComponentCommandDeallocate(h, componentInfo.getHandle(), WhyUnloadedReason.REPLACED, true));
 						//components.deallocate(h, true);
 					else
 					{
 						// !!! ACID 3
 						existingData = (ComponentInfo)components.get(h);
-						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REPLACED));
+						executeCommand(new ComponentCommandDeallocate(h, componentInfo.getHandle(), WhyUnloadedReason.REPLACED));
 						//components.deallocate(h);
 					}
 
@@ -6243,7 +6243,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					// !!! ACID 3
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REMOVED));
+						executeCommand(new ComponentCommandDeallocate(h, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
 						//components.deallocate(h);
 
 					// deactivate
@@ -6792,7 +6792,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// deallocate Component
 				synchronized (components)
 				{
-					executeCommand(new ComponentCommandDeallocate(handle, WhyUnloadedReason.REMOVED));
+					executeCommand(new ComponentCommandDeallocate(handle, componentInfo.getHandle(), WhyUnloadedReason.REMOVED));
 					//components.deallocate(handle);
 				}
 			}

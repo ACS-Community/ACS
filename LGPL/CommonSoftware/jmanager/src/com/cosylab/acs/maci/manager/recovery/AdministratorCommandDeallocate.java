@@ -20,14 +20,16 @@ import org.prevayler.PrevalentSystem;
 public class AdministratorCommandDeallocate implements Command {
 	
 	private final int handle;
+	private final int fullHandle;
 	private final WhyUnloadedReason reason;
 	
 	/**
 	 * Constructor for AddCOBCommand.
 	 */
-	public AdministratorCommandDeallocate(int handle, WhyUnloadedReason reason) {
+	public AdministratorCommandDeallocate(int handle, int fullHandle, WhyUnloadedReason reason) {
 		super();
 		this.handle = handle;
+		this.fullHandle = fullHandle;
 		this.reason = reason;
 	}
 
@@ -35,7 +37,7 @@ public class AdministratorCommandDeallocate implements Command {
 	 * @see Command#execute(PrevalentSystem)
 	 */
 	public Serializable execute(PrevalentSystem system) throws Exception {
-		((ManagerImpl)system).logHandleRelease(handle | HandleConstants.ADMINISTRATOR_MASK, reason);
+		((ManagerImpl)system).logHandleRelease(fullHandle, reason);
 		((ManagerImpl)system).getAdministrators().deallocate(handle);
 		return null;
 	}
