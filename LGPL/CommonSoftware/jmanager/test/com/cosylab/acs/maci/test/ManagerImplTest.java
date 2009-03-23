@@ -566,7 +566,7 @@ public class ManagerImplTest extends TestCase
 			fail("No permission exception was not thrown");
 		} catch (AcsJNoPermissionEx e) {
 			// this should provide nice error message
-			System.out.println("This is OK: "+e.getMessage());
+			System.out.println("This is OK: "+e);
 		}
 
 	}
