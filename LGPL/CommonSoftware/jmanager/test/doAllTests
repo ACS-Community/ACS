@@ -29,7 +29,7 @@ export ACS_TMP=../test/tmp
 #determine the ACS instance
 export ACS_INSTANCE=`cat $ACS_TMP/acs_instance`
 
-acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
+acsStartJava -Dmanager.debug.rememberOldHandles alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
 
 # does not exit!!! 
 #acsStartJava alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplSerializationTest

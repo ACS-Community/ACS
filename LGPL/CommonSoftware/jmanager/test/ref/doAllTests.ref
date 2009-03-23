@@ -1,17 +1,13 @@
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
 1 -  Starting ORB Services
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 -  -D manager.debug.rememberOldHandles -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.ManagerImplTest
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = ADMINISTRATOR, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Manager in shutdown state.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ Reason='Manager in shutdown state.' ]
 1 - This is OK: Non-null 'containerName' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: Non-null 'containerName' expected.
 1 - This is OK: Container 'invalid' not logged in.
@@ -20,14 +16,15 @@
 1 - This is OK: Invalid response to 'Client::name()' method - non-null string expected.
 1 - This is OK: Invalid response to 'Client::authenticate()' method - non-null client type expected.
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='container-invalid-auth' Reason='Given reply to 'Client::authenticate()' method indicated administrator login, but given reference does not implement 'maci::Administrator' interface.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was properly removed at ----------T--:--:--.---.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'names_wc' sequence expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
@@ -39,7 +36,7 @@
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'handles' sequence expected.
 1 - This is OK: Non-null 'names_wc' sequence expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CONTAINER, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CONTAINER, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='curl' ]
@@ -52,10 +49,10 @@
 1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
 1 - This is OK: invalid URI alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='CURL does not belong to this domain ('other' not one of '[]').' Parameter='curl' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Component with name 'GIZMO4' but different type already registered.' ProtectedResource='GIZMO4' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: duplicate unregistration alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx [ ParameterValue='null' Parameter='componentInfo' ]
 1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT2' ]
 1 - This is OK: cyclic dependency alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ]
@@ -70,12 +67,12 @@
 1 - This is OK: component not activated alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='MOUNT3' ]
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: Non-null 'type' expected.
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: Non-null 'type' expected.
 1 - This is OK: No default component for type 'invalid' found.
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason=''name' and 'type' cannot be both '*'.' ]
@@ -87,8 +84,8 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx [ Reason='Requested ComponentSpec does not match any entry in the CDB.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
 1 - This is OK: alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx
@@ -96,36 +93,42 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx [ ContainerName='*' CURL='noEntry' ]
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK
 1 - This is OK
 1 - This is OK
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Insufficient rights.' ]
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: Insufficient rights.
 1 - This is OK: null parameter
 1 - This is OK: null parameter
-1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle.' ]
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ]
 1 - This is OK: null parameter
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = CLIENT, key = (xxxxxxx), id = (xxxxxxx) }' Reason='Restarting component that client does not own.' ProtectedResource='MOUNT3' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ]
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ]
 1 - 
 1 - 
-1 - OK (39 tests)
+1 - OK (40 tests)
 1 - 
 1 -  Stopping the services
-1 - 
-1 - 
-1 - OK (2 tests)
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
 1 - 
 1 - {0, 2, 4, 6, 8, 10, 12}
 1 - 
 1 - 
+1 - 
+1 - OK (2 tests)
+1 - 
 1 - OK (5 tests)
 1 - 
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
 1 - ComponentStatus = { name = 'COMPONENT_ACTIVATED', description = 'Component is activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_NOT_ACTIVATED', description = 'Component is not activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_DOES_NO_EXIST', description = 'Component does not exists.' }
@@ -135,10 +138,14 @@
 1 - 
 1 - OK (2 tests)
 1 - 
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.WildcharMatcherTest
 1 - 
 1 - 
 1 - OK (1 test)
 1 - 
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.CURLHelperTest
 1 - curl://nrao
 1 - curl:///MOUNT1
 1 - curl:///MOUNT1
