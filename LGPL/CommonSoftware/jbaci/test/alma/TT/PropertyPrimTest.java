@@ -42,8 +42,6 @@ import alma.ACS.floatSeqHolder;
 import alma.ACS.longSeqHolder;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
-import alma.PS.PowerSupply;
-import alma.PS.PowerSupplyHelper;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
