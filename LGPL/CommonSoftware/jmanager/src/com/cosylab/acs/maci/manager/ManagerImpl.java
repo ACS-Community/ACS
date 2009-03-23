@@ -85,6 +85,7 @@ import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
+import com.cosylab.acs.maci.TimeoutRemoteException;
 import com.cosylab.acs.maci.Transport;
 import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
@@ -138,7 +139,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Serial versionUID
 	 */
-	private static final long serialVersionUID = 400178933049243893L;
+	private static final long serialVersionUID = 1372046383416324709L;
 
 	// TODO @todo revise...
 	private void reportException(Throwable th)
@@ -477,6 +478,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                       	new ObjectStreamField("administrators", HandleDataStore.class),
                       	new ObjectStreamField("containers", HandleDataStore.class),
                       	new ObjectStreamField("components", HandleDataStore.class),
+                      	new ObjectStreamField("releasedHandles", Map.class),
                       	new ObjectStreamField("unavailableComponents", Map.class),
 						new ObjectStreamField("defaultComponents", Map.class),
 						new ObjectStreamField("domains", HashSet.class),
@@ -523,6 +525,33 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @serial
 	 */
 	private HandleDataStore components = new HandleDataStore(128, HANDLE_MASK);
+
+	public enum WhyUnloadedReason { REMOVED, TIMEOUT, DISAPPEARED, REPLACED };
+	/**
+	 * Monitor entry generated at every handle removal.
+	 */
+	static class HandleMonitorEntry implements Serializable {
+		private static final long serialVersionUID = -5661590007096077942L;
+		public final long timestamp;
+		public final WhyUnloadedReason reason;
+		
+		/**
+		 * @param timestamp
+		 * @param reason
+		 */
+		public HandleMonitorEntry(long timestamp, WhyUnloadedReason reason) {
+			super();
+			this.timestamp = timestamp;
+			this.reason = reason;
+		}
+		
+	}
+	
+	/**
+	 * Handle data store to monitor released handles.
+	 * @serial
+	 */
+	private Map releasedHandles = new HashMap();
 
 	/**
 	 * List of all unavailable components.
@@ -700,6 +729,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private static final String NAME_CDB_DISABLE = "ACS.disableCDB";
 
+	/**
+	 * Enable handle monitoring property name.
+	 */
+	private static final String NAME_HANDLE_MONITORING = "manager.debug.rememberOldHandles";
+
+	/**
+	 * Handle monitoring flag. 
+	 */	
+	private transient boolean enableHandleMonitoring;
+	
 	/**
 	 * CURL URI schema
 	 */
@@ -1903,8 +1942,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	public void logout(int id) throws AcsJNoPermissionEx
 	{
-
-	    logger.log(Level.FINE,"Client with handle '" + HandleHelper.toString(id) + "' is logging out.");
+		logout(id, false);
+	}
+	
+	/**
+	 * Logout client.
+	 * @param id client handle.
+	 * @param pingFailed flag indicating that ping has failed (i.e. reason for logout).
+	 * @see com.cosylab.acs.maci.Manager#logout(int)
+	 */
+	public void logout(int id, boolean pingFailed) throws AcsJNoPermissionEx
+	{
+		if (pingFailed)
+			logger.log(Level.FINE,"Client with handle '" + HandleHelper.toString(id) + "' is being forcefully logged out due to its unresponsiveness.");
+		else
+			logger.log(Level.FINE,"Client with handle '" + HandleHelper.toString(id) + "' is logging out.");
 
 		// check handle, no special rights needed for logout
                 // AcsJNoPermissionEx flies directly up from securityCheck()
@@ -1915,13 +1967,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		switch	(id & TYPE_MASK)
 		{
 			case CONTAINER_MASK:
-				containerLogout(id);
+				containerLogout(id, pingFailed);
 				break;
 			case CLIENT_MASK:
-				clientLogout(id);
+				clientLogout(id, pingFailed);
 				break;
 			case ADMINISTRATOR_MASK:
-				administratorLogout(id);
+				administratorLogout(id, pingFailed);
 				break;
 		}
 
@@ -2936,7 +2988,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						removeComponentOwner(componentInfo.getHandle(), owners[j]);
 
 					// ... and deallocate
-					executeCommand(new ComponentCommandDeallocate(componentInfo.getHandle() & HANDLE_MASK));
+					executeCommand(new ComponentCommandDeallocate(componentInfo.getHandle() & HANDLE_MASK, WhyUnloadedReason.REMOVED));
 					executeCommand(new UnavailableComponentCommandRemove(componentInfo.getName()));
 
 					// remove component from container component list
@@ -3268,7 +3320,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 						// !!! ACID 3
 						// ... and deallocate
-						executeCommand(new ComponentCommandDeallocate(handle));
+						executeCommand(new ComponentCommandDeallocate(handle, WhyUnloadedReason.REMOVED));
 						//components.deallocate(handle);
 
 						requireTopologySort = true;
@@ -3664,8 +3716,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Container specific logout method
 	 * @param	id	handle of the container.
+	 * @param	pingFailed	flag indicating that ping has failed (i.e. is the reason of this logout).
 	 */
-	private void containerLogout(int id)
+	private void containerLogout(int id, boolean pingFailed)
 	{
 		TimerTaskContainerInfo containerInfo = null;
 
@@ -3680,7 +3733,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			containerInfo = (TimerTaskContainerInfo)containers.get(handle);
 
 			// !!! ACID - RemoveContainerCommand
-			executeCommand(new ContainerCommandDeallocate(handle));
+			executeCommand(new ContainerCommandDeallocate(handle,
+									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
 			// remove
 			//containers.deallocate(handle);
 
@@ -3758,8 +3812,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Client specific logout method
 	 * @param	id	handle of the client.
+	 * @param	pingFailed	flag indicating that ping has failed (i.e. is the reason of this logout).
 	 */
-	private void clientLogout(int id)
+	private void clientLogout(int id, boolean pingFailed)
 	{
 
 		TimerTaskClientInfo clientInfo = null;
@@ -3776,7 +3831,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			clientInfo = (TimerTaskClientInfo)clients.get(handle);
 
 			// !!! ACID - RemoveClientCommand
-			executeCommand(new ClientCommandDeallocate(handle));
+			executeCommand(new ClientCommandDeallocate(handle,
+									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
 			// remove
 			//clients.deallocate(handle);
 
@@ -3803,8 +3859,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/**
 	 * Administrator specific logout method
 	 * @param	id	handle of the administrators.
+	 * @param	pingFailed	flag indicating that ping has failed (i.e. is the reason of this logout).
 	 */
-	private void administratorLogout(int id)
+	private void administratorLogout(int id, boolean pingFailed)
 	{
 
 		TimerTaskClientInfo clientInfo = null;
@@ -3821,7 +3878,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			clientInfo = (TimerTaskClientInfo)administrators.get(handle);
 
 			// !!! ACID - RemoveAdministratorCommand
-			executeCommand(new AdministratorCommandDeallocate(handle));
+			executeCommand(new AdministratorCommandDeallocate(handle, 
+									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
 			// remove
 			//administrators.deallocate(handle);
 
@@ -5109,6 +5167,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 			npe.setID(HandleHelper.toString(id));
 			npe.setReason("Invalid handle.");
+			
+			HandleMonitorEntry hme = getHandleReleaseLog(id);
+			if (hme != null) {
+				// TODO detailed description
+			}
 			throw npe;
 		}
 
@@ -5872,6 +5935,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		long executionId = 0;
 		long activationTime = 0;
 		
+		boolean timeoutError = false;
+		
 		if (isOtherDomainComponent)
 		{
 			//
@@ -5910,6 +5975,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				bcex = new AcsJCannotGetComponentEx(ex);
 				logger.log(Level.SEVERE, "Failed to obtain component '"+name+"' from remote manager.", bcex);
+				timeoutError = (ex instanceof TimeoutRemoteException);
 			}
 		}
 		else
@@ -5931,6 +5997,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				bcex = new AcsJCannotGetComponentEx(ex);
 				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+				timeoutError = (ex instanceof TimeoutRemoteException);
 			}
 		}
 
@@ -5953,7 +6020,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// !!! ACID 3
 				if (!reactivate)
-					executeCommand(new ComponentCommandDeallocate(h, true));
+					executeCommand(new ComponentCommandDeallocate(h, 
+											timeoutError ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED, true));
 					//components.deallocate(h, true);
 			}
 
@@ -6012,7 +6080,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// !!! ACID 3
 					// cancel preallocation
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h, true));
+						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REMOVED, true));
 						//components.deallocate(h, true);
 
 					bcex = new AcsJCannotGetComponentEx();
@@ -6030,13 +6098,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// !!! ACID 3
 					// deallocate old
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h, true));
+						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REPLACED, true));
 						//components.deallocate(h, true);
 					else
 					{
 						// !!! ACID 3
 						existingData = (ComponentInfo)components.get(h);
-						executeCommand(new ComponentCommandDeallocate(h));
+						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REPLACED));
 						//components.deallocate(h);
 					}
 
@@ -6155,7 +6223,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					// !!! ACID 3
 					if (!reactivate)
-						executeCommand(new ComponentCommandDeallocate(h));
+						executeCommand(new ComponentCommandDeallocate(h, WhyUnloadedReason.REMOVED));
 						//components.deallocate(h);
 
 					// deactivate
@@ -6704,7 +6772,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// deallocate Component
 				synchronized (components)
 				{
-					executeCommand(new ComponentCommandDeallocate(handle));
+					executeCommand(new ComponentCommandDeallocate(handle, WhyUnloadedReason.REMOVED));
 					//components.deallocate(handle);
 				}
 			}
@@ -8612,6 +8680,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void readManagerConfiguration()
 	{
+		enableHandleMonitoring = System.getProperties().contains(NAME_HANDLE_MONITORING);
+		
 		DAOProxy managerDAO = getManagerDAOProxy();
 		if (managerDAO == null)
 			return;
@@ -9213,6 +9283,33 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	public HandleDataStore getComponents()
 	{
 		return components;
+	}
+
+	/**
+	 * Log handle release.
+	 * @param handle
+	 * @param reason
+	 */
+	public void logHandleRelease(int handle, WhyUnloadedReason reason) {
+		if (!enableHandleMonitoring)
+			return;
+		
+		final long now = System.currentTimeMillis();
+		synchronized (releasedHandles) {
+			// this simply overrides the old entry
+			releasedHandles.put(new Integer(handle), new HandleMonitorEntry(now, reason));
+		}
+	}
+
+	/**
+	 * Get handle release log.
+	 * @param handle
+	 * @return log or <code>null</code> if it does not exist.
+	 */
+	public HandleMonitorEntry getHandleReleaseLog(int handle) {
+		synchronized (releasedHandles) {
+			return (HandleMonitorEntry)releasedHandles.get(new Integer(handle));
+		}
 	}
 
 	/**

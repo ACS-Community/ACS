@@ -2,7 +2,9 @@ package com.cosylab.acs.maci.manager.recovery;
 
 import java.io.Serializable;
 
+import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
+import com.cosylab.acs.maci.manager.ManagerImpl.WhyUnloadedReason;
 
 import org.prevayler.Command;
 import org.prevayler.PrevalentSystem;
@@ -18,20 +20,23 @@ import org.prevayler.PrevalentSystem;
 public class ComponentCommandDeallocate implements Command {
 
 	private final int handle;
+	private final WhyUnloadedReason reason;
 	private final boolean depreallocate;
 
 	/**
 	 * Constructor for COBCommandAckAlloc.
 	 */
-	public ComponentCommandDeallocate(int handle) {
+	public ComponentCommandDeallocate(int handle, WhyUnloadedReason reason) {
 		super();
 		this.handle = handle;
+		this.reason = reason;
 		this.depreallocate = false;
 	}
 
-	public ComponentCommandDeallocate(int handle, boolean depreallocate) {
+	public ComponentCommandDeallocate(int handle, WhyUnloadedReason reason, boolean depreallocate) {
 		super();
 		this.handle = handle;
+		this.reason = reason;
 		this.depreallocate = depreallocate;
 	}
 
@@ -39,6 +44,7 @@ public class ComponentCommandDeallocate implements Command {
 	 * @see Command#execute(PrevalentSystem)
 	 */
 	public Serializable execute(PrevalentSystem system) throws Exception {
+		((ManagerImpl)system).logHandleRelease(handle | HandleConstants.COMPONENT_MASK, reason);
 		((ManagerImpl)system).getComponents().deallocate(handle, depreallocate);
 		return null;
 	}

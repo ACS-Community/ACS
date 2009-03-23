@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.omg.CORBA.TIMEOUT;
+
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.TimeoutRemoteException;
 
 
 /**
@@ -71,6 +74,11 @@ public class ContainerProxy extends ClientProxy implements Container
 			}
 			
 			return retVal;
+		}
+		catch (TIMEOUT tex)
+		{
+			TimeoutRemoteException re = new TimeoutRemoteException("Timout occured while invoking 'activate_component()' method.", tex);
+			throw re;
 		}
 		catch (Exception ex)
 		{

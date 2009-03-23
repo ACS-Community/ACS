@@ -2,7 +2,9 @@ package com.cosylab.acs.maci.manager.recovery;
 
 import java.io.Serializable;
 
+import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.manager.ManagerImpl;
+import com.cosylab.acs.maci.manager.ManagerImpl.WhyUnloadedReason;
 
 import org.prevayler.Command;
 import org.prevayler.PrevalentSystem;
@@ -18,19 +20,22 @@ import org.prevayler.PrevalentSystem;
 public class ClientCommandDeallocate implements Command {
 	
 	private final int handle;
+	private final WhyUnloadedReason reason;
 	
 	/**
 	 * Constructor for AddCOBCommand.
 	 */
-	public ClientCommandDeallocate(int handle) {
+	public ClientCommandDeallocate(int handle, WhyUnloadedReason reason) {
 		super();
 		this.handle = handle;
+		this.reason = reason;
 	}
 
 	/**
 	 * @see Command#execute(PrevalentSystem)
 	 */
 	public Serializable execute(PrevalentSystem system) throws Exception {
+		((ManagerImpl)system).logHandleRelease(handle | HandleConstants.CLIENT_MASK, reason);
 		((ManagerImpl)system).getClients().deallocate(handle);
 		return null;
 	}
