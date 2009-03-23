@@ -543,6 +543,34 @@ public class ManagerImplTest extends TestCase
 		
 	}
 
+	public void testExpiredHandle()
+	{
+		// test client login
+		Client client = new TestClient(clientName);		
+		ClientInfo info = null;
+		try {
+			info = manager.login(client);
+		} catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+		
+		try {
+			manager.logout(info.getHandle());
+		} catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+
+		// duplicate logout
+		try {
+			manager.logout(info.getHandle());
+			fail("No permission exception was not thrown");
+		} catch (AcsJNoPermissionEx e) {
+			// this should provide nice error message
+			System.out.println("This is OK: "+e.getMessage());
+		}
+
+	}
+
 	public void testSequentialContainersLogin() {
 
 		int counter = 0;
