@@ -10,8 +10,10 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -3734,7 +3736,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// !!! ACID - RemoveContainerCommand
 			executeCommand(new ContainerCommandDeallocate(handle,
-									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
+									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//containers.deallocate(handle);
 
@@ -3832,7 +3834,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// !!! ACID - RemoveClientCommand
 			executeCommand(new ClientCommandDeallocate(handle,
-									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
+									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//clients.deallocate(handle);
 
@@ -3879,7 +3881,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// !!! ACID - RemoveAdministratorCommand
 			executeCommand(new AdministratorCommandDeallocate(handle, 
-									pingFailed ? WhyUnloadedReason.TIMEOUT : WhyUnloadedReason.REMOVED));
+									pingFailed ? WhyUnloadedReason.DISAPPEARED : WhyUnloadedReason.REMOVED));
 			// remove
 			//administrators.deallocate(handle);
 
@@ -5070,6 +5072,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 	}
 
+	/**
+	 * ISO 8601 date formatter.
+	 */
+	private transient static SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
 	/**
 	 * Performs security check on given handle and if check if owner has <code>rights</code> permissions granted.
@@ -5166,12 +5172,26 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// NO_PERMISSION
 			AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
 			npe.setID(HandleHelper.toString(id));
-			npe.setReason("Invalid handle.");
 			
 			HandleMonitorEntry hme = getHandleReleaseLog(id);
 			if (hme != null) {
-				// TODO detailed description
+				final String timeISO =  timeFormatter.format(new Date(hme.timestamp));
+				switch (hme.reason)
+				{
+					case REMOVED:
+						npe.setReason("Invalid handle, handle was properly removed at " + timeISO + ".");
+						break;
+					case TIMEOUT:
+						npe.setReason("Invalid handle, handle was removed due to timeout at " + timeISO + ".");
+						break;
+					case DISAPPEARED:
+						npe.setReason("Invalid handle, handle was removed due to client/container/component disappearing at " + timeISO + ".");
+						break;
+				}
 			}
+			else
+				npe.setReason("Invalid handle, handle was never known.");
+			
 			throw npe;
 		}
 
