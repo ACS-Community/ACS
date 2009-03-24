@@ -233,7 +233,7 @@ public class CompHelperClass
 			String cdbEntryAttrs = "Name=\"" + m_componentClassName.toUpperCase() + "_1\" " +
 							"Code=\"" + m_implPackage + "." + m_componentClassName + m_helperSuffix + "\" " +
 							"Type=\"" + m_repositoryId + "\" " +
-							"Container=\"frodoContainer\"";
+							"Container=\"frodoContainer\" ImplLang=\"java\"";
 			stringBuffer.append(" * To create an entry for your component in the Configuration Database, \n");
 			stringBuffer.append(" * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml \n");
 			stringBuffer.append(" * and modify the instance name of the component and the container: \n");
