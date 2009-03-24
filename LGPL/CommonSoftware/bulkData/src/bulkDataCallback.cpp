@@ -152,7 +152,7 @@ int BulkDataCallback::handle_stop (void)
 
 	    if ( locLoop == 0 )
 		{
-		ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout (%d) expired for flow %s - not all data received", flowTimeout_m, flowname_m));
+		ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout (%d * (%d sec + %d msec)) expired for flow %s - not all data received", loop_m, waitPeriod_m.sec(), waitPeriod_m.msec(), flowname_m.c_str()));
 
 		timeout_m = true;
 		//cleaning the recv buffer
