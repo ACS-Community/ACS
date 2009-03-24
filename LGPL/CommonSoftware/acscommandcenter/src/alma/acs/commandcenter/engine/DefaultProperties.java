@@ -36,6 +36,9 @@ public class DefaultProperties extends Properties {
       // [ WARNING: Received a request with a non-jacorb object key ]
       this.setProperty("jacorb.orb.objectKeyMap.CDB", "ORB/dalPOA/CDB");
 
+/*
+ msc 2009-03: commented out all abeans-related stuff from Acs 8.0.1 on
+
       // 2004-05-05: 
       // this.setProperty("abeans.home", "JavaOnlyAcsConfig");      
       // - > i though setting abeans.home to "JavaOnlyAcsConfig"
@@ -61,7 +64,7 @@ public class DefaultProperties extends Properties {
       //this.setProperty("ORBInitRef.NameService", "corbaloc::" + ACSPorts.getIP() +":4000/StandardNS/NameServer%2DPOA/_root");
       //this.setProperty("ORBInitRef.NameService", "corbaloc::" + ACSPorts.getIP() +":4000/NameService");
       //this.setProperty("ACS.repository" , "corbaloc::" + ACSPorts.getIP() +":4001/InterfaceRepository"); 
-
+*/
    }
 
 }

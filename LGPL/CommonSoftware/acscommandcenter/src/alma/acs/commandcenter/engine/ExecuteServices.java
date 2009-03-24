@@ -41,13 +41,16 @@ public class ExecuteServices {
          args[i] = toky.nextToken();
 
       DefaultProperties props = new DefaultProperties();
-      
+
+/*
+ msc 2009-03: commented out all abeans-related stuff from Acs 8.0.1 on
+
       // msc(2005-07): we want the abeans framework to use the following tmp-dir 
       // (the abeans framework would create the dir if it doesn't exist, but we need
       // to do this ourselves since we're responsible for also removing the directory afterwards)
       String acsInstance = runModel.getScriptBase(); 
       props.setProperty("ACS.tmp", props.getProperty("ACS.data")+"/tmp/ACS_INSTANCE."+acsInstance);
-      
+*/
       /*
        (Apr 29, 2004) msc: 
        On Linux we have ORBInitRef.NameService= set by acsStartJava,

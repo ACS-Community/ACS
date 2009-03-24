@@ -5,7 +5,6 @@ package alma.acs.commandcenter.engine;
 
 import java.util.Properties;
 
-import abeans.framework.FrameworkLayer;
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
@@ -55,19 +54,23 @@ public class ExecuteManager {
         String mgrPort = runModel.getManagerLocalJavaPort();
         props.setProperty("OAPort", mgrPort);
         
+        // msc(2004-04): prevents jManager from calling System.exit()
+        props.setProperty("ACS.noExit", "true");
+
+/*
+ msc 2009-03: commented out all abeans-related stuff from Acs 8.0.1 on
+
         // manager-ref needed for "abeans" acs client (starts together with the manager)
         String mgrHost = ACSPorts.getIP();
         props.setProperty("ACS.manager", AcsLocations.convertToManagerLocation(mgrHost, mgrPort));
 
-        // msc(2004-04): prevents jManager from calling System.exit()
-        props.setProperty("ACS.noExit", "true");
-        
         // msc(2005-07): we need a reference to the manager object so we can invoke
         // its shutdown() method without going through ACS. Therefore, we can not simply
         // invoke com.cosylab.acs.maci.manager.app.Manager.main(). We duplicate here what
         // the manager's main() method would do
         props.setProperty("Manager.recovery", "false");
-        props.setProperty(FrameworkLayer.PROPERTY_DISABLE_SHUTDOWN_HOOK, "true");
+        props.setProperty(abeans.framework.FrameworkLayer.PROPERTY_DISABLE_SHUTDOWN_HOOK, "true");
+*/
 
         // msc(2005-07): we want the abeans framework to use the following tmp-dir 
         // (the abeans framework would create the dir if it doesn't exist, but we need
