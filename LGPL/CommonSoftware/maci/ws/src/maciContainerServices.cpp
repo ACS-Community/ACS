@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.32 2008/10/09 07:05:37 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.33 2009/03/25 11:38:34 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -652,7 +652,7 @@ void MACIContainerServices::fireComponentsUnavailable(ACE_CString_Vector& compNa
 
 
 CDB::DAL_ptr
-MACIContainerServices::getCDB() 
+MACIContainerServices::getCDB()
 {
   CDB::DAL_var dalObj = CDB::DAL::_nil();
   ACS_TRACE("MACIContainerServices::getCDB");
@@ -736,12 +736,19 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
 {
 
 	// Check if the POA was already created
-	if (m_offShootPOA.ptr() != PortableServer::POA::_nil()) {
+	if (!CORBA::is_nil(m_offShootPOA.ptr())) {
 		return m_offShootPOA;
 	}
 
   // get the container POA
   PortableServer::POA_var containerPOA = m_containerImpl->getContainerPOA();
+
+  try{
+	  m_offShootPOA = containerPOA->find_POA("OffShootPOA", false);
+	  return m_offShootPOA;
+  }catch(CORBA::Exception &ex){
+	  //if does not exist we just continue and create a new one
+  }
 
   // get the POA Manager
   PortableServer::POAManager_var poaManager = m_containerImpl->getPOAManager();
