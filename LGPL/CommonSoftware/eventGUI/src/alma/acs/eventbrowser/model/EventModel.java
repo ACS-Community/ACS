@@ -299,7 +299,7 @@ public class EventModel {
 	
 	private void printMonitoringResults(NotificationServiceMonitorControl mc) { //alma/ACS-8.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
 		// 
-		//if (true) return; // TODO -- Fix this method, which throws InvalidName exception
+		if (true) return; // TODO -- Fix this method, which throws InvalidName exception
 		try {
 			m_logger.info("EventChannelFactoryNames: "+mc.get_statistic(gov.sandia.NotifyMonitoringExt.EventChannelFactoryNames.value));
 			m_logger.info("ActiveEventChannelCount: "+mc.get_statistic(gov.sandia.NotifyMonitoringExt.ActiveEventChannelCount.value));
@@ -308,6 +308,16 @@ public class EventModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void closeAllConsumers() {
+		ArrayList<AdminConsumer>consumers = getAllConsumers();
+		for (AdminConsumer consumer : consumers) {
+			if (consumer != null) {
+				consumer.disconnect();
+			}
+		}
+		
 	}
 
 	

@@ -227,12 +227,7 @@ public class EventListView extends ViewPart {
 	@Override
 	public void dispose() {
 		super.dispose();
-		ArrayList<AdminConsumer>consumers = em.getAllConsumers();
-		for (AdminConsumer consumer : consumers) {
-			if (consumer != null) {
-				consumer.disconnect();
-			}
-		}
+		em.closeAllConsumers();
 	}
 
 

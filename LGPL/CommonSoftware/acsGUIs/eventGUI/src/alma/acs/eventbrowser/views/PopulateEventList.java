@@ -23,11 +23,13 @@ public class PopulateEventList {
 	private Logger logger;
 	private TableViewer viewer;
 	private ArrayList<AdminConsumer> consumers;
+	private final Display display;
 
 	public PopulateEventList(Logger logger, TableViewer viewer) {
 		super();
 		this.logger = logger;
 		this.viewer = viewer;
+		display = viewer.getControl().getDisplay();
 	}
 
 	private long cycles = 0;
@@ -41,7 +43,7 @@ public class PopulateEventList {
 				private long totalNumberDrained;
 
 				public void run() {
-					final Display display = viewer.getControl().getDisplay();
+					//final Display display = viewer.getControl().getDisplay();
 					if (!display.isDisposed()) {
 						ArrayList<EventData> c = new ArrayList<EventData>(QUEUE_DRAIN_LIMIT);
 						int numberDrained = Application.equeue.drainTo(c, QUEUE_DRAIN_LIMIT);
@@ -64,7 +66,7 @@ public class PopulateEventList {
 			};
 
 			public void run() {
-				final Display display = viewer.getControl().getDisplay();
+				//final Display display = viewer.getControl().getDisplay();
 
 				while (true) {
 					if (display.isDisposed())

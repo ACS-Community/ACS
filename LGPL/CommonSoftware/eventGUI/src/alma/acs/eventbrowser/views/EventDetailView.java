@@ -63,8 +63,9 @@ public class EventDetailView extends ViewPart {
         if (sourcepart != EventDetailView.this &&
             selection instanceof IStructuredSelection) {
         		IStructuredSelection iss = (IStructuredSelection) selection;
+        		if (iss == null) return;
         		Object[] arr = iss.toArray();
-        		if (arr[0] instanceof EventData) {
+        		if (arr.length > 0 && arr[0] instanceof EventData) {
         			EventData ed = (EventData) arr[0];
         			showEventDetails(sourcepart, ed);
         		}
