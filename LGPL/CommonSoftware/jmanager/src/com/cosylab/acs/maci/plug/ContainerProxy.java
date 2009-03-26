@@ -12,11 +12,14 @@ import org.omg.CORBA.TIMEOUT;
 
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.TimeoutRemoteException;
+
+import alma.maciErrType.CannotActivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 
 
 /**
@@ -61,11 +64,18 @@ public class ContainerProxy extends ClientProxy implements Container
 		try
 		{
 			ComponentInfo retVal = null;
-			si.ijs.maci.ComponentInfo info = container.activate_component(handle, executionId, name, exe, type);
+			si.ijs.maci.ComponentInfo info;
+			try {
+				info = container.activate_component(handle, executionId, name, exe, type);
+			} catch (CannotActivateComponentEx cannotActivateEx) {
+				// we want to keep the ErrorTrace of the IDL-declared CannotActivateComponentEx when wrapping it with other exceptions,
+				// and thus have to convert it to its JDK-style peer exception
+				throw AcsJCannotActivateComponentEx.fromCannotActivateComponentEx(cannotActivateEx);
+			}
 			if (info != null)
 			{
 				retVal = new ComponentInfo(info.h, info.name, info.type, info.code,
-					 				 info.reference != null ? new ComponentProxy(info.name, info.reference) : null);
+									info.reference != null ? new ComponentProxy(info.name, info.reference) : null);
 				retVal.setContainer(info.container);
 				retVal.setContainerName(info.container_name);
 				retVal.setAccessRights(inverseMapAccessRights(info.access));
