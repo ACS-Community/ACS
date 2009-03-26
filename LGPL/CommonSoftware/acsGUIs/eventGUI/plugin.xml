@@ -97,7 +97,8 @@
    </extension>
       <extension
             point="org.eclipse.ui.startup">
-         <startup></startup>
+         <startup
+               class="alma.acs.eventbrowser.Application"></startup>
       </extension>
       <extension
             id="product"
