@@ -128,8 +128,13 @@ public class EventListView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 
-		pel = new PopulateEventList(logger, viewer);
-		Thread th = pel.getThreadForEventList(em);
+		pel = new PopulateEventList(logger, viewer, em);
+		
+//		final Thread subscrTh = pel.getChannelRefreshThread();
+//		subscrTh.start();
+		pel.refreshChannelSubscriptions(); // TODO: remove workaround
+		
+		Thread th = pel.getThreadForEventList();
 		th.start();
 	}
 	

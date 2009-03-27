@@ -135,8 +135,8 @@ public class EventModel {
 	
 	public ArrayList<ChannelData> getServiceTotals() {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
-		String[] efactNames = {"Notification", "Logging", "Alarm", "Property Archiving"};
+		final EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
+		final String[] efactNames = {"Notification", "Logging", "Alarm", "Property Archiving"};
 
 		int nconsumers;
 		int nsuppliers;
@@ -180,43 +180,21 @@ public class EventModel {
 				EventChannel ec;
 				try {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
-					int numConsumers = ec.get_all_consumeradmins().length;
-					int numSuppliers = ec.get_all_supplieradmins().length;
-					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
-					int[] admins = ec.get_all_consumeradmins();
+
 					AdminConsumer consumer = null;
 					if (!channelMap.containsKey(channelName)) {
 						channelMap.put(channelName, ec);
 						consumer = getAdminConsumer(channelName);
 						consumers.add(consumer);
 					}
-//					try {
-//						ConsumerAdmin adm;
-//						if (numConsumers > 0)
-//							adm = ec.get_consumeradmin(admins[0]);
-//						// TODO This would be an opportunity to create the AdminConsumer, but let's not do it here...
-//					} catch (AdminNotFound e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} //					int[] pulls = adm.pull_suppliers();
-//					ClientType arg0 = ClientType.ANY_EVENT;
-//					IntHolder ih = new IntHolder();
-//					ProxySupplier ps = adm.obtain_notification_pull_supplier(arg0, ih);
-//					System.out.println(ps);
-//					Property[] props = ec.get_admin();
-//					for (int j = 0; j < props.length; j++) {
-//						System.out.println(props[j].name+ props[j].value);
-//					}
+					int[] admins = ec.get_all_consumeradmins();
+					int numConsumers = admins.length;
+					int numSuppliers = admins.length;
+					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
 					clist.add(new ChannelData(channelName, numConsumers, numSuppliers));
 				} catch (AcsJException e) {
 					m_logger.severe("Can't find channel "+channelName);
 					e.printStackTrace();
-//				} catch (AdminNotFound e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (AdminLimitExceeded e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
 				}
 
 			}
@@ -289,7 +267,30 @@ public class EventModel {
 	}
 
 	public ArrayList<AdminConsumer> getAllConsumers() {
-		getChannelStatistics();
+		BindingListHolder bl = new BindingListHolder();
+		BindingIteratorHolder bi = new BindingIteratorHolder();
+		nctx.list(-1, bl, bi);
+		for (Binding binding : bl.value) {
+			String serviceKind = alma.acscommon.NC_KIND.value;
+			if (binding.binding_name[0].kind.equals(serviceKind)) {
+				String channelName = binding.binding_name[0].id;
+				System.out.println("Channel: "+binding.binding_name[0].id);
+				EventChannel ec;
+				try {
+					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
+
+					AdminConsumer consumer = null;
+					if (!channelMap.containsKey(channelName)) {
+						channelMap.put(channelName, ec);
+						consumer = getAdminConsumer(channelName);
+						consumers.add(consumer);
+					}
+				} catch (AcsJException e) {
+					m_logger.severe("Can't find channel "+channelName);
+					e.printStackTrace();
+				}
+			}
+		}
 		return consumers;
 	}
 	

@@ -24,11 +24,13 @@ public class PopulateEventList {
 	private TableViewer viewer;
 	private ArrayList<AdminConsumer> consumers;
 	private final Display display;
+	private EventModel em;
 
-	public PopulateEventList(Logger logger, TableViewer viewer) {
+	public PopulateEventList(Logger logger, TableViewer viewer, EventModel em) {
 		super();
 		this.logger = logger;
 		this.viewer = viewer;
+		this.em = em;
 		display = viewer.getControl().getDisplay();
 	}
 
@@ -36,7 +38,7 @@ public class PopulateEventList {
 
 	private final long max_memory = runtime.maxMemory();
 
-	Thread getThreadForEventList(EventModel em) {
+	Thread getThreadForEventList() {
 		Runnable t = new Runnable() {
 			public Runnable r = new Runnable() {
 
@@ -91,7 +93,29 @@ public class PopulateEventList {
 			}
 		};
 		final Thread th = new Thread(t, "Event monitoring");
-		//	th.start();
+
+		return th;
+	}
+
+	public Thread getChannelRefreshThread() {
+		final Thread subscrTh = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				//while (true) { // TODO: Re-enable this when refresh doesn't try to repeat consumerReady
+					refreshChannelSubscriptions();
+					try {
+						Thread.sleep(60000); // Check for new channels every minute
+					} catch (InterruptedException e) {
+						logger.fine("Subscription thread interrupted.");
+						e.printStackTrace();
+					}
+				//}
+			}
+		}, "");
+		return subscrTh;
+	}
+
+	public void refreshChannelSubscriptions() {
 		consumers = em.getAllConsumers();
 
 		if (consumers != null) {
@@ -104,7 +128,6 @@ public class PopulateEventList {
 				}
 			}
 		}
-		return th;
 	}
 
 	private void freeMemoryIfNecessary() {
