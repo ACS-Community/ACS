@@ -130,9 +130,9 @@ public class EventListView extends ViewPart {
 
 		pel = new PopulateEventList(logger, viewer, em);
 		
-//		final Thread subscrTh = pel.getChannelRefreshThread();
-//		subscrTh.start();
-		pel.refreshChannelSubscriptions(); // TODO: remove workaround
+		final Thread subscrTh = pel.getChannelRefreshThread();
+		subscrTh.start();
+//		em.refreshChannelSubscriptions(); // TODO: remove workaround
 		
 		Thread th = pel.getThreadForEventList();
 		th.start();

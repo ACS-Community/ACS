@@ -56,6 +56,7 @@ public class EventModel {
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private static EventModel modelInstance;
 	private ArrayList<AdminConsumer> consumers;
+	private ArrayList<AdminConsumer> readyConsumers;
 	private HashMap<String, AdminConsumer> consumerMap;
 	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
@@ -100,6 +101,7 @@ public class EventModel {
 		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
 		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
 		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
+		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
@@ -256,6 +258,25 @@ public class EventModel {
 	public ContainerServices getContainerServices() {
 		return cs;
 	}
+	
+	public void refreshChannelSubscriptions() {
+		consumers = getAllConsumers();
+
+		if (consumers != null) {
+			for (AdminConsumer consumer : consumers) {
+				try {
+					if (!readyConsumers.contains(consumer)) {
+						consumer.consumerReady();
+						readyConsumers.add(consumer);
+					}
+				} catch (AcsJException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 
 	public AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
 		if (!consumerMap.containsKey(channelName)) {

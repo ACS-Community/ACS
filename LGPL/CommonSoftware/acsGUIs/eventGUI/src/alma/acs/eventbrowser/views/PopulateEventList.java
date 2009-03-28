@@ -101,34 +101,21 @@ public class PopulateEventList {
 		final Thread subscrTh = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				//while (true) { // TODO: Re-enable this when refresh doesn't try to repeat consumerReady
-					refreshChannelSubscriptions();
+				while (true) {
+					logger.info("Refreshing channel subscriptions");
+					em.refreshChannelSubscriptions();
 					try {
 						Thread.sleep(60000); // Check for new channels every minute
 					} catch (InterruptedException e) {
 						logger.fine("Subscription thread interrupted.");
 						e.printStackTrace();
 					}
-				//}
+				}
 			}
 		}, "");
 		return subscrTh;
 	}
 
-	public void refreshChannelSubscriptions() {
-		consumers = em.getAllConsumers();
-
-		if (consumers != null) {
-			for (AdminConsumer consumer : consumers) {
-				try {
-					consumer.consumerReady();
-				} catch (AcsJException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
 
 	private void freeMemoryIfNecessary() {
 		long ultimateFreeMemory = max_memory - (runtime.totalMemory()-runtime.freeMemory());

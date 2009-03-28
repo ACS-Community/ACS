@@ -38,7 +38,7 @@ public class Application implements IApplication, IStartup {
 			else
 				return IApplication.EXIT_OK;
 		} finally {
-			display.dispose();
+			if (!display.isDisposed()) display.dispose();
 		}
 		
 	}
