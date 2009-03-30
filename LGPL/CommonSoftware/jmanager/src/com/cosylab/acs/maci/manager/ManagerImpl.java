@@ -6841,7 +6841,42 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private ContainerInfo startUpContainer(String containerName)
 	{
+		// not to mess with same component name
+		final String LOCK_NAME = "container-" + containerName;
 
+		// try to acquire lock
+		boolean lockAcquired = acquireSynchronizationObject(LOCK_NAME, lockTimeout);
+		if (lockAcquired)
+		{
+			try
+			{
+				// double check pattern
+				ContainerInfo info = getContainerInfo(containerName);
+				if (info != null)
+					return info;
+				
+				return internalNoSyncStartUpContainer(containerName);
+			}
+			finally
+			{
+				releaseSynchronizationObject(LOCK_NAME);
+			}
+		}
+		else
+		{
+			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for container '"+containerName+"', possible deadlock.");
+			throw nre;
+		}
+
+	}
+	
+	/**
+	 * Start-up container (if it has a deploy info).
+	 * @param containerName	name of the container to start up.
+	 * @return container info of container, <code>null</code> if failed to start.
+	 */
+	private ContainerInfo internalNoSyncStartUpContainer(String containerName)
+	{
 		DAOProxy dao = getContainersDAOProxy();
 		if (dao == null)
 			return null;
