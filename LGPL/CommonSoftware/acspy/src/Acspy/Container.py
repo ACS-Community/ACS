@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.41 2009/01/15 23:20:55 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -262,7 +262,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 e2.setDetailedReason("Verify that CDB Code entry and Python install path match for module *%s*" % temp[EXE])
 
             self.failedActivation(temp)
-            e2.log()
+            e2.log(self.logger)
             raise e2
         except Exception, e:
             self.logger.logWarning("Failed to create Python object for: " + name)
