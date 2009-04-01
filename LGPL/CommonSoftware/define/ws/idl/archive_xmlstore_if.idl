@@ -348,10 +348,31 @@ module xmlstore
 		 */			
 		URISeq queryRecent( in string schemaname, in string timestamp)
 			raises (ArchiveInternalError);
+
 		
 		/**
-		 * TODO: update comment, is wrong. 
-		 * Shuts down the Archive. Replaced by close in Administrative.. */			
+		 * Adds xmlElement as last child of the (first) element found by xPath in document uid (belonging to schema schema)
+		 */	
+		void addElement(in URI uid, in string schema, in string xPath, in string xmlElement)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+	
+		/**
+		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be replaced by element xmlElement.
+		 */	
+		void updateElement(in URI uid, in string schema, in string xPath, in string xmlElement)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+
+			
+		/**
+		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be deleted.
+		 */	
+		void deleteElement(in URI uid, in string schema, in string xPath)
+		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
+
+		
+		/**
+		 * Archive usage only. Shuts down Archive subsystem.
+		 */			
 		void close()
 			raises (ArchiveInternalError);
 			
@@ -374,13 +395,14 @@ module xmlstore
 		// boolean ping();
 
 		/** 
-		 * Initialize Archive (XML store). Must be called before first use.
+		 * Initialize Archive (XML store). Must be called by Archive master component only!
 		 */		
 		void init()
 			raises (ArchiveInternalError);
 
 		/** 
 		 * Re-Initialize Archive (XML store). Adapts to changes eg. in config file.
+		 * Not to be used by other subsystems than Archive.
 		 */		
 		void reinit()
 			raises (ArchiveInternalError);
@@ -405,7 +427,7 @@ module xmlstore
 		 */
 		string config(in string name);
 		
-		/** Shuts down the Archive. 
+		/** Shuts down the Archive. Internal Archive use only, not for other subsystems!
 		 */
 		void close()
 			raises (ArchiveInternalError);
