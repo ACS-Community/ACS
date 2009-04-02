@@ -53,17 +53,17 @@ public class TestLogger
 		Logger logger = Logger.getLogger(name);
 		logger.setLevel(level);
 		logger.setUseParentHandlers(false);
-		// in JUnit tests, the intended fresh logger may be actually be recycled and already have the handler set.
+		// in JUnit tests, the intended fresh logger may actually be recycled and already have the handler set.
 		Handler logHandler = null;
 		for (Handler handler : logger.getHandlers()) {
 			if (handler instanceof ConsoleHandler) {
 				logHandler = handler;
 				break;
-			}		
+			}
 		}
 		if (logHandler == null) {
 			logHandler = new ConsoleHandler();
-			logger.addHandler(logHandler);		
+			logger.addHandler(logHandler);
 		}
 		logHandler.setLevel(level);
 		return logger;

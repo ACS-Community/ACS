@@ -45,6 +45,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * that these threads run after {@link Thread#start()} returns.
  * Therefore this class does not support methods such as {@link ExecutorService#execute(Runnable)}
  * which execute one {@code Runnable} in one thread independently of the other threads that it runs.
+ * <p>
+ * An instance is good for only one burst of threads, otherwise IllegalStateException will be thrown.
  * 
  * @author hsommer
  */
