@@ -71,7 +71,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		int delayMillis = 300;
 		int numberOnOffCycles = 3;
 		int expectedInvocationsPerCycle = 33;
-		int allowedThreadJitterMillis = 100;
+		int allowedThreadJitterMillis = 200;
 		
 		CountDownLatch sync = new CountDownLatch(expectedInvocationsPerCycle);
 		MyAction myAction = new MyAction(sync, actionWaitMillis, logger);
