@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 import alma.acs.eventbrowser.Application;
@@ -52,7 +53,18 @@ public class PopulateEventList {
 						if (numberDrained == 0)
 							return;
 						totalNumberDrained += numberDrained;
-						viewer.add(c.toArray()); 
+						try {
+							viewer.add(c.toArray());
+						} catch (SWTException e) {
+							if (display.isDisposed()) {
+								System.out.println("************** Display has been disposed!!!");
+								return;
+							}
+							else
+								throw e;
+							// TODO Auto-generated catch block
+							//e.printStackTrace();
+						} 
 						//					logger.fine("Table item count: "
 						//							+ viewer.getTable().getItemCount()
 						//							+ "; number of events drained from queue: "+numberDrained);
