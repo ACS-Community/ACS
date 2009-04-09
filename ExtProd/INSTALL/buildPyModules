@@ -336,11 +336,22 @@ fi
 
 if [ ! -e ../PRODUCTS/lxml-2.1.5.tar.gz ]
 then
-  echo Error: Pythoscope sources are missing
+  echo Error: lxml sources are missing
 else
   echo "== Installing lxml"
   tar -zxvf lxml-2.1.5.tar.gz
   pushd lxml-2.1.5
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/nose-0.10.4.tar.gz ]
+then
+  echo Error: nose sources are missing
+else
+  echo "== Installing nose"
+  tar -zxvf nose-0.10.4.tar.gz
+  pushd nose-0.10.4
   python setup.py install 
   popd
 fi
