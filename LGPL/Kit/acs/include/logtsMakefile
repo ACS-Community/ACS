@@ -30,5 +30,6 @@ endif
 
 ../object/%.dlts:
 	- @echo "== Dependencies: DLTS $@"
+	$(AT)mkdir -p ../object
 	$(AT)acsMakeLogTSDependencies $(*F)  >../object/$*.dlts
 
