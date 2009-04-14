@@ -372,8 +372,9 @@ module xmlstore
 		
 		/**
 		 * Archive usage only. Shuts down Archive subsystem.
+		 * Password must be provided to avoid abuse by other subsystems
 		 */			
-		void close()
+		void close(in string password)
 			raises (ArchiveInternalError);
 			
 	};
@@ -396,15 +397,17 @@ module xmlstore
 
 		/** 
 		 * Initialize Archive (XML store). Must be called by Archive master component only!
+		 * Password must be provided to avoid abuse by other subsystems
 		 */		
-		void init()
+		void init(in string password)
 			raises (ArchiveInternalError);
 
 		/** 
 		 * Re-Initialize Archive (XML store). Adapts to changes eg. in config file.
 		 * Not to be used by other subsystems than Archive.
+		 * Password must be provided to avoid abuse by other subsystems
 		 */		
-		void reinit()
+		void reinit(in string password)
 			raises (ArchiveInternalError);
 
 		/** Physically removes an entity. This operation is irrecoverable, in 
@@ -428,8 +431,9 @@ module xmlstore
 		string config(in string name);
 		
 		/** Shuts down the Archive. Internal Archive use only, not for other subsystems!
+		 * Password must be provided to avoid abuse by other subsystems
 		 */
-		void close()
+		void close(in string password)
 			raises (ArchiveInternalError);
 	};
 	
