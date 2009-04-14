@@ -2,6 +2,8 @@ package si.ijs.acs.objectexplorer.engine.BACI;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -9,7 +11,6 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
@@ -37,7 +38,6 @@ import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
-import org.omg.CORBA.SystemException;
 
 import si.ijs.acs.objectexplorer.NotificationBean;
 import si.ijs.acs.objectexplorer.OETreeNode;
@@ -46,8 +46,8 @@ import si.ijs.acs.objectexplorer.engine.Attribute;
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
 import si.ijs.acs.objectexplorer.engine.Invocation;
-import si.ijs.acs.objectexplorer.engine.NonStickyConnectFailedRemoteException;
 import si.ijs.acs.objectexplorer.engine.NonStickyComponentReleased;
+import si.ijs.acs.objectexplorer.engine.NonStickyConnectFailedRemoteException;
 import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
@@ -61,19 +61,17 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.UTCUtility;
-
-import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
-import alma.objexpErrType.wrappers.AcsJObjectExplorerReportEx;
-import alma.objexpErrType.wrappers.AcsJObjectExplorerInterfaceRepositoryAccessEx;
-import alma.objexpErrType.wrappers.AcsJObjectExplorerConnectEx;
-
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerConnectEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerInterfaceRepositoryAccessEx;
+import alma.objexpErrType.wrappers.AcsJObjectExplorerReportEx;
 
 /**
  * Insert the type's description here.
@@ -1397,8 +1395,17 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			else
 				rv[i] = new BACIAttribute((BACIAttribute) retVal[i], target);
 		}
+		Arrays.sort(rv, 0, rv.length, ATTRIBUTE_COMPARATOR);
 		return rv;
 	}
+
+	private static final class BACIAttributeNameComparator implements Comparator<Attribute> {
+		public int compare(Attribute o1, Attribute o2) {
+			return o1.toString().compareTo(o2.toString());
+		}
+	}
+	private static final Comparator<Attribute> ATTRIBUTE_COMPARATOR = new BACIAttributeNameComparator();
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (6/29/2001 11:01:21 AM)
@@ -1540,8 +1547,18 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			else
 				rv[i] = new BACIOperation((BACIOperation) retVal[i], target);
 		}
+		
+		Arrays.sort(rv, 0, rv.length, OPERATION_COMPARATOR);
 		return rv;
 	}
+
+	private static final class BACIOperationNameComparator implements Comparator<Operation> {
+		public int compare(Operation o1, Operation o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	}
+	private static final Comparator<Operation> OPERATION_COMPARATOR = new BACIOperationNameComparator();
+	
 	/**
 	 * Insert the method's description here.
 	 * Creation date: (1.11.2000 21:18:02)
