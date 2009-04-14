@@ -64,7 +64,12 @@ public class CommandCenter {
       StartupOptions startupOptions = new StartupOptions();
 
       for (int i=0; i<args.length; i++) {
-      	//System.out.println(i+": "+args[i]);
+
+      	if (i==0 && equalsOneOf(args[i], new String[]{"-h", "-help", "--help"})) {
+      		printUsage(System.out);
+      		return;
+      	}
+      	
       	try {
 
 				if (equalsOneOf(args[i], new String[]{"-r", "-retrieve", "--retrieve"})) {
@@ -101,7 +106,7 @@ public class CommandCenter {
 				// msc (Apr 28, 2006): alternatively it could be a manager location
 				String standalone = args[i];
 				
-				if (standalone.startsWith("corbaloc")) {
+				if (standalone.length()>8 && standalone.substring(0, 8).equalsIgnoreCase("corbaloc")) {
 					startupOptions.manager = standalone;
 					continue;
 				}
@@ -149,11 +154,15 @@ public class CommandCenter {
 	
    private static void printUsage(PrintStream s) {
    	String msg = "" +
-            "Usage: (this) [OPTIONS]\n" +
+		      "Usage: (this) [ARGUMENTS] [OPTIONS]\n" +
+		      "Arguments:\n" +
+		      " CORBALOC                                              instantly connect to existing Acs\n" +
+		      " HOST:INSTANCE                                         instantly connect to existing Acs\n" +
+		      " PROJ                                                  load a project file on startup\n" +
             "Options:\n" +
-            "-r | -retrieve | --retrieve PROJ                      load a project file on startup\n" +
-   			"-g | -geometry | --geometry WIDTHxHEIGHT+XPOS+YPOS    size and location of window\n" +
-   			"-x | -noexit   | --noexit                             don't exit the JVM when quitting\n";
+            " -r | -retrieve | --retrieve PROJ                      load a project file on startup\n" +
+   			" -g | -geometry | --geometry WIDTHxHEIGHT+XPOS+YPOS    size and location of window\n" +
+   			" -x | -noexit   | --noexit                             don't exit the JVM when quitting\n";
 
       s.println(msg);
    }
