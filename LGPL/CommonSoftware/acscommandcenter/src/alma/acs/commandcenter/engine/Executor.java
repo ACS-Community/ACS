@@ -44,13 +44,7 @@ public class Executor {
 
    public static boolean disableRemote = false;
    
-   public static final String SYSPROP_USE_NATIVE_SSH = "AcsCommandCenter.useNativeSSH";
-   public static final String SYSPROP_KILL_NATIVE_SSH = "AcsCommandCenter.killNativeSSH";
    public static final String SYSPROP_COMMAND_NATIVE_SSH = "AcsCommandCenter.commandNativeSSH";
-   
-   public static boolean useNativeSSH() {return Boolean.getBoolean(SYSPROP_USE_NATIVE_SSH);}
-   public static boolean killNativeSSH() {return Boolean.getBoolean(SYSPROP_KILL_NATIVE_SSH);}
-   
 
    public static RemoteFlow remoteFlow = new RemoteFlow();
    public static LocalInProcFlow localInProcFlow = new LocalInProcFlow();
@@ -67,20 +61,21 @@ public class Executor {
     * @return false - if this failed gracefully
     * @throws IOException - if this failed severely
     */
-   static public boolean remote(String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
-   	if (useNativeSSH()) {
+   static public boolean remote(boolean nativeSSH, String username, String password, String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
+   	if (nativeSSH)
    		return remoteNative(username, password, command, endMark, listener, host);
-   	} else {
+   	else
    		return remotePortable(username, password, command, endMark, listener, host);
-   	}
+   	
    }
    
    static public void remoteDownAll() {
-   	if (useNativeSSH()) {
-   		remoteDownAllNative();
-   	} else {
-   		remoteDownAllPortable();
-   	}
+   	// msc 2009-04: CommandCenterLogic uses this on shutdown. this method would
+   	// need a "nativeSSH" flag, too, but i would like to avoid that. it then
+   	// occurred to me that it shouldn't hurt (maybe it's even a good idea) to
+   	// try and bring down both types of remote processes in any case.
+		remoteDownAllNative();
+		remoteDownAllPortable();
    }
    
  
@@ -342,17 +337,15 @@ public class Executor {
    }
    
    static private void remoteDownAllNative() {
-   	if (killNativeSSH()) {
-	   	for (Enumeration<NativeCommand> en = remoteNativeTasks.elements(); en.hasMoreElements();) {
-	   		NativeCommand t = null;
-				try {
-					t = (NativeCommand) en.nextElement();
-					t.process.destroy();
-				} catch (Exception e) {
-		      	log.finest("Failed to destroy native-ssh task " + t);
-				}
+   	for (Enumeration<NativeCommand> en = remoteNativeTasks.elements(); en.hasMoreElements();) {
+   		NativeCommand t = null;
+			try {
+				t = (NativeCommand) en.nextElement();
+				t.process.destroy();
+			} catch (Exception e) {
+	      	log.finest("Failed to destroy native-ssh task " + t);
 			}
-   	}
+		}
    }
 
    

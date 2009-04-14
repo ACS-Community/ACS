@@ -150,7 +150,7 @@ public class ExecuteContainer {
     // ========================================================================================
     //
 
-    public void startRemote(RunModel runModel, NativeCommand.Listener listener) throws Throwable {
+    public void startRemote(RunModel runModel, boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
         String host = runModel.getContainerRemoteHost();
         String username = runModel.getContainerRemoteAccount();
@@ -173,11 +173,11 @@ public class ExecuteContainer {
 
         log.finer("generated remote command: " + command);
 
-        Executor.remote(username, password, command, t.getExpectedOutput(),
+        Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(),
                 listener, host);
     }
 
-    public void stopRemote(RunModel runModel, NativeCommand.Listener listener) throws Throwable {
+    public void stopRemote(RunModel runModel, boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
         String host = runModel.getContainerRemoteHost();
         String username = runModel.getContainerRemoteAccount();
@@ -187,7 +187,7 @@ public class ExecuteContainer {
                 + runModel.getContainerType());
         String command = ToolManager.generateCommand(t, runModel);
 
-        Executor.remote(username, password, command, t.getExpectedOutput(),
+        Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(),
                 listener, host);
     }
 

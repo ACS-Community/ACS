@@ -65,7 +65,7 @@ public class ExecuteAcs {
 	/**
 	 * @return an array {manager_host, manager_port}
 	 */
-	public boolean startRemote(NativeCommand.Listener listener) throws Throwable {
+	public boolean startRemote(boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
 		String host = runModel.getRemoteHost();
 		String username = runModel.getRemoteAccount();
@@ -73,13 +73,13 @@ public class ExecuteAcs {
 
 		Tool t = ToolManager.getBuiltinTool("Acs_startRemote");
 		String command = ToolManager.generateCommand(t, runModel);
-		return Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
+		return Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(), listener, host);
 	}
 
 	//
 	//
 
-	public void stopRemote(NativeCommand.Listener listener) throws Throwable {
+	public void stopRemote(boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
 		String host = runModel.getRemoteHost();
 		String username = runModel.getRemoteAccount();
@@ -87,13 +87,13 @@ public class ExecuteAcs {
 
 		Tool t = ToolManager.getBuiltinTool("Acs_stopRemote");
 		String command = ToolManager.generateCommand(t, runModel);
-		Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
+		Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(), listener, host);
 	}
 
 	//
 	//
 
-	public void killRemote(NativeCommand.Listener listener) throws Throwable {
+	public void killRemote(boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
 		String host = runModel.getRemoteHost();
 		String username = runModel.getRemoteAccount();
@@ -101,7 +101,7 @@ public class ExecuteAcs {
 
 		Tool t = ToolManager.getBuiltinTool("Acs_killRemote");
 		String command = ToolManager.generateCommand(t, runModel);
-		Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
+		Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(), listener, host);
 	}
 
 	//

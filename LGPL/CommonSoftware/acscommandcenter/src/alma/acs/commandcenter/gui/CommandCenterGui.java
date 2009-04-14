@@ -57,7 +57,6 @@ import javax.swing.filechooser.FileFilter;
 
 import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.engine.ExecuteTools;
-import alma.acs.commandcenter.engine.Executor;
 import alma.acs.commandcenter.engine.NativeCommand;
 import alma.acs.commandcenter.gui.TabPanel.ContainerLine;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
@@ -576,6 +575,13 @@ public class CommandCenterGui {
 			controller.project.setMode(ModeType.LOCAL);
 		} else
 		if (frontPanel.chkRemoteScript.isSelected()) {
+
+			if (frontPanel.chkRemoteDaemons.isSelected()) // Acs8.0.1 : store remote-variant in project
+				controller.project.setMode(ModeType.REMOTE_DAEMON);
+			else
+			if (frontPanel.chkRemoteNative.isSelected())
+				controller.project.setMode(ModeType.REMOTE_NATIVE);
+			else
 			controller.project.setMode(ModeType.REMOTE);
 		} 
 
@@ -614,12 +620,26 @@ public class CommandCenterGui {
 		} else 
 		if (mode.equals(ModeType.REMOTE)) {
 			frontPanel.chkRemoteScript.setSelected(true);
-		}
-		else
+			frontPanel.chkRemoteBuiltin.setSelected(true);
+			frontPanel.chkRemoteDaemons.setSelected(false);
+			frontPanel.chkRemoteNative.setSelected(false);
+		} else
+		if (mode.equals(ModeType.REMOTE_DAEMON)) { // Acs8.0.1 : store remote-variant in project
+			frontPanel.chkRemoteScript.setSelected(true);
+			frontPanel.chkRemoteBuiltin.setSelected(false);
+			frontPanel.chkRemoteDaemons.setSelected(true);
+			frontPanel.chkRemoteNative.setSelected(false);
+		} else
+		if (mode.equals(ModeType.REMOTE_NATIVE)) { // Acs8.0.1 : store remote-variant in project
+			frontPanel.chkRemoteScript.setSelected(true);
+			frontPanel.chkRemoteBuiltin.setSelected(false);
+			frontPanel.chkRemoteDaemons.setSelected(false);
+			frontPanel.chkRemoteNative.setSelected(true);
+		} else
 		if (mode.equals(ModeType.JAVA)) {
 			frontPanel.chkLocalScript.setSelected(true); // Acs8.0: remove local java
 		}
-		
+
 		// remove all existing, and re-add from project
 		// ---------------------------------------------
 		while (frontPanel.containerLines.size() > 0)
@@ -908,7 +928,7 @@ public class CommandCenterGui {
 		@Override
 		public void actionPerformed () throws Exception {
 			// as i learn from the OT, focus-listening is
-			// not 100% reliable, so we should probably enforce
+			// not 100% reliable, so it might be wise to enforce
 			// the following before we go to write to disk.
 			/* writeFrontPanelToModel(); */
 			
@@ -1056,24 +1076,6 @@ public class CommandCenterGui {
 		}
 	}
 
-	protected class ActionSetSshMode extends BackgroundAction {
-		
-		private boolean useNativeSSH;
-		private boolean killNativeSSH;
-
-		public ActionSetSshMode (String name, boolean useNativeSSH, boolean killNativeSSH) {
-			super(name);
-			this.useNativeSSH = useNativeSSH;
-			this.killNativeSSH = killNativeSSH;
-		}
-		
-		@Override
-		public void actionPerformed () {
-			System.setProperty(Executor.SYSPROP_USE_NATIVE_SSH, Boolean.toString(this.useNativeSSH));
-			System.setProperty(Executor.SYSPROP_KILL_NATIVE_SSH, Boolean.toString(this.killNativeSSH));
-		}
-	}
-	
 	protected class ActionShowExtraTools extends BackgroundAction {
 
 		public ActionShowExtraTools(String name) {

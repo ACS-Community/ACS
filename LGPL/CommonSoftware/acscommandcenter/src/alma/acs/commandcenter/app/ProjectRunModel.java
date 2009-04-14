@@ -100,7 +100,9 @@ public class ProjectRunModel implements RunModel {
 		
 	public String deriveMgrHostfromCommonSettings() {
 		String host;
-		if (ModeType.REMOTE.equals(project.getMode())) {
+		if (ModeType.REMOTE.equals(project.getMode())
+				|| ModeType.REMOTE_NATIVE.equals(project.getMode())	
+				|| ModeType.REMOTE_DAEMON.equals(project.getMode())) {
 			host = read(project.getRemoteHost());
 		} else {
 			host = ACSPorts.getIP();

@@ -15,7 +15,9 @@
 		<xsd:simpleType>
 			<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="local"/>
-			<xsd:enumeration value="remote"/>
+			<xsd:enumeration value="remote"/>  <!--  means "remote via built-in shh" -->
+			<xsd:enumeration value="remote_daemon"/>
+			<xsd:enumeration value="remote_native"/>
 			<xsd:enumeration value="java"/>
 			</xsd:restriction>
 		</xsd:simpleType>	 

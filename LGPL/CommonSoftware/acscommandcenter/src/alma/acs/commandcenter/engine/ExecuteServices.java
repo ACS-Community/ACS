@@ -107,7 +107,7 @@ public class ExecuteServices {
    // ========================================================================================
    //
 
-   public void startRemote(NativeCommand.Listener listener) throws Throwable {
+   public void startRemote(boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
       String host = runModel.getRemoteHost();
       String username = runModel.getRemoteAccount();
@@ -115,10 +115,10 @@ public class ExecuteServices {
 
       Tool t = ToolManager.getBuiltinTool("Services_startRemote");
       String command = ToolManager.generateCommand(t, runModel);
-      Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
+      Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(), listener, host);
    }
 
-   public void stopRemote(NativeCommand.Listener listener) throws Throwable {
+   public void stopRemote(boolean nativeSSH, NativeCommand.Listener listener) throws Throwable {
 
       String host = runModel.getRemoteHost();
       String username = runModel.getRemoteAccount();
@@ -126,7 +126,7 @@ public class ExecuteServices {
 
       Tool t = ToolManager.getBuiltinTool("Services_stopRemote");
       String command = ToolManager.generateCommand(t, runModel);
-      Executor.remote(username, password, command, t.getExpectedOutput(), listener, host);
+      Executor.remote(nativeSSH, username, password, command, t.getExpectedOutput(), listener, host);
    }
 
 }
