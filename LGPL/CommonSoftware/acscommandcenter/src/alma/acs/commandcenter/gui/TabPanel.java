@@ -21,6 +21,7 @@ import java.awt.event.WindowEvent;
 import java.util.Vector;
 import java.util.WeakHashMap;
 
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -105,14 +106,16 @@ public class TabPanel extends JPanel {
 	JButton btnMoveContainerUp;
 	JButton btnMoveContainerDown;
 
-	MyRadioButton chkLocalScript = new MyRadioButton("Localhost (= single-machine project)");
-	MyRadioButton chkRemoteScript = new MyRadioButton("Remote (= distributed project)");
-	JCheckBox chkUseDaemons;
-	JCheckBox chkUseNativeSsh;
+	MyRadioButton chkLocalScript = new MyRadioButton("Localhost (single-machine project)");
+	MyRadioButton chkRemoteScript = new MyRadioButton("Remote (distributed project)");
+	MyRadioButton chkRemoteBuiltin = new MyRadioButton("Use built-in ssh");
+	MyRadioButton chkRemoteDaemons = new MyRadioButton("Use Acs Daemons");
+	MyRadioButton chkRemoteNative = new MyRadioButton("Use native ssh");
 
 	JPanel containerPanel;
 	JPanel containerLinePanel;
 	ButtonGroup buttonGroup1 = new ButtonGroup(); // the radiobuttons for the mode 
+	ButtonGroup buttonGroup3 = new ButtonGroup(); // the connection types for remote mode
 	ButtonGroup buttonGroup2 = new ButtonGroup(); // for radiobuttons inside containerpanel
 
 	JLabel acsinstanceL, hostL, accountL, passwordL, cdbrootL, lblF, lblG;
@@ -220,26 +223,34 @@ public class TabPanel extends JPanel {
 
 		JPanel k = new JPanel(new GridBagLayout());
 		
-		chkUseDaemons = new JCheckBox(new ActionUseDaemons());
-		chkUseDaemons.setToolTipText("Use Acs daemons instead of ssh");
-		k.add(chkUseDaemons, gridbagpos(0,0).width(2).gapy(5));
+		buttonGroup3.add(chkRemoteBuiltin);
+		buttonGroup3.add(chkRemoteNative);
+		buttonGroup3.add(chkRemoteDaemons);
 
-		chkUseNativeSsh = new JCheckBox(new ActionUseNativeSsh());
-		chkUseNativeSsh.setToolTipText("Use native ssh installation");
-		k.add(chkUseNativeSsh, gridbagpos(0,2).width(2).gapy(5));
+		chkRemoteBuiltin.setToolTipText("Run Acs using built-in ssh client");
+		k.add(chkRemoteBuiltin, gridbagpos(0,0).width(2).gapy(1));
 
-		k.add(hostL = new JLabel("Host"), gridbagpos(1,0));
-		k.add(hostF, gridbagpos(1,1).width(3));
+		chkRemoteNative.setToolTipText("Run Acs using the local ssh program");
+		k.add(chkRemoteNative, gridbagpos(0,2).width(2).gapy(1));
+		
+		chkRemoteDaemons.setToolTipText("Run Acs using Daemons");
+		k.add(chkRemoteDaemons, gridbagpos(1,0).width(2).gapy(1));
+
+		k.add(hostL = new JLabel("Host"), gridbagpos(2,0));
+		k.add(hostF, gridbagpos(2,1).width(3));
 		chkRemoteScript.addFocusListener(focusListener);
+		chkRemoteBuiltin.addFocusListener(focusListener);
+		chkRemoteNative.addFocusListener(focusListener);
+		chkRemoteDaemons.addFocusListener(focusListener);
 		hostF.addFocusListener(focusListener);
 		
-		k.add(accountL = new JLabel("User"), gridbagpos(2,0));
-		k.add(accountF, gridbagpos(2,1));
+		k.add(accountL = new JLabel("User"), gridbagpos(3,0));
+		k.add(accountF, gridbagpos(3,1));
 		accountL.setLabelFor(accountF);
 		accountF.addFocusListener(focusListener);
 
-		k.add(passwordL = new JLabel("Pwd"), gridbagpos(2,2));
-		k.add(passwordF, gridbagpos(2,3).weightx(0.2));
+		k.add(passwordL = new JLabel("Pwd"), gridbagpos(3,2));
+		k.add(passwordF, gridbagpos(3,3).weightx(0.2));
 		passwordL.setLabelFor(passwordF);
 		passwordF.addFocusListener(focusListener);
 
@@ -268,7 +279,7 @@ public class TabPanel extends JPanel {
 		btnStopServices = new JButton(actStopServices = new ActionStopServices());
 		btnStartManager = new JButton(actStartManager = new ActionStartManager());
 		btnStopManager = new JButton(actStopManager = new ActionStopManager());
-		btnShowAdvanced = new JCheckBox(actShowAdvanced = new ActionShowAdvanced());
+		btnShowAdvanced = new MyCheckBox(actShowAdvanced = new ActionShowAdvanced());
 		btnStartAllContainers = new JButton(actStartAllContainers = new ActionStartAllContainers());
 		btnStopAllContainers = new JButton(actStopAllContainers = new ActionStopAllContainers());
 		btnStartServices.setToolTipText("Start Services with the specified Common Settings");
@@ -483,13 +494,11 @@ public class TabPanel extends JPanel {
 		// -------------------------------------------------------------------
 		// select some checkboxes, etc.
 		// -------------------------------------------------------------------
-		
-		disenabler = new Disenabler();
-		doToggleTo(chkLocalScript, true);
-		doToggleTo(btnShowAdvanced, false);
 
-		chkUseDaemons.setSelected(Boolean.getBoolean("AcsCommandCenter.useDaemon"));
-		chkUseNativeSsh.setSelected(Boolean.getBoolean("AcsCommandCenter.useNativeSSH"));
+		disenabler = new Disenabler();
+		chkRemoteBuiltin.setSelected(true);
+		chkLocalScript.setSelected(true);
+		btnShowAdvanced.setSelected(false);
 	}
 
 
@@ -503,44 +512,34 @@ public class TabPanel extends JPanel {
 		Disenabler() {
 			chkRemoteScript.addActionListener(this);
 			chkLocalScript.addActionListener(this);
-			chkUseDaemons.addActionListener(this);
-			chkUseNativeSsh.addActionListener(this);
+			chkRemoteBuiltin.addActionListener(this);
+			chkRemoteNative.addActionListener(this);
+			chkRemoteDaemons.addActionListener(this);
 			actionPerformed(null);
 		}
 
 		public void actionPerformed (ActionEvent e) {
 			/*System.out.println(e);*/
-			
-			// msc 2008-10: this is a quick hack shortly before the 8.0 deadline
-			// to ensure mutual exclusion of the two checkboxes so they behave like
-			// radio-buttons. feel free to replace this with real radio-buttons.
-			if (e!=null) {
-				if (chkUseDaemons.isSelected() && chkUseNativeSsh.isSelected()) {
-					if (e.getSource() == chkUseDaemons)
-						doToggleTo(chkUseNativeSsh, false);
-					if (e.getSource() == chkUseNativeSsh)
-						doToggleTo(chkUseDaemons, false);
-				}
-			}
 
 			boolean local = chkLocalScript.isSelected();
 			boolean remote = chkRemoteScript.isSelected();
-			boolean remoteSsh = remote && !chkUseDaemons.isSelected();
-			boolean remoteJavaSsh = remoteSsh && !chkUseNativeSsh.isSelected();
-			boolean remoteDaemon = remote && chkUseDaemons.isSelected();
+			boolean remoteBuiltin = remote && chkRemoteBuiltin.isSelected();
+			boolean remoteNative = remote && chkRemoteNative.isSelected();
+			boolean remoteDaemon = remote && chkRemoteDaemons.isSelected();
 
-			chkUseDaemons.setEnabled(remote);
-			chkUseNativeSsh.setEnabled(remote);
+			chkRemoteBuiltin.setEnabled(remote);
+			chkRemoteDaemons.setEnabled(remote);
+			chkRemoteNative.setEnabled(remote);
 			hostL.setEnabled(remote);
 			hostF.setEnabled(remote);
 
-			accountL.setEnabled(remoteSsh);
-			accountF.setEnabled(remoteSsh);
+			accountL.setEnabled(remoteBuiltin || remoteNative);
+			accountF.setEnabled(remoteBuiltin || remoteNative);
 
-			passwordL.setEnabled(remoteJavaSsh);
-			passwordF.setEnabled(remoteJavaSsh);
+			passwordL.setEnabled(remoteBuiltin);
+			passwordF.setEnabled(remoteBuiltin);
 
-			cdbrootF.setEnabled(local || remoteSsh);
+			cdbrootF.setEnabled(local || remoteBuiltin || remoteNative);
 
 			if (master.dlgContainerSettings != null) {
 				master.dlgContainerSettings.btnCustom.setEnabled(remote);
@@ -548,10 +547,10 @@ public class TabPanel extends JPanel {
 				master.dlgContainerSettings.scriptbaseF.setEnabled(remote);
 				master.dlgContainerSettings.hostL.setEnabled(remote);
 				master.dlgContainerSettings.hostF.setEnabled(remote);
-				master.dlgContainerSettings.accountL.setEnabled(remoteSsh);
-				master.dlgContainerSettings.accountF.setEnabled(remoteSsh);
-				master.dlgContainerSettings.passwordL.setEnabled(remoteJavaSsh);
-				master.dlgContainerSettings.passwordF.setEnabled(remoteJavaSsh);
+				master.dlgContainerSettings.accountL.setEnabled(remoteBuiltin || remoteNative);
+				master.dlgContainerSettings.accountF.setEnabled(remoteBuiltin || remoteNative);
+				master.dlgContainerSettings.passwordL.setEnabled(remoteBuiltin);
+				master.dlgContainerSettings.passwordF.setEnabled(remoteBuiltin);
 				master.dlgContainerSettings.modifL.setEnabled(remoteDaemon);
 				master.dlgContainerSettings.modifF.setEnabled(remoteDaemon);
 			}
@@ -799,14 +798,6 @@ public class TabPanel extends JPanel {
 		return mode.getType();
 	}
 
-	
-	// msc 2008-10: with the help of this, we can toggle
-	// checkboxes programmatically yielding an ACTION EVENT.
-	protected void doToggleTo (JToggleButton btn, boolean desired) {
-		if (btn.isSelected() == desired)
-			btn.setSelected(!desired);
-		btn.doClick(0);
-	}
 
 	/**
 	 * When the status or content of a Gui component has been modified programmatically,
@@ -966,13 +957,33 @@ public class TabPanel extends JPanel {
 		// needed since doClick() doesn't trigger itemStateChanged
 		@Override
 		public void setSelected (boolean b) {
-			disenabler.actionPerformed(null);
+			ActionEvent e = new ActionEvent(this, 0, "");
+			super.fireActionPerformed(e);
+			super.setSelected(b);
+		}
+
+//		// while setting up the gui we want to avoid some events
+//		protected void setInitiallyTo (boolean b) {
+//			super.setSelected(b);
+//		}
+		
+	}
+	
+	
+	protected class MyCheckBox extends JCheckBox {
+
+		MyCheckBox(Action a) {
+			super(a);
+		}
+
+		@Override
+		public void setSelected (boolean b) {
+			ActionEvent e = new ActionEvent(this, 0, "");
+			super.fireActionPerformed(e);
 			super.setSelected(b);
 		}
 
 	}
-	
-	
 	
 
 	protected class ContainerLine extends JPanel implements ActionListener {
@@ -1142,16 +1153,21 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_TYPE :
-					if (Boolean.getBoolean("AcsCommandCenter.useDaemon")) {
-						flowDialog.prepareShow("Starting Acs", remoteServicesDaemonFlowPanel);
-						master.controller.executeAcs.startRemoteDemonic(master.giveOutputListener("Acs"));
-						managerStarted();
-					} else {
-						flowDialog.prepareShow("Starting Acs", remoteFlowPanel);
-						if (master.controller.executeAcs.startRemote(master.giveOutputListener2("Acs")))
-							managerStarted();
-					}
+					flowDialog.prepareShow("Starting Acs", remoteFlowPanel);
+					master.controller.executeAcs.startRemote(false, master.giveOutputListener2("Acs"));
+					managerStarted();
 					break;
+
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Starting Acs", remoteFlowPanel);
+					master.controller.executeAcs.startRemote(true, master.giveOutputListener2("Acs"));
+					managerStarted();
+					break;
+					
+				case ModeType.REMOTE_DAEMON_TYPE :
+					flowDialog.prepareShow("Starting Acs", remoteServicesDaemonFlowPanel);
+					master.controller.executeAcs.startRemoteDemonic(master.giveOutputListener("Acs"));
+					managerStarted();
 
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
@@ -1185,15 +1201,19 @@ public class TabPanel extends JPanel {
 					managerStopped();
 					break;
 				case ModeType.REMOTE_TYPE :
-					if (Boolean.getBoolean("AcsCommandCenter.useDaemon")) {
-						flowDialog.prepareShow("Stopping Acs", remoteServicesDaemonFlowPanel);
-						master.controller.executeAcs.stopRemoteDemonic(master.giveOutputListener("Acs"));
-						managerStopped();
-					} else {
-						flowDialog.prepareShow("Stopping Acs", remoteFlowPanel);
-						master.controller.executeAcs.stopRemote(master.giveOutputListener2("Acs"));
-						managerStopped();
-					}
+					flowDialog.prepareShow("Stopping Acs", remoteFlowPanel);
+					master.controller.executeAcs.stopRemote(false, master.giveOutputListener2("Acs"));
+					managerStopped();
+					break;
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Stopping Acs", remoteFlowPanel);
+					master.controller.executeAcs.stopRemote(true, master.giveOutputListener2("Acs"));
+					managerStopped();
+					break;
+				case ModeType.REMOTE_DAEMON_TYPE :
+					flowDialog.prepareShow("Stopping Acs", remoteServicesDaemonFlowPanel);
+					master.controller.executeAcs.stopRemoteDemonic(master.giveOutputListener("Acs"));
+					managerStopped();
 					break;
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
@@ -1225,9 +1245,17 @@ public class TabPanel extends JPanel {
 					master.controller.executeServices.startLocalScript(master.giveOutputListener2("Services"));
 					break;
 
+				case ModeType.REMOTE_DAEMON_TYPE :
+					// fall through, daemon mode not supported
+
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Starting Services", remoteFlowPanel);
-					master.controller.executeServices.startRemote(master.giveOutputListener2("Services"));
+					master.controller.executeServices.startRemote(false, master.giveOutputListener2("Services"));
+					break;
+					
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Starting Services", remoteFlowPanel);
+					master.controller.executeServices.startRemote(true, master.giveOutputListener2("Services"));
 					break;
 
 				case ModeType.JAVA_TYPE :
@@ -1252,9 +1280,17 @@ public class TabPanel extends JPanel {
 					master.controller.executeServices.stopLocalScript(master.giveOutputListener2("Services"));
 					break;
 
+				case ModeType.REMOTE_DAEMON_TYPE :
+					// fall through, daemon mode not supported
+
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Stopping Services", remoteFlowPanel);
-					master.controller.executeServices.stopRemote(master.giveOutputListener2("Services"));
+					master.controller.executeServices.stopRemote(false, master.giveOutputListener2("Services"));
+					break;
+
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Stopping Services", remoteFlowPanel);
+					master.controller.executeServices.stopRemote(true, master.giveOutputListener2("Services"));
 					break;
 
 				case ModeType.JAVA_TYPE :
@@ -1295,10 +1331,19 @@ public class TabPanel extends JPanel {
 					managerStarted();
 					break;
 
+				case ModeType.REMOTE_DAEMON_TYPE :
+					// fall through, daemon mode not supported
+
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Starting Manager", remoteFlowPanel);
-					if (master.controller.executeManager.startRemote(master.giveOutputListener2("Manager")))
-						managerStarted();
+					master.controller.executeManager.startRemote(false, master.giveOutputListener2("Manager"));
+					managerStarted();
+					break;
+
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Starting Manager", remoteFlowPanel);
+					master.controller.executeManager.startRemote(true, master.giveOutputListener2("Manager"));
+					managerStarted();
 					break;
 
 				case ModeType.JAVA_TYPE :
@@ -1325,9 +1370,18 @@ public class TabPanel extends JPanel {
 					managerStopped();
 					break;
 
+				case ModeType.REMOTE_DAEMON_TYPE :
+					// fall through, daemon mode not supported
+
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Stopping Manager", remoteFlowPanel);
-					master.controller.executeManager.stopRemote(master.giveOutputListener2("Manager"));
+					master.controller.executeManager.stopRemote(false, master.giveOutputListener2("Manager"));
+					managerStopped();
+					break;
+
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Stopping Manager", remoteFlowPanel);
+					master.controller.executeManager.stopRemote(true, master.giveOutputListener2("Manager"));
 					managerStopped();
 					break;
 
@@ -1351,28 +1405,31 @@ public class TabPanel extends JPanel {
 		protected void actionPerformed () throws Throwable {
 			int contNumber = master.controller.project.getContainers().getSelect();
 			String contName = master.controller.project.getContainers().getContainer(contNumber).getName();
-			boolean useCustomSettings = master.controller.project.getContainers().getContainer(contNumber).getUseDedicatedSettings();
 
-			// msc (2004-11-16): gianluca finds it more reasonable that "custom" implies "remote"
-			int mode = (useCustomSettings) ? ModeType.REMOTE_TYPE : getMode();
-			
 			// msc (2005-11-23): ExecuteContainer API has changed to allow concurrent starts of containers
 			RunModel runmodel =  master.controller.model.createViewOnContainer(contNumber);
 
-			switch (mode) {
+			switch (getMode()) {
 				case ModeType.LOCAL_TYPE :
 					flowDialog.prepareShow("Starting "+contName, localScriptFlowPanel);
 					master.controller.executeContainer.startLocalScript(runmodel, master.giveOutputListener2(contName));
 					break;
+					
 				case ModeType.REMOTE_TYPE :
-					if (Boolean.getBoolean("AcsCommandCenter.useDaemon")) {
-						flowDialog.prepareShow("Starting "+contName, remoteContainerDaemonFlowPanel);
-						master.controller.executeContainer.startRemoteDemonic(runmodel, master.giveOutputListener(contName));
-					} else {
-						flowDialog.prepareShow("Starting "+contName, remoteFlowPanel);
-						master.controller.executeContainer.startRemote(runmodel, master.giveOutputListener2(contName));
-					}
+					flowDialog.prepareShow("Starting "+contName, remoteFlowPanel);
+					master.controller.executeContainer.startRemote(runmodel, false, master.giveOutputListener2(contName));
 					break;
+
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Starting "+contName, remoteFlowPanel);
+					master.controller.executeContainer.startRemote(runmodel, true, master.giveOutputListener2(contName));
+					break;
+
+				case ModeType.REMOTE_DAEMON_TYPE :
+					flowDialog.prepareShow("Starting "+contName, remoteContainerDaemonFlowPanel);
+					master.controller.executeContainer.startRemoteDemonic(runmodel, master.giveOutputListener(contName));
+					break;
+
 				case ModeType.JAVA_TYPE :
 					flowDialog.prepareShow("Starting "+contName, localJavaFlowPanel);
 					master.controller.executeContainer.startLocalJava(runmodel, master.giveOutputListener2(contName));
@@ -1391,27 +1448,26 @@ public class TabPanel extends JPanel {
 		protected void actionPerformed () throws Throwable {
 			int contNumber = master.controller.project.getContainers().getSelect();
 			String contName = master.controller.project.getContainers().getContainer(contNumber).getName();
-			boolean useCustomSettings = master.controller.project.getContainers().getContainer(contNumber).getUseDedicatedSettings();
-
-			// msc (2004-11-16): gianluca finds it more reasonable that "custom" implies "remote"
-			int mode = (useCustomSettings) ? ModeType.REMOTE_TYPE : getMode();
 
 			// msc (2005-11-23): ExecuteContainer API has changed to allow concurrent starts of containers
 			RunModel runmodel =  master.controller.model.createViewOnContainer(contNumber);
 
-			switch (mode) {
+			switch (getMode()) {
 				case ModeType.LOCAL_TYPE :
 					flowDialog.prepareShow("Stopping "+contName, localScriptFlowPanel);
 					master.controller.executeContainer.stopLocalScript(runmodel, master.giveOutputListener2(contName));
 					break;
 				case ModeType.REMOTE_TYPE :
-					if (Boolean.getBoolean("AcsCommandCenter.useDaemon")) {
-						flowDialog.prepareShow("Stopping "+contName, remoteContainerDaemonFlowPanel);
-						master.controller.executeContainer.stopRemoteDemonic(runmodel, master.giveOutputListener(contName));
-					} else {
-						flowDialog.prepareShow("Stopping "+contName, remoteFlowPanel);
-						master.controller.executeContainer.stopRemote(runmodel, master.giveOutputListener2(contName));
-					}
+					flowDialog.prepareShow("Stopping "+contName, remoteFlowPanel);
+					master.controller.executeContainer.stopRemote(runmodel, false, master.giveOutputListener2(contName));
+					break;
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Stopping "+contName, remoteFlowPanel);
+					master.controller.executeContainer.stopRemote(runmodel, true, master.giveOutputListener2(contName));
+					break;
+				case ModeType.REMOTE_DAEMON_TYPE :
+					flowDialog.prepareShow("Stopping "+contName, remoteContainerDaemonFlowPanel);
+					master.controller.executeContainer.stopRemoteDemonic(runmodel, master.giveOutputListener(contName));
 					break;
 				case ModeType.JAVA_TYPE :
 					flowDialog.prepareShow("Stopping "+contName, localJavaFlowPanel);
@@ -1487,9 +1543,15 @@ public class TabPanel extends JPanel {
 					flowDialog.prepareShow("Killing Acs", localScriptFlowPanel);
 					master.controller.executeAcs.killLocalScript(master.giveOutputListener2("Acs"));
 					break;
+				case ModeType.REMOTE_DAEMON_TYPE :
+					// fall through, daemon mode not supported
 				case ModeType.REMOTE_TYPE :
 					flowDialog.prepareShow("Killing Acs", remoteFlowPanel);
-					master.controller.executeAcs.killRemote(master.giveOutputListener2("Acs"));
+					master.controller.executeAcs.killRemote(false, master.giveOutputListener2("Acs"));
+					break;
+				case ModeType.REMOTE_NATIVE_TYPE :
+					flowDialog.prepareShow("Killing Acs", remoteFlowPanel);
+					master.controller.executeAcs.killRemote(true, master.giveOutputListener2("Acs"));
 					break;
 				case ModeType.JAVA_TYPE :
 					// Should we exit the vm (that would guarantee all delegates die), or what?
@@ -1600,31 +1662,4 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionUseDaemons extends CommandCenterGui.BackgroundAction {
-
-		protected ActionUseDaemons() {
-			master.super("Use Acs Daemons", null);
-		}
-
-		@Override
-		protected void actionPerformed () throws Throwable {
-			boolean b = chkUseDaemons.isSelected();
-			System.setProperty("AcsCommandCenter.useDaemon", String.valueOf(b));
-		}
-	}
-
-	protected class ActionUseNativeSsh extends CommandCenterGui.BackgroundAction {
-
-		protected ActionUseNativeSsh() {
-			master.super("Use native ssh", null);
-		}
-
-		@Override
-		protected void actionPerformed () throws Throwable {
-			boolean b = chkUseNativeSsh.isSelected();
-			/*System.out.println("use native "+b);*/
-			System.setProperty("AcsCommandCenter.useNativeSSH", String.valueOf(b));
-			System.setProperty("AcsCommandCenter.killNativeSSH", String.valueOf(b));
-		}
-	}
 }
