@@ -81,8 +81,14 @@ public class DeploymentTree extends JTree {
 	// external logic that can create supervisor instances
 	protected DeploymentTreeController ctrl;
 
-	public DeploymentTree(DeploymentTreeController ctrl) {
 
+	public DeploymentTree(DeploymentTreeController ctrl) {
+		this (ctrl, true);
+	}
+
+	// msc 2009-04: introducing "allowControl" flag for permission handling (used by OMC)
+	public DeploymentTree(DeploymentTreeController ctrl, boolean allowControl) {
+		
 		super(new DefaultMutableTreeNode("Deployment Info"));
 		this.setRootVisible(false);
 		this.setShowsRootHandles(true);
@@ -98,12 +104,12 @@ public class DeploymentTree extends JTree {
 		modelConverters = new Vector<ModelConverter>();
 
 		// --- setup context menus
-		clientContextMenu = new ClientContextMenu();
-		managerContextMenu = new ManagerContextMenu();
-		containerContextMenu = new ContainerContextMenu();
-		componentContextMenu = new ComponentContextMenu();
-		folderContextMenu = new FolderContextMenu();
-		folderComponentsContextMenu = new FolderComponentsContextMenu();
+		clientContextMenu = new ClientContextMenu (allowControl);
+		managerContextMenu = new ManagerContextMenu (allowControl);
+		containerContextMenu = new ContainerContextMenu (allowControl);
+		componentContextMenu = new ComponentContextMenu (allowControl);
+		folderContextMenu = new FolderContextMenu (allowControl);
+		folderComponentsContextMenu = new FolderComponentsContextMenu (allowControl);
 
 
 		this.addMouseListener(new MouseAdapter() {
@@ -166,7 +172,7 @@ public class DeploymentTree extends JTree {
 			return;
 		}
 
-		menu.show(this, target, evt.getX(), evt.getY());
+		menu.show(this, evt.getX(), evt.getY());
 	}
 
 	// get the supervisor stored in the tree node
@@ -680,35 +686,36 @@ public class DeploymentTree extends JTree {
 	// 
 
 
+	/** 
+	 * Base class for our context menus
+	 */
 	protected class ContextMenu extends JPopupMenu {
 
-		protected ContextMenu() {
-		/*
-		 * (Apr 15, 2004) msc: commented out When one removes a folder like "Containers", it
-		 * disappears unrecoverably. When one removes an element like "bilboContainer", it
-		 * reappears with the next Maci-Refresh This asymetry is not user-friendly, the
-		 * feature by itself is not so useful anyway. It has now gone to ManagerContextMenu.
-		 * 
-		 * this.add(new RemoveFromViewAction());
-		 */
-		}
+		protected ContextMenu (boolean allowControl) {}
 
-		public void show (DeploymentTree tree, DefaultMutableTreeNode target, int x, int y) {
-			super.show(tree, x, y);
+		/**
+		 * If this menu is empty, we don't bother to show it.
+		 */
+		@Override public void show (Component invoker, int x, int y) {
+			if (getComponentCount() == 0)
+				return;
+			super.show(invoker, x, y);
 		}
 
 	}
 
 	protected class ManagerContextMenu extends ContextMenu {
 
-		protected ManagerContextMenu() {
-			super();
+		protected ManagerContextMenu (boolean allowControl) {
+			super(allowControl);
+
 			this.add(new ManagerRefreshAction());
 
-			this.add(new JPopupMenu.Separator());
-			this.add(new ManagerPingAction());
-			this.add(new ManagerShutdownAction());
-
+			if (allowControl) {
+				this.add(new JPopupMenu.Separator());
+				this.add(new ManagerPingAction());
+				this.add(new ManagerShutdownAction());
+			}
 
 			/* 
 			 * msc (2008-10): "remove from view" hardly needed: if a
@@ -718,15 +725,15 @@ public class DeploymentTree extends JTree {
 			 * this.add(new JPopupMenu.Separator());
 			 * this.add(new RemoveFromViewAction());
 			 */
-
 		}
 
 	}
 
 	protected class FolderContextMenu extends ContextMenu {
 
-		protected FolderContextMenu() {
-			super();
+		protected FolderContextMenu (boolean allowControl) {
+			super (allowControl);
+			
 			this.add(new FolderSortByNameAction());
 		}
 
@@ -734,8 +741,9 @@ public class DeploymentTree extends JTree {
 
 	protected class FolderComponentsContextMenu extends FolderContextMenu {
 
-		protected FolderComponentsContextMenu() {
-			super();
+		protected FolderComponentsContextMenu (boolean allowControl) {
+			super (allowControl);
+
 			this.add(new FolderSortByContainerNameAction());
 		}
 
@@ -743,42 +751,51 @@ public class DeploymentTree extends JTree {
 
 	protected class ContainerContextMenu extends ContextMenu {
 
-		protected ContainerContextMenu() {
-			super();
-			this.add(new ContainerPingAction());
-			this.add(new ContainerMessageAction());
-			this.add(new ContainerDisconnectAction());
-			this.add(new ContainerShutdownAction());
+		protected ContainerContextMenu (boolean allowControl) {
+			super (allowControl);
 
-			this.add(new JPopupMenu.Separator());
-			this.add(new ContainerLogoutAction());
+			if (allowControl) {
+				this.add(new ContainerPingAction());
+				this.add(new ContainerMessageAction());
+				this.add(new ContainerDisconnectAction());
+				this.add(new ContainerShutdownAction());
+	
+				this.add(new JPopupMenu.Separator());
+				this.add(new ContainerLogoutAction());
+			}
 		}
 
 	}
 
 	protected class ClientContextMenu extends ContextMenu {
 
-		protected ClientContextMenu() {
-			super();
-			this.add(new ClientPingAction());
-			this.add(new ClientMessageAction());
-			this.add(new ClientDisconnectAction());
+		protected ClientContextMenu (boolean allowControl) {
+			super (allowControl);
 
-			this.add(new JPopupMenu.Separator());
-			this.add(new ClientLogoutAction());
+			if (allowControl) {
+				this.add(new ClientPingAction());
+				this.add(new ClientMessageAction());
+				this.add(new ClientDisconnectAction());
+	
+				this.add(new JPopupMenu.Separator());
+				this.add(new ClientLogoutAction());
+			}
 		}
 
 	}
 
 	protected class ComponentContextMenu extends ContextMenu {
 
-		protected ComponentContextMenu() {
-			super();
-			this.add(new ComponentRequestAction());
-			this.add(new ComponentReleaseAction());
+		protected ComponentContextMenu (boolean allowControl) {
+			super (allowControl);
 
-			this.add(new JPopupMenu.Separator());
-			this.add(new ComponentForceReleaseAction());
+			if (allowControl) {
+				this.add(new ComponentRequestAction());
+				this.add(new ComponentReleaseAction());
+	
+				this.add(new JPopupMenu.Separator());
+				this.add(new ComponentForceReleaseAction());
+			}
 		}
 
 	}
