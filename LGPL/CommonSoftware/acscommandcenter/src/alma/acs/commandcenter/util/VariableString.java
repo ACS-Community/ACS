@@ -125,6 +125,9 @@ public class VariableString {
 	 */
 	protected String resolveVariables (IResolver res, String value) throws UnresolvableException {
 		
+		if (value == null)
+			return null;
+		
 		int markerStart = value.indexOf("${");
 		
 		if (markerStart != -1) {
