@@ -270,7 +270,17 @@ public class NativeCommand implements Runnable {
    /**
     */
    protected void changeStatus(String newStatus) {
-   
+
+   	// close the IO streams and thereby all three OS pipes
+   	// ----------------------------------------------------
+   	// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4784692
+   	// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4523660
+   	if (TERMINATED==newStatus) {
+   		try {process.getOutputStream().close();} catch (Exception exc) {}
+   		try {process.getErrorStream().close();} catch (Exception exc) {}
+   		try {process.getInputStream().close();} catch (Exception exc) {}
+   	}
+
    	String oldStatus = this.status;
       this.status = newStatus;
       
