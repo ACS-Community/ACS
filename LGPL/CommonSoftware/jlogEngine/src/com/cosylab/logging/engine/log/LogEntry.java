@@ -215,13 +215,11 @@ public class LogEntry implements ILogEntry {
 			int size = additionalData.size();
 			for (int t=0; t<size; t++) {
 				AdditionalData temp = additionalData.get(t);
-				String name = temp.getName();
-				String value= temp.getValue();
 				// Cleanup
-				name=name.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
-				value=value.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
-				tempStr.append("<Data Name=\""+name+"\"><![CDATA[");
-				tempStr.append(value);
+				String tempName=temp.name.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
+				String tempValue=temp.value.replaceAll("<","&lt;").replaceAll(">","&gt;").trim();
+				tempStr.append("<Data Name=\""+tempName+"\"><![CDATA[");
+				tempStr.append(tempValue);
 				tempStr.append("]]></Data>");
 			}
 		}
@@ -404,14 +402,20 @@ public class LogEntry implements ILogEntry {
 		if (name==null || value==null) {
 			throw new IllegalArgumentException("Parameter can't be null");
 		}
-		if (name.length()==0 || value.length()==0) {
-			throw new IllegalArgumentException("Parameters can't be empty string");
+		if (name.isEmpty() || value.isEmpty()) {
+			throw new IllegalArgumentException("Parameters can't be empty");
 		}
 		
 		if (additionalData ==null) {
 			additionalData = new Vector<LogEntry.AdditionalData>();
 		}
-		additionalData.add(new AdditionalData(name,value));
+		synchronized (additionalData) {
+			AdditionalData data =new AdditionalData(name,value);
+			if (!additionalData.contains(data)) {
+				additionalData.add(data);
+			}
+		}
+		
 	}
 	
 	/**
@@ -443,7 +447,7 @@ public class LogEntry implements ILogEntry {
 			sb.append("Datas: \n");
 			for (int t=0; t<additionalData.size(); t++) {
 				AdditionalData temp = additionalData.get(t);
-				sb.append("\t"+temp.getName()+" : "+temp.getValue());
+				sb.append("\t"+temp.name+" : "+temp.value);
 			}
 		}
 
