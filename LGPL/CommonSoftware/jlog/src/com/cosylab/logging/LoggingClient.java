@@ -1746,7 +1746,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public ErrorBrowserDlg getErrorDialog() {
 		if (errorBrowserDialog==null) {
-			errorBrowserDialog=new ErrorBrowserDlg();
+			errorBrowserDialog=new ErrorBrowserDlg(this);
 		}
 		return errorBrowserDialog;
 	}
@@ -1756,8 +1756,15 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * 
 	 * @param stackID The <code>STACKID</code> of the error trace in the tab
 	 */
-	public void addErrorTab(String stackID) {
-		getErrorDialog().addErrorTab(getLCModel1(),stackID);
+	public void addErrorTab(final String stackID) {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				getErrorDialog().addErrorTab(getLCModel1(),stackID);		
+			}
+		};
+		Thread t = new Thread(runnable,"LoggingClient.addErrorTab");
+		t.setDaemon(true);
+		t.start();
 	}
 
 	/**
