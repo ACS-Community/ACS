@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.16 2008/07/17 14:06:47 hsommer Exp $"
+# "@(#) $Id: TestList.lite,v 1.17 2009/04/15 23:28:26 agrimstrup Exp $"
 #
 # TestList
 #
@@ -68,4 +68,6 @@ PROLOGUE acsstartupTATPrologue
 10 testContainerPort "testContainerPort.sh"
 
 11 heapDumpOnOutOfMemoryErrorTest "heapDumpOnOutOfMemoryErrorTest" 
+
+12 testContainerPortLock "testContainerPortLock"
 EPILOGUE acsstartupTATEpilogue

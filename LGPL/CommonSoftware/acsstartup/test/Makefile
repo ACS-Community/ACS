@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.17 2008/07/18 05:31:42 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.18 2009/04/15 23:28:26 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = tcpBlocker acsstartupTestLoadIFR
+PY_SCRIPTS_L       = tcpBlocker acsstartupTestLoadIFR testContainerPortLock
 
 PY_MODULES         =
 PY_MODULES_L       =
