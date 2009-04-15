@@ -50,26 +50,21 @@ public interface ILogEntry extends Serializable {
 	 *
 	 */
 	public class AdditionalData {
-		private String name;
-		private String value;
+		public final  String name;
+		public final  String value;
 		
 		public AdditionalData(String name, String value) {
 			this.name=name;
 			this.value=value;
 		}
 		
-		/**
-		 * Getter method
-		 */ 
-		public String getValue() {
-			return this.value;
-		}
-		
-		/** 
-		 * Getter method
-		 */ 
-		public String getName() {
-			return this.name;
+		@Override
+		public boolean equals(Object o) {
+			if (o==null || !(o instanceof AdditionalData)) {
+				return super.equals(o);
+			}
+			AdditionalData d=(AdditionalData)o;
+			return this.name.equals(d.name) && this.value.equals(d.value); 
 		}
 		
 	}
