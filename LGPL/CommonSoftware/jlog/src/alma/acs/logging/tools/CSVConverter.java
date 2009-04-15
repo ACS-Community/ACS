@@ -252,9 +252,9 @@ public class CSVConverter {
 				first=false;
 			}
 			temp.append('[');
-			temp.append(data.getName());
+			temp.append(data.name);
 			temp.append(" ==> ");
-			temp.append(data.getValue());
+			temp.append(data.value);
 			temp.append(']');
 		}
 		return temp.toString();

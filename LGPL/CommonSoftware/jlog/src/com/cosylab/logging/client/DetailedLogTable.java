@@ -245,8 +245,8 @@ public class DetailedLogTable extends JTable
 				}
 			}
 			for (int i=Field.values().length; i < rowsNum; i++) {
-				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-Field.values().length).getName()+"</I>";
-				String temp = new String ((String)additionalData.get(i-Field.values().length).getValue());
+				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-Field.values().length).name+"</I>";
+				String temp = new String ((String)additionalData.get(i-Field.values().length).value);
 				nameValue[i][1] = temp;
 			}
 			

@@ -183,7 +183,7 @@ public class SearchEngine {
             	Vector<ILogEntry.AdditionalData> addData = log.getAdditionalData();
             	for (int t=0; t<addData.size(); t++) {
             		ILogEntry.AdditionalData data = addData.elementAt(t);
-            		string = data.getName();
+            		string = data.name;
             		if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
                         if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
                             foundRow=cursor;
@@ -195,7 +195,7 @@ public class SearchEngine {
                             return foundRow;
                         }
                     }
-            		string = data.getValue();
+            		string = data.value;
             		if (matches(string,regExp,searchString,caseSensitive,wholeWord) ) {
                         if ((forwardSearch && cursor!=startingRow) || (!forwardSearch && cursor!=endRow)) { 
                             foundRow=cursor;

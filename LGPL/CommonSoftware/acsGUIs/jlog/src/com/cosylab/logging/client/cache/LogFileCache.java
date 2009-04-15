@@ -398,9 +398,9 @@ public class LogFileCache implements ILogMap {
 			Vector<ILogEntry.AdditionalData> datas = log.getAdditionalData();
 			for (int t=0; t<datas.size(); t++) {
 				ILogEntry.AdditionalData data = datas.get(t);
-				sb.append(data.getName());
+				sb.append(data.name);
 				sb.append(SEPARATOR);
-				sb.append(data.getValue());
+				sb.append(data.value);
 				sb.append(SEPARATOR);
 			}
 		}
