@@ -21,14 +21,20 @@
  */
 package alma.acs.logging.errorbrowser;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
@@ -44,17 +50,45 @@ import alma.acs.logging.table.LogEntryTableModelBase;
  * @author acaproni
  *
  */
-public class ErrorBrowserDlg extends JDialog {
+public class ErrorBrowserDlg extends JDialog implements ContainerListener {
 	
 	/**
 	 * The pane showing the error tabs
 	 */
-	private JTabbedPane tabbedPane = new JTabbedPane();
+	private final JTabbedPane tabbedPane = new JTabbedPane();
+	
+	/**
+	 * The panel shown when the dialog is displayed with no error traces.
+	 */
+	private final JPanel notTracesPnl = new JPanel(new BorderLayout()); 
 	
 	/**
 	 * The logging client
 	 */
 	private final LoggingClient loggingClient;
+	
+	/**
+	 * The {@link CardLayout} shows the tabbed pane when the dialog contains 
+	 * error traces and a label when no error traces have been defined.
+	 */
+	private final CardLayout cardLayout = new CardLayout();
+	
+	/**
+	 * The panel with the variable content.
+	 * <P>
+	 * The components shown by the panel is defined by the card layout.
+	 */
+	private final JPanel cardsPanel = new JPanel(cardLayout);
+	
+	/**
+	 * The name of the card shown when there are no error traces
+	 */
+	private final static String NO_ERROR_TRACES = "Empty";
+	
+	/**
+	 * The name of the card shown when there are no error traces
+	 */
+	private final static String ERROR_TRACES = "ErrorTraces";
 
 	/**
 	 * Constructor
@@ -77,7 +111,15 @@ public class ErrorBrowserDlg extends JDialog {
 	 * The dialog is composed of a set of tabs, one for each stack trace.
 	 */
 	private void initialize() {
-		add(tabbedPane);
+		cardsPanel.add(tabbedPane,ERROR_TRACES);
+		
+		JLabel notTracesLbl = new JLabel("<HTML>No error traces.<BR>Add an error trace from the table of logs.</HTML>");
+		notTracesPnl.add(notTracesLbl,BorderLayout.NORTH);
+		
+		cardsPanel.add(notTracesPnl,NO_ERROR_TRACES);
+		add(cardsPanel);
+		ratioContent();
+		tabbedPane.addContainerListener(this);
 		setMinimumSize(new Dimension(400,200));
 		setPreferredSize(new Dimension(500,300));
 		pack();
@@ -100,7 +142,7 @@ public class ErrorBrowserDlg extends JDialog {
 		if (sourceModel==null) {
 			throw new IllegalArgumentException("The model can't be null");
 		}
-		removeDuplacatedTab(stackId);
+		removeDuplicatedTabs(stackId);
 		
 		// Add the new tab
 		try {
@@ -146,7 +188,7 @@ public class ErrorBrowserDlg extends JDialog {
 	 * 
 	 * @param title The title of the tab
 	 */
-	private void removeDuplacatedTab(final String tabTitle) {
+	private void removeDuplicatedTabs(final String tabTitle) {
 		// Check if a tab with the given name already exists
 		while (true) {
 			try {
@@ -188,6 +230,38 @@ public class ErrorBrowserDlg extends JDialog {
 			}
 			toFront();
 		}
+	}
+	
+	/**
+	 * Shown the proper content in the dialog:
+	 * <UL>
+	 * 	<LI>the label when there are no error traces
+	 *  <LI>the tabbed pane when there is at least one error trace
+	 * </UL>
+	 */
+	private void ratioContent() {
+		if (tabbedPane.getTabCount()>0) {
+			cardLayout.show(cardsPanel, ERROR_TRACES);
+		} else {
+			cardLayout.show(cardsPanel, NO_ERROR_TRACES);
+		}
+	}
+
+	/**
+	 * @see ContainerListener
+	 */
+	@Override
+	public void componentAdded(ContainerEvent e) {
+		ratioContent();
+	}
+
+	/**
+	 * @see ContainerListener
+	 */
+	@Override
+	public void componentRemoved(ContainerEvent e) {
+		ratioContent();
+		
 	}
 	
 }
