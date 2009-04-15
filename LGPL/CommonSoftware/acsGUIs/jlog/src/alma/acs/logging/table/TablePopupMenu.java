@@ -39,7 +39,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -233,6 +232,12 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		addSeparator();
 		add(copyClipboard);
 		add(addUserInfo);
+		
+		// Add the listeners
+		showErrorStack.addActionListener(this);
+		copyClipboard.addActionListener(this);
+		addUserInfo.addActionListener(this);
+		saveSelected.addActionListener(this);
 	}
 	
 	/**
@@ -262,6 +267,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 				textTransfer.setClipboardContents(strBuffer.toString());
 			} 
 		} else if (e.getSource()==addUserInfo) {
+			System.out.println("AAAAAAAAAAAAAA");
 			// Show the dialog
 			UserInfoDlg dlg = new UserInfoDlg();
 			if (dlg.okPressed()) {
@@ -389,11 +395,6 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		copyClipboard.setEnabled(true);
 		saveSelected.setEnabled(true);
 		
-		// Add the listeners
-		showErrorStack.addActionListener(this);
-		copyClipboard.addActionListener(this);
-		addUserInfo.addActionListener(this);
-		saveSelected.addActionListener(this);
 		// Disable the menu items if the test is null or empty
 		if (textToCopy==null || textToCopy.length()==0) {
 			copyClipboard.setEnabled(false);
