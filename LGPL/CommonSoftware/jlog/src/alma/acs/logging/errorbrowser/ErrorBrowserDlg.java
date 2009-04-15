@@ -22,6 +22,8 @@
 package alma.acs.logging.errorbrowser;
 
 import java.awt.Dimension;
+import java.awt.Point;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -29,6 +31,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+
+import com.cosylab.logging.LoggingClient;
 
 import alma.acs.logging.table.LogEntryTableModelBase;
 
@@ -46,12 +50,23 @@ public class ErrorBrowserDlg extends JDialog {
 	 * The pane showing the error tabs
 	 */
 	private JTabbedPane tabbedPane = new JTabbedPane();
+	
+	/**
+	 * The logging client
+	 */
+	private final LoggingClient loggingClient;
 
 	/**
 	 * Constructor
+	 * 
+	 * @param client A not <code>null</code> reference to the <code>LoggingClient</code>
 	 */
-	public ErrorBrowserDlg() {
+	public ErrorBrowserDlg(LoggingClient client) {
 		super((JFrame)null, "Error browser");
+		if (client==null) {
+			throw new IllegalArgumentException("The LoggingClient can't be null");
+		}
+		loggingClient=client;
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		initialize();
 	}
@@ -78,43 +93,36 @@ public class ErrorBrowserDlg extends JDialog {
 	 *                    belonging to the error trace with the give <code>STACKID</code>
 	 * @param stackId The <code>STACKID</code> of logs of the stack trace
 	 */
-	public void addErrorTab(LogEntryTableModelBase sourceModel, String stackId) {
+	public synchronized void addErrorTab(final LogEntryTableModelBase sourceModel, final String stackId) {
 		if (stackId==null || stackId.isEmpty()) {
 			throw new IllegalArgumentException("The stackID can't be null nor empty");
 		}
 		if (sourceModel==null) {
 			throw new IllegalArgumentException("The model can't be null");
 		}
+		removeDuplacatedTab(stackId);
 		
-		// Check if a tab with the given name already exists
-		for (int t=0; t<tabbedPane.getTabCount(); t++) {
-			if (tabbedPane.getTitleAt(t).equals(stackId)) {
-				tabbedPane.removeTabAt(t);
-				break;
-			}
-		}
 		// Add the new tab
-		ErrorTab newTab=null;
 		try {
-			newTab = new ErrorTab(sourceModel,stackId);
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() {
+					ErrorTab newTab;
+					try {
+						newTab = new ErrorTab(sourceModel,stackId);
+					} catch (Exception e) {
+						System.err.println("Error creating an error tab: "+e.getMessage());
+						e.printStackTrace();
+						return;
+					}
+					tabbedPane.insertTab(stackId, null, newTab, "Stack trace for ID "+stackId, 0);
+					tabbedPane.setTabComponentAt(0, new TabComponent(tabbedPane));
+					setVisible(true);
+				}
+			});
 		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Error creating the error tab: "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-			return;
+			System.err.println("Error adding tab: "+e.getMessage());
+			e.printStackTrace(System.err);
 		}
-		class AddTab implements Runnable {
-			String id;
-			ErrorTab tab;
-			public void run() {
-				tabbedPane.insertTab(id, null, tab, "Stack trace for ID "+id, 0);
-				tabbedPane.setTabComponentAt(0, new TabComponent(tabbedPane));
-				setVisible(true);
-			}
-		}
-		AddTab temp = new AddTab();
-		temp.id=stackId;
-		temp.tab=newTab;
-		SwingUtilities.invokeLater(temp);
 	}
 	
 	/**
@@ -129,6 +137,57 @@ public class ErrorBrowserDlg extends JDialog {
 		}
 		setVisible(false);
 		dispose();
+	}
+	
+	/**
+	 * Remove all the tabs with the given title, if any.
+	 * <P>
+	 * The removal runs synchronously inside the vent dispatcher EDT.
+	 * 
+	 * @param title The title of the tab
+	 */
+	private void removeDuplacatedTab(final String tabTitle) {
+		// Check if a tab with the given name already exists
+		while (true) {
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						for (int t=0; t<tabbedPane.getTabCount(); t++) {
+							if (tabbedPane.getTitleAt(t).equals(tabTitle)) {
+								tabbedPane.removeTabAt(t);
+								break;
+							} 
+						}
+					}
+				});
+				return;
+			} catch (InterruptedException e) {
+				// If the thread has been interrupted then retry
+				e.printStackTrace();
+				continue;
+			} catch (InvocationTargetException e) {
+				// If an error happens while executing run() then prints out a message
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * Override <code>setVisible()</code> to move the dialog
+	 * over the logging client and in front of other windows
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		boolean wasVisibel=isVisible();
+		super.setVisible(visible);
+		// Move the win on top of jlog
+		if (visible && isShowing()) {
+			Point loggingPos = loggingClient.getLocationOnScreen();
+			if (!wasVisibel) {
+				setLocation(loggingPos);
+			}
+			toFront();
+		}
 	}
 	
 }
