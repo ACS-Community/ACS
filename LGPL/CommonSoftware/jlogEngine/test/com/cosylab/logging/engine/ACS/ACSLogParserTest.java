@@ -104,12 +104,12 @@ public class ACSLogParserTest extends TestCase {
 			
 			// Check the first data
 			ILogEntry.AdditionalData myData = additionalData.get(0);
-			assertEquals("LoggedException", myData.getName());
-			assertTrue(myData.getValue().startsWith("alma.xmlstore.OperationalPackage.NotFound: uid://X00000000000028aa/X00000002"));
+			assertEquals("LoggedException", myData.name);
+			assertTrue(myData.value.startsWith("alma.xmlstore.OperationalPackage.NotFound: uid://X00000000000028aa/X00000002"));
 			// Check the second data
 			ILogEntry.AdditionalData d = additionalData.get(1);
-			assertEquals("Pippo", d.getName());
-			assertEquals("Pluto", d.getValue());
+			assertEquals("Pippo", d.name);
+			assertEquals("Pluto", d.value);
 		}
 	}
 	
@@ -231,7 +231,7 @@ public class ACSLogParserTest extends TestCase {
 				if (data!=null) {
 					for (int t=0; t<data.size(); t++) {
 						AdditionalData d = data.get(t);
-						System.out.println("Data:  name="+d.getName()+", value="+d.getValue());
+						System.out.println("Data:  name="+d.name+", value="+d.value);
 					}
 				} else {
 					System.out.println("The log has no additional data entries");

@@ -117,8 +117,8 @@ public class LogEntryTest extends junit.framework.TestCase
 			expectedLength,
 			actualLength);
 
-		String dataName = datas.get(0).getName();
-		String dataVal =  datas.get(0).getValue();
+		String dataName = datas.get(0).name;
+		String dataVal =  datas.get(0).value;
 		
 		assertEquals("Data name differs", "DataName",dataName);
 		assertEquals("Data value differs", "first data",dataVal);

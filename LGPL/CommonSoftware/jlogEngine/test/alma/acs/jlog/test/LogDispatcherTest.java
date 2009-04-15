@@ -296,7 +296,7 @@ public class LogDispatcherTest extends TestCase {
 			logBin.log_data=new NameValue[data.size()];
 			for (int t=0; t<data.size(); t++) {
 				AdditionalData d=data.get(t);
-				logBin.log_data[t]=new NameValue(d.getName(),d.getValue());
+				logBin.log_data[t]=new NameValue(d.name,d.value);
 			}
 		}
 		return logBin;

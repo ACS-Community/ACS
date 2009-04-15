@@ -454,8 +454,8 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 					AdditionalData savedDataItem = savedData.elementAt(count);
 					assertNotNull(savedDataItem);
 					
-					assertEquals("Data names differ", originalDataItem.getName(), savedDataItem.getName());
-					assertEquals("Data values differ", originalDataItem.getValue(), savedDataItem.getValue());
+					assertEquals("Data names differ", originalDataItem.name, savedDataItem.name);
+					assertEquals("Data values differ", originalDataItem.value, savedDataItem.value);
 					
 				}
 			}
