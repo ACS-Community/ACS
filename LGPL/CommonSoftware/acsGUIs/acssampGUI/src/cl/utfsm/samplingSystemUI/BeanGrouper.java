@@ -3,25 +3,23 @@ package cl.utfsm.samplingSystemUI;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import javax.swing.JOptionPane;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import net.miginfocom.swing.MigLayout;
-
 
 /**
  * Displays the GUI for a Sampling Group, allowing plotting and control of its functions.
@@ -35,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
  * @author Jorge Avarias <javarias@inf.utfsm.cl>
  * @author Arturo Hoffstadt <ahoffsta@inf.utfsm.cl>
  */
-public class BeanGrouper extends JFrame implements WindowListener{
+public class BeanGrouper extends JFrame implements WindowListener {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -81,8 +79,8 @@ public class BeanGrouper extends JFrame implements WindowListener{
 		super();
 		this.ssg = ssg;
 		toFile=new FileHelper(group);
-		initialize();
 		this.group = group;
+		initialize();
 	}
 
 	/**
@@ -90,24 +88,47 @@ public class BeanGrouper extends JFrame implements WindowListener{
 	 */
 	private void initialize() {
 		this.setMinimumSize( new Dimension( 750, 550) );
-		this.setLayout(new MigLayout("", // Layout Constraints
-				"[]5[]5[][]10[][]10[][]", // Column Constraints
-				"[center]5[]5[]" // Row Constraints
-				) );
+		this.setLayout(new GridBagLayout());
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(5,5,5,5);
+		
 		//First row only has the Plot
-		this.add(getJPanel(), "span" );
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridx = 0; c.gridy = 0;
+		c.fill = GridBagConstraints.BOTH;
+		c.weighty = 1;
+		c.weightx = 1;
+		c.gridwidth = 8;
+		this.add(getJPanel(), c);
 		
 		//Second Row
-		this.add(getStartButton());
-		this.add(getStopButton());		
-		this.add(getFrequencyLabel());
-		this.add(getFreqTextField());
-		this.add(getTimeSampLabel());
-		this.add(getTimeSampTextField());
-		this.add(getTimeWindowLabel());
-		this.add(getTimeWindowTextField(), "wrap");
+		c.anchor = GridBagConstraints.WEST;
+		c.gridy = 1; c.gridx = 0;
+		c.weighty = 0;
+		c.weightx = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		this.add(getStartButton(), c);
+		c.gridx = 1;
+		this.add(getStopButton(), c);
+		c.gridx = 2;
+		this.add(getFrequencyLabel(), c);
+		c.gridx = 3;
+		this.add(getFreqTextField(), c);
+		c.gridx = 4;
+		this.add(getTimeSampLabel(), c);
+		c.gridx = 5;
+		this.add(getTimeSampTextField(), c);
+		c.gridx = 6;
+		this.add(getTimeWindowLabel(), c);
+		c.gridx = 7;
+		this.add(getTimeWindowTextField(), c);
 		
-		this.add(getFileNameLabel(), "span");
+		/* Third row */
+		c.gridy = 2; c.gridx = 0;
+		c.gridwidth = 8;
+		this.add(getFileNameLabel(), c);
 		
 		this.getStopButton().setEnabled(false);
 		

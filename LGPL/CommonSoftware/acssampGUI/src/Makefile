@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2009/02/13 22:57:28 ahoffsta Exp $"
+# "@(#) $Id: Makefile,v 1.10 2009/04/16 23:33:34 ahoffsta Exp $"
 #
 # Makefile of ........
 #
@@ -119,7 +119,7 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = acssampGUI samplingSystemUI
+JARFILES = samplingSystemUI
 acssampGUI_DIRS= alma
 samplingSystemUI_DIRS=cl
 samplingSystemUI_EXTRAS=cl/utfsm/samplingSystemUI/img/
@@ -171,7 +171,7 @@ INS_ROOT_DIR   =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES = ../lib/miglayout-3.5.5.jar ../lib/jfreechart-1.0.10.jar ../lib/jcommon-1.0.13.jar
+INSTALL_FILES = 
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

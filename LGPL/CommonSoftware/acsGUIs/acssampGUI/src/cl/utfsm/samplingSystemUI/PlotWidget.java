@@ -4,17 +4,19 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.Timer;
 
 import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.chart.ChartPanel;
 
 import alma.acs.util.UTCUtility;
 
@@ -70,17 +72,31 @@ public class PlotWidget extends SamplingWidget {
         	//TODO: Quitar el autoajuste de los ejes, y poder seter un rango fijo, pero en funcion del primer elemento
         	//chart.getXYPlot().getDomainAxis().setAutoRange(false);
     		//chartPanel.getChart().getXYPlot().getDomainAxis().setRange(0, 1000000000);
-        	
+
         	chartPanel = new ChartPanel(chart, true);
         	chartPanel.setMinimumSize(new java.awt.Dimension(500, 400));
+        	chartPanel.addComponentListener(new ComponentListener() {
+				public void componentResized(ComponentEvent e) {
+					// TODO: Plot resize
+				}
+        		
+				public void componentHidden(ComponentEvent e) {
+				}
+				public void componentMoved(ComponentEvent e) {
+				}
+				public void componentShown(ComponentEvent e) {
+				}        		
+        	});
         	
         	
         	//Adding Widgets and Composing the UI
         	this.setLayout(new GridBagLayout());
         	GridBagConstraints gbc = new GridBagConstraints();
-        	gbc.anchor = GridBagConstraints.NORTH;
+        	gbc.anchor = GridBagConstraints.CENTER;
         	gbc.ipadx = 10;
-        	gbc.weightx = 2;
+        	gbc.fill = GridBagConstraints.BOTH;
+        	gbc.weightx = 1;
+        	gbc.weighty = 1;
         	this.add(chartPanel, gbc);
         }
         

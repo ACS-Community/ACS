@@ -35,8 +35,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 
-import net.miginfocom.swing.MigLayout;
-
 /**
  * Main Widget class, and starting point for the SSG Software. Controls the main flow of the software.
  * <p>
@@ -95,13 +93,15 @@ public class SamplingSystemGUI extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
+
 		this.setLocation(0, 0);
 		this.setJMenuBar(getSSGMenuBar());
 		this.setLayout( new GridLayout(1,1,10,10) );
 		this.setContentPane( this.getPropertyAddPanel() );
-		this.setMinimumSize( getPropertyAddPanel().getSize() );
 		this.setTitle("Sampling System GUI");
-		//TODO: Leave a border from the contentpane to the window border.
+		this.setLocationRelativeTo(null);
+		this.pack();
+
 	}
 	
 	/**
@@ -182,7 +182,7 @@ public class SamplingSystemGUI extends JFrame {
 		}
 		return FileMenuLoadStatusButton;
 	}
-	
+
 	/**
 	 * This method initializes FileMenuSaveStatusButton	
 	 * @return javax.swing.JMenuItem	
@@ -315,20 +315,42 @@ public class SamplingSystemGUI extends JFrame {
 	private JPanel getPropertyAddPanel() {
 		if (PropertyAddPanel == null) {
 			PropertyAddPanel = new JPanel();
-			PropertyAddPanel.setLayout(new MigLayout("", // Layout Constraints
-					"[right]10[]", // Column Constraints
-					"[]10[]10[]10[]" // Row Constraints
-					) );
+			PropertyAddPanel.setLayout(new GridBagLayout());
 			//PropertyAddPanel.setLayout( new GridLayout( 4,2, 10, 10 ) );
 			PropertyAddPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			PropertyAddPanel.setSize( new Dimension(310, 180) );
-			PropertyAddPanel.add( getComponentLabel() );
-			PropertyAddPanel.add( getComponentComboBox(), "wrap" );
-			PropertyAddPanel.add( getPropertyLabel() );
-			PropertyAddPanel.add( getPropertyComboBox(), "wrap" );
-			PropertyAddPanel.add( getGroupLabel() );
-			PropertyAddPanel.add( getGroupTextField(), "wrap" );
-			PropertyAddPanel.add( getAddSampleButton(), "span" );
+			//PropertyAddPanel.setSize( new Dimension(310, 180) );
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridheight = 1;
+			c.gridwidth = 1;
+			c.insets = new Insets(5,5,5,5);
+			
+			c.anchor = GridBagConstraints.EAST;
+			c.gridx = 0;
+			c.gridy = 0;
+			PropertyAddPanel.add( getComponentLabel(), c);
+			c.gridx = 1;
+			c.anchor = GridBagConstraints.WEST;
+			PropertyAddPanel.add( getComponentComboBox(), c);
+			c.anchor = GridBagConstraints.EAST;
+			c.gridy = 1;
+			c.gridx = 0;
+			PropertyAddPanel.add( getPropertyLabel(), c);
+			c.gridx = 1;
+			c.anchor = GridBagConstraints.WEST;
+			PropertyAddPanel.add( getPropertyComboBox(), c);
+			c.anchor = GridBagConstraints.EAST;
+			c.gridy = 2;
+			c.gridx = 0;
+			PropertyAddPanel.add( getGroupLabel(), c );
+			c.gridx = 1;
+			c.anchor = GridBagConstraints.WEST;
+			PropertyAddPanel.add( getGroupTextField(), c);
+			c.anchor = GridBagConstraints.EAST;
+			c.gridy = 3;
+			c.gridx = 0;
+			c.gridwidth = 2;
+			PropertyAddPanel.add( getAddSampleButton(), c);
+			PropertyAddPanel.validate();
 		}
 		return PropertyAddPanel;
 	}
@@ -458,8 +480,11 @@ public class SamplingSystemGUI extends JFrame {
 	 */
 	private JTextField getGroupTextField() {
 		if (groupTextField == null) {
+			Dimension d = new Dimension(100, 19);
 			groupTextField = new JTextField();
-			groupTextField.setPreferredSize(new Dimension(100, 19));
+			groupTextField.setPreferredSize(d);
+			groupTextField.setSize(d);
+			groupTextField.setMinimumSize(d);
 			groupTextField.setToolTipText("Sampling Group where to add the new Sample. Only alphanumeric and underscore characters.");
 			groupTextField.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 			groupTextField.setHorizontalAlignment(JTextField.LEFT);
