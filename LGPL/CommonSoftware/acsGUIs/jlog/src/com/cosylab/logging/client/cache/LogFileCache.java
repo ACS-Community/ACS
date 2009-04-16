@@ -99,49 +99,49 @@ public class LogFileCache implements ILogMap {
 		}
 	}
 	
-	// The name of the log file of the cache
-	// This file is filled of logs when they arrive from the notification
-	// channel or by reading an input file
-	// The file will be destroyed when the object is destroyed.
+	/** 
+	 * The name of the log file of the cache 
+	 * This file is filled of logs when they arrive from the notification channel or by reading an input file 
+	 * The file will be destroyed when the object is destroyed.
+	 */
 	private String logFileName;
 	
-	// The file of logs is accessed in a random way (the positions
-	// are stored in the index)
+	/**
+	 * The file of logs is accessed in a random way 
+	 * (the positions are stored in the index) 
+	 */
 	protected RandomAccessFile file=null;
 	
-	// Each log is identified by a unique integer used as key to get the 
-	// log from the file (throw the index data structure)
-	// logID is incremented whenever a new log is added
-	//
-	// NOTE: in this implementation this value is incremented without taking
-	//       care of the logs deleted.
+	/**
+	 *  Each log is identified by a unique integer used as key to get the log from the file 
+	 *  (throw the index data structure) logID is incremented whenever a new log is added
+	 *  
+	 *  NOTE: in this implementation this value is incremented without taking 
+	 *  		care of the logs deleted.
+	 */
 	protected int logID=0;
 	
-	// The index of the log is a SortedMap having the number identifying a log as key.
-	// Each entry is a LogCacheInfo containing the starting and ending position
-	// of the log in the file
+	/** 
+	 * The index of the log is a SortedMap having the number identifying a log as key.  
+	 * Each entry is a LogCacheInfo containing the starting and ending position of the log in the file
+	 */
 	protected TreeMap<Integer,LogCacheInfo> index = new TreeMap<Integer,LogCacheInfo>();
 	
+	/**
+	 * The buffer to build the logs to write in cache
+	 */
 	private StringBuilder sb=new StringBuilder();
-	private final String SEPARATOR = new String (""+((char)0));
 	
-	// The logs replaced (for example the logs with some info added)
-	// They are usually a few so we keep them in memory
+	/**
+	 * The separator between the field of the logs written in cache
+	 */
+	private static final String SEPARATOR = new String (""+((char)0));
+	
+	/** 
+	 * The logs replaced (for example the logs with some info added)  
+	 * They are usually a few so we keep them in memory
+	 */
 	protected HashMap<Integer,ILogEntry> replacedLogs = new HashMap<Integer,ILogEntry>();
-	
-//	/**
-//	 * Build an empty cache
-//	 * 
-//	 * @param filters The user defined filters
-//	 * @param systemFilters The system filters
-//	 */
-//	public LogFileCache() throws LogCacheException {
-//		try {
-//			initCache();
-//		} catch (IOException ioe) {
-//			throw new LogCacheException("Error initializing the file",ioe);
-//		}		
-//	}
 	
 	/**
 	 * 
@@ -520,10 +520,10 @@ public class LogFileCache implements ILogMap {
 	 */
 	public synchronized void deleteLog(Integer key) throws LogCacheException {
 		if (key<0 || key>=logID) {
-			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"]");
+			throw new LogCacheException("Key "+key+" out of range [0,"+logID+"[");
 		}
 		if (!index.containsKey(key)) {
-			throw new LogCacheException("the log "+key+" is not in cache");
+			throw new LogCacheException("The log "+key+" is not in cache [0,"+logID+"[");
 		}
 		// Remove the log from the index
 		synchronized (index) {
