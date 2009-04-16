@@ -270,7 +270,7 @@ public class Executor {
     */
    static private boolean remoteNative(String username, final String password, final String command, String endMark, NativeCommand.Listener listener, String host) throws Throwable {
       
-      remoteFlow.reset(null);
+   	localOutProcFlow.reset(null);
 
       if (listener == null) {
          listener = new NativeCommand.ListenerAdapter(); // normalization: use a do-nothing implementation
@@ -299,7 +299,7 @@ public class Executor {
          @Override
 			public void statusChanged(NativeCommand task, String oldStatus) {
          	if (task.getStatus() == NativeCommand.RUNNING) {
-         		remoteFlow.success(RemoteFlow.CONNECT);
+         		localOutProcFlow.success(LocalOutProcFlow.RUN);
          	}
          }
       });
@@ -330,7 +330,7 @@ public class Executor {
          throw latestExc;
       } else {
 
-      	remoteFlow.success(RemoteFlow.COMPLETE);
+      	localOutProcFlow.success(LocalOutProcFlow.COMPLETE);
       	return true;
       }
          

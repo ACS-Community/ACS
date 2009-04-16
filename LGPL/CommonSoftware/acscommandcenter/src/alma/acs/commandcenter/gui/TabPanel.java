@@ -16,12 +16,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 import java.util.WeakHashMap;
 
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -30,9 +31,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -43,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import alma.acs.commandcenter.engine.Executor;
@@ -131,7 +133,7 @@ public class TabPanel extends JPanel {
 	protected TabPanel(CommandCenterGui master) {
 		this.master = master;
 
-		flowDialog = new FlowDialog(master.frame, "Progress");
+		flowDialog = new FlowDialog();
 
 		Icon okIcon = master.icons.getOkIcon();
 		Icon errIcon = master.icons.getErrIcon();
@@ -563,77 +565,130 @@ public class TabPanel extends JPanel {
 	}
 
 
-	protected class FlowDialog extends JDialog implements FlowListener {
+	/**
+	 * The progress dialog for long-running actions.
+	 */
+	protected class FlowDialog extends JInternalFrame implements FlowListener {
 
 		DefaultChecklistPanel currentFlowUI; // the flow-ui currently held by this dialog
 		JButton flowDialogOk;
 
-		protected FlowDialog(JFrame parent, String title) {
-			super(parent, title);
+		protected FlowDialog() {
 			this.getContentPane().setLayout(new BorderLayout());
-			this.setModal(false);
+			this.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createRaisedBevelBorder(),
+				BorderFactory.createLoweredBevelBorder()
+			));
+			this.setFrameIcon(master.icons.getConfigIcon());
+
 			flowDialogOk = new JButton("Close");
 			flowDialogOk.addActionListener(new ActionListener() {
-
 				public void actionPerformed (ActionEvent evt) {
 					close();
 				}
 			});
 			this.getRootPane().setDefaultButton(flowDialogOk); // TODO setDefaultButton doesn't work
-			
-			this.addWindowListener(new WindowAdapter(){
-				@Override
-				public void windowClosing (WindowEvent e) {
-					cleanUp();
-				}
-			});
-			
-			
+
 			flowDialogOk.setName("btn_Close_FlowDialog");
 		}
 
-		protected void prepareShow (String title, JComponent content) {
-			this.setTitle(title+" - Progress");
-			this.getContentPane().removeAll();
-			this.getContentPane().add(content, BorderLayout.CENTER);
-			this.getContentPane().add(flowDialogOk, BorderLayout.SOUTH);
-			this.validate();
-			this.pack();
+		/**
+		 * Bring up the dialog (execution in swing thread guaranteed).
+		 * @param title
+		 * @param content
+		 */
+		protected void prepareShow (final String title, final DefaultChecklistPanel content) throws InterruptedException, InvocationTargetException {
 
-			// the dialog must listen on the flow to be able to close when the flow has completed.
-			// to be able to undo this in close(), the flow must be stored.
-			// this dialog can hold any JComponent, thus we need to distinguish whether that jcomponent is a flow-UI
-			if (content instanceof DefaultChecklistPanel) {
-				currentFlowUI = (DefaultChecklistPanel) content;
-				currentFlowUI.getFlow().addListener(this);
-			} else {
-				currentFlowUI = null;
-			}
-		}
+			Runnable r = new Runnable(){
+				public void run () {
 
-		public void bringUp () {
-			// disable widgets
-			for (JComponent c : disenable.keySet())
-				c.setEnabled(false);
+					// prepare show
+					// --------------
 
-			master.correctDialogLocation(this);
-			super.setVisible(true);
-		}
+					setTitle(title+" - Progress");
+//					JLabel label = new JLabel(title+" - Progress");
+//					label.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
+//					label.setBackground(UIManager.getColor(key));
+					getContentPane().removeAll();
+//					getContentPane().add(label, BorderLayout.NORTH);
+					getContentPane().add(content, BorderLayout.CENTER);
+					getContentPane().add(flowDialogOk, BorderLayout.SOUTH);
+
+					validate();
+					pack();
+					
+					setLayer(JLayeredPane.MODAL_LAYER);
 		
-		public void close() {
-			super.setVisible(false);
-			cleanUp();
+					// listen on the flow in order to close when flow completes.
+					// for undoing this in close(), we must store the flow.
+					currentFlowUI = content;
+					currentFlowUI.getFlow().addListener(FlowDialog.this);
+
+					// bring up
+					// ----------
+		
+					// disable widgets
+					for (JComponent c : disenable.keySet())
+						c.setEnabled(false);
+
+
+					setVisible(true);
+					master.desktop.add(FlowDialog.this);
+
+					// center location
+					Dimension dialogSize = getPreferredSize();
+					Dimension desktopSize = master.desktop.getSize();
+					setBounds(
+							(desktopSize.width - dialogSize.width) / 2,
+							(desktopSize.height - dialogSize.height) / 2,
+							dialogSize.width,
+							dialogSize.height
+					);
+
+					// Note: We do not call InternalFrame.setSelected(true)
+					// here because this would steal the focus from other
+					// applications which can be annoying for the user.
+
+					master.desktop.validate();
+				}};
+
+				if (SwingUtilities.isEventDispatchThread())
+					r.run();
+				else
+					SwingUtilities.invokeAndWait(r);
 		}
 
-		protected void cleanUp() {
 
-			// undoes the listener registration that may have been done in prepareShow()
-			if (currentFlowUI != null)
-				currentFlowUI.getFlow().removeListener(this);
+		/**
+		 * Close the dialog (execution in swing thread guaranteed).
+		 */
+		public void close() {
 
-			// enable widgets
-			for (JComponent c : disenable.keySet())
-				c.setEnabled(true);
+			Runnable r = new Runnable() {
+				public void run () {
+
+					setVisible(false);
+					master.desktop.remove(FlowDialog.this);
+					master.desktop.validate();
+					if (isSelected())
+						try {
+							setSelected(false);
+						} catch (PropertyVetoException pve) {}
+
+					// undo the listener registration done above
+					if (currentFlowUI != null)
+						currentFlowUI.getFlow().removeListener(FlowDialog.this);
+					
+					// enable widgets
+					for (JComponent c : disenable.keySet())
+						c.setEnabled(true);
+				}
+			};
+
+			if (SwingUtilities.isEventDispatchThread())
+				r.run();
+			else
+				SwingUtilities.invokeLater(r);
 		}
 
 
@@ -1096,37 +1151,11 @@ public class TabPanel extends JPanel {
 	// Actions
 	// ################################################################
 
-	/**
-	 * Invokes super which runs the response in its own thread. Then makes the progress
-	 * panel for the action-response visible.
-	 */
-	protected abstract class BackgroundAction2 extends CommandCenterGui.BackgroundAction {
 
-		protected BackgroundAction2(String name) {
-			master.super(name);
-		}
-
-		protected BackgroundAction2(String name, Icon icon) {
-			master.super(name, icon);
-		}
-
-		@Override
-		public void actionPerformed (final ActionEvent evt) {
-			flowDialog.prepareShow("", new JLabel(" processing ... "));
-
-			super.actionPerformed(evt); // super-implementation will invoke actionPerformed()
-
-			// show progress
-			flowDialog.bringUp();
-		}
-	}
-
-
-
-	protected class ActionStartAcs extends BackgroundAction2 {
+	protected class ActionStartAcs extends BackgroundAction {
 
 		protected ActionStartAcs() {
-			super("Start", master.icons.getStartIcon());
+			master.super("Start", master.icons.getStartIcon());
 		}
 
 		// confirm whether necessary to have all the thread-creation etc. by the super-class
@@ -1159,7 +1188,7 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Starting Acs", remoteFlowPanel);
+					flowDialog.prepareShow("Starting Acs", localScriptFlowPanel);
 					master.controller.executeAcs.startRemote(true, master.giveOutputListener2("Acs"));
 					managerStarted();
 					break;
@@ -1172,11 +1201,9 @@ public class TabPanel extends JPanel {
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
 					flowDialog.prepareShow("Starting Cdb", localJavaFlowPanel);
-					flowDialog.bringUp();
 					master.controller.executeServices.startLocalJava(master.giveOutputListener2("Acs"));
 
 					flowDialog.prepareShow("Starting Manager", localJavaFlowPanel);
-					flowDialog.bringUp();
 					master.controller.executeManager.startLocalJava(master.giveOutputListener2("Acs"));
 
 					managerStarted();
@@ -1186,10 +1213,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopAcs extends BackgroundAction2 {
+	protected class ActionStopAcs extends BackgroundAction {
 
 		protected ActionStopAcs() {
-			super("Stop", master.icons.getStopIcon());
+			master.super("Stop", master.icons.getStopIcon());
 		}
 
 		@Override
@@ -1206,7 +1233,7 @@ public class TabPanel extends JPanel {
 					managerStopped();
 					break;
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Stopping Acs", remoteFlowPanel);
+					flowDialog.prepareShow("Stopping Acs", localScriptFlowPanel);
 					master.controller.executeAcs.stopRemote(true, master.giveOutputListener2("Acs"));
 					managerStopped();
 					break;
@@ -1218,11 +1245,9 @@ public class TabPanel extends JPanel {
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
 					flowDialog.prepareShow("Stopping Manager", localJavaFlowPanel);
-					flowDialog.bringUp();
 					master.controller.executeManager.stopLocalJava();
 
 					flowDialog.prepareShow("Stopping Cdb", singleStepFlowPanel);
-					flowDialog.bringUp();
 					master.controller.executeServices.stopLocalJava();
 
 					managerStopped();
@@ -1231,10 +1256,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartServices extends BackgroundAction2 {
+	protected class ActionStartServices extends BackgroundAction {
 
 		protected ActionStartServices() {
-			super("", master.icons.getStartIcon());
+			master.super("", master.icons.getStartIcon());
 		}
 
 		@Override
@@ -1254,7 +1279,7 @@ public class TabPanel extends JPanel {
 					break;
 					
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Starting Services", remoteFlowPanel);
+					flowDialog.prepareShow("Starting Services", localScriptFlowPanel);
 					master.controller.executeServices.startRemote(true, master.giveOutputListener2("Services"));
 					break;
 
@@ -1266,10 +1291,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopServices extends BackgroundAction2 {
+	protected class ActionStopServices extends BackgroundAction {
 
 		protected ActionStopServices() {
-			super("", master.icons.getStopIcon());
+			master.super("", master.icons.getStopIcon());
 		}
 
 		@Override
@@ -1289,7 +1314,7 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Stopping Services", remoteFlowPanel);
+					flowDialog.prepareShow("Stopping Services", localScriptFlowPanel);
 					master.controller.executeServices.stopRemote(true, master.giveOutputListener2("Services"));
 					break;
 
@@ -1302,10 +1327,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartManager extends BackgroundAction2 {
+	protected class ActionStartManager extends BackgroundAction {
 
 		protected ActionStartManager() {
-			super("", master.icons.getStartIcon());
+			master.super("", master.icons.getStartIcon());
 		}
 
 		// confirm whether necessary to have all the thread-creation etc. by the super-class
@@ -1341,7 +1366,7 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Starting Manager", remoteFlowPanel);
+					flowDialog.prepareShow("Starting Manager", localScriptFlowPanel);
 					master.controller.executeManager.startRemote(true, master.giveOutputListener2("Manager"));
 					managerStarted();
 					break;
@@ -1355,10 +1380,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopManager extends BackgroundAction2 {
+	protected class ActionStopManager extends BackgroundAction {
 
 		protected ActionStopManager() {
-			super("", master.icons.getStopIcon());
+			master.super("", master.icons.getStopIcon());
 		}
 
 		@Override
@@ -1380,7 +1405,7 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Stopping Manager", remoteFlowPanel);
+					flowDialog.prepareShow("Stopping Manager", localScriptFlowPanel);
 					master.controller.executeManager.stopRemote(true, master.giveOutputListener2("Manager"));
 					managerStopped();
 					break;
@@ -1395,10 +1420,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStartContainer extends BackgroundAction2 {
+	protected class ActionStartContainer extends BackgroundAction {
 
 		protected ActionStartContainer() {
-			super("Start Container");
+			master.super("Start Container");
 		}
 
 		@Override
@@ -1421,7 +1446,7 @@ public class TabPanel extends JPanel {
 					break;
 
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Starting "+contName, remoteFlowPanel);
+					flowDialog.prepareShow("Starting "+contName, localScriptFlowPanel);
 					master.controller.executeContainer.startRemote(runmodel, true, master.giveOutputListener2(contName));
 					break;
 
@@ -1438,10 +1463,10 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionStopContainer extends BackgroundAction2 {
+	protected class ActionStopContainer extends BackgroundAction {
 
 		protected ActionStopContainer() {
-			super("Stop Container");
+			master.super("Stop Container");
 		}
 
 		@Override
@@ -1462,7 +1487,7 @@ public class TabPanel extends JPanel {
 					master.controller.executeContainer.stopRemote(runmodel, false, master.giveOutputListener2(contName));
 					break;
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Stopping "+contName, remoteFlowPanel);
+					flowDialog.prepareShow("Stopping "+contName, localScriptFlowPanel);
 					master.controller.executeContainer.stopRemote(runmodel, true, master.giveOutputListener2(contName));
 					break;
 				case ModeType.REMOTE_DAEMON_TYPE :
@@ -1489,8 +1514,6 @@ public class TabPanel extends JPanel {
 			ContainersT conts = master.controller.project.getContainers();
 			for (int contNumber = 0; contNumber < conts.getContainerCount(); contNumber++) {
 				conts.setSelect(contNumber);
-				flowDialog.prepareShow("", new JLabel(" processing ... "));
-				flowDialog.bringUp();
 				actStartContainer.actionPerformed();
 			}
 		}
@@ -1508,18 +1531,16 @@ public class TabPanel extends JPanel {
 			ContainersT conts = master.controller.project.getContainers();
 			for (int contNumber = conts.getContainerCount() - 1; contNumber >= 0; contNumber--) {
 				conts.setSelect(contNumber);
-				flowDialog.prepareShow("", new JLabel(" processing ... "));
-				flowDialog.bringUp();
 				actStopContainer.actionPerformed();
 			}
 		}
 	}
 
 
-	protected class ActionKillAcs extends BackgroundAction2 {
+	protected class ActionKillAcs extends BackgroundAction {
 
 		protected ActionKillAcs() {
-			super("Kill", master.icons.getStopIconRed());
+			master.super("Kill", master.icons.getStopIconRed());
 		}
 
 		// confirm whether necessary to have all the thread-creation etc. by the super-class
@@ -1550,7 +1571,7 @@ public class TabPanel extends JPanel {
 					master.controller.executeAcs.killRemote(false, master.giveOutputListener2("Acs"));
 					break;
 				case ModeType.REMOTE_NATIVE_TYPE :
-					flowDialog.prepareShow("Killing Acs", remoteFlowPanel);
+					flowDialog.prepareShow("Killing Acs", localScriptFlowPanel);
 					master.controller.executeAcs.killRemote(true, master.giveOutputListener2("Acs"));
 					break;
 				case ModeType.JAVA_TYPE :
@@ -1560,7 +1581,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionConfigureAllContainers extends CommandCenterGui.BackgroundAction {
+	protected class ActionConfigureAllContainers extends BackgroundAction {
 
 		protected ActionConfigureAllContainers() {
 			master.super("", master.icons.getConfigIcon());
@@ -1572,7 +1593,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoreContainers extends CommandCenterGui.BackgroundAction {
+	protected class ActionMoreContainers extends BackgroundAction {
 
 		protected ActionMoreContainers() {
 			master.super("", master.icons.getPlusIcon());
@@ -1586,7 +1607,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionLessContainers extends CommandCenterGui.BackgroundAction {
+	protected class ActionLessContainers extends BackgroundAction {
 
 		protected ActionLessContainers() {
 			master.super("", master.icons.getMinusIcon());
@@ -1599,7 +1620,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionConfigureContainer extends CommandCenterGui.BackgroundAction {
+	protected class ActionConfigureContainer extends BackgroundAction {
 
 		protected ActionConfigureContainer() {
 			master.super("Configure Container");
@@ -1611,7 +1632,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoveContainerUp extends CommandCenterGui.BackgroundAction {
+	protected class ActionMoveContainerUp extends BackgroundAction {
 
 		protected ActionMoveContainerUp() {
 			master.super("", master.icons.getUpIcon());
@@ -1629,7 +1650,7 @@ public class TabPanel extends JPanel {
 		}
 	}
 
-	protected class ActionMoveContainerDown extends CommandCenterGui.BackgroundAction {
+	protected class ActionMoveContainerDown extends BackgroundAction {
 
 		protected ActionMoveContainerDown() {
 			master.super("", master.icons.getDownIcon());
@@ -1649,7 +1670,7 @@ public class TabPanel extends JPanel {
 	}
 	
 	
-	protected class ActionShowAdvanced extends CommandCenterGui.BackgroundAction {
+	protected class ActionShowAdvanced extends BackgroundAction {
 
 		protected ActionShowAdvanced() {
 			master.super("advanced", null);

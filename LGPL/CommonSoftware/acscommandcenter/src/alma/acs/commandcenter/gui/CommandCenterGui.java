@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -31,10 +32,13 @@ import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -54,6 +58,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.engine.ExecuteTools;
@@ -68,6 +73,9 @@ import alma.entity.xmlbinding.acscommandcenterproject.types.ModeType;
 import alma.entity.xmlbinding.acscommandcentertools.Tool;
 
 /**
+ * The main Gui class of the Acs Command Center application.
+ *
+ * @author M.Schilling, ESO
  */
 public class CommandCenterGui {
 
@@ -85,6 +93,7 @@ public class CommandCenterGui {
 	public CommandCenterLogic controller;
 	protected Logger log;
 	public JFrame frame;
+	public JDesktopPane desktop;
 	protected TabPanel frontPanel;
 	protected FeedbackTabs feedbackTabs;
 	public DeploymentTree deployTree;
@@ -232,7 +241,9 @@ public class CommandCenterGui {
 		extrasMenu.add(new ActionShowVariables("Variables..."));
 		
 		menuBar.add(extrasMenu);
+		
 		// ---
+		
 		JMenuItem item;
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -240,7 +251,9 @@ public class CommandCenterGui {
 		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(helpMenu);
+		
 		// ---
+		
 		JPanel h = new JPanel(new SpringLayout());
 		h.add(logoPanel);
 		h.add(menuBar);
@@ -257,16 +270,34 @@ public class CommandCenterGui {
 
 		// ---
 
-		
-		// ---
-
 		splitTopBottom = new JSplitPane(JSplitPane.VERTICAL_SPLIT, splitLeftRight, feedbackTabs);
 		splitTopBottom.setOneTouchExpandable(true);
-		frame.getContentPane().add(splitTopBottom, BorderLayout.CENTER);
+
+
+		// --- 
+		// 2009-04: Introducing a desktop layout so i can make the
+		// progress dialog a lightweight window on top the front panel
+
+		AccInternalFrame bigInternalFrame = new AccInternalFrame();
+		bigInternalFrame.add(splitTopBottom);
+		desktop = new JDesktopPane();
+		bigInternalFrame.setVisible(true);
+		desktop.add(bigInternalFrame);
+		frame.getContentPane().add(desktop, BorderLayout.CENTER);
+		try {
+			bigInternalFrame.setSelected(true);
+			bigInternalFrame.setMaximum(true);
+		} catch (PropertyVetoException exc) {}
+
+		// for mysterious swing reasons, the desktop has a preferred size
+		// of (1,1) instead of picking up the preferred size of its child
+		// component, so i'm doing this manually here.
+		desktop.setPreferredSize(bigInternalFrame.getPreferredSize());
 
 		doFrameTitle();
-			
+
 	}
+
 
 	public void go (boolean admincMode) {
 
@@ -284,7 +315,7 @@ public class CommandCenterGui {
 		if (controller.startupOptions.geometry != null) {
 			frame.setBounds(controller.startupOptions.geometry);
 		}
-
+		
 		frame.setVisible(true);
 	}
 
@@ -1377,4 +1408,33 @@ public class CommandCenterGui {
 		
 	}
 
+
+	// =========================================================================
+
+	/**
+	 * An internal frame without decorations.
+	 */
+	protected static class AccInternalFrame extends JInternalFrame {
+		AccInternalFrame() {
+			super (null);
+			setUI(new AccInternalFrameUI(this));
+			setBorder(new EmptyBorder(0,0,0,0));
+		}
+	}
+
+	/**
+	 * Helper class 
+	 */
+	protected static class AccInternalFrameUI extends BasicInternalFrameUI {
+		AccInternalFrameUI (JInternalFrame frame) {
+			super (frame);
+		}
+		@Override
+		protected JComponent createNorthPane(JInternalFrame frame) {
+			return null;
+		}
+	}
+
+	
+	
 }
