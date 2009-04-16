@@ -1,11 +1,12 @@
 #!/usr/bin/env perl
 
-if (system "uname -a" == "CYGWIN_NT-5.1") {
-	$pathsep = ";"
-}
-
-# $Id: mdExtractImages,v 1.2 2008/06/18 11:35:45 jschwarz Exp $
+# $Id: mdExtractImages,v 1.3 2009/04/16 11:02:02 gchiozzi Exp $
 $instDir = "$ENV{MAGIC_DRAW_HOME}";
+$mdLibrary = "mdExportDiagramImages.jar";
+
+#
+# Set this to 1 to get more information!
+#
 $debug = 1;
 
 if ($#ARGV < 1) { 
@@ -24,7 +25,19 @@ if ( ! -d $destination || ! -w $destination) {
 }
 
 if ( $ENV{MAGIC_DRAW_HOME} eq "") { 
-    die "Environment variable MAGIC_DRAW_HOME is not defined\n";
+    die "Environment variable MAGIC_DRAW_HOME is not defined. Set it to the proper installation path!\n";
+}
+
+if ( ! ( $ENV{CLASSPATH} =~ $mdLibrary ) ) { 
+    
+    print "Classpath variable does not contain $mdLibrary \n" if ($debug) ;
+
+    if ( ! -f $mdLibrary) { 
+        die $mdLibrary, "could not be found!\n";
+    } else {
+        $ENV{CLASSPATH} = $ENV{CLASSPATH}.":".$mdLibrary ;
+        print "Local $mdLibrary found and added to classpath\n"  if ($debug) ;
+    }
 }
 
 @jarfiles = `find $instDir/lib -follow -name \\*.jar`;
@@ -38,14 +51,20 @@ foreach $jar (@jarfiles) {
 
 print "$ENV{CLASSPATH}\n" if ($debug) ;
 
-#$model = "/home/sqa-ops/Mike/MagicDraw/Model/ACS-1_0.xml.zip";
-#$model = "/sqa0/NRI/ALMA/ICD/HLA/APDM/idl/ASDM_Profile.mdzip";
-#
-#
 $executeClass = "com.nomagic.magicdraw.examples.imagegenerator.ExportDiagramImages";
 
+#
+# This is a check for Cygwin under windows
+# TODO: Not tested yet (GCH)
+#
+$javaClassPath = "$ENV{CLASSPATH}:." ;
+if ( `uname -a` =~ "CYGWIN_NT-5.1") {
+    print "Running under CYGWIN\n"  if ($debug) ;
+    $cygwin = 1;
+    $javaClassPath = `cygpath -wp $javaClassPath` ;
+}
 
-$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp `cygpath -wp $ENV{CLASSPATH}:.` $executeClass project_file=$model destination_dir=$destination ";
+$command =  "java   -XX:PermSize=40M -XX:MaxPermSize=150M -Dinstall.root=$instDir -Xmx500M -Xss26M  -cp $javaClassPath $executeClass project_file=$model destination_dir=$destination ";
 print $command if ($debug);
 system $command;
 
