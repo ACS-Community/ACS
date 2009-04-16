@@ -426,9 +426,10 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 				if (removed>0) {
 					keys = new Integer[removed];
 					for (int t=0; t<removed; t++) {
-						keys[t]=rows.get(t);
+						keys[t]=rows.get(rows.size()-t-1);
 					}
-					rows.removeFirstEntries(removed);
+					rows.removeLastEntries(removed);
+					
 				} 
 			}
 		}
@@ -448,7 +449,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		if (removed<=0) {
 			return;
 		}
-		fireTableRowsDeleted(0, removed-1);
+		fireTableDataChanged();
 		
 		deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");
 		deleterThread.setDaemon(true);

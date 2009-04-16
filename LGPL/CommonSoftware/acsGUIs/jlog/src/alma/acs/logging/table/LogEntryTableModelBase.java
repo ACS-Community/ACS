@@ -394,7 +394,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			//checkLogNumber();
 			Integer key=Integer.valueOf(allLogs.add(log));
 			synchronized (rowsToAdd) {
-				rowsToAdd.add(key);
+				rowsToAdd.insertElementAt(key,0);
 			}
 		} catch (LogCacheException lce) {
 			System.err.println("Exception caught while inserting a new log entry in cache:");
@@ -424,19 +424,19 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 */
 	private void flushLogs() {
 		int added=0;
-		int first=0;
 		synchronized (rowsToAdd) {
 			if (!rowsToAdd.isEmpty()) {
 				added=rowsToAdd.size();
 				synchronized (rows) {
-					first=rows.size();
-					rows.addAll(rowsToAdd);
+					added=rowsToAdd.size();
+					rows.addAll(0,rowsToAdd);
 				}
 				rowsToAdd.clear();
 			}
 		}
 		if (added>0) {
-			fireTableRowsInserted(first, rows.size()-1);
+			//fireTableRowsInserted(0, added);
+			fireTableDataChanged();
 		}
 	}
 	
