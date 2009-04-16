@@ -1,3 +1,39 @@
+2009-04-06 16:38  rtobar
+
+	* src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  src/cl/utfsm/samplingSystemUI/PlotWidget.java,
+	  src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Plot is
+	  resized when windows is resized
+
+2009-04-06 15:11  rtobar
+
+	* src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Automatic
+	  packing of main window
+
+2009-04-06 15:04  rtobar
+
+	* src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Almost
+	  nothing :)
+
+2009-04-03 18:40  rtobar
+
+	* src/cl/utfsm/samplingSystemUI/BeanGrouper.java: Now it is totally
+	  free from miglayout
+
+2009-04-03 18:27  rtobar
+
+	* lib/jfreechart-1.0.10.jar, lib/miglayout-3.5.5.jar,
+	  src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
+	  src/cl/utfsm/samplingSystemUI/SamplingSystemGUI.java: Getting rid
+	  of miglayout
+
+2009-02-16 22:51  ahoffsta
+
+	* src/Makefile, src/cl/utfsm/samplingSystemUI/PlotPrinter.java,
+	  src/cl/utfsm/samplingSystemUI/PlotWidget.java,
+	  src/cl/utfsm/samplingSystemUI/SamplingDataCorrelator.java: Fixing
+	  compilation problems and bug #140.
+
 2009-02-13 08:34  ahoffsta
 
 	* /trunk/src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
@@ -1407,4 +1443,4 @@
 	  the ssg-legacy
 	  repo.
 
-"@(#) $Id: ChangeLog,v 1.5 2009/02/13 22:32:15 ahoffsta Exp $"
+"@(#) $Id: ChangeLog,v 1.6 2009/04/16 23:32:36 ahoffsta Exp $"
