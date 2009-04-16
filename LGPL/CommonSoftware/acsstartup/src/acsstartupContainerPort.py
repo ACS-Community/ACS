@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.38 2009/04/15 23:28:26 agrimstrup Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.39 2009/04/16 17:24:21 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -446,7 +446,7 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     #--optparse only supports switches of the form --xy...
     
     #go through every potential command-line switch
-    for i in range(1, len(prog_args)):
+    for i in range(0, len(prog_args)):
         #if the switch is something like -managerReference change it
         #to --managerReference
         if len(prog_args[i])>2 and prog_args[i][0]=='-' and prog_args[i][1]!='-':
