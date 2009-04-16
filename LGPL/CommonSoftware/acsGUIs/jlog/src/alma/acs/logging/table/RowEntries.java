@@ -55,4 +55,17 @@ public class RowEntries extends ArrayList<Integer> {
 		}
 		removeRange(0, numOfEntries);
 	}
+	
+	/**
+	 * Remove the first <code>numOfEntries</code> entries from the 
+	 * array.
+	 * 
+	 * @param numOfEntries
+	 */
+	public void removeLastEntries(int numOfEntries) {
+		if (numOfEntries<=0) {
+			throw new IllegalArgumentException("Invalid number of entries to remove: "+numOfEntries);
+		}
+		removeRange(size()-numOfEntries,size());
+	}
 }
