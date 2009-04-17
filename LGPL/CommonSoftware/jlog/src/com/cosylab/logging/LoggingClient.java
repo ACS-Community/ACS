@@ -38,7 +38,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JRootPane;
@@ -72,6 +71,8 @@ import alma.acs.logging.table.LogEntryTable;
 import alma.acs.logging.table.LogTableDataModel;
 
 import com.cosylab.gui.components.r2.SmartTextArea;
+import com.cosylab.logging.MessageWidget.MessageType;
+import com.cosylab.logging.MessageWidget.MessageWidgetListener;
 import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
@@ -121,7 +122,11 @@ import com.cosylab.logging.stats.StatsDlg;
  *  - by LogFrame 
  *  - as an EXEC plugin
  */
-public class LoggingClient extends JRootPane implements ACSRemoteLogListener, ACSLogConnectionListener, ACSRemoteErrorListener
+public class LoggingClient extends JRootPane implements 
+ACSRemoteLogListener, 
+ACSLogConnectionListener, 
+ACSRemoteErrorListener,
+MessageWidgetListener
 {
 	/**
 	 * The default log level
@@ -181,16 +186,35 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private JScrollPane statusAreaPanel = null; // The bottom scrolling panel with the status messages
 	private JScrollPane detailedInfoScrollPane = null;
 
-	private JSplitPane ivjJSplitPane1 = null;
-	private JSplitPane tableDetailsSplitPane = null;
+	/**
+	 * The horizontal split panel having the text area at the bottom
+	 * add the panel with the table and details (tableDetailsSplitPane) at the top. 
+	 */
+	private JSplitPane statusAreaHrSplitP = null;
+	
+	/**
+	 * The vertical split pane having the table of logs at the left side, and the
+	 * details panel at the right side.
+	 */
+	private JSplitPane tableDetailsVrSplitP = null;
 
 	private JScrollPane scrollLogTable = null;
+	
+	/**
+	 * The table of logs
+	 */
 	private LogEntryTable logEntryTable = null;
 
+	/**
+	 * The status area
+	 */
 	private SmartTextArea ivjStatusArea = null;
 
 	private JPanel ivjJFrameContentPane = null;
     
+	/**
+	 * The error dialog
+	 */
 	private ErrorLogDialog errorDialog = new ErrorLogDialog(null,"jlog: Error log", false);
     
     /** 
@@ -256,24 +280,37 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	private final int DISCONNECTED_ICON=2;
 	private final int SUSPENDED_ICON = 3;
 	private final int DELAY_ICON = 4;
-	private ImageIcon[] connectionStatusIcons; 
-	// The label where icon is shown
+	private ImageIcon[] connectionStatusIcons;
+	
+	/**
+	 * The label where icon is shown
+	 */
 	private JLabel connectionStatusLbl;
 	
-	// The label where the icon representing the status of the connection 
-	// with the DB is shown
+	/**
+	 * The label where the icon representing the status of the connection
+	 * with the DB is shown 
+	 */
 	private JLabel connectionDBLbl;
 	
-    // The toolbar
+    /**
+     * The toolbar
+     */
     private LogToolBar toolBar;
     
-    // The toolbar to navigate logs
+    /**
+     * The toolbar to navigate logs
+     */
     private LogNavigationBar navigationToolbar;
     
-    // The menu bar
+    /**
+     * The menu bar
+     */
     private LogMenuBar menuBar = new LogMenuBar();
     
-    // The dialog to choose filters to apply to the engine
+    /**
+     * The dialog to choose filters to apply to the engine
+     */
     private FilterChooserDialog engineFiltersDlg=null;
     
     /**
@@ -313,6 +350,16 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
      * @see connect()
      */
     protected ContainerServicesBase containerServices=null;
+    
+    /**
+     * The glass pane showing messages to the user
+     */
+    private MessageWidget errorWidget=new MessageWidget();
+    
+    /**
+     * The glass pane visible when jlog runs offline.
+     */
+    private TransparentGlassPane glassPane;
 	
 	class EventHandler implements ActionListener, MenuListener
 	{
@@ -396,17 +443,17 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
             	getStatusAreaPanel().setVisible(menuBar.getViewStatusAreaMenuItem().getState());
             	if (menuBar.getViewStatusAreaMenuItem().getState()) {
-            		getJSplitPane1().setDividerLocation(getHeight() - 150);
+            		getStatusAreaHrPane().setDividerLocation(getHeight() - 150);
             	} else {
-            		getJSplitPane1().setDividerLocation(getHeight());
+            		getStatusAreaHrPane().setDividerLocation(getHeight());
             	}
             } else if (e.getSource()==menuBar.getViewDetailedInfoMenuItem()) {
             	getDeatailedInfoPanel().setVisible(menuBar.getViewDetailedInfoMenuItem().getState());
             	if (menuBar.getViewDetailedInfoMenuItem().getState()) {
             		int w = getLogEntryTable().getWidth();
-            		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth() - w/3);
+            		getTableDetailsVrPane().setDividerLocation(getTableDetailsVrPane().getWidth() - w/3);
             	} else {
-            		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth());
+            		getTableDetailsVrPane().setDividerLocation(getTableDetailsVrPane().getWidth());
             	}
             } else if (e.getSource()==menuBar.getAutoReconnectMenuItem()) {
             	if (LoggingClient.this.engine!=null) {
@@ -789,7 +836,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				ivjJFrameContentPane = new JPanel();
 				ivjJFrameContentPane.setName("JFrameContentPane");
 				ivjJFrameContentPane.setLayout(new BorderLayout());
-				ivjJFrameContentPane.add(getJSplitPane1(), "Center");
+				ivjJFrameContentPane.add(getStatusAreaHrPane(), "Center");
 			}
 			catch (Throwable ivjExc)
 			{
@@ -893,12 +940,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	private void handleException(java.lang.Throwable exception)
 	{
-
-		/* Uncomment the following lines to print uncaught exceptions to stdout */
-		System.out.println("--------- UNCAUGHT EXCEPTION ---------");
-		exception.printStackTrace(System.err);
-		JOptionPane.showMessageDialog(null,exception.getMessage(),"Uncaught exception",JOptionPane.ERROR_MESSAGE);
+		showErrorMessage("Uncaught exception", exception);
 	}
+	
 	/**
 	 * Initializes connections and adds listeners to all the menus and menu items.
 	 * @exception java.lang.Exception The exception description.
@@ -924,6 +968,14 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		{
 			setName("LoggingClientPanel");
 			
+			// Set the glass pane showing errors and messages to be acknowledged
+			glassPane = new TransparentGlassPane(getContentPane());
+			setGlassPane(glassPane);
+			
+			// We want to be notified when the user presses the Ok button
+			// of the MessageWidget
+			errorWidget.addAckListener(this);
+			
 			// Set the tooltip manager
 			ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
 			toolTipManager.setDismissDelay(60000);
@@ -936,6 +988,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
             
             //  Add the GUI in the center position
 			getContentPane().add(getJFrameContentPane(),BorderLayout.CENTER);
+			
+			// The panel having the toolbars on top and the panel showing errors at the bottom
+			JPanel northPanel = new JPanel(new BorderLayout());
             
             // Add the toolbars to the toolbarsPanel
 			JPanel toolbarsPanel = new JPanel();
@@ -948,7 +1003,9 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			toolbarsPanel.add(toolBar);
 			navigationToolbar = new LogNavigationBar(getLogEntryTable());
 			toolbarsPanel.add(navigationToolbar);
-			getContentPane().add(toolbarsPanel,BorderLayout.NORTH);
+			northPanel.add(toolbarsPanel,BorderLayout.NORTH);
+			northPanel.add(errorWidget,BorderLayout.SOUTH);
+			getContentPane().add(northPanel,BorderLayout.NORTH);
             
     		initConnections();
     		validate();
@@ -972,11 +1029,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			handleException(ivjExc);
 		}
 
-		// java 1.2.2. bugfix
-		getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getLastDividerLocation());
-		getJSplitPane1().setDividerLocation(350); //getHeight() - 150);
-		// user code end
-
+		getTableDetailsVrPane().setDividerLocation(getTableDetailsVrPane().getLastDividerLocation());
+		getStatusAreaHrPane().setDividerLocation(350); //getHeight() - 150);
 	}
 
 	/**
@@ -1052,7 +1106,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				ivjJPanel2.setName("JPanel2");
 				ivjJPanel2.setLayout(new BorderLayout());
 				ivjJPanel2.add(getStatusLinePnl(), "South");
-				ivjJPanel2.add(getTableDetailsSplitPane(), "Center");
+				ivjJPanel2.add(getTableDetailsVrPane(), "Center");
 			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
@@ -1240,18 +1294,18 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 * Returns the JSplitPane1 property value.
 	 * @return javax.swing.JSplitPane
 	 */
-	private JSplitPane getJSplitPane1()
+	private JSplitPane getStatusAreaHrPane()
 	{
-		if (ivjJSplitPane1 == null)
+		if (statusAreaHrSplitP == null)
 		{
 			try
 			{
-				ivjJSplitPane1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-				ivjJSplitPane1.setName("JSplitPane1");
-				ivjJSplitPane1.setLastDividerLocation(350);
-				ivjJSplitPane1.setDividerLocation(350);
-				ivjJSplitPane1.add(getStatusAreaPanel(), "bottom");
-				ivjJSplitPane1.add(getJPanel2(), "top");
+				statusAreaHrSplitP = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+				statusAreaHrSplitP.setName("JSplitPane1");
+				statusAreaHrSplitP.setLastDividerLocation(350);
+				statusAreaHrSplitP.setDividerLocation(350);
+				statusAreaHrSplitP.add(getStatusAreaPanel(), "bottom");
+				statusAreaHrSplitP.add(getJPanel2(), "top");
 
 			}
 			catch (Throwable ivjExc)
@@ -1260,28 +1314,28 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 				handleException(ivjExc);
 			}
 		}
-		return ivjJSplitPane1;
+		return statusAreaHrSplitP;
 	}
 	/**
 	 * @return the split pane with the table of logs and the table with the details of a log
 	 */
 
-	private JSplitPane getTableDetailsSplitPane() {
-		if (tableDetailsSplitPane == null) {
+	private JSplitPane getTableDetailsVrPane() {
+		if (tableDetailsVrSplitP == null) {
 			try {
-				tableDetailsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-				tableDetailsSplitPane.setName("TableDetailsSplitPane");
-				tableDetailsSplitPane.setLastDividerLocation(570);
-				tableDetailsSplitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-				tableDetailsSplitPane.setContinuousLayout(true);
+				tableDetailsVrSplitP = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+				tableDetailsVrSplitP.setName("TableDetailsSplitPane");
+				tableDetailsVrSplitP.setLastDividerLocation(570);
+				tableDetailsVrSplitP.setAlignmentX(Component.LEFT_ALIGNMENT);
+				tableDetailsVrSplitP.setContinuousLayout(true);
 				//ivjJSplitPane2.setDividerLocation(501);
-				tableDetailsSplitPane.add(getLogTableScroolP(),"left");
-				tableDetailsSplitPane.add(getDeatailedInfoPanel(), "right");
+				tableDetailsVrSplitP.add(getLogTableScroolP(),"left");
+				tableDetailsVrSplitP.add(getDeatailedInfoPanel(), "right");
 			} catch (Throwable ivjExc) {
 				handleException(ivjExc);
 			}
 		}
-		return tableDetailsSplitPane;
+		return tableDetailsVrSplitP;
 	}
 	
 	/**
@@ -1342,6 +1396,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		}
 		return ivjStatusArea;
 	}
+	
 	/**
 	 * Sets the height and width generated by user's actions.
 	 */
@@ -1350,11 +1405,11 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 			int w = getLogEntryTable().getWidth();
 			int h = getLogEntryTable().getHeight();
 			System.out.println(w + ", " + h);
-			System.out.println(getTableDetailsSplitPane().getWidth());
-			System.out.println(getJSplitPane1().getHeight());
+			System.out.println(getTableDetailsVrPane().getWidth());
+			System.out.println(getStatusAreaHrPane().getHeight());
 
-			getTableDetailsSplitPane().setDividerLocation(getTableDetailsSplitPane().getWidth() - w);
-			getJSplitPane1().setDividerLocation(getJSplitPane1().getHeight() - h);
+			getTableDetailsVrPane().setDividerLocation(getTableDetailsVrPane().getWidth() - w);
+			getStatusAreaHrPane().setDividerLocation(getStatusAreaHrPane().getHeight() - h);
 		}
 	}
 
@@ -1499,6 +1554,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		isConnected=true;
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Connected");
+		glassPane.setVisible(false);
 	}
 	
 	/**
@@ -1509,6 +1565,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		isConnected=false;
 		connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Disconnected");
+		glassPane.setVisible(true);
 	}
 	
 	/**
@@ -1521,13 +1578,8 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 		if (isStopped) {
 			return;
 		}
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				JOptionPane.showMessageDialog(null,"Connection lost!","LoggingClient error",JOptionPane.ERROR_MESSAGE);
-				connectionStatusLbl.setIcon(connectionStatusIcons[DISCONNECTED_ICON]);
-				connectionStatusLbl.setToolTipText("Disconnected");
-			}
-		});
+		glassPane.setVisible(true);
+		showErrorMessage("Connection lost",null);
 	}
 	
 	/**
@@ -1540,7 +1592,7 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	}
 	
 	/**
-	 * Notify that the service is supended 
+	 * Notify that the service is suspended 
 	 * @see com.cosylab.logging.engine.ACS.ACSLogConnectionListener
 	 */
 	public void acsLogConnSuspended() {
@@ -1793,6 +1845,45 @@ public class LoggingClient extends JRootPane implements ACSRemoteLogListener, AC
 	 */
 	public boolean inDebugMode() {
 		return debugMode;
+	}
+	
+	/**
+	 * Show an error in the error panel displayed on top of the
+	 * table of logs.
+	 * <P>
+	 * <EM>Implementation note</EM>: this method shows the error widget and set the
+	 * 			glass pane so that it will catch all the events but those directed
+	 * 			the error widget's ACK button. What this method does not do, is to
+	 * 			make the glass pane visible. This is done by the connection
+	 * 			listener methods.
+	 * 			If, in future, you want to show the glass pane even here, you should do
+	 * 			it explicitly.
+	 * 
+	 * @param shortDescription The description of the error
+	 * @param t The throwable that caused the error (can be <code>null</code>).
+	 * @return
+	 */
+	public void showErrorMessage(String shortDescription, Throwable t) {
+		if (t==null) {
+			errorWidget.showMessage(MessageType.Error, shortDescription, null);
+		} else {
+			errorWidget.showMessage(shortDescription, t);
+		}
+		glassPane.setEventComponent(errorWidget.getAckButton());
+	}
+
+	/**
+	 * When the user acknowledges the message, we enable the glass pane to forward all the
+	 * messages to the content pane.
+	 * <P>
+	 * This method is executed when the user presses over the ACK button of the
+	 * error widget and remove the constraints on the glass pane.
+	 * 
+	 * @see <code>showErrorMessage</code> for further implementation details
+	 */
+	@Override
+	public void errorAcknowledged() {
+		glassPane.setEventComponent(null);
 	}
 }
 
