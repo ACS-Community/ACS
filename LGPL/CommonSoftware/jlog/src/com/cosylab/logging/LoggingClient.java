@@ -1555,6 +1555,9 @@ MessageWidgetListener
 		connectionStatusLbl.setIcon(connectionStatusIcons[CONNECTED_ICON]);
 		connectionStatusLbl.setToolTipText("Connected");
 		glassPane.setVisible(false);
+		if (errorWidget.getAckButton().isVisible()) {
+			errorWidget.getAckButton().doClick();
+		}
 	}
 	
 	/**
@@ -1851,13 +1854,24 @@ MessageWidgetListener
 	 * Show an error in the error panel displayed on top of the
 	 * table of logs.
 	 * <P>
-	 * <EM>Implementation note</EM>: this method shows the error widget and set the
+	 * Implementation notes:
+	 * <OL>
+	 * 	<LI>this method shows the error widget and set the
 	 * 			glass pane so that it will catch all the events but those directed
 	 * 			the error widget's ACK button. What this method does not do, is to
 	 * 			make the glass pane visible. This is done by the connection
 	 * 			listener methods.
 	 * 			If, in future, you want to show the glass pane even here, you should do
 	 * 			it explicitly.
+	 * 	<LI>when the connection with ACS is again available, the <code>acsLogConnEstablished</code>
+	 * 		programmatically pushes the ACS button of the error widget causing the widget
+	 * 		to disappear without any intervention from the user. 
+	 * 		This is very useful when the auto reconnect option is enabled.
+	 * 		However, note that if <code>showErrorMessage</code> is used for notifying other
+	 * 		abnormal situations then a different strategy must be used to avoid the error 
+	 * 		widget to disappear at the wrong time (i.e. without the user acknowledge the problem).
+	 * </OL>  	
+	 * 
 	 * 
 	 * @param shortDescription The description of the error
 	 * @param t The throwable that caused the error (can be <code>null</code>).
@@ -1870,6 +1884,9 @@ MessageWidgetListener
 			errorWidget.showMessage(shortDescription, t);
 		}
 		glassPane.setEventComponent(errorWidget.getAckButton());
+		toolBar.setEnabled(false);
+		navigationToolbar.setEnabled(false);
+		menuBar.setEnabled(false);
 	}
 
 	/**
@@ -1884,6 +1901,9 @@ MessageWidgetListener
 	@Override
 	public void errorAcknowledged() {
 		glassPane.setEventComponent(null);
+		toolBar.setEnabled(true);
+		navigationToolbar.setEnabled(true);
+		menuBar.setEnabled(true);
 	}
 }
 
