@@ -36,6 +36,7 @@ import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.FiltersVector;
+import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -44,19 +45,42 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  * @author acaproni
  *
  */
-public class LogFrame extends JFrame implements WindowListener {
+public class LogFrame extends JFrame implements WindowListener, ACSLogConnectionListener {
 	
-	// A boolean to signal that the application is closing
+	/**
+	 * A boolean to signal that the application is closing
+	 */
 	private volatile boolean closing =false;
 	
-	// The GUI showed into the frame
+	/**
+	 * The GUI showed into the frame
+	 */
 	private LoggingClient loggingClient;
 	
-	// The logger
+	/**
+	 * The logger
+	 */
 	private Logger logger;
 	
-	// The Shutdown hook
+	/**
+	 * The Shutdown hook
+	 */
 	private ShutdownHook shutdownHook;
+	
+	/**
+	 * Shown in the title bar while working online
+	 */
+	private static final String online = "LoggingClient - Online";
+	
+	/**
+	 * Shown in the title bar while working offline
+	 */
+	private static final String offline = "LoggingClient - Offline";
+	
+	/**
+	 * Shown in the title bar while trying to connect to the logging NC
+	 */
+	private static final String connecting = "LoggingClient - Connecting...";
 	
 	/**
 	 * Constructor: creates the main window and setup the panel with the controls.
@@ -81,7 +105,7 @@ public class LogFrame extends JFrame implements WindowListener {
 			boolean doNotConnect, 
 			boolean unlimited) {
 		super();
-		setName("LogFrame");
+		setName(offline);
 		
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("Logging client GUI",true);
 		initShutdownHook(); 
@@ -428,4 +452,46 @@ public class LogFrame extends JFrame implements WindowListener {
 		shutdownHook = new ShutdownHook(logger,"Logging client GUI", this);
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 	}
+	
+	/**
+	 * Set the title of the frame online/offline
+	 * 
+	 * @param mode <code>true</code> if running online
+	 */
+	public void voidSetWorkingMode(boolean mode) {
+		if (mode) {
+			setTitle(online);
+		} else {
+			setTitle(offline);
+		}
+	}
+
+	@Override
+	public void acsLogConnConnecting() {
+		setTitle(connecting);
+	}
+
+	@Override
+	public void acsLogConnDisconnected() {
+		setTitle(offline);
+	}
+
+	@Override
+	public void acsLogConnEstablished() {
+		setTitle(online);
+	}
+
+	@Override
+	public void acsLogConnLost() {
+		setTitle(offline);
+	}
+
+	@Override
+	public void acsLogConnSuspended() {}
+
+	@Override
+	public void acsLogsDelay() {}
+
+	@Override
+	public void reportStatus(String status) {}
 }
