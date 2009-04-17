@@ -330,7 +330,7 @@ MessageWidgetListener
      *  The frame containing this logging client.
      *  It is not <code>null</code> only if the application is executed in stand alone mode
      */
-    private LogFrame logFrame=null;
+    private final LogFrame logFrame;
     
     /**
      * The following property is set if logs runs in debug mode
@@ -577,6 +577,7 @@ MessageWidgetListener
 	public LoggingClient()
 	{
 		super();
+		logFrame=null;
 		initialize(DEFAULT_LOGLEVEL,DEFAULT_DISCARDLEVEL,false);
 		initAudience();
 	}
@@ -1352,7 +1353,9 @@ MessageWidgetListener
 				engine.addLogListener(this);
 				engine.addLogErrorListener(this);
 				engine.setDiscardLevel(LogTypeHelper.fromLogTypeDescription((String)toolBar.getDiscardLevelCB().getSelectedItem()));
-
+				if (logFrame!=null) {
+					engine.addLogConnectionListener(logFrame);
+				}
 			}
 			catch (java.lang.Throwable ivjExc)
 			{
