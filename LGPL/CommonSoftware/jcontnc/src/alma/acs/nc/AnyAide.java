@@ -50,7 +50,7 @@ import alma.acs.exceptions.AcsJException;
  * @author dfugate
  * @version $Id$
  */
-class AnyAide {
+public class AnyAide {
 
 	/** reference to the container services */
 	private final ContainerServicesBase m_containerServices;
@@ -99,7 +99,8 @@ class AnyAide {
 		// class object for the array
 		Class cl = objs.getClass();
 		if (!cl.isArray()) {
-			throw new AcsJJavaAnyEx("Object of type " + cl.getName() + " is not an array.");
+			Throwable cause = new Throwable("Object of type " + cl.getName() + " is not an array.");
+			throw new AcsJJavaAnyEx(cause);
 		}
 		// class object for the array elements
 		Class objClass = cl.getComponentType();
@@ -132,7 +133,8 @@ class AnyAide {
 		else {
 			// if we do not know what it is, there's not much we can
 			// do.
-			throw new AcsJJavaAnyEx(cl.getName() + " not supported!");
+			Throwable cause = new Throwable(cl.getName() + " not supported!");
+			throw new AcsJJavaAnyEx(cause);
 		}
 	}
 
@@ -214,7 +216,8 @@ class AnyAide {
 			return complexObjectToCorbaAny((IDLEntity) obj);
 		} 
 		else {
-			throw new AcsJBadParameterEx("Bad arg of type " + obj.getClass().getName());
+			Throwable cause = new Throwable("Bad arg of type " + obj.getClass().getName());
+			throw new AcsJBadParameterEx(cause);
 		}
 		return retVal;
 	}
@@ -231,7 +234,8 @@ class AnyAide {
 	public Any complexObjectToCorbaAny(IDLEntity obj) throws AcsJException {
 
 		if (obj == null) {
-			throw new AcsJBadParameterEx("Method arg 'obj' was null");
+			Throwable cause = new Throwable("Method arg 'obj' was null");
+			throw new AcsJBadParameterEx(cause);
 		}
 
 		Any retVal = m_containerServices.getAdvancedContainerServices().getAny();
@@ -250,8 +254,9 @@ class AnyAide {
 			// class which has nothing to do with CORBA.
 			String msg = "The non-CORBA class '" + obj.getClass().getName()
 					+ "' cannot be converted to a CORBA Any.";
+			Throwable cause = new Throwable(msg);
 			m_logger.warning(msg);
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotFoundEx(msg);
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotFoundEx(cause);
 		}
 
 		try {
@@ -268,21 +273,23 @@ class AnyAide {
 		} 
 		catch (NoSuchMethodException e) {
 			// we got a Helper class, but it seems to be not the CORBA-generated kind
-			String reason = "Class '" + structHelperClass.getName()
+			Throwable cause = new Throwable("Class '" + structHelperClass.getName()
 					+ "' associated with the given object of type '" + obj.getClass().getName()
-					+ "' is incompatiable with CORBA: ";
-			throw new AcsJBadParameterEx(reason + e.getMessage());
+					+ "' is incompatiable with CORBA: " +  e.getMessage());
+			throw new AcsJBadParameterEx(cause);
 		} 
 		catch (java.lang.reflect.InvocationTargetException e) {
 			Throwable realEx = e.getCause();
 			String reason = "Failed to insert the given CORBA object into a CORBA Any: the helper class insert method threw an exception.";
 			m_logger.log(Level.FINE, reason, realEx);
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason, realEx); // todo: NC-specific exception type
+			Throwable cause = new Throwable(reason + realEx.getMessage());
+			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(cause); // todo: NC-specific exception type
 		}
 		catch (Throwable thr) {
 			String reason = "Failed to insert the given CORBA object into a CORBA Any.";
 			m_logger.log(Level.FINE, reason, thr);
-			throw new AcsJUnexpectedExceptionEx(reason, thr);
+			Throwable cause = new Throwable(reason + thr.getMessage());
+			throw new AcsJUnexpectedExceptionEx(cause);
 		}
 	}
 
@@ -534,7 +541,7 @@ class AnyAide {
 	 * @param isNestedStruct  if true, "Package" will be inserted according to 
 	 *                        <i>"IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types</i> apply.
 	 */
-	protected String corbaStructToJavaClass(String id, boolean isNestedStruct)
+	public String corbaStructToJavaClass(String id, boolean isNestedStruct)
 			throws IllegalArgumentException 
 	{
 		String prefix = "IDL:";
