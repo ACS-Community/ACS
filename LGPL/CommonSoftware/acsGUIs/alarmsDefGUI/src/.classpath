@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="var" path="ACSROOT"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="var" path="JACORB_HOME"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSErrTypeAlarm.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSErrTypeMonitor.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsErrTypeComponent.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSErrTypeOK.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/JavaContainerError.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsContainerServices.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acscommon.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acscomponent.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acserr.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acserrj.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsexmplBuilding.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsexmplPowerSupply.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsjlog.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/antlr.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/avalon-framework.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/baci.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/castor.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/cdbDAL.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/cdbErrType.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/jACSUtil.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/jbaci.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/jcont.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/junit.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/logkit.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/maci.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/maciErrType.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/prevayler-1.02.001.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/jManager.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/AlarmSystem.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/laserutil.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/lasercore.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/laserdefinition.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/jms.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/laserclient.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/cosyframework-core.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/oe.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/jacorb.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/antlr-2.7.2.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/avalon-framework-4.1.5.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/idl.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/logkit-1.2.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/picocontainer-1.2.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/JacORB/lib/wrapper-3.1.0.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/logging_idl.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/logLevelGUI.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSError.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsErrTypeLifeCycle.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acserrHandlersErr.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/cdbjDAL.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/alarmsysteminterface.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsAlarmClients.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/core.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/laserguiplatform.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/testComponent.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsASsources.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsjms.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/acsnc.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/core-windows.jar"/>
+	<classpathentry kind="lib" path="/diska/alma/ACS-8.0/ACSSW/lib/laserconsole.jar"/>
+	<classpathentry kind="lib" path="/home/almamgr/workspace/ACSLaser"/>
+	<classpathentry kind="lib" path="/alma/ACS-8.0/ACSSW"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
