@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.17 2008/11/06 10:24:16 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.18 2009/04/20 08:26:24 jslopez Exp $"
 #
 # Makefile of ........
 #
@@ -43,7 +43,7 @@ archiveeventsSupplier_LIBS    = baci maciClient maciStubs maci
 # 
 # IDL Files and flags
 # 
-IDL_FILES = 
+IDL_FILES = adminTest1 adminTest2 adminTest3
 IDL_TAO_FLAGS =
 USER_IDL =
 #
