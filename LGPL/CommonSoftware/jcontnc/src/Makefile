@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.12 2005/06/01 13:11:42 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.13 2009/04/20 08:20:34 jslopez Exp $"
 #
 # Makefile of ........
 #
@@ -42,6 +42,8 @@ DEBUG=on
 JARFILES = jcontnc
 jcontnc_DIRS =  alma
 jcontnc_EXTRAS = 
+
+#USER_JFLAGS=-Xlint:deprecation
 
 #
 #COMPONENT_HELPERS=on
