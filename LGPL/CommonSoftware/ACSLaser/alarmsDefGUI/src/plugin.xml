@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="utfsm.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="utfsm.Perspective"
+            id="utfsm.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="View"
+            allowMultiple="true"
+            icon="icons/sample2.gif"
+            class="utfsm.View"
+            id="utfsm.view">
+      </view>
+      <view
+            name="Messages"
+            allowMultiple="true"
+            class="utfsm.NavigationView"
+            id="utfsm.navigationView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Message"
+            id="utfsm.category">
+      </category>
+      <command
+            name="Open Mailbox"
+            description="Opens "
+            categoryId="utfsm.category"
+            id="utfsm.open">
+      </command>
+      <command
+            name="Open Message Dialog"
+            description="Open a message dialog"
+            categoryId="utfsm.category"
+            id="utfsm.openMessage">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="utfsm.open"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+2">
+      </key>
+      <key
+            commandId="utfsm.openMessage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X">
+      </key>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="utfsm.application"
+            name="Alarms Definition GUI">
+         <property
+               name="aboutText"
+               value="RCP Mail template created by PDE">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample2.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <command
+               commandId="utfsm.CDB"
+               label="CDB"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>
