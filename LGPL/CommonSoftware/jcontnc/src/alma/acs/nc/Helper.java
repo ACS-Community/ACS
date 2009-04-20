@@ -27,6 +27,11 @@
 
 package alma.acs.nc;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,16 +48,6 @@ import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
-import com.cosylab.cdb.client.CDBAccess;
-import com.cosylab.cdb.client.DAOProxy;
-import com.cosylab.util.WildcharMatcher;
-
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
-
-import alma.ACSErrTypeCORBA.wrappers.AcsJFailedToResolveServiceEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -66,17 +61,22 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 
+import com.cosylab.CDB.DAO;
+import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
+import com.cosylab.util.WildcharMatcher;
+
 
 /**
  * This class provides methods useful to both supplier and consumer objects.
  */
-public class Helper {
+public class Helper { 
 
 	/**
 	 * In a running system, there can be only one reference to the Naming Service.
 	 * @TODO remove nulling this ref in 
 	 * ./ACSLaser/baciPropsTest/test/alma/acs/alarmsystem/test/BACITest.java:          Helper.m_nContext = null;
-     * ./ACSLaser/laser-source/test/alma/lasersource/test/SendTest.java:               Helper.m_nContext = null;
+     * ./ACSLaser/laserprotected-source/test/alma/lasersource/test/SendTest.java:               Helper.m_nContext = null;
      * ./ACSLaser/laser-source/test/alma/lasersource/test/SourceStressTest.java:               Helper.m_nContext = null;
 	 */
 	private final NamingContext m_nContext;
@@ -188,18 +188,18 @@ public class Helper {
 		org.omg.CORBA.Object tempCorbaObject = getContainerServices().getAdvancedContainerServices().corbaObjectFromString(nameCorbaloc);
 		if (tempCorbaObject == null) {
 			// very bad situation. without the naming service we cannot do anything.
-			String reason = "Null reference obtained for the Naming Service, corbaloc=" + nameCorbaloc;
-			AcsJFailedToResolveServiceEx ex = new AcsJFailedToResolveServiceEx();
+			Throwable cause = new Throwable("Null reference obtained for the Naming Service, corbaloc=" + nameCorbaloc);
+			//AcsJFailedToResolveServiceEx ex = new AcsJFailedToResolveServiceEx();
 			// @TODO add parameter "service" and "reason" to definition of AcsJFailedToResolveServiceEx
 			// ex.setReason("Null reference obtained for the Naming Service, corbaloc=" + nameCorbaloc);
-			throw new alma.ACSErrTypeCORBA.wrappers.AcsJFailedToResolveServiceEx(reason);
+			throw new alma.ACSErrTypeCORBA.wrappers.AcsJFailedToResolveServiceEx(cause);
 		}
 
 		NamingContext ret = NamingContextHelper.narrow(tempCorbaObject);
 		if (ret == null) {
 			// very bad situation. without the naming service we cannot do anything.
-			String reason = "Unable to narrow Naming Service reference to the correct type!";
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(reason);
+			Throwable cause = new Throwable("Unable to narrow Naming Service reference to the correct type!");
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJTypeNotSupportedEx(cause);
 		}
 		
 		return ret;
@@ -230,7 +230,7 @@ public class Helper {
 	 * @throws AcsJException
 	 *            Standard ACS Java exception.
 	 */
-	protected EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	public EventChannel getNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException 
 	{
 		// return value
@@ -322,7 +322,7 @@ public class Helper {
 	 * @throws NameMapError (@TODO check in TAO code what this means!) 
 	 * @throws NameAlreadyUsed thrown if the channel of this name already exists.
 	 */
-	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	public EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed, NameMapError
 	{
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
@@ -383,8 +383,8 @@ public class Helper {
 			// sanity check
 			if (retValue == null) {
 				// a null reference implies we cannot go any further
-				String reason = "Null reference obtained for the '" + channelName + "' channel!";
-				throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason); // @todo: more specific ex type
+				Throwable cause = new Throwable("Null reference obtained for the '" + channelName + "' channel!");
+				throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(cause); // TODO: more specific ex type
 			}
 			channelId = channelIdHolder.value;
 
@@ -404,18 +404,20 @@ public class Helper {
 			}
 		} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
 			// Think there is virtually no chance of this every happening but...
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
+			Throwable cause = new Throwable(e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
 			// Think there is virtually no chance of this every happening but...
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
+			Throwable cause = new Throwable(e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNotification.UnsupportedAdmin e) {
-			String reason = "The administrative properties specified for the '" + channelName
-					+ "' channel are unsupported: ";
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason + e.getMessage());
+			Throwable cause = new Throwable("The administrative properties specified for the '" + channelName
+					+ "' channel are unsupported: " + e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNotification.UnsupportedQoS e) {
-			String reason = "The quality of service properties specified for the '" + channelName
-					+ "' channel are unsupported: ";
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(reason + e.getMessage());
+			Throwable cause = new Throwable("The quality of service properties specified for the '" + channelName
+					+ "' channel are unsupported: " + e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		}
 		
 		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, channelId, notifyFactoryName); 
@@ -456,7 +458,7 @@ public class Helper {
 	 *            Service.
 	 * @warning this method assumes
 	 */
-	protected void destroyNotificationChannel(String channelName, String channelKind, EventChannel channelRef)
+	public void destroyNotificationChannel(String channelName, String channelKind, EventChannel channelRef)
 			throws AcsJException 
 	{
 		try {
@@ -472,13 +474,15 @@ public class Helper {
 			m_logger.severe(msg);
 		} catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
 			// Think there is virtually no chance of this every happening but...
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
+			Throwable cause = new Throwable(e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
 			// Think there is virtually no chance of this every happening but...
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
+			Throwable cause = new Throwable(e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		}
 		
-		LOG_NC_ChannelDestroyed_OK.log(m_logger, channelName, ""); // @TODO use notif.service name 
+		LOG_NC_ChannelDestroyed_OK.log(m_logger, channelName, ""); // TODO use notif.service name 
 
 	}
 
@@ -565,4 +569,69 @@ public class Helper {
 		return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
 	}
 
+	/**
+	 * The following returns a map where each key is the name of an event and the
+	 * value is the maximum amount of time (in floating point seconds) an event receiver has 
+	 * to process the event before a warning message is logged.
+	 * 
+	 * @param channelName name of the channel
+	 * @return HashMap described above
+	 */
+	public HashMap<String, Double> getEventHandlerTimeoutMap(String channelName) {
+		// initialize the return value
+		HashMap<String, Double> retVal = new HashMap<String, Double>();
+
+		// data access object to traverse the ACS CDB
+		DAO dao = null;
+
+		// keys into the DAO
+		String[] keys = null;
+
+		// get the dao for the channel...
+		// ...if this fails, just return.
+		try {
+			dao = m_services.getCDB().get_DAO_Servant(
+					"MACI/Channels/" + channelName);
+		} catch (Exception e) {
+			m_logger.finer("No CDB entry found for '" + channelName
+					+ "' channel");
+			return retVal;
+		}
+
+		// names of all the events
+		try {
+			keys = dao.get_string_seq("Events");
+		} catch (Exception e) {
+			m_logger.finer("CDB entry found for '" + channelName
+					+ "' but no Events element.");
+			return retVal;
+		}
+
+		// sanity check on the number of events
+		if (keys.length == 0) {
+			m_logger.finer("No event definitions found for the '" + channelName
+					+ "' within the CDB.");
+			return retVal;
+		}
+
+		// populate the hashmap
+		for (int i = 0; i < keys.length; i++) {
+			// determine the value location
+			String timeoutLocation = "Events/" + keys[i] + "/MaxProcessTime";
+			// get the value (floating point seconds)
+			try {
+				double value = dao.get_double(timeoutLocation);
+				retVal.put(keys[i], new Double(value));
+			} catch (Exception e) {
+				e.printStackTrace();
+				m_logger
+						.severe("Could not convert 'MaxProcessTime' to floating "
+								+ "point seconds for the '"
+								+ channelName
+								+ "' channel and '" + keys[i] + "' event type.");
+			}
+		}
+
+		return retVal;
+	}
 }
