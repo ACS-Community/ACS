@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeJavaDependencies,v 1.82 2008/08/04 16:17:18 mzampare Exp $"
+# "@(#) $Id: acsMakeJavaDependencies,v 1.83 2009/04/21 13:14:09 mzampare Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -91,7 +91,7 @@ CompilerFlags="${userCompilerFlags} ${jarCompilerFlags}"
 
 if [ "${JAVAC}" == "" ]
 then
-    JAVAC=javac
+    JAVAC="javac -J-Xmx1g"
 fi
 
     if [ "${debug}" != "" ]
@@ -116,12 +116,14 @@ fi
 
 if [ "${dirList}" != "" ]
 then
+    currentLocation=`\pwd | sed "s/\/.*\///"`
     #
     # prepare the list of all objects (full filename)
     for member in ${dirList}
     do
-	javaList=`(find ${member} -name \*.java | grep -v 'CVS/' | tr '\n' ' '  )`
-        oList="${oList} ${javaList} "
+        # prepare the list with the 'src/test' at the front, for DEBUG=on
+        sList="${sList} $currentLocation/${member} "
+
 	if [ ${member} = "." ]
 	then
 	    cList="${cList} *.class "
@@ -130,22 +132,25 @@ then
 	fi
     done
     #
-    currentLocation=`\pwd | sed "s/\/.*\///"`
-    # prepare the list with the 'src/test' at the front, for DEBUG=on
-    for member in ${oList}
-    do
-        sList="${sList} $currentLocation/${member} "
-    done
-
+    echo "${jarName}_source_file_list:= \$(shell find ${dirList} -name \\*.java | grep -v 'CVS/' | tr '\\n' ' ')"
+    echo "${jarName}_class_file_list:= \$(subst .java,.class,\$(foreach src,\$src, \$(${jarName}_source_file_list) ) )"
+    echo ""
+    #
+#
+# the usage of .INTERMEDIATE does not seem possible
+# for the file with the list of java source files.
+#
+#
 # define the dependency file dependent to the Makefile
-    echo "../${tgtDir}/${jarName}.jar: ${oList}"
+    echo "../${tgtDir}/${jarName}.jar: \$(${jarName}_source_file_list) ../object/${jarName}.djar"
     echo "	@echo \"== Making ${jarName}.jar\""
+    echo "	\$(AT)\$(shell \$(RM) ${fileListFile})"
     echo "	\$(AT)mkdir -p ${tmpDestDir}"
     echo "	\$(AT)mkdir -p ../${tgtDir}"
-    echo "	\$(AT)echo \$? > ${fileListFile}"
-    echo "	\$(AT)${PURIFY_ADDITION} CLASSPATH=\`${CLASSMAKER}\`:.; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir} @${fileListFile}"
+    echo "	\$(AT)\$(foreach element,\$?,\$(shell echo -n \"\$(element) \" | grep -v .djar  >> ${fileListFile}))"
+    echo "	\$(AT)CLASSPATH=\`${CLASSMAKER}\`:.; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir} @${fileListFile}"
     echo "	\$(AT)(cd ${tmpDestDir}; jar cf ../../${tgtDir}/${jarName}.jar ${cList} )"
-    echo "	\$(AT)rm ${fileListFile}"
+    echo "	\$(AT)\$(RM) ${fileListFile}"
 
 if [  "${MAKE_PURE}" != "" -o "${MAKE_PURIFY}" != "" ]
 then 
