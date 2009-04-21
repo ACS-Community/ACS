@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.173 2008/08/07 13:44:52 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.174 2009/04/21 13:11:58 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -766,7 +766,6 @@ ifeq ($(MAKE_PURIFY_TYPE),SCI)
 		CC =attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
 		CXX=attolcc $(purifyOptions) -- gcc -I $(RATIONAL_DIR)/targets/clinuxgnu/lib
 		LD =attolcc $(purifyOptions) -- gcc
-		JAVAC=javic -FDCDIR=.purifydir -TSFDIR=.purifydir -proc=r -block=l -perfpro -- javac
 	endif
     endif
 else # we are now on linux in OCI
@@ -802,10 +801,6 @@ else # we are now on linux in OCI
     endif
 endif # end of if over purify type
 
-
-ifndef JAVAC
-	JAVAC=javac
-endif
 
 endif # MAKE_VXWORKS
 #
@@ -2148,7 +2143,5 @@ clean_rtai:
 
 
 ## all
-
-
 #___oOo___
 
