@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.6 2009/04/24 09:24:04 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.7 2009/04/24 09:48:29 gchiozzi Exp $"
 #
 #
 
@@ -11,7 +11,7 @@
 # Windows +  Cygwin, but this was not tested and it is not
 # in the current scope.
 
-# Define where to find the Rose binaries.
+# Define where to find the Magic Draw binaries.
 # Unfortunately it seems there is no better way to do it.
 
 ifndef MAGIC_DRAW_HOME
