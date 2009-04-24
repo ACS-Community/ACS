@@ -30,18 +30,16 @@ public class MaciInfo extends DefaultTreeModel {
 	
 	
 	public List<ContainerInfo> getContainers () {
-		synchronized (refreshContainerInfoLock) {
-			
-			int nKids = containerNode.getChildCount();
-			List<ContainerInfo> ret = new ArrayList<ContainerInfo>(nKids);
-			for (int i = 0; i < nKids; i++) {
-				DefaultMutableTreeNode kid = (DefaultMutableTreeNode) containerNode.getChildAt(i);
-				ContainerInfo info = (ContainerInfo) kid.getUserObject();
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = containerNodes_currentcopy; 
 
-				ret.add(info);
-			}
-			return ret;
+		int size = current.size();
+		List<ContainerInfo> ret = new ArrayList<ContainerInfo>(size);
+		for (SortingTreeNode n : current) {
+			ContainerInfo info = (ContainerInfo) n.getUserObject();
+			ret.add(info);
 		}
+		return ret;
 	}
 
 	public ContainerInfo getContainer (String name) {
@@ -61,18 +59,16 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 	
 	public List<ClientInfo> getClients() {
-		synchronized (refreshClientInfoLock) {
-			
-			int nKids = clientNode.getChildCount();
-			List<ClientInfo> ret = new ArrayList<ClientInfo>(nKids);
-			for (int i = 0; i < nKids; i++) {
-				DefaultMutableTreeNode kid = (DefaultMutableTreeNode) clientNode.getChildAt(i);
-				ClientInfo info = (ClientInfo) kid.getUserObject();
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = clientNodes_currentcopy;
 
-				ret.add(info);
-			}
-			return ret;
+		int size = current.size();
+		List<ClientInfo> ret = new ArrayList<ClientInfo>(size);
+		for (SortingTreeNode n : current) {
+			ClientInfo info = (ClientInfo) n.getUserObject();
+			ret.add(info);
 		}
+		return ret;
 	}	
 
 	public ClientInfo getClient (String name) {
@@ -92,18 +88,16 @@ public class MaciInfo extends DefaultTreeModel {
 	}
 	
 	public List<ComponentInfo> getComponents () {
-		synchronized (refreshComponentInfoLock) {
-			
-			int nKids = componentNode.getChildCount();
-			List<ComponentInfo> ret = new ArrayList<ComponentInfo>(nKids);
-			for (int i = 0; i < nKids; i++) {
-				DefaultMutableTreeNode kid = (DefaultMutableTreeNode) componentNode.getChildAt(i);
-				ComponentInfo info = (ComponentInfo) kid.getUserObject();
-
-				ret.add(info);
-			}
-			return ret;
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = componentNodes_currentcopy;
+		
+		int size = current.size();
+		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(size);
+		for (SortingTreeNode n : current) {
+			ComponentInfo info = (ComponentInfo) n.getUserObject();
+			ret.add(info);
 		}
+		return ret;
 	}
 
 	public ComponentInfo getComponent (String name) {
@@ -123,25 +117,25 @@ public class MaciInfo extends DefaultTreeModel {
 	}	
 	
 	public List<ComponentInfo> getStartedComponents () {
-		synchronized (refreshComponentInfoLock) {
-			
-			int nKids = componentNode.getChildCount();
-			List<ComponentInfo> ret = new ArrayList<ComponentInfo>(nKids);
-			for (int i = 0; i < nKids; i++) {
-				DefaultMutableTreeNode kid = (DefaultMutableTreeNode) componentNode.getChildAt(i);
-				ComponentInfo info = (ComponentInfo) kid.getUserObject();
-
-				if (info.h == 0) // skip non-activated components
-					continue;
-				
-				ret.add(info);
-			}
-			return ret;
+		// grab reference as it is in this very moment, this is atomic.
+		List<SortingTreeNode> current = componentNodes_currentcopy;
+		
+		int size = current.size();
+		List<ComponentInfo> ret = new ArrayList<ComponentInfo>(size);
+		for (SortingTreeNode n : current) {
+			ComponentInfo info = (ComponentInfo) n.getUserObject();
+			if (info.h == 0) // skip non-activated components
+				continue;
+			ret.add(info);
 		}
+		return ret;
 	}	
-	
-	
-	
+
+	// each of these references is written and read atomically 
+   private volatile List<SortingTreeNode> componentNodes_currentcopy;
+   private volatile List<SortingTreeNode> containerNodes_currentcopy;
+   private volatile List<SortingTreeNode> clientNodes_currentcopy;
+
 	// ====================================================================
 	// Not-so-public API
 	// These are the portions used by the MaciSupervisor to construct the
@@ -156,34 +150,48 @@ public class MaciInfo extends DefaultTreeModel {
 		managerNode.add(componentNode = comps);
 	}
 
-   /**
-    */
    protected SortingTreeNode managerNode;
-   /**
-    */
    protected SortingTreeNode containerNode;
-   /**
-    */
    protected SortingTreeNode clientNode;
-   /**
-    */
    protected SortingTreeNode componentNode;
-   
-   /** 
-    * For synchronization
-    */
-   final protected Object refreshContainerInfoLock = new Object();
+
+
    /**
-    * For synchronization
+    * Sets the components, containers, and clients.
+    * The given lists must not be changed anymore (otherwise 
+    * this method would have to make a copy of them).
     */
-   final protected Object refreshComponentInfoLock = new Object();
-   /**
-    * For synchronization
-    */
-   final protected Object refreshClientInfoLock = new Object();
-   	
-	
-   
+   void setContents (List<SortingTreeNode> newComponents, List<SortingTreeNode> newContainers, List<SortingTreeNode> newClients) {
+
+   	// bend references, each assignment is atomic.
+   	componentNodes_currentcopy = newComponents;
+   	containerNodes_currentcopy = newContainers;
+   	clientNodes_currentcopy = newClients;
+
+   	// re-populate the toplevel nodes
+		componentNode.removeAllChildren();
+		for (SortingTreeNode n : newComponents)
+			componentNode.add(n);
+		
+		containerNode.removeAllChildren();
+		for (SortingTreeNode n : newContainers)
+			containerNode.add(n);
+
+		clientNode.removeAllChildren();
+		for (SortingTreeNode n : newClients)
+			clientNode.add(n);
+
+		// we sort - for some great user experience
+		componentNode.sortChildrenByInfoDetail("name");
+		containerNode.sortChildrenByInfoDetail("name");
+		clientNode.sortChildrenByInfoDetail("name");
+
+		// send out change event
+		nodeStructureChanged(managerNode);
+   }
+
+
+
    // wraps a single piece of info from ComponentInfo, each piece is to be shown in its own node.
    static public class InfoDetail {
       public String key;

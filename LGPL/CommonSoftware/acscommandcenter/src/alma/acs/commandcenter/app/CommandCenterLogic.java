@@ -616,6 +616,7 @@ public class CommandCenterLogic {
 			if (ret == null) {
 				ORB orb = firestarter.giveOrb();
 				ret = new GuiMaciSupervisor("AcsCommandCenter", managerLoc, orb, log);
+				ret.setRefreshesPeriodically(true);
 				managerLoc2instance.put(managerLoc, ret);
 	      }
 	      return ret;

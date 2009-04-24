@@ -14,6 +14,8 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.SystemException;
 import org.omg.CORBA.TRANSIENT;
 
+import com.cosylab.acs.maci.HandleConstants;
+
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOA;
 import si.ijs.maci.AuthenticationData;
@@ -440,25 +442,62 @@ public class MaciSupervisor implements IMaciSupervisor {
 	}
 
 
+	/**
+	 * Refresh every once in a while, even if there wasn't any
+	 * indication from the manager that something has changed.
+	 */
+	public void setRefreshesPeriodically (boolean b) {
+		this.refreshCountdown = 0; // provoke refresh at next run (if refreshing enabled)
+		this.refreshWithoutACause = b;
+	}
+
+	protected volatile boolean refreshWithoutACause;
+	protected volatile int refreshCountdown;
+
 	/*
 	 * We check 'refresh needed' regularly
 	 */
 	protected RefreshIfNeeded refreshTask;
 	protected Timer timer = new Timer("MaciSupervisor.Refresher", true);
 
+
 	protected class RefreshIfNeeded extends TimerTask {
 
 		@Override
 		public void run () {
 
-			/* We reset it here. If the refresh succeeds this is redundant, but in case of
-			 * error we could come into the situation where we indefinitely try to poll info
-			 * from a not-responding manager. */
+			/*
+			 * Every n'th run we refresh, even if no incoming event has set the
+			 * "shouldBeRefreshed" flag.
+			 *
+			 * But we shouldn't refresh blindly, otherwise we'd produce periodic errors when
+			 * the manager is not available. We keep the flag set, so if the manager becomes
+			 * available, we will refresh.
+			 */
+			if (refreshWithoutACause) {
+				if (refreshCountdown > 0)
+					refreshCountdown--;
+
+				if (refreshCountdown <= 0) {
+					refreshCountdown = 5;
+					infoShouldBeRefreshed = true;
+				}
+
+				if (!isConnected())
+					return;
+			}
+
+
+			/* We reset it here. If the refresh succeeds this is the obvious behavior,
+			 * but also in case of error this prevents us from indefinitely trying to
+			 * poll info from a not-responding manager. */
 			if (infoShouldBeRefreshed) {
 				infoShouldBeRefreshed = false;
 				try {
 					refreshNow();
-				} catch (Exception exc) {/* not interested in errors */}
+				} catch (Throwable exc) {
+					/* Timer dies on uncaught exceptions,
+					 * but we're not interested in errors */}
 			}
 		}
 	};
@@ -480,114 +519,93 @@ public class MaciSupervisor implements IMaciSupervisor {
 	 * @throws CorbaNotExistException 
 	 * @throws UnknownErrorException 
 	 */
-	public synchronized void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
+	public void refreshNow() throws NoPermissionEx, NotConnectedToManagerException, SystemException, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
 		log.finer("refreshing maci info...");
 
 		List<SortingTreeNode> newComponents = new ArrayList<SortingTreeNode>(); 
 		List<SortingTreeNode> newContainers = new ArrayList<SortingTreeNode>(); 
-		List<SortingTreeNode> newClientApps = new ArrayList<SortingTreeNode>();
+		List<SortingTreeNode> newClients = new ArrayList<SortingTreeNode>();
 		
 		try {
-
-			// retrieve data from manager
-			// -------------------------------
-
+		
 			ComponentInfo[] components;
+			ContainerInfo[] containers;
+			ClientInfo[] clients;
+			
+			try {
 
-			synchronized (maciInfo.refreshComponentInfoLock) {
-				
+				// retrieve data from manager
+				// -------------------------------
+	
 				components = this.retrieveComponentInfo("*");
-				for (ComponentInfo comp : components)
-					newComponents.add(createNode(comp));
+				containers = this.retrieveContainerInfo("*");
+				clients = this.retrieveClientInfo("*");
+	
+				
+			/* If the retrieval bails out it is (as far as i've seen)
+			 * always because the manager is not reachable at all.
+			 * thus, there's no need to try and retrieve e.g. the 
+			 * clients if the components have already failed. thus,
+			 * one exception handler for all retrievals is enough */
+
+			} catch (NotConnectedToManagerException exc) {
+				log.fine("problems refreshing maci info: " + exc);
+				mcehandler.handleExceptionTalkingToManager(exc);
+				throw exc;
+
+			} catch (NoPermissionEx exc) {
+				log.fine("problems refreshing maci info: " + exc);
+				mcehandler.handleExceptionTalkingToManager(exc);
+				throw exc;
+
+			} catch (org.omg.CORBA.TRANSIENT exc) {
+				log.fine("problems refreshing maci info: " + exc);
+				mcehandler.handleExceptionTalkingToManager(exc);
+				throw new CorbaTransientException(exc);
+
+			} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
+				log.fine("problems refreshing maci info: " + exc);
+				mcehandler.handleExceptionTalkingToManager(exc);
+				throw new CorbaNotExistException(exc);
+
+			} catch (RuntimeException exc) {
+				log.fine("problems refreshing maci info: " + exc);
+				mcehandler.handleExceptionTalkingToManager(exc);
+				throw new UnknownErrorException(exc);
 			}
 
-			synchronized (maciInfo.refreshContainerInfoLock) {
 
-				ContainerInfo[] containers = this.retrieveContainerInfo("*");
-				for (ContainerInfo cont : containers) {
-					SortingTreeNode currentNode = createNode(cont);
-					newContainers.add(currentNode);
+			// make nodes from retrieved data
+			// -------------------------------
 
-					// look up components held by the container
-					for (ComponentInfo comp : components) {
-						if (comp.container == cont.h && comp.h != 0)
-							currentNode.add(createNode(comp, false));
-					}
+			for (ComponentInfo comp : components)
+				newComponents.add(createNode(comp));
+
+			for (ContainerInfo cont : containers) {
+				SortingTreeNode currentNode = createNode(cont);
+				newContainers.add(currentNode);
+
+				// look up components held by the container
+				for (ComponentInfo comp : components) {
+					if (comp.container == cont.h && comp.h != 0)
+						currentNode.add(createNode(comp, false));
 				}
 			}
 
-			synchronized (maciInfo.refreshClientInfoLock) {
+			for (ClientInfo client : clients)
+				newClients.add(createNode(client));
 
-				ClientInfo[] clients = this.retrieveClientInfo("*");
-				for (ClientInfo client : clients)
-					newClientApps.add(createNode(client));
-			}
-			
 
-			// update the treemodel
-			// -------------------------------
-			
-			maciInfo.componentNode.removeAllChildren();
-			for (SortingTreeNode n : newComponents)
-				maciInfo.componentNode.add(n);
-			
-			maciInfo.containerNode.removeAllChildren();
-			for (SortingTreeNode n : newContainers)
-				maciInfo.containerNode.add(n);
-			
-			maciInfo.clientNode.removeAllChildren();
-			for (SortingTreeNode n : newClientApps)
-				maciInfo.clientNode.add(n);
 
-			maciInfo.componentNode.sortChildrenByInfoDetail("name");
-			maciInfo.containerNode.sortChildrenByInfoDetail("name");
-			maciInfo.clientNode.sortChildrenByInfoDetail("name");
-			
-			
-		/* If the retrieval bails out it is (as far as i've seen)
-		 * always because the manager is not reachable at all.
-		 * thus, there's no need to try and retrieve e.g. the 
-		 * clients if the components have already failed. thus,
-		 * one exception handler for all retrievals is enough */
-		} catch (NotConnectedToManagerException exc) {
-			refreshNowFailed(exc);
-			mcehandler.handleExceptionTalkingToManager(exc);
-			throw exc;
-			
-		} catch (NoPermissionEx exc) {
-			refreshNowFailed(exc);
-			mcehandler.handleExceptionTalkingToManager(exc);
-			throw exc;
-			
-		} catch (org.omg.CORBA.TRANSIENT exc) {
-			refreshNowFailed(exc);
-			mcehandler.handleExceptionTalkingToManager(exc);
-			throw new CorbaTransientException(exc);
-
-		} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
-			refreshNowFailed(exc);
-			mcehandler.handleExceptionTalkingToManager(exc);
-			throw new CorbaNotExistException(exc);
-
-		} catch (RuntimeException exc) {
-			refreshNowFailed(exc);
-			mcehandler.handleExceptionTalkingToManager(exc);
-			throw new UnknownErrorException(exc);
-			
 		} finally {
-			maciInfo.nodeStructureChanged(maciInfo.managerNode);
+
+			// update the treemodel in any case
+			// ----------------------------------
+			maciInfo.setContents (newComponents, newContainers, newClients);
 		}
-		
+
 	}
 
-	/** Helper for refreshNow() - i like when the nodes disappear in case of error */
-	protected void refreshNowFailed(Exception exc) {
-		log.fine("problems refreshing maci info: " + exc);
-		maciInfo.componentNode.removeAllChildren();
-		maciInfo.containerNode.removeAllChildren();
-		maciInfo.clientNode.removeAllChildren();
-	}
-	
 
 	/**
 	 * assigned in connectToManager()
@@ -685,6 +703,12 @@ public class MaciSupervisor implements IMaciSupervisor {
 			
 		} else {
 			ret.setUserObject(info);
+			/* when a component is configured as "autostart", it will have
+			 * the manager as its first client.
+			 * matej email 2009-04: there is no way to retrieve the handle
+			 * of the manager... but it is always fixed. */
+			if ("Manager".equals(info)) // = 83886080
+				ret.representedHandles = new int[]{HandleConstants.MANAGER_MASK};
 		}
 		return ret;
 	}

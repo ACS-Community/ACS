@@ -2,11 +2,16 @@
 <classpath>
 	<classpathentry excluding="README" kind="src" path="test"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jManagerConfig.jar"/>
 	<classpathentry kind="lib" path="lib/jnlp.jar"/>
 	<classpathentry kind="lib" path="lib/jfcunit.jar"/>
+	<classpathentry kind="lib" path="lib/trilead-ssh2-build213.jar"/>
 	<classpathentry kind="lib" path="lib/AcsCommandCenterHelp.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="lib" path="lib/AcsCommandCenterEntities.jar"/>
+	<classpathentry kind="lib" path="lib/xtmodcoll-3.0.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar" sourcepath="INTROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="/INTROOT/lib/acserrj.jar"/>
@@ -30,15 +35,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/systementities.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar" sourcepath="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/idl.jar"/>
-	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemon.jar" sourcepath="/ACSROOT/lib/acsdaemon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
-	<classpathentry kind="var" path="ACSROOT"/>
-	<classpathentry kind="lib" path="/80-acscommandcenter/lib/trilead-ssh2-build213.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

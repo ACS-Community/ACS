@@ -6,11 +6,9 @@ package alma.acs.commandcenter.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
@@ -30,6 +28,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -56,6 +55,8 @@ import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
+
+import com.xtmod.util.collections.TreeMerge;
 
 /**
  * @author mschilli
@@ -98,8 +99,7 @@ public class DeploymentTree extends JTree {
 
 		// --- forward events from the MaciTree-Models
 		// (there will be one for each macimanager) to our own, all-in-one TreeModel
-		DefaultTreeModel model = (DefaultTreeModel) this.getModel();
-		treeEventForwarder = new TreeEventForwarder(model);
+		treeEventForwarder = new TreeEventForwarder (this.getTreeModel());
 
 		modelConverters = new Vector<ModelConverter>();
 
@@ -126,6 +126,20 @@ public class DeploymentTree extends JTree {
 		this.ctrl = ctrl;
 	}
 
+
+	// synchronous run in swing thread
+	private void runSwingNow (Runnable r) {
+		if (SwingUtilities.isEventDispatchThread())
+			r.run();
+		else
+			try {
+				SwingUtilities.invokeAndWait(r);
+			} catch (Exception exc) {
+				 /* exc.printStackTrace(); */
+			}
+	}
+
+	
 	/**
 	 * @param evt
 	 */
@@ -218,7 +232,7 @@ public class DeploymentTree extends JTree {
 
 		// the root of maciInfo is just a node with the boring string "Manager",
 		// the root of guiInfo will be a node holding the MaciSupervisor.
-		DefaultMutableTreeNode managerNode = new DefaultMutableTreeNode(mrfotogen);
+		final DefaultMutableTreeNode managerNode = new DefaultMutableTreeNode(mrfotogen);
 		DefaultTreeModel guiInfo = new DefaultTreeModel(managerNode);
 		ModelConverter mc = new ModelConverter(maciInfo, guiInfo);
 		modelConverters.add(mc);
@@ -229,11 +243,22 @@ public class DeploymentTree extends JTree {
 
 		// store the additional manager node in our tree
 		getTreeModel().insertNodeInto(managerNode, getRoot(), getRoot().getChildCount());
-		// getRoot().add(managerNode);
-
 
 		// populate guitree, will make the tree display
 		mc.convertCompleteModel();
+
+		// must expand the new manager node otherwise the subtree won't be visible
+		runSwingNow(new Runnable(){
+			public void run () {
+				expandPath(new TreePath(new Object[]{getRoot(), managerNode}));
+
+				// for user joy also expand the manager's subnodes
+				expandPath(new TreePath(new Object[]{getRoot(), managerNode, managerNode.getChildAt(0)}));
+				expandPath(new TreePath(new Object[]{getRoot(), managerNode, managerNode.getChildAt(1)}));
+				expandPath(new TreePath(new Object[]{getRoot(), managerNode, managerNode.getChildAt(2)}));
+			}
+		});
+		
 	}
 
 
@@ -521,7 +546,7 @@ public class DeploymentTree extends JTree {
 		}
 	}
 
-
+	
 	/**
 	 * Listens on selection-changes in the tree to trigger a repaint-event.
 	 */
@@ -565,9 +590,7 @@ public class DeploymentTree extends JTree {
 		// --- conversion logic ---
 
 		public void treeNodesChanged (TreeModelEvent e) {}
-
 		public void treeNodesInserted (TreeModelEvent e) {}
-
 		public void treeNodesRemoved (TreeModelEvent e) {}
 
 		public void treeStructureChanged (TreeModelEvent e) {
@@ -577,69 +600,70 @@ public class DeploymentTree extends JTree {
 			}
 			convertCompleteModel();
 		}
-		
-		protected void convertCompleteModel () {
-			/* System.err.println("MC: "+Thread.currentThread().getName()); */
 
-			final DefaultMutableTreeNode src = (DefaultMutableTreeNode) sourceModel.getRoot();
-			final DefaultMutableTreeNode trg = (DefaultMutableTreeNode) targetModel.getRoot();
 
-			/*
-			 * the model update will replace all the nodes: the tree will collapse, will jump
-			 * to first row, will forget the selection - quite annoying for the user.
-			 * therefore, we'll try to restore partially what the tree looked like
-			 */
-			final Rectangle viewBeforeUpdate = getVisibleRect();
+			protected TreeMerge<String> treemerger = new TreeMerge<String>(){
 
-			// do a complete conversion of the whole model
-			Runnable r = new Runnable() {
-
-				public void run () {
-					trg.removeAllChildren();
-					convert(src, trg);
-					targetModel.nodeStructureChanged(trg);
+				@Override protected String identifyExisting (TreeNode x) {
+					return identify((DefaultMutableTreeNode)x);
 				}
+
+				@Override protected String identifyIncoming (TreeNode x) {
+					return identify((DefaultMutableTreeNode)x);
+				}
+
+				String identify (DefaultMutableTreeNode x) {
+					Object userObject = x.getUserObject();
+
+					if (userObject instanceof ComponentInfo)
+						return ((ComponentInfo) userObject).name;
+					
+					if (userObject instanceof ClientInfo)
+						return String.valueOf(((ClientInfo) userObject).h);
+
+					if (userObject instanceof ContainerInfo)
+						return ((ContainerInfo) userObject).name;
+					
+					return x.toString();
+				}
+
+				@Override protected boolean isUpdate (TreeNode exist, TreeNode incom) {
+					/* Keeping it kind of simple by looking at the toString() of the
+					 * userobject. One could also do some instanceof here and look at the
+					 * userobjects more closely to find out whether they have different
+					 * contents than before. Checking so coarsely means that nodes that
+					 * represent corbastructs will be updated at each refresh. This is more
+					 * costly but it makes sure that the tree always shows up-to-date info. */
+					return !String.valueOf(exist).equals(String.valueOf(incom));
+				}
+
+				@Override protected MutableTreeNode create (TreeNode x) {
+					return  (DefaultMutableTreeNode) ((DefaultMutableTreeNode) x).clone();
+				}
+				
+				@Override protected void applyUpdate (TreeNode exist, TreeNode incom) {
+					((DefaultMutableTreeNode)exist).setUserObject(((DefaultMutableTreeNode)incom).getUserObject());
+				}
+
 			};
 
-			/*
-			 * this is the main point of the whole model conversion business: modify the
+		protected void convertCompleteModel() {
+
+			treemerger.diff (targetModel, sourceModel);
+
+			/* this is the main point of the whole model conversion business: modify the
 			 * jtree's tree model only in the swing thread. the maci info is modified by the
 			 * supervisor in whatever thread it uses. we listen to those changes and transfer
-			 * them to the tree's underlying tree model.... using the swing thread...
-			 */
-			runInSwingThread(r);
+			 * them to the tree's underlying tree model.... using the swing thread... */
+			if (!treemerger.areEqual()) {
 
-			r = new Runnable() {
-
-				public void run () {
-					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(0)}));
-					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(1)}));
-					expandPath(new TreePath(new Object[]{getRoot(), trg, trg.getChildAt(2)}));
-					scrollRectToVisible(viewBeforeUpdate);
-				}
-			};
-			runInSwingThread(r);
-		}
-
-		private void convert (DefaultMutableTreeNode src, DefaultMutableTreeNode trg) {
-			List<DefaultMutableTreeNode> children = Collections.list((Enumeration<DefaultMutableTreeNode>) src.children());
-			for (DefaultMutableTreeNode subSrc : children) {
-				DefaultMutableTreeNode subTrg = (DefaultMutableTreeNode) subSrc.clone();
-				trg.add(subTrg);
-				convert(subSrc, subTrg);
+				runSwingNow(new Runnable() {
+					public void run () {
+					/* System.out.println(treemerger.toString()); */ 
+						treemerger.merge();
+					}
+				});
 			}
-		}
-
-		// so much hassle... see above
-		private void runInSwingThread (Runnable r) {
-			if (SwingUtilities.isEventDispatchThread())
-				r.run();
-			else
-				try {
-					SwingUtilities.invokeAndWait(r);
-				} catch (Exception exc) {
-					// exc.printStackTrace();
-				}
 		}
 
 	}
@@ -670,15 +694,28 @@ public class DeploymentTree extends JTree {
 		// --- forwarding logic ---
 
 		synchronized public void treeStructureChanged (TreeModelEvent e) {
-			/* System.err.println("TEF: "+Thread.currentThread().getName()); */
-			forwardTarget.nodeStructureChanged((TreeNode) e.getTreePath().getLastPathComponent());
+		/* System.err.println("TEF: "+Thread.currentThread().getName()+" treeStructureChanged");*/
+			TreeNode n = (TreeNode) e.getTreePath().getLastPathComponent();
+			forwardTarget.nodeStructureChanged(n);
 		}
 
-		public void treeNodesChanged (TreeModelEvent e) {}
+		public void treeNodesChanged (TreeModelEvent e) {
+		/* System.err.println("TEF: "+Thread.currentThread().getName()+" treeNodesChanged "+e);*/
+			TreeNode n = (TreeNode) e.getTreePath().getLastPathComponent();
+			forwardTarget.nodesChanged(n, e.getChildIndices());
+		}
 
-		public void treeNodesInserted (TreeModelEvent e) {}
+		public void treeNodesInserted (TreeModelEvent e) {
+		/*	System.err.println("TEF: "+Thread.currentThread().getName()+" treeNodesInserted "+e);*/
+			TreeNode n = (TreeNode) e.getTreePath().getLastPathComponent();
+			forwardTarget.nodesWereInserted (n, e.getChildIndices());
+		}
 
-		public void treeNodesRemoved (TreeModelEvent e) {}
+		public void treeNodesRemoved (TreeModelEvent e) {
+		/*	System.err.println("TEF: "+Thread.currentThread().getName()+" treeNodesRemoved "+e);*/
+			TreeNode n = (TreeNode) e.getTreePath().getLastPathComponent();
+			forwardTarget.nodesWereRemoved(n, e.getChildIndices(), e.getChildren());
+		}
 	}
 
 	// 

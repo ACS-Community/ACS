@@ -83,7 +83,8 @@ DEBUG= on
 INSTALL_FILES = ../lib/JavaOnlyAcsConfig.jar \
 					 ../lib/jnlp.jar \
 					 ../lib/trilead-ssh2-build213.jar \
-					 ../lib/AcsCommandCenterHelp.jar
+					 ../lib/AcsCommandCenterHelp.jar \
+					 ../lib/xtmodcoll-3.0.jar
 
 
 #
