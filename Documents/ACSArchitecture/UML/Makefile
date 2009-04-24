@@ -1,26 +1,28 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.5 2008/01/16 10:03:43 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.6 2009/04/24 09:24:04 gchiozzi Exp $"
 #
 #
 
 #
-# This Makefile must be used from Windows
-# within a Cygwin installation
+# This Makefile must be used from Linux
+# It should be easily possible to get it working from
+# Windows +  Cygwin, but this was not tested and it is not
+# in the current scope.
 
 # Define where to find the Rose binaries.
 # Unfortunately it seems there is no better way to do it.
 
-ifndef ROSE_HOME
-  export ROSE_HOME:=/cygdrive/e/Rational/Rose
-  export ROSE_SET_LOCALLY:=true
+ifndef MAGIC_DRAW_HOME
+  export MAGIC_DRAW_HOME=/home/almamgr/MagicDraw_UML/
+  export MAGIC_DRAW_SET_LOCALLY:=true
 endif
 
-rose_home:
-	@echo "Value of ROSE_HOME is: $(ROSE_HOME)"
-	@if [ "X$(ROSE_SET_LOCALLY)" != "X" ]; then \
-          echo "   The value of ROSE_HOME was set to the default in the Makefile";\
+magic_draw_home:
+	@echo "Value of MAGIC_DRAW_HOME is: $(MAGIC_DRAW_HOME)"
+	@if [ "X$(MAGIC_DRAW_SET_LOCALLY)" != "X" ]; then \
+          echo "   The value of MAGIC_DRAW_HOME was set to the default in the Makefile";\
         fi
 
 DESTDIR=out
@@ -31,36 +33,21 @@ endif
 
 PLATFORM := $(shell uname)
 
-rosewp: rose_home
-	@echo "Producing HTML from Rational Rose UML model!"
+magic_draw_wp: magic_draw_home
+	@echo "Producing HTML from Rational Magic_Draw UML model!"
 	@rm -rf Html; mkdir -p Html
-	@./makeRosewp.py
-	@echo "... Rose publishing done"
+	@echo "-----> NOT IMPLEMENTED YET!"
+	@echo "... Magic_Draw publishing done"
 
 clean:
 	@rm -rf Html *~
 
-#################################### Windows ###############
-ifeq ($(PLATFORM),CYGWIN_NT-5.1)
-  PLATFORM := Sun
-
-all: rosewp
+all: magic_draw_wp
 
 cvsUpdate:
 	cvs -Q update -P $(CVSFLAGS) .
 
-$(DESTDIR)/%.pdf : %.doc
-	@mkdir -p out
-	@cscript /nologo ./Doc2Pdf.vbs /nologo $<
-	@mv $(<D)/$(@F) $@
 
-#################################### NON Windows ###############
-else
 
-.DEFAULT:
-	@echo "This Makefile must be run from Windows Cygwin!"
-
-endif
-#################################### end ###############
 
 
