@@ -35,11 +35,9 @@ import javax.swing.tree.TreePath;
 
 import si.ijs.maci.Container;
 import si.ijs.maci.ContainerInfo;
-import si.ijs.maci.LoggingConfigurable;
 import si.ijs.maci.LoggingConfigurableHelper;
 import si.ijs.maci.LoggingConfigurableOperations;
 import si.ijs.maci.Manager;
-
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.gui.loglevel.LogPaneNotFoundException;
 import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;
@@ -55,6 +53,9 @@ public class TreeMouseListener extends MouseAdapter {
 	
 	// The tree generating events
 	private LogLvlTree tree;
+	
+	// The node of the managers
+	private DefaultMutableTreeNode managersNode;
 	
 	// The node of the containers
 	private DefaultMutableTreeNode containersNode;
@@ -77,6 +78,7 @@ public class TreeMouseListener extends MouseAdapter {
 		tree=logLevelTree;
 		model = (LogLvlTreeModel)tree.getModel();
 		popupMenu= new TreePopupMenu(model);
+		managersNode = model.findNode(null, "Managers", 0);
 		containersNode = model.findNode(null, "Containers", 0);
 		if (containersNode==null) {
 			throw new IllegalStateException("Containers node not found in the tree");
@@ -130,14 +132,19 @@ public class TreeMouseListener extends MouseAdapter {
 			throw new IllegalArgumentException("Invalid null path");
 		}
 		DefaultMutableTreeNode selNode = (DefaultMutableTreeNode)path.getLastPathComponent();
+		DefaultMutableTreeNode targetNode = selNode;
 		boolean implementsLogging=implementsLoggingConfigurable(selNode);
 		if (!implementsLogging) {
-			return;
+			// yatagai: ad hoc implementation
+			targetNode = (DefaultMutableTreeNode)selNode.getParent();
+			if (targetNode == null || !implementsLoggingConfigurable(targetNode))
+				return;
 		}
 		// Get a reference to the LoggingConfigurable for the 
 		// selected item
 		LoggingConfigurableOperations logConf = null;
-		if (selNode.isRoot()) {
+
+		if (model.isManagerNode(targetNode)) {
 			try {
 				logConf= getLogConfFromManager();
 			} catch (Throwable t) {
@@ -147,7 +154,7 @@ public class TreeMouseListener extends MouseAdapter {
 		} else {
 			ContainerInfo cInfo;
 			try {
-				cInfo = ((TreeContainerInfo)selNode.getUserObject()).getClientInfo();
+				cInfo = ((TreeContainerInfo)targetNode.getUserObject()).getClientInfo();
 			} catch (Throwable t) {
 				JOptionPane.showInternalMessageDialog(tree, "Error retrieving ContainerInfo from the node","Error", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -165,16 +172,16 @@ public class TreeMouseListener extends MouseAdapter {
 		}
 		
 		try {
-			tree.getTabPanel().showTab(selNode.getUserObject().toString());
+			tree.getTabPanel().showTab(targetNode.getUserObject().toString());
 		} catch (LogPaneNotFoundException e) {
 			// The tab with this name does not exist: create and add a new one
 			LogLevelSelectorPanel pnl;
 			try {
-				pnl = new LogLevelSelectorPanel(logConf,selNode.getUserObject().toString());
+				pnl = new LogLevelSelectorPanel(logConf,targetNode.getUserObject().toString());
 			} catch (LogLvlSelNotSupportedException ex) {
 				JOptionPane.showMessageDialog(
 						tree,
-						"<HTML>"+selNode.getUserObject().toString()+" does not support selection of log levels:<BR>"+ex.getMessage(),
+						"<HTML>"+targetNode.getUserObject().toString()+" does not support selection of log levels:<BR>"+ex.getMessage(),
 						"Error", 
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -184,7 +191,7 @@ public class TreeMouseListener extends MouseAdapter {
 			} catch (Throwable t) {
 				JOptionPane.showMessageDialog(
 						tree,
-						"<HTML>Error creating the panel for "+selNode.getUserObject().toString()+":<BR>"+t.getMessage(),
+						"<HTML>Error creating the panel for "+targetNode.getUserObject().toString()+":<BR>"+t.getMessage(),
 						"Error", 
 						JOptionPane.ERROR_MESSAGE);
 			}
@@ -249,9 +256,9 @@ public class TreeMouseListener extends MouseAdapter {
 			throw new IllegalArgumentException("Invalid null node to query");
 		}
 		if (node.isRoot()) {
-			// The root is the manager
-			return true;
+			return false;
 		}
-		return containersNode.isNodeChild(node);
+		return containersNode.isNodeChild(node) || 
+			managersNode.isNodeChild(node);
 	}
 }

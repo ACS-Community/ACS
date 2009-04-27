@@ -77,8 +77,15 @@ public class LogLevelModel extends DefaultTableModel {
 		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null array of log levels in constructor");
 		}
-		this.levels=levels;
+		setLevels(levels);
 		initialize();
+	}
+	
+	/**
+	 * @param levels
+	 */
+	public void setLevels(LogLevelHelper[] levels) {
+		this.levels = levels;
 	}
 	
 	/**

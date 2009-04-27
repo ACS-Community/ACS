@@ -28,15 +28,14 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.omg.CORBA.ORB;
 
-import alma.acs.gui.loglevel.tree.node.TreeClientInfo;
-import alma.acs.gui.loglevel.tree.node.TreeComponentInfo;
-import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
-import alma.acs.gui.loglevel.tree.node.TreeContentInfo;
-
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.Manager;
+import alma.acs.gui.loglevel.tree.node.TreeClientInfo;
+import alma.acs.gui.loglevel.tree.node.TreeComponentInfo;
+import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
+import alma.acs.gui.loglevel.tree.node.TreeContentInfo;
 
 /**
  * The model for the tree of containers/components
@@ -81,12 +80,13 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	// The logger
 	private Logger log=null;
 	
-	// The manager node is the root node of the tree
-	private DefaultMutableTreeNode managerNode=null;
+	// The root node of the tree
+	private DefaultMutableTreeNode rootNode = null;
 	
 	// The non leaf nodes for containers and clients
 	//
 	// Components are shown on the container node and in the Components node
+	private DefaultMutableTreeNode managersNode = new NoLeafNode("Managers");
 	private DefaultMutableTreeNode clientsNode = new NoLeafNode("Clients");
 	private DefaultMutableTreeNode containersNode = new NoLeafNode("Containers");
 	
@@ -146,38 +146,50 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	public void refreshTree() {
 		if (admin==null) {
 			setRoot(null);
-			if (managerNode!=null) {
-				managerNode.removeAllChildren();
+			if (rootNode!=null) {
+				rootNode.removeAllChildren();
 			}
-			managerNode=null;
+			rootNode=null;
 		} 
-		managerNode= new DefaultMutableTreeNode(formatManagerLoc(admin.getManagerLoc()));
+		rootNode= new DefaultMutableTreeNode("root");
 		
+		managersNode.removeAllChildren();
 		clientsNode.removeAllChildren();
 		componentsNode.removeAllChildren();
 		containersNode.removeAllChildren();
 		
-		managerNode.add(clientsNode);
-		managerNode.add(containersNode);
-		managerNode.add(componentsNode);
+		rootNode.add(managersNode);
+		// rootNode.add(clientsNode);  // yatagai:hide for now. 
+		rootNode.add(containersNode);
+		// rootNode.add(componentsNode);  // yatagai: not used any more
 		
 		Object[] children = new Object[] {
+				managersNode,
 				clientsNode,
 				containersNode,
 				componentsNode
 		};
 		int[] indexes = new int[] {
-				managerNode.getIndex(clientsNode),
-				managerNode.getIndex(containersNode),
-				managerNode.getIndex(componentsNode)
+				rootNode.getIndex(managersNode),
+				rootNode.getIndex(clientsNode),
+				rootNode.getIndex(containersNode),
+				rootNode.getIndex(componentsNode)
 		};
 		
-		fireTreeNodesInserted(managerNode, managerNode.getPath(), indexes, children);
-		setRoot(managerNode);
+		fireTreeNodesInserted(rootNode, rootNode.getPath(), indexes, children);
+		setRoot(rootNode);
 		
+		buildManagersNode();
 		buildClientsNode();
 		buildContainersNode();
 		buildComponentsNode();
+	}
+	
+	/**
+	 * Build the node of managers
+	 */
+	private void buildManagersNode() {
+		managersNode.add(new DefaultMutableTreeNode(formatManagerLoc(admin.getManagerLoc())));
 	}
 	
 	/**
@@ -270,6 +282,16 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 		temp.append(strs[0]);
 		
 		return temp.toString();
+	}
+
+	/**
+	 * Returns if the given node is the manager
+	 *  
+	 * @param selNode the node to test
+	 * @return true if the node is the manager
+	 */
+	protected boolean isManagerNode(DefaultMutableTreeNode selNode) {
+		return selNode.getUserObject().equals(formatManagerLoc(admin.getManagerLoc()));
 	}
 	
 	/**
@@ -518,22 +540,22 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 				return;
 			}
 			// Add the node
-			managerNode.add(componentsNode);
+			rootNode.add(componentsNode);
 			int[] indexes = new int[] {
-					managerNode.getIndex(componentsNode)
+					rootNode.getIndex(componentsNode)
 			};
 			Object[] children = new Object[] { componentsNode };
-			fireTreeNodesInserted(managerNode, managerNode.getPath(), indexes, children);
+			fireTreeNodesInserted(rootNode, rootNode.getPath(), indexes, children);
 		} else {
 			if (!isComponentsNodeVisible) {
 				return;
 			}
 			// Remove the node
-			int pos = managerNode.getIndex(componentsNode);
-			managerNode.remove(componentsNode);
+			int pos = rootNode.getIndex(componentsNode);
+			rootNode.remove(componentsNode);
 			int[] indexes = new int[] { pos };
 			Object[] children = new Object[] { componentsNode };
-			fireTreeNodesRemoved(managerNode, managerNode.getPath(), indexes, children);
+			fireTreeNodesRemoved(rootNode, rootNode.getPath(), indexes, children);
 		}
 	}
 	
@@ -549,22 +571,22 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 				return;
 			}
 			// Add the node
-			managerNode.add(clientsNode);
+			rootNode.add(clientsNode);
 			int[] indexes = new int[] {
-					managerNode.getIndex(clientsNode)
+					rootNode.getIndex(clientsNode)
 			};
 			Object[] children = new Object[] { clientsNode };
-			fireTreeNodesInserted(managerNode, managerNode.getPath(), indexes, children);
+			fireTreeNodesInserted(rootNode, rootNode.getPath(), indexes, children);
 		} else {
 			if (!isCclientsNodeVisible) {
 				return;
 			}
 			// Remove the node
-			int pos = managerNode.getIndex(clientsNode);
-			managerNode.remove(clientsNode);
+			int pos = rootNode.getIndex(clientsNode);
+			rootNode.remove(clientsNode);
 			int[] indexes = new int[] { pos };
 			Object[] children = new Object[] { clientsNode };
-			fireTreeNodesRemoved(managerNode, managerNode.getPath(), indexes, children);
+			fireTreeNodesRemoved(rootNode, rootNode.getPath(), indexes, children);
 		}
 	}
 	

@@ -28,6 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.gui.loglevel.leveldlg.ButtonTabComponent;
@@ -83,6 +85,17 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 	 */
 	private void initialize() {
 		setPreferredSize(new Dimension(150,100));
+		addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				try {
+					((LogLevelSelectorPanel)getSelectedComponent()).refresh();
+				} catch (ClassCastException ex) {
+					// do nothing for tree panel
+					return;
+				}
+			}
+		});
 	}
 	
 	/**
@@ -257,5 +270,4 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 		// No tab with the given name has been found
 		throw new LogPaneNotFoundException("The tab with name "+name+" does not exist");
 	}
-
 }

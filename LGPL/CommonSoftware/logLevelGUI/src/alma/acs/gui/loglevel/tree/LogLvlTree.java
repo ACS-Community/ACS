@@ -69,6 +69,8 @@ public class LogLvlTree extends JTree {
 		tabPanel=panel;
 		model = new LogLvlTreeModel(theOrb,theLogger);
 		setModel(model);
+		
+		setRootVisible(false);
 	}
 	
 	/**

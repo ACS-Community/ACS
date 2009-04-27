@@ -37,12 +37,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
-import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.settings.LogTypeRenderer;
-
+import si.ijs.maci.LoggingConfigurableOperations;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 
-import si.ijs.maci.LoggingConfigurableOperations;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.settings.LogTypeRenderer;
 
 /**
  * The panel to select the log level of the named loggers
@@ -54,6 +53,9 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	
 	// The Button to apply the changes
 	private JButton applyBtn = new JButton("Apply");
+	
+	// The Button to refresh the list
+	private JButton refreshBtn = new JButton("Refresh");
 	
 	// The LoggingConfigurable
 	private LoggingConfigurableOperations logConf=null;
@@ -117,11 +119,14 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		
 		// Set tooltip to buttons
 		applyBtn.setToolTipText("Apply the changes");
+		refreshBtn.setToolTipText("Refresh the list");
 		
 		// Add the botton at the bottom
 		JPanel btnPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		btnPnl.add(applyBtn);
+		btnPnl.add(refreshBtn);
 		applyBtn.addActionListener(this);
+		refreshBtn.addActionListener(this);
 		
 		add(btnPnl);
 	}
@@ -187,12 +192,31 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	}
 	
 	/**
+	 * Refresh the list, to see changes made by other operators
+	 * @throws LogLvlSelNotSupportedException 
+	 */
+	public void refresh() {
+		LogLevelHelper[] levels; 
+		try {
+			levels = loggersLbl();
+		} catch (Exception e) {
+			System.err.println("Function not yet implemented by "+getName());
+			return;
+		}
+
+		model.setLevels(levels);
+		model.fireTableDataChanged();
+	}
+	
+	/**
 	 * 
 	 * @see java.awt.event.ActionListener
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==applyBtn) { 
 			applyChanges();
+		} else if (e.getSource()==refreshBtn) { 
+			refresh();
 		} else if (e.getSource()==defaultCB) {
 			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
 			for (LogLevelHelper lvl: levels) {

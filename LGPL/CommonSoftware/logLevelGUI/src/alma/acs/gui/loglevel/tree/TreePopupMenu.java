@@ -26,9 +26,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 
 /**
  * The popup menu for the LogLevelTree
@@ -40,6 +38,8 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener {
 	
 	// The items in the popup menu
 	private JMenuItem refreshTreeMI = new JMenuItem("Refresh");
+
+	// yatagai: not used any more   
 	private JCheckBoxMenuItem viewClientsCMI = new JCheckBoxMenuItem("View clients node");
 	private JCheckBoxMenuItem viewComponentsCMI = new JCheckBoxMenuItem("View components node");
 	
@@ -66,18 +66,20 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener {
 	private void initialize() {
 		// Insert the items
 		add(refreshTreeMI);
-		add(new JPopupMenu.Separator());
-		add(viewClientsCMI);
-		add(viewComponentsCMI);
+
+		// yatagai: removed
+		// add(new JPopupMenu.Separator());
+		// add(viewClientsCMI);
+		// add(viewComponentsCMI);
 		
 		// Connect listeners
 		refreshTreeMI.addActionListener(this);
-		viewClientsCMI.addActionListener(this);
-		viewComponentsCMI.addActionListener(this);
+		viewClientsCMI.addActionListener(this);    // yatagai: not used any more   
+		viewComponentsCMI.addActionListener(this); // yatagai: not used any more   
 		
 		// Clients and components are visible at startup
-		viewClientsCMI.setSelected(true);
-		viewComponentsCMI.setSelected(true);
+		viewClientsCMI.setSelected(true);         // yatagai: not used any more   
+		viewComponentsCMI.setSelected(true);      // yatagai: not used any more   
 		
 		setLabel("Options");
 		setBorderPainted(true);
@@ -87,9 +89,9 @@ public class TreePopupMenu extends JPopupMenu implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==refreshTreeMI) {
 			model.refreshTree();
-		} else if (e.getSource()==viewClientsCMI) {
+		} else if (e.getSource()==viewClientsCMI) { // yatagai: not used any more   
 			model.showClients(viewClientsCMI.isSelected());
-		} else if (e.getSource()==viewComponentsCMI) {
+		} else if (e.getSource()==viewComponentsCMI) { // yatagai: not used any more   
 			model.showComponents(viewComponentsCMI.isSelected());
 		}
 	}
