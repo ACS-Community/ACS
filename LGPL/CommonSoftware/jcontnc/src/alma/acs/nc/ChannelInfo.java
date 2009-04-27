@@ -20,76 +20,51 @@
 
 package alma.acs.nc;
 
-import java.util.logging.Logger;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import com.cosylab.CDB.DAO;
 
-import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServicesBase;
 
 /**
  * ChannelInfo is intended to provide various tidbits on information on CORBA
- * Notification Channels to the ACS NC APIs.
+ * Notification Channels to the ACS NC APIs. Currently this information comes from the Configuration Database.
+ * <p>
+ * @TODO think about joining this class with {@link ChannelProperties}.
  * 
  * @author dfugate
  * @version $Id$
  */
 public class ChannelInfo {
-   /**
-    * Used strictly for testing purposes at the moment. Should be moved to the
-    * test directory???
-    * 
-    * @param args
-    */
-//   static public void main(String[] args) {
-//      try {
-//         // get a client to get at the CS
-//         ComponentClient client = new ComponentClient(null, System
-//               .getProperty("ACS.manager"), "ChannelInfoTestClient");
-//         // create a channel info
-//         ChannelInfo joe = new ChannelInfo(client.getContainerServices());
-//         String[] cNames = { "cdb_channel", "blarIL", "no_channel" };
-//         for (int i = 0; i < cNames.length; i++) {
-//            System.out.println("Channel:" + cNames[i] + ", HashMap:"
-//                  + joe.getEventHandlerTimeoutMap(cNames[i]));
-//         }
-//      }
-//      catch (Exception e) {
-//         e.printStackTrace();
-//      }
-//   }
 
    /**
-    * standard logger
-    */
-   private Logger            m_logger   = null;
+	 * standard logger
+	 */
+	private final Logger m_logger;
 
-   /** our own private copy of the container services. used
-    * to access the ACS CDB among other things
-    */
-   private ContainerServicesBase m_services = null;
+	/**
+	 * our own private copy of the container services. used to access the ACS CDB among other things
+	 */
+	private final ContainerServicesBase m_services;
 
-   /**
-    * Constructor.
-    * 
-    * @param services
-    *           A component or client's container services.
-    */
-   public ChannelInfo(ContainerServicesBase services) {
-      m_services = services;
-      // immediately grab a logger
-      m_logger = m_services.getLogger();
-   }
+	/**
+	 * Constructor.
+	 */
+	public ChannelInfo(ContainerServicesBase services) {
+		m_services = services;
+		// immediately grab a logger
+		m_logger = m_services.getLogger();
+	}
 
    /**
-    * The following returns a map where each key is the name of an event and the
-    * value is the maximum amount of time (in floating point seconds) an event receiver has 
-    * to process the event before a warning message is logged.
-    * 
-    * @param channelName name of the channel
-    * @return HashMap described above
-    */
+	 * The following returns a map where each key is the name of an event and the value is the maximum amount of time
+	 * (in floating point seconds) an event receiver has to process the event before a warning message is logged.
+	 * 
+	 * @param channelName
+	 *            name of the channel
+	 * @return HashMap described above
+	 */
    public HashMap<String, Double> getEventHandlerTimeoutMap(String channelName) {
       // initialize the return value
       HashMap<String, Double> retVal = new HashMap<String, Double>();
