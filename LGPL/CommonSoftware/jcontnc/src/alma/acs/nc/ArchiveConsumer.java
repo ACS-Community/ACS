@@ -19,15 +19,15 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.12 2007/11/05 20:20:56 hsommer Exp $
- * @since
+ * @version $Id: ArchiveConsumer.java,v 1.13 2009/04/27 13:19:26 hsommer Exp $
  */
 
 import java.lang.reflect.Method;
+import java.util.logging.Level;
 
-import org.omg.CosEventComm.Disconnected;
 import org.omg.CosNotification.StructuredEvent;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
@@ -40,11 +40,26 @@ import alma.acs.exceptions.AcsJException;
  * value)" and then invoke the consumerReady() method. Since archive events do
  * not contain complex IDL structs, filtering using the extended trader
  * constraint language should work as well.
- * 
+
  * @author dfugate
+ * @deprecated  As of March 2009, this class is only used in CONTROL/TMCDB_Monitor/src/alma/TMCDB/Monitor/Monitor.java
+ * and is scheduled to also disappear from there.
  */
 public class ArchiveConsumer extends Consumer {
 
+	/**
+	 * There is exactly one receive method that will be invoked per
+	 * ArchiveConsumer object.
+	 */
+	private final Method receiveMethod_m;
+
+	/**
+	 * There is exactly one receiver that will be used by each ArchiveConsumer
+	 * object.
+	 */
+	private final Object receiver_m;
+
+	
 	/**
 	 * Creates a new instance of ArchiveConsumer
 	 * 
@@ -63,32 +78,27 @@ public class ArchiveConsumer extends Consumer {
 		super(alma.acscommon.ARCHIVING_CHANNEL_NAME.value, services);
 
 		// check to ensure receiver is capable to processing the event
-		Class receiverClass = receiver.getClass();
+		Class<?> receiverClass = receiver.getClass();
 		Method receiveMethod = null;
 
 		// receive will have four parameters
-		Class[] parm = { Long.class, String.class, String.class, Object.class };
+		Class<?>[] parm = { Long.class, String.class, String.class, Object.class };
 
 		// if this fails we know that the developer has not defined "receive"
 		// correctly at not at all. we can do nothing more
 		try {
-			receiveMethod = receiverClass.getMethod("receive", parm);
-		} catch (NoSuchMethodException err) {
-			m_logger.warning(err.getMessage());
+			receiveMethod = receiverClass.getMethod(RECEIVE_METHOD_NAME, parm);
+		} catch (Exception ex) { // NoSuchMethodException, SecurityException
 			// Well the method doesn't exist...that sucks!
-			String reason = "The '" + m_channelName
-					+ "' channel: the receiver object is incapable of handling events!";
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-		} catch (SecurityException err) {
-			m_logger.warning(err.getMessage());
-			// Developer has defined the method to be protected or private...this
-			// doesn't work either.
-			String reason = "The '" + m_channelName
-					+ "' channel: the receiver method of the object is protected/private for archive events!";
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
+			AcsJIllegalArgumentEx ex2 = new AcsJIllegalArgumentEx();
+			ex2.setVariable("receiver");
+			ex2.setErrorDesc("Object of type '" + receiverClass.getName() + "' does not implement a visible and correct '" + 
+					RECEIVE_METHOD_NAME + "' method which it needs to receive events.");
+			m_logger.log(Level.FINE, "Bad monitor event receiver!", ex2);
+			throw ex2;
 		}
-
-		// save the receive method for later use.
+		
+		// save the receive method for later event dispatching
 		receiveMethod_m = receiveMethod;
 
 		// save the receiver for later use.
@@ -116,13 +126,14 @@ public class ArchiveConsumer extends Consumer {
 	}
 
 	/**
-	 * Overridden
+	 * Overridden so that super constructor subscribes to all events. 
+	 * @throws AcsJException 
 	 */
 	protected void configSubscriptions() {
 		// calling addsubscription on null automatically subscribes
 		// to all event types.
 		try {
-			addSubscription(null);
+		addSubscription(null);
 		} catch (Exception e) {
 			String msg = "Failed to subscribe to archive events: ";
 			msg = msg + e.getMessage();
@@ -134,8 +145,11 @@ public class ArchiveConsumer extends Consumer {
 
 	/**
 	 * Overridden.
+	 * <p>
+	 * @TODO: add reference to documentation about the expected event data, i.e.
+	 * timeStamp, device, parameter, value.
+	 * 
 	 * @param structuredEvent CORBA NC StructuredEvent
-	 * @throws Disconnected 
 	 */
 	public void push_structured_event(StructuredEvent structuredEvent) {
 		try {
@@ -169,15 +183,4 @@ public class ArchiveConsumer extends Consumer {
 		}
 	}
 
-	/**
-	 * There is exactly one receive method that will be invoked per
-	 * ArchiveConsumer object.
-	 */
-	private Method receiveMethod_m = null;
-
-	/**
-	 * There is exactly one receiver that will be used by each ArchiveConsumer
-	 * object.
-	 */
-	private Object receiver_m = null;
 }
