@@ -31,6 +31,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import si.ijs.maci.Container;
@@ -194,7 +195,25 @@ public class TreeMouseListener extends MouseAdapter {
 						"<HTML>Error creating the panel for "+targetNode.getUserObject().toString()+":<BR>"+t.getMessage(),
 						"Error", 
 						JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+		}
+
+		// yatagai : Although the mousePressed action for a LoggingConfigurable 
+		// folder node, expanding or collapsing, which is set by the JTree UI is not desirable,
+		// I could not find a good way to disable it. 
+		//
+		// Reaching here, a LoggingConfigTab is displayed.
+		// If this is a folder node, the following code cancels expanding or collapsing
+		// action.
+		TreeNode node = (TreeNode)path.getLastPathComponent();
+		if (node.isLeaf())
+			return;
+		else {
+			if (tree.isExpanded(path))
+				tree.collapsePath(path);
+			else
+				tree.expandPath(path);
 		}
 	}
 	
