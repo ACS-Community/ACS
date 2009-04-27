@@ -27,11 +27,6 @@
 
 package alma.acs.nc;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -48,6 +43,16 @@ import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
+import com.cosylab.CDB.DAO;
+import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
+import com.cosylab.util.WildcharMatcher;
+
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -61,23 +66,14 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 
-import com.cosylab.CDB.DAO;
-import com.cosylab.cdb.client.CDBAccess;
-import com.cosylab.cdb.client.DAOProxy;
-import com.cosylab.util.WildcharMatcher;
-
 
 /**
  * This class provides methods useful to both supplier and consumer objects.
  */
-public class Helper { 
+public class Helper {
 
 	/**
 	 * In a running system, there can be only one reference to the Naming Service.
-	 * @TODO remove nulling this ref in 
-	 * ./ACSLaser/baciPropsTest/test/alma/acs/alarmsystem/test/BACITest.java:          Helper.m_nContext = null;
-     * ./ACSLaser/laserprotected-source/test/alma/lasersource/test/SendTest.java:               Helper.m_nContext = null;
-     * ./ACSLaser/laser-source/test/alma/lasersource/test/SourceStressTest.java:               Helper.m_nContext = null;
 	 */
 	private final NamingContext m_nContext;
 
@@ -218,6 +214,8 @@ public class Helper {
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
 	 * 
+	 * @TODO Make "protected" again once we no longer have NC classes in separate subpackge "refactored".
+	 *  
 	 * @return Reference to the event channel specified by channelName.
 	 * @param channelName
 	 *           Name of the event channel registered with the CORBA Naming
@@ -322,7 +320,7 @@ public class Helper {
 	 * @throws NameMapError (@TODO check in TAO code what this means!) 
 	 * @throws NameAlreadyUsed thrown if the channel of this name already exists.
 	 */
-	public EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
+	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed, NameMapError
 	{
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
@@ -458,7 +456,7 @@ public class Helper {
 	 *            Service.
 	 * @warning this method assumes
 	 */
-	public void destroyNotificationChannel(String channelName, String channelKind, EventChannel channelRef)
+	protected void destroyNotificationChannel(String channelName, String channelKind, EventChannel channelRef)
 			throws AcsJException 
 	{
 		try {
