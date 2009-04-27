@@ -30,6 +30,7 @@ import alma.ADMINTEST2.statusBlockEvent2;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.Consumer;
 import alma.acsnc.EventDescription;
 
 /**
