@@ -38,5 +38,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/NotificationServiceMC.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/NotifyExt.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/NotifyMonitoringExt.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
+	<classpathentry kind="lib" path="lib/adminTest1.jar"/>
+	<classpathentry kind="lib" path="lib/adminTest2.jar"/>
+	<classpathentry kind="lib" path="lib/adminTest3.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
