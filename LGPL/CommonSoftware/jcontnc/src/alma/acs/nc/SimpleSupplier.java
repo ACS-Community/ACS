@@ -271,7 +271,6 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	 */
 	protected String getNotificationFactoryName() {
 		return m_helper.getNotificationFactoryNameForChannel(m_channelName, m_channelNotifyServiceDomainName);
-		//return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
 	}
 	
 	/**
