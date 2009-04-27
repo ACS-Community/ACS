@@ -47,6 +47,8 @@ import alma.acs.exceptions.AcsJException;
  * developers' lives, please send this suggestion to the alma-sw-common@nrao.edu
  * or acs-discuss@nrao.edu mailing lists.
  * 
+ * @TODO make package-private once we no longer have a separate "refactored" subpackage.
+ * 
  * @author dfugate
  * @version $Id$
  */
@@ -541,7 +543,7 @@ public class AnyAide {
 	 * @param isNestedStruct  if true, "Package" will be inserted according to 
 	 *                        <i>"IDL to Java LanguageMapping Specification" version 1.2: 1.17 Mapping for Certain Nested Types</i> apply.
 	 */
-	public String corbaStructToJavaClass(String id, boolean isNestedStruct)
+	protected String corbaStructToJavaClass(String id, boolean isNestedStruct)
 			throws IllegalArgumentException 
 	{
 		String prefix = "IDL:";
