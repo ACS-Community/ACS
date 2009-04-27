@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.10 2007/11/05 20:20:56 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.11 2009/04/27 13:46:05 hsommer Exp $
  * @since
  */
 
@@ -59,7 +59,6 @@ import org.omg.CosNotification.Timeout;
 import com.cosylab.CDB.DAO;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
@@ -67,11 +66,12 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 
 /**
  * ChanncelProperties is a class designed to retrieve the various quality of
- * service and administrative properties for a given channel. It is inteded to
+ * service and administrative properties for a given channel. It is intended to
  * be used primarily by the Helper class within this package.
+ *  * <p>
+ * @TODO think about joining this class with {@link ChannelInfo}.
  * 
  * @author dfugate
- * 
  */
 public class ChannelProperties {
 	/**
@@ -299,7 +299,8 @@ public class ChannelProperties {
 
 		connectRelAny.insert_short(Persistent.value);
 		Property connectRel = new Property(ConnectionReliability.value, connectRelAny);
-
+		//@TODO do something with this connectRel, e.g. check why it's commented out at the end of this method!
+		
 		// Priority - ///////////////////////////////////////////////
 		Any priorityAny = m_services.getAdvancedContainerServices().getAny();
 		try {
