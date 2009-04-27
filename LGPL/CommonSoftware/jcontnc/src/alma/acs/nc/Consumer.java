@@ -43,7 +43,9 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
+import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -53,6 +55,7 @@ import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushConsumer;
 import alma.acsnc.OSPushConsumerHelper;
 import alma.acsnc.OSPushConsumerPOA;
+import alma.acsncErrType.wrappers.AcsJEventSubscriptionFailureEx;
 
 /**
  * Consumer is the Java implementation of a structured push consumer
@@ -65,21 +68,23 @@ import alma.acsnc.OSPushConsumerPOA;
  * @author dfugate
  */
 public class Consumer extends OSPushConsumerPOA {
-	private static final String RECEIVE_METHOD_NAME = "receive";
+	
+	protected static final String RECEIVE_METHOD_NAME = "receive";
 
 	/**
 	 * The default maximum amount of time an event handler is given to process
-	 * event before an exception is logged. this is used when an enduser does
-	 * *not* define the appropriate XML elements within the ACS CDB. see the
-	 * inline doc on EventChannel.xsd for more info
+	 * event before an exception is logged. This is used when an end user does
+	 * *not* define the appropriate XML elements within the ACS CDB. 
+	 * See the EventChannel.xsd for more info, e.g. at
+	 * http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_EventChannel_1.0/complexType/EventDescriptor.html#attr_MaxProcessTime .
 	 */
-	private static final long DEFAULT_MAX_PROCESS_TIME = 2000;
+	private static final double DEFAULT_MAX_PROCESS_TIME = 100.0;
 
-	// /helper object contain yields various info about the
-	// /notification channel
+	
+	/** helper object contains various info about the notification channel */
 	protected final ChannelInfo m_channelInfo;
 
-	// /used to time the execution of receive methods
+	/** used to time the execution of receive methods */
 	private final StopWatch profiler;
 
 	/** Provides access to the ACS logging system. */
@@ -88,25 +93,30 @@ public class Consumer extends OSPushConsumerPOA {
 	/** Provides access to the naming service among other things. */
 	protected final Helper m_helper;
 
-	/** 
-	 * There can be only one notification channel for any given consumer. 
-	 * Constructed on demand. 
+	/**
+	 * Name of the notification service that hosts the channel that we consume event from.
 	 */
-	protected EventChannel m_channel;
-
+	protected final String m_notifyServiceName;
+	
 	/** The channel has exactly one name registered in the CORBA Naming Service. */
 	protected final String m_channelName;
 	
+	/** 
+	 * There can be only one notification channel for any given consumer. 
+	 */
+	protected final EventChannel m_channel;
+
 	/** The channel notification service domain name, can be <code>null</code>. */
 	protected final String m_channelNotifyServiceDomainName;
 
 	/**
-	 * Contains a list of handler/receiver functions to be invoked when an event
-	 * of a particular type is received.
+	 * Contains a list of handler/receiver objects whose "receive" method (see {@link #RECEIVE_METHOD_NAME}) 
+	 * will be invoked when an event of a particular type is received.
 	 */
 	protected final HashMap<String, Object> m_handlerFunctions = new HashMap<String, Object>();
 
-	/** maps event names to the maximum amount of time allowed for
+	/** 
+	 * maps event names to the maximum amount of time allowed for
 	 * receiver methods to complete. Time is given in floating point seconds.
 	 */ 
 	protected final HashMap<String, Double> m_handlerTimeoutMap;
@@ -121,10 +131,10 @@ public class Consumer extends OSPushConsumerPOA {
 	protected StructuredProxyPushSupplier m_proxySupplier;
 
 	/** CORBA reference to ourself */
-	protected OSPushConsumer m_corbaRef = null;
+	protected OSPushConsumer m_corbaRef;
 
 	/** Helper class used to manipulate CORBA anys */
-	protected AnyAide m_anyAide = null;
+	protected AnyAide m_anyAide;
 
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
@@ -152,20 +162,29 @@ public class Consumer extends OSPushConsumerPOA {
 	 *           Subscribe to events on this channel registered in the CORBA
 	 *           Naming Service.
 	 * @param channelNotifyServiceDomainName
-	 *           Channel domain name, which is being used to determine notification service.
+	 *           Channel domain name, which is being used to determine notification service. May be <code>null</code>.
 	 * @param services
 	 *           This is used to access ACS logging system.
 	 * @throws AcsJException
 	 *            Thrown on any <I>really bad</I> error conditions encountered.
 	 */
 	public Consumer(String channelName, String channelNotifyServiceDomainName, ContainerServicesBase services) throws AcsJException {
-		// sanity check
+		// sanity checks
 		if (channelName == null) {
-			String reason = "Null reference obtained for the channel name!";
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
+			AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+			ex.setVariable("channelName");
+			ex.setValue("null");
+			throw ex;
+		}
+		if (services == null) {
+			AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
+			ex.setVariable("services");
+			ex.setValue("null");
+			throw ex;
 		}
 		
 		m_channelName = channelName;
+		m_notifyServiceName = getNotificationFactoryName();
 
 		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		
@@ -183,8 +202,8 @@ public class Consumer extends OSPushConsumerPOA {
 		// naming service, POA, and Any generator
 		m_helper = new Helper(services);
 
-		// first try getting the channel
-		getNotificationChannel(m_channelName);
+		// get the channel
+		m_channel = getHelper().getNotificationChannel(m_channelName, getChannelKind(), m_notifyServiceName);
 
 		// go ahead configured CORBA stuff
 		createConsumer();
@@ -198,25 +217,7 @@ public class Consumer extends OSPushConsumerPOA {
 
 		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
 	}
-
-	/**
-	 * This method gets a reference to the event channel. If it is not already
-	 * registered with the naming service, it is created.
-	 * 
-	 * @return Reference to the event channel specified by channelName.
-	 * @param channelName
-	 *           Name of the event channel registered with the CORBA Naming
-	 *           Service
-	 * @throws AcsJException
-	 *            Standard ACS Java exception.
-	 */
-	protected EventChannel getNotificationChannel(String channelName) throws AcsJException {
-		if (m_channel == null) {
-			m_channel = getHelper().getNotificationChannel(channelName, getChannelKind(), getNotificationFactoryName());
-		}
-		return m_channel;
-
-	}
+	
 
 	/**
 	 * This method returns a constant character pointer to the "kind" of
@@ -247,31 +248,35 @@ public class Consumer extends OSPushConsumerPOA {
 	}
 
 	/**
-	 * This method returns a the notify service name as registered with the CORBA
+	 * This method returns the notify service name as registered with the CORBA
 	 * Naming Service. This is normally equivalent to acscommon::ALMADOMAIN. The
-	 * sole reason this method is provided is to accomodate subclasses which
+	 * sole reason this method is provided is to accommodate subclasses which
 	 * subscribe/publish non-ICD style events (ACS archiving channel for
-	 * example).In that case, the developer would override this method.
+	 * example). 
+	 * In that case, the developer would override this method 
+	 * (e.g. to return or logging channel with alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value)
 	 * 
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
 		return m_helper.getNotificationFactoryNameForChannel(m_channelName, m_channelNotifyServiceDomainName);
-		//return alma.acscommon.NOTIFICATION_FACTORY_NAME.value;
 	}
 
 	/**
-	 * createConsumer handles the CORBA creation of a consumer.
+	 * Handles the CORBA creation of a consumer.
+	 * Changed to private because only ctor of this class call this method as of Alma 5.0.2
 	 * 
 	 * @throws AcsJException
 	 *            Any CORBA exceptions encountered are converted to an
 	 *            AcsJException for developer's ease of use.
 	 */
-	protected void createConsumer() throws AcsJException {
+	private void createConsumer() throws AcsJException {
 		IntHolder consumerAdminID = new IntHolder();
 
 		// get the Consumer admin object
-		m_consumerAdmin = getNotificationChannel().new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminID);
+		// @TODO: investigate reuse of admin objects. Otherwise we may allocate a new thread in the notification service for every subscriber.  
+		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminID);
+		
 		// sanity check
 		if (m_consumerAdmin == null) {
 			String reason = "The '" + m_channelName + "' channel: null consumer admin";
@@ -284,13 +289,15 @@ public class Consumer extends OSPushConsumerPOA {
 				m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, new IntHolder()));
 		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
 			// convert it into an exception developers care about
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e.getMessage());
+			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
 		}
 		// sanity check
 		if (m_proxySupplier == null) {
 			String reason = "The '" + m_channelName + "' channel: null proxy supplier";
 			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
 		}
+		
+		LOG_NC_SubscriptionConnect_OK.log(m_logger, m_channelName, m_notifyServiceName); 
 	}
 
 	/**
@@ -325,45 +332,32 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 	}
 
-	/**
-	 * Gets a reference to the event channel specified during construction.
-	 * 
-	 * @return Valid reference to the event channel.
-	 * @throws AcsJException
-	 *            Thrown if the reference is null.
-	 */
-	protected EventChannel getNotificationChannel() throws AcsJException {
-		if (m_channel == null) {
-			String reason = "Null reference obtained for the Notification Channel!";
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(reason);
-		}
-		return m_channel;
-	}
 
 	/**
 	 * Override this method to setup any number of event subscriptions. That is,
 	 * this method is invoked by consumer's constructor after everything else has
 	 * been initialized.
 	 */
-	protected void configSubscriptions() {
+	protected void configSubscriptions() throws AcsJEventSubscriptionFailureEx{
 		// addSubscription();
 		return;
 	}
 
 	/**
 	 * Add a subscription to a given (IDL struct) Java class. Use this method
-	 * only when Consumer has been subclassed and processEvent overriden.
+	 * only when Consumer has been subclassed and processEvent overridden.
 	 * 
 	 * @param structClass
 	 *           Type of event to subscribe to (i.e., alma.CORR.DataStruct.class).
-	 * @throws AcsJException
-	 *            Thrown if there is some CORBA problem.
+	 *           If <code>null</code> then all events are subscribed.
+	 * @throws AcsJEventSubscriptionFailureEx
+	 *            Thrown if the subscription failed.
 	 */
-	public void addSubscription(Class<? extends IDLEntity> structClass) throws AcsJException {
+	public void addSubscription(Class<? extends IDLEntity> structClass) throws AcsJEventSubscriptionFailureEx {
 		String type = "*";
 		String domain = "*";
 		if (structClass != null) {
-			type = structClass.getName().substring(structClass.getName().lastIndexOf('.') + 1);
+			type = structClass.getSimpleName();
 			domain = getChannelDomain(); // "ALMA"
 		}
 
@@ -374,11 +368,12 @@ public class Consumer extends OSPushConsumerPOA {
 
 			// really subscribe to the events
 			m_consumerAdmin.subscription_change(added, removed);
-		} catch (org.omg.CosNotifyComm.InvalidEventType e) {
-			String msg = "'" + type + "' event type is invalid for the '" + m_channelName + "' channel: ";
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(msg + e.getMessage());
+		} catch (Throwable thr) { // org.omg.CosNotifyComm.InvalidEventType or other
+			AcsJEventSubscriptionFailureEx ex = new AcsJEventSubscriptionFailureEx(thr);
+			ex.setChannelName(m_channelName);
+			ex.setEventName(type);
+			throw ex;
 		}
-
 	}
 
 	/**
@@ -518,12 +513,12 @@ public class Consumer extends OSPushConsumerPOA {
 		String type = structClassName.getName().substring(structClassName.getName().lastIndexOf('.') + 1);
 
 		try {
-			FilterFactory t_filterFactory = getNotificationChannel().default_filter_factory();
+			FilterFactory t_filterFactory = m_channel.default_filter_factory();
 
 			// create the filter
 			Filter t_filter = t_filterFactory.create_filter(getFilterLanguage());
 			EventType[] t_eType = { new EventType(getChannelDomain(), type) };
-			ConstraintExp[] t_cexp = { new ConstraintExp(t_eType, new String(filter)) };
+			ConstraintExp[] t_cexp = { new ConstraintExp(t_eType, filter) };
 			t_filter.add_constraints(t_cexp);
 
 			// add the filter to the proxy
@@ -666,7 +661,7 @@ public class Consumer extends OSPushConsumerPOA {
 		// figure out how much time this event has to be processed
 		if (!m_handlerTimeoutMap.containsKey(eventName)) {
 			// setup a timeout if it's undefined
-			m_handlerTimeoutMap.put(eventName, new Double(DEFAULT_MAX_PROCESS_TIME));
+			m_handlerTimeoutMap.put(eventName, DEFAULT_MAX_PROCESS_TIME);
 		}
 		Double maxProcessTimeDouble = m_handlerTimeoutMap.get(eventName);
 		long maxProcessTime = (long) maxProcessTimeDouble.doubleValue(); // @TODO: the cast is stupid if time is actually given in fractional seconds.
@@ -690,7 +685,7 @@ public class Consumer extends OSPushConsumerPOA {
 
 					// finally we can invoke the "receive" method on the receiver object and start the timing
 					profiler.reset();
-					handlerFunction.invoke(m_handlerFunctions.get(corbaData.getClass().getName()), arg);
+					handlerFunction.invoke(m_handlerFunctions.get(eventName), arg);
 
 					// get the execution time of 'receive'.
 					// @TODO: it looks like a bug to compare profiled milliseconds with fractional seconds,
