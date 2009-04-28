@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+#******************************************************************************
+# -*- perl-mode  -*-
+## @file
+#   $Id: mdExtractHtml,v 1.1 2009/04/28 08:14:47 gchiozzi Exp $
+#
+#   NAME
+#   mdExtractHtml
+# 
+#   DESCRIPTION
+#   wrapper script to call WebPublisher from MagicDraw, to generate
+#   HTML pages from a UML/SysML model
+#
+#   AUTHOR
+#   Michele Zamparelli
+#
+#   ENVIRONMENT  
+#   
+#   CAUTION
+#   - The modeal and destination directory must have absolute 
+#     path, but the check is done then in the wrong place 
+#   - Changed MAGIC_DRAW path
+#
+#   EXAMPLES
+#
+#   SEE ALSO
+#   
+#   BUGS
+#
+#   DEPENDENCIES:
+#
+#
+# VARIABLE SETTINGS
+#
+$instDir = "$ENV{MAGIC_DRAW_HOME}";
+$pluginDir = "$instDir/plugins/com.nomagic.magicdraw.reportwizard";
+$debug = 0;
+
+if($#ARGV < 2) { 
+    die "Usage: $0 <modelFile> <packages> <htmlOutputDir>\n";
+}
+
+$model     = $ARGV[0];
+$package   = $ARGV[1];
+$destDir   = $ARGV[2];
+
+# CHECKS
+
+## MDUML installation
+if (! -f "$instDir/bin/mduml")  { 
+    die "$0: MagicDraw not installed at $instDir\n";
+
+} 
+
+#
+## MODEL EXISTANCE 
+#
+if ( ! -f $model) { 
+    die "$0: file $model does not exist\n";
+}
+
+#
+## DIR EXISTANCE 
+#
+if ( ! -d $destDir || ! -w $destDir) { 
+    die "$0: directory $destDir not existing or not writeable\n";
+}
+
+if ( $ENV{MAGIC_DRAW_HOME} eq "") { 
+    die "Environment variable MAGIC_DRAW_HOME is not defined. Set it to the proper installation path!\n";
+}
+
+
+$command =  "cd $pluginDir && ./generate.sh -project $model -output $destDir/index.html  -template Web\\ Publisher\\ 2.0 -package \"$package\" -recursive true";
+#
+# The following does not work because of classpath issues
+#
+#$command =  "$pluginDir/generate.sh -project $model -output $destDir/index.html  -template Web\\ Publisher\\ 2.0 -package \"$package\" -recursive true";
+
+
+print $command if ($debug);
+system $command;
