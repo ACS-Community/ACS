@@ -255,9 +255,12 @@ acsRequiredJars= [ \
            "jACSUtil.jar", \
            "acserrj.jar", \
 	   "acserr.jar",\
+	   "CDB.jar", \
+	   "NotifyMonitoringExt.jar", \
+	   "AcsNCTraceLogLTS.jar", \
+	   "NotifyExt.jar", \
            "acsjlog.jar", \
            "concurrent.jar", \
-           "backport-util-concurrent.jar", \
            "jcont.jar" , \
            "jacorb.jar", \
            "maci.jar", \
