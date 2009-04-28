@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.9 2009/04/24 09:58:05 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.10 2009/04/28 08:20:48 gchiozzi Exp $"
 #
 #
 
@@ -36,8 +36,8 @@ PLATFORM := $(shell uname)
 
 magic_draw_wp: magic_draw_home
 	@echo "Producing HTML from Rational Magic_Draw UML model!"
-	@rm -rf Html; mkdir -p Html
-	@echo "-----> NOT IMPLEMENTED YET!"
+	@rm -rf UML/Html; mkdir -p UML/Html
+	@UML/mdExtractHtml $(PWD)/UML/ACS.mdzip "ACS Architecture" $(PWD)/UML/Html
 	@echo "... Magic_Draw publishing done"
 
 diagrams: magic_draw_home
@@ -58,10 +58,10 @@ clean:
 	@rm -rf Html *~
 
 
-##### all: rosewp diagrams word_document
+##### all: magic draw, diagrams word_document
 all: magic_draw_home magic_draw_wp diagrams document_update
 
-##### model: only rose model, no word document.
+##### model: only  magic draw model, no word document.
 model: magic_draw_home diagrams 
 
 cvsUpdate:
