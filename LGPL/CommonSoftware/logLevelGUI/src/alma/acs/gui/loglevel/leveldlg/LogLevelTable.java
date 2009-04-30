@@ -21,6 +21,7 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -34,11 +35,13 @@ import javax.swing.SortOrder;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.acs.gui.loglevel.leveldlg.LogLevelModel.Column;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 
+import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
-import com.cosylab.logging.client.EntryTypeIcon;
 
 /**
  * The table showing the log levels
@@ -54,18 +57,6 @@ public class LogLevelTable extends JTable {
 	// The editor for log levels
 	private JComboBox editor;
 	public LogTypeRenderer editorRenderer= new LogTypeRenderer();
-	
-	// The identifiers of the cols
-	private static final Integer NAMEDLOGGER_ID=new Integer(0);
-	private static final Integer DEFAULT_ID=new Integer(1);
-	private static final Integer LOCAL_ID=new Integer(2);
-	private static final Integer GLOBAL_ID=new Integer(3);
-	private static final Object[] COL_IDS = {
-		NAMEDLOGGER_ID,
-		DEFAULT_ID,
-		LOCAL_ID,
-		GLOBAL_ID
-	};
 	
 	/**
 	 * Constructor
@@ -96,17 +87,35 @@ public class LogLevelTable extends JTable {
 		editor.setEditable(false);
 		editor.setMaximumRowCount(LogTypeHelper.values().length);
 		editor.setRenderer(editorRenderer);
+
+		TableCellEditor ce = new DefaultCellEditor(editor) {
+			@Override
+			public Component getTableCellEditorComponent(JTable table,
+					Object value, boolean isSelected, int row, int column) {
+				JComboBox cb = (JComboBox)super.getTableCellEditorComponent(table, 
+						value, isSelected, row, column);
+				int v = (Integer)table.getValueAt(row, column);
+				int index = 0;
+				try {
+					index = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(v)).ordinal();
+				} catch (AcsJIllegalArgumentEx e) {
+					// not expected
+					System.err.println("Invalid ACS log level: "+v);
+					e.printStackTrace();
+				}
+				cb.setSelectedIndex(index);
+				return cb;
+			}
+		};
 		
-		columnModel.getColumn(2).setCellEditor(new DefaultCellEditor(editor));
-		columnModel.getColumn(3).setCellEditor(new DefaultCellEditor(editor));
-		for (int t=0; t<4; t++) {
+		columnModel.getColumn(Column.LOCAL.ordinal()).setCellEditor(ce);
+		columnModel.getColumn(Column.GLOBAL.ordinal()).setCellEditor(ce);
+		for (int t=0; t<Column.getColumnCont(); t++) {
 			columnModel.getColumn(t).setMinWidth(50);
-			columnModel.getColumn(t).setIdentifier(LogLevelTable.COL_IDS[t]);
 		}
 		
 		setRowMargin(2);
 		setRowHeight(EntryTypeIcon.getIconsVSize()+5+getRowMargin());
-		getColumn(LogLevelTable.DEFAULT_ID).sizeWidthToFit();
 		
 		setRowSelectionAllowed(false);
 		
@@ -121,33 +130,6 @@ public class LogLevelTable extends JTable {
 			return renderer;
 		}
 		return super.getCellRenderer(row, column);
-	}
-	
-	/**
-	 * Return the combo box editor for a given cell if the default is not selected
-	 * 
-	 */
-	public TableCellEditor getCellEditor(int row, int column) {
-		if (column==2 || column==3) {
-			Object val=getModel().getValueAt(row, column);
-			DefaultCellEditor edt = (DefaultCellEditor)super.getCellEditor(row, column);
-			JComboBox edtCB = (JComboBox)edt.getComponent();
-			try {
-				AcsLogLevelDefinition loglevelDef = AcsLogLevelDefinition.fromInteger(Integer.parseInt(val.toString()));
-				LogTypeHelper logType = LogTypeHelper.fromAcsCoreLevel(loglevelDef);
-				edtCB.setSelectedIndex(logType.ordinal());
-			} catch (Exception e) {
-				System.err.println("Invalid ACS log level: "+val.toString());
-			}
-			LogLevelModel model = (LogLevelModel)getModel();
-			Boolean useDefault=(Boolean)model.getValueAt(convertRowIndexToModel(row), convertColumnIndexToModel(1));
-			if (useDefault) {
-				return null;
-			} else {
-				return edt;
-			}
-		}
-		return super.getCellEditor(row, column);
 	}
 	
 	/**

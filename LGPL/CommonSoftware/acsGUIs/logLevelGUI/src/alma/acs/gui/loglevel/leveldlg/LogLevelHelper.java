@@ -21,9 +21,9 @@
  */
 package alma.acs.gui.loglevel.leveldlg;
 
-import com.cosylab.logging.engine.log.LogTypeHelper;
-
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
  * An helper class to manage log levels
@@ -44,11 +44,6 @@ public class LogLevelHelper {
 	private LogLevels originalLevel;
 	
 	/**
-	 * The default levels
-	 */
-	private final LogLevels defaultLevels;
-	
-	/**
 	 * The name of the logger
 	 */
 	private final String name;
@@ -58,23 +53,30 @@ public class LogLevelHelper {
 	 * 
 	 * @param name The name of the logger
 	 * @param levels The log levels
-	 * @param defaults The default log levels
 	 */
-	public LogLevelHelper(String name, LogLevels levels, LogLevels defaults) {
+	public LogLevelHelper(String name, LogLevels levels) {
 		if (name==null) {
 			throw new IllegalArgumentException("Invalid null logger name in constructor");
 		}
 		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null LogLevels in constructor");
 		}
-		if (defaults==null) {
-			throw new IllegalArgumentException("Invalid null default LogLevels in constructor");
-		}
-		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+"> abd CDB defaults <"+defaults.minLogLevel+", "+defaults.minLogLevelLocal+">");
+		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+">");
 		this.levels=levels;
 		resetChanges();
 		this.name=name;
-		this.defaultLevels=defaults;
+	}
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param name The name of the logger
+	 * @param levels The log levels
+	 * @param defaults The default log levels -- yatagai[30-Apr-2009] this is not used any more
+	 */
+	@Deprecated
+	public LogLevelHelper(String name, LogLevels levels, LogLevels defaults) {
+		this(name, levels);
 	}
 	
 	/**
@@ -136,9 +138,5 @@ public class LogLevelHelper {
 		equal = equal && originalLevel.minLogLevel==levels.minLogLevel;
 		equal = equal && originalLevel.minLogLevelLocal==levels.minLogLevelLocal;
 		return !equal;
-	}
-
-	public LogLevels getDefaultLevels() {
-		return defaultLevels;
 	}
 }

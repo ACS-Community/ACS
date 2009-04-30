@@ -22,24 +22,33 @@
 package alma.acs.gui.loglevel.leveldlg;
 
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import si.ijs.maci.LoggingConfigurableOperations;
+import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+import alma.ACSErrTypeCommon.IllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
+import alma.acs.logging.level.AcsLogLevelDefinition;
 
+import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
 
@@ -67,10 +76,12 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	
 	private JComboBox allLocalCB;
 	private JComboBox allGlobalCB;
+	private JLabel    minLocal;
+	private JLabel    minGlobal;
 	public LogTypeRenderer editorLocal;
 	public LogTypeRenderer editorGlobal;
 	
-	private JCheckBox defaultCB = new JCheckBox("",false);
+	private JButton   defaultBtn = new JButton("Reset all loggers to use default levels");
 	
 	/**
 	 * Constructor 
@@ -96,6 +107,14 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		allGlobalCB=new JComboBox(descs);
 		editorLocal= new LogTypeRenderer();
 		editorGlobal= new LogTypeRenderer();
+
+		ActionListener al = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				applyBtn.setEnabled(true);
+			}
+		};
+		allLocalCB.addActionListener(al);
+		allGlobalCB.addActionListener(al);
 		
 		logConf=configurable;
 		setName(name);
@@ -111,11 +130,16 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		BoxLayout layout = new BoxLayout(this,BoxLayout.Y_AXIS);
 		setLayout(layout);
 		
-		// Add the widgets with the log levels at the center
-		add(initLogLevelsPanel());
-		
+		JComponent logLevelsPanel = initLogLevelsPanel(); 
+
 		// Add the panel to set all the levels
 		add(initAllLoggersPanel());
+		
+		// Add the widgets with the log levels at the center
+		add(logLevelsPanel);
+		
+		// Add the panel to show the minimum log levels
+		add(initMimimumLevelsPanel());
 		
 		// Set tooltip to buttons
 		applyBtn.setToolTipText("Apply the changes");
@@ -128,6 +152,8 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		applyBtn.addActionListener(this);
 		refreshBtn.addActionListener(this);
 		
+		applyBtn.setEnabled(false);
+
 		add(btnPnl);
 	}
 	
@@ -148,6 +174,11 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		
 		model = new LogLevelModel(levels);
 		table = new LogLevelTable(model);
+		model.addTableModelListener(new TableModelListener(){
+			public void tableChanged(TableModelEvent e) {
+				applyBtn.setEnabled(userChangedLogLevels());
+			}
+		});
 		
 		JScrollPane scrollPane = new JScrollPane(table);
 		return scrollPane;
@@ -165,7 +196,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		}
 		LogLevelHelper[] ret = new LogLevelHelper[logNames.length];
 		for (int t=0; t<logNames.length; t++) {
-			ret[t]= new LogLevelHelper(logNames[t],logConf.get_logLevels(logNames[t]),logConf.get_default_logLevels());
+			ret[t]= new LogLevelHelper(logNames[t],logConf.get_logLevels(logNames[t]));
 		}
 		return ret;
 	}
@@ -188,24 +219,58 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 				}
 			}
 		}
+
+		try {
+			int localIndex = allLocalCB.getSelectedIndex();
+			LogTypeHelper local = LogTypeHelper.values()[localIndex];
+			int localAcs = local.getAcsCoreLevel().value;
+
+			int globalIndex = allGlobalCB.getSelectedIndex();
+			LogTypeHelper global = LogTypeHelper.values()[globalIndex];
+			int globalAcs = global.getAcsCoreLevel().value;
+
+			boolean useDefault = logConf.get_default_logLevels().useDefault;
+			LogLevels toset = new LogLevels(useDefault, (short)globalAcs, (short)localAcs);
+			logConf.set_default_logLevels(toset);
+		} catch (IllegalArgumentEx e) {
+			e.printStackTrace();
+		}
 		model.changesApplied();
+		updateMinLevels();
+
+		applyBtn.setEnabled(false);
 	}
 	
 	/**
 	 * Refresh the list, to see changes made by other operators
-	 * @throws LogLvlSelNotSupportedException 
 	 */
 	public void refresh() {
-		LogLevelHelper[] levels; 
+    	if (userChangedLogLevels()) {
+			if (JOptionPane.showConfirmDialog(
+					null, 
+					"Do you really want to discard changes?", 
+					"Confirm", 
+					JOptionPane.YES_NO_OPTION)==JOptionPane.NO_OPTION) {
+				return;
+			}
+		}
+		
+		refreshAllLoggersPanel();
+		applyChanges();
+
+		LogLevelHelper[] levels=null;
 		try {
 			levels = loggersLbl();
 		} catch (Exception e) {
 			System.err.println("Function not yet implemented by "+getName());
+			e.printStackTrace(System.err);
 			return;
 		}
 
 		model.setLevels(levels);
 		model.fireTableDataChanged();
+		
+		applyBtn.setEnabled(false);
 	}
 	
 	/**
@@ -217,26 +282,19 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			applyChanges();
 		} else if (e.getSource()==refreshBtn) { 
 			refresh();
-		} else if (e.getSource()==defaultCB) {
-			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
-			for (LogLevelHelper lvl: levels) {
-				lvl.setUseDefault(defaultCB.isSelected());
-			}
-			((LogLevelModel)table.getModel()).fireTableDataChanged();
+		} else if (e.getSource()==defaultBtn) {
+			LogLevelModel llm = (LogLevelModel)table.getModel();
+			llm.setAllToCommonLevels();
 		} else if (e.getSource()==allLocalCB) {
-			int newLvl = allLocalCB.getSelectedIndex();
-			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
-			for (LogLevelHelper lvl: levels) {
-				lvl.setLocalLevel(LogTypeHelper.values()[newLvl]);
-			}
-			((LogLevelModel)table.getModel()).fireTableDataChanged();
+			int index  = allLocalCB.getSelectedIndex();
+			LogTypeHelper newLvl = LogTypeHelper.values()[index];
+			LogLevelModel llm = (LogLevelModel)table.getModel();
+			llm.setCommonLocalLevel(newLvl);
 		} else if (e.getSource()==allGlobalCB) {
-			int newLvl = allGlobalCB.getSelectedIndex();
-			LogLevelHelper[] levels = ((LogLevelModel)table.getModel()).getLevels();
-			for (LogLevelHelper lvl: levels) {
-				lvl.setGlobalLevel(LogTypeHelper.values()[newLvl]);
-			}
-			((LogLevelModel)table.getModel()).fireTableDataChanged();
+			int index = allGlobalCB.getSelectedIndex();
+			LogTypeHelper newLvl = LogTypeHelper.values()[index];
+			LogLevelModel llm = (LogLevelModel)table.getModel();
+			llm.setCommonGlobalLevel(newLvl);
 		} else {
 			throw new IllegalStateException("Unknown source of events: "+e.getSource());
 		}
@@ -264,47 +322,184 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	}
 	
 	/**
+	 * @return the mimimum level
+	 */
+	private LogTypeHelper getMinLocalLevel() {
+		return getMinLogLevel(true);
+	}
+	
+	/**
+	 * @return the minimum level
+	 */
+	private LogTypeHelper getMinGlobalLevel() {
+		return getMinLogLevel(false);
+	}
+	
+	/**
+	 * Get the minimum log level among the loggers
+	 * 
+	 * @param isLocal true for local log level, false for global log level 
+	 * @return the minimum level
+	 */
+	private LogTypeHelper getMinLogLevel(boolean isLocal) {
+		LogTypeHelper errret = LogTypeHelper.TRACE; 
+		LogLevelHelper[] levels; 
+		try {
+			levels = loggersLbl();
+		} catch (Exception e) {
+			System.err.println("Function not yet implemented by "+getName());
+			return errret;
+		}
+		int minval = LogTypeHelper.EMERGENCY.getAcsCoreLevel().value;
+		for (LogLevelHelper l : levels) {
+			int val = isLocal ? l.getLocalLevel() : l.getGlobalLevel();
+			if (minval > val)
+				minval = val;
+		}
+		LogTypeHelper logType;
+		try {
+			AcsLogLevelDefinition levelDef = AcsLogLevelDefinition.fromInteger(minval);
+			logType=LogTypeHelper.fromAcsCoreLevel(levelDef);
+		} catch (Exception e) {
+			System.err.println("Error parsing a log type: "+minval);
+			e.printStackTrace(System.err);
+			return errret;
+		}
+		return logType;
+	}
+
+	
+	/**
 	 * Setup the panel with the option for all the named loggers
 	 * 
 	 * @return
 	 */
 	private JPanel initAllLoggersPanel() {
-		TitledBorder border = BorderFactory.createTitledBorder("All named loggers actions");
-		GridLayout layout = new GridLayout(3,2);
-		layout.setVgap(5);
+		TitledBorder border = BorderFactory.createTitledBorder("Process wide default log levels");
+
+		JPanel        mainPnl = new JPanel();
+		GridBagLayout      gl = new GridBagLayout();
+		GridBagConstraints gc = new GridBagConstraints();
+		mainPnl.setLayout(gl);
+		mainPnl.setBorder(border);
 		
-		JPanel mainPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JPanel panel = new JPanel(layout);
-		panel.setBorder(border);
-		
-		// Default
-		JLabel defaultLbl=new JLabel("Set/unset all the use default");
-		panel.add(defaultLbl);
-		panel.add(defaultCB);
-		
-		// local
-		JPanel localPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel localLbl=new JLabel("Set all local levels");
-		panel.add(localLbl);
+		JLabel localLbl  = new JLabel("Default local log level");
 		allLocalCB.setRenderer(editorLocal);
-		localPnl.add (allLocalCB);
-		panel.add(localPnl);
-		
-		// Global
-		JPanel globalPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel globalLbl = new JLabel("Set all global levels");
-		panel.add(globalLbl);
+		JLabel globalLbl = new JLabel("Default remote log level");
 		allGlobalCB.setRenderer(editorGlobal);
-		globalPnl.add(allGlobalCB);
-		panel.add(globalPnl);
 		
-		mainPnl.add(panel);
+		gc.insets = new Insets(5, 5, 5, 5);
+		
+		gc.gridx = 0; gc.gridy = 0;
+		
+		gl.setConstraints(localLbl, gc);
+		mainPnl.add(localLbl);
+		gc.gridx++;
+		gl.setConstraints(allLocalCB, gc);
+		mainPnl.add(allLocalCB);
+		gc.gridx++;
+		gl.setConstraints(globalLbl, gc);
+		mainPnl.add(globalLbl);
+		gc.gridx++;
+		gl.setConstraints(allGlobalCB, gc);
+		mainPnl.add(allGlobalCB);
+		
+		gc.gridx = 0; gc.gridy++;
+		gc.gridwidth = GridBagConstraints.REMAINDER;
+		gl.setConstraints(defaultBtn, gc);
+		mainPnl.add(defaultBtn);
 		
 		// Set the listeners
-		defaultCB.addActionListener(this);
+		defaultBtn.addActionListener(this);
 		allLocalCB.addActionListener(this);
 		allGlobalCB.addActionListener(this);
 		
+		// set initial choices
+		refreshAllLoggersPanel();
+		
 		return mainPnl;
 	}
+	
+	private void refreshAllLoggersPanel() {
+		LogLevels defaultLevels;
+		defaultLevels = logConf.get_default_logLevels();
+		
+		int acsLevel = defaultLevels.minLogLevelLocal;
+		try {
+			LogTypeHelper logTypeLocal  = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
+			allLocalCB.setSelectedIndex(logTypeLocal.ordinal());
+			model.setCommonLocalLevel(logTypeLocal);
+		} catch (AcsJIllegalArgumentEx e) {
+			System.out.println("Unexpected log level : " + acsLevel);
+			e.printStackTrace(System.err);
+		}
+		
+		acsLevel = defaultLevels.minLogLevel;
+		try {
+			LogTypeHelper logTypeGlobal = LogTypeHelper.fromAcsCoreLevel(AcsLogLevelDefinition.fromInteger(acsLevel));
+			allGlobalCB.setSelectedIndex(logTypeGlobal.ordinal());
+			model.setCommonGlobalLevel(logTypeGlobal);
+		} catch (AcsJIllegalArgumentEx e) {
+			System.out.println("Unexpected log level : " + acsLevel);
+			e.printStackTrace(System.err);
+		}
+	}
+
+	/**
+	 * Setup the panel to show mimimum levels
+	 * 
+	 * @return
+	 */
+	private JPanel initMimimumLevelsPanel() {
+		TitledBorder border = BorderFactory.createTitledBorder("Minimum Log Levels");
+
+		JPanel        mainPnl = new JPanel();
+		GridBagLayout      gl = new GridBagLayout();
+		GridBagConstraints gc = new GridBagConstraints();
+		mainPnl.setLayout(gl);
+		mainPnl.setBorder(border);
+		
+		JLabel localLbl  = new JLabel("Current minimum local level");
+		minLocal = new JLabel("");
+		JLabel globalLbl = new JLabel("Current minimum remote level");
+		minGlobal = new JLabel("");
+
+		gc.insets = new Insets(5, 10, 5, 10);
+		
+		gc.gridx = 0; gc.gridy = 0;
+		
+		gl.setConstraints(localLbl, gc);
+		mainPnl.add(localLbl);
+		gc.gridx++;
+		gc.insets.right *= 2;
+		gl.setConstraints(minLocal, gc);
+		mainPnl.add(minLocal);
+		gc.gridx++;
+		gc.insets.right /= 2;
+		gl.setConstraints(globalLbl, gc);
+		mainPnl.add(globalLbl);
+		gc.gridx++;
+		gl.setConstraints(minGlobal, gc);
+		mainPnl.add(minGlobal);
+
+		updateMinLevels();
+		
+		return mainPnl;
+	}
+
+	/**
+	 *  Updates the minimum log level panel
+	 */
+	private void updateMinLevels() {
+		LogTypeHelper minLocalLevel = getMinLocalLevel();
+		minLocal.setIcon(EntryTypeIcon.getIcon(minLocalLevel));
+		minLocal.setText(minLocalLevel.toString());
+		minLocal.repaint();
+
+		LogTypeHelper minGlobalLevel = getMinGlobalLevel();
+		minGlobal.setIcon(EntryTypeIcon.getIcon(minGlobalLevel));
+		minGlobal.setText(minGlobalLevel.toString());
+		minLocal.repaint();
+	}
+
 }

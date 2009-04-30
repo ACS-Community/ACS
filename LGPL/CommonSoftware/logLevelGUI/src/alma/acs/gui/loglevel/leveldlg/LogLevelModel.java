@@ -62,11 +62,22 @@ public class LogLevelModel extends DefaultTableModel {
 			this.name=name;
 			this.colClass=cl;
 		}
+		
+		public static Column getColumn(int index) {
+			return values()[index];
+		}
+		
+		public static int getColumnCont() {
+			return values().length;
+		}
 	}
 	
 	// The log levels.
 	// Each log level is an entry in the table
 	private LogLevelHelper[] levels;
+	
+	private LogTypeHelper commonLocalLevel;
+	private LogTypeHelper commonGlobalLevel;
 	
 	/**
 	 * Constructor
@@ -86,6 +97,51 @@ public class LogLevelModel extends DefaultTableModel {
 	 */
 	public void setLevels(LogLevelHelper[] levels) {
 		this.levels = levels;
+	}
+	
+	/**
+	 * Sets the common local log level and apply it to the loggers
+	 * which use the default level.
+	 * 
+	 * @param commonLocalLevel
+	 */
+	public void setCommonLocalLevel(LogTypeHelper commonLocalLevel) {
+		int colDefault = Column.DEFAULT.ordinal();
+		for (int row = 0; row < getRowCount(); row++) {
+			if ((Boolean)getValueAt(row, colDefault)) 
+				levels[row].setLocalLevel(commonLocalLevel);
+		}
+		this.commonLocalLevel = commonLocalLevel;
+		fireTableDataChanged();
+	}
+	
+	/**
+	 * Sets the common global log level and apply it to the loggers
+	 * which use the default level.
+	 * 
+	 * @param commonGlobalLevel
+	 */
+	public void setCommonGlobalLevel(LogTypeHelper commonGlobalLevel) {
+		int colDefault = Column.DEFAULT.ordinal();
+		for (int row = 0; row < getRowCount(); row++) {
+			if ((Boolean)getValueAt(row, colDefault)) 
+				levels[row].setGlobalLevel(commonGlobalLevel);
+		}
+		this.commonGlobalLevel = commonGlobalLevel;
+		fireTableDataChanged();
+	}
+	
+	/**
+	 * Forces all the loggers to use the common levels
+	 */
+	public void setAllToCommonLevels() {
+		for (int row = 0; row < getRowCount(); row++) {
+			LogLevelHelper level = levels[row];
+			level.setUseDefault(true);
+			level.setLocalLevel(commonLocalLevel);
+			level.setGlobalLevel(commonGlobalLevel);
+		}
+		fireTableDataChanged();
 	}
 	
 	/**
@@ -119,7 +175,8 @@ public class LogLevelModel extends DefaultTableModel {
 	 * @see DefaultTableModel
 	 */
 	public boolean isCellEditable(int row, int col) {
-		return col!=0; 
+		Column column = Column.getColumn(col);
+		return (column != Column.NAME); 
 	}
 	
 	/**
@@ -133,28 +190,32 @@ public class LogLevelModel extends DefaultTableModel {
 		if (row>levels.length) {
 			throw new IllegalStateException("Trying to set value for ["+row+", "+column+"] but the table has "+levels.length+" rows");
 		}
-		switch (column) {
-		case 0: {
+		Column col = Column.getColumn(column);
+		LogLevelHelper level = levels[row];
+		
+		switch (col) {
+		case NAME: {
 			// Field not editable
 			break;
 		}
-		case 1: {
-			try {
-				levels[row].setUseDefault((Boolean)aValue);
-			} catch (Throwable t) {
-				System.err.println("Error setting a value:" +t.getMessage());
-				t.printStackTrace(System.err);
-				JOptionPane.showMessageDialog(
-						null,
-						"Error setting default: "+aValue+"\n"+t.getMessage(), 
-						"Error", 
-						JOptionPane.ERROR_MESSAGE);
+		
+		case DEFAULT: {
+			Boolean isSelected = (Boolean)aValue;
+			level.setUseDefault(isSelected);
+			if (isSelected) {
+				level.setLocalLevel(commonLocalLevel);
+				level.setGlobalLevel(commonGlobalLevel);
 			}
 			break;
 		}
-		case 2: {
+
+		case LOCAL: {
 			try {
-				levels[row].setLocalLevel(getLevelFromObject(aValue));
+				LogTypeHelper lev = getLevelFromObject(aValue);
+				if (level.getLocalLevel() != lev.acsCoreLevel.value) {
+					level.getLogLevels().useDefault = false;
+					level.setLocalLevel(lev);
+				}
 			} catch (Throwable t) {
 				System.err.println("Error setting a value:" +t.getMessage());
 				t.printStackTrace(System.err);
@@ -166,9 +227,13 @@ public class LogLevelModel extends DefaultTableModel {
 			}
 			break;
 		}
-		case 3: {
+		case GLOBAL: {
 			try {
-				levels[row].setGlobalLevel(getLevelFromObject(aValue));
+				LogTypeHelper lev = getLevelFromObject(aValue);
+				if (level.getGlobalLevel() != lev.acsCoreLevel.value) {
+					level.getLogLevels().useDefault = false;
+					level.setGlobalLevel(lev);
+				}
 			} catch (Throwable t) {
 				System.err.println("Error setting a value:" +t.getMessage());
 				t.printStackTrace(System.err);
@@ -237,26 +302,20 @@ public class LogLevelModel extends DefaultTableModel {
 	 * @see DefaultTableModel
 	 */
 	public Object getValueAt(int row, int column) {
-		switch (column) {
-		case 0: {
-			return levels[row].getName();
+		Column col = Column.getColumn(column);
+		LogLevelHelper level = levels[row];
+		switch (col) {
+		case NAME: {
+			return level.getName();
 		}
-		case 1: {
-			return levels[row].isUsingDefault();
+		case DEFAULT: {
+			return level.getLogLevels().useDefault;
 		}
-		case 2: {
-			if (levels[row].isUsingDefault()) {
-				return levels[row].getDefaultLevels().minLogLevelLocal;
-			} else {
-				return levels[row].getLocalLevel();
-			}
+		case LOCAL: {
+			return level.getLocalLevel();
 		}
-		case 3: {
-			if (levels[row].isUsingDefault()) {
-				return levels[row].getDefaultLevels().minLogLevel;
-			} else {
-				return levels[row].getGlobalLevel();
-			}
+		case GLOBAL: {
+			return level.getGlobalLevel();
 		}
 		default: {
 			return "N/A";
