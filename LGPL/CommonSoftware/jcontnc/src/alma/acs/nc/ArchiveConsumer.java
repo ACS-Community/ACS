@@ -19,7 +19,7 @@ package alma.acs.nc;
 
 /**
  * @author dfugate
- * @version $Id: ArchiveConsumer.java,v 1.13 2009/04/27 13:19:26 hsommer Exp $
+ * @version $Id: ArchiveConsumer.java,v 1.14 2009/04/30 16:23:39 hsommer Exp $
  */
 
 import java.lang.reflect.Method;
@@ -40,10 +40,11 @@ import alma.acs.exceptions.AcsJException;
  * value)" and then invoke the consumerReady() method. Since archive events do
  * not contain complex IDL structs, filtering using the extended trader
  * constraint language should work as well.
-
+ * <p>
+ * HSO 2009: Note that the base class Consumer is getting replaced with NCSubscriber, 
+ * and also that in Alma this ArchiveConsumer is being replaced with the new TMCDB monitoring code.
+ * 
  * @author dfugate
- * @deprecated  As of March 2009, this class is only used in CONTROL/TMCDB_Monitor/src/alma/TMCDB/Monitor/Monitor.java
- * and is scheduled to also disappear from there.
  */
 public class ArchiveConsumer extends Consumer {
 
