@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.11 2009/04/30 08:19:24 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.12 2009/04/30 08:30:28 gchiozzi Exp $"
 #
 #
 
@@ -59,10 +59,10 @@ clean:
 
 
 ##### all: magic draw, diagrams word_document
-all: magic_draw_home magic_draw_wp diagrams document_update
+all: model document_update
 
 ##### model: only  magic draw model, no word document.
-model: magic_draw_home diagrams 
+model: magic_draw_home magic_draw_wp diagrams 
 
 cvsUpdate:
 	cvs -Q update -P $(CVSFLAGS) .
