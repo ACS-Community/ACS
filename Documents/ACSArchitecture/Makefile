@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.10 2009/04/28 08:20:48 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.11 2009/04/30 08:19:24 gchiozzi Exp $"
 #
 #
 
@@ -35,7 +35,7 @@ endif
 PLATFORM := $(shell uname)
 
 magic_draw_wp: magic_draw_home
-	@echo "Producing HTML from Rational Magic_Draw UML model!"
+	@echo "Producing HTML from Magic_Draw UML model!"
 	@rm -rf UML/Html; mkdir -p UML/Html
 	@UML/mdExtractHtml $(PWD)/UML/ACS.mdzip "ACS Architecture" $(PWD)/UML/Html
 	@echo "... Magic_Draw publishing done"
