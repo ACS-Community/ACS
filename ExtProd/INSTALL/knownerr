@@ -43,3 +43,9 @@ errors wish tktest
 error-objects\.html
 errorbar_limits\.py
 numpy.*configtest.*undefined reference to `exp'
+lxml-2.1.5/doc
+nose-0.10.4/functional_tests
+errorclass\.py
+failuredetail\.
+failure\.html
+xmlerror\.p
