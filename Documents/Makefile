@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.12 2008/01/16 10:05:38 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.13 2009/04/30 10:42:36 gchiozzi Exp $"
 #
 #
 
@@ -23,24 +23,23 @@ endif
 PLATFORM := $(shell uname)
 
 WORDDOCS := $(wildcard *.doc) \
-            ACSArchitecture/ACSArchitectureNL.doc \
             ACSComponentSimulator/ACSComponentSim.doc \
             Acspy/ACSPython.doc \
             Acstime/ACSTime.doc \
             NotificationChannel/Notification_Channel_Module_Software_Design.doc
-PDFDOCS  := $(addprefix $(DESTDIR)/, $(addsuffix .pdf, $(basename $(notdir $(WORDDOCS)))))
+OODOCS   := $(wildcard *.odt) \
+            ACSArchitecture/ACSArchitecture.odt
+ALLDOCS  := $(WORDDOCS) $(OODOCS)
+PDFDOCS  := $(addprefix $(DESTDIR)/, $(addsuffix .pdf, $(basename $(notdir $(ALLDOCS)))))
 
 vpath %.doc .:Acspy:Acstime:NotificationChannel:ACSArchitecture:ACSComponentSimulator
+vpath %.odt .:Acspy:Acstime:NotificationChannel:ACSArchitecture:ACSComponentSimulator
 
 listDocs: 
-	@echo Docs to be converted from MS Word to PDF in directory $(DESTDIR):
-	@for member in  $(foreach name, $(WORDDOCS), $(name) ) ; do \
+	@echo Docs to be converted from MS Word or Open Office to PDF in directory $(DESTDIR):
+	@for member in  $(foreach name, $(ALLDOCS), $(name) ) ; do \
 		    echo "   $${member}" ;\
 		done
-
-#################################### Windows ###############
-ifeq ($(PLATFORM),CYGWIN_NT-5.1)
-  PLATFORM := Sun
 
 all: loginfo cvsUpdate changeLog acsarchitectureupd docs
 
@@ -68,16 +67,13 @@ changeLog:
 
 $(DESTDIR)/%.pdf : %.doc
 	@mkdir -p out
-	@cscript /nologo ./Doc2Pdf.vbs /nologo $<
-	@mv $(<D)/$(@F) $@
+	@./OpenOfficeDocumentConverter.sh $< $@
 
-#################################### NON Windows ###############
-else
+$(DESTDIR)/%.pdf : %.odt
+	@mkdir -p out
+	@./OpenOfficeDocumentConverter.sh $< $@
 
-.DEFAULT:
-	@echo "This Makefile must be run from Windows Cygwin!"
 
-endif
-#################################### end ###############
+
 
 
