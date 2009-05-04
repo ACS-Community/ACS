@@ -1,0 +1,83 @@
+#ifndef _TEST_JBACI_ENUM_PROP_IDL
+#define _TEST_JBACI_ENUM_PROP_IDL
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id: testjBaciEnumProp.idl,v 1.1 2009/05/04 07:44:20 msekoran Exp $"
+*
+* who       when      what
+* --------  --------  ----------------------------------------------
+*/
+
+#include <baci.idl>
+#include <enumpropMACRO.idl>
+#include <enumpropStd.idl>
+
+#define BASE_STATES DISABLED, ENABLED, DIAGNOSE, \
+	            SHUTDOWN, INITIALIZE
+
+module jbaciEnumPropTest {
+
+  enum States { BASE_STATES };
+
+  ACS_ENUM(States);
+
+
+  interface StateMachine {
+    
+    exception NoSuchState { };
+    exception NoSuchTransition { };
+
+/**
+ * RO + command for changing state version
+ */
+
+    /**
+     * Current state for this machine.
+     */
+    readonly attribute ROStates currentState;
+    /**
+     * Commands for changing state
+     */  
+    ACSErr::Completion enable() raises (NoSuchTransition);
+    ACSErr::Completion disable() raises (NoSuchTransition);
+    ACSErr::Completion diagnose() raises (NoSuchTransition);
+    ACSErr::Completion shutdown() raises (NoSuchTransition);
+    ACSErr::Completion init() raises (NoSuchTransition);
+    ACSErr::Completion on() raises (NoSuchTransition);
+    ACSErr::Completion off() raises (NoSuchTransition);
+
+
+    /**
+     * read-write version
+     */
+    readonly attribute RWStates currentStateRW;
+
+  };
+
+interface jbaciEnumTestComponent : ACS::CharacteristicComponent, StateMachine {
+};
+
+};
+
+#endif
+
