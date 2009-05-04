@@ -615,7 +615,7 @@ public abstract class CommonPropertyImpl
 		 * @see alma.ACS.jbaci.BACIAction
 		 */
 		public SetAsyncAction(Object value, Callback callback, CBDescIn descIn) {
-			super(getParentComponent(), callback, descIn, CommonPropertyImpl.this);
+			super(getParentComponent(), callback, descIn, null);
 			this.value = value;
 		}
 
@@ -627,7 +627,7 @@ public abstract class CommonPropertyImpl
 			Callback callback,
 			CBDescIn descIn,
 			BACIPriority priority) {
-			super(getParentComponent(), callback, descIn, CommonPropertyImpl.this, priority);
+			super(getParentComponent(), callback, descIn, null, priority);
 			this.value = value;
 		}
 
