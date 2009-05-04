@@ -342,7 +342,9 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 			{
 				// delegate
 				try {
-					return method.invoke(delegate, args);
+					// TODO cache
+					final Method localMethod = delegate.getClass().getMethod(method.getName(), method.getParameterTypes());
+					return localMethod.invoke(delegate, args);
 				} catch (InvocationTargetException e) {
 					throw e.getTargetException();
 				} catch (Throwable e) {
