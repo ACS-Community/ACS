@@ -24,7 +24,7 @@ List[State] listStates( StateMachine this ):
 	allOwnedElements().typeSelect(State).select(e|!(e.name == "Unavailable"));
 	
 // Lists Initial States, recursively
-List[Pseudostate] listInitialStates( State this ): 
+List[Pseudostate] listInitialStates( State this ):
 	allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial");
 List[Pseudostate] listInitialStates( StateMachine this ): 
 	allOwnedElements().typeSelect(Pseudostate).select(e|e.kind.toString() == "initial");
