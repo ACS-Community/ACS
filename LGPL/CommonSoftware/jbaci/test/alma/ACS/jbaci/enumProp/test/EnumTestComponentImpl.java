@@ -21,16 +21,22 @@
 
 package alma.ACS.jbaci.enumProp.test;
 
+import org.omg.CORBA.NO_IMPLEMENT;
+
 import jbaciEnumPropTest.ROStates;
 import jbaciEnumPropTest.ROStatesHelper;
 import jbaciEnumPropTest.ROStatesOperations;
 import jbaciEnumPropTest.ROStatesPOATie;
 import jbaciEnumPropTest.RWStates;
+import jbaciEnumPropTest.RWStatesHelper;
+import jbaciEnumPropTest.RWStatesOperations;
+import jbaciEnumPropTest.RWStatesPOATie;
 import jbaciEnumPropTest.States;
 import jbaciEnumPropTest.jbaciEnumTestComponentOperations;
 import jbaciEnumPropTest.StateMachinePackage.NoSuchTransition;
 import alma.ACS.impl.CharacteristicComponentImpl;
 import alma.ACS.impl.CommonROEnumPropertyImpl;
+import alma.ACS.impl.CommonRWEnumPropertyImpl;
 import alma.ACS.jbaci.CompletionUtil;
 import alma.ACS.jbaci.DataAccess;
 import alma.ACS.jbaci.MemoryDataAccess;
@@ -41,7 +47,7 @@ import alma.acs.container.ContainerServices;
 /**
  * Implementation of enumeration test component.
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
- * @version $Id: EnumTestComponentImpl.java,v 1.1 2009/05/04 07:43:11 msekoran Exp $
+ * @version $Id: EnumTestComponentImpl.java,v 1.2 2009/05/04 12:45:04 msekoran Exp $
  */
 public class EnumTestComponentImpl extends CharacteristicComponentImpl
 		implements jbaciEnumTestComponentOperations {
@@ -72,7 +78,7 @@ public class EnumTestComponentImpl extends CharacteristicComponentImpl
 							dataAccess);
 			ROStatesPOATie currentStatesTie = new ROStatesPOATie(currentStateImpl);
 			currentState = ROStatesHelper.narrow(this.registerProperty(currentStateImpl, currentStatesTie));
-/*
+
 			// currentStateRW
 			RWStatesOperations currentStateRWImpl =
 				(RWStatesOperations)CommonRWEnumPropertyImpl.createEnumProperty(
@@ -83,7 +89,6 @@ public class EnumTestComponentImpl extends CharacteristicComponentImpl
 							dataAccess);
 			RWStatesPOATie currentStatesRWTie = new RWStatesPOATie(currentStateRWImpl);
 			currentStateRW = RWStatesHelper.narrow(this.registerProperty(currentStateRWImpl, currentStatesRWTie));
-			*/
 		}
 		catch (Throwable th)
 		{
@@ -126,8 +131,7 @@ public class EnumTestComponentImpl extends CharacteristicComponentImpl
 	}
 
 	public Completion shutdown() throws NoSuchTransition {
-		// TODO Auto-generated method stub
-		return null;
+		throw new NO_IMPLEMENT();
 	}
 
 }

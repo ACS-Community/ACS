@@ -4,9 +4,7 @@
 
 package alma.ACS.jbaci.enumProp.test;
 
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Vector;
 
 import jbaciEnumPropTest.ROStates;
@@ -36,7 +34,6 @@ import alma.ACS.TimeSeqHolder;
 import alma.ACSErr.Completion;
 import alma.ACSErr.CompletionHolder;
 import alma.acs.util.ACSPorts;
-import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
 
 /**
@@ -130,25 +127,14 @@ public class EnumPropertyTest extends TestCase {
 		 * @see alma.ACS.CBvoidOperations#done(alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized void done(long value, Completion completion, CBDescOut desc) {
-//	TODO tmp
-System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(completion.timeStamp))) + " (done) Value: " + value);
 			responseQueue.add(new CBResponse(completion, desc, CBResponse.DONE_TYPE, States.from_int((int)value)));
 			this.notify();
 		}
-
-/**
- * ISO 8601 date formatter.
- */
-//TODO tmp
-private SimpleDateFormat timeFormatter = new IsoDateFormat();
-
 
 		/**
 		 * @see alma.ACS.CBvoidOperations#working(alma.ACSErr.Completion, alma.ACS.CBDescOut)
 		 */
 		public synchronized void working(long value, Completion completion, CBDescOut desc) {
-// TODO tmp
-System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(completion.timeStamp))) + " Value: " + value);
 			responseQueue.add(new CBResponse(completion, desc, CBResponse.WORKING_TYPE, States.from_int((int)value)));
 			//this.notify();
 		}
@@ -268,7 +254,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		destroyCORBA();
 	}
 
-	public void testCharacteristics() throws Throwable
+	public void testROCharacteristics() throws Throwable
 	{
 
 		assertEquals("currentState", ROproperty.name());
@@ -289,7 +275,25 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		Arrays.toString(ROproperty.alarm_on());
 	}
 
-/*
+	public void testRWCharacteristics() throws Throwable
+	{
+
+		assertEquals("currentStateRW", RWproperty.name());
+		assertEquals(COMPONENT_NAME, RWproperty.characteristic_component_name());
+
+		assertEquals("State", RWproperty.description());
+		assertEquals("%d", RWproperty.format());
+		assertEquals("w/o", RWproperty.units());
+		assertEquals(7, RWproperty.resolution());
+
+		assertEquals(10000, RWproperty.min_timer_trigger());
+		assertEquals(States.from_int(0), RWproperty.default_value());
+		
+		Arrays.toString(RWproperty.allStates());
+		Arrays.toString(RWproperty.statesDescription());
+	}
+
+	/*
 	public void testNewSubscriptionAlarm() {
 		try
 		{
@@ -352,14 +356,14 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		assertTrue((UTCUtility.utcJavaToOmg(System.currentTimeMillis())-response.completion.timeStamp)<50000000);
 		
 	}
-	/*
+
 	public void testSetAsync() {
 		
 		CBvoidImpl cb = new CBvoidImpl();
 		CBDescIn descIn = new CBDescIn(50000, 50000, 1208);
 		synchronized(cb)
 		{
-			RWproperty.set_async(500.0,cb._this(orb), descIn);
+			RWproperty.set_async(States.DIAGNOSE,cb._this(orb), descIn);
 			try
 			{
 				// wait for 5s
@@ -369,21 +373,39 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		}
 			
 		// only 1 response is expected
-		//assertEquals(1, cb.getResponseQueue().size());
-		//CBResponse response = (CBResponse)cb.getResponseQueue().firstElement();
+		assertEquals(1, cb.getResponseQueue().size());
+		CBResponse response = (CBResponse)cb.getResponseQueue().firstElement();
 		
 		// check reponse type
-		//assertEquals(CBResponse.DONE_TYPE, response.type);
+		assertEquals(CBResponse.DONE_TYPE, response.type);
 		
 		// check value
-		// TODO check value
-		
 		CompletionHolder completionHolder = new CompletionHolder();
-		double value = RWproperty.get_sync(completionHolder);
-		assertEquals(500.0, value, 0.0);
+		States value = RWproperty.get_sync(completionHolder);
+		assertEquals(States.DIAGNOSE, value);
 		
 	}
-*/
+
+	public void testSetSync() {
+		
+		RWproperty.set_sync(States.ENABLED);
+		
+		// check value
+		CompletionHolder completionHolder = new CompletionHolder();
+		States value = RWproperty.get_sync(completionHolder);
+		assertEquals(States.ENABLED, value);
+	}
+
+	public void testSetNonBlockingSync() {
+		
+		RWproperty.set_nonblocking(States.SHUTDOWN);
+		
+		// check value
+		CompletionHolder completionHolder = new CompletionHolder();
+		States value = RWproperty.get_sync(completionHolder);
+		assertEquals(States.SHUTDOWN, value);
+	}
+
 	public void testGetHistory() {
 		
 		// wait until history fills
@@ -402,9 +424,7 @@ System.out.println(timeFormatter.format(new Date(UTCUtility.utcOmgToJava(complet
 		
 		// TODO tmp
 		for (int i = 0; i < dsh.value.length; i++)
-			System.out.println("[" + i + "] (" + 
-								new java.util.Date(UTCUtility.utcOmgToJava(tsh.value[i])) + 
-							   ") "+dsh.value[i]);
+			System.out.println("[" + i + "]" + dsh.value[i]);
 			
 	}
 
