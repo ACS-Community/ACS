@@ -195,7 +195,9 @@ public abstract class CommonPropertyImpl
 		
 		this.propertyType = propertyType;
 		this.dataAccess = dataAccess;
-		
+	
+		readCharacteristics();
+	
 		m_logger = parentComponent.getComponentContainerServices().getLogger();
 		// TODO to be configurable
 		historySize = 32;

@@ -95,7 +95,8 @@ public class PropertyImpl implements PropertyOperations {
 		}
 
 		// read characteristics
-		readCharacteristics();
+		// not called here, but in CommonPropertyImpl (needed fro enum property - propertyType must be known)
+		//readCharacteristics();
 	}
 
 	/**

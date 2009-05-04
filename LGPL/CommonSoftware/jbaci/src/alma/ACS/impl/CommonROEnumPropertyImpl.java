@@ -91,7 +91,10 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 	protected Object from_int(int value)
 	{
     	try {
-        	return from_int_method.invoke(value, new Object[] { value });
+		// needed since it cen be called from super-constructor
+		if (from_int_method == null)
+			initialize();
+        	return from_int_method.invoke(null, new Object[] { value });
     	} catch (Throwable th) {
     		throw new RuntimeException("failed to get enum instance from int value", th);
     	}
