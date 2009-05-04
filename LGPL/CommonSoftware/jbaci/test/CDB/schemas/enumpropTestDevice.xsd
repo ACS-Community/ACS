@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by Bocek (Volja) -->
+<xs:schema targetNamespace="urn:schemas-cosylab-com:enumpropTestDevice:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:schemas-cosylab-com:enumpropTestDevice:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
+	<xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+	<xs:complexType name="EnumPropTestDevice">
+		<xs:complexContent>
+			<xs:extension base="baci:CharacteristicComponent">
+				<xs:all>
+					<xs:element name="currentState" type="baci:ROEnum"/>
+					<xs:element name="currentStateRW" type="baci:RWEnum"/>
+				</xs:all>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="EnumPropTestDevice" type="EnumPropTestDevice"/>
+</xs:schema>
+
