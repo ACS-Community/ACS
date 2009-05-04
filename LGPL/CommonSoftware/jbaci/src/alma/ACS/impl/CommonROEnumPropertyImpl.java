@@ -10,7 +10,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.NO_IMPLEMENT;
 import org.omg.CORBA.NO_RESOURCES;
 
@@ -28,9 +27,13 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.Subscription;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.jbaci.CallbackDispatcher;
+import alma.ACS.jbaci.CompletionUtil;
 import alma.ACS.jbaci.DataAccess;
 import alma.ACS.jbaci.PropertyInitializationFailed;
 import alma.ACSErr.Completion;
+import alma.ACSErr.CompletionHolder;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.acs.exceptions.AcsJException;
 
 /**
  * Base enum class. Contains common methods that does not contain <code>enumClass</code> class in method' signatures.
@@ -92,16 +95,13 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 	{
     	try {
 		// needed since it cen be called from super-constructor
-		if (from_int_method == null)
-			initialize();
+    		if (from_int_method == null)
+    			initialize();
         	return from_int_method.invoke(null, new Object[] { value });
     	} catch (Throwable th) {
     		throw new RuntimeException("failed to get enum instance from int value", th);
     	}
 	}
-
-	
-	
 	
 	/* (non-Javadoc)
 	 */
@@ -229,7 +229,7 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 			try
 			{
 				from_int(statesCount);
-			} catch (BAD_PARAM noMore) {
+			} catch (RuntimeException noMore) {
 				break;
 			}
 		}
@@ -252,6 +252,22 @@ public class CommonROEnumPropertyImpl extends ROCommonPropertyImpl {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 */
+	public Object get_sync(CompletionHolder c) {
+		try
+		{
+			return getSync(c);
+		}
+		catch (AcsJException acsex)
+		{
+			AcsJCouldntPerformActionEx cpa =
+				new AcsJCouldntPerformActionEx("Failed to retrieve value", acsex);
+			c.value = CompletionUtil.generateCompletion(cpa);
+			// return default value in case of error
+			return default_value();
+		}
+	}
 	
 	
 	
