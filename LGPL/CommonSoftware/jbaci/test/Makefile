@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.15 2009/05/04 07:44:20 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.16 2009/05/04 14:16:41 msekoran Exp $"
 #
 # Makefile of jbaci
 #
@@ -86,7 +86,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = dispatchActionTest PropertySeqTest PropertyDoubleTest PropertyPrimTest BuildingTest jbaciTATPrologue 
+SCRIPTS_L       = dispatchActionTest PropertySeqTest PropertyDoubleTest PropertyPrimTest BuildingTest jbaciTATPrologue EnumTest
 
 #
 # TCL scripts (public and local)
