@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.78 2008/11/12 15:18:04 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.79 2009/05/04 10:44:40 hyatagai Exp $"
 #
 #
 #
@@ -607,15 +607,18 @@ then
 fi
 
 # RTOS
-# Check for the directory structure AND for the existence of
-# the files inside it. (disappeared by mistake in 1.47.
-if [ -h $ALMASW_INSTDIR/rtai ] || [ -d $ALMASW_INSTDIR/rtai ]
+if [ X"$RTAI_HOME" = X ] || [ X"$LINUX_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   if [ -f $ALMASW_INSTDIR/rtai/bin/rtai-config ] 
+   # Check for the directory structure AND for the existence of
+   # the files inside it. (disappeared by mistake in 1.47.
+   if [ -h $ALMASW_INSTDIR/rtai ] || [ -d $ALMASW_INSTDIR/rtai ]
    then
-   export RTAI_HOME=$ALMASW_INSTDIR/rtai
-   export LINUX_HOME=$ALMASW_INSTDIR/rtlinux
-  fi
+      if [ -f $ALMASW_INSTDIR/rtai/bin/rtai-config ] 
+      then
+      export RTAI_HOME=$ALMASW_INSTDIR/rtai
+      export LINUX_HOME=$ALMASW_INSTDIR/rtlinux
+     fi
+   fi
 fi
 
 
