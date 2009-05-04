@@ -40,6 +40,7 @@ import alma.ACS.NoSuchCharacteristic;
 import alma.ACS.Property;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyHelper;
+import alma.ACS.PropertyOperations;
 import alma.ACS.jbaci.PrioritizedExecutor;
 import alma.ACS.jbaci.PrioritizedRunnable;
 import alma.ACS.jbaci.PrioritizedRunnableComparator;
@@ -213,7 +214,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * 							be threated as non-CORBA property and no CORBA activation will be done.
 	 * @return CORBA activated property reference, <code>null</code> if <code>propertyServant == null</code>.
 	 */
-	public Property registerProperty(PropertyImpl propertyImpl, Servant propertyServant) {
+	public Property registerProperty(PropertyOperations propertyImpl, Servant propertyServant) {
 
 		// allow activation if already in property list...
 		Property property = null;
@@ -250,7 +251,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * Should be called by <code>PropertyImpl.destroy()</code> method.
 	 * @param propertyImpl	property implementation.
 	 */
-	public void unregisterProperty(PropertyImpl propertyImpl) {
+	public void unregisterProperty(PropertyOperations propertyImpl) {
 		
 		Servant propertyServant = null;
 		
