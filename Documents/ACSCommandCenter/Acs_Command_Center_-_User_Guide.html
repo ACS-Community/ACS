@@ -13,7 +13,7 @@
 <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/projects/alma/"><img src="images/alma_art_3.jpg" alt="[ ALMA ]" id="_x0000_i1025" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
 </td>
 <td style="padding: 0.75pt;"> <span style="font-size: 18pt;"><b>ALMA Common Software</b></span>
-<span style="font-size: 18pt;"> <b>ACS 8.0
+<span style="font-size: 18pt;"> <b>ACS 8.0.1
 documentation</b></span><span style="font-size: 10pt;"><u1:p></u1:p><u6:p></u6:p><o:p></o:p></span>
 <u1:p></u1:p> </td>
 <td style="padding: 0.75pt;" valign="top"> <span style="font-size: 10pt;"><span style="text-decoration: none;"><a href="http://www.eso.org/"><img src="images/eso-logo.gif" id="_x0000_i1026" border="0" height="117" width="90"> </a></span><o:p></o:p></span>
@@ -127,7 +127,9 @@ instantly connect to and show details of specified manager</li>
 &nbsp; &nbsp;<b>b)</b> via the <a href="http://www.eso.org/projects/alma/AcsWebStart">
 Acs Java Web Start</a> <span style="font-style: italic;">[www.eso.org/projects/alma/AcsWebStart]</span>
 page. For this, your browser needs to have
-a Java Web Start plugin.<br>
+a Java Web Start plugin (the integrated help viewer of&nbsp;Acs Command
+Center does not have one, in that case please copy the given URL to
+your full-featured web browser).<br>
 <br>
 <br>
 To make clear what Acs Command Center can do for you (and what it can't
@@ -274,13 +276,13 @@ Info View</a> in the glossary for
 more information).<br>
 <br>
 Ensure you have at least one Container visible on screen (their amount
-can be adjusted using the plus and minus buttons on the bottom, <b><font color="#ff0000">C</font></b>). Specify a name (<b><font color="#ff0000">4</font></b>)
-and a type&nbsp;(<b><font color="#ff0000">5</font></b>)
+can be adjusted using the plus and minus buttons on the bottom, <b><font color="#ff0000">C</font></b>). Specify a name
+and a type&nbsp;(<b><font color="#ff0000">4</font></b>)
 for the
 Container, e.g., "frodoContainer" of type <code>java</code>,
 then
 press play
-to start the Container (<b><font color="#ff0000">6</font></b>).<br>
+to start the Container (<b><font color="#ff0000">5</font></b>).<br>
 <p class="caution">Note: The Container name you specify
 here is used by
 the Manager to associate components with the Container. It must
@@ -295,8 +297,7 @@ Acs is now up and running, and clients can be run against it.<br>
 To run one or more of the predefined clients, use the Tools menu (see <a href="#Tools_Menu">Tools Menu</a> below). For
 some of the tools, you may be asked to provide additional information.<br>
 <br>
-<h4><u>Stop</u></h4>
-Simply press the Acs Suite's stop button, (<b><font color="#ff0000">7</font></b>).
+<h4><u>Stop</u></h4>Press the Containers' stop button (<b><font color="#ff0000">6</font></b>) and then the Acs Suite's stop button (<b><font color="#ff0000">7</font></b>).
 This will stop the Container(s), the Manager, and the Services. Once
 the Acs Suite has been stopped, the Manager will be automatically
 removed from the <a href="#Deployment_Info_View">Deployment
@@ -304,8 +305,7 @@ Info View</a>.<br>
 <p class="caution">Note: There's an asymmetry in the
 behavior of
 starting the Acs Suite and stopping the Acs Suite: The first starts the
-Services and the Manager, the latter stops the Services, the Manager <b>plus</b>
-any Containers on your local host.</p>
+Services and the Manager, the latter stops the Services, the Manager <b>plus</b> the Containers on your local host.</p>
 <br>
 Again, all output will
 go to the log
@@ -404,81 +404,8 @@ for a container (in the container's Detail Settings).</li>
 available in the log area (<b><font color="#ff0000">L</font></b>).</li>
 </ul>
 <br>
-<br>
-<br>
-Two ways exist to choose which of the variants you want to use:<br>
-<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><br>
-<span style="font-weight: bold;">a)</span> Through
-Acs Command Center's Gui.<br>
-<br>
-In the&nbsp;<code>Common Settings</code>
-(<b><font color="#ff0000">1</font></b>)
-under "Remote",&nbsp;tick the checkbox "<span style="font-style: italic;">Use native ssh</span>"
-resp. "<span style="font-style: italic;">Use Acs Daemons</span>".
-If neither is ticked, the platform-independent ssh will be used.<br>
-<br>
-Note
-that&nbsp;the
-choice you make here will not be saved when you quit&nbsp;Acs
-Command
-Center. That is, you will need to tick the checkboxes again
-on&nbsp;your next run. For persistent behavior, you can define an
-environment variable as described next.<br>
-<br>
-<br>
-<span style="font-weight: bold;">b)</span>
-Through&nbsp;Java System Properties<br>
-<br>
-<pre>AcsCommandCenter.useDaemon </pre>
-<table style="width: 525px; height: 64px;" border="1" cellpadding="2" cellspacing="2">
-<tbody>
-<tr>
-<td>
-<pre>"true"</pre>
-</td>
-<td>use daemons</td>
-</tr>
-<tr>
-<td>
-<pre>"false" or undefined</pre>
-</td>
-<td> use ssh (either native or platform-independent)</td>
-</tr>
-</tbody>
-</table>
-<br>
-<pre>AcsCommandCenter.useNativeSSH </pre>
-<table style="width: 431px; height: 60px;" border="1" cellpadding="2" cellspacing="2">
-<tbody>
-<tr>
-<td>
-<pre>"true"</pre>
-</td>
-<td> use native variant</td>
-</tr>
-<tr>
-<td>
-<pre>"false" or undefined</pre>
-</td>
-<td>use platform-independent variant</td>
-</tr>
-</tbody>
-</table>
-<br>
-<br>
-To define
-a
-Java System Property, issue the following command before running Acs
-Command Center:<code><br>
-</code>
-<pre><code>export JAVA_OPTIONS="$JAVA_OPTIONS -Dname=value"</code><code></code></pre>
-with the possible&nbsp;<span style="font-style: italic;">name</span>
-and <span style="font-style: italic;">value</span>
-arguments listed above. Note that there must&nbsp;be <span style="font-weight: bold;">no spaces</span> anywhere
-in "-Dname=value".<br>
-<br>
-<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><br>
-<br>
+<br>To choose your remote variant, select "Remote" in the&nbsp;<code>Common Settings</code>
+(<b><font color="#ff0000">1</font></b>), then select the corresponding entry underneath.<br><br>
 </div>
 <br>
 <br>
@@ -499,7 +426,7 @@ Use the plus button (<b><font color="#ff0000">C</font></b>)
 to ensure
 you have at least two Containers available on screen.<br>
 <br>
-Give the first Container a name, and choose its type (<b><font color="#ff0000">4, 5</font></b>). Then press the
+Give the first Container a name, and choose its type (<b><font color="#ff0000">4</font></b>). Then press the
 first Container's
 configure button (the one labeled with three dots) and specify a host
 (e.g., "host2") and appropriate user credentials. <br>
@@ -507,15 +434,14 @@ configure button (the one labeled with three dots) and specify a host
 Do the same for the second Container.<br>
 <br>
 Finally, press
-play (<b><font color="#ff0000">6</font></b>)
+play (<b><font color="#ff0000">5</font></b>)
 to start all Containers in
 the order you entered them into the list. To move a Container up or
 down within the list, select it by clicking into its name field (<b><font color="#ff0000">4</font></b>) and press the
 arrow buttons (<b><font color="#ff0000">C</font></b>).<br>
 <br>
 <h4><u>Stop</u></h4>
-Stop the containers by pressing the stop button right beside the play
-button (<b><font color="#ff0000">6</font></b>).
+Stop the containers by pressing the stop button&nbsp;(<b><font color="#ff0000">6</font></b>).
 Then, shut down&nbsp;the Acs Suite through its stop button (<b><font color="#ff0000">7</font></b>). Please refer to <b>Localhost
 </b>mode above
 if unsure.<br>
@@ -624,9 +550,8 @@ instance (0-9). Simply type in the Manager's host and port into the
 fields above the Deployment Info View and press the "Add to View"
 button.<br>
 <br>
-The shown information will be refreshed automatically. Be aware that
-this automatism cannot detect all changes on the
-server-side. To
+The shown information will be refreshed automatically. Be aware that&nbsp;this automatism cannot detect all changes on the
+server-side instantaneously, in some situations there may be delays of about 10 seconds or more. To
 refresh the display manually, press the "Full Refresh" button. If,
 opposed to that, you're overwhelmed with data you can
 pause&nbsp;the
@@ -652,7 +577,7 @@ added Manager<br>
 Most elements of the Deployment Info View offer context menus.
 They&nbsp;allow to refresh the&nbsp;displayed information,
 activate a
-component, shut down a Manager, etc.<br>
+component, shut down a container, etc.<br>
 <br>
 <br>
 <h3><a name="Log_Area">Log Area</a></h3>
@@ -732,7 +657,7 @@ The change log for the different versions is on the <a href="AcsCommandCenter-Ne
 <td align="center" valign="top"><code>Changes</code><br>
 </td>
 </tr>
-<tr>
+<tr><td>2009-05-04</td><td>Marcus Schilling</td><td>Adjusted to Acs8.0.1</td></tr><tr>
 <td>2008-10-28</td>
 <td>Marcus Schilling</td>
 <td>Adjusted to Acs8.0</td>
