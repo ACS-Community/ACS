@@ -3,9 +3,11 @@
 <HEAD>
 	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
 	<TITLE>FeaturesContainer</TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.4  (Linux)">
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.0  (Linux)">
 	<META NAME="CREATED" CONTENT="0;0">
-	<META NAME="CHANGED" CONTENT="20080604;11570000">
+	<META NAME="CHANGEDBY" CONTENT="Gianluca Chiozzi">
+	<META NAME="CHANGED" CONTENT="20090505;10023200">
+	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
 	<META NAME="Template" CONTENT="C:\Program Files\MSOffice\Office\html.dot">
 	<STYLE TYPE="text/css">
 	<!--
@@ -25,7 +27,7 @@ implemented in a specific sub-package called the Management and
 Access Control package.</H3>
 <H3>Containers are supervised and managed by an ACS Manager. Manager
 and Containers cooperate to provide the following functionality:</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in"><B>Instantiation and
 	de-instantiation of Components.</B> <BR>Instances of Components are
 	created when needed or when requested and destroyed when not needed
@@ -69,12 +71,12 @@ services from the clients.
 </H3>
 <H3>The CORBA Naming Service is completely open and anybody can read
 and write into it. The Manager hides the CORBA NS and takes care of
-reading and writing into it under stricter control.  A
+reading and writing into it under stricter control. A
 non-administrative client cannot get access to all information in the
 NS, but only to what the Manager provides. Should ACS fully implement
-the &quot;authorization control&quot; in the future, use of 
-passwords and controlled access to the Manager could be used.</H3>
-<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/ACS_Component-Container_model__ACS_Container__Management_and_Access_Control__Name_Resolution.png" WIDTH="562" HEIGHT="347"  NAME="graphics1" ALIGN=BOTTOM BORDER=0>
+the &quot;authorization control&quot; in the future, use of passwords
+and controlled access to the Manager could be used.</H3>
+<P><A NAME="_x0000_i1025"></A><IMG SRC="Images/ACS_Component-Container_model__ACS_Container__Management_and_Access_Control__Name_Resolution.png" NAME="graphics1" ALIGN=BOTTOM WIDTH=562 HEIGHT=347 BORDER=0>
 <BR><I>Figure 3.12: Management and Access Control architecture</I> 
 </P>
 <H3>The basic entities managed by the Management and Access Control
@@ -82,7 +84,7 @@ interface (MACI) are&nbsp;<FONT FACE="Courier New">Components.</FONT></H3>
 <H4>To the management system, the Component is an entity with a
 lifecycle that has to be managed. Components can be instantiated in
 two different ways:</H4>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in"><B>regular Components</B> are
 	instantiated on demand when they are first requested. 
 	</P>
@@ -138,7 +140,7 @@ interaction between the Components and the clients requesting&nbsp;<FONT FACE="T
 services.&nbsp;</FONT></H3>
 <H4><FONT FACE="TimesNewRomanPSMT">Manager has&nbsp;</FONT>the
 following basic functionality:</H4>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="TimesNewRomanPSMT">It
 	is the communication entry point. A client requesting a Component
 	service can do so by querying the Manager. Security is tied to this
@@ -183,8 +185,8 @@ services upon request.
 can be started. The Manager interacts with this demon to instruct it
 to start Containers. The demon provides also other services (in part
 still TBD) like collection of statistical data such as CPU , memory
-and disk <B>load or availability</B><FONT COLOR="#0000ff"><B>
-</B></FONT><FONT COLOR="#0000ff"><I><B>(Partially implemented</B></I></FONT><FONT COLOR="#0000ff"><B>)</B></FONT><B>.</B></H4>
+and disk <B>load or availability</B><FONT COLOR="#0000ff"> </FONT><FONT COLOR="#0000ff"><I><B>(Partially
+implemented</B></I></FONT><FONT COLOR="#0000ff"><B>)</B></FONT><B>.</B></H4>
 <H4><B>Manager can also deploy &quot;collocated&quot; Components,
 i.e. it can be requested to &quot;deploy a Component in the same
 Container of another, given, Component&quot;</B></H4>
@@ -231,10 +233,10 @@ components to container or redundancy and replication of components. </I>
 </P>
 <H3>A Container serves as an agent of MACI that is installed on every
 computer in the control system.</H3>
-<P><A NAME="_x0000_i1026"></A><IMG SRC="Images/ACS_Component-Container_model__Component_Activation____Component_Activation.png" WIDTH="562" HEIGHT="294"  NAME="graphics2" ALIGN=BOTTOM BORDER=0>
+<P><A NAME="_x0000_i1026"></A><IMG SRC="Images/ACS_Component-Container_model__Component_Activation____Component_Activation.png" NAME="graphics2" ALIGN=BOTTOM WIDTH=562 HEIGHT=294 BORDER=0>
 <BR><I>Figure 3.13: Component activation sequence</I> 
 </P>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="TimesNewRomanPSMT">Every
 	Container runs in its own process.&nbsp;</FONT> 
 	</P>
@@ -274,7 +276,7 @@ computer in the control system.</H3>
 	interface defines a number of services. Look at the documentation
 	for more details. The most important are: 
 	</P>
-	<UL TYPE=DISC>
+	<UL>
 		<LI><P STYLE="margin-bottom: 0in">Logger&nbsp; getLogger ()
 		<BR>Retrieves the logging system service object 
 		</P>
@@ -314,7 +316,7 @@ computer in the control system.</H3>
 	</P>
 </UL>
 <H3>There can be two types of Containers:</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in">Porous Container <BR>A Porous
 	Container returns to clients directly the CORBA reference to the
 	managed Components. Once they have received the reference, clients
@@ -332,12 +334,12 @@ computer in the control system.</H3>
 	implication. 
 	</P>
 </UL>
-<P><A NAME="_x0000_i1027"></A><IMG SRC="Images/ACS_Component-Container_model__Porous-Tight_Container____Porous-Tight_Container.png" WIDTH="562" HEIGHT="424"  NAME="graphics3" ALIGN=BOTTOM BORDER=0>
+<P><A NAME="_x0000_i1027"></A><IMG SRC="Images/ACS_Component-Container_model__Porous-Tight_Container____Porous-Tight_Container.png" NAME="graphics3" ALIGN=BOTTOM WIDTH=562 HEIGHT=424 BORDER=0>
 <BR><I>Figure 3.14: Porous vs. Tight Container access sequence</I> 
 </P>
 <H3>ACS provides just one implementation for the Manager interface
 (in Java) and three implementations for the Container:</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in">C++ Container<BR>A C++ Container
 	is a “porous” Container to allow better performance avoiding the
 	extra level of indirection introduced by the tight Container
@@ -387,7 +389,7 @@ computer in the control system.</H3>
 	</P>
 </UL>
 <H3>Specialized Containers</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in">It is possible to create new
 	Container implementations for specific application purposes. 
 	</P>
@@ -413,7 +415,7 @@ computer in the control system.</H3>
 </UL>
 <H3>Every client of a Component service that is not itself a
 Component shall implement an interface called&nbsp;<FONT FACE="Courier">maci::Clien</FONT>t.</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="TimesNewRomanPSMT">The
 	Client interface allows the client to act as a secure party in the
 	communication with the Components, to receive general-purpose string
@@ -444,7 +446,7 @@ Components as well as notification about the availability of
 Components.</H3>
 <H3>MACI allows organizing Components hierarchically and handling
 startup and shutdown dependencies between objects.</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in">Whenever a client needs a CORBA
 	reference for a Component, a request to Manager is done for the
 	corresponding Component. 
@@ -568,7 +570,7 @@ the hierarchy of Components on the naming hierarchy.<A HREF="ReferenceDocuments.
 </UL>
 <H3>An Administrator User Interface (ACS Command Center) tool is
 provided. The Command Center:</H3>
-<UL TYPE=DISC>
+<UL>
 	<LI><P STYLE="margin-bottom: 0in">allows to start/stop ACS Services,
 	Manager, Containers and Components on the local system or remotely 
 	</P>
