@@ -361,18 +361,19 @@ public class TreeHandlerBean implements NodeRequestListener {
 				notifier.reportError("TreeHandlerBean::addNode - Unexpected null pointer (rnc).");
 				return;
 			}
-			getInvList().put(invoc.getName(),ic);
+			
+			// yatagai : the name can not be the proper key -- does not work
+			// when more than 1 sub node are added.
+			// getInvList().put(invoc.getName(),ic);
+			getInvList().put(invoc,ic);
 			
 			setNodesTreeByName(new TreeNode[] { ic.invocationByName }, rnc.deviceByName);
 			//System.out.println("DEBUG Added to invList "+invoc.getName()+"!");
 		}
 	}
 	
-	public InvocationCouple getInvocationCouple(String curl) {
-		return (InvocationCouple)invList.get(curl);
-	}
 	public InvocationCouple getInvocationCouple(Invocation invoc) {
-		return (InvocationCouple)invList.get(invoc.getName());
+		return (InvocationCouple)invList.get(invoc);
 	}
 
 	/**
