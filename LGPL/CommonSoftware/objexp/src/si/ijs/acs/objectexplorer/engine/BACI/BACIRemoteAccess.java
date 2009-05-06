@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.Icon;
+import javax.swing.JOptionPane;
 
 import org.omg.CORBA.Any;
 import org.omg.CORBA.AttributeDescription;
@@ -483,6 +484,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		}
 	}
 	private TreeHandlerBean parent = null;
+	private BACIMenu baciEngineMenu = null;
 	private NotificationBean notifier = null;
 	private ArrayList invocations = new ArrayList();
 	private Dispatcher dispatcher = null;
@@ -1428,6 +1430,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	public javax.swing.JMenu getEngineMenu() {
 		javax.swing.JMenu menu = new BACIMenu(this);
 		menu.setVisible(true);
+		baciEngineMenu = (BACIMenu)menu;
 		return menu;
 	}
 	/**
@@ -2252,6 +2255,18 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 		return false;
 	}
+	
+	private int choiceForNonStickyComponentConnection(String message) {
+		String[] choices = new String[] {
+				"get a \"sticky references\" for just this component",
+				"switch to \"sticky mode\" from now on",
+				"cancel the operation"
+		};
+		int ans = JOptionPane.showOptionDialog(notifier.getParent(), 
+				message, "Non-Sticky reference", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.WARNING_MESSAGE, null, choices, choices[0]);
+		return ans;
+	}
 
 	/**
 	 * Insert the method's description here.
@@ -2267,25 +2282,55 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			"Requesting component: '" + curl + "', activate = true");
 		notifier.reportMessage("Connecting to '" + curl + "'.");
 
+		baciNode.setNonSticky(connectNonSticky);
 		org.omg.CORBA.Object obj = null;
-		try
-		    {
-			if (connectNonSticky)
-			    obj = manager.get_component_non_sticky(handle, curl);
-			else
+		if (connectNonSticky) {
+			try {
+				obj = manager.get_component_non_sticky(handle, curl);
+			} catch (Throwable e) {
+				String message = "Connection to component '" + curl + "' failed. \n" + 
+								 "'Connect as non-sticky' mode is enabled: in this mode component will not be activated by ObjectExplorer,\n" +
+								 "only already activated components can be accessed.";
+				int ans = choiceForNonStickyComponentConnection(message);
+				switch (ans) {
+					case 0:
+						baciNode.setNonSticky(false);
+						System.out.println("BACIRemoteAccess.internalManagerConnect setNonSticky to " + baciNode.isNonSticky() + " @ " + baciNode.hashCode());
+						break;
+					case 1:
+						baciEngineMenu.setNonSticky(false);
+						baciNode.setNonSticky(false);
+						break;
+					case 2: {
+					    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+					    acsjex.setCurl(curl);
+					    throw acsjex;
+					}
+					default : {
+						// should not happen.
+						notifier.reportError("Unexpected choice.");
+						AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
+						acsjex.setCurl(curl);
+						throw acsjex;
+					}
+				}
+			}
+		}
+
+		try {
+			if (obj == null) {
 				obj = manager.get_component(handle, curl, true);
+			}
 		    notifier.reportDebug("BACIRemoteAccess::internalManagerConnect",
 					 "Manager returns OK");
-		    }
+		}
         /* 
          * We wrap into a specific exception and report up
          */
 		catch(Throwable e)
 		{
-			if (connectNonSticky)
-				notifier.reportError("Connection to component '" + curl + "' failed. 'Connect as non-sticky' mode is enabled: in this mode component will not be activated by ObjectExplorer, only already activated components can be accessed.");
-			else
-				notifier.reportError("Connection to component '" + curl + "' failed.");
+			notifier.reportError("Connection to component '" + curl + "' failed.");
+
 		    AcsJObjectExplorerConnectEx acsjex = new AcsJObjectExplorerConnectEx(e);
 		    acsjex.setCurl(curl);
 		    throw acsjex;
@@ -2322,7 +2367,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		    throw acsjex;
 		}
 		
-		baciNode.setNonSticky(connectNonSticky);
+//		baciNode.setNonSticky(connectNonSticky);
 		baciNode.setCORBARef(obj);
 		try {
 			baciNode.setIFDesc(getIFDesc(irfid));

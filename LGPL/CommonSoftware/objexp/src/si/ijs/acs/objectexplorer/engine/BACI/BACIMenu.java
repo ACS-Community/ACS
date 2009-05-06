@@ -40,7 +40,9 @@ public BACIMenu(BACIRemoteAccess ra) {
 	
 	managerLoc = props.getProperty(BACIRemoteAccess.MANAGER_CORBALOC);
 	IRloc = props.getProperty(BACIRemoteAccess.IR_CORBALOC);
-	connectNonSticky = Boolean.getBoolean(BACIRemoteAccess.CONNECT_NON_STICKY_FLAG);
+	// now non-sticky is the default connection type
+	String nonStickyStr = props.getProperty(BACIRemoteAccess.CONNECT_NON_STICKY_FLAG); 
+	connectNonSticky = ( nonStickyStr == null ? true : Boolean.parseBoolean(nonStickyStr));  
 	this.ra.setConnectNonSticky(connectNonSticky);
 
 	cacheItem.setSelected(this.ra.getCaching());
@@ -84,6 +86,18 @@ public BACIMenu(BACIRemoteAccess ra) {
 			BACIMenu.this.ra.setConnectNonSticky(nonStickyItem.isSelected());
 		}
 	});
-
+	
 }
+
+/**
+ * Allows to set the nonSticky menu item non-interactively
+ * @param b
+ */
+public void setNonSticky(boolean b) {
+	nonStickyItem.setSelected(b);
+	for (ActionListener al : nonStickyItem.getListeners(ActionListener.class)) {
+		al.actionPerformed(new ActionEvent(this, 0, null));
+	}
+}
+
 }

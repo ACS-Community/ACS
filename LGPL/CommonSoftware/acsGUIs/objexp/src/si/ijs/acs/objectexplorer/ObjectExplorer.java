@@ -2084,7 +2084,7 @@ public class ObjectExplorer extends JFrame {
 				Introspectable node=(Introspectable)clicked;
 				
 				getconnectMenuItem().setEnabled(!node.isConnected());
-				getdisconnectMenuItem().setEnabled(node.isConnected());
+				getdisconnectMenuItem().setEnabled(node.isConnected() && !node.isNonSticky());
 				getJLabel1().setText(node.toString());
 				getTreeHandlerBean1().setClicked(node);
 				

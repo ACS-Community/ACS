@@ -13,6 +13,7 @@ public class OETreeCellRenderer extends javax.swing.tree.DefaultTreeCellRenderer
 
   private boolean hasFocus;
   private java.awt.Color connectedColor= new java.awt.Color(0,120,116);
+  private java.awt.Color connectedColorSticky= new java.awt.Color(120,0,32);
   private java.awt.Color connectedBackColor= new java.awt.Color(147,185,243);
   private java.awt.Color selectedBackColor=null;
   private boolean  valuesAreOE=false;
@@ -42,6 +43,9 @@ public java.awt.Color getConnectedBackColor() {
 public java.awt.Color getConnectedColor() {
 	return connectedColor;
 }
+public java.awt.Color getConnectedColorSticky() {
+	return connectedColorSticky;
+}
 /**
  * Insert the method's description here.
  * Creation date: (3/26/2001 7:48:20 PM)
@@ -66,9 +70,10 @@ public Component getTreeCellRendererComponent(
 	    else return this;
 	}
 	if ((((OETreeNode)value).isIntrospectable()) && (((Introspectable) value).isConnected())) {
-		setForeground(getConnectedColor());
-		// indicate non-sticky usuing italic style
-		setFont(new java.awt.Font("dialog", (((Introspectable) value).isNonSticky()) ? java.awt.Font.ITALIC : java.awt.Font.BOLD, 12));
+		boolean isNonSticky = ((Introspectable) value).isNonSticky();
+		// indicate non-sticky usuing italic style & different color
+		setForeground(isNonSticky ? getConnectedColor() : getConnectedColorSticky());
+		setFont(new java.awt.Font("dialog", java.awt.Font.BOLD, 12));
 		setBackgroundSelectionColor(getConnectedBackColor());
 	} else if (sel) {
 		setForeground(getTextSelectionColor());
