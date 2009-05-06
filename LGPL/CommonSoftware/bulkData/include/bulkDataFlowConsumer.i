@@ -31,6 +31,9 @@ AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::~BulkDataFlowConsumer()
 
 //  TAO_AV_CORE::instance ()->remove_acceptor(m_flowName.c_str());
 //  TAO_AV_CORE::instance ()->remove_connector(m_flowName.c_str());
+
+  if(cb_p)
+      delete cb_p;
 }
 
 

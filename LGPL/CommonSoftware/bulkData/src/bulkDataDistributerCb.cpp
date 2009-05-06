@@ -121,8 +121,6 @@ int BulkDataDistributerCb::handle_destroy (void)
 
     //cout << "BulkDataDistributerCb::handle_destroy" << endl;
 
-    delete this;
-      
     return 0;
 }
 

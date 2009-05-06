@@ -260,8 +260,6 @@ int BulkDataCallback::handle_destroy (void)
 
     //cout << "BulkDataCallback::handle_destroy" << endl;
 
-    delete this;
-      
     return 0;
 }
 

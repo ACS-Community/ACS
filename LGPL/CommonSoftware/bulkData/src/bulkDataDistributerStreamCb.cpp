@@ -55,8 +55,6 @@ int BulkDataDistributerStreamCb::handle_destroy (void)
 {
     ACS_TRACE("BulkDataDistributerStreamCb::handle_destroy");
 
-    delete this;
-      
     return 0;
 }
 

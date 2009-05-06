@@ -17,6 +17,9 @@ AcsBulkdata::BulkDataFlowProducer<TSenderCallback>::~BulkDataFlowProducer()
 
 //  TAO_AV_CORE::instance ()->remove_acceptor(m_flowName.c_str());
 //  TAO_AV_CORE::instance ()->remove_connector(m_flowName.c_str());
+
+  if(callback_p)
+      delete callback_p;
 }
 
 

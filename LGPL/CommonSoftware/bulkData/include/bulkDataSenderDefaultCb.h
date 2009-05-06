@@ -91,7 +91,7 @@ class BulkDataSenderDefaultCallback : public TAO_AV_Callback
     virtual int handle_destroy (void)
 	{
 	    ACS_TRACE("BulkDataSenderDefaultCallback::handle_destroy");
-	    delete this;
+
 	    return 0;
 	}
 
