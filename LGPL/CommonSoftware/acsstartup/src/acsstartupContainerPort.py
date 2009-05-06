@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.39 2009/04/16 17:24:21 agrimstrup Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.40 2009/05/06 00:14:32 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -49,6 +49,7 @@ from fcntl   import LOCK_UN
 from sys     import stderr
 from sys     import argv
 from sys     import exit
+from time    import sleep
 import atexit
 
 from optparse import OptionParser
@@ -60,16 +61,30 @@ from AcsutilPy.ACSPorts import getIP
 
 __DEBUG__ = False
 container_file = None
+BASESLEEPTIME = 127
 
 #-----------------------------------------------------------------------------
 #--Functions
 def cleanUp():
     global container_file
+    global BASESLEEPTIME
     
-    if container_file:
-        lockf(container_file.fileno(), LOCK_UN)
-        container_file.close()
-
+    maxsleepperiod = int(environ['ACS_STARTUP_TIMEOUT_MULTIPLIER']) * BASESLEEPTIME
+    sleepperiod = 1    
+    while container_file is not None and sleepperiod <= maxsleepperiod:
+        try:
+            lockf(container_file.fileno(), LOCK_UN)
+            container_file.close()
+            container_file = None
+        except Exception, e:
+            stderr.write("WARNING: acsstartupContainerPort is unable to release resources.  Reason: %s Retrying in %d seconds." % (e, sleepperiod))
+            sleep(sleepperiod)
+            sleepperiod *= 2
+            
+    if container_file is not None:
+        stderr.write("FATAL: acsstartupContainerPort was unable to release resources")
+        exit(2)
+        
 def getPortsFile(baseport):
     '''
     Returns the file containing a list of containers and used ports
@@ -657,9 +672,7 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
                                    str(newPort) + ' ' +
                                    str(container_host) + '\n'])
 
-    lockf(container_file.fileno(), LOCK_UN)
-    container_file.close()
-    container_file = None
+    cleanUp()
 
     #at this point we should have found a free port number.
     #we can now close up the container_file so that other containers

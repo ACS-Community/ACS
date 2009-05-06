@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testContainerPortLock.py,v 1.1 2009/04/15 23:28:26 agrimstrup Exp $"
+# "@(#) $Id: testContainerPortLock.py,v 1.2 2009/05/06 00:14:32 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -31,8 +31,63 @@ import fcntl
 import socket
 import subprocess
 import unittest
+import mock
 
 from AcsutilPy.ACSPorts import getIP
+import acsstartupContainerPort
+
+mocklockf = mock.Mock()
+mockfile = mock.Mock(spec=file)
+mockstderr = mock.Mock(spec=file)
+
+
+class ContainerPortLockCleanupTest(unittest.TestCase):
+    
+    def setUp(self):
+        mockfile.fileno.return_value = 4
+        acsstartupContainerPort.container_file = mockfile
+        acsstartupContainerPort.BASESLEEPTIME = 1
+            
+    def tearDown(self):
+        mockfile.reset()
+        mocklockf.reset()
+        mockstderr.reset()
+
+    def excthrower(self):
+        raise Exception('Test Exception')
+
+    def test_no_file(self):
+        acsstartupContainerPort.container_file = None
+        acsstartupContainerPort.cleanUp()
+        self.assertEqual(True, acsstartupContainerPort.container_file is None)
+
+    @mock.patch_object(acsstartupContainerPort, 'stderr', mockstderr)
+    @mock.patch_object(acsstartupContainerPort, 'sleep', mock.Mock)
+    @mock.patch_object(acsstartupContainerPort, 'exit', mock.Mock)
+    @mock.patch_object(acsstartupContainerPort, 'lockf', mocklockf)
+    def test_lockf_exception(self):
+        mocklockf.side_effect = self.excthrower
+        acsstartupContainerPort.cleanUp()
+        self.assertEqual(True, mocklockf.called)
+        self.assertEqual(((4, 8), {}), mocklockf.call_args)
+        self.assertEqual(False, acsstartupContainerPort.container_file is None)
+        self.assertEqual(True, mockstderr.write.called)
+        self.assertEqual(3, len(mockstderr.method_calls))
+    
+    @mock.patch_object(acsstartupContainerPort, 'stderr', mockstderr)
+    @mock.patch_object(acsstartupContainerPort, 'sleep', mock.Mock)
+    @mock.patch_object(acsstartupContainerPort, 'exit', mock.Mock)
+    @mock.patch_object(acsstartupContainerPort, 'lockf', mocklockf)
+    @mock.patch_object(acsstartupContainerPort, 'container_file', mockfile)
+    def test_close_exception(self):
+        mockfile.close.side_effect = self.excthrower
+        acsstartupContainerPort.cleanUp()
+        self.assertEqual(True, mockfile.close.called)
+        self.assertEqual([], mockfile.call_args_list)
+        self.assertEqual(False, acsstartupContainerPort.container_file is None)
+        self.assertEqual(True, mockstderr.write.called)
+        self.assertEqual(3, len(mockstderr.method_calls))
+
 
 class ContainerPortLockTest(unittest.TestCase):
 
