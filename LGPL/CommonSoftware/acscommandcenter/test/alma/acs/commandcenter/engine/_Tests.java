@@ -28,7 +28,7 @@ import alma.entity.xmlbinding.acscommandcentertools.Tool;
  */
 public class _Tests {
 
-	/* $Id: _Tests.java,v 1.8 2008/12/04 14:53:59 mschilli Exp $ */
+
 
 	public static Test suite() {
 		TestSuite ret = new TestSuite("Test for " + _Tests.class.getPackage().getName());
