@@ -605,7 +605,7 @@ public class TabPanel extends JPanel {
 					// prepare show
 					// --------------
 
-					setTitle(title+" - Progress");
+					setTitle(title+" - please wait");
 //					JLabel label = new JLabel(title+" - Progress");
 //					label.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 //					label.setBackground(UIManager.getColor(key));
@@ -697,9 +697,15 @@ public class TabPanel extends JPanel {
 		
 		WeakHashMap<JComponent, Object> disenable = new WeakHashMap<JComponent, Object>();
 
+		/*
+		 * msc 2009-05: sometimes the progress dialog gets "lost": it is suddenly gone and
+		 * the controls remain disabled. this is a quick hack to help me out.
+		 */
 		protected void disenable (JComponent c) {
-			disenable.put(c, "");
-		}
+			/*
+			 * disenable.put(c, "");
+			 */
+			}
 		
 
 		// FlowListener implementation
