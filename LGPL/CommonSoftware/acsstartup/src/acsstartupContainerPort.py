@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.40 2009/05/06 00:14:32 agrimstrup Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.41 2009/05/07 15:45:43 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -74,15 +74,19 @@ def cleanUp():
     while container_file is not None and sleepperiod <= maxsleepperiod:
         try:
             lockf(container_file.fileno(), LOCK_UN)
-            container_file.close()
-            container_file = None
         except Exception, e:
-            stderr.write("WARNING: acsstartupContainerPort is unable to release resources.  Reason: %s Retrying in %d seconds." % (e, sleepperiod))
+            stderr.write("WARNING: acsstartupContainerPort is unable to release lock.  Reason: %s Retrying in %d seconds." % (e, sleepperiod))
             sleep(sleepperiod)
             sleepperiod *= 2
+            continue
+        try:
+            container_file.close()
+        except Exception, e:
+            stderr.write("WARNING: acsstartupContainerPort file close operation failed.  Reason: %s." % e)
+        container_file = None
             
     if container_file is not None:
-        stderr.write("FATAL: acsstartupContainerPort was unable to release resources")
+        stderr.write("FATAL: acsstartupContainerPort was unable to release lock")
         exit(2)
         
 def getPortsFile(baseport):

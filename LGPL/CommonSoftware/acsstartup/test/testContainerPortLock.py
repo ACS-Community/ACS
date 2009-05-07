@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testContainerPortLock.py,v 1.2 2009/05/06 00:14:32 agrimstrup Exp $"
+# "@(#) $Id: testContainerPortLock.py,v 1.3 2009/05/07 15:45:43 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -84,9 +84,9 @@ class ContainerPortLockCleanupTest(unittest.TestCase):
         acsstartupContainerPort.cleanUp()
         self.assertEqual(True, mockfile.close.called)
         self.assertEqual([], mockfile.call_args_list)
-        self.assertEqual(False, acsstartupContainerPort.container_file is None)
+        self.assertEqual(True, acsstartupContainerPort.container_file is None)
         self.assertEqual(True, mockstderr.write.called)
-        self.assertEqual(3, len(mockstderr.method_calls))
+        self.assertEqual(1, len(mockstderr.method_calls))
 
 
 class ContainerPortLockTest(unittest.TestCase):
