@@ -623,17 +623,29 @@ public class DeploymentTree extends JTree {
 
 					if (userObject instanceof ContainerInfo)
 						return ((ContainerInfo) userObject).name;
-					
+
+					if (userObject instanceof FolderInfo)
+						return ((FolderInfo) userObject).name;
+
 					return x.toString();
 				}
 
 				@Override protected boolean isUpdate (TreeNode exist, TreeNode incom) {
-					/* Keeping it kind of simple by looking at the toString() of the
-					 * userobject. One could also do some instanceof here and look at the
-					 * userobjects more closely to find out whether they have different
-					 * contents than before. Checking so coarsely means that nodes that
-					 * represent corbastructs will be updated at each refresh. This is more
-					 * costly but it makes sure that the tree always shows up-to-date info. */
+					/* our tree-renderer adds the childcount to some nodes (the folder info nodes),
+					 * so if the childcount changes we want a tree-change event to be sent to the
+					 * jtree. we could run the renderer here to find out if "incom" would be
+					 * rendered differently from "exist" and thus we consider this an update. but
+					 * for simplicity, i'm re-implementing a tiny portion of renderer logic here. */
+					if (exist.getChildCount() != incom.getChildCount())
+						return true;
+
+					/* Keeping it kind of simple by looking at the toString() of the treenode
+					 * which is in fact a toString() of the userobject. One could also do some
+					 * instanceof here and look at the userobjects more closely to find out
+					 * whether they have different contents than before. Checking via
+					 * toString() means that nodes that have a corbastruct as their userobject
+					 * will be updated at each refresh. This is a bit costly but makes sure the
+					 * tree always shows up-to-date info. */
 					return !String.valueOf(exist).equals(String.valueOf(incom));
 				}
 
