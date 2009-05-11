@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.49 2009/03/23 10:40:23 msekoran Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.50 2009/05/11 13:28:06 msekoran Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -157,6 +157,18 @@ then
 fi
 
 #
+# Evaluates property for DAL reference
+# The variable ACS_DAL_REF will be set
+#
+ACS_DAL_REF=""
+if [ "X$DAL_REFERENCE" != "X" ]
+then
+     ACS_DAL_REF="$DAL_REFERENCE"
+else
+     ACS_DAL_REF="corbaloc::$HOST:$ACS_CDB_PORT/CDB"
+fi
+
+#
 # Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "jmanager.gclog".
 # @TODO: When using several federated manager instances, we'll have to ensure that the jmanager.gclog files don't interfere with each other!
 #
@@ -169,7 +181,7 @@ export JVM_GC_LOG_NAME=jmanager
 acsStartJava -endorsed \
     -Djacorb.poa.thread_pool_max=200 \
     -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE \
-    -DDAL.defaultReference=corbaloc::$HOST:$ACS_CDB_PORT/CDB \
+    -DDAL.defaultReference=$ACS_DAL_REF \
     -DOAPort=$ACS_MANAGER_PORT \
     -Dmanager.debug.rememberOldHandles \
     $ACS_FEDERATION com.cosylab.acs.maci.manager.app.Manager $1 $2 $3 $4 $5 $6 $7 $8 $9
