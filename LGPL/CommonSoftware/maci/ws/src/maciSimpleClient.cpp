@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.109 2008/10/09 07:05:37 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.110 2009/05/13 17:16:06 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -72,6 +72,7 @@ ACE_CString SimpleClient::m_processName("");
 SimpleClient::SimpleClient ():
     m_handle(0),
     m_initialized(false),
+    m_loggedin(false),
     m_executionId(0),
     m_startTime(::getTimeStamp())
 {
@@ -88,6 +89,8 @@ SimpleClient::SimpleClient ():
 
 SimpleClient::~SimpleClient ()
 {
+  if (m_loggedin)
+  	logout();
   destroy();
 
 }
@@ -308,6 +311,7 @@ SimpleClient::login()
 	}
 
       maci::ClientInfo_var clientInfo = m_manager->login(c.in());
+      m_loggedin=true;
 
 
       if (clientInfo.ptr() == 0)
@@ -336,8 +340,6 @@ SimpleClient::logout()
   if (!m_initialized || !m_handle)
     return 0;
 
-
-
   try
     {
       /**
@@ -346,7 +348,7 @@ SimpleClient::logout()
       ACS_SHORT_LOG ((LM_DEBUG, "Logging out..."));
 
       m_manager->logout(m_handle);
-
+      m_loggedin=false;
 
       return 1;
     }

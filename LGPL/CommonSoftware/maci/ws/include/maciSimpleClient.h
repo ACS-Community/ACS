@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.108 2008/10/09 07:05:37 cparedes Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.109 2009/05/13 17:16:06 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -405,6 +405,9 @@ private:
 
   /// Initialization status.
   bool m_initialized;
+
+  /// Manager Logging status
+  bool m_loggedin;
 
   /// Root POA.
   PortableServer::POA_var m_poaRoot;
