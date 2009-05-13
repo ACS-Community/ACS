@@ -1,4 +1,4 @@
 #!/bin/sh
 cp acsReplaceTestfile.org acsReplaceTestfile
-acsReplace -nobackup "@REPLACEME" "one" acsReplaceTestfile
+acsReplace -nobackup -quiet "@REPLACEME" "one" acsReplaceTestfile
 diff acsReplaceTestfile.org acsReplaceTestfile
