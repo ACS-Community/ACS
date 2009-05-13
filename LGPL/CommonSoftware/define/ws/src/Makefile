@@ -55,7 +55,7 @@ ACSERRDEF = ArchiveIdentifierError
 # 
 # IDL Files and flags
 # 
-IDL_FILES = xmlentity archive_pingable_if archive_xmlstore_if 
+IDL_FILES = xmlentity archive_xmlstore_if 
 IDL_TAO_FLAGS =
 USER_IDL =
 
@@ -69,7 +69,7 @@ LIBRARIES_L     =
 # but we leave it here for now to avoid troubles
 xmlentity_OBJECTS           = xmlentityC xmlentityS   
 
-archive_xmlstore_if_OBJECTS = archive_xmlstore_ifC archive_pingable_ifC
+archive_xmlstore_if_OBJECTS = archive_xmlstore_ifC
 
 # adds the IdentifierRange schema to archive_xmlstore_if.jar to ensure that it can be loaded again when the archive has been erased.
 archive_xmlstore_if_EXTRAS = -C ../idl/IdentifierRange.xsd
