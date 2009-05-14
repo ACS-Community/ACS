@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Features Daemons</title>
+<style><!--
+.Normal
+	{font-size:12.0pt;
+	font-family:"Times New Roman";}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple class="Normal" bgcolor="#FFFFFF">
+<h2>Daemons</h2>
+<p>All ACS services and containers described in the previous chapters can be started and stopped by executing scripts provided by ACS. To execute these scripts directly, the user must be logged in on the host machine, or use the remote-ssh features provided by the ACS commandcenter or the Alma Operator Master Client. Running ACS scripts in this way is still recommended for development and modular testing, but any large scale testing or real operations of the system should start ACS services and containers in a different way, using the ACS daemons. </p>
+<p>There are two types of daemons, one for managing ACS services, and one for managing ACS containers. They must be started before ACS, where &quot;ACS&quot; now refers to the services and containers only, excluding the daemons which of course are also part of ACS in terms of software development and packaging. The starting can be done as part of the host machine's boot sequence, or later using some initialization framwork outside of ACS. The ACS daemons are implemented as Corba aware application, that are not daemons in the sense of the operating system.</p>
+<p>An ACS daemon only manages ACS services / containers on its local host machine, which means that a daemon must be running on every machine that should run ACS services and/or containers. </p>
+<p>By default an ACS daemon can only be shut down by killing the process, which ensures protection if a priviledged user account is used to start the daemon. As of ACS 8.0.0, it is not yet possible to have ACS services or containers started as a different OS user than the one who started the daemon; this feature may have to be added in the future. </p>
+<h3>Services daemon</h3>
+<p>A services daemon can start, monitor, and stop one or more of the ACS services. </p>
+<p>The services daemon is started with <code>acsservicesdaemon</code>. When started with the <code>--unprotected</code> option, the services daemon can be shut down using the command <code>acsservicesdaemonStop</code>. This is mostly useful when using daemons as part of automted tests, that clean up after themselves. </p>
+<h3>Container daemon</h3>
+<p>&nbsp;</p>
+</body>
+
+</html>
+
