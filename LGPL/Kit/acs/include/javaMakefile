@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: javaMakefile,v 1.78 2009/04/21 13:14:29 mzampare Exp $"
+# "@(#) $Id: javaMakefile,v 1.79 2009/05/14 07:13:20 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -174,11 +174,11 @@ clean_java:
 #
 ../object/%.djar: Makefile
 	- @echo "== Dependencies: $@"
-	$(AT)acsMakeJavaDependencies $(*F) lib "$($(*F)_DIRS)" "$($(*F)_EXTRAS)" "$(USER_JFLAGS)" "$($(*F)_JFLAGS)" "$($(*F)_ENDORSED)" "$(DEBUG)" >../object/$*.djar
+	$(AT)acsMakeJavaDependencies $(*F) djar lib "$($(*F)_DIRS)" "$($(*F)_EXTRAS)" "$(USER_JFLAGS)" "$($(*F)_JFLAGS)" "$($(*F)_ENDORSED)" "$(DEBUG)" >../object/$*.djar
 
 ../object/%.dcjar:
 	- @echo "== Dependencies: $@"
-	$(AT)acsMakeJavaDependencies $(*F) lib/$(ACS_CO) "$($(*F)_DIRS)" "$($(*F)_EXTRAS)" "$(USER_JFLAGS)" "$($(*F)_JFLAGS)" "$($(*F)_ENDORSED)" "$(DEBUG)" >../object/$*.dcjar
+	$(AT)acsMakeJavaDependencies $(*F) dcjar lib/$(ACS_CO) "$($(*F)_DIRS)" "$($(*F)_EXTRAS)" "$(USER_JFLAGS)" "$($(*F)_JFLAGS)" "$($(*F)_ENDORSED)" "$(DEBUG)" >../object/$*.dcjar
 
 do_java:  do_names_check do_components_check $(TMP_DEP_JAR) $(TMP_DEP_C_JAR)
 	$(AT) for member in $(foreach name, $(JARFILES_LIST), $(name) ); \
