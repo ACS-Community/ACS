@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.50 2009/05/11 13:28:06 msekoran Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.51 2009/05/14 12:37:49 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -87,26 +87,6 @@ else
     export ACS_MANAGER_CONFIG=$PWD/jManager
 fi
 
-# ----------------------------------------------------------------
-# Setup manager's config files
-
-#first we modify logging priorities
-if   [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
-then
-	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=FINEST" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
-
-elif [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_INFO_PRIORITY ]
-then
-	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=CONFIG" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
-
-elif [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_ERROR_PRIORITY ]
-then
-	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=INFO" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
-
-elif [ "X$ACS_LOG_STDOUT" != "X" ]
-then
-	acsReplace "abeans.core.defaults.ConsoleLoggingPolicy=INFO" "abeans.core.defaults.ConsoleLoggingPolicy=SEVERE" $ACS_MANAGER_CONFIG/PolicyManager.txt &> /dev/null
-fi
 
 # ----------------------------------------------------------------
 
