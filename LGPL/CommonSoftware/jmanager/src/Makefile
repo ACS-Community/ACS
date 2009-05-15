@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2006/10/26 13:38:05 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.9 2009/05/15 07:53:05 msekoran Exp $"
 #
 # Makefile of jManager
 #
@@ -93,9 +93,6 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
-	@echo " . . . copying configuration files"
-	-@gtar -cf - --exclude="CVS" -C ../config jManager  | gtar -xf - -C $(ACSDATA)/config; \
-	         chmod -R $(P755) $(ACSDATA)/config/jManager;
 	@echo " . . . installation done"
 
 #___oOo___
