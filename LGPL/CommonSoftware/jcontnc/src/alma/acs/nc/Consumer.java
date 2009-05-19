@@ -184,13 +184,15 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 		
 		m_channelName = channelName;
+		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
+		m_logger = services.getLogger();
+
+		// naming service, POA, and Any generator
+		m_helper = new Helper(services);
+
 		m_notifyServiceName = getNotificationFactoryName();
 
-		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
-		
 		profiler = new StopWatch();
-
-		m_logger = services.getLogger();
 
 		m_anyAide = new AnyAide(services);
 
@@ -199,8 +201,6 @@ public class Consumer extends OSPushConsumerPOA {
 		m_handlerTimeoutMap = m_channelInfo.getEventHandlerTimeoutMap(channelName);
 
 
-		// naming service, POA, and Any generator
-		m_helper = new Helper(services);
 
 		// get the channel
 		m_channel = getHelper().getNotificationChannel(m_channelName, getChannelKind(), m_notifyServiceName);
