@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencHelper.cpp,v 1.6 2008/02/12 01:06:22 msekoran Exp $"
+* "@(#) $Id: basencHelper.cpp,v 1.7 2009/05/19 17:35:42 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,9 +76,10 @@
 #include "basencHelper.h"
 #include <loggingACEMACROS.h>
 #include <acsutilWildcard.h>
+#include <ACSErrTypeCORBA.h>
 
 //-----------------------------------------------------------------------------
-static char *rcsId="@(#) $Id: basencHelper.cpp,v 1.6 2008/02/12 01:06:22 msekoran Exp $"; 
+static const char *rcsId="@(#) $Id: basencHelper.cpp,v 1.7 2009/05/19 17:35:42 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 //-----------------------------------------------------------------------------
 BaseHelper::BaseHelper(const char* channelName, const char* notifyServiceDomainName) :
@@ -146,100 +147,140 @@ BaseHelper::destroyNotificationChannel()
 void
 BaseHelper::init(CosNaming::NamingContext_ptr nc_p)
 {
-    //in this method, we take a look at the Naming Service to 
-    //see if the channel has been created before. if not,
-    //we go ahead and create it and then register it with the CORBA
-    //naming service
-    
-    namingContext_m = CosNaming::NamingContext::_duplicate(nc_p);
-    ACE_ASSERT(!CORBA::is_nil(namingContext_m.in()));
-    
-    //Common name sequence. This little object defines the name of 
-    //channel as registered with the CORBA Naming Service.
-    CosNaming::Name name(1);
-    name.length(1);
-    
-    //name of the channel
-    name[0].id   = CORBA::string_dup(channelName_mp);
-    //channel kind
-    name[0].kind = CORBA::string_dup(getChannelKind());
+	//in this method, we take a look at the Naming Service to 
+	//see if the channel has been created before. if not,
+	//we go ahead and create it and then register it with the CORBA
+	//naming service
 
-    try 
-	{
-	//use the naming service to get our object
-	CORBA::Object_var ec_obj =  namingContext_m->resolve(name);
-	ACE_ASSERT(!CORBA::is_nil(ec_obj.in()));
-	
-	//narrow it
-	notifyChannel_m = CosNotifyChannelAdmin::EventChannel::_narrow(ec_obj.in());
-	ACE_ASSERT(!CORBA::is_nil(notifyChannel_m.in()));
+	namingContext_m = CosNaming::NamingContext::_duplicate(nc_p);
+	if(CORBA::is_nil(namingContext_m.in())){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__, "BaseHelper::init");
+		ex.setVariable("namingContext_m");
+		throw ex;
 	}
-    catch(CosNaming::NamingContext::NotFound ex)
+
+	//Common name sequence. This little object defines the name of 
+	//channel as registered with the CORBA Naming Service.
+	CosNaming::Name name(1);
+	name.length(1);
+
+	//name of the channel
+	name[0].id   = CORBA::string_dup(channelName_mp);
+	//channel kind
+	name[0].kind = CORBA::string_dup(getChannelKind());
+
+	try 
 	{
-	//create it
-	createNotificationChannel();
+		//use the naming service to get our object
+		CORBA::Object_var ec_obj =  namingContext_m->resolve(name);
+		if(CORBA::is_nil(ec_obj.in())){
+			ACSErrTypeCORBA::FailedToResolveServiceExImpl 
+				ex(__FILE__, __LINE__, "BaseHelper::init");
+			throw ex;
+		}
+
+		//narrow it
+		notifyChannel_m = CosNotifyChannelAdmin::EventChannel::_narrow(ec_obj.in());
+		if(CORBA::is_nil(notifyChannel_m.in())){
+			ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "BaseHelper::init");
+			ex.setNarrowType("CosNotifyChannelAdmin::EventChannel");
+			throw ex;
+		}
 	}
-    
-    initCalled_m = true;
+	catch(CosNaming::NamingContext::NotFound ex)
+	{
+		//create it
+		createNotificationChannel();
+	}
+
+	initCalled_m = true;
 }
 //-----------------------------------------------------------------------------
 void
 BaseHelper::getNotifyService()
 {
-    //sanity check. If we cannot access the naming service, there is
-    //no point whatsoever in continuing.
-    ACE_ASSERT(!CORBA::is_nil(namingContext_m));
-    
-    //first get the notification factory
-    CosNaming::Name name(1);
-    name.length(1);
-    name[0].id = CORBA::string_dup(getNotificationFactoryName());
-    
-    //get the generic object for the notify service
-    CORBA::Object_var corbaObj = namingContext_m->resolve(name);
-    ACE_ASSERT(!CORBA::is_nil(corbaObj));
+	//sanity check. If we cannot access the naming service, there is
+	//no point whatsoever in continuing.
+	if(CORBA::is_nil(namingContext_m)){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseHelper::getNotifyService");
+		ex.setVariable("namingContext_m");
+		throw ex;
+	}
+	//first get the notification factory
+	CosNaming::Name name(1);
+	name.length(1);
+	name[0].id = CORBA::string_dup(getNotificationFactoryName());
 
-    //narrow the generic object
-    notifyFactory_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
-    ACE_ASSERT(!CORBA::is_nil(notifyFactory_m.in()));
+	//get the generic object for the notify service
+	CORBA::Object_var corbaObj = namingContext_m->resolve(name);
+	if(CORBA::is_nil(corbaObj.in())){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseHelper::getNotifyService");
+		ex.setVariable("corbaObj");
+		throw ex;
+	}
+
+	//narrow the generic object
+	notifyFactory_m = CosNotifyChannelAdmin::EventChannelFactory::_narrow(corbaObj.in());
+	if(CORBA::is_nil(notifyFactory_m.in())){
+		ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, "BaseHelper::getNotifyService");
+		ex.setNarrowType("CosNotifyChannelAdmin::EventChannelFactory");
+		throw ex;
+	}
 }
 //-----------------------------------------------------------------------------
 void
 BaseHelper::createNotificationChannel()
 {
-    //sanity check. If we cannot access the naming service, there is
-    //no point whatsoever in continuing.
-    ACE_ASSERT(!CORBA::is_nil(namingContext_m));
+	//sanity check. If we cannot access the naming service, there is
+	//no point whatsoever in continuing.
+	if(CORBA::is_nil(namingContext_m)){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseHelper::createNotificationChannel");
+		ex.setVariable("namingContext_m");
+		throw ex;
+	}
 
-    //get access to the notification service
-    getNotifyService();
-    
-    //here is where the channel is actually created
-    notifyChannel_m = notifyFactory_m->create_channel(getQoSProps(), 
-						      getAdminProps(), 
-						      channelID_m);
-    //ensure it's a valid reference
-    ACE_ASSERT(!CORBA::is_nil(notifyChannel_m.in()));
-    
-    // Bind notification channel to Naming service
-    attachChannelToNS();
+	//get access to the notification service
+	getNotifyService();
+
+	//here is where the channel is actually created
+	notifyChannel_m = notifyFactory_m->create_channel(getQoSProps(), 
+			getAdminProps(), 
+			channelID_m);
+	//ensure it's a valid reference
+	if(CORBA::is_nil(notifyChannel_m.in())){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseHelper::createNotificationChannel");
+		ex.setVariable("notifyChannel_m");
+		throw ex;
+	}
+
+	// Bind notification channel to Naming service
+	attachChannelToNS();
 }
 //-----------------------------------------------------------------------------
 void
 BaseHelper::attachChannelToNS()
 {
-    //sanity check. If we cannot access the naming service, there is
-    //no point whatsoever in continuing.
-    ACE_ASSERT(!CORBA::is_nil(namingContext_m));
+	//sanity check. If we cannot access the naming service, there is
+	//no point whatsoever in continuing.
+	if(CORBA::is_nil(namingContext_m)){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseHelper::attachChannelToNS");
+		ex.setVariable("namingContext_m");
+		throw ex;
+	}
 
-    //name for our channel
-    CosNaming::Name name(1);
-    name.length(1);
-    name[0].id = CORBA::string_dup(channelName_mp);
-    name[0].kind = CORBA::string_dup(getChannelKind());
-    
-    //really bind the reference here
-    namingContext_m->rebind(name, notifyChannel_m.in());
+	//name for our channel
+	CosNaming::Name name(1);
+	name.length(1);
+	name[0].id = CORBA::string_dup(channelName_mp);
+	name[0].kind = CORBA::string_dup(getChannelKind());
+
+	//really bind the reference here
+	namingContext_m->rebind(name, notifyChannel_m.in());
 }
 //-----------------------------------------------------------------------------
 const CosNotification::AdminProperties

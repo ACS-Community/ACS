@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2005/11/21 17:49:58 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.5 2009/05/19 17:35:42 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -25,7 +25,8 @@
 # additional include and library search paths
 #USER_INC = 
 USER_LIB = -lACE -lTAO -lTAO_CosNaming -lTAO_PortableServer -lTAO_CosNotification -lTAO_CosProperty -lacsutil \
-		-lacscommonStubs
+		-lacscommonStubs \
+	   -lcdb	
 
 #
 # MODULE CODE DESCRIPTION:
@@ -61,7 +62,8 @@ LIBRARIES       = basenc
 LIBRARIES_L     =
 
 basenc_OBJECTS = basencHelper basencSupplier
-basenc_LIBS    = acsncStubs acscommonStubs baciStubs acscomponentStubs acserrStubs
+basenc_LIBS    = acsncStubs acscommonStubs baciStubs acscomponentStubs acserrStubs acserr \
+					  ACSErrTypeCORBA
 
 #
 # <brief description of lllll library>

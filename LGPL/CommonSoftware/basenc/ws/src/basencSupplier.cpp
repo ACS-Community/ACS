@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: basencSupplier.cpp,v 1.11 2008/10/14 22:06:01 bjeram Exp $"
+* "@(#) $Id: basencSupplier.cpp,v 1.12 2009/05/19 17:35:42 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -27,6 +27,7 @@
 #include "basencSupplier.h"
 #include <iostream>
 #include <logging.h>
+#include <ACSErrTypeCORBA.h>
 
 //-----------------------------------------------------------------------------
 BaseSupplier::BaseSupplier(const char* channelName, const char* notifyServiceDomainName) :
@@ -43,8 +44,12 @@ BaseSupplier::init(CosNaming::NamingContext_ptr nc_p)
      
     //get the supplier admin
     supplierAdmin_m = notifyChannel_m->new_for_suppliers(ifgop_m, adminID_m);
-    ACE_ASSERT (!CORBA::is_nil(supplierAdmin_m.in()));
-    
+    if(CORBA::is_nil(supplierAdmin_m.in())){
+      ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__, "BaseSupplier::init");
+      ex.setVariable("supplierAdmin_m");
+      throw ex;
+   }
+
     //connect the supplier admin which really means connect 
     //ourselves to the proxy consumer
     this->connect();
@@ -59,17 +64,33 @@ BaseSupplier::connect()
 {
     //turn ourselves into a CORBA object
     corbaRef_m = getCORBARef();
-    ACE_ASSERT(!CORBA::is_nil(corbaRef_m.in()));
+	 if(CORBA::is_nil(corbaRef_m.in())){
+		 ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			 ex(__FILE__, __LINE__, "BaseSupplier::connect");
+		 ex.setVariable("corbaRef_m");
+		 throw ex;
+	 }
     
     //get the proxy consumer from the supplier admin.
     CosNotifyChannelAdmin::ProxyConsumer_var proxyconsumer =
 	supplierAdmin_m->obtain_notification_push_consumer(CosNotifyChannelAdmin::STRUCTURED_EVENT, 
 							   proxyConsumerID_m);
-    ACE_ASSERT(!CORBA::is_nil(proxyconsumer.in()));
+	 if(CORBA::is_nil(proxyconsumer.in())){
+		 ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			 ex(__FILE__, __LINE__, "BaseSupplier::connect");
+		 ex.setVariable("proxyconsumer");
+		 throw ex;
+	 }
+
     
     // narrow
     proxyConsumer_m = CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(proxyconsumer.in());
-    ACE_ASSERT(!CORBA::is_nil(proxyConsumer_m.in()));
+	 if(CORBA::is_nil(proxyConsumer_m.in())){
+		 ACSErrTypeCORBA::NarrowFailedExImpl 
+			 ex(__FILE__, __LINE__, "BaseSupplier::connect");
+		 ex.setNarrowType("CosNotifyChannelAdmin::StructuredProxyPushConsumer");
+		 throw ex;
+	 }
 
     //final piece of code connects us to the channel
     proxyConsumer_m->connect_structured_push_supplier(corbaRef_m.in());
@@ -79,7 +100,12 @@ void
 BaseSupplier::disconnect()
 {
     //take care of the proxy consumer
-    ACE_ASSERT(!CORBA::is_nil(proxyConsumer_m.in()));
+	 if(CORBA::is_nil(proxyConsumer_m.in())){
+		 ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			 ex(__FILE__, __LINE__, "BaseSupplier::disconnect");
+		 ex.setVariable("proxyConsumer_m");
+		 throw ex;
+	 }
     //sole ownership of the proxy
     CosNotifyChannelAdmin::StructuredProxyPushConsumer_var proxyConsumer = proxyConsumer_m;
     proxyConsumer_m=CosNotifyChannelAdmin::StructuredProxyPushConsumer::_nil(); 
@@ -87,7 +113,13 @@ BaseSupplier::disconnect()
     proxyConsumer->disconnect_structured_push_consumer();
 
     //take care of the supplier admin
-    ACE_ASSERT(!CORBA::is_nil(supplierAdmin_m.in()));
+	 if(CORBA::is_nil(supplierAdmin_m.in())){
+		 ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			 ex(__FILE__, __LINE__, "BaseSupplier::disconnect");
+		 ex.setVariable("supplierAdmin_m");
+		 throw ex;
+	 }
+
     //sole ownership of the proxy
     CosNotifyChannelAdmin::SupplierAdmin_var supplierAdmin = supplierAdmin_m;
     supplierAdmin_m = CosNotifyChannelAdmin::SupplierAdmin::_nil();
@@ -111,11 +143,16 @@ BaseSupplier::subscription_change(const CosNotification::EventTypeSeq &a,
 void
 BaseSupplier::publishEvent(const CosNotification::StructuredEvent& event)
 {
-    ACE_ASSERT(!CORBA::is_nil(this->proxyConsumer_m.in()));
-    //pass it on to the proxy consumer
-    try
+	if(CORBA::is_nil(proxyConsumer_m.in())){
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl 
+			ex(__FILE__, __LINE__, "BaseSupplier::publishEvent");
+		ex.setVariable("proxyConsumer_m");
+		throw ex;
+	}
+	//pass it on to the proxy consumer
+	try
 	{
-	proxyConsumer_m->push_structured_event(event);
+		proxyConsumer_m->push_structured_event(event);
 	}
 	catch(CORBA::COMM_FAILURE &ex)
 	{
