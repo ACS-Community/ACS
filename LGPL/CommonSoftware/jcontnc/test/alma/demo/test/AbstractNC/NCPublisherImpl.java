@@ -25,29 +25,17 @@
  */
 package alma.demo.test.AbstractNC;
 
-import java.util.logging.Logger;
-/*
-import alma.acs.nc.*;
-import org.omg.CosNotification.*;
-
-import alma.FRIDGE.temperatureDataBlockEvent;
-import alma.FRIDGE.TemperatureStatus;
-
-import alma.acs.component.client.ComponentClient;
-import alma.acs.container.ContainerServices;
-import alma.acs.container.ContainerException;
-*/
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.acs.nc.*;
-
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
-
-import alma.demo.NCPublisherOperations;
+import alma.acs.nc.CorbaNotificationChannel;
 import alma.acsnc.EventDescription;
+import alma.demo.NCPublisherOperations;
+
+
 /**
  * This is an example of a how an abstract notification channel
  * can be created. 
@@ -58,30 +46,27 @@ public class NCPublisherImpl
         implements NCPublisherOperations {
     
     
-    private AbstractNotificationChannel nc;
+    private CorbaNotificationChannel nc;
     
 
     public NCPublisherImpl() {
     }
 
-    public void initialize(ContainerServices containerServices) 
-        throws ComponentLifecycleException {
+    public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
 
-        super.initialize(containerServices);
-        /* If you want a local channel put in
-         * AbstractNotificationChannel.LOCAL
-         */
-        try {
-			nc = AbstractNotificationChannel.createNotificationChannel(
-			                AbstractNotificationChannel.CORBA,
-			                "AbstractNC_Channel", m_containerServices);
+		super.initialize(containerServices);
+		/*
+		 * If you want a local channel put in AbstractNotificationChannel.LOCAL
+		 */
+		try {
+			nc = new CorbaNotificationChannel("AbstractNC_Channel", m_containerServices);
 		} catch (AcsJException ex) {
 			throw new ComponentLifecycleException(ex);
 		}
-        System.out.println("Created NC Pulisher");
+		System.out.println("Created NC Pulisher");
+	}
 
-    }
-
+    
     public void publish(String name) throws CouldntPerformActionEx {
         EventDescription event = new EventDescription(name, 32L, 64L);
         try {
@@ -98,8 +83,4 @@ public class NCPublisherImpl
 			ex.printStackTrace();
 		}
     }
-
-
 }
-
-
