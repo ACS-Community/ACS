@@ -23,7 +23,9 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.ArchiveConsumer;
 
 /**
- * 
+ * Currently this test is started via "acsStartJava junit.textui.TestRunner alma.demo.test.client.ArchiveConsumerTest",
+ * and then 3 seconds later the "archiveeventsSupplier" is run, which sends off events and terminates.
+ * Then TAT waits 30 seconds for this test to receive these events.
  */
 public class ArchiveConsumerTest extends ComponentClientTestCase
 {
@@ -49,6 +51,10 @@ public class ArchiveConsumerTest extends ComponentClientTestCase
 		super.tearDown();
 	}
 	
+	/**
+	 * The types of events, as they get fired by the archiveeventsSupplier application,
+	 * will be checked by TAT based on the output from {@link #receive(Long, String, String, Object)}.
+	 */
 	public void testReceiveFor15Seconds() throws Exception {
 		Thread.sleep(15000);
 		assertTrue("Should have received at least 11 events, but was " + count, count >= 11);
