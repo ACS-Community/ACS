@@ -78,7 +78,7 @@ public class Consumer extends OSPushConsumerPOA {
 	 * See the EventChannel.xsd for more info, e.g. at
 	 * http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_EventChannel_1.0/complexType/EventDescriptor.html#attr_MaxProcessTime .
 	 */
-	private static final double DEFAULT_MAX_PROCESS_TIME = 100.0;
+	private static final double DEFAULT_MAX_PROCESS_TIME = 2000.0;
 
 	
 	/** helper object contains various info about the notification channel */
