@@ -25,7 +25,6 @@ import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
 import alma.demo.SupplierComp;
-import alma.demo.ConsumerComp;
 
 /**
  * Client application that accesses a supplier and sends events.
@@ -44,10 +43,9 @@ public class SupplierCDBChannelTest extends ComponentClient
 	throws Exception 
 	{
 	    super(logger, managerLoc, clientName);
-	    m_supplier = alma.demo.SupplierCompHelper.narrow(getContainerServices()
-							     .getComponent("SUPPLIER_CDB_CHANNEL_COMP1"));
+	    m_supplier = alma.demo.SupplierCompHelper.narrow(getContainerServices().getComponent("SUPPLIER_CDB_CHANNEL_COMP1"));
 	}
-    
+
 	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
 		try {
 			m_supplier.sendEvents((short)10);
@@ -55,8 +53,8 @@ public class SupplierCDBChannelTest extends ComponentClient
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e);
 		}
 	}
-    
-    public void cleanupNC() throws Exception 
+
+	public void cleanupNC() throws Exception 
 	{
 	    getContainerServices().releaseComponent("SUPPLIER_CDB_CHANNEL_COMP1");
 	}

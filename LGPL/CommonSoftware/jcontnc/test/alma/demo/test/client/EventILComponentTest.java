@@ -31,8 +31,8 @@ import alma.demo.ConsumerComp;
  */
 public class EventILComponentTest extends ComponentClient
 {
-    private SupplierComp m_supplier = null;
-    private ConsumerComp m_consumer = null;
+    private SupplierComp m_supplier;
+    private ConsumerComp m_consumer;
 
 	/**
 	 * @param logger
@@ -40,9 +40,8 @@ public class EventILComponentTest extends ComponentClient
 	 * @param clientName
 	 * @throws Exception
 	 */
-	public EventILComponentTest(Logger logger, String managerLoc, String clientName)
-			throws Exception {
-		super(logger, managerLoc, clientName);
+	public EventILComponentTest(String managerLoc) throws Exception {
+		super(null, managerLoc, "EventILComponentTest");
 		m_consumer = alma.demo.ConsumerCompHelper.narrow(getContainerServices()
 								 .getComponent("IL_CONSUMERCOMP1"));
 		m_supplier = alma.demo.SupplierCompHelper.narrow(getContainerServices()
@@ -80,10 +79,9 @@ public class EventILComponentTest extends ComponentClient
 					.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
 			System.exit(-1);
 		}
-		String clientName = "EventILComponentTest";
 		EventILComponentTest hlc = null;
 		try {
-			hlc = new EventILComponentTest(null, managerLoc, clientName);
+			hlc = new EventILComponentTest(managerLoc);
 			hlc.doSomeStuff();
 			hlc.cleanupNC();
 		}

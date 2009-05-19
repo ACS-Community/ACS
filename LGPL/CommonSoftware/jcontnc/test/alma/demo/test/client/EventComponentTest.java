@@ -19,40 +19,28 @@
  */
 package alma.demo.test.client;
 
-import java.util.logging.Logger;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.FRIDGE.TemperatureStatus;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.client.ComponentClient;
-import alma.demo.SupplierComp;
 import alma.demo.ConsumerComp;
+import alma.demo.SupplierComp;
 
 /**
- * Client application that accesses the HelloDemo component. It demonstrates
- * how the class {@link ComponentClient}can be used as a base class.
- * 
- * @author hsommer Nov 21, 2002 5:53:05 PM
  */
 public class EventComponentTest extends ComponentClient
 {
-    private SupplierComp m_supplier = null;
-    private ConsumerComp m_consumer = null;
+	private final SupplierComp m_supplierComp;
+	private final ConsumerComp m_consumerComp;
 
 	/**
-	 * @param logger
 	 * @param managerLoc
-	 * @param clientName
-	 * @throws Exception
 	 */
-	public EventComponentTest(Logger logger, String managerLoc, String clientName)
-			throws Exception {
-		super(logger, managerLoc, clientName);
-		m_consumer = alma.demo.ConsumerCompHelper.narrow(getContainerServices()
-								 .getComponent("CONSUMERCOMP1"));
-		m_supplier = alma.demo.SupplierCompHelper.narrow(getContainerServices()
-								 .getComponent("SUPPLIERCOMP1"));
+	public EventComponentTest(String managerLoc) throws Exception {
+		super(null, managerLoc, "EventComponentTest");
+		m_consumerComp = alma.demo.ConsumerCompHelper.narrow(getContainerServices().getComponent("CONSUMERCOMP1"));
+		m_supplierComp = alma.demo.SupplierCompHelper.narrow(getContainerServices().getComponent("SUPPLIERCOMP1"));
 		//give the consumer a few seconds to discover the channel exists and subscribe
 		Thread.sleep(5000);
 	}
@@ -63,7 +51,7 @@ public class EventComponentTest extends ComponentClient
 	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
 		try {
 			// get the supplier component to create 10 default events
-			m_supplier.sendEvents((short)10);
+			m_supplierComp.sendEvents((short)10);
 
 			// Now give the supplier component a bunch of event structs to publish on the fridge channel
 			// Note that the event type is different from the above.
@@ -73,19 +61,19 @@ public class EventComponentTest extends ComponentClient
             	nestedEvents[i] = new NestedFridgeEvent();
             	nestedEvents[i].status = TemperatureStatus.ATREF;
             }
-			m_supplier.sendEventsSpecial(nestedEvents);
+            m_supplierComp.sendEventsSpecial(nestedEvents);
 			
 		} catch (CouldntPerformActionEx e) {
 			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(e);
 		}
 	}
 
-    public void cleanupNC() throws Exception {
-	getContainerServices().releaseComponent("SUPPLIERCOMP1");
-	//give consumer five seconds to process the events
-	Thread.sleep(5000);
-	getContainerServices().releaseComponent("CONSUMERCOMP1");
-    }
+	public void cleanupNC() throws Exception {
+		getContainerServices().releaseComponent("SUPPLIERCOMP1");
+		//give consumer five seconds to process the events
+		Thread.sleep(5000);
+		getContainerServices().releaseComponent("CONSUMERCOMP1");
+	}
 
 	/**
 	 * Checks whether the Java property 'ACS.manager' is set and calls the
@@ -94,24 +82,22 @@ public class EventComponentTest extends ComponentClient
 	public static void main(String[] args) {
 		String managerLoc = System.getProperty("ACS.manager");
 		if (managerLoc == null) {
-			System.out
-					.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
+			System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
 			System.exit(-1);
 		}
-		String clientName = "EventComponentTest";
-		EventComponentTest hlc = null;
+		EventComponentTest instance = null;
 		try {
-			hlc = new EventComponentTest(null, managerLoc, clientName);
-			hlc.doSomeStuff();
-			hlc.cleanupNC();
+			instance = new EventComponentTest(managerLoc);
+			instance.doSomeStuff();
+			instance.cleanupNC();
 		}
 		catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
 		finally {
-			if (hlc != null) {
+			if (instance != null) {
 				try {
-					hlc.tearDown();
+					instance.tearDown();
 				}
 				catch (Exception e1) {
 					// bad luck

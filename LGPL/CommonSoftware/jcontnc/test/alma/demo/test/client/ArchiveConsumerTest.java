@@ -19,98 +19,45 @@
  */
 package alma.demo.test.client;
 
-import java.util.logging.Logger;
-import alma.acs.component.client.ComponentClient;
+import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.nc.ArchiveConsumer;
 
 /**
- * Client application that accesses the HelloDemo component. It demonstrates
- * how the class {@link ComponentClient}can be used as a base class.
  * 
- * @author hsommer Nov 21, 2002 5:53:05 PM
  */
-public class ArchiveConsumerTest extends ComponentClient
+public class ArchiveConsumerTest extends ComponentClientTestCase
 {
-    /**
-     * @param logger
-     * @param managerLoc
-     * @param clientName
-     * @throws Exception
-     */
-    public ArchiveConsumerTest(Logger logger, String managerLoc, String clientName)
-	throws Exception 
-	{
-	    super(logger, managerLoc, clientName);
-	    
-	    m_consumer = new ArchiveConsumer(getContainerServices(), this);
-	    m_consumer.consumerReady();
-	}
-    
-    public void receive(Long a, String b, String c, Object d)
-	{
-	    m_logger.info("receive method: b=" + b + ", c=" + c + ", d(type)=" + d.getClass());
-	    if (count_m < magicNumber)
-		{
-		count_m++;
-		}
-	}
-    
-    public void tearDown() throws Exception
-	{
-	    m_consumer.disconnect();
+	private ArchiveConsumer m_consumer;
+	private int count = 0;
 
-	    if(count_m==magicNumber)
-		{
+	/**
+	 * @param managerLoc
+	 * @throws Exception
+	 */
+	public ArchiveConsumerTest() throws Exception {
+		super(ArchiveConsumerTest.class.getSimpleName());
+	}
+
+	protected void setUp() throws Exception {
+		super.setUp();
+		m_consumer = new ArchiveConsumer(getContainerServices(), this);
+		m_consumer.consumerReady();
+	}
+	
+	protected void tearDown() throws Exception {
+		m_consumer.disconnect();
+		super.tearDown();
+	}
+	
+	public void testReceiveFor15Seconds() throws Exception {
+		Thread.sleep(15000);
+		assertTrue("Should have received at least 11 events, but was " + count, count >= 11);
 		System.out.println("Test passed!");
-		}
-	    else
-		{
-		System.out.println("Test failed!");
-		}
-	    super.tearDown();
 	}
-    
-    private ArchiveConsumer m_consumer = null;
-    private int count_m = 0;
-    private int magicNumber = 11;
-    
-    /**
-     * Checks whether the Java property 'ACS.manager' is set and calls the
-     * other methods from this class.
-     */
-    public static void main(String[] args) {
-	String managerLoc = System.getProperty("ACS.manager");
-	if (managerLoc == null) 
-	    {
-	    System.out.println("Java property 'ACS.manager' must be set to the corbaloc of the ACS manager!");
-	    System.exit(-1);
-	    }
-	String clientName = "ArchiveConsumerTest";
-	ArchiveConsumerTest hlc = null;
 	
-	try 
-	    {
-	    hlc = new ArchiveConsumerTest(null, managerLoc, clientName);
-	    }
-	catch (Exception e) 
-	    {
-	    e.printStackTrace(System.err);
-	    }
-	
-	//sleep 15 seconds
-	
-	
-	if (hlc != null) {
-	try 
-	    {
-	    Thread.sleep(15000);
-	    hlc.tearDown();
-	    }
-	catch (Exception e1) 
-	    {
-	    // bad luck
-	    }
+	public void receive(Long a, String b, String c, Object d) {
+		m_logger.info("receive method: b=" + b + ", c=" + c + ", d(type)=" + d.getClass());
+		count++;
 	}
-    }
-}
 
+}

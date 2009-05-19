@@ -27,6 +27,11 @@ import alma.demo.NCReceiver;
 import alma.acs.component.client.ComponentClient;
 
 /**
+ * HSO 2009-05: The components used by this test have been modified to no longer use 
+ *              the deprecated AbstractNotificationChannel
+ *              but instead to use CorbaNotificationChannel directly. 
+ *              Therefore this test is outdated and should probably be removed.
+ *              I just leave it in now, hoping that it might give some little additional coverage.
  * @author sroberts March 17, 2004
  */
 public class AbstractNCComponentTest extends ComponentClient {

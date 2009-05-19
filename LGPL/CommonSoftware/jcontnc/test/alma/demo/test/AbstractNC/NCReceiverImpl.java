@@ -25,14 +25,11 @@
  */
 package alma.demo.test.AbstractNC;
 
-import java.util.logging.Logger;
 import alma.acs.component.ComponentImplBase;
-import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-
+import alma.acs.nc.CorbaNotificationChannel;
+import alma.acs.nc.Receiver;
 import alma.acsnc.EventDescription;
-import alma.acs.nc.*;
-
 import alma.demo.NCReceiverOperations;
 /**
  * This is an example of a receiver class for the Simulated
@@ -53,8 +50,8 @@ public class NCReceiverImpl
     public void initialize(ContainerServices containerServices) 
        throws alma.acs.component.ComponentLifecycleException {
         super.initialize(containerServices);
-        System.out.println("Created NC Receiver");
         receiver = CorbaNotificationChannel.getCorbaReceiver("AbstractNC_Channel", m_containerServices);
+        System.out.println("Created NC Receiver");
     }
 
     public void execute() {
@@ -67,7 +64,5 @@ public class NCReceiverImpl
         System.out.println("NC_TEST: Got temperatureDataBlockEvent in receive");
         System.out.println("NC_TEST: "+e.name);
     }
-        
+
 }
-
-

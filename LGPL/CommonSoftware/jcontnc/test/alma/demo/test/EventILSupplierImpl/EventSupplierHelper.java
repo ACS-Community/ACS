@@ -29,6 +29,9 @@ package alma.demo.test.EventILSupplierImpl;
 
 import java.util.logging.Logger;
 
+import org.omg.PortableServer.Servant;
+
+import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 
@@ -60,7 +63,7 @@ public class EventSupplierHelper extends ComponentHelper
      *
      * @return Class
      */
-    protected Class _getPOATieClass()
+    protected Class<? extends Servant> _getPOATieClass()
     {
         return SupplierCompPOATie.class;
     }
@@ -71,7 +74,7 @@ public class EventSupplierHelper extends ComponentHelper
      *
      * @return  the <code>Class</code> object associated with the operations interface.
      */
-    protected Class _getOperationsInterface()
+    protected Class<? extends ACSComponentOperations> _getOperationsInterface()
     {
         return SupplierCompOperations.class;
     }
