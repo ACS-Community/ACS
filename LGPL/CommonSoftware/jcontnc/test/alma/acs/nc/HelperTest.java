@@ -153,6 +153,7 @@ public class HelperTest extends ComponentClientTestCase
 		
 		assertChannel(false, channelName);
 
+		// @TODO Refactor the following code to use alma.acs.concurrent.ThreadBurstExecutorService now that we have it
 		class ChannelCreator implements Callable<EventChannel> {
 			private final String channelName;
 			private final CountDownLatch synchStart;
