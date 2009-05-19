@@ -36,55 +36,54 @@ import alma.acs.exceptions.AcsJException;
  * The CorbaPublisher class implements those methods needed to craft a publisher
  * that publishes events to a CORBA notification channel.
  * 
+ * @deprecated since ACS 8.0.1, see COMP-1786. This class adds no functionality to SimpleSupplier and will be removed later.
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
  */
-public class CorbaPublisher extends alma.acs.nc.SimpleSupplier {
-	
-	//private StructuredEvent corbaEvent;
+public class CorbaPublisher extends SimpleSupplier {
 	
 	/**
 	 * The parameters are:
-	 * @param channelName	the name of the channel -- e.g., Progress
-	 * @param cs container services
-    * @throws AcsJException 
+	 * @param channelName
+	 *            the name of the channel -- e.g., Progress
+	 * @param cs
+	 *            container services
+	 * @throws AcsJException
 	 */
-	public CorbaPublisher (String channelName, ContainerServicesBase cs) 
-      throws AcsJException {
-
-		super (channelName, cs);
+	public CorbaPublisher(String channelName, ContainerServicesBase cs) throws AcsJException {
+		super(channelName, cs);
 	}
-	
+
 	/**
 	 * The parameters are:
-	 * @param channelName	the name of the channel -- e.g., Progress
-	 * @param channelNotifyDomaiName	the name of notify. service domain -- e.g., ALARMSYSTEM
-	 * @param cs container services
-    * @throws AcsJException 
+	 * 
+	 * @param channelName
+	 *            the name of the channel -- e.g., Progress
+	 * @param channelNotifyDomaiName
+	 *            the name of notify. service domain -- e.g., ALARMSYSTEM
+	 * @param cs
+	 *            container services
+	 * @throws AcsJException
 	 */
-	public CorbaPublisher (String channelName, String channelNotifyDomaiName, ContainerServicesBase cs) 
-      throws AcsJException {
-
-		super (channelName, channelNotifyDomaiName, cs);
+	public CorbaPublisher(String channelName, String channelNotifyDomaiName, ContainerServicesBase cs)
+			throws AcsJException {
+		super(channelName, channelNotifyDomaiName, cs);
 	}
 
 	/**
-	 * This is the main method for publishing an event.  The IDLEntity must be
-	 * the IDL structure that defines the event data.  It must match the names of
-	 * the events in the list when the channel was created.
-	 * @param event an IDLEntity to publish
+	 * This is the main method for publishing an event. The IDLEntity must be the IDL structure that defines the event
+	 * data. It must match the names of the events in the list when the channel was created.
+	 * 
+	 * @param event
+	 *            an IDLEntity to publish
+	 * @throws AcsJException 
 	 */
-	public final void publish(IDLEntity event) {
-        try {
-            super.publishEvent(event);
-        } catch(AcsJException e) {
-           //@TODO OK to swallow???
-        }
+	public final void publish(IDLEntity event) throws AcsJException {
+		super.publishEvent(event);
 	}
-	
 
 	/**
-    * Returns the name of the channel.
+	 * Returns the name of the channel.
 	 * @return Name of the channel.
 	 */
 	public String getChannelName() {
