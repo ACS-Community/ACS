@@ -16,5 +16,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/selector-1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
