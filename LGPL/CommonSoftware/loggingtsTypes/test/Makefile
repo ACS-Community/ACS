@@ -87,7 +87,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = typeSafeLogTest
 
 #
 # TCL scripts (public and local)
@@ -122,9 +122,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
+JARFILES= typeSafeLogTest
+typeSafeLogTest_DIRS= alma
+typeSafeLogTest_EXTRAS= 
 #
 # java sources in Jarfile on/off
 DEBUG=on
