@@ -17,7 +17,7 @@ import javax.jms.TopicPublisher;
 
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.CorbaPublisher;
+import alma.acs.nc.SimpleSupplier;
 
 /**
  * 
@@ -46,7 +46,7 @@ import alma.acs.nc.CorbaPublisher;
 public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublisher {
 	
 	/**
-	 * Objects from this class associate a time to the <code>CorbaPublisher</code>
+	 * Objects from this class associate a time to the <code>SimpleSupplier</code>
 	 * in order to remember when the NC has been accessed the last time.
 	 * In this way it is possible to implement a policy to free not used NC.
 	 * 
@@ -58,7 +58,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		/**
 		 * The publisher
 		 */ 
-		private CorbaPublisher publisher;
+		private SimpleSupplier publisher;
 		
 		/**
 		 * The last time the publisher has been accessed
@@ -75,7 +75,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		 * @throws AcsJException In case of error building the <code>CorbaPublisher</code>
 		 */
 		public PublisherPoolItem(String name, ContainerServicesBase contSvcs) throws AcsJException {
-			publisher= new CorbaPublisher(
+			publisher= new SimpleSupplier(
 					name, 
 					alma.acsnc.ALARMSYSTEM_DOMAIN_NAME.value, 
 					contSvcs);
@@ -86,14 +86,20 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		 * Publish a message on this publisher
 		 * @param message
 		 */
-		public void sendMessage(Message message)
+		public void sendMessage(Message message) throws JMSException
 		{
 			if (publisher==null) {
 				throw new IllegalStateException("Trying to publish on a null publisher");
 			}
 			if(message instanceof ACSJMSMessage) {
 				((ACSJMSMessage)message).getEntity().type=message.getClass().getName();
-				publisher.publish(((ACSJMSMessage)message).getEntity());
+				try {
+					publisher.publishEvent(((ACSJMSMessage)message).getEntity());
+				} catch (AcsJException ex) {
+					JMSException ex2 = new JMSException("Failed to publish on NC " + publisher.getChannelName());
+					ex2.setLinkedException(ex);
+					throw ex2;
+				}
 				lastAccessTime=System.currentTimeMillis();
 			} else {
 				throw new IllegalArgumentException("ACSJMSProducer can only send ACSJMSMessage messages!");
@@ -103,7 +109,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 		/**
 		 * Release the publisher
 		 * 
-		 * @see {@link CorbaPublisher}
+		 * @see {@link SimpleSupplier}
 		 */
 		public void close() {
 			if (publisher==null) {
@@ -133,7 +139,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 	
 	/** The publishers
 	 * The key is the name of the NC (i.e. the name of the topic)
-	 * The value is the CorbaPublisher
+	 * The value is the SimpleSupplier
 	 */
 	private static HashMap<String, PublisherPoolItem> publishersPool = new HashMap<String, PublisherPoolItem>(); 
 
@@ -143,7 +149,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 	 * @param topic The topic to publish messages into
 	 * @param containerServices The container service
 
-	 * @throws JMSException In case of error building the <code>CorbaPublisher</code>
+	 * @throws JMSException In case of error building the <code>SimpleSupplier</code>
 	 */
 	public ACSJMSTopicPublisher(Topic topic, ContainerServicesBase containerServices) throws JMSException {
 		super(topic, containerServices);
@@ -235,7 +241,7 @@ public class ACSJMSTopicPublisher extends ACSJMSProducer implements TopicPublish
 			try {
 				item = new PublisherPoolItem(topic.getTopicName(),containerServices);
 			} catch (Exception e) {
-				throw new JMSException("Error building a CorbaPublisher");
+				throw new JMSException("Error building a SimpleSupplier");
 			}
 			synchronized (publishersPool) {
 				publishersPool.put(topic.getTopicName(), item);
