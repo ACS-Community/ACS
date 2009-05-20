@@ -18,13 +18,15 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: archiveeventsArchiveSupplier.cpp,v 1.5 2007/12/04 12:04:30 maraya Exp $"
+* "@(#) $Id: archiveeventsArchiveSupplier.cpp,v 1.6 2009/05/20 17:19:48 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
 */
 
 #include <acscommonC.h>
+#include <acsncErrType.h>
+#include <ACSErrTypeCORBA.h>
 #include "archiveeventsArchiveSupplier.h"
 //-----------------------------------------------------------------------------
 ArchiveSupplier::ArchiveSupplier() :
@@ -74,6 +76,32 @@ ArchiveSupplier::send_event(CORBA::Short priority,
     archiving_event.filterable_data[1].value = value;
     
     //delegate to another method which will actually send the event
-    this->publishEvent(archiving_event);
+	 try{
+		 this->publishEvent(archiving_event);
+	 }
+	 catch(ACSErrTypeCORBA::CORBAReferenceNilExImpl& ex1)
+	 {
+		 acsncErrType::PublishEventFailureExImpl
+			 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+		 ex2.setEventName("archiving_event");
+		 ex2.setChannelName(channelName_mp);
+		 throw ex2;
+	 }
+	 catch(ACSErrTypeCORBA::NarrowFailedExImpl& ex1)
+	 {
+		 acsncErrType::PublishEventFailureExImpl
+			 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+		 ex2.setEventName("archiving_event");
+		 ex2.setChannelName(channelName_mp);
+		 throw ex2;
+	 }
+	 catch(ACSErrTypeCORBA::FailedToResolveServiceExImpl& ex1)
+	 {
+		 acsncErrType::PublishEventFailureExImpl
+			 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+		 ex2.setEventName("archiving_event");
+		 ex2.setChannelName(channelName_mp);
+		 throw ex2;
+	 }
 }
 //-----------------------------------------------------------------------------

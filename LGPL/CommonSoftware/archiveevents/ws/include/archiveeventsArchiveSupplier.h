@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.6 2006/01/27 19:07:07 dfugate Exp $"
+ * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.7 2009/05/20 17:19:48 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -72,6 +72,8 @@ class ArchiveSupplier : public BaseSupplier
      * @param container Name of the container. Optional and there's
      * a solid chance this param will be removed entirely in the 
      * future.
+	  * @throw acsncErrType::PublishEventFailureExImpl
+	  * 		  Cannot publish the event in the Notification Channel
      */
     template <class T> 
     void 
@@ -84,13 +86,39 @@ class ArchiveSupplier : public BaseSupplier
 	{
 	    CORBA::Any any;
 	    any <<= value;
-	    
-	    this->send_event(priority,
-			     timeStamp,
-			     component,
-			     property,
-			     any,
-			     container);
+
+		 try{
+			 this->send_event(priority,
+					 timeStamp,
+					 component,
+					 property,
+					 any,
+					 container);
+		 }
+		 catch(ACSErrTypeCORBA::CORBAReferenceNilExImpl& ex1)
+		 {
+			 acsncErrType::PublishEventFailureExImpl
+				 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+			 ex2.setEventName("archiving_event");
+			 ex2.setChannelName(channelName_mp);
+			 throw ex2;
+		 }
+		 catch(ACSErrTypeCORBA::NarrowFailedExImpl& ex1)
+		 {
+			 acsncErrType::PublishEventFailureExImpl
+				 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+			 ex2.setEventName("archiving_event");
+			 ex2.setChannelName(channelName_mp);
+			 throw ex2;
+		 }
+		 catch(ACSErrTypeCORBA::FailedToResolveServiceExImpl& ex1)
+		 {
+			 acsncErrType::PublishEventFailureExImpl
+				 ex2 (__FILE__, __LINE__, "ArchiveSupplier::send_event");
+			 ex2.setEventName("archiving_event");
+			 ex2.setChannelName(channelName_mp);
+			 throw ex2;
+		 }
 	}
     
     /**
@@ -104,6 +132,8 @@ class ArchiveSupplier : public BaseSupplier
      * @param container Name of the container. There's
      * a solid chance this param will be removed entirely in the 
      * future.
+	  * @throw acsncErrType::PublishEventFailureExImpl
+	  * 		  Cannot publish the event in the Notification Channel
      */
     void 
     send_event(CORBA::Short priority,

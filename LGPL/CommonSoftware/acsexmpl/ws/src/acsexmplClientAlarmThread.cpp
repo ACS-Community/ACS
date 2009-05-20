@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.109 2007/02/01 05:14:26 cparedes Exp $"
+* "@(#) $Id: acsexmplClientAlarmThread.cpp,v 1.110 2009/05/20 17:19:48 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -105,7 +105,7 @@ necessary for this alarm to "go off" are set using an ACS thread.
 
 #include <acsexmplPowerSupplyC.h>
 
-ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.109 2007/02/01 05:14:26 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplClientAlarmThread, "$Id: acsexmplClientAlarmThread.cpp,v 1.110 2009/05/20 17:19:48 javarias Exp $")
 
 using namespace ACS;
 using namespace maci;
@@ -268,8 +268,9 @@ int main(int argc, char *argv[])
 	_ex.log();
 	return -1;
 	}
-    catch(...)
+    catch(std::exception& e)
 	{
+		std::cout << e.what() << std::endl;
 	ACS_SHORT_LOG((LM_ERROR,"Error!"));
 	return -1;
 	}

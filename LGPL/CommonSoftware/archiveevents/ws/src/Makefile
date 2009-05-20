@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2006/01/26 00:13:02 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.3 2009/05/20 17:19:48 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -58,9 +58,10 @@ INCLUDES        = archiveeventsArchiveSupplier.h
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = archiveevents
-LIBRARIES_L     =
+LIBRARIES_L     =  
 
 archiveevents_OBJECTS = archiveeventsArchiveSupplier
+archiveevents_LIBS = acsncErrType cdb
 
 #
 # <brief description of lllll library>

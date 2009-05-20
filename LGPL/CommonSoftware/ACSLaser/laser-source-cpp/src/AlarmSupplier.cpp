@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.9 2008/04/06 03:59:38 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.10 2009/05/20 17:19:48 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,6 +60,8 @@
 #include "acsutilTimeStamp.h"
 #include <string>
 #include <acsncC.h>
+#include <acsncErrType.h>
+#include <ACSErrTypeCORBA.h>
 
 using acsalarm::ASIMessage;
 using std::string;
@@ -117,6 +119,32 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Preparing to send XML.");
-	BaseSupplier::publishEvent(event);
+	try{
+		BaseSupplier::publishEvent(event);
+	}
+	catch(ACSErrTypeCORBA::CORBAReferenceNilExImpl& ex1)
+	{
+		acsncErrType::PublishEventFailureExImpl 
+			ex2 (__FILE__, __LINE__, "AlarmSupplier::publishEvent");
+		ex2.setEventName("event");
+		ex2.setChannelName(channelName_mp);
+		throw ex2;
+	}
+	catch(ACSErrTypeCORBA::NarrowFailedExImpl& ex1)
+	{
+		acsncErrType::PublishEventFailureExImpl 
+			ex2 (__FILE__, __LINE__, "AlarmSupplier::publishEvent");
+		ex2.setEventName("event");
+		ex2.setChannelName(channelName_mp);
+		throw ex2;
+	}
+	catch(ACSErrTypeCORBA::FailedToResolveServiceExImpl& ex1)
+	{
+		acsncErrType::PublishEventFailureExImpl 
+			ex2 (__FILE__, __LINE__, "AlarmSupplier::publishEvent");
+		ex2.setEventName("event");
+		ex2.setChannelName(channelName_mp);
+		throw ex2;
+	}
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Sent XML.");
 }

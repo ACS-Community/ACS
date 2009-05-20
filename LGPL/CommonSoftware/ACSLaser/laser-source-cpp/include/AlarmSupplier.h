@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.5 2008/01/29 01:38:45 sharring Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.6 2009/05/20 17:19:47 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -64,6 +64,8 @@ class AlarmSupplier : public BaseSupplier
 
 		/**
 		 * Method to publish an event to the LASER alarm server.
+		 * @throw acsncErrType::PublishEventFailureExImpl
+		 * 		 Cannot publish the event in the Notification Channel
 		 */
 		void publishEvent(acsalarm::ASIMessage &msg);
 	
