@@ -42,181 +42,235 @@ import alma.acs.testsupport.LogRecordCollectingLogger;
 public class RemoteLogDispatcherTest extends TestCase {
 
     private TestLogDispatcher dispatcher;
-    private DispatchingLogQueue queue;
-    private CollectingLogger collectingLogger;
-    private TestAcsXMLLogFormatter formatter;
-    
-    
-    
-    /**
-     * JUnit's class re-loading strategy fails for these tests, so the setUp must reset the state of the member variables
-     * 
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        System.out.println("START----------------------------" + getName() + "-------------");
-        ORB orb = org.omg.CORBA.ORB.init();
-//        collectingLogger = CollectingLogger.getTestLogger("RemoteLogDispatcherTest");
-        collectingLogger = LogRecordCollectingLogger.getCollectingLogger("RemoteLogDispatcherTest", CollectingLogger.class);
-        collectingLogger.suppressLogs(true); // only interested in the LogRecords
-        collectingLogger.clearLogRecords(); 
-        formatter = new TestAcsXMLLogFormatter();
-        dispatcher = new TestLogDispatcher(orb, formatter);
-        queue = new DispatchingLogQueue();
-    }
+	private DispatchingLogQueue queue;
+	private CollectingLogger collectingLogger;
+	private TestAcsXMLLogFormatter formatter;
 
-    protected void tearDown() throws Exception {
-        queue.shutDown();
-        System.out.println("END------------------------------" + getName() + "-------------\n\n");
-    }
+	/**
+	 * JUnit's class re-loading strategy fails for these tests, so the setUp must reset the state of the member
+	 * variables
+	 * 
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		System.out.println("START----------------------------" + getName() + "-------------");
+		ORB orb = org.omg.CORBA.ORB.init();
+		collectingLogger = LogRecordCollectingLogger.getCollectingLogger("RemoteLogDispatcherTest", CollectingLogger.class);
+		collectingLogger.suppressLogs(true); // only interested in the LogRecords
+		collectingLogger.clearLogRecords();
+		formatter = new TestAcsXMLLogFormatter();
+		dispatcher = new TestLogDispatcher(orb, formatter);
+		queue = new DispatchingLogQueue();
+	}
 
-//    public void testSendLogRecords() {
-//        int numRecords = 10;
-//        collectingLogger.produceLogs1(numRecords);
-//        LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords(); 
-//        dispatcher.sendLogRecords(fakeLogRecords);
-//        String[] xmlRecords = dispatcher.getCollectedXmlLogRecords();
-//        // nothing lost?
-//        assertEquals(numRecords, xmlRecords.length);
-//        // order kept?
-//        assertTrue(xmlRecords[1].startsWith("<Emergency TimeStamp="));
-//    }
-// 
-//    
-//    public void testFlushByRecordNumber() {
-//        // no initial buffering beyond normal
-//        queue.setRemoteLogDispatcher(dispatcher);
-//        
-//        int numRecords = 4;
-//        dispatcher.setBufferSize(numRecords);
-//        collectingLogger.produceLogs1(numRecords);
-//        LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords(); 
-//        
-//        for (int i = 0; i < numRecords-1; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        // so far all should be buffered
-//        sleep(1000);
-//        assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
-//        
-//        // the next one should trigger a flush (in a separate thread, thus we wait a bit)
-//        queue.log(fakeLogRecords[numRecords-1]);
-//        sleep(1000);
-//        assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
-//        
-//        // the queue should have sorted by by level/time, but the time-sorting of the dispatcher should have restored the order in this case 
-//        assertTrue(dispatcher.getCollectedXmlLogRecords()[1].startsWith("<Emergency TimeStamp="));
-//    }
-//    
-//    public void testPeriodicFlush() {
-//        queue.setRemoteLogDispatcher(dispatcher);
-//        queue.setPeriodicFlushing(2000);
-//        
-//        int numRecords = 2;
-//        System.out.println("next should come " + numRecords + " records:");
-//        dispatcher.setBufferSize(numRecords + 1);
-//        collectingLogger.produceLogs1(numRecords);
-//        LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();         
-//        for (int i = 0; i < numRecords; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        // not enough records to flush directly, but should happen after 2 seconds anyway
-//        sleep(2500);
-//        assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
-//        
-//        // now flood it with more logs to see if this interferes with the scheduled timer (note the 200ms sleep introduced by TestLogDispatcher) 
-//        numRecords = numRecords * 10;
-//        System.out.println("next should come " + numRecords + " records:");
-//        dispatcher.clearCollectedXmlLogRecords();
-//        collectingLogger.clearLogRecords();
-//        collectingLogger.produceLogs1(numRecords);
-//        fakeLogRecords = collectingLogger.getCollectedLogRecords();
-//        for (int i = 0; i < numRecords; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        sleep(10000);
-//        int pendingLogFlushes = queue.pendingFlushes();
-//        System.out.println("all should be logged now. Pending flushes: " + pendingLogFlushes);
-//        assertEquals(0, pendingLogFlushes);
-//
-//        // stop periodic flushing, and check pendingFlushes
-//        queue.setPeriodicFlushing(0);
-//        sleep(5000);
-//        assertEquals(0, queue.pendingFlushes());
-//    }
-//    
-//    
-//    public void testUnavailableRemoteLogService() throws Exception {
-//        // do not yet call queue.setRemoteLogDispatcher to simulate e.g. a container start when the log service is not yet accessible
-//        int numRecords = 100;
-//        collectingLogger.produceLogs1(numRecords);
-//        LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
-//        for (int i = 0; i < numRecords; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        // all log records should be queued
-//        assertEquals(numRecords, queue.recordQueueSize());
-//        // no flushing should be pending
-//        assertEquals(0, queue.pendingFlushes());        
-//        sleep(1000);
-//        
-//        // now the remote logging becomes available
-//        dispatcher.setVerbose(false);
-//        int bufferSize = 12; // must not divide numRecords
-//        dispatcher.setBufferSize(bufferSize);  
-//        queue.setRemoteLogDispatcher(dispatcher);
-//        
-//        // a single flush() (assuming it is successful) should trigger more flushes to run after it returns,
-//        // and thus take away more log records (largest multiple of the buffer size).
-//        // here we wait for the original flush to finish
-//        boolean flushResult = ((Boolean)queue.flush().get()).booleanValue();
-//        assertTrue(flushResult);
-//// if we want to let the flushes resubmit new flushes and finish before flushAllAndWait is called, uncomment the following lines:         
-////        sleep(10000); 
-////        assertEquals(numRecords % bufferSize, queue.recordQueueSize());
-////        assertEquals(0, queue.pendingFlushes());
-//        
-//        // now flush the leftover records
-//        queue.flushAllAndWait();
-//        dispatcher.clearCollectedXmlLogRecords();
-//        assertEquals(0, queue.recordQueueSize());
-//        // sometimes the flush executor still reports one residual flush request right after the last flush has finished, so we sleep a bit 
-//        sleep(100);
-//        assertEquals(0, queue.pendingFlushes());
-//        // make sure that flushAllAndWait really waited enough, and no stray records were delivered afterwards
-//        assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
-//    }
-//    
-//    
-//    public void testFailingRecords() {
-//        // simulate a failure in converting the LogRecord to XML
-//        formatter.setFormatFailureChance(1.0);
-//        queue.setRemoteLogDispatcher(dispatcher);
-//        
-//        int numRecords = 4;
-//        dispatcher.setBufferSize(2);
-//        collectingLogger.produceLogs1(numRecords);
-//        LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords(); 
-//        
-//        for (int i = 0; i < numRecords; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        queue.flushAllAndWait();
-//        // all records should have been dropped
-//        assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
-//
-//        
-//        // now simulate a failure in sending the XML log records
-//        // These records should be resubmitted to the queue and finally get sent as long as the failure chance is below 1.0
-//        formatter.setFormatFailureChance(0.0);
-//        dispatcher.setWriteFailureChance(0.7);
-//        for (int i = 0; i < numRecords; i++) {
-//            queue.log(fakeLogRecords[i]);    
-//        }
-//        queue.flushAllAndWait();
-//        assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
-//    }
-    
+	protected void tearDown() throws Exception {
+		queue.shutDown();
+		System.out.println("END------------------------------" + getName() + "-------------\n\n");
+	}
+
+	
+	/**
+	 * Sends a sequence of LogRecords to the {@link TestLogDispatcher}
+	 * and compares the number and ordering of the gathered XML records
+	 * with those sent. 
+	 * This effectively tests {@link RemoteLogDispatcher#sendLogRecords(LogRecord[])}.
+	 */
+	public void testSendLogRecords() {
+		int numRecords = 10;
+		collectingLogger.produceLogs1(numRecords);
+		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+		dispatcher.sendLogRecords(fakeLogRecords);
+		String[] xmlRecords = dispatcher.getCollectedXmlLogRecords();
+		// nothing lost?
+		assertEquals(numRecords, xmlRecords.length);
+		// order kept?
+		assertTrue(xmlRecords[1].startsWith("<Emergency TimeStamp="));
+	}
+
+
+	/**
+	 * Sends as many LogRecords via {@link DispatchingLogQueue#log(LogRecord)} 
+	 * that the buffer size ("dispatchPacketSize") is not quite reached, and 
+	 * verifies that all these logs are still queued.
+	 * <p>
+	 * Then sends another LogRecord and verifies that (now that the buffer was full) 
+	 * all LogRecords are forwarded from the queue to the dispatcher.
+	 * <p>
+	 * Finally this test verifies that the dispatcher applies the time sorting correctly,
+	 * thus restoring the original order of LogRecords. (The queue should sort by log level,
+	 * but since in this test all records fit into one buffer, the original order should be restored.)
+	 */
+	public void testFlushByRecordNumber() {
+		// no initial buffering beyond normal
+		queue.setRemoteLogDispatcher(dispatcher);
+
+		int numRecords = 5;
+		dispatcher.setBufferSize(numRecords);
+		collectingLogger.produceLogs1(numRecords);
+		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+
+		for (int i = 0; i < numRecords - 1; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		// so far all should be buffered
+		sleep(500);
+		assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
+
+		// the next one should trigger a flush (in a separate thread, thus we wait a bit)
+		queue.log(fakeLogRecords[numRecords - 1]);
+		sleep(500);
+		assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
+
+		// the queue should have sorted by by level/time, but the time-sorting of the dispatcher should have restored
+		// the order in this case
+		assertTrue(dispatcher.getCollectedXmlLogRecords()[1].startsWith("<Emergency TimeStamp="));
+	}
+
+	
+	/**
+	 * Sets up DispatchingLogQueue for periodic flushing every 2 seconds (cp. CDB attribute "flushPeriodSeconds")
+	 * and sends some LogRecords to the queue. (Flushing by record number is disabled by using a sufficiently large buffer, 
+	 * see also {@link #testFlushByRecordNumber()}).
+	 * Then verifies that after the flushing period the log records have been forwarded to the dispatcher.
+	 * <p>
+	 * Then sends many more log records than fit into one buffer, thus testing the triggering of subsequent flushes
+	 * until the queue is drained, and that this mechanism still works while we have scheduled flushing in place.
+	 * <p>
+	 * Finally stops the scheduled flushing and verifies that it's gone.
+	 */
+	public void testPeriodicFlush() {
+		queue.setRemoteLogDispatcher(dispatcher);
+		assertFalse(queue.flushesPeriodically());
+		queue.setPeriodicFlushing(2000);
+		assertTrue(queue.flushesPeriodically());
+
+		int numRecords = 8;
+		System.out.println("next should come " + numRecords + " records:");
+		dispatcher.setBufferSize(numRecords + 1);
+		collectingLogger.produceLogs1(numRecords);
+		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+		for (int i = 0; i < numRecords; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		// not enough records to flush directly, but should happen after 2 seconds anyway
+		sleep(2500);
+		assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
+
+		// now flood it with more logs to see if this interferes with the scheduled timer 
+		// (note the 200ms sleep introduced by TestLogDispatcher#writeRecords)
+		numRecords = numRecords * 10;
+		System.out.println("next should come " + numRecords + " records:");
+		dispatcher.clearCollectedXmlLogRecords();
+		collectingLogger.clearLogRecords();
+		collectingLogger.produceLogs1(numRecords);
+		fakeLogRecords = collectingLogger.getCollectedLogRecords();
+		for (int i = 0; i < numRecords; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		sleep(3000);
+		assertEquals(0, queue.realQueueSize());
+		int pendingLogFlushes = queue.pendingFlushes();
+		System.out.println("all should be logged now. Pending flushes: " + pendingLogFlushes);
+		assertEquals(0, pendingLogFlushes);
+
+		// stop periodic flushing, and check pendingFlushes
+		queue.setPeriodicFlushing(0);
+		assertFalse(queue.flushesPeriodically());
+		// wait for the underlying concurrent.BlockingQueue to remove the scheduled task,
+		// now that flushesPeriodically() gives false and thus no longer deducts the scheduled task from the flush queue.
+		sleep(3000);
+		assertEquals(0, queue.pendingFlushes());
+	}
+
+	
+	/**
+	 * Submits LogRecords to {@link DispatchingLogQueue} without having hooked up 
+	 * the {@link RemoteLogDispatcher} yet (as it happens during a container start),
+	 * and checks that all records are queued.
+	 * <p>
+	 * Then adds the dispatcher, flushes the queue, and verifies that {@link DispatchingLogQueue#flush()}
+	 * flushes some records, while a subsequent {@link DispatchingLogQueue#flushAllAndWait()} flushes all records
+	 * and leaves the queue in a clean state without further flushing requests.
+	 */
+	public void testUnavailableRemoteLogService() throws Exception {
+		// do not yet call queue.setRemoteLogDispatcher to simulate e.g. a container start when the log service is not yet accessible
+		int numRecords = 100;
+		collectingLogger.produceLogs1(numRecords);
+		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+		for (int i = 0; i < numRecords; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		// all log records should be queued
+		assertEquals(numRecords, queue.recordQueueSize());
+		// no flushing should be pending
+		assertEquals(0, queue.pendingFlushes());
+		sleep(1000);
+
+		// now the remote logging becomes available
+		dispatcher.setVerbose(false);
+		int bufferSize = 12; // must not divide numRecords
+		dispatcher.setBufferSize(bufferSize);
+		queue.setRemoteLogDispatcher(dispatcher);
+
+		// a single flush() (assuming it is successful) should trigger more flushes to run **after it returns**,
+		// and thus take away more log records (largest multiple of the buffer size).
+		// here we wait **only for the original flush** to finish
+		boolean flushResult = queue.flush().get().booleanValue();
+		assertTrue(flushResult);
+		// if we want to wait for and validate the re-submitted flushes, before flushAllAndWait is called, uncomment the following lines:
+		// sleep(10000);
+		// assertEquals(numRecords % bufferSize, queue.recordQueueSize());
+		// assertEquals(0, queue.pendingFlushes());
+
+		// now flush the leftover records and wait (including the flushes triggered by the above flush() call)
+		queue.flushAllAndWait();
+		// make sure that flushAllAndWait really waited enough
+		assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
+		dispatcher.clearCollectedXmlLogRecords();
+		assertEquals(0, queue.recordQueueSize());
+		// sometimes the flush executor still reports one residual flush request right after the last flush has finished, so we sleep a bit
+		sleep(100);
+		assertEquals(0, queue.pendingFlushes());
+		// just in case check that no stray records were delivered after the above flushAllAndWait - clearCollectedXmlLogRecords
+		assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
+	}
+
+
+	/**
+	 * Tests that a failure in XML formatting leads to dropping of the records.
+	 * <p>
+	 * Then tests that even with a 70% chance of failure in dispatching the log records will eventually send all records,
+	 * due to the records being re-inserted in the queue.
+	 */
+	public void testFailingRecords() {
+		// simulate a failure in converting the LogRecord to XML
+		formatter.setFormatFailureChance(1.0);
+		queue.setRemoteLogDispatcher(dispatcher);
+
+		int numRecords = 4;
+		dispatcher.setBufferSize(2);
+		collectingLogger.produceLogs1(numRecords);
+		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+
+		for (int i = 0; i < numRecords; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		queue.flushAllAndWait();
+		// all records should have been dropped
+		assertEquals(0, dispatcher.getCollectedXmlLogRecords().length);
+
+		// now simulate a failure in sending the XML log records
+		// These records should be resubmitted to the queue and finally get sent as long as the failure chance is below 1.0
+		formatter.setFormatFailureChance(0.0);
+		dispatcher.setWriteFailureChance(0.7);
+		for (int i = 0; i < numRecords; i++) {
+			queue.log(fakeLogRecords[i]);
+		}
+		queue.flushAllAndWait();
+		assertEquals(numRecords, dispatcher.getCollectedXmlLogRecords().length);
+	}
+
+	
     public void testQueueOverflow() {
         // simulate a failing log service 
         dispatcher.setWriteFailureChance(1.0);
@@ -267,8 +321,6 @@ public class RemoteLogDispatcherTest extends TestCase {
     }
 
 }
-
-
 
 
 
