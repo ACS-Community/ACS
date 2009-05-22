@@ -20,7 +20,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.7 2009/05/20 17:19:48 javarias Exp $"
+ * "@(#) $Id: archiveeventsArchiveSupplier.h,v 1.8 2009/05/22 15:15:41 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -39,6 +39,7 @@
 #include <baciC.h>
 
 #include <basencSupplier.h>
+#include <ACSErrTypeCORBA.h>
 
 /**
  * Class designed to send structured events out which will eventually
