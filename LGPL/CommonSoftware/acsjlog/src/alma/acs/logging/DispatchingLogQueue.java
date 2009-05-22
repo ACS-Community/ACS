@@ -490,7 +490,7 @@ public class DispatchingLogQueue {
             }
         }
         
-        if (periodMillisec > 0) {            
+        if (periodMillisec > 0) {
             Runnable cmd = new Runnable() {
                 public void run() {
                     if (queue.size() > 0) {

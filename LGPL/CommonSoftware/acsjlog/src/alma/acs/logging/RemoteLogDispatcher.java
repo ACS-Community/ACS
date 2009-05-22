@@ -88,7 +88,7 @@ class RemoteLogDispatcher {
      * Sets the size of the log record buffer, which determines the maximum number of log records 
      * that can be sent to the remote log service in one call. 
      * <p>
-     * Corresponds to <code>cacheSize</code> in the CDB.
+     * Corresponds to <code>dispatchPacketSize</code> in the CDB.
      * 
      * @param newBuffSize value >=1, otherwise ignored
      */

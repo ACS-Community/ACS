@@ -286,7 +286,7 @@ public class LogConfig {
 					// named logger configs under LoggingConfig we process right away, while other separate configs (those from component configurations) we do later.
 					
 					// @TODO: check if we really want to lose named logger settings that had been added dynamically before this refresh from CDB.
-					// If not, then we must dinstinguish between dynamic API and from-CDB config, and leave those objects that have no CDB-equivalent.
+					// If not, then we must distinguish between dynamic API and from-CDB config, and leave those objects that have no CDB-equivalent.
 
 					synchronized (namedLoggerConfigs) {
 						// We don't call namedLoggerConfigs.clear() because we don't want to lose logger names 

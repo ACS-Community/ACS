@@ -360,7 +360,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
                     record.setSourceClassName(cname);
                     record.setSourceMethodName(frame.getMethodName());
                     int lineNumber = frame.getLineNumber();
-                    specialProperties.put(LogParameterUtil.PARAM_LINE, new Long(lineNumber));
+                    specialProperties.put(LogParameterUtil.PARAM_LINE, Long.valueOf(lineNumber));
                     foundNonLogFrame = true;
                     if (this.callStacksToBeIgnored.isEmpty()) {
                     	break; // performance optimization: avoid checking all "higher" stack frames
