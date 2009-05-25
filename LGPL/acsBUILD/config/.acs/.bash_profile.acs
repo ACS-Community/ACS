@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.79 2009/05/04 10:44:40 hyatagai Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.80 2009/05/25 11:52:15 mpasquat Exp $"
 #
 #
 #
@@ -718,7 +718,7 @@ then
 
    if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
    then
-      PATH=$CASA_ROOT/bin:$PATH
+      PATH=$PATH:$CASA_ROOT/bin
    fi
 
 elif [ "$OSYSTEM" = "Linux" ]
@@ -738,7 +738,7 @@ then
 
    if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
    then
-      PATH=$CASA_ROOT/bin:$PATH
+      PATH=$PATH:$CASA_ROOT/bin
    fi
 else
     PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
@@ -803,7 +803,7 @@ then
 
    if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
    then
-       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
+       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CASA_ROOT/lib
    fi
 
 elif [ "$OSYSTEM" = "Linux" ]
@@ -832,7 +832,7 @@ then
 
    if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
    then
-       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
+       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CASA_ROOT/lib
    fi
 
 else
@@ -977,7 +977,7 @@ fi
 
 if [ X"$CASA_ROOT" != X ]
 then
-   PYTHONPATH=$CASA_ROOT/lib/python:$PYTHONPATH
+   PYTHONPATH=$PYTHONPATH:$CASA_ROOT/lib/python
 fi
    
 
