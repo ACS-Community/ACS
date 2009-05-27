@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.15 2009/02/11 17:16:47 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.16 2009/05/27 19:03:07 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -40,7 +40,11 @@ clean :
 	rm -rf ../PRODUCTS/generateDS-1.15d
 	rm -rf ../PRODUCTS/pythoscope-0.3.2
 	rm -rf ../PRODUCTS/snakefood-1.3.1
+	rm -rf ../PRODUCTS/nose-0.10.4
 	rm -rf ../PRODUCTS/figleaf-latest
+	rm -rf ../PRODUCTS/logilab-common-0.39.0
+	rm -rf ../PRODUCTS/logilab-astng-0.19.0
+	rm -rf ../PRODUCTS/pylint-0.18.0
 #	rm -rf ../PRODUCTS/ipython-0.8.1
 #	rm -rf ../PRODUCTS/ipython1-saw
 #	rm -rf ../PRODUCTS/Twisted-2.5.0

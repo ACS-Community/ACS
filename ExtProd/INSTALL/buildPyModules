@@ -356,6 +356,28 @@ else
   popd
 fi
 
+if [ ! -e ../PRODUCTS/pylint-0.18.0.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-astng-0.19.0.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-common-0.39.0.tar.gz
+   ]
+then
+  echo Error: pylint sources are missing
+else
+  echo "== Building pylint"
+  tar -xvzf logilab-common-0.39.0.tar.gz
+  pushd logilab-common-0.39.0
+  python setup.py install
+  popd
+  tar -xvzf logilab-astng-0.19.0.tar.gz
+  pushd logilab-astng-0.19.0
+  python setup.py install
+  popd
+  tar -zxvf pylint-0.18.0.tar.gz
+  pushd pylint-0.18.0
+  python setup.py install 
+  popd
+fi
+
 cd $CWD
 echo Python Module installation done!
 date
