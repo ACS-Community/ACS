@@ -7,6 +7,7 @@
 1 - ----------T--:--:--.--- TRACE [PubSubTest#testTopicConnection] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='TOPIC.TEST' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- CONFIG [PubSubTest#testTopicConnection] Connected to DAO 'MACI/Channels'.
+1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='TOPIC.TEST' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] acs-jms message received
 1 - 
 1 - 
