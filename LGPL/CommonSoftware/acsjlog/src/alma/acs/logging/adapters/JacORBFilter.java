@@ -27,12 +27,11 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 
-
 /**
  * Filters out JacORB log messages that we don't want to see.
- * Also corrects the log level of a few known messages when it seems inappropriate;
+ * Also corrects the log level of a few known messages when it seems inappropriate (and blanks non-printable chars in the message);
  * this is a bit dirty because the JDK logging filters are not expected to modify the log records,
- * but it saves us from re-examining the same log record in a subsequent home-brew modifier stage.  
+ * but it saves us from re-examining the same log record in a subsequent home-brew modifier stage.
  */
 public class JacORBFilter implements Filter {
 
@@ -44,6 +43,8 @@ public class JacORBFilter implements Filter {
 	 * TODO-: to improve performance, we could instead match file and line, but then would have to update 
 	 * that information with the next jacorb code change.
 	 * The implementation already minimizes string comparison by checking only those messages that can occur at the given log level.
+	 * <p>
+	 * TODO: Add repeat guard based on the message, e.g. using MultipleRepeatGuard from jacsutil.
 	 */
 	public boolean isLoggable(LogRecord record) {
 		String message = record.getMessage();
@@ -145,6 +146,35 @@ public class JacORBFilter implements Filter {
 //		if (!isLoggable) {
 //			System.out.println("dropping JacORB message " + message + " with Level " + record.getLevel().getName());
 //		}
+		
+		// Remove non-ascii chars from the log message, which seems to occur only in logs coming from jacorb, 
+		// see http://jira.alma.cl/browse/COMP-3243
+		// For simplicity we blank all non-ascii-7-printable chars except newline and tab, 
+		// at the low risk of erroneously blanking more sophisticated (Umlaut etc) chars that jacorb may send us.
+		// If that turns out to be the case, and the encoding turns out as unicode, then see http://en.wikipedia.org/wiki/C0_and_C1_control_codes
+		if (isLoggable && message != null) {
+			String message2 = null;
+			int mlen = message.length();
+			for (int i = 0; i < mlen; i++) {
+				char ch = message.charAt(i);
+				if ((ch < 32 || ch >= 127) && ch != '\n' && ch != '\t') {
+					// got a bad char
+					if (message2 == null) {
+						// copy the leading good chars only if needed, to improve performance
+						message2 = message.substring(0, i);
+					}
+					// blank the bad char
+					message2 += '#';
+				}
+				else if (message2 != null) {
+					message2 += ch;
+				}
+			}
+			if (message2 != null) {
+				record.setMessage(message2);
+			}
+		}
+		
 		return isLoggable;
 	}
 
