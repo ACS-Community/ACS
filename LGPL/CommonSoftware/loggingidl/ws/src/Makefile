@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2007/11/26 09:52:40 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.5 2009/05/28 15:12:47 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -113,8 +113,8 @@ CDB_SCHEMAS =
 # IDL Files and flags
 # 
 IDL_FILES = logging_idl
-IDL_TAO_FLAGS =
-USER_IDL =
+IDL_TAO_FLAGS = 
+USER_IDL = -I$(ACE_ROOT)/TAO
 #
 # Jarfiles and their directories
 #

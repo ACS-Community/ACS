@@ -22,6 +22,8 @@
 #ifndef _LOGGING_IDL
 #define _LOGGING_IDL
 
+#include "orbsvcs/orbsvcs/DsLogAdmin.idl"
+
 #pragma prefix "alma"
 
 
@@ -161,6 +163,26 @@ Header,
 
     };
 
+};
+
+
+module Logging
+{
+	struct XmlLogRecord{
+		string xml;
+		AcsLogLevels::logLevelValue logLevel;
+	};
+
+	typedef sequence<XmlLogRecord> XmlLogRecordSeq;
+
+
+	interface AcsLogService : DsLogAdmin::BasicLog
+	{
+		/**
+		 * Write a record as XML string format
+		 */
+		void writeRecord(in XmlLogRecordSeq xmlLogRecords);
+	};
 };
 
 
