@@ -226,6 +226,50 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 		}
 	}
 
+	/**
+	 * Retrieve Component by name, non-sticky.
+	 * @return a component
+	 * 
+	 * @throws ComponentNotAlreadyActivatedEx 
+	 * @throws CannotGetComponentEx 
+	 * @throws NotConnectedToManagerException 
+	 * @throws NoPermissionEx 
+	 * @throws CorbaTransientException 
+	 * @throws CorbaNotExistException 
+	 * @throws UnknownErrorException 
+	 */
+	public org.omg.CORBA.Object managerGetComponentNonSticky (String curl) throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, UnknownErrorException {
+		try {
+			log.fine("sending get_component_non_sticky request for '" + curl + "'");
+			int hhhhh = myMaciHandle();
+			org.omg.CORBA.Object stub = myManagerReference().get_component_non_sticky(hhhhh, curl);
+			
+			log.fine("successfully retrieved component '" + curl + "' as non_sticky");
+			return stub;
+
+
+		} catch (NotConnectedToManagerException exc) {
+			mcehandler.handleExceptionTalkingToManager(exc);
+			throw exc;
+
+		} catch (NoPermissionEx exc) {
+			mcehandler.handleExceptionTalkingToManager(exc);
+			throw exc;
+
+		} catch (org.omg.CORBA.TRANSIENT exc) {
+			mcehandler.handleExceptionTalkingToManager(exc);
+			throw new CorbaTransientException(exc);
+
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST exc) {
+			mcehandler.handleExceptionTalkingToManager(exc);
+			throw new CorbaNotExistException(exc);
+
+		} catch (RuntimeException exc) {
+			mcehandler.handleExceptionTalkingToManager(exc);
+			throw new UnknownErrorException(exc);
+		}
+	}
+	
 
 	/**
 	 * Release components by name.
