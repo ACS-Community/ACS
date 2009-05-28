@@ -8,3 +8,4 @@ acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.AcsLoggin
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.RemoteLogDispatcherTest
 acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.ClientLogManagerTest
 acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.config.LogConfigTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner  alma.acs.logging.adapters.JacORBFilterTest
