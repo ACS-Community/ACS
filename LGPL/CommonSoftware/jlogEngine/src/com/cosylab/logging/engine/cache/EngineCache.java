@@ -163,27 +163,35 @@ public class EngineCache extends Thread {
 	 * 
 	 * @return A new temporary file
 	 *          <code>null</code> if it was not possible to create a new file
-	 * 
+	 * @throws If it was not possible to create a temporary file
 	 */
-	private File getNewFile() {
+	private File getNewFile() throws IOException {
 		String name=null;
 		File f=null;
 		try {
 			// Try to create the file in $ACSDATA/tmp
 			String acsdata = System.getProperty("ACS.data");
-			acsdata=acsdata+"/tmp/";
+			acsdata=acsdata+File.separator+"tmp"+File.separator;
 			File dir = new File(acsdata);
 			f = File.createTempFile("jlogEngineCache",".tmp",dir);
 			name=acsdata+f.getName();
 		} catch (IOException ioe) {
-			// Another error :-O
+			// An error :-O
 			String homeDir = System.getProperty("user.dir");
-			do {
-				// Try to create the file in the home directory
-				int random = new Random().nextInt();
-				name = homeDir + "/jlogEngineCache"+random+".jlog";
-				f = new File(name);
-			} while (f.exists());
+			// Check if the home dir is writable
+			File homeDirFile = new File(homeDir);
+			if (homeDirFile.isDirectory() && homeDirFile.canWrite()) {
+				do {
+					// Try to create the file in the home directory
+					int random = new Random().nextInt();
+					name = homeDir + File.separator+"jlogEngineCache"+random+".jlog";
+					f = new File(name);
+				} while (f.exists());
+			} else {
+				// The home folder is not writable: try to get a system temp file
+				f=File.createTempFile("jlogEngineCache",".tmp");
+				name=f.getName();
+			}
 		}
 		if (f!=null) {
 			f.deleteOnExit();
