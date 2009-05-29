@@ -195,9 +195,9 @@ public class LogFileCache implements ILogMap {
 	 * before giving up.
 	 * 
 	 * @ return The name of the file for the temporary log file 
-	 * 
+	 * @throws IOException If an error happened while creating the new file
 	 */
-	private String getFile() {
+	private String getFile() throws IOException {
 		String name=null;
 		File f=null;
 		// This does not work because the file is created into a 
@@ -209,18 +209,26 @@ public class LogFileCache implements ILogMap {
 		try {
 			// Try to create the cache in $ACSDATA/tmp
 			String acsdata = System.getProperty("ACS.data");
-			acsdata=acsdata+"/tmp/";
+			acsdata=acsdata+File.separator+"tmp"+File.separator;
 			File dir = new File(acsdata);
 			f = File.createTempFile("jlog",".tmp",dir);
 		} catch (IOException ioe) {
 			// Another error :-O
 			String homeDir = System.getProperty("user.dir");
-			do {
-				// Try to create the file in the home diretory
-				int random = new Random().nextInt();
-				name = homeDir + "/jlog"+random+".jlog";
-				f = new File(name);
-			} while (f.exists());
+			File homeFileDir = new File(homeDir);
+			if (homeFileDir.isDirectory() && homeFileDir.canWrite()) {
+				do {
+					// Try to create the file in the home diretory
+					int random = new Random().nextInt();
+					name = homeDir + File.separator+"jlog"+random+".jlog";
+					f = new File(name);
+				} while (f.exists());
+			} else {
+				// If for any reason the home folder was not writable then try 
+				// to get a system temporary file
+				f= File.createTempFile("jlog",".tmp");
+				name=f.getAbsolutePath();
+			}
 		}
 		if (f!=null) {
 			logFileName=f.getAbsolutePath();
