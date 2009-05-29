@@ -190,7 +190,7 @@ public class EngineCache extends Thread {
 			} else {
 				// The home folder is not writable: try to get a system temp file
 				f=File.createTempFile("jlogEngineCache",".tmp");
-				name=f.getName();
+				name=f.getAbsolutePath();
 			}
 		}
 		if (f!=null) {
