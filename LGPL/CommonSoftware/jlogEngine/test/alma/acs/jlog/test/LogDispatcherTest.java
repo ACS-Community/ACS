@@ -149,11 +149,11 @@ public class LogDispatcherTest extends TestCase {
 	 * @see junit.framework.TestCase
 	 */
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		assertNotNull("The collection of logs is null!",logs);
 		logs.clear();
 		logs=null;
 		logRecv = null;
+		super.tearDown();
 	}
 	
 	/**
@@ -176,7 +176,7 @@ public class LogDispatcherTest extends TestCase {
 		for (ILogEntry log: logs) {
 			logDispatcher.addLog(log.toXMLString());
 		}
-		waitProcessingComplete(logDispatcher);
+		waitProcessingComplete(logDispatcher,300);
 		long xmlTime=stopWatch.getLapTimeMillis()/1000;
 		//String str ="Time to publish "+LOGS_NUMBER+" XML logs: "+xmlTime + " seconds.\n";
 		//System.out.print(str);
@@ -205,7 +205,7 @@ public class LogDispatcherTest extends TestCase {
 		for (ILogEntry log: logs) {
 			logDispatcher.addLog(this.toCacheString(log));
 		}
-		waitProcessingComplete(logDispatcher);
+		waitProcessingComplete(logDispatcher,300);
 		long binTime=stopWatch.getLapTimeMillis()/1000;
 		//String str="Time to publish "+LOGS_NUMBER+" binary logs: "+binTime + " seconds.\n";
 		//System.out.print(str);
@@ -215,12 +215,22 @@ public class LogDispatcherTest extends TestCase {
 	}
 		
 	/**
-	 * Wait until all the logs are processed
+	 * Wait until all the logs are processed or throws an exception
+	 * if the passed timeout elapsed.
 	 * 
-	 * @param processor
+	 * @param processor The {@link ACSLogRetrieval}
+	 * @param timeout The timeout (sec) to wait for the entries to be consumed
+	 * @throws Exception If a timeout occurs
 	 */
-	private void waitProcessingComplete(ACSLogRetrieval processor) {
+	private void waitProcessingComplete(ACSLogRetrieval processor, final int timeout) throws Exception {
+		if (timeout<=0) {
+			throw new IllegalArgumentException("The timeout must be greater then 0");
+		}
+		long endTime = System.currentTimeMillis()+timeout*1000;
 		while (processor.hasPendingEntries()) {
+			if (System.currentTimeMillis()>endTime) {
+				throw new Exception("A timeout occurredTimeout!");
+			}
 			try {
 				Thread.sleep(50);
 			} catch (Exception e) {
