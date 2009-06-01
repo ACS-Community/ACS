@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.2 2008/10/28 09:43:31 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.3 2009/06/01 13:31:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -79,6 +79,15 @@ public:
       )) {
         return context->getACSServiceState(instance_number, name);
     }
+
+    virtual acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) {
+	bool isRightNCType = obj->_is_a("IDL:sandia.gov/NotifyMonitoringExt/EventChannelFactory:1.0");
+	if (!isRightNCType) {
+		ACS_SHORT_LOG((LM_ERROR, "%s does not extend required interface, reported as defunctional.", desc->getName()));
+	}
+	return isRightNCType ? acsdaemon::RUNNING : acsdaemon::DEFUNCT;
+    }
+
 
 };
 

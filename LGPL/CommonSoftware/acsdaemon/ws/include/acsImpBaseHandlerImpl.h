@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.3 2008/11/10 20:04:46 msekoran Exp $"
+* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.4 2009/06/01 13:31:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 
 
 
-template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::ImpBase {
+template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::ImpBase, public virtual DetailedServiceStateProvider {
 
   public:
     
@@ -46,7 +46,7 @@ template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::I
      * Constructor
      */
     ACSImpBaseHandlerImpl(ACSServiceType iservice) : service(iservice) {
-        context = new ACSDaemonContext(acsServices[service].impname);
+        context = new ACSDaemonContext(acsServices[service].impname, this);
     }
   
     /**
@@ -55,6 +55,13 @@ template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::I
     virtual ~ACSImpBaseHandlerImpl() {
         ACS_SHORT_LOG((LM_DEBUG, "DESTROYING ACSImpHandlerImpl!"));
         delete context;
+    }
+
+    /**
+     * Default implementation, to be overriden by specific handler.
+     */
+    virtual acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) {
+	return acsdaemon::RUNNING;
     }
 
     /**

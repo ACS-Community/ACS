@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.6 2009/03/10 08:48:10 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.7 2009/06/01 13:31:36 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -292,7 +292,7 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
             return acsdaemon::NOT_EXISTING;
         }
         ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' responded.", desc->getACSServiceName()));
-        return acsdaemon::RUNNING;
+        return getContext()->getDetailedServiceState(desc, obj.in()); // acsdaemon::RUNNING;
 //    } catch(CORBA::OBJECT_NOT_EXIST &ex) {
     } catch(CORBA::TRANSIENT &ex) {
         ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
@@ -373,7 +373,7 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
 
 /***************************** ACSDaemonContext *******************************/
 
-ACSDaemonContext::ACSDaemonContext(std::string name) {
+ACSDaemonContext::ACSDaemonContext(std::string name, DetailedServiceStateProvider *dssp) : detailedServiceStateProvider(dssp) {
     reqproc = tm.create<RequestProcessorThread>((name + " Request Processor").c_str());
     ctrl = tm.create<ControllerThread>((name + " Controller").c_str());
     ctrl->setContext(this);

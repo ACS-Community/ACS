@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.3 2009/03/10 08:48:10 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.4 2009/06/01 13:31:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,6 +34,12 @@
 #include <string>
 
 const ACE_Time_Value TIME_PERIOD(60);
+
+class DetailedServiceStateProvider {
+  public:
+    virtual ~DetailedServiceStateProvider() {};
+    virtual acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) = 0;
+};
 
 class ControllerThread : public ACS::Thread {
   private:
@@ -153,9 +159,10 @@ class ACSDaemonContext {
     ServiceController *getImpController(ACSServiceType service);
     ServiceController *getACSServiceController(ACSServiceRequestDescription *desc);
     ACE_CString managerReference;
+    DetailedServiceStateProvider *detailedServiceStateProvider;
     void setImpControllersManagerReference(const char * ref);
   public:
-    ACSDaemonContext(std::string name);
+    ACSDaemonContext(std::string name, DetailedServiceStateProvider *dssp = NULL);
     ~ACSDaemonContext();
     void initialize(CORBA::ORB_ptr iorb);
     void dispose(CORBA::ORB_ptr iorb);
@@ -164,6 +171,8 @@ class ACSDaemonContext {
     CORBA::ORB_ptr getORB() { return orb; }
     void checkControllers();
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
+    acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
+	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
     void setManagerReference(const char * ref) { managerReference = ref; setImpControllersManagerReference(ref); };
     const char * getManagerReference() const { return managerReference.is_empty() ? NULL : managerReference.c_str(); }
 };
