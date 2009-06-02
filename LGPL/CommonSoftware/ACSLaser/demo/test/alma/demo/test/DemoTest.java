@@ -28,6 +28,7 @@ import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
+import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
@@ -130,8 +131,9 @@ public class DemoTest {
 		if (alarmSvc!=null) {
 			return true;
 		}
+		AlarmServiceUtils alarmUtils = new AlarmServiceUtils(m_contSvcs);
 		try {
-			alarmSvc = AlarmServiceHelper.narrow(m_contSvcs.getComponent("AlarmService"));
+			alarmSvc = alarmUtils.getAlarmService();
 		} catch (Exception ce) {
 			System.out.println("Error getting AlarmService: "+ce.getMessage());
 			ce.printStackTrace();
@@ -142,15 +144,6 @@ public class DemoTest {
 			return false;
 		}
 		return true;
-	}
-	
-	/**
-	 * Relese the ASC (if it is not null)
-	 *
-	 */
-	public void releaseAlarmServiceComponent() {
-		m_contSvcs.releaseComponent("AlarmService");
-		alarmSvc=null;
 	}
 	
 	/**
@@ -386,7 +379,5 @@ public class DemoTest {
 		test.testCppComponents();
 		// Disconnect from the source NC
 		test.disconnect();
-		// Release the ASC
-		test.releaseAlarmServiceComponent();
 	}
 }

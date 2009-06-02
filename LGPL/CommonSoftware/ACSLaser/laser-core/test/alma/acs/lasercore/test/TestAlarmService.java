@@ -28,6 +28,7 @@ import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.Source;
+import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
@@ -38,11 +39,20 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
  */
 public class TestAlarmService extends ComponentClientTestCase {
 
-	// The AS component
+	/**
+	 * The AS component
+	 */
 	private AlarmService alarmService;
 	
-	// Container services
+	/**
+	 * Container services
+	 */
 	private ContainerServices contSvcs;
+	
+	/**
+	 * An helper class
+	 */
+	private AlarmServiceUtils utils;
 	
 	/**
 	 * Constructor 
@@ -64,8 +74,11 @@ public class TestAlarmService extends ComponentClientTestCase {
 		
 		ACSAlarmSystemInterfaceFactory.init(contSvcs);
 		
+		utils = new AlarmServiceUtils(contSvcs);
+		assertNotNull(utils);
+		
 		// Get the AS 
-		alarmService =AlarmServiceHelper.narrow(contSvcs.getComponent("AlarmService"));
+		alarmService =utils.getAlarmService();
 		assertNotNull(alarmService);
 	}
 	
@@ -74,7 +87,6 @@ public class TestAlarmService extends ComponentClientTestCase {
 	 */
 	public void tearDown() throws Exception {
 		
-		contSvcs.releaseComponent(alarmService.name());
 		alarmService=null;
 		
 		super.tearDown();
@@ -91,7 +103,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 		assertNotNull(categories);
 		
 		// CAT1, CAT2 and ROOT
-		assertEquals(categories.length, 3);
+		assertEquals(3,categories.length);
 		
 		for (Category cat: categories) {
 			if (!cat.name.equals("ROOT") && !cat.name.equals("CATEGORY1") && !cat.name.equals("CATEGORY2")) {

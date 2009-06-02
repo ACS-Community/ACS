@@ -22,15 +22,14 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
+import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 import cern.laser.business.data.AlarmImpl;
@@ -42,8 +41,6 @@ import cern.laser.business.data.Source;
 import cern.laser.business.data.Status;
 import cern.laser.business.data.StatusImpl;
 import cern.laser.business.data.Triplet;
-import cern.laser.business.definition.data.CategoryDefinition;
-import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -128,30 +125,6 @@ public class CategoryClient {
 		if (logger==null) {
 			throw new IllegalStateException("Got a null logger from the container services!");
 		}
-		
-		
-		
-		System.out.println("AlarmSystemClient built");
-		
-	}
-	
-	/**
-	 * Connect the AlarmSrevice component
-	 */
-	private void getAlarmServiceComponent() throws Exception {
-		String[] names  = contSvc.findComponents("*",alarmServiceIDL);
-		if (names==null || names.length==0) {
-			// Nothing has been found
-			throw new Exception("No available alarm component");
-		}
-		if (names.length>1) {
-			contSvc.getLogger().log(AcsLogLevel.WARNING,"More then one AlarmService component found");
-			
-		}
-		contSvc.getLogger().log(AcsLogLevel.DEBUG,"Getting "+names[0]);
-		// Get a reference to the first component
-		alarm=AlarmServiceHelper.narrow(contSvc.getComponent(names[0]));
-		contSvc.getLogger().log(AcsLogLevel.DEBUG,names[0]+" connected");
 	}
 	
 	/**
@@ -219,7 +192,8 @@ public class CategoryClient {
 			throw new IllegalStateException("SourceClient is closed!");
 		}
 		try {
-			getAlarmServiceComponent();
+			AlarmServiceUtils alarmUtils = new AlarmServiceUtils(contSvc);
+			alarm=alarmUtils.getAlarmService();
 		} catch (Throwable t) {
 			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
 			ex.setReason("Alarm service component unavailable");
@@ -264,9 +238,6 @@ public class CategoryClient {
 			if (jms_selectionHandler!=null) {
 				jms_selectionHandler.close();
 				jms_selectionHandler=null;
-			}
-			if (contSvc!=null && alarm!=null) {
-				contSvc.releaseComponent(alarm.name());
 			}
 		} catch (Exception e) {
 			throw new AlarmClientException("Exception closing: ",e);

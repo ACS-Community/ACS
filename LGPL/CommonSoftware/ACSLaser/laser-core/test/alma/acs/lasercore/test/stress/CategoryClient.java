@@ -26,6 +26,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.Category;
+import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
 import alma.acs.lasercore.test.stress.category.CategorySubscriber;
@@ -54,11 +55,7 @@ public class CategoryClient {
 	// The consumers to listen to alarms from the categories
 	private CategorySubscriber[] consumers;
 	
-	// The name of the AlarmSrvice component
-	private String alarmName;
-	
-	// The alarm service component and its IDL
-	private final String alarmServiceIDL = "*/AlarmService:*";
+	// The alarm service 
 	private AlarmService alarm;
 	
 	private HashSet<CategoryListener> listeners = new HashSet<CategoryListener>();
@@ -83,39 +80,9 @@ public class CategoryClient {
 	/**
 	 * Connect the AlarmSrevice component
 	 */
-	private void getAlarmServiceComponent() throws Exception {
-		String[] names  = contSvc.findComponents("*",alarmServiceIDL);
-		if (names==null || names.length==0) {
-			// Nothing has been found
-			throw new Exception("No available alarm component");
-		}
-		if (names.length>1) {
-			contSvc.getLogger().log(AcsLogLevel.WARNING,"More then one AlarmService component found");
-			
-		}
-		contSvc.getLogger().log(AcsLogLevel.INFO,"Getting "+names[0]);
-		// Get a reference to the first component
-		alarm=AlarmServiceHelper.narrow(contSvc.getComponent(names[0]));
-		alarmName=names[0];
-		contSvc.getLogger().log(AcsLogLevel.INFO,names[0]+" connected");
-	}
-	
-	/**
-	 * Release the alarm component
-	 *
-	 */
-	private void releaseAlarmServiceComponent() {
-		try {
-			if (alarmName!=null) {
-				contSvc.getLogger().log(AcsLogLevel.INFO,"Releasing "+alarmName);
-				contSvc.releaseComponent(alarmName);
-				contSvc.getLogger().log(AcsLogLevel.INFO,alarmName+" released");
-			}
-		} catch (Throwable t) {
-			System.err.println("Error releasing the AlarmService: "+t.getMessage());
-		}
-		alarmName=null;
-		alarm=null;
+	private void getAlarmService() throws Exception {
+		AlarmServiceUtils alarmtUtils= new AlarmServiceUtils(contSvc);
+		alarm=alarmtUtils.getAlarmService();
 	}
 	
 	/**
@@ -177,7 +144,7 @@ public class CategoryClient {
 		for (CategorySubscriber cat: consumers) {
 			cat.close();
 		}
-		releaseAlarmServiceComponent();
+		alarm=null;
 	}
 	
 	/**
@@ -208,13 +175,12 @@ public class CategoryClient {
 	private void initialize() throws Exception {
 		// Get the AlarmService
 		try {
-			getAlarmServiceComponent();
+			getAlarmService();
 		} catch (Exception e) {
-			releaseAlarmServiceComponent();
 			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the AlarmSystem component: "+e.getMessage());
 			throw new Exception("Error getting the AlarmSystem component: "+e.getMessage(),e);
 		}
-		if (alarmName==null || alarm==null) {
+		if (alarm==null) {
 			contSvc.getLogger().log(AcsLogLevel.ERROR,"Unknown error getting the AlarmService");
 			throw new Exception("Unknown error getting the AlarmService");
 		}
@@ -222,7 +188,6 @@ public class CategoryClient {
 		try {
 			getCategories();
 		} catch (Exception e) {
-			releaseAlarmServiceComponent();
 			contSvc.getLogger().log(AcsLogLevel.ERROR,"Error getting the categories from AlarmService");
 			throw new Exception("Error getting the categories from AlarmService",e);
 		}
