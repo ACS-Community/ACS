@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.20 2007/10/19 14:47:02 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.21 2009/06/02 13:22:59 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = alarmService alarmServiceShutdown
 SCRIPTS_L       =
 
 #
