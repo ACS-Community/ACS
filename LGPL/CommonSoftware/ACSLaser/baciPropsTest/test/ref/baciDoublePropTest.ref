@@ -3,11 +3,9 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
-1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
+1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - suppressRemoteLogging called
-1 - 0    INFO  MomConfig          - loading configuration...
-1 - 3    WARN  MomConfig          - could not load configuration, using defaults
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]

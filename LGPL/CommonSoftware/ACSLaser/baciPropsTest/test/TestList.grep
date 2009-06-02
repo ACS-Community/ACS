@@ -32,3 +32,4 @@ DefaultSubscriberImpl
 ACSJMSTopicConnectionImpl
 HeartbeatHelper
 ACS abeans configuration directory
+MomConfig
