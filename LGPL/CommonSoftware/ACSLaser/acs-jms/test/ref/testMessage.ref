@@ -1,4 +1,5 @@
 1 -  -D user.dir=xxx -- junit.textui.TestRunner alma.acsjms.test.MessageTest
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: junit.textui.TestRunner alma.acsjms.test.MessageTest
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [MessageTest#testACSJMSMessage] -------------------------------
 1 - ----------T--:--:--.--- INFO [MessageTest#testACSJMSMessage] ComponentClientTestCase#setUp()
