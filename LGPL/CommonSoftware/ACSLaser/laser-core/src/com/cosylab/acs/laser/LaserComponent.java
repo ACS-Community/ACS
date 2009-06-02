@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
@@ -40,16 +39,24 @@ import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
 import org.omg.CORBA.Any;
+import org.omg.CORBA.ORB;
+import org.omg.CosNaming.NameComponent;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosPropertyService.Property;
-
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import org.omg.PortableServer.POA;
 
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
+import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.Alarm;
+import alma.alarmsystem.AlarmServiceHolder;
 import alma.alarmsystem.AlarmServiceOperations;
+import alma.alarmsystem.AlarmServicePOA;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.LaserProcessingException;
 import alma.alarmsystem.Location;
@@ -58,6 +65,9 @@ import alma.alarmsystem.Source;
 import alma.alarmsystem.Status;
 import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
+import alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper;
+import alma.alarmsystem.corbaservice.AlarmSystemContainerServices;
+import alma.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
@@ -94,9 +104,30 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 
-public class LaserComponent extends ComponentImplBase
-		implements AlarmServiceOperations, MessageListener{
-	ContainerServices contSvcs;
+public class LaserComponent extends AlarmServicePOA implements MessageListener{
+	
+	/**
+	 * A class to terminate the alarm service asynchronously.
+	 * <P>
+	 * The alarm service is stopped by calling the shutdown IDL method.
+	 * But inside such a method, the ORB can't be closed.
+	 * This class shuts down the servant outside of the ORB thread.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class LaserComponentTerminator implements Runnable {
+		public void run() {
+			System.out.println("LaserComponentTerminator.run");
+			alarmCacheListener.close();
+			alarmCacheListener=null;
+			alarmSourceMonitor.stop();
+			heartbeat.stop();
+			corbaServer.shutdown();
+			logger.log(AcsLogLevel.DEBUG,"See you soon :-)");
+			
+		}
+	}
 	
 	Logger logger=null;
 
@@ -148,19 +179,42 @@ public class LaserComponent extends ComponentImplBase
 	 * alarms in the <code>coreAlarms</code> vector.
 	 */
 	private Vector<LaserCoreFaultCodes> coreAlarms = new Vector<LaserCoreFaultCodes>(); 
-
-	public void initialize(ContainerServices cont)
-			throws ComponentLifecycleException {
-		super.initialize(cont);
-		
-		if (cont==null) {
-			throw new ComponentLifecycleException("Invalid null ContainerServices in initialize");
+	
+	/**
+	 * The CORBA server
+	 */
+	private final AlarmSystemCorbaServer corbaServer;
+	
+	/**
+	 * The implementation of the {@link ContainerServicesBase}
+	 */
+	private final AlarmSystemContainerServices alSysContSvcs;
+	
+	/**
+	 * Set to <code>true</code> if the alarm service has been shut down
+	 */
+	private volatile boolean closed=false;
+	
+	/**
+	 * Constructor
+	 */
+	public LaserComponent(AlarmSystemCorbaServer corbaServer, AlarmSystemContainerServices alSysContSvcs) throws Exception {
+		if (corbaServer==null) {
+			throw new IllegalArgumentException("The AlarmSystemCorbaServer can't be null");
 		}
+		if (alSysContSvcs==null) {
+			throw new IllegalArgumentException("The AlarmSystemContainerServices can't be null");
+		}
+		this.corbaServer=corbaServer;
+		this.alSysContSvcs=alSysContSvcs;
+		initialize();
+		execute();
+	}
+
+	public void initialize() {
+		this.logger=corbaServer.getLogger();
 		
-		this.contSvcs = cont;
-		this.logger=contSvcs.getLogger();
-		
-		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(cont);
+		defaultTopicConnectionFactory = new ACSJMSTopicConnectionFactory(alSysContSvcs);
 
 		TopicConnection tc;
 		TopicSession ts=null;
@@ -207,7 +261,7 @@ public class LaserComponent extends ComponentImplBase
 
 		ConfigurationAccessor conf=null;
 		try {
-			conf = ConfigurationAccessorFactory.getInstance(cont);
+			conf = ConfigurationAccessorFactory.getInstance(alSysContSvcs);
 		} catch (Throwable t) {
 			System.err.println("Error getting CDB: "+t.getMessage());
 			t.printStackTrace(System.err);
@@ -352,6 +406,19 @@ public class LaserComponent extends ComponentImplBase
 	}
 	
 	/**
+	 * Shutdown the alarm service
+	 */
+	public synchronized void shutdown() {
+		if (closed) {
+			return;
+		}
+		closed=true;
+		logger.log(AcsLogLevel.DEBUG,"Shutting down");
+		Thread t = new Thread(new LaserComponentTerminator(),"LaserComponentTerminator");
+		t.start();
+	}
+	
+	/**
 	 * Sent alarm services alarms.
 	 * <P>
 	 * The alarms generated by the alarm service are injected in the
@@ -370,7 +437,7 @@ public class LaserComponent extends ComponentImplBase
 			FaultState fs = LaserCoreFaultState.createFaultState(alarm, true);
 			Message msg;
 			try {
-				msg= LaserCoreFaultState.createJMSMessage(fs, contSvcs);
+				msg= LaserCoreFaultState.createJMSMessage(fs, alSysContSvcs);
 			} catch (Throwable t) {
 				System.err.println("Error creating a core alarm of type "+alarm);
 				t.printStackTrace(System.err);
@@ -400,20 +467,11 @@ public class LaserComponent extends ComponentImplBase
 	}
 
 	public void execute() throws ComponentLifecycleException {
-		super.execute();
 		heartbeat.start();
 		ProcessingController.getInstance().startProcessing();
 		sentCoreAlarms(coreAlarms);
 	}
 
-	public void cleanUp() {
-		heartbeat.stop();
-	}
-
-	public void aboutToAbort() {
-		heartbeat.stop();
-	}
-	
 	/************************** CoreService **************************/
 	
 	
@@ -500,7 +558,7 @@ public class LaserComponent extends ComponentImplBase
 			for (Object key: keys) {
 				String name = (String)key;
 				String value = alarm.getStatus().getProperties().getProperty(name);
-				Any any = contSvcs.getAdvancedContainerServices().getAny();
+				Any any=corbaServer.getORB().create_any();
 				any.insert_string(value);
 				props[t++] = new Property(name,any);
 			}

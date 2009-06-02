@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 
-import com.cosylab.acs.laser.LaserComponent;
 import alma.alarmsystem.AlarmServiceOperations;
 import alma.alarmsystem.AlarmServicePOATie;
 
@@ -60,7 +59,7 @@ public class AlarmServiceHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new LaserComponent();
+		return null;
 	}
 
 	/**
