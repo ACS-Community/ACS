@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmReductionHandlerImpl.java,v 1.3 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: AlarmReductionHandlerImpl.java,v 1.4 2009/06/02 13:11:53 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2009/06/02 13:11:53 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -31,7 +31,11 @@ public class AlarmReductionHandlerImpl extends AlarmReductionHandler {
   //
 
   public AlarmReductionHandlerImpl() throws LaserConnectionException {
-    this.m_laser = AlarmServiceSingleton.getInstance();
+	  try {
+		  this.m_laser = AlarmServiceSingleton.getInstance();
+	  } catch (Throwable t) {
+		  throw new LaserConnectionException("Error getting the alarm service",t);
+	  }
   }
 
   //

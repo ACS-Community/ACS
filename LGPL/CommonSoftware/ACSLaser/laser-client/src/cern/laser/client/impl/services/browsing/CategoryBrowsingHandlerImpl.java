@@ -1,8 +1,8 @@
 /*
- * $Id: CategoryBrowsingHandlerImpl.java,v 1.6 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: CategoryBrowsingHandlerImpl.java,v 1.7 2009/06/02 13:11:53 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.6 $ 
+ * $Date: 2009/06/02 13:11:53 $ 
+ * $Revision: 1.7 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -31,7 +31,11 @@ public class CategoryBrowsingHandlerImpl extends CategoryBrowsingHandler {
   //
 
   public CategoryBrowsingHandlerImpl() throws LaserConnectionException {
-     this.m_laser = AlarmServiceSingleton.getInstance();
+	  try {
+		  this.m_laser = AlarmServiceSingleton.getInstance();
+	  } catch (Throwable t) {
+		  throw new LaserConnectionException("Error getting the alarm service",t);
+	  }
   }
 
   //
