@@ -17,7 +17,6 @@
       ContainerPingInterval="10.0"
       AdministratorPingInterval="10.0">
 	<Startup>
-		<cdb:_ string="AlarmService"/> 
 	</Startup> 
 	<ServiceComponents>
 		<cdb:_ string="Log"/>
