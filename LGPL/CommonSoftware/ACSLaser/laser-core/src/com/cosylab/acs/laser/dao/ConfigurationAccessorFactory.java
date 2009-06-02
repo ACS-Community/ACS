@@ -23,7 +23,7 @@
 package com.cosylab.acs.laser.dao;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.WDAL;
@@ -75,8 +75,8 @@ public class ConfigurationAccessorFactory
 		
 	}
 	
-	public static ConfigurationAccessor getInstance(ContainerServices cont) throws AcsJContainerServicesEx
+	public static ConfigurationAccessor getInstance(ContainerServicesBase contBase) throws AcsJContainerServicesEx
 	{
-		return new DALConfAccessor(cont.getCDB());
+		return new DALConfAccessor(contBase.getCDB());
 	}
 }
