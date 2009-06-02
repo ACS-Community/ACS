@@ -20,7 +20,7 @@ import alma.alarmsystem.AlarmService;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl implements CategoryDefinitionHandler {
 	private AlarmService alarmService;
@@ -32,7 +32,11 @@ public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl impleme
    */
   public CategoryDefinitionHandlerImpl(String userId) throws LaserDefinitionException {
     super(userId);
-    alarmService = AlarmServiceSingleton.getInstance();
+    try {
+		  this.alarmService=AlarmServiceSingleton.getInstance();
+	  } catch (Throwable t) {
+		  throw new LaserDefinitionException("Error getting the alarm service",t);
+	  }
   }
 
   /**

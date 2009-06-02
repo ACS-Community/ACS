@@ -17,7 +17,7 @@ import cern.laser.definition.LaserDefinitionNotFoundException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class AdminUserHandlerImpl extends AdminUserHandler {
   private AlarmService alarmService;
@@ -25,7 +25,11 @@ public class AdminUserHandlerImpl extends AdminUserHandler {
   public AdminUserHandlerImpl() throws LaserException, LaserConnectionException
   {
     super();
-    alarmService = AlarmServiceSingleton.getInstance();
+    try {
+		  this.alarmService=AlarmServiceSingleton.getInstance();
+	  } catch (Throwable t) {
+		  throw new LaserConnectionException("Error getting the alarm service",t);
+	  }
   }
 
   /**

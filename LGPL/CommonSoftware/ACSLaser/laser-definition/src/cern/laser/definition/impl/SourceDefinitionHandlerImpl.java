@@ -22,7 +22,7 @@ import cern.laser.definition.SourceDefinitionHandler;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class SourceDefinitionHandlerImpl extends DefinitionHandlerImpl implements SourceDefinitionHandler {
 	private AlarmService alarmService;
@@ -34,7 +34,11 @@ public class SourceDefinitionHandlerImpl extends DefinitionHandlerImpl implement
    */
   public SourceDefinitionHandlerImpl(String userId) throws LaserDefinitionException {
     super(userId);
-    alarmService = AlarmServiceSingleton.getInstance();
+    try {
+		  this.alarmService=AlarmServiceSingleton.getInstance();
+	  } catch (Throwable t) {
+		  throw new LaserDefinitionException("Error getting the alarm service",t);
+	  }
   }
 
   /**
