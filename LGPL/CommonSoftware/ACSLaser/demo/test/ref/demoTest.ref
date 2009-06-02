@@ -7,6 +7,7 @@
 1 - ----------T--:--:----- FINE [DemoTest] ready to talk with components!
 1 - ----------T--:--:----- INFO [DemoTest] component 'TestSendLaserSources' requested AdvancedContainerServices
 1 - ----------T--:--:----- CONFIG [TestSendLaserSources] Connected to DAO 'MACI/Channels'
+1 - ----------T--:--:----- DEBUG [TestSendLaserSources] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='CMWALARM_SYSTEMALARMSSOURCESALARM_SYSTEM_SOURCES' Service='NotifyEventChannelFactory' ]
 1 - Connected to source channel
 1 - Invoking methods on java components (NODE REDUCTION)
 1 - Alarm message received from source: <PS,ALARM_SOURCE_PS,1> Status: ACTIVE
