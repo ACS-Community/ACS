@@ -118,7 +118,7 @@ USER_IDL =
 #Generated code
 CASTOR_GENERATED= ASIConfiguration ../config/CDB/schemas/ASIMessage
 ASIConfiguration_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.configuration
-ASIMessage_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.message
+../config/CDB/schemas/ASIMessage_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.message
 
 #
 # Jarfiles and their directories
