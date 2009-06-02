@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.74 2008/08/29 10:20:47 msekoran Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.75 2009/06/02 12:57:53 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -174,6 +174,7 @@ function timeoutExit
   if [ $1 -ge 2 ]; then acsInterfaceRepository -k ; fi
   if [ $1 -ge 9 ]; then acsACSLogService -k ; fi
   if [ $1 -ge 3 ]; then acsConfigurationDatabase -k ; fi
+  if [ $1 -ge 10 ]; then acsAlarmService -k ; fi
   rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot remove $INSTANCE_DIR")
   exit $EC_TIMEOUT
 }
@@ -203,6 +204,9 @@ if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
 # if not, clean up and exit.
 acsConfigurationDatabase -w $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
+echo "Starttttttttttttttttttttttttttttttttttttttttttttttttt"
+acsAlarmService -s $PARAMS
+if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 10; fi
 
 ACS_LOG_FORCED "$COMMAND" "INFO" "For this ACS session, please do an 'export ACS_INSTANCE=$ACS_INSTANCE' on all terminals running ACS clients."
 ACS_LOG_FORCED "$COMMAND" "INFO" "The $COMMAND script has now completed!"

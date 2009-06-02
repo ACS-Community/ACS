@@ -70,6 +70,12 @@ function getCDBPort
 echo $(( `getBasePort` * 100 + 3000 + 12 ))
 }
 #############################################################
+#Returns the port the ACS alarm service is running on.
+function getAlarmServicePort
+{
+echo $(( `getBasePort` * 100 + 3000 + 13 ))
+}
+#############################################################
 #Returns the current IP address (or $HOST if an error occurs)
 function getIP
 {

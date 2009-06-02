@@ -322,6 +322,31 @@ echo $PID
 
 export getCDBPid
 
+#-------------------------------------
+#Sends the process ID of the alarm service to stdout or returns with an 
+#error code if there's some failure.
+function getAlarmServicePid
+{
+local INSTANCE_DIR
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+FILE=$INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE
+
+PORT=`getAlarmServicePort`
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine AlarmService's process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+
+export getAlarmServicePid
 
 #------------------------------------------------------------
 function checkDeadManager

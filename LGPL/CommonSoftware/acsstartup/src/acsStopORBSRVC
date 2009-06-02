@@ -5,7 +5,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.40 2008/08/29 10:20:47 msekoran Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.41 2009/06/02 12:57:53 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -147,6 +147,7 @@ fi
 
 ACS_LOG_INFO "$COMMAND" "Stopping the ORB Services and CDB using 'ACS_INSTANCE=$ACS_INSTANCE'"
 
+acsAlarmService -k $PARAMS
 acsConfigurationDatabase -k $PARAMS
 acsNamingService -k $PARAMS
 acsNotifyService -k $PARAMS
