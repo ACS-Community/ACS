@@ -245,12 +245,14 @@ module alarmsystem
 	exception LaserProcessingException
 	{
 	};
+	
+	const string AlarmServiceName="AcsAlarmService";
 
 	/*
 	 * ALARM SYSTEM CORE SERVICE
 	 */
 	
-	interface AlarmService : ACS::ACSComponent
+	interface AlarmService
 	{
 		typedef sequence<long> long_sequence;
 		
@@ -312,7 +314,9 @@ module alarmsystem
 		void createAlarm(
 			in string userId, 
 			in AlarmDefinition definition
-		) raises (LaserDefinitionException); 
+		) raises (LaserDefinitionException);
+		
+		void shutdown();
 	};
 	
 	interface TestAlarmSource : ACS::ACSComponent
