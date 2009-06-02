@@ -21,5 +21,14 @@ failed to flush logging queue because remote logging service has not been made a
 about to release component
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 activated
- Failed to get MACI/Channels DAO from CDB
- ##
+Failed to get MACI/Channels DAO from CDB
+##
+Successfully connected to a notification channel
+component AlarmService retrieved
+Starting Java/abeans application
+DEBUG
+FINE
+DefaultSubscriberImpl
+ACSJMSTopicConnectionImpl
+HeartbeatHelper
+ACS abeans configuration directory
