@@ -48,7 +48,7 @@ else:
     # Create a test fault
     fltstate = Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState(family,member, code)
     fltstate.descriptor = FaultState.ACTIVE_STRING
-    fltstate.timestamp = Timestamp.Timestamp()
+    fltstate.userTimestamp = Timestamp.Timestamp()
     fltstate.userProperties[FaultState.ASI_PREFIX_PROPERTY_STRING] = "prefix"
     fltstate.userProperties[FaultState.ASI_SUFFIX_PROPERTY_STRING] = "suffix"
     fltstate.userProperties["TEST_PROPERTY"] = "TEST_VALUE"
