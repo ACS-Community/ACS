@@ -5,7 +5,7 @@ import java.util.Collection;
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
 import cern.laser.client.impl.common.AlarmServiceSingleton;
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 import cern.laser.definition.AdminUser;
 import cern.laser.definition.AdminUserHandler;
 import cern.laser.definition.LaserDefinitionDuplicationException;
@@ -17,10 +17,10 @@ import cern.laser.definition.LaserDefinitionNotFoundException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class AdminUserHandlerImpl extends AdminUserHandler {
-  private AlarmService alarmService;
+  private CERNAlarmService alarmService;
 
   public AdminUserHandlerImpl() throws LaserException, LaserConnectionException
   {

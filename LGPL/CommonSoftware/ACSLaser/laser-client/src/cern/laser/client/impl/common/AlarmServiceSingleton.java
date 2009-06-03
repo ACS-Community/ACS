@@ -23,6 +23,7 @@ import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.util.AcsLocations;
 import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 
 /**
@@ -32,7 +33,8 @@ import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
  */
 public class AlarmServiceSingleton {
 
-	private static AlarmService instance = null;
+	private static CERNAlarmService instance = null;
+	
 	private static ComponentClient client;
 	private static ContainerServicesBase contSvcBase = null;
 	
@@ -49,7 +51,7 @@ public class AlarmServiceSingleton {
 	 * @return A reference to the alarm service
 	 * @throws ExceptionIn case of error getting the alarm service
 	 */
-	public static synchronized AlarmService getInstance() throws Exception {
+	public static synchronized CERNAlarmService getInstance() throws Exception {
 		if (instance == null) {
 			String managerLoc = AcsLocations.figureOutManagerLocation();
 			String clientName = new String("laser-client");
@@ -69,13 +71,13 @@ public class AlarmServiceSingleton {
 			// Get the AlarmService 
 			if (client != null) {
 				alarmUtils = new AlarmServiceUtils(client.getContainerServices());
-				instance=alarmUtils.getAlarmService();
+				instance=alarmUtils.getCernAlarmService();
 			}
 		}
 		return instance;
 	}
 	
-	public static synchronized AlarmService getInstance(ContainerServicesBase contSvc) throws Exception {
+	public static synchronized CERNAlarmService getInstance(ContainerServicesBase contSvc) throws Exception {
 		if (contSvc==null) {
 			throw new IllegalArgumentException("ContainerServicesBase can't be null");
 		}
@@ -84,7 +86,7 @@ public class AlarmServiceSingleton {
 			if (alarmUtils==null) {
 				alarmUtils = new AlarmServiceUtils(contSvc);
 			}
-			instance=alarmUtils.getAlarmService();
+			instance=alarmUtils.getCernAlarmService();
 		}
 		return instance;
 	}

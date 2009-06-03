@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHelper.java,v 1.7 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: AlarmSelectionHelper.java,v 1.8 2009/06/03 16:23:20 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.7 $ 
+ * $Date: 2009/06/03 16:23:20 $ 
+ * $Revision: 1.8 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -24,8 +24,8 @@ import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 
-import alma.alarmsystem.AlarmService;
-import com.cosylab.acs.jms.ACSJMSObjectMessage;
+import alma.alarmsystem.CERNAlarmService;
+
 import com.cosylab.acs.jms.ACSJMSTextMessage;
 
 import cern.cmw.mom.pubsub.ExceptionListener;
@@ -43,22 +43,13 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
 import cern.laser.client.services.selection.Selection;
 import cern.laser.util.UUIDGenerator;
-import cern.laser.business.data.Location;
-import cern.laser.business.data.Building;
-import cern.laser.business.data.ResponsiblePerson;
-import cern.laser.business.data.Triplet;
-import cern.laser.business.data.Status;
-import cern.laser.business.data.StatusImpl;
-import cern.laser.business.definition.data.AlarmDefinition;
-import cern.laser.business.data.Source;
-import cern.laser.business.definition.data.SourceDefinition;
 
 import alma.alarmsystem.alarmmessage.AlarmMessageConversion;
 
 /**
  * 
  * 
- * @version $Revision: 1.7 $ $Date: 2006/09/25 08:52:36 $
+ * @version $Revision: 1.8 $ $Date: 2009/06/03 16:23:20 $
  * @author Katarina Sigerud
  */
 class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
@@ -85,7 +76,7 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
   private String categoryRootTopic;
 
   // The AlarmService component
-  private AlarmService m_laser;
+  private CERNAlarmService m_laser;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------

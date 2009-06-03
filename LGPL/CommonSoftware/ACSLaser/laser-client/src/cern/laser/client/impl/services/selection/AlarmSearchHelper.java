@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSearchHelper.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: AlarmSearchHelper.java,v 1.5 2009/06/03 16:23:20 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2009/06/03 16:23:20 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,7 +19,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Logger;
 
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 
 import cern.cmw.mom.pubsub.ExceptionListener;
 import cern.cmw.mom.pubsub.MOMException;
@@ -40,7 +40,7 @@ import cern.laser.util.UUIDGenerator;
 /**
  * 
  * 
- * @version $Revision: 1.4 $ $Date: 2006/09/25 08:52:36 $
+ * @version $Revision: 1.5 $ $Date: 2009/06/03 16:23:20 $
  * @author Katarina Sigerud
  */
 class AlarmSearchHelper implements ExceptionListener {
@@ -61,7 +61,7 @@ class AlarmSearchHelper implements ExceptionListener {
   private SubscriptionListener initialSearchListener;
 
   // The AlarmService component
-  private AlarmService m_laser;
+  private CERNAlarmService m_laser;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------

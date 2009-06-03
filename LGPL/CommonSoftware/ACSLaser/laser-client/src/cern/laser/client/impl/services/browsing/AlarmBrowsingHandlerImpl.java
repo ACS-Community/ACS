@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmBrowsingHandlerImpl.java,v 1.4 2009/06/02 13:11:53 acaproni Exp $
+ * $Id: AlarmBrowsingHandlerImpl.java,v 1.5 2009/06/03 16:23:20 acaproni Exp $
  *
- * $Date: 2009/06/02 13:11:53 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2009/06/03 16:23:20 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
 
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 
 import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.client.LaserConnectionException;
@@ -32,8 +32,8 @@ import cern.laser.client.services.browsing.AlarmBrowsingHandler;
 
 public class AlarmBrowsingHandlerImpl extends AlarmBrowsingHandler {
 
-  // The AlarmService component
-  private AlarmService m_laser;
+  // The AlarmService 
+  private CERNAlarmService m_laser;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------

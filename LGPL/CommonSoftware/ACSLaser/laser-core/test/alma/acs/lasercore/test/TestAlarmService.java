@@ -24,8 +24,7 @@ package alma.acs.lasercore.test;
 import junit.framework.TestCase;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
-import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.AlarmServiceHelper;
+import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.Source;
 import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
@@ -42,7 +41,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 	/**
 	 * The AS component
 	 */
-	private AlarmService alarmService;
+	private CERNAlarmService alarmService;
 	
 	/**
 	 * Container services
@@ -78,7 +77,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 		assertNotNull(utils);
 		
 		// Get the AS 
-		alarmService =utils.getAlarmService();
+		alarmService =utils.getCernAlarmService();
 		assertNotNull(alarmService);
 	}
 	

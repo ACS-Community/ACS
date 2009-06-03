@@ -1,8 +1,8 @@
 /*
- * $Id: HeartbeatHelper.java,v 1.5 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: HeartbeatHelper.java,v 1.6 2009/06/03 16:23:20 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.5 $ 
+ * $Date: 2009/06/03 16:23:20 $ 
+ * $Revision: 1.6 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -16,7 +16,7 @@ import javax.jms.Message;
 
 import org.apache.log4j.Logger;
 
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 
 import cern.cmw.mom.pubsub.ExceptionListener;
 import cern.cmw.mom.pubsub.MOMException;
@@ -34,7 +34,7 @@ import cern.laser.client.services.selection.LaserSelectionException;
  * This class subscribes to the heartbeat from the business layer and verifies that it arrives in time. If it doesn't
  * the AlarmSelectionListener is informed. It is a helper class for the AlarmSelectionHandler.
  * 
- * @version $Revision: 1.5 $ $Date: 2006/09/25 08:52:36 $
+ * @version $Revision: 1.6 $ $Date: 2009/06/03 16:23:20 $
  * @author Katarina Sigerud
  */
 class HeartbeatHelper implements ExceptionListener {
@@ -58,7 +58,7 @@ class HeartbeatHelper implements ExceptionListener {
   private boolean cmwConnected = true;
 
   // The AlarmService component
-  private AlarmService m_laser;
+  private CERNAlarmService m_laser;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------

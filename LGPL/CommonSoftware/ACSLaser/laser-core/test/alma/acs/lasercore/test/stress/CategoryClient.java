@@ -23,8 +23,7 @@ import java.util.Vector;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
-import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.AlarmServiceHelper;
+import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
 import alma.acs.lasercore.test.stress.category.AlarmView;
@@ -55,8 +54,10 @@ public class CategoryClient {
 	// The consumers to listen to alarms from the categories
 	private CategorySubscriber[] consumers;
 	
-	// The alarm service 
-	private AlarmService alarm;
+	/**
+	 * The alarm service 
+	 */
+	private CERNAlarmService alarm;
 	
 	private HashSet<CategoryListener> listeners = new HashSet<CategoryListener>();
 	
@@ -82,7 +83,7 @@ public class CategoryClient {
 	 */
 	private void getAlarmService() throws Exception {
 		AlarmServiceUtils alarmtUtils= new AlarmServiceUtils(contSvc);
-		alarm=alarmtUtils.getAlarmService();
+		alarm=alarmtUtils.getCernAlarmService();
 	}
 	
 	/**

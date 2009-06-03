@@ -1,8 +1,8 @@
 /*
- * $Id: CategoryBrowsingHandlerImpl.java,v 1.7 2009/06/02 13:11:53 acaproni Exp $
+ * $Id: CategoryBrowsingHandlerImpl.java,v 1.8 2009/06/03 16:23:20 acaproni Exp $
  *
- * $Date: 2009/06/02 13:11:53 $ 
- * $Revision: 1.7 $ 
+ * $Date: 2009/06/03 16:23:20 $ 
+ * $Revision: 1.8 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,12 +19,12 @@ import cern.laser.client.impl.common.AlarmServiceSingleton;
 import cern.laser.client.impl.data.CategoryImpl;
 import cern.laser.client.services.browsing.CategoryBrowsingHandler;
 
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 
 public class CategoryBrowsingHandlerImpl extends CategoryBrowsingHandler {
     
   // The AlarmService component
-  private AlarmService m_laser;
+  private CERNAlarmService m_laser;
   
   //
   // -- CONSTRUCTORS ------------------------------------------------

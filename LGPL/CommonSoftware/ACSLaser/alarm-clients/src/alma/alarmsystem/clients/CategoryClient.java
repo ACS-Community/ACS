@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
-import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
 import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
@@ -100,9 +100,10 @@ public class CategoryClient {
 	 */
 	private Logger logger;
 	
-	// The alarm service component and its IDL
-	private final String alarmServiceIDL = "*/AlarmService:*";
-	private AlarmService alarm;
+	/**
+	 * The alarm service component
+	 */
+	private CERNAlarmService alarm;
 	
 	/**
 	 * To avoid to release the resources twice
@@ -193,7 +194,7 @@ public class CategoryClient {
 		}
 		try {
 			AlarmServiceUtils alarmUtils = new AlarmServiceUtils(contSvc);
-			alarm=alarmUtils.getAlarmService();
+			alarm=alarmUtils.getCernAlarmService();
 		} catch (Throwable t) {
 			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
 			ex.setReason("Alarm service unavailable");
