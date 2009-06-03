@@ -28,7 +28,6 @@
 		<cdb:_ string="CDB"/>
 		<cdb:_ string="ACSLogSvc"/>
 		<cdb:_ string="PDB"/>
-		<cdb:_ string="AlarmService"/>
 	</ServiceComponents>
 
 
