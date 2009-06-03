@@ -196,7 +196,7 @@ public class CategoryClient {
 			alarm=alarmUtils.getAlarmService();
 		} catch (Throwable t) {
 			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
-			ex.setReason("Alarm service component unavailable");
+			ex.setReason("Alarm service unavailable");
 			throw ex;
 		}
 		try {
