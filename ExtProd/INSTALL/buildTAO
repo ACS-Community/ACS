@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.30 2008/08/06 07:56:03 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.31 2009/06/03 17:26:12 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -92,6 +92,8 @@ echo "- ACErelpath.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
 echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
+echo "- TAOLog.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
 echo "done"
 echo ""
 

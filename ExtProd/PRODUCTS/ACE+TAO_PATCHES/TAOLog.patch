@@ -1,0 +1,58 @@
+diff -Naur TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLogFactory_i.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLogFactory_i.h
+--- TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLogFactory_i.h	2008-05-07 12:45:12.000000000 -0600
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLogFactory_i.h	2009-06-03 10:53:16.000000000 -0600
+@@ -45,8 +45,8 @@
+  * @brief The BasicLogFactory is a factory that is used to create event-unaware Logs.
+  */
+ class TAO_Log_Serv_Export TAO_BasicLogFactory_i :
+-  public POA_DsLogAdmin::BasicLogFactory,
+-  public TAO_LogMgr_i
++  public TAO_LogMgr_i,
++  public virtual POA_DsLogAdmin::BasicLogFactory
+ {
+ public:
+ 
+@@ -59,19 +59,19 @@
+   ~TAO_BasicLogFactory_i ();
+ 
+   /// Activate this servant with the ORB and POA passed in.
+-  DsLogAdmin::BasicLogFactory_ptr
++  virtual DsLogAdmin::BasicLogFactory_ptr
+     activate (CORBA::ORB_ptr orb,
+               PortableServer::POA_ptr poa);
+ 
+   /// Allows clients to create new BasicLog objects.
+   /// Raises DsLogAdmin::InvalidThreshold.
+-  DsLogAdmin::BasicLog_ptr
++  virtual DsLogAdmin::BasicLog_ptr
+     create (DsLogAdmin::LogFullActionType full_action,
+             CORBA::ULongLong max_size,
+             DsLogAdmin::LogId_out id);
+ 
+   /// Same as create (), but allows clients to specify the id.
+-  DsLogAdmin::BasicLog_ptr
++  virtual DsLogAdmin::BasicLog_ptr
+     create_with_id (DsLogAdmin::LogId id,
+                     DsLogAdmin::LogFullActionType full_action,
+                     CORBA::ULongLong max_size);
+diff -Naur TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLog_i.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLog_i.h
+--- TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLog_i.h	2008-05-07 12:45:12.000000000 -0600
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Log/BasicLog_i.h	2009-06-03 10:53:16.000000000 -0600
+@@ -50,7 +50,7 @@
+  */
+ class TAO_Log_Serv_Export TAO_BasicLog_i :
+   public TAO_Log_i,
+-  public POA_DsLogAdmin::BasicLog
++  public virtual POA_DsLogAdmin::BasicLog
+ {
+ public:
+ 
+@@ -68,7 +68,7 @@
+   virtual DsLogAdmin::Log_ptr copy_with_id (DsLogAdmin::LogId id);
+ 
+   /// Destroy the log object and all contained records.
+-  void destroy (void);
++  virtual void destroy (void);
+ 
+ protected:
+ 
