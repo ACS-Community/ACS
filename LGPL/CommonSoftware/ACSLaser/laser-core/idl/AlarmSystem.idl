@@ -247,12 +247,34 @@ module alarmsystem
 	};
 	
 	const string AlarmServiceName="AcsAlarmService";
+	
+	/*
+	 * The ACS alarm service.
+	 * 
+	 * It is a fake process that does nothing but waiting for shutdown.
+	 *
+	 * Having this servant is useful to uniform the behaviour of the system that does
+	 not need to be aware of the implementation currently running.
+	 * 
+	 */ 
+	interface AlarmService 
+	{
+		/**
+		 * shutdown the alarm service
+		 */
+		void shutdown();
+		
+		/*
+		 * Return the type of alarm service: true means ACS implementation
+		 *                                   false means CERN implementation
+		 */
+		boolean isACSAlarmService();
+	};
 
 	/*
 	 * ALARM SYSTEM CORE SERVICE
 	 */
-	
-	interface AlarmService
+	interface CERNAlarmService: AlarmService
 	{
 		typedef sequence<long> long_sequence;
 		
@@ -316,7 +338,7 @@ module alarmsystem
 			in AlarmDefinition definition
 		) raises (LaserDefinitionException);
 		
-		void shutdown();
+		
 	};
 	
 	interface TestAlarmSource : ACS::ACSComponent
