@@ -37,6 +37,8 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
+import alma.alarmsystem.CERNAlarmService;
+import alma.alarmsystem.CERNAlarmServiceHelper;
 
 /**
  * An helper class with a set of useful methods.
@@ -180,6 +182,43 @@ public class AlarmServiceUtils {
 		nameComponent[0]=new NameComponent(name,"");
 		Object alarmObj = ns.resolve(nameComponent);
 		return AlarmServiceHelper.narrow(alarmObj);
+	}
+	
+	/**
+	 * Return the type of the alarm service in use
+	 * 
+	 * @return <code>true</code> if the alarm system implementation is ACS,
+	 * 			<code>false</code> otherwise
+	 */
+	public boolean getAlarmServiceType() throws Exception {
+		AlarmService alService = getAlarmService();
+		return alService.isACSAlarmService();
+	}
+	
+	/**
+	 * Get a reference to the {@link CERNAlarmService}.
+	 * 
+	 * @return The {@link CERNAlarmService} 
+	 */
+	public CERNAlarmService getCernAlarmService() throws Exception {
+		AlarmService alService=getAlarmService();
+		if (alService.isACSAlarmService()) {
+			throw new Exception("The ACS implementation of the alarm service is in use");
+		}
+		return CERNAlarmServiceHelper.narrow(alService);
+	}
+	
+	/**
+	 * Get a reference to the {@link CERNAlarmService}.
+	 * 
+	 * @return The {@link CERNAlarmService} 
+	 */
+	public AlarmService getAcsAlarmService() throws Exception {
+		AlarmService alService=getAlarmService();
+		if (!alService.isACSAlarmService()) {
+			throw new Exception("The CERN implementation of the alarm service is in use");
+		}
+		return alService;
 	}
 
 	/**
