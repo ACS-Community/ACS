@@ -39,24 +39,13 @@ import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
 import org.omg.CORBA.Any;
-import org.omg.CORBA.ORB;
-import org.omg.CosNaming.NameComponent;
-import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosPropertyService.Property;
-import org.omg.PortableServer.POA;
 
-import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
-import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.container.AdvancedContainerServices;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.Alarm;
-import alma.alarmsystem.AlarmServiceHolder;
-import alma.alarmsystem.AlarmServiceOperations;
-import alma.alarmsystem.AlarmServicePOA;
+import alma.alarmsystem.CERNAlarmServicePOA;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.LaserProcessingException;
 import alma.alarmsystem.Location;
@@ -65,7 +54,6 @@ import alma.alarmsystem.Source;
 import alma.alarmsystem.Status;
 import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
-import alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper;
 import alma.alarmsystem.corbaservice.AlarmSystemContainerServices;
 import alma.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
@@ -104,7 +92,7 @@ import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 
-public class LaserComponent extends AlarmServicePOA implements MessageListener{
+public class LaserComponent extends CERNAlarmServicePOA implements MessageListener{
 	
 	/**
 	 * A class to terminate the alarm service asynchronously.
@@ -965,4 +953,8 @@ public class LaserComponent extends AlarmServicePOA implements MessageListener{
 			throw new alma.alarmsystem.LaserDefinitionException(e.getMessage());
 		}
     }
+	
+	public boolean isACSAlarmService() {
+		return false;
+	}
 }
