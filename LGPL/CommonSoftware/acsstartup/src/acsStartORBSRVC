@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStartORBSRVC,v 1.75 2009/06/02 12:57:53 acaproni Exp $"
+# "@(#) $Id: acsStartORBSRVC,v 1.76 2009/06/03 09:30:54 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -204,7 +204,6 @@ if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
 # if not, clean up and exit.
 acsConfigurationDatabase -w $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 9; fi
-echo "Starttttttttttttttttttttttttttttttttttttttttttttttttt"
 acsAlarmService -s $PARAMS
 if [ $? -eq $EC_TIMEOUT ]; then timeoutExit 10; fi
 
