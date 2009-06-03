@@ -3,7 +3,7 @@ OLD_CDB=$ACS_CDB
 ACS_CDB=../test
 
 #Start the ORB services and manager.
-acsutilTATPrologue --noloadifr
+acsutilTATPrologue
 
 echo " Starting Test Java Container"
 acsutilAwaitContainerStart -java frodoContainer
