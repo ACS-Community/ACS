@@ -35,7 +35,7 @@ else:
     numAlarmsToSend = int(sys.argv[1])
 
     # Test data for our fault
-    family = 'AlarmSource'
+    family = 'Mount'
     member = 'ALARM_SOURCE_MOUNT'
     code = 1
 
