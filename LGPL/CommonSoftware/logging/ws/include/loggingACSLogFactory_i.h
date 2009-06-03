@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogFactory_i.h,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingACSLogFactory_i.h,v 1.4 2009/06/03 23:16:28 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #endif
 
 #include <acsutil.h>
+#include <logging_idlS.h>
 
 #include <orbsvcs/Log/BasicLogFactory_i.h>
 
@@ -40,7 +41,8 @@
 /**
  * Implementation of the ACSLogFactory interface (extending BasicLogFactory interface).
  */
-class ACSLogFactory_i : public TAO_BasicLogFactory_i
+class ACSLogFactory_i : public TAO_BasicLogFactory_i, 
+public POA_Logging::ACSLogFactory
 {
     
   public:
@@ -66,6 +68,21 @@ class ACSLogFactory_i : public TAO_BasicLogFactory_i
     
     PortableServer::ServantBase* create_log_servant(DsLogAdmin::LogId id);
 
+    
+    Logging::ACSLogFactory_ptr
+	    activate (CORBA::ORB_ptr orb,
+			    PortableServer::POA_ptr poa);
+
+    Logging::AcsLogService_ptr
+	    create (DsLogAdmin::LogFullActionType full_action,
+			    CORBA::ULongLong max_size,
+			    DsLogAdmin::LogId_out id_out);
+
+    Logging::AcsLogService_ptr
+	    create_with_id (DsLogAdmin::LogId id,
+			    DsLogAdmin::LogFullActionType full_action,
+			    CORBA::ULongLong max_size);
+
     /**
      * Same as BasicLogFactory implementation, except it creates ACSLog
      */
@@ -81,6 +98,8 @@ class ACSLogFactory_i : public TAO_BasicLogFactory_i
     
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
+
+    CORBA::RepositoryId create_repositoryid ();
     
 };
 

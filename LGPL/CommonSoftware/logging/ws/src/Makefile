@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.63 2007/11/30 11:04:31 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.64 2009/06/03 23:16:28 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -66,8 +66,8 @@ EXECUTABLES     = $(PROG) loggingService loggingClient
 EXECUTABLES_L   = 
 
 loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSStructuredPushSupplierBin loggingACSStructuredPushSupplierXml loggingACSLog_i \
-			loggingHelper 
-loggingService_LIBS = logging
+			loggingHelper  loggingAcsLogServiceImpl
+loggingService_LIBS = logging logging_idlStubs
 #loggingService_LDFLAGS= -ggdb
 
 loggingClient_OBJECTS = loggingClient loggingHelper 
@@ -96,7 +96,8 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
                         loggingLogTrace.h loggingACSLogger.h \
 			loggingLogSvcHandler.h  loggingLogLevelDefinition.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
-			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h 
+			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h \
+			loggingAcsLogServiceImpl.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
@@ -125,7 +126,7 @@ baselogging_LDFLAGS = 	-lloki -ggdb
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
-			loggingACSLogger loggingLogSvcHandler
+			loggingACSLogger loggingLogSvcHandler 
 logging_LIBS    =	baselogging 
 logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLogFactory_i.cpp,v 1.3 2006/08/08 11:14:04 bjeram Exp $"
+* "@(#) $Id: loggingACSLogFactory_i.cpp,v 1.4 2009/06/03 23:16:28 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -26,62 +26,132 @@
 
 #include "loggingACSLogFactory_i.h"
 #include "loggingACSLog_i.h"
+#include "loggingAcsLogServiceImpl.h"
 
 /*****************************************************************/
 
-PortableServer::ServantBase*
-ACSLogFactory_i::create_log_servant(DsLogAdmin::LogId id)
+PortableServer::ServantBase* ACSLogFactory_i::create_log_servant(
+		DsLogAdmin::LogId id)
 {
-    ACSLog_i* basic_log_i=0;
-    
-    try
+	AcsLogServiceImpl* acs_log=0;
+
+	try
 	{
-	basic_log_i = new ACSLog_i(this->orb_.in(), 
-				   this->log_poa_.in(),
-				   *this,
-				   this->log_mgr_.in(),
-				   id);
+		acs_log = new AcsLogServiceImpl(this->orb_.in(), 
+				this->log_poa_.in(),
+				*this,
+				this->log_mgr_.in(),
+				id);
 	}
-    catch(...)
+	catch(...)
 	{
-	return basic_log_i;
+		return acs_log;
 	}
-    
-    if (basic_log_i==0)
+
+	if (acs_log==0)
 	{
-	errno = ENOMEM;
-	throw CORBA::NO_MEMORY ();
+		errno = ENOMEM;
+		throw CORBA::NO_MEMORY ();
 	}  
-    
-    // Set suppliers
-    basic_log_i->set_logging_supplier(m_logging_supplier);
-    
-    try
+
+	// Set suppliers
+	acs_log->set_logging_supplier(m_logging_supplier);
+
+	try
 	{
-	basic_log_i->init ();
+		acs_log->init ();
 	}
-    catch(...)
+	catch(...)
 	{
-	delete basic_log_i;
-	return 0;
+		delete acs_log;
+		return 0;
 	}
-    
-    return basic_log_i;
+
+	return acs_log;
 }//create_log_servant
 
-/*
-DsLogAdmin::BasicLog_ptr
-ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
-				 DsLogAdmin::LogFullActionType full_action,
-				 CORBA::ULongLong max_size)
-    throw(CORBA::SystemException,
-	  DsLogAdmin::LogIdAlreadyExists,
-	  DsLogAdmin::InvalidLogFullAction)
+Logging::ACSLogFactory_ptr ACSLogFactory_i::activate (CORBA::ORB_ptr orb,
+		PortableServer::POA_ptr poa)
 {
-    // Make sure the id not used up.
-    if (exists (id) )
-	{
-	
+	TAO_LogMgr_i::init (orb, poa);
+
+	PortableServer::ObjectId_var oid =
+		this->factory_poa_->activate_object (this);
+
+	CORBA::Object_var obj =
+		this->factory_poa_->id_to_reference (oid.in ());
+
+
+	// narrow and store the result..
+	this->log_mgr_ =
+		DsLogAdmin::LogMgr::_narrow (obj.in ());
+
+	Logging::ACSLogFactory_var v_return =
+		Logging::ACSLogFactory::_narrow (obj.in ());
+
+	return v_return._retn ();
+
+}
+
+Logging::AcsLogService_ptr ACSLogFactory_i::create (
+		DsLogAdmin::LogFullActionType full_action,
+		CORBA::ULongLong max_size,
+		DsLogAdmin::LogId_out id_out)
+{
+	this->create_i (full_action,
+			max_size,
+			0,
+			id_out);
+	DsLogAdmin::LogId id = id_out;
+
+	DsLogAdmin::Log_var log =
+		this->create_log_object (id);
+
+	Logging::AcsLogService_var acs_log =
+		Logging::AcsLogService::_narrow (log.in ());
+
+	return acs_log._retn ();
+
+}
+
+Logging::AcsLogService_ptr ACSLogFactory_i::create_with_id (
+		DsLogAdmin::LogId id,
+		DsLogAdmin::LogFullActionType full_action,
+		CORBA::ULongLong max_size)
+{
+	this->create_with_id_i (id,
+			full_action,
+			max_size,
+			0);
+
+	DsLogAdmin::Log_var log =
+		this->create_log_object (id);
+
+	// narrow to AcsLogService
+	Logging::AcsLogService_var acs_log =
+		Logging::AcsLogService::_narrow (log.in ());
+
+	return acs_log._retn ();
+}
+
+CORBA::RepositoryId ACSLogFactory_i::create_repositoryid ()
+{
+	return CORBA::string_dup ("IDL:alma/Logging:AcsLogService:1.0");
+}
+
+/*
+   DsLogAdmin::BasicLog_ptr
+   ACSLogFactory_i::create_with_id (DsLogAdmin::LogId id,
+   DsLogAdmin::LogFullActionType full_action,
+   CORBA::ULongLong max_size)
+   throw(CORBA::SystemException,
+   DsLogAdmin::LogIdAlreadyExists,
+   DsLogAdmin::InvalidLogFullAction)
+   {
+// Make sure the id not used up.
+if (exists (id) )
+{
+
 	throw DsLogAdmin::LogIdAlreadyExists();
 	return DsLogAdmin::BasicLog::_nil();
 	}
