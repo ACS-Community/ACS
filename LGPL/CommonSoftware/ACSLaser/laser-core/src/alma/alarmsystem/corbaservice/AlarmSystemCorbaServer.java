@@ -58,11 +58,19 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
+import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.AlarmServiceImpl.AcsAlarmSystem;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 import com.cosylab.acs.laser.LaserComponent;
 
 /**
  * Class that provides default ACS CORBA service implementation.
+ * <P>
+ * The constructor activate the CORBA servant: the ACS or the CERN implementation,
+ * depending on the value read from the CDB.
+ * 
  * 
  * @author acaproni
  */
@@ -103,9 +111,18 @@ public class AlarmSystemCorbaServer implements Runnable
 	private volatile boolean closed=false;
 	
 	/**
-	 * The CORBA servant
+	 * The CERN CORBA servant
+	 * <P>
+	 * One and only one between <code>laserComponent</code> and <code>acsComponent</code> is not <code>null</code>.
 	 */
 	private LaserComponent laserComponent=null;
+	
+	/**
+	 * The ACS CORBA servant
+	 * <P>
+	 * One and only one between <code>laserComponent</code> and <code>acsComponent</code> is not <code>null</code>.
+	 */
+	private AcsAlarmSystem acsComponent=null;
 	
 	public static void main(String[] args) {
 		AcsLogger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("AlarmService", true);
@@ -133,6 +150,8 @@ public class AlarmSystemCorbaServer implements Runnable
 			public void run() {
 				if (laserComponent!=null) {
 					laserComponent.shutdown();
+				} else if (acsComponent!=null) {
+					acsComponent.shutdown();
 				} else {
 					shutdown();
 				}
@@ -141,10 +160,26 @@ public class AlarmSystemCorbaServer implements Runnable
 		this.m_logger = logger;
 		internalInitialize(args);
 		AlarmSystemContainerServices alSysContSvcs = new AlarmSystemContainerServices(this,logger);
-		laserComponent=new LaserComponent(this,alSysContSvcs);
-		org.omg.CORBA.Object laserObject = rootPOA.servant_to_reference(laserComponent);
-		System.out.println("CORBA reference: "+orb.object_to_string(laserObject));
-		registerToNamingService(laserObject);
+		// Check which implementation to use (true=ACS)
+		boolean alarmType=true;
+		try {
+			alarmType=getAlarmSystemType();
+		} catch (Throwable t) {}
+		org.omg.CORBA.Object alarmObject;
+		if (alarmType) {
+			// ACS
+			laserComponent=null;
+			logger.log(AcsLogLevel.INFO,"Starting the ACS implementation of the alarm service");
+			acsComponent=new AcsAlarmSystem(this);
+			alarmObject = rootPOA.servant_to_reference(acsComponent);
+		} else {
+			// CERN
+			acsComponent=null;
+			logger.log(AcsLogLevel.INFO,"Starting the CERN implementation of the alarm service");
+			laserComponent=new LaserComponent(this,alSysContSvcs);
+			alarmObject = rootPOA.servant_to_reference(laserComponent);
+		}
+		registerToNamingService(alarmObject);
 		new Thread(this, "AlarmSystemCORBAHelper").start();
 		System.out.println("The alarm service is ready and waiting");
 	}
@@ -520,15 +555,19 @@ public class AlarmSystemCorbaServer implements Runnable
 		} catch (Throwable t) {
 			m_logger.log(AcsLogLevel.WARNING,"Error unbinding the alarm service from the name service",t);
 		}
-		if (laserComponent!=null) {
-			try {
-				m_logger.log(AcsLogLevel.DEBUG,"Shutting down the laser alarm service");
+		try {
+			m_logger.log(AcsLogLevel.DEBUG,"Shutting down the alarm service");
+			if (laserComponent!=null) {
 				laserComponent.shutdown();
-			} catch (Throwable t) {
-				m_logger.log(AcsLogLevel.WARNING,"Error shutting down the alarm service",t);
-			} finally {
-				laserComponent=null;
 			}
+			if (acsComponent!=null) {
+				acsComponent.shutdown();
+			}
+		} catch (Throwable t) {
+			m_logger.log(AcsLogLevel.WARNING,"Error shutting down the alarm service",t);
+		} finally {
+			acsComponent=null;
+			laserComponent=null;
 		}
 		m_logger.log(AcsLogLevel.DEBUG,"Shutting down ORB");
 		orb.shutdown(true);
@@ -536,6 +575,39 @@ public class AlarmSystemCorbaServer implements Runnable
 		poaManager=null;
 		rootPOA=null;
 		orb=null;
+	}
+	
+	/**
+	 * Get a reference to the DAL.
+	 * 
+	 * @return The DAL
+	 * @throws Exception In case of error getting the DAL
+	 */
+	private DAL getCDB() throws Exception {
+		NamingContext context=getNamingContext();
+		NameComponent[] nameCom = new NameComponent[1];
+		nameCom[0] = new NameComponent("CDB","");
+		Object obj = context.resolve(nameCom);
+		return DALHelper.narrow(obj);
+	}
+	
+	/**
+	 * Query the CDB to understand which one between ACS and CERN implementation
+	 * has to be used
+	 *  
+	 * @return <code>true</code> if ACS implementation must be used
+	 * @throws Exception In case of error
+	 */
+	private boolean getAlarmSystemType() throws Exception {
+		DAL dal = getCDB();
+		String str=dal.get_DAO("Alarms/Administrative/AlarmSystemConfiguration");
+		String[] rows=str.split("\n");
+		for (String row: rows) {
+			if (row.trim().startsWith("<configuration-property") && row.contains("name") && row.contains("CERN")) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
 
