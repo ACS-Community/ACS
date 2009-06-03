@@ -70,5 +70,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="lib" path="laser-core/lib/AlarmSystem.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
