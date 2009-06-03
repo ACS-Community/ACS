@@ -39,7 +39,7 @@ def alarmDataHandler(some_param):
 
 
 if len(sys.argv) < 2:
-    print "\n\nUsage: \n\n" << "TestAcsAlarmSending <NUM_ALARMS_TO_SEND>\n\n" << "where NUM_ALARMS_TO_SEND is how many alarms you wish to send.\n\n"
+    print "\n\nUsage: \n\nTestAcsAlarmSending <NUM_ALARMS_TO_SEND>\n\nwhere NUM_ALARMS_TO_SEND is how many alarms you wish to send.\n\n"
 else:
     numAlarmsToReceive = int(sys.argv[1])
 
