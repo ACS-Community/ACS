@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.python,v 1.2 2009/06/04 21:56:43 javarias Exp $"
+# "@(#) $Id: Makefile.python,v 1.3 2009/06/04 22:17:08 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -56,6 +56,9 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 	@cp -r ../lib/python/site-packages/* $(ACSROOT)/lib/python/site-packages/
+
+do_pidl: ../idl/TimeBase.pidl
+	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $<
 
 do_pidl: ../idl/TimeBase.pidl
 	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $<
