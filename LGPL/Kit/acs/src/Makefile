@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.94 2007/06/12 12:35:53 mzampare Exp $" 
+# "@(#) $Id: Makefile,v 1.95 2009/06/04 13:39:51 mzampare Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -51,6 +51,7 @@ SCRIPTS  = 	acsMakeTclScriptDependencies    \
 		acsMakeXmlErrLibraries     \
                 acsMakeTclScript		\
 		acsMakeLogTSDependencies   \
+		acsMakeDDSDependencies   \
 		acsMan				\
 		doxygenize		\
 		acsChangeEnv            \
@@ -114,6 +115,7 @@ INSTALL_FILES = ../include/acsMakefile       \
                 ../include/idlMakefile   \
                 ../include/xsdMakefile   \
                 ../include/xmlerrMakefile   \
+		../include/ddsMakefile \
                 ../include/acsMakefile.all   \
                 ../include/Makefile_LCU.template \
                 ../include/Makefile_WS.template \
