@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.python,v 1.1 2008/04/17 12:45:58 bjeram Exp $"
+# "@(#) $Id: Makefile.python,v 1.2 2009/06/04 21:56:43 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -20,7 +20,7 @@ MAKE_ONLY = Python
 # 
 # IDL Files and flags
 # 
-IDL_FILES = NotificationServiceMC NotifyExt NotifyMonitoringExt
+IDL_FILES = NotificationServiceMC NotifyExt NotifyMonitoringExt DsLogAdmin
 TAO_IDLFLAGS =
 # USER_IDL is defined in top Makefile, so it has to be commented here !!
 #USER_IDL =
@@ -41,7 +41,7 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+all:	do_all do_pidl
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
@@ -55,6 +55,9 @@ man   : do_man
 
 install : install_all
 	@echo " . . . installation done"
+	@cp -r ../lib/python/site-packages/* $(ACSROOT)/lib/python/site-packages/
 
+do_pidl: ../idl/TimeBase.pidl
+	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $<
 
 #___oOo___

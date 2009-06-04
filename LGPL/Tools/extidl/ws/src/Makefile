@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2008/04/17 12:58:47 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.4 2009/06/04 21:56:43 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -64,6 +64,8 @@ do_copy :
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/NotifyExt.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControl/NotificationServiceMC.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl ../idl
+	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/DsLogAdmin.idl ../idl
+	@cp -f $(ACE_ROOT)/TAO/tao/TimeBase.pidl ../idl
 
 do_remove :
 	@rm -f ../idl/NotifyExt.idl
