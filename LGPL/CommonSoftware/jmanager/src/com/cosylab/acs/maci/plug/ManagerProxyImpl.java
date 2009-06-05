@@ -1818,14 +1818,20 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * Gets the log levels of the default logging configuration. These levels
 	 * are used by all loggers that have not been configured individually.
 	 */
-	public LogLevels get_default_logLevels() {		
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		
-		LogLevels logLevels = new LogLevels();
-		logLevels.useDefault = false;
-		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
-		logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal().value;
-		return logLevels;
+	public LogLevels get_default_logLevels() {
+		pendingRequests.incrementAndGet();
+		try {
+			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+			
+			LogLevels logLevels = new LogLevels();
+			logLevels.useDefault = false;
+			logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
+			logLevels.minLogLevelLocal = (short) logConfig.getDefaultMinLogLevelLocal().value;
+			return logLevels;
+		}
+		finally {
+			pendingRequests.decrementAndGet();
+		}
 	}
 
 	/**
@@ -1833,6 +1839,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
+		pendingRequests.incrementAndGet();
 		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
 		
 		try {
@@ -1840,7 +1847,10 @@ public class ManagerProxyImpl extends ManagerPOA
 			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
 		} catch (AcsJIllegalArgumentEx ex) {
 			throw ex.toIllegalArgumentEx();
-		}			
+		}
+		finally {
+			pendingRequests.decrementAndGet();
+		}
 	}
 
 	/**
@@ -1850,10 +1860,16 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * component loggers, and (only C++) GlobalLogger.
 	 */
 	public String[] get_logger_names() {
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		
-		Set<String> loggerNames = logConfig.getLoggerNames();
-		return loggerNames.toArray(new String[loggerNames.size()]);		
+		pendingRequests.incrementAndGet();
+		try {
+			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+			
+			Set<String> loggerNames = logConfig.getLoggerNames();
+			return loggerNames.toArray(new String[loggerNames.size()]);
+		}
+		finally {
+			pendingRequests.decrementAndGet();
+		}
 	}
 
 	/**
@@ -1863,12 +1879,18 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * levels apply.
 	 */
 	public LogLevels get_logLevels(String logger_name) {
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		
-		UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
-		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
-		LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, levels);
-		return ret;
+		pendingRequests.incrementAndGet();
+		try {
+			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+			
+			UnnamedLogger levels = logConfig.getNamedLoggerConfig(logger_name);
+			boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
+			LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, levels);
+			return ret;
+		}
+		finally {
+			pendingRequests.decrementAndGet();
+		}
 	}
 
 	/**
@@ -1877,18 +1899,24 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * will use the supplied local and remote levels.
 	 */
 	public void set_logLevels(String logger_name, LogLevels levels) throws IllegalArgumentEx {
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-
-		if (levels.useDefault) {
-			logConfig.clearNamedLoggerConfig(logger_name);
-		}
-		else {
-			try {
-				UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
-				logConfig.setNamedLoggerConfig(logger_name, config);
-			} catch (AcsJIllegalArgumentEx ex) {
-				throw ex.toIllegalArgumentEx();
+		pendingRequests.incrementAndGet();
+		try {
+			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+	
+			if (levels.useDefault) {
+				logConfig.clearNamedLoggerConfig(logger_name);
 			}
+			else {
+				try {
+					UnnamedLogger config = AcsLogLevelDefinition.createXsdLogLevelsFromIdl(levels);
+					logConfig.setNamedLoggerConfig(logger_name, config);
+				} catch (AcsJIllegalArgumentEx ex) {
+					throw ex.toIllegalArgumentEx();
+				}
+			}
+		}
+		finally {
+			pendingRequests.decrementAndGet();
 		}
 	}
 
@@ -1899,14 +1927,20 @@ public class ManagerProxyImpl extends ManagerPOA
 	 * effective, and also for changes of more advanced parameters.
 	 */
 	public void refresh_logging_config() {
-		LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		
+		pendingRequests.incrementAndGet();
 		try {
-			logConfig.initialize(true);
-		} catch (LogConfigException ex) {
-			// if the CDB can't be read, we still want to run the container, thus we only log the problem here
-			logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
-		}		
+			LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+			
+			try {
+				logConfig.initialize(true);
+			} catch (LogConfigException ex) {
+				// if the CDB can't be read, we still want to run the container, thus we only log the problem here
+				logger.log(Level.FINE, "Failed to configure logging (default values will be used).", ex);
+			}
+		}
+		finally {
+			pendingRequests.decrementAndGet();
+		}
 	}
 
 	/* ************************ END LoggingConfigurable ************************ */
