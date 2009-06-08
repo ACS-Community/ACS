@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsAlarmService,v 1.1 2009/06/02 12:57:25 acaproni Exp $"
+# "@(#) $Id: acsAlarmService,v 1.2 2009/06/08 14:43:23 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -62,7 +62,7 @@ CL_RECOVER=
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,start,kill,wait,recoverClientConnections,baseport:,timeout:
+LONGOPTS=help,start,kill,wait,noloadIFR,recoverClientConnections,baseport:,timeout:
 SHORTOPTS=hskwrb:t:
 
 #
