@@ -22,4 +22,27 @@ public class RemoteTimeoutException extends RemoteException
 	 * Serial version UID. 
 	 */
 	private static final long serialVersionUID = 6032183068374159550L;
+
+	/**
+	 * 
+	 */
+	public RemoteTimeoutException() {
+		super();
+	}
+
+	/**
+	 * @param message
+	 * @param t
+	 */
+	public RemoteTimeoutException(String message, Throwable t) {
+		super(message, t);
+	}
+
+	/**
+	 * @param s
+	 */
+	public RemoteTimeoutException(String s) {
+		super(s);
+	}
+	
 }

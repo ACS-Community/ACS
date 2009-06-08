@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.omg.CORBA.Object;
+import org.omg.CORBA.TIMEOUT;
+import org.omg.CORBA.TRANSIENT;
 
 import alma.acs.util.IorParser;
 import alma.acs.util.UTCUtility;
@@ -21,6 +23,8 @@ import com.cosylab.acs.maci.Client;
 import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.RemoteTimeoutException;
+import com.cosylab.acs.maci.RemoteTransientException;
 
 /**
  * CORBA Client Proxy.
@@ -279,10 +283,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		{
 			return client.ping();
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'ping()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'ping()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'ping()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'ping()' method.", ex);
 		}
 	}
 

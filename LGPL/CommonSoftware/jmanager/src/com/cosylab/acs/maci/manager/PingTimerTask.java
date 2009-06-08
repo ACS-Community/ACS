@@ -6,6 +6,7 @@ package com.cosylab.acs.maci.manager;
 
 import java.sql.Timestamp;
 import java.util.TimerTask;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
@@ -175,8 +176,8 @@ public class PingTimerTask extends TimerTask
 		}
 		catch (Throwable ex)
 		{
-			//logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ping method thrown an exception, logging it out.", ex);
-			logger.info("Invoking client '"+clientInfo.getName()+"' ping method threw an unknown exception, logging it out.");
+			logger.log(Level.INFO, "Invoking client '"+clientInfo.getName()+"' ping method thrown an exception, logging it out.", ex);
+			//logger.info("Invoking client '"+clientInfo.getName()+"' ping method threw an unknown exception, logging it out.");
 
 			// An alarm is raised for those clients that define an alarm interface
 			raise_alarm(clientInfo.getName());

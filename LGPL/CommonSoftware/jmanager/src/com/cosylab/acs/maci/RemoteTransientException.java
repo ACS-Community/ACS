@@ -22,5 +22,27 @@ public class RemoteTransientException extends RemoteException
 	 * Serial version UID. 
 	 */
 	private static final long serialVersionUID = -1093411214533539296L;
+
+	/**
+	 * 
+	 */
+	public RemoteTransientException() {
+		super();
+	}
+
+	/**
+	 * @param message
+	 * @param t
+	 */
+	public RemoteTransientException(String message, Throwable t) {
+		super(message, t);
+	}
+
+	/**
+	 * @param s
+	 */
+	public RemoteTransientException(String s) {
+		super(s);
+	}
 	
 }
