@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.5 2008/09/29 08:36:42 cparedes Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.6 2009/06/09 00:04:18 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -123,7 +123,6 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
             
          //   CORBA::TCKind kin = AnyAide::getRealType(reclist[i].info); 
            
-        
         reclist[i].info >>= xml; 
         result = XMLParser::parseElementType(xml, XMLtype);
         

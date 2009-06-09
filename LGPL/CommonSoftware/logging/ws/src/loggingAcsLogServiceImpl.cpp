@@ -24,7 +24,7 @@ void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
 	/*TODO: Implement*/
 	if (reclist.length() <= 0)
 		return;
-	
+
 	// Check if supplyer is given
 	if (!this->m_logging_supplier)
 		return;
@@ -59,17 +59,17 @@ void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
 
 	CosNotification::StructuredEvent logging_event;
 	logging_event.header.fixed_header.event_type.domain_name = 
-			  CORBA::string_dup(acscommon::LOGGING_DOMAIN);
+		CORBA::string_dup(acscommon::LOGGING_DOMAIN);
 	logging_event.header.fixed_header.event_type.type_name =  
-			  CORBA::string_dup(acscommon::LOGGING_TYPE);
+		CORBA::string_dup(acscommon::LOGGING_TYPE);
 	logging_event.header.fixed_header.event_name = CORBA::string_dup("");
 	logging_event.header.variable_header.length (0); // put nothing here
 	logging_event.filterable_data.length (0);
 
 	for (CORBA::ULong i = 0; i < reclist.length (); i++)
 	{
-			  logging_event.remainder_of_body <<= reclist[i].xml;
-			  m_logging_supplier->send_event (logging_event);
+		logging_event.remainder_of_body <<= reclist[i].xml;
+		m_logging_supplier->send_event (logging_event);
 	}
 }
 

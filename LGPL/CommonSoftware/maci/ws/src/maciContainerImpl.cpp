@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.113 2008/10/01 02:40:28 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.114 2009/06/09 00:03:54 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.113 2008/10/01 02:40:28 cparedes Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.114 2009/06/09 00:03:54 javarias Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1136,9 +1136,9 @@ ContainerImpl::connect()
 
 	      if (log_obj.ptr() != CORBA::Object::_nil())
 		{
-		  DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
+		  Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(log_obj.in());
 
-		  if (logger.ptr() != DsLogAdmin::Log::_nil())
+		  if (logger.ptr() != Logging::AcsLogService::_nil())
 		    {
 		      m_loggerProxy->setCentralizedLogger(logger.in());
 		      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connected to the Centralized Logger."));
@@ -2321,7 +2321,7 @@ ContainerImpl::shutdown (
   if (m_loggerProxy)
   {
       m_loggerProxy->flush();
-      m_loggerProxy->setCentralizedLogger(DsLogAdmin::Log::_nil());
+      m_loggerProxy->setCentralizedLogger(Logging::AcsLogService::_nil());
   }
 
   ACS_DEBUG("maci::ContainerImpl::shutdown", "Shutting down ORB");

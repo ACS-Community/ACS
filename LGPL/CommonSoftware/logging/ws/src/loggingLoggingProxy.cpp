@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.66 2008/11/10 11:03:33 bjeram Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.67 2009/06/09 00:04:18 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -52,13 +52,14 @@
 #include <loggingLogLevelDefinition.h>
 
 #include <acsutilTempFile.h>
+#include <logging_idlS.h>
 
  using namespace loggingXMLParser;
 
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.66 2008/11/10 11:03:33 bjeram Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.67 2009/06/09 00:04:18 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -651,9 +652,12 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // sent record directly to centralized logger
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority)))
 	{
-	CORBA::Any record;
-	record <<= xml.c_str();
-	if (!sendRecord(record))
+	Logging::XmlLogRecordSeq reclist;
+	reclist.length(1);
+	reclist[0].xml = xml.c_str();
+//	CORBA::Any record;
+//	record <<= xml.c_str();
+	if (!sendRecord(reclist))
 	    {
 	    m_cache.push_back(xml);
 	    }
@@ -997,14 +1001,14 @@ LoggingProxy::AddData(const ACE_TCHAR *szName, const ACE_TCHAR *szFormat, ...)
 LoggingProxy::LoggingProxy(const unsigned long cacheSize,
 			   const unsigned long minCachePriority,
 			   const unsigned long maxCachePriority,
-			   DsLogAdmin::Log_ptr centralizedLogger,
+			   Logging::AcsLogService_ptr centralizedLogger,
 			   CosNaming::NamingContext_ptr namingContext,
 			   const unsigned int autoFlushTimeoutSec) :
   m_cacheSize(cacheSize),
   m_minCachePriority(minCachePriority),
   m_maxCachePriority(maxCachePriority),
   m_autoFlushTimeoutSec(autoFlushTimeoutSec),
-  m_logger(DsLogAdmin::Log::_duplicate(centralizedLogger)),
+  m_logger(Logging::AcsLogService::_duplicate(centralizedLogger)),
   m_noLogger(false),
   m_namingContext(CosNaming::NamingContext::_duplicate(namingContext)),
   m_failureCount(0),
@@ -1164,7 +1168,7 @@ LoggingProxy::reconnectToLogger()
 
 		    if (!CORBA::is_nil(obj.in()))
 		    {
-			DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(obj.in());
+			Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(obj.in());
 
 
 			if (!CORBA::is_nil(logger.ptr()))
@@ -1469,8 +1473,10 @@ LoggingProxy::sendCacheInternal()
         int i = 0;
         for (LogDeque::iterator iter = m_cache.begin();
              iter != m_cache.end();
-             iter++)
+             iter++){
             anys[i++] <<= iter->c_str();
+	    std::cout << iter->c_str();
+	}
         // we have to unlock before we do a remote call to prevent a deadlock
         // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
         // (to delete cache afterwards or to put the logs back and how to handle    successfullySent/failedToSend
@@ -1523,6 +1529,38 @@ LoggingProxy::sendCacheInternal()
 	 m_sendingPending = false;
 }
 
+
+/// NO LOGGING IN THIS METHOD !!!
+bool LoggingProxy::sendRecord(const Logging::XmlLogRecordSeq &reclist)
+{
+	ACE_GUARD_RETURN (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, false);
+
+	if (m_noLogger && !reconnectToLogger())
+		return false;
+	try
+	{
+		ace_mon.release();
+		m_logger->writeRecord(reclist);
+
+		// here we have to acquire the mutex again. Should be done in better way.
+		ace_mon.acquire();
+		// successfully sent
+		successfullySent();
+
+		return true;
+	}
+	catch(...)
+	{
+		//TBD: here we have to lock again, but it has to be done in better way
+		ace_mon.acquire();
+		failedToSend();
+		// this can cause dead-loop
+		//ACE_PRINT_EXCEPTION(ACE_ANY_EXCEPTION, "(LoggingProxy::sendRecord) Unexpected exception occured while sending to the Centralized Logger");
+	}
+
+	return false;
+
+}
 /// NO LOGGING IN THIS METHOD !!!
 bool
 LoggingProxy::sendRecord(CORBA::Any &record)
@@ -1715,10 +1753,10 @@ std::string LoggingProxy::BinToXml(ACSLoggingLog::LogBinaryRecord* record){
     return xml.c_str();
 }
 
-void LoggingProxy::setCentralizedLogger(DsLogAdmin::Log_ptr centralizedLogger)
+void LoggingProxy::setCentralizedLogger(Logging::AcsLogService_ptr centralizedLogger)
 {
     ACE_GUARD (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex);
-    m_logger = DsLogAdmin::Log::_duplicate(centralizedLogger);
+    m_logger = Logging::AcsLogService::_duplicate(centralizedLogger);
     if (CORBA::is_nil(m_logger.ptr()))
 	m_noLogger = true;
     else

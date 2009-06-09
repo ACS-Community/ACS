@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.35 2008/08/05 15:46:07 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.36 2009/06/09 00:04:18 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -102,7 +102,7 @@
  * if (logger)
  *  {
  *    logger->flush();
- *    logger->setCentralizedLogger(DsLogAdmin::Log::_nil());
+ *    logger->setCentralizedLogger(Logging::AcsLogService::_nil());
  *  }
  *
  * LoggingProxy is also configurable via next enivronment variables:
@@ -113,7 +113,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.35 2008/08/05 15:46:07 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.36 2009/06/09 00:04:18 javarias Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -264,7 +264,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     LoggingProxy(const unsigned long cacheSize,
 		 const unsigned long minCachePriority,
 		 const unsigned long maxCachePriority,
-		 DsLogAdmin::Log_ptr centralizedLogger = DsLogAdmin::Log::_nil(),
+		 Logging::AcsLogService_ptr centralizedLogger = Logging::AcsLogService::_nil(),
 		 CosNaming::NamingContext_ptr namingContext = CosNaming::NamingContext::_nil(),
 		 const unsigned int autoFlushTimeoutSec = 5);
 
@@ -272,7 +272,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ~LoggingProxy();
 
     /// Set Centralized Logger.
-    void setCentralizedLogger(DsLogAdmin::Log_ptr centralizedLogger);
+    void setCentralizedLogger(Logging::AcsLogService_ptr centralizedLogger);
 
     /// Set Naming Context.
     void setNamingContext(CosNaming::NamingContext_ptr namingContext)
@@ -340,6 +340,10 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Send given record to the centralized logger (Telecom log service)
     /// Return: true if successful, false on failure
     bool sendRecord(CORBA::Any &record);
+    
+    /// Send given record to the centralized logger (Telecom log service)
+    /// Return: true if successful, false on failure
+    bool sendRecord(const Logging::XmlLogRecordSeq &reclist);
 
     void sendXmlLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);
     void sendBinLogs(ACE_Log_Record &log_record,  const ACE_TCHAR * timestamp, const ACE_TCHAR * entryType);
@@ -376,7 +380,7 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// Reference to the persistent object which implements the Telecom Log
     /// Service�s Log interface, in particular the write_records method.
     ///
-    DsLogAdmin::Log_var m_logger;
+    Logging::AcsLogService_var m_logger;
     bool m_noLogger;
 
     ///

@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.110 2009/05/13 17:16:06 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.111 2009/06/09 00:03:54 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -457,10 +457,10 @@ SimpleClient::init(int argc, char *argv[])
 
 	  if (log_obj.ptr() != CORBA::Object::_nil())
 	      {
-	      DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
+	      Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(log_obj.in());
 
 
-	      if (logger.ptr() != DsLogAdmin::Log::_nil())
+	      if (logger.ptr() != Logging::AcsLogService::_nil())
 		  {
 		  m_logger->setCentralizedLogger(logger.in());
 		  }
