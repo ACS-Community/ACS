@@ -218,17 +218,6 @@ else
   popd
 fi
 
-#if [ ! -e ../PRODUCTS/ipython-0.8.1.tar.gz ]
-#then
-#  echo Error: ipython sources are missing
-#else
-#  echo "== Building IPython"
-#  tar -zxvf ipython-0.8.1.tar.gz
-#  pushd ipython-0.8.1
-#  python setup.py install 
-#  popd
-#fi
-
 #if [ ! -e ../PRODUCTS/ipython1-saw.tar.gz \
 #     -o ! -e ../PRODUCTS/Twisted-2.5.0.tar.bz2 \
 #   ]
@@ -374,6 +363,58 @@ else
   popd
   tar -zxvf pylint-0.18.0.tar.gz
   pushd pylint-0.18.0
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/ipython-0.9.1.tar.gz \
+     -o ! -e ../PRODUCTS/Twisted-8.2.0.tar.bz2 \
+     -o ! -e ../PRODUCTS/zope.interface-3.5.1.tar.gz \
+     -o ! -e ../PRODUCTS/Sphinx-0.6.1.tar.gz \
+     -o ! -e ../PRODUCTS/pyOpenSSL-0.9.tar.gz \
+     -o ! -e ../PRODUCTS/Pygments-1.0.tar.gz \
+     -o ! -e ../PRODUCTS/foolscap-0.4.1.tar.gz \
+     -o ! -e ../PRODUCTS/Jinja2-2.1.1.tar.gz \
+     -o ! -e ../PRODUCTS/docutils-snapshot.tgz \
+]
+then
+  echo Error: ipython sources are missing
+else
+  echo "== Building IPython"
+  tar -zxvf Pygments-1.0.tar.gz
+  pushd Pygments-1.0
+  python setup.py install 
+  popd
+  tar -zxvf Jinja2-2.1.1.tar.gz
+  pushd Jinja2-2.1.1
+  python setup.py install 
+  popd
+  tar -zxvf docutils-snapshot.tgz
+  pushd docutils
+  python setup.py install 
+  popd
+  tar -zxvf Sphinx-0.6.1.tar.gz
+  pushd Sphinx-0.6.1
+  python setup.py install 
+  popd
+  tar -zxvf zope.interface-3.5.1.tar.gz
+  pushd zope.interface-3.5.1
+  python setup.py install 
+  popd
+  tar -jxvf Twisted-8.2.0.tar.bz2
+  pushd Twisted-8.2.0
+  python setup.py install 
+  popd
+  tar -zxvf pyOpenSSL-0.9.tar.gz
+  pushd pyOpenSSL-0.9
+  python setup.py install 
+  popd
+  tar -zxvf foolscap-0.4.1.tar.gz
+  pushd foolscap-0.4.1
+  python setup.py install 
+  popd
+  tar -zxvf ipython-0.9.1.tar.gz
+  pushd ipython-0.9.1
   python setup.py install 
   popd
 fi
