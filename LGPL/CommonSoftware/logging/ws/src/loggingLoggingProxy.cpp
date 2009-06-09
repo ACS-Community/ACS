@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.67 2009/06/09 00:04:18 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.68 2009/06/09 23:31:04 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.67 2009/06/09 00:04:18 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.68 2009/06/09 23:31:04 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1475,7 +1475,6 @@ LoggingProxy::sendCacheInternal()
              iter != m_cache.end();
              iter++){
             anys[i++] <<= iter->c_str();
-	    std::cout << iter->c_str();
 	}
         // we have to unlock before we do a remote call to prevent a deadlock
         // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
