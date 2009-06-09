@@ -49,3 +49,6 @@ errorclass\.py
 failuredetail\.
 failure\.html
 xmlerror\.p
+pylint-0.18.0/test/input/.*error.*
+pylint-0.18.0/test/regrtest_data/socketerror_import.py
+pylint-0.18.0/test/messages/.*error.*
