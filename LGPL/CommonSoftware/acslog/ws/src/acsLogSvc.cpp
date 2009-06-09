@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsLogSvc.cpp,v 1.21 2008/03/12 15:24:48 bjeram Exp $"
+* "@(#) $Id: acsLogSvc.cpp,v 1.22 2009/06/09 00:03:30 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 * bjeram 2001-09-11 created
 */
 
-static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.21 2008/03/12 15:24:48 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsLogSvc.cpp,v 1.22 2009/06/09 00:03:30 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <acslogSvcImpl.h>
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
 */
       if (!CORBA::is_nil (log_obj.in()))
 	  {
-	  DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
+	  Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(log_obj.in());
 	  ACE_OS::printf ( "Logging Service resolved !\n");
 	  
 	  m_logger.setCentralizedLogger(logger.in());
