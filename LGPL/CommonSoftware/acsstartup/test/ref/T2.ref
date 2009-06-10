@@ -13,7 +13,7 @@
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
-1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=/diska/home/almadev/introot/lib/endorsed:/alma/ACS-x.y/ACSSW/lib/endorsed:
+1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 -  --endorsed -- alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
@@ -29,7 +29,6 @@
 3 - ----------T--:--:--.--- INFO [acsManager] acsManager: done.
 3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Stopping the ORB Services and CDB using 'ACS_INSTANCE=9'
 3 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Stopping the CDB
-3 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 3 - ----------T--:--:--.--- INFO [acsLoggingService] Stopping the CORBA Logging Service
 3 - ----------T--:--:--.--- INFO [acsNamingService] Stopping the CORBA Naming Service
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Alarm Notification Service
@@ -37,5 +36,6 @@
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 3 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 3 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
+3 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
 3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACSDATA/tmp/ACS_INSTANCE.9
 3 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
