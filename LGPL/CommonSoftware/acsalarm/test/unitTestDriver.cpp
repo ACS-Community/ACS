@@ -28,7 +28,7 @@
 // constants we will use when creating the fault
 #define DUMMY_PROCESS_NAME "DummyClientProcess"
 #define DUMMY_HOSTNAME "DummyClientProcess"
-#define FAMILY_VALUE "AlarmSource" 
+#define FAMILY_VALUE "AlarmSource"
 #define MEMBER_VALUE "ALARM_SOURCE_MOUNT"
 #define DESCRIPTOR_VALUE "TestDescriptor"
 #define PREFIX_VALUE_VALUE "prefixValue"
@@ -61,7 +61,7 @@
    #else
       #define MEMPARSE_ENCODING "ascii"
    #endif
-#endif 
+#endif
 
 XERCES_CPP_NAMESPACE_USE
 using Parameters::acsDOMErrorHandler;
@@ -86,7 +86,7 @@ class AcsAlarmTestCase : public CPPUNIT_NS::TestFixture
 		~AcsAlarmTestCase();
 		void setUp();
 		void tearDown();
-		
+
   protected:
     void testFaultState();
     void testProps();
@@ -146,7 +146,7 @@ void AcsAlarmTestCase::testTimestamp()
 	timestamp.setSeconds(100);
 	CPPUNIT_ASSERT_MESSAGE("Timestamp::getSeconds/setSeconds appears to be broken", (100 == timestamp.getSeconds()) );
 
-	// test setMicroSeconds & getMicroSeconds 
+	// test setMicroSeconds & getMicroSeconds
 	timestamp.setMicroSeconds(1000);
 	CPPUNIT_ASSERT_MESSAGE("Timestamp::getMicroSeconds/setMicroSeconds appears to be broken", (1000 == timestamp.getMicroSeconds()) );
 
@@ -185,7 +185,7 @@ void AcsAlarmTestCase::verifyTimestampXML(string xmlToVerify)
 	}
 	catch (const XMLException& toCatch)
 	{
-		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR, 
+		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR,
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
 	}
 }
@@ -222,7 +222,7 @@ void AcsAlarmTestCase::testProps()
 	{
 		CPPUNIT_ASSERT_MESSAGE("Properties::(&properties) - copy constructor appears to be broken", (keys2->at(i) == key || keys2->at(i) == key2) );
 	}
-	
+
 	// test == operator
 	CPPUNIT_ASSERT_MESSAGE("Properties:: == operator appears to be broken", (properties == properties2) );
 
@@ -236,7 +236,7 @@ void AcsAlarmTestCase::testProps()
 	{
 		CPPUNIT_ASSERT_MESSAGE("Properties:: = operator appears to be broken", (keys3->at(i) == key || keys3->at(i) == key2) );
 	}
-	
+
 	// test toXML method
 	Properties properties4;
 	properties4.setProperty(faultState::ASI_PREFIX_PROPERTY_STRING, PREFIX_VALUE_VALUE);
@@ -263,7 +263,7 @@ void AcsAlarmTestCase::verifyPropertiesXML(string xmlToVerify)
 	}
 	catch (const XMLException& toCatch)
 	{
-		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR, 
+		ACS_LOG(LM_ERROR, "Properties::toXML", (LM_ERROR,
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
 	}
 }
@@ -423,21 +423,21 @@ void AcsAlarmTestCase::testFaultState()
 
 	// test assignment operator
 	FaultState assignedFaultState = *fltstate;
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getFamily", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getFamily",
 		(assignedFaultState.getFamily() == fltstate->getFamily()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getMember", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getMember",
 		(assignedFaultState.getMember() == fltstate->getMember()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getCode", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getCode",
 		(assignedFaultState.getCode() == fltstate->getCode()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getDescriptor", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getDescriptor",
 		(assignedFaultState.getDescriptor() == fltstate->getDescriptor()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getTerminatedByBackup", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getTerminatedByBackup",
 		(assignedFaultState.getTerminatedByBackup() == fltstate->getTerminatedByBackup()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getActivatedByBackup", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getActivatedByBackup",
 		(assignedFaultState.getActivatedByBackup() == fltstate->getActivatedByBackup()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserTimestamp", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserTimestamp",
 		(assignedFaultState.getUserTimestamp() == fltstate->getUserTimestamp()) );
-	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserProperties", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::= (assignment operator) appears to be broken; getUserProperties",
 		(assignedFaultState.getUserProperties() == fltstate->getUserProperties()) );
 }
 
@@ -463,7 +463,7 @@ void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
 	}
 	catch (const XMLException& toCatch)
 	{
-		ACS_LOG(LM_ERROR, "FaultState::toXML", (LM_ERROR, 
+		ACS_LOG(LM_ERROR, "FaultState::toXML", (LM_ERROR,
 			"***** XMLException message: ***** \n\n%s \n *****\n", StrX(toCatch.getMessage()).localForm()))
 	}
 }
@@ -472,14 +472,14 @@ void AcsAlarmTestCase::verifyFaultStateXML(string xmlData)
  * Private method to orchestrate the XML parsing using DOM.
  * @param xmlData - ptr to an InMemoryXmlData object (OR NULL if we are using a file)
  * NOTE: one of the params, but not both, should be NULL for a given parse - i.e.
- * either we are parsing from a file or parsing from memory, but not both (nor neither - 
+ * either we are parsing from a file or parsing from memory, but not both (nor neither -
  * i.e. NULL for both params should not occur either).
  */
-DOMDocument* AcsAlarmTestCase::parseDOM(string xmlData) 
+DOMDocument* AcsAlarmTestCase::parseDOM(string xmlData)
 {
 	DOMDocument *doc = 0;
 	MemBufInputSource *mbis = NULL;
-	
+
 	bool caughtException = false;
 	try {
 		mbis = new  MemBufInputSource((const XMLByte *) xmlData.c_str(), xmlData.length(), "ID", false);
@@ -488,7 +488,7 @@ DOMDocument* AcsAlarmTestCase::parseDOM(string xmlData)
 	}
 	catch (const XMLException& toCatch) {
 		char* message = XMLString::transcode(toCatch.getMessage());
-		ACS_LOG(LM_ERROR, "AcsAlarmTestCase::parseDOM", (LM_ERROR, 
+		ACS_LOG(LM_ERROR, "AcsAlarmTestCase::parseDOM", (LM_ERROR,
 			"***** XMLException message: ***** \n\n%s \n *****\n", message))
 		XMLString::release(&message);
 		caughtException = true;
@@ -505,16 +505,16 @@ DOMDocument* AcsAlarmTestCase::parseDOM(string xmlData)
 	return doc;
 }
 
-void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertiesAndTimestampPopulated) 
+void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertiesAndTimestampPopulated)
 {
 	// Verify that the fault-state element exists
 	DOMNodeList * faultStateNodes = doc->getElementsByTagName(FAULT_STATE_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no fault-state element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no fault-state element found",
 		(NULL != faultStateNodes && faultStateNodes->getLength() == 1));
 
 	// verify that there are the expected attributes (family, member, code) on the fault-state element
 	DOMNode * faultStateItem = faultStateNodes->item(0);
-	if(NULL != faultStateItem) 
+	if(NULL != faultStateItem)
 	{
 		// verify that there are 3 attributes in total
 		DOMNamedNodeMap * attributesMap = faultStateItem->getAttributes();
@@ -563,11 +563,11 @@ void AcsAlarmTestCase::verifyFaultStateElement(DOMDocument * doc, bool propertie
 	}
 }
 
-void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc)
 {
-	// Verify the descriptor element 
+	// Verify the descriptor element
 	DOMNodeList * descriptorNodes = doc->getElementsByTagName(DESCRIPTOR_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no descriptor element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no descriptor element found",
 		(NULL != descriptorNodes && descriptorNodes->getLength() == 1));
 
 	// check value of descriptor
@@ -581,16 +581,16 @@ void AcsAlarmTestCase::verifyDescriptorElement(DOMDocument * doc)
 		(NULL != descriptorNodeValue && XMLString::equals(descriptorNodeValue, DESCRIPTOR_VALUE_XMLCH)));
 }
 
-void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 {
-	// Verify the user-properties element 
+	// Verify the user-properties element
 	DOMNodeList * userPropertiesNodes = doc->getElementsByTagName(USER_PROPERTIES_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found",
 		(NULL != userPropertiesNodes && userPropertiesNodes->getLength() == 1));
 
 	// check for 3 property sub-element(s)
 	DOMNodeList * propertyNodes = doc->getElementsByTagName(PROPERTY_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; did not find 3 property elements", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; did not find 3 property elements",
 		(NULL != propertyNodes && propertyNodes->getLength() == 3));
 
 	// verify for each property element that it has the expected attributes
@@ -617,7 +617,7 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 	const XMLCh * prefixNameNodeValue = prefixNameNode->getNodeValue();
 	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 1st property element, 'name' attribute value is not correct",
 		(NULL!= prefixNameNodeValue && XMLString::equals(prefixNameNodeValue, PREFIX_NAME_VALUE_XMLCH)));
-		
+
 	DOMNamedNodeMap * secondPropAttrMap = propertyNodes->item(1)->getAttributes();
 	DOMNode * suffixNameNode = secondPropAttrMap->getNamedItem(NAME_TAG_NAME);
 	const XMLCh * suffixNameNodeValue = suffixNameNode->getNodeValue();
@@ -636,7 +636,7 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 	const XMLCh * prefixValueNodeValue = prefixValueNode->getNodeValue();
 	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; 1st property element, 'value' attribute value is not correct",
 		(NULL!= prefixValueNodeValue && XMLString::equals(prefixValueNodeValue, PREFIX_VALUE_VALUE_XMLCH)));
-		
+
 	DOMNamedNodeMap * secondAttrMap = propertyNodes->item(1)->getAttributes();
 	DOMNode * suffixValueNode = secondAttrMap->getNamedItem(VALUE_TAG_NAME);
 	const XMLCh * suffixValueNodeValue = suffixValueNode->getNodeValue();
@@ -650,11 +650,11 @@ void AcsAlarmTestCase::verifyUserPropertiesElement(DOMDocument * doc)
 		(NULL!= testValueNodeValue && XMLString::equals(testValueNodeValue, TEST_VALUE_VALUE_XMLCH)));
 }
 
-void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc) 
+void AcsAlarmTestCase::verifyUserTimestampElement(DOMDocument * doc)
 {
-	// Verify the user-timestamp element 
+	// Verify the user-timestamp element
 	DOMNodeList * userTimestampNodes = doc->getElementsByTagName(USER_TIMESTAMP_TAG_NAME);
-	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found", 
+	CPPUNIT_ASSERT_MESSAGE("FaultState::toXML appears to be broken; no user-properties element found",
 		(NULL != userTimestampNodes && userTimestampNodes->getLength() == 1));
 
 	// verify that there are 2 attributes
@@ -688,7 +688,7 @@ int main(int argc, char *argv[])
 {
 	Logging::Logger::setGlobalLogger(new Logging::GenericLogger("testLogger"));
 
-	// initialize the AlarmSystemInterfaceFactory 
+	// initialize the AlarmSystemInterfaceFactory
 	ACSAlarmSystemInterfaceFactory::init(NULL);
 
 	// Create the event manager and test controller
@@ -696,11 +696,11 @@ int main(int argc, char *argv[])
 
 	// Add a listener that colllects test result
 	CPPUNIT_NS::TestResultCollector result;
-	controller.addListener( &result );        
+	controller.addListener( &result );
 
 	// Add a listener that print dots as test run.
 	CPPUNIT_NS::BriefTestProgressListener progress;
-	controller.addListener( &progress );      
+	controller.addListener( &progress );
 
 	// Add the top suite to the test runner
 	CPPUNIT_NS::TestRunner runner;
@@ -708,11 +708,11 @@ int main(int argc, char *argv[])
 	runner.run( controller );
 
 	// Print test in a compiler compatible format.
-	std:cout.flush();
+	std::cout.flush();
 	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
-	outputter.write(); 
+	outputter.write();
 
-	// close the AlarmSystemInterfaceFactory 
+	// close the AlarmSystemInterfaceFactory
 	ACSAlarmSystemInterfaceFactory::done();
 
 	return result.wasSuccessful() ? 0 : 1;
