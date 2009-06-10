@@ -27,8 +27,8 @@ using namespace std;
 using acsalarm::AlarmSystemInterface;
 
 /**
- * NOTE: this tests the following scenarios: 
- * 
+ * NOTE: this tests the following scenarios:
+ *
  * 1) NO "Alarms" branch present in the CDB - in this case, the "ACS" style alarms (i.e. to the logging system) should be used
  * 2) "ACS" as the implementation specified in the CDB/Alarms/AlarmSystemConfiguration/AlarmSystemConfiguration.xml file
  *    in this case, the ACS style alarms (i.e. to the logging system) should be used.
@@ -38,7 +38,7 @@ using acsalarm::AlarmSystemInterface;
  * NOTE ALSO: this test does not actually send alarms; it only checks which style alarms would be sent in different scenarios.
  *
  * FINAL NOTE: this test does not test CERN style alarms because this requires initializing the ACSAlarmSystemFactory with a non-NULL
- * manager reference, which we cannot do at this point in the build. This scenario is tested in the ACSLaser/laser-source-cpp/test 
+ * manager reference, which we cannot do at this point in the build. This scenario is tested in the ACSLaser/laser-source-cpp/test
  * module.
  */
 class FactoryTestCase : public CPPUNIT_NS::TestFixture
@@ -56,7 +56,7 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 		~FactoryTestCase();
 		void setUp();
 		void tearDown();
-		
+
 	protected:
 		void testNoAlarmBranch();
 		void testACSAlarmSystem();
@@ -96,7 +96,7 @@ void FactoryTestCase::setUp()
 
 void FactoryTestCase::tearDown()
 {
-	configureAlarmBranch(cwd,"CERN");
+	configureAlarmBranch(cwd,"ACS");
 }
 
 void FactoryTestCase::clearCdbCache()
@@ -107,7 +107,7 @@ void FactoryTestCase::clearCdbCache()
 /**
  * Check if the ACS implementation of the AS is choosen when
  * there is no Alarm branch in the CDB
- * 
+ *
  * @throws Exception
  */
 void FactoryTestCase::testNoAlarmBranch() {
@@ -118,11 +118,11 @@ void FactoryTestCase::testNoAlarmBranch() {
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
 	ACSAlarmSystemInterfaceFactory::done();
 }
-	
+
 /**
  * Check if the ACS implementation of the AS is choosen when
  * there ACS is in the CDB
- * 
+ *
  * @throws Exception
  */
 void FactoryTestCase::testACSAlarmSystem() {
@@ -147,7 +147,7 @@ void FactoryTestCase::testWrongImplementationProp() {
 
 /**
  * Test the creation of a FaultState
- * 
+ *
  * @throws Exception
  */
 void FactoryTestCase::testFaultStateCreation()
@@ -162,7 +162,7 @@ void FactoryTestCase::testFaultStateCreation()
 
 /**
  * Test the creation of a source (proxy)
- * 
+ *
  * @throws Exception
  */
 void FactoryTestCase::testAlarmSourceCreation()
@@ -174,13 +174,13 @@ void FactoryTestCase::testAlarmSourceCreation()
 	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
 	ACSAlarmSystemInterfaceFactory::done();
 }
-	
+
 /**
  * Remove the Alarm branch from the CDB
- * 
- * @param CDBFolder The directory of the CDB 
+ *
+ * @param CDBFolder The directory of the CDB
  */
-void FactoryTestCase::renameAlarmBranch(string CDBFolder) 
+void FactoryTestCase::renameAlarmBranch(string CDBFolder)
 {
 	string CDBdir = CDBFolder + "/CDB/Alarms";
 	string CDBbackupdir = CDBFolder + "/CDB/Alarms.bak";
@@ -193,10 +193,10 @@ void FactoryTestCase::renameAlarmBranch(string CDBFolder)
 
 /**
  * Replace the Alarm branch from the CDB
- * 
- * @param CDBFolder The directory of the CDB 
+ *
+ * @param CDBFolder The directory of the CDB
  */
-void FactoryTestCase::replaceAlarmBranch(string CDBFolder) 
+void FactoryTestCase::replaceAlarmBranch(string CDBFolder)
 {
 	string CDBdir = CDBFolder + "/CDB/Alarms";
 	string CDBbackupdir = CDBFolder + "/CDB/Alarms.bak";
@@ -206,19 +206,19 @@ void FactoryTestCase::replaceAlarmBranch(string CDBFolder)
 		ACS_SHORT_LOG((LM_ERROR,"Error renaming CDB/Alarms.bak directory"));
 	}
 }
-	
+
 /**
  * Rewrite the Alarm branch of the CDB.
- * 
- * @param CDBFolder The directory of the CDB 
- * @param ASImplementation The value of the implementation property of the CDB 
+ *
+ * @param CDBFolder The directory of the CDB
+ * @param ASImplementation The value of the implementation property of the CDB
  */
-void FactoryTestCase::configureAlarmBranch(string CDBFolder, string ASImplementation) 
+void FactoryTestCase::configureAlarmBranch(string CDBFolder, string ASImplementation)
 {
 	string CDBdir = CDBFolder + "/CDB/Alarms";
 	string configDirName = CDBdir + "/Administrative/AlarmSystemConfiguration";
 	string configFileName = configDirName + "/AlarmSystemConfiguration.xml";
-	try 
+	try
 	{
 		filebuf buffer;
 		ostream output(&buffer);
@@ -229,8 +229,8 @@ void FactoryTestCase::configureAlarmBranch(string CDBFolder, string ASImplementa
 		output << XML_HEADER_LINE_FOUR;
 		output << ASImplementation;
 		output << XML_TAIL;
-	} 
-	catch (...) 
+	}
+	catch (...)
 	{
 		ACS_SHORT_LOG((LM_ERROR, "Error setting up the Alarm branch of the CDB:"));
 	}
@@ -247,11 +247,11 @@ int main(int argc, char *argv[])
 
 	// Add a listener that colllects test result
 	CPPUNIT_NS::TestResultCollector result;
-	controller.addListener( &result );        
+	controller.addListener( &result );
 
 	// Add a listener that print dots as test run.
 	CPPUNIT_NS::BriefTestProgressListener progress;
-	controller.addListener( &progress );      
+	controller.addListener( &progress );
 
 	// Add the top suite to the test runner
 	CPPUNIT_NS::TestRunner runner;
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 
 	// Print test in a compiler compatible format.
 	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
-	outputter.write(); 
+	outputter.write();
 
 	return result.wasSuccessful() ? 0 : 1;
 }
