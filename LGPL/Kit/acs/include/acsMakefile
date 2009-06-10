@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.174 2009/04/21 13:11:58 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.175 2009/06/10 14:03:32 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -410,7 +410,7 @@ ifndef MAKE_VXWORKS
 
     #
     # define UNIX environment   
-    CCDEP   = gcc -MM -ansi
+    CCDEP   = gcc -MM -MG -ansi
     LD      = ld
     AR      = ar
     RANLIB  = ranlib
@@ -583,7 +583,7 @@ ifndef MAKE_VXWORKS
         # WARNING GCH: Commented out -ansi option for c,c++ and dependencies. 
         #              Problems with ACE/TAO
         # CXX           = c++ -ansi
-        CCDEP         = gcc -MM
+        CCDEP         = gcc -MM -MG
         CC            = gcc
         CXX           = c++
         LD            = gcc
@@ -1123,8 +1123,11 @@ ifdef ACE_ROOT
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Log  \
               -I$(ACE_ROOT) $(VLTINC)
     VLTLIB := -L$(ACE_ROOT)/lib $(VLTLIB)
-    TAO_MK_IDL_PATH := -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/tao -I$(ACE_ROOT)/TAO
-
+    TAO_MK_IDL_PATH := -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/tao -I$(ACE_ROOT)/TAO 
+ifdef DDS_ROOT
+    TAO_MK_IDL_PATH := $(TAO_MK_IDL_PATH) -I$(DDS_ROOT)
+    TAO_IDLFLAGS += -Gdcps
+endif
 endif
 
 #
@@ -1381,6 +1384,7 @@ ifndef MAKE_VXWORKS
 include $(MAKEDIR)/xsdMakefile
 endif
 include $(MAKEDIR)/idlMakefile
+include $(MAKEDIR)/ddsMakefile
 include $(MAKEDIR)/tclMakefile
 # 
 #
@@ -1791,7 +1795,7 @@ removeDepFile:
 #
 # In order to avoid that left over files from ctrl-C interrupted
 # execution can cause troubles, remove possible old files
-install_all : removeDepFile $(INSTALL_TARGET) install_logts
+install_all : removeDepFile $(INSTALL_TARGET) install_logts install_dds
 	-@$(ECHO) "install_all: begin $(INSTALL_TARGET)" >> $(FILE)
 	-@$(ECHO) "SHELL=/bin/bash" >> $(FILE)
 	-@$(ECHO) "begin:" >>$(FILE)
