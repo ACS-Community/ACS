@@ -11,7 +11,7 @@
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
 1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
@@ -42,7 +42,7 @@
 5 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 5 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 5 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
-5 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
+5 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
 5 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
 5 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=8' on all terminals running ACS clients.
 5 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!

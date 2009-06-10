@@ -14,7 +14,7 @@
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] For this ACS session, please do an 'export ACS_INSTANCE=9' on all terminals running ACS clients.
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC] The acsStartORBSRVC script has now completed!
 1 -  --endorsed -- alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
-1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java/abeans application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
+1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
 1 - ----------T--:--:--.--- INFO [acsStartJava] Using endorsed jar files in: -Djava.endorsed.dirs=xxxxx
 1 - ----------T--:--:--.--- INFO [acsManager] Manager is up and running
 1 - ----------T--:--:--.--- INFO [acsStart] ACS is up and running
