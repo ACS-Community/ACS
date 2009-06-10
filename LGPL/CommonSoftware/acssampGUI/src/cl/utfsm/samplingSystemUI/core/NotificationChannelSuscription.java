@@ -45,7 +45,7 @@ final class NotificationChannelSuscription extends alma.acs.nc.Consumer {
 		
 		}catch(Exception e){
 			String msg = "'SampDataBlockSeq' event type is invalid for the '" + m_channelName + "' channel!";
-			cServices.getLogger().warning(msg);
+			cServices.getLogger().warning(msg + e.getMessage());
 
 		}
 	}

@@ -89,4 +89,9 @@ public class BeanLister extends SamplingWidget{
 	public void resetSampleCount() {
 		
 	}
+	@Override
+	public void setTimeWindow(long frecuency, int time) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -57,7 +57,6 @@ public class SamplingDataCorrelator {
 		this.startTimestamp = startTimestamp;
 		formater = new IsoDateFormat();
 		filename = "" + this.group.replace('/', '-') + "_" + this.frequency + "_" + formater.format( this.startTimestamp ) + ".csv";
-		//System.out.println( "Filename is: " + filename );
 		header = "\"Timestamp in ISO Format\"";
 		meanQty = 4;
 		meanData = new ArrayList<ArrayList<Double>>();
@@ -85,7 +84,6 @@ public class SamplingDataCorrelator {
 		data.add(new ArrayList<DataItem>());
 		header = header + ";" + headers.get(headers.size()-1);
 		meanData.add( new ArrayList<Double>() );
-		//System.out.println("Added to Correlator: " + date + "; " + headers.get(headers.size()-1));
 	}
 
 	/**
@@ -93,6 +91,15 @@ public class SamplingDataCorrelator {
 	 */
 	public void dumpToFile(){
 		dumpToFile( 0.5 );
+		for(BufferedReader br: readers){
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}		
 	}
 	
 	/**
@@ -259,4 +266,7 @@ public class SamplingDataCorrelator {
 			meanData.get( index ).remove(0);
 	}
 
+	public String getFilename() {
+		return filename;
+	}
 }

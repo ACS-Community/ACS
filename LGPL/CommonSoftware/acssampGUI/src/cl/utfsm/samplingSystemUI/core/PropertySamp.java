@@ -6,6 +6,13 @@
 package cl.utfsm.samplingSystemUI.core;
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
+import alma.ACSErrTypeCommon.CORBAProblemEx;
+import alma.ACSErrTypeCommon.CouldntCreateObjectEx;
+import alma.ACSErrTypeCommon.MemoryFaultEx;
+import alma.ACSErrTypeCommon.OutOfBoundsEx;
+import alma.acs.exceptions.AcsJException;
 import alma.acssamp.SampObj;
 
 /**
@@ -26,8 +33,19 @@ public class PropertySamp {
 	* Generates a SamplingObject (if none exist for the target sampDetail) and creates a channel for communication
 	 * @throws CouldntAccessComponentEx 
 	 * @throws TypeNotSupportedEx 
+	 * @throws AcsJContainerServicesEx
+	 * @throws CouldntAccessPropertyEx
+	 * @throws CORBAProblemEx
+	 * @throws CouldntCreateObjectEx
+	 * @throws MemoryFaultEx
+	 * @throws OutOfBoundsEx
+	 * @throws AcsJException
+	 * @throws SamplingManagerException 
 	*/
-	public void run() throws CouldntAccessComponentEx, TypeNotSupportedEx {
+	public void run() throws CouldntAccessComponentEx, TypeNotSupportedEx, 
+                                  AcsJContainerServicesEx, CouldntAccessPropertyEx,
+                                  CORBAProblemEx, CouldntCreateObjectEx,
+                                  MemoryFaultEx, OutOfBoundsEx, AcsJException, SamplingManagerException {
 		
 		try {
 			sampObject=sManager.getSamplingObj(sampDetail);
@@ -38,9 +56,8 @@ public class PropertySamp {
 			throw ex;
 		} catch (alma.ACSErrTypeCommon.TypeNotSupportedEx ex) {
 			throw ex;
-		}
-		catch (Exception e) {
-			e.printStackTrace();
+		} catch (SamplingManagerException ex) {
+			throw ex;
 		}
 	}
 

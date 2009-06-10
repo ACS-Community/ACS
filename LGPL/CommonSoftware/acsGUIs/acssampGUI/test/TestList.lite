@@ -7,5 +7,5 @@
 
 SOURCE TATEnvironment
 PROLOGUE TATPrologue
-1 samplingSystemUI   samplingSystemUI.sh
+1 samplingSystemUI   testSamplingSystemUI.sh
 EPILOGUE acsutilTATEpilogue

@@ -57,7 +57,7 @@ public class ComponentsManager{
 		try {
 			repRef = orb.string_to_object(CORBALOC);
 		} catch (Exception e) {
-			throw new IllegalStateException("Cannot access orb initial reference 'InterfaceRepository'.");
+			throw new IllegalStateException("Cannot access orb initial reference 'InterfaceRepository'.",e);
 		}	
 		rep = RepositoryHelper.narrow(repRef);//cast to the Repository class
 	}
@@ -89,6 +89,8 @@ public class ComponentsManager{
 			try{	
 				ComponentDescriptor desc = cServices.getComponentDescriptor(componentName);
 				InterfaceDef ifdef = InterfaceDefHelper.narrow(rep.lookup_id(desc.getType()));
+				if( ifdef == null )
+					return null;
 				FullInterfaceDescription ifdes = ifdef.describe_interface();
 				for(int i = 0 ; i < ifdes.attributes.length ; i++){
 					TypeCode tc = ifdes.attributes[i].type;
@@ -97,9 +99,7 @@ public class ComponentsManager{
 						tmp.add(ifdes.attributes[i].name);
 				}
 				
-			}catch(Exception e){
-				//e.printStackTrace();
-			}
+			}catch(Exception e){}
 		}
 		//String[] retval = new String[tmp.size()];
 		//tmp.toArray(retval);

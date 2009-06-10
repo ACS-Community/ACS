@@ -1,3 +1,29 @@
+2009-05-27 18:45  ntroncos
+
+        * .: Created release tag 2.0 and added branches directory
+
+2009-05-27 18:37  ntroncos
+
+        * : Modified Version. Now 2.0
+
+
+2009-04-30 23:18  jareyes
+
+        * : status label added to ploting window
+
+2009-04-30 03:22  rtobar
+
+        * : Fail gracefully if Manager cannot be reached
+          Deleted dummy System.out.println()
+
+2009-04-30 01:51  rtobar
+
+        * : Deleted /VERY/ outdated README file
+
+2009-04-23 23:11  ahoffsta
+
+        * : Uploading changes in Makefile
+
 2009-04-06 16:38  rtobar
 
 	* src/cl/utfsm/samplingSystemUI/BeanGrouper.java,
@@ -1443,4 +1469,4 @@
 	  the ssg-legacy
 	  repo.
 
-"@(#) $Id: ChangeLog,v 1.6 2009/04/16 23:32:36 ahoffsta Exp $"
+"@(#) $Id: ChangeLog,v 1.7 2009/06/10 22:49:04 utfsm Exp $"

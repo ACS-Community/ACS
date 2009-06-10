@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2008/09/09 20:15:48 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.4 2009/06/10 22:49:04 utfsm Exp $"
 #
 # Makefile of ssgTestSuite
 #
@@ -35,14 +35,14 @@
 LIBRARIES       = sampledCompImpl
 
 ## <brief description of lllll library>
-sampledCompImpl_OBJECTS  = sampledCompImpl
+sampledCompImpl_OBJECTS  = CosDevIO SinDevIO sampledCompImpl
 sampledCompImpl_LIBS     = sampledCompStubs baci acsutil acserr
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = samplingSystemUI.sh TATPrologue
+SCRIPTS_L       = testSamplingSystemUI.sh TATPrologue
 
 # 
 # IDL Files and flags

@@ -10,9 +10,11 @@ import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 
 import cl.utfsm.samplingSystemUI.DataPrinter;
 import cl.utfsm.samplingSystemUI.core.DataItem;
+import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 
 public class PlotPrinter extends DataPrinter {
 	
@@ -23,6 +25,7 @@ public class PlotPrinter extends DataPrinter {
 	private IsoDateFormat formater;
 	private boolean stopped;
 	private int position = 0;
+	private boolean dumpToFile = true;
 
 	/**
 	 * Constructor, initialize the sampling counter and creates a BeanMemoryWidget for representation.
@@ -35,7 +38,6 @@ public class PlotPrinter extends DataPrinter {
 		formater = new IsoDateFormat();
 		stopped = true;
 		position = 0;
-		System.out.println("PlotPrinter::Default Position: " + position);
 	}
 	
 	/**
@@ -51,7 +53,6 @@ public class PlotPrinter extends DataPrinter {
 		formater = new IsoDateFormat();
 		stopped = true;
 		this.position = position;
-		System.out.println("PlotPrinter::Received Position: " + position);
 		widget.initializeNewPosition(position);
 	}
 
@@ -75,7 +76,7 @@ public class PlotPrinter extends DataPrinter {
 	 * @throws CouldntAccessComponentEx Component wasn't available at the time.
 	 * @throws TypeNotSupportedEx Sampling Manager specific exception. Some types are currently not supported in acssamp.
 	 */
-	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx {
+	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx,CouldntAccessPropertyEx, SamplingManagerException {
 		super.startSample();
 		stopped = false;		
 	}
@@ -87,33 +88,40 @@ public class PlotPrinter extends DataPrinter {
 		stopped = true;
 		widget.resetSampleCount();
 		samplesCounter = 0;
-		try {
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if( dumpToFile ){
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
 		}
+		
 	}
 
 	protected void updateValue(DataItem item) {
 		if(!stopped){
 			samplesCounter++;
-			if( samplesCounter == 1){
-				openFile();
-				String line = "\"Timestamp ISO Format\";" + component + "_" + property;
+			if( dumpToFile ){
+				if( samplesCounter == 1){
+					openFile();
+					String line = "\"Timestamp ISO Format\";" + component + "_" + property;
+					try {
+						writer.write(line + "\n");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}	
+			}				
+			widget.updateValues(item.getTime(), item.getValue(), position);
+			if( dumpToFile ){
+				String line = "" + formater.format(new Date(UTCUtility.utcOmgToJava(item.getTime()))) + ";"+ item.getValue();
 				try {
 					writer.write(line + "\n");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
-				
-			widget.updateValues(item.getTime(), item.getValue(), position);
-			String line = "" + formater.format(new Date(UTCUtility.utcOmgToJava(item.getTime()))) + ";"+ item.getValue();
-			try {
-				writer.write(line + "\n");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			}		
+			
 		}		
 	}
 	
@@ -144,5 +152,13 @@ public class PlotPrinter extends DataPrinter {
 		writer = new BufferedWriter( file );
 		return true;
 	}
-
+	
+	public void setTimeWindow(int freq, int time) {
+		widget.setTimeWindow( frecuency, time);
+	}
+	
+	public void setDumpToFile( boolean value){
+		dumpToFile = value;
+	}
+	
 }

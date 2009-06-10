@@ -4,11 +4,12 @@
  **/
 
 package cl.utfsm.samplingSystemUI.core;
-import java.util.Hashtable;/*<K,V>;*/
+import java.util.Hashtable;
 
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
-
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 
 
 /**
@@ -31,11 +32,12 @@ public class SamplingManagerUITool {
 	 * will register with ACS.
 	 * @param managerName string that contains the name of the sampling
 	 * manager in the container. This manager is specified in the CDB.
+	 * @throws AcsJContainerEx 
 	 *
 	 * @see AcsInformation
 	 * @see SamplingManager
 	 */
-	protected static void spinUp(String clientName, String managerName) throws AcsInformationException, SamplingManagerException {
+	protected static void spinUp(String clientName, String managerName) throws AcsInformationException, SamplingManagerException, AcsJContainerEx {
 		info = AcsInformation.getInstance(clientName);
 		SamplingManager.getInstance(managerName);
 	}
@@ -48,10 +50,14 @@ public class SamplingManagerUITool {
 	 * for the sampling.
 	 * @throws CouldntAccessComponentEx 
 	 * @throws TypeNotSupportedEx 
+	 * @throws CouldntAccessPropertyEx
+	 * @throws SamplingManagerException
 	 * @see SampDetail
 	 * @see PropertySamp  
 	 */
-	protected static void startSample(SampDetail sDetail) throws CouldntAccessComponentEx, TypeNotSupportedEx{
+	protected static void startSample(SampDetail sDetail) throws 
+                                  CouldntAccessComponentEx, TypeNotSupportedEx,
+                                  CouldntAccessPropertyEx, SamplingManagerException {
 		
 		if(sampler.get(sDetail) == null)
 			sampler.put(sDetail,new PropertySamp(sDetail));
@@ -64,6 +70,12 @@ public class SamplingManagerUITool {
 		} catch(alma.ACSErrTypeCommon.TypeNotSupportedEx e) {
 			sampler.remove(sDetail);
 			throw e;
+		} catch(CouldntAccessPropertyEx e) {
+			sampler.remove(sDetail);
+			throw e;
+		} catch(Exception e) {
+			sampler.remove(sDetail);
+			throw new SamplingManagerException("Could not start sample",e);
 		}
 	}
 

@@ -9,6 +9,28 @@ public class SerializableProperty implements Serializable {
 	private String component;
 	private String property;
 	private String samplingGroup;
+	private String frequency;
+	private String samplingTime;
+	private String timeWindow;
+	
+	public long getFrequency() {
+		return Long.parseLong(frequency);
+	}
+	public void setFrequency(long frequency) {
+		this.frequency = String.valueOf(frequency);
+	}
+	public int getSamplingTime() {
+		return Integer.parseInt(samplingTime);
+	}
+	public void setSamplingTime(int samplingTime) {
+		this.samplingTime = String.valueOf(samplingTime);
+	}
+	public int getTimeWindow() {
+		return Integer.parseInt(timeWindow);
+	}
+	public void setTimeWindow(int timeWindow) {
+		this.timeWindow = String.valueOf(timeWindow);
+	}
 	
 	public String getComponent() {
 		return component;

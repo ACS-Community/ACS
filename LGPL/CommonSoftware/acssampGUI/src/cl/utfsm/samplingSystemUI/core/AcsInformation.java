@@ -4,6 +4,7 @@
  **/
 
 package cl.utfsm.samplingSystemUI.core;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
 import java.util.logging.Logger;
@@ -37,9 +38,9 @@ public class AcsInformation {
 	*
 	* @param clientName The name for the ClientComponent to create
 	*/
-	public static synchronized AcsInformation getInstance(String clientName) throws AcsInformationException { 
+	public static synchronized AcsInformation getInstance(String clientName) throws AcsInformationException, AcsJContainerEx { 
 		if (_instance==null) { 
-			_instance = new AcsInformation(clientName); 
+			_instance = new AcsInformation(clientName);
 		} 
 		return _instance; 
 	}
@@ -50,7 +51,7 @@ public class AcsInformation {
 	public static synchronized AcsInformation getInstance() { 
 		if (_instance==null) { 
 			/* it should never enter into this if. It is here meerly as safe guard.*/
-			throw new IllegalStateException("No instance available, an d connot create one with out a client name");
+			throw new IllegalStateException("No instance available, and connot create one with out a client name");
 		} 
 		return _instance; 
 	}
@@ -59,9 +60,19 @@ public class AcsInformation {
 	* Creates an instance for the ComponentClient
 	* @param clientName
 	*/
-	private AcsInformation(String clientName) throws AcsInformationException {
-		try{
+	private AcsInformation(String clientName) throws AcsInformationException, AcsJContainerEx {
+		
+		try {
 			client = new ComponentClient(null, managerLoc, clientName);
+		} catch (Exception e) {
+			if(e instanceof AcsJContainerEx) {
+				throw (AcsJContainerEx)e;
+			}
+			throw new AcsInformationException(clientName+" can not connect to "+managerLoc+
+				"\nCheck if the ACS is up and running, or that you have conectivity to the manager.",e);
+		}
+		
+		try{
 			m_logger = client.getContainerServices().getLogger();
 			m_logger.info("Sampling System UI startup");
 			cManager = new ComponentsManager(client.getContainerServices());

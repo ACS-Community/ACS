@@ -7,12 +7,12 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.container.ContainerServices;
 import cl.utfsm.samplingSystemUI.core.AcsInformation;
 import cl.utfsm.samplingSystemUI.core.AcsInformationException;
-import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerUITool;
 
 public class SampTool extends SamplingManagerUITool {
@@ -27,6 +27,7 @@ public class SampTool extends SamplingManagerUITool {
 	private static LinkedList<String> sampManList = new LinkedList<String>();
 	private static LinkedList<ComponentDescriptor> cDescriptorList = new LinkedList<ComponentDescriptor>();
 	private static LinkedList<List<String>> propList = new LinkedList<List<String>>();
+	private static String managerLoc = System.getProperty("ACS.manager");
 	
 	public static String[] getComponents(){		
 		return compList;
@@ -40,13 +41,9 @@ public class SampTool extends SamplingManagerUITool {
 		return tmp;
 	}
 
-	public static void initializeComponents(){
-		try {
-			info=AcsInformation.getInstance(NAME);
-		} catch (AcsInformationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public static void initializeComponents() throws AcsJContainerEx, AcsInformationException{
+
+		info=AcsInformation.getInstance(NAME);
 		
 		/* Get all component names and descriptors */
 		List<String> listTmp = new ArrayList<String>();
@@ -91,12 +88,17 @@ public class SampTool extends SamplingManagerUITool {
 					    JOptionPane.ERROR_MESSAGE);
 				System.exit(1);
 			}
-				
-			spinUp(NAME,sampManList.getFirst());
+			//spinUp(NAME,sampManList.getFirst());
 		} catch (AcsInformationException e) {
 			e.printStackTrace();
-		} catch (SamplingManagerException e) {
-			e.printStackTrace();
+		} catch (AcsJContainerEx e) {
+			JOptionPane.showMessageDialog(null,
+				    "Coudln't connect to Manager '" + managerLoc + "'\n" +
+				    "Please check that the Manager is running, and that your Manager\n" +
+				    "reference is well formed",
+				    "Critical Error",
+				    JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		}
 		window.loadWindow();
 		window.fillWidgets(getComponents(), propList);

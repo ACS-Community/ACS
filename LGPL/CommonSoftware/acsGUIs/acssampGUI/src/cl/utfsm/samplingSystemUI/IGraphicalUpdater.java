@@ -12,4 +12,6 @@ public interface IGraphicalUpdater {
 	public void setComponentAvailable(boolean tmp, String reason, int position);
 	
 	public void resetSampleCount();
+	
+	public void setTimeWindow(long frecuency, int time);
 }

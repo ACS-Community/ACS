@@ -6,6 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 
 import cl.utfsm.samplingSystemUI.core.AcsInformationException;
 import cl.utfsm.samplingSystemUI.core.DataItem;
@@ -83,8 +85,9 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	 * Starts the sampling, connecting to ACS Manager and the Sampling Manager.
 	 * @throws CouldntAccessComponentEx Component wasn't available at the time.
 	 * @throws TypeNotSupportedEx Sampling Manager specific exception. Some types are currently not supported in acssamp.
+	 * @throws CouldntAccessPropertyEx
 	 */
-	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx {
+	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx , CouldntAccessPropertyEx, SamplingManagerException{
 		samp = new Sampler();
 		synchronized(this){
 			System.out.println(initializations);
@@ -98,6 +101,9 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 					}
 					catch (SamplingManagerException e){
 						System.out.print(e.getMessage());
+						System.exit(-1);
+					} catch (AcsJContainerEx e) {
+						System.out.println(e.getMessage());
 						System.exit(-1);
 					}
 			}
@@ -113,8 +119,13 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		} catch(alma.ACSErrTypeCommon.TypeNotSupportedEx e) {
 			setComponentAvailable(false,"Type not supported");
 			throw e;
-		}
-		
+	 	} catch (CouldntAccessPropertyEx e){
+			setComponentAvailable(false,"Cannot access the property");
+                        throw e;
+		} catch(SamplingManagerException e){ 
+			setComponentAvailable(false,e.getMessage());
+                        throw e;
+                }
 		samp.start();
 	}
 	
@@ -153,6 +164,14 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	
 	public boolean isComponentAvailable() {
 		return componentAvailable;
+	}
+	
+	public SerializableProperty getSerializableProperty(){
+		SerializableProperty sp = new SerializableProperty();
+		sp.setComponent(getComponent());
+		sp.setFrequency(getFrecuency());
+		sp.setProperty(getProperty());
+		return sp;
 	}
 	
 	/**

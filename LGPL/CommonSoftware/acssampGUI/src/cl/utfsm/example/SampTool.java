@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import alma.JavaContainerError.wrappers.AcsJContainerEx;
+
 import cl.utfsm.samplingSystemUI.core.AcsInformationException;
 import cl.utfsm.samplingSystemUI.core.DataItem;
 import cl.utfsm.samplingSystemUI.core.SampDetail;
@@ -21,7 +23,7 @@ public class SampTool extends SamplingManagerUITool{
 
 	static String prop;	
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws AcsJContainerEx{
 		String component = "";
 		String property = "";
 		long frequency;
@@ -29,7 +31,7 @@ public class SampTool extends SamplingManagerUITool{
 		Display2 display = new Display2();
 
 		try{
-		spinUp("SampTool","SAMP1");
+			spinUp("SampTool","SAMP1");
 		}
 		catch (AcsInformationException e){
 			System.out.print(e.getMessage());

@@ -32,8 +32,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
+import cl.utfsm.samplingSystemUI.core.SamplingManager;
+import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 
 /**
  * Main Widget class, and starting point for the SSG Software. Controls the main flow of the software.
@@ -51,7 +52,7 @@ public class SamplingSystemGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
-	public String MAN_NAME = "SAMP1";
+	public String MAN_NAME = "";
 	private final static String DEFAULT_STATUS_FILENAME = "default.ssgst";
 	
 	private LinkedList<List<String>> propList;
@@ -78,9 +79,10 @@ public class SamplingSystemGUI extends JFrame {
 	private JLabel groupLabel = null;
 	private JTextField groupTextField = null;
 	private JButton addSampleButton = null;
+	private StatusIcon statusIcon;
 	
 	/**
-	 * This is the default constructor. It start the initialization of the window.
+	 * This is the default constructor. It starts the initialization of the window.
 	 */
 	public SamplingSystemGUI() {
 		super();
@@ -101,7 +103,6 @@ public class SamplingSystemGUI extends JFrame {
 		this.setTitle("Sampling System GUI");
 		this.setLocationRelativeTo(null);
 		this.pack();
-
 	}
 	
 	/**
@@ -154,6 +155,7 @@ public class SamplingSystemGUI extends JFrame {
 							MAN_NAME);
 					if( s != null && !s.trim().equals("") )
 						SamplingSystemGUI.this.MAN_NAME = s;
+					checkSamplingManager();
 				}
 			});
 		}
@@ -252,7 +254,7 @@ public class SamplingSystemGUI extends JFrame {
 					
 					if( aboutWindow == null ) {
 						String url = "http://alma.inf.utfsm.cl/twiki4/bin/view/ACS/SamplingSystem";
-						String message = "<html>Sampling System GUI v1.1<br>" +
+						String message = "<html>Sampling System GUI Version 2.0<br>" +
 						   "This software is released under <b>LGPL</b> license.<br>" +
 					       "SSG was developed by the ALMA-UTFSM Team.</html>";
 						String messageUrl = "<html>Please refer to <u><font color=#0000ff>" + url + "</font></u><br>" +
@@ -316,13 +318,11 @@ public class SamplingSystemGUI extends JFrame {
 		if (PropertyAddPanel == null) {
 			PropertyAddPanel = new JPanel();
 			PropertyAddPanel.setLayout(new GridBagLayout());
-			//PropertyAddPanel.setLayout( new GridLayout( 4,2, 10, 10 ) );
 			PropertyAddPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			//PropertyAddPanel.setSize( new Dimension(310, 180) );
 			GridBagConstraints c = new GridBagConstraints();
 			c.gridheight = 1;
 			c.gridwidth = 1;
-			c.insets = new Insets(5,5,5,5);
+			c.insets = new Insets(15,5,5,5);
 			
 			c.anchor = GridBagConstraints.EAST;
 			c.gridx = 0;
@@ -334,6 +334,7 @@ public class SamplingSystemGUI extends JFrame {
 			c.anchor = GridBagConstraints.EAST;
 			c.gridy = 1;
 			c.gridx = 0;
+			c.insets = new Insets(5,5,5,5);
 			PropertyAddPanel.add( getPropertyLabel(), c);
 			c.gridx = 1;
 			c.anchor = GridBagConstraints.WEST;
@@ -351,8 +352,27 @@ public class SamplingSystemGUI extends JFrame {
 			c.gridwidth = 2;
 			PropertyAddPanel.add( getAddSampleButton(), c);
 			PropertyAddPanel.validate();
+			
+			// This is a new status icon that should reflect the status of the SSG
+			c.anchor = GridBagConstraints.WEST;
+			c.gridy = 3;
+			c.gridx = 0;
+			PropertyAddPanel.add( getStatusIcon(), c);
 		}
 		return PropertyAddPanel;
+	}
+
+
+	/**
+	 * This method initializes statusIcon
+	 * 
+	 * @return javax.swing.JLabel
+	 */
+	private StatusIcon getStatusIcon() {
+		if ( statusIcon == null ) {
+			statusIcon = new StatusIcon();
+		}
+		return statusIcon;
 	}
 
 	/**
@@ -367,6 +387,10 @@ public class SamplingSystemGUI extends JFrame {
 			ComponentComboBox.setSize(ComponentComboBox.getPreferredSize());
 			ComponentComboBox.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
+					
+					if( e.getStateChange() == java.awt.event.ItemEvent.DESELECTED )
+						return;
+					
 					PropertyComboBox.setEnabled(true);
 					String comp = e.getItem().toString();
 					PropertyComboBox.removeAllItems();
@@ -375,12 +399,33 @@ public class SamplingSystemGUI extends JFrame {
 						 * properties for it. If we do not have them,
 						 * we go and find them */
 						if(compList[i].compareTo(comp)==0){
-							
-							if( propList.get(i) == null )
-								propList.add(i,SampTool.getPropsForComponent(compList[i]));
+	
+							if( propList.get(i) == null ) {
 
+								/* If we can't get the list of properties for the interface,
+								 * (cuased because of the IR not available or not
+								 * having the interface definition), this should be
+								 * notified to the user. */
+								List<String> list = SampTool.getPropsForComponent(compList[i]);
+								if( list == null ) {
+									PropertyComboBox.removeAllItems();
+									PropertyComboBox.setEnabled(false);
+									ComponentComboBox.hidePopup();
+									JOptionPane.showMessageDialog(PropertyComboBox.getParent().getParent(),
+											"The interface definition for the component '" + comp +
+											"' could not be found in the Interface Repository\n" +
+											"Please check that you have the Interface Repository running " +
+											"and that the interface is loaded into it",
+											"IR error",
+											JOptionPane.ERROR_MESSAGE);
+								}
+								else {
+									propList.add(i,list);
+								}
+							}
 							try{
-								fillPropertyComboBox(propList.get(i));
+								if( propList.get(i) != null )
+									fillPropertyComboBox(propList.get(i));
 							}catch(IndexOutOfBoundsException ex){
 								PropertyComboBox.removeAllItems();
 								PropertyComboBox.setEnabled(false);
@@ -424,17 +469,7 @@ public class SamplingSystemGUI extends JFrame {
 					String component = ComponentComboBox.getSelectedItem().toString();
 					String property = PropertyComboBox.getSelectedItem().toString();
 					String group = groupTextField.getText();
-					
-					SerializableProperty p = new SerializableProperty();
-					p.setComponent(component);
-					p.setProperty(property);
-					p.setSamplingGroup(group);
-					if(status==null)
-						status = new ArrayList<SerializableProperty>();
-					
-					/* Only add it if it was really added to the panel */
-					if( addToSampling(component, property, group) )
-						status.add(p);
+					addToSampling(component, property, group);
 				}
 			});
 		}
@@ -522,7 +557,7 @@ public class SamplingSystemGUI extends JFrame {
 
 		/* If there is no group with this name, we create it */
 		if (bg == null){
-			bg = new BeanGrouper(this,group);
+			bg = new BeanGrouper(this,group,getStatusIcon().getStatus());
 			bg.setGroupName(group);
 			bg.addSamp(component, property);
 			BeanGrouperList.add(bg);
@@ -533,8 +568,8 @@ public class SamplingSystemGUI extends JFrame {
 		else {
 			if( bg.checkIfExists(component, property) ) {
 				JOptionPane.showMessageDialog(this,  
-						"Component " + component + " with property " + property +
-						"\nhas been already added to the sample list for group " + bg.getGroupName(), 
+						"Component '" + component + "' with property '" + property +
+						"'\nhas been already added to the sample list for group " + bg.getGroupName(), 
 						"Already added",
 						JOptionPane.WARNING_MESSAGE );
 				added = false;
@@ -567,7 +602,6 @@ public class SamplingSystemGUI extends JFrame {
 
 	public void loadWindow(){
 		/* Select the sampling manager */
-		System.out.println(SampTool.getSamplingManagers().length);
 		String s = (String)JOptionPane.showInputDialog(this,
 				"Please Select a Sampling Manager",
 				"Sampling Manager Selection",
@@ -580,9 +614,10 @@ public class SamplingSystemGUI extends JFrame {
 		else
 			System.exit(0);
 		
+		checkSamplingManager();
+		
 		/* Show the main window */
 		this.setVisible(true);
-		this.validate();
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
@@ -594,6 +629,30 @@ public class SamplingSystemGUI extends JFrame {
 		readStatusFile(true);
 	}
 	
+	private void checkSamplingManager() {
+		Thread t = new Thread(new Runnable(){
+
+			public void run() {
+				try {
+					SamplingManager man = SamplingManager.getInstance(MAN_NAME);
+					man.getSampReference();
+				} catch (SamplingManagerException e) {
+					statusIcon.setStatus(StatusIcon.CONNECTED_TO_MANAGER);
+					for (BeanGrouper bg: BeanGrouperList) {
+						bg.setStatus(StatusIcon.CONNECTED_TO_MANAGER);
+					}
+					return;
+				}
+				statusIcon.setStatus(StatusIcon.CONNECTED_TO_SAMPMANAGER);
+				for (BeanGrouper bg: BeanGrouperList) {
+					bg.setStatus(StatusIcon.CONNECTED_TO_SAMPMANAGER);
+				}
+			}
+
+		});
+		t.start();
+	}
+
 	public void fillWidgets(String[] components, LinkedList<List<String>> properties){
 		this.propList = properties;
 		this.compList = components;
@@ -637,6 +696,12 @@ public class SamplingSystemGUI extends JFrame {
 			in.close();
 			for(SerializableProperty p: status){
 				addToSampling(p.getComponent(), p.getProperty(), p.getSamplingGroup());
+				for( BeanGrouper bg: BeanGrouperList){
+					if( bg.getGroupName().equals(p.getSamplingGroup() ) ){
+						bg.loadConfiguration(p.getFrequency(), p.getTimeWindow(), p.getSamplingTime());
+						break;
+					}
+				}
 			}
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
@@ -649,10 +714,23 @@ public class SamplingSystemGUI extends JFrame {
 	}
 	
 	private void writeStatusFile(String filename){
-		FileOutputStream fos = null;
-		ObjectOutputStream out = null;
+		
+		status = new ArrayList<SerializableProperty>();
+		
+		for( BeanGrouper bg: BeanGrouperList){
+			for( SerializableProperty sp: bg.getSerializableProperty()){
+				status.add(sp);
+			}
+		}
 		if( status.size() == 0 )
 			return;
+		
+		File file = new File(filename);
+		if( file.exists() ) file.delete();
+		
+		FileOutputStream fos = null;
+		ObjectOutputStream out = null;
+		
 		try {
 			fos = new FileOutputStream(filename);
 			out = new ObjectOutputStream(fos);
@@ -666,7 +744,7 @@ public class SamplingSystemGUI extends JFrame {
 	private void writeStatusFile(){
 		writeStatusFile(DEFAULT_STATUS_FILENAME);
 	}
-
+	
 	/**
 	 * Removes from the local list of Component/Properties that are being
 	 * sampled a given set of sampler <code>samplers</code> for a given
@@ -676,32 +754,29 @@ public class SamplingSystemGUI extends JFrame {
 	 */
 	public synchronized void deleteBeanGrouper(ArrayList<DataPrinter> samplers, String group) {
 		for(DataPrinter dp : samplers )
-			for(SerializableProperty sp : status ) {
-				if( sp.getComponent().equals(dp.component) &&
-					sp.getProperty().equals(dp.property)   &&
-					sp.getSamplingGroup().equals(group) ) {
-					status.remove(sp);
+			if( status != null ){
+				for(SerializableProperty sp : status ) {
+					if( sp.getComponent().equals(dp.component) &&
+						sp.getProperty().equals(dp.property)   &&
+						sp.getSamplingGroup().equals(group) ) {
+						status.remove(sp);
+						break;
+					}
+				}
+			}
+			
+			for( BeanGrouper bg : BeanGrouperList ){
+				if( bg.getGroupName().toString().equalsIgnoreCase(group)){
+					bg.setVisible(false);
+					BeanGrouperList.remove(bg);
+					bg.dispose();
 					break;
 				}
-		}
-		for( BeanGrouper bg : BeanGrouperList ){
-			if( bg.getGroupName().toString().equalsIgnoreCase(group)){
-				bg.setVisible(false);
-				BeanGrouperList.remove(bg);
-				bg.dispose();
-				break;
 			}
-		}
 	}
 	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater( new Runnable(){
-			public void run(){
-				SamplingSystemGUI thisClass = new SamplingSystemGUI();
-				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setVisible(true);
-			}
-		});
+	public void setStatus(int status) {
+		statusIcon.setStatus(status);
 	}
 }
 

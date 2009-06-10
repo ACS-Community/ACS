@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2009/04/16 23:33:34 ahoffsta Exp $"
+# "@(#) $Id: Makefile,v 1.11 2009/06/10 22:49:04 utfsm Exp $"
 #
 # Makefile of ........
 #
@@ -119,18 +119,19 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = samplingSystemUI
-acssampGUI_DIRS= alma
+JARFILES=samplingSystemUI
 samplingSystemUI_DIRS=cl
 samplingSystemUI_EXTRAS=cl/utfsm/samplingSystemUI/img/
 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG= on
+
 #
 # ACS XmlIdl generation on/off
 #
-XML_IDL= 
+XML_IDL= on
+
 #
 # Java Component Helper Classes generation on/off
 #
@@ -191,7 +192,6 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
    include $(MAKEDIR)/acsMakefile
 endif
-
 
 #
 # TARGETS

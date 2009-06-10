@@ -4,8 +4,10 @@ import junit.framework.TestCase;
 import cl.utfsm.samplingSystemUI.core.SamplingManager;
 import cl.utfsm.samplingSystemUI.core.SampDetail;
 import cl.utfsm.samplingSystemUI.core.AcsInformation;
+import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.acssamp.Samp;
 import alma.acssamp.SampObj;
 
 public class SamplingManagerTest extends TestCase {
@@ -23,8 +25,53 @@ public class SamplingManagerTest extends TestCase {
 		assertNotNull(man1);
 		assertNotNull(man2);
 		assertEquals(man1,man2);
+		
+		man2 = SamplingManager.getInstance("SAMP2");
+		assertNotNull(man2);
+		assertNotSame(man1, man2);
+		man1 = SamplingManager.getInstance("SAMP2");
+		assertNotNull(man1);
+		assertEquals(man1, man2);
+		
+		man1 = SamplingManager.getInstance();
+		assertNotNull(man1);
+		assertEquals(man1, man2);
+		
+		boolean exception = false;
+		try {
+			man1 = SamplingManager.getInstance("SAMP3");
+		} catch (SamplingManagerException e) {
+			exception = true;
+		}
+		assertTrue(exception);
 	}
 
+	public void testGetSamplingObj() throws Exception {
+		SamplingManager man1 = null;
+		SamplingManager man2 = null;
+		Samp sampManager1 = null;
+		Samp sampManager2 = null;
+		
+		man1 = SamplingManager.getInstance("SAMP1");
+		assertNotNull(man1);
+		sampManager1 = man1.getSampReference();
+		assertNotNull(sampManager1);
+		sampManager2 = man1.getSampReference();
+		assertNotNull(sampManager2);
+		assertEquals(sampManager1, sampManager2);
+		
+		man2 = SamplingManager.getInstance("SAMP2");
+		assertNotNull(man2);
+		sampManager1 = man2.getSampReference();
+		assertNotNull(sampManager1);
+		sampManager2 = man2.getSampReference();
+		assertNotNull(sampManager2);
+		assertEquals(sampManager1, sampManager2);
+		
+		sampManager1 = man1.getSampReference();
+		sampManager2 = man2.getSampReference();
+		assertNotSame(sampManager1, sampManager2);
+	}
 
 	public void testGetSampObj() throws Exception {
 		SamplingManager  man1=null;

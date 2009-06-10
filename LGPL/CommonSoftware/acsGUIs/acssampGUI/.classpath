@@ -27,5 +27,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jfreechart-1.0.6.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/miglayout-3.5.5.jar"/>
+	<classpathentry kind="lib" path="/opt/almamgr/ssg/trunk/lib/jlibeps-0.1.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

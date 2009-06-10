@@ -1,38 +1,40 @@
 package cl.utfsm.samplingSystemUI;
 
+import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.IAxis;
+import info.monitorenter.gui.chart.IAxisLabelFormatter;
+import info.monitorenter.gui.chart.TracePoint2D;
+import info.monitorenter.gui.chart.ZoomableChart;
+import info.monitorenter.gui.chart.axis.AAxis;
+import info.monitorenter.gui.chart.axis.AxisLinear;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterDate;
+import info.monitorenter.gui.chart.traces.Trace2DLtd;
+import info.monitorenter.gui.chart.views.ChartPanel;
+
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
-import javax.swing.Timer;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.time.Millisecond;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
+import javax.swing.JPanel;
 
 import alma.acs.util.UTCUtility;
 
 public class PlotWidget extends SamplingWidget {
 
 	// Data Handling Attributes
-	private TimeSeriesCollection dataset = null;
-	private TimeSeries xy = null;
 	private long samples=0;
 	private int position;
-	private ArrayList<TimeSeries> dataArray;
+	private ArrayList<Trace2DLtd> traces;
+	private int frequency = 10;  // Herz
+	private int timewindow = 1; // Minutes
 	
 	// UI Attributes
 	private static final long serialVersionUID = 4823621192367385664L;
-	private ChartPanel chartPanel = null;
-	private JFreeChart chart;
+	private Chart2D chart;
+	private Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.GRAY, Color.ORANGE, Color.BLACK};
+	private int currentColor = 0;
 
 	public PlotWidget() {
 		super();
@@ -51,91 +53,86 @@ public class PlotWidget extends SamplingWidget {
 	 */
 	private void initialize(){
 		
-		dataArray = new ArrayList<TimeSeries>();
-        // Creating the Chart
-        
-        if( position == 0){
-        	xy = new TimeSeries("a", Millisecond.class);
-        	dataArray.add(xy);
-        	dataset = new TimeSeriesCollection( xy );
-        	chart = ChartFactory.createTimeSeriesChart(
-        			null,			// Chart Title
-        			"Time UTC [s]", 		// Domain axis label
-        			"Property Unit",// Range axis label
-        			dataset,		// Data
-        			true,			// include legend
-        			true,			// tooltips
-        			false			// urls
-            	);
-        	chart.setAntiAlias( false );
-        	
-        	//TODO: Quitar el autoajuste de los ejes, y poder seter un rango fijo, pero en funcion del primer elemento
-        	//chart.getXYPlot().getDomainAxis().setAutoRange(false);
-    		//chartPanel.getChart().getXYPlot().getDomainAxis().setRange(0, 1000000000);
+		if( position == 0){
+			chart = new ZoomableChart();
+			
+			// Changing X Axis for time presentation
+			// TODO: Axis labels and units
+			IAxis xAxis = new AxisLinear();
+			xAxis.setFormatter( (IAxisLabelFormatter) new LabelFormatterDate(new SimpleDateFormat("H:mm:ss")));
+			xAxis.getAxisTitle().setTitle("Time [seconds]");
+			chart.setAxisXBottom((AAxis)xAxis);
+                	chart.setGridColor(Color.BLACK);
+			
 
-        	chartPanel = new ChartPanel(chart, true);
-        	chartPanel.setMinimumSize(new java.awt.Dimension(500, 400));
-        	chartPanel.addComponentListener(new ComponentListener() {
-				public void componentResized(ComponentEvent e) {
-					// TODO: Plot resize
-				}
-        		
-				public void componentHidden(ComponentEvent e) {
-				}
-				public void componentMoved(ComponentEvent e) {
-				}
-				public void componentShown(ComponentEvent e) {
-				}        		
-        	});
-        	
-        	
-        	//Adding Widgets and Composing the UI
-        	this.setLayout(new GridBagLayout());
-        	GridBagConstraints gbc = new GridBagConstraints();
-        	gbc.anchor = GridBagConstraints.CENTER;
-        	gbc.ipadx = 10;
-        	gbc.fill = GridBagConstraints.BOTH;
-        	gbc.weightx = 1;
-        	gbc.weighty = 1;
-        	this.add(chartPanel, gbc);
-        }
-        
-        ActionListener rendering = new ActionListener() {
-    		public void actionPerformed(ActionEvent evt) {
-    			chart.setNotify(true);
-    			chart.setNotify(false);
-    		}
-    	};
-    	new Timer(1000/4, rendering).start();
+			traces = new ArrayList<Trace2DLtd>();
+			chart.setSize(800,600);
+			
+			// add the chart to the panel
+			this.setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.anchor = GridBagConstraints.CENTER;
+			gbc.ipadx = 10;
+			gbc.fill = GridBagConstraints.BOTH;
+			gbc.weightx = 1;
+			gbc.weighty = 1;
+			
+                	ChartPanel cp = new ChartPanel(chart);
+			this.add(cp,gbc);
+			
+			
+			// create new trace for the data.
+			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*60*frequency);
+			tempTrace.setColor(colors[currentColor]);
+			currentColor++;
+			if( currentColor >= colors.length ){
+				currentColor = 0;
+			}
+			//trace.setPhysicalUnits("Ticks", "Voltage");
+			chart.addTrace(tempTrace);
+			traces.add(tempTrace);
+		}
+
 	}
 	
 	public void initializeNewPosition(int position){
 		if( position != 0 ){
-			xy = new TimeSeries("b", Millisecond.class);
-			dataArray.add(xy);
-			dataset.addSeries( xy );
+			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*60*frequency);
+			tempTrace.setColor(colors[currentColor]);
+			currentColor++;
+			if( currentColor >= colors.length ){
+				currentColor = 0;
+			}
+			//trace.setPhysicalUnits("Ticks", "Voltage");
+			chart.addTrace(tempTrace);
+			traces.add(tempTrace);
 		}
 	}
 
 	public void updateValues(long time, double value, int position) {
 		samples++;
-		dataArray.get(position).add( new Millisecond( new Date(UTCUtility.utcOmgToJava(time) ) ), value);
+		traces.get(position).addPoint(new TracePoint2D(UTCUtility.utcOmgToJava(time), value));
+		//dataArray.get(position).add( new Millisecond( new Date(UTCUtility.utcOmgToJava(time) ) ), value);
 	}
 
 	public void setValues(String component, String property, int position) {
-		dataArray.get(position).setKey(component + "->" + property);
-		chart.setNotify(true);
-		chart.setNotify(false);
+		traces.get(position).setName(component + "->" + property);
 	}
 
 	public void setComponentAvailable(boolean tmp, String reason, int position) {
 	}
 	
 	public void resetSampleCount() {
-		//TODO: Erase data from the Chart.
+		for (Trace2DLtd trace : traces){
+			trace.removeAllPoints();
+		}
 	}
 	
+	public void setTimeWindow(long frecuency, int time) {
+		for (Trace2DLtd trace : traces){
+			trace.setMaxSize((int) (frecuency*60*time));
+		}
+		
+	}
 	
-	
-
 }

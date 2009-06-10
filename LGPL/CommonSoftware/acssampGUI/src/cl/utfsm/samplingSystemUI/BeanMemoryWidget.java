@@ -83,4 +83,9 @@ public class BeanMemoryWidget extends SamplingWidget {
 		samples = 0;
 		SamplingSizeLabel.setText("Sampling size: "+ samples);
 	}
+	@Override
+	public void setTimeWindow(long frecuency, int time) {
+		// TODO Auto-generated method stub
+		
+	}
 }

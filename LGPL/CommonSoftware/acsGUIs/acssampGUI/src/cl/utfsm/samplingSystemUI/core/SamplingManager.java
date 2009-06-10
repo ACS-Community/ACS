@@ -7,13 +7,20 @@ package cl.utfsm.samplingSystemUI.core;
 import alma.ACSErr.NameValue;
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
+import alma.ACSErrTypeCommon.CORBAProblemEx;
+import alma.ACSErrTypeCommon.CouldntCreateObjectEx;
+import alma.ACSErrTypeCommon.MemoryFaultEx;
+import alma.ACSErrTypeCommon.OutOfBoundsEx;
 import alma.acssamp.*;
-import java.util.Hashtable;/*<K,V>;*/
+import java.util.HashMap;
+import java.util.Hashtable;
 
 
 /**
  * Probaly this class should have another name, but it does manage the sampling
- * system within this application. This class is a singleton. And holds
+ * system within this application. This class is a per-manager singleton. And holds
  * references for each ACS sampling object. Each one of this objects is
  * associated in hashTable with a sampling detail 
  * @see SampDetail
@@ -22,13 +29,19 @@ import java.util.Hashtable;/*<K,V>;*/
 public class SamplingManager {
 	Hashtable<SampDetail,SampObj> samplingObjects = null;
 	AcsInformation info = null;
-	private static SamplingManager _instance = null;
+	private static HashMap<String,SamplingManager> _instances = null;
+	private static SamplingManager _last_referenced = null;
 	private String managerName = "";
+	private Samp _acssamp_instance = null;
+
+	static {
+		_instances = new HashMap<String, SamplingManager>(); 
+	}
 
 	/**
 	 * Private constructor. This may only be called from within this class.
 	 * This is done beacause this class is a singleton, so just one
-	 * instance should be allowed.
+	 * instance should be allowed per sampling manager.
 	 */ 
 	private SamplingManager(String managerName) throws SamplingManagerException{
 		try{
@@ -38,31 +51,72 @@ public class SamplingManager {
 			}
 			samplingObjects = new Hashtable<SampDetail,SampObj>();
 			this.managerName = managerName;
+			_acssamp_instance = null;
 		}catch(Exception e){
 			throw new SamplingManagerException("No reference to manager by name "+managerName,e);
-		}
-		finally{
-
 		}
 	}
 
 	/**
 	 * Singleton creator. This member calls the contructor and verifies
-	 * that only one instance is allowed.
+	 * that only one instance is allowed for the given sampling manager.
+	 * @param managerName The sampling managercomponent 
+	 * @return A singleton for this sampling manager
+	 * @throws SamplingManagerException If something goes wrong in the creation of the singleton
 	 */
 	public static synchronized SamplingManager getInstance(String managerName) throws SamplingManagerException{ 
-		if (_instance==null) { 
-			_instance = new SamplingManager(managerName); 
-		} 
-		return _instance; 
+		SamplingManager inst = _instances.get(managerName);
+		if ( inst == null) {
+			inst = new SamplingManager(managerName);
+			_instances.put(managerName, inst);
+		}
+		_last_referenced = inst;
+		return inst;
 	}
-
+	
+	/**
+	 * Returns the last sampling manager referenced by {@link #getInstance(String)}. 
+	 * @return The last sampling manager singleton referenced by the system.
+	 */
 	public static synchronized SamplingManager getInstance() { 
-		if (_instance==null) { 
+		if (_last_referenced == null) {
 			throw new IllegalStateException("Sampling manager instance was requested, but it does not exist."); 
 		} 
-		return _instance; 
+		return _last_referenced;
 	}
+
+	/**
+	 * Gets a reference to the sampling manager and returns it
+	 * As of ACS-7.0 the following call throws AcsJContainerServicesEx instead of returnin null
+	 * 
+	 * @return alma.acssamp.Samp
+	 * @throws SamplingManagerException 
+	 */
+	public Samp getSampReference() throws SamplingManagerException {
+		
+		if( _acssamp_instance == null ) {
+			org.omg.CORBA.Object obj;
+			try {
+				obj = (info.getContainerServices()).getComponent(managerName);
+				_acssamp_instance = alma.acssamp.SampHelper.narrow(obj);
+			} catch (AcsJContainerServicesEx e) {
+				
+				throw new SamplingManagerException("Couldn't get reference to Sampling Manager '"
+						+ managerName + "'",e);
+			}
+		} else {
+			try {
+				_acssamp_instance.componentState();
+			} catch (Exception e) {
+				info.getContainerServices().releaseComponent(managerName);
+				_acssamp_instance = null;
+				throw new SamplingManagerException("Sampling Manager '"
+						+ managerName + "' reference has been destroyed");
+			}
+		}
+		return _acssamp_instance;
+	}
+	
 	/**
 	 * Get or create a new Sampling object. This member will create a new sampling
 	 * object for each distinc sampling detail. If the sampling detail already
@@ -71,24 +125,25 @@ public class SamplingManager {
 	 * @return a sampling object SampObj.
 	 * @throws CouldntAccessComponentEx 
 	 * @throws TypeNotSupportedEx 
+	 * @throws AcsJContainerServicesEx
+	 * @throws CouldntAccessPropertyEx
+	 * @throws CORBAProblemEx
+	 * @throws CouldntCreateObjectEx
+	 * @throws MemoryFaultEx
+	 * @throws OutOfBoundsEx
+	 * @throws SamplingManagerException 
 	 */ 
-	public synchronized SampObj getSamplingObj(SampDetail managerDef) throws CouldntAccessComponentEx, TypeNotSupportedEx {
+	public synchronized SampObj getSamplingObj(SampDetail managerDef) throws CouldntAccessComponentEx, TypeNotSupportedEx, 
+                                                                                 AcsJContainerServicesEx, CouldntAccessPropertyEx,
+                                                                                 CORBAProblemEx, CouldntCreateObjectEx,
+                                                                                 MemoryFaultEx, OutOfBoundsEx, SamplingManagerException {
 		SampObj temp=null;
 		if(samplingObjects.get(managerDef)!=null){
 			info.getContainerServices().getLogger().info("Trying to add a duplicate samplingObj");
 			return samplingObjects.get(managerDef);
 		}
 		try{
-			/*get a reference to the sampling manager and return a
- 			* CORBA Object. At the moment of the initialization we checked if we could
- 			* contact the Sampling System through is name in the cdb, any how we will
-			 * still check every time. */
-			org.omg.CORBA.Object obj = (info.getContainerServices()).getComponent(managerName);
-			if(obj==null){
-				throw new NullPointerException("No reference to manager by name "+managerName);
-			}
-			//after we get the reference we try to cast the CORBA Object to a Samp Object
-			temp = (alma.acssamp.SampHelper.narrow(obj)).initSampObj(managerDef.getComponent(),managerDef.getProperty(),managerDef.getFrequency(),managerDef.getReportRate());
+			temp = getSampReference().initSampObj(managerDef.getComponent(),managerDef.getProperty(),managerDef.getFrequency(),managerDef.getReportRate());
 		} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx tmp) {
 			info.getContainerServices().getLogger().warning("Sampling Manager could not access component " +  managerDef.getComponent());
 			throw tmp;
@@ -101,8 +156,8 @@ public class SamplingManager {
 				}
 			info.getContainerServices().getLogger().warning("Unsopported type for component/property: " + managerDef.getComponent() + "/" + managerDef.getProperty() + ": " + str);
 			throw tmp;
-		} catch(Exception e){
-			e.printStackTrace();
+		} catch(SamplingManagerException e) {
+			throw e;
 		}
 		samplingObjects.put(managerDef,temp);
 		return temp;

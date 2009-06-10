@@ -11,10 +11,12 @@ import java.util.Date;
 
 import alma.ACSErrTypeCommon.CouldntAccessComponentEx;
 import alma.ACSErrTypeCommon.TypeNotSupportedEx;
+import alma.ACSErrTypeCommon.CouldntAccessPropertyEx;
 import alma.acs.util.IsoDateFormat;
 import alma.acs.util.UTCUtility;
 
 import cl.utfsm.samplingSystemUI.core.DataItem;
+import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 
 /**
  * Printer class that acts takes the data that comming from the sampling manager, and do something with it. <br />
@@ -63,7 +65,7 @@ public class FilePrinter extends DataPrinter {
 	 * @throws CouldntAccessComponentEx Component wasn't available at the time.
 	 * @throws TypeNotSupportedEx Sampling Manager specific exception. Some types are currently not supported in acssamp.
 	 */
-	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx {
+	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx,CouldntAccessPropertyEx, SamplingManagerException  {
 		super.startSample();
 		stopped = false;		
 	}
