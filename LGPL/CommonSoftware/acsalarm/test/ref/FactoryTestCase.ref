@@ -1,1 +1,4 @@
+1 -  --endorsed -- alma.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb -OAIAddr a.b.c.d -OAport nnnn
+1 - The alarm service is ready and waiting
 1 - OK (5)
+1 - SHUTDOWN
