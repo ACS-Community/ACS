@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile.all,v 1.79 2009/06/10 14:03:32 mzampare Exp $" 
+# "@(#) $Id: acsMakefile.all,v 1.80 2009/06/12 13:05:16 hsommer Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -365,7 +365,7 @@ include $(MAKEDIR)/pythonMakefile
 include $(MAKEDIR)/idlMakefile
 include $(MAKEDIR)/tclMakefile
 include $(MAKEDIR)/logtsMakefile
-include $(MAKEDIR)/ddsMakefile
+
 # 
 #
 
@@ -432,7 +432,7 @@ include ../object/vltMakeIndexFiles.del
 #################################################
 # set standard targets.                         #
 #################################################
-ALL_TARGET := $(ALL_TARGET) do_ERRORS do_LOGS do_links do_idl do_libs do_exes do_scripts do_panels  
+ALL_TARGET := do_ERRORS do_LOGS do_links do_libs do_exes do_scripts do_panels  $(ALL_TARGET) 
 
 .PHONY : do_all
 do_all : $(ALL_TARGET)
