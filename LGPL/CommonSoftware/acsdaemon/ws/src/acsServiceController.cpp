@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.7 2009/06/01 13:31:36 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.8 2009/06/12 13:32:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,25 +38,25 @@
 /***************************** ControllerThread *******************************/
 
 ControllerThread::ControllerThread(const ACE_CString &name, const ACS::TimeInterval& responseTime,  const ACS::TimeInterval& sleepTime) :
-       ACS::Thread(name, responseTime, sleepTime, false, THR_DETACHED) {
+       ACS::Thread(name, responseTime, sleepTime) {
     ACS_TRACE("ServiceControlThread::ServiceControlThread"); 
-    m_mutex = new ACE_Thread_Mutex();
-    m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
 }
 
 ControllerThread::~ControllerThread() { 
     ACS_TRACE("ServiceControlThread::~ServiceControlThread"); 
-    delete m_wait;
-    delete m_mutex; 
+    if (m_mutex) delete m_wait;
+    if (m_wait) delete m_mutex; 
 }
 
 void ControllerThread::onStart() {
     running = true;
+    m_mutex = new ACE_Thread_Mutex();
+    m_wait = new ACE_Condition<ACE_Thread_Mutex>(*m_mutex);
 }
 
 void ControllerThread::stop() {
     running = false;
-    m_wait->signal();
+    if (m_wait) m_wait->signal();
 }
 
 void ControllerThread::exit() {
@@ -273,6 +273,8 @@ ACSServiceController::~ACSServiceController() {
 }
 
 ControlledServiceRequest *ACSServiceController::createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback) {
+    if (itype == STOP_SERVICE)
+      getContext()->getDetailedServiceState(desc, 0); 
     return new ControlledServiceRequest(this, new ACSServiceRequest(getContext(), LOCAL, itype, new ACSServiceRequestDescription(*desc), callback), itype == STOP_SERVICE);
 }
 

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.7 2008/11/19 11:03:09 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.8 2009/06/12 13:32:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,7 @@
 #include <acserr.h>
 #include <acsdaemonErrType.h>
 #include <ACSErrTypeCommon.h>
+#include "acsdaemonORBTask.h"
 
 /**
  *  Service management class for daemon.
@@ -202,7 +203,22 @@ int ACSDaemonServiceImpl<T>::run (void)
     try
 	{
 	handler.initialize(m_orb.in());
-	this->m_orb->run ();
+//	this->m_orb->run ();
+
+      // constrcut CORBA ORB request handler task
+      ORBTask task (this->m_orb.in(), &m_logProxy);
+const int m_serverThreads = 5;
+      // activate task, i.e. spawn threads and handle requests
+      if (task.activate (THR_NEW_LWP | THR_JOINABLE, m_serverThreads) == 0)
+          // wait until CORBA ORB is shutdown or destroyed
+          task.thr_mgr()->wait ();
+      else
+        {
+          // failed to spawn threads
+          ACS_LOG(LM_RUNTIME_CONTEXT, "ACSDaemonServiceImpl<T>::run", (LM_INFO, "Failed to activate CORBA ORB request handler threads..."));
+          return -1;
+        }
+
 	}
     catch(...)
 	{

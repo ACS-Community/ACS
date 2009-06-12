@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.4 2009/06/01 13:31:46 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.5 2009/06/12 13:32:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <map>
 #include <string>
 
-const ACE_Time_Value TIME_PERIOD(60);
+const ACE_Time_Value TIME_PERIOD(15);
 
 class DetailedServiceStateProvider {
   public:

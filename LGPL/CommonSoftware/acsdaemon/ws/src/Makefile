@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.22 2008/12/01 13:39:56 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.23 2009/06/12 13:32:14 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -49,7 +49,7 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerHandlerImpl
+acscontainerdaemon_OBJECTS   =	acscontainerdaemon acsContainerHandlerImpl acsdaemonORBTask
 acscontainerdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
 acsdaemonStartContainer_OBJECTS   =	acsdaemonStartContainer
@@ -59,7 +59,7 @@ acsdaemonStartContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemon
 acsdaemonStopContainer_OBJECTS   =	acsdaemonStopContainer
 acsdaemonStopContainer_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
-acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController
+acsservicesdaemon_OBJECTS   =	acsservicesdaemon acsServicesHandlerImpl acsRequest acsServiceController acsdaemonORBTask
 acsservicesdaemon_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread expat acsQoS
 
 acsdaemonStartAcs_OBJECTS   =	acsdaemonStartAcs
@@ -81,26 +81,26 @@ acscontainerdaemonSmartStart_LIBS      =	acscomponentStubs acsdaemonErrType acsd
 acsservicesdaemonStop_OBJECTS   =	acsservicesdaemonStop
 acsservicesdaemonStop_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs
 
-acsdaemonNamingServiceImp_OBJECTS   =	acsdaemonNamingServiceImp acsRequest acsServiceController
+acsdaemonNamingServiceImp_OBJECTS   =	acsdaemonNamingServiceImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonNamingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonNotificationServiceImp_OBJECTS   =	acsdaemonNotificationServiceImp acsRequest acsServiceController
+acsdaemonNotificationServiceImp_OBJECTS   =	acsdaemonNotificationServiceImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonNotificationServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonInterfaceRepositoryImp_OBJECTS   =	acsdaemonInterfaceRepositoryImp acsRequest acsServiceController
+acsdaemonInterfaceRepositoryImp_OBJECTS   =	acsdaemonInterfaceRepositoryImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonInterfaceRepositoryImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonLoggingServiceImp_OBJECTS   =	acsdaemonLoggingServiceImp acsRequest acsServiceController
+acsdaemonLoggingServiceImp_OBJECTS   =	acsdaemonLoggingServiceImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonLoggingServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonACSLogServiceImp_OBJECTS   =	acsdaemonACSLogServiceImp acsRequest acsServiceController
+acsdaemonACSLogServiceImp_OBJECTS   =	acsdaemonACSLogServiceImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonACSLogServiceImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonConfigurationDatabaseImp_OBJECTS   =	acsdaemonConfigurationDatabaseImp acsRequest acsServiceController
+acsdaemonConfigurationDatabaseImp_OBJECTS   =	acsdaemonConfigurationDatabaseImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
 
-acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController
-acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController acsdaemonORBTask
+acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS 
 
 acsdaemonImpStop_OBJECTS   =       acsdaemonImpStop
 acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonStubs

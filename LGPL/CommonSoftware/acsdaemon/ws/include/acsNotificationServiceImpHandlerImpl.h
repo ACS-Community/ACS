@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.3 2009/06/01 13:31:46 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.4 2009/06/12 13:32:14 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,14 +33,31 @@
 #endif
 
 #include "acsImpBaseHandlerImpl.h"
+#include "acsNotificationServiceMonitor.h"
 
+#include <map>
+
+typedef std::map<ACSServiceRequestDescription*, NotificationServiceMonitor*> MonitorMap;
 
 class ACSNotificationServiceImpHandlerImpl : public ACSImpBaseHandlerImpl<ACSNotificationServiceImpHandlerImpl>, public POA_acsdaemon::NotificationServiceImp {
+private:
+  MonitorMap monitorMap;
 
 public:
 
     ACSNotificationServiceImpHandlerImpl() : ACSImpBaseHandlerImpl<ACSNotificationServiceImpHandlerImpl>(NOTIFICATION_SERVICE) {}
-    
+   
+    virtual ~ACSNotificationServiceImpHandlerImpl()
+    {  
+      MonitorMap::iterator iter = monitorMap.begin();
+      for (; iter != monitorMap.end(); iter++)
+      {
+        NotificationServiceMonitor* nsm = iter->second;
+        nsm->destroy();
+        delete nsm;
+      }
+    } 
+
     /*************************** CORBA interface *****************************/
 
     void start_notification_service (
@@ -81,16 +98,51 @@ public:
     }
 
     virtual acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) {
-	bool isRightNCType = obj->_is_a("IDL:sandia.gov/NotifyMonitoringExt/EventChannelFactory:1.0");
-	if (!isRightNCType) {
-		ACS_SHORT_LOG((LM_ERROR, "%s does not extend required interface, reported as defunctional.", desc->getName()));
-	}
-	return isRightNCType ? acsdaemon::RUNNING : acsdaemon::DEFUNCT;
+
+    // destroy check 
+    if (obj == 0)
+    { 
+      if (monitorMap.find(desc) != monitorMap.end())
+      {  
+        NotificationServiceMonitor* nsm = monitorMap[desc];
+        nsm->destroy();
+        monitorMap.erase(desc);
+        delete nsm;
+      }
+      return acsdaemon::DEFUNCT;
     }
 
+    bool isRightNCType = obj->_is_a("IDL:sandia.gov/NotifyMonitoringExt/EventChannelFactory:1.0");
+    if (!isRightNCType) {
+		ACS_SHORT_LOG((LM_ERROR, "%s does not extend required interface, reported as defunctional.", desc->getName()));
+		return acsdaemon::DEFUNCT;
+    }
+
+    if (monitorMap.find(desc) == monitorMap.end())
+    {
+      CosNotifyChannelAdmin::EventChannelFactory_var ecf = CosNotifyChannelAdmin::EventChannelFactory::_narrow(obj);
+      NotificationServiceMonitor* nsm = new NotificationServiceMonitor(ecf.in());
+      nsm->init();
+      monitorMap[desc] = nsm;
+      nsm->issuePingEvent();
+      return acsdaemon::RUNNING;
+    }
+    else
+    {
+      NotificationServiceMonitor* nsm = monitorMap[desc];
+      CORBA::ULongLong rtt = nsm->getAndResetRTT();
+      nsm->issuePingEvent();
+      if (rtt < 0) // no response
+        return acsdaemon::DEFUNCT;
+      else if (rtt > 200000) // > 200ms
+        return acsdaemon::DEGRADED;
+      else
+        return acsdaemon::RUNNING;
+    }
+
+  }
 
 };
-
 
 
 #endif
