@@ -242,6 +242,8 @@ namespace AcsBulkdata
 	typedef ACE_Hash_Map_Manager<ACE_CString, BulkDataFlowProducer<TSenderCallback> *, ACE_Null_Mutex> FepObjects;
 	typedef ACE_Hash_Map_Iterator<ACE_CString, BulkDataFlowProducer<TSenderCallback> *, ACE_Null_Mutex>  FepObjectsIterator;
 
+	typedef ACE_Hash_Map_Manager<ACE_CString, ACE_HANDLE, ACE_Null_Mutex> HandleMap;
+	typedef ACE_Hash_Map_Iterator<ACE_CString, ACE_HANDLE, ACE_Null_Mutex>  HandleMapIterator;
 
 	/** Initialize the A/V part A
 	 *  @return void
@@ -408,16 +410,18 @@ namespace AcsBulkdata
 
 	FepObjects fepMap_m;
 
+	HandleMap handleMap_m;
+
 	AVStreams::flowSpec_var recvFeps_p;
 
 	AVStreams::flowSpec senderFeps_m;
-
 
 	TAO_StreamEndPoint_A * sepRefCount_p;
 
 	CORBA::Boolean disconnectPeerFlag;
     
 	AVStreams::flowSpec flowSpec_m;
+
 	TAO_StreamCtrl *streamctrl_p;
 
 	/**

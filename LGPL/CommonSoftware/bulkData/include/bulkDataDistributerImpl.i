@@ -115,6 +115,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 
 	distributer.multiConnect(receiverConfig,buf,recvName);
 
+	receiverObj_p->setRecvName(receiverObj_p->name());
+
 	distributer.setTimeout(timeout);
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
@@ -457,6 +459,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::setReceiver(co
 	else
 	    {
 	    cb->setDistributerImpl(this);
+	    ACE_HANDLE handle = cb->getHandle();
+	    getDistributer()->getReceiver()->addHandle(flw,handle);
 	    }	    
 	}
 }
@@ -541,6 +545,11 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSen
 	{
 	if( ((entry->int_id_).first())->_is_equivalent(receiverObj_p) )
 	    {
+	    (entry->int_id_).second()->disconnectPeer();
+	    AcsBulkdata::BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	    if (locSender_p != 0)
+		delete locSender_p;
+
 	    CORBA::release((entry->int_id_).first()); 
 	    map->unbind(entry);
 	    }

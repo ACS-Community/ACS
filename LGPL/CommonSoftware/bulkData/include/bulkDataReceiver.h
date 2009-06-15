@@ -183,10 +183,21 @@ namespace AcsBulkdata
      */
 	void notifySender(const ACSErr::Completion& comp);
 
+
+	// method called by the distributor object to set the reactor handle
+        // on its internal receiver
+	void addHandle(ACE_CString flowName, ACE_HANDLE handle)
+	    {
+		handleMap_m.rebind(flowName,handle);	
+	    }
+
       private:
 
 	typedef ACE_Hash_Map_Manager<ACE_CString, BulkDataFlowConsumer<TReceiverCallback> *, ACE_Null_Mutex> FepObjects;
 	typedef ACE_Hash_Map_Iterator<ACE_CString, BulkDataFlowConsumer<TReceiverCallback> *, ACE_Null_Mutex>  FepObjectsIterator;
+
+	typedef ACE_Hash_Map_Manager<ACE_CString, ACE_HANDLE, ACE_Null_Mutex> HandleMap;
+	typedef ACE_Hash_Map_Iterator<ACE_CString, ACE_HANDLE, ACE_Null_Mutex>  HandleMapIterator;
 
 	/** Initialize the A/V part B
 	 *  @return void
@@ -261,6 +272,8 @@ namespace AcsBulkdata
 
 	void deleteAcceptor();
 
+	void deleteHandler();
+
 	void closeSocket();
 
 	/** Create the Flow Specifications
@@ -287,7 +300,10 @@ namespace AcsBulkdata
 	    }
 
       private:
+
 	FepObjects fepMap_m;
+
+	HandleMap handleMap_m;
 
 	/**
 	 * The endpoint strategy used by the receiver

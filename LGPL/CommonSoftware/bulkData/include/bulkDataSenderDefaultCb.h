@@ -38,6 +38,8 @@ class BulkDataSenderDefaultCallback : public TAO_AV_Callback
     BulkDataSenderDefaultCallback (TAO_StreamCtrl * stream_p)
 	{
 	    ACS_TRACE("BulkDataSenderDefaultCallback::BulkDataSenderDefaultCallback");
+
+	    isFepAlive_m = true;
 	}
 
 
@@ -92,14 +94,31 @@ class BulkDataSenderDefaultCallback : public TAO_AV_Callback
 	{
 	    ACS_TRACE("BulkDataSenderDefaultCallback::handle_destroy");
 
+	    isFepAlive_m = false;
+
 	    return 0;
 	}
+
+    ACE_HANDLE getHandle()
+	{
+	    ACE_Event_Handler *event_handler = handler_->event_handler();
+	    ACE_HANDLE handle = event_handler->get_handle();
+	    return handle;
+	}
+
+
+    CORBA::Boolean isFepAlive()
+	{
+	    return isFepAlive_m;
+	}
+
 
   private:
 
     TAO_StreamCtrl * stream_p;
     TAO_AV_Protocol_Object * protocolObject_p;
 
+    CORBA::Boolean isFepAlive_m;
 };
 
 #endif /* _BULKDATA_SENDER_DEFAULTCB_H */

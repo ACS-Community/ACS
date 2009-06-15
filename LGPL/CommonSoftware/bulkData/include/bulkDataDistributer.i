@@ -294,7 +294,7 @@ bool AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::isRec
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStart(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
-    // ACS_TRACE("BulkDataDistributer<>::distSendStart");
+    ACS_TRACE("BulkDataDistributer<>::distSendStart");
     // call start on all the receivers.
 
     Sender_Map_Iterator iterator (senderMap_m);
@@ -321,12 +321,24 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
     catch(CORBA::Exception &ex)
 	{
 	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStart");
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStart - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendStart Unknown exception"));
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStart - Receiver %s removed from Distributor",recvName.c_str()));
 	}
@@ -336,7 +348,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 template<class TReceiverCallback, class TSenderCallback>
 int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendDataHsk(ACE_CString& flowName,ACE_Message_Block * frame_p,CORBA::ULong flowNumber)
 {
-//    ACS_TRACE("BulkDataDistributer<>::distSendDataHsk");
+    ACS_TRACE("BulkDataDistributer<>::distSendDataHsk");
 
     int res = -1;
 
@@ -368,12 +380,24 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     catch(CORBA::Exception &ex)
 	{
 	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendDataHsk");
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendDataHsk - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendDataHsk Unknown exception"));
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendDataHsk - Receiver %s removed from Distributor",recvName.c_str()));
 	}	
@@ -384,7 +408,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 template<class TReceiverCallback, class TSenderCallback>
 int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendData(ACE_CString& flowName,ACE_Message_Block * frame_p, CORBA::ULong flowNumber)
 {
-//    ACS_TRACE("BulkDataDistributer<>::distSendData");
+    ACS_TRACE("BulkDataDistributer<>::distSendData");
 
     int res = -1;
 
@@ -408,7 +432,14 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		if(res < 0)
 		    {
 		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame error"));
+
+		    (entry->int_id_).second()->disconnectPeer();
+		    BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+		    if (locSender_p != 0)
+			delete locSender_p;
+
 		    CORBA::release((entry->int_id_).first()); 
+
 		    senderMap_m.unbind(recvName);
 		    iterator--;
 		    recvStatusMap_m.unbind(recvName);
@@ -420,12 +451,24 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     catch(CORBA::Exception &ex)
 	{
 	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendData");
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData Unknown exception"));
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));
 	}	
@@ -438,7 +481,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStopTimeout(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
-// ACS_TRACE("BulkDataDistributer<>::distSendStopTimeout");
+    ACS_TRACE("BulkDataDistributer<>::distSendStopTimeout");
 
 // call stop on all the receivers.
 
@@ -463,12 +506,20 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::TIMEOUT & ex)
 		{
-		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout CORBA::TIMEOUT exception"));
+		//ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout CORBA::TIMEOUT exception"));
+		//ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStopTimeout");
+		//senderMap_m.unbind(recvName);
+		//ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
 		getFlowReceiverStatus(recvName, flowNumber);
 		timeout = false;
 		}
 	    catch(CORBA::SystemException &ex)
 		{
+		(entry->int_id_).second()->disconnectPeer();
+		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+		if (locSender_p != 0)
+		    delete locSender_p;
+
 		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		iterator--;
@@ -482,12 +533,24 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	    catch(CORBA::Exception &ex)
 		{
 		ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStopTimeout");
+		(entry->int_id_).second()->disconnectPeer();
+		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+		if (locSender_p != 0)
+		    delete locSender_p;
+
+		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
 		}
 	    catch(...)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout Unknown exception"));
+		(entry->int_id_).second()->disconnectPeer();
+		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+		if (locSender_p != 0)
+		    delete locSender_p;
+
+		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
 		}
@@ -501,7 +564,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 template<class TReceiverCallback, class TSenderCallback>
 void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSendStop(ACE_CString& flowName, CORBA::ULong flowNumber)
 {
-    // ACS_TRACE("BulkDataDistributer<>::distSendStop");
+    ACS_TRACE("BulkDataDistributer<>::distSendStop");
     // call stop on all the receivers.
 
     Sender_Map_Iterator iterator (senderMap_m);
@@ -526,12 +589,24 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
     catch(CORBA::Exception &ex)
 	{
 	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStop");
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStop - Receiver %s removed from Distributor",recvName.c_str()));
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSenStop Unknown exception"));
+	(entry->int_id_).second()->disconnectPeer();
+	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
+	if (locSender_p != 0)
+	    delete locSender_p;
+
+	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStop - Receiver %s removed from Distributor",recvName.c_str()));
 	}	
@@ -541,7 +616,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distS
 template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::getFlowReceiverStatus(const ACE_CString& receiverName, CORBA::ULong flowNumber)
 {
-    // ACS_TRACE("BulkDataDistributer<>::getFlowReceiverStatus");
+    ACS_TRACE("BulkDataDistributer<>::getFlowReceiverStatus");
 
     CORBA::ULong currRecvNo, currFlowPos;
 
@@ -598,7 +673,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 template<class TReceiverCallback, class TSenderCallback>
 CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::isFlowReceiverAvailable(const ACE_CString& receiverName, CORBA::ULong flowNumber)
 {
-    // ACS_TRACE("BulkDataDistributer<>::isFlowReceiverAvailable");
+    ACS_TRACE("BulkDataDistributer<>::isFlowReceiverAvailable");
 
     CORBA::ULong currRecvNo, currFlowPos;
 

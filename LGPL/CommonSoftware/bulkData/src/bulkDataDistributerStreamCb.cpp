@@ -10,6 +10,8 @@ BulkDataDistributerStreamCb::BulkDataDistributerStreamCb()
 BulkDataDistributerStreamCb::BulkDataDistributerStreamCb(TAO_StreamCtrl * stream_p)
 {
     ACS_TRACE("BulkDataDistributerStreamCb::BulkDataDistributerStreamCb"); 
+
+    isFepAlive_m = true;
 }
 
 
@@ -54,6 +56,8 @@ int BulkDataDistributerStreamCb::handle_stop (void)
 int BulkDataDistributerStreamCb::handle_destroy (void)
 {
     ACS_TRACE("BulkDataDistributerStreamCb::handle_destroy");
+      
+    isFepAlive_m = false;
 
     return 0;
 }
@@ -96,6 +100,18 @@ void BulkDataDistributerStreamCb::setDistributerImpl(BulkDataDistributerImpl<Bul
     ACS_TRACE("BulkDataDistributerStreamCb::setDistributerImpl");
 
     distr_m = distr_p;
+}
+
+
+ACE_HANDLE BulkDataDistributerStreamCb::getHandle()
+{
+    ACS_TRACE("BulkDataDistributerStreamCb::getHandle");
+
+    ACE_Event_Handler *event_handler = handler_->event_handler();
+	
+    ACE_HANDLE handle = event_handler->get_handle();
+
+    return handle;
 }
 
 

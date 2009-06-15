@@ -76,6 +76,13 @@ class BulkDataDistributerCb : public TAO_AV_Callback
 
     virtual CORBA::Boolean isWorking();
 
+    ACE_HANDLE getHandle();
+
+    CORBA::Boolean isFepAlive()
+	{
+	    return isFepAlive_m;
+	}
+
   protected:
 
     ACE_CString flowname_m;
@@ -102,6 +109,8 @@ class BulkDataDistributerCb : public TAO_AV_Callback
     CORBA::Boolean timeout_m;
 
     CORBA::Boolean working_m;
+
+    CORBA::Boolean isFepAlive_m;
 };
 
 

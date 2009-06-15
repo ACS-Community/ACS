@@ -411,6 +411,9 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::closeReceiver()
     try
 	{
 	deleteAcceptor();
+	deleteHandler();
+	ACE_OS::sleep(1);  // seems necessary to give time to remove
+	                   // the handler from the reactor
 	deleteFepsB();
 	deleteSepB();
 	}
@@ -592,6 +595,19 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteFepsB()
 	    }
 	else
 	    {
+	    TReceiverCallback *cb_p = fep->getBulkDataCallback();
+	    if(cb_p == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::deleteFepsB callback null"));
+		ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver<>::deleteFepsB");
+		throw err;
+		}
+	    else
+		{
+		if(cb_p->isFepAlive())
+		    fep->destroy();
+		}
+
 	    CORBA::Long dim = fep->_refcount_value /*_ref_count*/();
 	    for(CORBA::Long n = 1; n < dim; n++)
 		{
@@ -637,6 +653,51 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteAcceptor()
 	{
 	ACE_CString flowname = TAO_AV_Core::get_flowname(fepsData[i]);
 	TAO_AV_CORE::instance()->remove_acceptor(flowname.c_str());
+	}
+}
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteHandler()
+{
+    ACS_TRACE("BulkDataReceiver<>::deleteHandler");   
+
+    for(CORBA::ULong i = 0; i < fepsData.length(); i++)
+	{
+	ACE_CString flowname = TAO_AV_Core::get_flowname(fepsData[i]);
+        BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+    
+        fepMap_m.find(flowname, fep);
+
+	if(fep == 0)
+	    {
+	    ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::deleteHandler");
+	    throw err;
+	    }
+        else
+            {
+	    ACE_HANDLE handle;
+	    if((handleMap_m.find(flowname,handle)) == -1)
+		{
+		//ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::deleteHandler - handle not present in HandleMap"));
+		return; // to be better defined what to do here
+		}
+	    else
+		{
+		if(TAO_AV_CORE::instance()->reactor()->find_handler(handle))
+		    {
+		    TAO_AV_Flow_Handler *locHandler_p = fep->getFlowHandler();
+		    ACE_Event_Handler *event_handler = locHandler_p ->event_handler();
+		    TAO_AV_CORE::instance()->reactor()->remove_handler(event_handler,ACE_Event_Handler::READ_MASK);
+		    handleMap_m.unbind(flowname,handle);
+		    }
+		else
+		    {
+		    //ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::deleteHandler - handle not present in the ACE_Reactor"));
+		    continue;
+		    }
+		}
+	    }
 	}
 }
 
@@ -737,6 +798,8 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setReceiverName(ACE_CStri
 		}
 	    else
 		cb_p->setReceiverName(recvName);
+		ACE_HANDLE handle = cb_p->getHandle();
+		handleMap_m.rebind(flowName,handle);
 	    }	
 	}
 }

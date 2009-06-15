@@ -30,6 +30,8 @@ BulkDataCallback::BulkDataCallback()
     errComp_p = 0;
 
     flowTimeout_m = 0;
+
+    isFepAlive_m = true;
 }
 
 
@@ -156,8 +158,11 @@ int BulkDataCallback::handle_stop (void)
 
 		timeout_m = true;
 		//cleaning the recv buffer
-		cleanRecvBuffer();
-
+		///cleanRecvBuffer();
+		//cout << "BulkDataCallback::handle_stop - handle removed: " << getHandle() << endl;
+		TAO_AV_CORE::instance()->reactor()->remove_handler(getHandle(),ACE_Event_Handler::READ_MASK);
+		ACE_OS::sleep(1);  // seems necessary to give time to remove
+		                   // the handler from the reactor
 		throw CORBA::TIMEOUT();
 		}
 
@@ -260,6 +265,8 @@ int BulkDataCallback::handle_destroy (void)
 
     //cout << "BulkDataCallback::handle_destroy" << endl;
 
+    isFepAlive_m = false;
+
     return 0;
 }
 
@@ -272,7 +279,7 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 
     if(error_m == true)
 	{
-	cleanRecvBuffer();
+	///cleanRecvBuffer();
 	working_m = false;
 	return 0;
 	}
@@ -487,7 +494,7 @@ void BulkDataCallback::checkFlowTimeout()
     double dtime = (elapsedTime.sec() * 1000.) + ( elapsedTime.usec() / 1000. );
     if(dtime > flowTimeout_m)
 	{
-	cleanRecvBuffer();
+	///cleanRecvBuffer();
 	timeout_m = true;
 	AVCbFlowTimeoutExImpl err = AVCbFlowTimeoutExImpl(__FILE__,__LINE__,"BulkDataCallback::checkFlowTimeout");
 	throw err;
@@ -504,4 +511,16 @@ void BulkDataCallback::closePeer()
 	{
 	svch->peer().close();
 	}
+}
+
+
+ACE_HANDLE BulkDataCallback::getHandle()
+{
+    ACS_TRACE("BulkDataCallback::getHandle");
+
+    ACE_Event_Handler *event_handler = handler_->event_handler();
+
+    ACE_HANDLE handle = event_handler->get_handle();
+
+    return handle;
 }

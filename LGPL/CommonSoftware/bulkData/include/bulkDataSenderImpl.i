@@ -134,10 +134,11 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 {
     ACS_TRACE("BulkDataSenderImpl::disconnect");
 
-    CORBA::Boolean loop = true;
+    //CORBA::Boolean loop = true;
 
     try
 	{
+/*
 	if(receiverObj_m != 0)
 	    {
 	    std::vector<std::string> vec = getSender()->getFlowNames();
@@ -147,6 +148,7 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		while(loop)
 		    {
 		    CompletionImpl comp = receiverObj_m->getCbStatus(i+1);
+*/
 
 /*
   if(comp.getCode() == ACSBulkDataStatus::AVCbReady)
@@ -163,6 +165,7 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
   cout << "ACSBulkDataStatus::AVCbNotAvailable" << endl;
 */
 		   
+/*
 		    if ((comp.getCode() == ACSBulkDataStatus::AVCbReady) || 
 			(comp.getCode() == ACSBulkDataStatus::AVCbTimeout))
 			{
@@ -172,9 +175,10 @@ void BulkDataSenderImpl<TSenderCallback>::disconnect()
 		    }
 		}
 	    }
+*/
 
 	getSender()->disconnectPeer();
-	}
+	}	
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
 	ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSenderImpl::disconnectPeer");

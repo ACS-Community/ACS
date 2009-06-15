@@ -43,6 +43,12 @@ class BulkDataDistributerStreamCb : public TAO_AV_Callback
 
     virtual void setDistributerImpl(BulkDataDistributerImpl<BulkDataDistributerStreamCb> *distr_p);
 
+    ACE_HANDLE getHandle();
+
+    CORBA::Boolean isFepAlive()
+	{
+	    return isFepAlive_m;
+	}
 
   protected:
 
@@ -53,6 +59,8 @@ class BulkDataDistributerStreamCb : public TAO_AV_Callback
   private:
 
     BulkDataDistributerImpl<BulkDataDistributerStreamCb> *distr_m;
+
+    CORBA::Boolean isFepAlive_m;
 };
 
 

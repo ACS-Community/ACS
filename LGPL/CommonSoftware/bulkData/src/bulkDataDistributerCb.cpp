@@ -2,7 +2,7 @@
 
 BulkDataDistributerCb::BulkDataDistributerCb()
 {
-    ACS_TRACE("BulkDataCallback::BulkDataCallback");
+    ACS_TRACE("BulkDataDistributerCb::BulkDataDistributerCb");
 
     state_m = CB_UNS; 
     substate_m = CB_SUB_UNS;
@@ -20,6 +20,8 @@ BulkDataDistributerCb::BulkDataDistributerCb()
     timeout_m = false;
 
     working_m = false;
+
+    isFepAlive_m = true;
 }
 
 
@@ -31,7 +33,7 @@ BulkDataDistributerCb::BulkDataDistributerCb(TAO_StreamCtrl * stream_p)
 
 BulkDataDistributerCb::~BulkDataDistributerCb()
 {
-    ACS_TRACE("BulkDataCallback::~BulkDataCallback"); 
+    ACS_TRACE("BulkDataDistributerCb::~BulkDataDistributerCb"); 
 }
 
 
@@ -96,7 +98,7 @@ int BulkDataDistributerCb::handle_stop (void)
 	
 	if ( locLoop == 0 )
 	    {
-	    ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout expired, not all data received"));
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::handle_stop timeout expired, not all data received"));
 
 	    timeout_m = true;
 
@@ -120,6 +122,8 @@ int BulkDataDistributerCb::handle_destroy (void)
     //ACS_TRACE("BulkDataDistributerCb::handle_destroy");
 
     //cout << "BulkDataDistributerCb::handle_destroy" << endl;
+
+    isFepAlive_m = false;
 
     return 0;
 }
@@ -436,6 +440,18 @@ CORBA::Boolean BulkDataDistributerCb::isWorking()
     ACS_TRACE("BulkDataDistributerCb::isWorking");
 
     return working_m;
+}
+
+
+ACE_HANDLE BulkDataDistributerCb::getHandle()
+{
+    ACS_TRACE("BulkDataDistributerCb::getHandle");
+
+    ACE_Event_Handler *event_handler = handler_->event_handler();
+	
+    ACE_HANDLE handle = event_handler->get_handle();
+	
+    return handle;
 }
 
 

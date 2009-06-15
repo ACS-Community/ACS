@@ -76,6 +76,13 @@ class BulkDataCallback : public TAO_AV_Callback
 	    //to be defined by the user
 	}
 
+    ACE_HANDLE getHandle();
+
+    CORBA::Boolean isFepAlive()
+	{
+	    return isFepAlive_m;
+	}
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
@@ -122,6 +129,8 @@ class BulkDataCallback : public TAO_AV_Callback
     CORBA::ULong flowTimeout_m;
 
     ACE_Time_Value startTime_m;    
+
+    CORBA::Boolean isFepAlive_m;
 };
 
 

@@ -20,16 +20,7 @@ AcsBulkdata::BulkDataSender<TSenderCallback>::~BulkDataSender()
 	{
 	if(disconnectPeerFlag == false)
 	    {
-//	disconnectPeer();
-
-// we do not remove the handler; this will
-// cause problems if the user forget to call disconnect,
-// but at least the container will not crash when an exception occurs
-	
-	    deleteConnector();
-	    deleteStreamCtrl();
-	    deleteFepsA();
-	    deleteSepA();
+	    disconnectPeer();
 	    }
 	}
     catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
@@ -256,6 +247,37 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkD
 	    ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
 	    throw err;
 	    }
+
+	for(CORBA::ULong i = 0; i < senderFeps_m.length(); i++)
+	    {
+	    ACE_CString flowName = TAO_AV_Core::get_flowname(senderFeps_m[i]);
+	
+	    BulkDataFlowProducer<TSenderCallback> *fep = 0;
+	
+	    fepMap_m.find(flowName, fep);
+	    if(fep == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataSender::connectToPeer Flow End Point null"));
+		ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
+		throw err;
+		} 
+	    else
+		{
+		TSenderCallback *cb_p = fep->getBulkDataCallback();
+		if(cb_p == 0)
+		    {
+		    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender::connectToPeer callback null"));
+		    ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"Sender::connectToPeer");
+		    throw err;
+		    }
+		else
+		    {
+		    ACE_HANDLE handle = cb_p->getHandle();
+		    handleMap_m.rebind(flowName,handle);
+		    }
+		}
+	    }
+
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
@@ -1131,6 +1153,19 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteFepsA()
 	    }
 	else
 	    {
+	    TSenderCallback *cb_p = fep->getBulkDataCallback();
+	    if(cb_p == 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::deleteFepsA callback null"));
+		ACSBulkDataError::AVCallbackErrorExImpl err = ACSBulkDataError::AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataSender<>::deleteFepsA");
+		throw err;
+		}
+	    else
+		{
+		if(cb_p->isFepAlive())
+		    fep->destroy();
+		}
+
 	    CORBA::Long dim = fep->_refcount_value/*_ref_count*/();
 	    
 	    for(CORBA::Long n = 1; n < dim; n++)
@@ -1200,8 +1235,8 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteConnector()
 template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteHandler()
 {
-     ACS_TRACE("BulkDataSender<>::deleteHandler");   
-
+    ACS_TRACE("BulkDataSender<>::deleteHandler");
+  
     for(CORBA::ULong i = 0; i < senderFeps_m.length(); i++)
 	{
 	ACE_CString flowname = TAO_AV_Core::get_flowname(senderFeps_m[i]);
@@ -1216,9 +1251,27 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteHandler()
 	    }
         else
             {
-            TAO_AV_Flow_Handler *locHandler_p = fep->getFlowHandler();
-            ACE_Event_Handler *event_handler = locHandler_p ->event_handler();
-            TAO_AV_CORE::instance()->reactor()->remove_handler(event_handler,ACE_Event_Handler::READ_MASK );
+	    ACE_HANDLE handle;
+	    if((handleMap_m.find(flowname,handle)) == -1)
+		{
+		//ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::deleteHandler - handle not present in HandleMap"));
+		return; // to be better defined what to do here
+		}
+	    else
+		{
+		if(TAO_AV_CORE::instance()->reactor()->find_handler(handle))
+		    {
+		    TAO_AV_Flow_Handler *locHandler_p = fep->getFlowHandler();
+		    ACE_Event_Handler *event_handler = locHandler_p ->event_handler();
+		    TAO_AV_CORE::instance()->reactor()->remove_handler(event_handler,ACE_Event_Handler::READ_MASK);
+		    handleMap_m.unbind(flowname,handle);
+		    }
+		else
+		    {
+		    //ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::deleteHandler - handle not present in the ACE_Reactor"));
+		    continue;
+		    }
+		}
 	    }
 	}
 }
