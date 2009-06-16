@@ -24,7 +24,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbjDAL,v 1.46 2009/02/09 10:20:36 hsommer Exp $"
+# "@(#) $Id: cdbjDAL,v 1.47 2009/06/16 12:45:10 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -132,7 +132,7 @@ export JVM_GC_LOG_NAME=cdbjDAL
 #
 acsStartJava \
     -endorsed -noClassLoader -noAutoClasspath \
-    -addToClasspath CDB.jar:cdbDAL.jar:cdbjDAL.jar:jACSUtil.jar:acscomponent.jar:acsjlog.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:cdbErrType.jar:maciSchemaBindings.jar:castor.jar -DACS.cdbpath=$SCHEMA_PATH \
+    -addToClasspath CDB.jar:cdbDAL.jar:cdbjDAL.jar:jACSUtil.jar:acscomponent.jar:logging_idl.jar:acsjlog.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:cdbErrType.jar:maciSchemaBindings.jar:castor.jar -DACS.cdbpath=$SCHEMA_PATH \
     com.cosylab.cdb.jdal.Server -jacorb $CDB_PORT $CDB_ROOT $1 $2 $3 $4 $5 $6 $7 $8
 
 
