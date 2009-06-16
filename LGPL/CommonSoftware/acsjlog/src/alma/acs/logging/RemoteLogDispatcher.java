@@ -30,10 +30,12 @@ import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.UserException;
 import org.omg.DsLogAdmin.Log;
-import org.omg.DsLogAdmin.LogFull;
 import org.omg.DsLogAdmin.LogOperations;
 
+import alma.Logging.AcsLogServiceOperations;
+import alma.Logging.XmlLogRecord;
 import alma.acs.logging.formatters.AcsLogFormatter;
+import alma.acs.logging.formatters.AcsXMLLogFormatter;
 
 /**
  * Sends log records to the remote CORBA log service.
@@ -44,20 +46,29 @@ import alma.acs.logging.formatters.AcsLogFormatter;
  */
 class RemoteLogDispatcher {
 
-    /** 
-     * Maximum number of CORBA Anys (with 1 log record each) sent to remote log service at a time.
-     * This buffer is what the CDB documentation refers to as "cache" (e.g. attribute <code>cacheSize</code>).
-     * We call it 'buffer' because our 'cache' is the queue that feeds this dispatcher. 
-     */
-    private int bufferSize = 30;
+	/**
+	 * Name of the property which will enable using the ACS extensions to the 
+	 * telecom logging service ("Log"), mainly to avoid wrapping all log records with a Corba Any.
+	 */
+	public static final String USE_ACS_LOGSERVICE_EXTENSIONS_PROPERTYNAME = "alma.acs.logging.useAcsLogServiceExtensions";
 
-    private ORB orb;
-    private LogOperations logService;
-    
-    private AcsLogFormatter logFormatter;  
+	public final boolean useAcsLogServiceExtensions = Boolean.getBoolean(USE_ACS_LOGSERVICE_EXTENSIONS_PROPERTYNAME);
+	
+	/** 
+	 * Maximum number of CORBA Anys (with 1 log record each) sent to remote log service at a time.
+	 * This buffer is is configured in the CDB through the attribute <code>dispatchPacketSize</code>.
+	 */
+	private int bufferSize = 30;
 
-    private LogRecordComparator timestampLogRecordComparator;
-    protected boolean DEBUG = false;
+	private final ORB orb;
+	private final AcsLogServiceOperations logService;
+
+	private final AcsLogFormatter logFormatter;
+
+	private LogRecordComparator timestampLogRecordComparator;
+
+	private final boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
+
     
     /**
      * 
@@ -73,11 +84,15 @@ class RemoteLogDispatcher {
      *                    No direct assumption on XML is made, so technically any valid Any returned by the formatter will do 
      *                    (as far as this class is concerned).  
      */
-    RemoteLogDispatcher(ORB orb, LogOperations logService, AcsLogFormatter logFormatter) {
+    RemoteLogDispatcher(ORB orb, AcsLogServiceOperations logService, AcsLogFormatter logFormatter) {
         this.orb = orb;
         this.logService = logService;
         this.logFormatter = logFormatter;
         timestampLogRecordComparator = new LogRecordComparator(true);
+        
+        if (useAcsLogServiceExtensions && !(logFormatter instanceof AcsXMLLogFormatter)) {
+        	throw new RuntimeException("Only XML-based remote logging is supported with the " + USE_ACS_LOGSERVICE_EXTENSIONS_PROPERTYNAME + " option.");
+        }
     }
  
     public int getBufferSize() {
@@ -124,57 +139,85 @@ class RemoteLogDispatcher {
         // used for feeding back these LogRecords if the sending fails
         List<LogRecord> candidateLogRecords = new ArrayList<LogRecord>(); 
         
-        // create CORBA Anys containing Any representations of log records
-        List<Any> anyLogRecords = new ArrayList<Any>();
-        for (int i = 0; i < logRecords.length; i++) {
-            if (i < getBufferSize()) {
-                try {
-                    Any anyLogRecord = orb.create_any();
-                    anyLogRecord = logFormatter.formatAny(anyLogRecord, logRecords[i]);
-                    anyLogRecords.add(anyLogRecord);
-                    candidateLogRecords.add(logRecords[i]);
-                } catch (RuntimeException e) {
-                    failures.addSerializationFailure(logRecords[i]);
-                }
-            }
-            else {
-                // records that don't fit into one remote call must be sent later
-                failures.addSendFailure(logRecords[i]);
-            }
+        if (useAcsLogServiceExtensions) {
+            // create CORBA XmlLogRecord containing XML representations of log records and the log level as a separate field
+			List<XmlLogRecord> remoteLogRecords = new ArrayList<XmlLogRecord>();
+			for (int i = 0; i < logRecords.length; i++) {
+	            if (i < getBufferSize()) {
+	                try {
+	                	String xml = ((AcsXMLLogFormatter)logFormatter).format(logRecords[i]);
+	                	int level = AcsLogLevel.getNativeLevel(logRecords[i].getLevel()).getAcsLevel().value;
+	                	XmlLogRecord remoteLogRecord = new XmlLogRecord(xml, (short)level);
+	                    remoteLogRecords.add(remoteLogRecord);
+	                    candidateLogRecords.add(logRecords[i]);
+	                } catch (RuntimeException e) {
+	                    failures.addSerializationFailure(logRecords[i]);
+	                }
+	            }
+	            else {
+	                // records that don't fit into one remote call must be sent later
+	            	// this should never happen except for during concurrently changing buffer size.
+	                failures.addSendFailure(logRecords[i]);
+	            }
+		        // send the log records over CORBA 
+		        if (!remoteLogRecords.isEmpty()) {
+		        	XmlLogRecord[] remoteLogRecordsArray = remoteLogRecords.toArray(new XmlLogRecord[remoteLogRecords.size()]);
+	                writeRecords(remoteLogRecordsArray);
+		        }
+	        }
         }
-        
-        // send the log records over CORBA 
-        if (!anyLogRecords.isEmpty()) {
-            Any[] anyLogRecordsArray = anyLogRecords.toArray(new Any[anyLogRecords.size()]);
-            try {
-                writeRecords(anyLogRecordsArray);
-            } 
-//            catch (LogFull ex1) {
-//            	// Telecom Log Service spec v. 1.1.2, chapter 1.2.5.1:
-//            	// "if availability status is log_full and LogFullAction is "halt", then a LogFull exception is raised 
-//            	// and the number of log records written will be returned in the exception."
-//            	// @TODO: Can we actually assume that this number n refers to the first n log records from the Any[] so that we only feed back the later records?
-//            	int recordsWritten = ex1.n_records_written;
-//            	if (recordsWritten > 0 && recordsWritten < candidateLogRecords.size()) {
-//            		for (int i = recordsWritten; i < candidateLogRecords.size(); i++) {
-//						failures.addSendFailure(candidateLogRecords.get(i));
-//					}
-//            	}
-//            	else {
-//            		failures.addSendFailures(candidateLogRecords);
-//            	}
-//            }
-//            // @todo: slow down future sending attempts if we get a 
-//            // LogDisabled - operational state "disabled" due to some runtime problem in the Log
-//            // LogLocked - hopefully temporary admin setting on the Log
-//            // LogOffDuty - other exotic reasons to be not "on duty", such as log duration time or scheduling time
-            catch (Throwable thr) {
-                // feed back these records to we can try them again later
-                failures.addSendFailures(candidateLogRecords);
-                // Currently ACS does not make use of the semantics of the various exceptions specified here by CORBA, i.e.
-                // LogDisabled, LogOffDuty, LogLocked, LogFull (see above)
-                // There can also be java.net.ConnectException thrown.. @TODO perhaps we should print that to stdout, with repeatGuard.
-            }
+        else { // default is Corba telecom Log interface that requires records inside Anys
+	        List<Any> anyLogRecords = new ArrayList<Any>();
+	        for (int i = 0; i < logRecords.length; i++) {
+	            if (i < getBufferSize()) {
+	                try {
+	                    Any anyLogRecord = orb.create_any();
+	                    anyLogRecord = logFormatter.formatAny(anyLogRecord, logRecords[i]);
+	                    anyLogRecords.add(anyLogRecord);
+	                    candidateLogRecords.add(logRecords[i]);
+	                } catch (RuntimeException e) {
+	                    failures.addSerializationFailure(logRecords[i]);
+	                }
+	            }
+	            else {
+	                // records that don't fit into one remote call must be sent later
+	                failures.addSendFailure(logRecords[i]);
+	            }
+	        }
+	        
+	        // send the log records over CORBA 
+	        if (!anyLogRecords.isEmpty()) {
+	            Any[] anyLogRecordsArray = anyLogRecords.toArray(new Any[anyLogRecords.size()]);
+	            try {
+	                writeRecords(anyLogRecordsArray);
+	            } 
+	//            catch (LogFull ex1) {
+	//            	// Telecom Log Service spec v. 1.1.2, chapter 1.2.5.1:
+	//            	// "if availability status is log_full and LogFullAction is "halt", then a LogFull exception is raised 
+	//            	// and the number of log records written will be returned in the exception."
+	//            	// @TODO: Can we actually assume that this number n refers to the first n log records from the Any[] so that we only feed back the later records?
+	//            	int recordsWritten = ex1.n_records_written;
+	//            	if (recordsWritten > 0 && recordsWritten < candidateLogRecords.size()) {
+	//            		for (int i = recordsWritten; i < candidateLogRecords.size(); i++) {
+	//						failures.addSendFailure(candidateLogRecords.get(i));
+	//					}
+	//            	}
+	//            	else {
+	//            		failures.addSendFailures(candidateLogRecords);
+	//            	}
+	//            }
+	//            // @todo: slow down future sending attempts if we get a 
+	//            // LogDisabled - operational state "disabled" due to some runtime problem in the Log
+	//            // LogLocked - hopefully temporary admin setting on the Log
+	//            // LogOffDuty - other exotic reasons to be not "on duty", such as log duration time or scheduling time
+	            catch (Throwable thr) {
+	                // feed back these records to we can try them again later
+	                failures.addSendFailures(candidateLogRecords);
+	                // Currently ACS does not make use of the semantics of the various exceptions specified here by CORBA, i.e.
+	                // LogDisabled, LogOffDuty, LogLocked, LogFull (see above)
+	                // There can also be java.net.ConnectException thrown.. @TODO perhaps we should print that to stdout, with repeatGuard.
+	            }
+	        }
         }
         return failures;
     }
@@ -195,6 +238,14 @@ class RemoteLogDispatcher {
 				System.out.println("" + i + ") " + anyLogRecordsArray[i].extract_string());
 			}
 		}
+	}
+
+	/**
+	 * Alternative to {@link #writeRecords(Any[]) used when property {@code alma.acs.logging.useAcsLogServiceExtensions} is set.
+	 * @param remoteLogRecords
+	 */
+	protected void writeRecords(XmlLogRecord[] remoteLogRecords) {
+		logService.writeRecord(remoteLogRecords);
 	}
 
 
