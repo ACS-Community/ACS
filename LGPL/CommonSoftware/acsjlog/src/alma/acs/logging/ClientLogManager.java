@@ -32,11 +32,12 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
-import org.omg.DsLogAdmin.LogHelper;
 import org.omg.DsLogAdmin.LogOperations;
 
 import si.ijs.maci.Manager;
 
+import alma.Logging.AcsLogServiceHelper;
+import alma.Logging.AcsLogServiceOperations;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.config.LogConfigSubscriber;
@@ -505,7 +506,7 @@ public class ClientLogManager implements LogConfigSubscriber
             System.err.println("can't connect to log service: manager is null, or invalid handle " + managerHandle);
             return false;
 		}
-        LogOperations logService = null;
+        AcsLogServiceOperations logService = null;
         int count = 0;
         String errMsg;
         do {
@@ -584,9 +585,11 @@ public class ClientLogManager implements LogConfigSubscriber
 	/**
 	 * This method is broken out from {@link #initRemoteLogging(ORB, Manager, int, boolean)} to allow mock implementation by tests
 	 * without a functional manager object. Note that module acsjlog comes before jmanager.
+	 * <p>
+	 * Since ACS 8.0.1 we use an ACS-specific subtype of {@link LogOperations} to avoid the marshalling to Corba Any.
 	 */
-	protected LogOperations getLogService(Manager manager, int managerHandle) throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, NoPermissionEx, ComponentConfigurationNotFoundEx {
-		return LogHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
+	protected AcsLogServiceOperations getLogService(Manager manager, int managerHandle) throws ComponentNotAlreadyActivatedEx, CannotGetComponentEx, NoPermissionEx, ComponentConfigurationNotFoundEx {
+		return AcsLogServiceHelper.narrow(manager.get_service(managerHandle, logServiceName, true));
 	}
 
 	
@@ -658,7 +661,9 @@ public class ClientLogManager implements LogConfigSubscriber
 	        corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
 	        // Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
 	        corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
-	        
+	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
+	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecord"); // @TODO update method name when we change it to writeRecords or similar!!!
+
 	        if (autoConfigureContextName && processName == null) {
 	        	// mark this logger for process name update
 	        	AcsLoggerInfo loggerInfo = loggers.get(loggerName);
