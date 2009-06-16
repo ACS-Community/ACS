@@ -23,7 +23,6 @@ import org.omg.DsLogAdmin.LogIdAlreadyExists;
 import org.omg.DsLogAdmin.LogLocked;
 import org.omg.DsLogAdmin.LogMgr;
 import org.omg.DsLogAdmin.LogOffDuty;
-import org.omg.DsLogAdmin.LogOperations;
 import org.omg.DsLogAdmin.LogRecord;
 import org.omg.DsLogAdmin.NVPair;
 import org.omg.DsLogAdmin.OperationalState;
@@ -31,7 +30,10 @@ import org.omg.DsLogAdmin.TimeInterval;
 import org.omg.DsLogAdmin.UnsupportedQoS;
 import org.omg.DsLogAdmin.WeekMaskItem;
 
-public class LogEmptyImpl implements LogOperations 
+import alma.Logging.AcsLogServiceOperations;
+import alma.Logging.XmlLogRecord;
+
+public class LogEmptyImpl implements AcsLogServiceOperations 
 {
 	public Log copy(IntHolder id) {
 		return null;
@@ -104,9 +106,9 @@ public class LogEmptyImpl implements LogOperations
 	public LogRecord[] retrieve(long from_time, int how_many, IteratorHolder i) {
 		return null;
 	}
-	public void set_administrative_state(AdministrativeState state) {			
+	public void set_administrative_state(AdministrativeState state) {
 	}
-	public void set_capacity_alarm_thresholds(short[] threshs) throws InvalidThreshold {			
+	public void set_capacity_alarm_thresholds(short[] threshs) throws InvalidThreshold {
 	}
 	public void set_forwarding_state(ForwardingState state) {		
 	}
@@ -122,8 +124,8 @@ public class LogEmptyImpl implements LogOperations
 	}
 	public void set_record_attribute(long id, NVPair[] attr_list) throws InvalidAttribute, InvalidRecordId {
 	}
-	public int set_records_attribute(String grammar, String c, NVPair[] attr_list) throws InvalidConstraint,
-			InvalidGrammar, InvalidAttribute {
+	public int set_records_attribute(String grammar, String c, NVPair[] attr_list) 
+			throws InvalidConstraint, InvalidGrammar, InvalidAttribute {
 		return 0;
 	}
 	public void set_week_mask(WeekMaskItem[] masks) throws InvalidMask, InvalidTimeInterval, InvalidTime {
@@ -131,5 +133,13 @@ public class LogEmptyImpl implements LogOperations
 	public void write_recordlist(LogRecord[] list) throws LogDisabled, LogOffDuty, LogLocked, LogFull {
 	}
 	public void write_records(Any[] records) throws LogDisabled, LogOffDuty, LogLocked, LogFull {
+	}
+	
+	@Override
+	public void writeRecord(XmlLogRecord[] xmlLogRecords) {
+		
+	}
+	@Override
+	public void destroy() {
 	}
 }
