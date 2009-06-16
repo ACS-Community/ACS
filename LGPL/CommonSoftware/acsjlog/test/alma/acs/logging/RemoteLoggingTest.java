@@ -13,6 +13,8 @@ import org.omg.DsLogAdmin.LogOperations;
 import si.ijs.maci.Manager;
 import si.ijs.maci._ManagerStub;
 
+import alma.Logging.AcsLogServiceOperations;
+import alma.Logging.XmlLogRecord;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.level.AcsLogLevelDefinition;
@@ -154,11 +156,21 @@ public class RemoteLoggingTest extends TestCase
 		 * contained in the given Any objects to stdout, and simulates network delay by sleeping 
 		 * via a call to {@link #delay()}.
 		 */
-		private final LogOperations logServiceMock = new LogEmptyImpl() {
+		private final AcsLogServiceOperations logServiceMock = new LogEmptyImpl() 
+		{
 			public void write_records(Any[] records) {
 				for (Any any : records) {
 					// just print to stdout, to be verified by TAT
 					System.out.println("Remote log: " + any.extract_string());
+				}
+				delay();
+			}
+			
+			@Override
+			public void writeRecord(XmlLogRecord[] xmlLogRecords) {
+				for (XmlLogRecord record : xmlLogRecords) {
+					// just print to stdout, to be verified by TAT
+					System.out.println("Remote log: " + record.xml);
 				}
 				delay();
 			}
@@ -184,7 +196,7 @@ public class RemoteLoggingTest extends TestCase
 		 * and simulates the access to the Log service by sleeping via {@linkplain #delay()}. 
 		 * @see alma.acs.logging.ClientLogManager#getLogService(si.ijs.maci.Manager, int)
 		 */
-		protected LogOperations getLogService(Manager manager, int managerHandle) {
+		protected AcsLogServiceOperations getLogService(Manager manager, int managerHandle) {
 			delay();
 			return logServiceMock;
 		}
