@@ -182,6 +182,8 @@ module Logging
 		 * Write a record as XML string format
 		 */
 		void writeRecord(in XmlLogRecordSeq xmlLogRecords);
+		
+		unsigned long getNumberOfLogs();
 	};
 
 	interface ACSLogFactory : DsLogAdmin::BasicLogFactory
