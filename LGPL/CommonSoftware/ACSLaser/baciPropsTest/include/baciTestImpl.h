@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.10 2008/10/09 09:16:35 cparedes Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.11 2009/06/17 21:29:54 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
 
 /**
  * A component for testing if baci sends alarms when a property goes out of range.
- * 
+ *
  */
 class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard component superclass
 			     public virtual POA_alarmsystemPropTest::BaciPropTest   //CORBA servant stub
@@ -57,60 +57,58 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
   public:
      /**
      * Constructor
-     * 
+     *
      * @param name component's name. This is also the name that will be used to find the
      * configuration data for the component in the Configuration Database.
      * @param containerService The pointer to the container services
      */
 	  BaciPropTest(ACE_CString name, maci::ContainerServices * containerServices);
-	  
+
      /**
       * @throw ACSErr::ACSbaseExImpl
       */
 	  virtual void execute();
 
-    
+
     /**
      * Destructor
      */
     virtual ~BaciPropTest();
-    
-    /* --------------------- [ CORBA interface ] ----------------------*/   
+
+    /* --------------------- [ CORBA interface ] ----------------------*/
     /**
-     * 
-     */   
+     *
+     */
     virtual void setDoubleVar(CORBA::Float);
     virtual void setPatternVar(CORBA::Long);
     virtual void setEnumVar(alarmsystemPropTest::AlarmEnum);
-    
+
     /**
      * Returns a reference to the double property
      */
     virtual ACS::ROdouble_ptr testDoubleVar();
-    
+
     /**
      * Returns a reference to the pattern property
      */
      virtual ACS::ROpattern_ptr testPatternVar();
-    
+
     /**
      * Returns a reference to the enum property
      */
     virtual ::alarmsystemPropTest::ROAlarmEnum_ptr testEnumVar();
-    
+
   private:
-    
+
     /**
      *  The test properties
      */
     baci::SmartPropertyPointer<baci::ROdouble>  m_testDoubleVar_sp;
-    
-    
+
+    baci::SmartPropertyPointer<baci::ROpattern>  m_testPatternVar_sp;
+
     baci::SmartPropertyPointer<ROEnumImpl<ACS_ENUM_T(alarmsystemPropTest::AlarmEnum),  POA_alarmsystemPropTest::ROAlarmEnum>
         > m_testEnumVar_sp;
-    
-    baci::SmartPropertyPointer<baci::ROpattern>  m_testPatternVar_sp;
-    
 };
 /*\@}*/
 /*\@}*/
