@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.68 2009/06/09 23:31:04 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.69 2009/06/17 20:30:12 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.68 2009/06/09 23:31:04 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.69 2009/06/17 20:30:12 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -405,7 +405,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     (*tss)->clear();
     ACE_GUARD_REACTION (ACE_Recursive_Thread_Mutex, ace_mon, m_mutex, printf("problem acquring mutex in loggingProxy::log () errno: %d\n", errno);return);
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority))){
-	    CORBA::Any record;
+        CORBA::Any record;
         record <<= *s_log;
         if (!sendRecord(record)){
             m_bin_cache.push_back(s_log);

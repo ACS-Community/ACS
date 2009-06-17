@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.6 2009/06/09 00:04:18 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.7 2009/06/17 20:30:12 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,6 +57,8 @@ using namespace loggingXMLParser;
 
 ACSLog_i::~ACSLog_i ()
 {
+	std::cout << "Number of Logs: " << counter.getNMessages() << std::endl;
+	std::cout << "Performance: " << counter.getMessagesMetric() << std::endl;
 }
 
 void
@@ -128,7 +130,7 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
         
         logging_event.remainder_of_body <<= xml;
         m_logging_supplier->send_event (logging_event);
-         
+        counter++;	
         /*
           this->check_threshold_list ();
         */
@@ -160,3 +162,33 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
     }
 }
 
+
+LoggingServiceMessageCounter::LoggingServiceMessageCounter(){
+	resetCounter();
+}
+
+void LoggingServiceMessageCounter::resetCounter(){
+	messages=0;
+	gettimeofday(&i_time, NULL);
+}
+
+double LoggingServiceMessageCounter::getMessagesMetric(){
+	double retval;
+	struct timeval e_time;
+	gettimeofday(&e_time, NULL);
+	retval =  (double) (e_time.tv_usec - i_time.tv_usec)/1000000;
+	if (retval < 0 )
+		retval = (double) (e_time.tv_sec - i_time.tv_sec) - retval;
+	else
+		retval = (double) (e_time.tv_sec - i_time.tv_sec) + retval;
+	retval = messages/retval;
+	return retval;
+}
+
+unsigned long LoggingServiceMessageCounter::getNMessages(){
+	return messages;
+}
+
+void LoggingServiceMessageCounter::operator++(int){
+	messages++;
+}

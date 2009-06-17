@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.5 2008/09/29 08:36:42 cparedes Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.6 2009/06/17 20:30:12 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -31,6 +31,8 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <time.h>
+
 #include <acsutil.h>
 
 #include <orbsvcs/Log/BasicLog_i.h>
@@ -39,6 +41,28 @@
 
 #define LOG_BIN_TYPE 0
 #define LOG_XML_TYPE 1
+
+class LoggingServiceMessageCounter
+{
+	private:
+		unsigned long messages;
+		struct timeval i_time;
+	public:
+
+		LoggingServiceMessageCounter();
+
+		void resetCounter();
+		
+		// Number of messages / elapsed time
+		double getMessagesMetric();
+
+		// Get the number of Log messages registered
+		unsigned long getNMessages();
+
+		void operator++(int);
+};
+
+
 /**
  * Implementation of the ACSLog interface (extending BasicLog interface).
  */
@@ -85,6 +109,9 @@ class ACSLog_i : public TAO_BasicLog_i
     bool m_logBin; 
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
+    LoggingServiceMessageCounter counter;
+
 };
+
 
 #endif /* logging_acs_log_i_H */

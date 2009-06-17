@@ -21,7 +21,7 @@ AcsLogServiceImpl::~AcsLogServiceImpl()
 
 void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
 {
-	/*TODO: Implement*/
+	
 	if (reclist.length() <= 0)
 		return;
 
@@ -70,6 +70,11 @@ void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
 	{
 		logging_event.remainder_of_body <<= reclist[i].xml;
 		m_logging_supplier->send_event (logging_event);
+		counter++;
 	}
 }
 
+CORBA::ULong AcsLogServiceImpl::getNumberOfLogs()
+{
+	return counter.getNMessages();
+}

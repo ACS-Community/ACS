@@ -17,6 +17,7 @@ class AcsLogServiceImpl: public ACSLog_i,
 		~AcsLogServiceImpl();
 
 		void writeRecord (const ::Logging::XmlLogRecordSeq & xmlLogRecords);
+		CORBA::ULong getNumberOfLogs ();
 
 };
 
