@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.21 2009/06/02 13:22:59 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.22 2009/06/17 22:03:22 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -202,7 +202,8 @@ endif
 all: do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all
+	rm -rf ../object/* ../lib/*
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
