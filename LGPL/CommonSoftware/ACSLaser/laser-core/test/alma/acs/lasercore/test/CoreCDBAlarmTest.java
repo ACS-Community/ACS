@@ -19,14 +19,20 @@
 package alma.acs.lasercore.test;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServices;
 import alma.acs.lasercore.test.stress.CategoryClient;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.AlarmService;
+import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 
 /**
  * Test the sending of core alarms from the alarm component.
@@ -37,10 +43,6 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
  * The test works by changing the readability property of <code>PS.xml</code>.
  * When the alarm component starts, it sends an alarm about a misconfigured CDB.
  * The alarm will be received by the category client.
- * <BR>
- * Note that the test does not do a real work: it only change the property of 
- * the file and connect the category client. As a consequence, the test method
- * is empty.
  * 
  * @author acaproni
  *
@@ -58,10 +60,15 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	private ContainerServices contSvcs;
 	
 	/**
+	 * The logger
+	 */
+	private Logger logger;
+	
+	/**
 	 * The vector with the alarms received from the categories.
 	 * The key is the alarm ID
 	 */
-	private HashMap<String,AlarmView> alarms = new HashMap<String,AlarmView>();
+	private final List<AlarmView> alarms = Collections.synchronizedList(new LinkedList<AlarmView>());
 	
 	/**
 	 * Constructor
@@ -77,9 +84,7 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	 */
 	@Override
 	public void alarmReceived(AlarmView alarm) {
-		synchronized (alarms) {
-			alarms.put(alarm.alarmID, alarm);
-		}
+		alarms.add(alarm);
 	}
 
 	/**
@@ -88,14 +93,10 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		// Change the permission of PS.xml
-		File f = new File("CDB//Alarms//AlarmDefinitions//PS//PS.xml");
-		assertTrue(f.canRead());
-		f.setReadable(false);
-		assertFalse(f.canRead());
-		
 		contSvcs = getContainerServices();
 		assertNotNull(contSvcs);
+		logger=contSvcs.getLogger();
+		assertNotNull(logger);
 		
 		// Connect the categories
 		categoryClient= new CategoryClient(contSvcs);
@@ -110,20 +111,33 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	@Override
 	protected void tearDown() throws Exception {
 		categoryClient.disconnect();
-		File f = new File("CDB//Alarms//AlarmDefinitions//PS//PS.xml");
-		assertFalse(f.canRead());
-		f.setReadable(true);
-		assertTrue(f.canRead());
 		super.tearDown();
 	}
 	
 	/**
-	 * Connect the category client and wait until the alarm is received
-	 * of e timeout occur.
+	 * To test if the alarm service send an alarm in case of an error 
+	 * in the CDB:
+	 * <OL>
+	 * 	<LI>shut down the AS
+	 * 	<LI>change the reading permission of a file
+	 * 	<LI>restart the AS
+	 * 	<LI>wait for the alarm or a timeout
+	 * </OL>
 	 * 
 	 * @throws Exception
 	 */
 	public void testCDBAlarm() throws Exception {
+		// Shuts down the AS
+		shutdownAS();
+		// Change the permission of PS.xml
+		File f = new File("CDB//Alarms//AlarmDefinitions//PS//PS.xml");
+		assertTrue(f.canRead());
+		f.setReadable(false);
+		assertFalse(f.canRead());
+		// Start the AS again
+		startAS();
+		
+		logger.info("Waiting for alarms");
 		long timeout=System.currentTimeMillis()+60*1000;;
 		do {
 			try {
@@ -131,13 +145,60 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 			} catch (InterruptedException e) {
 				continue;
 			}
-			synchronized (alarms) {
-				if (alarms.size()>0) {
-					break;
-				}
+			if (alarms.size()>0) {
+				break;
 			}
 		} while (System.currentTimeMillis()<timeout); 
 		assertEquals(1, alarms.size());
+		// Check if the alarm is the right one
+		AlarmView alarm = alarms.get(0);
+		assertNotNull(alarm);
+		String expectedID=LaserCoreFaultState.FaultFamily+":"+LaserCoreFaultState.FaultMember+":"+LaserCoreFaultCodes.ALARMS_CDB.faultCode;
+		assertEquals(expectedID, alarm.alarmID);
+		
+		// Restore the reading permission of the file
+		f = new File("CDB//Alarms//AlarmDefinitions//PS//PS.xml");
+		assertFalse(f.canRead());
+		f.setReadable(true);
+		assertTrue(f.canRead());
+	}
+	
+	/**
+	 * Shuts down the alarm service
+	 */
+	private void shutdownAS() throws Exception {
+		logger.info("Shutting down the AS");
+		AlarmServiceUtils utils = new AlarmServiceUtils(contSvcs);
+		assertNotNull(utils);
+		AlarmService alarmService = utils.getAlarmService();
+		assertNotNull(alarmService);
+		alarmService.shutdown();
+		logger.info("Leaving the AS time to shut down");
+		// Leave the AS time to shut down
+		try {
+			Thread.sleep(30*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Launch the alarm service
+	 * 
+	 * @throws Exception
+	 */
+	private void startAS() throws Exception {
+		logger.info("Restarting the AS");
+		File f=new File("../bin/alarmService");
+		assertTrue(f.canExecute());
+		Process p = Runtime.getRuntime().exec(f.getAbsolutePath());
+		logger.info("Leaving the AS time to startup");
+		// Leave the AS time to shut down
+		try {
+			Thread.sleep(60*1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
