@@ -21,8 +21,6 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.util.HashMap;
 import java.util.Vector;
 
-import alma.alarmsystem.clients.CategoryClient;
-
 import cern.laser.client.data.Alarm;
 
 /**

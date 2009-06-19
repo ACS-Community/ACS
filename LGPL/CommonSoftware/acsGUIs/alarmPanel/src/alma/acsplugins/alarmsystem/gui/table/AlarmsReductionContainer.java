@@ -22,7 +22,6 @@ import java.util.Vector;
 
 import cern.laser.client.data.Alarm;
 
-import alma.acsplugins.alarmsystem.gui.table.AlarmsContainer.AlarmContainerException;
 import alma.alarmsystem.clients.CategoryClient;
 
 /**
@@ -88,10 +87,19 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 */
 	public synchronized void add(AlarmTableEntry entry) throws AlarmContainerException {
 		super.add(entry);
-		if (!entry.isReduced()) {
-			indexWithReduction.add(entry.getAlarm().getAlarmId());
+		addAlarm(entry.getAlarm());
+	}
+	
+	/**
+	 * Add an alarm to the reduction container
+	 * 
+	 * @param alarm The alarm to add to the container
+	 */
+	private void addAlarm(Alarm alarm) {
+		if (!alarm.getStatus().isReduced()) {
+			indexWithReduction.add(alarm.getAlarmId());
 		}
-		hideReducedChildren(entry);
+		hideReducedChildren(alarm);
 	}
 	
 	/**
@@ -99,7 +107,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param entry The not <code>null</code> entry to hide active children
 	 */
-	private void hideReducedChildren(AlarmTableEntry entry) {
+	private void hideReducedChildren(Alarm entry) {
 		if (entry==null) {
 			throw new IllegalArgumentException("The entry can't be null");
 		}
@@ -110,19 +118,20 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 		// i.e. removed
 		Alarm[] children=null;
 		try {
-			if (entry.getAlarm().isNodeParent()) {
-					children = categoryClient.getChildren(entry.getAlarm().getAlarmId(), true);
+			if (entry.isNodeParent()) {
+					children = categoryClient.getChildren(entry.getAlarmId(), true);
 				
-			} else if (entry.getAlarm().isMultiplicityParent()) {
-				children = categoryClient.getChildren(entry.getAlarm().getAlarmId(), false);
+			} else if (entry.isMultiplicityParent()) {
+				children = categoryClient.getChildren(entry.getAlarmId(), false);
 			}
 		} catch (Throwable t) {
-			System.err.println("Error getting children of "+entry.getAlarm().getAlarmId()+": "+t.getMessage());
+			System.err.println("Error getting children of "+entry.getAlarmId()+": "+t.getMessage());
 			t.printStackTrace();
 			children=null;
 		}
 		if (children!=null) {
 			for (Alarm al: children) {
+				System.out.println("\tchild "+al.getAlarmId());
 				indexWithReduction.remove(al.getAlarmId());
 			}
 		}
@@ -208,10 +217,14 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 			String key = indexWithReduction.remove(pos);
 			indexWithReduction.insertElementAt(key, 0);
 			if (newAlarm.getStatus().isActive()) {
-				return;
-			}
-			showActiveChildren(newAlarm,pos);
+				hideReducedChildren(newAlarm);
+			} else {
+				showActiveChildren(newAlarm,pos);
+			}	
+		} else {
+			addAlarm(newAlarm);
 		}
+		
 	}
 	
 	/**

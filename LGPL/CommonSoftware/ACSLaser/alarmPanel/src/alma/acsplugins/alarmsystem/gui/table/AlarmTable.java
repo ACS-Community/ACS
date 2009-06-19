@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.12 2008/10/29 10:57:10 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.13 2009/06/19 21:02:52 acaproni Exp $
  * @since    
  */
 
@@ -413,23 +413,33 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @see JTable
 	 */
 	public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
+		
 		TableColumn col = getColumnModel().getColumn(vColIndex);
+		AlarmTableEntry entry=null; 
+		try {
+			entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
+		} catch (Throwable t) {
+			// This can happen if the entry has been removed by the thread while
+			// this method runs.
+			entry=null;
+		}
+		if (entry==null) {
+			return emptyLbl;
+		}
+		Alarm alarm = entry.getAlarm();
 		if (col.getIdentifier().equals(AlarmTableColumn.ICON)) {
 			if (model.isRowAlarmNew(sorter.convertRowIndexToModel(rowIndex))) {
-				Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
 				return AlarmGUIType.fromAlarm(alarm).flagRenderer;
 			} else {
 				return emptyLbl;
 			}
 		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCED))  {
-			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
 			if (entry.isReduced()) {
 				return AlarmTable.reductionRenderer;
 			} else {
 				return emptyLbl;
 			}
 		} else if (col.getIdentifier().equals(AlarmTableColumn.HIDES_CHILDREN)) {
-			AlarmTableEntry entry = model.getRowEntry(sorter.convertRowIndexToModel(rowIndex));
 			if (entry.isParent()) {
 				return AlarmTable.hasReducedNodesRenderer;
 			} else {
@@ -437,7 +447,6 @@ public class AlarmTable extends JTable implements ActionListener {
 			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-		Alarm alarm = model.getRowAlarm(sorter.convertRowIndexToModel(rowIndex));
 		colorizeCell(c, alarm);
 	
 		if (c instanceof JComponent) {
