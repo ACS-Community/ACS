@@ -23,8 +23,8 @@
 #ifndef _ALARMSERVICE_IDL_
 #define _ALARMSERVICE_IDL_
 
-#include <acscomponent.idl>
 #include <CosProperty.idl>
+#include <AcsAlarmSystem.idl>
 
 #pragma prefix "alma"
 
@@ -245,31 +245,6 @@ module alarmsystem
 	exception LaserProcessingException
 	{
 	};
-	
-	const string AlarmServiceName="AcsAlarmService";
-	
-	/*
-	 * The ACS alarm service.
-	 * 
-	 * It is a fake process that does nothing but waiting for shutdown.
-	 *
-	 * Having this servant is useful to uniform the behaviour of the system that does
-	 not need to be aware of the implementation currently running.
-	 * 
-	 */ 
-	interface AlarmService 
-	{
-		/**
-		 * shutdown the alarm service
-		 */
-		void shutdown();
-		
-		/*
-		 * Return the type of alarm service: true means ACS implementation
-		 *                                   false means CERN implementation
-		 */
-		boolean isACSAlarmService();
-	};
 
 	/*
 	 * ALARM SYSTEM CORE SERVICE
@@ -341,34 +316,35 @@ module alarmsystem
 		
 	};
 	
-	interface TestAlarmSource : ACS::ACSComponent
-	{
-		void set_count(in long count);
-		
-		void active_alarm(
-		  in string fault_family,
-		  in string fault_member,
-		  in long fault_code
-		);
-
-		void terminate_alarm(
-		  in string fault_family,
-		  in string fault_member,
-		  in long fault_code
-		);
-
-		void instant_alarm(
-		  in string fault_family,
-		  in string fault_member,
-		  in long fault_code
-		);
-		
-		void change_alarm(
-		  in string fault_family,
-		  in string fault_member,
-		  in long fault_code
-		);
-	};
+//	interface TestAlarmSource : ACS::ACSComponent
+//	{
+//		void set_count(in long count);
+//		
+//		void active_alarm(
+//		  in string fault_family,
+//		  in string fault_member,
+//		  in long fault_code
+//		);
+//
+//		void terminate_alarm(
+//		  in string fault_family,
+//		  in string fault_member,
+//		  in long fault_code
+//		);
+//
+//		void instant_alarm(
+//		  in string fault_family,
+//		  in string fault_member,
+//		  in long fault_code
+//		);
+//		
+//		void change_alarm(
+//		  in string fault_family,
+//		  in string fault_member,
+//		  in long fault_code
+//		);
+//	};
 };
 
 #endif
+
