@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2007/10/29 19:45:04 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.6 2009/06/19 23:50:32 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -116,7 +116,7 @@ CDB_SCHEMAS = AcsAlarmSystem acsalarm-fault-family acsalarm-categories
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = AcsAlarmSystem
 IDL_TAO_FLAGS =
 USER_IDL =
 #
