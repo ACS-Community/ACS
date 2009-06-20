@@ -60,9 +60,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/testComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/AcsAlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsGUIutil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
@@ -71,5 +70,6 @@
 	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="lib" path="laser-core/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/acsAlarmService.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
