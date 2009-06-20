@@ -20,8 +20,8 @@
  *    MA 02111-1307  USA
  */
 
-#ifndef _ALARMSERVICE_IDL_
-#define _ALARMSERVICE_IDL_
+#ifndef _CERNALARMSERVICE_IDL_
+#define _CERNALARMSERVICE_IDL_
 
 #include <CosProperty.idl>
 #include <AcsAlarmSystem.idl>
@@ -315,35 +315,6 @@ module alarmsystem
 		
 		
 	};
-	
-//	interface TestAlarmSource : ACS::ACSComponent
-//	{
-//		void set_count(in long count);
-//		
-//		void active_alarm(
-//		  in string fault_family,
-//		  in string fault_member,
-//		  in long fault_code
-//		);
-//
-//		void terminate_alarm(
-//		  in string fault_family,
-//		  in string fault_member,
-//		  in long fault_code
-//		);
-//
-//		void instant_alarm(
-//		  in string fault_family,
-//		  in string fault_member,
-//		  in long fault_code
-//		);
-//		
-//		void change_alarm(
-//		  in string fault_family,
-//		  in string fault_member,
-//		  in long fault_code
-//		);
-//	};
 };
 
 #endif
