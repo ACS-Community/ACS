@@ -55,7 +55,7 @@ import alma.alarmsystem.Status;
 import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
 import alma.alarmsystem.corbaservice.AlarmSystemContainerServices;
-import alma.alarmsystem.corbaservice.AlarmSystemCorbaServer;
+import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
@@ -106,7 +106,6 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	 */
 	public class LaserComponentTerminator implements Runnable {
 		public void run() {
-			System.out.println("LaserComponentTerminator.run");
 			alarmCacheListener.close();
 			alarmCacheListener=null;
 			alarmSourceMonitor.stop();
