@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2009/06/19 23:50:32 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.7 2009/06/20 17:10:13 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = alarmService alarmServiceShutdown
 SCRIPTS_L       =
 
 #
@@ -122,8 +122,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+JARFILES= acsAlarmService
+acsAlarmService_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
