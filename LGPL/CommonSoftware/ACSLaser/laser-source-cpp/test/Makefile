@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2008/04/06 04:32:09 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.12 2009/06/20 18:48:55 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@ USER_CFLAGS = -rdynamic
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lstdc++ -lxerces-c
+USER_LIB = -lstdc++ -lxerces-c -lacscomponent
 
 #
 # MODULE CODE DESCRIPTION:
@@ -44,15 +44,15 @@ FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsA
 
 # <brief description of xxxxx program>
 testDriverMultiThreaded_OBJECTS   = testDriverMultiThreaded
-testDriverMultiThreaded_LIBS      = AlarmTestMountMultiThreadedImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
+testDriverMultiThreaded_LIBS      = AlarmTestMountMultiThreadedImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
 
 # <brief description of xxxxx program>
 testDriver_OBJECTS   = testDriver
-testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
+testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
 
 # <brief description of xxxxx program>
 testDriverAcs_OBJECTS   = testDriverAcs
-testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AlarmSystemStubs acsnc  laserSourceAcsSpecific
+testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs acsnc  laserSourceAcsSpecific
 
 #
 # special compilation flags for single c sources
