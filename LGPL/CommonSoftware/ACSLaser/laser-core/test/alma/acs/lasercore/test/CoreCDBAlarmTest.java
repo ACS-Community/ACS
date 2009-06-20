@@ -30,7 +30,7 @@ import alma.acs.lasercore.test.stress.CategoryClient;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
 import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 
@@ -168,7 +168,7 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	 */
 	private void shutdownAS() throws Exception {
 		logger.info("Shutting down the AS");
-		AlarmServiceUtils utils = new AlarmServiceUtils(contSvcs);
+		CernAlarmServiceUtils utils = new CernAlarmServiceUtils(contSvcs);
 		assertNotNull(utils);
 		AlarmService alarmService = utils.getAlarmService();
 		assertNotNull(alarmService);
@@ -190,8 +190,8 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	private void startAS() throws Exception {
 		logger.info("Restarting the AS");
 		File f=new File("../bin/alarmService");
-		assertTrue(f.canExecute());
-		Process p = Runtime.getRuntime().exec(f.getAbsolutePath());
+		//assertTrue(f.canExecute());
+		Process p = Runtime.getRuntime().exec("alarmService");
 		logger.info("Leaving the AS time to startup");
 		// Leave the AS time to shut down
 		try {

@@ -27,7 +27,7 @@ import alma.acs.container.ContainerServices;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.Source;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
@@ -51,7 +51,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 	/**
 	 * An helper class
 	 */
-	private AlarmServiceUtils utils;
+	private CernAlarmServiceUtils utils;
 	
 	/**
 	 * Constructor 
@@ -73,7 +73,7 @@ public class TestAlarmService extends ComponentClientTestCase {
 		
 		ACSAlarmSystemInterfaceFactory.init(contSvcs);
 		
-		utils = new AlarmServiceUtils(contSvcs);
+		utils = new CernAlarmServiceUtils(contSvcs);
 		assertNotNull(utils);
 		
 		// Get the AS 

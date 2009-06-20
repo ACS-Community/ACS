@@ -25,7 +25,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
 import alma.acs.lasercore.test.stress.category.CategorySubscriber;
@@ -82,7 +82,7 @@ public class CategoryClient {
 	 * Connect the AlarmSrevice component
 	 */
 	private void getAlarmService() throws Exception {
-		AlarmServiceUtils alarmtUtils= new AlarmServiceUtils(contSvc);
+		CernAlarmServiceUtils alarmtUtils= new CernAlarmServiceUtils(contSvc);
 		alarm=alarmtUtils.getCernAlarmService();
 	}
 	
