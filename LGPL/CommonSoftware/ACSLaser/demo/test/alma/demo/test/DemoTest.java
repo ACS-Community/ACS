@@ -28,7 +28,7 @@ import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 
 import alma.acs.alarmsystem.binding.ACSLaserFaultStateImpl;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
@@ -131,7 +131,7 @@ public class DemoTest {
 		if (alarmSvc!=null) {
 			return true;
 		}
-		AlarmServiceUtils alarmUtils = new AlarmServiceUtils(m_contSvcs);
+		CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(m_contSvcs);
 		try {
 			alarmSvc = alarmUtils.getAlarmService();
 		} catch (Exception ce) {

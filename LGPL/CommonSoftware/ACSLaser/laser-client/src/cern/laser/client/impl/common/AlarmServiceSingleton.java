@@ -24,7 +24,7 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.util.AcsLocations;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.CERNAlarmService;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 
 /**
  * Singleton class to connect to and supply the AlarmService.
@@ -41,7 +41,7 @@ public class AlarmServiceSingleton {
 	/**
 	 * The alarm service utils 
 	 */
-	private static AlarmServiceUtils alarmUtils=null;
+	private static CernAlarmServiceUtils alarmUtils=null;
 
 	/**
 	 * Get an instance of the alarm service
@@ -70,7 +70,7 @@ public class AlarmServiceSingleton {
 			}
 			// Get the AlarmService 
 			if (client != null) {
-				alarmUtils = new AlarmServiceUtils(client.getContainerServices());
+				alarmUtils = new CernAlarmServiceUtils(client.getContainerServices());
 				instance=alarmUtils.getCernAlarmService();
 			}
 		}
@@ -84,7 +84,7 @@ public class AlarmServiceSingleton {
 		contSvcBase=contSvc;
 		if (instance==null) {
 			if (alarmUtils==null) {
-				alarmUtils = new AlarmServiceUtils(contSvc);
+				alarmUtils = new CernAlarmServiceUtils(contSvc);
 			}
 			instance=alarmUtils.getCernAlarmService();
 		}

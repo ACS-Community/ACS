@@ -29,7 +29,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
-import alma.alarmsystem.corbaservice.utils.AlarmServiceUtils;
+import alma.alarmsystem.corbaservice.CernAlarmServiceUtils;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 import cern.laser.business.data.AlarmImpl;
@@ -193,7 +193,7 @@ public class CategoryClient {
 			throw new IllegalStateException("SourceClient is closed!");
 		}
 		try {
-			AlarmServiceUtils alarmUtils = new AlarmServiceUtils(contSvc);
+			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(contSvc);
 			alarm=alarmUtils.getCernAlarmService();
 		} catch (Throwable t) {
 			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
