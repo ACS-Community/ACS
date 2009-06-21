@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHelper.java,v 1.8 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: AlarmSelectionHelper.java,v 1.9 2009/06/21 21:48:58 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.8 $ 
+ * $Date: 2009/06/21 21:48:58 $ 
+ * $Revision: 1.9 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -49,7 +49,7 @@ import alma.alarmsystem.alarmmessage.AlarmMessageConversion;
 /**
  * 
  * 
- * @version $Revision: 1.8 $ $Date: 2009/06/03 16:23:20 $
+ * @version $Revision: 1.9 $ $Date: 2009/06/21 21:48:58 $
  * @author Katarina Sigerud
  */
 class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
@@ -221,20 +221,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
    */
   public void onMessage(Message msg) {
 	  ACSJMSTextMessage acsMsg = (ACSJMSTextMessage)msg;
-	  try {
-		  System.out.print("## FaultFamily: ");
-		  System.out.println((String)acsMsg.getStringProperty("FAULT_FAMILY"));
-		  System.out.print("## FaultMember: ");
-		  System.out.println((String)acsMsg.getStringProperty("FAULT_MEMBER"));
-		  System.out.print("## FaultCode:   ");
-		  System.out.println(acsMsg.getIntProperty("FAULT_CODE"));
-		  //System.out.print(acsMsg.getText());
-	  } catch (Exception e) {
-		  System.err.println("### Exception: "+e.getMessage());
-		  e.printStackTrace();
-	  }
-	  
-	  
 	  
     if (selectionListener != null) {
       try {
@@ -389,9 +375,6 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
           try {
             if (msg instanceof TextMessage) {
             	ACSJMSTextMessage acsMsg = (ACSJMSTextMessage)msg;
-            	System.out.println("******************************");
-            	System.out.println("Msg is: \n"+acsMsg.getText());
-            	System.out.println("******************************");
               if (acsMsg.getText().trim().length()>0) {
             	  cern.laser.business.data.Alarm business_alarm = AlarmMessageConversion.getAlarm(acsMsg.getText());
             	  initialSelection.put(business_alarm.getAlarmId(), new AlarmImpl(business_alarm));
