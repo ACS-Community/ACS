@@ -25,4 +25,4 @@ export ACS_TMP=../test/tmp
 acsStartJava -endorsed -Duser.dir=$PWD alma.alarmsystem.test.manager.ManagerTest $ACS_TMP/bilboContainer.out.pid &
 sleep 10
 acsStartContainer -cpp bilboContainer 2>&1 >/dev/null & 
-sleep 15 
+sleep 45 
