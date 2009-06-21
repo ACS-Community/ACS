@@ -1,7 +1,7 @@
 1 - Process xxxxx killed
 1 - 
-1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
+1 - Ignoring call to ClientLogManager#init: already initialized!
 1 - suppressRemoteLogging called
 1 - ******************************
 1 - Msg is: 
@@ -9,11 +9,13 @@
 1 - ******************************
 1 - ManagerTest ready to receive alarms
 1 - Waiting
-1 - Alarm from source received: <Manager, bilboContainer, 1> ACTIVE
 1 - ## FaultFamily: Manager
 1 - ## FaultMember: bilboContainer
 1 - ## FaultCode:   1
 1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: true
+1 - Closing; num of received alarms=2
+1 - ### DefaultSubscriberImpl::unSubscribeAll
+1 - Done
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
 1 - Bootstrap ORB parms: maciContainer bilboContainer -m corbaloc::xxxxxxx:yyyy/Manager
@@ -27,8 +29,3 @@
 1 - 
 1 - Manager hostname obtained via command line: xxx.xxx.xxx.xxx
 1 - 
-1 - Alarm from source received: <Manager, bilboContainer, 1> TERMINATE
-1 - ## FaultFamily: Manager
-1 - ## FaultMember: bilboContainer
-1 - ## FaultCode:   1
-1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: false
