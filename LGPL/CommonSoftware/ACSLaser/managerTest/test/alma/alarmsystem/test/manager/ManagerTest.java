@@ -33,7 +33,6 @@ import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.clients.CategoryClient;
-import alma.alarmsystem.clients.SourceClient;
 import alma.alarmsystem.clients.source.SourceListener;
 
 /**
@@ -45,19 +44,29 @@ import alma.alarmsystem.clients.source.SourceListener;
  */
 public class ManagerTest extends Thread implements SourceListener, AlarmSelectionListener {
 	
-	// ACS component client
+	/**
+	 * ACS component client
+	 */
 	private AdvancedComponentClient client;
 	
-	// The client to receive alarms from categories
+	/**
+	 * The client to receive alarms from categories
+	 */
 	private CategoryClient categoryClient;
 	
-	// The client to receive alarms from the sources
-	private SourceClient sourceClient;
-	
-	// ContainerServices
+	/**
+	 * ContainerServices
+	 */
 	private ContainerServices containerServices;
 	
-	// The millisecs to wait for alarms
+	/**
+	 * The number of alarms received from the alarm service
+	 */
+	private volatile int alarmsReceived=0;
+	
+	/**
+	 * The millisecs to wait for alarms
+	 */
 	private static final int WAIT_TIME=90000;
 	
 	/**
@@ -95,22 +104,6 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
         	System.out.println("ContainerServices is null!");
         	System.exit(-1);
         }
-        // Connect the source client
-        try {
-        	sourceClient=new SourceClient(containerServices);
-        	logger.log(AcsLogLevel.INFO,"Source client connected");
-        } catch (Exception e) {
-        	System.out.println("Exception caught while instantiating the source client: "+e.getMessage());
-        	e.printStackTrace();
-        	System.exit(-1);
-        }
-        try {
-        	sourceClient.connect();
-        } catch (Exception e) {
-        	System.err.println("Error connecting sources: "+e.getMessage());
-        	logger.log(AcsLogLevel.ERROR,"Source client connected");
-        	return;
-        }
         // Connect the category client
         try {
         	categoryClient=new CategoryClient(containerServices);
@@ -127,13 +120,10 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
         	logger.log(AcsLogLevel.ERROR,"Source client connected",e);
         	System.exit(-1);
         }
-        // Connect the source listeners
-        sourceClient.addAlarmListener(this);
         System.out.println("ManagerTest ready to receive alarms");
 	}
 	
 	public void close() {
-		sourceClient.close();
 		try {
 			categoryClient.close();
 		} catch (Exception e) {
@@ -158,6 +148,12 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		str.append(" active: ");
 		str.append(alarm.getStatus().isActive());
 		System.out.println(str.toString());
+		alarmsReceived++;
+		if (alarm.getAlarmId().equals("Manager:bilboContainer:1")) {
+			alarmsReceived++;
+		} else {
+			System.out.println("Unknown alarm received: "+alarm.getAlarmId());
+		}
 	}
 
 	/**
@@ -197,17 +193,7 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 	public static void main(String[] args) {
 		
 		ManagerTest managertest=new ManagerTest();
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {}
-		// Wait for alarms
-		System.out.println("Waiting");
-		try {
-			Thread.sleep(WAIT_TIME);
-		} catch (InterruptedException e) {}
-		System.out.println("Closing");
-		managertest.close();
-		System.out.println("Done");
+		managertest.test();
 	}
 
 	/**
@@ -215,4 +201,23 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 	 */
 	@Override
 	public void sourceXMLMsgReceived(String asiMessage) {}
+	
+	public void test() {
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {}
+		// Wait for alarms
+		System.out.println("Waiting");
+		long timeout=System.currentTimeMillis()+WAIT_TIME;
+		while (alarmsReceived<2 && System.currentTimeMillis()<=timeout) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException ie) {
+				continue;
+			}
+		}
+		System.out.println("Closing; num of received alarms="+alarmsReceived);
+		close();
+		System.out.println("Done");
+	}
 }
