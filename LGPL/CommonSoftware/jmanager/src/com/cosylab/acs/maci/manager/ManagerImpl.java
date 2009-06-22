@@ -2070,9 +2070,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// allocate new handle
 			// !!! ACID 2
-			int handle = ((Integer)executeCommand(new ComponentCommandAllocate())).intValue();
+			Integer objHandle = (Integer)executeCommand(new ComponentCommandAllocate());
+			int handle;
 			//int handle = components.allocate();
-			if (handle == 0)
+			if (objHandle == null || (handle = objHandle.intValue()) == 0)
 			{
 				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many components registred.");
 				throw af;
@@ -2618,10 +2619,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				// allocate new handle
 				// !!! ACID 2
-				int handle = ((Integer)executeCommand(new ContainerCommandAllocate())).intValue();
+				Integer objHandle = (Integer)executeCommand(new ContainerCommandAllocate());
+				int handle;
 				//int handle = containers.allocate();
 
-				if (handle == 0)
+				if (objHandle == null || (handle = objHandle.intValue()) == 0)
 				{
 					NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many containers logged in.");
 					throw af;
@@ -3605,9 +3607,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// allocate new handle
 			// !!! ACID 2
-			int handle = ((Integer)executeCommand(new AdministratorCommandAllocate())).intValue();
+			Integer objHandle = (Integer)executeCommand(new AdministratorCommandAllocate());
+			int handle;
 			//int handle = administrators.allocate();
-			if (handle == 0)
+			if (objHandle == null || (handle = objHandle.intValue()) == 0)
 			{
 				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many administrators logged in.");
 				throw af;
@@ -3676,9 +3679,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			// allocate new handle
 			// !!! ACID 2
-			int handle = ((Integer)executeCommand(new ClientCommandAllocate())).intValue();
+			Integer objHandle = (Integer)executeCommand(new ClientCommandAllocate());
+			int handle;
 			//int handle = clients.allocate();
-			if (handle == 0)
+			if (objHandle == null || (handle = objHandle.intValue()) == 0)
 			{
 				NoResourcesException af = new NoResourcesException("Generation of new handle failed, too many clients logged in.");
 				throw af;
@@ -5914,10 +5918,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// only preallocate (if necessary)
 			if (!reactivate)
+			{
 				// !!! ACID 2
-				h = ((Integer)executeCommand(new ComponentCommandPreallocate())).intValue();
+				Integer objHandle = (Integer)executeCommand(new ComponentCommandPreallocate());
+				h = (objHandle == null) ? 0 : objHandle.intValue();
 				//h = components.preallocate();
-
+			}
+			
 			// failed to obtain handle
 			if (h == 0)
 			{
@@ -6130,9 +6137,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 					// !!! ACID 3
 					// preallocate new
-					h = ((Integer)executeCommand(new ComponentCommandAllocateHandle(componentHandle, true))).intValue();
+					Integer objHandle  = (Integer)executeCommand(new ComponentCommandAllocateHandle(componentHandle, true));
 					//h = components.allocate(componentHandle, true);
-					if (h == 0)
+					if (objHandle == null || (h = objHandle.intValue()) == 0)
 					{
 						// failed to allocate new
 						bcex = new AcsJCannotGetComponentEx();
