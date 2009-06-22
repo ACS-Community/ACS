@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.69 2009/06/17 20:30:12 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.70 2009/06/22 22:21:08 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.69 2009/06/17 20:30:12 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.70 2009/06/22 22:21:08 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1467,14 +1467,17 @@ LoggingProxy::sendCacheInternal()
 	{
 
     if(!m_logBin ){
-	    // fill anys
-        DsLogAdmin::Anys anys(m_cache.size());
-        anys.length(m_cache.size());
+		// fill anys
+		Logging::XmlLogRecordSeq reclist;
+		reclist.length(m_cache.size());
+		//DsLogAdmin::Anys anys(m_cache.size());
+		//anys.length(m_cache.size());
         int i = 0;
         for (LogDeque::iterator iter = m_cache.begin();
              iter != m_cache.end();
              iter++){
-            anys[i++] <<= iter->c_str();
+					reclist[i++].xml = iter->c_str();
+					//anys[i++] <<= iter->c_str();
 	}
         // we have to unlock before we do a remote call to prevent a deadlock
         // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
@@ -1482,7 +1485,8 @@ LoggingProxy::sendCacheInternal()
         // successfully sent, clear cache
         m_cache.clear();
         ace_mon.release();
-        m_logger->write_records(anys);
+        //m_logger->write_records(anys);
+		  m_logger->writeRecord(reclist);
 
         // here we have to acquire the mutex again. Should be done in better way.
         ace_mon.acquire();
