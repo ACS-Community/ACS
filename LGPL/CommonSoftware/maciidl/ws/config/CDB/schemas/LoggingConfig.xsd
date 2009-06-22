@@ -19,7 +19,7 @@ The inherited 'minLogLevel' and 'minLogLevelLocal' are the default log levels fo
                         <xs:documentation>Name of the service representing the logging service. This is the name used to query the Manager for the reference to the logging service. In the current installations the default value is normally used. The value can be changed to distribute logs to different instances of the service in order to improve performance and scalability of the system. In the future it will be possible to federate instances of the logging service, but this is not implemented yet.</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
-                <xs:attribute name="dispatchPacketSize" type="xs:int" use="optional" default="10">
+                <xs:attribute name="dispatchPacketSize" type="xs:int" use="optional" default="100">
                     <xs:annotation>
                         <xs:documentation>In order to improve performance and reduce network traffic, containers do not send immediately logs to the logging system. This parameter specifies how many logs are packaged together and sent to the logging system in one call. Note that the real package size may be smaller if sending off the records is also triggered by a timer and /or by the log level. 
 For debugging purposes it may be convenient to set the cache to 0, to avoid losing logs when a Container crashes. 
