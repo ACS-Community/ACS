@@ -12,14 +12,10 @@
 1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ******************************
-1 - Msg is: 
-1 - 
-1 - ******************************
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH ON
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH OFF
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 1> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:1> ACTIVE=false
