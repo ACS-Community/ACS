@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.177 2009/06/17 11:22:17 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.178 2009/06/23 07:52:13 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1127,6 +1127,8 @@ ifdef ACE_ROOT
 ifdef DDS_ROOT
     TAO_MK_IDL_PATH := $(TAO_MK_IDL_PATH) -I$(DDS_ROOT)
     TAO_IDLFLAGS += -Gdcps
+    USER_INC += -I$(DDS_ROOT)
+    USER_LIB += -L$(DDS_ROOT)/lib
 endif
 endif
 
