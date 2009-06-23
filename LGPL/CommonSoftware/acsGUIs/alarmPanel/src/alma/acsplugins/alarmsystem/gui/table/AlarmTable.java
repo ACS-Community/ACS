@@ -19,13 +19,15 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.13 2009/06/19 21:02:52 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.14 2009/06/23 14:38:10 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui.table;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,6 +39,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -47,6 +50,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JComponent;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.table.TableColumn;
@@ -56,6 +60,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import alma.acs.util.IsoDateFormat;
+import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.alarmsystem.clients.CategoryClient;
@@ -108,7 +113,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		
 		/**
 		 * The user selected a row, i.e. an alarm.
-		 * alarmSected notifies the model that the icon showd be removed
+		 * alarmSected notifies the model that the icon must be removed
 		 * 
 		 * @param e The event to get the selected row from
 		 */
@@ -260,12 +265,22 @@ public class AlarmTable extends JTable implements ActionListener {
 	/** 
 	 * The model of the table
 	 */
-	private AlarmTableModel model;
+	private final AlarmTableModel model;
+	
+	/**
+	 * The panel showing this table
+	 */
+	private final AlarmPanel panel;
 	
 	/**
 	 * The sorter for sorting the rows of the table
 	 */
 	private TableRowSorter<TableModel> sorter;
+	
+	/**
+	 * The table selection model
+	 */
+	private DefaultListSelectionModel selectionModel;
 	
 	/**
 	 * The cols of the table
@@ -320,6 +335,11 @@ public class AlarmTable extends JTable implements ActionListener {
 	private ReducedChainDlg reducedDlg=null;
 	
 	/**
+	 * The engine to search alarm entries in the table
+	 */
+	private final SearchEngine searchEngine;
+	
+	/**
 	 *  The renderer for the reduced alarm entries i.e.
 	 *  the entries normally hidden
 	 */
@@ -338,22 +358,31 @@ public class AlarmTable extends JTable implements ActionListener {
 	/**
 	 * Constructor 
 	 * @param model The model for this table
+	 * @param panel The panel showing this table
 	 */
-	public AlarmTable(AlarmTableModel model) {
+	public AlarmTable(AlarmTableModel model, AlarmPanel panel) {
 		super(model);
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null model in constructor");
 		}
 		this.model=model;
+		if (panel==null) {
+			throw new IllegalArgumentException("Invalid null panel in constructor");
+		}
+		this.panel=panel;
 		initialize();
+		searchEngine=new SearchEngine(this,model);
 	}
 	
 	/**
 	 * Init the GUI
 	 */
 	private void initialize() {
-		this.setCellSelectionEnabled(false);
-		setRowSelectionAllowed(false);
+		setShowHorizontalLines(true);
+		// Build and set the selection model
+		selectionModel = new DefaultListSelectionModel();
+		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		setSelectionModel(selectionModel);
 		this.setOpaque(false);
 		sorter = new TableRowSorter<TableModel>(model);
 		this.setRowSorter(sorter);
@@ -447,14 +476,19 @@ public class AlarmTable extends JTable implements ActionListener {
 			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+		if (getSelectedRow()==rowIndex) {
+			Font f = c.getFont();
+			Font bold=f.deriveFont(Font.BOLD);
+			c.setFont(bold);
+		}
 		colorizeCell(c, alarm);
 	
 		if (c instanceof JComponent) {
 			JComponent jc = (JComponent) c;
-			if (((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), vColIndex)==null) {
+			if (((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), convertColumnIndexToModel(vColIndex))==null) {
 				jc.setToolTipText(null);
 			} else { 
-				jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), vColIndex));
+				jc.setToolTipText("<HTML>"+((AlarmTableModel)model).getCellContent(sorter.convertRowIndexToModel(rowIndex), convertColumnIndexToModel(vColIndex)));
 			}
 		}
 		return c;
@@ -467,7 +501,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param c The component to color
 	 * @param priority The alarm to set the color
 	 */
-	private void colorizeCell(Component c, Alarm alarm ) {
+	private void colorizeCell(Component c, Alarm alarm) {
 		AlarmGUIType alarmType = AlarmGUIType.fromAlarm(alarm);
 		c.setForeground(alarmType.foreg);
 		c.setBackground(alarmType.backg);
@@ -539,7 +573,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		}
 		CategoryClient client = model.getCategoryClient();
 		if (reducedDlg==null) {
-			reducedDlg = new ReducedChainDlg(client,alarm);
+			reducedDlg = new ReducedChainDlg(client,alarm,panel);
 		} else {
 			reducedDlg.setRootAlarm(alarm);
 			reducedDlg.setVisible(true);
@@ -607,5 +641,24 @@ public class AlarmTable extends JTable implements ActionListener {
 		thread.toAdd=add;
 		SwingUtilities.invokeLater(thread);
 	}
-	
+
+	/**
+	 * Search for a string in the table
+	 * 
+	 * @param string The string to search in the table
+	 * @param next If <code>true</code> search for the next entry
+	 * @return <code>true</code> if an entry has been found
+	 * 
+	 * @see SearchEngine
+	 */
+	public boolean search(String string, boolean next) {
+		int ret= searchEngine.search(string, next);
+		if (ret!=-1) {
+			changeSelection(ret, 1, false, false);
+			panel.showMessage("Entry found at "+ret, false);
+		} else {
+			panel.showMessage("No alarm found",true);
+		}
+		return ret!=-1;
+	}
 }

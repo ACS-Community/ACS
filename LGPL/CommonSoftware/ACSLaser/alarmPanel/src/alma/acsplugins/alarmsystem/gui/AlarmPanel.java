@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.23 2009/02/23 16:37:30 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.24 2009/06/23 14:38:10 acaproni Exp $
  * @since    
  */
 
@@ -161,7 +161,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		
 		// Build GUI objects
 		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
-		alarmTable = new AlarmTable(model);
+		alarmTable = new AlarmTable(model,this);
 		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
@@ -173,7 +173,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		add(tableScrollPane,BorderLayout.CENTER);
 		
 		// Add the toolbar
-		toolbar=new Toolbar(model,ACTIVATE_RDUCTION_RULES,this);
+		toolbar=new Toolbar(alarmTable,model,ACTIVATE_RDUCTION_RULES,this);
 		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the status line
@@ -401,5 +401,17 @@ public class AlarmPanel extends JPanel implements IPanel {
 			throw new Exception("The alarm cant'be null and must have a valid ID!");
 		}
 		model.onAlarm(alarm);
+	}
+
+	/**
+	 * Show a message in the status line
+	 * 
+	 * @param mesg
+	 * @param red
+	 * 
+	 * @see StatusLine
+	 */
+	public void showMessage(String mesg, boolean red) {
+		statusLine.showMessage(mesg, red);
 	}
 }

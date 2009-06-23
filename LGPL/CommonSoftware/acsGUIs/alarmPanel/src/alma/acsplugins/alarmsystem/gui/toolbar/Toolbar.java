@@ -27,6 +27,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -35,13 +37,20 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 
 /**
@@ -50,7 +59,7 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
  * @author acaproni
  *
  */
-public class Toolbar extends JPanel implements ActionListener {
+public class Toolbar extends JPanel implements ActionListener, DocumentListener {
 	
 	/** 
 	 * The rendered for the auto acknowledge combo box
@@ -261,9 +270,29 @@ public class Toolbar extends JPanel implements ActionListener {
 	private JLabel autoAckLbl = new JLabel("Auto ack: ");
 	
 	/**
-	 * 
+	 * The text field to write the text to search for in the table
 	 */
-	private AlarmTableModel model;
+	private JTextField searchTF = new JTextField(16);
+	
+	/**
+	 * The button to search for the next item
+	 */
+	private JButton nextSearchBtn = new JButton(new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"resultset_next.png")));
+	
+	/**
+	 * The button to search for the next item
+	 */
+	private JButton prevSearchBtn = new JButton(new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"resultset_previous.png")));
+	
+	/**
+	 * The table of alarms
+	 */
+	private final AlarmTable table;
+	
+	/**
+	 * The table model
+	 */
+	private final AlarmTableModel model;
 	
 	/**
 	 * Constructor
@@ -272,14 +301,18 @@ public class Toolbar extends JPanel implements ActionListener {
 	 * @param reduce <code>true</code> if the reduction rules are applied at startup
 	 * @param panel The panel showing the toolbar
 	 */
-	public Toolbar(AlarmTableModel model, boolean reduce, AlarmPanel panel) {
+	public Toolbar(AlarmTable table, AlarmTableModel model, boolean reduce, AlarmPanel panel) {
 		super();
+		if (table==null) {
+			throw new IllegalArgumentException("The table can't be null");
+		}
 		if (model==null) {
 			throw new IllegalArgumentException("The model can't be null");
 		}
 		if (panel==null) {
 			throw new IllegalArgumentException("The panel can't be null");
 		}
+		this.table=table;
 		this.model=model;
 		this.alarmPanel=panel;
 		initialize(reduce);
@@ -291,14 +324,14 @@ public class Toolbar extends JPanel implements ActionListener {
 	 * @param <code>true</code> if the reduction rules are applied at startup
 	 */
 	private void initialize(boolean reduce) {
-		FlowLayout layout = (FlowLayout)getLayout();
-		layout.setAlignment(FlowLayout.LEFT);
+		setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
 		// Add the label and the combobox for auto ack
 		Font fnt = autoAckLbl.getFont();
 		Font newFont = fnt.deriveFont(fnt.getSize()*80/100);
 		autoAckLbl.setFont(newFont);
+		add(Box.createHorizontalStrut(2));
 		add(autoAckLbl);
 		autoAckLevelCB.setFont(newFont);
 		autoAckLevelCB.setEditable(false);
@@ -312,17 +345,38 @@ public class Toolbar extends JPanel implements ActionListener {
 		autoAckLevelCB.addActionListener(this);
 		Dimension d = new Dimension(ComboBoxValues.getWidth(),ComboBoxValues.getHeight());
 		autoAckLevelCB.setMinimumSize(d);
+		add(Box.createHorizontalStrut(5));
 		add(autoAckLevelCB);
 		
 		activeReductionIcon=new ImageIcon(this.getClass().getResource("/alma/acsplugins/alarmsystem/gui/resources/arrow_in.png"));
 		inactiveReductionIcon=new ImageIcon(this.getClass().getResource("/alma/acsplugins/alarmsystem/gui/resources/arrow_out.png"));
-		reductionRulesBtn= new JToggleButton("Reduce alarms",activeReductionIcon, reduce);
+		reductionRulesBtn= new JToggleButton("Reduce",activeReductionIcon, reduce);
 		reductionRulesBtn.setFont(newFont);
+		add(Box.createHorizontalStrut(5));
 		add(reductionRulesBtn);
 		reductionRulesBtn.addActionListener(this);
 		
+		add(Box.createHorizontalStrut(5));
 		add(pauseBtn);
 		pauseBtn.addActionListener(this);
+		
+		add(Box.createHorizontalStrut(5));
+		add(new JSeparator(JSeparator.VERTICAL));
+		add(Box.createHorizontalStrut(5));
+		add(searchTF);
+		searchTF.setEditable(true);
+		searchTF.getDocument().addDocumentListener(this);
+		searchTF.setToolTipText("Search");
+		add(Box.createHorizontalStrut(3));
+		add(prevSearchBtn);
+		prevSearchBtn.setToolTipText("Search prev");
+		prevSearchBtn.addActionListener(this);
+		add(Box.createHorizontalStrut(3));
+		add(nextSearchBtn);
+		nextSearchBtn.setToolTipText("Search next");
+		nextSearchBtn.addActionListener(this);
+		ratioSearchBtns();
+		add(Box.createHorizontalStrut(2));
 	}
 	
 	/**
@@ -330,7 +384,6 @@ public class Toolbar extends JPanel implements ActionListener {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==autoAckLevelCB) {
-			System.out.println("Selected item: "+autoAckLevelCB.getSelectedItem());
 			model.setAutoAckLevel((ComboBoxValues)autoAckLevelCB.getSelectedItem());
 		} else if (e.getSource()==reductionRulesBtn) {
 			model.applyReductions(reductionRulesBtn.isSelected());
@@ -350,6 +403,10 @@ public class Toolbar extends JPanel implements ActionListener {
 				t.printStackTrace(System.err);
 				JOptionPane.showMessageDialog(this, t.getMessage(), "Error pausing/unpausing", JOptionPane.ERROR_MESSAGE);
 			}
+		} else if (e.getSource()==prevSearchBtn) {
+			table.search(searchTF.getText(), false);
+		} else if (e.getSource()==nextSearchBtn) {
+			table.search(searchTF.getText(), true);
 		} else {
 			System.err.println("Invalid source of event: "+e.getSource());
 		}
@@ -373,5 +430,49 @@ public class Toolbar extends JPanel implements ActionListener {
 			pauseBtn.setIcon(notPausedIcon);
 			pauseBtn.setText("Pause");
 		}
+	}
+
+	/**
+	 * The document listener for the text in the search TF
+	 * 
+	 * @see DocumentListener
+	 */
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		ratioSearchBtns();
+	}
+
+	/**
+	 * The document listener for the text in the search TF
+	 * 
+	 * @see DocumentListener
+	 */
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		ratioSearchBtns();
+	}
+
+	/**
+	 * The document listener for the text in the search TF
+	 * 
+	 * @see DocumentListener
+	 */
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		ratioSearchBtns();
+	}
+	
+	/**
+	 * Enable/disble the buttons for searching depending
+	 * on the content of the text field
+	 */
+	private void ratioSearchBtns() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				String text = searchTF.getText();
+				prevSearchBtn.setEnabled(text!=null && !text.isEmpty());
+				nextSearchBtn.setEnabled(text!=null && !text.isEmpty());
+			}
+		});
 	}
 }

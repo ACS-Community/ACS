@@ -35,6 +35,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import cern.laser.client.data.Alarm;
 
+import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
@@ -79,6 +80,11 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	private final AlarmTableModel model;
 	
 	/**
+	 * The panel showing this table
+	 */
+	private final AlarmPanel panel;
+	
+	/**
 	 * The {@link CategoryClient} to get the children of the root
 	 * alarm from the alarm service
 	 */
@@ -95,18 +101,23 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 	 * @param client The {@link CategoryClient} to get the children of the alarm
 	 * 				to show in the table
 	 * @param rootAlarm The root alarm whose children appear in the table
+	 * @param panel The alarm panel
 	 */
-	public ReducedChainDlg(CategoryClient client, Alarm rootAlarm) {
+	public ReducedChainDlg(CategoryClient client, Alarm rootAlarm, AlarmPanel panel) {
 		if (client==null) {
 			throw new IllegalArgumentException("The category client can't be null");
 		}
 		if (rootAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
+		if (panel==null) {
+			throw new IllegalArgumentException("The panel can't be null");
+		}
 		categoryClient=client;
 		alarm=rootAlarm;
+		this.panel=panel;
 		model = new AlarmTableModel(rootPane,false);
-		table = new AlarmTable(model);
+		table = new AlarmTable(model,panel);
 		initialize();
 		refreshContent();
 	}

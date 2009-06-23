@@ -19,12 +19,16 @@
 package alma.acsplugins.alarmsystem.gui.statusline;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
@@ -40,25 +44,40 @@ import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
  */
 public class StatusLine extends JPanel implements ActionListener, ConnectionListener {
 	
-	
-	
-	
-	
-	// The counters showing the number of alarms
+	/**
+	 * The counters showing the number of alarms
+	 */
 	private CounterWidget[] counters = new CounterWidget[AlarmGUIType.values().length];
 	
-	// The table model
+	/**
+	 * The table model
+	 */
 	private final AlarmTableModel tableModel;
 	
-	// The alarm panel
+	/**
+	 * The alarm panel
+	 */
 	private final AlarmPanel alarmPanel;
 	
-	// The time to refresh the values shown by the StatusLine
+	/**
+	 * The time to refresh the values of the widgets shown by the StatusLine
+	 */
 	private Timer timer=null;
+	
+	/**
+	 * The time interval between 2 refreshes of the widgets
+	 */
 	private static final int TIMER_INTERVAL=2000;
 	
-	// The widget showing the icon and the tooltip for the status of the connection
+	/**
+	 * The widget showing the icon and the tooltip for the status of the connection
+	 */
 	private ConnectionWidget connectionWidget;
+	
+	/**
+	 * The label to write messages to the user
+	 */
+	private final StatusMessageTF statusMessageLbl = new StatusMessageTF();
 
 	/**
 	 * Constructor
@@ -81,7 +100,8 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 * Init the status line
 	 */
 	private void initialize() {
-		setLayout(new BorderLayout());
+		BoxLayout layout = new BoxLayout(this,BoxLayout.LINE_AXIS);
+		setLayout(layout);
 		
 		// Add the panel with the widgets at the left side
 		JPanel widgetsPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -97,14 +117,19 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 			// Add the widget
 			widgetsPnl.add(counters[t].getComponent());
 		}
-		add(widgetsPnl,BorderLayout.WEST);
+		add(widgetsPnl);
+		
+		JPanel statusMsgPnl = new JPanel();
+		statusMsgPnl.setBorder(BorderFactory.createLoweredBevelBorder());
+		statusMsgPnl.add(statusMessageLbl);
+		add(statusMsgPnl);
 		
 		// Add the label with the connection status to the right
 		JPanel connectionPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		connectionPnl.setBorder(BorderFactory.createLoweredBevelBorder());
 		connectionWidget = new ConnectionWidget(alarmPanel);
 		connectionPnl.add(connectionWidget);
-		add(connectionPnl,BorderLayout.EAST);
+		add(connectionPnl);
 	}
 	
 	/** 
@@ -121,7 +146,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	}
 	
 	/** 
-	 * Start the thread to update values
+	 * Stop the thread to update values
 	 */
 	public void stop() {
 		if (timer!=null) {
@@ -130,6 +155,8 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 			timer=null;
 		}
 	}
+	
+	
 	
 	/** 
 	 * Pause the thread to update values
@@ -194,6 +221,18 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	@Override
 	public void heartbeatLost() {
 		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.HEARTBEAT_LOST);
+	}
+
+	/***
+	 * Show a string the status line
+	 * 
+	 * @param mesg
+	 * @param red
+	 * 
+	 * @see StatusMessageTF
+	 */
+	public void showMessage(String mesg, boolean red) {
+		statusMessageLbl.showMessage(mesg, red);
 	}
 	
 }
