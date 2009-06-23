@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.3 2008/11/04 14:50:15 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.4 2009/06/23 12:39:33 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -86,7 +86,7 @@ const ACSService acsServices[] = {
       "acsNamingService",
       "Naming Service Imp",
       "NamingServiceImp",
-      "3015",
+      "2981",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNamingServiceImp",
       "corbaloc::%s:%s/NameService",
       &ACSPorts::getNamingServicePort,
@@ -97,7 +97,7 @@ const ACSService acsServices[] = {
       "acsNotifyService",
       "Notification Service Imp",
       "NotificationServiceImp",
-      "3016",
+      "2982",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonNotificationServiceImp",
       "corbaloc::%s:%s/%s",
       NULL,
@@ -108,7 +108,7 @@ const ACSService acsServices[] = {
       "acsConfigurationDatabase",
       "CDB Imp",
       "ConfigurationDatabaseImp",
-      "3017",
+      "2983",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonConfigurationDatabaseImp",
       "corbaloc::%s:%s/CDB",
       &ACSPorts::getCDBPort,
@@ -119,7 +119,7 @@ const ACSService acsServices[] = {
       "acsManager",
       "Manager Imp",
       "ManagerImp",
-      "3018",
+      "2984",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonManagerImp",
       "corbaloc::%s:%s/Manager",
       &ACSPorts::getManagerPort,
@@ -130,7 +130,7 @@ const ACSService acsServices[] = {
       "acsACSLogService",
       "ACS Log Service Imp",
       "ACSLogServiceImp",
-      "3019",
+      "2985",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonACSLogServiceImp",
       "corbaloc::%s:%s/ACSLogSvc",
       &ACSPorts::getLogPort,
@@ -141,7 +141,7 @@ const ACSService acsServices[] = {
       "acsLoggingService",
       "Logging Service Imp",
       "LoggingServiceImp",
-      "3020",
+      "2986",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonLoggingServiceImp",
       "corbaloc::%s:%s/Log",
       &ACSPorts::getLoggingServicePort,
@@ -152,7 +152,7 @@ const ACSService acsServices[] = {
       "acsInterfaceRepository",
       "Interface Repository Imp",
       "InterfaceRepositoryImp",
-      "3021",
+      "2987",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonInterfaceRepositoryImp",
       "corbaloc::%s:%s/InterfaceRepository",
       &ACSPorts::getIRPort,

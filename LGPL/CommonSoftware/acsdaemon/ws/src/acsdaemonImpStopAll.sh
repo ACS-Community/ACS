@@ -3,10 +3,10 @@
 
 HOST=`getIP`
 
-acsdaemonImpStop -r corbaloc::$HOST:3015/NamingServiceImp
-acsdaemonImpStop -r corbaloc::$HOST:3016/NotificationServiceImp
-acsdaemonImpStop -r corbaloc::$HOST:3017/ConfigurationDatabaseImp
-acsdaemonImpStop -r corbaloc::$HOST:3018/ManagerImp
-acsdaemonImpStop -r corbaloc::$HOST:3019/ACSLogServiceImp
-acsdaemonImpStop -r corbaloc::$HOST:3020/LoggingServiceImp
-acsdaemonImpStop -r corbaloc::$HOST:3021/InterfaceRepositoryImp
+acsdaemonImpStop -r corbaloc::$HOST:2981/NamingServiceImp
+acsdaemonImpStop -r corbaloc::$HOST:2982/NotificationServiceImp
+acsdaemonImpStop -r corbaloc::$HOST:2983/ConfigurationDatabaseImp
+acsdaemonImpStop -r corbaloc::$HOST:2984/ManagerImp
+acsdaemonImpStop -r corbaloc::$HOST:2985/ACSLogServiceImp
+acsdaemonImpStop -r corbaloc::$HOST:2986/LoggingServiceImp
+acsdaemonImpStop -r corbaloc::$HOST:2987/InterfaceRepositoryImp

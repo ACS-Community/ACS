@@ -184,7 +184,7 @@ std::string
 ACSPorts::getContainerDaemonPort()
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (3000 + 13) << ends;
+    realOutput << setw(4) << setfill('0') << (2970) << ends;
     return realOutput.str();
 }
 
@@ -198,7 +198,7 @@ std::string
 ACSPorts::getServicesDaemonPort()
 {
     std::ostringstream realOutput;
-    realOutput << setw(4) << setfill('0') << (3000 + 14) << ends;
+    realOutput << setw(4) << setfill('0') << (2980) << ends;
     return realOutput.str();
 }
 
