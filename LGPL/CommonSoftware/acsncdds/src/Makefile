@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.12 2009/06/23 06:47:50 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.13 2009/06/23 09:53:50 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -143,7 +143,7 @@ CDB_SCHEMAS =
 # 
 # DDS and IDL Files and flags
 # 
-DDS_IDL = NCBenchmark SimpleExample
+DDS_FILES = NCBenchmark SimpleExample
 IDL_FILES = NCBenchmark SimpleExample
 
 # man pages to be done
