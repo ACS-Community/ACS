@@ -1,7 +1,6 @@
 #*******************************************************************************
-# PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2009/03/17 13:35:07 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.12 2009/06/23 06:47:50 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -19,11 +18,10 @@
 
 #
 # user definable C-compilation flags
-#USER_CFLAGS = 
+# USER_CFLAGS = 
 
 #
 # additional include and library search paths
-USER_INC = -I$(DDS_ROOT)
 USER_LIB = -lACE \
 			  -lTAO \
 			  -lTAO_DsLogAdmin \
@@ -49,8 +47,7 @@ USER_LIB = -lACE \
 			  -lACSErrTypeCommon \
 			  -lacsnc \
 			  -lOpenDDS_Dcps \
-			  -lSimpleTcp \
-			  -L$(DDS_ROOT)/lib
+			  -lSimpleTcp
 
 #
 # MODULE CODE DESCRIPTION:
@@ -64,67 +61,55 @@ USER_LIB = -lACE \
 EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber ncSlowConsumer ddsSlowSubscriber
 EXECUTABLES_L   = 
 
-# <brief description of xxxxx program>
-simpleExampleDDSClient_OBJECTS   = 	simpleExampleDDSClient
+simpleExampleDDSClient_OBJECTS   = simpleExampleDDSClient
 simpleExampleDDSClient_LDFLAGS   =  
-simpleExampleDDSClient_LIBS      =  acsddsnc maciClient SimpleExampleStubs acsddsncTypeSupport
+simpleExampleDDSClient_LIBS      = acsddsnc maciClient \
+                                   SimpleExampleStubs simpleMessageTypeSupportStubs \
+                                   acsddsncTypeSupport
 
-# <brief description of xxxxx program>
 simpleExampleNCClient_OBJECTS   = 	simpleExampleNCClient
 simpleExampleNCClient_LDFLAGS   =  
 simpleExampleNCClient_LIBS      =  acsnc maciClient SimpleExampleStubs 
 
-# <brief description of xxxxx program>
 ncConsumer_OBJECTS   = 	ncConsumer
 ncConsumer_LDFLAGS   =  
 ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
 
-# <brief description of xxxxx program>
 ddsSubscriber_OBJECTS   = ddsSubscriber
 ddsSubscriber_LDFLAGS   = 
-ddsSubscriber_LIBS      = acsddsnc NCBenchmarkStubs acsddsncTypeSupport
+ddsSubscriber_LIBS      = acsddsnc NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport
 
-# <brief description of xxxxx program>
 ncSlowConsumer_OBJECTS   = 	ncSlowConsumer
 ncSlowConsumer_LDFLAGS   =  
 ncSlowConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
 
-# <brief description of xxxxx program>
 ddsSlowSubscriber_OBJECTS   = ddsSlowSubscriber
 ddsSlowSubscriber_LDFLAGS   = 
-ddsSlowSubscriber_LIBS      = acsddsnc NCBenchmarkStubs acsddsncTypeSupport
-
-# <brief description of xxxxx program>
-#xxxxx_OBJECTS   = 	
-#xxxxx_LDFLAGS   = 
-#xxxxx_LIBS      = 
-
-#
-# special compilation flags for single c sources
-#yyyyy_CFLAGS   = 
+ddsSlowSubscriber_LIBS      = acsddsnc NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport
 
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
-						 DataReaderListener.h acsddsncDataReaderListener.h \
-						 NCBenchmarkImpl.h
+INCLUDES      =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
+		 DataReaderListener.h acsddsncDataReaderListener.h \
+		 NCBenchmarkImpl.h
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc acsddsncTypeSupport simpleExampleNCImpl simpleExampleDDSImpl NCBenchmarkImpl DDSNCBenchmarkImpl
+LIBRARIES       = acsddsnc acsddsncTypeSupport \
+		  simpleExampleNCImpl simpleExampleDDSImpl NCBenchmarkImpl DDSNCBenchmarkImpl
 LIBRARIES_L     =
 
 #
 # <brief description of acsddsnc library>
 acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl
-acsddsnc_LIBS		= OpenDDS_Dcps SimpleTcp ACE
+acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp ACE
 
 #
 # <brief description of simpleExample library>
 simpleExampleDDSImpl_OBJECTS = simpleExampleDDSImpl
-simpleExampleDDSImpl_LIBS    = SimpleExampleStubs acsddsncTypeSupport acsddsnc 
+simpleExampleDDSImpl_LIBS    = SimpleExampleStubs simpleMessageTypeSupportStubs acsddsncTypeSupport acsddsnc 
 
 # <brief description of simpleExample library>
 simpleExampleNCImpl_OBJECTS = simpleExampleNCImpl
@@ -133,10 +118,10 @@ simpleExampleNCImpl_LIBS    = SimpleExampleStubs acsnc
 #
 # <brief description of NCBenchmarkImpl library>
 NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
-NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs acsnc
+NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs MessageTypeSupportStubs acsnc
 
 DDSNCBenchmarkImpl_OBJECTS = DDSNCBenchmarkImpl
-DDSNCBenchmarkImpl_LIBS    = NCBenchmarkStubs acsddsncTypeSupport acsddsnc
+DDSNCBenchmarkImpl_LIBS    = NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport acsddsnc
 
 #
 # <brief description of acsddsncTypeSupport library>
@@ -149,40 +134,6 @@ acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs
 SCRIPTS         = startDCPSInfoRepo
 SCRIPTS_L       =
 
-#
-# TCL scripts (public and local)
-# ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
-
-#
-# Python stuff (public and local)
-# ----------------------------
-PY_SCRIPTS         =
-PY_SCRIPTS_L       =
-
-PY_MODULES         =
-PY_MODULES_L       =
-
-PY_PACKAGES        =
-PY_PACKAGES_L      =
-pppppp_MODULES	   =
-
-#
-# <brief description of tttttt tcl-script>
-tttttt_OBJECTS  =
-tttttt_TCLSH    = 
-tttttt_LIBS     = 
-
-#
-# TCL libraries (public and local)
-# ------------------------------
-TCL_LIBRARIES   =
-TCL_LIBRARIES_L =
-
-#
-# <brief description of tttlll library>
-tttlll_OBJECTS  = 
 
 #
 # Configuration Database Files
@@ -190,38 +141,11 @@ tttlll_OBJECTS  =
 CDB_SCHEMAS = 
 
 # 
-# IDL Files and flags
+# DDS and IDL Files and flags
 # 
+DDS_IDL = NCBenchmark SimpleExample
 IDL_FILES = NCBenchmark SimpleExample
-DDS_IDL_FILES = NCBenchmark SimpleExample
-DDS_TYPES = Message simpleMessage
-TAO_IDLFLAGS = -Gdcps
-USER_IDL = -I$(DDS_ROOT)
-#
-# Jarfiles and their directories
-#
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
-#
-# java sources in Jarfile on/off
-DEBUG= 
-#
-# ACS XmlIdl generation on/off
-#
-XML_IDL= 
-#
-# Java Component Helper Classes generation on/off
-#
-COMPONENT_HELPERS=
-#
-# Java Entity Classes generation on/off
-#
-XSDBIND=
-#
-# Schema Config files for the above
-#
-XSDBIND_INCLUDE=
+
 # man pages to be done
 # --------------------
 MANSECTIONS =
@@ -270,10 +194,10 @@ endif
 #
 # TARGETS
 # -------
-all: build_dds do_all
+all: do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_dds clean_all 
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -282,30 +206,8 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_dds install_all
+install : install_all
 	@echo " . . . installation done"
 
-DDS_IDLS=$(foreach idl, $(DDS_IDL_FILES), ../idl/$(idl).idl)
-DDS_TYPE_IDLS=$(foreach type, $(DDS_TYPES), $(type)TypeSupport.idl)
-DDS_TYPE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC $(type)TypeSupportS $(type)TypeSupportImpl)
-DDS_INCLUDE_FILES=$(foreach type, $(DDS_TYPES), $(type)TypeSupportC.h $(type)TypeSupportC.inl $(type)TypeSupportImpl.h $(type)TypeSupportS.h $(type)TypeSupportS.inl)
-
-build_dds: $(DDS_TYPE_IDLS)
-
-$(DDS_TYPE_IDLS):
-	@echo "==== Generating DDS idls"
-	cp -r $(DDS_IDLS) .
-	$(foreach idl, $(DDS_IDL_FILES), $(DDS_ROOT)/bin/dcps_ts.pl $(idl).idl;)
-	@echo "==== Processing DDS idls: $(DDS_TYPE_IDLS)"
-	$(foreach idl, $(DDS_TYPE_IDLS), $(ACE_ROOT)/TAO/TAO_IDL/tao_idl $(IDL_PATH) $(USER_IDL) $(TAO_IDLFLAGS) $(USER_IDL) $(idl);)
-#	rm -rf $(foreach idl, $(DDS_IDL_FILES), $(idl).idl)
-
-clean_dds:
-	rm -rf *TypeSupport*
-	rm -rf $(DDS_IDL_FILES).idl $(DDS_TYPE_IDLS)
-
-install_dds: $(DDS_TYPES_IDLS)
-	cp $(DDS_INCLUDE_FILES) $(INSTALL_ROOT)/include
-#	$(foreach file, $(DDS_INCLUDE_FILES), chmod 775 $(file))
 
 #___oOo___
