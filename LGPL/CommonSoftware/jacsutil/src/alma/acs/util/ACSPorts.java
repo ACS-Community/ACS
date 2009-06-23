@@ -276,6 +276,13 @@ public class ACSPorts {
    public String giveCDBPort() {
       return String.valueOf(basePort * 100 + 3000 + 12);
    }
+   
+   /**
+    * @return the port the ACS alarm service is running on.
+    */
+   public String giveAlarmServicePort() {
+      return String.valueOf(basePort * 100 + 3000 + 13);
+   }
 
    /**
     * @return the constant port (2970) the ACS Container daemon is running on.
