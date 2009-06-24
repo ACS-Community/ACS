@@ -111,6 +111,7 @@ public class ThreadLoopRunnerTest extends TestCase
 				threadLoopRunner.suspendLoop();
 				assertFalse(threadLoopRunner.isLoopRunning());
 				assertFalse(threadLoopRunner.isDisabled());
+				assertEquals(delayMode, threadLoopRunner.getDelayMode());
 				Thread.sleep((actionWaitMillis + delayMillis)*2);
 				assertEquals(expectedInvocationsPerCycle, myAction.getCount());
 				
@@ -156,20 +157,22 @@ public class ThreadLoopRunnerTest extends TestCase
 			StopWatch sw = new StopWatch();
 			delayMillis = 200;
 			threadLoopRunner.setDelayTime(delayMillis, TimeUnit.MILLISECONDS);
-			assertTrue("Our 1-second- task should have blocked the setDelayTime call for at least 800 ms", sw
-					.getLapTimeMillis() >= 800);
+			assertTrue("Our 1-second- task should have blocked the setDelayTime call for at least 800 ms", 
+					sw.getLapTimeMillis() >= 800);
 			assertTrue(threadLoopRunner.isLoopRunning());
 			assertEquals(delayMillis, threadLoopRunner.getDelayTimeMillis());
 			// verify after 10 repetitions that the new shorter delay time was applied
 			sync = new CountDownLatch(10);
 			myAction.reset(sync);
-			assertTrue("Got timeout, after just " + myAction.getCount() + " task executions", sync.await(
-					(actionWaitMillis + delayMillis) * 10 + 100, TimeUnit.MILLISECONDS));
+			assertTrue("Got timeout, after just " + myAction.getCount() + " task executions", 
+					sync.await((actionWaitMillis + delayMillis) * 10 + 100, TimeUnit.MILLISECONDS));
+			assertTrue("Failed to shutdown in 150 ms", threadLoopRunner.shutdown(150, TimeUnit.MILLISECONDS));
 		}
-		finally {
+		catch (Exception ex) {
 			if (threadLoopRunner != null) {
-				assertTrue(threadLoopRunner.shutdown(100, TimeUnit.MILLISECONDS));
+				threadLoopRunner.shutdown(1000, TimeUnit.MILLISECONDS);
 			}
+			throw ex;
 		}
 	}
 
