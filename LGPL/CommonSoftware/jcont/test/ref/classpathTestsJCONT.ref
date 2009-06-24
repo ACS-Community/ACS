@@ -30,7 +30,7 @@
 1 - <LoggingConfig xmlns="urn:schemas-cosylab-com:LoggingConfig:1.0"
 1 -     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 1 -     minLogLevel="2" minLogLevelLocal="2" centralizedLogger="Log"
-1 -     dispatchPacketSize="10" immediateDispatchLevel="10"
+1 -     dispatchPacketSize="100" immediateDispatchLevel="10"
 1 -     flushPeriodSeconds="10" maxLogQueueSize="1000" xsi:type="LoggingConfig">
 1 -     <_ minLogLevel="6" minLogLevelLocal="6" Name="jacorb@testContainer"/>
 1 - </LoggingConfig> with env vars having precedence over CDB
