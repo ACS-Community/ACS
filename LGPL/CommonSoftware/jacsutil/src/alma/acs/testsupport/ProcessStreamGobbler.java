@@ -13,9 +13,15 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Continuously reads the stdout and stderr streams of {@link Process} in separate threads, 
- * so that the OS will not block out the JVM, as it could happen if lines are read from these streams sequentially in one thread.
- * This class is only useful if the output is either not interesting at all for the user,
- * or if the output should be read only after the process has terminated. Otherwise the streams should be read directly without using this class.
+ * so that the OS will not block out the JVM, as it could otherwise happen if lines are read from these streams sequentially in one thread.
+ * <p>
+ * This class is only useful if the external process's output is either not interesting at all for the user,
+ * or if the output should be read only after the process has terminated. 
+ * Otherwise the streams should be read directly without using this class.
+ * <p>
+ * The {@link #gobble(long, TimeUnit)} call returns either when both stdout and stderr streams deliver a null, 
+ * or if the timeout is reached. @TODO check if relying on the null from both streams is
+ * as robust as {@link Process#waitFor()}.
  * 
  * @author hsommer
  */
@@ -27,6 +33,7 @@ public class ProcessStreamGobbler
 	private final ThreadFactory tf;
 	private GobblerRunnable runErr;
 	private GobblerRunnable runOut;
+	private volatile boolean DEBUG = false;
 
 	/**
 	 * @param proc The process whose streams we want to read.
@@ -59,10 +66,11 @@ public class ProcessStreamGobbler
 	 */
 	public boolean gobble(long timeout, TimeUnit unit) throws InterruptedException {
 		ExecutorService exsrv = Executors.newFixedThreadPool(2, tf);
-		runOut = new GobblerRunnable(proc.getInputStream(), stdout);
+		runOut = new GobblerRunnable(proc.getInputStream(), stdout, "stdout", DEBUG);
 		exsrv.submit(runOut);
-		runErr = new GobblerRunnable(proc.getErrorStream(), stderr);
+		runErr = new GobblerRunnable(proc.getErrorStream(), stderr, "stderr", DEBUG);
 		exsrv.submit(runErr);
+		exsrv.shutdown();
 		return exsrv.awaitTermination(timeout, unit);
 	}
 
@@ -100,25 +108,39 @@ public class ProcessStreamGobbler
 		}
 	}
 	
+	public void setDebug(boolean DEBUG) {
+		this.DEBUG = DEBUG;
+	}
+	
 	private static class GobblerRunnable implements Runnable {
 		
 		private final BufferedReader br;
 		private final List<String> buffer;
 		private boolean hasReadError;
+		private String name;
+		private final boolean DEBUG;
 		
-		GobblerRunnable(InputStream stream, List<String> buffer) {
+		GobblerRunnable(InputStream stream, List<String> buffer, String name, boolean DEBUG) {
 			br = new BufferedReader(new InputStreamReader(stream));
 			this.buffer = buffer;
 			hasReadError = false;
+			this.name = name;
+			this.DEBUG = DEBUG;
 		}
 
 		public void run() {
 			try {
 				String line = null;
 				while ((line = br.readLine()) != null) {
+					if (DEBUG) {
+						System.out.println(name + ": "+ line);
+					}
 					if (buffer != null) {
 						buffer.add(line);
 					}
+				}
+				if (DEBUG) {
+					System.out.println(name + ": DONE");
 				}
 			} catch (IOException ioe) {
 				ioe.printStackTrace();
