@@ -1,27 +1,24 @@
 package alma.acs.testsupport;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import alma.acs.concurrent.DaemonThreadFactory;
+
 /**
- * Helper class to be used by tests which need to verify that some other process
- * exists or does not exist, or that need to kill some process.
- * <b>Never use this class in operational code!</b>
- * <p>
- * @TODO If we see problems with blocking streams from Runtime.exec,
- * apply tricks from 
- * http://www.javaworld.com/javaworld/jw-12-2000/jw-1229-traps.html
- * http://www.velocityreviews.com/forums/t294249-running-special-programs-through-runtime-exec.html
+ * Helper class to be used by tests which need to verify that some other process exists 
+ * or does not exist, or that need to kill some process.
+ * <b>Don't use this class in operational code!</b>
  */
 public class ProcessUtil
 {
 	private final Logger logger;
+	private volatile boolean DEBUG = false;
 
 	public ProcessUtil(Logger logger) {
 		this.logger = logger;
@@ -59,6 +56,10 @@ public class ProcessUtil
 	 * <p>
 	 * @TODO Currently this method works only on Linux because it uses the "kill -9" command.
 	 * 
+	 * @TODO Currently the stdout and stderr from running "kill" are not gobbled because 
+	 *       they are expected to be very small and thus won't block buffers etc. 
+	 *       If they do, then use {@link ProcessStreamGobbler} also here. 
+	 * 
 	 * @param tough if true, a tough way of killing is used (kill -9)
 	 * @return Exit value of the kill command
 	 * @throws IOException 
@@ -70,35 +71,52 @@ public class ProcessUtil
 			command += "-9 ";
 		}
 		command += pid;
-		logger.info("Will kill process using command '" + command + "'.");
+		logger.info("Will kill process " + pid + " using command '" + command + "'.");
 		
-		ProcessBuilder pb = new ProcessBuilder(command);
-		Process killProc = pb.start();
+		Process killProc = Runtime.getRuntime().exec(command);
 		return killProc.waitFor();
 	}
 	
 	
 	/**
-	 * Gets a map with running java main classes and list of the process IDs.
+	 * Gets a map with key=(running java main classes) and value=(list of the process IDs).
 	 * Filters out sun.tools.jps.Jps which is the tool used to get the processes.
 	 * @return Map<classname, pid-list>
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
 	protected Map<String, List<String>> getJavaPIDs() throws IOException {
 		// The following command returns lines of the format
 		// 23551 com.cosylab.acs.maci.manager.app.Manager
 		// 29113 sun.tools.jps.Jps
 		String command = "jps -l";
-
+		Process proc = Runtime.getRuntime().exec(command);
+		ProcessStreamGobbler gob = null;
+		try {
+			gob = new ProcessStreamGobbler(proc, new DaemonThreadFactory(), true);
+			gob.setDebug(DEBUG);
+			// read stdout and stderr
+			if (!gob.gobble(10, TimeUnit.SECONDS)) {
+				throw new IOException("Failed to execute command '" + command + "' within 10 seconds");
+			}
+			if (gob.hasStreamReadErrors()) {
+				throw new IOException("Failed to read output of command '" + command + "'");
+			}
+		} catch (InterruptedException ex) {
+			throw new IOException("Thread reading output of command '" + command + "' got interrupted.");
+		} 
+		finally {
+			if (gob != null) {
+				gob.closeStreams();
+			}
+		}
+		// evaluate jps output
 		Map<String, List<String>> pidMap = new HashMap<String, List<String>>();
-
-		Runtime rt = Runtime.getRuntime();
-		BufferedReader br = new BufferedReader(new InputStreamReader(rt.exec(command).getInputStream()));
-		String line = null;
+		
+		List<String> outlines = gob.getStdout();
 		String[] splitLine = null;
-		while ((line = br.readLine()) != null) {
-			if (line.length() > 0 && 
-				(splitLine = line.split(" ")).length == 2) {
+		for (String line : outlines) {
+			if (line.length() > 0 && (splitLine = line.split(" ")).length == 2) {
 				String cname = splitLine[1];
 				if (!"sun.tools.jps.Jps".equals(cname)) {
 					String pid = splitLine[0];
@@ -111,9 +129,11 @@ public class ProcessUtil
 				logger.info("jps returned unexpected line '" + line + "'");
 			}
 		}
-		br.close();
 		return pidMap;
 	}
 	
+	public void setDebug(boolean DEBUG) {
+		this.DEBUG = DEBUG;
+	}
 }
 
