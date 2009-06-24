@@ -142,4 +142,8 @@ public class LogEmptyImpl implements AcsLogServiceOperations
 	@Override
 	public void destroy() {
 	}
+	@Override
+	public int getNumberOfLogs() {
+		return 0;
+	}
 }
