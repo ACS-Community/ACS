@@ -30,7 +30,12 @@ configuration parameters.</xs:documentation>
 			</xs:element>
 			<xs:element name="ServiceComponents" type="cdb:Array">
 				<xs:annotation>
-					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the meneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+					<xs:documentation>This is a list of names that have be handle by the Manager as services. When a request for a Component with this name is given, the maneger will try first to see if there is already a service with that name registered in the Naming Service. Only if it fails it will treat it as a real component.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ServiceDaemons" type="cdb:Array" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>This is a list of host addresses (names) where service daemons are running. Manager will provide its reference to all daemons in the list; this will give daemons access to all other services in the system (e.g. CDB).</xs:documentation>
 				</xs:annotation>
 			</xs:element>
             <xs:element name="LoggingConfig" type="log:LoggingConfig" minOccurs="1" />
