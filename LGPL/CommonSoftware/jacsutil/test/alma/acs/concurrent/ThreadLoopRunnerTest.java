@@ -3,6 +3,7 @@ package alma.acs.concurrent;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -136,6 +137,7 @@ public class ThreadLoopRunnerTest extends TestCase
 		MyAction myAction = new MyAction(sync, actionWaitMillis, logger);
 
 		ThreadLoopRunner threadLoopRunner = null;
+		Exception mainBlockException = null;
 		
 		try {
 			threadLoopRunner = new ThreadLoopRunner(myAction, delayMillis, TimeUnit.MILLISECONDS, tf, logger);
@@ -166,13 +168,24 @@ public class ThreadLoopRunnerTest extends TestCase
 			myAction.reset(sync);
 			assertTrue("Got timeout, after just " + myAction.getCount() + " task executions", 
 					sync.await((actionWaitMillis + delayMillis) * 10 + 100, TimeUnit.MILLISECONDS));
-			assertTrue("Failed to shutdown in 150 ms", threadLoopRunner.shutdown(150, TimeUnit.MILLISECONDS));
 		}
-		catch (Exception ex) {
+		catch (Exception ex1) {
+			mainBlockException = ex1;
+		}
+		finally {
 			if (threadLoopRunner != null) {
-				threadLoopRunner.shutdown(1000, TimeUnit.MILLISECONDS);
+				try {
+					assertTrue("Failed to shutdown thread loop runner in 1000ms.", 
+							threadLoopRunner.shutdown(1000, TimeUnit.MILLISECONDS));
+				} catch (Exception ex2) {
+					if (mainBlockException != null) {
+						throw mainBlockException;
+					}
+					else {
+						throw ex2;
+					}
+				}
 			}
-			throw ex;
 		}
 	}
 
