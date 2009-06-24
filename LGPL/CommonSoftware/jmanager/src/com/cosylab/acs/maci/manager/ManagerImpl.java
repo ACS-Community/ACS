@@ -3387,7 +3387,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw new RuntimeException("Failed to resolve service daemon reference '" + daemons[i] + "'.");
 
 			} catch (Throwable th) {
-				logger.log(Level.CONFIG,"Failed to set manager reference on service daemon on host '"+daemons[i]+"'.", th);
+				// do not make scarry logs...
+				logger.config("Failed to set manager reference on service daemon on host '"+daemons[i]+"'.");
+				//logger.log(Level.CONFIG,"Failed to set manager reference on service daemon on host '"+daemons[i]+"'.", th);
 			}
 			
 		}
