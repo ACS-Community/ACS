@@ -173,6 +173,9 @@ public class ThreadLoopRunner
 		if (isDefunct.get()) {
 			throw new IllegalStateException("object already disabled");
 		}
+		if (delayMode == null) {
+			throw new IllegalArgumentException("delayMode must not be null");
+		}
 		if (isLoopRunning()) {
 			throw new IllegalStateException("Cannot set delay mode while the loop is running");
 		}
@@ -236,7 +239,7 @@ public class ThreadLoopRunner
 	 * as a {@link CancelableRunnable}.
 	 * Note also that this call returns quickly, without waiting for a possibly running action to finish.
 	 * <p>
-	 * The loop can be started again later via {@link #runLoop(ScheduleDelayMode)}.
+	 * The loop can be started again later via {@link #runLoop()}.
 	 * Suspending and restarting the loop does not lead to the creation of a new Thread.
 	 * 
 	 * @throws IllegalStateException if called after shutdown. 
@@ -249,7 +252,6 @@ public class ThreadLoopRunner
 		if (loop != null) {
 			loop.cancel(false);
 			loop = null;
-			delayMode = null;
 		}
 	}
 	
