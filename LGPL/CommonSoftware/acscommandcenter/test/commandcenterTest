@@ -20,5 +20,4 @@
 # MA 02111-1307  USA
 #
 
-acsStartJava --noDirectory -noexport -endorsed -noClassLoader alma.acs.testsupport.tat.TATJUnitRunner alma.acs.commandcenter.AccTests
-
+acsStartJava --noDirectory -noexport -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acs.commandcenter.AccTests
