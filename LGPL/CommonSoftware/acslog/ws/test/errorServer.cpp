@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: errorServer.cpp,v 1.13 2006/12/14 08:35:29 bjeram Exp $"
+* "@(#) $Id: errorServer.cpp,v 1.14 2009/06/24 15:19:51 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,12 +26,12 @@
 * almamgr  20/06/01  created
 */
 
-static char *rcsId="@(#) $Id: errorServer.cpp,v 1.13 2006/12/14 08:35:29 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: errorServer.cpp,v 1.14 2009/06/24 15:19:51 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "ESTestImpl.h"
 #include <orbsvcs/CosNamingC.h>
-#include <orbsvcs/orbsvcs/DsLogAdminC.h>
+#include <logging_idlC.h>
 #include <acsutilPorts.h>
 
 #ifdef MAKE_VXWORKS
@@ -102,7 +102,7 @@ int acslogErrorServer (char *szCmdLn){
 
 	  if (!CORBA::is_nil (log_obj.in()))
 	    {
-	      DsLogAdmin::Log_var logger = DsLogAdmin::Log::_narrow(log_obj.in());
+	      Logging::AcsLogService_var logger = Logging::AcsLogService::_narrow(log_obj.in());
 	      ACS_DEBUG ("acslogErrorServer", "Logging Service resolved !");
 
 	      m_logger->setCentralizedLogger(logger.in());
