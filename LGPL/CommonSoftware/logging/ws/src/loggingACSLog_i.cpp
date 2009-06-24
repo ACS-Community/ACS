@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.7 2009/06/17 20:30:12 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.8 2009/06/24 22:52:54 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -50,15 +50,16 @@ using namespace loggingXMLParser;
   if (acsLogType && *acsLogType){
     if(strcmp("true", acsLogType) == 0)
         m_logBin = true; 
-  } 
+  }
+  counter = new LoggingServiceMessageCounter(&logStat.receivedLogs);
 
 }
 
 
 ACSLog_i::~ACSLog_i ()
 {
-	std::cout << "Number of Logs: " << counter.getNMessages() << std::endl;
-	std::cout << "Performance: " << counter.getMessagesMetric() << std::endl;
+	std::cout << "Number of Logs: " << counter->getNMessages() << std::endl;
+	std::cout << "Performance: " << counter->getMessagesMetric() << std::endl;
 }
 
 void
@@ -163,12 +164,13 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
 }
 
 
-LoggingServiceMessageCounter::LoggingServiceMessageCounter(){
+LoggingServiceMessageCounter::LoggingServiceMessageCounter(unsigned long long *m){
+	messages=m;
 	resetCounter();
 }
 
 void LoggingServiceMessageCounter::resetCounter(){
-	messages=0;
+	*messages=0;
 	gettimeofday(&i_time, NULL);
 }
 
@@ -181,14 +183,16 @@ double LoggingServiceMessageCounter::getMessagesMetric(){
 		retval = (double) (e_time.tv_sec - i_time.tv_sec) - retval;
 	else
 		retval = (double) (e_time.tv_sec - i_time.tv_sec) + retval;
-	retval = messages/retval;
+	retval = *messages/retval;
 	return retval;
 }
 
-unsigned long LoggingServiceMessageCounter::getNMessages(){
-	return messages;
+unsigned long long LoggingServiceMessageCounter::getNMessages(){
+	unsigned long long retval;
+	retval = *messages;
+	return retval;
 }
 
 void LoggingServiceMessageCounter::operator++(int){
-	messages++;
+	(*messages)++;
 }

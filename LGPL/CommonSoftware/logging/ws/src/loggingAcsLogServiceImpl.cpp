@@ -19,7 +19,7 @@ AcsLogServiceImpl::~AcsLogServiceImpl()
 {
 }
 
-void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
+void AcsLogServiceImpl::writeRecords (const Logging::XmlLogRecordSeq &reclist)
 {
 	
 	if (reclist.length() <= 0)
@@ -74,7 +74,7 @@ void AcsLogServiceImpl::writeRecord (const Logging::XmlLogRecordSeq &reclist)
 	}
 }
 
-CORBA::ULong AcsLogServiceImpl::getNumberOfLogs()
+Logging::LogStatistics AcsLogServiceImpl::getStatistics()
 {
-	return counter.getNMessages();
+	return logStat;
 }

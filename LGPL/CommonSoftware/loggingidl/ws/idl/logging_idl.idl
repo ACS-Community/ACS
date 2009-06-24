@@ -168,9 +168,25 @@ Header,
 
 module Logging
 {
+	/**
+	  * Struct used to send Log Records through ACS Custom Log Service
+	  */
 	struct XmlLogRecord{
+		// xml string that represents the Log
 		string xml;
+
+		// Log level of the log record
 		AcsLogLevels::logLevelValue logLevel;
+	};
+
+	/**
+	  * Struct used to retrive statistics of the ACS Custom Log Service
+	  */
+	struct LogStatistics{
+		/**
+		  * Number of the Logs received by the ACS custon log service
+		  */
+		unsigned long long receivedLogs;
 	};
 
 	typedef sequence<XmlLogRecord> XmlLogRecordSeq;
@@ -181,9 +197,15 @@ module Logging
 		/**
 		 * Write a record as XML string format
 		 */
-		void writeRecord(in XmlLogRecordSeq xmlLogRecords);
+		void writeRecords(in XmlLogRecordSeq xmlLogRecords);
+
+		/**
+		  * return a struct containing statistics of 
+		  * ACS Custom Log Service. <br>
+		  * @see LogStatistics
+		  */ 
+		LogStatistics getStatistics();
 		
-		unsigned long getNumberOfLogs();
 	};
 
 	interface ACSLogFactory : DsLogAdmin::BasicLogFactory

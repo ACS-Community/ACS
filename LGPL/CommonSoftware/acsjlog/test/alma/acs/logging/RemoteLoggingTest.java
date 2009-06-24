@@ -167,7 +167,7 @@ public class RemoteLoggingTest extends TestCase
 			}
 			
 			@Override
-			public void writeRecord(XmlLogRecord[] xmlLogRecords) {
+			public void writeRecords(XmlLogRecord[] xmlLogRecords) {
 				for (XmlLogRecord record : xmlLogRecords) {
 					// just print to stdout, to be verified by TAT
 					System.out.println("Remote log: " + record.xml);

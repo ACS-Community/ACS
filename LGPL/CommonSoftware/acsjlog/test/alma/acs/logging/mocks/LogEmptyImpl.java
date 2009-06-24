@@ -31,6 +31,7 @@ import org.omg.DsLogAdmin.UnsupportedQoS;
 import org.omg.DsLogAdmin.WeekMaskItem;
 
 import alma.Logging.AcsLogServiceOperations;
+import alma.Logging.LogStatistics;
 import alma.Logging.XmlLogRecord;
 
 public class LogEmptyImpl implements AcsLogServiceOperations 
@@ -136,14 +137,14 @@ public class LogEmptyImpl implements AcsLogServiceOperations
 	}
 	
 	@Override
-	public void writeRecord(XmlLogRecord[] xmlLogRecords) {
+	public void writeRecords(XmlLogRecord[] xmlLogRecords) {
 		
 	}
 	@Override
 	public void destroy() {
 	}
 	@Override
-	public int getNumberOfLogs() {
-		return 0;
+	public LogStatistics getStatistics() {
+		return new LogStatistics();
 	}
 }

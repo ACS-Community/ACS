@@ -245,7 +245,7 @@ class RemoteLogDispatcher {
 	 * @param remoteLogRecords
 	 */
 	protected void writeRecords(XmlLogRecord[] remoteLogRecords) {
-		logService.writeRecord(remoteLogRecords);
+		logService.writeRecords(remoteLogRecords);
 	}
 
 

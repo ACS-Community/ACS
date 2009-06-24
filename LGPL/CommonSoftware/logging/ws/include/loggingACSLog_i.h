@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.6 2009/06/17 20:30:12 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.7 2009/06/24 22:52:54 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -37,6 +37,8 @@
 
 #include <orbsvcs/Log/BasicLog_i.h>
 
+#include <logging_idlC.h>
+
 #include "loggingACSStructuredPushSupplier.h"
 
 #define LOG_BIN_TYPE 0
@@ -45,11 +47,11 @@
 class LoggingServiceMessageCounter
 {
 	private:
-		unsigned long messages;
+		unsigned long long *messages;
 		struct timeval i_time;
 	public:
 
-		LoggingServiceMessageCounter();
+		LoggingServiceMessageCounter(unsigned long long *m);
 
 		void resetCounter();
 		
@@ -57,7 +59,7 @@ class LoggingServiceMessageCounter
 		double getMessagesMetric();
 
 		// Get the number of Log messages registered
-		unsigned long getNMessages();
+		unsigned long long getNMessages();
 
 		void operator++(int);
 };
@@ -109,7 +111,8 @@ class ACSLog_i : public TAO_BasicLog_i
     bool m_logBin; 
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
-    LoggingServiceMessageCounter counter;
+    Logging::LogStatistics logStat;
+    LoggingServiceMessageCounter *counter;
 
 };
 
