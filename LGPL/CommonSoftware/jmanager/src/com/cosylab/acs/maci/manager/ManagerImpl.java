@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.acs.util.ACSPorts;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 import alma.jmanagerErrType.wrappers.AcsJCyclicDependencyDetectedEx;
 import alma.jmanagerErrType.wrappers.AcsJSyncLockFailedEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
@@ -9289,25 +9291,85 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	/************************* [ Prevayler methods ] *****************************/
 	/*****************************************************************************/
 
+	// ALARM SYSTEM codes
+	protected final static String FAULT_FAMILY = "Manager";
+	protected final static String FAULT_MEMBER = "Prevayler";
+	protected final static int FAULT_CODE = 2;
+
+	private volatile AtomicBoolean prevaylerAlarmState = new AtomicBoolean(true);	// we must clear it on startup
+
+	/**
+	 * Convenience method for send_alarm with given state.
+	 *
+	 * @param faultMember
+	 * @param state
+	 */
+	public void reportPrevaylerState(final boolean raise, Throwable alarmEx) {
+		
+		// ignore duplicate requests
+		if (prevaylerAlarmState.getAndSet(raise) == raise)
+			return;
+		
+		// log message
+		if (raise)
+			logger.log(Level.SEVERE, "Manager persistance subsystem failed to store pesistent data.", alarmEx);
+		else
+			logger.log(Level.INFO, "Manager peristance subsystem is functional.");
+		
+		// if no alarm system initialized ignore
+		if (alarmSource == null)
+			return;
+
+		// do not block
+		try
+		{
+			threadPool.execute(new Runnable() {
+				public void run() {
+					try {
+						ACSFaultState fs = ACSAlarmSystemInterfaceFactory.createFaultState(FAULT_FAMILY, FAULT_MEMBER, FAULT_CODE);
+						fs.setDescriptor(raise ? ACSFaultState.ACTIVE : ACSFaultState.TERMINATE);
+						fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
+						alarmSource.push(fs);
+					} catch (Throwable th) {
+						logger.log(Level.WARNING, "Failed to send alarm.", th);
+					}
+				}
+			});
+		} catch (Throwable th) {
+			logger.log(Level.WARNING, "Failed to put send alarm async request to queue.", th);
+		}
+		
+	}
+	
 	/**
 	 * @param command
 	 * @return
 	 */
-	private Serializable executeCommand(Command command) /*!!!throws Exception*/
+	
+	private Serializable executeCommand(Command command) throws NoResourcesException
 	{
-		try
+		if (prevayler != null)
 		{
-			if (prevayler != null)
-				return prevayler.executeCommand(command);
-			else
-				return command.execute(this);
+			try {
+				final Serializable retVal = prevayler.executeCommand(command);
+				reportPrevaylerState(false, null);
+				return retVal;
+			} catch (IOException ioex) {
+				// filesystem error, prevailey failed
+				// log, raise alarm and bypass prevayler (do not return here)
+				reportPrevaylerState(true, ioex);
+			} catch (Throwable th) {
+				// most likely command execution error
+				throw new NoResourcesException("Failed to execute command.", th);
+			}
+			
 		}
-		catch (Throwable th)
-		{
-			// no command should throw an exception !!!
-			// this has to be handled in a nice way
-			th.printStackTrace();
-			return null;
+		
+		// bypass prevayler
+		try {
+			return command.execute(this);
+		} catch (Throwable th) {
+			throw new NoResourcesException("Failed to execute command.", th);
 		}
 	}
 
