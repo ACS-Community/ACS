@@ -93,18 +93,21 @@ public class ProcessStreamGobbler
 	}
 	
 	public void closeStreams() {
-		try {
-			runOut.br.close();
+		if (runOut != null) {
+			try {
+				runOut.br.close();
+			}
+			catch (Throwable thr) {
+				thr.printStackTrace();
+			}
 		}
-		catch (Throwable thr) {
-			thr.printStackTrace();
-		}
-		
-		try {
-			runErr.br.close();
-		}
-		catch (Throwable thr) {
-			thr.printStackTrace();
+		if (runErr != null) {
+			try {
+				runErr.br.close();
+			}
+			catch (Throwable thr) {
+				thr.printStackTrace();
+			}
 		}
 	}
 	
