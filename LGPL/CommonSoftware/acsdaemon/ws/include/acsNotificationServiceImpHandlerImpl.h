@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.4 2009/06/12 13:32:14 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.5 2009/06/24 11:26:45 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,7 +42,7 @@ typedef std::map<ACSServiceRequestDescription*, NotificationServiceMonitor*> Mon
 class ACSNotificationServiceImpHandlerImpl : public ACSImpBaseHandlerImpl<ACSNotificationServiceImpHandlerImpl>, public POA_acsdaemon::NotificationServiceImp {
 private:
   MonitorMap monitorMap;
-
+  int intervalCount;
 public:
 
     ACSNotificationServiceImpHandlerImpl() : ACSImpBaseHandlerImpl<ACSNotificationServiceImpHandlerImpl>(NOTIFICATION_SERVICE) {}
@@ -117,7 +117,12 @@ public:
 		ACS_SHORT_LOG((LM_ERROR, "%s does not extend required interface, reported as defunctional.", desc->getName()));
 		return acsdaemon::DEFUNCT;
     }
-
+    
+    // do not monitor alarm notification service
+    if (ACE_OS::strcmp(desc->getName(), "AlarmNotifyEventChannelFactory") == 0 ||
+        ACE_OS::strcmp(desc->getName(), "Alarm") == 0)
+      return acsdaemon::RUNNING;
+    
     if (monitorMap.find(desc) == monitorMap.end())
     {
       CosNotifyChannelAdmin::EventChannelFactory_var ecf = CosNotifyChannelAdmin::EventChannelFactory::_narrow(obj);
