@@ -11,7 +11,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - RequestProcessorThread::RequestProcessorThread] 
 1 - ----------T--:--:--.--- [GlobalLogger - ServiceControlThread::ServiceControlThread] 
 1 - ----------T--:--:--.--- [ACS Services Daemon - acsDaemonImpl<T>::run] 
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Command line is: -ORBEndpoint iiop://a.b.c.d:3014
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Command line is: -ORBEndpoint iiop://a.b.c.d:2980
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting up the ACS Services Daemon...
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] ACS Services Daemon is initialized.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] ACS Services Daemon is up and running...
