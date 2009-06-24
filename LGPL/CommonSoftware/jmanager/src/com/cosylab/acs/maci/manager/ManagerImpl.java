@@ -87,6 +87,7 @@ import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.ServiceDaemon;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.TimeoutRemoteException;
@@ -1001,6 +1002,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	{
 		threadPool.execute(new Runnable() {
 			public void run() {
+				initializeServiceDaemons();
 				autoStartComponents();
 			}
 		});
@@ -3347,6 +3349,48 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (requireTopologySort)
 			topologySortManager.notifyTopologyChange(containerInfo.getHandle());
 
+	}
+
+	/**
+	 * Provices its own address to daemons.
+	 */
+	private void initializeServiceDaemons()
+	{
+		// get CDB access daos
+		DAOProxy dao = getManagerDAOProxy();
+
+		// no data
+		if (dao == null)
+			return;
+
+		String[] daemons;
+		try
+		{
+			// query service daemon array
+			daemons = dao.get_string_seq("ServiceDaemons");
+		}
+		catch (Throwable th)
+		{
+			// parameter is optional
+			logger.log(Level.FINE, "No list of service daemons available.", th);
+			return;
+		}
+
+		for (int i = 0; i < daemons.length; i++)
+		{
+			try
+			{
+				ServiceDaemon daemon = transport.getServiceDaemon(daemons[i]);
+				if (daemon != null)
+					daemon.setManagerReference(transport.getManagerReference());
+				else
+					throw new RuntimeException("Failed to resolve service daemon reference '" + daemons[i] + "'.");
+
+			} catch (Throwable th) {
+				logger.log(Level.CONFIG,"Failed to set manager reference on service daemon on host '"+daemons[i]+"'.", th);
+			}
+			
+		}
 	}
 
 	/**

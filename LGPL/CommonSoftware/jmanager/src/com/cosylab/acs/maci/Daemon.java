@@ -5,7 +5,7 @@
 package com.cosylab.acs.maci;
 
 /**
- * ACS daemon IF.
+ * ACS service daemon IF.
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */

@@ -24,4 +24,11 @@ public interface Transport
 	 * @return daemon instance, <code>null</code> if failed.
 	 */
 	Daemon getDaemon(String host);
+
+	/**
+	 * Get service daemon on host.
+	 * @param host remote host.
+	 * @return service daemon instance, <code>null</code> if failed.
+	 */
+	ServiceDaemon getServiceDaemon(String host);
 }

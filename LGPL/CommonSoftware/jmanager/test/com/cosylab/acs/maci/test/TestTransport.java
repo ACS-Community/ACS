@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cosylab.acs.maci.Daemon;
+import com.cosylab.acs.maci.ServiceDaemon;
 import com.cosylab.acs.maci.Transport;
 
 /**
@@ -50,4 +51,13 @@ public class TestTransport implements Transport {
 			daemons.put(host, daemon);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Transport#getServiceDaemon(java.lang.String)
+	 */
+	public ServiceDaemon getServiceDaemon(String host) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }

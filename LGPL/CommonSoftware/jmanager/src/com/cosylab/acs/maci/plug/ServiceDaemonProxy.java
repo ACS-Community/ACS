@@ -9,10 +9,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import com.cosylab.acs.maci.Daemon;
-import com.cosylab.acs.maci.RemoteException;
+import alma.acsdaemon.ServicesDaemonHelper;
 
-import alma.acsdaemon.ContainerDaemonHelper;
+import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.ServiceDaemon;
 
 
 /**
@@ -21,39 +21,39 @@ import alma.acsdaemon.ContainerDaemonHelper;
  * @author		Matej Sekoranja (matej.sekoranja@cosylab.com)
  * @version	@@VERSION@@
  */
-public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, Serializable
+/**
+ * @author msekoranja
+ *
+ */
+public class ServiceDaemonProxy extends CORBAReferenceSerializator implements ServiceDaemon, Serializable
 {
 
 	/**
 	 * Serial version UID.
 	 */
-	private static final long serialVersionUID = -5090533056497509226L;
+	private static final long serialVersionUID = -5090533056497509227L;
 
 	/**
 	 * CORBA reference.
 	 */
-	protected alma.acsdaemon.ContainerDaemon daemon;
+	protected alma.acsdaemon.ServicesDaemon daemon;
 
 	/**
-	 * Constructor for DaemonProxy.
+	 * Constructor for ServiceDaemonProxy.
 	 * @param	daemon	CORBA reference, non-<code>null</code>.
 	 */
-	public DaemonProxy(alma.acsdaemon.ContainerDaemon daemon)
+	public ServiceDaemonProxy(alma.acsdaemon.ServicesDaemon daemon)
 	{
 		this.daemon = daemon;
 	}
 
-	/**
-	 * @see com.cosylab.acs.maci.Daemon#startContainer(java.lang.String, java.lang.String, short, java.lang.String)
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.ServiceDaemon#setManagerReference(java.lang.String)
 	 */
-	public void startContainer(String containerType, String containerName,
-			short instanceNumber, String flags) throws RemoteException {
+	public void setManagerReference(String reference) throws RemoteException {
 		try
 		{
-			// @TODO: get typeModifiers from the CDB, 
-			// see http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html
-			String[] typeModifiers = new String[0];
-			daemon.start_container(containerType, containerName, instanceNumber, typeModifiers, flags);
+			daemon.set_manager_reference(reference);
 		}
 		catch (Exception ex)
 		{
@@ -66,7 +66,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	 * Returns the daemon.
 	 * @return alma.acsdaemon.Daemon
 	 */
-	public alma.acsdaemon.ContainerDaemon getDaemon()
+	public alma.acsdaemon.ServicesDaemon getServiceDaemon()
 	{
 		return daemon;
 	}
@@ -89,7 +89,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
         throws IOException, ClassNotFoundException
     {
 		try {
-			daemon = ContainerDaemonHelper.narrow(deserialize((String)stream.readObject()));
+			daemon = ServicesDaemonHelper.narrow(deserialize((String)stream.readObject()));
 		}
 		catch (Exception e) {
 			// silent here and set reference to null.
@@ -106,7 +106,7 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	public String toString()
 	{
 		StringBuffer sbuff = new StringBuffer();
-		sbuff.append("DaemonProxy = { ");
+		sbuff.append("ServiceDaemonProxy = { ");
 		sbuff.append("daemon = '");
 		sbuff.append(daemon);
 		sbuff.append("' }");
@@ -120,22 +120,22 @@ public class DaemonProxy extends CORBAReferenceSerializator implements Daemon, S
 	{
 		if (daemon == null)
 			return (obj == null);
-		else if (obj instanceof alma.acsdaemon.ContainerDaemon)
+		else if (obj instanceof alma.acsdaemon.ServicesDaemon)
 		{
 			try
 			{
-				return daemon._is_equivalent((alma.acsdaemon.ContainerDaemon)obj);
+				return daemon._is_equivalent((alma.acsdaemon.ServicesDaemon)obj);
 			}
 			catch (Exception ex)
 			{
 				return false;
 			}
 		}
-                else if (obj instanceof DaemonProxy)
+                else if (obj instanceof ServiceDaemonProxy)
                 {
                         try
                         {
-                                return daemon._is_equivalent(((DaemonProxy)obj).getDaemon());
+                                return daemon._is_equivalent(((ServiceDaemonProxy)obj).getServiceDaemon());
                         }
                         catch (Exception ex)
                         {
