@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.7 2009/06/24 22:52:54 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.8 2009/06/25 17:35:13 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -43,27 +43,6 @@
 
 #define LOG_BIN_TYPE 0
 #define LOG_XML_TYPE 1
-
-class LoggingServiceMessageCounter
-{
-	private:
-		unsigned long long *messages;
-		struct timeval i_time;
-	public:
-
-		LoggingServiceMessageCounter(unsigned long long *m);
-
-		void resetCounter();
-		
-		// Number of messages / elapsed time
-		double getMessagesMetric();
-
-		// Get the number of Log messages registered
-		unsigned long long getNMessages();
-
-		void operator++(int);
-};
-
 
 /**
  * Implementation of the ACSLog interface (extending BasicLog interface).
@@ -112,8 +91,6 @@ class ACSLog_i : public TAO_BasicLog_i
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
     Logging::LogStatistics logStat;
-    LoggingServiceMessageCounter *counter;
-
 };
 
 

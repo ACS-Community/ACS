@@ -70,7 +70,7 @@ void AcsLogServiceImpl::writeRecords (const Logging::XmlLogRecordSeq &reclist)
 	{
 		logging_event.remainder_of_body <<= reclist[i].xml;
 		m_logging_supplier->send_event (logging_event);
-		counter++;
+		logStat.receivedLogs++;
 	}
 }
 
