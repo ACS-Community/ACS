@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.36 2009/06/09 00:04:18 javarias Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.37 2009/06/25 20:02:47 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -113,7 +113,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.36 2009/06/09 00:04:18 javarias Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.37 2009/06/25 20:02:47 javarias Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -316,6 +316,10 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 
     /// For testing only (not tread-safe)
     int getCacheLogCount() const { if(!m_logBin) return m_cache.size(); else return m_bin_cache.size();}
+
+  protected:
+	 /** If the environment variable LOG_SERVICE_USE_EXTENSIONS is set the new log way will be used*/
+	 char *oldLog;
 
   private:
 

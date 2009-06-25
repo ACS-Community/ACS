@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.71 2009/06/24 22:52:54 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.72 2009/06/25 20:02:47 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.71 2009/06/24 22:52:54 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.72 2009/06/25 20:02:47 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -652,15 +652,23 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // sent record directly to centralized logger
     if (!m_noLogger && (m_cacheDisabled || (priority > m_maxCachePriority)))
 	{
-	Logging::XmlLogRecordSeq reclist;
-	reclist.length(1);
-	reclist[0].xml = xml.c_str();
-//	CORBA::Any record;
-//	record <<= xml.c_str();
-	if (!sendRecord(reclist))
+	 if (oldLog == NULL){
+	    CORBA::Any record;
+	    record <<= xml.c_str();
+	    if (!sendRecord(record))
 	    {
-	    m_cache.push_back(xml);
+	       m_cache.push_back(xml);
 	    }
+	 }
+	 else{
+	    Logging::XmlLogRecordSeq reclist;
+	    reclist.length(1);
+	    reclist[0].xml = xml.c_str();
+	    if (!sendRecord(reclist))
+	    {
+	       m_cache.push_back(xml);
+	    }
+	 }
 	}
     else
 	{
@@ -1056,6 +1064,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
     {
       m_envCentralizePriority = atoi(acsCentralizeLogger);
     }
+
+  oldLog = ACE_OS::getenv("LOG_SERVICE_USE_EXTENSIONS");
 }
 
 LoggingProxy::~LoggingProxy()
@@ -1468,16 +1478,21 @@ LoggingProxy::sendCacheInternal()
 
     if(!m_logBin ){
 		// fill anys
+		DsLogAdmin::Anys anys(m_cache.size());
 		Logging::XmlLogRecordSeq reclist;
-		reclist.length(m_cache.size());
-		//DsLogAdmin::Anys anys(m_cache.size());
-		//anys.length(m_cache.size());
-        int i = 0;
+		if (oldLog == NULL)
+			anys.length(m_cache.size());
+		else
+			reclist.length(m_cache.size());
+       
+	  	int i = 0;
         for (LogDeque::iterator iter = m_cache.begin();
              iter != m_cache.end();
              iter++){
-					reclist[i++].xml = iter->c_str();
-					//anys[i++] <<= iter->c_str();
+					if(oldLog ==NULL)
+						anys[i++] <<= iter->c_str();
+					else
+						reclist[i++].xml = iter->c_str();
 	}
         // we have to unlock before we do a remote call to prevent a deadlock
         // this is just temporary solution. We have to solve the problem in case if we can not send logs to logging system
@@ -1485,8 +1500,10 @@ LoggingProxy::sendCacheInternal()
         // successfully sent, clear cache
         m_cache.clear();
         ace_mon.release();
-        //m_logger->write_records(anys);
-		  m_logger->writeRecords(reclist);
+		  if (oldLog == NULL)
+           m_logger->write_records(anys);
+		  else
+		     m_logger->writeRecords(reclist);
 
         // here we have to acquire the mutex again. Should be done in better way.
         ace_mon.acquire();

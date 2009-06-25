@@ -69,7 +69,8 @@ void AcsLogServiceImpl::writeRecords (const Logging::XmlLogRecordSeq &reclist)
 	for (CORBA::ULong i = 0; i < reclist.length (); i++)
 	{
 		logging_event.remainder_of_body <<= reclist[i].xml;
-		m_logging_supplier->send_event (logging_event);
+		if(supOutput == NULL)
+		   m_logging_supplier->send_event (logging_event);
 		logStat.receivedLogs++;
 	}
 }

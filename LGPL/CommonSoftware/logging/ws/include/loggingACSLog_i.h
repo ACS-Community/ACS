@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.8 2009/06/25 17:35:13 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.9 2009/06/25 20:02:47 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -91,6 +91,9 @@ class ACSLog_i : public TAO_BasicLog_i
     /** The logging supplier */
     ACSStructuredPushSupplier* m_logging_supplier;
     Logging::LogStatistics logStat;
+	 /** if the environmet variable LOG_SERVICE_SUPPRESS_OUTPUT is set,
+	  logging Service supress all the output to the Notification Channel*/
+	 char *supOutput;
 };
 
 

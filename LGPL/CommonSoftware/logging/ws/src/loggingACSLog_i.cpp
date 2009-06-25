@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.9 2009/06/25 17:35:13 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.10 2009/06/25 20:02:47 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -51,6 +51,8 @@ using namespace loggingXMLParser;
     if(strcmp("true", acsLogType) == 0)
         m_logBin = true; 
   }
+
+  supOutput = ACE_OS::getenv("LOG_SERVICE_SUPPRESS_OUTPUT");
 }
 
 
@@ -126,7 +128,8 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
         result = XMLParser::parseElementType(xml, XMLtype);
         
         logging_event.remainder_of_body <<= xml;
-        m_logging_supplier->send_event (logging_event);
+		  if(supOutput == NULL)
+           m_logging_supplier->send_event (logging_event);
         logStat.receivedLogs++;
         /*
           this->check_threshold_list ();
