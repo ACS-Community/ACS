@@ -91,10 +91,9 @@ public class ProcessUtil
 		// 29113 sun.tools.jps.Jps
 		String command = "jps -l";
 		Process proc = Runtime.getRuntime().exec(command);
-		ProcessStreamGobbler gob = null;
+		ProcessStreamGobbler gob = new ProcessStreamGobbler(proc, new DaemonThreadFactory(), true);
+		gob.setDebug(DEBUG);
 		try {
-			gob = new ProcessStreamGobbler(proc, new DaemonThreadFactory(), true);
-			gob.setDebug(DEBUG);
 			// read stdout and stderr
 			if (!gob.gobble(10, TimeUnit.SECONDS)) {
 				throw new IOException("Failed to execute command '" + command + "' within 10 seconds");
@@ -105,11 +104,6 @@ public class ProcessUtil
 		} catch (InterruptedException ex) {
 			throw new IOException("Thread reading output of command '" + command + "' got interrupted.");
 		} 
-		finally {
-			if (gob != null) {
-				gob.closeStreams();
-			}
-		}
 		// evaluate jps output
 		Map<String, List<String>> pidMap = new HashMap<String, List<String>>();
 		

@@ -44,7 +44,6 @@ public class ProcessUtilTest extends TestCase
 		assertEquals("Expected two 'All is well' messages in 3.5 seconds (after ~ 0 and 2 seconds).", 2, msgCount);
 		List<String> stderr = gobbler.getStderr();
 		assertEquals(0, stderr.size());
-		gobbler.closeStreams();
 		
 		// get PID of dummy process	
 		List<String> pidList = processUtil.getJavaPIDs(testClass);
