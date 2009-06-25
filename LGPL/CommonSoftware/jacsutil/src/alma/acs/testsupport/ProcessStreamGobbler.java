@@ -92,25 +92,6 @@ public class ProcessStreamGobbler
 		return (runOut.hasReadError | runErr.hasReadError);
 	}
 	
-	public void closeStreams() {
-		if (runOut != null) {
-			try {
-				runOut.br.close();
-			}
-			catch (Throwable thr) {
-				thr.printStackTrace();
-			}
-		}
-		if (runErr != null) {
-			try {
-				runErr.br.close();
-			}
-			catch (Throwable thr) {
-				thr.printStackTrace();
-			}
-		}
-	}
-	
 	public void setDebug(boolean DEBUG) {
 		this.DEBUG = DEBUG;
 	}
@@ -143,11 +124,28 @@ public class ProcessStreamGobbler
 					}
 				}
 				if (DEBUG) {
-					System.out.println(name + ": DONE");
+					System.out.println(name + ": done reading");
 				}
-			} catch (IOException ioe) {
+			} 
+			catch (IOException ioe) {
 				ioe.printStackTrace();
 				hasReadError = true;
+			}
+			finally {
+				// close the BufferedReader and underlying stream.
+				// It should only be closed in this thread, as otherwise 
+				// we can get a deadlock if this thread waits on br.readLine() and the other on 
+				// the related lock in BufferedReader#close
+				try {
+					br.close();
+					if (DEBUG) {
+						System.out.println(name + ": streams closed.");
+					}
+				} catch (IOException ex) {
+					if (DEBUG) {
+						System.out.println(name + ": streams failed to close.");
+					}
+				}
 			}
 		}
 	}
