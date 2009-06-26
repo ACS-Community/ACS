@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.32 2004/09/16 13:32:19 mpasquat Exp $" 
+# "@(#) $Id: Makefile,v 1.33 2009/06/26 13:47:09 eallaert Exp $" 
 #
 # Makefile of the document utilites
 #
@@ -16,6 +16,7 @@
 # mverola   21/07/98  added docManExtract and docModManBuild
 # mverola   24/08/98  docUnix2Doc changed from script to tcl-script
 # psivera   02/02/01  added docDeroff (for MANPAGES to TXT conversion)
+# eallaert 2009-06-26 added docPrepareComments
 #---------------------------------------------------------------------------
 
 
@@ -69,7 +70,7 @@ SCRIPTS  =  docFMupdate docDos2Unix docExDbDir docDoDbInfo \
             docSelectPreparation docSelectOption docMakeReport \
             docMergeComments docMoveOldVersions docCopyMif\
             docImported4to5.ex docImporting4to5.ex docModManBuild\
-	    docDeroff
+	    docDeroff docPrepareComments
 
 #
 # TCL scripts (public and local)
