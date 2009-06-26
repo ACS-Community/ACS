@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.10 2009/06/25 20:02:47 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.11 2009/06/26 15:23:38 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -53,6 +53,9 @@ using namespace loggingXMLParser;
   }
 
   supOutput = ACE_OS::getenv("LOG_SERVICE_SUPPRESS_OUTPUT");
+  if (supOutput != NULL){
+			 std::cout << "Suppressing output to the Notification Channel. NOT SENDING LOGS" << std::endl;
+  }
 }
 
 

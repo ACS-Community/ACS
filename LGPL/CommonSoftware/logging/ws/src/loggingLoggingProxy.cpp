@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.72 2009/06/25 20:02:47 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.73 2009/06/26 15:23:38 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.72 2009/06/25 20:02:47 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.73 2009/06/26 15:23:38 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1066,6 +1066,9 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
     }
 
   oldLog = ACE_OS::getenv("LOG_SERVICE_USE_EXTENSIONS");
+  if (oldLog!= NULL){
+			 std::cout << "Using Logging Service Extensions" << std::endl;
+  }
 }
 
 LoggingProxy::~LoggingProxy()
