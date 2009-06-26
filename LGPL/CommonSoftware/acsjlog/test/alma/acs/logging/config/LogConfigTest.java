@@ -107,7 +107,7 @@ public class LogConfigTest extends TestCase {
 		logger.info("============ Running testDefaultValues ============");
 
 		assertEquals("Log", logConfig.getCentralizedLogger());
-		assertEquals(10, logConfig.getDispatchPacketSize());
+		assertEquals(100, logConfig.getDispatchPacketSize());
 
 		LoggingConfig schemaDefaults = new LoggingConfig(); 
 		// We verify that the castor-generated class actually has the current schema defaults.
@@ -115,7 +115,7 @@ public class LogConfigTest extends TestCase {
 		// In that case also the values in the simulated CDB's xml might have to be changed
 		// in order to still be different from the default values.
 		assertEquals(0, schemaDefaults.getCount()); // 0 named loggers
-		assertEquals(10, schemaDefaults.getDispatchPacketSize());
+		assertEquals(100, schemaDefaults.getDispatchPacketSize());
 		assertEquals(10, schemaDefaults.getFlushPeriodSeconds());
 		assertEquals(LogLevel.VALUE_10, schemaDefaults.getImmediateDispatchLevel());
 		assertEquals(1000, schemaDefaults.getMaxLogQueueSize());
