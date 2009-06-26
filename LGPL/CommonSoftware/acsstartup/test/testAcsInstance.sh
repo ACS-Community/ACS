@@ -1,8 +1,10 @@
 #! /bin/bash
 
+HOST=`hostname -s`
+
 . acsstartupAcsInstance
 
-rm -rf $ACSDATA/tmp/ACS_INSTANCE.*
+rm -rf $ACSDATA/tmp/$HOST/ACS_INSTANCE.*
 
 if [ "`acsList`" != "" ]
 then
@@ -121,7 +123,7 @@ else
 fi
 
 
-chmod 000 $ACSDATA/tmp/ACS_INSTANCE.0
+chmod 000 $ACS_TMP/ACS_INSTANCE.0
 GOOD_STUFF=0
 if ! createInstanceDirectory $GOOD_STUFF
 then
@@ -130,7 +132,7 @@ else
     echo "Good"
 fi
 
-chmod 755 -R $ACSDATA/tmp/ACS_INSTANCE.*
-rm -rf $ACSDATA/tmp/ACS_INSTANCE.*
+chmod 755 -R $ACS_TMP/ACS_INSTANCE.*
+rm -rf $ACS_TMP/ACS_INSTANCE.*
 
 echo "-------------------------------------------------------------------------"

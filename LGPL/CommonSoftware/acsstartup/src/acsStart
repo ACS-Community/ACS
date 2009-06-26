@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.45 2008/11/25 16:34:23 msekoran Exp $"
+# "@(#) $Id: acsStart,v 1.46 2009/06/26 05:55:21 hyatagai Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -95,7 +95,7 @@ function printUsage {
    echo "        -nowaitifr                  does not wait for the CORBA Interface Repository to load before returning"
    echo "        -noloadifr                  does not load the CORBA Interface Repository before returning"
    echo "   -l | -log                        automatically starts a loggingClient process writing XML logs to"
-   echo "                                    \$ACSDATA/tmp/ACS_INSTANCE.\$ACS_INSTANCE/"
+   echo "                                    \$ACS_TMP/ACS_INSTANCE.\$ACS_INSTANCE/"
    echo "   -r | -recoverClientConnections   force services to recover client connections"
    echo "   -v | -verbose                    print subprocess output to console (additionally to regular logfile)"
    echo "   -h | -help                       prints this help and exits"
@@ -178,7 +178,7 @@ then
     export ACS_INSTANCE=$CL_BASEPORT
 fi
 
-###If there's a corrupted $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE, attempt
+###If there's a corrupted $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE, attempt
 ###to fix it
 if ! checkDeadACS
 then

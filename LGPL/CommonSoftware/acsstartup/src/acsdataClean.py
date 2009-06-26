@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.1 2006/08/31 12:43:02 gchiozzi Exp $
+# @(#) $Id: acsdataClean.py,v 1.2 2009/06/26 05:55:21 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -23,7 +23,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 ################################################################################################
 '''
-This script is designed to clean-up $ACSDATA/tmp for modular tests.
+This script is designed to clean-up $ACS_TMP for modular tests.
 Normally ACS_INSTANCE directories are NOT cleaned up.
 The -a or -all command line option forces ALL files and directories
 to be cleaned up
@@ -43,7 +43,7 @@ from os.path import isfile, isdir
 from sys import argv
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.1 2006/08/31 12:43:02 gchiozzi Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.2 2009/06/26 05:55:21 hyatagai Exp $"
 #------------------------------------------------------------------------------
 
 print "Cleaning up ACS temporary directories"
@@ -78,7 +78,7 @@ else:
 
 ################################################################################################
 try:
-    myDir = str(environ['ACSDATA']) + '/tmp'
+    myDir = str(environ['ACS_TMP']) 
 
     #make sure acs temp exists
     if not exists(myDir):

@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.14 2008/05/07 22:23:25 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.15 2009/06/26 05:57:27 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.14 2008/05/07 22:23:25 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.15 2009/06/26 05:57:27 hyatagai Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -74,7 +74,7 @@ else:
     if environ.has_key('ACS_TMP'):
         LOG_FILE_NAME = path.join(environ['ACS_TMP'], 'acs_local_log')
     else:
-        LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/acs_local_log')
+        LOG_FILE_NAME = path.join(environ['ACSDATA'], 'tmp/' + gethostname() + '/acs_local_log')
 
 LOG_FILE_NAME = LOG_FILE_NAME + "_" +  path.basename(sys.argv[0]) + "_" + str(getpid())
 #------------------------------------------------------------------------------

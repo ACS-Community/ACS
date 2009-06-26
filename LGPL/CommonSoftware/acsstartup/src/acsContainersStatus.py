@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsContainersStatus.py,v 1.4 2008/06/10 04:45:01 cparedes Exp $
+# @(#) $Id: acsContainersStatus.py,v 1.5 2009/06/26 05:55:22 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -29,7 +29,7 @@ those living on remote hosts for a given $ACS_INSTANCE.
 Paramters: None
 
 Assumptions:
-- $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS exists
+- $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/USED_CONTAINER_PORTS exists
 
 TODO:
 - accept "-b" switch for $ACS_INSTANCE???
@@ -59,11 +59,11 @@ def getPortsFile():
     
     #directory where all the process IDs of this particular instance of 
     #ACS are stored
-    ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp/ACS_INSTANCE.' + str(cl_baseport)
+    ACS_INSTANCE_DIR = str(environ['ACS_TMP']) + '/ACS_INSTANCE.' + str(cl_baseport)
 
     #make sure the acs instance directory exists
     if not exists(ACS_INSTANCE_DIR):
-        stderr.write("$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE does not exist!\n")
+        stderr.write("$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE does not exist!\n")
         exit(1)
             
     #make sure the user actually has write access to this ACS instance

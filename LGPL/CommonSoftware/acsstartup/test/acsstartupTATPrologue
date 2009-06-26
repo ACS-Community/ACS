@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupTATPrologue,v 1.2 2008/07/18 05:31:42 cparedes Exp $"
+# "@(#) $Id: acsstartupTATPrologue,v 1.3 2009/06/26 05:55:22 hyatagai Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -37,6 +37,6 @@ acsdataClean
 #creates the tmp directory if it doesn't exist
 #the ACS_TMP variable is defined in acsstartupTATEnvironment
 if [ ! -d $ACS_TMP ]; then
-        mkdir $ACS_TMP
+        mkdir -p $ACS_TMP
 fi
     

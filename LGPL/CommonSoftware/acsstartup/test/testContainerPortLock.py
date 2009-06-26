@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testContainerPortLock.py,v 1.3 2009/05/07 15:45:43 agrimstrup Exp $"
+# "@(#) $Id: testContainerPortLock.py,v 1.4 2009/06/26 05:55:22 hyatagai Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -92,9 +92,9 @@ class ContainerPortLockCleanupTest(unittest.TestCase):
 class ContainerPortLockTest(unittest.TestCase):
 
     def setUp(self):
-        self.oldacsdata = os.environ['ACSDATA']
-        os.environ['ACSDATA'] = os.getcwd()
-        self.tmpdirpath = 'tmp/ACS_INSTANCE.0'
+        self.oldacstmp = os.environ['ACS_TMP']
+        os.environ['ACS_TMP'] = os.getcwd()
+        self.tmpdirpath = 'ACS_INSTANCE.0'
         os.makedirs(self.tmpdirpath)
         self.testfilename = self.tmpdirpath + '/USED_CONTAINER_PORTS'
         os.system('touch ' + self.testfilename)
@@ -103,7 +103,7 @@ class ContainerPortLockTest(unittest.TestCase):
     def tearDown(self):
         os.remove(self.testfilename)
         os.removedirs(self.tmpdirpath)
-        os.environ['ACSDATA'] = self.oldacsdata
+        os.environ['ACS_TMP'] = self.oldacstmp
 
     def check_lock(self):
         with open(self.testfilename, 'r+') as f:

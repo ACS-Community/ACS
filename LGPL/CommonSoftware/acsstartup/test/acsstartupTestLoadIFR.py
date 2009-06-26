@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupTestLoadIFR.py,v 1.2 2008/02/20 02:59:25 agrimstrup Exp $"
+# "@(#) $Id: acsstartupTestLoadIFR.py,v 1.3 2009/06/26 05:55:22 hyatagai Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@ import CORBA
 
 omniORB.importIRStubs()
 
-fname = "%s/tmp/ACS_INSTANCE.%s/iors/InterfaceRepositoryIOR" % (os.environ['ACSDATA'], os.environ['ACS_INSTANCE'])
+fname = "%s/ACS_INSTANCE.%s/iors/InterfaceRepositoryIOR" % (os.environ['ACS_TMP'], os.environ['ACS_INSTANCE'])
 
 with open(fname,'r') as ior :
     

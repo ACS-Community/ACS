@@ -2,7 +2,7 @@
 #------------------------------------------------------------------------------------
 #--THIS SCRIPT IS NOT SAFE FOR USE OUTSIDE ACS!
 #--It contains functions used to do rudiamentary logging from bash. These functions
-#--in turn write the logs to $ACS_TMP or $ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE
+#--in turn write the logs to $ACS_TMP or $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
 #--or $ACSDATA/tmp/ or /tmp. The other thing to take note of is that the set of functions
 #--ending with an ACS logging priority (e.g., ACS_LOG_DEBUG) will only send the message
 #--to standard out if $ACS_LOG_STDOUT is less than their logging priority.
@@ -22,11 +22,21 @@ then
 elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w $ACSDATA/tmp ]
 then
     #give it an OK default value
-    OUTPUT_FILE=$ACS_INSTANCES_DIR
+    OUTPUT_FILE=$ACSDATA/tmp/`hostname -s`
+
+    if [ ! -e $OUTPUT_FILE ]
+    then
+	if ! mkdir $OUTPUT_FILE
+        then
+            echo "Cannot create $INSTANCE_DIR"
+            exit $EC_CANNOTCREATE
+        fi
+    fi
+
 
     if [ -d $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ]
     then
-	OUTPUT_FILE=$ACS_INSTANCES_DIR/ACS_INSTANCE.$ACS_INSTANCE
+	OUTPUT_FILE=$OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE
     fi
 
 else
@@ -39,7 +49,7 @@ OUTPUT_FILE=$OUTPUT_FILE/.`basename $0`.$$.log
 if [ ! -e $OUTPUT_FILE ]
 then
 	touch $OUTPUT_FILE
-	chmod 774 $OUTPUT_FILE
+	chmod 774 $OUTPUT_FILE 2> /dev/null
 
 elif [ ! -w $OUTPUT_FILE ]
 then

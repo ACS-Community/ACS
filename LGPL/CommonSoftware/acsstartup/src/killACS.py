@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.25 2008/11/10 06:05:15 cparedes Exp $
+# @(#) $Id: killACS.py,v 1.26 2009/06/26 05:55:22 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -39,7 +39,7 @@ from optparse import OptionParser
 
 #first thing we do is create a lock so this command cannot be run again until it
 #finishes
-ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp/'
+ACS_INSTANCE_DIR = str(environ['ACS_TMP'])
 #sanity check to ensure the temp directory exists
 if exists(ACS_INSTANCE_DIR):
     #sanity check to ensure the file exists

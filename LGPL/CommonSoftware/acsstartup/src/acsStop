@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.24 2008/08/29 10:20:47 msekoran Exp $"
+# "@(#) $Id: acsStop,v 1.25 2009/06/26 05:55:22 hyatagai Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -136,7 +136,7 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #Cannot shutdown everything if we don't know the process IDs.
 if [ ! -d $INSTANCE_DIR ]
 then
-    ACS_LOG_ERROR "acsStop" "The lock directory '$ACSDATA/tmp/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
+    ACS_LOG_ERROR "acsStop" "The lock directory '$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE' does not exist!"
     ACS_LOG_INFO "acsStop" "Will continue trying to shutdown ACS although containers cannot be stopped."
 
 #Cannot shutdown everything if this user does not own the processes.

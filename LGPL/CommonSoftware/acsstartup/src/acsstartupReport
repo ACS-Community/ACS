@@ -10,8 +10,8 @@ rm -rf $REPORT_DIR
 mkdir -p $REPORT_DIR
 
 #-----------------------------------------------------------
-#copy the contents of $ACSDATA/tmp somewhere safe
-cp -RHL --preserve $ACSDATA/tmp $REPORT_DIR/acsdata_tmp
+#copy the contents of $ACS_TMP somewhere safe
+cp -RHL --preserve $ACS_TMP $REPORT_DIR/acsdata_tmp
 
 #-----------------------------------------------------------
 #find out every bit of info we can about processes
