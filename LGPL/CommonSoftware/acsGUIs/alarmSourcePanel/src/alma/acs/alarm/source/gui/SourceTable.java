@@ -41,6 +41,7 @@ public class SourceTable extends JTable implements SourceListener {
 	
 	public SourceTable() {
 		setModel(model);
+		setAutoCreateRowSorter(true);
 	}
 	
 	/**
@@ -53,8 +54,17 @@ public class SourceTable extends JTable implements SourceListener {
 	}
 
 	/**
-	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
+	 * Remove all the fault states from the table
 	 */
-	@Override
-	public void sourceXMLMsgReceived(String asiMessage) {}
+	public void clear() {
+		model.clear();
+	}
+	
+	/**
+	 * Toggle between the compact/normal view of the table
+	 * @param compact
+	 */
+	public void compactTable(boolean compact) {
+		model.showCompact(compact);
+	}
 }

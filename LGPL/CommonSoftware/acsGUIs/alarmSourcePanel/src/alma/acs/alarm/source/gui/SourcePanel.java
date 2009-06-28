@@ -19,11 +19,16 @@
 package alma.acs.alarm.source.gui;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.ContainerServices;
@@ -48,22 +53,47 @@ import alma.alarmsystem.clients.SourceClient;
  *
  * @since ACS7.0
  */
-public class SourcePanel extends JFrame {
+public class SourcePanel extends JFrame implements ActionListener {
 	
-	// The client to listen to alarms from the source channel
+	/**
+	 * The client to listen to alarms from the source channel
+	 */
 	private SourceClient sourceClient;
 	
-	// ACS component client
+	/**
+	 * ACS component client
+	 */
 	private AdvancedComponentClient acsClient;
 	
-	// The logger
+	/**
+	 * The logger
+	 */
 	private Logger logger;
 	
-	// ContainerServices
+	/**
+	 * ContainerServices
+	 */
 	private ContainerServices contSvcs;
 	
-	// The table of alarms
+	/**
+	 * The table of alarms
+	 */
 	private SourceTable table=new SourceTable();
+	
+	/**
+	 * The button to clear the table
+	 */
+	private final JButton clearButton = new JButton("Clear");
+	
+	/**
+	 * 
+	 */
+	private final JToolBar toolBar = new JToolBar(JToolBar.HORIZONTAL);
+	
+	/**
+	 * The button to show a compact view of the table
+	 */
+	private final JToggleButton compactTB = new JToggleButton("Compact",false);
 	
 	/**
 	 * Constructor
@@ -92,6 +122,11 @@ public class SourcePanel extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JScrollPane scrollPane = new JScrollPane(table);
 		setLayout(new BorderLayout());
+		toolBar.add(clearButton);
+		clearButton.addActionListener(this);
+		toolBar.add(compactTB);
+		compactTB.addActionListener(this);
+		add(toolBar,BorderLayout.PAGE_START);
 		add(scrollPane,BorderLayout.CENTER);
 		setBounds(20, 20, 100, 100);
 		pack();
@@ -124,6 +159,17 @@ public class SourcePanel extends JFrame {
 			System.exit(-1);
 		}
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource()==clearButton) {
+			table.clear();
+		} else if (e.getSource()==compactTB) {
+			table.compactTable(compactTB.isSelected());
+		} else{
+			System.out.print("Unknow source of events "+e);
+		}
 	}
 
 }
