@@ -19,10 +19,7 @@ import org.omg.CosNaming.BindingIteratorHolder;
 import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
-import org.omg.CosNotification.Property;
-import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
-import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper;
@@ -69,7 +66,7 @@ public class EventModel {
 		int acsInstance;
 		if ((connectionString = System.getProperty("ACS.Manager")) == null) { // Joe's Linux box in Garching is the default!
 			acsInstance = 0;
-			managerHost = "pc013018";
+			managerHost = "alma";
 			connectionString = getConnectionString(managerHost, acsInstance);
 		}
 		else {
@@ -189,9 +186,10 @@ public class EventModel {
 						consumer = getAdminConsumer(channelName);
 						consumers.add(consumer);
 					}
-					int[] admins = ec.get_all_consumeradmins();
-					int numConsumers = admins.length;
-					int numSuppliers = admins.length;
+					int[] cons= ec.get_all_consumeradmins();
+					int[] sups=ec.get_all_supplieradmins();
+					int numConsumers = cons.length;
+					int numSuppliers = sups.length;
 					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
 					clist.add(new ChannelData(channelName, numConsumers, numSuppliers));
 				} catch (AcsJException e) {
