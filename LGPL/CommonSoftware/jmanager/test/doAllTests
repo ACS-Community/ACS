@@ -22,7 +22,7 @@
 #
 
 # set ACS_TMP directory
-export ACS_TMP=../test/tmp
+export ACS_TMP=`pwd`/tmp
 
 ./jmanagerTATPrologue
 
