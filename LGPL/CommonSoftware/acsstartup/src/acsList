@@ -5,7 +5,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsList,v 1.9 2008/10/29 09:53:26 mschilli Exp $"
+# "@(#) $Id: acsList,v 1.10 2009/06/29 08:45:37 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -93,6 +93,9 @@ function printDetails() {
 	manager=none
 	nContainers=0
 	containers=
+	notifys=
+	nNotifys=0
+        
 	
 	if [ -d `getInstanceDirName $1` ] ; then 
 		pushd `getInstanceDirName $1` >/dev/null
@@ -114,9 +117,19 @@ function printDetails() {
 		   fi
 		fi
 
+		if [ -e USED_NOTIFY_PORTS ] ; then
+		   if [ ! -r USED_NOTIFY_PORTS ] ; then
+                        notifys="(can't read)"
+                        else
+                      nNotifys=`cat USED_NOTIFY_PORTS | wc -l`
+                      notifys=`cat USED_NOTIFY_PORTS | cut -d " " -f 1`
+		   fi
+		fi
+
 		echo Cdb: $cdb
 		echo Manager: $manager
 		echo $nContainers Container\(s\): $containers
+		echo $nNotifys Notify service\(s\): $notifys
 
 		popd >/dev/null
 	

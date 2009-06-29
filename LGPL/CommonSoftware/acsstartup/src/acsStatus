@@ -134,6 +134,8 @@ fi
 #---------------------------
 echo ""
 acsContainersStatus
+echo ""
+acsNotifysStatus
 if [ $ACS_INSTANCE_OLD ]
 then
     export ACS_INSTANCE=$ACS_INSTANCE_OLD

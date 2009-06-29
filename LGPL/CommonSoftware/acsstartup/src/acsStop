@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStop,v 1.25 2009/06/26 05:55:22 hyatagai Exp $"
+# "@(#) $Id: acsStop,v 1.26 2009/06/29 08:45:37 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -190,6 +190,21 @@ fi
 #SHUTDOWN MANAGER-------------------------------------------------------
 ACS_LOG_INFO "acsStop" "Stopping Manager"
 acsManager -k
+
+########################################################################
+#SHUTDOWN NON-STANDARD NOTIFY SERVICES----------------------------------
+#if [ "true" ]
+#then
+#        ACS_LOG_INFO "acsStop" "Shutting down non-standard notify services..."
+
+        file=`getLocalNotifyServiceNames`
+
+        for line in $file
+        do
+          ACS_LOG_INFO "acsStop" "Shutting down $line notify service"
+          acsNotifyService -k -w -n $line &> /dev/null
+        done
+#fi
 
 ########################################################################
 #SHUTDOWN ORB SERVICES--------------------------------------------------

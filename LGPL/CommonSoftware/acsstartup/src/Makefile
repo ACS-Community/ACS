@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.48 2009/06/02 12:59:14 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.49 2009/06/29 08:45:37 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -61,8 +61,10 @@ SCRIPTS_L       =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = killACS acsstartupContainerPort acsstartupRemovePID \
-		     acsContainersStatus acsstartupCreateChannel \
+PY_SCRIPTS         = killACS acsstartupContainerPort acsstartupNotifyPort \
+		     acsstartupRemovePID \
+		     acsContainersStatus acsNotifysStatus \
+		     acsstartupCreateChannel \
                      acsdataClean
 PY_SCRIPTS_L       =
 

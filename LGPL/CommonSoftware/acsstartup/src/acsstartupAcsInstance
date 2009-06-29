@@ -94,6 +94,7 @@ local PORTS_FILENAME
 ACS_INSTANCE=$1
 ACS_INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 PORTS_FILENAME=$ACS_INSTANCE_DIR/USED_CONTAINER_PORTS
+NOTIFY_PORTS_FILENAME=$ACS_INSTANCE_DIR/USED_NOTIFY_PORTS
 
 #sanity check to make sure we were given a port to work with
 if [ "X$ACS_INSTANCE" == "X" ]
@@ -155,6 +156,20 @@ else
 	chmod 774 $PORTS_FILENAME
 fi
 
+#now create USED_NOTIFY_PORTS
+if [ -e $NOTIFY_PORTS_FILENAME ]
+then
+        ACS_SILENT_LOG "WARNING $NOTIFY_PORTS_FILENAME already exists!"
+
+elif [ ! -w $ACS_INSTANCE_DIR ]
+then
+        ACS_SILENT_LOG "WARNING cannot create $NOFITY_PORTS_FILENAME because $ACS_INSTANCE_DIR is not writeable by $USER!"
+
+else
+        touch $NOTIFY_PORTS_FILENAME
+        chmod 774 $NOTIFY_PORTS_FILENAME
+fi
+
 #create the pids directory
 if [ -e $ACS_INSTANCE_DIR/$ACS_PID_DIR ]
 then
@@ -191,3 +206,23 @@ fi
 
 return 1
 }
+#--------------------------------------------------------------
+function getLocalNotifyServiceNames
+{
+local FILE
+local FILE_NAME
+
+
+FILE_NAME=`getInstanceDirName $ACS_INSTANCE`/USED_NOTIFY_PORTS
+FILE=`(cat $FILE_NAME | cut -d' ' -f1) 2> /dev/null`
+
+#handle the good case that the ports file contains what we expect
+if [ "$FILE" != "" ]
+then
+    echo "$FILE"
+    return 0
+fi
+
+return 1
+}
+

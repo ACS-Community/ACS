@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.6 2008/11/11 13:59:12 bjeram Exp $"
+# "@(#) $Id: acsNotifyService,v 1.7 2009/06/29 08:45:37 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -210,8 +210,12 @@ case $CL_NS_TYPE in
     NOTIFY_EVENT_CHANNEL=AlarmChannel
     NOTIFY_EVENT_CHANNEL_FACTORY=AlarmNotifyEventChannelFactory
   ;; *)
-    ACS_LOG_ERROR "$COMMAND" "Unknown Notify Service type '$CL_NS_TYPE'!"
-    exit $EC_BADARGS
+    NOTIFY_SERVICE_PIDFILE="$INSTANCE_DIR/$ACS_PID_DIR/${CL_NS_TYPE}_NotifyService_PID"
+    NOTIFY_OUT="$INSTANCE_DIR/$ACS_OUT_DIR/${CL_NS_TYPE}_NotifyService.out"
+    NOTIFY_IOR="$INSTANCE_DIR/$ACS_IOR_DIR/${CL_NS_TYPE}_NotifyServiceIOR"
+    NOTIFY_SERVICE_PORT=`acsstartupNotifyPort $CL_NS_TYPE`
+    NOTIFY_EVENT_CHANNEL="${CL_NS_TYPE}Channel"
+    NOTIFY_EVENT_CHANNEL_FACTORY="${CL_NS_TYPE}NotifyEventChannelFactory"
   ;;
 esac
 
@@ -245,7 +249,7 @@ then
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------
   ACS_LOG_INFO "$COMMAND" "Stopping the CORBA ${CL_NS_TYPE_SP}Notification Service${LOGPOSTFIX}"
-  if NOTIFY_SERVICE_PID=`get${CL_NS_TYPE}NotifyServicePid`
+  if NOTIFY_SERVICE_PID=`getServicePid "${CL_NS_TYPE} notification service" $NOTIFY_SERVICE_PIDFILE $NOTIFY_SERVIE_PORT`
   then
     acsKillProc $NOTIFY_SERVICE_PID 2> /dev/null && rm -f $NOTIFY_SERVICE_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the ${CL_NS_TYPE_SP}Notification Service"
   fi 

@@ -73,6 +73,31 @@ echo $PID
 }
 export getPid
 #-------------------------------------
+#Sends the process ID of some process to stdout or returns with an
+#error code if there's some failure.
+function getServicePid
+{
+local INSTANCE_DIR
+local SERVICE_NAME
+local FILE
+local PID
+local PORT
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+SERVICE_NAME=$1
+FILE=$2
+PORT=$3
+
+if ! PID=`getPid $FILE $PORT`
+then
+    ACS_LOG_ERROR "acsstartupPids" "Unable to determine ${SERVICE_NAME}'s process ID."
+    exit $EC_FAILURE
+fi
+
+echo $PID
+}
+export getServicePid
+#-------------------------------------
 #Sends the process ID of manager to stdout or returns with an 
 #error code if there's some failure.
 function getManagerPid
