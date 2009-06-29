@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.14 2009/06/29 21:52:58 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.1 2009/06/29 21:52:58 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -58,30 +58,73 @@ USER_LIB = -lACE \
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
+EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber ncSlowConsumer ddsSlowSubscriber
 EXECUTABLES_L   = 
+
+simpleExampleDDSClient_OBJECTS   = simpleExampleDDSClient
+simpleExampleDDSClient_LDFLAGS   =  
+simpleExampleDDSClient_LIBS      = acsddsnc maciClient \
+                                   SimpleExampleStubs simpleMessageTypeSupportStubs \
+                                   acsddsncTypeSupport
+
+simpleExampleNCClient_OBJECTS   = 	simpleExampleNCClient
+simpleExampleNCClient_LDFLAGS   =  
+simpleExampleNCClient_LIBS      =  acsnc maciClient SimpleExampleStubs 
+
+ncConsumer_OBJECTS   = 	ncConsumer
+ncConsumer_LDFLAGS   =  
+ncConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
+
+ddsSubscriber_OBJECTS   = ddsSubscriber
+ddsSubscriber_LDFLAGS   = 
+ddsSubscriber_LIBS      = acsddsnc NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport
+
+ncSlowConsumer_OBJECTS   = 	ncSlowConsumer
+ncSlowConsumer_LDFLAGS   =  
+ncSlowConsumer_LIBS      =  acsnc maciClient NCBenchmarkStubs
+
+ddsSlowSubscriber_OBJECTS   = ddsSlowSubscriber
+ddsSlowSubscriber_LDFLAGS   = 
+ddsSlowSubscriber_LIBS      = acsddsnc NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport
 
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES      =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
-		 DataReaderListener.h acsddsncDataReaderListener.h \
+INCLUDES      =  
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = acsddsnc
+LIBRARIES       = acsddsncTypeSupport simpleExampleNCImpl simpleExampleDDSImpl \
+		  NCBenchmarkImpl DDSNCBenchmarkImpl
 LIBRARIES_L     =
 
 #
-# Library that provides all the core functionality of DDS Notification Channel in ACS
-acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl
-acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp ACE
+# <brief description of simpleExample library>
+simpleExampleDDSImpl_OBJECTS = simpleExampleDDSImpl
+simpleExampleDDSImpl_LIBS    = SimpleExampleStubs simpleMessageTypeSupportStubs acsddsncTypeSupport acsddsnc 
+
+# <brief description of simpleExample library>
+simpleExampleNCImpl_OBJECTS = simpleExampleNCImpl
+simpleExampleNCImpl_LIBS    = SimpleExampleStubs acsnc 
+
+#
+# <brief description of NCBenchmarkImpl library>
+NCBenchmarkImpl_OBJECTS = NCBenchmarkImpl
+NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs MessageTypeSupportStubs acsnc
+
+DDSNCBenchmarkImpl_OBJECTS = DDSNCBenchmarkImpl
+DDSNCBenchmarkImpl_LIBS    = NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport acsddsnc
+
+#
+# <brief description of acsddsncTypeSupport library>
+acsddsncTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
+acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs 
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = startDCPSInfoRepo
+SCRIPTS         = 
 SCRIPTS_L       =
 
 
@@ -93,8 +136,8 @@ CDB_SCHEMAS =
 # 
 # DDS and IDL Files and flags
 # 
-DDS_FILES = 
-IDL_FILES = 
+DDS_FILES = NCBenchmark SimpleExample
+IDL_FILES = NCBenchmark SimpleExample
 
 # man pages to be done
 # --------------------
