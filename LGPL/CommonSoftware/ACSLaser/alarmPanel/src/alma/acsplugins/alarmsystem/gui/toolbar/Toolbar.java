@@ -260,6 +260,21 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	private ImageIcon notPausedIcon = new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"pause.png"));
 	
 	/**
+	 * The icon for the filter button
+	 */
+	private ImageIcon filterIcon = new ImageIcon(Toolbar.class.getResource(AlarmGUIType.iconFolder+"filters.png"));
+	
+	/**
+	 * The button to select the alarms matching the content of the <code>searchTF</code> text field
+	 */
+	private JToggleButton showBtn = new JToggleButton("Show",filterIcon, false);
+	
+	/**
+	 * The button to hide the alarms matching the content of the <code>searchTF</code> text field
+	 */
+	private JToggleButton hideBtn = new JToggleButton("Hide",filterIcon, false);
+	
+	/**
 	 * The button to pause/unpause the application
 	 */
 	private JButton pauseBtn = new JButton("Pause",notPausedIcon);
@@ -359,9 +374,14 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		add(Box.createHorizontalStrut(5));
 		add(pauseBtn);
 		pauseBtn.addActionListener(this);
+		pauseBtn.setFont(newFont);
 		
 		add(Box.createHorizontalStrut(5));
 		add(new JSeparator(JSeparator.VERTICAL));
+		add(Box.createHorizontalStrut(5));
+		JLabel searchLbl=new JLabel("Search");
+		add(searchLbl);
+		searchLbl.setFont(newFont);
 		add(Box.createHorizontalStrut(5));
 		add(searchTF);
 		searchTF.setEditable(true);
@@ -375,8 +395,20 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		add(nextSearchBtn);
 		nextSearchBtn.setToolTipText("Search next");
 		nextSearchBtn.addActionListener(this);
-		ratioSearchBtns();
+		add(Box.createHorizontalStrut(3));
+		add(showBtn);
+		showBtn.setFont(newFont);
+		showBtn.setToolTipText("Filter in");
+		showBtn.addActionListener(this);
+		
+		add(Box.createHorizontalStrut(3));
+		add(hideBtn);
+		hideBtn.setFont(newFont);
+		hideBtn.setToolTipText("Filter out");
+		hideBtn.addActionListener(this);
 		add(Box.createHorizontalStrut(2));
+		
+		ratioSearchBtns();
 	}
 	
 	/**
@@ -407,6 +439,22 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 			table.search(searchTF.getText(), false);
 		} else if (e.getSource()==nextSearchBtn) {
 			table.search(searchTF.getText(), true);
+		} else if (e.getSource()==showBtn) {
+			searchTF.setEnabled(!showBtn.isSelected());
+			hideBtn.setEnabled(!showBtn.isSelected());
+			if (showBtn.isSelected()) {
+				table.filter(searchTF.getText(),false);
+			} else {
+				table.filter(null,false);
+			}
+		} else if (e.getSource()==hideBtn) {
+			searchTF.setEnabled(!hideBtn.isSelected());
+			showBtn.setEnabled(!hideBtn.isSelected());
+			if (hideBtn.isSelected()) {
+				table.filter(searchTF.getText(),true);
+			} else {
+				table.filter(null,false);
+			}
 		} else {
 			System.err.println("Invalid source of event: "+e.getSource());
 		}
@@ -463,8 +511,16 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	}
 	
 	/**
-	 * Enable/disble the buttons for searching depending
-	 * on the content of the text field
+	 * Enable/disable the buttons for searching depending
+	 * on the content of the text field.
+	 * <P>
+	 * This is the logic:
+	 * <UL>
+	 * 	<LI>if the TF is empty the buttons are all disabled
+	 *  <LI>if the TF contains test, the buttons are all enabled
+	 *  <LI>if the user filters then the TF is disabled
+	 *  	(this is done while catching the <code>filterBtn</code> event)
+	 *</UL>
 	 */
 	private void ratioSearchBtns() {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -472,6 +528,8 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 				String text = searchTF.getText();
 				prevSearchBtn.setEnabled(text!=null && !text.isEmpty());
 				nextSearchBtn.setEnabled(text!=null && !text.isEmpty());
+				showBtn.setEnabled(text!=null && !text.isEmpty());
+				hideBtn.setEnabled(text!=null && !text.isEmpty());
 			}
 		});
 	}

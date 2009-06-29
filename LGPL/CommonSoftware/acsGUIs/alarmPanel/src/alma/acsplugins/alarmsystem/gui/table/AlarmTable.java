@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.14 2009/06/23 14:38:10 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.15 2009/06/29 02:52:32 acaproni Exp $
  * @since    
  */
 
@@ -37,9 +37,12 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.DefaultRowSorter;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -51,8 +54,12 @@ import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
+import javax.swing.RowFilter.Entry;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -262,6 +269,70 @@ public class AlarmTable extends JTable implements ActionListener {
 		
 	}
 	
+	/**
+	 * The filter of table entries.
+	 * <P>
+	 * Accepts all the entries containing the passed string in one of the
+	 * visible columns.
+	 * <P>
+	 * The filter can be applied to hide entries instead of select (i.e. NOT logic)
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class AlarmTableFilter extends RowFilter<AlarmTableModel,Integer> {
+		
+		/**
+		 * If <code>true</code> the selected entries are those that do not
+		 * contain the filter string
+		 */
+		private boolean applyAsNot=false;
+		
+		/**
+		 * The string to compare to the visible columns to accept the antries
+		 */
+		private String filterString;
+		
+		/**
+		 * Set the filter
+		 * 
+		 * @param flt The string used to filter
+		 * @param not If <code>true</code> the filter is applied with a NOT policy
+		 */
+		public void setFilter(String flt, boolean not) {
+			if (flt==null || flt.isEmpty()) {
+				throw new IllegalArgumentException("The string for filtering can't be null nor empty");
+			}
+			applyAsNot=not;
+			filterString=flt;
+		}
+
+		@Override
+		public boolean include(
+			Entry<? extends AlarmTableModel, ? extends Integer> entry) {
+			boolean ret=false;
+			// TODO Auto-generated method stub
+			TableColumnModel colModel = getColumnModel();
+			int modelRow=entry.getIdentifier();
+			for (int t=0; t< colModel.getColumnCount(); t++) {
+				TableColumn tc=colModel.getColumn(t);
+				int idx=tc.getModelIndex();
+				Object obj = model.getValueAt(modelRow,idx);
+				if (!(obj instanceof String)) {
+					continue;
+				}
+				if (obj.toString().contains(filterString)) {
+					ret= true;
+				}
+			}
+			if (applyAsNot) {
+				return !ret;
+			}
+			return ret;
+		}
+		
+	}
+	
 	/** 
 	 * The model of the table
 	 */
@@ -275,7 +346,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	/**
 	 * The sorter for sorting the rows of the table
 	 */
-	private TableRowSorter<TableModel> sorter;
+	private TableRowSorter<AlarmTableModel> sorter;
 	
 	/**
 	 * The table selection model
@@ -291,6 +362,14 @@ public class AlarmTable extends JTable implements ActionListener {
 	 *  The alarm adapter that recives events from the mouse
 	 */
 	private AlarmTableMouseAdapter mouseAdapter = new AlarmTableMouseAdapter();
+	
+	/**
+	 * The filter of the table activate from the toolbar
+	 * <P>
+	 * This filter is added or removed from the tale filters depending if the 
+	 * user select or unselect the toolbar button
+	 */
+	private final AlarmTableFilter filter = new AlarmTableFilter();
 	
 	/**
 	 *  The clipboard
@@ -384,10 +463,15 @@ public class AlarmTable extends JTable implements ActionListener {
 		selectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		setSelectionModel(selectionModel);
 		this.setOpaque(false);
-		sorter = new TableRowSorter<TableModel>(model);
+		sorter = new TableRowSorter<AlarmTableModel>(model);
 		this.setRowSorter(sorter);
 		sorter.setMaxSortKeys(2);
 		sorter.setSortsOnUpdates(true);
+		// Initially sort by timestamp
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(AlarmTableColumn.TIME.ordinal(), SortOrder.DESCENDING));
+		sorter.setSortKeys(sortKeys); 
+
 		
 		// Remove all the columns not visible at startup
 		TableColumnModel colModel = getColumnModel();
@@ -661,4 +745,26 @@ public class AlarmTable extends JTable implements ActionListener {
 		}
 		return ret!=-1;
 	}
+	
+	/**
+	 * Filter the table by the passed string
+	 * <P>
+	 * Filtering select all the rows containing the passed string 
+	 * in at least on one (visible) column.
+	 * 
+	 * @param filterString The string used to filter;
+	 * 			if <code>null</code> or empty, the table is unfiltered
+	 * @param not If the filter must be applied to discard entries instead of to select
+	 */
+	public void filter(String filterString, boolean not) {
+		if (filterString==null || filterString.isEmpty()) {
+			// remove the filter
+			sorter.setRowFilter(null);
+		} else {
+			// add the filter
+			filter.setFilter(filterString, not);
+			sorter.setRowFilter(filter);
+		}
+	}
 }
+

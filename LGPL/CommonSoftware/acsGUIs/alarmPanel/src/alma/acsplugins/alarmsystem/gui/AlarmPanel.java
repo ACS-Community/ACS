@@ -19,7 +19,11 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.24 2009/06/23 14:38:10 acaproni Exp $
+<<<<<<< AlarmPanel.java
+ * @version $Id: AlarmPanel.java,v 1.25 2009/06/29 02:52:32 acaproni Exp $
+=======
+ * @version $Id: AlarmPanel.java,v 1.25 2009/06/29 02:52:32 acaproni Exp $
+>>>>>>> 1.21.4.2
  * @since    
  */
 

@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.20 2008/10/30 14:32:53 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.21 2009/06/29 02:52:32 acaproni Exp $
  * @since    
  */
 
@@ -66,11 +66,11 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		ICON("","Not acknowledged flag",true), // The flag
 		TIME("Time",null,true),
 		COMPONENT("Component",null,true),
-		CODE("Code",null,true),
+		CODE("Code",null,false),
 		PRIORITY("Priority",null,true),
 		DESCRIPTION("Description",null,true),
 		CAUSE("Cause",null,true),
-		ACTION("Action",null,false),
+		ACTION("Action",null,true),
 		CONSEQUENCE("Consequence",null,false),
 		URL("URL",null,false),
 		CONTACT("Contact",null,false),
@@ -187,6 +187,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see AlarmSelectionListener
 	 */
 	public synchronized void onAlarm(Alarm alarm) {
+		//System.out.println("Alarm received: <"+alarm.getAlarmId()+">");
+		//System.out.println("\tisNodeChild="+alarm.isNodeChild()+". isNodeParent="+alarm.isNodeParent());
 		// Add the alarm to the queue
 		if (waitIfQueueFull) {
 			// Wait if the queue is full
