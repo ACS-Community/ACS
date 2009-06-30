@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.5 2009/06/24 11:26:45 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.6 2009/06/30 20:34:20 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -72,6 +72,14 @@ public:
         ACS_SHORT_LOG ((LM_INFO, "Starting '%s' Notification Service on Imp (instance %d).", name == NULL ? "default" : name, instance_number));
         ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NOTIFICATION_SERVICE, instance_number);
         desc->setName(name);
+    #define NOTIFY_FACTORY_NAME_STRING "NotifyEventChannelFactory"
+    // add NOTIFY_FACTORY_NAME_STRING postfix, is not already there
+    if (name != NULL) {
+        int lendiff = (int)strlen(name) - strlen(NOTIFY_FACTORY_NAME_STRING);
+        if (lendiff <= 0 || strcmp(name + lendiff, NOTIFY_FACTORY_NAME_STRING) != 0)
+            desc->setCorbalocName((ACE_CString(name) + NOTIFY_FACTORY_NAME_STRING).c_str());
+
+    }
         context->processRequest(LOCAL, START_SERVICE, desc, callback);
     }
 

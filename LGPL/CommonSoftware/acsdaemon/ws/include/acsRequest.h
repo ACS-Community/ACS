@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.4 2009/06/23 12:39:33 hsommer Exp $"
+* "@(#) $Id: acsRequest.h,v 1.5 2009/06/30 20:34:20 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -246,16 +246,18 @@ class ACSServiceRequestDescription {
   private:
     ACSServiceType service;
     int instance_number;
-    const char *host, *name, *domain, *cdbxmldir;
+    const char *host, *name, *corbalocName, *domain, *cdbxmldir;
     bool loadir, wait, recovery;
     ACE_CString prepareCommand(ACSServiceRequestType request_type, bool log);
   public:
     ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number);
     ACSServiceRequestDescription(const ACSServiceRequestDescription &desc);
+    ~ACSServiceRequestDescription();
     ACSErr::Completion_var executeLocal(ACSServiceRequestType request_type);
     ACSErr::Completion_var executeRemote(ACSServiceRequestType request_type, CORBA::ORB_ptr orb, acsdaemon::DaemonCallback_ptr cbptr, const char *corbaloc);
     void setFromXMLAttributes(const char **atts);
     void setName(const char *iname) { name = iname == NULL ? NULL : strdup(iname); }
+    void setCorbalocName(const char *iname) { corbalocName = iname == NULL ? NULL : strdup(iname); }
     void setDomain(const char *idomain) { domain = idomain == NULL ? NULL : strdup(idomain); }
     void setLoadIR(bool iloadir) { loadir = iloadir; }
     void setWaitLoadIR(bool iwait) { wait = iwait; }
@@ -263,6 +265,7 @@ class ACSServiceRequestDescription {
     void setCdbXMLDir(const char *icdbxmldir) { cdbxmldir = icdbxmldir == NULL ? NULL : strdup(icdbxmldir); }
     int getInstanceNumber() { return instance_number; }
     const char *getName() { return name; }
+    const char *getCorbalocName() { return corbalocName; } 
     const char *getHost() { return host == NULL ? ACSPorts::getIP() : host; }
     ACSServiceType getACSService() { return service; }
     const char *getACSServiceName() { return acsServices[service].xmltag; }
