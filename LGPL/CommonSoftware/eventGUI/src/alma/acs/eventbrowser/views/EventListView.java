@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -145,7 +146,9 @@ public class EventListView extends ViewPart {
 	}
 	
 	private void buildTextFilter(Composite customToolBar) {
-		final Text text = new Text(customToolBar, SWT.BORDER);
+		final Text text = new Text(customToolBar, SWT.BORDER | SWT.SEARCH);
+//		text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+//				| GridData.HORIZONTAL_ALIGN_FILL));
 		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				if (tableFilter != null) {

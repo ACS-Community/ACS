@@ -165,8 +165,8 @@ public class ChannelTreeView extends ViewPart {
 			for (Iterator<ChannelData> iterator = clist.iterator(); iterator.hasNext();) {
 				ChannelData cd = iterator.next();
 				TreeParent tp = new TreeParent(cd.getName());
-				TreeObject tcon = new TreeObject(cd.getNumberConsumers()+" consumers.");
-				TreeObject tsup = new TreeObject(cd.getNumberSuppliers()+" suppliers.");
+				TreeObject tcon = new TreeObject(cd.getNumConsumersAndDelta());
+				TreeObject tsup = new TreeObject(cd.getNumSuppliersAndDelta());
 				tp.addChild(tcon);
 				tp.addChild(tsup);
 				root.addChild(tp);	

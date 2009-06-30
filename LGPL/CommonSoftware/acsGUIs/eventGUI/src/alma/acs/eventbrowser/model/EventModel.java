@@ -32,6 +32,7 @@ import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.Helper;
 
@@ -51,6 +52,7 @@ public class EventModel {
 	private final EventChannelFactory alsvc;
 	private final EventChannelFactory arsvc;
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
+	private HashMap<String, int[]> lastConsumerAndSupplierCount;
 	private static EventModel modelInstance;
 	private ArrayList<AdminConsumer> consumers;
 	private ArrayList<AdminConsumer> readyConsumers;
@@ -96,6 +98,7 @@ public class EventModel {
 			throw(e);
 		}
 		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
+		lastConsumerAndSupplierCount = new HashMap<String, int[]>(MAX_NUMBER_OF_CHANNELS);
 		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
 		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
 		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
@@ -114,7 +117,7 @@ public class EventModel {
 		h = new Helper(cs);
 		nctx = h.getNamingService();
 		nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(new NameComponent[]{new NameComponent("TAO_MonitorAndControl","")}));
-		getServiceTotals(); // temporarily, for testing
+//		getServiceTotals(); // temporarily, for testing
 	}
 	
 	private String getConnectionString(String managerHost, int acsInstance) {
@@ -160,7 +163,8 @@ public class EventModel {
 //			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
 //			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
 //					chans.length);
-			clist.add(new ChannelData(efactNames[i], nconsumers, nsuppliers));
+			clist.add(new ChannelData(efactNames[i], new int[]{nconsumers, nsuppliers},new int[]{0,0}));
+			lastConsumerAndSupplierCount.put(efactNames[i], new int[]{0,0});
 		}
 
 		return clist;
@@ -170,31 +174,53 @@ public class EventModel {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
+		final String[] roleNames = {"consumer","supplier"};
+		
 		nctx.list(-1, bl, bi);
 		for (Binding binding : bl.value) {
 			String serviceKind = alma.acscommon.NC_KIND.value;
 			if (binding.binding_name[0].kind.equals(serviceKind)) {
 				String channelName = binding.binding_name[0].id;
-				System.out.println("Channel: "+binding.binding_name[0].id);
 				EventChannel ec;
 				try {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
 
 					AdminConsumer consumer = null;
+					int[] consAndSupp = new int[] {0,0};
 					if (!channelMap.containsKey(channelName)) {
 						channelMap.put(channelName, ec);
 						consumer = getAdminConsumer(channelName);
 						consumers.add(consumer);
+						lastConsumerAndSupplierCount.put(channelName,consAndSupp);
+					} else {
+						consAndSupp = lastConsumerAndSupplierCount.get(channelName);
 					}
-					int[] cons= ec.get_all_consumeradmins();
-					int[] sups=ec.get_all_supplieradmins();
-					int numConsumers = cons.length;
-					int numSuppliers = sups.length;
-					System.out.println("... has "+numConsumers+" consumers and "+numSuppliers+" suppliers.");
-					clist.add(new ChannelData(channelName, numConsumers, numSuppliers));
+					int [] adminCounts = new int[2];
+					int [] adminDeltas = new int[2];
+					adminCounts[0] = ec.get_all_consumeradmins().length;
+					adminCounts[1] = ec.get_all_supplieradmins().length;
+
+					for (int i = 0; i < adminCounts.length; i++) {
+						String cstr = channelName;
+						int cdiff = adminCounts[i] - consAndSupp[i];
+						if (cdiff != 0) {
+							if (cdiff > 0) {
+								cstr += " has added " + cdiff + " "
+										+ roleNames[i];
+							} else if (cdiff < 0) {
+								cstr += " has removed " + (-cdiff) + " "
+										+ roleNames[i];
+							}
+							cstr += (Math.abs(cdiff)!=1 ? "s." : ".");
+							m_logger.info(cstr);
+						}
+						adminDeltas[i] = cdiff;
+					}
+					lastConsumerAndSupplierCount.put(channelName,adminCounts);
+					m_logger.info("Channel: "+channelName+" has "+adminCounts[0]+" consumers and "+adminCounts[1]+" suppliers.");
+					clist.add(new ChannelData(channelName, adminCounts, adminDeltas));
 				} catch (AcsJException e) {
-					m_logger.severe("Can't find channel "+channelName);
-					e.printStackTrace();
+					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
 				}
 
 			}
@@ -293,7 +319,7 @@ public class EventModel {
 			String serviceKind = alma.acscommon.NC_KIND.value;
 			if (binding.binding_name[0].kind.equals(serviceKind)) {
 				String channelName = binding.binding_name[0].id;
-				System.out.println("Channel: "+binding.binding_name[0].id);
+				System.out.println("Channel: "+channelName);
 				EventChannel ec;
 				try {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
@@ -305,8 +331,7 @@ public class EventModel {
 						consumers.add(consumer);
 					}
 				} catch (AcsJException e) {
-					m_logger.severe("Can't find channel "+channelName);
-					e.printStackTrace();
+					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
 				}
 			}
 		}
