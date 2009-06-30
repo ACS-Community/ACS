@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.7 2008/12/01 13:39:56 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.8 2009/06/30 20:35:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -154,10 +154,18 @@ template <class R> void RequestChainContext<R>::proceed(R *lastreq) {
 /*********************** ACS SERVICES SPECIFIC REQUESTS ***********************/
 /************************ ACSServiceRequestDescription ************************/
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(ACSServiceType iservice, int iinstance_number) : service(iservice), instance_number(iinstance_number), host(NULL), name(NULL), corbalocName(NULL), domain(NULL), cdbxmldir(NULL), loadir(false), wait(true), recovery(false) {
 }
 
-ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)), loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery) {
+ACSServiceRequestDescription::ACSServiceRequestDescription(const ACSServiceRequestDescription &desc) : service(desc.service), instance_number(desc.instance_number), host(STRDUP(desc.host)), name(STRDUP(desc.name)), corbalocName(STRDUP(desc.corbalocName)), domain(STRDUP(desc.domain)), cdbxmldir(STRDUP(desc.cdbxmldir)), loadir(desc.loadir), wait(desc.wait), recovery(desc.recovery) {
+}
+
+ACSServiceRequestDescription::~ACSServiceRequestDescription() {
+    if (host != NULL) free((void*)host);
+    if (name != NULL) free((void*)name);
+    if (corbalocName != NULL) free((void*)corbalocName);
+    if (domain != NULL) free((void*)domain);
+    if (cdbxmldir != NULL) free ((void*)cdbxmldir);
 }
 
 void ACSServiceRequestDescription::setFromXMLAttributes(const char **atts) {

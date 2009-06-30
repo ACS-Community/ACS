@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.14 2008/11/25 23:56:00 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.15 2009/06/30 20:35:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -254,7 +254,7 @@ void ACSServicesHandlerImpl::start_naming_service (
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
     context->processRequest(IMP, START_SERVICE, desc, callback);
 }
-    
+
 void ACSServicesHandlerImpl::start_notification_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,

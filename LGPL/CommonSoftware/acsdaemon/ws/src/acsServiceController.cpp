@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.8 2009/06/12 13:32:14 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.9 2009/06/30 20:35:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 /***************************** ControllerThread *******************************/
 
 ControllerThread::ControllerThread(const ACE_CString &name, const ACS::TimeInterval& responseTime,  const ACS::TimeInterval& sleepTime) :
-       ACS::Thread(name, responseTime, sleepTime) {
+       ACS::Thread(name, responseTime, sleepTime, false, THR_DETACHED) {
     ACS_TRACE("ServiceControlThread::ServiceControlThread"); 
 }
 
@@ -262,7 +262,8 @@ ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServic
     char str[256];
     const ACSService *service = &acsServices[idesc->getACSService()];
     std::string port = service->svcport == NULL ? service->namedsvcport(idesc->getInstanceNumber(), idesc->getName()) : service->svcport(idesc->getInstanceNumber());
-    snprintf(str, 256, service->svccorbaurl, ACSPorts::getIP(), port.c_str(), idesc->getName() == NULL ? "" : idesc->getName());
+    const char * cname = idesc->getCorbalocName() == NULL ? idesc->getName() : idesc->getCorbalocName();
+    snprintf(str, 256, service->svccorbaurl, ACSPorts::getIP(), port.c_str(), cname == NULL ? "" : cname);
     corbaloc = ACE_CString(str);
 }
 
