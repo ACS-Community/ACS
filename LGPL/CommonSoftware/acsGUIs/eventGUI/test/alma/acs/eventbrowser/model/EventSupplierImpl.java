@@ -41,13 +41,14 @@ import alma.acs.nc.SimpleSupplier;
 import alma.acsnc.EventDescription;
 
 /** Class designed for testing event suppliers.
- * @TODO: consolidate with similar class in jcontexmpl
- * @author dfugate
+ * @author original by dfugate, hacked for eventGUI testing by jschwarz
  */
 public class EventSupplierImpl implements SupplierCompOperations 
 {
 	private Logger m_logger;
 	private ContainerServices m_containerServices;
+	
+	private final String channelName = "blar";
 
 	public EventSupplierImpl(Logger logger, ContainerServices cs, String clientName)
 			throws Exception {
@@ -67,9 +68,9 @@ public class EventSupplierImpl implements SupplierCompOperations
 
 		try {
 			//Instantiate our supplier
-			m_supplier = new SimpleSupplier("blar", //the channel's name
+			m_supplier = new SimpleSupplier(channelName, //the channel's name
 					m_containerServices);
-			m_logger.info("SimpleSupplier for 'blar' channel created.");
+			m_logger.info("SimpleSupplier for '"+channelName+"' channel created.");
 		} catch (Exception e) {
 			throw new ComponentLifecycleException(e);
 		}
@@ -80,7 +81,7 @@ public class EventSupplierImpl implements SupplierCompOperations
 	 * @param param number of events to send
 	 */
 	public void sendEvents(short param) {
-		System.out.println("Now sending simplesupplier events...");
+		m_logger.info("Now sending simplesupplier events...");
 		try {
 			//first send out some number of events.
 			EventDescription t_block = new EventDescription("no name", 32L, 64L);
