@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.7 2009/06/29 08:45:37 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.8 2009/06/30 09:20:35 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -249,7 +249,7 @@ then
   # SERVICE SHUTDOWN
   # --------------------------------------------------------------------------
   ACS_LOG_INFO "$COMMAND" "Stopping the CORBA ${CL_NS_TYPE_SP}Notification Service${LOGPOSTFIX}"
-  if NOTIFY_SERVICE_PID=`getServicePid "${CL_NS_TYPE} notification service" $NOTIFY_SERVICE_PIDFILE $NOTIFY_SERVIE_PORT`
+  if NOTIFY_SERVICE_PID=`getServicePid "${CL_NS_TYPE} notification service" $NOTIFY_SERVICE_PIDFILE $NOTIFY_SERVICE_PORT`
   then
     acsKillProc $NOTIFY_SERVICE_PID 2> /dev/null && rm -f $NOTIFY_SERVICE_PIDFILE || ACS_LOG_ERROR "$COMMAND" "Cannot kill the ${CL_NS_TYPE_SP}Notification Service"
   fi 
