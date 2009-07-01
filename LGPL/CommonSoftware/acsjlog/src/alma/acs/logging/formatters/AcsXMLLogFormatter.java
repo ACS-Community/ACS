@@ -258,7 +258,7 @@ public class AcsXMLLogFormatter extends AcsLogFormatter
 	 * Escapes characters in a log record attribute which would make the surrounding XML invalid.
 	 * Since XML attributes can't use <code>&lt;![CDATA[..]]&gt;</code>, illegal characters in <code>attributeValue</code>
 	 * are replaced with the corresponding masked XML notation.
-	 * @return the masked atttribute value 
+	 * @return the masked attribute value 
 	 * @see XmlNormalizer#normalize(java.lang.String)  
 	 */
 	private String maskAttribute(String attributeValue) {
