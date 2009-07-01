@@ -63,4 +63,4 @@ ACS_ALARM_NOTIFY_SERVICE_IORFILE=$ACS_IOR_DIR/AlarmNotifyServiceIOR
 ACS_IR_IORFILE=$ACS_IOR_DIR/InterfaceRepositoryIOR
 
 #command history file
-ACS_COMMAND_HISTORY_FILE=$ACSDATA/tmp/.acs_command_history
+ACS_COMMAND_HISTORY_FILE=$ACS_TMP/.acs_command_history
