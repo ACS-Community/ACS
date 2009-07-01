@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.2 2009/06/26 05:55:21 hyatagai Exp $
+# @(#) $Id: acsdataClean.py,v 1.3 2009/07/01 07:21:13 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -42,8 +42,10 @@ from os.path import isfile, isdir
 
 from sys import argv
 
+import socket
+
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.2 2009/06/26 05:55:21 hyatagai Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.3 2009/07/01 07:21:13 hyatagai Exp $"
 #------------------------------------------------------------------------------
 
 print "Cleaning up ACS temporary directories"
@@ -78,7 +80,12 @@ else:
 
 ################################################################################################
 try:
-    myDir = str(environ['ACS_TMP']) 
+    if environ.has_key('ACS_TMP'):
+        ACS_TMP_DIR = str(environ['ACS_TMP'])
+    else:
+        ACS_TMP_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname()
+
+    myDir = ACS_TMP_DIR
 
     #make sure acs temp exists
     if not exists(myDir):

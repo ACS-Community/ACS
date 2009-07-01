@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.42 2009/06/26 05:55:21 hyatagai Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.43 2009/07/01 07:21:13 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -100,16 +100,18 @@ def getPortsFile(baseport):
     #directory where all the process IDs of this particular instance of 
     #ACS are stored
     if environ.has_key('ACS_TMP'):
-        ACS_INSTANCE_DIR = str(environ['ACS_TMP']) + '/ACS_INSTANCE.' + str(baseport)
+        ACS_TMP_DIR = str(environ['ACS_TMP'])
     else:
-        ACS_INSTANCE_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname() + '/ACS_INSTANCE.' + str(baseport)
+        ACS_TMP_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname()
+
+    ACS_INSTANCE_DIR = ACS_TMP_DIR + '/ACS_INSTANCE.' + str(baseport)
 
     #make sure the acs instance directory exists
     if not exists(ACS_INSTANCE_DIR):
         #assume everything is running remotely
-        ACS_INSTANCE_DIR = str(environ['ACS_TMP'])
+        ACS_INSTANCE_DIR = ACS_TMP_DIR
         if not exists(ACS_INSTANCE_DIR):
-            stderr.write("$ACS_TMP does not exist!\n")
+            stderr.write("$ACS_TMP_DIR does not exist!\n")
             exit(1)
             
     #make sure the user actually has write access to this ACS instance
