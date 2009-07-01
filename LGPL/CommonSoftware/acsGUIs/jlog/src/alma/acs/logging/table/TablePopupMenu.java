@@ -39,6 +39,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -345,9 +347,15 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 			}
 				
 		}
+		FileFilter fileFileter = new FileNameExtensionFilter("XML file","xml");
 		JFileChooser fc = new JFileChooser();
+		fc.addChoosableFileFilter(fileFileter);
 		if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
+			// If not present, add the xml extension
+			if (!file.getAbsolutePath().toLowerCase().endsWith(".xml")) {
+				file = new File(file.getAbsolutePath()+".xml");
+			}
 			FileOutputStream outFStream=null;
 			try {
 				outFStream = new FileOutputStream(file);
