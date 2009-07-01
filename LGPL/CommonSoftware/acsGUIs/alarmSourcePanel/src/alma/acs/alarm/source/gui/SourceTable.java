@@ -67,4 +67,8 @@ public class SourceTable extends JTable implements SourceListener {
 	public void compactTable(boolean compact) {
 		model.showCompact(compact);
 	}
+
+	@Override
+	public void sourceXMLMsgReceived(String asiMessage) {
+	}
 }
