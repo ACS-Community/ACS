@@ -138,34 +138,35 @@ class RemoteLogDispatcher {
         
         // used for feeding back these LogRecords if the sending fails
         List<LogRecord> candidateLogRecords = new ArrayList<LogRecord>(); 
-        
-        if (useAcsLogServiceExtensions) {
-            // create CORBA XmlLogRecord containing XML representations of log records and the log level as a separate field
+
+		if (useAcsLogServiceExtensions) {
+			// create CORBA XmlLogRecord containing XML representations of log records and the log level as a separate field
 			List<XmlLogRecord> remoteLogRecords = new ArrayList<XmlLogRecord>();
 			for (int i = 0; i < logRecords.length; i++) {
-	            if (i < getBufferSize()) {
-	                try {
-	                	String xml = ((AcsXMLLogFormatter)logFormatter).format(logRecords[i]);
-	                	int level = AcsLogLevel.getNativeLevel(logRecords[i].getLevel()).getAcsLevel().value;
-	                	XmlLogRecord remoteLogRecord = new XmlLogRecord(xml, (short)level);
-	                    remoteLogRecords.add(remoteLogRecord);
-	                    candidateLogRecords.add(logRecords[i]);
-	                } catch (RuntimeException e) {
-	                    failures.addSerializationFailure(logRecords[i]);
-	                }
-	            }
-	            else {
-	                // records that don't fit into one remote call must be sent later
-	            	// this should never happen except for during concurrently changing buffer size.
-	                failures.addSendFailure(logRecords[i]);
-	            }
-		        // send the log records over CORBA 
-		        if (!remoteLogRecords.isEmpty()) {
-		        	XmlLogRecord[] remoteLogRecordsArray = remoteLogRecords.toArray(new XmlLogRecord[remoteLogRecords.size()]);
-	                writeRecords(remoteLogRecordsArray);
-		        }
-	        }
-        }
+				if (i < getBufferSize()) {
+					try {
+						String xml = ((AcsXMLLogFormatter) logFormatter).format(logRecords[i]);
+						int level = AcsLogLevel.getNativeLevel(logRecords[i].getLevel()).getAcsLevel().value;
+						XmlLogRecord remoteLogRecord = new XmlLogRecord(xml, (short) level);
+						remoteLogRecords.add(remoteLogRecord);
+						candidateLogRecords.add(logRecords[i]);
+					} 
+					catch (RuntimeException e) {
+						failures.addSerializationFailure(logRecords[i]);
+					}
+				} 
+				else {
+					// records that don't fit into one remote call must be sent later
+					// this should never happen except for during concurrently changing buffer size.
+					failures.addSendFailure(logRecords[i]);
+				}
+			}
+			// send the log records over CORBA
+			if (!remoteLogRecords.isEmpty()) {
+				XmlLogRecord[] remoteLogRecordsArray = remoteLogRecords.toArray(new XmlLogRecord[remoteLogRecords.size()]);
+				writeRecords(remoteLogRecordsArray);
+			}
+		}
         else { // default is Corba telecom Log interface that requires records inside Anys
 	        List<Any> anyLogRecords = new ArrayList<Any>();
 	        for (int i = 0; i < logRecords.length; i++) {
