@@ -19,22 +19,23 @@
 
 /** 
  * @author  acaproni   
-<<<<<<< AlarmPanel.java
- * @version $Id: AlarmPanel.java,v 1.25 2009/06/29 02:52:32 acaproni Exp $
-=======
- * @version $Id: AlarmPanel.java,v 1.25 2009/06/29 02:52:32 acaproni Exp $
->>>>>>> 1.21.4.2
+ * @version $Id: AlarmPanel.java,v 1.26 2009/07/01 16:54:13 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
@@ -43,6 +44,7 @@ import alma.acs.container.ContainerServices;
 import alma.alarmsystem.clients.CategoryClient;
 
 import alma.acs.gui.util.panel.IPanel;
+import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
@@ -78,9 +80,21 @@ public class AlarmPanel extends JPanel implements IPanel {
 	private AlarmTable alarmTable;
 	
 	/**
+	 * The table with the details of an alarm
+	 */
+	private AlarmDetailTable detailTable;
+	
+	/**
 	 * The scroll pane of the table
 	 */
 	private JScrollPane tableScrollPane = new JScrollPane(
+			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	
+	/**
+	 * The scroll pane of the details table
+	 */
+	private JScrollPane detailsScrollPane = new JScrollPane(
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	
@@ -129,6 +143,11 @@ public class AlarmPanel extends JPanel implements IPanel {
      * Signal the thread to teminate
      */
     private Thread disconnectThread;
+    
+    /**
+     * The split pane dividing the table of alarms and the detail view
+     */
+    private JSplitPane splitPane;
 	
 	/**
 	 * Constructor 
@@ -161,20 +180,41 @@ public class AlarmPanel extends JPanel implements IPanel {
 	private void initialize() {
 		setLayout(new BorderLayout());
 		
-		
-		
 		// Build GUI objects
 		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
 		alarmTable = new AlarmTable(model,this);
 		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
+		detailTable = new AlarmDetailTable();
 		
-		// Add the table of alarms
+		// The table of alarms
 		tableScrollPane.setViewportView(alarmTable);
-		tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		tableScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		add(tableScrollPane,BorderLayout.CENTER);
+		Dimension minimumSize = new Dimension(300, 150);
+		tableScrollPane.setMinimumSize(minimumSize);
+		tableScrollPane.setPreferredSize(minimumSize);
+		
+		// The details table
+		detailsScrollPane.setViewportView(detailTable);
+		
+		// The panel with the details
+		JPanel detailsPanel = new JPanel();
+		BoxLayout layout = new BoxLayout(detailsPanel,BoxLayout.Y_AXIS);
+		detailsPanel.setLayout(new BorderLayout());
+		
+		JPanel lblPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		lblPnl.add(new JLabel("Alarm details"));
+		detailsPanel.add(lblPnl,BorderLayout.PAGE_START);
+		detailsPanel.add(detailsScrollPane,BorderLayout.CENTER);
+		minimumSize = new Dimension(120, 150);
+		detailsPanel.setMinimumSize(minimumSize);
+		detailsPanel.setPreferredSize(minimumSize);
+		
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,tableScrollPane,detailsPanel);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setResizeWeight(1);
+		//splitPane.setDividerLocation(tableScrollPane.getMinimumSize().width);
+		add(splitPane,BorderLayout.CENTER);
 		
 		// Add the toolbar
 		toolbar=new Toolbar(alarmTable,model,ACTIVATE_RDUCTION_RULES,this);
@@ -418,4 +458,17 @@ public class AlarmPanel extends JPanel implements IPanel {
 	public void showMessage(String mesg, boolean red) {
 		statusLine.showMessage(mesg, red);
 	}
+	
+	/**
+	 * Show the alarm in the details table
+	 *  
+	 * @param alarm The alarm to show in the details panel;
+	 * 				if <code>null</code> the details table is cleared.
+	 */
+	public void showAlarmDetails(Alarm alarm) {
+		detailTable.showAlarmDetails(alarm);
+	}
+	
+	
 }
+

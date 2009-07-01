@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.21 2009/06/29 02:52:32 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.22 2009/07/01 16:54:13 acaproni Exp $
  * @since    
  */
 
@@ -39,6 +39,7 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserHeartbeatException;
 import cern.laser.client.services.selection.LaserSelectionException;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -67,10 +68,10 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		TIME("Time",null,true),
 		COMPONENT("Component",null,true),
 		CODE("Code",null,false),
-		PRIORITY("Priority",null,true),
-		DESCRIPTION("Description",null,true),
 		CAUSE("Cause",null,true),
+		DESCRIPTION("Description",null,true),
 		ACTION("Action",null,true),
+		PRIORITY("Priority",null,true),
 		CONSEQUENCE("Consequence",null,false),
 		URL("URL",null,false),
 		CONTACT("Contact",null,false),
@@ -109,6 +110,58 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 			
 	};
+	
+	public static enum PriorityLabel {
+		VERY_HIGH("VERY HIGH",Color.red),
+		HIGH("HIGH", new Color(255,165,31)),
+		MEDIUM("MEDIUM",Color.yellow),
+		LOW("LOW",new Color(188,255,188));
+		
+		/**
+		 * The description label
+		 */
+		public final String description;
+		
+		/**
+		 * The color of the entry in the alarm table
+		 */
+		public final Color color;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param desc The description
+		 * @param col The color
+		 */
+		private PriorityLabel(String desc, Color col) {
+			description=desc;
+			color=col;
+		}
+		
+		/**
+		 * 
+		 * @param priority The priority
+		 * @return The {@link PriorityLabel} of the given priority
+		 */
+		public static PriorityLabel fromPriorityNumber(int priority) {
+			switch (priority) {
+			case 0: return VERY_HIGH;
+			case 1: return HIGH;
+			case 2: return MEDIUM;
+			case 3: return LOW;
+			default:
+				throw new IndexOutOfBoundsException("Invalid priority");
+			}
+		}
+		
+		/**
+		 * @param n The number of the priority
+		 * @return The description of the priority
+		 */
+		public static String fromPriorityDesc(int n) {
+			return fromPriorityNumber(n).description;
+		}
+	}
 	
 	/** 
 	 * The date format
@@ -422,6 +475,23 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	}
 	
 	/**
+	 * Return the alarm shown at the rowIndex row of the table.
+	 * 
+	 * @param rowIndex The index of the alarm in the model
+	 * @return the alarm shown at the rowIndex row of the table
+	 */
+	public Alarm getAlarmAt(int rowIndex) {
+		if (rowIndex<0) {
+			return null;
+		}
+		Alarm alarm;
+		synchronized (items) {
+			alarm = items.get(rowIndex,applyReductionRules).getAlarm();
+		}
+		return alarm;
+	}
+	
+	/**
 	 * Return the text to display in a cell as it is read by the alarm
 	 * without any formatting (the table add some formatting for
 	 * example the color)
@@ -431,10 +501,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @return The string to display in the cell
 	 */
 	public Object getCellContent(int rowIndex, int columnIndex) {
-		Alarm alarm;
-		synchronized (items) {
-			alarm = items.get(rowIndex,applyReductionRules).getAlarm();
-		}
+		Alarm alarm=getAlarmAt(rowIndex);
 		
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
 		switch (col) {
@@ -448,7 +515,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return alarm.getTriplet().getFaultCode();
 		}
 		case PRIORITY: {
-			return alarm.getPriority().toString();
+			int priority = alarm.getPriority().intValue();
+			return PriorityLabel.fromPriorityDesc(priority);
 		}
 		case DESCRIPTION: {
 			return alarm.getProblemDescription();

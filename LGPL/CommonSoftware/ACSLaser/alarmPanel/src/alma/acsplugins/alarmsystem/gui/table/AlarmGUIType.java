@@ -98,7 +98,7 @@ public enum AlarmGUIType {
 		flagRenderer = new JLabel(flagIcon,JLabel.CENTER);
 	}
 	
-	public AlarmGUIType fromID(int id) {
+	public static AlarmGUIType fromID(int id) {
 		if (id<0 || id>=AlarmGUIType.values().length) {
 			throw new IllegalArgumentException("Invalid id "+id);
 		}

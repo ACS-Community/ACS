@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.15 2009/06/29 02:52:32 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.16 2009/07/01 16:54:13 acaproni Exp $
  * @since    
  */
 
@@ -28,12 +28,15 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
@@ -42,7 +45,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultListSelectionModel;
-import javax.swing.DefaultRowSorter;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -62,7 +64,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.RowFilter.Entry;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
@@ -70,6 +71,7 @@ import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
+import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
 import alma.alarmsystem.clients.CategoryClient;
 
 import cern.laser.client.data.Alarm;
@@ -419,6 +421,11 @@ public class AlarmTable extends JTable implements ActionListener {
 	private final SearchEngine searchEngine;
 	
 	/**
+	 * The ID of the last selected alarm for painting in bold
+	 */
+	private String selectedAlarmId=null;
+	
+	/**
 	 *  The renderer for the reduced alarm entries i.e.
 	 *  the entries normally hidden
 	 */
@@ -487,6 +494,13 @@ public class AlarmTable extends JTable implements ActionListener {
 				columns[t].setPreferredWidth(20);
 				columns[t].setMaxWidth(20);
 				columns[t].setMinWidth(20);
+			} else if (columns[t].getIdentifier()==AlarmTableColumn.PRIORITY) {
+				BufferedImage bImg = new BufferedImage(100,100,BufferedImage.TYPE_INT_RGB);
+				Graphics2D g2D= bImg.createGraphics();
+				FontMetrics fm=g2D.getFontMetrics();
+				int sz=fm.stringWidth(PriorityLabel.VERY_HIGH.description);
+				columns[t].setPreferredWidth(sz+6);
+				columns[t].setMaxWidth(sz+8);
 			}
 		}
 		for (AlarmTableColumn col: AlarmTableColumn.values()) {
@@ -560,7 +574,7 @@ public class AlarmTable extends JTable implements ActionListener {
 			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-		if (getSelectedRow()==rowIndex) {
+		if (alarm.getAlarmId().equals(selectedAlarmId)) {
 			Font f = c.getFont();
 			Font bold=f.deriveFont(Font.BOLD);
 			c.setFont(bold);
@@ -747,6 +761,18 @@ public class AlarmTable extends JTable implements ActionListener {
 	}
 	
 	/**
+	 * Override {@link JTable#changeSelection(int, int, boolean, boolean)} to show
+	 * the selected alarm in the detail panel.
+	 */
+	@Override
+	public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+		super.changeSelection(rowIndex, columnIndex, toggle, extend);
+		int idx = sorter.convertRowIndexToModel(rowIndex);
+		panel.showAlarmDetails(model.getAlarmAt(idx));
+		selectedAlarmId=model.getAlarmAt(idx).getAlarmId();
+	}
+	
+	/**
 	 * Filter the table by the passed string
 	 * <P>
 	 * Filtering select all the rows containing the passed string 
@@ -765,6 +791,21 @@ public class AlarmTable extends JTable implements ActionListener {
 			filter.setFilter(filterString, not);
 			sorter.setRowFilter(filter);
 		}
+	}
+
+	/**
+	 * Return the id of the selected alarm;
+	 * the id is <code>null</code> if no alarm is selected;
+	 * <P>
+	 * This method does not ensure that the alarm with the ID
+	 * returned by this method is still in the table: it might have been
+	 * removed when the panel discards alarms.
+	 * 
+	 * @return The id of the selected alarm or <code>null</code>
+	 * 			if no alarm is selected
+	 */
+	private String getSelectedAlarmId() {
+		return selectedAlarmId;
 	}
 }
 
