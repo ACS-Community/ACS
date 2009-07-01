@@ -33,6 +33,7 @@ import org.omg.CORBA.UserException;
 
 import junit.framework.TestCase;
 
+import alma.Logging.XmlLogRecord;
 import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.AcsLogFormatter;
 import alma.acs.testsupport.LogRecordCollectingLogger;
@@ -41,7 +42,8 @@ import alma.acs.testsupport.LogRecordCollectingLogger;
 
 public class RemoteLogDispatcherTest extends TestCase {
 
-    private TestLogDispatcher dispatcher;
+	private ORB orb;
+	private TestLogDispatcher dispatcher;
 	private DispatchingLogQueue queue;
 	private CollectingLogger collectingLogger;
 	private TestAcsXMLLogFormatter formatter;
@@ -54,7 +56,7 @@ public class RemoteLogDispatcherTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		System.out.println("START----------------------------" + getName() + "-------------");
-		ORB orb = org.omg.CORBA.ORB.init();
+		orb = org.omg.CORBA.ORB.init();
 		collectingLogger = LogRecordCollectingLogger.getCollectingLogger("RemoteLogDispatcherTest", CollectingLogger.class);
 		collectingLogger.suppressLogs(true); // only interested in the LogRecords
 		collectingLogger.clearLogRecords();
@@ -76,15 +78,39 @@ public class RemoteLogDispatcherTest extends TestCase {
 	 * This effectively tests {@link RemoteLogDispatcher#sendLogRecords(LogRecord[])}.
 	 */
 	public void testSendLogRecords() {
+		// produce some LogRecord objects to test the dispatcher with
 		int numRecords = 10;
 		collectingLogger.produceLogs1(numRecords);
 		LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+		// 
 		dispatcher.sendLogRecords(fakeLogRecords);
 		String[] xmlRecords = dispatcher.getCollectedXmlLogRecords();
 		// nothing lost?
 		assertEquals(numRecords, xmlRecords.length);
 		// order kept?
 		assertTrue(xmlRecords[1].startsWith("<Emergency TimeStamp="));
+		
+		// test the same thing again, but this time sending log records via the new ACS extension to the Log service
+		try {
+			collectingLogger.clearLogRecords();
+			collectingLogger.produceLogs1(numRecords);
+			fakeLogRecords = collectingLogger.getCollectedLogRecords();
+			assertEquals(numRecords, fakeLogRecords.length);
+			
+			System.setProperty(RemoteLogDispatcher.USE_ACS_LOGSERVICE_EXTENSIONS_PROPERTYNAME, "true");
+			TestLogDispatcher dispatcherAcsLogService = new TestLogDispatcher(orb, formatter);
+			assertTrue(dispatcherAcsLogService.useAcsLogServiceExtensions);
+			
+			dispatcherAcsLogService.sendLogRecords(fakeLogRecords);
+			xmlRecords = dispatcherAcsLogService.getCollectedXmlLogRecords();
+			// nothing lost?
+			assertEquals(numRecords, xmlRecords.length);
+			// order kept?
+			assertTrue(xmlRecords[1].startsWith("<Emergency TimeStamp="));
+		}
+		finally {
+			System.setProperty(RemoteLogDispatcher.USE_ACS_LOGSERVICE_EXTENSIONS_PROPERTYNAME, "false");
+		}
 	}
 
 
@@ -240,7 +266,9 @@ public class RemoteLogDispatcherTest extends TestCase {
 	 * Tests that a failure in XML formatting leads to dropping of the records.
 	 * <p>
 	 * Then tests that even with a 70% chance of failure in dispatching the log records will eventually send all records,
-	 * due to the records being re-inserted in the queue.
+	 * due to the records being taken out and re-inserted in the queue. 
+	 * Chances to add an additional record to the queue are fairly low because the simulated failure in
+	 * writeRecords(..) occurs immediately (before the 200ms sleep we otherwise get)
 	 */
 	public void testFailingRecords() {
 		// simulate a failure in converting the LogRecord to XML
@@ -271,19 +299,27 @@ public class RemoteLogDispatcherTest extends TestCase {
 	}
 
 	
+    /**
+     * TODO: investigate the occasional test failure 
+     * overflowing log queue accepted/rejected wrong number of records ('filterThreshold'=700) expected: 850 but was:851
+     * 
+     * Most likely this comes from log records being temporarily removed and then reinserted to the queue.
+     */
     public void testQueueOverflow() {
         // simulate a failing log service 
         dispatcher.setWriteFailureChance(1.0);
         queue.setRemoteLogDispatcher(dispatcher);
         
         int numRecords = queue.getMaxQueueSize();
+        assertEquals("Default maxQueueSize 1000 from CDB schema as well as Java hardcoded", 1000, numRecords);
+        
         collectingLogger.produceLogs1(numRecords);
         LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
         dispatcher.setVerbose(false);
         int filterThreshold = numRecords * 7 / 10;
         int numLoggedExpected = 0;
         for (int i = 0; i < numRecords; i++) {
-            queue.log(fakeLogRecords[i]);
+            boolean wasAddedToQueue = queue.log(fakeLogRecords[i]);
             // first 70% of queue accepts any of these log records, later only INFO and above
             if ( (i+1 <= filterThreshold) ||
                  fakeLogRecords[i].getLevel().intValue() >= Level.INFO.intValue() ) {
@@ -326,16 +362,17 @@ public class RemoteLogDispatcherTest extends TestCase {
 
 class TestLogDispatcher extends RemoteLogDispatcher {
 
-    private final List<String> xmlLogRecordList = new ArrayList<String>();
-    private boolean verbose = true;
-    private double writeFailureChance = 0.0;
-    private final Random random = new Random(System.currentTimeMillis());
-    
-    TestLogDispatcher(ORB orb, AcsLogFormatter xmlLogFormatter) {
-        super(orb, null, xmlLogFormatter);
-    }
+	private final List<String> xmlLogRecordList = new ArrayList<String>();
+	private boolean verbose = true;
+	private double writeFailureChance = 0.0;
+	private final Random random = new Random(System.currentTimeMillis());
 
-    protected void writeRecords(Any[] anyLogRecordsArray) throws UserException {
+	TestLogDispatcher(ORB orb, AcsLogFormatter xmlLogFormatter) {
+		super(orb, null, xmlLogFormatter);
+	}
+
+	@Override
+	protected void writeRecords(Any[] anyLogRecordsArray) throws UserException {
         if (random.nextDouble() < writeFailureChance) {
             if (verbose) {
                 System.out.println("--------writeRecords fails with simulated network problem------");
@@ -358,11 +395,30 @@ class TestLogDispatcher extends RemoteLogDispatcher {
             e.printStackTrace();
         }
     }
-    
-    String[] getCollectedXmlLogRecords() {
-        return xmlLogRecordList.toArray(new String[xmlLogRecordList.size()]);
-    }
-    
+
+	@Override
+	protected void writeRecords(XmlLogRecord[] remoteLogRecords) {
+		for (XmlLogRecord remoteLogRecord : remoteLogRecords) {
+			String xmlLogRecord = remoteLogRecord.xml;
+			xmlLogRecordList.add(xmlLogRecord);
+			if (verbose) {
+				System.out.println(xmlLogRecord.toString());
+			}
+		}
+		if (verbose) {
+			System.out.println("--------end writeRecords-------");
+		}
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	String[] getCollectedXmlLogRecords() {
+		return xmlLogRecordList.toArray(new String[xmlLogRecordList.size()]);
+	}
+
     void clearCollectedXmlLogRecords() {
         xmlLogRecordList.clear();
     }
