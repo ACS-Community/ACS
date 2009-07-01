@@ -163,6 +163,8 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 */
 	private JMenuItem zoomOverSelected = new JMenuItem("Drill down",zoomIcon);
 	
+	private LogTableRowSorter sorter;
+	
 	/** 
 	 * The text to copy
 	 */
@@ -218,6 +220,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		this.table=table;
 		this.model=table.getLCModel();
 		this.selectionModel=(DefaultListSelectionModel)table.getSelectionModel();
+		this.sorter=(LogTableRowSorter)table.getRowSorter();
 		
 		// Add the Label
 		setLabel("Paste");
@@ -331,7 +334,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 				if (!selectionModel.isSelectedIndex(i)) {
 					continue;
 				} else {
-					ILogEntry log = model.getVisibleLogEntry(i);
+					ILogEntry log = model.getVisibleLogEntry(sorter.convertRowIndexToModel(i));
 					strBuffer.append(log.toXMLString());
 					strBuffer.append("\n");
 				}
