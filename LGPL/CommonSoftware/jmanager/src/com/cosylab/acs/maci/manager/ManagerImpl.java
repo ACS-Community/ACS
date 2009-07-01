@@ -3841,19 +3841,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private void makeUnavailable(ComponentInfo componentInfo)
 	{
+		final boolean notificationNeeded;
+		String componentName = null;
+		int[] clients = null;
 		synchronized (unavailableComponents)
 		{
 			// !!! ACID 3
 			// add to unavailable component map (override old info)
-			boolean notificationNeeded = !unavailableComponents.containsKey(componentInfo.getName());
+			notificationNeeded = !unavailableComponents.containsKey(componentInfo.getName());
 			executeCommand(new UnavailableComponentCommandPut(componentInfo.getName(), componentInfo));
 			//unavailableComponents.put(componentInfo.getName(), componentInfo);
 
 			if (notificationNeeded)
 			{
-				// inform clients about unavailability (if necessary)
-				int[] clients = componentInfo.getClients().toArray();
-				notifyComponentUnavailable(0, clients, new String[] { componentInfo.getName() });
+				componentName = componentInfo.getName();
+				clients = componentInfo.getClients().toArray();
 			}
 
 			// clear component reference and container
@@ -3861,6 +3863,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			componentInfo.setContainer(0);
 			// leave container name set
 		}
+
+		// inform clients about unavailability (if necessary)
+		if (notificationNeeded)
+			notifyComponentUnavailable(0, clients, new String[] { componentName });
 	}
 
 	/**
