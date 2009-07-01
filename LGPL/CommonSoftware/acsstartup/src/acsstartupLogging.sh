@@ -28,7 +28,7 @@ then
     then
 	if ! mkdir $OUTPUT_FILE
         then
-            echo "Cannot create $INSTANCE_DIR"
+            echo "Cannot create $OUTPUT_FILE"
             exit $EC_CANNOTCREATE
         fi
     fi
@@ -215,6 +215,8 @@ local PID  #process ID
 local HOST #hostname
 local MSG  #entire message
 
+local LOGDIR
+
 TS=`getTimeStamp`
 CMD=`basename $0`
 PID=$$
@@ -226,6 +228,15 @@ MSG="Time:$TS; User=$USER; Host=$HOST; Command:$CMD $@; Process ID:$PID; ACS_INS
 #sanity check on the history file
 if [ ! -e $ACS_COMMAND_HISTORY_FILE ]
 then
+    if ! touch $ACS_COMMAND_HISTORY_FILE 2> /dev/null
+    then
+        LOGDIR=`dirname $ACS_COMMAND_HISTORY_FILE`
+        if [ ! -d $LOGDIR ]
+        then
+            mkdir -p $LOGDIR
+            chmod 777 $LOGDIR
+        fi
+    fi
     touch $ACS_COMMAND_HISTORY_FILE
     chmod 666 $ACS_COMMAND_HISTORY_FILE
 fi
