@@ -1,4 +1,4 @@
-package alma.acs.testsupport;
+package alma.acs.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

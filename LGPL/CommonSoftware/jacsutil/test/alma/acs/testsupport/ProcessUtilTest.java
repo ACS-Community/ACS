@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.util.ProcessStreamGobbler;
 
 public class ProcessUtilTest extends TestCase
 {

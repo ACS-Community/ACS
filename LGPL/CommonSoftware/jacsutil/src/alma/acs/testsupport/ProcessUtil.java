@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.util.ProcessStreamGobbler;
 
 /**
  * Helper class to be used by tests which need to verify that some other process exists 
