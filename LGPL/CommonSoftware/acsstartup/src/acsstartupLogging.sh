@@ -216,6 +216,7 @@ local HOST #hostname
 local MSG  #entire message
 
 local LOGDIR
+local TMPDIR
 
 TS=`getTimeStamp`
 CMD=`basename $0`
@@ -233,7 +234,18 @@ then
         LOGDIR=`dirname $ACS_COMMAND_HISTORY_FILE`
         if [ ! -d $LOGDIR ]
         then
-            mkdir -p $LOGDIR
+            # LOGDIR is supposed to be $ACSDATA/tmp/{hostname}
+            TMPDIR=`dirname $LOGDIR`
+            if [ ! -d $TMPDIR ]
+            then
+                mkdir $TMPDIR
+                chmod 777 $TMPDIR
+            fi
+            if ! mkdir $LOGDIR
+            then
+                echo "Cannot create $LOGDIR"
+                exit $EC_CANNOTCREATE
+            fi
             chmod 777 $LOGDIR
         fi
     fi
