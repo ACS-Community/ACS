@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +42,7 @@ public class ProcessStreamGobbler
 	 * @param tf ThreadFactory to be used to create the two threads that read the stdout and stderr streams
 	 * @param storeStreamContent If true, then the stdout and stderr content will be stored 
 	 *        and can be read using {@link #getStdout()} and {@link #getStderr()} 
+	 * @TODO: set max sizes for the buffers
 	 */
 	public ProcessStreamGobbler(Process proc, ThreadFactory tf, boolean storeStreamContent) {
 		this.proc = proc;
@@ -57,21 +60,50 @@ public class ProcessStreamGobbler
 	/**
 	 * Starts fetching process output from stdout/stderr, storing it internally
 	 * so that it can later be read via {@link #getStdout()} and {@link #getStderr()}.
+	 * <p>
+	 * Use this method if you do not want to wait for the process to end.
+	 * The status can anyway be checked using {@link #hasTerminated()}.
+	 * 
+	 * @param timeout maximum time to wait for the process to finish
+	 * @param unit unit for the timeout
+	 * @return  {@code true) if returning because the process ended, 
+	 *          otherwise {@code false} if the timeout applied (in which case the streams will continue to be read though).
+	 * @throws InterruptedException 
+	 */
+	public void gobbleAsync() throws InterruptedException {
+		gobble(-1, null);
+	}
+
+	/**
+	 * Starts fetching process output from stdout/stderr, storing it internally
+	 * so that it can later be read via {@link #getStdout()} and {@link #getStderr()}.
+	 * <p>
+	 * Use this method if you want to wait for the process to end, limited by a timeout.
+	 * <p>
 	 * @TODO: set max sizes for the buffers
-	 * @param timeout
-	 * @param unit
-	 * @return  true if returning because of process ended, 
-	 *          otherwise false if the timeout applied (in which case the streams will continue to be read though).
+	 * 
+	 * @param timeout maximum time to wait for the process to finish
+	 * @param unit unit for the timeout
+	 * @return  {@code true) if returning because the process ended, 
+	 *          otherwise {@code false} if the timeout applied (in which case the streams will continue to be read though).
 	 * @throws InterruptedException 
 	 */
 	public boolean gobble(long timeout, TimeUnit unit) throws InterruptedException {
-		ExecutorService exsrv = Executors.newFixedThreadPool(2, tf);
+		ExecutorService exsrv = new ThreadPoolExecutor(0, 2, 0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>(), tf);
+
 		runOut = new GobblerRunnable(proc.getInputStream(), stdout, "stdout", DEBUG);
 		exsrv.submit(runOut);
 		runErr = new GobblerRunnable(proc.getErrorStream(), stderr, "stderr", DEBUG);
 		exsrv.submit(runErr);
-		exsrv.shutdown();
-		return exsrv.awaitTermination(timeout, unit);
+		
+		if (timeout > 0) {
+			exsrv.shutdown();
+			return exsrv.awaitTermination(timeout, unit);
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -88,8 +120,22 @@ public class ProcessStreamGobbler
 		return stderr;
 	}
 	
+	/**
+	 * @return true if there was 1 or more errors reading the stdout or stderr stream.
+	 * @throws IllegalStateException if called before {@link #gobble(long, TimeUnit)} or {@link #gobbleAsync()}.
+	 */
 	public boolean hasStreamReadErrors() {
+		if (runOut == null || runErr == null) {
+			throw new IllegalStateException("Cannot call this method before gobbling.");
+		}
 		return (runOut.hasReadError | runErr.hasReadError);
+	}
+	
+	public boolean hasTerminated() {
+		if (runOut == null || runErr == null) {
+			throw new IllegalStateException("Cannot call this method before gobbling.");
+		}
+		return (runOut.hasTerminated | runErr.hasTerminated);
 	}
 	
 	public void setDebug(boolean DEBUG) {
@@ -101,6 +147,7 @@ public class ProcessStreamGobbler
 		private final BufferedReader br;
 		private final List<String> buffer;
 		private boolean hasReadError;
+		private boolean hasTerminated;
 		private String name;
 		private final boolean DEBUG;
 		
@@ -108,6 +155,7 @@ public class ProcessStreamGobbler
 			br = new BufferedReader(new InputStreamReader(stream));
 			this.buffer = buffer;
 			hasReadError = false;
+			hasTerminated = false;
 			this.name = name;
 			this.DEBUG = DEBUG;
 		}
@@ -141,10 +189,14 @@ public class ProcessStreamGobbler
 					if (DEBUG) {
 						System.out.println(name + ": streams closed.");
 					}
-				} catch (IOException ex) {
+				} 
+				catch (IOException ex) {
 					if (DEBUG) {
 						System.out.println(name + ": streams failed to close.");
 					}
+				}
+				finally {
+					hasTerminated = true;
 				}
 			}
 		}
