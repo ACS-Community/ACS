@@ -3372,7 +3372,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		catch (Throwable th)
 		{
 			// parameter is optional
-			logger.log(Level.FINE, "No list of service daemons available.", th);
+			logger.log(Level.WARNING, "No list of services daemons available in the CDB. " + 
+					"In an operational environment using ACS daemons, this is a severe error!!" + 
+					"It is OK only if you run the system without using these daemons. ");
 			return;
 		}
 
@@ -3387,7 +3389,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					throw new RuntimeException("Failed to resolve service daemon reference '" + daemons[i] + "'.");
 
 			} catch (Throwable th) {
-				// do not make scarry logs...
+				// do not make scary logs...
 				logger.config("Failed to set manager reference on service daemon on host '"+daemons[i]+"'.");
 				//logger.log(Level.CONFIG,"Failed to set manager reference on service daemon on host '"+daemons[i]+"'.", th);
 			}
