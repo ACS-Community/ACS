@@ -83,6 +83,14 @@ ACSPorts::getNotifyServicePort(int baseport, const char *name)
         if (strcmp(name, "Logging") == 0 || strcmp(name, "LoggingNotifyEventChannelFactory") == 0) add = 5;
         else if (strcmp(name, "Archive") == 0 || strcmp(name, "ArchiveNotifyEventChannelFactory") == 0) add = 6;
         else if (strcmp(name, "Alarm") == 0 || strcmp(name, "AlarmNotifyEventChannelFactory") == 0) add = 7;
+        else {
+            char cmd[200];
+            snprintf(cmd, 200, "acsstartupNotifyPortViaErrorCode -b %d -name %s", baseport, name);
+            int result = ACE_OS::system(cmd);
+            if (result != -1)
+                add = (result >> 8) + 20;
+            // otherwise defult port is returned... hmmm?!
+        }
     }
     realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + add) << ends;
     return realOutput.str();
