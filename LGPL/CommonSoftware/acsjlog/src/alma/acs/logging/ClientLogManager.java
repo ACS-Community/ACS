@@ -660,9 +660,10 @@ public class ClientLogManager implements LogConfigSubscriber
 	        
 	        corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
 	        // Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
+	        // As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
 	        corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
 	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
-	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecord"); // @TODO update method name when we change it to writeRecords or similar!!!
+	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
 
 	        if (autoConfigureContextName && processName == null) {
 	        	// mark this logger for process name update
