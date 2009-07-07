@@ -22,13 +22,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The queue of entries.
@@ -36,27 +33,35 @@ import java.util.concurrent.TimeUnit;
  * This class has been introduced to avoid keeping in memory a
  * never ending queue of {@link CacheEntry} and reduce the
  * chance to face an out of memory at run-time.
- * <P>
- * <code>CacheEntriesQueue</code> own a {@link LinkedBlockingQueue} to
- * keep in memory only a defined subset of items.
- * All exceeding items are flushed on disk. 
+ * <BR>
+ * This class is composed of two lists and a file.
+ * <code>inMemoryQueue</code> is the list of the entries to get.
+ * When this list contains few items then some more items are read from the file.
+ * <BR>
+ * The other list, <code>CacheEntriesQueue</code>, is a buffer where the entries
+ * are stored ready to be flushed on disk. 
+ * This is done to write more entries at once reducing the I/O and increasing
+ * the performances.
  * <P>
  * <B>Implementation note</B><BR>
- * <code>CacheEntry</code> items  are read only with the <code>poll</code> 
- * or an equivalent method and pushed with <code>put</code>.
- * <P><I>Adding entries</I>:<BR>
- * If there is enough room in the queue (i.e. <code>size()<MAX_QUEUE_LENGTH</code>) 
- * then a new entry is stored directly in the queue otherwise it is added
- * to a vector (<code>cachedEntries</code>) ready to be written on file.
- * If the size of the vector is greater of the size of a page (<code>PAGE_LEN</code>),
- * the page is flushed on disk. Note that what is in the vector is added at the
- * end of the file.
- * <P><I>Getting entries</I>:<BR>
- * The entry to get is always in the queue.
- * After getting the entry, it checks if the the size of the queue allows to get 
- * new entries from the file (i.e. read a new page) or from the vector.
- * Note that the right order is first the file and then the vector. 
- * In fact the vector, <code>cachedEntries</code>, contains the last received entries, 
+ * <code>CacheEntry</code> items  are read only with the <code>get</code> 
+ * method and pushed with the <code>put</code>.
+ * <P>
+ * <I>Adding entries</I>:<BR>
+ * If there is enough room in <code>inMemoryQueue</code> 
+ * (i.e. <code>inMemoryQueue.size()<MAX_QUEUE_LENGTH</code>) 
+ * then a new entry is stored directly in that list; otherwise it is added
+ * to <code>cachedEntries</code> ready to be written on file.
+ * If the size of <code>cachedEntries</code> is greater then <code>PAGE_LEN</code>, 
+ * the size of a page, then a page is flushed on disk. 
+ * Note that what is in the list, <code>cacheEntries</code> is added at the end of the file.
+ * <P>
+ * <I>Getting entries</I>:<BR>
+ * The entry to get is always in <code>inMemoryQueue</code>.
+ * After getting an entry, it checks if the the size of the queue allows to get 
+ * new entries from the file or from the <code>cachedEntries</code>.
+ * Note that the right order is first the file and then <code>cachedEntries</code>. 
+ * In fact <code>cachedEntries</code>, contains the last received entries, 
  * packed to be transferred on a new page on disk while the first entries to push
  * in the queue are on a page disk (if any).
  * 
@@ -68,7 +73,7 @@ public class CacheEntriesQueue {
 	/**
 	 * The entries to keep in memory.
 	 */
-	private final LinkedBlockingQueue<CacheEntry> inMemoryQueue = new LinkedBlockingQueue<CacheEntry>(MAX_QUEUE_LENGTH);
+	private final List<CacheEntry> inMemoryQueue =new LinkedList<CacheEntry>();
 	
 	/**
 	 * The max number of entries kept in memory.
@@ -96,19 +101,19 @@ public class CacheEntriesQueue {
 	/**
 	 * The buffer for each I/O
 	 */
-	private byte[] fileBuffer = null;
+	private byte[] fileBuffer = new byte[PAGE_SIZE];
 	
 	/**
 	 * The buffer containing the hexadecimal string of a <code>CacheEntry</code> 
 	 */
-	private byte[] entryBuffer =null;
+	private byte[] entryBuffer =new byte[CacheEntry.ENTRY_LENGTH];
 	
 	/**
 	 * 
 	 * This Vector contains the entries that will be written on the file.
 	 * 
 	 */
-	private List<CacheEntry> cachedEntries=Collections.synchronizedList(new LinkedList<CacheEntry>());
+	private List<CacheEntry> cachedEntries=new LinkedList<CacheEntry>();
 	
 	/**
 	 * The file to buffer entries on disk.
@@ -139,21 +144,19 @@ public class CacheEntriesQueue {
 	private volatile int nextPageToRead=0;
 	
 	/**
-	 * The object to wait events from
-	 */
-	private Object semaphore = new Object();
-	
-	/**
 	 * Put an entry in Cache.
 	 * <P>
 	 * If the cache is full the entry is added to the buffer.
 	 * 
-	 * @throws InterruptedException 
+	 * @param entry The not <code>null</code> {@link CacheEntry} to add to the queue 
 	 * @throws IOException In case of I/O error while flushing the cache on disk
 	 */
-	public void put(CacheEntry entry) throws InterruptedException, IOException {
+	public synchronized void put(CacheEntry entry) throws IOException {
+		if (entry==null) {
+			throw new IllegalArgumentException("The queue do not contain null items!");
+		}
 		if (inMemoryQueue.size()<MAX_QUEUE_LENGTH && pagesOnFile==0 && cachedEntries.isEmpty()) {
-			inMemoryQueue.put(entry);
+			inMemoryQueue.add(entry);
 		} else {
 			cachedEntries.add(entry);
 			if (cachedEntries.size()>=PAGE_LEN) {
@@ -165,9 +168,17 @@ public class CacheEntriesQueue {
 	
 	/**
 	 * Get the next value from the queue.
+	 * 
+	 * @return The next item in the queue or <code>null</code> if the
+	 * 			queue is empty
+	 * 
+	 * @throws IOException In case of error during I/O
 	 */
-	public CacheEntry poll(long timeout, TimeUnit unit) throws InterruptedException {
-		CacheEntry e = inMemoryQueue.poll(timeout, unit);
+	public synchronized CacheEntry get() throws IOException {
+		if (inMemoryQueue.isEmpty()) {
+			return null;
+		}
+		CacheEntry e = inMemoryQueue.remove(0);
 		if (e!=null && inMemoryQueue.size()<THRESHOLD && (cachedEntries.size()>0 || pagesOnFile>0)) {
 			flushEntriesInQueue();
 		}
@@ -177,7 +188,7 @@ public class CacheEntriesQueue {
 	/**
 	 * Clear the queue and the file (if any)
 	 */
-	public void clear() {
+	public synchronized void clear() {
 		inMemoryQueue.clear();
 		cachedEntries.clear();
 		pagesOnFile=0;
@@ -185,12 +196,10 @@ public class CacheEntriesQueue {
 		fileBuffer=null;
 		entryBuffer=null;
 		if (raFile!=null) {
-			synchronized (raFile) {
-				try {
-					raFile.close();
-				} catch (Exception e) {
-					System.err.println("Error closing file: "+e.getMessage());
-				}
+			try {
+				raFile.close();
+			} catch (Exception e) {
+				System.err.println("Error closing file: "+e.getMessage());
 			}
 		}
 		raFile=null;
@@ -203,7 +212,7 @@ public class CacheEntriesQueue {
 	/**
 	 * Return the number of cache entries waiting in queue
 	 */
-	public int size() {
+	public synchronized int size() {
 		return inMemoryQueue.size()+cachedEntries.size()+pagesOnFile*PAGE_LEN;
 	}
 	
@@ -224,7 +233,7 @@ public class CacheEntriesQueue {
 			acsdata=acsdata+File.separator+"tmp"+File.separator;
 			File dir = new File(acsdata);
 			f = File.createTempFile("jlogEngineCache",".tmp",dir);
-			name=acsdata+f.getName();
+			name=f.getAbsolutePath();
 		} catch (IOException ioe) {
 			// Another error :-O
 			String homeDir = System.getProperty("user.dir");
@@ -254,25 +263,13 @@ public class CacheEntriesQueue {
 	 * The vector contains the last added entries so if there are pages in
 	 * the file they are flushed before the vector
 	 * 
+	 * @throws IOException In case of error during I/O
 	 */
-	private synchronized void flushEntriesInQueue() {
+	private void flushEntriesInQueue() throws IOException {
 		if (pagesOnFile==0) {
-			// Just to be sure, we check if there is enough room
-			// to flush all the vector in the queue otherwise we risk
-			// to lock everything because the queue has a fixed mx size
 			if (cachedEntries.size()!=0) {
-				if (cachedEntries.size()<MAX_QUEUE_LENGTH-inMemoryQueue.size()) {
-					inMemoryQueue.addAll(cachedEntries);
-					cachedEntries.clear();
-				} else {
-					while (cachedEntries.size()>0 && inMemoryQueue.size()<MAX_QUEUE_LENGTH) {
-						if (inMemoryQueue.offer(cachedEntries.get(0))) {
-							cachedEntries.remove(0);
-						} else {
-							break;
-						}
-					}
-				}
+				inMemoryQueue.addAll(cachedEntries);
+				cachedEntries.clear();
 			}
 		} else {
 			// Get the next page from disk
@@ -283,8 +280,10 @@ public class CacheEntriesQueue {
 	/**
 	 * Read page from the file putting all the <code>CacheEntry</code> it contains
 	 * in the queue.
+	 * 
+	 * @throws IOException In case of error during I/O
 	 */
-	private synchronized void readNextPageFromFile() {
+	private void readNextPageFromFile() throws IOException {
 		if (pagesOnFile==0) {
 			throw new IllegalStateException("No pages available on file");
 		}
@@ -294,38 +293,21 @@ public class CacheEntriesQueue {
 		if (inMemoryQueue.size()<PAGE_LEN) {
 			throw new IllegalStateException("Not enough room in queue!");
 		}
-		if (fileBuffer==null) {
-			// This should not be null because it must have been initialized 
-			// by a previous writing
-			throw new IllegalStateException("The array of bytes should not be null!");
-		}
-		if (entryBuffer==null) {
-			// This should not be null because it must have been initialized 
-			// by a previous writing
-			throw new IllegalStateException("The entryBuffer array of bytes should not be null!");
-		}
 		if (file.length()<nextPageToRead*(PAGE_SIZE+1)-1) {
-			throw new IllegalStateException("File out of bound exception");
+			throw new IllegalStateException("File out of bound exception file length="
+					+file.length()+", index to read="+
+					(nextPageToRead*(PAGE_SIZE+1)-1)+", inMemoryQueue="+
+					inMemoryQueue.size()+", cachedEntries="+cachedEntries.size()+
+					", pages to read on disk="+pagesOnFile);
 		}
 		int bytesRead=-1;
-		synchronized (raFile) {
-			try {
-				raFile.seek(nextPageToRead*PAGE_SIZE);
-				bytesRead=raFile.read(fileBuffer);
-			} catch (Throwable t) {
-				//An error reading the page form the file
-				//
-				// This should never happen
-				// At the present I think the best is to print a message and
-				// continue without changing the value of nextPageToRead
-				// so it will try to read the same page again at the next iteration
-				t.printStackTrace(System.err);
-				return;
-			}
+		raFile.seek(nextPageToRead*PAGE_SIZE);
+		bytesRead=raFile.read(fileBuffer);
+		if (bytesRead==-1) {
+			throw new IllegalStateException("EOF! but... pagesOnFile="+pagesOnFile);
 		}
 		if (bytesRead!=fileBuffer.length) {
-			System.err.println("Got "+bytesRead+" bytes instead of "+fileBuffer.length);
-			return;
+			throw new IllegalStateException("Not read all the bytes?!? Is the file shorter then expected?!?!?");
 		}
 		nextPageToRead++;
 		pagesOnFile--;
@@ -341,13 +323,8 @@ public class CacheEntriesQueue {
 		// If there are no pages it means that the file is empty and we can cut it
 		// It saves disk space...
 		if (pagesOnFile==0) {
-			try {
-				synchronized (raFile) {
-					raFile.setLength(0);
-				}
-			} catch (Exception e) {
-				// We can skip this one
-			}
+			raFile.setLength(0);
+			nextPageToRead=0;
 		}
 	}
 	
@@ -356,7 +333,7 @@ public class CacheEntriesQueue {
 	 * 
 	 * @throws IOException In case of error creating a new temporary file
 	 */
-	private synchronized void writePageOnFile() throws IOException {
+	private void writePageOnFile() throws IOException {
 		if (file==null) {
 			file=getNewFile();
 			try {
@@ -371,13 +348,6 @@ public class CacheEntriesQueue {
 				throw ioe;
 			}
 		}
-		if (entryBuffer==null) {
-			entryBuffer=new byte[CacheEntry.ENTRY_LENGTH];
-		}
-		if (fileBuffer==null) {
-			fileBuffer=new byte[PAGE_SIZE];
-		}
-		
 		if (cachedEntries.size()<PAGE_LEN) {
 			throw new IllegalStateException("Not enough entries in vector");
 		}
@@ -389,10 +359,8 @@ public class CacheEntriesQueue {
 			}
 			
 		}
-		synchronized (raFile) {
-			raFile.seek(raFile.length());
-			raFile.write(fileBuffer);
-		}
+		raFile.seek(raFile.length());
+		raFile.write(fileBuffer);
 		// Better to remove here so if the
 		// writing returned an error we have all
 		// the data still in the vector
