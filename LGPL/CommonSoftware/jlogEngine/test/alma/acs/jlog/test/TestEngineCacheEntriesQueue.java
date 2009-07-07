@@ -93,7 +93,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
 		for (int t=0; t<CacheEntriesQueue.THRESHOLD-1; t++) {
-			CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+			CacheEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals(entries.get(t).key, e.key);
 			assertEquals(entries.get(t).start, e.start);
@@ -121,7 +121,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
 		for (int t=0; t<CacheEntriesQueue.THRESHOLD+CacheEntriesQueue.PAGE_LEN-1; t++) {
-			CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+			CacheEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals(entries.get(t).key, e.key);
 			assertEquals(entries.get(t).start, e.start);
@@ -151,7 +151,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// Get the entries from the queue and compare each entry with the 
 		// original in the vector
 		for (int t=0; t<TEST_ENTRIES; t++) {
-			CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+			CacheEntry e = queue.get();
 			assertNotNull("Item "+t+" not found", e);
 			assertEquals("Item "+t,entries.get(t).key, e.key);
 			assertEquals("Item "+t,entries.get(t).start, e.start);
@@ -183,7 +183,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		// One push, one pop
 		for (writeCount=0; writeCount<1000; writeCount++) {
 			queue.put(entries.get(writeCount));
-			CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+			CacheEntry e = queue.get();
 			assertNotNull(e);
 			assertEquals("Item "+writeCount,entries.get(writeCount).key, e.key);
 			assertEquals("Item "+writeCount,entries.get(writeCount).start, e.start);
@@ -200,7 +200,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 			}
 			// read 2000 entries
 			for (int y=0; y<3000; y++) {
-				CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+				CacheEntry e = queue.get();
 				assertEquals("Item "+readCount,entries.get(readCount).key, e.key);
 				assertEquals("Item "+readCount,entries.get(readCount).start, e.start);
 				assertEquals("Item "+readCount,entries.get(readCount).end, e.end);
@@ -210,7 +210,7 @@ public class TestEngineCacheEntriesQueue  extends TestCase {
 		boolean dump=false;
 		// Get all remaining entries
 		for (; readCount<TEST_ENTRIES; readCount++) {
-			CacheEntry e = queue.poll(1, TimeUnit.SECONDS);
+			CacheEntry e = queue.get();
 			assertNotNull(e);
 			assertEquals("Item "+readCount,entries.get(readCount).key, e.key);
 			assertEquals("Item "+readCount,entries.get(readCount).start, e.start);

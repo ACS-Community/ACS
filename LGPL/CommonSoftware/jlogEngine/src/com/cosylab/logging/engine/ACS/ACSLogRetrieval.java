@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.37 2009/02/18 10:14:21 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.38 2009/07/07 09:35:52 acaproni Exp $
  * @since    
  */
 
@@ -373,7 +373,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			}
 			String tempStr = null;
 			try {
-				tempStr=cache.pop(250);
+				tempStr=cache.pop();
 			} catch (InterruptedException ie) {
 				continue;
 			} catch (Throwable t) {
@@ -383,6 +383,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			}
 			if (tempStr==null) {
 				// Timeout
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException ie) {}
 				continue;
 			}
 			if (tempStr.length()>0) {

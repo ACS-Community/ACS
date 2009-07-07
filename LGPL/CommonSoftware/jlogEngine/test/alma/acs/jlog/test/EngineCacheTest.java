@@ -111,7 +111,7 @@ public class EngineCacheTest extends TestCase {
 		assertEquals(1, cache.getActiveFilesSize());
 		
 		for (int t=0; t<items.size(); t++) {
-			String str = cache.pop(200);
+			String str = cache.pop();
 			// str is null if the cache is empty
 			assertNotNull(str);
 			assertEquals(items.get(t), str);
@@ -138,7 +138,7 @@ public class EngineCacheTest extends TestCase {
 		assertEquals(4, cache.getActiveFilesSize());
 		
 		for (int t=0; t<items.size(); t++) {
-			String str = cache.pop(200);
+			String str = cache.pop();
 			// str is null if the cache is empty
 			assertNotNull(str);
 			assertEquals(items.get(t), str);
