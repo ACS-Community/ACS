@@ -318,33 +318,23 @@ public class EngineCache extends Thread {
 		}
 		// Write the string in the file
 		CacheEntry entry = outCacheFile.writeOnFile(string, outCacheFile.key);
-		boolean inserted = false;
-		while (!inserted) {
-			try {
-				entries.put(entry);
-				inserted=true;
-			} catch (InterruptedException ie) {	}
-		}
+		entries.put(entry);
 	}
 	
 	/**
 	 * Get and remove the next string from the cache.
 	 * 
-	 * @param timeout The timeout to wait getting the new entry
 	 * @return The next string entry in cache.
 	 *         <code>null</code> If the timeout happened
 	 * @throws IOException In case of error reading from the file
 	 * @throws InterruptedException When the call to <code>poll</code> is interrupted
 	 */
-	public String pop(int timeout) throws IOException, InterruptedException {
-		if (timeout <=0 ) {
-			throw new IllegalArgumentException("Invalid timeout: "+timeout);
-		}
+	public String pop() throws IOException, InterruptedException {
 		if (closed) {
 			return null;
 		}
 		CacheEntry entry=null;
-		entry = entries.poll(timeout,TimeUnit.MILLISECONDS);
+		entry = entries.get();
 		if (entry==null) {
 			// Timeout
 			return null;
