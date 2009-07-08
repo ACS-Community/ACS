@@ -140,7 +140,6 @@ public abstract class ACSJMSConsumer implements MessageConsumer {
 		if (message==null) {
 			throw new NullPointerException("The message received is null");
 		}
-		containerServices.getLogger().log(AcsLogLevel.DEBUG,"acs-jms message received");
 		ACSJMSMessage jmsMessage = null;
 		if (message.type.compareTo("com.cosylab.acs.jms.ACSJMSObjectMessage")==0){
 			jmsMessage = new ACSJMSObjectMessage(message,containerServices);
