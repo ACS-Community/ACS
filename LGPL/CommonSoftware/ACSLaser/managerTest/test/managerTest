@@ -22,7 +22,10 @@
 #
 export ACS_TMP=../test/tmp
 . $PWD/killContainer
+echo "Container killed"
 acsStartJava -endorsed -Duser.dir=$PWD alma.alarmsystem.test.manager.ManagerTest $ACS_TMP/bilboContainer.out.pid &
-sleep 10
-acsStartContainer -cpp bilboContainer 2>&1 >/dev/null & 
+sleep 30
+acsutilAwaitContainerStart -cpp bilboContainer 2>&1 >/dev/null &
+echo "Container restarted" 
 sleep 45 
+echo "managerTest script exiting"
