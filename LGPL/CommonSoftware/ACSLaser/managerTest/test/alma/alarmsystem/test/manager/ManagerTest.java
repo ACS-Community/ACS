@@ -67,7 +67,7 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 	/**
 	 * The millisecs to wait for alarms
 	 */
-	private static final int WAIT_TIME=90000;
+	private static final int WAIT_TIME=120000;
 	
 	/**
 	 * Constructor.
