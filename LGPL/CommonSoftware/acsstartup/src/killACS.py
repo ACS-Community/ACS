@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.27 2009/07/01 07:21:13 hyatagai Exp $
+# @(#) $Id: killACS.py,v 1.28 2009/07/09 08:51:22 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -35,6 +35,7 @@ from fcntl   import LOCK_EX
 from os.path import exists
 
 from optparse import OptionParser
+import socket
 ################################################################################################
 
 #first thing we do is create a lock so this command cannot be run again until it
