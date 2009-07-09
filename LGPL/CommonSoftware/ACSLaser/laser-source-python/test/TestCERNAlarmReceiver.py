@@ -26,6 +26,7 @@
 
 import sys
 from time import sleep
+from string import find
 import ACSJMSMessageEntity_idl
 from Acspy.Nc.Consumer import Consumer
 
@@ -33,8 +34,9 @@ msgCount = 0
 
 def alarmDataHandler(some_param):
     global msgCount
-#    print msgCount, some_param.text
-    msgCount += 1
+    #print msgCount, some_param.text
+    if some_param.text.find("<fault-state family=\"Mount\" member=\"ALARM_SOURCE_MOUNT\" code=\"1\">")!=-1:
+        msgCount += 1
     return
 
 
