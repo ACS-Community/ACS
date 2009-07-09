@@ -17,8 +17,8 @@ s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/\/[a-z,A-Z,0-9,-,.,_,/]*[:] line [0-9]*[:] [0-9]* Killed/\/xxx: line xxx Killed/g
-s/Unable to shutdown because the lock directory '.*\/ACS_INSTANCE/Unable to shutdown because the lock directory '$ACSDATA\/tmp\/ACS_INSTANCE/g
-s/Freeing .*\/ACS_INSTANCE/Freeing $ACSDATA\/tmp\/ACS_INSTANCE/g
+s/Unable to shutdown because the lock directory '.*\/ACS_INSTANCE/Unable to shutdown because the lock directory '$ACS_TMP\/ACS_INSTANCE/g
+s/Freeing .*\/ACS_INSTANCE/Freeing $ACS_TMP\/ACS_INSTANCE/g
 s/Starting ACS[.]*$/Starting ACS.../g
 s/Please see .*$/Please see \/some\/file for debug output/g
 s/'[^',=]*'/'something'/g

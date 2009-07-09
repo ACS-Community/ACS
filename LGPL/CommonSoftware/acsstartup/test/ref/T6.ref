@@ -47,5 +47,5 @@
 5 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Notification Service
 5 - ----------T--:--:--.--- INFO [acsACSLogService] Stopping the ACS Log Service
 5 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Stopping the CORBA Interface Repository
-5 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACSDATA/tmp/ACS_INSTANCE.9
+5 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
 5 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...

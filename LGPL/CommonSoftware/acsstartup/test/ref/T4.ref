@@ -47,4 +47,4 @@
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Archive Notification Service
 6 - ----------T--:--:--.--- INFO [acsNotifyService] Stopping the CORBA Logging Notification Service
 6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Killing any rogue ACS processes...
-6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACSDATA/tmp/ACS_INSTANCE.9
+6 - ----------T--:--:--.--- INFO [acsStopORBSRVC] Freeing $ACS_TMP/ACS_INSTANCE.9
