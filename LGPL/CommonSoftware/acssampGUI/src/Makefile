@@ -1,15 +1,30 @@
 #*******************************************************************************
-# E.S.O. - ACS project
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2005
 #
-# "@(#) $Id: Makefile,v 1.11 2009/06/10 22:49:04 utfsm Exp $"
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 #
-# Makefile of ........
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+# "@(#) $Id: Makefile,v 1.12 2009/07/09 18:46:10 ntroncos Exp $"
+#
+# Makefile of samplingSystemGUI
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# oat       25/02/04  created
-# rtobar    09/09/08  Added sampTool creation
-
+# ntroncos  14/11/06  created
+# jaray	    20/11/06  modified
+# ntroncos  09/08/2009 Merged changes from SVN repo to ACS CVS
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
 #*******************************************************************************
@@ -18,105 +33,15 @@
 #------------------------------------------------------------------------
 
 #
-# user definable C-compilation flags
-#USER_CFLAGS = 
-
-#
-# additional include and library search paths
-#USER_INC = 
-#USER_LIB = 
-
-#
-# MODULE CODE DESCRIPTION:
-# ------------------------
-# As a general rule:  public file are "cleaned" and "installed"  
-#                     local (_L) are not "installed".
-
-#
-# C programs (public and local)
-# -----------------------------
-EXECUTABLES     =
-EXECUTABLES_L   = 
-
-#
-# <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
-
-#
-# special compilation flags for single c sources
-#yyyyy_CFLAGS   = 
-
-#
-# Includes (.h) files (public only)
-# ---------------------------------
-INCLUDES        =
-
-#
-# Libraries (public and local)
-# ----------------------------
-LIBRARIES       =
-LIBRARIES_L     =
-
-#
-# <brief description of lllll library>
-lllll_OBJECTS   =
-
-#
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = sampTool
-SCRIPTS_L       =
+#SCRIPTS_L       =
 
-#
-# TCL scripts (public and local)
-# ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
-
-#
-# Python stuff (public and local)
+# Configuration Database Files
 # ----------------------------
-PY_SCRIPTS         =
-PY_SCRIPTS_L       =
+#CDB_SCHEMAS = 
 
-PY_MODULES         =
-PY_MODULES_L       =
-
-PY_PACKAGES        =
-PY_PACKAGES_L      =
-pppppp_MODULES	   =
-
-#
-# <brief description of tttttt tcl-script>
-tttttt_OBJECTS  =
-tttttt_TCLSH    = 
-tttttt_LIBS     = 
-
-#
-# TCL libraries (public and local)
-# ------------------------------
-TCL_LIBRARIES   =
-TCL_LIBRARIES_L =
-
-#
-# <brief description of tttlll library>
-tttlll_OBJECTS  = 
-
-#
-# UIF panels (public and local)
-# ----------------------------
-PANELS   =
-PANELS_L = 
-
-# 
-# IDL Files and flags
-# 
-IDL_FILES =
-IDL_TAO_FLAGS =
-USER_IDL =
-#
 # Jarfiles and their directories
 #
 JARFILES=samplingSystemUI
@@ -157,17 +82,6 @@ MAN8 =
 # local man pages
 # ---------------
 MANl =
-
-#
-# ASCII file to be converted into Framemaker-MIF
-# --------------------
-ASCII_TO_MIF = 
-
-#
-# INS_ROOT files to be installed
-#-------------------------------
-INS_ROOT_FILES =
-INS_ROOT_DIR   =
 
 #
 # other files to be installed

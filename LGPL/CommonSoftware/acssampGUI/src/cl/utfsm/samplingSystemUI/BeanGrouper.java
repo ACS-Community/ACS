@@ -5,12 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 import javax.swing.JComboBox;
@@ -57,6 +52,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	
 	//GUI Widgets
 	private JButton startButton = null;
+	private JToggleButton pauseButton = null;
 	private JButton stopButton = null;
 	private JButton resetFrequencyButton = null;
 	private JLabel frecuencyLabel = null;
@@ -80,7 +76,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	private boolean ready2samp = false;
 	private boolean isStopped=true;
 	private String group;
-	private boolean faultErrorAddedToStatusBox = false; 
+	private boolean faultErrorAddedToStatusBox = false;
+	private boolean pausedGraph = false;
 	
 	//For script execution
 	private ScriptExecutor script = null;
@@ -105,7 +102,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * This method initializes the GUI, setting up the layout.
 	 */
 	private void initialize() {
-		this.setMinimumSize( new Dimension( 820, 550) );
+		this.setMinimumSize( new Dimension( 1000, 550) );
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(5,5,5,5);
@@ -122,27 +119,29 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		c.anchor = GridBagConstraints.WEST;
 		this.add(getStartButton(), c);
 		c.gridx = 1;
+		this.add(getPauseButton(),c);
+		c.gridx = 2;
 		c.anchor = GridBagConstraints.WEST;
 		this.add(getStopButton(), c);
-		c.gridx = 2;
+		c.gridx = 3;
 		c.anchor = GridBagConstraints.EAST;
 		this.add(getFrequencyLabel(), c);
-		c.gridx = 3;
+		c.gridx = 4;
 		c.anchor = GridBagConstraints.CENTER;
 		this.add(getFreqSpinner(), c);
-		c.gridx = 4;
+		c.gridx = 5;
 		c.anchor = GridBagConstraints.WEST;
 		this.add(getResetFrequencyButton(), c);
-		c.gridx = 5;
+		c.gridx = 6;
 		c.anchor = GridBagConstraints.EAST;
 		this.add(getTimeSampLabel(), c);
-		c.gridx = 6;
+		c.gridx = 7;
 		c.anchor = GridBagConstraints.WEST;
 		this.add(getTimeSampSpinner(), c);
-		c.gridx = 7;
+		c.gridx = 8;
 		c.anchor = GridBagConstraints.EAST;
 		this.add(getTimeWindowLabel(), c);
-		c.gridx = 8;
+		c.gridx = 9;
 		c.anchor = GridBagConstraints.WEST;
 		this.add(getTimeWindowSpinner(), c);
 		
@@ -164,7 +163,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		c.gridx = 8;
 		c.gridwidth = 1;
 		this.add(getStatusIcon(), c);
-		
+
 		this.getStopButton().setEnabled(false);
 		
 		this.setTitle("Sampling Group: "+ group);
@@ -172,8 +171,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		addWindowListener(this);
 		
 		//add menu
-		setJMenuBar(getBeanGrouperMenuBar());
-		
+		setJMenuBar(getBeanGrouperMenuBar());	
 		samplers = new ArrayList<DataPrinter>();
 	}
 	
@@ -183,6 +181,43 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		}
 		return statusIcon;
 	}
+
+
+	/**
+	 * This method pause the graphic in movement<br>
+	 * This JButton when click do a pause of the graphic, but the sampling still running<br>
+	 * @return javax.swing.JButton Reference to the Pause Button.
+	 */
+	private JToggleButton getPauseButton() {
+		if (pauseButton == null) {
+			pauseButton = new JToggleButton();
+			pauseButton.setIcon( new ImageIcon(getClass().getClassLoader().getResource("cl/utfsm/samplingSystemUI/img/player_pause.png")) );
+			pauseButton.setToolTipText("Pause the graphic.");
+			pauseButton.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					if (pausedGraph == false) {
+						for (DataPrinter i : samplers) {
+							i.pauseSampling(true);
+						}
+						pauseButton.setSelected(true);
+						pausedGraph = true;
+					}
+					else {
+						for (DataPrinter i : samplers) {
+							i.pauseSampling(false);
+						} 					
+        				pausedGraph = false;
+						pauseButton.setSelected(false);
+					}
+				}
+			});
+		}
+		return pauseButton;
+	}
+
+
+
+
 
 	/**
 	 * This method initializes startButton<br>
@@ -275,7 +310,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		if(timeWindowLabel==null){
 			timeWindowLabel=new JLabel();
 			timeWindowLabel.setText("Time Window (min):");
-			timeWindowLabel.setHorizontalAlignment(JTextField.RIGHT);
+			timeWindowLabel.setHorizontalAlignment(JTextField.LEFT);
 			timeWindowLabel.setToolTipText("How much data, expressed in minutes, will the trend present in the graph.");
 		}
 		return timeWindowLabel;
@@ -357,7 +392,6 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					freqSpinner.setEnabled(true);
 					stopButton.setEnabled(false);
 					getSaveButton().setEnabled(true);
-					
 					
 					// start (again) the Thread, with the new frequency
 					stopButton.setEnabled(true);
@@ -543,7 +577,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					"Running sampling group", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
+		
 		//TODO: Check for presence of 1 or more, and reassign the BeanLister for each one.
 		//TODO: Also assign a unique number to each one, to allow them to know their "line" in the plot
 		PlotPrinter w;
@@ -555,8 +589,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		w.setComponent(component);
 		w.setProperty(property);
 		w.setDumpToFile(getSaveButton().isSelected());			
-		
 		addSamp(w);
+		ssg.addToSampled(component + ":" + property);
 		
 	}
 	
@@ -578,7 +612,6 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * It initializes the SamplingDataCorrelator Object, which is used to store data to file.<br>
 	 */
 	private void startSample(){
-		
 		int freq=0;
 		int prev_status;
 		
@@ -694,7 +727,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 
 	public boolean checkIfExists(String component, String property) {
 		
-		for (Iterator iter = samplers.iterator(); iter.hasNext();) {
+		for (Iterator<DataPrinter> iter = samplers.iterator(); iter.hasNext();) {
 			DataPrinter element = (DataPrinter) iter.next();
 			if( element.component == component &&
 				element.property  == property )
@@ -704,6 +737,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	}
 
 	private void stopSample(){
+		
 		if(isStopped ) return;
 		isStopped=true;
 		stopButton.setEnabled(false);
@@ -721,10 +755,10 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					_sdc.addSamplingSet(((PlotPrinter)i).getFilename());
 				}
 			}
-			
+
 		}
 		if(getSaveButton().isSelected() == true){
-			_sdc.dumpToFile();			
+			_sdc.dumpToFile();
 		}
 		for(DataPrinter i : samplers) {
 			if(getSaveButton().isSelected() == true){
@@ -736,7 +770,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			
 		}
 	}
-	
+
 	public ArrayList<SerializableProperty> getSerializableProperty(){
 		ArrayList<SerializableProperty> spa = new ArrayList<SerializableProperty>();
 		for( DataPrinter dp: samplers){
@@ -745,10 +779,10 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			sp.setSamplingTime( ((SpinnerNumberModel)this.getTimeSampSpinner().getModel()).getNumber().intValue() );
 			sp.setTimeWindow( ((SpinnerNumberModel)this.getTimeWindowSpinner().getModel()).getNumber().intValue() );
 			spa.add(sp);
-		}		
+		}
 		return spa;
 	}
-	
+
 	public void loadConfiguration(long frequency, int timeWindow, int samplingTime){
 		this.getFreqSpinner().setValue(frequency);
 		this.getTimeWindowSpinner().setValue(timeWindow);

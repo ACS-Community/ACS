@@ -17,8 +17,6 @@ import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
-
 import alma.acs.util.UTCUtility;
 
 public class PlotWidget extends SamplingWidget {

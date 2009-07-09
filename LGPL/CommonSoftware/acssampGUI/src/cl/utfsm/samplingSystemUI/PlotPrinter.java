@@ -77,6 +77,7 @@ public class PlotPrinter extends DataPrinter {
 	 * @throws TypeNotSupportedEx Sampling Manager specific exception. Some types are currently not supported in acssamp.
 	 */
 	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx,CouldntAccessPropertyEx, SamplingManagerException {
+		widget.resetSampleCount();
 		super.startSample();
 		stopped = false;		
 	}
@@ -86,7 +87,7 @@ public class PlotPrinter extends DataPrinter {
 	 */
 	public void postProcessing() {
 		stopped = true;
-		widget.resetSampleCount();
+//		widget.resetSampleCount();
 		samplesCounter = 0;
 		if( dumpToFile ){
 			try {

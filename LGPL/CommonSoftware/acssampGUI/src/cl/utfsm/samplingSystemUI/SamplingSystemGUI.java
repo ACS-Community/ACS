@@ -19,6 +19,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -35,6 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 import cl.utfsm.samplingSystemUI.core.SamplingManager;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
+
 
 /**
  * Main Widget class, and starting point for the SSG Software. Controls the main flow of the software.
@@ -80,6 +82,8 @@ public class SamplingSystemGUI extends JFrame {
 	private JTextField groupTextField = null;
 	private JButton addSampleButton = null;
 	private StatusIcon statusIcon;
+	private Vector property_sampled; 
+	
 	
 	/**
 	 * This is the default constructor. It starts the initialization of the window.
@@ -87,6 +91,7 @@ public class SamplingSystemGUI extends JFrame {
 	public SamplingSystemGUI() {
 		super();
 		BeanGrouperList = new ArrayList<BeanGrouper>();
+		property_sampled = new Vector();
 		initialize();
 	}
 	
@@ -103,6 +108,30 @@ public class SamplingSystemGUI extends JFrame {
 		this.setTitle("Sampling System GUI");
 		this.setLocationRelativeTo(null);
 		this.pack();
+	}
+	
+	/**
+	 * Method to check if a component and a property was previously sampled.
+	 * The argument comp_prop is equal to component:property <br>
+	 */	
+	public boolean isAlreadySampled(String comp_prop){
+		
+		for(int i=0; i< property_sampled.size(); i++)
+		{
+			if(((String)property_sampled.elementAt(i)).compareTo(comp_prop)==0)
+			{
+				return true;
+			}
+
+		}
+		
+		return false;
+	}
+	
+	public void addToSampled(String comp_prop) {
+		if(!isAlreadySampled(comp_prop)) {
+			property_sampled.add((Object)comp_prop);
+		}
 	}
 	
 	/**
@@ -208,7 +237,7 @@ public class SamplingSystemGUI extends JFrame {
 	
 	/**
 	 * This method initializes FileMenuExitButton	
-	 * @return javax.swing.JMenuItem	
+	 * @return javax.swing.JMenuItem	                                              
 	 */
 	private JMenuItem getFileMenuExitButton() {
 		if (FileMenuExitButton == null) {
@@ -552,34 +581,39 @@ public class SamplingSystemGUI extends JFrame {
 	 * @return Whether or not the property was added to the sampling group.
 	 */
 	private boolean addToSampling(String component, String property, String group){
-		boolean added;
-		BeanGrouper bg = groupExists(group);
-
-		/* If there is no group with this name, we create it */
-		if (bg == null){
-			bg = new BeanGrouper(this,group,getStatusIcon().getStatus());
-			bg.setGroupName(group);
-			bg.addSamp(component, property);
-			BeanGrouperList.add(bg);
-			added = true;
-			bg.setVisible(true);
-		}
-		/* Else, we check if component/property is already added */
-		else {
-			if( bg.checkIfExists(component, property) ) {
-				JOptionPane.showMessageDialog(this,  
-						"Component '" + component + "' with property '" + property +
-						"'\nhas been already added to the sample list for group " + bg.getGroupName(), 
-						"Already added",
-						JOptionPane.WARNING_MESSAGE );
-				added = false;
-			}
-			else {
+		if(isAlreadySampled(component + ":" + property)){
+			JOptionPane.showMessageDialog(null, "Property Already Sampled in another Sampling Group", "Error", JOptionPane.ERROR_MESSAGE);
+			return false;
+		} else {
+			boolean added;
+			BeanGrouper bg = groupExists(group);
+			
+			/* If there is no group with this name, we create it */
+			if (bg == null){
+				bg = new BeanGrouper(this,group,getStatusIcon().getStatus());
+				bg.setGroupName(group);
 				bg.addSamp(component, property);
+				BeanGrouperList.add(bg);
 				added = true;
+				bg.setVisible(true);
 			}
+			/* Else, we check if component/property is already added */
+			else {
+				if( bg.checkIfExists(component, property) ) {
+					JOptionPane.showMessageDialog(this,  
+							"Component '" + component + "' with property '" + property +
+							"'\nhas been already added to the sample list for group " + bg.getGroupName(), 
+							"Already added",
+							JOptionPane.WARNING_MESSAGE );
+					added = false;
+				}
+				else {
+					bg.addSamp(component, property);
+					added = true;
+				}
+			}
+			return added;
 		}
-		return added;
 	}
 	
 	/**

@@ -140,6 +140,15 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		}
 	}
 
+	/**
+	 * Pauses/unpauses the displaying of the sampling process 
+	 * @param p Pause status
+	 */
+	public void pauseSampling(boolean p) {
+		if( componentAvailable == true )
+			samp.setPause(p);
+	}
+	
 	public void finalize(){
 		stopSampling();
 		synchronized (this) {
@@ -186,7 +195,17 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	class Sampler extends Thread {
 		
 		private boolean stop = false;
+		
+		/**
+		 * Flag to freeze the information displayer (graphic or whatever).
+		 * Anyways, the sampling processes continues 
+		 */
+		private boolean pause = false;
 
+		public void setPause(boolean p) {
+			pause = p;
+		}
+		
 		public void halt() {
 			stop=true;
 		}
@@ -210,9 +229,10 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 					//drain all sampled data from the sampling start.
 					if(c.isEmpty())
 						continue;
-					for(int i=n;i<c.size();i++){
-						updateValue(c.get(i));
-					}
+					if( !pause )
+						for(int i=n;i<c.size();i++){
+							updateValue(c.get(i));
+						}
 					n=c.size();
 						
 				} catch (InterruptedException e) {
