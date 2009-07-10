@@ -116,11 +116,11 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
 	}
 
 	/**
-	 * @see alma.jconttest.ContainerServicesTesterOperations.testGetReferenceWithCustomClientSideTimeout#(String)
+	 * @see alma.jconttest.ContainerServicesTesterOperations#testGetReferenceWithCustomClientSideTimeout(String)
 	 */
 	public boolean testGetReferenceWithCustomClientSideTimeout(String compName)
 	{
-        boolean ret = true;
+		boolean ret = true;
 		try
 		{
             org.omg.CORBA.Object compObj = m_containerServices.getComponent(compName);
