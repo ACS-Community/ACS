@@ -23,8 +23,6 @@ package alma.jconttest.DummyComponentWrapperImpl;
 
 import java.util.logging.Level;
 
-import org.omg.CORBA.ORB;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.ComponentImplBase;
