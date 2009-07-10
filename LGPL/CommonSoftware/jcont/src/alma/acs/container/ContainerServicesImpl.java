@@ -90,7 +90,10 @@ public class ContainerServicesImpl implements ContainerServices
 	/** cheat property that allows testing without identifier archive present, because UIDs will be faked */
 	public static final String PROPERTYNAME_FAKE_UID_FOR_TESTING = "acs.container.fakeUIDsForTesting";
 	private final boolean fakeUIDsForTesting = Boolean.getBoolean(PROPERTYNAME_FAKE_UID_FOR_TESTING);
-	
+
+	/**
+	 * Holds and re-establishes the connection to the manager, and encapsulates the handle given by the manager at login.
+	 */
 	protected final AcsManagerProxy m_acsManagerProxy;
 
     // logger used by this class
@@ -106,10 +109,16 @@ public class ContainerServicesImpl implements ContainerServices
 	// sync'd map, key=curl, value=ComponentDescriptor
 	private final Map<String, ComponentDescriptor> m_componentDescriptorMap;
 	
-	// the handle that the manager has assigned to the component to whom this ContainerServices object belongs
-	private final int m_clientHandle;
-    
-    // the component name. "Client" refers to the component acting as a client to the manager 
+	/** 
+	 * The handle that the manager has assigned to the component to whom this ContainerServices object belongs, 
+	 * or 0 if this ContainerServices object does not belong to a component, 
+	 * in which case m_acsManagerProxy's handle should be used.
+	 */
+	private final int m_componentHandle;
+
+	/**
+	 * Name of the component or other client (client app or container etc)
+	 */
 	private final String m_clientName;
 
 	private final AcsCorba acsCorba; 
@@ -133,16 +142,16 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @param componentPOA the POA for the component. Can be the root POA or some other specialized POA.
 	 * @param acsCorba  Encapsulates the ORB and all POAs
 	 * @param logger  logger to be used by this class
-	 * @param clientHandle  handle to be used for identification when sending requests to the manager.
-	 * 						For components, this should be the component handle assigned by the manager;
-	 *                      for other clients, it can be the general handle assigned to the client at login.
+	 * @param componentHandle  handle to be used for identification when sending requests to the manager.
+	 *                      For components, this should be the component handle assigned by the manager;
+	 *                      for other clients, it should be 0 to indicate that the handle obtained at manager login should be used.
 	 * @param clientCurl
 	 * @param componentStateManager  can be null if this class is instantiated 
 	 * 									for a component client outside of a container
      * @param threadFactory to be used for <code>getThreadFactory</code>
 	 */
 	public ContainerServicesImpl(AcsManagerProxy acsManagerProxy, POA componentPOA, AcsCorba acsCorba,
-									AcsLogger logger, int clientHandle, String clientCurl, 
+									AcsLogger logger, int componentHandle, String clientCurl, 
 									ComponentStateManager componentStateManager,
 									ThreadFactory threadFactory)
 	{
@@ -152,7 +161,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_clientPOA = componentPOA;
 		this.acsCorba = acsCorba;
 		m_logger = logger;
-		m_clientHandle = clientHandle;
+		m_componentHandle = componentHandle;
 		m_clientName = clientCurl;
 		
 		m_componentStateManager = componentStateManager;
@@ -452,12 +461,12 @@ public class ContainerServicesImpl implements ContainerServices
 		else
 		{
 			m_logger.fine("will retrieve remote component '" + curl + 
-							"' using ACS Manager#get_component with client handle " + m_clientHandle);
+							"' using ACS Manager#get_component with client handle " + getEffectiveClientHandle());
 		
 			/// @todo: think about timeouts
 			
 			try {
-			    stub = m_acsManagerProxy.get_component(m_clientHandle, curl, true);
+			    stub = m_acsManagerProxy.get_component(getEffectiveClientHandle(), curl, true);
 			    m_logger.fine("component " + curl + " retrieved successfully.");
 			    m_usedComponentsMap.put(curl, stub);
 			} catch (AcsJmaciErrTypeEx ex) {				
@@ -477,6 +486,8 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 	
 	
+
+
 	public org.omg.CORBA.Object getComponentNonSticky(String curl) 
 		throws AcsJContainerServicesEx
 	{
@@ -489,7 +500,7 @@ public class ContainerServicesImpl implements ContainerServices
 
 		org.omg.CORBA.Object stub = null;
 		try {
-			stub = m_acsManagerProxy.get_component_non_sticky(m_clientHandle, curl);
+			stub = m_acsManagerProxy.get_component_non_sticky(getEffectiveClientHandle(), curl);
 		    m_logger.fine("Non-sticky reference to component '" + curl + "' retrieved successfully.");
 		    m_usedNonStickyComponentsMap.put(curl, stub);
 		} catch (AcsJmaciErrTypeEx ex) {				
@@ -523,7 +534,7 @@ public class ContainerServicesImpl implements ContainerServices
 		try
 		{
 			// the call
-			cInfo = m_acsManagerProxy.get_default_component(m_clientHandle, componentIDLType);
+			cInfo = m_acsManagerProxy.get_default_component(getEffectiveClientHandle(), componentIDLType);
 		}
 		catch (AcsJmaciErrTypeEx ex) {
 			String msg = "failed to retrieve default component for type " + componentIDLType;
@@ -590,7 +601,7 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		try {
 			// the call
-			cInfo = m_acsManagerProxy.get_collocated_component(m_clientHandle, spec.toComponentSpec(), false, targetCompUrl);
+			cInfo = m_acsManagerProxy.get_collocated_component(getEffectiveClientHandle(), spec.toComponentSpec(), false, targetCompUrl);
 			
 		} catch (AcsJmaciErrTypeEx ex) {				
 			String msg = "Failed to retrieve component '" + spec.getComponentName() + "' created such that it runs collocated with '"+ targetCompUrl + "'.";
@@ -650,7 +661,7 @@ public class ContainerServicesImpl implements ContainerServices
 		try
 		{
 			// the call
-			cInfo = m_acsManagerProxy.get_dynamic_component(m_clientHandle, compSpec, markAsDefault);
+			cInfo = m_acsManagerProxy.get_dynamic_component(getEffectiveClientHandle(), compSpec, markAsDefault);
 			
 			m_usedComponentsMap.put(cInfo.name, cInfo.reference);
 			m_componentDescriptorMap.put(cInfo.name, new ComponentDescriptor(cInfo));
@@ -754,16 +765,16 @@ public class ContainerServicesImpl implements ContainerServices
 		m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
 		try {
 			if (forcefully) {
-				m_acsManagerProxy.force_release_component(m_clientHandle, curl);
+				m_acsManagerProxy.force_release_component(getEffectiveClientHandle(), curl);
 			}
 			else {
-				m_acsManagerProxy.release_component(m_clientHandle, curl);
+				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl);
 			}
 			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
 			stub._release();
 		}
 		catch (Throwable thr) { // mainly thinking of org.omg.CORBA.NO_PERMISSION
-			m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + m_clientHandle + ") failed to release " + 
+			m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + getEffectiveClientHandle() + ") failed to release " + 
 					" with the manager the component with curl=" + curl, thr);
 		}
 	}
@@ -935,6 +946,21 @@ public class ContainerServicesImpl implements ContainerServices
 		for (String curl : curls ) {
 			releaseComponent(curl);
 		}
+	}
+
+	/**
+	 * Gets the handle to be used toward the manager, which is 
+	 * <ul>
+	 *   <li> The handle obtained from the manager at login for normal clients
+	 *   <li> The component handle assigned  by the manager at component activation time, 
+	 *        if this ContainerServices instance is used for a component
+	 * </ul>
+	 * We don't cache the handle from acsManagerProxy because it may change after a re-login,
+	 * and then we get errors if the stale handle would be used.
+	 * @return  The correct handle to be used to identify this client to the manager.
+	 */
+	private int getEffectiveClientHandle() {
+		return (m_componentHandle > 0 ? m_componentHandle : m_acsManagerProxy.getManagerHandle());
 	}
 
 
