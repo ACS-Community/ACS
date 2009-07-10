@@ -49,16 +49,15 @@ import alma.acs.logging.AcsLogger;
 public class ComponentAdapter 
 {
 	// fields from si.ijs.maci.ComponentInfo
-    private String m_type;
+	private String m_type;
 	private String m_code;
-    private org.omg.CORBA.Object m_reference;		// the corba object
-    private String m_compInstanceName;
-    private int[] m_clients;
-    private int m_containerHandle;
+	private org.omg.CORBA.Object m_reference; // the corba object
+	private String m_compInstanceName;
+	private int[] m_clients;
 	private String m_containerName;
-    private int m_compHandle;
-    private int m_access;
-    private String[] m_interfaces;
+	private int m_compHandle;
+	private int m_access;
+	private String[] m_interfaces;
 
 	// other fields
 	
@@ -77,22 +76,23 @@ public class ComponentAdapter
 	
 	private final AcsCorba acsCorba;
 
-    private final ClassLoader m_componentClassLoader;
-	
+	private final AcsManagerProxy m_managerProxy;
+
+	private final ClassLoader m_componentClassLoader;
+
 	private final ComponentStateManagerImpl m_componentStateManager;
 
 	private final ContainerServicesImpl m_containerServices;
-    
-    private final CleaningDaemonThreadFactory m_threadFactory;
+
+	private final CleaningDaemonThreadFactory m_threadFactory;
 	
 
-    /**
+	/**
 	 * Method ComponentAdapter.
 	 * @param compName component instance name (curl)
 	 * @param type  IDL type
 	 * @param code  Java impl class of the component <b>helper</b> (subclass of {@link ComponentHelper}); 
 	 * @param compHandle  component handle assigned by the manager
-	 * @param containerHandle
 	 * @param containerName
 	 * @param component  the instance of the component implementation class
 	 * @param managerProxy  the shared manager proxy object
@@ -101,8 +101,8 @@ public class ComponentAdapter
 	 * @param acsCorba 
 	 * @throws AcsJContainerServicesEx 
 	 */
-	ComponentAdapter(String compName, String type, String code,  
-					int compHandle, int containerHandle, String containerName,
+	ComponentAdapter(String compName, String type, String code,
+					int compHandle, String containerName,
 					ComponentLifecycle component,
 					AcsManagerProxy managerProxy, 
 					ClassLoader componentClassLoader,
@@ -115,13 +115,12 @@ public class ComponentAdapter
 		m_type = type;
 		m_code = code;
 		m_compHandle = compHandle;
-		m_containerHandle = containerHandle;
 		m_containerName = containerName;
 		m_component = component;
 		m_componentClassLoader = componentClassLoader;
 		m_containerLogger = logger;
 		this.acsCorba = acsCorba;
-        
+
 		// init arrays to avoid nullpointer trouble
 		m_interfaces = new String[0];
 		m_clients = new int[0];
@@ -133,6 +132,8 @@ public class ComponentAdapter
 			
         m_threadFactory = new CleaningDaemonThreadFactory(compName, m_containerLogger);
         m_threadFactory.setNewThreadContextClassLoader(m_componentClassLoader);
+        
+        m_managerProxy = managerProxy;
         
         m_containerServices = 
 			new ContainerServicesImpl(managerProxy, m_componentPOA, acsCorba, m_containerLogger, 
@@ -163,7 +164,7 @@ public class ComponentAdapter
 			throw ex;
 		}	
 		
-		m_interfaces = _getInterfaces();		
+		m_interfaces = _getInterfaces();
 	}
 
 
@@ -387,7 +388,7 @@ public class ComponentAdapter
 	ComponentInfo getComponentInfo()
 	{
 		ComponentInfo ci = new ComponentInfo(
-			m_type, m_code, m_reference, m_compInstanceName, m_clients, m_containerHandle, m_containerName, m_compHandle, m_access, m_interfaces);
+			m_type, m_code, m_reference, m_compInstanceName, m_clients, m_managerProxy.getManagerHandle(), m_containerName, m_compHandle, m_access, m_interfaces);
 		return ci;
 
 	}
