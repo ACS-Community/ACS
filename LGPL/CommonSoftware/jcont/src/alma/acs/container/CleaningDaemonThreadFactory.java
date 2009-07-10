@@ -49,19 +49,33 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 
 	private final Logger logger;
 	private final String name;
+	private final String ownerName;
+	
 	private LoggingThreadGroup group;
 
 	private ClassLoader newThreadContextCL;
 
+
 	
 	/**
-	 * Constructor.
+	 * Normal constructor.
 	 * @param name  the name of the {@link ThreadGroup} to which all threads created by this factory will belong.
 	 * @param logger  the logger to be used by this class
 	 */
 	public CleaningDaemonThreadFactory(String name, Logger logger) {
+		this(name, logger, "User");
+	}
+
+	/**
+	 * Special constructor, e.g. when used internally by the container.
+	 * @param name  the name of the {@link ThreadGroup} to which all threads created by this factory will belong.
+	 * @param logger  the logger to be used by this class
+	 * @param ownerName  Can show up in log messages such as warnings by {@link LoggingThreadGroup#uncaughtException(Thread, Throwable)}. 
+	 */
+	public CleaningDaemonThreadFactory(String name, Logger logger, String ownerName) {
 		this.logger = logger;
 		this.name = name;
+		this.ownerName = ownerName;
 	}
 
 	/**
@@ -88,7 +102,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 
 	private synchronized void ensureGroupCreated() {
 		if (group == null) {
-			group = new LoggingThreadGroup(name, logger);
+			group = new LoggingThreadGroup(name, logger, ownerName);
 			group.setMaxPriority(Thread.currentThread().getPriority());
 		}
 	}
@@ -161,10 +175,12 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 	{
 		private final Logger logger;
 		private volatile boolean shuttingDown = false;
+		private final String ownerName;
 
-		LoggingThreadGroup(String name, Logger logger) {
+		LoggingThreadGroup(String name, Logger logger, String ownerName) {
 			super(name);
 			this.logger = logger;
+			this.ownerName = ownerName;
 		}
 
 		void setShuttingDown() {
@@ -188,7 +204,7 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 		 */
 		public void uncaughtException(Thread t, Throwable e) {
 			if (!shuttingDown) {
-				logger.log(Level.WARNING, "User thread '" + t.getName() + "' terminated with error ", e);
+				logger.log(Level.WARNING, ownerName + " thread '" + t.getName() + "' terminated with error ", e);
 			}
 			// ThreadDeath must move on to really let the thread die
 			if (e instanceof ThreadDeath) {
