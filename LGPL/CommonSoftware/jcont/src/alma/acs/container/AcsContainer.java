@@ -99,6 +99,9 @@ public class AcsContainer extends ContainerPOA
      */
     private static AcsContainer s_instance;
 
+    /**
+     * Start time, used during login to the manager.
+     */
     private final long startTimeUTClong;
     
     private final String m_containerName;
@@ -167,7 +170,7 @@ public class AcsContainer extends ContainerPOA
 			m_managerProxy = managerProxy;
 			this.isEmbedded = isEmbedded;
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
-			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger); // drawback or reusing this class here: it logs exceptions as "user thread"
+			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger, "Container");
 			m_activeComponentMap = new ComponentMap(m_logger);
 			m_acsCorba = acsCorba;
 
@@ -194,6 +197,8 @@ public class AcsContainer extends ContainerPOA
 
 		System.out.println(ContainerOperations.ContainerStatusMgrInitBeginMsg);
 		loginToManager();
+		// @TODO Block calls to activate_component until container has fully initialized (such calls can come in starting from here!)
+		//       Or add a new operation to the manager such as "containerReady", so that manager can withhold component activation.
 		System.out.println(ContainerOperations.ContainerStatusMgrInitEndMsg);
 		
 		// init logging 
@@ -231,8 +236,7 @@ public class AcsContainer extends ContainerPOA
 			ThreadFactory threadFactory = containerThreadFactory; 
 
 			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
-	        		m_acsCorba, m_logger, m_managerProxy.getManagerHandle(), 
-	        		name, null, threadFactory) {
+	        		m_acsCorba, m_logger, 0, name, null, threadFactory) {
 	        	private AcsLogger alarmLogger;
 	        	public AcsLogger getLogger() {
 	                if (alarmLogger == null) {
@@ -256,11 +260,12 @@ public class AcsContainer extends ContainerPOA
 	 * Implemented as on-demand remote call, so always use this method instead
 	 * of directly accessing the field {@link #cdb}.
 	 * <p>
-	 * TODO: reuse this CDB reference in ContainerServicesImpl for method
-	 * getCDB()
+	 * @TODO: reuse this CDB reference in ContainerServicesImpl for method getCDB()
+	 * <p>
+	 * @TODO: Perhaps register for change notification at {@link DAL#add_change_listener(com.cosylab.CDB.DALChangeListener)}.
+	 * (Currently Alma does not use live CDB updates, but the feature is there...)
 	 * 
-	 * @return the CDB reference, or <code>null</code> if it could not be
-	 *         obtained.
+	 * @return the CDB reference, or <code>null</code> if it could not be obtained.
 	 */
     DAL getCDB() {
         if (cdb != null) {
@@ -368,12 +373,21 @@ public class AcsContainer extends ContainerPOA
      *
      * @see si.ijs.maci.ContainerOperations#activate_component(int, String, String, String)
      */
-    public ComponentInfo activate_component(int componentHandle, long execution_id, String compName, String exe, String type)
-    	throws CannotActivateComponentEx
-    {
-        ComponentInfo componentInfo = null;
+	public ComponentInfo activate_component(int componentHandle, long execution_id, String compName, String exe, String type)
+		throws CannotActivateComponentEx
+	{
+		if (shuttingDown.get()) {
+			String msg = "activate_component() blocked because of container shutdown.";
+			m_logger.fine(msg);
+			AcsJCannotActivateComponentEx ex = new AcsJCannotActivateComponentEx();
+			ex.setCURL(compName);
+			ex.setDetailedReason(msg);
+			throw ex.toCannotActivateComponentEx();
+		}
 
-        StopWatch activationWatch = new StopWatch(m_logger);
+		ComponentInfo componentInfo = null;
+		
+		StopWatch activationWatch = new StopWatch(m_logger);
 
         // to make component activations stick out in the log list
         m_logger.fine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
@@ -465,8 +479,7 @@ public class AcsContainer extends ContainerPOA
             //
 
             compAdapter = new ComponentAdapter(compName, type, exe, componentHandle,
-                    m_managerProxy.getManagerHandle(), m_containerName, compImpl,
-                    m_managerProxy, compCL, m_logger, m_acsCorba);
+                    m_containerName, compImpl, m_managerProxy, compCL, m_logger, m_acsCorba);
 
             // for future offshoots created by this component we must pass on the no-auto-logging info
             compAdapter.setMethodsExcludedFromInvocationLogging(methodsExcludedFromInvocationLogging);
