@@ -80,7 +80,8 @@ ACSPorts::getNotifyServicePort(int baseport, const char *name)
     std::ostringstream realOutput;
     int add = 2;
     if (name != NULL) {
-        if (strcmp(name, "Logging") == 0 || strcmp(name, "LoggingNotifyEventChannelFactory") == 0) add = 5;
+        if (strcmp(name, "") == 0 || strcmp(name, "NotifyEventChannelFactory") == 0) add = 2;
+        else if (strcmp(name, "Logging") == 0 || strcmp(name, "LoggingNotifyEventChannelFactory") == 0) add = 5;
         else if (strcmp(name, "Archive") == 0 || strcmp(name, "ArchiveNotifyEventChannelFactory") == 0) add = 6;
         else if (strcmp(name, "Alarm") == 0 || strcmp(name, "AlarmNotifyEventChannelFactory") == 0) add = 7;
         else {
