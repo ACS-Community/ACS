@@ -156,14 +156,12 @@ public class ComponentClient
 
 
 
-    private void initAcs(String managerLoc, POA rootPOA) throws Exception
+	private void initAcs(String managerLoc, POA rootPOA) throws Exception
 	{
 		try
 		{
-			ManagerClient clImpl = new ManagerClient(m_clientName, m_logger)
-				{
-					public void disconnect()
-					{
+			ManagerClient clImpl = new ManagerClient(m_clientName, m_logger) {
+					public void disconnect() {
 						m_logger.info("disconnected from manager");
 						m_acsManagerProxy.logoutFromManager();
 						m_acsManagerProxy = null;
@@ -180,8 +178,7 @@ public class ComponentClient
 			m_threadFactory = new CleaningDaemonThreadFactory(m_clientName, m_logger);
 
 			m_containerServices = new ContainerServicesImpl(m_acsManagerProxy, rootPOA, acsCorba,
-										m_logger, m_acsManagerProxy.getManagerHandle(), 
-										m_clientName, null, m_threadFactory);
+										m_logger, 0, m_clientName, null, m_threadFactory);
 			
 			clImpl.setContainerServices(m_containerServices);
 			
