@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.6 2009/06/30 20:34:20 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.7 2009/07/13 20:40:30 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,7 +76,7 @@ public:
     // add NOTIFY_FACTORY_NAME_STRING postfix, is not already there
     if (name != NULL) {
         int lendiff = (int)strlen(name) - strlen(NOTIFY_FACTORY_NAME_STRING);
-        if (lendiff <= 0 || strcmp(name + lendiff, NOTIFY_FACTORY_NAME_STRING) != 0)
+        if (lendiff < 0 || strcmp(name + lendiff, NOTIFY_FACTORY_NAME_STRING) != 0)
             desc->setCorbalocName((ACE_CString(name) + NOTIFY_FACTORY_NAME_STRING).c_str());
 
     }
