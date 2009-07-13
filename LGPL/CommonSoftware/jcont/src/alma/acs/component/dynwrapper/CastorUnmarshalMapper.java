@@ -51,8 +51,8 @@ public class CastorUnmarshalMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#canTranslate(java.lang.Class, java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
 	public boolean canTranslate(
-		Class oldObjClass,
-		Class newObjClass,
+		Class<?> oldObjClass,
+		Class<?> newObjClass,
 		ComponentInvocationHandler invHandler)
 	{
 		boolean canTranslate = false;
@@ -92,10 +92,10 @@ public class CastorUnmarshalMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#translate(java.lang.Object, java.lang.Object, java.lang.Class, 
 	 * 		alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
-	public Object translate(
+	public <T> Object translate(
 		Object oldObject,
-		Object newObjectTemplate,
-		Class newObjectClass,
+		T newObjectTemplate,
+		Class<T> newObjectClass,
 		ComponentInvocationHandler invHandler)
 		throws DynWrapperException
 	{

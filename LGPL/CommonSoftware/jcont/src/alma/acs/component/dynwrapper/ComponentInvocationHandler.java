@@ -251,7 +251,7 @@ public class ComponentInvocationHandler implements InvocationHandler
 	}
 	
 	
-	boolean canTranslate(Class oldObjClass, Class newObjClass)
+	boolean canTranslate(Class<?> oldObjClass, Class<?> newObjClass)
 	{
 		String mapKey = oldObjClass.getName() + newObjClass.getName();
 		
@@ -262,15 +262,13 @@ public class ComponentInvocationHandler implements InvocationHandler
 		}
 
 		// now try all our mappers and see who can do it
-		for (Iterator iter = m_typeMappers.iterator(); iter.hasNext(); )
-		{
-			TypeMapper typeMapper = (TypeMapper) iter.next();
+		for (TypeMapper typeMapper : m_typeMappers) {
 			if (typeMapper.canTranslate(oldObjClass, newObjClass, this))
 			{
 				m_mapperMap.put(mapKey, typeMapper);
 				return true;
 			}
-		}		
+		}
 		return false;
 	}
 
@@ -310,12 +308,15 @@ public class ComponentInvocationHandler implements InvocationHandler
 			throw new DynWrapperException(msg);
 		}
 		
-		Object newObject = typeMapper.translate(oldObject, newObjectTemplate, newObjectClass, this);				
+		Object newObject = typeMapper.translate(oldObject, newObjectTemplate, newObjectClass, this);
 
 		return newObject;
 	}
 
-	private Class primitiveToWrapper(Class inClass)
+	/**
+	 * Converts the Class of primitive types to the Class of the corresponding wrappers.
+	 */
+	private Class<?> primitiveToWrapper(Class<?> inClass)
 	{
 		// todo: check if the JDK provides this method as public (must have it internally somewhere...)
 		// remember: Boolean.TYPE == boolean.class 

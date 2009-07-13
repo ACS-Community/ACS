@@ -26,6 +26,8 @@ import java.lang.reflect.Proxy;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.ACS.ACSComponentOperations;
+import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
 import alma.acs.util.StopWatch;
 
@@ -75,7 +77,7 @@ public class DynamicProxyFactory
 	 */
 	public <T> T createClientProxy(Class<T> componentInterface, 
 											org.omg.CORBA.Object corbaStub, 
-											Class corbaOperationsIF)
+											Class<?> corbaOperationsIF)
 			throws DynWrapperException
 	{
 		T proxy = null;
@@ -116,9 +118,9 @@ public class DynamicProxyFactory
 	 * @return the proxy object that implements <code>corbaIF</code> and delegates to <code>componentImpl</code>.
 	 * @throws DynWrapperException
 	 */
-	public Object createServerProxy(Class corbaIF, 
-											java.lang.Object componentImpl, 
-											Class componentIF)
+	public Object createServerProxy(Class<? extends ACSComponentOperations> corbaIF, 
+											ComponentLifecycle componentImpl, 
+											Class<?> componentIF)
 			throws DynWrapperException
 	{
 		ComponentInvocationHandler handler = 
@@ -128,7 +130,7 @@ public class DynamicProxyFactory
 
 		Object proxy = Proxy.newProxyInstance(corbaIF.getClassLoader(),
 															new Class[] { corbaIF },
-															handler);		
+															handler);
 		return proxy;
 	}
 	

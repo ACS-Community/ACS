@@ -105,10 +105,10 @@ public class CompositionMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#translate(java.lang.Object, 
 	 * java.lang.Object, java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
-	public Object translate(
+	public <T> Object translate(
 		Object oldObject,
-		Object newObjectTemplate,
-		Class newObjectClass,
+		T newObjectTemplate,
+		Class<T> newObjectClass,
 		ComponentInvocationHandler invHandler)
 		throws DynWrapperException
 	{

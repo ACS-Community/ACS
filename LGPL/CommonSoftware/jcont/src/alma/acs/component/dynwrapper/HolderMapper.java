@@ -47,8 +47,8 @@ public class HolderMapper extends TypeMapper
 	 * java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
 	public boolean canTranslate(
-		Class oldObjClass,
-		Class newObjClass,
+		Class<?> oldObjClass,
+		Class<?> newObjClass,
 		ComponentInvocationHandler invHandler)
 	{
 		boolean canTranslate = false;
@@ -74,12 +74,11 @@ public class HolderMapper extends TypeMapper
 
 		if (m_verbose)
 		{
-			// before we logged both cases, which ended up cluttering the log ouput... lets see now
 			String msg = "can " + (canTranslate ? "" : "not ") + "translate from class '" + oldObjClass.getName()  + 
 						"' to class '" + newObjClass.getName() + "'.";
 			m_logger.finer(msg);
 		}		
-		return canTranslate;		
+		return canTranslate;
 	}
 
 

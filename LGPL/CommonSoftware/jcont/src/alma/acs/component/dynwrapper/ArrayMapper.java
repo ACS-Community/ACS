@@ -49,8 +49,8 @@ public class ArrayMapper extends TypeMapper
 	 * alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
 	public boolean canTranslate(
-		Class oldObjClass,
-		Class newObjClass,
+		Class<?> oldObjClass,
+		Class<?> newObjClass,
 		ComponentInvocationHandler invHandler)
 	{
 		boolean canTranslate = false;
@@ -65,12 +65,12 @@ public class ArrayMapper extends TypeMapper
 				if (dim1 == 1 && dim2 == 1)
 				{
 					// check if types match
-					Class oldCompType = oldObjClass.getComponentType();
-					Class newCompType = newObjClass.getComponentType();
+					Class<?> oldCompType = oldObjClass.getComponentType();
+					Class<?> newCompType = newObjClass.getComponentType();
 
 					// recursion
 					canTranslate = invHandler.canTranslate(oldCompType, newCompType);
-				}								
+				}
 			}
 		}
 		catch (Exception e)
@@ -97,15 +97,15 @@ public class ArrayMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#translate(java.lang.Object, 
 	 * java.lang.Object, java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
-	public Object translate(
+	public <T> Object translate(
 		Object oldArray,
-		Object newObjectTemplate,
-		Class newArrayClass,
+		T newObjectTemplate,
+		Class<T> newArrayClass,
 		ComponentInvocationHandler invHandler)
 		throws DynWrapperException
 	{
 		int length = Array.getLength(oldArray);
-		Class newType = newArrayClass.getComponentType();
+		Class<?> newType = newArrayClass.getComponentType();
 		Object newArray = Array.newInstance(newType, length);
 		
 		for (int i = 0; i < length; i++)

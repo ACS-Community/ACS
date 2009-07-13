@@ -27,29 +27,28 @@ import java.util.logging.Logger;
  * Abstract base class for concrete mapper classes that convert an object into another
  * one of a different type, and the other way round. 
  * 
- *   
  * @author hsommer
  */
 public abstract class TypeMapper
 {
-	protected Object m_delegate;
-	protected Logger m_logger;
+	protected final Object m_delegate;
+	protected final Logger m_logger;
 
 	protected boolean m_verbose = false;
 	
 
 	public TypeMapper(Object delegate, Logger logger)
 	{
-		m_delegate = delegate;				
+		m_delegate = delegate;
 		m_logger = logger;
 	}
-		
 
-	public abstract boolean canTranslate(Class oldObjClass, Class newObjClass, 
+	
+	public abstract boolean canTranslate(Class<?> oldObjClass, Class<?> newObjClass, 
 											ComponentInvocationHandler invHandler);
 
 
-	public abstract Object translate(Object oldObject, Object newObjectTemplate, Class newObjectClass,
+	public abstract <T> Object translate(Object oldObject, T newObjectTemplate, Class<T> newObjectClass,
 											ComponentInvocationHandler invHandler)
 		throws DynWrapperException;
 }

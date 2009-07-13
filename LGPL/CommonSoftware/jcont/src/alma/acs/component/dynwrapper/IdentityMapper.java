@@ -43,8 +43,8 @@ public class IdentityMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#canTranslate(java.lang.Class, java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
 	public boolean canTranslate(
-		Class oldObjClass,
-		Class newObjClass,
+		Class<?> oldObjClass,
+		Class<?> newObjClass,
 		ComponentInvocationHandler invHandler)
 	{
 		if (oldObjClass.getName().equals(newObjClass.getName()))
@@ -55,8 +55,6 @@ public class IdentityMapper extends TypeMapper
 			}
 			return true;
 		}
-		// before we logged the negative result too, 
-		// which ended up cluttering the log ouput... lets see now
 		//m_logger.finest("different types: " + oldObjClass.getName() + ", " + newObjClass.getName());
 		return false;
 	}
@@ -75,11 +73,4 @@ public class IdentityMapper extends TypeMapper
 	}
 
 	
-//	public static void main(String[] args)
-//	{
-//		IdentityMapper im = new IdentityMapper(new Object()); 
-//		
-//		im.canTranslate(Integer.class, Integer.class, null);
-//	}
-
 }

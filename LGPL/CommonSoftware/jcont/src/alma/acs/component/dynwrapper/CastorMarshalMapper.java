@@ -63,7 +63,7 @@ public class CastorMarshalMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#canTranslate(java.lang.Class, java.lang.Class, 
 	 * alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
-	public boolean canTranslate(Class oldObjClass, Class newObjClass, ComponentInvocationHandler invHandler)
+	public boolean canTranslate(Class<?> oldObjClass, Class<?> newObjClass, ComponentInvocationHandler invHandler)
 	{
 		boolean canTranslate = true;
 		
@@ -106,6 +106,10 @@ public class CastorMarshalMapper extends TypeMapper
 							Class newObjectClass, ComponentInvocationHandler invHandler)
 		throws DynWrapperException
 	{
+		if (oldObject == null) {
+			return null;
+		}
+		
 		EntityT entityMeta;
 
 		try
