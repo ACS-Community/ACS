@@ -77,14 +77,17 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 public class AcsManagerProxy 
 {
 	private Manager m_manager;
-	private String m_managerLoc;
+	private final String m_managerLoc;
 	
-	// handle representing the container or other client (assigned by Manager at login)
-	private int m_mgrHandle = 0;
+	/** 
+	 * Handle representing the container or other client (assigned by Manager at login).
+	 * Note that every component has a separate "component handle".
+	 */
+	private volatile int m_mgrHandle = 0;
 
-	private ORB m_orb;
+	private final ORB m_orb;
 
-	private Logger m_logger;
+	private final Logger m_logger;
 	
 	private volatile boolean m_shuttingDown;
 	
@@ -113,7 +116,7 @@ public class AcsManagerProxy
 		m_managerLoc = managerLoc;
 		m_orb = orb;
 		
-		m_logger = logger;		
+		m_logger = logger;
 	}
 	
 
@@ -378,7 +381,7 @@ public class AcsManagerProxy
 				ex.setContextInfo("Got invalid handle from manager login: " + ci.h);
 				throw ex;
 			}
-			m_mgrHandle = ci.h;			
+			m_mgrHandle = ci.h;
 		}
 		catch (Throwable thr) {
 			m_mgrHandle = 0;
@@ -533,11 +536,11 @@ public class AcsManagerProxy
 		String name_wc,
 		String type_wc,
 		boolean active_only)
-	    throws AcsJNoPermissionEx
+		throws AcsJNoPermissionEx
 	{
 		ComponentInfo[] compInfos = null;
 		try {
-			compInfos = m_manager.get_component_info(m_mgrHandle, componentHandles, name_wc, type_wc, active_only);			
+			compInfos = m_manager.get_component_info(checkAndGetManagerHandle(), componentHandles, name_wc, type_wc, active_only);
 		} catch (NoPermissionEx ex) {
 			throw AcsJNoPermissionEx.fromNoPermissionEx(ex);
 		} catch (RuntimeException exc) {
@@ -575,7 +578,7 @@ public class AcsManagerProxy
 		throws AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx, AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx
 	{
 		try {
-			return m_manager.get_service(m_mgrHandle, service_url, activate);		
+			return m_manager.get_service(checkAndGetManagerHandle(), service_url, activate);		
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
@@ -594,7 +597,8 @@ public class AcsManagerProxy
 	 * The more restricted version of {@link #get_service(String, boolean, IntHolder) get_service}, 
 	 * only good for getting components.
 	 * 
-	 * @param clientHandle  handle of requesting component or other kind of client
+	 * @param clientHandle  handle of requesting component or other kind of client 
+	 *        (for non-container clients this will always be the login-handle)
 	 * @param component_url  to specify the requested component  
 	 * @param activate
 	 * @param status  status out-parameter
@@ -671,6 +675,7 @@ public class AcsManagerProxy
 
 	/**
 	 * @param clientHandle  handle of requesting component or other kind of client
+	 *        (for non-container clients this will always be the login-handle)
 	 * @param componentIDLType  the IDL type
 	 * @see ContainerServices#getDefaultComponent(String)
 	 */
@@ -694,6 +699,7 @@ public class AcsManagerProxy
 
 	/**
 	 * @param clientHandle  handle of requesting component or other kind of client
+	 *        (for non-container clients this will always be the login-handle)
 	 * @param c  dynamic version of deployment info, may be incomplete, see ACS documentation
 	 * @param mark_as_default  if true, make the new component instance the default for its type
 	 * @return  a struct which contains the corba reference, as well as name, type, etc.
@@ -731,6 +737,7 @@ public class AcsManagerProxy
 	 * Encapsulates {@link si.ijs.maci.ManagerOperations#get_collocated_component(int, si.ijs.maci.ComponentSpec, boolean, java.lang.String)}.
 	 * 
 	 * @param clientHandle  handle of requesting component or other kind of client
+	 *        (for non-container clients this will always be the login-handle)
 	 * @param c dynamic version of deployment info, may be incomplete, see ACS documentation
 	 * @param mark_as_default  if true, make the new component instance the default for its type
 	 * @param target_component_url
@@ -776,7 +783,7 @@ public class AcsManagerProxy
 	    throws AcsJCannotRegisterComponentEx, AcsJNoPermissionEx
 	{
 		try {
-			return m_manager.register_component(m_mgrHandle, component_url, type, component);
+			return m_manager.register_component(checkAndGetManagerHandle(), component_url, type, component);
 
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
@@ -793,13 +800,14 @@ public class AcsManagerProxy
 	 * From maci IDL comments:
 	 * <i>
 	 * "Releases a component. In order for this operation to be possible, the caller 
-	 * represented by the id must have previously successfuly requested the component 
+	 * represented by the id must have previously successfully requested the component 
 	 * via a call to {@link #get_service(String, boolean, IntHolder)}.
      * Releasing a component more times than requesting it should be avoided, 
      * but it produces no errors."
 	 * </i>
 	 * 
 	 * @param clientHandle  handle of requesting component or other kind of client
+	 *        (for non-container clients this will always be the login-handle)
 	 * @param component_url  
 	 * @return int  Number of clients that are still using the component 
 	 * 			after the operation completed. This is a useful debugging tool.
@@ -846,8 +854,9 @@ public class AcsManagerProxy
 	/////////////////////////////////////////////////////////////		
 	
 	/**
-	 * Returns the handle that the ACS Manager has assigned to this client.
-	 * This handle is kept inside the Manager proxy class, but applies to the whole container.
+	 * Returns the handle that the ACS Manager has assigned to the container/client during login.
+	 * The handle should always be retrieved from here instead of storing its value outside of this class,
+	 * so that a change in handle after a reconnect can be propagated.
 	 * 
 	 * @return handle, or 0 if not logged in
 	 */
@@ -855,6 +864,24 @@ public class AcsManagerProxy
 	{
 		return m_mgrHandle;
 	}
+
+	/**
+	 * Gets the current client handle assigned by the manager, or throws an
+	 * exception if this client is not logged in.
+	 * @throws AcsJNoPermissionEx
+	 * @see {@link #getManagerHandle()}
+	 */
+	int checkAndGetManagerHandle() throws AcsJNoPermissionEx {
+		int managerHandle = m_mgrHandle; // copy to avoid confusion from concurrent change
+		if (managerHandle <= 0) {
+			AcsJNoPermissionEx ex = new AcsJNoPermissionEx();
+			ex.setReason("Currently not logged in with the acs manager.");
+			ex.setID("client handle: " + managerHandle);
+			throw ex;
+		}
+		return managerHandle;
+	}
+
 
 	/**
 	 * Notification that the container is in the process of shutting down.
@@ -883,10 +910,10 @@ public class AcsManagerProxy
 	 * The new instance can then be used to log in to the manager (again) independently of this instance.
 	 * <p>
 	 * There is no communication between this instance and the new instance. 
-	 * For example, a call to {@link #shutdownNotify()} will not be forwarded.   
+	 * For example, a call to {@link #shutdownNotify()} will not be forwarded.
 	 */
 	public AcsManagerProxy createInstance() {
-		AcsManagerProxy inst = new AcsManagerProxy(m_managerLoc, m_orb, m_logger);		
+		AcsManagerProxy inst = new AcsManagerProxy(m_managerLoc, m_orb, m_logger);
 		return inst;
 	}
 
