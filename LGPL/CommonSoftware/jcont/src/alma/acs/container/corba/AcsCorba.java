@@ -274,6 +274,17 @@ public class AcsCorba
 			setORB(ORB.init(orbConf.getOptions(), orbConf.getProperties()));
 			initRootPoa(m_orb);
 			sharedPoaManager.activate();
+			
+			// @TODO when switching from JacORB to some other Java ORB in the future, 
+			// it may be necessary to create a new thread here and call ORB.run, 
+			// as the spec recommends doing this although JacORB does not require it:
+			// "Single threaded ORB implementations, and some multi-threaded ORB implementations, 
+			//  need the use of the main thread in order to function properly.
+			//  For maximum portability, an application should call either run or perform_work on
+			//  its main thread. run may be called by multiple threads simultaneously."
+			// In C++ ACS, the user is supposed to call SimpleClient.run,
+			// but for Java it seems better for ACS to handle this internally.
+			// Inside Java containers, this happens already via #blockOnORB
 		} catch (Exception ex) {
 			m_logger.log(Level.SEVERE, "failed to initialize CORBA.", ex);
 			if (m_orb != null) {
@@ -1179,7 +1190,9 @@ public class AcsCorba
         // sets CORBA options
         OrbConfigurator orbConf = OrbConfigurator.getOrbConfigurator();
         orbConf.setOptions(args);
-        orbConf.setPort(port.intValue());
+        if (port != null) {
+        	orbConf.setPort(port.intValue());
+        }
         String[] orbOpts = orbConf.getOptions();
         
 		/*
