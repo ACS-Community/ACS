@@ -36,9 +36,11 @@ import org.omg.CosNotification.FixedEventHeader;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
@@ -76,7 +78,7 @@ import alma.acsnc.OSPushSupplierPOA;
  * 
  * @author dfugate
  */
-public class SimpleSupplier extends OSPushSupplierPOA 
+public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSubscriber
 {
 	/**
 	 * Creates a new instance of SimpleSupplier.
@@ -138,7 +140,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 			String reason = "Null reference obtained for the notification channel " + m_channelName;
 			throw new AcsJCORBAReferenceNilEx(reason);
 		}
-		IntHolder ih = new IntHolder();
+		ih = new IntHolder();
 		m_supplierAdmin = m_channel.new_for_suppliers(InterFilterGroupOperator.AND_OP, ih);
 		if (m_supplierAdmin == null) {
 			String reason = "Null reference obtained for the supplier admin for channel " + m_channelName;
@@ -149,7 +151,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 		// The client type parameter selects a StructuredProxyPushConsumer (based on Structured Events),
 		// as opposed to ProxyPushConsumer (based on Anys), or SequenceProxyPushConsumer (based on sequences of Structured Events).
 		try {
-			IntHolder cp_ih = new IntHolder(); // to receive the unique ID assigned by the admin object (will be dicarded) 
+			cp_ih = new IntHolder(); // to receive the unique ID assigned by the admin object (will be dicarded) 
 			org.omg.CORBA.Object tempCorbaObj = m_supplierAdmin.obtain_notification_push_consumer(ClientType.STRUCTURED_EVENT, cp_ih);
 			if (tempCorbaObj == null) {
 				String reason = "Null reference obtained for the Proxy Push Consumer!";
@@ -176,7 +178,9 @@ public class SimpleSupplier extends OSPushSupplierPOA
 			// Think there is virtually no chance of this every happening but...
 			throw new AcsJCORBAProblemEx(e);
 		}
-
+		
+		m_callback = new AcsNcReconnectionCallback(this);
+		m_callback.init(services, m_helper.getNotifyFactory());
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -215,6 +219,8 @@ public class SimpleSupplier extends OSPushSupplierPOA
 		catch (Throwable thr) {
 			m_logger.log(Level.WARNING, errMsg + "could not deactivate the SimpleSupplier offshoot.", thr);
 		}
+		m_callback.disconnect();
+		m_callback = null;
 		m_proxyConsumer = null;
 		m_supplierAdmin = null;
 	}
@@ -355,6 +361,8 @@ public class SimpleSupplier extends OSPushSupplierPOA
 		try {
 			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
 			m_proxyConsumer.push_structured_event(se);
+		} catch (org.omg.CORBA.TRANSIENT e){
+			// the Notify Service is down... dropping the event
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
 			String reason = "Failed to publish event on channel '" + m_channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
@@ -448,6 +456,25 @@ public class SimpleSupplier extends OSPushSupplierPOA
 		publishCORBAEvent(event);
 		m_count++;
 	}
+	
+	@Override
+	public void reconnect(gov.sandia.NotifyMonitoringExt.EventChannelFactory ecf) {
+		m_channel = m_helper.getNotificationChannel(ecf);
+		try {
+			m_supplierAdmin = m_channel.get_supplieradmin(ih.value);
+			m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.get_proxy_consumer(cp_ih.value));
+			if (m_proxyConsumer == null)
+				throw new NullPointerException("m_proxyConsumer is null");
+		} catch (AdminNotFound e) {
+			//e.printStackTrace();
+			//do something here
+		} catch (ProxyNotFound e) {
+			//e.printStackTrace();
+			//do something here
+		}
+		
+		
+	}
 
 	// //////////////////////////////////////////////////////////////////////////
 	/**
@@ -480,7 +507,7 @@ public class SimpleSupplier extends OSPushSupplierPOA
 	protected volatile long m_count = 0;
 
 	/** Channel we'll be sending events to*/
-	protected final EventChannel m_channel;
+	protected EventChannel m_channel;
 
 	/** Standard logger*/
 	protected final Logger m_logger;
@@ -493,6 +520,13 @@ public class SimpleSupplier extends OSPushSupplierPOA
 
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
+	
+	private IntHolder ih;
+	
+	private IntHolder cp_ih;
+	
+	private AcsNcReconnectionCallback m_callback;
+
 
 	// //////////////////////////////////////////////////////////////////////////
 }

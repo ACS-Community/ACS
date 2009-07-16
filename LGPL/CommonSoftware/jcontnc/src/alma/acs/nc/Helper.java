@@ -40,6 +40,7 @@ import org.omg.CosNaming.NamingContextHelper;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
+import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
@@ -100,6 +101,15 @@ public class Helper {
 	
 	// cached MACI/Channels DAO
 	private DAOProxy channelsDAO;
+	
+	// channelId is used to reconnect to channel in case that Notify Server crashes
+	private int channelId;
+	
+	private EventChannelFactory notifyFactory;
+
+	public EventChannelFactory getNotifyFactory() {
+		return notifyFactory;
+	}
 
 	/**
 	 * Map that's used similar to a log repeat guard, because the OMC was flooded with NC config problem logs 
@@ -210,6 +220,19 @@ public class Helper {
 		return m_nContext;
 	}
 	
+	
+	public EventChannel getNotificationChannel(EventChannelFactory ecf)
+	{
+		EventChannel ec = null;
+		try {
+			ecf.get_event_channel(channelId);
+		} catch (ChannelNotFound e) {
+			// I cannot recover the channel using the ID
+		}
+		return ec;
+	}
+	
+	
 	/**
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
@@ -233,7 +256,6 @@ public class Helper {
 	{
 		// return value
 		EventChannel retValue = null;
-
 		NameComponent[] t_NameSequence = { new NameComponent(channelName, channelKind) };
 		// (retryNumberAttempts * retrySleepSec) = the time before we give up to get a reference or create the channel if 
 		// a channel of the given name supposedly gets created already (due to race conditions with other clients).
@@ -327,7 +349,7 @@ public class Helper {
 		
 		// return value
 		EventChannel retValue = null;
-		int channelId = -1; // to be assigned by factory
+		channelId = -1; // to be assigned by factory
 		
 		final String standardEventFactoryId = org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper.id();
 		final String specialEventFactoryId = gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper.id();
@@ -336,7 +358,7 @@ public class Helper {
 			// get the Notification Factory first.
 			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, "") };
 			org.omg.CORBA.Object notifyFactoryObj = null;
-			EventChannelFactory notifyFactory = null;
+			notifyFactory = null;
 			try {
 				notifyFactoryObj = getNamingService().resolve(t_NameFactory);
 			}

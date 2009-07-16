@@ -24,6 +24,8 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -33,10 +35,12 @@ import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyFilter.ConstraintExp;
@@ -67,7 +71,7 @@ import alma.acsncErrType.wrappers.AcsJEventSubscriptionFailureEx;
  * 
  * @author dfugate
  */
-public class Consumer extends OSPushConsumerPOA {
+public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscriber{
 	
 	protected static final String RECEIVE_METHOD_NAME = "receive";
 
@@ -104,7 +108,7 @@ public class Consumer extends OSPushConsumerPOA {
 	/** 
 	 * There can be only one notification channel for any given consumer. 
 	 */
-	protected final EventChannel m_channel;
+	protected EventChannel m_channel;
 
 	/** The channel notification service domain name, can be <code>null</code>. */
 	protected final String m_channelNotifyServiceDomainName;
@@ -138,6 +142,12 @@ public class Consumer extends OSPushConsumerPOA {
 
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
+	
+	private IntHolder consumerAdminID;
+
+	private IntHolder proxyID;
+	
+	private AcsNcReconnectionCallback m_callback;
 
 	
 	/**
@@ -216,6 +226,11 @@ public class Consumer extends OSPushConsumerPOA {
 		configFilters();
 
 		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
+		if (m_helper.getNotifyFactory() != null){
+			//if the factory is null, the callback is not registered
+			m_callback = new AcsNcReconnectionCallback(this);
+			m_callback.init(services, m_helper.getNotifyFactory());
+		}
 	}
 	
 
@@ -271,7 +286,7 @@ public class Consumer extends OSPushConsumerPOA {
 	 *            AcsJException for developer's ease of use.
 	 */
 	private void createConsumer() throws AcsJException {
-		IntHolder consumerAdminID = new IntHolder();
+		consumerAdminID = new IntHolder();
 
 		// get the Consumer admin object
 		// @TODO: investigate reuse of admin objects. Otherwise we may allocate a new thread in the notification service for every subscriber.  
@@ -284,9 +299,10 @@ public class Consumer extends OSPushConsumerPOA {
 		}
 
 		// get the Supplier proxy
+		proxyID = new IntHolder();
 		try {
 			m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
-				m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, new IntHolder()));
+				m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID));
 		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
 			// convert it into an exception developers care about
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
@@ -787,6 +803,8 @@ public class Consumer extends OSPushConsumerPOA {
 
 			// clean-up CORBA stuff
 			getHelper().getContainerServices().deactivateOffShoot(this);
+			m_callback.disconnect();
+			m_callback = null;
 			m_corbaRef = null;
 			m_consumerAdmin = null;
 			m_proxySupplier = null;
@@ -852,6 +870,26 @@ public class Consumer extends OSPushConsumerPOA {
 	 */
 	public alma.acs.nc.Helper getHelper() {
 		return m_helper;
+	}
+
+	@Override
+	public void reconnect(EventChannelFactory ecf) {
+		m_channel = m_helper.getNotificationChannel(ecf);
+		try {
+			m_consumerAdmin = m_channel.get_consumeradmin(consumerAdminID.value);
+			m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.get_proxy_supplier(proxyID.value));
+			consumerReady();
+		} catch (AdminNotFound e) {
+			//e.printStackTrace();
+			//do something here;
+		} catch (ProxyNotFound e) {
+			//e.printStackTrace();
+			//do something here;
+		} catch (AcsJException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
