@@ -28,6 +28,7 @@
  */
 #include <CosNotification.idl>
 #include <CosNotifyComm.idl>
+#include <NotifyExt.idl>
 #include <acscommon.idl>
 #include <baci.idl>
 
@@ -250,5 +251,12 @@ module acsnc
      * can be activated as CORBA objects by the ContainerServices.
      */
     interface OSPushConsumer : CosNotifyComm::StructuredPushConsumer, ACS::OffShoot {};
+
+    /**
+     * The only reason this interface is being defined is because the ACS Java implementation
+     * ensures that only IDL interface implementations derived from ACS::OffShoots
+     * can be activated as CORBA objects by the ContainerServices.
+     */
+    interface OSReconnectionCallback : NotifyExt::ReconnectionCallback, ACS::OffShoot {};
 };
 #endif
