@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.2 2008/08/08 09:25:34 bjeram Exp $"
+# "@(#) $Id: Makefile.java,v 1.3 2009/07/16 23:21:33 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -51,6 +51,7 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
+	@cp ../idl/NotifyExt.idl $(ACSROOT)/idl
 	@echo " . . . installation done"
 
 #___oOo___
