@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.15 2009/06/26 05:57:27 hyatagai Exp $
+# @(#) $Id: ACSHandler.py,v 1.16 2009/07/16 16:34:19 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.15 2009/06/26 05:57:27 hyatagai Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.16 2009/07/16 16:34:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -265,7 +265,7 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
 
         # Create an RTContext object
-        rt_context = ACSLog.RTContext(str(record.thread).replace("<", "").replace(">", ""),
+        rt_context = ACSLog.RTContext(str(record.threadName).replace("<", "").replace(">", ""),
                                       str(record.source).replace("<", "").replace(">", ""),
                                       str(gethostname()).replace("<", "").replace(">", ""),
                                       "",
