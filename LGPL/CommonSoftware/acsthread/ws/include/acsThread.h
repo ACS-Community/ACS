@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.30 2008/10/14 22:46:42 bjeram Exp $"
+* "@(#) $Id: acsThread.h,v 1.31 2009/07/16 13:24:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -212,7 +212,7 @@ namespace ACS
 	   Returns the logger. In the case a thread manager is used,
 	   the logger is from the component.
 	 */
-	virtual Logging::Logger::LoggerSmartPtr	getLogger();
+	virtual Logging::Logger::LoggerSmartPtr	getLogger() const;
 
 	/**
 	   Static method which is passed to the ACE thread manager
@@ -228,7 +228,7 @@ namespace ACS
 	/**
 	   Returns pointer to the thread manager responsible for this thread.
 	*/
-	ACS::ThreadManager*  getThreadManager();
+	ACS::ThreadManager*  getThreadManager() const;
 
 	LoggingProxy *logger_mp; ///< ponter to Logging proxy
 

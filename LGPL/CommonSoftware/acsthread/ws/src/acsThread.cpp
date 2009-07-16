@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.40 2008/10/14 22:42:33 bjeram Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.41 2009/07/16 13:24:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.40 2008/10/14 22:42:33 bjeram Exp $";
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.41 2009/07/16 13:24:00 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -104,12 +104,12 @@ Thread::~Thread()
 	}
 }
 
-ACS::ThreadManager*  Thread::getThreadManager()
+ACS::ThreadManager*  Thread::getThreadManager() const
 {
     return thrMgr_mp;
 }
 
-Logging::Logger::LoggerSmartPtr Thread::getLogger()
+Logging::Logger::LoggerSmartPtr Thread::getLogger() const
 {
     if (getThreadManager()!=0)
 	{
