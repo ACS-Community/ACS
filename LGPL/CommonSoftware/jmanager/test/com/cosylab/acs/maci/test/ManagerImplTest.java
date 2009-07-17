@@ -2128,12 +2128,10 @@ public class ManagerImplTest extends TestCase
 				
 				StatusHolder status = new StatusHolder();
 				Component ref = manager.getComponent(info.getHandle(), mount, false, status);
-				
-				fail();
 			} 
 			catch (AcsJCannotGetComponentEx e) {
 
-				System.out.println("This is OK: component not activated "+e.toString());
+				fail();
 			}
 			catch (Exception ex)
 			{
