@@ -1626,7 +1626,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			else
 				logger.log(Level.INFO,"Component '" + curl + "' provided.");
 		}
-		else if (status.getStatus() != ComponentStatus.COMPONENT_NOT_ACTIVATED)
+		else if (ex2 != null && status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
 		{
 			if (requestorName != null)
 				logger.log(Level.INFO,"Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.");
@@ -1640,14 +1640,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		 */
 		else
 		{
-			if (requestorName != null)
-				logger.log(Level.INFO,"Failed to provide component '" + curl + "' to '" + requestorName + "'.");
-			else
-				logger.log(Level.INFO,"Failed to provide component '" + curl + "'.");
-			if (status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED) {
+			if (ex2 == null)
 				ex2 = new AcsJCannotGetComponentEx();
-				logger.log(Level.WARNING, "Component " + curl + " not activated.", ex2);
-			}
+			
+			if (requestorName != null)
+				logger.log(Level.WARNING,"Failed to provide component '" + curl + "' to '" + requestorName + "'.", ex2);
+			else
+				logger.log(Level.WARNING,"Failed to provide component '" + curl + "'.", ex2);
 		}
 	
 		/****************************************************************/
