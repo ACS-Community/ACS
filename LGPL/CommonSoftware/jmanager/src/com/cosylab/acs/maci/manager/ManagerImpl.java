@@ -1626,7 +1626,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			else
 				logger.log(Level.INFO,"Component '" + curl + "' provided.");
 		}
-		else if (ex2 != null && status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
+		else if (ex2 == null && status.getStatus() == ComponentStatus.COMPONENT_NOT_ACTIVATED)
 		{
 			if (requestorName != null)
 				logger.log(Level.INFO,"Request from '" + requestorName + "' for component '" + curl + "' completed sucessfully, but component not activated.");
