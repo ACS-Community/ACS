@@ -225,12 +225,11 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		configSubscriptions();
 		configFilters();
 
-		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
-		if (m_helper.getNotifyFactory() != null){
-			//if the factory is null, the callback is not registered
-			m_callback = new AcsNcReconnectionCallback(this);
-			m_callback.init(services, m_helper.getNotifyFactory());
-		}
+		isTraceEventsEnabled = m_helper.getChannelProperties()
+				.isTraceEventsEnabled(m_channelName);
+		// if the factory is null, the callback is not registered
+		m_callback = new AcsNcReconnectionCallback(this);
+		m_callback.init(services, m_helper.getNotifyFactory());
 	}
 	
 
@@ -802,8 +801,8 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			m_consumerAdmin.destroy();
 
 			// clean-up CORBA stuff
-			getHelper().getContainerServices().deactivateOffShoot(this);
 			m_callback.disconnect();
+			getHelper().getContainerServices().deactivateOffShoot(this);
 			m_callback = null;
 			m_corbaRef = null;
 			m_consumerAdmin = null;
@@ -874,20 +873,20 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
-		m_channel = m_helper.getNotificationChannel(ecf);
+		if (m_channel!=null)
+				m_channel = m_helper.getNotificationChannel(ecf);
 		try {
-			m_consumerAdmin = m_channel.get_consumeradmin(consumerAdminID.value);
-			m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.get_proxy_supplier(proxyID.value));
-			consumerReady();
+			if (m_consumerAdmin ==null)
+				m_consumerAdmin = m_channel.get_consumeradmin(consumerAdminID.value);
+			if (m_proxySupplier == null)
+				m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.get_proxy_supplier(proxyID.value));
+			//consumerReady();
 		} catch (AdminNotFound e) {
 			//e.printStackTrace();
 			//do something here;
 		} catch (ProxyNotFound e) {
 			//e.printStackTrace();
 			//do something here;
-		} catch (AcsJException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 	}

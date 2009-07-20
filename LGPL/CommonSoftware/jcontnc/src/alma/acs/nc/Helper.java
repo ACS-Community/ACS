@@ -37,6 +37,8 @@ import org.omg.CORBA.IntHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
@@ -106,10 +108,6 @@ public class Helper {
 	private int channelId;
 	
 	private EventChannelFactory notifyFactory;
-
-	public EventChannelFactory getNotifyFactory() {
-		return notifyFactory;
-	}
 
 	/**
 	 * Map that's used similar to a log repeat guard, because the OMC was flooded with NC config problem logs 
@@ -267,6 +265,7 @@ public class Helper {
 				// now that we use the TAO extension with named NCs.
 				// The only advantage of still using the naming service is that the naming service is a real system-wide singleton
 				// and can return also channels that were by mistake created from a different notify service factory than the one configured in the CDB.
+				initializeNotifyFactory(notifyFactoryName);
 				retValue = EventChannelHelper.narrow(getNamingService().resolve(t_NameSequence));
 			} 
 			catch (org.omg.CosNaming.NamingContextPackage.NotFound e) {
@@ -314,7 +313,58 @@ public class Helper {
 		
 		return retValue;
 	}
-
+	
+	
+	protected void initializeNotifyFactory(String notifyFactoryName) 
+		throws AcsJException
+	{
+		if (notifyFactory == null){
+			final String standardEventFactoryId = org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper.id();
+			final String specialEventFactoryId = gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper.id();
+			
+			// get the Notification Factory first.
+			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, "") };
+			org.omg.CORBA.Object notifyFactoryObj = null;
+			//notifyFactory = null;
+			try {
+				notifyFactoryObj = getNamingService().resolve(t_NameFactory);
+			}
+			catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
+				String reason = "The CORBA Notification Service '" + notifyFactoryName + 
+							"' is not registered in the Naming Service: " + ex.why.toString();
+				AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
+				ex2.setInfo(reason);
+				throw ex2;
+			}catch (org.omg.CosNaming.NamingContextPackage.CannotProceed e) {
+				// Think there is virtually no chance of this every happening but...
+				Throwable cause = new Throwable(e.getMessage());
+				throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			} catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+				// Think there is virtually no chance of this every happening but...
+				Throwable cause = new Throwable(e.getMessage());
+				throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			}
+			
+			// narrow the notification factory to the TAO extension subtype
+			try {
+				notifyFactory = EventChannelFactoryHelper.narrow(notifyFactoryObj);
+			} catch (BAD_PARAM ex) {
+				
+				String errMsg = "Notify factory '" + notifyFactoryName + "' is not of the expected type " + specialEventFactoryId;
+				if (notifyFactoryObj._is_a(standardEventFactoryId)) {
+					errMsg += ". Note that ACS no longer uses the base type " + standardEventFactoryId + " since ACS 8.0";
+				}
+				else {
+					errMsg += " and not even of the expected base type " + standardEventFactoryId;
+				}
+				m_logger.warning(errMsg);
+				AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
+				ex2.setNarrowType(specialEventFactoryId);
+				throw ex2;
+			}
+		}
+	}
+	
 	/**
 	 * Tries to create a notification channel (using quality of service and administrative properties 
 	 * specified by configQofS() and configAdminProps() respectively).
@@ -351,42 +401,10 @@ public class Helper {
 		EventChannel retValue = null;
 		channelId = -1; // to be assigned by factory
 		
-		final String standardEventFactoryId = org.omg.CosNotifyChannelAdmin.EventChannelFactoryHelper.id();
-		final String specialEventFactoryId = gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper.id();
-		
 		try {
-			// get the Notification Factory first.
-			NameComponent[] t_NameFactory = { new NameComponent(notifyFactoryName, "") };
-			org.omg.CORBA.Object notifyFactoryObj = null;
-			notifyFactory = null;
-			try {
-				notifyFactoryObj = getNamingService().resolve(t_NameFactory);
-			}
-			catch (org.omg.CosNaming.NamingContextPackage.NotFound ex) {
-				String reason = "The CORBA Notification Service '" + notifyFactoryName + 
-							"' is not registered in the Naming Service: " + ex.why.toString();
-				AcsJCORBAProblemEx ex2 = new AcsJCORBAProblemEx();
-				ex2.setInfo(reason);
-				throw ex2;
-			}
 			
-			// narrow the notification factory to the TAO extension subtype
-			try {
-				notifyFactory = EventChannelFactoryHelper.narrow(notifyFactoryObj);
-			} catch (BAD_PARAM ex) {
-				String errMsg = "Notify factory '" + notifyFactoryName + "' is not of the expected type " + specialEventFactoryId;
-				if (notifyFactoryObj._is_a(standardEventFactoryId)) {
-					errMsg += ". Note that ACS no longer uses the base type " + standardEventFactoryId + " since ACS 8.0";
-				}
-				else {
-					errMsg += " and not even of the expected base type " + standardEventFactoryId;
-				}
-				m_logger.warning(errMsg);
-				AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
-				ex2.setNarrowType(specialEventFactoryId);
-				throw ex2;
-			}
-
+			initializeNotifyFactory(notifyFactoryName);
+			
 			// create the channel
 			// here we use the channel properties taken directly from our channel properties helper object. 
 			// presumably these values come from the ACS configuration database.
@@ -653,5 +671,9 @@ public class Helper {
 		}
 
 		return retVal;
+	}
+	
+	public EventChannelFactory getNotifyFactory() {
+		return notifyFactory;
 	}
 }

@@ -459,10 +459,13 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	
 	@Override
 	public void reconnect(gov.sandia.NotifyMonitoringExt.EventChannelFactory ecf) {
-		m_channel = m_helper.getNotificationChannel(ecf);
+		if (m_channel != null)
+			m_channel = m_helper.getNotificationChannel(ecf);
 		try {
-			m_supplierAdmin = m_channel.get_supplieradmin(ih.value);
-			m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.get_proxy_consumer(cp_ih.value));
+			if (m_supplierAdmin == null)
+				m_supplierAdmin = m_channel.get_supplieradmin(ih.value);
+			if (m_proxyConsumer == null)
+				m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.get_proxy_consumer(cp_ih.value));
 			if (m_proxyConsumer == null)
 				throw new NullPointerException("m_proxyConsumer is null");
 		} catch (AdminNotFound e) {
