@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.9 2009/07/10 21:15:38 javarias Exp $"
+# "@(#) $Id: acsNotifyService,v 1.10 2009/07/21 22:21:19 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -307,7 +307,8 @@ then
   # Let's create configuration file
   # we replace slashes(/) with \/ which can be used in sed
   NOTIFY_MC_IOR=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`"\/iors\/${CL_NS_TYPE}NotifyMCIOR"
-  sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$NOTIFY_MC_IOR/" -e "s/INS_DIR/\/tmp/" -e "s/NS_TYPE/${CL_NS_TYPE}/" $ACSROOT/config/svc.conf/defaultNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf
+  INSTANCE_DIR_REG=`echo $INSTANCE_DIR | sed 's/\//\\\\\//g'`
+  sed -e "s/NS_HOST/$HOST/" -e "s/NS_PORT/$NAMING_SERVICE_PORT/" -e "s/MC_IOR/$NOTIFY_MC_IOR/" -e "s/INS_DIR/$INSTANCE_DIR_REG/" -e "s/NS_TYPE/${CL_NS_TYPE}/" $ACSROOT/config/svc.conf/defaultNotify.svc.conf > $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf
   ORBOPTS="$ORBOPTS -ORBSvcConf $INSTANCE_DIR/$ACS_CNF_DIR/${CL_NS_TYPE}Notify.svc.conf"
 
   # I need to cd to $ACE_ROOT/TAO/orbsvcs/Notify_Service
