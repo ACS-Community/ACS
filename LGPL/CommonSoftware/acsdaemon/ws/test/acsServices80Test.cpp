@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.7 2008/11/25 23:56:00 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.8 2009/07/27 11:27:59 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -69,7 +69,7 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
         ACS_SHORT_LOG((LM_INFO, "DONE STARTING UP SERVICES."));
         
 	ACE_CString managerRef = ACE_CString("corbaloc::") + ACSPorts::getIP() + ":" + ACSPorts::getManagerPort(1).c_str() + "/Manager";
-        daemon->set_manager_reference(managerRef.c_str()); 
+        daemon->set_manager_reference(1, managerRef.c_str()); 
 
 //        printf("Please, press a key to start shutting down the services!");
 //        getchar();

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.10 2008/11/25 23:55:59 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.11 2009/07/27 11:27:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -362,6 +362,7 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
       ));
 
     void set_manager_reference(
+        const short instance_number,
         const char * ref
         )
       ACE_THROW_SPEC ((
@@ -369,7 +370,7 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
       ))
    {
 	if (context)
-	   context->setManagerReference(ref);
+	   context->setManagerReference(instance_number, ref);
    }
 
   private:

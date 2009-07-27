@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.4 2009/06/01 13:31:46 msekoran Exp $"
+* "@(#) $Id: acsImpBaseHandlerImpl.h,v 1.5 2009/07/27 11:27:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,11 +123,12 @@ template <class T> class ACSImpBaseHandlerImpl : public virtual POA_acsdaemon::I
     }
 
     void set_manager_reference(
+        const short instance_number,
         const char * ref
         )
     {
 	if (context)
-	    context->setManagerReference(ref);
+	    context->setManagerReference(instance_number, ref);
     }
 
   protected:

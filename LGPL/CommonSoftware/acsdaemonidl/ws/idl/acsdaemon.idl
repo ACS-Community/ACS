@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.19 2008/12/01 11:54:28 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.20 2009/07/27 11:28:19 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -336,7 +336,7 @@ module acsdaemon
 		 * Set corrensponding manager reference.
                  * NOTE: this is used to initialize alarm system.
                  */
-		void set_manager_reference(in string ref);
+		void set_manager_reference(in short instance_number, in string ref);
 
 		/** 
 		 * Heartbeat ping check.
@@ -835,7 +835,7 @@ module acsdaemon
                  * Set corrensponding manager reference.
                  * NOTE: this is used to initialize alarm system.
                  */
-                void set_manager_reference(in string ref);
+                void set_manager_reference(in short instance_number, in string ref);
 
 	};
 

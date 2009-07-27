@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.5 2009/06/12 13:32:14 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.6 2009/07/27 11:27:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -128,7 +128,7 @@ class ImpController : public ServiceController {
   public:
     ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart = true);
     ACSServiceType getACSService() { return service; }
-    void setManagerReference(const char * ref);
+    void setManagerReference(const short instance_number, const char * ref);
 };
 
 class ACSServiceController : public ServiceController {
@@ -158,9 +158,9 @@ class ACSDaemonContext {
     std::map<std::string, ServiceController **> acsservicecontrollersmap;
     ServiceController *getImpController(ACSServiceType service);
     ServiceController *getACSServiceController(ACSServiceRequestDescription *desc);
-    ACE_CString managerReference;
+    std::map<short, std::string> managerReferences;
     DetailedServiceStateProvider *detailedServiceStateProvider;
-    void setImpControllersManagerReference(const char * ref);
+    void setImpControllersManagerReference(const short instance_number, const char * ref);
   public:
     ACSDaemonContext(std::string name, DetailedServiceStateProvider *dssp = NULL);
     ~ACSDaemonContext();
@@ -173,8 +173,8 @@ class ACSDaemonContext {
     acsdaemon::ServiceState getACSServiceState(int instance_number, const char *name = NULL);
     acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
 	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
-    void setManagerReference(const char * ref) { managerReference = ref; setImpControllersManagerReference(ref); };
-    const char * getManagerReference() const { return managerReference.is_empty() ? NULL : managerReference.c_str(); }
+    void setManagerReference(const short instance_number, const char * ref) { managerReferences[instance_number] = ref; setImpControllersManagerReference(instance_number, ref); };
+    const char * getManagerReference(const short instance_number) { if (managerReferences.find(instance_number) != managerReferences.end()) return managerReferences[instance_number].c_str(); }
 };
 
 
