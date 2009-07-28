@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAcsLog.cpp,v 1.18 2008/01/17 22:56:19 agrimstrup Exp $"
+* "@(#) $Id: testAcsLog.cpp,v 1.19 2009/07/28 16:09:20 gchiozzi Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 // Uncomment this if you are using the VLT environment
 // #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.18 2008/01/17 22:56:19 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.19 2009/07/28 16:09:20 gchiozzi Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <stdlib.h>
@@ -123,6 +123,16 @@ int main(int argc, char *argv[])
       ACE_Time_Value tv = ACE_OS::gettimeofday();
       acscommon::TimeStamp ts = (ACE_UINT64_LITERAL(0x2D8539C80) + ACE_static_cast(CORBA::ULongLong, tv.sec())) *ACE_static_cast(ACE_UINT32, 10000000) + ACE_static_cast(CORBA::ULongLong, tv.usec() * 10);
       ACE_OS::printf("Test #1\n");      
+
+      /*
+       * GCH - 2009.07.28
+       * It is ESSENTIAL to initialize si.line, the only non-string
+       * in the structure.
+       * If you do not do it, then you get garbage, because corba structures
+       * are not initialized.
+       */
+      si.line = __LINE__+1;
+
       log->logTrace(ts, "test msg #0 (there should not be Context and Source info)", con, si, data);
       
 
