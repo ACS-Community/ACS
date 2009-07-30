@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThreadJoinable.cpp,v 1.8 2008/06/06 08:48:24 bjeram Exp $"
+* "@(#) $Id: testACSThreadJoinable.cpp,v 1.9 2009/07/30 10:16:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,7 +31,7 @@
 
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.8 2008/06/06 08:48:24 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testACSThreadJoinable.cpp,v 1.9 2009/07/30 10:16:47 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /**
@@ -78,11 +78,16 @@ class FastACSThread :public ACS::Thread
      */
     virtual void runLoop() 
 	{ 
+    	/*
+    	 * we removed writing to stdout because on some machine the runLoop was not executed at all
+    	 * on some other was executed for some threads several (different number)
+
 #ifndef MAKE_VXWORKS
 	std::cout << pthread_self() << " runLoop()" << std::endl; 
 #else
 	std::cout << taskIdSelf() << " runLoop()" << std::endl; 	
 #endif
+*/
 	}
 };
 
