@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingClient.cpp,v 1.54 2008/09/29 08:36:42 cparedes Exp $"
+* "@(#) $Id: loggingClient.cpp,v 1.55 2009/07/31 16:22:37 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -45,6 +45,7 @@
 #include <acsutilTimeStamp.h>
 #include <acsutilPorts.h>
 #include <loggingLoggingProxy.h>
+#include <logging_idlC.h>
 
 Subscribe::Subscribe (void)
 {
@@ -362,6 +363,9 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
         // for logging
         const char * xmlLog;
         notification.remainder_of_body >>= xmlLog;
+	Logging::XmlLogRecordSeq *reclist;
+	notification.remainder_of_body >>= reclist;
+
         if (xmlLog)
         {
             if (toSyslog)
@@ -379,6 +383,27 @@ ACSStructuredPushConsumer::push_structured_event (const CosNotification::Structu
                 }
             }
         }
+	else if (reclist)
+	{
+		for(unsigned int i = 0; i < reclist->length(); i++){
+			xmlLog = (*reclist)[i].xml;
+
+			if (toSyslog)
+			{
+				writeSyslogMsg(xmlLog);
+			}
+			else
+			{
+				if(toFile){
+					ACE_OS::fprintf(outputFile,"%s\n", xmlLog);
+					ACE_OS::fflush (outputFile);
+				}else{
+					ACE_OS::printf("%s\n", xmlLog);
+					ACE_OS::fflush (stdout);
+				}
+			}
+		}
+	}
     }else{
         // for logging
         ACSLoggingLog::LogBinaryRecord *log;

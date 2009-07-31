@@ -66,13 +66,16 @@ void AcsLogServiceImpl::writeRecords (const Logging::XmlLogRecordSeq &reclist)
 	logging_event.header.variable_header.length (0); // put nothing here
 	logging_event.filterable_data.length (0);
 
-	for (CORBA::ULong i = 0; i < reclist.length (); i++)
+	logging_event.remainder_of_body <<= reclist;
+	m_logging_supplier->send_event(logging_event);
+
+	/*for (CORBA::ULong i = 0; i < reclist.length (); i++)
 	{
 		logging_event.remainder_of_body <<= reclist[i].xml;
 		if(supOutput == NULL)
 		   m_logging_supplier->send_event (logging_event);
 		logStat.receivedLogs++;
-	}
+	}*/
 }
 
 Logging::LogStatistics AcsLogServiceImpl::getStatistics()
