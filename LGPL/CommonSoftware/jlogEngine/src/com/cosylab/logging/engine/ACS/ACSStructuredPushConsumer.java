@@ -31,6 +31,9 @@ import org.omg.CosNotifyComm.StructuredPushConsumerPOA;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.LogBinaryRecordHelper;
+import alma.Logging.XmlLogRecord;
+import alma.Logging.XmlLogRecordSeqHelper;
+import alma.Logging.XmlLogRecordSeqHolder;
 
 import com.cosylab.logging.engine.FiltersVector;
 
@@ -176,8 +179,14 @@ public final class ACSStructuredPushConsumer extends StructuredPushConsumerPOA
 			String binStr = CacheUtils.toCacheString(logRecord);
 			logRetrieval.addLog(binStr);
 		} else {
-			String xmlLog = event.remainder_of_body.extract_string();
-			logRetrieval.addLog(xmlLog);
+			try{
+				String xmlLog = event.remainder_of_body.extract_string();
+				logRetrieval.addLog(xmlLog);
+			}catch(org.omg.CORBA.BAD_OPERATION ex){
+				XmlLogRecord[] xmlLogs = XmlLogRecordSeqHelper.extract(event.remainder_of_body);
+				for(int i = 0; i < xmlLogs.length ; i++)
+					logRetrieval.addLog(xmlLogs[i].xml);
+			}
 		}
 	}
 

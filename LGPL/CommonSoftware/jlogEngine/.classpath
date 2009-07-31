@@ -22,5 +22,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="INTROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
