@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.73 2009/06/26 15:23:38 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.74 2009/07/31 16:20:56 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.73 2009/06/26 15:23:38 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.74 2009/07/31 16:20:56 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -680,8 +680,14 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     if (m_cache.size() >= m_cacheSize)
 	{
 		// avoid excessive signaling
-		if (m_cache.size() > 0)
+		if (m_cache.size() > 0){
+			struct timespec ts;
+			ts.tv_sec=0;
+			ts.tv_nsec=100;
 			sendCache();
+			ace_mon.release();
+			nanosleep(&ts,NULL);
+		}
 	}
 }
 
