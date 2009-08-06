@@ -53,7 +53,7 @@ public class ServiceDaemonProxy extends CORBAReferenceSerializator implements Se
 	public void setManagerReference(String reference) throws RemoteException {
 		try
 		{
-			daemon.set_manager_reference(reference);
+			daemon.set_manager_reference((short)alma.acs.util.ACSPorts.getBasePort(), reference);
 		}
 		catch (Exception ex)
 		{
