@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# (c) European Southern Observatory, 2009
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,21 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.7 2009/08/07 14:34:03 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2006-09-06 created
-SOURCE lasercoreTATEnvironment
-PROLOGUE lasercoreTATPrologue
-
-1 testCategoryDAO "testCategoryDAO"
-2 testAlarmDAO "testAlarmDAO"
-3 testAlarmService "testAlarmService"
-4 testAlarmSender "testAlarmSender"
-5 testCDBCoreAlarm "testCDBCoreAlarm"
-6 testIDLSendAlarm "testIDLSendAlarm"
-
-EPILOGUE acsutilTATEpilogue
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD junit.textui.TestRunner alma.acs.lasercore.test.IDLSendAlarmTest
