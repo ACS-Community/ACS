@@ -38,9 +38,16 @@ import javax.jms.TopicConnection;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import java.util.Properties;
+
 import org.omg.CORBA.Any;
 import org.omg.CosPropertyService.Property;
 
+import alma.ACSErrTypeCommon.BadParameterEx;
+import alma.ACSErrTypeCommon.BadParameterExHelper;
+import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
@@ -59,6 +66,7 @@ import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
+import alma.alarmsystem.source.ACSFaultState;
 
 import cern.laser.business.cache.AlarmCacheListener;
 import cern.laser.business.cache.AlarmCacheListenerImpl;
@@ -78,8 +86,19 @@ import cern.laser.business.definition.data.CategoryDefinition;
 import cern.laser.business.definition.data.SourceDefinition;
 import cern.laser.business.definition.data.AlarmDefinition;
 import cern.laser.business.ProcessingController;
-import cern.laser.source.alarmsysteminterface.FaultState;
+import cern.laser.source.alarmsysteminterface.impl.configuration.ASIConfiguration;
+import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
+import cern.laser.source.alarmsysteminterface.impl.message.FaultState;
+import cern.laser.source.alarmsysteminterface.impl.message.FaultStates;
+import cern.laser.source.alarmsysteminterface.impl.message.FaultStatesDescriptor;
+import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
+import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
+import cern.laser.source.alarmsysteminterface.impl.Configurator;
+import cern.laser.source.alarmsysteminterface.impl.FaultStateImpl;
+import cern.laser.source.alarmsysteminterface.impl.TimestampHelper;
+import cern.laser.source.alarmsysteminterface.impl.XMLMessageHelper;
 
+import com.cosylab.acs.jms.ACSJMSTextMessage;
 import com.cosylab.acs.jms.ACSJMSTopic;
 import com.cosylab.acs.jms.ACSJMSTopicConnectionFactory;
 import com.cosylab.acs.laser.dao.ACSAdminUserDAOImpl;
@@ -419,9 +438,8 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 			return;
 		}
 		for (LaserCoreFaultCodes alarm: alarms) {
-			System.out.println("Sending core alar of type: "+alarm);
 			logger.log(AcsLogLevel.ALERT, "Laser core alarm <"+LaserCoreFaultState.FaultFamily+", "+LaserCoreFaultState.FaultMember+", "+alarm.faultCode+">");
-			FaultState fs = LaserCoreFaultState.createFaultState(alarm, true);
+			cern.laser.source.alarmsysteminterface.FaultState fs = LaserCoreFaultState.createFaultState(alarm, true);
 			Message msg;
 			try {
 				msg= LaserCoreFaultState.createJMSMessage(fs, alSysContSvcs);
@@ -439,10 +457,8 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	 * @see MessageListener
 	 */
 	public synchronized void onMessage(Message message) {
-		if (message instanceof TextMessage) {
-			logger.log(AcsLogLevel.DEBUG,"Received a source message");
-		} else {
-			logger.log(AcsLogLevel.DEBUG,"Received a non text source message");
+		if (!(message instanceof TextMessage)) {
+			logger.log(AcsLogLevel.WARNING,"Received a non text source message");
 		}
 		try {
 			alarmMessageProcessor.process(message);
@@ -955,5 +971,118 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 	
 	public boolean isACSAlarmService() {
 		return false;
+	}
+	
+	/**
+	 * IDL method: submit an alarm without.
+	 * <P>
+	 * Build a message to sent to the {@link AlarmMessageProcessorImpl#process(Message)}.
+	 * 
+	 * @param triplet The triplet of the alarm
+	 * @param active if <code>true</code> the alarm is active
+	 * @param sourceHostName The name of the host of the source
+	 * @param timestamp The timestamp of the source
+	 * @param alarmProperties Additional user-defined properties of the alarm
+	 */
+	public synchronized void submitAlarm(
+			Triplet triplet,
+			boolean active,
+			String sourceHostName,
+			String sourceName,
+			Timestamp timestamp,
+			Property[] alarmProperties) throws BadParameterEx, UnexpectedExceptionEx {
+		cern.laser.source.alarmsysteminterface.impl.message.FaultState fs = new cern.laser.source.alarmsysteminterface.impl.message.FaultState();
+		fs.setCode(triplet.faultCode);
+		fs.setMember(triplet.faultMember);
+		fs.setFamily(triplet.faultFamily);
+		logger.log(AcsLogLevel.DEBUG, "Submitting alarm <"+triplet.faultFamily+
+				", "+triplet.faultMember+
+				", "+triplet.faultCode+"> active="+active);
+		// Properties
+		cern.laser.source.alarmsysteminterface.impl.message.Properties props = new cern.laser.source.alarmsysteminterface.impl.message.Properties();
+		if (alarmProperties!=null) {
+			for (Property p: alarmProperties) {
+				cern.laser.source.alarmsysteminterface.impl.message.Property propToAdd = new cern.laser.source.alarmsysteminterface.impl.message.Property();
+				propToAdd.setName(p.property_name);
+				propToAdd.setValue(p.property_value.toString());
+				props.addProperty(propToAdd);
+			}
+		}
+		fs.setUserProperties(props);
+		// Timestamp
+		cern.laser.source.alarmsysteminterface.impl.message.Timestamp tStamp = new cern.laser.source.alarmsysteminterface.impl.message.Timestamp();
+		long msecs=timestamp.miliseconds;
+		tStamp.setSeconds(msecs/1000);
+		long microSecs=(msecs-tStamp.getSeconds()*1000)*1000;
+		tStamp.setMicroseconds(microSecs);
+		fs.setUserTimestamp(tStamp);
+		// Descriptor
+		if (active) {
+			fs.setDescriptor(ACSFaultState.ACTIVE);
+		} else {
+			fs.setDescriptor(ACSFaultState.TERMINATE);
+		}
+		// Build the message
+		TextMessage message;
+		try {
+			message= buildMessage(fs, sourceHostName, sourceName);
+		} catch (IllegalArgumentException ie) {
+			AcsJBadParameterEx ex = new AcsJBadParameterEx(ie);
+			throw ex.toBadParameterEx();
+			
+		} catch (Throwable t) {
+			AcsJUnexpectedExceptionEx ex = new AcsJUnexpectedExceptionEx(t);
+			throw ex.toUnexpectedExceptionEx();
+		}
+		// Inject the message
+		try {
+			System.out.println("===> ["+message.getText()+"]");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		onMessage(message);
+	}
+	
+	/**
+	 * Build the {@link ACSJMSTextMessage} for a given fault state
+	 * 
+	 * @param state The fault state
+	 * @param hostName The host name
+	 * 
+	 * @see AlarmSystemInterfaceProxy#publish
+	 */
+	private TextMessage buildMessage(cern.laser.source.alarmsysteminterface.impl.message.FaultState state, String hostName, String sourceName) throws Exception {
+		if (state==null) {
+			throw new IllegalArgumentException("The fault state can't be null");
+		}
+		if (hostName==null || hostName.isEmpty()) {
+			throw new IllegalArgumentException("Invalid host name");
+		}
+		if (sourceName==null || sourceName.isEmpty()) {
+			throw new IllegalArgumentException("Invalid source name");
+		}
+		Collection<FaultStateImpl> tempStates = new Vector<FaultStateImpl>();
+		cern.laser.source.alarmsysteminterface.impl.message.FaultState tempState = new FaultState();
+	    ASIMessage asi_message = ASIMessageHelper.marshal(tempStates);
+	    FaultStates states = new FaultStates();
+	    states.addFaultState(state);
+	    asi_message.setFaultStates(states);
+	    asi_message.setSourceName("ALARM_SYSTEM_SOURCES");
+	    asi_message.setSourceHostname(hostName);
+	    asi_message.setSourceTimestamp(TimestampHelper.marshalSourceTimestamp(new java.sql.Timestamp(System.currentTimeMillis())));
+	    asi_message.setBackup(false);
+	    
+	    Configurator configurator = new Configurator();
+	    ASIConfiguration configuration = configurator.getConfiguration();
+	    asi_message.setVersion(configuration.getASIVersion());
+
+	    ACSJMSTextMessage tm = new ACSJMSTextMessage(alSysContSvcs);
+	    tm.setText(XMLMessageHelper.marshal(asi_message));
+	    tm.setStringProperty(configuration.getSourceNameProperty(), sourceName);
+	    tm.setStringProperty(configuration.getSourceHostnameProperty(), hostName);
+	    tm.setStringProperty(configuration.getBackupProperty(), String.valueOf(false));
+	    tm.setStringProperty(configuration.getAlarmsNumberProperty(), String.valueOf(1));
+
+	    return tm;
 	}
 }

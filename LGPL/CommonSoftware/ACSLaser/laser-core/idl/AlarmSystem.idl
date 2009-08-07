@@ -24,6 +24,7 @@
 #define _CERNALARMSERVICE_IDL_
 
 #include <CosProperty.idl>
+#include <ACSErrTypeCommon.idl>
 #include <AcsAlarmSystem.idl>
 
 #pragma prefix "alma"
@@ -312,6 +313,26 @@ module alarmsystem
 			in string userId, 
 			in AlarmDefinition definition
 		) raises (LaserDefinitionException);
+		
+		/**
+		 * Submit an alarm bypassing the source NC
+		 * 
+		 * This method allows to send alarms even when the Notify Service
+		 * is down or not working properly and it is meant for this purpose
+		 * only: normally alarms must be sent through the API of your
+		 * preferred programming language because it offers more functionalities
+		 * then this method
+		 *
+		 * Note: this method does not come for the original LASER alarm system.
+		 */
+		void submitAlarm(
+			in alarmsystem::Triplet triplet,
+			in boolean active,
+			in string sourceHostName,
+			in string sourceName,
+			in alarmsystem::Timestamp sourceTimestamp,
+			in CosPropertyService::Properties alarmProperties)
+			 raises (ACSErrTypeCommon::BadParameterEx, ACSErrTypeCommon::UnexpectedExceptionEx);
 		
 		
 	};
