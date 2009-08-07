@@ -59,7 +59,8 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		TEST_TM2_2("TEST:TEST_MEMBER2:2",3,"Test alarm 2",null,null,null),
 		TEST_DEF_1("TEST:*:1",2,"Test alarm 1","The cause","Run and fix quickly","A disaster"),
 		TEST_DEF_2("TEST:*:2",3,"Test alarm 2",null,null,null),
-		PS_PSM_1("PS:PS_MEMBER:1",2,"PS test alarm","A terrible mistake",null,null);
+		PS_PSM_1("PS:PS_MEMBER:1",2,"PS test alarm","A terrible mistake",null,null),
+		IDL("IDLFamily:IDLMember:1",0,"This alarm has been sent through an IDL method","Sent an IDL alarm",null,null);
 		
 		public final String ID;
 		public final int priority;
@@ -159,10 +160,10 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		String[] ids = alarmDAO.getAllAlarmIDs();
 		assertNotNull(ids);
 		
-		// There are 7 alarms defined in the CDB 
-		// 5 alarms plus 2 defaults for TEST
+		// There are 8 alarms defined in the CDB 
+		// 6 alarms plus 2 defaults for TEST
 		// We have to consider the laser core alarms too...
-		assertEquals(7+LaserCoreFaultCodes.values().length, ids.length);
+		assertEquals(8+LaserCoreFaultCodes.values().length, ids.length);
 		
 		// Check if all the triplets exist
 		for (String id: ids) {

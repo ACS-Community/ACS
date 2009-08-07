@@ -84,7 +84,12 @@ public class CoreCDBAlarmTest extends ComponentClientTestCase implements Categor
 	 */
 	@Override
 	public void alarmReceived(AlarmView alarm) {
-		alarms.add(alarm);
+		if (alarm.alarmID.equals(
+				LaserCoreFaultState.FaultFamily+":"+
+				LaserCoreFaultState.FaultMember+":"+
+				LaserCoreFaultCodes.ALARMS_CDB.faultCode)) {
+			alarms.add(alarm);
+		}
 	}
 
 	/**
