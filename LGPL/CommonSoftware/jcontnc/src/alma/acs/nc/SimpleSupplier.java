@@ -214,12 +214,13 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 
 		try {
 			// clean-up CORBA stuff
+			m_callback.disconnect();
+			m_services.deactivateOffShoot(m_callback);
 			m_services.deactivateOffShoot(this);
 		} 
 		catch (Throwable thr) {
 			m_logger.log(Level.WARNING, errMsg + "could not deactivate the SimpleSupplier offshoot.", thr);
 		}
-		m_callback.disconnect();
 		m_callback = null;
 		m_proxyConsumer = null;
 		m_supplierAdmin = null;

@@ -802,6 +802,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 			// clean-up CORBA stuff
 			m_callback.disconnect();
+			getHelper().getContainerServices().deactivateOffShoot(m_callback);
 			getHelper().getContainerServices().deactivateOffShoot(this);
 			m_callback = null;
 			m_corbaRef = null;
