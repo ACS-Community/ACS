@@ -377,9 +377,11 @@ public class ACSCategoryDAOImpl implements CategoryDAO
 			
 			// Connect alarms to this category
 			for (alma.acs.alarmsystem.generated.Category cat : daoCategories.getCategory()) {
-				String[] families=cat.getAlarms().getFaultFamily();
-				for (String faultFamily: families) {
-					assignCategoryToAlarms(ci, faultFamily);
+				if (cat.getPath().equals(ci.getPath())) {
+					String[] families=cat.getAlarms().getFaultFamily();
+					for (String faultFamily: families) {
+						assignCategoryToAlarms(ci, faultFamily);
+					}
 				}
 			}
 		}
