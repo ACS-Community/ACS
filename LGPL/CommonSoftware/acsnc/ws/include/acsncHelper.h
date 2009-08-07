@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.72 2008/11/13 01:57:44 cparedes Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.73 2009/08/07 17:55:03 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,6 +48,7 @@
 #include "acsncC.h"
 #include "acsncORBHelper.h"
 #include "acsncCDBProperties.h"
+#include "acsncReconnectionCallback.h"
 
 #include <basencHelper.h>
 
@@ -66,6 +67,9 @@
 #define ACSNC_STRING_MACRO(something) #something
 
 namespace nc {
+
+   class ReconnectionCallback;
+
 /**
  *  Class Helper is a base class used to provide common functionality between the
  *  Consumer and Supplier classes. That is, it hides much of the ACE/TAO
@@ -138,6 +142,19 @@ class Helper
      */
     static char *
     extractStructName(const char* idlStruct);
+
+    /** 
+      * This method allow to the Helper reconnect to the Notification Channel
+      * in case of Notify Service cracs. It is used by the the Persistance 
+      * Notify Service extension and must be
+      * called only from the Reconnection Callback.
+      * 
+      *  @see acsnc::ReconnectionCallback
+      *  @param ecf Pointer to the EventChannelFactory
+      */
+    virtual void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
+
+   
     
   protected:
     /**
@@ -314,6 +331,8 @@ class Helper
      */
     void
     integrationLog(const std::string& log);
+
+    ReconnectionCallback *callback_m;
 
   private:
     

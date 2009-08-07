@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncArchiveConsumer.h,v 1.9 2008/10/09 07:57:41 cparedes Exp $"
+* "@(#) $Id: acsncArchiveConsumer.h,v 1.10 2009/08/07 17:55:03 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,8 @@ namespace nc {
 		    const std::string& device,
 		    const std::string& parameter,
 		    const CORBA::Any& value) = 0;
+
+            virtual ~ArchiveHandler();
 	};
 	
 	///Archive handler smart pointer

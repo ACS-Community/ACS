@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.79 2008/11/13 01:57:44 cparedes Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.80 2009/08/07 17:55:03 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,6 +78,7 @@ Helper::Helper(const char* channelName, const char* notifyServiceDomainName):
 	    {
 	    okToLog_m = true;
 	    }
+    callback_m = new ReconnectionCallback(this);
 }
 //-----------------------------------------------------------------------------
 Helper::~Helper()
@@ -85,6 +86,11 @@ Helper::~Helper()
     ACS_TRACE("Helper::~Helper");
     //since everything is essentially created using _var types...just delete
     //the ORB helper if it exists
+    if (callback_m !=0){
+        delete callback_m;
+        callback_m = 0;
+    }
+
     if (orbHelper_mp != 0)
 	{
 	delete orbHelper_mp;
@@ -455,6 +461,13 @@ Helper::extractStructName(const char* idlStruct)
     //set the retValue
     return CORBA::string_dup(const_cast<char *>(idlStruct + goodPos));
 }
+
+void Helper::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
+{
+   if (!::CORBA::is_nil(notifyChannel_m))
+      resolveNotifyChannel();
+}
+
 //-----------------------------------------------------------------------------
 //The following was requested by Heiko Sommer and is needed for integrations.
 void

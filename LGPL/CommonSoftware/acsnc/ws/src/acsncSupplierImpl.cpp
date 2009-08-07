@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.80 2008/11/13 01:57:44 cparedes Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.81 2009/08/07 17:55:03 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -103,6 +103,7 @@ Supplier::init(CORBA::ORB_ptr orb)
         ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //Finally we can create the supplier admin, consumer proxy, etc.
     createSupplier();
+    callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
 Supplier::~Supplier()
@@ -116,6 +117,8 @@ void
 Supplier::disconnect()
 {
     ACS_TRACE("Supplier::disconnect");
+
+    callback_m->disconnect();
 
     /**
      *  proxyConsumer_m->disconnect_structured_push_consumer should really disconnect the consumer.
@@ -331,8 +334,8 @@ Supplier::createSupplier()
 	throw err.getCORBAProblemEx();
 	}
 
-    CosNotifyChannelAdmin::AdminID adminid;
-    CosNotifyChannelAdmin::ProxyID proxyConsumerID;
+    // CosNotifyChannelAdmin::AdminID adminid;
+    // CosNotifyChannelAdmin::ProxyID proxyConsumerID;
 
     try
 	{
@@ -404,6 +407,18 @@ Supplier::createSupplier()
 	throw err.getCORBAProblemEx();
 	}
 }
+
+void Supplier::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
+{
+   Helper::reconnect(ecf);
+   if (::CORBA::is_nil(SupplierAdmin_m))
+      SupplierAdmin_m = notifyChannel_m->get_supplieradmin(adminid);
+   if(::CORBA::is_nil(proxyConsumer_m))
+      proxyConsumer_m = 
+         CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(
+               SupplierAdmin_m->get_proxy_consumer(proxyConsumerID));
+}
+
 //-----------------------------------------------------------------------------
 void
 Supplier::disconnect_structured_push_supplier()

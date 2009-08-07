@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.72 2008/11/13 01:57:44 cparedes Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.73 2009/08/07 17:55:03 javarias Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -105,13 +105,16 @@ Consumer::init(CORBA::ORB_ptr orb)
         ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //create consumer corba objects
     createConsumer();
+    callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
 void 
 Consumer::disconnect()
 {
     ACS_TRACE("Consumer::disconnect");
-    
+
+    callback_m->disconnect();
+
     if(reference_m.in()!=0)
 	{  
 	//suspend the connection first
@@ -440,7 +443,7 @@ Consumer::createConsumer()
     try
 	{
 	// Get ConsumerAdmin object
-	CosNotifyChannelAdmin::AdminID adminid;
+	//CosNotifyChannelAdmin::AdminID adminid;
 	consumerAdmin_m = notifyChannel_m->new_for_consumers(ifgop_m, adminid);
 	
 	if(CORBA::is_nil(consumerAdmin_m.in()) == true)
@@ -450,7 +453,7 @@ Consumer::createConsumer()
 	    }
 	
 	//get the the proxySupplier
-	CosNotifyChannelAdmin::ProxyID proxySupplierID;
+	//CosNotifyChannelAdmin::ProxyID proxySupplierID;
 	CosNotifyChannelAdmin::ProxySupplier_var 
 	    proxysupplier = consumerAdmin_m->obtain_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxySupplierID);
 	if(CORBA::is_nil(proxysupplier.in()) == true)
@@ -478,6 +481,21 @@ Consumer::createConsumer()
     
     //now the developer must call consumerReady() to receive events.
 }
+
+void Consumer::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
+{
+   Helper::reconnect(ecf);
+   
+   if (::CORBA::is_nil(consumerAdmin_m))
+      consumerAdmin_m = notifyChannel_m->get_consumeradmin(adminid);
+   
+   if(::CORBA::is_nil(proxySupplier_m))
+      proxySupplier_m = 
+         CosNotifyChannelAdmin::StructuredProxyPushSupplier::_narrow(
+               consumerAdmin_m->get_proxy_supplier(proxySupplierID));
+
+}
+
 //-----------------------------------------------------------------------------
 /*
 * @throw CosNotifyComm::InvalidEventType

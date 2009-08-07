@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.64 2008/11/07 05:59:55 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.65 2009/08/07 17:55:03 javarias Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -50,7 +50,8 @@ INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
 		acsncSimpleConsumer.i acsncSimpleConsumer.h \
 		acsncRTSupplier.i acsncRTSupplier.h \
 		acsncArchiveConsumer.h \
-		acsncCDBProperties.h acsncServiceChecker.h
+		acsncCDBProperties.h acsncServiceChecker.h \
+                acsncReconnectionCallback.h
 INCLUDES_L	= 
 
 # Libraries (public and local)
@@ -63,7 +64,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
 		 acsncORBHelperImpl acsncHelperImpl \
 		 acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
-                 acsncServiceChecker
+                 acsncServiceChecker acsncReconnectionCallback
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs acsncErrType
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec

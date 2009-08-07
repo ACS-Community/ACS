@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.70 2008/10/09 07:57:41 cparedes Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.71 2009/08/07 17:55:03 javarias Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -309,6 +309,12 @@ class Consumer :
      */
     bool
     removeFilter(int filter_id);
+
+    /**
+      * Override of reconnect method
+      * @see acsnc::Helper::reconnect
+      */
+    virtual void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
     
   protected:
     /**
@@ -452,6 +458,9 @@ class Consumer :
      */
     void
     removeSubscription(const char* type_name);
+
+    CosNotifyChannelAdmin::AdminID adminid;
+    CosNotifyChannelAdmin::ProxyID proxySupplierID;
     ///////////////////////////////////////////////////////////////////////////////////////
 };
  }; 

@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.63 2008/10/09 07:57:41 cparedes Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.64 2009/08/07 17:55:03 javarias Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -171,6 +171,12 @@ class Supplier :
     subscription_change(const CosNotification::EventTypeSeq &eventsAdded,
 			const CosNotification::EventTypeSeq &eventsRemoved);
 
+    /**
+      * Override of reconnect method
+      * @see acsnc::Helper::reconnect
+      */
+    void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
+
   protected:
     /**
      * Destructor is protected.
@@ -313,6 +319,9 @@ class Supplier :
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     Supplier(const Supplier&);
+
+    CosNotifyChannelAdmin::AdminID adminid;
+    CosNotifyChannelAdmin::ProxyID proxyConsumerID;
 };
  }; 
 #endif
