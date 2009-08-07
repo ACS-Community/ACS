@@ -13,6 +13,7 @@
   	<description>Test category 2</description>
   	<alarms>
   		<FaultFamily>PS</FaultFamily>
+  		<FaultFamily>IDLFamily</FaultFamily>
   	</alarms>
   </category>
 </categories>
