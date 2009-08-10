@@ -38,13 +38,10 @@ import javax.jms.TopicConnection;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
-import java.util.Properties;
-
 import org.omg.CORBA.Any;
 import org.omg.CosPropertyService.Property;
 
 import alma.ACSErrTypeCommon.BadParameterEx;
-import alma.ACSErrTypeCommon.BadParameterExHelper;
 import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
@@ -90,7 +87,6 @@ import cern.laser.source.alarmsysteminterface.impl.configuration.ASIConfiguratio
 import cern.laser.source.alarmsysteminterface.impl.message.ASIMessage;
 import cern.laser.source.alarmsysteminterface.impl.message.FaultState;
 import cern.laser.source.alarmsysteminterface.impl.message.FaultStates;
-import cern.laser.source.alarmsysteminterface.impl.message.FaultStatesDescriptor;
 import cern.laser.source.alarmsysteminterface.impl.ASIMessageHelper;
 import cern.laser.source.alarmsysteminterface.impl.AlarmSystemInterfaceProxy;
 import cern.laser.source.alarmsysteminterface.impl.Configurator;
@@ -1035,11 +1031,6 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 			throw ex.toUnexpectedExceptionEx();
 		}
 		// Inject the message
-		try {
-			System.out.println("===> ["+message.getText()+"]");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		onMessage(message);
 	}
 	
