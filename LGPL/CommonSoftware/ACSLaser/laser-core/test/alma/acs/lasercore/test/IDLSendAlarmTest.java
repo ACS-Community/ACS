@@ -130,6 +130,8 @@ public class IDLSendAlarmTest extends ComponentClientTestCase implements Categor
 		assertNotNull(alarmService);
 		assertFalse(alarmService.isACSAlarmService());
 		
+		alarms.clear();
+		
 		// Connect the categories
 		categoryClient= new CategoryClient(contSvcs);
 		assertNotNull(categoryClient);
@@ -142,6 +144,7 @@ public class IDLSendAlarmTest extends ComponentClientTestCase implements Categor
 	 */
 	@Override
 	protected void tearDown() throws Exception {
+		alarms.clear();
 		categoryClient.disconnect();
 		super.tearDown();
 	}
