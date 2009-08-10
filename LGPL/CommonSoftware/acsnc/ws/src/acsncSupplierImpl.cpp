@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.81 2009/08/07 17:55:03 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.82 2009/08/10 19:53:47 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -103,7 +103,12 @@ Supplier::init(CORBA::ORB_ptr orb)
         ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //Finally we can create the supplier admin, consumer proxy, etc.
     createSupplier();
-    callback_m->init(orb, notifyFactory_m);
+    if(notifyFactory_m == 0)
+       resolveNotificationFactory();
+    if (orbHelper_mp !=0 )
+        callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
+    else
+        callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
 Supplier::~Supplier()

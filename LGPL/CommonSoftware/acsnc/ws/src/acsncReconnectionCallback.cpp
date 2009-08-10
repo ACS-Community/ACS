@@ -31,6 +31,7 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
       NotifyMonitoringExt::EventChannelFactory_ptr ecf)
 {
    if (::CORBA::is_nil(ecf)){
+	  std::cout << "-- ECF is nil :( --" << std::endl;
       return;
    }
 
@@ -42,7 +43,7 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
         root_poa_ = PortableServer::POA::_narrow (poa);
         callback_obj_id_ = root_poa_->activate_object(this);
 
-        CORBA::Object_var obj = 
+        CORBA::Object_var obj =
         root_poa_->id_to_reference(callback_obj_id_.in());
         callback = NotifyExt::ReconnectionCallback::_narrow(obj);
    }
@@ -57,7 +58,7 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
    if (::CORBA::is_nil(callback))
       std::cout << "Callback not initializated" << std::endl;
 
-   NotifyExt::ReconnectionRegistry_var registry = 
+   NotifyExt::ReconnectionRegistry_var registry =
       NotifyExt::ReconnectionRegistry::_narrow(ecf_);
 
    callback_id_ = registry->register_callback(callback);

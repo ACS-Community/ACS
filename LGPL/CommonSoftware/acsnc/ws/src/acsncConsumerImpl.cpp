@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.73 2009/08/07 17:55:03 javarias Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.74 2009/08/10 19:53:47 javarias Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -105,7 +105,14 @@ Consumer::init(CORBA::ORB_ptr orb)
         ACS_SHORT_LOG((LM_ERROR,"NC '%s' couldn't be created nor resolved", channelName_mp));  
     //create consumer corba objects
     createConsumer();
-    callback_m->init(orb, notifyFactory_m);
+
+    if(notifyFactory_m == 0)
+       resolveNotificationFactory();
+
+    if (orbHelper_mp != 0 )
+        callback_m->init(orbHelper_mp->getORB(), notifyFactory_m);
+    else
+       callback_m->init(orb, notifyFactory_m);
 }
 //-----------------------------------------------------------------------------
 void 
