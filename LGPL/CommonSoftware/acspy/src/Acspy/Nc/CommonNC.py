@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.6 2008/11/18 00:01:39 agrimstrup Exp $
+# @(#) $Id: CommonNC.py,v 1.7 2009/08/11 22:49:02 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,7 +25,7 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.6 2008/11/18 00:01:39 agrimstrup Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.7 2009/08/11 22:49:02 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -43,6 +43,7 @@ from Acspy.Nc.CDBProperties   import cdb_channel_config_exists
 from Acspy.Nc.CDBProperties   import get_channel_qofs_props
 from Acspy.Nc.CDBProperties   import get_channel_admin_props
 from Acspy.Nc.CDBProperties   import get_notification_service_mapping
+from Acspy.Nc.ReconnectionCallback import ReconnectionCallback
 #--GLOBALS---------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -76,6 +77,9 @@ class CommonNC:
         self.nt = None
         #component...use this to get the name.
         self.component = component
+        #create the reconnection callback
+        self.channel_factory = None
+        self.callback = ReconnectionCallback(self)
     #------------------------------------------------------------------------------
     def configQofS(self):
         '''
@@ -220,11 +224,12 @@ class CommonNC:
                                             NameValue("reason",
                                                       "Naming Service")])
 
-        #Get EventChannel.
         #First try to use the naming service to access the channel. If that fails,
         #try to create it.  If this also fails, forget it...there's nothing that
         #can be done.
         try:
+            self.channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
+            self.channel_factory = self.channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
             obj = self.nt.getObject(self.channelName, self.getChannelKind())
             self.evtChan = obj._narrow(NotifyMonitoringExt.EventChannel)
         except:
@@ -243,6 +248,9 @@ class CommonNC:
                             break
                 else:
                     raise
+
+        #initialize the callback
+        self.callback.init(self.channel_factory)
 
     #------------------------------------------------------------------------------
     def destroyNotificationChannel(self):
@@ -286,8 +294,8 @@ class CommonNC:
         
         #Get at the Notification Service first.
         try:
-            channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
-            channel_factory = channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
+            self.channel_factory = self.nt.getObject(self.getNotificationFactoryName(), "")
+            self.channel_factory = self.channel_factory._narrow(NotifyMonitoringExt.EventChannelFactory)
         except Exception, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
@@ -299,7 +307,7 @@ class CommonNC:
 
         #Create the actual channel.
         try:
-            (self.evtChan, chan_id) = channel_factory.create_named_channel(self.configQofS(),
+            (self.evtChan, chan_id) = self.channel_factory.create_named_channel(self.configQofS(),
                                                                 self.configAdminProps(),
                                                                 self.channelName)
             #make the NRI happy
@@ -336,3 +344,5 @@ class CommonNC:
                                                       str(e))])
         return
 #------------------------------------------------------------------------------
+    def reconnect(self, ecf):
+       pass

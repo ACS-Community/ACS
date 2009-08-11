@@ -1,4 +1,4 @@
-# @(#) $Id: Supplier.py,v 1.17 2008/02/25 21:02:42 agrimstrup Exp $
+# @(#) $Id: Supplier.py,v 1.18 2009/08/11 22:49:02 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Supplier.py,v 1.17 2008/02/25 21:02:42 agrimstrup Exp $"
+__revision__ = "$Id: Supplier.py,v 1.18 2009/08/11 22:49:02 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -167,6 +167,8 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             self.logger.logWarning(str(e))
             print_exc()
 
+        self.callback.disconnect()
+        self.callback = None
         self.evtChan = None
         self.supplierAdmin = None  
         self.sppc = None  
@@ -352,6 +354,9 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
                                       ", Event Type:" + type_name)
             
             self.count = self.count + 1
+        except (CORBA.COMM_FAILURE, CORBA.TRANSIENT):
+            pass
+
         except Exception, e:
             print_exc()
             raise CORBAProblemExImpl(nvSeq=[NameValue("channelname",
@@ -360,4 +365,3 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
                                                       str(e))])
         return
 #------------------------------------------------------------------------------
-

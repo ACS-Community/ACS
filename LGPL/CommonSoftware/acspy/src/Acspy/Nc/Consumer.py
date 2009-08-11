@@ -1,4 +1,4 @@
-# @(#) $Id: Consumer.py,v 1.20 2009/02/05 21:57:22 agrimstrup Exp $
+# @(#) $Id: Consumer.py,v 1.21 2009/08/11 22:49:02 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -27,7 +27,7 @@ This module includes classes to be used as Consumers for the CORBA Notification
 service.
 '''
 
-__revision__ = "$Id: Consumer.py,v 1.20 2009/02/05 21:57:22 agrimstrup Exp $"
+__revision__ = "$Id: Consumer.py,v 1.21 2009/08/11 22:49:02 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -441,6 +441,8 @@ class Consumer (CosNotifyComm__POA.StructuredPushConsumer, CommonNC):
         '''
         #Disconnect
         self.connected = 0
+        self.callback.disconnect()
+        self.callback = None
         
         try:
             #suspend all subscriptions
