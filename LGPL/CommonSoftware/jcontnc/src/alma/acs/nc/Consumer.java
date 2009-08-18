@@ -883,10 +883,8 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 				m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.get_proxy_supplier(proxyID.value));
 			//consumerReady();
 		} catch (AdminNotFound e) {
-			//e.printStackTrace();
 			//do something here;
 		} catch (ProxyNotFound e) {
-			//e.printStackTrace();
 			//do something here;
 		}
 		

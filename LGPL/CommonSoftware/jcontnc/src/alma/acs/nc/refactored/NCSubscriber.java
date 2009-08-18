@@ -19,6 +19,8 @@
 
 package alma.acs.nc.refactored;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,6 +39,7 @@ import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.InvalidEventType;
@@ -59,8 +62,10 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
+import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
+import alma.acs.nc.ReconnectableSubscriber;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -79,7 +84,7 @@ import alma.acsnc.OSPushConsumerPOA;
  * @author jslopez
  */
 public class NCSubscriber extends OSPushConsumerPOA implements
-		AcsEventSubscriber {
+		AcsEventSubscriber, ReconnectableSubscriber {
 	/**
 	 * The default maximum amount of time an event handler is given to process
 	 * event before a warning message is logged. This is used when an end-user
@@ -157,6 +162,12 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * Contains a list of repeat guards for each different type of event.
 	 */
 	protected MultipleRepeatGuard multiRepeatGuard;
+
+	private AcsNcReconnectionCallback m_callback;
+
+	private IntHolder consumerAdminID;
+
+	private IntHolder proxyID;
 
 	/**
 	 * Creates a new instance of NCSubscriber.
@@ -238,6 +249,10 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 		// Repeat guard for maxProcessTime warning logging
 		multiRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 2,
 				Logic.COUNTER, 100);
+		
+		// if the factory is null, the reconnection callback is not registered
+		m_callback = new AcsNcReconnectionCallback(this);
+		m_callback.init(services, helper.getNotifyFactory());
 	}
 
 	/**
@@ -250,9 +265,11 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	private void getAdmin() throws AcsJException {
 		int consumerAdmins[] = channel.get_all_consumeradmins();
 		try {
-			if (consumerAdmins.length == 0)
+			if (consumerAdmins.length == 0){
+				consumerAdminID = new IntHolder();
 				consumerAdmin = channel.new_for_consumers(
-						InterFilterGroupOperator.AND_OP, new IntHolder());
+						InterFilterGroupOperator.AND_OP, consumerAdminID);
+			}
 			else
 				consumerAdmin = channel.get_consumeradmin(consumerAdmins[0]);
 		} catch (AdminNotFound e) {
@@ -276,9 +293,10 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 */
 	private void getProxySupplier() throws AcsJException {
 		try {
+			proxyID = new IntHolder();
 			proxySupplier = StructuredProxyPushSupplierHelper
 					.narrow(consumerAdmin.obtain_notification_push_supplier(
-							ClientType.STRUCTURED_EVENT, new IntHolder()));
+							ClientType.STRUCTURED_EVENT, proxyID));
 		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
 			Throwable cause = new Throwable(e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
@@ -780,5 +798,22 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	public void offer_change(EventType[] added, EventType[] removed)
 			throws InvalidEventType {
 		throw new NO_IMPLEMENT();
+	}
+
+	@Override
+	public void reconnect(EventChannelFactory ecf) {
+		if (channel!=null)
+			channel = helper.getNotificationChannel(ecf);
+	try {
+		if (consumerAdmin ==null)
+			consumerAdmin = channel.get_consumeradmin(consumerAdminID.value);
+		if (proxySupplier == null)
+			proxySupplier = StructuredProxyPushSupplierHelper.narrow(consumerAdmin.get_proxy_supplier(proxyID.value));
+	} catch (AdminNotFound e) {
+		//do something here;
+	} catch (ProxyNotFound e) {
+		//do something here;
+	}
+		
 	}
 }

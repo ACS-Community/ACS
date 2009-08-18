@@ -19,6 +19,8 @@
 
 package alma.acs.nc.refactored;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,9 +33,11 @@ import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.FixedEventHeader;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
@@ -48,8 +52,10 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
+import alma.acs.nc.ReconnectableSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -60,7 +66,7 @@ import alma.acsnc.OSPushSupplierPOA;
 
  * @author jslopez
  */
-public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher {
+public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher, ReconnectableSubscriber {
 
 	/** Provides useful methods. */
 	protected final Helper helper;
@@ -101,9 +107,16 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher 
 
 	/** Helper class used to manipulate CORBA anys */
 	protected final AnyAide anyAide;
+	
+	protected AcsNcReconnectionCallback m_callback;
 
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
+
+	private IntHolder supplierAdminID;
+
+	private IntHolder proxyID;
+
 
 	/**
 	 * Creates a new instance of NCPublisher. Make sure you call
@@ -173,7 +186,7 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher 
 		}
 		
 		// get the Supplier admin
-		IntHolder supplierAdminID = new IntHolder();
+		supplierAdminID = new IntHolder();
 		supplierAdmin = channel.new_for_suppliers(
 				InterFilterGroupOperator.AND_OP, supplierAdminID);
 		if (supplierAdmin == null) {
@@ -185,9 +198,10 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher 
 
 		// get the Consumer proxy
 		try {
+			proxyID = new IntHolder();
 			proxyConsumer = StructuredProxyPushConsumerHelper
 					.narrow(supplierAdmin.obtain_notification_push_consumer(
-							ClientType.STRUCTURED_EVENT, new IntHolder()));
+							ClientType.STRUCTURED_EVENT, proxyID));
 		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
 			Throwable cause = new Throwable(e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
@@ -207,6 +221,9 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher 
 			// Think there is virtually no chance of this every happening but...
 			throw new AcsJCORBAProblemEx(e);
 		}
+		
+		m_callback = new AcsNcReconnectionCallback(this);
+		m_callback.init(services, helper.getNotifyFactory());
 
 	}
 
@@ -437,6 +454,25 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher 
 
 		publishCORBAEvent(event);
 		count++;
+	}
+
+	@Override
+	public void reconnect(EventChannelFactory ecf) {
+		if (channel != null)
+			channel = helper.getNotificationChannel(ecf);
+		try {
+			if (supplierAdmin == null)
+				supplierAdmin = channel.get_supplieradmin(supplierAdminID.value);
+			if (proxyConsumer == null)
+				proxyConsumer = StructuredProxyPushConsumerHelper.narrow(supplierAdmin.get_proxy_consumer(cp_ih.value));
+			if (proxyConsumer == null)
+				throw new NullPointerException("m_proxyConsumer is null");
+		} catch (AdminNotFound e) {
+			//do something here
+		} catch (ProxyNotFound e) {
+			//do something here
+		}
+		
 	}
 
 }
