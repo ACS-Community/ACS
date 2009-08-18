@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.32 2008/10/14 22:47:10 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.33 2009/08/18 13:36:49 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -501,7 +501,7 @@ namespace ACS {
 
 	/// semaphore used for running loop
 	mutable ACE_Thread_Semaphore m_suspendSemaphore;
-	mutable ACE_Thread_Semaphore m_sleepSemaphore;
+	mutable ACE_Semaphore m_sleepSemaphore;
     };
 
 

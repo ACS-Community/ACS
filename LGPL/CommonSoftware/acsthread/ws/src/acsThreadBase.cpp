@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.36 2008/10/13 23:40:09 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.37 2009/08/18 13:36:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -74,7 +74,7 @@ ThreadBase::ThreadBase(const ACE_CString& _name,
     stackSize_m(_stackSize),
     threadManager_mp(_threadManager),
     m_suspendSemaphore(1, 0, 0, 1),  // Starts unlocked. An acquire will not block. Max 1
-    m_sleepSemaphore(0, 0, 0, 1)  // Starts locked. An acquire will block. Max 1
+    m_sleepSemaphore(0, 1, 0 , 0, 1)  // Starts locked. An acquire will block. Max 1
 {
 
     ACS_TRACE("ACS::ThreadBase::ThreadBase");
