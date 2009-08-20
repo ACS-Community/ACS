@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.cpp,v 1.11 2009/06/26 15:23:38 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.cpp,v 1.12 2009/08/20 21:33:50 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -131,8 +131,13 @@ ACSLog_i::write_recordlist (const DsLogAdmin::RecordList &reclist)
         result = XMLParser::parseElementType(xml, XMLtype);
         
         logging_event.remainder_of_body <<= xml;
-		  if(supOutput == NULL)
-           m_logging_supplier->send_event (logging_event);
+		  if(supOutput == NULL){
+           try{
+            m_logging_supplier->send_event (logging_event);
+           }catch(::CORBA::TRANSIENT &ex){
+              //do nothing the logs will lost
+           }
+        }
         logStat.receivedLogs++;
         /*
           this->check_threshold_list ();

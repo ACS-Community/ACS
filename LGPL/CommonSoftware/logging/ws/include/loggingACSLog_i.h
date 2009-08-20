@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSLog_i.h,v 1.9 2009/06/25 20:02:47 javarias Exp $"
+* "@(#) $Id: loggingACSLog_i.h,v 1.10 2009/08/20 21:33:50 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -69,7 +69,7 @@ class ACSLog_i : public TAO_BasicLog_i
     /**
      * Set the logging supplier to which puch logs
      */
-    void
+    virtual void
     set_logging_supplier(ACSStructuredPushSupplier* supplier)
 	{
 	    m_logging_supplier = supplier;
