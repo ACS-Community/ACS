@@ -165,8 +165,8 @@ void AcsLogServiceImpl::writeRecords (const Logging::XmlLogRecordSeq &reclist)
 	}
 
    logStat.receivedLogs += reclist.length();
-   //TODO: add suppress output option
-   recordBatch.add(&reclist);
+   if (supOutput == NULL)
+      recordBatch.add(&reclist);
 
 }
 
