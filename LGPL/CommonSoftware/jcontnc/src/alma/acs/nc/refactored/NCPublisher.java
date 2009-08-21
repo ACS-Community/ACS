@@ -97,7 +97,7 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 	protected volatile long count = 0;
 
 	/** Channel we'll be sending events to */
-	protected final EventChannel channel;
+	protected EventChannel channel;
 
 	/** Provides access to the ACS logging system. */
 	protected final Logger logger;
@@ -464,7 +464,7 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 			if (supplierAdmin == null)
 				supplierAdmin = channel.get_supplieradmin(supplierAdminID.value);
 			if (proxyConsumer == null)
-				proxyConsumer = StructuredProxyPushConsumerHelper.narrow(supplierAdmin.get_proxy_consumer(cp_ih.value));
+				proxyConsumer = StructuredProxyPushConsumerHelper.narrow(supplierAdmin.get_proxy_consumer(proxyID.value));
 			if (proxyConsumer == null)
 				throw new NullPointerException("m_proxyConsumer is null");
 		} catch (AdminNotFound e) {
