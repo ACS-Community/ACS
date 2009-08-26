@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.22 2009/07/01 16:54:13 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.23 2009/08/26 13:01:01 acaproni Exp $
  * @since    
  */
 
@@ -67,6 +67,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		ICON("","Not acknowledged flag",true), // The flag
 		TIME("Time",null,true),
 		COMPONENT("Component",null,true),
+		FAMILY("Family",null,true),
 		CODE("Code",null,false),
 		CAUSE("Cause",null,true),
 		DESCRIPTION("Description",null,true),
@@ -77,8 +78,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		CONTACT("Contact",null,false),
 		EMAIL("email",null,false),
 		GSM("GSM",null,false),
-		TRIPLET("Triplet",null,false),
-		FAMILY("Family",null,false);
+		TRIPLET("Triplet",null,false);
 		
 		/**
 		 *  The title of the column as it appears in the table header
