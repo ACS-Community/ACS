@@ -27,13 +27,15 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Logger;
 
-import org.exolab.castor.xml.MarshalException;
-
 import junit.framework.TestCase;
+
+import org.exolab.castor.xml.MarshalException;
 
 import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
+import alma.acs.component.ComponentImplBase;
 import alma.acs.logging.ClientLogManager;
+import alma.demo.MyXmlOffshootJ;
 import alma.demo.ObsProjectTree;
 import alma.demo.ObsProjectTreeJ;
 import alma.demo.SchedBlockHolder;
@@ -57,9 +59,9 @@ import alma.xmljbind.test.schedblock.SchedBlockEntityT;
  */
 public class DynamicProxyFactoryTest extends TestCase
 {
-	private Class corbaIF = alma.demo.XmlComponentOperations.class;
-	private XmlComponentJ compImpl;
-	private Class compIF = XmlComponentJ.class;
+	private Class<XmlComponentOperations> corbaIF = alma.demo.XmlComponentOperations.class;
+	private XmlTestComponent compImpl;
+	private Class<XmlComponentJ> compIF = XmlComponentJ.class;
 	private Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DynamicProxyFactoryTest", false);
 	
 	/**
@@ -234,7 +236,7 @@ public class DynamicProxyFactoryTest extends TestCase
 	 * Dumb little test implementation of the (inner) component interface
 	 * @author hsommer Dec 18, 2002 2:34:16 PM
 	 */
-	private static class XmlTestComponent implements XmlComponentJ
+	private static class XmlTestComponent extends ComponentImplBase implements XmlComponentJ
 	{
 		private ArrayList<SchedBlock> m_schedBlockList = new ArrayList<SchedBlock>();
 	
