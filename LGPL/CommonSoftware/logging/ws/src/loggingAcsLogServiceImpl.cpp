@@ -22,17 +22,17 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
 
    /*if the log record list length is long enough, send it directly*/
    if (reclist->length() > 2){
-      batchMutex_.acquire();
       logging_event.remainder_of_body <<= *reclist;
-      batchMutex_.release();
       try{
          loggingSupplier_->send_event(logging_event);
+         //for(unsigned int i = 0; i < reclist->length(); i++){
+            //std::cout << (*reclist)[i].xml << std::endl;
+         //}
       }catch(::CORBA::TRANSIENT &ex){
       }
    }
    /*otherwise, send the log Records one by one*/
    else{
-      batchMutex_.acquire();
       for (CORBA::ULong i = 0; i < reclist->length(); i++){
          logging_event.remainder_of_body <<= (*reclist)[i].xml;
          try{
@@ -40,16 +40,19 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
          }catch(::CORBA::TRANSIENT &ex){
          }
       }
-      batchMutex_.release();
    }
 }
 
 AcsLogServiceImpl::LogRecordBatch::LogRecordBatch(): 
    size_(0),
    waitCond_(mutex_),
-   shutdown_(false)
+   shutdown_(false),
+   nBuff(0)
 {
-   cache_.length(BATCH_LEN);
+   buffer[0].length(BATCH_LEN * 2);
+   buffer[1].length(BATCH_LEN * 2);
+   buffer[2].length(BATCH_LEN * 2);
+   buffer_ = &buffer[0];
    ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(
                AcsLogServiceImpl::LogRecordBatch::worker), this);
 }
@@ -57,41 +60,61 @@ AcsLogServiceImpl::LogRecordBatch::LogRecordBatch():
 AcsLogServiceImpl::LogRecordBatch::~LogRecordBatch()
 {
    sendRecords();
-   cache_.length(0);
    waitCond_.signal();
+   buffer_->length(0);
 }
 
 void AcsLogServiceImpl::LogRecordBatch::
 sendRecords()
 {
+   batchMutex_.acquire();
    if (size_ > 0){
-      cache_.length(size_);
-      sendRecords(&cache_);
+      /*save the current buffer status*/
+      tmpBuffer = buffer_;
+      tmpSize = size_;
+      /*interchange the buffers*/
+      nBuff = (nBuff + 1) % 3;
+      buffer_ = &buffer[nBuff];
       size_ = 0;
+      batchMutex_.release();
+      /*send the buffer through NC*/
+      tmpBuffer->length(tmpSize);
+      sendRecords(tmpBuffer);
+      /*prepare the size of the buffer*/
+      tmpBuffer->length(BATCH_LEN * 2 );
+      return;
    }
+   batchMutex_.release();
 }
 
 void AcsLogServiceImpl::LogRecordBatch::
 add(const ::Logging::XmlLogRecordSeq *reclist)
 {
-   if (size_ == 0 && reclist->length() > BATCH_LEN){
+   batchMutex_.acquire();
+   if (reclist->length() == 0){
+      batchMutex_.release();
+      return;
+   }
+   else if (reclist->length() > BATCH_LEN - 1){
+      waitCond_.signal();
+      batchMutex_.release();
       sendRecords(const_cast<Logging::XmlLogRecordSeq *>(reclist));
       return;
    }
-   if(cache_.length() < (size_ + reclist->length()))
-      cache_.length(size_ + reclist->length());
+   if(buffer_->length() < (size_ + reclist->length()))
+      buffer_->length(size_ + reclist->length() + 10);
 
    for(CORBA::ULong i = 0; i < reclist->length(); i++, size_++)
-      cache_[size_] = (*reclist)[i];
-   size_++;
+      (*buffer_)[size_] = (*reclist)[i];
    if(size_ > BATCH_LEN){
       waitCond_.signal();
    }
+   batchMutex_.release();
 }
 
 int AcsLogServiceImpl::LogRecordBatch::svc()
 {
-   sendRecords(&cache_);
+   sendRecords(buffer_);
    while(!shutdown_){
       ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(1, 0);
       mutex_.acquire();

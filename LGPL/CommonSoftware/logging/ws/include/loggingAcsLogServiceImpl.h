@@ -26,13 +26,17 @@ class AcsLogServiceImpl: public ACSLog_i,
       class LogRecordBatch
       {
          private:
-            ::Logging::XmlLogRecordSeq cache_;
+            ::Logging::XmlLogRecordSeq *buffer_;
+            ::Logging::XmlLogRecordSeq buffer[3];
             unsigned int size_;
             ACSStructuredPushSupplier* loggingSupplier_;
             ACE_SYNCH_MUTEX mutex_;
             ACE_SYNCH_MUTEX batchMutex_;
             ACE_SYNCH_CONDITION waitCond_;
             volatile bool shutdown_;
+            int nBuff;
+            ::Logging::XmlLogRecordSeq *tmpBuffer;
+            unsigned int tmpSize;
 
             void sendRecords(::Logging::XmlLogRecordSeq *reclist);
             int svc();
