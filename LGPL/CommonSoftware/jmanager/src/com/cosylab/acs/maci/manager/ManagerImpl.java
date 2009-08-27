@@ -3372,7 +3372,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		{
 			// parameter is optional
 			logger.log(Level.WARNING, "No list of services daemons available in the CDB. " + 
-					"In an operational environment using ACS daemons, this is a severe error!!" + 
+					"In an operational environment using ACS daemons, this is a severe error!! " + 
 					"It is OK only if you run the system without using these daemons. ");
 			return;
 		}
