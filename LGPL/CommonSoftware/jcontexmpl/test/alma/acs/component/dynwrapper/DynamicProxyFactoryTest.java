@@ -35,7 +35,6 @@ import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.logging.ClientLogManager;
-import alma.demo.MyXmlOffshootJ;
 import alma.demo.ObsProjectTree;
 import alma.demo.ObsProjectTreeJ;
 import alma.demo.SchedBlockHolder;
