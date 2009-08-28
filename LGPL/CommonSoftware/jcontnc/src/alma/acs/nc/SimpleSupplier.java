@@ -48,6 +48,8 @@ import org.omg.CosNotifyComm.InvalidEventType;
 import org.omg.CosNotifyComm.StructuredPushSupplier;
 import org.omg.CosNotifyComm.StructuredPushSupplierHelper;
 
+import com.cosylab.util.CircularArrayList;
+
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -178,6 +180,8 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			// Think there is virtually no chance of this every happening but...
 			throw new AcsJCORBAProblemEx(e);
 		}
+		
+		eventBuff = new CircularQueue();
 		
 		m_callback = new AcsNcReconnectionCallback(this);
 		m_callback.init(services, m_helper.getNotifyFactory());
@@ -360,10 +364,15 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	 */
 	protected void publishCORBAEvent(StructuredEvent se) throws AcsJException {
 		try {
+			//Check the queue for remaining events
+			StructuredEvent tmp;
+			while ((tmp = eventBuff.pop()) != null)
+				m_proxyConsumer.push_structured_event(tmp);
 			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
 			m_proxyConsumer.push_structured_event(se);
 		} catch (org.omg.CORBA.TRANSIENT e){
 			// the Notify Service is down... dropping the event
+			eventBuff.push(se);
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
 			String reason = "Failed to publish event on channel '" + m_channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
@@ -477,7 +486,6 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			//do something here
 		}
 		
-		
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -530,7 +538,8 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	private IntHolder cp_ih;
 	
 	private AcsNcReconnectionCallback m_callback;
-
+	
+	private CircularQueue eventBuff;
 
 	// //////////////////////////////////////////////////////////////////////////
 }
