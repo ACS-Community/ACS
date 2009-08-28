@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLoggable.h,v 1.1 2006/10/03 21:44:38 gchiozzi Exp $"
+* "@(#) $Id: loggingLoggable.h,v 1.2 2009/08/28 08:27:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,6 +81,16 @@ namespace Logging
 	 */
 	virtual Logger::LoggerSmartPtr	getLogger() const;
 	
+
+	/**
+	 * Sets logger. In this way is possible to  (re)set the logger latter.
+	  A smart pointer to an existing logger.
+	 *               This is assigned to the internal smart pointer
+	 *               so that the reference counting will make sure
+	 *               it will not be destroyed until in usage.
+	 */
+	virtual void setLogger(Logger::LoggerSmartPtr logger){ logger_m = logger; }
+
 	/**
 	 * Destructor.
 	 */
