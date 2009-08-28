@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testComponent.py,v 1.2 2008/11/04 11:00:20 agrimstrup Exp $"
+# "@(#) $Id: testComponent.py,v 1.3 2009/08/28 01:56:29 hyatagai Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -48,7 +48,7 @@ def find_worker_pid(cname):
     """Return the pid of the actual container process"""
 
     #The PID of the top level caller is recorded in the file
-    pidfile = "%s/tmp/ACS_INSTANCE.0/pids/%s_PID" % (os.environ['ACSDATA'], cname)
+    pidfile = "%s/ACS_INSTANCE.0/pids/%s_PID" % (os.environ['ACS_TMP'], cname)
     mpid = subprocess.Popen(['cat', pidfile], stdout=subprocess.PIPE).communicate()[0].strip()
 
     #Walk down the process tree until you have a process with no children
