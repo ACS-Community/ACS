@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.65 2009/08/07 17:55:03 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.66 2009/08/28 23:18:16 javarias Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -45,13 +45,15 @@ EXECUTABLES_L   =
 # Includes (.h) files (public only)
 # ---------------------------------
 INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
-		acsncORBHelper.h \
-		acsncSimpleSupplier.i acsncSimpleSupplier.h \
-		acsncSimpleConsumer.i acsncSimpleConsumer.h \
-		acsncRTSupplier.i acsncRTSupplier.h \
-		acsncArchiveConsumer.h \
-		acsncCDBProperties.h acsncServiceChecker.h \
-                acsncReconnectionCallback.h
+            acsncORBHelper.h \
+            acsncSimpleSupplier.i acsncSimpleSupplier.h \
+            acsncSimpleConsumer.i acsncSimpleConsumer.h \
+            acsncRTSupplier.i acsncRTSupplier.h \
+            acsncArchiveConsumer.h \
+            acsncCDBProperties.h acsncServiceChecker.h \
+            acsncReconnectionCallback.h \
+            acsncCircularQueue.h
+
 INCLUDES_L	= 
 
 # Libraries (public and local)
@@ -60,11 +62,13 @@ LIBRARIES       = acsnc
 LIBRARIES_L     =
 
 acsnc_OBJECTS  = acsncCDBProperties \
-		 acsncArchiveConsumer \
-		 acsncORBHelperImpl acsncHelperImpl \
-		 acsncConsumerImpl acsncSimpleConsumerImpl \
+                 acsncArchiveConsumer \
+                 acsncORBHelperImpl acsncHelperImpl \
+                 acsncConsumerImpl acsncSimpleConsumerImpl \
                  acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
-                 acsncServiceChecker acsncReconnectionCallback
+                 acsncServiceChecker acsncReconnectionCallback \
+                 acsncCircularQueue
+
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs acsncErrType
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec

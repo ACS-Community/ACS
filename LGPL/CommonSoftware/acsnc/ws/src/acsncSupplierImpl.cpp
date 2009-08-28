@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.83 2009/08/10 22:12:19 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.84 2009/08/28 23:18:16 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -178,16 +178,24 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     	throw ex;
 	}//if
 
+    CosNotification::StructuredEvent *tmp;
     try
     {
+       while( (tmp = eventBuff.pop()) != NULL){
+          proxyConsumer_m->push_structured_event(*tmp);
+          delete tmp;
+       }
     	// Invoke a method on consumer proxy
     	proxyConsumer_m->push_structured_event(event);
     }
     catch(CORBA::TRANSIENT &ex)
     {
-       /* do nothing, probably the Noitify Service is down
-        * It can be recovery starting the service again
+       /* Probably the Notify Service is down.
+        * It can be recovery starting the service again.
+        * The supplier will store the events.
         */
+       eventBuff.push(event);
+
     }
     catch(CosEventComm::Disconnected &ex)
     {

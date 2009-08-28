@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.64 2009/08/07 17:55:03 javarias Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.65 2009/08/28 23:18:16 javarias Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -33,6 +33,8 @@
 #include "acsncHelper.h"
 #include <acscomponentImpl.h>
 #include "RepeatGuardLogger.h"
+#include "acsncCircularQueue.h"
+
 namespace nc {
 /** 
  * Supplier provides an implementation of the structured event push supplier interface 
@@ -322,6 +324,9 @@ class Supplier :
 
     CosNotifyChannelAdmin::AdminID adminid;
     CosNotifyChannelAdmin::ProxyID proxyConsumerID;
+
+    CircularQueue eventBuff;
+
 };
  }; 
 #endif
