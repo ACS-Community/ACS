@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.h,v 1.31 2009/07/16 13:24:00 bjeram Exp $"
+* "@(#) $Id: acsThread.h,v 1.32 2009/08/28 09:53:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -207,12 +207,6 @@ namespace ACS
 	virtual void runLoop(){}
 
       protected:
-	/**
-	   Overrides getLogger from ThreadBase.
-	   Returns the logger. In the case a thread manager is used,
-	   the logger is from the component.
-	 */
-	virtual Logging::Logger::LoggerSmartPtr	getLogger() const;
 
 	/**
 	   Static method which is passed to the ACE thread manager

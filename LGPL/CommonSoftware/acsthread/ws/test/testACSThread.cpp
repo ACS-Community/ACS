@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testACSThread.cpp,v 1.23 2006/06/16 11:35:43 bjeram Exp $"
+* "@(#) $Id: testACSThread.cpp,v 1.24 2009/08/28 09:53:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "acsThreadManager.h"
 #include "acsThreadTest.h"
 
-static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.23 2006/06/16 11:35:43 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: testACSThread.cpp,v 1.24 2009/08/28 09:53:54 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #ifdef MAKE_VXWORKS
@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
     LoggingProxy logger_m(0, 0, 31);
     LoggingProxy::init(&logger_m);
 
-    ACS::ThreadManager tm;
+    ACS_CHECK_LOGGER;
+    ACS::ThreadManager tm(getNamedLogger("ThrMgrLogger"));
 
     /*
      * Creates a thread passing just thread name

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThread.cpp,v 1.41 2009/07/16 13:24:00 bjeram Exp $"
+* "@(#) $Id: acsThread.cpp,v 1.42 2009/08/28 09:53:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsThread.cpp,v 1.41 2009/07/16 13:24:00 bjeram Exp $";
+static char *rcsId="@(#) $Id: acsThread.cpp,v 1.42 2009/08/28 09:53:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsThread.h"
@@ -68,8 +68,15 @@ Thread::Thread(const ACE_CString & name,
             ex2.setThreadName(getName());
             throw ex2;
         }
-    }
 
+        // set logger
+        Logging::Logger::LoggerSmartPtr thrMgrLog = getThreadManager()->getLogger();
+        //if thread manager's logger is not global logger
+        if (thrMgrLog->getName() != Logging::Logger::getGlobalLogger()->getName() )
+        {
+        	setLogger(thrMgrLog);
+        }//if
+    }//if
     /*
      * We create a Kernel Thread and the thread is:
      * But we have to be careful: if we have a JOINABLE thread,
@@ -82,7 +89,7 @@ Thread::Thread(const ACE_CString & name,
         ex.setThreadName(getName());
         throw ex;
     }//if
-}
+}//Thread::Thread
 
 Thread::~Thread()
 {
@@ -102,25 +109,13 @@ Thread::~Thread()
 	{
 	thrMgr_mp->removeFromMap(this->getName());
 	}
-}
+}//Thread::~Thread
 
 ACS::ThreadManager*  Thread::getThreadManager() const
 {
     return thrMgr_mp;
-}
+}//Thread::getThreadManager
 
-Logging::Logger::LoggerSmartPtr Thread::getLogger() const
-{
-    if (getThreadManager()!=0)
-	{
-	return getThreadManager()->getLogger();
-	}
-    else
-	{
-	ACS_CHECK_LOGGER;
-	return ::getLogger();
-	}
-}//getLogger
 
 void Thread::commonStart()
 {
