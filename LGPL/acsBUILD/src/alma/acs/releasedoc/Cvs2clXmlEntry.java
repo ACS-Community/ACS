@@ -72,6 +72,24 @@ public class Cvs2clXmlEntry
 	}
 	
 
+	/**
+	 * Special ctor to be used when copying an entry, 
+	 * e.g. to flatten files that each should have their own Cvs2clXmlEntry object.
+	 */
+	public Cvs2clXmlEntry(Cvs2clXmlEntry other) {
+		this.date = other.date;
+		this.author = other.author;
+		this.commondir = other.commondir;
+		this.msg = other.msg;
+		
+		
+		this.files = new ArrayList<EntryFile>(other.files);
+		for (EntryFile otherfile : other.files) {
+			this.files.add(new EntryFile(otherfile));
+		}
+	}
+	
+	
 	Date getDate() {
 		return date;
 	}
@@ -84,12 +102,20 @@ public class Cvs2clXmlEntry
 		return msg;
 	}
 	
+
 	String getCommonDir() {
 		return this.commondir;
 	}
 	
 	List<EntryFile> getFiles() {
 		return files;
+	}
+	
+	/**
+	 * Only to be used when inverting the check-in based structure to a file-based structure etc.
+	 */
+	void setFiles(List<EntryFile> newFileList) {
+		files = newFileList;
 	}
 	
 	Date parseDate(String dateString) throws ParseException {
@@ -144,6 +170,14 @@ public class Cvs2clXmlEntry
 //			System.out.println("file = " + pathName); 
 		}
 
+		EntryFile(EntryFile other) {
+			this.pathName = other.pathName;
+			this.cvsstate = other.cvsstate;
+			this.revision = other.revision;
+			this.tag = other.tag;
+		}
+		
+		
 		String getPathName() {
 			return pathName;
 		}
@@ -160,7 +194,6 @@ public class Cvs2clXmlEntry
 			return tag;
 		}
 	}
-
 
 
 }

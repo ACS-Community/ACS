@@ -6,9 +6,13 @@ package alma.acs.releasedoc;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -19,6 +23,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import alma.acs.releasedoc.Cvs2clXmlEntry.EntryFile;
 import alma.acs.util.CmdLineArgs;
 import alma.acs.util.CmdLineRegisteredOption;
 
@@ -31,7 +36,7 @@ public class ProcessCvs2clOutput
 	public static enum SortBy {
 		time,
 		user,
-		path
+		file
 	}
 
 	private SortBy sortBy;
@@ -81,7 +86,10 @@ public class ProcessCvs2clOutput
 		switch (sortBy) {
 		case time:
 			entries2 = formatter.sortByDate(entries1);
+			// formatting
+			formatter.printTwiki(entries2);
 			break;
+			
 		case user:
 			entries2 = formatter.sortByAuthor(entries1);
 			TWikiFormatter.HeadingInserter hi = new TWikiFormatter.HeadingInserter() {
@@ -93,17 +101,81 @@ public class ProcessCvs2clOutput
 				}
 			};
 			formatter.setHeadingInserter(hi);
+			// formatting
+			formatter.printTwiki(entries2);
 			break;
-		// @TODO: other sorting options!!
-//		case path:
-//			entries2 = formatter.sortByPath(entries1);			
-		default:
-			entries2 = new ArrayList<Cvs2clXmlEntry>(entries1);
+			
+		case file:
+			// A separate Cvs2clXmlEntry gets created for every file, and all entries for the same file are put in a map.
+			
+			Map<String, List<Cvs2clXmlEntry>> entriesByFileName = new HashMap<String, List<Cvs2clXmlEntry>>();
+			
+			// Iterate over all entries, some of which represent a related change on many files which needs to be broken up
+			for (Cvs2clXmlEntry compositeEntry : entries1) {
+				// Iterate over all files of this entry. We don't care about the common dir, because every file is given with the full path anyway.
+				for (Cvs2clXmlEntry.EntryFile file : compositeEntry.getFiles()) {
+					
+					String pathName = file.getPathName();
+					List<Cvs2clXmlEntry> currentFileEntries = null;
+					if (entriesByFileName.containsKey(pathName)) {
+						// reuse entry list, add Cvs2clXmlEntry
+						currentFileEntries = entriesByFileName.get(pathName);
+					}
+					else {
+						currentFileEntries = new ArrayList<Cvs2clXmlEntry>();
+						entriesByFileName.put(pathName, currentFileEntries);
+					}
+					
+					// create a separate Cvs2clXmlEntry for this file
+					Cvs2clXmlEntry singleFileEntry = new Cvs2clXmlEntry(compositeEntry);
+					List<EntryFile> singleFileList = new ArrayList<EntryFile>(1);
+					singleFileList.add(file);
+					singleFileEntry.setFiles(singleFileList);
+					currentFileEntries.add(singleFileEntry);
+				}
+			}
+			
+			List<String> fileNames = new ArrayList<String>(entriesByFileName.keySet());
+			Collections.sort(fileNames);
+			
+			// @TODO Optionally keep only fileNames that also occur in an externally provided file
+			
+			hi = new TWikiFormatter.HeadingInserter() {
+				boolean needsHeading(Cvs2clXmlEntry entry) {
+					if (lastEntry == null) {
+						return true;
+					}
+					String nameThis = getRelevantFileName(entry.getFiles().get(0).getPathName());
+					String nameLast = getRelevantFileName(lastEntry.getFiles().get(0).getPathName());
+					return !nameThis.equals(nameLast);
+				}
+				String headingText(Cvs2clXmlEntry entry) {
+					return getRelevantFileName(entry.getFiles().get(0).getPathName());
+				}
+				private String getRelevantFileName(String pathName) {
+					int relevantLevels = ( pathName.startsWith("LGPL/CommonSoftware/") ? 3 : 1 );
+					String[] nameParts = pathName.split("/");
+					String ret = "";
+					for (int i = 0; i < relevantLevels; i++) {
+						ret += nameParts[i] + "/";
+					}
+					return ret;
+				}
+			};
+			formatter.setHeadingInserter(hi);
+			
+			for (String fileName : fileNames) {
+				List<Cvs2clXmlEntry> currentFileEntries = formatter.sortByDate(entriesByFileName.get(fileName));
+				
+				// @TODO construct a fixed-ordered map first and then pass everything in one call to the formatter
+				formatter.printTwikiByFile(fileName, currentFileEntries);
+			}
 			break;
+
+		default: // should never happen, unless someone adds new enum literals
+			throw new IllegalStateException("Need to fix this switch statement!");
 		}
 		
-		// formatting
-		formatter.printTwiki(entries2);
 	}
 	
 	
@@ -135,7 +207,7 @@ public class ProcessCvs2clOutput
 		cmdArgs.registerOption(optSortBy);
 		
 		// -- parse and set args
-		cmdArgs.parseArgs(args);		
+		cmdArgs.parseArgs(args);
 
 		// -- subtract
 		subtractFiles.clear();
@@ -155,7 +227,11 @@ public class ProcessCvs2clOutput
 		// -- sort by
 		if (cmdArgs.isSpecified(optSortBy)) {
 			String sortByString = cmdArgs.getValues(optSortBy)[0].trim();
-			sortBy = SortBy.valueOf(sortByString);
+			try {
+				sortBy = SortBy.valueOf(sortByString);
+			} catch (IllegalArgumentException ex) {
+				System.err.println("Will ignore illegal sort option '" + sortByString + "'.");
+			}
 		}
 		else {
 			sortBy = SortBy.time;
