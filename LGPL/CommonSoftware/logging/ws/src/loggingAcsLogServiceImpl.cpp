@@ -1,3 +1,27 @@
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) National Radio Astronomy Observatory, 2009
+*    Copyright by NRAO (in the framework of the ALMA collaboration)
+*    All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*
+*
+* "@(#) $Id:"
+*/
+
 #include <typeinfo>
 #include <iostream>
 
@@ -29,6 +53,7 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
             //std::cout << (*reclist)[i].xml << std::endl;
          //}
       }catch(::CORBA::TRANSIENT &ex){
+         /*if the Notify Service is down the log records will be lost*/
       }
    }
    /*otherwise, send the log Records one by one*/
@@ -76,12 +101,17 @@ sendRecords()
       nBuff = (nBuff + 1) % 3;
       buffer_ = &buffer[nBuff];
       size_ = 0;
+      while(buffer->length() != BATCH_LEN * 2)
+      {
+         /*block in case that the buffer is not ready
+          The buffer is ready when in have a size of BATCH_LEN*2 */
+      }
       batchMutex_.release();
       /*send the buffer through NC*/
       tmpBuffer->length(tmpSize);
       sendRecords(tmpBuffer);
       /*prepare the size of the buffer*/
-      tmpBuffer->length(BATCH_LEN * 2 );
+      tmpBuffer->length(BATCH_LEN * 2);
       return;
    }
    batchMutex_.release();
