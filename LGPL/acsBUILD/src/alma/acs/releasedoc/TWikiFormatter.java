@@ -1,5 +1,6 @@
 package alma.acs.releasedoc;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,6 +23,8 @@ public class TWikiFormatter
 {
 	public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 	
+	private DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance(); 
+		
 	private HeadingInserter headingInserter;
 	
 	List<Cvs2clXmlEntry> sortByDate(Collection<Cvs2clXmlEntry> entries) {
@@ -32,7 +35,7 @@ public class TWikiFormatter
 		});
 	}
 	
-	List<Cvs2clXmlEntry> sortByAuthor(Collection<Cvs2clXmlEntry> entries) {		
+	List<Cvs2clXmlEntry> sortByAuthor(Collection<Cvs2clXmlEntry> entries) {
 		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
 			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
 				if (!entry1.getAuthor().equals(entry2.getAuthor())) {
@@ -44,41 +47,38 @@ public class TWikiFormatter
 		} );
 	}
 	
-//	List<Cvs2clXmlEntry> sortByPath(Collection<Cvs2clXmlEntry> entries) {		
-//		return sort(entries, new Comparator<Cvs2clXmlEntry>() {
-//			public int compare(Cvs2clXmlEntry entry1, Cvs2clXmlEntry entry2) {
-//				// @todo deal with commondir  
-//			}
-//		} );
-//	}
 	
+	/**
+	 * Returns the {@code entries} as a sorted list with the order given by {@code comp}, 
+	 * without modifying the original collection.
+	 */
 	List<Cvs2clXmlEntry> sort(Collection<Cvs2clXmlEntry> entries, Comparator<Cvs2clXmlEntry> comp) {
-		List<Cvs2clXmlEntry> list = new ArrayList<Cvs2clXmlEntry>(entries);		
+		List<Cvs2clXmlEntry> list = new ArrayList<Cvs2clXmlEntry>(entries);
 		Collections.sort(list, comp);
 		return list;
 	}
-	
-	
+
+
 	void printTwiki(List<Cvs2clXmlEntry> entryList) {
 		for (Cvs2clXmlEntry entry : entryList) {
-			printTwiki(entry);
+			printTwikiByCheckin(entry);
 		}
 	}
 	
-	void printTwiki(Cvs2clXmlEntry entry) {
+	void printTwikiByCheckin(Cvs2clXmlEntry entry) {
 		
 		if (headingInserter != null) {
 			headingInserter.processRecord(entry);
 		}
-		String output = SimpleDateFormat.getDateTimeInstance().format(entry.getDate());
+		String output = dateFormat.format(entry.getDate());
 		output += "  ";
 		output += entry.getAuthor();
-		output += " \n";
-		String wikiFileIndent = "   * ";
+		output += LINE_SEPARATOR;
+		String wikiFileIndent = getWikiIndentBullet1();
 		if (entry.getCommonDir() != null) {
 			output += "   * " + entry.getCommonDir();
-			output += ": \n";
-			wikiFileIndent = "      * ";
+			output += ": " + LINE_SEPARATOR;
+			wikiFileIndent = "   " + wikiFileIndent;
 		}
 		Iterator<EntryFile> fileIter = entry.getFiles().iterator();
 		while (fileIter.hasNext()) {
@@ -90,11 +90,34 @@ public class TWikiFormatter
 			else {
 				output += "=" + file.getPathName() + "=";
 			}
-			output += " \n";
+			output += LINE_SEPARATOR;
 		}
 		// @TODO perhaps use <blockquote> around the message for indenting, instead of the silly bullet.
-		output += "   * " + formatMessage("     ", entry.getMessage()) + " \n";
+		output += "   * " + formatMessage("     ", entry.getMessage()) + LINE_SEPARATOR;
 		System.out.println(output);
+	}
+
+	void printTwikiByFile(String fileName, List<Cvs2clXmlEntry> entries) {
+		if (entries == null || entries.size() < 1) {
+			throw new IllegalArgumentException("empty entries arg");
+		}
+		Cvs2clXmlEntry firstEntry = entries.get(0);
+		Cvs2clXmlEntry lastEntry = entries.get(entries.size() - 1);
+
+		if (headingInserter != null) {
+			headingInserter.processRecord(firstEntry);
+		}
+		
+		String output = lastEntry.getFiles().get(0).getCvsstate().equals("dead") 
+				? "<strike>" + fileName + "</strike>"
+				: fileName;
+		output += LINE_SEPARATOR;
+		for (Cvs2clXmlEntry entry : entries) {
+			output += getWikiIndentBullet1() + dateFormat.format(entry.getDate()) + "  " + entry.getAuthor() + "<br>" + LINE_SEPARATOR;
+			// @TODO perhaps use <blockquote> around the message for indenting, instead of the silly bullet.
+			output += getWikiIndentBullet1_subseqLines() + formatMessage(getWikiIndentBullet1_subseqLines(), entry.getMessage()) + LINE_SEPARATOR;
+			System.out.println(output);
+		}
 	}
 	
 	protected String formatMessage(String indentAfterFirstLine, String message) {
@@ -121,7 +144,7 @@ public class TWikiFormatter
 				ret += "!";
 			}
 			ret += word;
-		}		
+		}
 		return ret;
 	}
 	
@@ -162,6 +185,13 @@ public class TWikiFormatter
 		return false;
 	}
 	
+	String getWikiIndentBullet1() {
+		return "   * ";
+	}
+	
+	String getWikiIndentBullet1_subseqLines() {
+		return "     ";
+	}
 	
 	abstract static class HeadingInserter {
 		protected Cvs2clXmlEntry lastEntry;
