@@ -3,7 +3,10 @@
  */
 package alma.acs.releasedoc;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -41,7 +43,7 @@ public class ProcessCvs2clOutput
 
 	private SortBy sortBy;
 	private List<File> subtractFiles = new ArrayList<File>();
-
+	private Set<String> retainFiles;
 
 	public static void main(String[] args) {
 		try {
@@ -138,7 +140,12 @@ public class ProcessCvs2clOutput
 			List<String> fileNames = new ArrayList<String>(entriesByFileName.keySet());
 			Collections.sort(fileNames);
 			
-			// @TODO Optionally keep only fileNames that also occur in an externally provided file
+			// 
+			if (retainFiles != null) {
+				int oldSize = fileNames.size();
+				fileNames.retainAll(retainFiles);
+				System.out.println("Reduced file list from " + oldSize + " to " + fileNames.size());
+			}
 			
 			hi = new TWikiFormatter.HeadingInserter() {
 				boolean needsHeading(Cvs2clXmlEntry entry) {
@@ -194,7 +201,7 @@ public class ProcessCvs2clOutput
 	}
 
 
-	void setOptions(String[] args) {
+	void setOptions(String[] args) throws IOException {
 		// -- prepare arg parser
 		CmdLineArgs cmdArgs = new CmdLineArgs();
 		
@@ -205,6 +212,10 @@ public class ProcessCvs2clOutput
 		// sort by time or by path (module, file,...) and time
 		CmdLineRegisteredOption optSortBy = new CmdLineRegisteredOption("-sortBy", 1);
 		cmdArgs.registerOption(optSortBy);
+		
+		// sort by time or by path (module, file,...) and time
+		CmdLineRegisteredOption optRetainFiles = new CmdLineRegisteredOption("-retainFiles", 1);
+		cmdArgs.registerOption(optRetainFiles);
 		
 		// -- parse and set args
 		cmdArgs.parseArgs(args);
@@ -235,6 +246,26 @@ public class ProcessCvs2clOutput
 		}
 		else {
 			sortBy = SortBy.time;
+		}
+
+		// -- retain files
+		if (cmdArgs.isSpecified(optRetainFiles)) {
+			File retainFilesFile = new File(cmdArgs.getValues(optRetainFiles)[0].trim());
+			if (sortBy != SortBy.file) {
+				System.err.println("Ignoring retain-files file '" + retainFilesFile.getAbsolutePath() + "' because 'sortBy' is not set to 'file'.");
+			}
+			else if (!retainFilesFile.exists() || !retainFilesFile.isFile()) {
+				System.err.println("Ignoring invalid retain-files file '" + retainFilesFile.getAbsolutePath() + "'");
+			}
+			BufferedReader reader = new BufferedReader(new FileReader(retainFilesFile));
+			retainFiles = new HashSet<String>();
+			String line = null;
+//			System.out.println("Will only consider the following files given in " + retainFilesFile.getAbsolutePath() + ":");
+			while ((line=reader.readLine()) != null) {
+				retainFiles.add(line);
+//				System.out.println(line);
+			}
+			reader.close();
 		}
 	}
 
