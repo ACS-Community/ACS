@@ -116,8 +116,8 @@ public class TWikiFormatter
 			output += getWikiIndentBullet1() + dateFormat.format(entry.getDate()) + "  " + entry.getAuthor() + "<br>" + LINE_SEPARATOR;
 			// @TODO perhaps use <blockquote> around the message for indenting, instead of the silly bullet.
 			output += getWikiIndentBullet1_subseqLines() + formatMessage(getWikiIndentBullet1_subseqLines(), entry.getMessage()) + LINE_SEPARATOR;
-			System.out.println(output);
 		}
+		System.out.println(output);
 	}
 	
 	protected String formatMessage(String indentAfterFirstLine, String message) {
