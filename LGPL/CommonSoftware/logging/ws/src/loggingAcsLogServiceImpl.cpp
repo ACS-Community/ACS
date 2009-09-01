@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id:"
+* "@(#) $Id: loggingAcsLogServiceImpl.cpp,v 1.13 2009/09/01 19:56:44 javarias Exp $"
 */
 
 #include <typeinfo>
@@ -48,10 +48,10 @@ sendRecords(::Logging::XmlLogRecordSeq *reclist)
    if (reclist->length() > 2){
       logging_event.remainder_of_body <<= *reclist;
       try{
+         while(loggingSupplier_ == NULL)
+            usleep(1);
+         /*block until loggingSupplier_ is ready*/
          loggingSupplier_->send_event(logging_event);
-         //for(unsigned int i = 0; i < reclist->length(); i++){
-            //std::cout << (*reclist)[i].xml << std::endl;
-         //}
       }catch(::CORBA::TRANSIENT &ex){
          /*if the Notify Service is down the log records will be lost*/
       }
