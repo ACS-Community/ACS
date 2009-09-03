@@ -175,8 +175,8 @@ public class ThreadLoopRunnerTest extends TestCase
 		finally {
 			if (threadLoopRunner != null) {
 				try {
-					assertTrue("Failed to shutdown thread loop runner in 1000ms.", 
-							threadLoopRunner.shutdown(1000, TimeUnit.MILLISECONDS));
+					assertTrue("Failed to shutdown thread loop runner in 2000 ms.", 
+							threadLoopRunner.shutdown(2000, TimeUnit.MILLISECONDS));
 				} catch (Exception ex2) {
 					if (mainBlockException != null) {
 						throw mainBlockException;
