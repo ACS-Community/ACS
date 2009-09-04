@@ -71,7 +71,7 @@ class AcsLogServiceImpl: public ACSLog_i,
             /** triple buffer*/
             ::Logging::XmlLogRecordSeq buffer[3];
             /** current size of the batch*/
-            unsigned int size_;
+            volatile unsigned int size_;
             ACSStructuredPushSupplier* loggingSupplier_;
             /** mutex used by the wait condition*/
             ACE_SYNCH_MUTEX mutex_;

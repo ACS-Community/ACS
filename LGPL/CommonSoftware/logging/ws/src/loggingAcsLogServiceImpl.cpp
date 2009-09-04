@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingAcsLogServiceImpl.cpp,v 1.13 2009/09/01 19:56:44 javarias Exp $"
+* "@(#) $Id: loggingAcsLogServiceImpl.cpp,v 1.14 2009/09/04 21:32:29 javarias Exp $"
 */
 
 #include <typeinfo>
@@ -101,11 +101,6 @@ sendRecords()
       nBuff = (nBuff + 1) % 3;
       buffer_ = &buffer[nBuff];
       size_ = 0;
-      while(buffer->length() != BATCH_LEN * 2)
-      {
-         /*block in case that the buffer is not ready
-          The buffer is ready when in have a size of BATCH_LEN*2 */
-      }
       batchMutex_.release();
       /*send the buffer through NC*/
       tmpBuffer->length(tmpSize);
@@ -138,6 +133,10 @@ add(const ::Logging::XmlLogRecordSeq *reclist)
       (*buffer_)[size_] = (*reclist)[i];
    if(size_ > BATCH_LEN){
       waitCond_.signal();
+		while (size_ > 100 * BATCH_LEN)
+		{
+			/*if the size of the batch is huge, wait for flush*/
+		}
    }
    batchMutex_.release();
 }
