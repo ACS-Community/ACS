@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.58 2009/03/17 12:16:53 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.59 2009/09/07 08:58:47 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -119,8 +119,8 @@ function printUsage {
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
-	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -client, -maxHeapSize, -threadStackSize and don't add any default memory"
-	echo "                                                       and garbage collector settings; instead pass through the settings from this variable."
+	echo "   JAVA_OPTIONS_MEMORY      if it is set, ignore -clientVM, -maxHeapSize, -threadStackSize and don't add any default memory"
+	echo "                                          and garbage collector settings; instead pass through the settings from this variable."
 	echo "   ACS_NAME_SERVICE         if is not set, take the computer where Manager is located"
 	echo "   ACS_INTERFACE_REPOSITORY if is not set, take the computer where Manager is located"
 }
