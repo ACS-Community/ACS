@@ -43,6 +43,9 @@ import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
+ * This class has been extracted directly from slf4j-jdk14-1.5.8-sources.jar
+ * since our AcsLogger appears to slf4j as a plain JDK logger. 
+ * <p>
  * A wrapper over {@link java.util.logging.Logger java.util.logging.Logger} in
  * conformity with the {@link Logger} interface. Note that the logging levels
  * mentioned in this class refer to those defined in the java.util.logging
@@ -53,16 +56,16 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public final class JDK14LoggerAdapter extends MarkerIgnoringBase implements
     LocationAwareLogger {
+
+  private static final long serialVersionUID = -8053026990503422791L;
+
   final java.util.logging.Logger logger;
 
   // WARN: JDK14LoggerAdapter constructor should have only package access so
   // that only JDK14LoggerFactory be able to create one.
   JDK14LoggerAdapter(java.util.logging.Logger logger) {
     this.logger = logger;
-  }
-
-  public String getName() {
-    return logger.getName();
+    this.name = logger.getName();
   }
 
   /**
@@ -626,7 +629,7 @@ public final class JDK14LoggerAdapter extends MarkerIgnoringBase implements
       record.setSourceMethodName(ste.getMethodName());
     }
   }
-
+ 
   public void log(Marker marker, String callerFQCN, int level, String message,
       Throwable t) {
     Level julLevel;
@@ -650,6 +653,13 @@ public final class JDK14LoggerAdapter extends MarkerIgnoringBase implements
       throw new IllegalStateException("Level number " + level
           + " is not recognized.");
     }
-    log(callerFQCN, julLevel, message, t);
+    // the logger.isLoggable check avoids the unconditional 
+    // construction of location data for disabled log
+    // statements. As of 2008-07-31, callers of this method 
+    // do not perform this check. See also 
+    // http://bugzilla.slf4j.org/show_bug.cgi?id=90
+    if(logger.isLoggable(julLevel)) {
+      log(callerFQCN, julLevel, message, t);
+    }
   }
 }

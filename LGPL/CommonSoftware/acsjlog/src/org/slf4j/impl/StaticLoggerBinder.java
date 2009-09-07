@@ -40,6 +40,12 @@ import org.slf4j.spi.LoggerFactoryBinder;
 /**
  * The binding of {@link LoggerFactory} class with an actual instance of 
  * {@link ILoggerFactory} is performed using information returned by this class. 
+ * <p>
+ * The code is copied into ACS from the slf4j 1.5.8 sources, 
+ * and modified to return {@link ACSLoggerFactory} instead of slf4j's JDK Logger factory.
+ * The design of slf4j requires this StaticLoggerBinder class to be implemented in
+ * package org.slf4j.impl so that slf4j will simply load it, without looking 
+ * at any properties or doing class loader tricks. See http://www.slf4j.org/manual.html.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -47,9 +53,28 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
 
   /**
    * The unique instance of this class.
+   * 
    */
-  public static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
-  // Note: JCL gets substituted at build time by an appropriate Ant task
+  private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+  
+  /**
+   * Return the singleton of this class.
+   * 
+   * @return the StaticLoggerBinder singleton
+   */
+  public static final StaticLoggerBinder getSingleton() {
+    return SINGLETON;
+  }
+
+  
+  /**
+   * Declare the version of the SLF4J API this implementation is compiled against. 
+   * The value of this field is usually modified with each release. 
+   */
+  // to avoid constant folding by the compiler, this field must *not* be final
+  public static String REQUESTED_API_VERSION = "1.5.8";  // !final
+
+  
   private static final String loggerFactoryClassStr = org.slf4j.impl.ACSLoggerFactory.class.getName();
 
   /** The ILoggerFactory instance returned by the {@link #getLoggerFactory} method
