@@ -19,3 +19,6 @@
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.adapters.JacORBFilterTest
 1 - TEST_RUNNER_REPORT success/total: 1/1
 1 - JUnit test run succeeded
+1 -  -- alma.acs.testsupport.tat.TATJUnitRunner org.slf4j.impl.Slf4jAcsLoggerTest
+1 - TEST_RUNNER_REPORT success/total: 1/1
+1 - JUnit test run succeeded

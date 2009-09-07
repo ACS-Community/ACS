@@ -45,7 +45,7 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES = acsjlogTest
-acsjlogTest_DIRS =  alma
+acsjlogTest_DIRS =  alma org/slf4j
 
 #
 # Scripts (public and local)
