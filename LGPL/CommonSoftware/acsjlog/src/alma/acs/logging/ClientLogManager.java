@@ -641,6 +641,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	/**
 	 * Gets a logger to be used by ORB and POA classes.
 	 * The logger is connected to the central ACS logger.
+	 * @TODO rename this method to accomodate non-corba frameworks into which we insert ACS loggers, such as hibernate,
+	 *       see {@link org.slf4j.impl.ACSLoggerFactory}.
 	 * @param corbaName e.g. <code>jacorb</code>.
 	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended 
 	 *                                  to this logger's name as soon as it is available, making it e.g. <code>jacorb@frodoContainer</code>.
