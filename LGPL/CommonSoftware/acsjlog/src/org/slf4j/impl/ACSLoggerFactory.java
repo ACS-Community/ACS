@@ -33,49 +33,45 @@
 
 package org.slf4j.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
 /**
  * ACSLoggerFactory is an implementation of {@link ILoggerFactory} returning
- * the appropriately named {@link JDK14LoggerAdapter} instance.
+ * the same {@link JDK14LoggerAdapter} instance with the same underlying ACS logger,
+ * regardless of the "name" parameter for the requested logger.
+ * 
+ * The hibernate framework tries to use separate loggers with names being those of its java classes, 
+ * e.g. "org.hibernate.cfg.Ejb3Column".
+ * All of these logger requests are now served with the same logger called "hibernate"
+ * or "hibernate@<container name>" if a process/container name is known to the ACS logging libs.
+ * The same name reduction is used for JacORB logs, see 
+ * {@link alma.acs.logging.adapters.JacORBLoggerFactory#getNamedLogger(String)}.
  * 
  * @author msekoranja
  */
-public class ACSLoggerFactory implements ILoggerFactory {
+public class ACSLoggerFactory implements ILoggerFactory
+{
+	private AcsLogger acsLoggerDelegate;
+	private Logger jdkAdapter;
 
-  // key: name (String), value: a Logger;
-  Map<String, Logger> loggerMap;
-
-  public ACSLoggerFactory() {
-    loggerMap = new HashMap<String, Logger>();
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.slf4j.ILoggerFactory#getLogger(java.lang.String)
-   */
-  public synchronized Logger getLogger(String name) {
-    Logger ulogger = null;
-    // protect against concurrent access of loggerMap
-    synchronized (this) {
-      // the root logger is called "" in JUL
-      if(name.equalsIgnoreCase(Logger.ROOT_LOGGER_NAME)) {
-        name = "";
-      }
-      ulogger = (Logger) loggerMap.get(name);
-      if (ulogger == null) {
-        java.util.logging.Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name, true);
-        ulogger = new JDK14LoggerAdapter(logger);
-        loggerMap.put(name, ulogger);
-      }
-    }
-    return ulogger;
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.slf4j.ILoggerFactory#getLogger(java.lang.String)
+	 */
+	public synchronized Logger getLogger(String name) {
+		// protect against concurrent access of acsLoggerDelegate
+		synchronized (this) {
+			if (acsLoggerDelegate == null) {
+				acsLoggerDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("hibernate", true);
+				jdkAdapter = new JDK14LoggerAdapter(acsLoggerDelegate);
+			}
+		}
+//		System.out.println("**** Got hibernate logger " + acsLoggerDelegate.getName() + " -- " + name);
+		return jdkAdapter;
+	}
 }
