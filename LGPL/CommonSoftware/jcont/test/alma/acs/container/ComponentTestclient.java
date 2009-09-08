@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.StringHolder;
 
+import alma.ACS.stringSeqHolder;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -134,6 +135,20 @@ public class ComponentTestclient extends ComponentClientTestCase
 		assertTrue("test execution successful on the server component", ret);
 	}
 
+	public void testFindDummyComponentsByType() throws Exception {
+		String[] curls = null;
+		try {
+			stringSeqHolder curlRet = new stringSeqHolder();
+			m_contSrvTesterComp.testFindDummyComponentsByType(curlRet);
+			curls = curlRet.value;
+		} catch (CouldntPerformActionEx ex) {
+			throw AcsJCouldntPerformActionEx.fromCouldntPerformActionEx(ex);
+		}
+		assertNotNull(curls);
+		assertEquals(2, curls.length);
+		assertEquals("DefaultDummyComp", curls[0]);
+	}
+	
 	public void testGetCollocatedComponent() throws Exception {
 		try {
 			// a new component in the same container as our main test component

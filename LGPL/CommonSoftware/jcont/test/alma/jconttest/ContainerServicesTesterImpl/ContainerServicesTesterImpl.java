@@ -31,8 +31,10 @@ import java.util.logging.Level;
 import org.omg.CORBA.StringHolder;
 
 import alma.ACS.ACSComponentHelper;
+import alma.ACS.stringSeqHolder;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
@@ -215,6 +217,15 @@ public class ContainerServicesTesterImpl extends ComponentImplBase implements Co
     }
     
 
+	public void testFindDummyComponentsByType(stringSeqHolder curls) throws alma.ACSErrTypeCommon.CouldntPerformActionEx {
+		try {
+			curls.value = m_containerServices.findComponents(null, "IDL:alma/jconttest/DummyComponent:1.0");
+		} catch (Exception ex) {
+			AcsJCouldntPerformActionEx ex2 = new AcsJCouldntPerformActionEx(ex);
+			throw ex2.toCouldntPerformActionEx();
+		}
+	}
+	
 	public void testGetCollocatedComponent(String curl, String compType, String targetCurl) throws CouldntPerformActionEx {
 		String msg = "component '" + curl + "' of type '" + compType +"' collocated with '" + targetCurl + "'";
 		m_logger.info("Received call to testGetCollocatedComponent for " + msg);

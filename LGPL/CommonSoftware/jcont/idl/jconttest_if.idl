@@ -22,6 +22,7 @@
 #ifndef _JCONTTEST_IDL_
 #define _JCONTTEST_IDL_
 
+#include <acscommon.idl>
 #include <acscomponent.idl>
 #include <ACSErrTypeCommon.idl>
 
@@ -47,6 +48,12 @@ module jconttest
 		boolean testGetThreadFactory(in long numThreads, in long busyLoopCount, in boolean randomize);
 		
 		/**
+		 * Will call ContainerServices#findComponents(null, "IDL:alma/jconttest/DummyComponent:1.0") 
+		 * and return the resulting list of configured dummy comp instance curls.
+		 */
+		void testFindDummyComponentsByType(out ACS::stringSeq curls) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
+		/**
 		 * Will obtain a reference to a component given by curl and/or compType, 
 		 * which will run in the same container in which the component identified by targetCurl runs
 		 * or is defined to run in.
@@ -61,6 +68,7 @@ module jconttest
 		 * have no effect (aside from some log message).
 		 */
 		void testGetComponentNonSticky(in string curl, in boolean release) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+		
 	};
 
 	
