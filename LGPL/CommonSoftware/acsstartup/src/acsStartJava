@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.59 2009/09/07 08:58:47 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.60 2009/09/08 13:28:51 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -551,9 +551,10 @@ then
 
     # Since ACS 7.0.2 we get dumps for OutOfMemoryError
     # see http://jira.alma.cl/browse/COMP-3061 about JVM crash when XX:HeapDumpPath is empty
+    # Since ACS 8.1.0 we use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
     JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
     if [ X"$ACS_TMP" != X ]; then
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP"
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP -XX:ErrorFile=$ACS_TMP/jvm_fatal_error%p.log"
     fi
 fi
 
