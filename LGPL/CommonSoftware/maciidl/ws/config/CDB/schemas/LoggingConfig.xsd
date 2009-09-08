@@ -67,7 +67,7 @@ This value sets the log level, so that log records with that priority or less wi
         </xs:annotation>
         <xs:attribute name="minLogLevel" type="logLevel" use="optional" default="2">
             <xs:annotation>
-                <xs:documentation>All logs with priority lower than this value will be discarded and never sent to the logging system. On a normally running system, priority is kept to INFO level (4) or higher to avoid flooding the logging system. While debugging, it might be useful to increase the verbosity of the system by setting the priority to 0 or 2.
+                <xs:documentation>All logs with priority lower than this value will be discarded and never sent to the logging system. On a normally running system, priority is kept to INFO level (4) or higher to avoid flooding the logging system. While debugging, it might be useful to increase the verbosity of the system by reducing the priority down to the lowest value 2.
 This value was called "MinCachePriority" prior to ACS 6.0.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
