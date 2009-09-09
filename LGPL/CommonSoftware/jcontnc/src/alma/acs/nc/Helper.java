@@ -117,6 +117,8 @@ public class Helper {
 	 */
 	private final Map<String, Long> channelConfigProblems = new HashMap<String, Long>();
 
+	private String channelName;
+
 
 
 	/**
@@ -395,6 +397,7 @@ public class Helper {
 	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed, NameMapError
 	{
+		this.channelName = channelName;
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
 		
 		// return value

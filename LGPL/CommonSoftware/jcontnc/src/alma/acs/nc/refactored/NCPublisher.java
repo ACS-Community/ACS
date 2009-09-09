@@ -33,6 +33,8 @@ import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.FixedEventHeader;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosNotification.UnsupportedAdmin;
+import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
@@ -471,6 +473,18 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 			//do something here
 		} catch (ProxyNotFound e) {
 			//do something here
+		}
+		try {
+			channel.set_qos(helper.getChannelProperties().
+					getCDBQoSProps(channelName));
+			channel.set_admin(helper.getChannelProperties().
+					getCDBAdminProps(channelName));
+		} catch (UnsupportedQoS e) {
+			e.printStackTrace();
+		} catch (AcsJException e) {
+			e.printStackTrace();
+		} catch (UnsupportedAdmin e) {
+			e.printStackTrace();
 		}
 		
 	}

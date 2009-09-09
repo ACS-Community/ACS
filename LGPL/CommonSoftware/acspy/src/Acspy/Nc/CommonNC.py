@@ -1,4 +1,4 @@
-# @(#) $Id: CommonNC.py,v 1.7 2009/08/11 22:49:02 javarias Exp $
+# @(#) $Id: CommonNC.py,v 1.8 2009/09/09 21:18:06 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -25,7 +25,7 @@
 Provides functionality common to both NC suppliers and consumers.
 '''
 
-__revision__ = "$Id: CommonNC.py,v 1.7 2009/08/11 22:49:02 javarias Exp $"
+__revision__ = "$Id: CommonNC.py,v 1.8 2009/09/09 21:18:06 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -344,5 +344,4 @@ class CommonNC:
                                                       str(e))])
         return
 #------------------------------------------------------------------------------
-    def reconnect(self, ecf):
-       pass
+

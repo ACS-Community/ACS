@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.80 2009/08/07 17:55:03 javarias Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.81 2009/09/09 21:18:06 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -464,8 +464,9 @@ Helper::extractStructName(const char* idlStruct)
 
 void Helper::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
 {
-   if (!::CORBA::is_nil(notifyChannel_m))
+   if (::CORBA::is_nil(notifyChannel_m))
       resolveNotifyChannel();
+	notifyChannel_m->set_qos(getQoSProps());
 }
 
 //-----------------------------------------------------------------------------

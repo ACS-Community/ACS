@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.74 2009/08/10 19:53:47 javarias Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.75 2009/09/09 21:18:06 javarias Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -495,7 +495,9 @@ void Consumer::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
    
    if (::CORBA::is_nil(consumerAdmin_m))
       consumerAdmin_m = notifyChannel_m->get_consumeradmin(adminid);
-   
+  
+	consumerAdmin_m->set_qos(getAdminProps());
+
    if(::CORBA::is_nil(proxySupplier_m))
       proxySupplier_m = 
          CosNotifyChannelAdmin::StructuredProxyPushSupplier::_narrow(

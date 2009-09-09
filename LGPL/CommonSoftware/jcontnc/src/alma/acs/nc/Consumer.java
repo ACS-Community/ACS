@@ -35,6 +35,8 @@ import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
+import org.omg.CosNotification.UnsupportedAdmin;
+import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
@@ -886,6 +888,18 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			//do something here;
 		} catch (ProxyNotFound e) {
 			//do something here;
+		}
+		try {
+			m_channel.set_qos(m_helper.getChannelProperties().
+					getCDBQoSProps(m_channelName));
+			m_channel.set_admin(m_helper.getChannelProperties().
+					getCDBAdminProps(m_channelName));
+		} catch (UnsupportedQoS e) {
+			e.printStackTrace();
+		} catch (AcsJException e) {
+			e.printStackTrace();
+		} catch (UnsupportedAdmin e) {
+			e.printStackTrace();
 		}
 		
 	}

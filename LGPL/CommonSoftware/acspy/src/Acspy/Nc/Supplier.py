@@ -1,4 +1,4 @@
-# @(#) $Id: Supplier.py,v 1.18 2009/08/11 22:49:02 javarias Exp $
+# @(#) $Id: Supplier.py,v 1.19 2009/09/09 21:18:06 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Supplier.py,v 1.18 2009/08/11 22:49:02 javarias Exp $"
+__revision__ = "$Id: Supplier.py,v 1.19 2009/09/09 21:18:06 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -365,3 +365,6 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
                                                       str(e))])
         return
 #------------------------------------------------------------------------------
+    def reconnect(self, ecf):
+        self.evtChan.set_qos(self.configQofS())
+        self.supplierAdmin.set_qos(self.configAdminProps())

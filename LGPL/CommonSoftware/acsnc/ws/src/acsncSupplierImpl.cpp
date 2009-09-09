@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.84 2009/08/28 23:18:16 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.85 2009/09/09 21:18:06 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -430,8 +430,12 @@ Supplier::createSupplier()
 void Supplier::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
 {
    Helper::reconnect(ecf);
+
    if (::CORBA::is_nil(SupplierAdmin_m))
       SupplierAdmin_m = notifyChannel_m->get_supplieradmin(adminid);
+
+	SupplierAdmin_m->set_qos(getAdminProps());
+
    if(::CORBA::is_nil(proxyConsumer_m))
       proxyConsumer_m = 
          CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(
