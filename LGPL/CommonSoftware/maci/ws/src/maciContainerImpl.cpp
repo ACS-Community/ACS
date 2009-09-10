@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.114 2009/06/09 00:03:54 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.115 2009/09/10 06:33:33 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.114 2009/06/09 00:03:54 javarias Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.115 2009/09/10 06:33:33 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1842,6 +1842,8 @@ ContainerImpl::activate_component (
     throw ex.getCannotActivateComponentEx();
     }
 
+  // remove reference to servant, so that only POA nows owns it
+    servant->_remove_ref();
 
   // even though the component is now an activated Corba object already,
   // it won't be called yet since the maciManager will only pass around
@@ -1978,8 +1980,6 @@ ContainerImpl::activate_component (
     }
   m_activeComponentList.insert(h);
 
-  // remove reference to servant, so that only POA nows owns it
-  servant->_remove_ref();
 
   ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
 	  (LM_INFO, "Component '%s' activated.", name));
