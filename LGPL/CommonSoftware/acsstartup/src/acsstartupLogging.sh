@@ -32,7 +32,7 @@ then
             exit $EC_CANNOTCREATE
         fi
     fi
-	chmod 774 $OUTPUT_FILE
+	chmod 777 $OUTPUT_FILE
 
     if [ -d $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ]
     then
