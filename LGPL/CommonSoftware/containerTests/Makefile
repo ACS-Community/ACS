@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2008/09/19 10:04:33 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2009/09/11 12:22:25 gchiozzi Exp $"
 #
 # Makefile of containerTests (the package dealing with container tests)
 #
@@ -35,7 +35,7 @@
 #
 # Modules in the various containerTest sub-packages.
 #
-MODULES =  contLogTest contNcTest corbaRefPersistenceTest
+MODULES_CTEST =  contLogTest contNcTest corbaRefPersistenceTest
 SUBSYSTEM = "containerTest"
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
@@ -64,7 +64,7 @@ startupDir = $(shell pwd)
 #
 define canned
 	@$(ECHO) "############ Executing '$@' on all $(SUBSYSTEM) modules #################"
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_CTEST), $(name) ) ; do \
 		    $(ECHO) "############ $${member}" ;\
 		    if [ ! -d $${member} ]; then \
                          echo "### ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
@@ -143,7 +143,7 @@ clean_test_log:
 
 update:
 	@$(ECHO) "############ (Re-)build$ (SUBSYSTEM) Software         #################"| tee -a build.log
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_CTEST), $(name) ) ; do \
 	    if [ ! -d $${member} ]; then \
                  echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
             fi;\
@@ -210,7 +210,7 @@ endef
 #
 update_clean:
 	@$(ECHO) "############ (Re-)build $(SUBSYSTEM) Software         #################"| tee -a build.log
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_CTEST), $(name) ) ; do \
             $(update-clean-one-module);\
 	done;\
         true;
@@ -261,7 +261,7 @@ Test = test
 #
 $(Test): clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ TEST $(SUBSYSTEM) Software #################"| tee -a test.log
-	@for member in $(foreach name,$(MODULES),$(name)); do\
+	@for member in $(foreach name,$(MODULES_CTEST),$(name)); do\
                    $(test-one-module);\
 	done;\
         true;
@@ -270,7 +270,7 @@ $(Test): clean_test_log $(ACCDB_CONFIG)
 
 update_clean_test: clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ UPDATE and TEST $(SUBSYSTEM) Software #################"| tee -a build.log
-	@for member in $(foreach name,$(MODULES),$(name)); do\
+	@for member in $(foreach name,$(MODULES_CTEST),$(name)); do\
                    $(update-clean-one-module);\
                    $(test-one-module);\
 	done;\
@@ -282,12 +282,12 @@ update_clean_test: clean_test_log $(ACCDB_CONFIG)
 #
 # show_modules target
 #
-# Simply lists all MODULES that would be build
+# Simply lists all MODULES_CTEST that would be build
 # with the current setup
 #
 show_modules:
 	@$(ECHO) "Modules in build list are:" 
-	@$(ECHO) ${MODULES}
+	@$(ECHO) ${MODULES_CTEST}
 
 #
 # Standard canned targets
