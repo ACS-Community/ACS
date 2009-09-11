@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.23 2008/11/04 14:51:01 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.24 2009/09/11 12:07:27 gchiozzi Exp $"
 #
 #
 
@@ -11,7 +11,7 @@ os     = $(shell uname)
 #
 # Modules in the various Laser sub-packages.
 #
-MODULES = laser-extlib \
+MODULES_ACSLASER = laser-extlib \
 	  acs-jms \
 	  laser-source-cpp \
 	  laser-source-python \
@@ -58,7 +58,7 @@ startupDir = $(shell pwd)
 define canned
 	@$(ECHO) "############ Executing '$@' on all Laser modules #################"
 	@$(ECHO) "############ '$@' on NetbeansACS must be executed manually!" 
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_ACSLASER), $(name) ) ; do \
 		    $(ECHO) "############ $${member}" ;\
 		    if [ ! -d $${member} ]; then \
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
@@ -138,7 +138,7 @@ clean_test_log:
 update:
 	@$(ECHO) "############ (Re-)build Laser Software         #################"| tee -a build.log
 	@$(ECHO) "############ NetbeansACS will NOT be built: it must be done manually!" | tee -a build.log
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_ACSLASER), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
                     fi;\
@@ -237,7 +237,7 @@ endef
 #
 update_clean:
 	@$(ECHO) "############ (Re-)build Laser Software         #################"| tee -a build.log
-	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	@for member in  $(foreach name, $(MODULES_ACSLASER), $(name) ) ; do \
                    $(update-clean-one-module);\
 		done;\
          true;
@@ -289,7 +289,7 @@ endef
 Test = test
 $(Test): clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ TEST Laser Software #################"| tee -a test.log
-	@for member in $(foreach name,$(MODULES),$(name)); do\
+	@for member in $(foreach name,$(MODULES_ACSLASER),$(name)); do\
                    $(test-one-module);\
 	done;\
         true;
@@ -298,7 +298,7 @@ $(Test): clean_test_log $(ACCDB_CONFIG)
 
 update_clean_test: clean_test_log $(ACCDB_CONFIG)
 	@$(ECHO) "############ UPDATE and TEST Laser Software #################"| tee -a build.log
-	@for member in $(foreach name,$(MODULES),$(name)); do\
+	@for member in $(foreach name,$(MODULES_ACSLASER),$(name)); do\
                    $(update-clean-one-module);\
                    $(test-one-module);\
 	done;\
@@ -310,12 +310,12 @@ update_clean_test: clean_test_log $(ACCDB_CONFIG)
 #
 # show_modules target
 #
-# Simply lists all MODULES that would be build
+# Simply lists all MODULES_ACSLASER that would be build
 # with the current setup
 #
 show_modules:
 	@$(ECHO) "Modules in build list are:" 
-	@$(ECHO) ${MODULES}
+	@$(ECHO) ${MODULES_ACSLASER}
 
 #
 # Standard targets
