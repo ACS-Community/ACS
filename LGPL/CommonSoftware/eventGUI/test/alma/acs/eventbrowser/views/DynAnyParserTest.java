@@ -2,22 +2,17 @@ package alma.acs.eventbrowser.views;
 
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+
 import org.omg.CORBA.Any;
-import org.omg.CORBA.portable.IDLEntity;
-import org.omg.CosNotification.EventHeader;
-import org.omg.CosNotification.EventType;
-import org.omg.CosNotification.FixedEventHeader;
-import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 
+import tdem.TDEM_TOPICS.actuatorSpace;
+import tdem.TDEM_TOPICS.pttDataEvent;
 import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.eventbrowser.views.DynAnyParser;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.StructuredEventCreator;
 import alma.acs.util.StopWatch;
-import tdem.TDEM_TOPICS.actuatorSpace;
-import tdem.TDEM_TOPICS.pttDataEvent;
-import junit.framework.TestCase;
 
 public class DynAnyParserTest extends TestCase {
 	private StructuredEventCreator seCreator;
@@ -30,7 +25,7 @@ public class DynAnyParserTest extends TestCase {
 	private String eventName;
 	private StructuredEvent se;
 	private Any eventAny;
-
+	
 	public DynAnyParserTest(String name) {
 		super(name);
 		try {
@@ -56,7 +51,16 @@ public class DynAnyParserTest extends TestCase {
 	 *  public long timestamp;
 	 */
 	public void testPttDataEventParsing() {
-		pde = new pttDataEvent(new actuatorSpace(new double[2952]), new actuatorSpace(new double[2952]), 25, 32L);
+		ParsedAnyData[] pResults = parsePttDataEvent();
+		for (int i = 0; i < pResults.length; i++) {
+			System.out.println(pResults[i].getName() + " "
+					+ pResults[i].getType() + " " + pResults[i].getValue());
+		}
+	}
+
+	public ParsedAnyData[] parsePttDataEvent() {
+		pde = new pttDataEvent(new actuatorSpace(new double[2952]),
+				new actuatorSpace(new double[2952]), 25, 32L);
 		try {
 			se = seCreator.createEvent(pde);
 		} catch (AcsJException e) {
@@ -69,11 +73,9 @@ public class DynAnyParserTest extends TestCase {
 		parser = new DynAnyParser(eventAny, eventName);
 		ParsedAnyData[] pResults = parser.getParsedResults();
 		sw.logLapTime("parse this eventAny");
-		for (int i = 0; i<pResults.length; i++) {
-			System.out.println(pResults[i].getName()+" "+pResults[i].getType()+" "+pResults[i].getValue());
-		}
+		return pResults;
 	}
-
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 	}
