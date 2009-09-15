@@ -1,11 +1,9 @@
 package alma.acs.eventbrowser;
 
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -14,8 +12,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction preferencesAction;
 	private IWorkbenchAction exitAction;
-	private IWorkbenchAction openViewAction;
-	private IContributionItem views;
+//	private IWorkbenchAction showViewsAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -26,7 +23,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(preferencesAction);
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
-        views = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+//        showViewsAction = ActionFactory.SHOW_VIEW_MENU.create(window);
     }
 
     protected void fillMenuBar(IMenuManager menuBar) {
@@ -34,9 +31,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	eventGuiMenu.add(preferencesAction);
     	eventGuiMenu.add(exitAction);
     	menuBar.add(eventGuiMenu);
-    	MenuManager windowMenu = new MenuManager("Window", "window");
-    	windowMenu.add(views);
-    	menuBar.add(windowMenu);
+//    	MenuManager windowMenu = new MenuManager("Window", "window");
+//    	windowMenu.add(showViewsAction);
+//    	menuBar.add(windowMenu);
     }
     
 }

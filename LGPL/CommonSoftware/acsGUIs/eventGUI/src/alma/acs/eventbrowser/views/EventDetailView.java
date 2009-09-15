@@ -2,12 +2,16 @@ package alma.acs.eventbrowser.views;
 
 import java.util.logging.Logger;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbenchPart;
@@ -17,9 +21,10 @@ import alma.acs.eventbrowser.model.EventModel;
 
 public class EventDetailView extends ViewPart {
 
-	private TreeViewer viewer;
+	private TableViewer viewer;
 	
 	private EventModel em;
+	private DynAnyParser parser;
 	private Logger logger;
 	
 	public static final String ID = "alma.acs.eventbrowser.views.eventdetail";
@@ -38,12 +43,45 @@ public class EventDetailView extends ViewPart {
 			e.printStackTrace();
 		}
 		
-		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		
+		Table table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.verticalSpacing = 0;
+		parent.setLayout(gridLayout);
+		
+		TableViewerColumn tvcol = new TableViewerColumn(viewer, SWT.NONE, 0);
+		tvcol.setLabelProvider(new DetailNameLabelProvider());
+		TableColumn col = tvcol.getColumn();
+		col.setText("Name");
+		col.setWidth(180);
+		col.setAlignment(SWT.LEFT);
+
+		tvcol = new TableViewerColumn(viewer, SWT.NONE, 1);
+		tvcol.setLabelProvider(new DetailTypeLabelProvider());
+		col = tvcol.getColumn();
+		col.setText("Type");
+		col.setWidth(100);
+		col.setAlignment(SWT.LEFT);
+
+		tvcol = new TableViewerColumn(viewer, SWT.NONE, 2);
+		tvcol.setLabelProvider(new DetailValueLabelProvider());
+		col = tvcol.getColumn();
+		col.setText("Value");
+		col.setWidth(50);
+		col.setAlignment(SWT.LEFT);
+		
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
+
 		viewer.setContentProvider(new DetailContentProvider());
-		viewer.setLabelProvider(new DetailLabelProvider());
 		
 		// we're cooperative and also provide our selection
-		// at least for the treeviewer
+		// at least for the TableViewer
 		getSite().setSelectionProvider(viewer);
 		logger = em.getLogger();
 		
@@ -74,8 +112,10 @@ public class EventDetailView extends ViewPart {
         }
     };
 	public void showEventDetails(IWorkbenchPart sourcepart, EventData ed) {
-		setContentDescription("Details of " + ed.getEventTypeName());
-//		viewer.setInput(input);
+		String eventName = ed.getEventTypeName();
+		setContentDescription("Details of " + eventName);
+		parser = new DynAnyParser(ed.getEventAny(),eventName);
+		viewer.setInput(parser.getParsedResults());
 
 	}
 	

@@ -19,6 +19,7 @@ import alma.acs.eventbrowser.model.EventModel;
 
 public class DynAnyParser {
 	
+	private static final boolean DEBUG = false;
 	private final DynAnyFactory daFactory;
 	private DynAny dynAny = null;
 	private ArrayList<ParsedAnyData> pdlist = new ArrayList<ParsedAnyData>(100);
@@ -42,10 +43,11 @@ public class DynAnyParser {
 		return pdlist.toArray(new ParsedAnyData[0]);
 	}
 
-	private ParsedAnyData[] parseEventAny(DynAny dynAny2, String path) {
+	private void parseEventAny(DynAny dynAny2, String path) {
 		DynAny da = dynAny2;
 		int tcKind = da.type().kind().value();
 		ParsedAnyData entry = new ParsedAnyData(path,"","");
+
 		try {
 			switch (tcKind) {
 
@@ -117,21 +119,35 @@ public class DynAnyParser {
 			case TCKind._tk_except:
 				DynStruct ds = (DynStruct)da;
 				String structName = ds.type().name();
+				System.out.println("Struct name: "+structName);
 				entry.setType("struct");
 				if (path.equals("")) {
-					entry.setName(eventName);
+					entry.setName(structName);
+				} else
+					entry.setName(path+" / "+structName); // TODO: still not working -- this doesn't display Actuator Space at all!
+				
+				String members = "Members: ";
+				for (int i = 0; i < ds.component_count(); i++) {
+					members += ds.current_member_name()+((i == ds.component_count()-1) ? " ":", ");
+					ds.next();
 				}
+				entry.setValue(members);
 				pdlist.add(entry);
+				ds.rewind();
+				
 				for (int i = 0; i < ds.component_count(); i++) {
 					String dname = ds.current_member_name();
-					pdlist.add(new ParsedAnyData(dname, "element of "+structName, ""));
+					System.out.println("\tMember name: "+dname+" type: "+ds.current_component().type().kind().value());
 					parseEventAny(ds.current_component(), dname);
 					ds.next();
 				}
 
-				NameValuePair[] nvp = ds.get_members();
-				for (int i = 0; i < nvp.length; i++) {
-					System.out.println(nvp[i].id+" "+ nvp[i].value);
+				if (DEBUG) {
+					NameValuePair[] nvp = ds.get_members();
+
+					for (int i = 0; i < nvp.length; i++) {
+						System.out.println(nvp[i].id + " " + nvp[i].value);
+					}
 				}
 				break;
 				
@@ -157,7 +173,7 @@ public class DynAnyParser {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return;
 	}
 
 }

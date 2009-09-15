@@ -162,16 +162,20 @@ public class ChannelTreeView extends ViewPart {
 			}
 			TreeParent root = new TreeParent("Notify Service");
 
-			for (Iterator<ChannelData> iterator = clist.iterator(); iterator.hasNext();) {
-				ChannelData cd = iterator.next();
-				TreeParent tp = new TreeParent(cd.getName());
-				TreeObject tcon = new TreeObject(cd.getNumConsumersAndDelta());
-				TreeObject tsup = new TreeObject(cd.getNumSuppliersAndDelta());
-				tp.addChild(tcon);
-				tp.addChild(tsup);
-				root.addChild(tp);	
+			if (clist != null) {
+				for (Iterator<ChannelData> iterator = clist.iterator(); iterator
+						.hasNext();) {
+					ChannelData cd = iterator.next();
+					TreeParent tp = new TreeParent(cd.getName());
+					TreeObject tcon = new TreeObject(cd
+							.getNumConsumersAndDelta());
+					TreeObject tsup = new TreeObject(cd
+							.getNumSuppliersAndDelta());
+					tp.addChild(tcon);
+					tp.addChild(tsup);
+					root.addChild(tp);
+				}
 			}
-			
 			invisibleRoot = new TreeParent("");
 			invisibleRoot.addChild(root);
 //			System.out.println("Root has following children: "+root.children);

@@ -186,14 +186,15 @@ public class EventModel {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
 
 					AdminConsumer consumer = null;
-					int[] consAndSupp = new int[] {0,0};
+					int[] consAndSupp = {0,0};
 					if (!channelMap.containsKey(channelName)) {
 						channelMap.put(channelName, ec);
 						consumer = getAdminConsumer(channelName);
 						consumers.add(consumer);
 						lastConsumerAndSupplierCount.put(channelName,consAndSupp);
 					} else {
-						consAndSupp = lastConsumerAndSupplierCount.get(channelName);
+						if (lastConsumerAndSupplierCount.containsKey(channelName))
+							consAndSupp = lastConsumerAndSupplierCount.get(channelName);
 					}
 					int [] adminCounts = new int[2];
 					int [] adminDeltas = new int[2];
