@@ -22,8 +22,7 @@
 
 template <ACS_RO_C> 
 ROSeqDiscImpl<ACS_RO_TL>::ROSeqDiscImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
-    ROdiscImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO),
-    alarmSystemMonitor_mp(0)
+    ROdiscImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO)
 {
     ACS_TRACE("baci::ROSeqDiscImpl&lt;&gt;::ROSeqDiscImpl"); 
 

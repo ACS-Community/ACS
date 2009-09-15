@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.8 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciAlarmSystemMonitor_T.h,v 1.9 2009/09/15 08:51:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <AlarmSystemInterface.h>
+#include <baciAlarmSystemMonitorBase.h>
 
 namespace baci
 {
@@ -45,7 +45,7 @@ namespace baci
  *  The purpose of this class or better its implementation is to send alarms to the ACS alarm system
  */
 template<class TPROP>
-class baci_EXPORT AlarmSystemMonitor : public EventStrategy
+class baci_EXPORT AlarmSystemMonitor : public AlarmSystemMonitorBase
 {
   public:
     
@@ -53,49 +53,8 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
 
     virtual ~AlarmSystemMonitor();
     
-    bool failed();
-    void succeeded();
     
-    virtual bool isSuspended() { return false; }
-    
-// here we do not need recovery stuff
-    virtual int getId(void){ return -1; }
-    
-    virtual const char* getName(void){ return ""; }
-    
-    virtual char* getObjectState(void){ return ""; }
-    
-    virtual void setObjectState(const char * state){}
-// ... and also implementation of  POA_ACS::Subscription can be empty
-    virtual void suspend () {}
-    
-    virtual void resume () {}
-    
-    virtual void destroy () {}
-
-    virtual void check(BACIValue &val,
-	       const ACSErr::Completion & c,
-	       const ACS::CBDescOut & desc )=0;
-	       
-	/**
-     * Send an alarm to the AlarmSystem
-     */
-    void sendAlarm(std::string family, std::string member, int code, bool active);
- 
   private:
-    
-    ACE_CString name_m;
-    
-    bool suspended_m;
-    
-    int failureCount_m;
-    
-    CBDescIn desc_mIn;
-    
-    ACS::TimeInterval interval_m;
-    
-    EventDispatcher * eventDispatcher_mp;
-    
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.
      */
@@ -108,12 +67,10 @@ class baci_EXPORT AlarmSystemMonitor : public EventStrategy
     
     
   protected:
-    // The alarm system source
-    auto_ptr<acsalarm::AlarmSystemInterface> alarmSource_map;
 
+    /// pointer to the baci property - owner
     TPROP *property_mp;
     
-    int alarmRaised_m;
 };//class AlarmSystemMonitor
 
 }// namespace baci

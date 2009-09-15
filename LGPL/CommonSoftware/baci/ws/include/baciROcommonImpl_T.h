@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.27 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.28 2009/09/15 08:51:14 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,6 +36,7 @@
 #endif
 
 #include "baciAlarm_T.h"
+#include "baciAlarmSystemMonitor_T.h"
 #include <baciPcommonImpl_T.h>
 #include <baciErrTypeDevIO.h>
 #include <baciErrTypeProperty.h>
@@ -96,6 +97,34 @@ public:
    */
   virtual ~ROcommonImpl();
 
+  /**
+   * Sets alarm fault family
+   * @param fault family
+   */
+  void setAlarmFaultFamily(const char* ff);
+
+  /**
+   * Sets alarm fault member
+   * @param fault member
+   */
+  void setAlarmFaultMember(const char* fm);
+
+  /**
+   * Accessor method for alarm fault family
+   */
+  const char* getAlarmFaultFamily() { return alarmFaultFamily_m.c_str(); }
+
+  /**
+   * Accessor method for alarm fault member
+   */
+  const char* getAlarmFaultMember() { return alarmFaultMember_m.c_str(); }
+
+  /**
+     * Accessor method for alarm level
+     */
+  int getAlarmLevel() { return this->alarmLevel_m;}
+
+
     /* -------------------- [ RO interface ] -------------------- */
   
   protected:
@@ -114,7 +143,17 @@ protected:
 
   // RO
   ACS::TimeInterval	alarmTimerTrig_m;
-  
+
+  ACE_CString alarmFaultFamily_m;
+  ACE_CString alarmFaultMember_m;
+  int alarmLevel_m;
+
+  /**
+   * monitor which sends information (alarms) to the alarm system.
+   * It is pointer to the base class, and thus created in the inherted classes.
+   */
+  baci::AlarmSystemMonitorBase *alarmSystemMonitor_mp;
+
   private:
     /**
      * ALMA C++ coding standards state assignment operators should be disabled.

@@ -22,8 +22,7 @@
 
 template <ACS_RO_C> 
 baci::ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO) :
-    ROcontImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO),
-    alarmSystemMonitor_mp(0)
+    ROcontImpl<ACS_RO_TL>(false, name, component_p, devIO, flagdeldevIO)
 {
     ACS_TRACE("baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl"); 
 
@@ -35,7 +34,7 @@ baci::ROSeqContImpl<ACS_RO_TL>::ROSeqContImpl(const ACE_CString& name, BACICompo
 
     if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
     {
-    	alarmSystemMonitor_mp = new AlarmSystemMonitorSeqCont<TM, PropType>(this, this->monitorEventDispatcher_mp);
+    	this->alarmSystemMonitor_mp = new AlarmSystemMonitorSeqCont<TM, PropType>(this, this->monitorEventDispatcher_mp);
     }//if
 
   this->initialization_m = 0;   // property successfuly initialized
@@ -46,10 +45,10 @@ template <ACS_RO_C>
 baci::ROSeqContImpl<ACS_RO_TL>::~ROSeqContImpl()
 {
     ACS_TRACE("baci::ROSeqContImpl&lt;&gt;::~ROSeqContImpl");
-    if (alarmSystemMonitor_mp) 
+    if (this->alarmSystemMonitor_mp)
 	{
-	delete alarmSystemMonitor_mp;
-	alarmSystemMonitor_mp = 0;
+	delete this->alarmSystemMonitor_mp;
+	this->alarmSystemMonitor_mp = 0;
 	}//if
 }
 

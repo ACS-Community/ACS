@@ -27,6 +27,8 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 		const ACS::CBDescOut & desc)
 {
 	ACE_UNUSED_ARG(c);
+	ACE_Guard<ACE_Recursive_Thread_Mutex>  protSect(this->faultStructMutex_m);
+
 	T valueSeq = val.getValue(static_cast<T*>(0));
 
 	if (alarmsRaisedLength_m!=valueSeq.length())
@@ -58,9 +60,14 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 			ostr << valueSeq[n] << std::ends;	
 			ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s[%d] cleared. Value change to: %s", this->property_mp->name(), n, ts.c_str()));
-			ostr.str("");
-			ostr << this->property_mp->name() << "[" << n << "]";
-			this->sendAlarm("BACIProperty", ostr.str(), 1, false);
+
+			//ostr.str("");
+			//ostr << this->property_mp->name() << "[" << n << "]";
+
+			this->setProperty("BACI_Value", ts.c_str());
+			this->setProperty("BACI_Position", n);
+
+			this->sendAlarm(this->lastAlarmFaultCode_m, false);
 			alarmsRaised_mp[n] = 0;//=cleared
 		}
 		else if ((alarmsRaised_mp[n]!=-1) &&            // if not alarm low
@@ -70,10 +77,13 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 			std::string ts;
 			ostr << valueSeq[n] << std::ends;	
 			ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
-			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s[%d] raised. Value change to: %s", this->property_mp->name(), n, ts.c_str()));
-			ostr.str("");
-			ostr << this->property_mp->name() << "[" << n << "]";
-			this->sendAlarm("BACIProperty", ostr.str(), 1, true);
+			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s[%d] raised - value %s too low.", this->property_mp->name(), n, ts.c_str()));
+			//ostr.str("");
+			//ostr << this->property_mp->name() << "[" << n << "]";
+			this->setProperty("BACI_Value", ts.c_str());
+			this->setProperty("BACI_Position", n);
+
+			this->sendAlarm(2, true);
 			alarmsRaised_mp[n] = -1;//raised value too low
 		}
 		else if ((alarmsRaised_mp[n]!=1) &&            // if not alarm hi 
@@ -83,10 +93,14 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 			std::string ts;
 			ostr << valueSeq[n] << std::ends;	
 			ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
-			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s[%d] raised. Value change to: %s", this->property_mp->name(), n, ts.c_str()));
-			ostr.str("");
-			ostr << this->property_mp->name() << "[" << n << "]";
-			this->sendAlarm("BACIProperty", ostr.str(), 1, true);
+			ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s[%d] raised - value %s too high.", this->property_mp->name(), n, ts.c_str()));
+			//ostr.str("");
+			//ostr << this->property_mp->name() << "[" << n << "]";
+
+			this->setProperty("BACI_Value", ts.c_str());
+			this->setProperty("BACI_Position", n);
+
+			this->sendAlarm(3, true);
 			alarmsRaised_mp[n] = 1;//raised value too high
 		}
 	}// for loop

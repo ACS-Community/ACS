@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.h,v 1.110 2008/10/01 02:26:45 cparedes Exp $"
+ * "@(#) $Id: baciROpattern.h,v 1.111 2009/09/15 08:51:14 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -86,11 +86,6 @@ namespace baci {
 	 * @return true on success, false on failure
 	 */
 	virtual bool readCharacteristics();
-
-/**
- * monitor which sends information (alarms) to the alarm system
- */
-	AlarmSystemMonitorPattern *alarmSystemMonitor_mp;
 
 
       private:

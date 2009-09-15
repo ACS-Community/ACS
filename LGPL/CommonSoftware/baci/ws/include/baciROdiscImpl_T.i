@@ -24,9 +24,6 @@
 template <ACS_RO_C> 
 baci::ROdiscImpl<ACS_RO_TL>::ROdiscImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO, int initalize) :
     baci::ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO)
-/*,
-    alarmSystemMonitor_mp(0)
-*/
 {
     ACS_TRACE("baci::ROdiscImpl&lt;&gt;::ROdiscImpl"); 
 /*TBD: fix BACI type in MonitorEventDisp

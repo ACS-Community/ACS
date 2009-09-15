@@ -23,6 +23,7 @@ void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
     ACE_UNUSED_ARG(c);
     std::ostringstream ostr;
     std::string ts;
+    ACE_Guard<ACE_Recursive_Thread_Mutex>  protSect(this->faultStructMutex_m);
 
     T value = val.getValue(static_cast<T*>(0));
 
@@ -34,7 +35,9 @@ void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
 	ostr << value << std::ends;
 	ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value change to: %s", this->property_mp->name(), ts.c_str()));
-	this->sendAlarm("BACIProperty",this->property_mp->name(),1,false);
+
+	this->setProperty("BACI_Value", ts.c_str());
+	this->sendAlarm(1, false);
 
 	  this->alarmRaised_m = 0;
 	}
@@ -44,7 +47,9 @@ void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
 	ostr << value << std::ends;
 	ts =  ostr.str(); // we have to make a temporary string otherwise there is problem with memory:  s = ostr.str().c_str(); does not work
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s raised. Value change to: %s", this->property_mp->name(), ts.c_str()));
-	this->sendAlarm("BACIProperty",this->property_mp->name(),1,true);
+
+	this->setProperty("BACI_Value", ts.c_str());
+	this->sendAlarm(1, true);
 	this->alarmRaised_m = 1;
 	} //if
 }//check

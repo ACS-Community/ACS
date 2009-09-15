@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.7 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciROSeqDiscImpl_T.h,v 1.8 2009/09/15 08:51:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,9 +73,6 @@ namespace baci
 	/**
 	 * monitor which sends information (alarms) to the alarm system
 	 */
-#ifndef MAKE_VXWORKS       
-	AlarmSystemMonitorSeqDisc<TM, PropType> *alarmSystemMonitor_mp;
-#endif
     };//class ROSeqContImpl
 
 }; //namespace baci

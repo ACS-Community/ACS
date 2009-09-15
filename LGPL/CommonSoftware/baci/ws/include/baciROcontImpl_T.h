@@ -104,7 +104,6 @@ protected:
     /**
      * monitor which sends information (alarms) to the alarm system
      */
-    AlarmSystemMonitorCont<TS, PropType> *alarmSystemMonitor_mp;
 
   /**
    * Read characteristics from CDB

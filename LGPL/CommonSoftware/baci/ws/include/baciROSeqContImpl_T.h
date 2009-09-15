@@ -65,10 +65,6 @@ class ROSeqContImpl : public virtual POA_SK,
     typedef ROSeqContImpl<ACS_RO_TL> PropType;
     /** @} */
 
-    /**
-     * monitor which sends information (alarms) to the alarm system
-     */
-    AlarmSystemMonitorSeqCont<TM, PropType> *alarmSystemMonitor_mp;
 };
 
  }; 

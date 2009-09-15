@@ -25,8 +25,7 @@
 template<ACS_RO_C> 
 baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(name, component_p, devIO, flagdeldevIO),
-    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
-    alarmSystemMonitor_mp(0)
+    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::ROcontImpl");
   
@@ -41,7 +40,7 @@ baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* 
   
   if (this->monitorEventDispatcher_mp!=0 && this->alarmTimerTrig_m!=0)
       {
-      alarmSystemMonitor_mp = new AlarmSystemMonitorCont<TS, PropType>(this, this->monitorEventDispatcher_mp);
+      this->alarmSystemMonitor_mp = new AlarmSystemMonitorCont<TS, PropType>(this, this->monitorEventDispatcher_mp);
       }//if
 
   ACS_DEBUG("baci::ROcontImpl&lt;&gt;::ROcontImpl", "Successfully created.");
@@ -54,8 +53,7 @@ baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(const ACE_CString& name, BACIComponent* 
 template<ACS_RO_C> 
 baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     ROcommonImpl<ACS_RO_TL>(init, name, component_p, devIO, flagdeldevIO),
-    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO),
-    alarmSystemMonitor_mp(0)
+    PcontImpl<ACS_P_TL>(name, this->getProperty(), component_p, devIO, flagdeldevIO)
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::ROcontImpl");
   
@@ -80,10 +78,10 @@ baci::ROcontImpl<ACS_RO_TL>::ROcontImpl(bool init, const ACE_CString& name, BACI
 template<ACS_RO_C> baci::ROcontImpl<ACS_RO_TL>::~ROcontImpl()
 {
   ACS_TRACE("baci::ROcontImpl&lt;&gt;::~ROcontImpl");
-  if (alarmSystemMonitor_mp) 
+  if (this->alarmSystemMonitor_mp)
       {
-      delete alarmSystemMonitor_mp;
-      alarmSystemMonitor_mp = 0;
+      delete this->alarmSystemMonitor_mp;
+      this->alarmSystemMonitor_mp = 0;
       }
 }
 

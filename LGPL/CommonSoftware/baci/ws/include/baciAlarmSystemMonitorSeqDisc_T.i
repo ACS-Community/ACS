@@ -19,6 +19,8 @@ void AlarmSystemMonitorSeqDisc<T, TPROP>::check(BACIValue &val,
 						const ACS::CBDescOut & desc )
 {
     ACE_UNUSED_ARG(c);
+    ACE_Guard<ACE_Recursive_Thread_Mutex>  protSect(this->faultStructMutex_m);
+
     T valueSeq = val.getValue(static_cast<T*>(0));
     
     if (alarmsRaisedLength_m!=static_cast<int>(valueSeq.length()))

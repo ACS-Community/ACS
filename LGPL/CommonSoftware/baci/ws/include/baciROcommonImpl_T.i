@@ -22,7 +22,7 @@
 template<ACS_RO_C> 
 baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACIComponent* component_p, DevIO<TM>* devIO, bool flagdeldevIO) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
-    monitorEventDispatcher_mp(0)
+    monitorEventDispatcher_mp(0), alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::ROcommonImpl");
   
@@ -78,7 +78,7 @@ baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(const ACE_CString& name, BACICompone
 template<ACS_RO_C> 
 baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, BACIComponent *component_p, DevIO<TM> *devIO, bool flagdeldevIO ) : 
     PcommonImpl<ACS_P_TL>(name, component_p, devIO, flagdeldevIO),
-    monitorEventDispatcher_mp(0)
+    monitorEventDispatcher_mp(0), alarmSystemMonitor_mp(0)
 {
   ACS_TRACE("baci::ROcommonImpl&lt;&gt;::ROcommonImpl");
   ACE_UNUSED_ARG(init);
@@ -103,7 +103,7 @@ baci::ROcommonImpl<ACS_RO_TL>::ROcommonImpl(bool init, const ACE_CString& name, 
   // property successfuly initialized
 // TMP uncment
 //initialization_m = 0;
-}
+}//ROcommonImpl
 
 template<ACS_RO_C> baci::ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
 {
@@ -116,7 +116,35 @@ template<ACS_RO_C> baci::ROcommonImpl<ACS_RO_TL>::~ROcommonImpl()
       delete monitorEventDispatcher_mp;
       monitorEventDispatcher_mp = 0;
       }
-}
+}//~ROcommonImpl
+
+template<ACS_RO_C>
+void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)
+{
+	ACS_TRACE("baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+	if (this->alarmSystemMonitor_mp!=0)
+	{
+		this->alarmSystemMonitor_mp->setFaultFamily(ff);
+	}
+	else
+	{
+		//@TBD error handling
+	}//if-else
+}//setAlarmFaultFamily
+
+template<ACS_RO_C>
+void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultMember(const char* fm)
+{
+	if (this->alarmSystemMonitor_mp!=0)
+	{
+		this->alarmSystemMonitor_mp->setFaultMember(fm);
+	}
+	else
+	{
+//@TBD error handling
+	}//if-else
+
+}//setAlarmFaultMember
 
 
 
@@ -131,10 +159,26 @@ bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
       {
 
       CORBA::Double dbl;
+      CORBA::String_var str;
 
       dbl = dao->get_double("alarm_timer_trig");
       dbl = dbl * static_cast<CORBA::Double>(10000000.0);
       alarmTimerTrig_m = static_cast<CORBA::ULong>(dbl);
+
+
+      str = dao->get_string("alarm_fault_family");
+      if (strlen(str)!=0) //if FF is not specified in the CDB
+    	  alarmFaultFamily_m = str.in();
+      else
+    	  alarmFaultFamily_m = "BACIProperty"; //default
+
+      str = dao->get_string("alarm_fault_member");
+      if (strlen(str)!=0) //if FF is not specified in the CDB
+    	  alarmFaultMember_m = str.in();
+      else
+    	  alarmFaultMember_m = this->property_mp->getName();
+
+       alarmLevel_m = dao->get_long("alarm_level");
 
       return true;
       }
