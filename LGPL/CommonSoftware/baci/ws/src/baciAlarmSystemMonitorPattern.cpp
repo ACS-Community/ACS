@@ -36,14 +36,15 @@ void AlarmSystemMonitorPattern::check(BACIValue &val,
     	alarmMask_m = property_mp->alarm_mask();
     	alarmTrigger_m = property_mp->alarm_trigger();
     	bitDescriptions_mp = property_mp->bitDescription();
+
     	ACS::pattern tmpVal = value; //tmp storage of the value
     	for(bitPos_m=0; bitPos_m<patternSize_m; bitPos_m++)
     	{
     		//we check if the bit at position bitPos has been changed
     		if ((alarmMask_m & (value ^ lastValue_m ) & 1) )
     		{
+    			setProperty("BACI_BitPosition", bitPos_m);
     			const char *bitDesc;
-    			ACE_CString fullName = this->property_mp->name();
     			if (bitPos_m<bitDescriptions_mp->length())
     			{
     			   bitDesc = (*bitDescriptions_mp)[bitPos_m];
@@ -52,21 +53,20 @@ void AlarmSystemMonitorPattern::check(BACIValue &val,
     			{
     				bitDesc = "w/o description";
     			}
-    			fullName += ":"; 
-    			fullName += bitDesc; 
-    			// how the bit has changed (we could merge this with if above but would	 not be cleare then)	
+    			setProperty("BACI_BitDescription", bitDesc);
+    			setProperty("BACI_Value", value);
+
+    			// how the bit has changed (we could merge this with if above but would	 not be cleared then)
     			if ( ~(value ^ alarmTrigger_m) & 1 )
     			{
     				ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s, bit %d (%s) raised. Value change to: %d", property_mp->name(), bitPos_m, bitDesc, value));
-    				this->sendAlarm("BACIProperty", fullName.c_str(), 1, true);
-    				//TODO: here we should send also value and bit position
-    			}
+    				this->sendAlarm(1, true);
+      			}
     			else
     			{
     				ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s, bit %d (%s) cleared. Value change to: %d", property_mp->name(), bitPos_m, bitDesc, value));
-    				this->sendAlarm("BACIProperty", fullName.c_str(), 1, false);
-    				//TODO: here we should send also value and bit position
-    			}//if-else
+    				this->sendAlarm(1, false);
+      			}//if-else
     		}//if
     		// shift to the next bit 
     		value >>= 1;

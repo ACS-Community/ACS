@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROdoubleSeq.cpp,v 1.96 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciROdoubleSeq.cpp,v 1.97 2009/09/15 08:52:12 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -34,6 +34,8 @@
 #include "baciMonitor_T.i"
 
 template class baci::Monitor<ACS_MONITOR_SEQ(double, CORBA::Double)>;
+
+template class baci::ROcommonImpl<ACS_RO_SEQ_T(double, CORBA::Double)>;
 template class baci::ROSeqContImpl<ACS_RO_SEQ_T(double, CORBA::Double)>;
 
 /*___oOo___*/

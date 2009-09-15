@@ -30,6 +30,7 @@
 #include "baciMonitor_T.i"
 
 template class baci::Monitor<ACS_MONITOR(uLongLong, ACS::uLongLong)>;
+template class baci::ROcommonImpl<ACS_RO_T(uLongLong, ACS::uLongLong)>;
 template class baci::ROcontImpl<ACS_RO_T(uLongLong, ACS::uLongLong)>;
 /*___oOo___*/
 

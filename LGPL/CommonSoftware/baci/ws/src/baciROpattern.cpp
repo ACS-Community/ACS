@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.114 2008/10/01 02:26:45 cparedes Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.115 2009/09/15 08:52:12 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -39,14 +39,14 @@ namespace baci {
 
 // we need it in enumprop
     template class MonitorEventDispatcher<ACS::pattern, ACS::CBpattern, POA_ACS::CBpattern>; 
-
     template class Monitor<ACS_MONITOR(pattern, ACS::pattern)>;
+
+    template class ROcommonImpl<ACS_RO_T(pattern, ACS::pattern)>;
     template class ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>;
 
     ROpatternImpl::ROpatternImpl(const ACE_CString& name, BACIComponent *component_p, DevIO<ACS::pattern> *devIO, bool flagdeldevIO) :
 	ROdiscImpl<ACS_RO_T(pattern, ACS::pattern)>(name, component_p, devIO, flagdeldevIO, 1),
-	PpatternImpl(name, this->getProperty()),
-	alarmSystemMonitor_mp(0)
+	PpatternImpl(name, this->getProperty())
     {
 	// read static data
 	if (readCharacteristics()==false) 

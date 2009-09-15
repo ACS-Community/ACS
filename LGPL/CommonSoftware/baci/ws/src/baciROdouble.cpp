@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROdouble.cpp,v 1.95 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciROdouble.cpp,v 1.96 2009/09/15 08:52:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,5 +35,7 @@
 #include "baciMonitor_T.i"
 
 template class baci::Monitor<ACS_MONITOR(double, CORBA::Double)>;
+
+template class baci::ROcommonImpl<ACS_RO_T(double, CORBA::Double)>;
 template class baci::ROcontImpl<ACS_RO_T(double, CORBA::Double)>;
 /*___oOo___*/

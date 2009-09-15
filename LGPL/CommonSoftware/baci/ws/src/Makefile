@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.132 2008/02/27 08:11:43 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.133 2009/09/15 08:52:12 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -118,7 +118,7 @@ INCLUDES      = baciCharacteristicModelImpl.h baciCharacteristicComponentImpl.h 
 		baciAlarmSystemMonitorSeqCont_T.h  baciAlarmSystemMonitorSeqCont_T.i \
 		baciAlarmSystemMonitorSeqDisc_T.h baciAlarmSystemMonitorSeqDisc_T.i \
 		baciAlarmSystemMonitorPattern.h \
-	        baciAlarmSystemMonitor_T.h  baciAlarmSystemMonitor_T.i
+	    baciAlarmSystemMonitorBase.h    baciAlarmSystemMonitor_T.h  baciAlarmSystemMonitor_T.i
 
 
 INCLUDES_L	=
@@ -140,6 +140,7 @@ baci_OBJECTS =  baciValue baciBACIAction baciBACICallback baciBACIMonitor baciUt
 		baciROlongLong baciRWlongLong \
 		baciROuLongLong baciRWuLongLong \
 		baciROlong baciRWlong \
+		baciAlarmSystemMonitorBase \
 		baciPpatternImpl baciROpattern baciRWpattern baciAlarmPattern baciAlarmSystemMonitorPattern\
 	        baciROstring baciRWstring \
 		baciROdoubleSeq baciROfloatSeq baciROlongSeq \

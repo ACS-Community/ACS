@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROfloatSeq.cpp,v 1.4 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciROfloatSeq.cpp,v 1.5 2009/09/15 08:52:12 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -34,6 +34,7 @@
 #include "baciMonitor_T.i"
 
 template class baci::Monitor<ACS_MONITOR_SEQ(float, CORBA::Float)>;
+template class baci::ROcommonImpl<ACS_RO_SEQ_T(float, CORBA::Float)>;
 template class baci::ROSeqContImpl<ACS_RO_SEQ_T(float, CORBA::Float)>;
 
 /*___oOo___*/
