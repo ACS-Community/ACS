@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.49 2008/10/27 14:50:38 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.50 2009/09/15 09:05:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -241,7 +241,35 @@ public:
      */
     bool checkAlarm(T state);
 
-  protected:
+    /**
+     * Sets alarm fault family
+     * @param fault family
+     */
+    void setAlarmFaultFamily(const char* ff);
+
+    /**
+     * Sets alarm fault member
+     * @param fault member
+     */
+    void setAlarmFaultMember(const char* fm);
+
+    /**
+     * Accessor method for alarm fault family
+     */
+    const char* getAlarmFaultFamily() { return alarmFaultFamily_m.c_str(); }
+
+    /**
+     * Accessor method for alarm fault member
+     */
+    const char* getAlarmFaultMember() { return alarmFaultMember_m.c_str(); }
+
+    /**
+     * Accessor method for alarm level
+     */
+    int getAlarmLevel() { return this->alarmLevel_m;}
+
+
+protected:
     
     /**
      * Read characteristics from CDB
@@ -328,6 +356,10 @@ public:
 
     /** True if the alarm is ON */
     bool  alarmRaised_m; 
+
+    ACE_CString alarmFaultFamily_m;
+    ACE_CString alarmFaultMember_m;
+    int alarmLevel_m;
 
 #ifdef MAKE_VXWORKS 
     baci::AlarmenumpropEventStrategy<T, ROEnumImpl<ACS_ENUM_T(T), SK>, ACS::Alarmpattern> a;

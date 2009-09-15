@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.55 2008/10/01 02:33:31 cparedes Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.56 2009/09/15 09:05:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,101 +27,102 @@ ROEnumImpl<ACS_ENUM_T(T), SK>::ROEnumImpl(const ACE_CString& name, baci::BACICom
     CharacteristicModelImpl(name, cob->getCharacteristicModel()), 
     initialization_m(1), destroyed_m(false), reference_mp(CORBA::Object::_nil()), property_mp(0),
     monitorEventDispatcher_mp(0), alarmSystemMonitorEnumProp_mp(0), historyStart_m(-1), historyTurnaround_m(false), m_enumLength(0)
-{
+    {
 
-    ACS_TRACE("ROEnumImpl::ROEnumImpl");
-  
-    // initialize
-    m_condition.length(0);
-    m_statesDescription.length(0);
-    // read static data
-    if (!readCharacteristics())
-	{
-	std::string procName="ROEnumImpl::ROEnumImpl(";
-        procName+=name.c_str();
-        procName+=",...)";
+	ACS_TRACE("ROEnumImpl::ROEnumImpl");
 
-	ACS_LOG(LM_RUNTIME_CONTEXT, "ROEnumImpl::ROEnumImpl",
-		(LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
+	// initialize
+	m_condition.length(0);
+	m_statesDescription.length(0);
 
-	baciErrTypeProperty::PropertyStaticDataExImpl ex(__FILE__,__LINE__,procName.c_str());
-	ex.addData("Property",name.c_str());
-	throw ex;
-	}
-  
-    // create BACI property instance
-    CORBA::Any tAny;
-    tAny <<= default_value();
-    property_mp = new baci::BACIProperty(name.c_str(), this, this,
-				  baci::BACIValue(default_value(), tAny), cob);
-    if (!property_mp) {
-	std::string procName="ROEnumImpl::ROEnumImpl(";
-        procName+=name.c_str();
-        procName+=",...)";
-        baciErrTypeProperty::PropertyCreationExImpl ex(__FILE__,__LINE__,procName.c_str());
-	ex.addData("Property",name.c_str());
-	throw ex;
-    }
-
-    reference_mp = BACI_CORBA::ActivateCORBAObject(this, name.c_str());
-    if (CORBA::is_nil(reference_mp))
-	{
-	std::string procName="ROEnumImpl::ROEnumImpl(";
-        procName+=name.c_str();
-        procName+=",...)";
-	ACS_LOG(LM_RUNTIME_CONTEXT, "ROEnumImpl::ROEnumImpl",
-		(LM_ERROR, "Failed to activate CORBA object '%s'", name.c_str()));
-
-	delete property_mp;
-	baciErrTypeProperty::PropertyActivationExImpl ex(__FILE__,__LINE__,procName.c_str());
-	ex.addData("Property",name.c_str());
-	throw ex;
+	// create BACI property instance
+	CORBA::Any tAny;
+	tAny <<= default_value();
+	property_mp = new baci::BACIProperty(name.c_str(), this, this,
+			baci::BACIValue(default_value(), tAny), cob);
+	if (!property_mp) {
+		std::string procName="ROEnumImpl::ROEnumImpl(";
+		procName+=name.c_str();
+		procName+=",...)";
+		baciErrTypeProperty::PropertyCreationExImpl ex(__FILE__,__LINE__,procName.c_str());
+		ex.addData("Property",name.c_str());
+		throw ex;
 	}
 
-    ACE_CString_Vector recoveryMonitorsNames = 
-	baci::BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
-    if (recoveryMonitorsNames.size()>0)
+	// read static data
+	if (!readCharacteristics())
 	{
-	for (ACE_CString_Vector::iterator i = recoveryMonitorsNames.begin();
-	     i != recoveryMonitorsNames.end(); i++) {
-	new baci::Monitorpattern(i->c_str(), min_timer_trigger(), baci::BACIValue(0.0), property_mp);
-	}
-	}
-    state = (T)defaultValue_m;
-    alarmRaised_m = checkAlarm(state);
+		std::string procName="ROEnumImpl::ROEnumImpl(";
+		procName+=name.c_str();
+		procName+=",...)";
 
-    if (devIO!=0)
-	{
-	devIO_mp = devIO;
-	deldevIO_m = flagdeldevIO;
-	devIO_mp->m_initialize = initializeDevIO_m;
+		ACS_LOG(LM_RUNTIME_CONTEXT, "ROEnumImpl::ROEnumImpl",
+				(LM_ERROR, "Failed to read static data for '%s'", name.c_str()));
+
+		baciErrTypeProperty::PropertyStaticDataExImpl ex(__FILE__,__LINE__,procName.c_str());
+		ex.addData("Property",name.c_str());
+		throw ex;
 	}
-    else
+
+	reference_mp = BACI_CORBA::ActivateCORBAObject(this, name.c_str());
+	if (CORBA::is_nil(reference_mp))
 	{
-	deldevIO_m = true;
-	m_value = (T)defaultValue_m; 
-	devIO_mp = new DevIOMem<T> (m_value);
-	ACS_DEBUG("ROEnumImpl::ROEnumImpl", "No DevIO provided - created DevIOMem.");
+		std::string procName="ROEnumImpl::ROEnumImpl(";
+		procName+=name.c_str();
+		procName+=",...)";
+		ACS_LOG(LM_RUNTIME_CONTEXT, "ROEnumImpl::ROEnumImpl",
+				(LM_ERROR, "Failed to activate CORBA object '%s'", name.c_str()));
+
+		delete property_mp;
+		baciErrTypeProperty::PropertyActivationExImpl ex(__FILE__,__LINE__,procName.c_str());
+		ex.addData("Property",name.c_str());
+		throw ex;
+	}
+
+	ACE_CString_Vector recoveryMonitorsNames =
+			baci::BACIRecoveryManager::getInstance()->getObjectsStartingWith(name.c_str());
+	if (recoveryMonitorsNames.size()>0)
+	{
+		for (ACE_CString_Vector::iterator i = recoveryMonitorsNames.begin();
+				i != recoveryMonitorsNames.end(); i++) {
+			new baci::Monitorpattern(i->c_str(), min_timer_trigger(), baci::BACIValue(0.0), property_mp);
+		}
+	}
+	state = (T)defaultValue_m;
+	alarmRaised_m = checkAlarm(state);
+
+	if (devIO!=0)
+	{
+		devIO_mp = devIO;
+		deldevIO_m = flagdeldevIO;
+		devIO_mp->m_initialize = initializeDevIO_m;
+	}
+	else
+	{
+		deldevIO_m = true;
+		m_value = (T)defaultValue_m;
+		devIO_mp = new DevIOMem<T> (m_value);
+		ACS_DEBUG("ROEnumImpl::ROEnumImpl", "No DevIO provided - created DevIOMem.");
 	}//if-else
 
-    if (monitorEventDispatcher_mp==0 && this-> m_alarm_timer_trig!=0)
+	if (monitorEventDispatcher_mp==0 && this-> m_alarm_timer_trig!=0)
 	{
-	CBDescIn descIn;
-	descIn.id_tag = 0;
-	monitorEventDispatcher_mp = new baci::MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
+		CBDescIn descIn;
+		descIn.id_tag = 0;
+		monitorEventDispatcher_mp = new baci::MonitorenumpropEventDispatcher(descIn, m_alarm_timer_trig, property_mp);
 
-	if (this->monitorEventDispatcher_mp!=0 && this->m_alarm_timer_trig!=0)
-	    {
-	     alarmSystemMonitorEnumProp_mp = new baci::AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> >(this, this->monitorEventDispatcher_mp);
-	    }//if
+		if (this->monitorEventDispatcher_mp!=0 && this->m_alarm_timer_trig!=0)
+		{
+			alarmSystemMonitorEnumProp_mp = new baci::AlarmSystemMonitorEnumProp<T, ROEnumImpl<ACS_ENUM_T(T), SK> >(this, this->monitorEventDispatcher_mp);
+		}//if
 	}  
 
 
-    ACS_DEBUG_PARAM("ROEnumImpl::ROEnumImpl", "Successfully created %s.", name.c_str() );
-	
-    // property successfuly initialized
-    initialization_m = 0;
-}
+	ACS_DEBUG_PARAM("ROEnumImpl::ROEnumImpl", "Successfully created %s.", name.c_str() );
+
+	// property successfuly initialized
+	initialization_m = 0;
+    }
 
 template <ACS_ENUM_C>
 ROEnumImpl<ACS_ENUM_T(T), SK>::~ROEnumImpl()
@@ -364,6 +365,20 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
 
       m_archive_delta = dao->get_long("archive_delta");
 #endif
+
+      str = dao->get_string("alarm_fault_family");
+      if (strlen(str)!=0) //if FF is not specified in the CDB
+    	  alarmFaultFamily_m = str.in();
+      else
+    	  alarmFaultFamily_m = "BACIProperty"; //default
+
+      str = dao->get_string("alarm_fault_member");
+      if (strlen(str)!=0) //if FF is not specified in the CDB
+    	  alarmFaultMember_m = str.in();
+      else
+    	  alarmFaultMember_m = this->property_mp->getName();
+
+      alarmLevel_m = dao->get_long("alarm_level");
 
       return true;
       }
@@ -705,7 +720,33 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::checkAlarm(T state){
 }
 
 
+template <ACS_ENUM_C>
+void ROEnumImpl<ACS_ENUM_T(T), SK>::setAlarmFaultFamily(const char* ff)
+{
+	ACS_TRACE("baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+	if (this->alarmSystemMonitor_mp!=0)
+	{
+		this->alarmSystemMonitor_mp->setFaultFamily(ff);
+	}
+	else
+	{
+		//@TBD error handling
+	}//if-else
+}//setAlarmFaultFamily
 
+template <ACS_ENUM_C>
+void ROEnumImpl<ACS_ENUM_T(T), SK>::setAlarmFaultMember(const char* fm)
+{
+	if (this->alarmSystemMonitor_mp!=0)
+	{
+		this->alarmSystemMonitor_mp->setFaultMember(fm);
+	}
+	else
+	{
+//@TBD error handling
+	}//if-else
+
+}//setAlarmFaultMember
 
 
 
