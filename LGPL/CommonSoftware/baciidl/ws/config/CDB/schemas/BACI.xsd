@@ -286,6 +286,29 @@ See the documentation of the specific implementation for details on the implicat
 For example in the ACS CPP baci implementation, the value of a property is checked for its status with respect to the alarm configuration by an internal monitor defined with this time interval. This means that, depending on the underlying DevIO implementation, changes in the alarm status accurring during this time interval might get un-noticed.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							Here user can specify fault family for the alarm. for details of the fault family see the alarm documentation. 
+							If the fault family attribute is not specified (=is empty), than default value which is BACIproperty is taken.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							Here user can specify fault member for the alarm. for details of the fault member see the alarm documentation. 
+							If the fault member attribute is not specified (=is empty), than default value which is property name is taken.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							Defines the level (priority) of the alarm.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -399,6 +422,27 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 of the ROlong propery.			</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -501,6 +545,27 @@ of the ROlong propery.							</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -618,6 +683,27 @@ of the ROlong propery.							</xs:documentation>
 of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -683,6 +769,27 @@ NOTE: This is normally not used, since the concept or "delta" does not really ma
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -782,6 +889,27 @@ of the Plong propery.                                      </xs:documentation>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -894,6 +1022,27 @@ of the Plong propery.                     </xs:documentation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1002,6 +1151,27 @@ properties. Check with the implementation specific documentation.</xs:documentat
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery.	</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1106,6 +1276,27 @@ The values defined for the Characteristics apply to each single element of the s
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1189,34 +1380,88 @@ of the Plong propery.                                     </xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ROfloatSeq">
 		<xs:annotation>
-			<xs:documentation>Read Only sequence of Float values.
-The values defined for the Characteristics apply to each single element of the sequence.</xs:documentation>
+			<xs:documentation>
+				Read Only sequence of Float values. The values defined
+				for the Characteristics apply to each single element of
+				the sequence.
+			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="PfloatSeq">
-				<xs:attribute name="alarm_high_on" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_high_on" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_low_on" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_low_on" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.					</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_high_off" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_high_off" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_low_off" type="xs:float" use="optional" default="0.0">
+				<xs:attribute name="alarm_low_off" type="xs:float"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.						</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="0.0">
+				<xs:attribute name="alarm_timer_trig" type="xs:double"
+					use="optional" default="0.0">
 					<xs:annotation>
-						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+						<xs:documentation>
+							For a description of this characteristic,
+							see documentation of the ROlong propery. The
+							definition apply here to each single value
+							in the sequence.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1331,6 +1576,27 @@ The values defined for the Characteristics apply to each single element of the s
 				<xs:attribute name="alarm_timer_trig" type="xs:double" default="0.0">
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation of the ROlong propery. The definition apply here to each single value in the sequence.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default="">
+					<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default="">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0">
+				<xs:annotation>
+						<xs:documentation>
+							For a description of this characteristic, see documentation of the ROlong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
