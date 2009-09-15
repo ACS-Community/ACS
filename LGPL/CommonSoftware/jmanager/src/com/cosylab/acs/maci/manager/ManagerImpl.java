@@ -813,6 +813,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
      * Last execution id;
      */
     private transient long lastExecutionId = 0;
+
+    /**
+     * Prevayler state.
+     */
+	private transient volatile AtomicBoolean prevaylerAlarmState;
     
 	/**
 	 * Initializes Manager.
@@ -852,6 +857,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		pendingActivations = new HashMap();
 		pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
 
+		prevaylerAlarmState = new AtomicBoolean(true);
+		
 		// create threads
 		threadPool.prestartAllCoreThreads();
 
@@ -9348,8 +9355,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	protected final static String FAULT_FAMILY = "Manager";
 	protected final static String FAULT_MEMBER = "Prevayler";
 	protected final static int FAULT_CODE = 2;
-
-	private volatile AtomicBoolean prevaylerAlarmState = new AtomicBoolean(true);	// we must clear it on startup
 
 	/**
 	 * Convenience method for send_alarm with given state.
