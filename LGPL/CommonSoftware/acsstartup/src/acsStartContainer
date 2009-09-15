@@ -62,7 +62,7 @@ fi
 
 #-----------------------------------------------------------------------
 #--Get the correct commandline
-if ! COMMANDLINE=`acsstartupContainerPort $@`
+if ! COMMANDLINE=`acsstartupContainerPort "$@"`
 then
     ACS_LOG_ERROR "acsStartContainer" "There was an error when trying to generate the command to start the container!"
     ACS_LOG_ERROR "acsStartContainer" "Unable to proceed!"
