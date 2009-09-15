@@ -28,6 +28,9 @@
 				<xs:attribute name="alarm_on" type="xs:string" use="optional" default="0"/>
 				<xs:attribute name="alarm_off" type="xs:string" use="optional" default="0"/>
 				<xs:attribute name="alarm_timer_trig" type="xs:double" use="optional" default="1.0"/>
+				<xs:attribute name="alarm_fault_family"	type="xs:string" use="optional" default=""/>
+				<xs:attribute name="alarm_fault_member" type="xs:string" use="optional" default=""/>
+				<xs:attribute name="alarm_level" type="xs:int" use="optional" default="0"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
