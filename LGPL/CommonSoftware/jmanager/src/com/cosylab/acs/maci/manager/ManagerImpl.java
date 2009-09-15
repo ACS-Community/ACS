@@ -9370,9 +9370,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		// log message
 		if (raise)
-			logger.log(Level.SEVERE, "Manager persistance subsystem failed to store pesistent data.", alarmEx);
+			logger.log(Level.SEVERE, "Manager persistence subsystem failed to store pesistent data.", alarmEx);
 		else
-			logger.log(Level.INFO, "Manager peristance subsystem is functional.");
+			logger.log(Level.INFO, "Manager peristence subsystem is functional.");
 		
 		// if no alarm system initialized ignore
 		if (alarmSource == null)
