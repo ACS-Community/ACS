@@ -122,26 +122,37 @@ template<ACS_RO_C>
 void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)
 {
 	ACS_TRACE("baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+	if (ff==0)
+		throw ACSErrTypeCommon::NullPointerExImpl (__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+
 	if (this->alarmSystemMonitor_mp!=0)
 	{
 		this->alarmSystemMonitor_mp->setFaultFamily(ff);
 	}
 	else
 	{
-		//@TBD error handling
+		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+		ex.setVariable("alarmSystemMonitor_mp");
+		throw ex;
 	}//if-else
 }//setAlarmFaultFamily
 
 template<ACS_RO_C>
 void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultMember(const char* fm)
 {
+	ACS_TRACE("baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember");
+	if (fm==0)
+		throw ACSErrTypeCommon::NullPointerExImpl (__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember");
+
 	if (this->alarmSystemMonitor_mp!=0)
 	{
 		this->alarmSystemMonitor_mp->setFaultMember(fm);
 	}
 	else
 	{
-//@TBD error handling
+		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember");
+		ex.setVariable("alarmSystemMonitor_mp");
+		throw ex;
 	}//if-else
 
 }//setAlarmFaultMember
