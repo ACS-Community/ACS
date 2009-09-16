@@ -19,6 +19,7 @@
 
 package alma.acs.nc;
 
+import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 
@@ -32,7 +33,7 @@ import alma.acsnc.EventDescriptionHelper;
  * Used to supply (BACI property) events to the archiving notification channel.
  * 
  * @author dfugate
- * @version $Id: ArchiveSupplier.java,v 1.9 2007/11/05 20:20:56 hsommer Exp $
+ * @version $Id: ArchiveSupplier.java,v 1.10 2009/09/16 23:03:49 javarias Exp $
  */
 public class ArchiveSupplier extends SimpleSupplier {
 	/**
@@ -117,6 +118,6 @@ public class ArchiveSupplier extends SimpleSupplier {
 		event.filterable_data[0] = new Property("time_stamp", m_anyAide.objectToCorbaAny(new Long(utcTime)));
 		event.filterable_data[1] = new Property("value", m_anyAide.objectToCorbaAny(value));
 
-		publishCORBAEvent(event);
+		publishCORBAEvent(event, (IDLEntity)value);
 	}
 }

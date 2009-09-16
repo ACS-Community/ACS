@@ -50,8 +50,6 @@ import org.omg.CosNotifyComm.InvalidEventType;
 import org.omg.CosNotifyComm.StructuredPushSupplier;
 import org.omg.CosNotifyComm.StructuredPushSupplierHelper;
 
-import com.cosylab.util.CircularArrayList;
-
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -59,6 +57,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.CircularQueue.EventDroppedException;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
@@ -101,7 +100,30 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	 */
 	public SimpleSupplier(String cName, ContainerServicesBase services) throws AcsJException 
 	{
-		this(cName, null, services);
+		this(cName, null, services, null);
+	}
+	
+	/**
+	 * Creates a new instance of SimpleSupplier.
+	 * Make sure you call {@link #disconnect()} when you no longer need this event supplier object.
+	 * 
+	 * @param cName
+	 *           name of the notification channel events will be published to.
+	 * @param services
+	 *           This is used to get the name of the component and to access the
+	 *           ACS logging system.
+	 * @param evProcCallback
+	 * 			Callback that handles the events' fate
+	 * @throws AcsJException
+	 *            There are literally dozens of CORBA exceptions that could be
+	 *            thrown by the SimpleSupplier class. Instead, these are
+	 *            converted into an ACS Error System exception for the
+	 *            developer's convenience.
+	 */
+	public SimpleSupplier(String cName, ContainerServicesBase services, 
+			EventProcessingCallback<? extends IDLEntity> evProcCallback) throws AcsJException 
+	{
+		this(cName, null, services, evProcCallback);
 	}
 
 	/**
@@ -121,7 +143,32 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	 *            converted into an ACS Error System exception for the
 	 *            developer's convenience.
 	 */
-	public SimpleSupplier(String cName, String channelNotifyServiceDomainName, ContainerServicesBase services) throws AcsJException 
+	public SimpleSupplier(String cName, String channelNotifyServiceDomainName, ContainerServicesBase services) throws AcsJException
+	{
+		this(cName, channelNotifyServiceDomainName, services, null);
+	}
+	
+	/**
+	 * Creates a new instance of SimpleSupplier.
+	 * Make sure you call {@link #disconnect()} when you no longer need this event supplier object.
+	 * 
+	 * @param cName
+	 *           name of the notification channel events will be published to.
+	 * @param channelNotifyServiceDomainName
+	 *           Channel domain name, which is being used to determine notification service.
+	 * @param services
+	 *           This is used to get the name of the component and to access the
+	 *           ACS logging system.
+	 * @param evProcCallback
+	 * 			Callback that handles the events' fate
+	 * @throws AcsJException
+	 *            There are literally dozens of CORBA exceptions that could be
+	 *            thrown by the SimpleSupplier class. Instead, these are
+	 *            converted into an ACS Error System exception for the
+	 *            developer's convenience.
+	 */
+	public SimpleSupplier(String cName, String channelNotifyServiceDomainName, ContainerServicesBase services, 
+			EventProcessingCallback<? extends IDLEntity> evProcCallback) throws AcsJException 
 	{
 		// sanity check
 		if (cName == null) {
@@ -185,8 +232,10 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 		
 		eventBuff = new CircularQueue();
 		
-		m_callback = new AcsNcReconnectionCallback(this);
-		m_callback.init(services, m_helper.getNotifyFactory());
+		reconnectCallback = new AcsNcReconnectionCallback(this);
+		reconnectCallback.init(services, m_helper.getNotifyFactory());
+		
+		eventProcCallback = evProcCallback;
 	}
 
 	// //////////////////////////////////////////////////////////////////////////
@@ -220,16 +269,18 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 
 		try {
 			// clean-up CORBA stuff
-			m_callback.disconnect();
-			m_services.deactivateOffShoot(m_callback);
+			reconnectCallback.disconnect();
+			m_services.deactivateOffShoot(reconnectCallback);
 			m_services.deactivateOffShoot(this);
 		} 
 		catch (Throwable thr) {
 			m_logger.log(Level.WARNING, errMsg + "could not deactivate the SimpleSupplier offshoot.", thr);
 		}
-		m_callback = null;
+		reconnectCallback = null;
 		m_proxyConsumer = null;
 		m_supplierAdmin = null;
+		
+		
 	}
 
 	
@@ -364,7 +415,8 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	 * @param se A complete structured event
 	 * @throws AcsJException if the event cannot be published for some reason or another.
 	 */
-	protected void publishCORBAEvent(StructuredEvent se) throws AcsJException {
+	protected <T extends IDLEntity> void publishCORBAEvent(StructuredEvent se,
+			T event) throws AcsJException {
 		try {
 			//Check the queue for remaining events
 			StructuredEvent tmp;
@@ -372,9 +424,19 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 				m_proxyConsumer.push_structured_event(tmp);
 			// Publish directly the given event (see CORBA NC spec 3.3.7.1)
 			m_proxyConsumer.push_structured_event(se);
+			if(eventProcCallback != null)
+				eventProcCallback.eventSent(event);
 		} catch (org.omg.CORBA.TRANSIENT e){
-			// the Notify Service is down... dropping the event
-			eventBuff.push(se);
+			// the Notify Service is down...
+			try {
+				eventBuff.push(se);
+			} catch (EventDroppedException ex) {
+				if(eventProcCallback != null)
+					eventProcCallback.eventDropped(event);
+			} finally{
+				if(eventProcCallback != null)
+					eventProcCallback.eventStoredInQueue(event);
+			}
 		} catch (org.omg.CosEventComm.Disconnected e) {
 			// declared CORBA ex
 			String reason = "Failed to publish event on channel '" + m_channelName + "': org.omg.CosEventComm.Disconnected was thrown.";
@@ -465,7 +527,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			m_logger.log(Level.INFO, "Channel:" + m_channelName + ", Event Type:" + typeName);
 		}
 
-		publishCORBAEvent(event);
+		publishCORBAEvent(event, customStruct);
 		m_count++;
 	}
 	
@@ -551,9 +613,37 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	
 	private IntHolder cp_ih;
 	
-	private AcsNcReconnectionCallback m_callback;
+	private AcsNcReconnectionCallback reconnectCallback;
 	
 	private CircularQueue eventBuff;
+	
+	protected EventProcessingCallback eventProcCallback;
 
 	// //////////////////////////////////////////////////////////////////////////
+	/**
+	 * Defines the different handlers according of the event's fate in the
+	 * Notification Channel. The developer is responsible to implement the handlers
+	 */
+	public static interface EventProcessingCallback<T extends IDLEntity>{
+		/**
+		 * Handler if the event was dropped
+		 * @param event 
+		 * 			the event to be handled
+		 */
+		public void eventDropped(T event);
+		
+		/**
+		 * Handler if the event was sent
+		 * @param event 
+		 * 			the event to be handled
+		 */
+		public void eventSent(T event);
+		
+		/**
+		 * Handler if the event was stored in the circular queue
+		 * @param event
+		 * 			the event to be handled
+		 */
+		public void eventStoredInQueue(T event);
+	}
 }

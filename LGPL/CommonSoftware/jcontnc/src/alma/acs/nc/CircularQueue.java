@@ -61,14 +61,19 @@ public class CircularQueue {
 	 * queue
 	 * 
 	 * @param e the event to be inserted in the queue
+	 * @throws EventDroppedException if the queue dropped an event, but the
+	 * object will be inserted anyways in the queue and the removed event will
+	 * be returned in the exception.
 	 */
 	
-	public void push(StructuredEvent e){
+	public void push(StructuredEvent e) throws EventDroppedException{
 		queue.add(e);
 		length++;
 		if(length > queue.capacity()-1){
-			queue.remove(0);
+			EventDroppedException ex = 
+				new EventDroppedException(queue.remove(0));
 			length--;
+			throw ex;
 		}
 	}
 	
@@ -94,5 +99,22 @@ public class CircularQueue {
 		}catch (IndexOutOfBoundsException ex)
 		{}
 		return e;
+	}
+	
+	public class EventDroppedException extends java.lang.Exception{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6138342262356370746L;
+		private final StructuredEvent event;
+		
+		public EventDroppedException (StructuredEvent event){
+			this.event = event;
+		}
+		
+		public StructuredEvent getEvent(){
+			return event;
+		}
+		
 	}
 }
