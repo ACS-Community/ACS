@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROlongSeq.cpp,v 1.97 2009/09/15 08:52:12 bjeram Exp $"
+* "@(#) $Id: baciROlongSeq.cpp,v 1.98 2009/09/16 07:55:41 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -32,7 +32,11 @@
 #include "baciMonitor_T.i"
 
 template class baci::Monitor<ACS_MONITOR_SEQ(long, CORBA::Long)>;
-template class baci::ROcommonImpl<ACS_RO_SEQ_T(long, CORBA::Long)>;
+
+//we explicitly instantiate just two methods, otherwise (instantiation of whole class) we have problem with the constructor of ROcommonImpl
+template void baci::ROcommonImpl<ACS_RO_SEQ_T(long, CORBA::Long)>::setAlarmFaultFamily(const char* ff);
+template void baci::ROcommonImpl<ACS_RO_SEQ_T(long, CORBA::Long)>::setAlarmFaultMember(const char* fm);
+
 template class baci::ROSeqContImpl<ACS_RO_SEQ_T(long, CORBA::Long)>;
 
 /*___oOo___*/
