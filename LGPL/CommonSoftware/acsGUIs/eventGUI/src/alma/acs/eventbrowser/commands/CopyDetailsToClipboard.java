@@ -1,4 +1,4 @@
-package alma.acs.eventbrowser.views;
+package alma.acs.eventbrowser.commands;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -18,6 +18,10 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
+
+import alma.acs.eventbrowser.views.EventDetailView;
+import alma.acs.eventbrowser.views.ParsedAnyData;
 
 public class CopyDetailsToClipboard extends AbstractHandler {
 
@@ -25,26 +29,25 @@ public class CopyDetailsToClipboard extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IWorkbenchWindow window = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPage page = window.getActivePage();
-		IViewPart view = page.findView(EventDetailView.ID);
+		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
+
 		Clipboard cb = new Clipboard(Display.getDefault());
-		ISelection selection = view.getSite().getSelectionProvider()
-				.getSelection();
-		List<ParsedAnyData> personList = new ArrayList<ParsedAnyData>();
+
+		ISelection selection = page.getSelection(EventDetailView.ID);
+		List<ParsedAnyData> parsedAnyList = new ArrayList<ParsedAnyData>();
 		if (selection != null && selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
-			for (Iterator<ParsedAnyData> iterator = ((ArrayList<ParsedAnyData>) sel)
-					.iterator(); iterator.hasNext();) {
-				ParsedAnyData person = iterator.next();
-				personList.add(person);
+			for (Iterator iterator = sel.iterator(); iterator.hasNext();) {
+				ParsedAnyData parsedAny = (ParsedAnyData)iterator.next();
+				parsedAnyList.add(parsedAny);
 			}
-		}
+		} else
+			return null;
 		StringBuilder sb = new StringBuilder();
-		for (ParsedAnyData person : personList) {
-			sb.append(parsedAnyDataToString(person));
+		for (ParsedAnyData parsedAny : parsedAnyList) {
+			sb.append(parsedAnyDataToString(parsedAny));
 		}
+		if (parsedAnyList.size() <= 0) return null;
 		TextTransfer textTransfer = TextTransfer.getInstance();
 		cb.setContents(new Object[] { sb.toString() },
 				new Transfer[] { textTransfer });
@@ -52,9 +55,9 @@ public class CopyDetailsToClipboard extends AbstractHandler {
 		return null;
 	}
 
-	private String parsedAnyDataToString(ParsedAnyData person) {
-		return person.getName() + "\t" + person.getType() + "\t"
-				+ person.getValue() + System.getProperty("line.separator");
+	private String parsedAnyDataToString(ParsedAnyData parsedAny) {
+		return parsedAny.getName() + "\t" + parsedAny.getType() + "\t"
+				+ parsedAny.getValue() + System.getProperty("line.separator");
 	}
 
 }

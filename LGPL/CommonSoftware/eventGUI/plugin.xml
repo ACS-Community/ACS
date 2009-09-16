@@ -71,7 +71,7 @@
                id="alma.acs.eventbrowser.views.servicesummary"
                minimized="false"
                moveable="true"
-               ratio="0.35f"
+               ratio="0.25f"
                relationship="left"
                relative="org.eclipse.ui.editorss"
                showTitle="true"
@@ -83,7 +83,7 @@
                id="alma.acs.eventbrowser.views.channeltree"
                minimized="false"
                moveable="true"
-               ratio="0.35f"
+               ratio="0.25f"
                relationship="stack"
                relative="alma.acs.eventbrowser.views.servicesummary"
                showTitle="true"
@@ -107,11 +107,11 @@
                id="alma.acs.eventbrowser.views.eventdetail"
                minimized="false"
                moveable="true"
-               ratio="0.5f"
+               ratio="0.65f"
                relationship="bottom"
                relative="alma.acs.eventbrowser.views.eventlist"
                showTitle="true"
-               standalone="true"
+               standalone="false"
                visible="true">
          </view>
       </perspectiveExtension>
@@ -152,6 +152,26 @@
                   value="ALMA ACS Event Browser">
             </property>
          </product>
+      </extension>
+      <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="alma.acs.eventbrowser.commands.CopyDetailsToClipboard"
+               description="Copy selected event details to clipboard"
+               id="alma.acs.eventbrowser.commands.Copy"
+               name="Copy">
+         </command>
+      </extension>
+      <extension
+            point="org.eclipse.ui.menus">
+         <menuContribution
+               locationURI="popup:alma.acs.eventbrowser.views.eventdetail">
+            <command
+                  commandId="alma.acs.eventbrowser.commands.Copy"
+                  label="Copy selection"
+                  style="push">
+            </command>
+         </menuContribution>
       </extension>
 
 </plugin>

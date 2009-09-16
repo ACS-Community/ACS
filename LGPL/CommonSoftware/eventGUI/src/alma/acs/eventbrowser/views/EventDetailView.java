@@ -2,6 +2,7 @@ package alma.acs.eventbrowser.views;
 
 import java.util.logging.Logger;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -10,6 +11,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.ISelectionListener;
@@ -79,6 +81,13 @@ public class EventDetailView extends ViewPart {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getTable());
 
 		viewer.setContentProvider(new DetailContentProvider());
+		
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getTable());
+		// Set the MenuManager
+		viewer.getTable().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
+
 		
 		// we're cooperative and also provide our selection
 		// at least for the TableViewer
