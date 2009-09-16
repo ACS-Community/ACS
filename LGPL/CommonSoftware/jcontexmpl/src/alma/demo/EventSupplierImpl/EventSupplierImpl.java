@@ -36,6 +36,7 @@ import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.SimpleSupplier;
 import alma.demo.SupplierCompOperations;
 
@@ -54,11 +55,12 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
     public void initialize(ContainerServices containerServices) throws ComponentLifecycleException
     {
     	super.initialize(containerServices);
-    	
+    	SimpleSupplier.EventProcessingCallback<alma.FRIDGE.temperatureDataBlockEvent> callback =
+    		new EventProcessingCallbackImpl();
     	try {
     		// Instantiate our supplier
     		m_supplier = new SimpleSupplier(alma.FRIDGE.CHANNELNAME_FRIDGE.value,  //the channel's name 
-    				m_containerServices);
+    				m_containerServices, callback);
     	}
     	catch (Exception e) {
     		throw new ComponentLifecycleException("failed to create SimpleSupplier for channel " + alma.FRIDGE.CHANNELNAME_FRIDGE.value, e);
@@ -105,4 +107,32 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
             throw (new AcsJCouldntPerformActionEx(thr)).toCouldntPerformActionEx();
         }
     }
+    
+	private class EventProcessingCallbackImpl implements 
+	SimpleSupplier.EventProcessingCallback<alma.FRIDGE.temperatureDataBlockEvent>
+	{
+
+		@Override
+		public void eventDropped(temperatureDataBlockEvent event) {
+			m_logger.log(Level.WARNING, "CALLBACK: Event dropped, trying to send again");
+			try {
+				m_supplier.publishEvent(event);
+			} catch (AcsJException e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void eventSent(temperatureDataBlockEvent event) {
+			m_logger.log(Level.INFO, "CALLBACK: Event sent successfully");
+			
+		}
+
+		@Override
+		public void eventStoredInQueue(temperatureDataBlockEvent event) {
+			m_logger.log(Level.INFO, "CALLBACK: Notify Service probably is down. Storing the event");
+			
+		}
+		
+	}
 }
