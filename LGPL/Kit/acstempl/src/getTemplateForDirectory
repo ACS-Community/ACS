@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #   
-# "@(#) $Id: getTemplateForDirectory,v 1.30 2005/10/06 10:37:31 mzampare Exp $" 
+# "@(#) $Id: getTemplateForDirectory,v 1.31 2009/09/17 16:18:17 nsaez Exp $" 
 #
 # who       when      what
 # --------  ----------  ----------------------------------------------
@@ -14,6 +14,7 @@
 # mzampare  2002-10-16  added support for config/CDB/schemas
 # psivera   2002-11-08  changed VLTDATA to ACSDATA
 # psivera   2003-06-03  added back the creation of msql dir for Sun OS
+# nsaez     2009-09-17  added responsible file to INTROOT
 #
 #************************************************************************
 #   NAME
@@ -353,6 +354,7 @@ INTROOT)
         chmod 775 $ROOT_NAME/$dir
     done
     echo "\n Remember to define \$INTROOT to make this area accessible.\n"
+    echo "[Jira] [isInCvs: yes/no] [$USER] [comments:] [`date "+%Y/%b/%d"`]" >> $ROOT_NAME/responsible
     ;;
 
 ACSROOT)
