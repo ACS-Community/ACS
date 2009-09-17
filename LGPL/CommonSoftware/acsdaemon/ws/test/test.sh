@@ -52,6 +52,12 @@ if [ $? -ne 0 ]; then
     echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyContainer"
     FLAG=1
 fi
+sleep 10
+acsdaemonStartContainer -t py -m casaContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 &> startpyCasaContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - starting CONTROL/AMBSOCKETSERVER/pyCasaContainer"
+    FLAG=1
+fi
 sleep 30
 
 
@@ -89,6 +95,12 @@ sleep 10
 acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyContainer -i 0 >> stoppyContainer.log
 if [ $? -ne 0 ]; then
     echo "FAILED - stoping CONTROL/AMBSOCKETSERVER/pyContainer"
+    FLAG=1
+fi
+sleep 10
+acsdaemonStopContainer -c CONTROL/AMBSOCKETSERVER/pyCasaContainer -i 0 >> stoppyCasaContainer.log
+if [ $? -ne 0 ]; then
+    echo "FAILED - stoping CONTROL/AMBSOCKETSERVER/pyCasaContainer"
     FLAG=1
 fi
 sleep 10

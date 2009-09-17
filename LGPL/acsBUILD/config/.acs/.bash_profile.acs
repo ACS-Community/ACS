@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.82 2009/09/03 12:37:05 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.83 2009/09/17 20:31:03 agrimstrup Exp $"
 #
 #
 #
@@ -796,11 +796,6 @@ then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
    fi
 
-   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CASA_ROOT/lib
-   fi
-
 elif [ "$OSYSTEM" = "Linux" ]
 then
    if  [ X"$RTAI_HOME" != X ]
@@ -823,11 +818,6 @@ then
    if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
    then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
-   fi
-
-   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
-   then
-       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CASA_ROOT/lib
    fi
 
 else
@@ -970,11 +960,6 @@ then
    PYTHONPATH=$ACSROOT/lib/python/site-packages:$PYTHONPATH
 fi
 
-if [ X"$CASA_ROOT" != X ]
-then
-   PYTHONPATH=$PYTHONPATH:$CASA_ROOT/lib/python
-fi
-   
 
 if [ X"$INTLIST" != X ]
 then

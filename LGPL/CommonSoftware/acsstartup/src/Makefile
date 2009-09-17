@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.50 2009/07/06 09:22:41 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.51 2009/09/17 20:31:03 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -53,6 +53,7 @@ SCRIPTS         = acsStartContainer acsStopContainer \
 		  acsNamingService \
 		  acsNotifyService \
 		  acsAlarmService \
+		  acsStartContainerWithCASA \
 		  acsstartupNotifyPortViaErrorCode
 
 

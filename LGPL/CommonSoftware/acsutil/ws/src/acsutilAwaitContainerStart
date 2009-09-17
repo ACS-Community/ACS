@@ -9,16 +9,22 @@ function printUsage
 	echo ""
 	echo "Options:"
 	echo "-h, --help      Prints this message and exits"
+	echo "-C, --casa      Incorporate CASA paths in container environment"
 	
 }
+
+CONTAINERSTARTCMD="acsStartContainer"
 
 if [ "$1" = "-h" -o "$1" = "--help" ] ; then
     printUsage;
     exit 0;
+elif [ "$1" = "-C" -o "$1" = "--casa" ] ; then
+    CONTAINERSTARTCMD="acsStartContainerWithCASA"
+    shift
 fi
 
 if [ "$#" -ne "2" ] ; then
-	echo "Error: wrong number of parameters provided"
+    echo "Error: wrong number of parameters provided"
     printUsage;
     exit 1;
 fi
@@ -31,7 +37,7 @@ then
 fi
 
 #replace /'s with _'s in the container name
-FILE=`echo "$2.out" | sed 's/\//_/g'`
+FILE=`echo "${!#}.out" | sed 's/\//_/g'`
 
 #params that go to acsutilBlock
 EXTRA_PARAMS=
@@ -43,4 +49,4 @@ then
 fi
 
 #Just delgate to helper script
-acsutilBlock -f $ACS_TMP/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS acsStartContainer $@
+acsutilBlock -f $ACS_TMP/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@
