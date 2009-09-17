@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.6 2009/09/15 09:04:34 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.7 2009/09/17 06:34:01 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciROpattern.h>
@@ -66,7 +66,6 @@ BaciTestAlarmClassImpl::BaciTestAlarmClassImpl(const ACE_CString& name,
     m_rwPatternProperty_sp(this)
 {
     ACS_TRACE("BaciTestAlarmClassImpl::BaciTestAlarmClassImpl");
-printf("FDGFDGDFDFG\n");
     m_rwPatternProperty_sp = new MyROPatternProperty(name+":rwPatternProperty", getComponent(), m_roPatternProperty_sp);
     m_roPatternProperty_sp->setAlarmFaultFamily("UserDefinedFF");
     m_roPatternProperty_sp->setAlarmFaultMember("UserDefinedFM");
