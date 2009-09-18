@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.41 2009/09/17 20:31:03 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.42 2009/09/18 18:59:31 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -110,7 +110,7 @@ acsutil_LIBS    = acscommonStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = acsutilTATPrologue acsutilTATEpilogue acsutilTATTestRunner acsutilProfiler acsutilDiffTrap acsutilRedo \
-		  acsutilBlock acsutilAwaitContainerStart acsutilCASAPython
+		  acsutilBlock acsutilAwaitContainerStart acsutilCASAPython acsutilCASAEnv
 SCRIPTS_L       = 
 
 #
