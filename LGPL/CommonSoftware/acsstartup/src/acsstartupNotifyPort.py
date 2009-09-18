@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupNotifyPort.py,v 1.2 2009/07/01 07:21:13 hyatagai Exp $
+# @(#) $Id: acsstartupNotifyPort.py,v 1.3 2009/09/18 06:39:11 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -58,6 +58,7 @@ import subprocess
 import socket
 
 from AcsutilPy.ACSPorts import getIP
+from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 __DEBUG__ = False
 container_file = None
@@ -99,11 +100,7 @@ def getPortsFile(baseport):
     
     #directory where all the process IDs of this particular instance of 
     #ACS are stored
-    if environ.has_key('ACS_TMP'):
-        ACS_TMP_DIR = str(environ['ACS_TMP'])
-    else:
-        ACS_TMP_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname()
-
+    ACS_TMP_DIR = getAcsTmpDirectoryPath()
     ACS_INSTANCE_DIR = ACS_TMP_DIR + '/ACS_INSTANCE.' + str(baseport)
 
     #make sure the acs instance directory exists

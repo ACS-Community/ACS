@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.28 2009/07/09 08:51:22 hyatagai Exp $
+# @(#) $Id: killACS.py,v 1.29 2009/09/18 06:39:11 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -36,16 +36,12 @@ from os.path import exists
 
 from optparse import OptionParser
 import socket
+from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 ################################################################################################
 
 #first thing we do is create a lock so this command cannot be run again until it
 #finishes
-if environ.has_key('ACS_TMP'):
-    ACS_TMP_DIR = str(environ['ACS_TMP'])
-else:
-    ACS_TMP_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname()
-
-ACS_INSTANCE_DIR = ACS_TMP_DIR
+ACS_INSTANCE_DIR = getAcsTmpDirectoryPath()
 #sanity check to ensure the temp directory exists
 if exists(ACS_INSTANCE_DIR):
     #sanity check to ensure the file exists
@@ -149,12 +145,14 @@ print "...done."
 print ""
 
 #Now everything should have been killed...let's try to cleanup $ACSDATA/tmp
-print "==> Cleaning up $ACSDATA/tmp/ - removing ACS_INSTANCE temporary directories..."
+dir = getAcsTmpDirectoryPath()
+print "==> Cleaning up " + dir + " - removing ACS_INSTANCE temporary directories..."
 try:
-    system('rm -rf $ACSDATA/tmp/ACS_INSTANCE*')
+    com = 'rm -rf ' + dir + '/ACS_INSTANCE*'
+    system(com)
     print "...done."
 except:
-    print "==> Failed to remove the ACS_INSTANCE directories from $ACSDATA/tmp/!"
+    print "==> Failed to remove the ACS_INSTANCE directories from " + dir + "!"
     print "    Please clean up this directory on your own!"
 
 

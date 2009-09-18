@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsContainersStatus.py,v 1.6 2009/07/01 07:21:13 hyatagai Exp $
+# @(#) $Id: acsContainersStatus.py,v 1.7 2009/09/18 06:39:11 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -46,6 +46,8 @@ from sys     import exit
 
 import socket
 
+from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
+
 #-----------------------------------------------------------------------------
 #--Functions
 def getPortsFile():
@@ -59,10 +61,7 @@ def getPortsFile():
     
     #directory where all the process IDs of this particular instance of 
     #ACS are stored
-    if environ.has_key('ACS_TMP'):
-        ACS_TMP_DIR = str(environ['ACS_TMP'])
-    else:
-        ACS_TMP_DIR = str(environ['ACSDATA']) + '/tmp/' + socket.gethostname()
+    ACS_TMP_DIR = getAcsTmpDirectoryPath()
 
     ACS_INSTANCE_DIR = ACS_TMP_DIR + '/ACS_INSTANCE.' + str(cl_baseport)
 
