@@ -33,7 +33,7 @@ fi
 #first need to figure out $ACS_TMP
 if [ "$ACS_TMP" = "" ]
 then 
-    export ACS_TMP=$ACSDATA/tmp
+    export ACS_TMP=$ACSDATA/tmp/`hostname -s`
 fi
 
 #replace /'s with _'s in the container name
