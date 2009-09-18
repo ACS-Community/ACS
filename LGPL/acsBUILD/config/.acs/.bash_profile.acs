@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.83 2009/09/17 20:31:03 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.84 2009/09/18 06:09:40 hyatagai Exp $"
 #
 #
 #
@@ -79,6 +79,7 @@
 #             # (external value always overwrite script default)
 # ACSDATA     # ACS run time files
 # ACS_CDB     # ACS configuration database file tree
+# ACS_TMP     # ACS tmporary directory, which contains ACS_INSTANCE.{n}
 # VLTROOT     # VLT Common software installation (if any)
 # VLTSW_RELEASE  # As above             
 #
@@ -500,6 +501,11 @@ VLTDATA=$ACSDATA
 if [ X"$ACS_CDB" = X ] || [ X"$ACS_RETAIN" = X ]
 then
    ACS_CDB=$ACSDATA/config/defaultCDB
+fi
+
+if [ X"$ACS_TMP" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   ACS_TMP=$ACSDATA/tmp/`hostname -s`
 fi
 
 # set the following variable to your default environment
