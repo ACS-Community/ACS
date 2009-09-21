@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -820,6 +821,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient volatile AtomicBoolean prevaylerAlarmState;
     
 	/**
+	 * Queue (per client) for its messages.
+	 */
+	protected transient Map<Client, LinkedList<ClientMessageTask>> clientMessageQueue;
+
+	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
 	 * @param	context				remote directory implementation
@@ -858,6 +864,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		pendingContainerShutdown = Collections.synchronizedSet(new HashSet());
 
 		prevaylerAlarmState = new AtomicBoolean(true);
+		
+		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
 		
 		// create threads
 		threadPool.prestartAllCoreThreads();
@@ -5077,23 +5085,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	    sendMessage(client, message, messageType, (short)0);
 	}
 
-	/**
-	 * Sends an message to the client.
-	 * @param	client		client to receive the message, non-<code>null</code>
-	 * @param	message		message to be sent, non-<code>null</code>
-	 * @param	messageType	type of the message, non-<code>null</code>
-	 * @param       messageID       identifier for this message
-	 */
-	private void sendMessage(Client client, String message, MessageType messageType, short messageID)
-	{
-		assert (client != null);
-		assert (message != null);
-		assert (messageType != null);
-
 		/**
 		 * Task thats invokes <code>Client#message</code> method.
 		 */
-		class ClientMessageTask implements Runnable
+		private class ClientMessageTask implements Runnable
 		{
 			private Client client;
 			private String message;
@@ -5124,18 +5119,73 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						}
 						break;
 					}
-					catch (RemoteException re)
+					catch (Throwable re)
 					{
-						logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.message' on "+client+".", re);
+						logger.log(Level.WARNING, "Exception caught while invoking 'Client.message' on "+client+".", re);
 					}
 				}
 			}
 		}
 
+	/**
+	 * Sends an message to the client.
+	 * @param	client		client to receive the message, non-<code>null</code>
+	 * @param	message		message to be sent, non-<code>null</code>
+	 * @param	messageType	type of the message, non-<code>null</code>
+	 * @param       messageID       identifier for this message
+	 */
+	private void sendMessage(Client client, String message, MessageType messageType, short messageID)
+	{
+		assert (client != null);
+		assert (message != null);
+		assert (messageType != null);
 
-		// spawn new task which surely does not block
-		threadPool.execute(new ClientMessageTask(client, message, messageType, messageID));
+		boolean newClient = false;
+		synchronized (clientMessageQueue) {
+			LinkedList<ClientMessageTask> list = clientMessageQueue.get(client);
+			if (list == null) {
+				list = new LinkedList<ClientMessageTask>();
+				clientMessageQueue.put(client, list);
+				newClient = true;
+			}
+			list.addLast(new ClientMessageTask(client, message, messageType, messageID));
+		}
+		
+		if (newClient)
+		{
+			class ClientQueuMessageTask implements Runnable
+			{
+				private Client client;
 
+				public ClientQueuMessageTask(Client client)
+				{
+					this.client = client;
+				}
+
+				public void run()
+				{
+					boolean moreMessages = true;
+					ClientMessageTask clientTask;
+					while (moreMessages) {
+						synchronized (clientMessageQueue) {
+							LinkedList<ClientMessageTask> list = clientMessageQueue.get(client);
+							if (list == null)
+								break;
+							clientTask = list.removeFirst();
+							moreMessages = !list.isEmpty();
+							if (!moreMessages) {
+								clientMessageQueue.remove(client);
+							}
+						}
+						// exception safe
+						if (clientTask != null) clientTask.run();
+					}
+				}
+			}
+
+			// spawn new task which surely does not block
+			threadPool.execute(new ClientQueuMessageTask(client));
+		}
 	}
 
 	/**
