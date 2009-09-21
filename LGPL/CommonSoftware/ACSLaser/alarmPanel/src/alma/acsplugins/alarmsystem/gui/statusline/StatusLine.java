@@ -62,7 +62,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	/**
 	 * The time to refresh the values of the widgets shown by the StatusLine
 	 */
-	private Timer timer=null;
+	private final Timer timer;
 	
 	/**
 	 * The time interval between 2 refreshes of the widgets
@@ -92,6 +92,10 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 		alarmPanel=panel;
 		tableModel=model;
 		initialize();
+		// Init the timer
+		timer = new Timer(TIMER_INTERVAL, this);
+		timer.setRepeats(true);
+		timer.addActionListener(this);
 		
 		connectionWidget.setConnectionState(ConnectionWidget.ConnectionStatus.DISCONNECTED);
 	}
@@ -136,12 +140,6 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 * Start the thread to update values
 	 */
 	public void start() {
-		if (timer!=null) {
-			throw new IllegalStateException("Already started");
-		}
-		timer = new Timer(TIMER_INTERVAL, this);
-		timer.setRepeats(true);
-		timer.addActionListener(this);
 		timer.start();
 	}
 	
@@ -149,11 +147,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	 * Stop the thread to update values
 	 */
 	public void stop() {
-		if (timer!=null) {
-			timer.stop();
-			timer.removeActionListener(this);
-			timer=null;
-		}
+		timer.stop();
 	}
 	
 	
