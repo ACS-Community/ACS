@@ -31,6 +31,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.lasercore.test.stress.CategoryClient;
 import alma.acs.lasercore.test.stress.category.AlarmView;
 import alma.acs.lasercore.test.stress.category.CategoryListener;
+import alma.acs.util.UTCUtility;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.CERNAlarmServiceHelper;
@@ -157,7 +158,7 @@ public class IDLSendAlarmTest extends ComponentClientTestCase implements Categor
 	public void testSendAlarmThroughIDL() throws Exception {
 		// Build the alarm
 		Triplet triplet = new Triplet(IDLTestFF, IDLTestFM, IDLTestFC);
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis(), 0);
+		long  timestamp = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
 		org.omg.CosPropertyService.Property[] props = new org.omg.CosPropertyService.Property[0];
 		alarmService.submitAlarm(
 				triplet, 

@@ -48,6 +48,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.util.UTCUtility;
 import alma.alarmsystem.Alarm;
 import alma.alarmsystem.CERNAlarmServicePOA;
 import alma.alarmsystem.Category;
@@ -60,6 +61,8 @@ import alma.alarmsystem.Timestamp;
 import alma.alarmsystem.Triplet;
 import alma.alarmsystem.corbaservice.AlarmSystemContainerServices;
 import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
+import alma.acstime.Epoch;
+import alma.acstime.EpochHelper;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.alarmsystem.core.mail.ACSMailAndSmsServer;
@@ -985,7 +988,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 			boolean active,
 			String sourceHostName,
 			String sourceName,
-			Timestamp timestamp,
+			long timestamp,
 			Property[] alarmProperties) throws BadParameterEx, UnexpectedExceptionEx {
 		cern.laser.source.alarmsysteminterface.impl.message.FaultState fs = new cern.laser.source.alarmsysteminterface.impl.message.FaultState();
 		fs.setCode(triplet.faultCode);
@@ -1006,11 +1009,13 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		}
 		fs.setUserProperties(props);
 		// Timestamp
+		long javaTime = UTCUtility.utcOmgToJava(timestamp);
+		long seconds = javaTime/1000;
+		long milliseconds = javaTime % 1000;
+		
 		cern.laser.source.alarmsysteminterface.impl.message.Timestamp tStamp = new cern.laser.source.alarmsysteminterface.impl.message.Timestamp();
-		long msecs=timestamp.miliseconds;
-		tStamp.setSeconds(msecs/1000);
-		long microSecs=(msecs-tStamp.getSeconds()*1000)*1000;
-		tStamp.setMicroseconds(microSecs);
+		tStamp.setSeconds(seconds);
+		tStamp.setMicroseconds(milliseconds*1000);
 		fs.setUserTimestamp(tStamp);
 		// Descriptor
 		if (active) {

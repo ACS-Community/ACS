@@ -26,6 +26,7 @@
 #include <CosProperty.idl>
 #include <ACSErrTypeCommon.idl>
 #include <AcsAlarmSystem.idl>
+#include <acscommon.idl>
 
 #pragma prefix "alma"
 
@@ -330,7 +331,7 @@ module alarmsystem
 			in boolean active,
 			in string sourceHostName,
 			in string sourceName,
-			in alarmsystem::Timestamp sourceTimestamp,
+			in ACS::Time sourceTimestamp,
 			in CosPropertyService::Properties alarmProperties)
 			 raises (ACSErrTypeCommon::BadParameterEx, ACSErrTypeCommon::UnexpectedExceptionEx);
 		
