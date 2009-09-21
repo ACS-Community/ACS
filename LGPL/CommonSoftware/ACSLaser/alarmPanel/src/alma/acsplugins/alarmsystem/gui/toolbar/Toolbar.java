@@ -470,14 +470,18 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 *  
 	 * @param paused <code>true</code> if the application is paused 
 	 */
-	public void updatePauseBtn(boolean paused) {
-		if (paused) {
-			pauseBtn.setIcon(pausedIcon);
-			pauseBtn.setText("Play");
-		} else {
-			pauseBtn.setIcon(notPausedIcon);
-			pauseBtn.setText("Pause");
-		}
+	public void updatePauseBtn(final boolean paused) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (paused) {
+					pauseBtn.setIcon(pausedIcon);
+					pauseBtn.setText("Play");
+				} else {
+					pauseBtn.setIcon(notPausedIcon);
+					pauseBtn.setText("Pause");
+				}
+			}
+		});
 	}
 
 	/**
