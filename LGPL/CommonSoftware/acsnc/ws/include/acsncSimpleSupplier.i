@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.26 2008/10/14 19:52:10 bjeram Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.27 2009/09/24 23:08:03 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002
  *    (c) European Southern Observatory, 2002
@@ -32,13 +32,27 @@
 namespace nc {
 //----------------------------------------------------------------------
 template <class T> void
-SimpleSupplier::publishData(T data)
+SimpleSupplier::publishData(T data, EventProcessingCallback<T> *evProcCallback)
 {
 	try
 	{
 		any_m <<= data;
 		Supplier::publishEvent(any_m);
+      if(evProcCallback != NULL)
+         evProcCallback->eventSent(data);
 	}
+   catch(CORBA::TRANSIENT &ex)
+   {
+      if(evProcCallback != NULL)
+         evProcCallback->eventStoredInQueue(data);
+   }
+   catch(EventDroppedException &ex)
+   {
+      if(evProcCallback != NULL){
+         evProcCallback->eventDropped(data);
+         evProcCallback->eventStoredInQueue(data);
+      }
+   }
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{
 		acsncErrType::PublishEventFailureExImpl ex(ex, __FILE__, __LINE__, "nc::Supplier::publishData");

@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_H
 #define SIMPLE_SUPPLIER_H
-/*    @(#) $Id: acsncSimpleSupplier.h,v 1.18 2008/10/09 07:57:41 cparedes Exp $
+/*    @(#) $Id: acsncSimpleSupplier.h,v 1.19 2009/09/24 23:08:03 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -43,6 +43,17 @@ namespace nc {
 class SimpleSupplier : public Supplier
 {
   public:
+	  /**
+		 * Event procesing callback interface definition
+		*/
+	  template<class T>
+		  class EventProcessingCallback{
+			  public:
+				  virtual void eventDropped(T event){}
+				  virtual void eventSent(T event){}
+				  virtual void eventStoredInQueue(T event){}
+				  virtual ~EventProcessingCallback(){}
+		  };
     ///////////////////////////////////////////////////////////////
     /**
      * Constructor. All the work is done in the superclass's constructor.
@@ -58,14 +69,16 @@ class SimpleSupplier : public Supplier
      * struct) to be sent. Really this is the only Supplier method developers 
      * should be invoking from their code.
      * @param data The templated data structure to be published.
+	  * @param evProcCallback Pointer to the callback to handle event's fate, by
+	  * default is null
      * @throw ACSErrTypeCommon::CORBAProblemEx
      * @htmlonly
        <br><hr>
        @endhtmlonly
      */
     template <class T> void 
-    publishData(T data);
-    
+    publishData(T data, EventProcessingCallback<T> *evProcCallback=NULL);
+
     ///////////////////////////////////////////////////////////////
   protected:
     /**
@@ -78,6 +91,7 @@ class SimpleSupplier : public Supplier
      * performance increase.
      */
     CORBA::Any any_m;
+
     ///////////////////////////////////////////////////////////////
   private:
     /**

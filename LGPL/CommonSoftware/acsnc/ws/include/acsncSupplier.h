@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.65 2009/08/28 23:18:16 javarias Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.66 2009/09/24 23:08:03 javarias Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -121,6 +121,9 @@ class Supplier :
      * which does not return control until the event has arrived whereever the 
      * Notification Service is actually running.
      * Makes a call to the push_structured_event() method of consumers.
+	  * @throw CORBA::TRANSIENT In case that the Notification Service is down
+	  * @throw nc::EventDroppedException In the case that que event buffer queue
+	  * discard a meesage.
      * @throw ACSErrTypeCommon::CORBAProblemEx
      * @return void
      * @htmlonly

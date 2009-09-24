@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.133 2008/10/01 04:30:47 cparedes Exp $"
+* "@(#) $Id: acsexmplFridgeImpl.cpp,v 1.134 2009/09/24 23:08:03 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,7 +40,7 @@
 #include <acsexmplFridgeImpl.h>
 #include <math.h>
 
-ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.133 2008/10/01 04:30:47 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplFridgeImpl, "$Id: acsexmplFridgeImpl.cpp,v 1.134 2009/09/24 23:08:03 javarias Exp $")
 using namespace baci;
 
 /**
@@ -319,11 +319,33 @@ FridgeControl::currTemperature ()
     return prop._retn();
 }
 /* --------------------- [ Notification Channel ] -----------------*/
+
+/* optional */
+/* Implement event processing callback */
+class FridgeEventsCallback :public nc::SimpleSupplier::EventProcessingCallback
+									 <FRIDGE::temperatureDataBlockEvent>
+{
+	public:
+		void eventDropped(FRIDGE::temperatureDataBlockEvent event)
+		{
+			ACS_SHORT_LOG((LM_WARNING, "Event Dropped"))
+		}
+		void eventSent(FRIDGE::temperatureDataBlockEvent event)
+		{
+			ACS_SHORT_LOG((LOCAL_LOGGING_LEVEL, "Event sent succesfully"))
+		}
+		void eventStoredInQueue(FRIDGE::temperatureDataBlockEvent event)
+		{
+			ACS_SHORT_LOG((LOCAL_LOGGING_LEVEL, "Notification Channel is down"))
+		}
+};
+
 void 
 FridgeControl::loadData()
 {
-    
     ACS_TRACE("::FridgeControl::loadData()");
+	 
+	 FridgeEventsCallback callback;
 
     ACSErr::Completion_var completion;
     double current=0.0;
@@ -350,9 +372,13 @@ FridgeControl::loadData()
     // push the data - this eventually calls setData
     if(m_FridgeSupplier_p)
 	{
-	m_FridgeSupplier_p->publishData<FRIDGE::temperatureDataBlockEvent>(data);
+	//m_FridgeSupplier_p->publishData<FRIDGE::temperatureDataBlockEvent>(data);
+		m_FridgeSupplier_p->publishData<FRIDGE::temperatureDataBlockEvent>
+			(data, &callback);
 	}
 }
+
+
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
 MACI_DLL_SUPPORT_FUNCTIONS(FridgeControl)

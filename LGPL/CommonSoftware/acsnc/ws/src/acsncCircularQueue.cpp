@@ -38,6 +38,8 @@ void CircularQueue::push(CosNotification::StructuredEvent e)
    if (length > max_size -1){
       queue.pop_front();
       length--;
+		EventDroppedException ex;
+		throw ex;
    }
 }
 

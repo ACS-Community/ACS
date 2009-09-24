@@ -27,6 +27,7 @@
 #define _NC_CIRCULAR_QUEUE_H_
 
 #include <deque>
+#include <iostream>
 #include <orbsvcs/CosNotificationC.h>
 
 namespace nc{
@@ -56,6 +57,8 @@ namespace nc{
          * queue
          * 
          * @param e the event to be inserted in the queue
+			* @throws EventDroppedException if the queue drop a message after to 
+			* push the event e
          */
          void push(CosNotification::StructuredEvent e);
          
@@ -72,6 +75,10 @@ namespace nc{
           */
          CosNotification::StructuredEvent *pop();
    };
+
+	class EventDroppedException: std::exception
+	{
+	};
 }
 
 #endif

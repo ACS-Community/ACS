@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.85 2009/09/09 21:18:06 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.86 2009/09/24 23:08:03 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -195,7 +195,7 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
         * The supplier will store the events.
         */
        eventBuff.push(event);
-
+	   throw ex;
     }
     catch(CosEventComm::Disconnected &ex)
     {
