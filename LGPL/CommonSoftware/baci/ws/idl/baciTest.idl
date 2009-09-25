@@ -52,6 +52,9 @@ module BACI_TEST {
   
     // Method to request shutdown of the server
     oneway void shutdown ();
+    
+    // request to change FF and FM
+    void changeAlarmFFFM(in string FF, in string FM);
 
     boolean isPropertiesMonitoringActive(); // @action 
 
