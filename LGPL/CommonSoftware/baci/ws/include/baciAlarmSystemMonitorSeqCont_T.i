@@ -67,8 +67,9 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 			this->setProperty("BACI_Value", ts.c_str());
 			this->setProperty("BACI_Position", n);
 
-			this->sendAlarm(this->lastAlarmFaultCode_m, false);
+			this->clearAlarm();//=this->sendAlarm(this->lastAlarmFaultCode_m, false);
 			alarmsRaised_mp[n] = 0;//=cleared
+			this->lastAlarmValue_m = val;
 		}
 		else if ((alarmsRaised_mp[n]!=-1) &&            // if not alarm low
 				(valueSeq[n]<=this->property_mp->alarm_low_on()))
@@ -85,6 +86,7 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 
 			this->sendAlarm(2, true);
 			alarmsRaised_mp[n] = -1;//raised value too low
+			this->lastAlarmValue_m = val;
 		}
 		else if ((alarmsRaised_mp[n]!=1) &&            // if not alarm hi 
 				(valueSeq[n]>=this->property_mp->alarm_high_on()))
@@ -102,6 +104,7 @@ void baci::AlarmSystemMonitorSeqCont<T, TPROP>::check(BACIValue &val,
 
 			this->sendAlarm(3, true);
 			alarmsRaised_mp[n] = 1;//raised value too high
+			this->lastAlarmValue_m = val;
 		}
 	}// for loop
 }//check

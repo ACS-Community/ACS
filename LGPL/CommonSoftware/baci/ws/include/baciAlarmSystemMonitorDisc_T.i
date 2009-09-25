@@ -37,9 +37,9 @@ void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
 	ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value change to: %s", this->property_mp->name(), ts.c_str()));
 
 	this->setProperty("BACI_Value", ts.c_str());
-	this->sendAlarm(1, false);
-
-	  this->alarmRaised_m = 0;
+	this->clearAlarm();//=this->sendAlarm(1, false);
+    this->alarmRaised_m = 0;
+    this->lastAlarmValue_m = val;
 	}
     else if ((this->alarmRaised_m==0) &&                   // no alarm for now
 	     (value>1))                              // alarm state
@@ -51,5 +51,6 @@ void baci::AlarmSystemMonitorDisc<T, TPROP>::check(BACIValue &val,
 	this->setProperty("BACI_Value", ts.c_str());
 	this->sendAlarm(1, true);
 	this->alarmRaised_m = 1;
+	this->lastAlarmValue_m = val;
 	} //if
 }//check

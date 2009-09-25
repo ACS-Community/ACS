@@ -37,8 +37,9 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 		ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value changed to: %s", this->property_mp->name(), ts.c_str()));
 
 		this->setProperty("BACI_Value", ts.c_str());
-		this->sendAlarm(this->lastAlarmFaultCode_m, false);
+		this->clearAlarm(); //=	this->sendAlarm(this->lastAlarmFaultCode_m, false);
 		this->alarmRaised_m = 0;
+		this->lastAlarmValue_m = val;
 	}
 	else if ((this->alarmRaised_m!=-1) &&            // if not alarm low
 			(value<=this->property_mp->alarm_low_on()))
@@ -51,6 +52,7 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 		this->setProperty("BACI_Value", ts.c_str());
 		this->sendAlarm(2, true);
 		this->alarmRaised_m = -1;
+		this->lastAlarmValue_m = val;
 	}
 	else if ((this->alarmRaised_m!=1) &&            // if not alarm high
 			(value>=this->property_mp->alarm_high_on()))
@@ -63,6 +65,7 @@ void baci::AlarmSystemMonitorCont<T, TPROP>::check(BACIValue &val,
 		this->setProperty("BACI_Value", ts.c_str());
 		this->sendAlarm(3, true);
 		this->alarmRaised_m = 1;
+		this->lastAlarmValue_m = val;
 	}
 }//check
 

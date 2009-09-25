@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.1 2009/09/15 10:49:58 bjeram Exp $"
+ * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.2 2009/09/25 13:50:08 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -72,15 +72,50 @@ public:
 
 	virtual void destroy () {}
 
+	/**
+	 * set level of the alarm
+	 * @parm alarm level
+	 */
+	void setLevel(int level){ alarmLevel_m = level; }
+
+	/**
+	 * (re)set Alarm's fault family
+	 * @param fault family
+	 */
+	void setFaultFamily(const char *ff);
+
+	/**
+	 * (re)set Alarm's fault member
+	 * @param fault member
+	 */
+	void setFaultMember(const char *fm);
+
+protected:
+
 	virtual void check(BACIValue &val,
 			const ACSErr::Completion & c,
 			const ACS::CBDescOut & desc )=0;
 
 	/**
-	 * Send an alarm to the AlarmSystem
+	 * Send an alarm with a certain alarm code to the AlarmSystem
+	 * @parm code alarm code
+	 * @parm active true-raise an alarm, false-clear an alarm
 	 */
 	void sendAlarm(int code, bool active);
 
+
+	/**
+	 * Clear the alarm that was previously set/raised. For the alarm code it is used alarm code used for sending/raising the alarm.
+	 * Main goal of the method is to be called when fault family or fault member is changed to clear the alarm.
+	 */
+	virtual void clearAlarm();
+
+
+	/**
+	 * Check last value that caused an alarm for the alarm.
+	 * The purpose of the method is to be used afer fault family or fault member is changed.
+	 */
+	virtual void recheckAlarm();
 
 	/**
 	 * sets property of the alarm.
@@ -102,23 +137,6 @@ public:
 		setProperty(name, ts.c_str());
 	}//setProperty<>
 
-	/**
-	 * set level of the alarm
-	 * @parm alarm level
-	 */
-	void setLevel(int level){ alarmLevel_m = level; }
-
-	/**
-	 * (re)set Alarm's fault family
-	 * @param fault family
-	 */
-	void setFaultFamily(const char *ff);
-
-	/**
-	 * (re)set Alarm's fault member
-	 * @param fault member
-	 */
-	void setFaultMember(const char *fm);
 
 private:
 
@@ -149,14 +167,19 @@ protected:
 	// The alarm system source
 	auto_ptr<acsalarm::AlarmSystemInterface> alarmSource_map;
 
+	/// indicator (flag) if an alarm was raised.
+	/// in case of pattern how many alarms were raised
+	/// in case of continues types like long/dobule etc. -1 low alarm, 1 high alarm
 	int alarmRaised_m;
 
 	std::string faultMember_m;  /// alarm fault member that is used to send alarm
 	std::string faultFamily_m;  /// alarm fault  family that is used to send alarm
 
-	int lastAlarmFaultCode_m; ///fault code of sent alarm
-
 	int alarmLevel_m;  /// alarm's level (priorty)
+
+
+	int lastAlarmFaultCode_m; ///fault code of sent alarm
+	BACIValue lastAlarmValue_m;	//value that caused (raised or cleared) the last alarm
 
 	// here we can store alarm propertes
 	std::map<std::string, std::string> alarmProperties_m;

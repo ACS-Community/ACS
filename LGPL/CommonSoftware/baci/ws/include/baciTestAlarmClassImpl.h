@@ -19,7 +19,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
+ * "@(#) $Id: baciTestAlarmClassImpl.h,v 1.4 2009/09/25 13:50:08 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -81,6 +81,7 @@ class MyROPatternProperty : public baci::RWpattern
 	      Completion &completion,
 	      CBDescOut &descOut);
     
+
   private:
     /** 
      * m_roPatternProperty_p is never created in this class.
@@ -124,6 +125,13 @@ class BaciTestAlarmClassImpl: public baci::CharacteristicComponentImpl,
      * Servant shutdown request function
      */
     virtual void shutdown ();
+
+    /**
+     * we can change FF and FM from a client so that we can test this functionalty
+     * @param FF
+     * @param FM
+     */
+    void changeAlarmFFFM(const char*, const char*);
 
     /**
      * Check the status of the monitoring thread and logs it

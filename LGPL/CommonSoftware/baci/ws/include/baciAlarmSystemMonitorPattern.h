@@ -27,6 +27,10 @@ class baci_EXPORT AlarmSystemMonitorPattern : public AlarmSystemMonitorDisc<ACS:
 	       const ACSErr::Completion & c,
 	       const ACS::CBDescOut & desc );
  
+  protected:
+    //we need specia version for pattern
+    virtual void clearAlarm();
+
   private:
     // lastValue that	  
 	ACS::pattern lastValue_m;
