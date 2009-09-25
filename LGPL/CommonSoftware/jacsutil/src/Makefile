@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.17 2008/02/19 15:00:58 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.18 2009/09/25 21:31:07 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -29,7 +29,7 @@
 # rtobar   2008-02-19 added tools.jar file to classpath
 #
 
-CLASSPATH = $(JAVA_HOME)/lib/tools.jar:.
+CLASSPATH := $(JAVA_HOME)/lib/tools.jar:$(CLASSPATH):.
 
 #
 # 3rd party Install files
@@ -81,7 +81,7 @@ man   : do_man
 
 install : install_all
 	@echo " . . . copying jacorb property files"
-	-@cp ../config/orb.properties $(VLTDATA)/config;
+	-@cp ../config/orb.properties $(ACSDATA)/config;
 	@echo " . . . installation done"
 
 #___oOo___
