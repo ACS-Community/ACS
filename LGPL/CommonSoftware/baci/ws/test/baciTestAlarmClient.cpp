@@ -18,14 +18,14 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
+ * "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
  * oat      2008-02-02 created
  */
  
-static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -57,7 +57,7 @@ using namespace BACI_TEST;
  * of done invocations as well as the name of the BACI property it's monitoring, receiving
  * an asynchronous value from, etc.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
  */
 class CommonCallback
 {
@@ -96,7 +96,7 @@ class CommonCallback
  * property.  There are only two useful methods: alarm_raised and alarm_cleared.  They
  * do just what their names imply.
  * 
- * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.3 2008/10/01 02:26:45 cparedes Exp $"
+ * @version "@(#) $Id: baciTestAlarmClient.cpp,v 1.4 2009/09/25 13:59:26 bjeram Exp $"
  */
 class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant stub
 		       protected CommonCallback
@@ -180,17 +180,18 @@ class MyAlarmpattern : public virtual POA_ACS::Alarmpattern,    //CORBA servant 
 class WorkerThreadPattern : public ACS::Thread
 { 
   public:
-    WorkerThreadPattern(const ACE_CString& name, 
-			ACS::RWpattern_var rwPattern, 
+    WorkerThreadPattern(const ACE_CString& name,
+    		BACI_TEST::BaciTestAlarmClass* comp,
 			const ACS::TimeInterval& responseTime=ThreadBase::defaultResponseTime, 
 			const ACS::TimeInterval& sleepTime=ThreadBase::defaultSleepTime) :
 	ACS::Thread(name, responseTime, sleepTime)
 	{
 	    ACS_TRACE("WorkerThreadPattern::WorkerThreadPattern");
-	    rwPattern_m = rwPattern;
+	    comp_m = BACI_TEST::BaciTestAlarmClass::_duplicate(comp);
+	    rwPattern_m = comp_m->rwPatternProperty();
 	    count = 0;
-	    numValues = 8;
-	    values = new int[8];
+	    numValues = 9;
+	    values = new int[numValues];
 	                    // 1011 - alarm_mask read from the CDB (decimal 11), three bits considered
                             // 1101 - alarm_trigger read from the CDB (decimal 13)
                             // 0010 - default value read from the CDB (decimal 2), no alarm raised 
@@ -202,6 +203,8 @@ class WorkerThreadPattern : public ACS::Thread
 	    values[5] = 9;  // 1001 - 3 bits present in alarm_trigger, 3 alarms raised
 	    values[6] = 2;  // 0010 - no bit present in alarm_trigger, all 3 alarms cleared
 	    values[7] = 6;  // 0110 - the bit present in alarm_trigger is not present in alarm_mask, no alarm raised
+	    //we added this that we have an alarm before we change FF and FM
+	    values[8] = 1;  // 0001 - 2 bits present in alarm_trigger, 2 alarms raised
 
 	    ACS_SHORT_LOG((LM_INFO, "%s: Created thread", getName().c_str()));
 	}
@@ -238,7 +241,6 @@ class WorkerThreadPattern : public ACS::Thread
 
 		    ACE_OS::sleep(1);
 
-
 		    }
 		catch(...)
 		    {
@@ -246,8 +248,25 @@ class WorkerThreadPattern : public ACS::Thread
 		    }
 		}
 	    else {
-	    setStopped();
-	    ACS_SHORT_LOG((LM_INFO, "%s: Stopped thread", getName().c_str()));
+	    	ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we have a previous alarm."));
+	    	// first heaving an alarm
+	    	comp_m->changeAlarmFFFM("UserDefinedFF", "UserDefinedFM");
+
+	    	// reset all alarms
+	    	ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we do not have a previous alarm."));
+	    	ACS_SHORT_LOG((LM_INFO, "==> First we reset all alarms an wait that are actaully cleared."));
+	    	ACS_SHORT_LOG((LM_INFO, "%s: Setting rwPattern to %d", getName().c_str(), 2));
+			rwPattern_m->set_sync(2);
+			ACE_OS::sleep(2); //we have to wait that alarm is actually cleaned
+			ACS_SHORT_LOG((LM_INFO, "==> After resting alarms  we set new FF FM"));
+			comp_m->changeAlarmFFFM("AnotherUserDefinedFF", "AnotherUserDefinedFM");
+
+			ACS_SHORT_LOG((LM_INFO, "==>  Generate an alarm after we have changed FF, FM."));
+	    	ACS_SHORT_LOG((LM_INFO, "%s: Setting rwPattern to %d", getName().c_str(), 1));
+			rwPattern_m->set_sync(1);
+
+	    	setStopped();
+	    	ACS_SHORT_LOG((LM_INFO, "%s: Stopped thread", getName().c_str()));
 	    }
 	}
 
@@ -260,6 +279,7 @@ class WorkerThreadPattern : public ACS::Thread
     // alarm high on : 80
     int * values; 
     ACS::pattern prop_m;
+    BACI_TEST::BaciTestAlarmClass_var comp_m;
 };
 
 
@@ -348,7 +368,7 @@ int main (int argc, char **argv)
 	
 
 	// create the thread 
-	WorkerThreadPattern threadPattern_p /*threadManager.create<WorkerThreadPattern,ACS::RWpattern_var>*/ ("actionThreadPattern", rwPattern, ThreadBase::defaultResponseTime, ThreadBase::defaultSleepTime*10 /*=1s*/);
+	WorkerThreadPattern threadPattern_p ("actionThreadPattern", comp, ThreadBase::defaultResponseTime, ThreadBase::defaultSleepTime*10 /*=1s*/);
 	// by default threads that are not created using a thread manager are creatd suspended so we have to resume them!!
 	threadPattern_p.resume();
 	
@@ -359,9 +379,10 @@ int main (int argc, char **argv)
 	//of this example.
 	ACS_SHORT_LOG((LM_INFO,"baciTestAlarmClient: main thread, entering ORB loop to sleep..."));
 
-	ACE_Time_Value tv(20);
+	ACE_Time_Value tv(25);
 
 	BACI_CORBA::getORB()->run(tv); 
+
 
 	//Must cleanly destroy the alarm
 	ACS_SHORT_LOG((LM_INFO,"Alarm subscriptions deleted")); 
