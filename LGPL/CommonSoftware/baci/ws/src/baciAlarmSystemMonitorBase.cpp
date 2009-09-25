@@ -56,24 +56,49 @@ void baci::AlarmSystemMonitorBase::setFaultFamily(const char *ff)
 	ACE_TRACE("baci::AlarmSystemMonitorBase::setFaultFamily");
 	ACE_Guard<ACE_Recursive_Thread_Mutex>  protSect(faultStructMutex_m);
 
+	// first we have to clear actual alarm if there is any
 	if (this->alarmRaised_m !=0)
 	{
-		//@TBD clear eventual alarm
+		clearAlarm();
+		this->faultFamily_m = ff;
+		recheckAlarm();
 	}
-	this->faultFamily_m = ff;
+	else
+	{
+		this->faultFamily_m = ff;
+	}//if-else
 }//setFaultFamily
 
 void baci::AlarmSystemMonitorBase::setFaultMember(const char *fm)
 {
 	ACE_TRACE("baci::AlarmSystemMonitorBase::setFaultMember");
 	ACE_Guard<ACE_Recursive_Thread_Mutex>  protSect(faultStructMutex_m);
+
+	// first we have to clear actual alarm if there is any
 	if (this->alarmRaised_m !=0)
 	{
-		//@TBD clear eventual alarm
+		clearAlarm();
+		this->faultMember_m = fm;
+		recheckAlarm();
 	}
-	this->faultMember_m = fm;
+	else
+	{	this->faultMember_m = fm;
+
+	}
 }//setFaultMember
 
+void baci::AlarmSystemMonitorBase::clearAlarm()
+{
+	sendAlarm(lastAlarmFaultCode_m, false);
+	alarmRaised_m = 0;
+}//clearAlarm
+
+void baci::AlarmSystemMonitorBase::recheckAlarm()
+{
+	ACSErr::Completion c;
+	ACS::CBDescOut desc;
+	check(lastAlarmValue_m, c, desc);
+}//recheckAlarm
 
 void baci::AlarmSystemMonitorBase::sendAlarm(int code, bool active) {
 /**
