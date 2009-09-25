@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jacorb.orb.acs.AcsORBProfiler;
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
@@ -49,6 +51,8 @@ import org.omg.PortableServer.POAManagerPackage.State;
 import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
 import org.omg.PortableServer.POAPackage.AdapterNonExistent;
 import org.omg.PortableServer.POAPackage.InvalidPolicy;
+
+import si.ijs.maci.ContainerHelper;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
@@ -90,7 +94,11 @@ public class AcsCorba
 {
 	private org.omg.CORBA.ORB m_orb;
 
+	/**
+	 * POA manager shared among RootPOA, ContainerPOA, component shared parent poa, offshoot poas, *BUT NOT with the component poas*.
+	 */
 	private POAManager sharedPoaManager;
+	
 	private POA m_rootPOA;
 	private POA m_containerPOA;
 	private POA m_componentPOA;
@@ -229,6 +237,12 @@ public class AcsCorba
 			initPOAForComponents();
 			
 			setInitialized(true);
+			
+			// register orb profiler
+//			if (m_orb instanceof AcsProfilingORB) {
+//				AcsORBProfiler profiler = new ContainerOrbProfiler(m_logger);
+//				((AcsProfilingORB)m_orb).registerAcsORBProfiler(profiler);
+//			}
 		} catch (Throwable thr) {
 			if (thr instanceof AcsJContainerEx) {
 				throw (AcsJContainerEx) thr;
@@ -410,8 +424,10 @@ public class AcsCorba
 		}
 		finally {
 			if (contPolicies != null) {
-				for (int polInd = 0; polInd < contPolicies.length; polInd++) {
-					contPolicies[polInd].destroy();
+				for (Policy policy : contPolicies) {
+					if (policy != null) {
+						policy.destroy();
+					}
 				}
 			}
 		}
@@ -708,6 +724,24 @@ public class AcsCorba
 		return actObj;
 	}
 
+	/**
+	 * Encapsulates {@link POA#servant_to_reference(Servant)} for the container servant.
+	 * @since ACS 8.1 when {@link Servant#_this_object(ORB)} was replaced by {@link POA#servant_to_reference(Servant)}
+	 *        in {@link AcsContainer#loginToManager} to avoid a second activation of the container servant, on the RootPOA.
+	 */
+	public si.ijs.maci.Container getContainerCorbaRef(AcsContainer container)
+		throws AcsJContainerEx
+	{
+		try {
+			return ContainerHelper.narrow(m_containerPOA.servant_to_reference(container));
+		} catch (Exception ex) { // ServantNotActive, WrongPolicy (needs RETAIN and UNIQUE_ID or IMPLICIT_ACTIVATION)
+			AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+			ex2.setContextInfo("failed to retrieve corba ref for container servant " + container.name());
+			throw ex2;
+		}
+	}
+	
+	
 	/**
 	 * Creates a new POA that is responsible for exactly one component.
 	 * Dependent CORBA objects (offshoots) are activated through a child POA. 

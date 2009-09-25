@@ -334,8 +334,7 @@ public class AcsContainer extends ContainerPOA
      * @throws AcsJContainerServicesEx
      */
     protected void loginToManager() throws AcsJContainerEx {
-        Container thisContainer = _this(m_acsCorba.getORB());
-        m_managerProxy.loginToManager(thisContainer, true);
+        m_managerProxy.loginToManager(m_acsCorba.getContainerCorbaRef(this), true);
     }
 
 
