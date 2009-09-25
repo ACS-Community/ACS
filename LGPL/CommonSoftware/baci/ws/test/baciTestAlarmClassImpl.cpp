@@ -1,7 +1,7 @@
 ////#include <baciTestAlarmClassImpl.h>
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.7 2009/09/17 06:34:01 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciTestAlarmClassImpl.cpp,v 1.8 2009/09/25 13:58:59 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciROpattern.h>
@@ -67,8 +67,8 @@ BaciTestAlarmClassImpl::BaciTestAlarmClassImpl(const ACE_CString& name,
 {
     ACS_TRACE("BaciTestAlarmClassImpl::BaciTestAlarmClassImpl");
     m_rwPatternProperty_sp = new MyROPatternProperty(name+":rwPatternProperty", getComponent(), m_roPatternProperty_sp);
-    m_roPatternProperty_sp->setAlarmFaultFamily("UserDefinedFF");
-    m_roPatternProperty_sp->setAlarmFaultMember("UserDefinedFM");
+    //m_roPatternProperty_sp->setAlarmFaultFamily("UserDefinedFF");
+    //m_roPatternProperty_sp->setAlarmFaultMember("UserDefinedFM");
 
     /*
      * Here we are at the top of the hierarchy and we do not have
@@ -102,6 +102,11 @@ BaciTestAlarmClassImpl::shutdown()
     CORBAShutdown::shutdown();
 }
 
+void BaciTestAlarmClassImpl::changeAlarmFFFM(const char* ff, const char *fm)
+{
+	m_roPatternProperty_sp->setAlarmFaultFamily(ff);
+	m_roPatternProperty_sp->setAlarmFaultMember(fm);
+}//changeAlarmFFFM
 
 CORBA::Boolean
 BaciTestAlarmClassImpl::isPropertiesMonitoringActive() 
