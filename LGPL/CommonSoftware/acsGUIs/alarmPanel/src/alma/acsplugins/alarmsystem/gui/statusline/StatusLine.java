@@ -32,6 +32,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
+import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
@@ -57,7 +58,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	/**
 	 * The alarm panel
 	 */
-	private final AlarmPanel alarmPanel;
+	private final CernSysPanel alarmPanel;
 	
 	/**
 	 * The time to refresh the values of the widgets shown by the StatusLine
@@ -82,7 +83,7 @@ public class StatusLine extends JPanel implements ActionListener, ConnectionList
 	/**
 	 * Constructor
 	 */
-	public StatusLine(AlarmTableModel model, AlarmPanel panel) {
+	public StatusLine(AlarmTableModel model, CernSysPanel panel) {
 		if (model==null) {
 			throw new IllegalArgumentException("The AlarmTableModel can't be null");
 		}

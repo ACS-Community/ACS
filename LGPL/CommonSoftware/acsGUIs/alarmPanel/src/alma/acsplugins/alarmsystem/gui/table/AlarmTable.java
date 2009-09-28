@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.16 2009/07/01 16:54:13 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.17 2009/09/28 15:28:21 acaproni Exp $
  * @since    
  */
 
@@ -69,6 +69,7 @@ import javax.swing.table.TableRowSorter;
 
 import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
+import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
@@ -343,7 +344,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	/**
 	 * The panel showing this table
 	 */
-	private final AlarmPanel panel;
+	private final CernSysPanel panel;
 	
 	/**
 	 * The sorter for sorting the rows of the table
@@ -446,7 +447,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param model The model for this table
 	 * @param panel The panel showing this table
 	 */
-	public AlarmTable(AlarmTableModel model, AlarmPanel panel) {
+	public AlarmTable(AlarmTableModel model, CernSysPanel panel) {
 		super(model);
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null model in constructor");

@@ -49,6 +49,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
+import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
@@ -227,7 +228,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	/**
 	 * The panel showing the toolbar
 	 */
-	private final AlarmPanel alarmPanel;
+	private final CernSysPanel alarmPanel;
 	
 	/**
 	 * The combo box for auto-acknowledgment of alarms
@@ -316,7 +317,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 * @param reduce <code>true</code> if the reduction rules are applied at startup
 	 * @param panel The panel showing the toolbar
 	 */
-	public Toolbar(AlarmTable table, AlarmTableModel model, boolean reduce, AlarmPanel panel) {
+	public Toolbar(AlarmTable table, AlarmTableModel model, boolean reduce, CernSysPanel panel) {
 		super();
 		if (table==null) {
 			throw new IllegalArgumentException("The table can't be null");

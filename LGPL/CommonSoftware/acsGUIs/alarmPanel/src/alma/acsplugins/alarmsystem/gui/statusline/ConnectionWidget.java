@@ -30,6 +30,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
 import alma.acsplugins.alarmsystem.gui.AlarmPanel;
+import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 
 /**
  * The widget showing the status of the connection with an icon and
@@ -97,7 +98,7 @@ public class ConnectionWidget extends JLabel implements ActionListener {
 			class ShowPopup extends Thread {
 				MouseEvent e;
 				public ShowPopup(MouseEvent e) {
-					reconnectMI.setEnabled(currentState!=ConnectionStatus.CONNECTED && !alarmPanel.isConencting());
+					reconnectMI.setEnabled(currentState!=ConnectionStatus.CONNECTED && !alarmPanel.isConnecting());
 					this.e=e;
 				}
 				public void run() {
@@ -108,22 +109,30 @@ public class ConnectionWidget extends JLabel implements ActionListener {
 		}
 	}
 	
-	// The popmenu shown when the user presses the mouse button over the label
+	/**
+	 * The popmenu shown when the user presses the mouse button over the label
+	 */
 	private JPopupMenu popMenu;
 	
-	// The menu item to reconnect
+	/**
+	 *  The menu item to reconnect
+	 */
 	private JMenuItem reconnectMI;
 	
-	// The actual state of the connection
+	/**
+	 *  The actual state of the connection
+	 */
 	private ConnectionStatus currentState;
 	
-	// The main panel
-	private AlarmPanel alarmPanel;
+	/**
+	 * The panel for the CERN alarm system
+	 */
+	private CernSysPanel alarmPanel;
 	
 	/**
 	 * Constructor
 	 */
-	public ConnectionWidget(AlarmPanel panel) {
+	public ConnectionWidget(CernSysPanel panel) {
 		if (panel==null) {
 			throw new IllegalArgumentException("The AlarmPanel can't be null");
 		}
