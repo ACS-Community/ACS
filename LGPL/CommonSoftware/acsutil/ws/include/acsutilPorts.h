@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilPorts.h,v 1.7 2008/10/27 20:43:56 msekoran Exp $"
+* "@(#) $Id: acsutilPorts.h,v 1.8 2009/09/28 08:40:13 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -144,6 +144,18 @@ class ACSPorts
 
     static std::string
     getCDBPort();
+
+    /**
+     * @return the port the ACS Alarm Service is running on.
+     * @htmlonly
+     <br><hr>
+     @endhtmlonly
+     */
+    static std::string
+    getAlarmServicePort(int baseport);
+
+    static std::string
+    getAlarmServicePort();
 
     /**
      * @return the port the ACS Container Daemon is running on.

@@ -184,6 +184,26 @@ ACSPorts::getCDBPort()
 }
 
 /**
+ * @return the port the ACS Alarm Service is running on.
+ * @htmlonly
+ * <br><hr>
+ * @endhtmlonly
+ */
+std::string
+ACSPorts::getAlarmServicePort(int baseport)
+{
+    std::ostringstream realOutput;
+    realOutput << setw(4) << setfill('0') << (baseport*100 + 3000 + 13) << ends;    return realOutput.str();
+}
+
+std::string
+ACSPorts::getAlarmServicePort()
+{
+    return ACSPorts::getAlarmServicePort(getBasePort());
+}
+
+
+/**
  * @return the port the ACS Container Daemon is running on.
  * @htmlonly
  * <br><hr>
