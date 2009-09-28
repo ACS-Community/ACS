@@ -35,6 +35,7 @@ void baci::AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
       this->setProperty("BACI_Value", ts.c_str());
       this->sendAlarm(1, true);
       this->alarmRaised_m = true;
+      this->lastAlarmValue_m = val;
       }
   if (!this->property_mp->checkAlarm(T(value)) && this->alarmRaised_m )
       {
@@ -43,8 +44,9 @@ void baci::AlarmSystemMonitorEnumProp<T, TPROP>::check(BACIValue &val,
       ACS_SHORT_LOG((LM_ALERT, "Alarm for property: %s cleared. Value change to: %s", this->property_mp->name(), ts.c_str()));
 
       this->setProperty("BACI_Value", ts.c_str());
-      this->sendAlarm(1, false);
+      this->clearAlarm();//=this->sendAlarm(1, false);
       this->alarmRaised_m = false;
+      this->lastAlarmValue_m = val;
       }
 }//check
 
