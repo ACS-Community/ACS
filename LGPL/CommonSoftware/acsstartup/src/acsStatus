@@ -132,6 +132,11 @@ then
     echo "ACS CDB process ID is: $PID"
 fi
 #---------------------------
+if PID=`getAlarmServicePid`
+then
+    echo "ACS Alarm Service process ID is: $PID"
+fi
+#---------------------------
 echo ""
 acsContainersStatus
 echo ""
