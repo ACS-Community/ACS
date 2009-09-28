@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsAlarmService,v 1.3 2009/06/20 17:15:04 acaproni Exp $"
+# "@(#) $Id: acsAlarmService,v 1.4 2009/09/28 20:03:06 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -57,7 +57,6 @@ CL_STOP=false
 CL_WAIT=false
 CL_BASEPORT=
 CL_HELP=
-CL_RECOVER=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
@@ -79,7 +78,6 @@ Options:
    -w | -wait                       wait for service to get started
    -b | -baseport INSTANCE          the acs instance (0-9) you want to use
    -t | -timeout MULTIPLIER         the maximum timeout can be increased by specifying an integer value greater than 1
-   -r | -recoverClientConnections   force services to recover client connections
    -h | -help                       prints this help and exits
 EOF
 }
@@ -107,8 +105,6 @@ do
     -b)                           CL_BASEPORT=$2 ; shift ;;
     --timeout)                    export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
     -t)                           export ACS_STARTUP_TIMEOUT_MULTIPLIER=$2 ; shift ;;
-    --recoverClientConnections)   CL_RECOVER=true ;; 
-    -r)                           CL_RECOVER=true ;; 
     --help)                       CL_HELP=true ;; 
     -h)                           CL_HELP=true ;; 
     --start)                      CL_START=true ;; 
