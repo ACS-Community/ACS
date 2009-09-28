@@ -19,13 +19,14 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.26 2009/07/01 16:54:13 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.27 2009/09/28 15:29:06 acaproni Exp $
  * @since    
  */
 
 package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 
@@ -36,10 +37,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 
+import alma.acs.alarmsystem.corbaservice.AlarmServiceUtils;
 import alma.acs.container.ContainerServices;
 import alma.alarmsystem.clients.CategoryClient;
 
@@ -55,48 +58,20 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 /**
  * 
  * The panel showing alarms
- *
+ * <P>
+ * The panel has a different content in the following situations:
+ * <UL>
+ * 	<LI>The ACS AS is in use
+ * 	<LI>The CERN AS is use but the alarm client is not connected to the alarm service
+ * 	<LI>The CERN AS is use and the alarm client is connected to the alarm service
+ * </UL>
  */
 public class AlarmPanel extends JPanel implements IPanel {
-	
-	/**
-	 * The startup option for reduction rules
-	 */
-	public final boolean ACTIVATE_RDUCTION_RULES=true;
-	
+
 	/**
 	 * The container services
 	 */
     private ContainerServices contSvc=null;
-	
-	/**
-	 * The model of the table of alarms
-	 */
-	private AlarmTableModel model;
-	
-	/**
-	 * The table of alarms
-	 */
-	private AlarmTable alarmTable;
-	
-	/**
-	 * The table with the details of an alarm
-	 */
-	private AlarmDetailTable detailTable;
-	
-	/**
-	 * The scroll pane of the table
-	 */
-	private JScrollPane tableScrollPane = new JScrollPane(
-			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	
-	/**
-	 * The scroll pane of the details table
-	 */
-	private JScrollPane detailsScrollPane = new JScrollPane(
-			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	
 	/**
 	 * The window that shows this panel
@@ -104,50 +79,57 @@ public class AlarmPanel extends JPanel implements IPanel {
     private JFrame frame=null;
     
     /**
-     *  The client to listen alarms from categories
+     * The panel shown when the CERN alarm system is in use
+     * and the client is connected to the AS
      */
-    private CategoryClient categoryClient=null;
+    private final CernSysPanel cernSysPnl;
     
     /**
-     * The toolbar
+     * The panel shown when the ACS alarm system is in use.
+     * <P>
+     * This panel contains a label to inform the user to open jlog instead
      */
-    private Toolbar toolbar;
+    private AcsAlSysPanel acsASPnl=new AcsAlSysPanel();
     
     /**
-     * The status line
+     * The panel shown when the AS is not available even if the CERN
+     * AS is in use.
+     * <P>
+     * This panel is shown at startup until the client connects to the AS.
+     * The purpose is to inform the user that the AS is not available but can signal 
+     * an error if the AS did not start.
      */
-    private StatusLine statusLine;
+    private AlSysNotAvailPanel alSysNotAvailPnl=new AlSysNotAvailPanel();
     
     /**
-     * The listener of the connection
+     * The layout to choose which panel the GUI shows
      */
-    private ConnectionListener connectionListener;
+    private final CardLayout layout = new CardLayout();
     
     /**
-     * Say if there is an attempt to connect
+     * The panel showing the a different container for each situation
      */
-    private volatile boolean connecting=false;
+    private final JPanel panel = new JPanel();
     
     /**
-     * <code>true</code> if the panel has been closed.
-     * It helps stopping the connection thread
+     * The name (in the layout) of <code>alSysNotAvailPnl</code>
      */
-    private volatile boolean closed=false;
+    public static final String alSysNotAvailName="CERN_N/A_pnl";
     
     /**
-     * The thread to connect/disconnect
+     * The name (in the layout) of <code>cernSysPnl</code>
      */
-    private Thread connectThread;
+    public static final String cernSysName="CERN_pnl";
     
     /**
-     * Signal the thread to teminate
+     * The name (in the layout) of <code>acsASPnl</code>
      */
-    private Thread disconnectThread;
+    public static final String acsASName="ACS_pnl";
     
     /**
-     * The split pane dividing the table of alarms and the detail view
+     * <code>true</code> if the alarm system in use is the ACS implementation
      */
-    private JSplitPane splitPane;
+    private boolean isAcsAs;
 	
 	/**
 	 * Constructor 
@@ -155,6 +137,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public AlarmPanel() {
 		super(true);
+		cernSysPnl=new CernSysPanel(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -170,6 +153,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		}
 		this.frame=frame;
 		this.frame.setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"flag_red.png")).getImage());
+		cernSysPnl=new CernSysPanel(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -178,68 +162,40 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 *
 	 */
 	private void initialize() {
+		panel.setLayout(layout);
+		panel.add(alSysNotAvailPnl, alSysNotAvailName);
+		panel.add(cernSysPnl, cernSysName);
+		panel.add(acsASPnl, acsASName);
+
+		// At this stage the alarm system is unavailable  but we do not know yet
+		// which is the type of alarm system in use
+		panel.setLayout(layout);
+		
 		setLayout(new BorderLayout());
+		add(panel,BorderLayout.CENTER);
 		
-		// Build GUI objects
-		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
-		alarmTable = new AlarmTable(model,this);
-		statusLine = new StatusLine(model,this);
-		connectionListener=statusLine;
-		model.setConnectionListener(statusLine);
-		detailTable = new AlarmDetailTable();
-		
-		// The table of alarms
-		tableScrollPane.setViewportView(alarmTable);
-		Dimension minimumSize = new Dimension(300, 150);
-		tableScrollPane.setMinimumSize(minimumSize);
-		tableScrollPane.setPreferredSize(minimumSize);
-		
-		// The details table
-		detailsScrollPane.setViewportView(detailTable);
-		
-		// The panel with the details
-		JPanel detailsPanel = new JPanel();
-		BoxLayout layout = new BoxLayout(detailsPanel,BoxLayout.Y_AXIS);
-		detailsPanel.setLayout(new BorderLayout());
-		
-		JPanel lblPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		lblPnl.add(new JLabel("Alarm details"));
-		detailsPanel.add(lblPnl,BorderLayout.PAGE_START);
-		detailsPanel.add(detailsScrollPane,BorderLayout.CENTER);
-		minimumSize = new Dimension(120, 150);
-		detailsPanel.setMinimumSize(minimumSize);
-		detailsPanel.setPreferredSize(minimumSize);
-		
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,tableScrollPane,detailsPanel);
-		splitPane.setOneTouchExpandable(true);
-		splitPane.setResizeWeight(1);
-		//splitPane.setDividerLocation(tableScrollPane.getMinimumSize().width);
-		add(splitPane,BorderLayout.CENTER);
-		
-		// Add the toolbar
-		toolbar=new Toolbar(alarmTable,model,ACTIVATE_RDUCTION_RULES,this);
-		add(toolbar,BorderLayout.NORTH);
-		
-		// Add the status line
-		add(statusLine,BorderLayout.SOUTH);
+		// This method is executed before setting the ContainerService
+		// and so at this stage we do not know if the AS is CERN or ACS
+		// but for sure we are not connected to the alarm service
+		showPanel(alSysNotAvailName);
 	}
 	
 	/**
+	 * Pause by delegating to the cern panel
+	 * 
 	 * @see IpauseResume
 	 */
 	public void pause() throws Exception {
-		model.pause(true);
-		statusLine.pause();
-		toolbar.updatePauseBtn(true);
+		cernSysPnl.pause();
 	}
 	
 	/**
-	 * @see IPauseResume
+	 * Unpause by delegating to the cern panel
+	 * 
+	 * @see IpauseResume
 	 */
 	public void resume() throws Exception {
-		model.pause(false);
-		statusLine.resume();
-		toolbar.updatePauseBtn(false);
+		cernSysPnl.resume();
 	}
 	
 	/**
@@ -256,41 +212,14 @@ public class AlarmPanel extends JPanel implements IPanel {
 		if (contSvc==null) {
 			throw new Exception("PluginContainerServices not set");
 		}
-		class StartAlarmPanel extends Thread {
-			public void run() {
-				AlarmPanel.this.connect();
-			}
-		}
-		closed=false;
-		// Connect the categoryClient only if it is null
-		if (categoryClient==null) {
-			connectThread = new StartAlarmPanel();
-			connectThread.setName("StartAlarmPanel");
-			connectThread.setDaemon(true);
-			connectThread.start();
-		}
+		cernSysPnl.start();
 	}
 	
 	/**
 	 * @see SubsystemPlugin
 	 */
 	public void stop() throws Exception {
-		class StopAlarmPanel extends Thread {
-			public void run() {
-				try {
-					AlarmPanel.this.disconnect();
-				} catch (Throwable t) {
-					System.err.println("Ignored error while disconnecting category client: "+t.getMessage());
-					t.printStackTrace(System.err);
-				}
-			}
-		}
-		closed=true;
-		disconnectThread = new StopAlarmPanel();
-		disconnectThread.setName("StopAlarmPanel");
-		disconnectThread.start();
-		model.close();
-		alarmTable.close();
+		cernSysPnl.stop();
 	}
 	
 	/**
@@ -298,6 +227,8 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public void setServices (ContainerServices ctrl) {
 		contSvc=ctrl;
+		cernSysPnl.setContainerServices(contSvc);
+		initAlarmServiceType();
 	}
 	
 	/**
@@ -319,6 +250,8 @@ public class AlarmPanel extends JPanel implements IPanel {
 			throw new IllegalArgumentException("Invalid null ContainerServices");
 		}
 		contSvc=cs;	
+		cernSysPnl.setContainerServices(cs);
+		initAlarmServiceType();
 	}
 	
 	/**
@@ -331,101 +264,12 @@ public class AlarmPanel extends JPanel implements IPanel {
 	}
 	
 	/**
-	 * Connect
-	 */
-	public void connect() {
-		if (connecting || closed) {
-			return;
-		}
-		connecting=true;
-		connectionListener.connecting();
-		try {
-			categoryClient = new CategoryClient(contSvc);
-		} catch (Throwable t) {
-			System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
-			t.printStackTrace(System.err);
-			connectionListener.disconnected();
-			categoryClient=null;
-			connecting=false;
-			return;
-		}
-		/**
-		 * Try to connect to the alarm service until it becomes available
-		 */
-		while (true && !closed) {
-			try {
-				categoryClient.connect((AlarmSelectionListener)model);
-				// If the connection succeeded then exit the loop
-				break;
-			} catch (AcsJCannotGetComponentEx cgc) {
-				// Wait 30 secs before retrying
-				// but checks if it is closed every second.
-				int t=0;
-				while (t<30) {
-					if (closed) {
-						return;
-					}
-					try {
-						Thread.sleep(1000);
-					} catch (Exception e) {}
-					t++;
-				}
-				continue; // Try again
-			} catch (Throwable t) {
-				System.err.println("Error connecting CategoryClient: "+t.getMessage()+", "+t.getClass().getName());
-				t.printStackTrace(System.err);
-				connectionListener.disconnected();
-				connecting=false;
-				return;
-			}
-		}
-		if (closed) {
-			model.setCategoryClient(null);
-			return;
-		}
-		connecting=false;
-		connectionListener.connected();
-		statusLine.start();
-		model.setCategoryClient(categoryClient);
-	}
-	
-	/**
-	 * Disconnect
-	 */
-	public void disconnect() {
-		statusLine.stop();
-		model.setCategoryClient(null);
-		// wait until the connect thread terminates (if it is running)
-		while (connectThread!=null && connectThread.isAlive()) {
-			try {
-				Thread.sleep(1500);
-			} catch (Exception e) {}
-		}
-		try {
-			categoryClient.close();
-		} catch (Throwable t) {
-			System.err.println("Error closinging CategoryClient: "+t.getMessage());
-			t.printStackTrace(System.err);
-		} finally {
-			categoryClient=null;
-			connectionListener.disconnected();
-		}
-	}
-	
-	/**
 	 * @return <code>true</code> if an attempt to connect is running
 	 */
-	public boolean isConencting() {
-		return connecting;
+	public boolean isConnecting() {
+		return cernSysPnl.isConnecting();
 	}
 
-	/**
-	 * @return the categoryClient
-	 */
-	public CategoryClient getCategoryClient() {
-		return categoryClient;
-	}
-	
 	/**
 	 * A method to send alarms to the GUI outside of the alarm service.
 	 * <P>
@@ -441,22 +285,16 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * 
 	 */
 	public synchronized void addSpecialAlarm(Alarm alarm) throws Exception {
-		if (alarm==null || alarm.getAlarmId()==null || alarm.getAlarmId().isEmpty()) {
-			throw new Exception("The alarm cant'be null and must have a valid ID!");
-		}
-		model.onAlarm(alarm);
+		cernSysPnl.addSpecialAlarm(alarm);
 	}
 
 	/**
 	 * Show a message in the status line
 	 * 
-	 * @param mesg
-	 * @param red
-	 * 
 	 * @see StatusLine
 	 */
 	public void showMessage(String mesg, boolean red) {
-		statusLine.showMessage(mesg, red);
+		cernSysPnl.showMessage(mesg, red);
 	}
 	
 	/**
@@ -466,9 +304,62 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * 				if <code>null</code> the details table is cleared.
 	 */
 	public void showAlarmDetails(Alarm alarm) {
-		detailTable.showAlarmDetails(alarm);
+		cernSysPnl.showAlarmDetails(alarm);
 	}
 	
+	/**
+	 * Read the type of the alarm system in use.
+	 * <P> 
+	 * If it is not possible to get the type, then we set the alarm type as <code>false</code> because
+	 * in that case an error panel is shown.
+	 * <P>
+	 * If the AS is ACS, the ACS panel is shown.
+	 */
+	private void initAlarmServiceType() {
+		if (contSvc==null) {
+			throw new IllegalStateException("The ContainerServices is still null!");
+		}
+		System.out.println("getAlarmServiceType");
+		AlarmServiceUtils utils = new AlarmServiceUtils(contSvc);
+		boolean ret=false;
+		try {
+			ret=utils.getAlarmServiceType();
+		} catch (Throwable t) {
+			System.err.println("Unable to get the alarm system type: "+t.getMessage());
+			t.printStackTrace(System.err);
+		}
+		isAcsAs=ret;
+		// Show the ACS panel
+		if (isAcsAs) {
+			showPanel(acsASName);
+		}
+	}
 	
+	/**
+	 * Show the panel with the given name
+	 * 
+	 * @param panelName The not <code>null</code> and not empty
+	 * 					name of the panel to show
+	 * 
+	 * @throws IllegalArgumentException panelName is not a valid panel name
+	 */
+	public void showPanel(final String panelName) {
+		if (panelName==null || panelName.isEmpty()) {
+			throw new IllegalArgumentException("Invalid name of panel (null or empty name)");
+		}
+		boolean found=false;
+		if (panelName.equals(cernSysName) || panelName.equals(acsASName) || panelName.equals(alSysNotAvailName)) {
+			found=true;
+		}
+		if (!found) {
+			throw new IllegalArgumentException("Panel name "+panelName+" NOT defined");
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				layout.show(panel, panelName);
+			}
+		});
+	}
 }
 
