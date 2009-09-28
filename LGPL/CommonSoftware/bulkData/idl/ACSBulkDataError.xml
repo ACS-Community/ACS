@@ -25,6 +25,6 @@
 	<ErrorCode name="AVSetReceiverNameError" shortDescription="Set receiver name error" description=""/>
 	<ErrorCode name="AVSetReceiverError" shortDescription="Set receiver error" description=""/>
 	<ErrorCode name="AVNotificationMechanismError" shortDescription="Notification Mechanism error" description=""/>
-
+	<ErrorCode name="AVFlowNumbersNotMatchingError" shortDescription="Flow numbers not maching error" description=""/>
 </Type>
 

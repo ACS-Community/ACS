@@ -23,9 +23,9 @@ AcsBulkdata::BulkDataSender<TSenderCallback>::~BulkDataSender()
 	    disconnectPeer();
 	    }
 	}
-    catch(ACSBulkDataError::AVFlowEndpointErrorExImpl &ex)
+    catch(ACSBulkDataError::AVDisconnectErrorExImpl &ex)
 	{
-	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::~BulkDataSender");
+	ACSBulkDataError::AVDisconnectErrorExImpl err = ACSBulkDataError::AVDisconnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::~BulkDataSender");
 	err.log(LM_ERROR);
 	}
     catch(...)
@@ -281,7 +281,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::connectToPeer(bulkdata::BulkD
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
-	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(__FILE__,__LINE__,"BulkDataSender::connectToPeer");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::connectToPeer");
 	throw err;
 	}
     catch(...)
@@ -604,7 +604,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
     // ACE_Time_Value elapsed_time;
     // elapsed_timer.elapsed_time (elapsed_time);
     // cout << "Elapsed_time in msec " << elapsed_time.msec () << endl;
- }
+}
 
 
 template<class TSenderCallback>
@@ -749,6 +749,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::disconnectPeer()
 	ACE_OS::sleep(1); // idem: seems necessary to give time to remove the streamCtrl
 
 	deleteFepsA();
+
 	deleteSepA();
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
@@ -1313,59 +1314,83 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 {
     ACS_TRACE("BulkDataSender<>::mergeFlowSpecs");
 
-    CORBA::ULong dim = senderFeps_m.length();
-    flowSpec_m.length(dim);
-
-    ACE_CString flowname;  
-    ACE_CString direction = "IN";
-    ACE_CString formatName = "USER_DEFINED";
-    ACE_CString flowProtocol = "";
-    ACE_CString carrierProtocol;
-    ACE_CString localAddress;
-    ACE_CString remoteAddress;
-
-    ACE_INET_Addr *peerAddr_p = new ACE_INET_Addr();
-    char buf[BUFSIZ];
-
-    for(CORBA::ULong i = 0; i < dim; i++)
+    try
 	{
-	TAO_Forward_FlowSpec_Entry senderEntry;
-	TAO_Forward_FlowSpec_Entry recvEntry;
+	CORBA::ULong senderDim = senderFeps_m.length();
+	CORBA::ULong receiverDim = recvFeps_p->length();
 
-	int is = senderEntry.parse(senderFeps_m[i]);
-	if(is != 0)
+	if(senderDim != receiverDim)
 	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs sender_protocols[%d] CDB entry not correct",i));
-	    ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
-	    throw err;	
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs sender and receiver flow numbers not matching"));	
+	    ACSBulkDataError::AVFlowNumbersNotMatchingErrorExImpl err = ACSBulkDataError::AVFlowNumbersNotMatchingErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	    throw err;
 	    }
 
-	int ir = recvEntry.parse(recvFeps_p[i]);
-	if(ir != 0)
-	    {
-	    ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs recv_protocols[%d] CDB entry not correct",i));
-	    ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
-	    throw err;	
-	    }
+	flowSpec_m.length(senderDim);
 
-	flowname = CORBA::string_dup(senderEntry.flowname());
-	carrierProtocol = CORBA::string_dup(senderEntry.carrier_protocol_str());
-	localAddress = CORBA::string_dup(senderEntry.address_str());
+	ACE_CString flowname;  
+	ACE_CString direction = "IN";
+	ACE_CString formatName = "USER_DEFINED";
+	ACE_CString flowProtocol = "";
+	ACE_CString carrierProtocol;
+	ACE_CString localAddress;
+	ACE_CString remoteAddress;
+
+	ACE_INET_Addr *peerAddr_p = new ACE_INET_Addr();
+	char buf[BUFSIZ];
+
+	for(CORBA::ULong i = 0; i < senderDim; i++)
+	    {
+	    TAO_Forward_FlowSpec_Entry senderEntry;
+	    TAO_Forward_FlowSpec_Entry recvEntry;
+
+	    int is = senderEntry.parse(senderFeps_m[i]);
+	    if(is != 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs sender_protocols[%d] CDB entry not correct",i));
+		ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+		throw err;	
+		}
+
+	    int ir = recvEntry.parse(recvFeps_p[i]);
+	    if(ir != 0)
+		{
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::mergeFlowSpecs recv_protocols[%d] CDB entry not correct",i));
+		ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+		throw err;	
+		}
+
+	    flowname = CORBA::string_dup(senderEntry.flowname());
+	    carrierProtocol = CORBA::string_dup(senderEntry.carrier_protocol_str());
+	    localAddress = CORBA::string_dup(senderEntry.address_str());
       
-	peerAddr_p = ACE_dynamic_cast(ACE_INET_Addr *, recvEntry.get_peer_addr());
-	peerAddr_p->addr_to_string(buf, BUFSIZ);
-	remoteAddress = buf;
+	    peerAddr_p = ACE_dynamic_cast(ACE_INET_Addr *, recvEntry.get_peer_addr());
+	    peerAddr_p->addr_to_string(buf, BUFSIZ);
+	    remoteAddress = buf;
 
-	const char *locEntry = createFwdFlowSpec(flowname,
-						 direction,
-						 formatName,
-						 flowProtocol,
-						 carrierProtocol,
-						 localAddress,
-						 remoteAddress);
+	    const char *locEntry = createFwdFlowSpec(flowname,
+						     direction,
+						     formatName,
+						     flowProtocol,
+						     carrierProtocol,
+						     localAddress,
+						     remoteAddress);
 
-	flowSpec_m[i] = CORBA::string_dup(locEntry);
+	    flowSpec_m[i] = CORBA::string_dup(locEntry);
+	    }
+
+	//  delete peerAddr_p;
+
 	}
-
-    //  delete peerAddr_p;
+    catch(ACSErr::ACSbaseExImpl &ex)
+	{
+	ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	throw err;
+	}
+    catch(...)
+	{
+	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
+	throw err;
+	}
 }

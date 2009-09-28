@@ -85,6 +85,32 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::multiConnect(b
 
     ACE_OS::strcpy(buf,dao_p->get_string("sender_protocols"));
 
+    char bufrecv[BUFSIZ];
+    ACE_OS::strcpy(bufrecv,dao_p->get_string("recv_protocols"));
+
+    int senderFeps = 1;
+    if(ACE_OS::strcmp(buf, "") != 0)
+	{
+	TAO_Tokenizer senderAddressToken(buf, '/');
+	senderFeps = senderAddressToken.num_tokens();
+	}
+
+    int recvFeps = 1;
+    if(ACE_OS::strcmp(bufrecv, "") != 0)
+	{
+	TAO_Tokenizer recvAddressToken(bufrecv, '/');
+	recvFeps = recvAddressToken.num_tokens();
+	}
+
+    if(senderFeps != recvFeps)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl<>::multiconnect sender and receiver flow numbers not matching"));	
+	ACSBulkDataError::AVFlowNumbersNotMatchingErrorExImpl ex = ACSBulkDataError::AVFlowNumbersNotMatchingErrorExImpl(__FILE__,__LINE__,"BulkDataDistributerImpl<>::multiconnect");
+	ACSBulkDataError::AVConnectErrorExImpl err = ACSBulkDataError::AVConnectErrorExImpl(ex,__FILE__,__LINE__,"BulkDataDistributerImpl::multiConnect");
+	throw err.getAVConnectErrorEx();
+	}
+
+
     // TBD; not used for now; waiting for requirements 
     try
 	{
