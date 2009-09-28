@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.15 2009/06/30 20:35:52 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.16 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,15 @@ void ServiceDefinitionBuilderImpl::add_naming_service (
     if (host != NULL && host[0] != '\0') services_definition_xml = services_definition_xml + " host=\"" + host + "\"";
     services_definition_xml = services_definition_xml + " />\n";
 }
-    
+   
+void ServiceDefinitionBuilderImpl::add_alarm_service (
+    const char * host)
+{
+    services_definition_xml = services_definition_xml + "<" + acsServices[ALARM_SERVICE].xmltag;
+    if (host != NULL && host[0] != '\0') services_definition_xml = services_definition_xml + " host=\"" + host + "\"";
+    services_definition_xml = services_definition_xml + " />\n";
+}
+ 
 void ServiceDefinitionBuilderImpl::add_notification_service (
     const char * name,
     const char * host)
@@ -255,6 +263,20 @@ void ACSServicesHandlerImpl::start_naming_service (
     context->processRequest(IMP, START_SERVICE, desc, callback);
 }
 
+void ACSServicesHandlerImpl::start_alarm_service (
+    ::acsdaemon::DaemonCallback_ptr callback,
+    ::CORBA::Short instance_number
+  )
+  ACE_THROW_SPEC ((
+    ACSErrTypeCommon::BadParameterEx,
+    acsdaemonErrType::ServiceAlreadyRunningEx
+  ))
+{
+    ACS_SHORT_LOG ((LM_INFO, "Starting Alarm Service (instance %d).", instance_number));
+    ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ALARM_SERVICE, instance_number);
+    context->processRequest(IMP, START_SERVICE, desc, callback);
+}
+
 void ACSServicesHandlerImpl::start_notification_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
@@ -371,7 +393,21 @@ void ACSServicesHandlerImpl::stop_naming_service (
     ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(NAMING_SERVICE, instance_number);
     context->processRequest(IMP, STOP_SERVICE, desc, callback);
 }
-    
+
+void ACSServicesHandlerImpl::stop_alarm_service (
+    ::acsdaemon::DaemonCallback_ptr callback,
+    ::CORBA::Short instance_number
+  )
+  ACE_THROW_SPEC ((
+    ACSErrTypeCommon::BadParameterEx,
+    acsdaemonErrType::ServiceNotRunningEx
+  ))
+{
+    ACS_SHORT_LOG ((LM_INFO, "Stopping Alarm Service (instance %d).", instance_number));
+    ACSServiceRequestDescription *desc = new ACSServiceRequestDescription(ALARM_SERVICE, instance_number);
+    context->processRequest(IMP, STOP_SERVICE, desc, callback);
+}
+ 
 void ACSServicesHandlerImpl::stop_notification_service (
     const char * name,
     ::acsdaemon::DaemonCallback_ptr callback,
@@ -481,6 +517,7 @@ ACSServicesHandlerImpl::getServices(short instance_number, bool recovery)
     sdb->add_logging_service(DAEMONHOST, "Log");
     sdb->add_acs_log(DAEMONHOST);
     sdb->add_xml_cdb(DAEMONHOST, recovery, getenv("ACS_CDB"));
+    sdb->add_alarm_service(DAEMONHOST);
     sdb->add_manager(DAEMONHOST, "", recovery);
     
     #undef DAEMONHOST

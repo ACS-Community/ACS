@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServicesHandlerImpl.h,v 1.11 2009/07/27 11:27:59 msekoran Exp $"
+* "@(#) $Id: acsServicesHandlerImpl.h,v 1.12 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,10 @@ class ServiceDefinitionBuilderImpl : public POA_acsdaemon::ServiceDefinitionBuil
 
     void add_naming_service (
         const char * host);
-    
+   
+    void add_alarm_service (
+        const char * host);
+ 
     void add_notification_service (
         const char * name,
         const char * host);
@@ -327,6 +330,24 @@ class ACSServicesHandlerImpl : public POA_acsdaemon::ServicesDaemon {
         acsdaemonErrType::ServiceNotRunningEx
       ));
     
+    void start_alarm_service (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceAlreadyRunningEx
+      ));
+
+    void stop_alarm_service (
+        ::acsdaemon::DaemonCallback_ptr callback,
+        ::CORBA::Short instance_number
+      )
+      ACE_THROW_SPEC ((
+        ACSErrTypeCommon::BadParameterEx,
+        acsdaemonErrType::ServiceNotRunningEx
+      ));
+ 
     void start_acs (
         acsdaemon::DaemonSequenceCallback_ptr callback,
         ::CORBA::Short instance_number,

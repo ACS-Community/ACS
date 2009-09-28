@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.23 2009/06/12 13:32:14 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.24 2009/09/28 19:46:49 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lACSErrTypeCORBA -lTAO_Messaging -lacsQoS -lacsAlSysSource
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lACSErrTypeCORBA -lTAO_Messaging -lacsQoS -lacsAlSysSource -lAlarmSystemStubs -lAcsAlarmSystemStubs
 
 #
 # MODULE CODE DESCRIPTION:
@@ -39,7 +39,7 @@ EXECUTABLES     = acsservicesdaemon acsservicesdaemonStop \
                   acsdaemonNamingServiceImp acsdaemonNotificationServiceImp \
                   acsdaemonInterfaceRepositoryImp acsdaemonLoggingServiceImp \
                   acsdaemonACSLogServiceImp acsdaemonConfigurationDatabaseImp \
-                  acsdaemonManagerImp \
+                  acsdaemonManagerImp acsdaemonAlarmServiceImp \
                   acscontainerdaemon acsdaemonStartContainer \
                   acsdaemonStopContainer acsdaemonStartAcs \
                   acsdaemonStopAcs acsdaemonStatusAcs \
@@ -101,6 +101,10 @@ acsdaemonConfigurationDatabaseImp_LIBS      =	acscomponentStubs acsdaemonErrType
 
 acsdaemonManagerImp_OBJECTS   =	acsdaemonManagerImp acsRequest acsServiceController acsdaemonORBTask
 acsdaemonManagerImp_LIBS      =	acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS 
+
+acsdaemonAlarmServiceImp_OBJECTS   = acsdaemonAlarmServiceImp acsRequest acsServiceController acsdaemonORBTask
+acsdaemonAlarmServiceImp_LIBS      = acscomponentStubs acsdaemonErrType acsdaemonStubs acsThread acsQoS
+
 
 acsdaemonImpStop_OBJECTS   =       acsdaemonImpStop
 acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonStubs

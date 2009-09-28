@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.10 2009/07/27 11:27:59 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.11 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,9 +29,11 @@
 #include <acsutilPorts.h>
 #include <acsQoS.h>
 
-#include <ACSAlarmSystemInterfaceFactory.h>
+#include <maciC.h>
 #include <Properties.h>
 #include <faultStateConstants.h>
+
+#include <sys/time.h>
 
 #include "acsdaemonErrType.h"
 
@@ -259,7 +261,7 @@ void ImpController::setManagerReference(const short instance_number, const char 
 
 /*************************** ACSServiceController *****************************/
 
-ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc), alarmSystemInitialized(false) {
+ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc), alarmSystemInitialized(false), alarmService(::alarmsystem::CERNAlarmService::_nil()) {
     char str[256];
     const ACSService *service = &acsServices[idesc->getACSService()];
     std::string port = service->svcport == NULL ? service->namedsvcport(idesc->getInstanceNumber(), idesc->getName()) : service->svcport(idesc->getInstanceNumber());
@@ -269,8 +271,6 @@ ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServic
 }
 
 ACSServiceController::~ACSServiceController() {
-    if (alarmSystemInitialized)
-        ACSAlarmSystemInterfaceFactory::done();
     delete desc;
 }
 
@@ -320,16 +320,17 @@ bool ACSServiceController::setState(acsdaemon::ServiceState istate) {
 }
 
 void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
+//ACS_SHORT_LOG((LM_INFO, "-------------- fireAlarm"));
     if (!alarmSystemInitialized)
     {
-	// @todo for now only instance 0 is supported
+//ACS_SHORT_LOG((LM_INFO, "-------------- not initialized"));
 
         // no reference yet, noop
-        if (!getContext()->getManagerReference(0))
+        if (!getContext()->getManagerReference(desc->getInstanceNumber()))
 	   return;
-   
+//ACS_SHORT_LOG((LM_INFO, "-------------- initializing!!!"));   
         try {
-           ACE_CString managerReference = getContext()->getManagerReference(0);
+           ACE_CString managerReference = getContext()->getManagerReference(desc->getInstanceNumber());
            ACS_SHORT_LOG((LM_DEBUG, "Initializing Alarm System using manager reference '%s'.", managerReference.c_str()));
            CORBA::Object_var obj = getContext()->getORB()->string_to_object(managerReference.c_str());
            if (CORBA::is_nil(obj.in())) {
@@ -345,13 +346,21 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
                return;
            }
 
-           if (alarmSystemInitialized = ACSAlarmSystemInterfaceFactory::init(manager.in())) {
-               ACS_SHORT_LOG((LM_DEBUG, "Alarm System initialized."));
+	   obj = manager->get_service(0, ::alarmsystem::AlarmServiceName, false);  
+           if (CORBA::is_nil(obj.in())) {
+               ACS_SHORT_LOG((LM_ERROR, "Failed to get '%s' service from manager!", ::alarmsystem::AlarmServiceName));
+               return;
            }
-	   else {
-               ACS_SHORT_LOG((LM_DEBUG, "Alarm System initialization failed."));
-	       return;
+
+           alarmService = ::alarmsystem::CERNAlarmService::_narrow(obj.in());
+           if (alarmService.ptr() == ::alarmsystem::CERNAlarmService::_nil()) {
+               ACS_SHORT_LOG((LM_INFO, "AlarmService reference is not valid."));
+               return;
            }
+
+	   alarmSystemInitialized = true; 
+
+           ACS_SHORT_LOG((LM_DEBUG, "Alarm System initialized."));
        } catch (...) {
            // TODO special exception handling?
            ACS_SHORT_LOG((LM_DEBUG, "Failed to initialize Alarm System."));
@@ -359,22 +368,48 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
        }
     } 
 
-    // constants we will use when creating the fault
-    std::string family = "Services";
-    std::string member = desc->getACSServiceName();
-    int code = 0; //(int)state; 
-    
+    ::alarmsystem::Triplet triplet;
+    triplet.faultFamily = "Services";
+    triplet.faultMember = desc->getACSServiceName();
+    triplet.faultCode = 0; //(int)state;
+
+    ::alarmsystem::Timestamp timestamp;
+    timeval t;
+    gettimeofday(&t, NULL);
+    CORBA::Long ms = t.tv_usec/1000;
+    timestamp.miliseconds = t.tv_sec*1000 + ms;
+    timestamp.nanos = (t.tv_usec - ms)*1000;
+
+    bool hasName = (desc->getName() != 0);
+
     // create a Properties object and configure it
-    acsalarm::Properties props;
-    props.setProperty("host", desc->getHost());
+    CosPropertyService::Properties properties;
+    properties.length(hasName ? 3 : 2);
+    properties[0].property_name = "host";
+    properties[0].property_value <<= desc->getHost();
+
+    properties[1].property_name = "instance";
+    properties[1].property_value <<= desc->getInstanceNumber();
+/*    
     std::stringstream out;
     out << desc->getInstanceNumber();
     props.setProperty("instance", out.str());
-    if (desc->getName())
-        props.setProperty("name", desc->getName()); // for named services (e.g. notification services) 
+*/
+    // for named services (e.g. notification services)
+    if (hasName)
+    {
+        properties[2].property_name = "name";
+        properties[2].property_value <<= desc->getName();
+    }
+   
+    ACE_TCHAR hostname[200];
+    hostname[0] = 0;
+    ACE_OS::hostname(hostname, 200);
 
-    // push the FaultState using the AlarmSystemInterface previously created
-    ACSAlarmSystemInterfaceFactory::createAndSendAlarm(family, member, code, state != acsdaemon::RUNNING, props);
+//ACS_SHORT_LOG((LM_INFO, "huuuraaaay, sending an alarm..."));
+ 
+    alarmService->submitAlarm(triplet, state != acsdaemon::RUNNING,
+	hostname, "ALARM_SOURCE_NAME", timestamp, properties);
 }
 
 /***************************** ACSDaemonContext *******************************/

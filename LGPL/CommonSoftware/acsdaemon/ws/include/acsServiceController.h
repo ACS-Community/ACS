@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.6 2009/07/27 11:27:59 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.7 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,6 +32,7 @@
 #include <acsThreadManager.h>
 #include <map>
 #include <string>
+#include <AlarmSystemC.h>
 
 const ACE_Time_Value TIME_PERIOD(15);
 
@@ -136,7 +137,8 @@ class ACSServiceController : public ServiceController {
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;
     bool alarmSystemInitialized;
-  protected:
+    ::alarmsystem::CERNAlarmService_var alarmService;
+ protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
     acsdaemon::ServiceState getActualState();
     virtual bool setState(acsdaemon::ServiceState istate);
@@ -174,7 +176,7 @@ class ACSDaemonContext {
     acsdaemon::ServiceState getDetailedServiceState(ACSServiceRequestDescription *desc, CORBA::Object_ptr obj) const {
 	return detailedServiceStateProvider ? detailedServiceStateProvider->getDetailedServiceState(desc, obj) : acsdaemon::RUNNING; };
     void setManagerReference(const short instance_number, const char * ref) { managerReferences[instance_number] = ref; setImpControllersManagerReference(instance_number, ref); };
-    const char * getManagerReference(const short instance_number) { if (managerReferences.find(instance_number) != managerReferences.end()) return managerReferences[instance_number].c_str(); }
+    const char * getManagerReference(const short instance_number) { if (managerReferences.find(instance_number) != managerReferences.end()) return managerReferences[instance_number].c_str(); else return NULL; }
 };
 
 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.8 2009/06/30 20:35:52 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.9 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -273,6 +273,19 @@ ACSErr::Completion_var ACSServiceRequestDescription::executeRemote(ACSServiceReq
             switch (request_type) {
             case START_SERVICE: spell->start_naming_service(cbptr, instance_number); break;
             case STOP_SERVICE: spell->stop_naming_service(cbptr, instance_number); break;
+            }
+            break;
+        } case ALARM_SERVICE: {
+            acsdaemon::AlarmServiceSpell_var spell = acsdaemon::AlarmServiceSpell::_narrow(obj.in());
+            if (CORBA::is_nil(spell.in())) {
+                ACS_SHORT_LOG((LM_ERROR, "Failed to narrow reference '%s'.", corbaloc));
+                acsdaemonErrType::FailedToProcessRequestCompletion failed(__FILE__, __LINE__, "ACSServiceRequestDescription::executeRemote");
+                return failed.returnCompletion(false);
+            }
+            spell = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, spell.in());
+            switch (request_type) {
+            case START_SERVICE: spell->start_alarm_service(cbptr, instance_number); break;
+            case STOP_SERVICE: spell->stop_alarm_service(cbptr, instance_number); break;
             }
             break;
         } case NOTIFICATION_SERVICE: {

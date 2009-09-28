@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.5 2009/06/30 20:34:20 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.6 2009/09/28 19:46:49 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -74,6 +74,7 @@ enum ACSServiceType {
     ACS_LOG_SERVICE,
     LOGGING_SERVICE,
     INTERFACE_REPOSITORY,
+    ALARM_SERVICE,
     UNKNOWN
 };
 
@@ -156,6 +157,17 @@ const ACSService acsServices[] = {
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonInterfaceRepositoryImp",
       "corbaloc::%s:%s/InterfaceRepository",
       &ACSPorts::getIRPort,
+      NULL,
+      false
+    }, {
+      "alarm_service",
+      "acsAlarmService",
+      "Alarm Service Imp",
+      "AlarmServiceImp",
+      "2988",
+      "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonAlarmServiceImp",
+      "corbaloc::%s:%s/AlarmService",
+      &ACSPorts::getAlarmServicePort,
       NULL,
       false
     }, { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false }

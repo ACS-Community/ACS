@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.8 2009/07/27 11:27:59 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.9 2009/09/28 19:46:49 msekoran Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -271,6 +271,7 @@ main (int argc, char *argv[])
 		sdb->add_logging_service(DAEMONHOST, "Log");
 		sdb->add_acs_log(DAEMONHOST);
                 sdb->add_xml_cdb(DAEMONHOST, true, getenv("ACS_CDB"));
+                sdb->add_alarm_service(DAEMONHOST);
                 sdb->add_manager(DAEMONHOST, "", true);
 
 		printf("SERVICE DEFINITION XML:\n%s\n", sdb->get_services_definition());
