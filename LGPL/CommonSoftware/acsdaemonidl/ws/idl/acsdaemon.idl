@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsdaemon.idl,v 1.20 2009/07/27 11:28:19 msekoran Exp $"
+* "@(#) $Id: acsdaemon.idl,v 1.21 2009/09/28 19:42:41 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -310,6 +310,14 @@ module acsdaemon
 		 */
 		services_definition_xml get_services_definition();
 		
+		/** 
+		 *  Starts an alarm service.
+		 * 
+		 *  @param host Hostname
+		 *  @return void
+		 */
+		void add_alarm_service(in string host) raises (ACSErrTypeCommon::BadParameterEx);
+
 		/**
 		 * This method must be called when the ServiceDefinitionBuilder instance is no longer used (typically after calling {@link #get_services_definition}).
 		 * It allows the factory (services daemon) to release allocated resources. The instance must not be used afterwards.
@@ -688,6 +696,48 @@ module acsdaemon
 	};
 
 	/** 
+	 *  Alarm Service Spell interface.
+	 */
+	interface AlarmServiceSpell
+	{
+		/** 
+		 *  Asynchronously starts an alarm service.
+		 *  Notification about service start problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with the service start.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void start_alarm_service(in DaemonCallback callback, in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceAlreadyRunningEx);
+
+		/** 
+		 *  Asynchronously stops an alarm service on the current host.
+		 *  Notification about service stop problems or successful completion is passed to the client via the callback, on which the client may block.
+		 * 
+		 *  @param callback DaemonCallback instance to receive notification about completion or problems with stopping the service.
+		 *  @param instance_number ACS instance number
+		 *  @return void
+		 */
+		void stop_alarm_service(in DaemonCallback callback, in short instance_number) 
+				raises (ACSErrTypeCommon::BadParameterEx, acsdaemonErrType::ServiceNotRunningEx);
+	};
+
+	/** 
+	 *  Alarm Service Imp.
+	 */
+	interface AlarmServiceImp : ImpBase, AlarmServiceSpell
+	{
+		/** 
+		 *  Get service state.
+		 *  @param instance_number ACS instance number
+		 *  @return ServiceState
+		 */
+		ServiceState get_service_status(in short instance_number) 
+			raises (ACSErrTypeCommon::BadParameterEx);
+	};
+
+	/** 
 	 * <p>
 	 *  The services daemon starts, stops and monitors the ACS services on one or more host machine(s).
 	 *  This daemon must persist any state data (such as user-defined notification service name-to-port mappings) 
@@ -723,7 +773,7 @@ module acsdaemon
 	 */
 	interface ServicesDaemon :
 		NamingServiceSpell, NotificationServiceSpell, CDBSpell,
-		ManagerSpell, ACSLogSpell, LoggingServiceSpell, InterfaceRepositorySpell
+		ManagerSpell, ACSLogSpell, LoggingServiceSpell, InterfaceRepositorySpell, AlarmServiceSpell
 	{
 		/**
 		 *  Creates and retrieves a reference to a ServiceDescriptionBuilder instance.
