@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.44 2009/09/18 06:39:11 hyatagai Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.45 2009/09/29 01:16:17 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -460,6 +460,14 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
                       default=None,
                       help=flags_help_msg)
     
+    #Start Options
+    flags_help_msg='''Sets options that are to be passed to the actual container
+    start executables.'''
+    parser.add_option("--passthroughProcessStart",
+                      dest="start_options",
+                      default=None,
+                      help=flags_help_msg)
+    
     #--------------------------------------------------------------------------
     #--Make commands backwards compatible with pre ACS 6.0 usage.
     #--Basically this means that commands of the form -xy... should still 
@@ -488,6 +496,7 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     cl_cdb_ref           = options.cdb_ref
     cl_baseport          = options.baseport
     cl_flags             = options.container_flags
+    cl_start_options     = options.start_options
     __DEBUG__            = options.debug
 
     #--------------------------------------------------------------------------
@@ -701,6 +710,13 @@ Setting this flag overrides the value of $ACS_LOG_STDOUT.
     parsed_argv.insert(i, cl_name)
     i = i + 1
 
+    #add any container flags passed
+    if cl_start_options:
+        #parsed_argv.insert(i, "--passthroughProcessStart")
+        #i = i + 1
+        parsed_argv.insert(i, cl_start_options)
+        i = i + 1
+        
     #figure out the correct language first
     if cl_java:
         parsed_argv.insert(i, cl_java_container)
