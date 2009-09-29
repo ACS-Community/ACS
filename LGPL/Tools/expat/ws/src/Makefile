@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2005/01/31 21:45:25 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.4 2009/09/29 08:41:56 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -19,7 +19,7 @@
 
 #
 # user definable C-compilation flags
-#USER_CFLAGS = 
+USER_CFLAGS =  -DHAVE_EXPAT_CONFIG_H
 
 #
 # additional include and library search paths
