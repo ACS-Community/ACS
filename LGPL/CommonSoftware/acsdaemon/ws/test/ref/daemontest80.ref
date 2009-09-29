@@ -26,40 +26,41 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] DaemonSeqeuenceCallback is waiting for incoming requests.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
 2 - ----------T--:--:--.--- [GlobalLogger - ] BUILDING SERVICE DEFINITION.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] CREATING ServiceDefinitionBuilderImpl. New count: 'something'!
 2 - SERVICE DEFINITION XML:
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] CREATING ServiceDefinitionBuilderImpl. New count: 'something'!
 2 - <acs_services_definition instance="1">
 2 - <naming_service host="a.b.c.d" />
-2 - ----------T--:--:--.--- [GlobalLogger - ] STARTING UP THE SERVICES.
 2 - <interface_repository host="a.b.c.d" load="false" wait_load="false" />
 2 - <notification_service name="NotifyEventChannelFactory" host="a.b.c.d" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ServiceDefinitionBuilderImpl. New count: 'something'!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 2 - <notification_service name="LoggingNotifyEventChannelFactory" host="a.b.c.d" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - <notification_service name="AlarmNotifyEventChannelFactory" host="a.b.c.d" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Naming Service (instance 1).
 2 - <notification_service name="ArchiveNotifyEventChannelFactory" host="a.b.c.d" />
 2 - <logging_service host="a.b.c.d" name="Log" />
 2 - <acs_log host="a.b.c.d" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+2 - ----------T--:--:--.--- [GlobalLogger - ] STARTING UP THE SERVICES.
 2 - <cdb host="a.b.c.d" recovery="true" cdb_xml_dir="/alma/ACS-x.y/acsdata/config/defaultCDB" />
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+2 - <alarm_service host="a.b.c.d" />
 2 - <manager host="a.b.c.d" recovery="true" />
 2 - </acs_services_definition>
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ServiceDefinitionBuilderImpl. New count: 'something'!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 2 - 
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Naming Service (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Interface Repository (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
@@ -68,8 +69,8 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
@@ -134,8 +135,32 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Configuration Database (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Starting Alarm Service (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely start 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully started service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
@@ -153,28 +178,16 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Setting manager reference 'something' at instance 1 to Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Manager reference at instance 1 set to Imp 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Failed to make a 'something' callback call for ACS service request chain!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Ended processing command requests!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ACSServiceRequestChainContext!
@@ -184,6 +197,32 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Manager (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Alarm Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -200,8 +239,8 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping ACS Log Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
@@ -233,6 +272,16 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
@@ -244,30 +293,6 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -292,28 +317,30 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 2 - ----------T--:--:--.--- [GlobalLogger - ] DONE SHUTTING DOWN SERVICES.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Ended processing command requests!
 2 - ----------T--:--:--.--- [GlobalLogger - ] TEST COMPLETE.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ACSServiceRequestChainContext!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] Ended processing command requests!
 2 - ----------T--:--:--.--- [GlobalLogger - ] DESTROYING TestDaemonSequenceCallback!
+1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING ACSServiceRequestChainContext!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Evaluating state of Imp with Corba URI 'something'.
-1 - ----------T--:--:--.--- [ACS Services Daemon - ] Imp 'something' responded.
 3 - ----------T--:--:--.--- [GlobalLogger - ] Using local Services Daemon reference: 'something'
 3 - ----------T--:--:--.--- [GlobalLogger - ] Calling shutdown().
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Shutting down the ACS Services Daemon on remote request...
