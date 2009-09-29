@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsAlarmService,v 1.4 2009/09/28 20:03:06 msekoran Exp $"
+# "@(#) $Id: acsAlarmService,v 1.5 2009/09/29 15:27:10 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -162,6 +162,8 @@ export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #set the filenames where binaries' output will be sent
 ALARM_SERVICE_OUT=$INSTANCE_DIR/$ACS_ALARM_SERVICE_OUT
 
+ALARM_SERVICE_PIDFILE=$INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE
+
 #determine the TCP ports to be used
 ALARM_SERVICE_PORT=`getAlarmServicePort`
 
@@ -199,15 +201,18 @@ then
   # --------------------------------------------------------------------------
   # Since the alarm service is just a Java process, it must be treated a little differently
   ACS_LOG_INFO "$COMMAND" "Stopping the AlarmService${LOGPOSTFIX}"
-
+  
   #Try the "correct" way of shutting down the alarm service
   if ! acsutilBlock -t 15 -k alarmServiceShutdown # &> /dev/null
   then
-  	echo ">>>>" `getAlarmServicePid`
     if ALARM_SERVICE_PID=`getAlarmServicePid`
     then
       acsKillProc $ALARM_SERVICE_PID 2> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot kill the alarm service")
     fi
+  fi
+  if [ -e $ALARM_SERVICE_PIDFILE ]
+  then
+    rm $ALARM_SERVICE_PIDFILE
   fi
 fi
 
