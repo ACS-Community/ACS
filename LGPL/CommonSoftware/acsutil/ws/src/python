@@ -1,0 +1,161 @@
+#! /bin/bash
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) National Research Council of Canada, 2009 
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+#
+# "@(#) $Id: python,v 1.1 2009/09/29 20:03:57 agrimstrup Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# agrimstrup  2009-09-28  created
+#
+
+# We have to process the set of Python command line arguments
+# in order to properly mimic the behaviour of the tools we
+# are wrapping
+
+OPTIMIZE=
+VERBOSITY=
+ISCOMMAND=
+PYTHONARGS=""
+
+while getopts ":c:dEhim:OQ:StuvVW:x-:" flag
+do
+   case $flag in
+   c)
+      PYTHONARGS="$PYTHONARGS-c "
+      ISCOMMAND='YES'
+      CMDSTR=$OPTARG
+      break
+      ;;
+   m) 
+      PYTHONARGS="$PYTHONARGS-$flag $OPTARG "
+      break
+      ;;
+   V|h) 
+      PYTHONARGS="$PYTHONARGS -$flag "
+      break
+      ;;
+   Q|W) 
+      PYTHONARGS="$PYTHONARGS -$flag $OPTARG "
+      ;;
+   O)
+      if [[ -z $OPTIMIZE ]]
+      then 
+         OPTIMIZE="-O"
+      else
+         OPTIMIZE="-OO"
+      fi 
+      ;;
+   v)
+      if [[ -z $VERBOSITY ]]
+      then 
+         VERBOSITY="-v"
+      else
+         VERBOSITY="$VERBOSITYv"
+      fi 
+      ;;
+   d|E|i|S|t|u|x)
+      PYTHONARGS="$PYTHONARGS-$flag "
+      ;;
+   -)
+      PYTHONARGS="--$OPTARG"
+      ;;
+   esac
+done
+shift $(($OPTIND-1))
+
+if [[ ! -z $OPTIMIZE ]]
+then
+   PYTHONARGS="$OPTIMIZE $PYTHONARGS"
+fi
+
+if [[ ! -z $VERBOSITY ]]
+then
+   PYTHONARGS="$VERBOSITY $PYTHONARGS"
+fi
+
+# CASA_ROOT is set when .bash_profile.acs detects that CASA
+# has been installed on the machine.  Since we are trying to
+# run a CASA-provided Python interpreter with this script, 
+# there is no point in continuing if CASA isn't installed.
+if [ X"$CASA_ROOT" = X -o X"$USE_ACS_PYTHON" != X ]
+then
+   PYTHONSHELL="$PYTHON_ROOT/bin/python"
+else
+
+   PYTHONSHELL="$CASA_ROOT/lib/casapy/bin/python"
+
+   # CASA requires the tk.tcl file from the TCL libraries it
+   # provides
+   export TCL_LIBRARY=$CASA_ROOT/share/tcl8.4
+
+   # Access to ACS-supplied modules may still be necessary so
+   # the PYTHONPATH has to include both the CASA and ACS
+   # site-package directories.  This is true for some shared
+   # libraries as well.  CASA is given priority in the
+   # ordering.
+   if [[ ! "$PYTHONPATH" =~ ".*$CASA_ROOT" ]]
+   then
+     PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
+   fi
+   if [[ ! "$LD_LIBRARY_PATH" =~ ".*$CASA_ROOT" ]]
+   then
+     LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
+   fi
+fi
+
+
+# Now that the environment is set, the interpreter can
+# be started.
+if [ "X" = "$1X" ]
+then
+   # No arguments provided so CASA's interpreter is launched
+   if [ ! -z $ISCOMMAND ]
+   then  
+       $PYTHONSHELL $PYTHONARGS "$CMDSTR"
+   else
+       $PYTHONSHELL $PYTHONARGS
+   fi     
+else
+   # A script is to be run in CASA's interpreter
+   if [ -e $1 ]
+   then
+      # Run the file from the current directory
+      $PYTHONSHELL $PYTHONARGS $@
+   else
+      # Use the CASA interpreter to override the Python
+      # interpreter line given in an executable script
+      SCRIPT=`which $1`
+      if [ "X" = "$SCRIPTX" ]
+      then
+         echo "$1 not found!"
+      else
+         shift
+         $PYTHONSHELL $PYTHONARGS $SCRIPT $@
+      fi
+   fi
+fi
+
+# Clean up the CASA-specific setting
+if [ ! X"$TCL_LIBRARY" = X ]
+then
+  unset TCL_LIBRARY
+fi
+
+#
+# ___oOo___

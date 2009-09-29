@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /alma/ACS-8.0/Python/bin/python
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) National Research Council of Canada, 2009 
@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsutilCASAPathInsert.py,v 1.1 2009/09/17 20:31:03 agrimstrup Exp $"
+# "@(#) $Id: acsutilCASAPathInsert.py,v 1.2 2009/09/29 20:03:57 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
