@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsConfigurationDatabaseImpHandlerImpl.h,v 1.1 2008/10/27 21:11:23 msekoran Exp $"
+* "@(#) $Id: acsConfigurationDatabaseImpHandlerImpl.h,v 1.2 2009/09/29 16:04:06 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ public:
     
     /*************************** CORBA interface *****************************/
 
-    void ACSConfigurationDatabaseImpHandlerImpl::start_xml_cdb (
+    void start_xml_cdb (
         acsdaemon::DaemonCallback_ptr callback,
         CORBA::Short instance_number,
         CORBA::Boolean recovery,
@@ -62,7 +62,7 @@ public:
         context->processRequest(LOCAL, START_SERVICE, desc, callback);
     }
 
-    void ACSConfigurationDatabaseImpHandlerImpl::stop_cdb (
+    void stop_cdb (
         acsdaemon::DaemonCallback_ptr callback,
         CORBA::Short instance_number
       )
