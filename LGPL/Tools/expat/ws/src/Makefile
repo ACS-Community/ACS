@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2009/09/29 08:41:56 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.5 2009/09/29 13:26:55 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -51,17 +51,17 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = expat.h
+INCLUDES        = 
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = expat
+#LIBRARIES       = expat
 LIBRARIES_L     = 
 
 #
 # <brief description of lllll library>
-expat_OBJECTS   = xmlparse xmlrole xmltok
+
 
 #
 # Scripts (public and local)
