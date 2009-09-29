@@ -93,6 +93,11 @@ public class AlarmSystemCorbaServer implements Runnable {
 	private POA rootPOA = null;
 	
 	/**
+	 * Alarm System POA.
+	 */
+	private POA asPOA = null;
+	
+	/**
 	 * POA manager
 	 */
 	private POAManager poaManager;
@@ -167,17 +172,22 @@ public class AlarmSystemCorbaServer implements Runnable {
 			alarmType=getAlarmSystemType();
 		} catch (Throwable t) {}
 		org.omg.CORBA.Object alarmObject;
+
+		//create object id
+		byte[] id = alma.alarmsystem.AlarmServiceName.value.getBytes();
 		if (alarmType) {
 			// ACS
 			laserComponent=null;
 			logger.log(AcsLogLevel.INFO,"Starting the ACS implementation of the alarm service");
 			acsComponent=new AcsAlarmSystem(this);
-			alarmObject = rootPOA.servant_to_reference(acsComponent);
+			asPOA.activate_object_with_id(id, acsComponent);
+			alarmObject = asPOA.servant_to_reference(acsComponent);
 		} else {
 			// CERN
 			acsComponent=null;
 			laserComponent=instantiateCernAS();
-			alarmObject = rootPOA.servant_to_reference(laserComponent);
+			asPOA.activate_object_with_id(id, acsComponent);
+			alarmObject = asPOA.servant_to_reference(laserComponent);
 		}
 		registerToNamingService(alarmObject);
 		new Thread(this, "AlarmSystemCORBAHelper").start();
@@ -263,8 +273,8 @@ public class AlarmSystemCorbaServer implements Runnable {
 			 */
 
 			properties.put(
-				"jacorb.orb.objectKeyMap."+alma.alarmsystem.AlarmServiceName.value,
-				"ORB/dalPOA/"+alma.alarmsystem.AlarmServiceName.value);
+				"jacorb.orb.objectKeyMap." + alma.alarmsystem.AlarmServiceName.value,
+				"ORB/asPOA/" + alma.alarmsystem.AlarmServiceName.value);
 
 		} else {
 			properties.put(
@@ -279,6 +289,29 @@ public class AlarmSystemCorbaServer implements Runnable {
 		// resolve RootPOA
 		rootPOA = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
 			
+		org.omg.CORBA.Policy[] policies = new org.omg.CORBA.Policy[2];
+
+		policies[0] =
+			rootPOA.create_id_assignment_policy(
+				IdAssignmentPolicyValue.USER_ID);
+		if (useJacORB)
+			policies[1] =
+				rootPOA.create_lifespan_policy(
+					LifespanPolicyValue.PERSISTENT);
+		else
+			policies[1] =
+				rootPOA.create_lifespan_policy(
+					LifespanPolicyValue.TRANSIENT);
+
+		asPOA =
+			rootPOA.create_POA(
+				"asPOA",
+				rootPOA.the_POAManager(),
+				policies);
+
+		for (int i = 0; i < policies.length; i++)
+			policies[i].destroy();
+
 		// activate POA
 		poaManager = rootPOA.the_POAManager();
 		poaManager.activate();
