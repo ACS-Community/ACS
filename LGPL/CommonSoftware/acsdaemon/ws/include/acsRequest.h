@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsRequest.h,v 1.6 2009/09/28 19:46:49 msekoran Exp $"
+* "@(#) $Id: acsRequest.h,v 1.7 2009/09/29 15:30:59 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -166,7 +166,7 @@ const ACSService acsServices[] = {
       "AlarmServiceImp",
       "2988",
       "acsutilBlock -t 15 -s -k -b \"Imp is up and running...\" acsdaemonAlarmServiceImp",
-      "corbaloc::%s:%s/AlarmService",
+      "corbaloc::%s:%s/AcsAlarmService",
       &ACSPorts::getAlarmServicePort,
       NULL,
       false
