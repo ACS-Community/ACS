@@ -158,8 +158,6 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 		contSvcs = getContainerServices();
 		assertNotNull(contSvcs);
 		
-		ACSAlarmSystemInterfaceFactory.init(contSvcs);
-		
 		alarmSource = ACSAlarmSystemInterfaceFactory.createSource();
 		assertNotNull("Error instantiating the source",alarmSource);
 		
@@ -182,7 +180,6 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	protected void tearDown() throws Exception {
 		cleanActiveAlarms();
 		categoryClient.disconnect();
-		ACSAlarmSystemInterfaceFactory.done();
 		super.tearDown();
 	}
 	

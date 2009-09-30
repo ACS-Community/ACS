@@ -180,8 +180,6 @@ public class SourceStressTest extends ComponentClientTestCase {
 		super.setUp();
 		assertNotNull(getContainerServices());
 		
-		ACSAlarmSystemInterfaceFactory.init(getContainerServices());
-
 		// If the Consumer ctor hangs again, we have to investigate more about http://jira.alma.cl/browse/COMP-2153
 		// and perhaps go back to rev. 1.10 and create the Consumer in a separate thread with timeout.
 		// For now, the hope is that this spurious problem got resolved by changing the NC Helper.m_nContext field
@@ -205,7 +203,6 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 */
 	protected void tearDown() throws Exception {
 		m_consumer.disconnect();
-		ACSAlarmSystemInterfaceFactory.done();
 		super.tearDown();
 	}
 	

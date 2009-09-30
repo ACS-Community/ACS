@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: SendTest.java,v 1.10 2008/11/13 10:26:11 hsommer Exp $
+ * @version $Id: SendTest.java,v 1.11 2009/09/30 15:22:29 acaproni Exp $
  * @since    
  */
 
@@ -90,8 +90,6 @@ public class SendTest extends ComponentClientTestCase {
 			final ContainerServices contSvcs = getContainerServices();
 			assertNotNull("Error getting the ContainerServices",contSvcs);
 			
-			ACSAlarmSystemInterfaceFactory.init(contSvcs);
-			
 			// Check if the CERN AS is in use
 			assertFalse("Using ACS implementation instead of CERN", ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 
@@ -115,7 +113,6 @@ public class SendTest extends ComponentClientTestCase {
 	public void tearDown() throws Exception {
 		m_logger.info("tearDown called.");
 		m_consumer.disconnect();
-		ACSAlarmSystemInterfaceFactory.done();
 		m_logger.info("tearDown: done clearing NC consumer and alarm factory.");
 		super.tearDown();
 	}

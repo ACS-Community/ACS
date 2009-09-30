@@ -71,8 +71,6 @@ public class TestAlarmService extends ComponentClientTestCase {
 		contSvcs = getContainerServices();
 		assertNotNull(contSvcs);
 		
-		ACSAlarmSystemInterfaceFactory.init(contSvcs);
-		
 		utils = new CernAlarmServiceUtils(contSvcs);
 		assertNotNull(utils);
 		

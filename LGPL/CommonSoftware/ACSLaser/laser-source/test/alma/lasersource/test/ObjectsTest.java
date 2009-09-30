@@ -19,7 +19,7 @@
 
 /** 
  * @author  almadev   
- * @version $Id: ObjectsTest.java,v 1.5 2007/11/07 10:24:56 acaproni Exp $
+ * @version $Id: ObjectsTest.java,v 1.6 2009/09/30 15:22:29 acaproni Exp $
  * @since    
  */
 
@@ -53,13 +53,11 @@ public class ObjectsTest extends ComponentClientTestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		ACSAlarmSystemInterfaceFactory.init(super.getContainerServices());
 		assertFalse("Using ACS implementation instead of CERN",ACSAlarmSystemInterfaceFactory.usingACSAlarmSystem());
 	}
 	
 	public void tearDown() throws Exception {
 		super.tearDown();
-		ACSAlarmSystemInterfaceFactory.done();
 	}
 	
 	public void testFaultStateType() throws Exception {
