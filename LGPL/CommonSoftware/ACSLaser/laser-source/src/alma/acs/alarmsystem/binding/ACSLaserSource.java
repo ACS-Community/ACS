@@ -27,7 +27,7 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 	/**
 	 * @see cern.laser.source.alarmsysteminterface.AlarmSystemInterface
 	 */
-	public void push(ACSFaultState state){
+	public synchronized void push(ACSFaultState state){
 		logFaultState(state);
 		try {
 			this.push((FaultState)state);
@@ -39,11 +39,11 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 		}
 	}
 	
-	public void push(Collection states) {
+	public synchronized void push(Collection states) {
 		this.push(states);
 	}
 	
-	public void pushActiveList(Collection active) {
+	public synchronized void pushActiveList(Collection active) {
 		this.pushActiveList(active);
 	}
 	
