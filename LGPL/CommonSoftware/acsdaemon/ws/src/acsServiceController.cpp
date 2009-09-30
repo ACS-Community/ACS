@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.11 2009/09/28 19:46:49 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.12 2009/09/30 12:18:13 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,8 +32,6 @@
 #include <maciC.h>
 #include <Properties.h>
 #include <faultStateConstants.h>
-
-#include <sys/time.h>
 
 #include "acsdaemonErrType.h"
 
@@ -337,7 +335,7 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
                ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' as manager reference!", managerReference.c_str()));
                return;
            }
-
+//ACS_SHORT_LOG((LM_INFO, "-------------- got manager 1"));
            obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
 
 	   ::maci::Manager_var manager = ::maci::Manager::_narrow(obj.in());
@@ -345,13 +343,13 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
                ACS_SHORT_LOG((LM_INFO, "Manager reference '%s' is not valid.", managerReference.c_str()));
                return;
            }
-
+//ACS_SHORT_LOG((LM_INFO, "-------------- manager in place"));
 	   obj = manager->get_service(0, ::alarmsystem::AlarmServiceName, false);  
            if (CORBA::is_nil(obj.in())) {
                ACS_SHORT_LOG((LM_ERROR, "Failed to get '%s' service from manager!", ::alarmsystem::AlarmServiceName));
                return;
            }
-
+//ACS_SHORT_LOG((LM_INFO, "-------------- got ACS obj "));
            alarmService = ::alarmsystem::CERNAlarmService::_narrow(obj.in());
            if (alarmService.ptr() == ::alarmsystem::CERNAlarmService::_nil()) {
                ACS_SHORT_LOG((LM_INFO, "AlarmService reference is not valid."));
@@ -373,12 +371,7 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
     triplet.faultMember = desc->getACSServiceName();
     triplet.faultCode = 0; //(int)state;
 
-    ::alarmsystem::Timestamp timestamp;
-    timeval t;
-    gettimeofday(&t, NULL);
-    CORBA::Long ms = t.tv_usec/1000;
-    timestamp.miliseconds = t.tv_sec*1000 + ms;
-    timestamp.nanos = (t.tv_usec - ms)*1000;
+    ACS::Time acsTime = ::getTime();
 
     bool hasName = (desc->getName() != 0);
 
@@ -406,10 +399,10 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
     hostname[0] = 0;
     ACE_OS::hostname(hostname, 200);
 
-//ACS_SHORT_LOG((LM_INFO, "huuuraaaay, sending an alarm..."));
+//ACS_SHORT_LOG((LM_INFO, "********************* huuuraaaay, sending an alarm..."));
  
     alarmService->submitAlarm(triplet, state != acsdaemon::RUNNING,
-	hostname, "ALARM_SOURCE_NAME", timestamp, properties);
+	hostname, "ALARM_SOURCE_NAME", acsTime, properties);
 }
 
 /***************************** ACSDaemonContext *******************************/
