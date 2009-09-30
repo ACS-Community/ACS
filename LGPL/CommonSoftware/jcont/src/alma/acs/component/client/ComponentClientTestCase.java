@@ -41,6 +41,7 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.engine.LogReceiver;
 import alma.acs.util.ACSPorts;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
  * Base class for writing JUnit test clients for ACS components. 
@@ -140,6 +141,7 @@ public class ComponentClientTestCase extends TestCase
 			};
 			managerClientImpl.setContainerServices(m_containerServices);
 			initRemoteLogging();
+			ACSAlarmSystemInterfaceFactory.init(m_containerServices);
 		}
 		catch (Exception ex1)
 		{
@@ -240,6 +242,7 @@ public class ComponentClientTestCase extends TestCase
 			e.printStackTrace(System.err);
 			throw e;
 		} finally {
+			ACSAlarmSystemInterfaceFactory.done();
 			if (acsCorba != null) {
 				// @todo investigate COMP-2632 which happened here.
 				// Check if the wait_for_completion is buggy and returns too early.
