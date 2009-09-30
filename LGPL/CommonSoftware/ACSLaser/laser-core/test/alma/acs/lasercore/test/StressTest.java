@@ -130,6 +130,9 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	 */
 	private int activeFS=0;
 	
+	/**
+	 * Used to generated the FM of the {@link MiniFaultState}'s to send.
+	 */
 	private static int count=0;
 	
 	/**
@@ -179,6 +182,7 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	protected void tearDown() throws Exception {
 		cleanActiveAlarms();
 		categoryClient.disconnect();
+		ACSAlarmSystemInterfaceFactory.done();
 		super.tearDown();
 	}
 	
@@ -188,7 +192,7 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 	@Override
 	public void alarmReceived(AlarmView alarm) {
 		synchronized (alarms) {
-			if (alarm.active) {
+			if (alarm.active && alarm.alarmID.startsWith(FF+":"+FM)) {
 				alarms.put(alarm.alarmID,alarm);
 			}
 		}
@@ -234,17 +238,17 @@ public class StressTest extends ComponentClientTestCase implements CategoryListe
 		}
 		
 		int timeout = 60; // timeout in secs
-		int count=0;
+		int cnt=0;
 		int old=0; // The number of items read in the previous iteration
 		// Wait for all the alarms to be in the vector
-		while (alarms.size()<activeFS && count<2*timeout) {
+		while (alarms.size()<activeFS && cnt<2*timeout) {
 			if (old!=alarms.size()) {
-				count=0;
+				cnt=0;
 				old=alarms.size();
 			}
 			try {
 				Thread.sleep(500);
-				count++;
+				cnt++;
 			} catch (Exception e) {}
 		}
 		assertEquals("Wrong number of alarms received",activeFS, alarms.size());
