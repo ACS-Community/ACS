@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -304,13 +305,13 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 *  The CDB contains fault families.
 	 *  The alarms are generated from the fault families.
 	 */
-	private HashMap<String,Alarm> alarmDefs=new HashMap<String,Alarm>();
+	private ConcurrentHashMap<String,Alarm> alarmDefs=new ConcurrentHashMap<String,Alarm>();
 	
 	/**
 	 * Source are defined together with alarms
 	 * This HashMap contains all the sources read from CDB
 	 */
-	private HashMap<String, Source> srcDefs = new HashMap<String, Source>();
+	private ConcurrentHashMap<String, Source> srcDefs = new ConcurrentHashMap<String, Source>();
 	
 	/**
 	 * Constructor 
@@ -405,7 +406,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	private void generateLaserCoreAlarms() {
 		Vector<AlarmImpl> coreAlarms=LaserCoreAlarms.generateAlarms();
 		for (AlarmImpl alarm: coreAlarms) {
-			alarmDefs.put(alarm.getAlarmId(), alarm);
+			addAlarmToCache(alarm);
 			logger.log(AcsLogLevel.DEBUG,"Alarm added "+alarm.getAlarmId());
 		}
 	}
@@ -521,7 +522,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					alarm.setSource(src);
 					alarm.setIdentifier(alarm.getTriplet().toIdentifier());
 					
-					alarmDefs.put(alarm.getAlarmId(), alarm);
+					addAlarmToCache(alarm);
 					if (!srcDefs.containsKey(source)) {
 						srcDefs.put(src.getSourceId(),src);
 						logger.log(AcsLogLevel.DEBUG,"Source "+src.getName()+" (id="+src.getSourceId()+") added");
@@ -583,7 +584,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					Triplet triplet = new Triplet(FF,DEFAULT_FM,FC);
 					defaultAlarm.setTriplet(triplet);
 					defaultAlarm.setIdentifier(triplet.toIdentifier());
-					alarmDefs.put(defaultAlarm.getAlarmId(), defaultAlarm);
+					addAlarmToCache(defaultAlarm);
 					if (!srcDefs.containsKey(source)) {
 						srcDefs.put(src.getSourceId(),src);
 						logger.log(AcsLogLevel.DEBUG,"Source "+src.getName()+" (id="+src.getSourceId()+") added");
@@ -844,6 +845,12 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			alarm=(AlarmImpl)defaultalarm.clone();
 			Triplet alarmTriplet = new Triplet(tripletItems[0],tripletItems[1],Integer.parseInt(tripletItems[2]));
 			alarm.setTriplet(alarmTriplet);
+			alarm.setAlarmId(
+					Triplet.toIdentifier(
+							alarmTriplet.getFaultFamily(), 
+							alarmTriplet.getFaultMember(), 
+							alarmTriplet.getFaultCode()));
+			// Add the alarm in the HashMap
 		}
 		return alarm;
 		
@@ -906,7 +913,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	
 	public void saveAlarm(Alarm alarm)
 	{
-		alarmDefs.put(alarm.getTriplet().toIdentifier(), alarm);
+		addAlarmToCache(alarm);
 		saveMemberAlarms(alarm.getTriplet().getFaultMember());
 	}
 
@@ -997,7 +1004,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	
 	public void updateAlarm(Alarm alarm)
 	{
-		alarmDefs.put(alarm.getTriplet().toIdentifier(), alarm);
+		addAlarmToCache(alarm);
 		saveMemberAlarms(alarm.getTriplet().getFaultMember());
 	}
 
@@ -1039,6 +1046,25 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		this.responsiblePersonDAO=responsiblePersonDAO;
 	}
 	
+	/**
+	 * Add an alarm in cache (<code>alarmDefs</code>)
+	 * <P>
+	 * The {@link Alarm} to add in the cache must be not <code>null</code>
+	 * and with a valid ID otherwise an exception is thrown.
+	 * 
+	 * @param alarm The Alarm to add to the cache
+	 */
+	private void addAlarmToCache(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("It is forbidden to add null alarms to cache");
+		}
+		String alarmId=alarm.getAlarmId();
+		if (alarmId==null || alarmId.isEmpty()) {
+			throw new IllegalStateException("Trying to add an alarm with an invalid ID!");
+		}
+		alarmDefs.put(alarmId, alarm);
+	}
+	
 	public String[] getAllAlarmIDs()
 	{
 		Set keyset=alarmDefs.keySet();
@@ -1052,7 +1078,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 * 
 	 * @return The sources
 	 */
-	public HashMap<String,Source> getSources() {
+	public ConcurrentHashMap<String,Source> getSources() {
 		return srcDefs;
 		
 	}
