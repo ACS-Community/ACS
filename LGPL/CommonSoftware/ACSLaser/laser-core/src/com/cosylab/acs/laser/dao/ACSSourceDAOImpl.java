@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import alma.acs.logging.AcsLogLevel;
@@ -59,7 +60,7 @@ public class ACSSourceDAOImpl implements SourceDAO
 	
 	String laserSourceID;
 	
-	HashMap<String, Source> sourceDefs;
+	ConcurrentHashMap<String, Source> sourceDefs;
 	
 	// The path in the CDB of the definitions of sources
 	private static final String SOURCE_PATH="/Alarms/SourceDefinitions";
@@ -79,7 +80,7 @@ public class ACSSourceDAOImpl implements SourceDAO
 	 * @param log The logger
 	 * @param sources The sources
 	 */
-	public ACSSourceDAOImpl (Logger log, HashMap<String, Source> sources)
+	public ACSSourceDAOImpl (Logger log, ConcurrentHashMap<String, Source> sources)
 	{
 		if (log==null) {
 			throw new IllegalArgumentException("Invalid null logger");

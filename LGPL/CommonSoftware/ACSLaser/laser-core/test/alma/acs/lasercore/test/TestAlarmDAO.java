@@ -23,6 +23,7 @@ package alma.acs.lasercore.test;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Source;
@@ -234,7 +235,7 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testGetSources() throws Exception {
-		HashMap<String,cern.laser.business.data.Source> sources = alarmDAO.getSources();
+		ConcurrentHashMap<String,cern.laser.business.data.Source> sources = alarmDAO.getSources();
 		assertNotNull(sources);
 		assertEquals("There should be only one source and not "+sources.size(),1, sources.size());
 		Set<String> keys =sources.keySet();
