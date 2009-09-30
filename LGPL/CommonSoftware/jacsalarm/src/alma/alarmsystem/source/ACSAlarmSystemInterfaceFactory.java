@@ -3,6 +3,7 @@ package alma.alarmsystem.source;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -42,16 +43,37 @@ import alma.acsErrTypeAlarmSourceFactory.wrappers.AcsJSourceCreationErrorEx;
  */
 public class ACSAlarmSystemInterfaceFactory {
 	
+	/**
+	 * The path in the CDB of the AS configuraton
+	 */
 	private static final String CONFIGURATION_PATH="Alarms/Administrative/AlarmSystemConfiguration";
-	// It is true if ACS implementation for sources must be used and
-	// null if it has not yet been initialized
-	// false means CERN implementation
+	
+	/**
+	 *  It is <code>true</code> if ACS implementation for sources must be used;
+	 *  <code>false</code> means CERN implementation.
+	 *  <P>
+	 *  It is <code>null</code> if it has not yet been initialized.
+	 */
 	private static Boolean useACSAlarmSystem = null;
 	
-	// The logger
+	/**
+	 * At the present, while using the CERN implementation, 
+	 * we use the same source for sending all the alarms
+	 * so we can use a singleton and return the same object 
+	 * to all the clients.
+	 *  
+	 *  @see AlarmSystemInterfaceProxy
+	 */
+	private static ACSAlarmSystemInterface source=null;
+	
+	/**
+	 * The logger
+	 */
 	private static Logger logger=null;
 	
-	// Container services
+	/**
+	 * Container services
+	 */
 	private static ContainerServicesBase containerServices;
 	
 	/**
@@ -222,6 +244,9 @@ public class ACSAlarmSystemInterfaceFactory {
 		  if (useACSAlarmSystem) {
 			  return new ACSAlarmSystemInterfaceProxy(sourceName,logger);
 		  } else {
+			  if (source!=null) {
+				  return source;
+			  }
 			  try {
 				  Thread t = Thread.currentThread();
 				  ClassLoader loader = t.getContextClassLoader();
@@ -233,8 +258,8 @@ public class ACSAlarmSystemInterfaceFactory {
 				  // and set it on ACSJMSTopicConnectionImpl.containerServices
 				  // Of course in after the ACS 7.0 release rush, this static field communication 
 				  // must be replaced with with real calls, or at least the absence of such an object must be detected early.
-				  
-				  return (ACSAlarmSystemInterface)constructor.newInstance(sourceName,logger);
+				  source=(ACSAlarmSystemInterface)constructor.newInstance(sourceName,logger);
+				  return source;
 			  } catch (Throwable t) {
 				  System.out.println("ERROR: "+t.getMessage());
 				  t.printStackTrace();
