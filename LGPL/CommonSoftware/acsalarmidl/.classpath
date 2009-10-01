@@ -5,10 +5,10 @@
 	<classpathentry kind="lib" path="ws/lib/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="lib" path="ws/lib"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>
