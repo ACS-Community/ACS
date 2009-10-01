@@ -804,7 +804,6 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 			// clean-up CORBA stuff
 			m_callback.disconnect();
-			getHelper().getContainerServices().deactivateOffShoot(m_callback);
 			getHelper().getContainerServices().deactivateOffShoot(this);
 			m_callback = null;
 			m_corbaRef = null;
@@ -876,30 +875,19 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
-		if (m_channel!=null)
-				m_channel = m_helper.getNotificationChannel(ecf);
-		try {
-			if (m_consumerAdmin ==null)
-				m_consumerAdmin = m_channel.get_consumeradmin(consumerAdminID.value);
-			if (m_proxySupplier == null)
-				m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.get_proxy_supplier(proxyID.value));
-			//consumerReady();
-		} catch (AdminNotFound e) {
-			//do something here;
-		} catch (ProxyNotFound e) {
-			//do something here;
-		}
+		if (m_channel != null)
+			m_channel = m_helper.getNotificationChannel(ecf);
+			if (m_channel == null)
+				m_logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
+						m_channelName);
 		try {
 			m_channel.set_qos(m_helper.getChannelProperties().
 					getCDBQoSProps(m_channelName));
 			m_channel.set_admin(m_helper.getChannelProperties().
 					getCDBAdminProps(m_channelName));
 		} catch (UnsupportedQoS e) {
-			e.printStackTrace();
 		} catch (AcsJException e) {
-			e.printStackTrace();
 		} catch (UnsupportedAdmin e) {
-			e.printStackTrace();
 		}
 		
 	}

@@ -462,29 +462,17 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 	public void reconnect(EventChannelFactory ecf) {
 		if (channel != null)
 			channel = helper.getNotificationChannel(ecf);
-		try {
-			if (supplierAdmin == null)
-				supplierAdmin = channel.get_supplieradmin(supplierAdminID.value);
-			if (proxyConsumer == null)
-				proxyConsumer = StructuredProxyPushConsumerHelper.narrow(supplierAdmin.get_proxy_consumer(proxyID.value));
-			if (proxyConsumer == null)
-				throw new NullPointerException("m_proxyConsumer is null");
-		} catch (AdminNotFound e) {
-			//do something here
-		} catch (ProxyNotFound e) {
-			//do something here
-		}
+			if (channel == null)
+				logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
+						channel);
 		try {
 			channel.set_qos(helper.getChannelProperties().
 					getCDBQoSProps(channelName));
 			channel.set_admin(helper.getChannelProperties().
 					getCDBAdminProps(channelName));
 		} catch (UnsupportedQoS e) {
-			e.printStackTrace();
 		} catch (AcsJException e) {
-			e.printStackTrace();
 		} catch (UnsupportedAdmin e) {
-			e.printStackTrace();
 		}
 		
 	}

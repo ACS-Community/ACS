@@ -41,7 +41,6 @@ import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
-import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.InvalidEventType;
@@ -804,30 +803,20 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
-		if (channel!=null)
+		if (channel != null)
 			channel = helper.getNotificationChannel(ecf);
-	try {
-		if (consumerAdmin ==null)
-			consumerAdmin = channel.get_consumeradmin(consumerAdminID.value);
-		if (proxySupplier == null)
-			proxySupplier = StructuredProxyPushSupplierHelper.narrow(consumerAdmin.get_proxy_supplier(proxyID.value));
-	} catch (AdminNotFound e) {
-		//do something here;
-	} catch (ProxyNotFound e) {
-		//do something here;
-	}
-	try {
-		channel.set_qos(helper.getChannelProperties().
-				getCDBQoSProps(channelName));
-		channel.set_admin(helper.getChannelProperties().
-				getCDBAdminProps(channelName));
-	} catch (UnsupportedQoS e) {
-		e.printStackTrace();
-	} catch (AcsJException e) {
-		e.printStackTrace();
-	} catch (UnsupportedAdmin e) {
-		e.printStackTrace();
-	}
+			if (channel == null)
+				logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
+						channel);
+		try {
+			channel.set_qos(helper.getChannelProperties().
+					getCDBQoSProps(channelName));
+			channel.set_admin(helper.getChannelProperties().
+					getCDBAdminProps(channelName));
+		} catch (UnsupportedQoS e) {
+		} catch (AcsJException e) {
+		} catch (UnsupportedAdmin e) {
+		}
 		
 	}
 }

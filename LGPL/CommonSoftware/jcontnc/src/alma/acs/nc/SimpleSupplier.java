@@ -270,7 +270,6 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 		try {
 			// clean-up CORBA stuff
 			reconnectCallback.disconnect();
-			m_services.deactivateOffShoot(reconnectCallback);
 			m_services.deactivateOffShoot(this);
 		} 
 		catch (Throwable thr) {
@@ -535,20 +534,9 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 	public void reconnect(gov.sandia.NotifyMonitoringExt.EventChannelFactory ecf) {
 		if (m_channel != null)
 			m_channel = m_helper.getNotificationChannel(ecf);
-		try {
-			if (m_supplierAdmin == null)
-				m_supplierAdmin = m_channel.get_supplieradmin(ih.value);
-			if (m_proxyConsumer == null)
-				m_proxyConsumer = StructuredProxyPushConsumerHelper.narrow(m_supplierAdmin.get_proxy_consumer(cp_ih.value));
-			if (m_proxyConsumer == null)
-				throw new NullPointerException("m_proxyConsumer is null");
-		} catch (AdminNotFound e) {
-			//e.printStackTrace();
-			//do something here
-		} catch (ProxyNotFound e) {
-			//e.printStackTrace();
-			//do something here
-		}
+			if (m_channel == null)
+				m_logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
+						m_channelName);
 		/*Re apply the Channel QoS and admin properties*/
 		try {
 			m_channel.set_qos(m_helper.getChannelProperties().
@@ -556,11 +544,8 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 			m_channel.set_admin(m_helper.getChannelProperties().
 					getCDBAdminProps(m_channelName));
 		} catch (UnsupportedQoS e) {
-			e.printStackTrace();
 		} catch (AcsJException e) {
-			e.printStackTrace();
 		} catch (UnsupportedAdmin e) {
-			e.printStackTrace();
 		}
 	}
 

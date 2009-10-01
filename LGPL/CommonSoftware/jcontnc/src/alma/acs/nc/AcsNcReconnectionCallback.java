@@ -18,6 +18,7 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 	private EventChannelFactory ecf_;
 	private ReconnectableSubscriber sub_;
 	private int callback_id_;
+	private ContainerServicesBase services;
 	private boolean id_is_valid_;
 
 	public AcsNcReconnectionCallback(ReconnectableSubscriber sub){
@@ -44,6 +45,7 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 		
 		ecf_=(EventChannelFactory) ecf._duplicate();
 		try {
+				this.services = services;
 				ReconnectionCallback callback = ReconnectionCallbackHelper.narrow(services.activateOffShoot(this));
 				ReconnectionRegistry registry = ReconnectionRegistryHelper.narrow(ecf);
 				callback_id_ = registry.register_callback(callback);
@@ -58,6 +60,11 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 		if (id_is_valid_){
 			ReconnectionRegistry registry = ReconnectionRegistryHelper.narrow(ecf_);
 			registry.unregister_callback(callback_id_);
+			/* This should never occurs, but in any case*/
+			try {
+				services.deactivateOffShoot(this);
+			} catch (AcsJContainerServicesEx e) {
+			}
 			id_is_valid_ = false;
 		}
 	}
