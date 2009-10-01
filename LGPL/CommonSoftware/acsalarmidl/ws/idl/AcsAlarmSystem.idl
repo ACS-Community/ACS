@@ -23,6 +23,8 @@
 #define _ACSALARMSERVICE_IDL_
 
 #include <CosProperty.idl>
+#include <acscommon.idl>
+#include <ACSErrTypeCommon.idl>
 
 #pragma prefix "alma"
 
@@ -33,6 +35,16 @@ module alarmsystem
 	 * service
 	 */
 	const string AlarmServiceName="AcsAlarmService";
+	
+	/*
+	 * The triplet
+	 */
+	struct Triplet
+	{
+		string faultFamily;
+		string faultMember;
+		long faultCode;
+	};
 	
 	/*
 	 * The ACS alarm service.
@@ -54,6 +66,24 @@ module alarmsystem
 		 *                                   false means CERN implementation
 		 */
 		boolean isACSAlarmService();
+		
+		/*
+		 * Submit an alarm bypassing the NC
+		 * 
+		 * This method allows to send alarms even when the Notify Service
+		 * is down or not working properly and it is meant for this purpose
+		 * only: normally alarms must be sent through the API of your
+		 * preferred programming language because it offers more functionalities
+		 * then this method
+		 */
+		void submitAlarm(
+			in alarmsystem::Triplet triplet,
+			in boolean active,
+			in string sourceHostName,
+			in string sourceName,
+			in ACS::Time sourceTimestamp,
+			in CosPropertyService::Properties alarmProperties)
+			 raises (ACSErrTypeCommon::BadParameterEx, ACSErrTypeCommon::UnexpectedExceptionEx);
 	};
 
 };
