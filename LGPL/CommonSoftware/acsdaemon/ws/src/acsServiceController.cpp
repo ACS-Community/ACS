@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.12 2009/09/30 12:18:13 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.13 2009/10/01 11:36:04 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -259,7 +259,7 @@ void ImpController::setManagerReference(const short instance_number, const char 
 
 /*************************** ACSServiceController *****************************/
 
-ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc), alarmSystemInitialized(false), alarmService(::alarmsystem::CERNAlarmService::_nil()) {
+ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart) : ServiceController(icontext, iautostart), desc(idesc), alarmSystemInitialized(false), alarmService(::alarmsystem::AlarmService::_nil()) {
     char str[256];
     const ACSService *service = &acsServices[idesc->getACSService()];
     std::string port = service->svcport == NULL ? service->namedsvcport(idesc->getInstanceNumber(), idesc->getName()) : service->svcport(idesc->getInstanceNumber());
@@ -318,15 +318,13 @@ bool ACSServiceController::setState(acsdaemon::ServiceState istate) {
 }
 
 void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
-//ACS_SHORT_LOG((LM_INFO, "-------------- fireAlarm"));
     if (!alarmSystemInitialized)
     {
-//ACS_SHORT_LOG((LM_INFO, "-------------- not initialized"));
 
         // no reference yet, noop
         if (!getContext()->getManagerReference(desc->getInstanceNumber()))
 	   return;
-//ACS_SHORT_LOG((LM_INFO, "-------------- initializing!!!"));   
+
         try {
            ACE_CString managerReference = getContext()->getManagerReference(desc->getInstanceNumber());
            ACS_SHORT_LOG((LM_DEBUG, "Initializing Alarm System using manager reference '%s'.", managerReference.c_str()));
@@ -335,7 +333,7 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
                ACS_SHORT_LOG((LM_ERROR, "Failed to parse Corba URI '%s' as manager reference!", managerReference.c_str()));
                return;
            }
-//ACS_SHORT_LOG((LM_INFO, "-------------- got manager 1"));
+
            obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
 
 	   ::maci::Manager_var manager = ::maci::Manager::_narrow(obj.in());
@@ -343,15 +341,15 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
                ACS_SHORT_LOG((LM_INFO, "Manager reference '%s' is not valid.", managerReference.c_str()));
                return;
            }
-//ACS_SHORT_LOG((LM_INFO, "-------------- manager in place"));
+
 	   obj = manager->get_service(0, ::alarmsystem::AlarmServiceName, false);  
            if (CORBA::is_nil(obj.in())) {
                ACS_SHORT_LOG((LM_ERROR, "Failed to get '%s' service from manager!", ::alarmsystem::AlarmServiceName));
                return;
            }
-//ACS_SHORT_LOG((LM_INFO, "-------------- got ACS obj "));
-           alarmService = ::alarmsystem::CERNAlarmService::_narrow(obj.in());
-           if (alarmService.ptr() == ::alarmsystem::CERNAlarmService::_nil()) {
+
+           alarmService = ::alarmsystem::AlarmService::_narrow(obj.in());
+           if (alarmService.ptr() == ::alarmsystem::AlarmService::_nil()) {
                ACS_SHORT_LOG((LM_INFO, "AlarmService reference is not valid."));
                return;
            }
@@ -360,7 +358,6 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
 
            ACS_SHORT_LOG((LM_DEBUG, "Alarm System initialized."));
        } catch (...) {
-           // TODO special exception handling?
            ACS_SHORT_LOG((LM_DEBUG, "Failed to initialize Alarm System."));
            return;
        }
@@ -399,10 +396,14 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
     hostname[0] = 0;
     ACE_OS::hostname(hostname, 200);
 
-//ACS_SHORT_LOG((LM_INFO, "********************* huuuraaaay, sending an alarm..."));
- 
-    alarmService->submitAlarm(triplet, state != acsdaemon::RUNNING,
-	hostname, "ALARM_SOURCE_NAME", acsTime, properties);
+    try
+    {
+       alarmService->submitAlarm(triplet, state != acsdaemon::RUNNING,
+   	hostname, "ALARM_SOURCE_NAME", acsTime, properties);
+    } catch (...) {
+       ACS_SHORT_LOG((LM_DEBUG, "Failed to send an alarm."));
+       return;
+    }
 }
 
 /***************************** ACSDaemonContext *******************************/

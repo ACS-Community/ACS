@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.7 2009/09/28 19:46:49 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.8 2009/10/01 11:36:04 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -137,7 +137,7 @@ class ACSServiceController : public ServiceController {
     ACSServiceRequestDescription *desc;
     ACE_CString corbaloc;
     bool alarmSystemInitialized;
-    ::alarmsystem::CERNAlarmService_var alarmService;
+    ::alarmsystem::AlarmService_var alarmService;
  protected:
     ControlledServiceRequest *createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback = NULL);
     acsdaemon::ServiceState getActualState();
