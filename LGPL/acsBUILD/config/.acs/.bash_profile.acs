@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.84 2009/09/18 06:09:40 hyatagai Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.85 2009/10/01 17:27:58 agrimstrup Exp $"
 #
 #
 #
@@ -956,7 +956,7 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.
 # the minor version number seem not used.
 # If I do it before, I get the system python and not the one we want to use.
 #
-export PATH LD_LIBRARY_PATH
+export PYTHON_ROOT PATH LD_LIBRARY_PATH
 PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
 PYTHONINC=`python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
 PYTHONPATH=$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
