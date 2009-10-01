@@ -438,4 +438,3 @@
 1 - <timestamp> INFO [CONSUMER2_JAVA] cleanUp() called..., nothing to clean up.
 1 - <timestamp> INFO [CONSUMER3_JAVA] cleanUp() called..., nothing to clean up.
 1 - <timestamp> INFO [SUPPLIER_JAVA] cleanUp() called, disconnecting supplier from channel counter
-
