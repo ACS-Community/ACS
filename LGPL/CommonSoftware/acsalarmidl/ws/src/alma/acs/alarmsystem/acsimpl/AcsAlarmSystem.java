@@ -25,7 +25,15 @@ import java.util.logging.Logger;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.alarmsystem.AlarmServicePOA;
+import alma.alarmsystem.Triplet;
 import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
+
+import alma.acs.util.XmlNormalizer;
+
+import org.omg.CosPropertyService.Property;
+
+import alma.ACSErrTypeCommon.BadParameterEx;
+import alma.ACSErrTypeCommon.UnexpectedExceptionEx;
 
 public class AcsAlarmSystem extends AlarmServicePOA {
 	
@@ -93,5 +101,30 @@ public class AcsAlarmSystem extends AlarmServicePOA {
 		logger.log(AcsLogLevel.DEBUG,"Shutting down");
 		Thread t = new Thread(new AcsComponentTerminator(),"LaserComponentTerminator");
 		t.start();
+	}
+	
+	/**
+	 * IDL method: submit an alarm without.
+	 * <P>
+	 * Build a message to sent to the {@link AlarmMessageProcessorImpl#process(Message)}.
+	 * 
+	 * @param triplet The triplet of the alarm
+	 * @param active if <code>true</code> the alarm is active
+	 * @param sourceHostName The name of the host of the source
+	 * @param timestamp The timestamp of the source
+	 * @param alarmProperties Additional user-defined properties of the alarm
+	 */
+	public synchronized void submitAlarm(
+			Triplet triplet,
+			boolean active,
+			String sourceHostName,
+			String sourceName,
+			long timestamp,
+			Property[] alarmProperties) throws BadParameterEx, UnexpectedExceptionEx {
+		String activeString=active?"ACTIVE":"TERMINATE";
+		StringBuilder sb = new StringBuilder("Alarm sent: <");
+		sb.append(triplet.faultFamily+','+triplet.faultMember+','+triplet.faultCode+"> ");
+		sb.append(activeString);
+		logger.log(AcsLogLevel.ALERT,XmlNormalizer.normalize(sb.toString()));
 	}
 }
