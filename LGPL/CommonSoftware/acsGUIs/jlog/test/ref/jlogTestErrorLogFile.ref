@@ -5,6 +5,7 @@
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] logged out from manager.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -14,6 +15,7 @@
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] logged out from manager.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -23,6 +25,7 @@
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] logged out from manager.
 1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
@@ -32,6 +35,7 @@
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
 1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] Manager login donee, handle 'xxxxxxxxxx' obtained.
+1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testClear] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] logged out from manager.
 1 - 
