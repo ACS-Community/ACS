@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.42 2006/12/06 16:04:34 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.43 2009/10/02 14:01:56 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,7 @@ USER_LIB = -lbaci -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsutil -
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = enumpropTestServer testClient testRWClient monitorTest alarmTest onchangeMonitorTest
+EXECUTABLES_L   = enumpropTestServer testClient testRWClient monitorTest alarmTest onchangeMonitorTest alarmTestSetFFFM
 
 #
 # <brief description of xxxxx program>
@@ -81,6 +81,9 @@ alarmTest_OBJECTS=  $(alarmTest_COMMON) $(common_GENERATED)
 
 onchangeMonitorTest_COMMON = onchangeMonitorTest
 onchangeMonitorTest_OBJECTS=  $(onchangeMonitorTest_COMMON) $(common_GENERATED)
+
+alarmTestSetFFFM_COMMON = alarmTestSetFFFM
+alarmTestSetFFFM_OBJECTS = $(alarmTestSetFFFM_COMMON) $(common_GENERATED)
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 

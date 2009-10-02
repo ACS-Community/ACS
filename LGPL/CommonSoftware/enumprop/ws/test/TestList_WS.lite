@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList_WS.lite,v 1.31 2005/07/28 10:03:36 vwang Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.32 2009/10/02 14:01:56 bjeram Exp $"
 #
 # TestList
 #
@@ -43,5 +43,7 @@ PROLOGUE cdbTATPrologue
 6 enumRWTestDISABLED	"startEnumpropTestServer" "@SLEEP 20" "alarmTest EPTESTDEVICE1" "@SLEEP 2" "testRWClient EPTESTDEVICE1 DISABLED"
 
 7 enumOnChangeTest   "startEnumpropTestServer" "@SLEEP 20" "onchangeMonitorTest EPTESTDEVICE1" "@SLEEP 2" "testClient EPTESTDEVICE1 DISABLED noshutdown" "@SLEEP 10" "testClient EPTESTDEVICE1 ENABLED"
+
+8 enumSetFFFMTest   "startEnumpropTestServer" "@SLEEP 20" "alarmTestSetFFFM EPTESTDEVICE1"
 
 EPILOGUE cdbTATEpilogue
