@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: python,v 1.2 2009/09/30 15:32:49 agrimstrup Exp $"
+# "@(#) $Id: python,v 1.3 2009/10/02 19:10:02 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -28,12 +28,12 @@
 # in order to properly mimic the behaviour of the tools we
 # are wrapping
 
-OPTIMIZE=
-VERBOSITY=
-PYTHONARGS=""
-CMDSTR=
-
 function get_args {
+   local OPTIMIZE=
+   local VERBOSITY=
+   local PYTHONARGS=""
+   local CMDSTR=
+
    while getopts ":c:dEhim:OQ:StuvVW:x-:" flag
    do
       case $flag in
@@ -47,11 +47,11 @@ function get_args {
          break
          ;;
       V|h) 
-         PYTHONARGS="$PYTHONARGS -$flag "
+         PYTHONARGS="$PYTHONARGS-$flag "
          break
          ;;
       Q|W) 
-         PYTHONARGS="$PYTHONARGS -$flag $OPTARG "
+         PYTHONARGS="$PYTHONARGS-$flag $OPTARG "
          ;;
       O)
          if [[ -z $OPTIMIZE ]]
@@ -75,89 +75,116 @@ function get_args {
       -)
          PYTHONARGS="--$OPTARG"
          ;;
+      :)
+         PYTHONARGS="-h"
+         break
+         ;;
       esac
    done
+
+   if [[ ! -z $OPTIMIZE ]]
+   then
+      PYTHONARGS="$OPTIMIZE $PYTHONARGS"
+   fi
+
+   if [[ ! -z $VERBOSITY ]]
+   then
+      PYTHONARGS="$VERBOSITY $PYTHONARGS"
+   fi
+
+   if [ ! -z "$CMDSTR" ]
+   then
+      PYINTRARGS=$PYTHONARGS
+      PYCMDSTR=$CMDSTR
+   else
+      PYINTRARGS=$PYTHONARGS
+      PYCMDSTR=
+   fi
 }
 
-get_args "$@"
-shift $(($OPTIND-1))
-
-if [[ ! -z $OPTIMIZE ]]
-then
-   PYTHONARGS="$OPTIMIZE $PYTHONARGS"
-fi
-
-if [[ ! -z $VERBOSITY ]]
-then
-   PYTHONARGS="$VERBOSITY $PYTHONARGS"
-fi
-
-# CASA_ROOT is set when .bash_profile.acs detects that CASA
-# has been installed on the machine.  Since we are trying to
-# run a CASA-provided Python interpreter with this script, 
-# there is no point in continuing if CASA isn't installed.
-if [ X"$CASA_ROOT" = X -o X"$USE_ACS_PYTHON" != X ]
-then
-   PYTHONSHELL="$PYTHON_ROOT/bin/python"
-else
-
-   PYTHONSHELL="$CASA_ROOT/lib/casapy/bin/python"
-
-   # CASA requires the tk.tcl file from the TCL libraries it
-   # provides
-   export TCL_LIBRARY=$CASA_ROOT/share/tcl8.4
-
-   # Access to ACS-supplied modules may still be necessary so
-   # the PYTHONPATH has to include both the CASA and ACS
-   # site-package directories.  This is true for some shared
-   # libraries as well.  CASA is given priority in the
-   # ordering.
-   if [[ ! "$PYTHONPATH" =~ ".*$CASA_ROOT" ]]
+function select_intr {
+   # CASA_ROOT is set when .bash_profile.acs detects that CASA
+   # has been installed on the machine.  Since we are trying to
+   # run a CASA-provided Python interpreter as our first choice, 
+   # we fall back to the ACS Python if CASA isn't installed.
+   # Setting USE_ACS_PYTHON will force the use of ACS Python.
+   if [ X"$CASA_ROOT" = X -o X"$USE_ACS_PYTHON" != X ]
    then
-     PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
-   fi
-   if [[ ! "$LD_LIBRARY_PATH" =~ ".*$CASA_ROOT" ]]
-   then
-     LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
-   fi
-fi
-
-
-# Now that the environment is set, the interpreter can
-# be started.
-if [ "X" = "$1X" ]
-then
-   # No arguments provided so CASA's interpreter is launched
-   if [ ! -z "$CMDSTR" ]
-   then  
-       $PYTHONSHELL $PYTHONARGS "$CMDSTR"
+      PYTHONSHELL="$PYTHON_ROOT/bin/python"
    else
-       $PYTHONSHELL $PYTHONARGS
-   fi     
-else
-   # A script is to be run in CASA's interpreter
-   if [ -e $1 ]
-   then
-      # Run the file from the current directory
-      $PYTHONSHELL $PYTHONARGS $@
-   else
-      # Use the CASA interpreter to override the Python
-      # interpreter line given in an executable script
-      SCRIPT=`which $1`
-      if [ "X" = "$SCRIPTX" ]
+
+      PYTHONSHELL="$CASA_ROOT/lib/casapy/bin/python"
+
+      # CASA requires the tk.tcl file from the TCL libraries it
+      # provides
+      export TCL_LIBRARY=$CASA_ROOT/share/tcl8.4
+
+      # Access to ACS-supplied modules may still be necessary so
+      # the PYTHONPATH has to include both the CASA and ACS
+      # site-package directories.  This is true for some shared
+      # libraries as well.  CASA is given priority in the
+      # ordering.
+      if [[ ! "$PYTHONPATH" =~ ".*$CASA_ROOT" ]]
       then
-         echo "$1 not found!"
-      else
-         shift
-         $PYTHONSHELL $PYTHONARGS $SCRIPT $@
+         PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
+      fi
+      if [[ ! "$LD_LIBRARY_PATH" =~ ".*$CASA_ROOT" ]]
+      then
+         LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
       fi
    fi
-fi
+}
 
-# Clean up the CASA-specific setting
-if [ ! X"$TCL_LIBRARY" = X ]
+function start_intr {
+
+   # Now that the environment is set, the interpreter can
+   # be started.
+   if [ "X" = "$1X" ]
+   then
+      # No script provided so the interpreter is launched
+      if [ ! -z "$PYCMDSTR" ]
+      then  
+         $PYTHONSHELL $PYINTRARGS "$PYCMDSTR"
+      else
+         $PYTHONSHELL $PYINTRARGS
+      fi     
+   else
+      # A script is to be run in the interpreter
+      if [ -e $1 ]
+      then
+         # Run the file from the current directory
+         $PYTHONSHELL $PYINTRARGS $@
+      else
+         # Use the interpreter to override the Python
+         # interpreter line given in an executable script
+         SCRIPT=`which $1 2>/dev/null`
+         if [ "X" = "X$SCRIPT" ]
+         then
+            echo "$1 not found!"
+         else
+            shift
+            $PYTHONSHELL $PYINTRARGS $SCRIPT $@
+         fi
+      fi
+   fi
+
+   # Clean up the CASA-specific setting
+   if [ ! X"$TCL_LIBRARY" = X ]
+   then
+     unset TCL_LIBRARY
+   fi
+}
+
+if [ -z "$TEST_MODE" ]
 then
-  unset TCL_LIBRARY
+   # Extract the interpreter arguments from the command line
+   get_args "$@"
+   shift $(($OPTIND-1))
+
+   # Pick the interpreter to be run
+   select_intr
+
+   start_intr
 fi
 
 #

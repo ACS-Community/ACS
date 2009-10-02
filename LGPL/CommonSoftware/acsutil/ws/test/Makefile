@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.25 2005/12/13 21:35:13 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.26 2009/10/02 19:10:02 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -93,7 +93,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =  
+SCRIPTS_L       =  testPython
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
