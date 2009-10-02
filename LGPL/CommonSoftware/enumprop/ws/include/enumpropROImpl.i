@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.56 2009/09/15 09:05:59 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.57 2009/10/02 13:58:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -724,9 +724,9 @@ template <ACS_ENUM_C>
 void ROEnumImpl<ACS_ENUM_T(T), SK>::setAlarmFaultFamily(const char* ff)
 {
 	ACS_TRACE("baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
-	if (this->alarmSystemMonitor_mp!=0)
+	if (this->alarmSystemMonitorEnumProp_mp!=0)
 	{
-		this->alarmSystemMonitor_mp->setFaultFamily(ff);
+		this->alarmSystemMonitorEnumProp_mp->setFaultFamily(ff);
 	}
 	else
 	{
@@ -737,9 +737,9 @@ void ROEnumImpl<ACS_ENUM_T(T), SK>::setAlarmFaultFamily(const char* ff)
 template <ACS_ENUM_C>
 void ROEnumImpl<ACS_ENUM_T(T), SK>::setAlarmFaultMember(const char* fm)
 {
-	if (this->alarmSystemMonitor_mp!=0)
+	if (this->alarmSystemMonitorEnumProp_mp!=0)
 	{
-		this->alarmSystemMonitor_mp->setFaultMember(fm);
+		this->alarmSystemMonitorEnumProp_mp->setFaultMember(fm);
 	}
 	else
 	{
