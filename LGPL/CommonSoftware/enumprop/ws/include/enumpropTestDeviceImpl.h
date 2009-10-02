@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.40 2008/10/01 02:33:31 cparedes Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.h,v 1.41 2009/10/02 14:00:28 bjeram Exp $
  */
 /*
 * DeviceImpl.h - ALMA Device interface implementation.
@@ -92,6 +92,11 @@ class  enumpropTestDeviceImpl : public POA_ENUMPROP_TEST::enumpropTestDevice,
    ENUMPROP_TEST::RWStates_ptr currentStateRW (); 
 
       void serverShutdown ();
+
+      /**
+         * For test purpose we want to be able to change FF and FM
+         */
+      void changeAlarmFFFM(const char*, const char*);
 
   private:
     ROEnumImpl<ACS_ENUM_T(ENUMPROP_TEST::States), POA_ENUMPROP_TEST::ROStates> *m_currentState;

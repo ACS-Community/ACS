@@ -1,4 +1,4 @@
-/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.48 2008/10/01 02:33:31 cparedes Exp $
+/* @(#) $Id: enumpropTestDeviceImpl.cpp,v 1.49 2009/10/02 13:57:40 bjeram Exp $
  */
 /*
 *    DeviceImpl.cpp - ALMA Device interface implementation.
@@ -196,6 +196,13 @@ void  enumpropTestDeviceImpl::serverShutdown ()
     //LoggingProxy::done();
 #endif
 }
+
+
+void  enumpropTestDeviceImpl::changeAlarmFFFM(const char *ff, const char *fm)
+{
+	m_currentState->setAlarmFaultFamily(ff);
+	m_currentState->setAlarmFaultMember(fm);
+}//changeAlarmFFFM
 
 // at this point we can not use  MACI_DLL_SUPPORT_FUNCTIONS
 // since it is not available yet
