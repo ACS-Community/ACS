@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: python,v 1.3 2009/10/02 19:10:02 agrimstrup Exp $"
+# "@(#) $Id: python,v 1.4 2009/10/05 14:43:05 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -184,7 +184,7 @@ then
    # Pick the interpreter to be run
    select_intr
 
-   start_intr
+   start_intr "$@"
 fi
 
 #
