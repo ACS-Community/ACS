@@ -13,5 +13,5 @@ public interface IGraphicalUpdater {
 	
 	public void resetSampleCount();
 	
-	public void setTimeWindow(long frecuency, int time);
+	public void setTimeWindow(double frecuency, int time);
 }

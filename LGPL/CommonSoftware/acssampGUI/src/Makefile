@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.12 2009/07/09 18:46:10 ntroncos Exp $"
+# "@(#) $Id: Makefile,v 1.13 2009/10/05 22:39:06 ntroncos Exp $"
 #
 # Makefile of samplingSystemGUI
 #
@@ -25,6 +25,7 @@
 # ntroncos  14/11/06  created
 # jaray	    20/11/06  modified
 # ntroncos  09/08/2009 Merged changes from SVN repo to ACS CVS
+# ntroncos  05/10/2009 Merged changes from SVN repo to ACS CVS
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
 #*******************************************************************************

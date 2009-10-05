@@ -154,8 +154,8 @@ public class PlotPrinter extends DataPrinter {
 		return true;
 	}
 	
-	public void setTimeWindow(int freq, int time) {
-		widget.setTimeWindow( frecuency, time);
+	public void setTimeWindow(float freq, int time) {
+		widget.setTimeWindow((long)frecuency, time);
 	}
 	
 	public void setDumpToFile( boolean value){

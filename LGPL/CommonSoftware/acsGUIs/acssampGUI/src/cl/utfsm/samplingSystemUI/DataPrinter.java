@@ -32,8 +32,8 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		this.ssg = ssg;
 	}
 	
-	public long getFrecuency() {
-		return (long)(10000000L/frecuency);
+	public double getFrecuency() {
+		return (double)(10000000L/frecuency);
 	}
 
 	public long getReportRate() {
@@ -56,8 +56,8 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		this.property = property;
 	}
 
-	public void setFrecuency(long frecuency) {
-		this.frecuency=(long)10000000L/frecuency;
+	public void setFrecuency(double f) {
+		this.frecuency=(long)(10000000/f);
 	}
 
 	public void setReportRate(long reportRate) {
@@ -112,7 +112,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 
 		try {
 			SamplingManagerUITool.startSample(new SampDetail(component,property,
-					this.frecuency,reportRate));
+					(long)this.frecuency,reportRate));
 		} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx e) {
 			setComponentAvailable(false,"Cannot access component implementation");
 			throw e;
@@ -134,7 +134,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		initializations--;
 			if( componentAvailable == true ) {
 				samp.halt();
-				SamplingManagerUITool.stopSample(new SampDetail(component, property, frecuency, reportRate));
+				SamplingManagerUITool.stopSample(new SampDetail(component, property, (long)frecuency, reportRate));
 				postProcessing();
 			}
 		}
@@ -211,24 +211,44 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		}
 
 		public void run(){
+			//int timeout_ms = (int)(1000/getFrecuency())*10; //maximum of 10 times of delay
+			//Timer timer = new Timer( timeout_ms );
+			boolean runningTimer = false;
 			LinkedBlockingQueue<DataItem> cChannel;
 			LinkedList<DataItem> c = new LinkedList<DataItem>(); 
 			int n=0;
 			while(true){
-				try {
-					if(stop==true)
+				try {					
+					if(stop==true) {
+						//timer.reset();
 						return;
+					}
 					Thread.sleep(100);
 					//"NC_LAMP1_brightness_10000000_1"
 					cChannel = ThreadCommunicator.getInstance().getChannel("NC_"+component+"_"+
 							property+"_"+frecuency+"_"+reportRate);
+					
 					if(cChannel==null)
 						continue;
+					if( (cChannel.size() == 0) && !runningTimer ) {
+						runningTimer = true;
+						//timer = new Timer(timeout_ms);
+						//timer.start();
+					}
+					if(runningTimer) {
+						if( cChannel.size() == 1 ) {
+							runningTimer = false;
+							//timer.reset();
+						}
+					}
+					
 					cChannel.drainTo(c);
+	
 					//TODO:Improve the way to drain data: Actually drainTo method
 					//drain all sampled data from the sampling start.
 					if(c.isEmpty())
 						continue;
+
 					if( !pause )
 						for(int i=n;i<c.size();i++){
 							updateValue(c.get(i));

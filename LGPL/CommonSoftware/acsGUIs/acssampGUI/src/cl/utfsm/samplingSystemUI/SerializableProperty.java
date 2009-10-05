@@ -16,8 +16,8 @@ public class SerializableProperty implements Serializable {
 	public long getFrequency() {
 		return Long.parseLong(frequency);
 	}
-	public void setFrequency(long frequency) {
-		this.frequency = String.valueOf(frequency);
+	public void setFrequency(double d) {
+		this.frequency = String.valueOf(d);
 	}
 	public int getSamplingTime() {
 		return Integer.parseInt(samplingTime);

@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+
 import cl.utfsm.samplingSystemUI.core.SamplingManager;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 
@@ -81,8 +82,9 @@ public class SamplingSystemGUI extends JFrame {
 	private JLabel groupLabel = null;
 	private JTextField groupTextField = null;
 	private JButton addSampleButton = null;
+
 	private StatusIcon statusIcon;
-	private Vector property_sampled; 
+	private Vector<Object> property_sampled; 
 	
 	
 	/**
@@ -91,7 +93,7 @@ public class SamplingSystemGUI extends JFrame {
 	public SamplingSystemGUI() {
 		super();
 		BeanGrouperList = new ArrayList<BeanGrouper>();
-		property_sampled = new Vector();
+		property_sampled = new Vector<Object>();
 		initialize();
 	}
 	
@@ -127,12 +129,21 @@ public class SamplingSystemGUI extends JFrame {
 		
 		return false;
 	}
-	
+	/** Add the component:property to the property_sampled vector*/
 	public void addToSampled(String comp_prop) {
 		if(!isAlreadySampled(comp_prop)) {
 			property_sampled.add((Object)comp_prop);
 		}
 	}
+	
+	/** removes the componente:property from the property_sampled vector*/
+	public void delFromSampled(String comp_prop){
+		if(isAlreadySampled(comp_prop)){
+			property_sampled.remove((Object)comp_prop);
+		}
+		
+	}
+	
 	
 	/**
 	 * This method initializes SSGMenuBar
@@ -391,7 +402,6 @@ public class SamplingSystemGUI extends JFrame {
 		return PropertyAddPanel;
 	}
 
-
 	/**
 	 * This method initializes statusIcon
 	 * 
@@ -424,6 +434,7 @@ public class SamplingSystemGUI extends JFrame {
 					String comp = e.getItem().toString();
 					PropertyComboBox.removeAllItems();
 					for(int i=0; i<compList.length;i++){
+
 						/* We find the component. We show the
 						 * properties for it. If we do not have them,
 						 * we go and find them */
@@ -459,7 +470,6 @@ public class SamplingSystemGUI extends JFrame {
 								PropertyComboBox.removeAllItems();
 								PropertyComboBox.setEnabled(false);
 							}
-					//System.out.println(comp);
 						}
 					}
 					if(PropertyComboBox.getItemCount()==0)addSampleButton.setEnabled(false);
@@ -738,8 +748,11 @@ public class SamplingSystemGUI extends JFrame {
 				}
 			}
 		} catch (FileNotFoundException e) {
+			System.out.println("FILE NOT FOUND");
 		} catch (IOException e) {
+			System.out.println("IO EXCEPTION");
 		} catch (ClassNotFoundException e) {
+			System.out.println("CLASS NOT FOUND EXCEPTION");
 		}
 	}
 	
