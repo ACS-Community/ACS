@@ -30,7 +30,7 @@
 1 - testStartIntrNoLocalScript
 1 - foo.py not found!
 1 - testStartIntr
-1 - /diska/home/almamgr/ACS/LGPL/CommonSoftware/acsutil/ws/bin/acsutilCASAPathInsert PYTHONPATH
+acsutilCASAPathInsert PYTHONPATH
 1 - 
 1 - Ran 27 tests.
 1 - 
