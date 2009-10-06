@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.29 2007/10/15 16:06:04 hsommer Exp $"
+# "@(#) $Id: buildTools,v 1.30 2009/10/06 15:42:56 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -184,6 +184,8 @@ echo "buildOmniORB"
 ./buildOmniORB
 echo "buildMico"
 ./buildMico
+echo "buildEclipse"
+./buildEclipse
 
 if [ ${OS} = "LINUX" ]
 then
