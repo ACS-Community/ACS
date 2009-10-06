@@ -33,17 +33,31 @@ namespace acsalarm
 			Properties & operator=(const Properties & rhs);
 
 			// equality operator
-			int operator==(const Properties &rhs) const;
+			bool operator==(const Properties &rhs) ;
 
-			//Searches for the property with the specified key in this property list.
-			std::string getProperty(std::string key); 
+			// operator !=
+			bool operator!=(const Properties &rhs) ;
+
+			/**
+			 * Searches for the property with the specified key in this property list.
+			 *
+			 * @return the value of the property with the given key;
+			 * 			the returned string is empty if a pair with the given key does not exist
+			 *
+			 */
+			std::string getProperty(std::string key) ;
 
  			// Returns an enumeration of all the keys in this property list, 
 			// including distinct keys in the default property list if a key 
 			// of the same name has not already been found from the main properties list.
 			std::auto_ptr<std::vector<std::string> > propertyNames();
 
-			// Calls the map method put.
+			/**
+			 * Add a pair <key, value> to the property
+			 *
+			 * @param key The key (not empty)
+			 * @param value The value (not empty)
+			 */
 			void setProperty(std::string key, std::string value) throw(std::invalid_argument);
 
 			// Returns an XML fragment (NOT a complete document) representing all of 
@@ -51,6 +65,11 @@ namespace acsalarm
 			// from an alarm source to the alarm server.
 			// @param amountToIndent - used to specify a level of indentation (in spaces) for readability
 			std::string toXML(int amountToIndent = 6);
+
+			/**
+			 * @return the size of the properties
+			 */
+			unsigned int getSize() const { return propertiesMap.size(); }
 	};
 }
 #endif
