@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.16 2009/09/28 19:46:49 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.17 2009/10/06 13:37:38 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,8 +31,9 @@
 #include "acsServicesHandlerImpl.h"
 #include <expat.h>
 
+#ifndef XML_TRUE
 #define XML_TRUE 1
-#define XML_FALSE 0
+#endif
 #define XML_STATUS_OK 1
 #define XML_STATUS_ERROR 0
 
