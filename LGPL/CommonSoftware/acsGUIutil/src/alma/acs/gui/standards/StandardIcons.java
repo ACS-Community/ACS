@@ -1,4 +1,4 @@
-package alma.common.gui.standards;
+package alma.acs.gui.standards;
 
 import java.net.URL;
 

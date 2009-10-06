@@ -1,7 +1,7 @@
 /*
  * Created on Jul 29, 2008 by mschilli
  */
-package alma.common.gui.standards;
+package alma.acs.gui.standards;
 
 import java.util.Collections;
 import java.util.Enumeration;

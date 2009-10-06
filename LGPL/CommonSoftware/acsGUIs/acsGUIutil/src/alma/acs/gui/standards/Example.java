@@ -1,7 +1,7 @@
 /*
  * Created on Jul 28, 2008 by mschilli
  */
-package alma.common.gui.standards;
+package alma.acs.gui.standards;
 
 import java.awt.GridLayout;
 import java.io.File;
