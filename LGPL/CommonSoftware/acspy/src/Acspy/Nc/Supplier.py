@@ -1,4 +1,4 @@
-# @(#) $Id: Supplier.py,v 1.19 2009/09/09 21:18:06 javarias Exp $
+# @(#) $Id: Supplier.py,v 1.20 2009/10/06 09:04:56 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - nada
 '''
 
-__revision__ = "$Id: Supplier.py,v 1.19 2009/09/09 21:18:06 javarias Exp $"
+__revision__ = "$Id: Supplier.py,v 1.20 2009/10/06 09:04:56 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -218,6 +218,7 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
     #------------------------------------------------------------------------------
     def publishEvent (self,
                       simple_data=None,
+                      event_callback=None,
                       type_name=None,
                       event_name="",
                       se=None,
@@ -231,6 +232,10 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         - simple_data is a user-defined IDL struct. If this parameter is not
         specified by the developer, se MUST be used.  99% of the time developers
         should specify the simple_data parameter and NOTHING ELSE!
+        - event_callback is a reference to the user implemented eventProcessCallback
+        the user must implements: eventSent(self, simple_data), 
+        eventDropped(self, simple_data) and eventStoredInQueue(self, simple_data)
+        methods.
         - type_name is literally the type_name field of a structured event. This
         is an optional parameter and should not be specified under normal
         circumstances. If unspecified, the name of the simple_data object is used.
@@ -342,6 +347,8 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
         # publish the event
         try:
             self.sppc.push_structured_event(se)
+            if event_callback != None:
+                event_calback.eventSent(simple_data)
 
             #For HLA/ITS - to be removed later!
             if get_integration_logs(self.channelName)==1:
@@ -355,7 +362,9 @@ class Supplier (CosNotifyComm__POA.StructuredPushSupplier, CommonNC):
             
             self.count = self.count + 1
         except (CORBA.COMM_FAILURE, CORBA.TRANSIENT):
-            pass
+            #Notify Service is down
+            if event_callback != None:
+                event_calback.eventDropped(simple_data)
 
         except Exception, e:
             print_exc()
