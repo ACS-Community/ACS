@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2009/09/30 22:19:35 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2009/10/06 09:30:13 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -34,7 +34,7 @@
 
 SHELL=/bin/bash
 SHUNIT_VER = 2.1.5
-SHUNIT_TEST_DIR=../src/shunit-$(SHUNIT_VER)/src/shell
+SHUNIT_TEST_DIR=../src/shunit2-$(SHUNIT_VER)/src/shell
 
 #>>>>> END OF standard rules
 
@@ -54,12 +54,6 @@ endif
 all:
 
 clean:
-
-test:
-	@echo $(OLDPWD)
-	@cd $(OLDPWD)/src/shell ; ./shunit2_test.sh
-	@cd $(OLDPWD)
-	ls $(PWD)
-    
+	@rm -rf tatlogs
 
 #___oOo___
