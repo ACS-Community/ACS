@@ -47,7 +47,7 @@ public enum StandardIcons {
 	 * Translates strings to icons
 	 */
 	public static ImageIcon decode (String loc) {
-		String resdir = "alma/common/gui/standards/resources/";
+		String resdir = "alma/acs/gui/standards/resources/";
 		try {
 			if (!loc.startsWith("/") && !loc.startsWith(resdir))
 				loc = resdir + loc;
