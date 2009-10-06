@@ -43,18 +43,38 @@ Properties & Properties::operator=(const Properties & rhs)
 /*
  * Equality operator.
  */
-int Properties::operator==(const Properties &rhs) const
+bool Properties::operator==(const Properties &rhs)
 {
-	int retVal = 1;
-	if(propertiesMap != rhs.propertiesMap)
-	{
-		retVal = 0;
+	// Check the number of items in the containers
+	if (rhs.getSize()!=getSize()) {
+		return false;
 	}
-	return retVal;
+
+	// Check if both maps contain the same pairs <key,value>
+	std::map<std::string, std::string>::iterator mapIter;
+	for(mapIter= propertiesMap.begin(); mapIter != propertiesMap.end(); mapIter++ )
+	{
+		// The key of the present item
+		string key = mapIter->first;
+		string val = mapIter->second;
+
+		string rhsVal = rhs.getProperty(key);
+
+		if (val.compare(rhsVal)!=0) {
+			// The value of the same keys differ
+			return false;
+		}
+	}
+	return true;
+}
+
+bool Properties::operator!=(const Properties &rhs) {
+	return !((*this == rhs));
 }
 
 /*
  * Searches for the property with the specified key in this property list.
+ *
  * @key the key to search for in the map.
  */
 string Properties::getProperty(string key)
@@ -120,6 +140,11 @@ void Properties::setProperty(string key, string value) throw(invalid_argument)
 	{
 		// NULL passed in for key; not allowed
 		throw invalid_argument("zero-length key not allowed");
+	}
+	if(0 == value.length())
+	{
+		// NULL passed in for value; not allowed
+		throw invalid_argument("zero-length value not allowed");
 	}
 	string logStr = "Properties::setProperty(): inserting key: " + key + " and value: " + value;
 	if(myLoggerSmartPtr != NULL) {
