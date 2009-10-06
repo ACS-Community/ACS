@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.8 2009/10/01 11:36:04 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.9 2009/10/06 13:46:25 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <acsThreadManager.h>
 #include <map>
 #include <string>
-#include <AlarmSystemC.h>
+#include <AcsAlarmSystemC.h>
 
 const ACE_Time_Value TIME_PERIOD(15);
 
