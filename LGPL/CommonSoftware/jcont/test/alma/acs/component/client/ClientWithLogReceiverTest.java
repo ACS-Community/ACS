@@ -121,7 +121,8 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
 	                String sourceObjectName = logRecord.getSourceObject();
 	                if (sourceObjectName!=null && 
 	                		sourceObjectName.equals("ClientWithLogReceiverTest#testLogQueueNoDelay") &&
-	                		!logRecord.getMessage().startsWith("------------ setUp")) {
+	                		!logRecord.getMessage().startsWith("------------ setUp") &&
+	                		!logRecord.getMessage().startsWith("Alarm system type:")) {
 	                	// it's a log record sent from this process 
 		                assertEquals("Log message text must match the test log record", 
 		                		logMessage, logRecord.getMessage());
