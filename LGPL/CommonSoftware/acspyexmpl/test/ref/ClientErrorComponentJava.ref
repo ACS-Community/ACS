@@ -296,9 +296,9 @@
 1 - 	at $Proxy0.corbaSystemException(Unknown Source)
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:99)
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:138)
-1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:297)
-1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:591)
-1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:734)
+1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:310)
+1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:604)
+1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:759)
 1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...
