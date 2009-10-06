@@ -19,7 +19,7 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 	private ReconnectableSubscriber sub_;
 	private int callback_id_;
 	private ContainerServicesBase services;
-	private boolean id_is_valid_;
+	private volatile boolean id_is_valid_;
 
 	public AcsNcReconnectionCallback(ReconnectableSubscriber sub){
 		id_is_valid_ = false; 
