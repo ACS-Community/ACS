@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.17 2009/10/06 13:37:38 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.18 2009/10/06 16:09:37 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,8 +34,14 @@
 #ifndef XML_TRUE
 #define XML_TRUE 1
 #endif
+
+#ifndef XML_STATUS_OK
 #define XML_STATUS_OK 1
+#endif
+
+#ifndef XML_STATUS_ERROR
 #define XML_STATUS_ERROR 0
+#endif
 
 /************************** ServiceDefinitionBuilderImpl ****************************/
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.24 2009/09/28 19:46:49 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.25 2009/10/06 16:09:37 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -24,7 +24,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lACSErrTypeCORBA -lTAO_Messaging -lacsQoS -lacsAlSysSource -lAlarmSystemStubs -lAcsAlarmSystemStubs
+USER_LIB = -lTAO -lACE -lTAO_PortableServer -lacserr -lmaciErrType -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_CosProperty_Serv -lTAO_IORTable -llogging -lTAO_DynamicAny -lacsutil -lACSErrTypeCommon -lACSErrTypeCORBA -lTAO_Messaging -lacsQoS -lacsAlSysSource -lAcsAlarmSystemStubs
 
 #
 # MODULE CODE DESCRIPTION:
