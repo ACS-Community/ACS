@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: PropertyTest.cpp,v 1.1 2009/10/06 16:21:05 acaproni Exp $"
+* "@(#) $Id: PropertyTest.cpp,v 1.2 2009/10/06 16:45:33 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@
 
 #include <string>
 
-static char *rcsId="@(#) $Id: PropertyTest.cpp,v 1.1 2009/10/06 16:21:05 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: PropertyTest.cpp,v 1.2 2009/10/06 16:45:33 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 class PropertyTestCase : public CPPUNIT_NS::TestFixture
@@ -184,6 +184,11 @@ int main(int argc, char *argv[])
 	CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
 	outputter.write();
 
+	if (result.wasSuccessful()) {
+		std::cout<<"No errors in test"<<std::endl;
+	} else {
+		std::cout<<"The test reported errors"<<std::endl;
+	}
 	return result.wasSuccessful() ? 0 : 1;
 }
 
