@@ -2,11 +2,11 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildEclipse,v 1.1 2009/10/05 16:29:57 jschwarz Exp $"
+# "@(#) $Id: buildEclipse,v 1.2 2009/10/07 12:49:55 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
-# jschwarz    06/10/2009
+# jschwarz    02/10/2009
 
 # Load functions
 . standardUtilities
@@ -39,15 +39,9 @@ then
   echo $TOPDIR directory exists already. I clean it up.
   rm -rf $TOPDIR
 fi
-SDKDIR=$TOPDIR/SDK
-DELTAPACKDIR=$TOPDIR/DeltaPack
-RCPSDKDIR=$TOPDIR/RCP-SDK
-RCPBINDIR=$TOPDIR/RCP-BIN
+SDKDIR=$TOPDIR/SDKandDeltaPack
 mkdir $TOPDIR
 mkdir $SDKDIR
-mkdir $DELTAPACKDIR
-mkdir $RCPSDKDIR
-mkdir $RCPBINDIR
 
 #
 # Unpack the tar file
@@ -59,14 +53,7 @@ SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
 cd $SDKDIR
 tar zxf $SDKFILE
 DELTAPACKFILE=$CURR_DIR/../PRODUCTS/eclipse-$VERSION-delta-pack.zip
-cd $DELTAPACKDIR
-unzip $DELTAPACKFILE
-RCPSDKFILE=$CURR_DIR/../PRODUCTS/eclipse-RCP-SDK-$VERSION-linux-gtk.tar.gz
-cd $RCPSDKDIR
-tar zxf $RCPSDKFILE
-RCPBINFILE=$CURR_DIR/../PRODUCTS/eclipse-RCP-$VERSION-linux-gtk.tar.gz
-cd $RCPBINDIR
-tar zxf $RCPBINFILE
+unzip -o $DELTAPACKFILE
 echo "done"
 echo ""
 
