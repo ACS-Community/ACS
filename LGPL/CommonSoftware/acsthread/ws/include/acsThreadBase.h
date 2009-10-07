@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.33 2009/08/18 13:36:49 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.34 2009/10/07 14:46:39 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -621,7 +621,8 @@ namespace ACS {
 	ThreadBase * create(const ACE_CString& name, void * threadProc, void * parameter,
 			    const TimeInterval& responseTime=ThreadBase::defaultResponseTime,
 			    const TimeInterval& sleepTime=ThreadBase::defaultSleepTime,
-			    const long _thrFlags= THR_NEW_LWP | THR_DETACHED);
+			    const long _thrFlags= THR_NEW_LWP | THR_DETACHED,
+			    const size_t _stackSize=ACE_DEFAULT_THREAD_STACKSIZE);
 
 	/**
 	 * Add a thread to the ThreadBaseManger thread pool.

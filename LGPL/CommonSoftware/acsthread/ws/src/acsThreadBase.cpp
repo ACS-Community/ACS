@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.37 2009/08/18 13:36:49 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.38 2009/10/07 14:46:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -647,7 +647,8 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString& name,
 				      void* parameter,
 				      const TimeInterval& responseTime,
 				      const TimeInterval& sleepTime,
-				      const long _thrFlags)
+				      const long _thrFlags,
+				      const size_t _stackSize)
 {
     ACS_TRACE("ACS::ThreadManagerBase::create");
     ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_addRemoveMutex); //  GUARD;
@@ -662,7 +663,8 @@ ThreadBase* ThreadManagerBase::create(const ACE_CString& name,
     ThreadBase* thread_p = new ThreadBase(name, threadManager_mp, threadProc, parameter,
 					  responseTime, sleepTime,
 					  true,
-					  _thrFlags);
+					  _thrFlags,
+					  _stackSize);
     add2map(name, thread_p);
     return thread_p;
 }
