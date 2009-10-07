@@ -10,22 +10,22 @@ using acsalarm::FaultState;
 /**
  * Default Constructor
  */
-FaultState::FaultState()
+FaultState::FaultState():
+	userTimestamp(new Timestamp()),
+	userProperties(new Properties())
 {
-	auto_ptr<Timestamp> tstamp(new Timestamp());
-	setUserTimestamp(tstamp);
 }
 
 /**
  * Constructor for initializing a fault state with values
  */
-FaultState::FaultState(string theFamily, string theMember, int theCode)
+FaultState::FaultState(string theFamily, string theMember, int theCode):
+	userTimestamp(new Timestamp()),
+	userProperties(new Properties())
 {
 	setFamily(theFamily);
 	setMember(theMember);
 	setCode(theCode);
-	auto_ptr<Timestamp> tstamp(new Timestamp());
-	setUserTimestamp(tstamp);
 }
 
 /**
