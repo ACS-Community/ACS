@@ -1,5 +1,5 @@
-#ifndef _HELLO_WORLD_IDL_
-#define _HELLO_WORLD_IDL_
+#ifndef _REFPERSIST_HELLO_WORLD_IDL_
+#define _REFPERSIST_HELLO_WORLD_IDL_
 
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: HelloWorld.idl,v 1.1 2008/04/01 09:29:56 acaproni Exp $"
+* "@(#) $Id: HelloWorld.idl,v 1.2 2009/10/07 09:06:04 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
