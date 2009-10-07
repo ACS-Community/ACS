@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.43 2009/09/29 20:03:57 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.44 2009/10/07 15:11:56 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -197,11 +197,16 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+
+acsutilCASAPathInsert.py:	acsutilCASAPathInsert.py.tmpl
+	sed "s/RLSE/${ALMASW_RELEASE}/" < $< > $@
+
+all:	acsutilCASAPathInsert.py do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
 	$(RM) *~ ../include/*~ ../dbl/*~ ../idl/*~ ../*~ ../../*~ core
+	$(RM) acsutilCASAPathInsert.py
 	$(RM) ../doc/*
 	@echo " . . . clean done"
 
