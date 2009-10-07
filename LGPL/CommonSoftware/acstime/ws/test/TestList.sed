@@ -37,3 +37,4 @@ s/Invocation timeout set to [0-9, m, s]*/Invocation timeout set to xxxx /g
 s/invocation timeout set to [0-9, m, s]*/invocation timeout set to xxxx /g
 s/via environment: '[a-z,A-Z,0-9,-]*'/via environment: 'xxx'/g
 s/\(\.[0-9]\{7\}\)[0-9]\{1,\}/\1/g
+s/\(922337203685\.4775\)[0-9][0-9][0-9]/\1xxx/
