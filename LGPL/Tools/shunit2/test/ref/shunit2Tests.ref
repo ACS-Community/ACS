@@ -1,4 +1,3 @@
-1 - ~/ACS/LGPL/Tools/shunit2/src/shunit2-2.1.5/src/shell ~/ACS/LGPL/Tools/shunit2/test
 1 - #------------------------------------------------------------------------------
 1 - # System data
 1 - #
@@ -184,4 +183,3 @@
 1 - shunit2_test.sh:WARN unable to run tests with the /bin/pdksh shell
 1 - 
 1 - shunit2_test.sh:WARN unable to run tests with the /bin/zsh shell
-1 - ~/ACS/LGPL/Tools/shunit2/test
