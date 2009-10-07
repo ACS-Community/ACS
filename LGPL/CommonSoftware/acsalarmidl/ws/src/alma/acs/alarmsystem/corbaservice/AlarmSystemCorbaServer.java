@@ -185,8 +185,9 @@ public class AlarmSystemCorbaServer implements Runnable {
 		} else {
 			// CERN
 			acsComponent=null;
+			logger.log(AcsLogLevel.INFO,"Starting the CERN implementation of the alarm service");
 			laserComponent=instantiateCernAS();
-			asPOA.activate_object_with_id(id, acsComponent);
+			asPOA.activate_object_with_id(id, laserComponent);
 			alarmObject = asPOA.servant_to_reference(laserComponent);
 		}
 		registerToNamingService(alarmObject);
