@@ -8,6 +8,9 @@
   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:complexType name="TEST_TASK">
+  <xs:complexContent>
+			<xs:extension base="baci:CharacteristicComponent"/>
+  </xs:complexContent>			
   </xs:complexType>
   <xs:element name="TEST_TASK" type="TEST_TASK"/>
 </xs:schema>
