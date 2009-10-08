@@ -18,7 +18,7 @@ s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
 s/The current time is:  [0-9]*$/The current time is:  xxx/g
-s/Thread=omniORB--\([0-9]\)\+/Thread=omniORB--XXXXXXX/g 
+s/Thread=omniORB-\+\([0-9]\)\+/Thread=omniORB--XXXXXXX/g 
 s/-OAIAddr [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/-OAIAddr xxx.xxx.xxx.xxx/g
 s/-ORBEndpoint iiop:\/\/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*:[0-9]*/-ORBEndpoint iiop:\/\/xxx.xxx.xxx.xxx:xxxx/g
 s/-OAport [0-9]*/-OAport xxx/g
