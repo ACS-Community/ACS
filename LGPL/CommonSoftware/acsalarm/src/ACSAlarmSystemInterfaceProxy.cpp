@@ -41,6 +41,10 @@ ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSy
 	LoggingProxy::init (m_logger);
 }
 
+ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {
+	delete m_logger;
+}
+
 /**
  * Push a fault state.
  * @param state the fault state change to push.

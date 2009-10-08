@@ -48,6 +48,9 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 		 * The logger
 		 */
 		LoggingProxy* m_logger;
+
+		// Synch the push methods
+		ACE_Recursive_Thread_Mutex o_mutex;
 	
       virtual void close() {}
 	
@@ -55,7 +58,7 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 	
 		ACSAlarmSystemInterfaceProxy(std::string name);
 		
-		virtual ~ACSAlarmSystemInterfaceProxy() {}
+		virtual ~ACSAlarmSystemInterfaceProxy();
 		/**
 	 	 * Push a fault state.
 	 	 * @param state the fault state change to push.
