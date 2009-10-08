@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.47 2008/10/09 06:18:16 cparedes Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.48 2009/10/08 09:04:00 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.47 2008/10/09 06:18:16 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.48 2009/10/08 09:04:00 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -52,20 +52,45 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
     desc_m(0),
     monitoringProperties_mp(monitoringProperties),
     component_mp(0)
-{  
-    // Create Component
-    component_mp = new BACIComponent(getContainerServices()->getThreadManager(), name, this);
-    if (component_mp==0) 
+{
+
+
+    CORBA::Long actionThreadStackSize, monitoringThreadStackSize;
+	cdb::DAONode* dao = this->getDAONode();
+	if (!dao) return;
+
+	try
+	  {
+		actionThreadStackSize = dao->get_long("actionThreadStackSize");
+		actionThreadStackSize *= 1024;  // that we have size in bytes
+		monitoringThreadStackSize = dao->get_long("monitoringThreadStackSize");
+		monitoringThreadStackSize *= 1024;  // that we have size in bytes
+
+	  }
+  catch (ACSErr::ACSbaseExImpl& ex)
+	  {
+	  ex.log();
+	  return;
+	  }
+  catch (...)
+	  {
+	  return;
+	  }
+
+  // Create Component
+    component_mp = new BACIComponent(getContainerServices()->getThreadManager(), name, this,
+										actionThreadStackSize, monitoringThreadStackSize);
+    if (component_mp==0)
 	{
 	return;
 	}
 
-    // Setup most of the characteristics for this CharacteristicComponent minus properties.  
+    // Setup most of the characteristics for this CharacteristicComponent minus properties.
     // Those are handled in subclasses constructors.
-    
+
     desc_m = new ACS::CharacteristicComponentDesc();
     desc_m->name            = CORBA::string_dup(component_mp->getName());
-    desc_m->characteristics = get_all_characteristics(); 
+    desc_m->characteristics = get_all_characteristics();
 
     // Here initialization is not complete. The lifecycle has to be dealed with
 }
