@@ -17,6 +17,7 @@ using acsalarm::AlarmSystemInterface;
 void AlarmSystemInterface::push(vector<FaultState> & states)
 {
 	ACS_TRACE("AlarmSystemInterface::push(vector<FaultState>)");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	commonPush(states, false);
 }
 
@@ -29,6 +30,7 @@ void AlarmSystemInterface::push(vector<FaultState> & states)
 void AlarmSystemInterface::push(FaultState & state)
 {
 	ACS_TRACE("AlarmSystemInterface::push(FaultState)");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	// create a vector and populate with the (single) fault state,
 	// to be passed to the buildMessageXML method
 	vector<FaultState> states;
@@ -47,6 +49,7 @@ void AlarmSystemInterface::push(FaultState & state)
 void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
 {
 	ACS_TRACE("AlarmSystemInterface::pushActiveList()");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	commonPush(activeFaults, true);
 }
 
@@ -67,7 +70,7 @@ void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
 void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 {
 	ACS_TRACE("AlarmSystemInterface::commonPush()");
-
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
 	auto_ptr<vector<FaultState> > statesAutoPtr(new vector<FaultState>(states));
 	ASIMessage asiMessage(statesAutoPtr);
