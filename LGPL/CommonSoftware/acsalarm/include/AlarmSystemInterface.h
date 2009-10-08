@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterface.h,v 1.3 2008/02/06 21:09:18 sharring Exp $"
+* "@(#) $Id: AlarmSystemInterface.h,v 1.4 2009/10/08 10:21:01 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,6 +39,7 @@
 #include "ASIConfiguration.h"
 #include <vector>
 #include <string>
+#include "ace/Task.h"
 
 namespace acsalarm
 {
@@ -114,6 +115,10 @@ namespace acsalarm
 			std::string sourceName;
 			std::string hostName;
 			acsalarm::ASIConfiguration configuration;
+
+			// Synch the public methods because one source can be used
+			// by different threads
+			ACE_Recursive_Thread_Mutex m_mutex;
 
 		private:
 			/**
