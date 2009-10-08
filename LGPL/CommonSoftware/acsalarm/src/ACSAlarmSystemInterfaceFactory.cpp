@@ -52,13 +52,13 @@ AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInter
 void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 ACE_Recursive_Thread_Mutex ACSAlarmSystemInterfaceFactory::main_mutex;
 auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource;
+Logging::Logger::LoggerSmartPtr ACSAlarmSystemInterfaceFactory::myLoggerSmartPtr=getLogger();
 
 /**
  * Create a new instance of an alarm system interface without binding it to any source.
  */
 auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource entering");
 
 	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
@@ -80,7 +80,6 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
  */
 auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createSource(string) entering...");
 
 	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
@@ -102,7 +101,6 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
  */
 bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 { 
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() entering");
 	bool retVal = true;
 	if(NULL == m_useACSAlarmSystem)
@@ -120,7 +118,6 @@ bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlar
 auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) 
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int) entering");
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
@@ -137,7 +134,6 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 	
 auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createFaultState() entering");
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
@@ -154,7 +150,6 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState()
 
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::getManager()
 { 
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::getManager() entering/exiting");
 	return m_manager; 
 }
@@ -165,7 +160,6 @@ maci::Manager_ptr ACSAlarmSystemInterfaceFactory::getManager()
 void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, string sourceName) 
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, string) entering");
 
 	// create a Properties object and configure it, then assign to the FaultState
@@ -181,7 +175,6 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, string & faultMember, int faultCode, bool active, Properties & faultProperties, string sourceName) 
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) entering");
 
 	// create the FaultState
@@ -225,7 +218,6 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 // called at shutdown by maciContainer
 void ACSAlarmSystemInterfaceFactory::done() 
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::done entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -241,7 +233,6 @@ void ACSAlarmSystemInterfaceFactory::done()
 // private method called at shutdown
 void ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpManagerReference entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -256,7 +247,6 @@ void ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()
 // private method called at shutdown
 void ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -272,7 +262,6 @@ void ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()
 // private method called at shutdown
 void ACSAlarmSystemInterfaceFactory::cleanUpDLL()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpDLL entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -288,7 +277,6 @@ void ACSAlarmSystemInterfaceFactory::cleanUpDLL()
 // private method called at shutdown
 void ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpSharedSource entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -304,7 +292,6 @@ void ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()
 // private method called at shutdown
 void ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -320,7 +307,7 @@ void ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()
 // public method: called at startup by maciContainer
 bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsErrTypeAlarmSourceFactory::ErrorLoadingCERNDLLExImpl)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
+	ACSAlarmSystemInterfaceFactory::myLoggerSmartPtr=getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::init() entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -340,7 +327,6 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsE
 // private method callled during initialization (at container startup)
 void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr manager)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initImplementationType entering");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
@@ -382,7 +368,6 @@ void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr ma
 // private method callled during initialization (at container startup), if using CERN alarm style
 bool ACSAlarmSystemInterfaceFactory::initDLL()
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "ACSAlarmSystemInterfaceFactory::initDLL entering");
 	bool retVal = true;
 
