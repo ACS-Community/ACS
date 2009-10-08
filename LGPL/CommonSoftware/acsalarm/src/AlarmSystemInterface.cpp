@@ -16,10 +16,8 @@ using acsalarm::AlarmSystemInterface;
  */
 void AlarmSystemInterface::push(vector<FaultState> & states)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(vector<FaultState>): entering.");
+	ACS_TRACE("AlarmSystemInterface::push(vector<FaultState>)");
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(vector<FaultState>): exiting.");
 }
 
 /**
@@ -30,9 +28,7 @@ void AlarmSystemInterface::push(vector<FaultState> & states)
  */
 void AlarmSystemInterface::push(FaultState & state)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(FaultState): entering.");
-
+	ACS_TRACE("AlarmSystemInterface::push(FaultState)");
 	// create a vector and populate with the (single) fault state,
 	// to be passed to the buildMessageXML method
 	vector<FaultState> states;
@@ -40,7 +36,6 @@ void AlarmSystemInterface::push(FaultState & state)
 	states.push_back((FaultState)*st);
 
 	commonPush(states, false);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::push(FaultState): exiting.");
 }
 
 /**
@@ -51,10 +46,8 @@ void AlarmSystemInterface::push(FaultState & state)
  */
 void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::pushActiveList(): entering.");
+	ACS_TRACE("AlarmSystemInterface::pushActiveList()");
 	commonPush(activeFaults, true);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::pushActiveList(): exiting.");
 }
 
 /**
@@ -73,8 +66,7 @@ void AlarmSystemInterface::pushActiveList(vector<FaultState> & activeFaults)
  */
 void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 {
-	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): entering.");
+	ACS_TRACE("AlarmSystemInterface::commonPush()");
 
 	// create the ASIMessage, supplying the faults which are to be published to the alarm server
 	auto_ptr<vector<FaultState> > statesAutoPtr(new vector<FaultState>(states));
@@ -113,8 +105,5 @@ void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 		msg+=(*it).getDescriptor();
 		ACS_SHORT_LOG((LM_ALERT, msg.c_str()));
 	}
-
-
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::commonPush(): exiting.");
 }
 

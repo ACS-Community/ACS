@@ -44,11 +44,6 @@
  */
 class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 	private:
-		/**
-		 * The logger
-		 */
-		LoggingProxy* m_logger;
-
 		virtual void close() {}
 	
 	public:

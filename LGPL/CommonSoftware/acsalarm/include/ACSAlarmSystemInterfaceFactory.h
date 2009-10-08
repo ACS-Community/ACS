@@ -84,9 +84,6 @@ class ACSAlarmSystemInterfaceFactory
 	// used to synchronize access to shared vars
 	static ACE_Recursive_Thread_Mutex main_mutex;
 
-	// The logger
-	static Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
-
 	/** Default constructor.  */
 	ACSAlarmSystemInterfaceFactory();
 	ACSAlarmSystemInterfaceFactory(const ACSAlarmSystemInterfaceFactory&);

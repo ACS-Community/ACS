@@ -38,14 +38,9 @@ using std::vector;
 
 ACSAlarmSystemInterfaceProxy::ACSAlarmSystemInterfaceProxy(string name): AlarmSystemInterface() {
 	setSourceName(name);
-	// Get the logger
-	m_logger = new LoggingProxy(0 ,0, 31);
-	LoggingProxy::init (m_logger);
 }
 
-ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {
-	delete m_logger;
-}
+ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {}
 
 /**
  * Push a fault state.
