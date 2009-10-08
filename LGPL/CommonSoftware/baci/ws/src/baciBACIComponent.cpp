@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.19 2008/10/09 06:18:16 cparedes Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.20 2009/10/08 09:02:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.19 2008/10/09 06:18:16 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.20 2009/10/08 09:02:01 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -321,6 +321,8 @@ const ACS::TimeInterval BACIComponent::minMTSleepTime_m=25*1000*10;	          //
 BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
 			      const ACE_CString& _name,
 			      CharacteristicModelImpl *characteristicModel,
+			      size_t actionThreadStackSize,
+			      size_t monitorThreadStackSize,
 			      const ACS::TimeInterval& _actionThreadResponseTime,
 			      const ACS::TimeInterval& _actionThreadSleepTime,
 			      const ACS::TimeInterval& _monitorThreadResponseTime,
@@ -330,7 +332,9 @@ BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
     actionThread_mp(BACIThread::NullBACIThread),
     monitorThread_mp(BACIThread::NullBACIThread),
     threadManager_mp(thrMgr),
-    inDestructionState_m(false)
+    inDestructionState_m(false),
+    actionThreadStackSize_m(actionThreadStackSize),
+    monitoringThreadStackSize_m(monitorThreadStackSize)
 {
 
   ACS_TRACE("baci::BACIComponent::BACIComponent");
@@ -404,7 +408,9 @@ void BACIComponent::startMonitoringThread()
       {
       monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread",
 						(void*)monitorThreadWorker, (void*)this,
-						getMTResponseTime(), getMTSleepTime());
+						getMTResponseTime(), getMTSleepTime(),
+						(THR_NEW_LWP | THR_DETACHED),
+						monitoringThreadStackSize_m);
       }
   if (monitorThread_mp != BACIThread::NullBACIThread)
       {
@@ -431,7 +437,9 @@ void BACIComponent::startActionThread()
       {
       actionThread_mp=threadManager_mp->create(name_m+"::actionThread",
 					       (void*)actionThreadWorker, (void*)this,
-					       getRTResponseTime(), getRTSleepTime());
+					       getRTResponseTime(), getRTSleepTime(),
+					       THR_NEW_LWP | THR_DETACHED,
+					       actionThreadStackSize_m);
       }
   if (actionThread_mp != BACIThread::NullBACIThread)
       {
@@ -456,7 +464,9 @@ bool BACIComponent::startAllThreads()
       {
       actionThread_mp=threadManager_mp->create(name_m+"::actionThread",
 					       (void*)actionThreadWorker, (void*)this,
-					       getRTResponseTime(), getRTSleepTime());
+					       getRTResponseTime(), getRTSleepTime(),
+					       THR_NEW_LWP | THR_DETACHED,
+					       actionThreadStackSize_m);
       }
   if (actionThread_mp == BACIThread::NullBACIThread)
     {
@@ -472,7 +482,9 @@ bool BACIComponent::startAllThreads()
       {
       monitorThread_mp=threadManager_mp->create(name_m+"::monitorThread",
 						(void*)monitorThreadWorker, (void*)this,
-						getMTResponseTime(), getMTSleepTime());
+						getMTResponseTime(), getMTSleepTime(),
+						THR_NEW_LWP | THR_DETACHED,
+						monitoringThreadStackSize_m);
       }
   if (monitorThread_mp == BACIThread::NullBACIThread)
     {
