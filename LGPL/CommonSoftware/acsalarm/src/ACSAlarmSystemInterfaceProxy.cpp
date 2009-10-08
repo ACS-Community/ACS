@@ -25,6 +25,8 @@
 
 #include "vltPort.h"
 
+
+
 #include "ACSAlarmSystemInterfaceProxy.h"
 #include "FaultState.h"
 
@@ -50,6 +52,7 @@ ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {
  * @param state the fault state change to push.
  */
  void ACSAlarmSystemInterfaceProxy::push(acsalarm::FaultState & state) {
+	m_mutex.acquire();
 	char msgA[16];
 	sprintf(msgA,"%d",state.getCode());
 	string msg="Alarm sent: <";
@@ -61,6 +64,7 @@ ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {
 	msg+="> ";
 	msg+=state.getDescriptor();
 	ACS_SHORT_LOG((LM_ALERT, msg.c_str()));
+	m_mutex.release();
 }
 
 /**
@@ -68,10 +72,12 @@ ACSAlarmSystemInterfaceProxy::~ACSAlarmSystemInterfaceProxy() {
  * @param states
  */
 void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::FaultState> & states) {
+	m_mutex.acquire();
 	for (unsigned int t=0; t<states.size(); t++) {
 		acsalarm::FaultState fs(states[t]);
 		push(fs);
 	}
+	m_mutex.release();
 }
 
 /**
@@ -79,6 +85,9 @@ void ACSAlarmSystemInterfaceProxy::push(vector<acsalarm::FaultState> & states) {
  * @param activeFaults the active fault states.
  */
 void ACSAlarmSystemInterfaceProxy::pushActiveList(vector<acsalarm::FaultState> & activeFaults) {
+	m_mutex.acquire();
 	push(activeFaults);
+	m_mutex.release();
 }
+
 
