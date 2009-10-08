@@ -43,6 +43,16 @@ ISO time format.
 Note: optionally used, requires write access to the database.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="actionThreadStackSize" type="xs:unsignedLong" use="optional" default="1024">
+					<xs:annotation>
+						<xs:documentation>Stack size of for the action thread in kBytes. If 0 is specified the default OS stack size value will be taken. (just C++).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="monitoringThreadStackSize" type="xs:unsignedLong" use="optional" default="2048">
+					<xs:annotation>
+						<xs:documentation>Stack size of for the monitoring thread in kBytes. If 0 is specified the default OS stack size value will be taken. (just C++).</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
