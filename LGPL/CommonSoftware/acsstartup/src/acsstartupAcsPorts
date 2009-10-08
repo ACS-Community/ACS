@@ -81,6 +81,7 @@ function getIP
 {
 #perhaps not the nicest way of doing this but it looks like
 #the safest mechanism
+# TODO: figure out why $ACS_HOST is checked here. It is not set in any of the ACS scripts.
 if [ "$ACS_HOST" ] 
 then
     python -c "import socket; import os;  print str(socket.gethostbyname(os.environ['ACS_HOST']))"
