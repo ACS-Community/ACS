@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.85 2009/10/01 17:27:58 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.86 2009/10/08 07:11:54 agrimstrup Exp $"
 #
 #
 #
@@ -958,7 +958,7 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.
 #
 export PYTHON_ROOT PATH LD_LIBRARY_PATH
 PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
-PYTHONINC=`python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
+PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
 PYTHONPATH=$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
 
 if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
