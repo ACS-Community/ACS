@@ -49,10 +49,7 @@ class ACSAlarmSystemInterfaceProxy: public acsalarm::AlarmSystemInterface {
 		 */
 		LoggingProxy* m_logger;
 
-		// Synch the push methods
-		ACE_Recursive_Thread_Mutex o_mutex;
-	
-      virtual void close() {}
+		virtual void close() {}
 	
 	public:
 	
