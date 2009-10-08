@@ -42,10 +42,10 @@
 
 
 basic_tools = [('gcc','gcc --version','4.1.2'),\
-              ('binutils','ld --version','2.17.50.0.6-9.el5'),\
+              ('binutils','ld --version','2.17.50.0.6-12.el5'),\
               ('make','make --version','3.81'),\
               ('awk','awk --version','3.1.5'),\
-              ('gdb','gdb  -version','6.8-27.el5'),\
+              ('gdb','gdb  -version','6.8-37.el5'),\
               ('flex','flex --version','2.5.4'),\
               ('bison','bison --version','2.3'),\
               ('gzip','gzip --version','1.3.5'),\
@@ -62,7 +62,7 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('texinfo','info --version','4.8'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.6.0_07'),\
+              ('java','java -version','(build 1.6.0_14'),\
               ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.19'),\
               ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.19'),\
               ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
@@ -157,7 +157,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
                 ('JAVA_ENDORSED','--DUMP--'),\
-                ('JAVA_HOME','/usr/java/jdk1.6.0_07'),\
+                ('JAVA_HOME','/usr/java/jdk1.6.0_14'),\
                 ('JAVA_ORB','--DUMP--'),\
                 ('MANAGER_REFERENCE','--DUMP--' ),\
                 ('NAMESERVICE_REFERENCE','--DUMP--'),\
@@ -165,7 +165,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('OMNI_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni'),\
                 ('OMNIORB_CONFIG','$OMNI_ROOT/config'),\
                 ('PYTHON_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python'),\
-                ('TCLTK_ROOT','/alma/ACS-8.0/tcltk'),\
+                ('TCLTK_ROOT','/alma/ACS-8.1/tcltk'),\
                 ('INTROOT','--DUMP--'),\
                 ('INTLIST','--DUMP--'),\
                 ('ACSROOT','--DUMP--'),\
