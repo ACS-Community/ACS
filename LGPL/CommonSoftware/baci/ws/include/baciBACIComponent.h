@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.14 2008/10/09 06:18:16 cparedes Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.15 2009/10/08 09:05:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,6 +84,8 @@ public:
     BACIComponent( ACS::ThreadManager *thrMgr,
 		   const ACE_CString& name,
 		   CharacteristicModelImpl *characteristicModel,
+		   size_t actionThreadStackSize,
+		   size_t monitorThreadStackSize,
 		   const ACS::TimeInterval& actionThreadResponseTime=defaultRTResponseTime_m, 
 		   const ACS::TimeInterval& actionThreadSleepTime=minRTSleepTime_m,
 		   const ACS::TimeInterval& monitorThreadResponseTime=defaultMTResponseTime_m,
@@ -264,6 +266,8 @@ private:
   BACIMutex propertyVectorMutex_m;
   BACIMutex callbackTableMutex_m;
 
+  size_t actionThreadStackSize_m;
+  size_t monitoringThreadStackSize_m;
 
   friend class BACIProperty;
 
