@@ -26,7 +26,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -34,6 +36,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.ProgressMonitor;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.event.RowSorterEvent;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -287,6 +291,10 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		// Initialize the sorter (unsorted/unfiltered
 		rowSorter = new LogTableRowSorter(model);
 		setRowSorter(rowSorter);
+		// Initially sort by timestamp
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(ILogEntry.Field.TIMESTAMP.ordinal()+1, SortOrder.DESCENDING));
+		rowSorter.setSortKeys(sortKeys); 
 		
 		initialize(initialDateFormat,initalLogTypeFormat);
 		
