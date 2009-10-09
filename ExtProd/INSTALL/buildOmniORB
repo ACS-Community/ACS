@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.16 2008/10/15 22:29:52 agrimstrup Exp $"
+# "@(#) $Id: buildOmniORB,v 1.17 2009/10/09 09:21:00 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -96,7 +96,7 @@ if [ "$OS" = "LINUX" ] || [ "$OS" = "SOLARIS" ]
 then
     mkdir build
     cd build
-    ../configure --prefix=$OMNI_ROOT 
+    ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
     make
     make install
 else
@@ -127,7 +127,7 @@ mv $OMNI_ROOT/src/lib/omniORBpy-3.3 $OMNI_ROOT/src/lib/omniORBpy
 cd $OMNI_ROOT/src/lib/omniORBpy
 mkdir -p build
 cd build
-../configure --prefix=$OMNI_ROOT
+../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
 make
 make install
 
