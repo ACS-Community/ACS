@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 		ACSAlarmSystemInterfaceFactory::init(NULL);
 
 		// create the AlarmSystemInterface
-		auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+		AlarmSystemInterface* alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
 
 		// create the FaultState
 		auto_ptr<FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);

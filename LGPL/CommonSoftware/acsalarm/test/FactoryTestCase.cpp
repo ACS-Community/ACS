@@ -170,8 +170,8 @@ void FactoryTestCase::testAlarmSourceCreation()
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
-	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
+	AlarmSystemInterface* alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource != NULL));
 	ACSAlarmSystemInterfaceFactory::done();
 }
 
