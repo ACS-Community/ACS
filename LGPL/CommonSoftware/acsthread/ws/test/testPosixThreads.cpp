@@ -34,7 +34,7 @@ void createThreads(int n, pthread_attr_t *pthread_custom_attr)
 	int ret = pthread_create(&threads[i], pthread_custom_attr, hello, (void *)(p+i));
 	printf ("Ret: %d for thread #: %d\n", ret, i);
 	}
-        
+
     for (i=0; i<n; i++)
 	{
 	pthread_join(threads[i],NULL);
@@ -67,12 +67,11 @@ int main(int argc, char* argv[]) {
 	STACKSIZE = atoi(argv[2]) * 1024;
 	
 
-
     pthread_attr_init(&pthread_custom_attr);
 
     pthread_attr_getstacksize(&pthread_custom_attr, &stacksize);
-    printf("Going to create %d threads with default stack size: %d bytes\n", 300, stacksize);
-    createThreads(300, &pthread_custom_attr);
+    printf("Going to create %d threads with default stack size: %d bytes\n", n, stacksize);
+    createThreads(n, &pthread_custom_attr);
     printf("----------------------------------------------\n");
     
     pthread_attr_setstacksize(&pthread_custom_attr, STACKSIZE);
