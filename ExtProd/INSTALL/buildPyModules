@@ -46,7 +46,6 @@
 #
 os_discovery
 
-
 LOG=buildPyModules.log
 CWD=`pwd`
 #
@@ -59,6 +58,8 @@ then
   echo "$PYTHON_ROOT not found, cannot continue..."
   exit 1
 fi
+
+PYTHON_INTR=$PYTHON_ROOT/bin/python
 
 echo installing Python Modules
 
@@ -98,7 +99,7 @@ else
   echo "== Building setuptools"
   tar -zxvf setuptools-0.6c9.tar.gz
   pushd setuptools-0.6c9
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
 fi
 
@@ -110,7 +111,7 @@ else
   echo "== Building PySNMP"
   tar -zxvf pysnmp-2.0.9.tar.gz
   pushd pysnmp-2.0.9
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
 fi
 
@@ -124,7 +125,7 @@ else
   pushd python-ldap-2.3.5
   cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
   mv setup.cfg.tmp setup.cfg 
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
 fi
 
@@ -135,7 +136,7 @@ else
   echo "== Building Numeric"
   tar -zxvf Numeric-24.2.tar.gz
   pushd Numeric-24.2
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -148,7 +149,7 @@ else
   export LAPACK=/usr/lib/liblapack.so
   tar -zxvf numpy-1.1.1.tar.gz
   pushd numpy-1.1.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -159,7 +160,7 @@ else
   echo "== Building GnuPlot Py"
   tar -zxvf gnuplot-py-1.8.tar.gz
   pushd gnuplot-py-1.8
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
 fi
 
@@ -184,8 +185,8 @@ else
   mv setup.py.tmp setup.py
 
   export BUILD_AGG=1
-  python setup.py build
-  python setup.py install 
+  $PYTHON_INTR setup.py build
+  $PYTHON_INTR setup.py install 
 
 
   echo "== Configuring matplotlib"
@@ -216,7 +217,7 @@ else
   echo "== Building scipy"
   tar -zxvf scipy-0.6.0.tar.gz
   pushd scipy-0.6.0
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -227,7 +228,7 @@ else
   echo "== Building pexpect"
   tar -zxvf pexpect-2.3.tar.gz
   pushd pexpect-2.3
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -238,7 +239,7 @@ else
   echo "== Building pychecker"
   tar -zxvf pychecker-0.8.17.tar.gz
   pushd pychecker-0.8.17
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -249,7 +250,7 @@ else
   echo "== Building coverage"
   tar -zxvf coverage-2.80.tar.gz
   pushd coverage-2.80
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -268,7 +269,7 @@ else
   echo "== Installing snakefood"
   tar -jxvf snakefood-1.3.1.tar.bz2
   pushd snakefood-1.3.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -279,7 +280,7 @@ else
   echo "== Installing figleaf"
   tar -zxvf figleaf-latest.tar.gz
   pushd figleaf-latest
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -290,7 +291,7 @@ else
   echo "== Installing Pythoscope"
   tar -zxvf pythoscope-0.3.2.tar.gz
   pushd pythoscope-0.3.2
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -301,7 +302,7 @@ else
   echo "== Installing lxml"
   tar -zxvf lxml-2.1.5.tar.gz
   pushd lxml-2.1.5
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -312,7 +313,7 @@ else
   echo "== Installing nose"
   tar -zxvf nose-0.10.4.tar.gz
   pushd nose-0.10.4
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -326,15 +327,15 @@ else
   echo "== Building pylint"
   tar -xvzf logilab-common-0.39.0.tar.gz
   pushd logilab-common-0.39.0
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
   tar -xvzf logilab-astng-0.19.0.tar.gz
   pushd logilab-astng-0.19.0
-  python setup.py install
+  $PYTHON_INTR setup.py install
   popd
   tar -zxvf pylint-0.18.0.tar.gz
   pushd pylint-0.18.0
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
@@ -354,39 +355,39 @@ else
   echo "== Building IPython"
   tar -zxvf Pygments-1.0.tar.gz
   pushd Pygments-1.0
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf Jinja2-2.1.1.tar.gz
   pushd Jinja2-2.1.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf docutils-snapshot.tgz
   pushd docutils
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf Sphinx-0.6.1.tar.gz
   pushd Sphinx-0.6.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf zope.interface-3.5.1.tar.gz
   pushd zope.interface-3.5.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -jxvf Twisted-8.2.0.tar.bz2
   pushd Twisted-8.2.0
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf pyOpenSSL-0.9.tar.gz
   pushd pyOpenSSL-0.9
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf foolscap-0.4.1.tar.gz
   pushd foolscap-0.4.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
   tar -zxvf ipython-0.9.1.tar.gz
   pushd ipython-0.9.1
-  python setup.py install 
+  $PYTHON_INTR setup.py install 
   popd
 fi
 
