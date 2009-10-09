@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.4 2008/06/03 09:18:20 bjeram Exp $"
+* "@(#) $Id: AlarmSystemInterfaceFactory.h,v 1.5 2009/10/09 13:07:15 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,13 +65,13 @@ class AlarmSystemInterfaceFactory
 	 * @param sourceName the source name.
 	 * @return the interface instance.
 	 */
-	virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource(std::string sourceName) = 0;
+	virtual acsalarm::AlarmSystemInterface* createSource(std::string sourceName) = 0;
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @return the interface instance.
 	 */
-	virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource() = 0;
+	virtual acsalarm::AlarmSystemInterface* createSource() = 0;
 	
 	/**
 	 * Create a fault state with the given family, member and code

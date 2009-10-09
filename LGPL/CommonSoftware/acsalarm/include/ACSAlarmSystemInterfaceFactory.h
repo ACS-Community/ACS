@@ -67,8 +67,9 @@ class ACSAlarmSystemInterfaceFactory
 	// the logic in ACSLaser/laser-source-cpp
 	static void *dllHandle;
 
-	// a shared source for use by the single-line "createAndSendAlarm" methods
-	static std::auto_ptr<acsalarm::AlarmSystemInterface> sharedSource;
+	// At the present all the alarm are mapped in the same NC
+	// so we need only one source to publish all the alarms
+	static acsalarm::AlarmSystemInterface* m_sourceSingleton_p;
 
 	// It is true if ACS implementation for sources must be used,  and
 	// false means CERN implementation
@@ -91,13 +92,20 @@ class ACSAlarmSystemInterfaceFactory
 	~ACSAlarmSystemInterfaceFactory();
 
 	static void cleanUpAlarmSystemInterfacePtr();
-	static void cleanUpSharedSource();
+	static void cleanUpSourceSingleton();
 	static void cleanUpDLL();
 	static void cleanUpBooleanPtr();
 	static void cleanUpManagerReference();
 	static void initImplementationType(maci::Manager_ptr manager);
 	static bool initDLL();
 	
+	/**
+	 * Return the source singleton;
+	 *
+	 * If the singleton is null, this method instatiates a new one.
+	 */
+	static acsalarm::AlarmSystemInterface* getSourceSingleton();
+
 	public:
 
 	static maci::Manager_ptr getManager();
@@ -131,14 +139,14 @@ class ACSAlarmSystemInterfaceFactory
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static std::auto_ptr<acsalarm::AlarmSystemInterface> createSource(std::string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static acsalarm::AlarmSystemInterface* createSource(std::string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 		
 	/**
 	 * Create a new instance of an alarm system interface without binding it to any source.
 	 * @throw ACSASFactoryNotInitedExImpl if the alarm system has not been previously initialized.
 	 * @return the interface instance.
 	 */
-	static std::auto_ptr<acsalarm::AlarmSystemInterface> createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static acsalarm::AlarmSystemInterface* createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 	
 	/**
 	 * Create a fault state with the given family, member and code

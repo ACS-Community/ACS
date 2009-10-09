@@ -51,42 +51,41 @@ maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager = maci::Manager::_ni
 AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
 void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
 ACE_Recursive_Thread_Mutex ACSAlarmSystemInterfaceFactory::main_mutex;
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::sharedSource;
+acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::m_sourceSingleton_p=NULL;
+
 
 /**
  * Create a new instance of an alarm system interface without binding it to any source.
  */
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::createSource() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createSource()");
-	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
-	if (m_useACSAlarmSystem == NULL) {
-		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
-	}
-	if (!(*m_useACSAlarmSystem)) {
-		retVal = m_AlarmSystemInterfaceFactory_p->createSource();
-	} else {
-		retVal = createSource("UNDEFINED");
-	}
-	return retVal;
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	return getSourceSingleton();
 }
 
 /**
  * Create a new instance of an alarm system interface.
  */
-auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::createSource(string sourceName) throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createSource(string)");
-	auto_ptr<acsalarm::AlarmSystemInterface> retVal;
-	if (m_useACSAlarmSystem == NULL) {
-		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createSource");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	return getSourceSingleton();
+}
+
+acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::getSourceSingleton() {
+	ACS_TRACE("ACSAlarmSystemInterfaceFactory::getSourceSingleton()");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (m_sourceSingleton_p!=NULL) {
+		return m_sourceSingleton_p;
 	}
 	if (!(*m_useACSAlarmSystem)) {
-		retVal = m_AlarmSystemInterfaceFactory_p->createSource(sourceName);
+		m_sourceSingleton_p = m_AlarmSystemInterfaceFactory_p->createSource(ALARM_SOURCE_NAME);
 	} else {
-		retVal.reset(new ACSAlarmSystemInterfaceProxy(sourceName));
+		m_sourceSingleton_p = new ACSAlarmSystemInterfaceProxy(ALARM_SOURCE_NAME);
 	}
-	return retVal;
+	return m_sourceSingleton_p;
 }
 
 /**
@@ -94,6 +93,7 @@ auto_ptr<acsalarm::AlarmSystemInterface> ACSAlarmSystemInterfaceFactory::createS
  */
 bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 { 
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()");
 	bool retVal = true;
 	if(NULL == m_useACSAlarmSystem)
@@ -111,6 +111,7 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
@@ -126,6 +127,7 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createFaultState()");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
 	if (m_useACSAlarmSystem==NULL) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState()");
@@ -141,6 +143,7 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState()
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::getManager()
 { 
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::getManager()");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	return m_manager; 
 }
 
@@ -151,6 +154,7 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, string)");
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	// create a Properties object and configure it, then assign to the FaultState
 	Properties properties;
 
@@ -164,7 +168,7 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string)");
-
+	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	// create the FaultState
 	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(faultFamily, faultMember, faultCode);
 
@@ -189,16 +193,8 @@ void ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string & faultFamily, st
 	auto_ptr<Properties> propsAutoPtr(propsPtr);
 	fltstate->setUserProperties(propsAutoPtr);
 
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	if(NULL == sharedSource.get())
-	{
-		// Send the fault. We must use the "ALARM_SYSTEM_SOURCES" to match the name defined on CDB
-		ACS_SHORT_LOG((LM_TRACE, "ACSAlarmSystemInterfaceFactory::createAndSendAlarm(string, string, int, bool, Properties, string) creating shared source"));
-		sharedSource = ACSAlarmSystemInterfaceFactory::createSource(ALARM_SOURCE_NAME);
-	}
-
 	// push the FaultState using the source
-	ACSAlarmSystemInterfaceFactory::sharedSource->push(*fltstate);
+	getSourceSingleton()->push(*fltstate);
 }
 
 // called at shutdown by maciContainer
@@ -208,7 +204,7 @@ void ACSAlarmSystemInterfaceFactory::done()
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	cleanUpAlarmSystemInterfacePtr();
-	cleanUpSharedSource();
+	cleanUpSourceSingleton();
 	cleanUpDLL();
 	cleanUpBooleanPtr();
 	cleanUpManagerReference();
@@ -251,15 +247,16 @@ void ACSAlarmSystemInterfaceFactory::cleanUpDLL()
 }
 
 // private method called at shutdown
-void ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()
+void ACSAlarmSystemInterfaceFactory::cleanUpSourceSingleton()
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	if(NULL != sharedSource.get())
+	if(m_sourceSingleton_p!=NULL)
 	{
 		// force the deletion of the allocated memory for the shared source auto_ptr
-		sharedSource.reset();
+		delete m_sourceSingleton_p;
+		m_sourceSingleton_p=NULL;
 	}
 }
 
