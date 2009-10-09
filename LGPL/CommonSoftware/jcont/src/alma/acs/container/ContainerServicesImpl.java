@@ -31,7 +31,6 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
@@ -121,6 +120,9 @@ public class ContainerServicesImpl implements ContainerServices
 	 */
 	private final String m_clientName;
 
+	/**
+	 * The externally provided instance of AcsCorba
+	 */
 	private final AcsCorba acsCorba; 
 	
 	
@@ -135,6 +137,8 @@ public class ContainerServicesImpl implements ContainerServices
      * Optional callback object for component available/unavailable notification
      */
     private ComponentListener compListener;
+
+	private final List<CleanUpCallback> cleanUpCallbacks;
 
 	/**
 	 * ctor.
@@ -173,6 +177,9 @@ public class ContainerServicesImpl implements ContainerServices
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
 
 		m_threadFactory = threadFactory;
+		
+		cleanUpCallbacks = new ArrayList<CleanUpCallback>();
+		
 		if (fakeUIDsForTesting) {
 			m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
 		}
@@ -987,5 +994,39 @@ public class ContainerServicesImpl implements ContainerServices
 
 
 
+	/**
+	 * @since ACS 8.1.0
+	 */
+	public void cleanUp() {
+		for (CleanUpCallback cleanUpCallback : cleanUpCallbacks) {
+			try {
+				cleanUpCallback.containerServicesCleanUp();
+			}
+			catch (Throwable thr) {
+				m_logger.log(Level.WARNING, "Failed to clean up registered client object", thr);
+			}
+		}
+	}
+
+	/**
+	 * A hack, see {@link ContainerServicesImpl#registerCleanUpCallback(CleanUpCallback)}.
+	 */
+	public static interface CleanUpCallback {
+		public void containerServicesCleanUp();
+	}
+
+	/**
+	 * This is a hack: NC classes can register themselves to be notified,
+	 * in order to release remote Corba resources (and prevent crashes of Notify Service...).
+	 * Note that without this hack, the lifecycle of NC classes is only managed by the application code,
+	 * which means that ACS could not enforce the clean up.
+	 * <p>
+	 * @TODO remove this once the NC classes are properly integrated into container services
+	 * @param cb
+	 * @since ACS 8.1.0
+	 */
+	public void registerCleanUpCallback(ContainerServicesImpl.CleanUpCallback cb) {
+		cleanUpCallbacks.add(cb);
+	}
 }
 

@@ -125,9 +125,10 @@ public class AdvancedComponentClient extends ComponentClient {
 			AcsManagerProxy acsManagerProxy = additionalContainerServices.get(cs);
 			acsManagerProxy.shutdownNotify();
 			csImpl.releaseAllComponents();
-			((CleaningDaemonThreadFactory) csImpl.getThreadFactory()).cleanUp();							
+			((CleaningDaemonThreadFactory) csImpl.getThreadFactory()).cleanUp();
 			acsManagerProxy.logoutFromManager();
 			additionalContainerServices.remove(cs);
+			csImpl.cleanUp();
 		} catch (Throwable thr) {
     		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
     		ex.setContextInfo("Failed to destroy additional container services instance");

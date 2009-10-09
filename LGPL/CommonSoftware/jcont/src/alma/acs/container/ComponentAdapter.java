@@ -309,6 +309,7 @@ public class ComponentAdapter
             } finally {
                 Thread.currentThread().setContextClassLoader(contCL);
                 m_componentStateManager.setStateByContainer(ComponentStates.COMPSTATE_DEFUNCT);
+				m_containerServices.cleanUp();
                 m_threadFactory.cleanUp();
             }
 
@@ -368,6 +369,7 @@ public class ComponentAdapter
                     } finally {
                         Thread.currentThread().setContextClassLoader(contCL);
                         m_componentStateManager.setStateByContainer(ComponentStates.COMPSTATE_DEFUNCT);
+                        m_containerServices.cleanUp();
                         m_threadFactory.cleanUp();
                         if (killComponentPOA) {
                             m_componentPOA.destroy(false, false);

@@ -282,7 +282,7 @@ public class ComponentClient
 			
 			m_containerServices.releaseAllComponents();
 						
-			m_acsManagerProxy.logoutFromManager();            
+			m_acsManagerProxy.logoutFromManager();
 			
 			if (ownAcsCorba) {
 				ClientLogManager.getAcsLogManager().shutdown(false);
@@ -290,6 +290,7 @@ public class ComponentClient
 				acsCorba.doneCorba();
 			}
 
+			m_containerServices.cleanUp();
 			m_threadFactory.cleanUp();
 			ACSAlarmSystemInterfaceFactory.done();
 		}

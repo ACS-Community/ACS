@@ -237,12 +237,15 @@ public class ComponentClientTestCase extends TestCase
 			m_threadFactory.cleanUp();
 
 			ClientLogManager.getAcsLogManager().shutdown(true);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			System.err.println("Exception in tearDown: ");
 			e.printStackTrace(System.err);
 			throw e;
-		} finally {
+		} 
+		finally {
 			ACSAlarmSystemInterfaceFactory.done();
+			m_containerServices.cleanUp();
 			if (acsCorba != null) {
 				// @todo investigate COMP-2632 which happened here.
 				// Check if the wait_for_completion is buggy and returns too early.
