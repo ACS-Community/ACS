@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.48 2009/10/08 09:04:00 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.49 2009/10/09 08:19:20 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.48 2009/10/08 09:04:00 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.49 2009/10/09 08:19:20 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -59,23 +59,33 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
 	cdb::DAONode* dao = this->getDAONode();
 	if (!dao) return;
 
+	actionThreadStackSize = 1024;
 	try
 	  {
 		actionThreadStackSize = dao->get_long("actionThreadStackSize");
-		actionThreadStackSize *= 1024;  // that we have size in bytes
-		monitoringThreadStackSize = dao->get_long("monitoringThreadStackSize");
-		monitoringThreadStackSize *= 1024;  // that we have size in bytes
+	}
+	catch (ACSErr::ACSbaseExImpl& ex)
+	{
+		ex.log(LM_WARNING);
+	}
+	catch (...)
+	{
+	}
+	actionThreadStackSize *= 1024;  // that we have size in bytes
 
-	  }
-  catch (ACSErr::ACSbaseExImpl& ex)
-	  {
-	  ex.log();
-	  return;
-	  }
-  catch (...)
-	  {
-	  return;
-	  }
+	monitoringThreadStackSize = 2048;
+	try
+	{
+		monitoringThreadStackSize = dao->get_long("monitoringThreadStackSize");
+	}
+	catch (ACSErr::ACSbaseExImpl& ex)
+	{
+		ex.log(LM_WARNING);
+	}
+	catch (...)
+	{
+	}
+	monitoringThreadStackSize *= 1024;  // that we have size in bytes
 
   // Create Component
     component_mp = new BACIComponent(getContainerServices()->getThreadManager(), name, this,
