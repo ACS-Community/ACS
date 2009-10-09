@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.2 2009/09/25 13:50:08 bjeram Exp $"
+ * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.3 2009/10/09 10:57:33 acaproni Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -165,7 +165,8 @@ protected:
 	EventDispatcher * eventDispatcher_mp;
 
 	// The alarm system source
-	auto_ptr<acsalarm::AlarmSystemInterface> alarmSource_map;
+	// The source is a singleton (there is no need to delete this pointer)
+	acsalarm::AlarmSystemInterface* alarmSource_map;
 
 	/// indicator (flag) if an alarm was raised.
 	/// in case of pattern how many alarms were raised
