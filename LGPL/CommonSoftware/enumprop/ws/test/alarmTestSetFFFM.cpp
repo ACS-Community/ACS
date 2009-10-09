@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.1 2009/10/02 14:01:56 bjeram Exp $"
+* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.2 2009/10/09 10:38:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.1 2009/10/02 14:01:56 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.2 2009/10/09 10:38:17 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -106,7 +106,7 @@ class SetterThread : public ACS::Thread
 
 	    			ACS_SHORT_LOG((LM_INFO, "==> Going to changing value to ENABLE (1) to trigger an alarm."));
 	    			dev_m->enable ();
-	    			ACE_OS::sleep(1);
+	    			ACE_OS::sleep(2);
 
 
 	    			ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we have an alarm."));
@@ -114,15 +114,15 @@ class SetterThread : public ACS::Thread
 	    			dev_m->changeAlarmFFFM("UserDefinedFF", "UserDefinedFM");
 
 	    			dev_m->disable ();
-	    			ACE_OS::sleep(1);
+	    			ACE_OS::sleep(2);
 
 	    			dev_m->diagnose ();
-	    			ACE_OS::sleep(1);
+	    			ACE_OS::sleep(2);
 	    			// here we should not have an alarm anymore
 	    			ACS_SHORT_LOG((LM_INFO, "==> Going to test changing of FF and FM if we do not have an alarm."));
 
 	    			dev_m->shutdown ();
-	    			ACE_OS::sleep(1);
+	    			ACE_OS::sleep(2);
 
 
 		    }
@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
 	setterThread.resume();
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Going in main loop sleep..."));
-	ACE_Time_Value tv(5);
+	ACE_Time_Value tv(12);
 	BACI_CORBA::getORB()->run(tv);
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Exit ... "));
