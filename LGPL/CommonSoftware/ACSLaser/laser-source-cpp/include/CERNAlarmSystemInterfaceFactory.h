@@ -31,17 +31,14 @@ namespace laserSource
 		 * @param sourceName the source name.
 		 * @return the interface instance.
 		 */
-		virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource(std::string sourceName);
+		virtual acsalarm::AlarmSystemInterface* createSource(std::string sourceName);
 		
 		/**
 		 * Create a new instance of an alarm system interface without binding it to any source.
 		 * @return the interface instance.
 		 */
-		virtual std::auto_ptr<acsalarm::AlarmSystemInterface> createSource();
+		virtual acsalarm::AlarmSystemInterface* createSource();
 		
-		private:
-		// logger
-		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 	};
 };
 #endif /* ifndef CERN_ALARM_SYSTEM_INTERFACE_FACTORY_H */

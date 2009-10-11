@@ -70,7 +70,7 @@ namespace testalarmsystem
 
 		private:
 			// the AlarmSystemInterface
-			auto_ptr<acsalarm::AlarmSystemInterface> alarmSource;
+			acsalarm::AlarmSystemInterface* alarmSource;
 
 			ACE_Thread_Mutex mutex;
 

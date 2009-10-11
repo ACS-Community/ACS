@@ -56,7 +56,7 @@ void Mount::sendAlarm(std::string family, std::string member, int code, bool act
 	// constants we will use when creating the fault
 
 		// create the AlarmSystemInterface
-		auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
+		AlarmSystemInterface* alarmSource = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 
 		// create the FaultState
 		auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState(family, member, code);

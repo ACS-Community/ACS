@@ -63,7 +63,7 @@ namespace testalarmsystem
 			void sendAlarmShortHand(std::string fFamily, std::string fMember, int code, bool active);
 
 			// the AlarmSystemInterface
-			auto_ptr<acsalarm::AlarmSystemInterface> alarmSource;
+			acsalarm::AlarmSystemInterface* alarmSource;
 
 			int counter;
 	};

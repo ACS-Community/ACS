@@ -268,7 +268,7 @@ void AlarmTestMountMultiThreadedImpl::sendAlarmLongHand(std::string& family, std
 
 		// push the FaultState using the AlarmSystemInterface previously created
 		//alarmSource->push(*fltstate);
-		auto_ptr<AlarmSystemInterface> myInterface = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
+		AlarmSystemInterface* myInterface = ACSAlarmSystemInterfaceFactory::createSource("ALARM_SYSTEM_SOURCES");
 		//myInterface->setThreadName(threadName);
 		myInterface->push(*fltstate); 
 		// TODO: remove above line, uncomment line above it...
