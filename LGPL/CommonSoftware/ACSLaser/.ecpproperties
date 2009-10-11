@@ -1,0 +1,10 @@
+#ECP Compilation Preferences
+#Mon Sep 21 09:01:23 UTC 2009
+.INVOKE_COMPILERS=
+.GENERATE_SKELETONS=false
+.CUSTOM_OPTIONS=false
+.INCLUDE_PATHS=/diska/home/almadev/introot/idl;/alma/ACS-8.1/ACSSW/idl
+.GENERATE_STUBS=false
+.GENERATE_TIES=false
+.COMPILE=false
+.OUTPUT_DIRECTORY=

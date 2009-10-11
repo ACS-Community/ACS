@@ -8,10 +8,10 @@
 1 - suppressRemoteLogging called
 1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar#AlarmSet:1> ACTIVE=true
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar#AlarmSet, 1> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar#AlarmSet, 1> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar#AlarmSet:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar:1> ACTIVE=false
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
 1 - 
 1 - 
