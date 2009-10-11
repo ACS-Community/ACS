@@ -15,9 +15,7 @@ using acsalarm::AlarmSystemInterface;
  */
 CERNAlarmSystemInterfaceFactory::CERNAlarmSystemInterfaceFactory()
 {
-	myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::constructor(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::constructor(): exiting.");
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::constructor()");
 }
 
 /**
@@ -25,9 +23,8 @@ CERNAlarmSystemInterfaceFactory::CERNAlarmSystemInterfaceFactory()
  */
 CERNAlarmSystemInterfaceFactory::~CERNAlarmSystemInterfaceFactory()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::destructor(): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::destructor()");
 	done();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::destructor(): exiting.");
 }
 
 /**
@@ -37,8 +34,7 @@ CERNAlarmSystemInterfaceFactory::~CERNAlarmSystemInterfaceFactory()
  */
 bool CERNAlarmSystemInterfaceFactory::init()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::init(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::init(): exiting.");
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::init()");
 	return true;
 }
 	
@@ -48,8 +44,7 @@ bool CERNAlarmSystemInterfaceFactory::init()
  */
 void CERNAlarmSystemInterfaceFactory::done()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::done(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::done(): exiting.");
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::done()");
 }
 
 /**
@@ -58,14 +53,10 @@ void CERNAlarmSystemInterfaceFactory::done()
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
+AlarmSystemInterface* CERNAlarmSystemInterfaceFactory::createSource(string sourceName)
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
-
-	auto_ptr<AlarmSystemInterface> asIfAutoPtr(new CERNAlarmSystemInterfaceProxy(sourceName));
-
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): exiting.");
-	return asIfAutoPtr;
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::createSource()");
+	return new CERNAlarmSystemInterfaceProxy(sourceName);
 }
 	
 /**
@@ -73,11 +64,10 @@ auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource(str
  * @return the interface instance.
  * @throws ASIException if the AlarmSystemInterface instance can not be created.
  */
-auto_ptr<AlarmSystemInterface> CERNAlarmSystemInterfaceFactory::createSource()
+AlarmSystemInterface* CERNAlarmSystemInterfaceFactory::createSource()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceFactory::createSource()");
 	return createSource(ALARM_SOURCE_NAME);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::createSource(): entering.");
 }
 
 /*
@@ -88,10 +78,8 @@ extern "C"
 {
 	CERNAlarmSystemInterfaceFactory * getAlarmSystemInterfaceFactory()
 	{
-		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::getAlarmSystemInterface(): entering.");
+		ACS_TRACE("CERNAlarmSystemInterfaceFactory::getAlarmSystemInterface()");
 		CERNAlarmSystemInterfaceFactory * retVal = new CERNAlarmSystemInterfaceFactory();
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceFactory::getAlarmSystemInterface(): exiting.");
 		return retVal;
 	}
 };

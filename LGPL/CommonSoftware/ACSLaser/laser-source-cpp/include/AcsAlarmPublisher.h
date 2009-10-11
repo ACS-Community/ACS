@@ -26,7 +26,6 @@ namespace laserSource
 
 		private:
 			AlarmSupplier * alarmSupplier;
-			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 
 			/**
 			 * Get the NameService from the manager

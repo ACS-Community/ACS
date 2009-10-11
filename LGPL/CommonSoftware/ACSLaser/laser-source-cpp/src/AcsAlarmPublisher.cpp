@@ -18,20 +18,17 @@ CosNaming::NamingContext_var AcsAlarmPublisher::naming_v;
  */
 AcsAlarmPublisher::AcsAlarmPublisher(std::string topicName)
 {
-	myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): entering.");
+	ACS_TRACE("AcsAlarmPublisher::AcsAlarmPublisher()");
 
-
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier.");
+	ACS_SHORT_LOG((LM_DEBUG,"AcsAlarmPublisher::AcsAlarmPublisher(): about to instantiate the alarm supplier."));
 	alarmSupplier = new AlarmSupplier(topicName.c_str());
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier.");
+	ACS_SHORT_LOG((LM_DEBUG,"AcsAlarmPublisher::AcsAlarmPublisher(): instantiated the alarm supplier."));
 
 	// initialize the AlarmSupplier with the naming context
 	CosNaming::NamingContext_ptr naming_p=getNamingService();
 	alarmSupplier->init(naming_p);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): init called on alarm supplier.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): exiting.");
+	ACS_SHORT_LOG((LM_DEBUG,"AcsAlarmPublisher::AcsAlarmPublisher(): init called on alarm supplier."));
 }
 
 /*
@@ -39,7 +36,7 @@ AcsAlarmPublisher::AcsAlarmPublisher(std::string topicName)
  */
 AcsAlarmPublisher::~AcsAlarmPublisher()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::~AcsAlarmPublisher(): entering.");
+	ACS_TRACE("AcsAlarmPublisher::~AcsAlarmPublisher()");
 	if(NULL != alarmSupplier)
 	{
 		// disconnect the AlarmSupplier.
@@ -47,7 +44,6 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 		delete(alarmSupplier);
 		alarmSupplier = NULL;
 	}
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::~AcsAlarmPublisher(): exiting.");
 }
 
 /*
@@ -55,25 +51,25 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
  */
 bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): entering.");
+	ACS_TRACE("AcsAlarmPublisher::publishAlarm()");
 	alarmSupplier->publishEvent(msg);
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::publishAlarm(): exiting.");
 	return true;
 }
 
 CosNaming::NamingContext_var AcsAlarmPublisher::getNamingService() {
+	ACS_TRACE("AcsAlarmPublisher::getNamingService()");
 	if (!CORBA::is_nil(naming_v)) {
 		return naming_v;
 	}
 	maci::Manager_ptr mgr = ACSAlarmSystemInterfaceFactory::getManager();
 	CORBA::Object_var namingObj = mgr->get_service(0, "NameService", true);
-	AcsAlarmPublisher::naming_v = CosNaming::NamingContext::_narrow(namingObj.ptr());
+	naming_v = CosNaming::NamingContext::_narrow(namingObj.ptr());
 
 	if(CORBA::is_nil(naming_v)) {
-		myLoggerSmartPtr->log(Logging::Logger::LM_ERROR, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was nil.");
+		ACS_SHORT_LOG((LM_ERROR,"AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was nil."));
 	}
 	else {
-		myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was not nil.");
+		ACS_SHORT_LOG((LM_DEBUG,"AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was not nil."));
 	}
 	return AcsAlarmPublisher::naming_v;
 }

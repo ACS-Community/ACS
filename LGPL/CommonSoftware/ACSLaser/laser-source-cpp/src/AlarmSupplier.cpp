@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.10 2009/05/20 17:19:48 javarias Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.11 2009/10/11 08:17:23 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,10 +73,7 @@ using std::string;
 AlarmSupplier::AlarmSupplier(const char* channelName) :
     BaseSupplier(channelName, acsnc::ALARMSYSTEM_DOMAIN_NAME)
 {
-   //no-op
-	myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::AlarmSupplier(): exiting.");
+	ACS_TRACE("AlarmSupplier::AlarmSupplier()");
 }
 
 /**
@@ -84,9 +81,7 @@ AlarmSupplier::AlarmSupplier(const char* channelName) :
  */
 AlarmSupplier::~AlarmSupplier()
 {
-   //no-op
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::~AlarmSupplier(): exiting.");
+	ACS_TRACE("AlarmSupplier::~AlarmSupplier()");
 }
 
 
@@ -96,7 +91,7 @@ AlarmSupplier::~AlarmSupplier()
  */
 void AlarmSupplier::publishEvent(ASIMessage &msg)
 { 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): entering.");
+	ACS_TRACE("AlarmSupplier::publishEvent()");
 
 	CosNotification::StructuredEvent event;
 	populateHeader(event);    
@@ -114,11 +109,11 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 	com::cosylab::acs::jms::ACSJMSMessageEntity msgForNotificationChannel;
 	string xmlToSend = msg.toXML();
 	string xmlToLog = "AlarmSupplier::publishEvent()\n\nAbout to send XML of: \n\n" + xmlToSend + "\n\n";
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, xmlToLog);
+	ACS_SHORT_LOG((LM_TRACE, xmlToLog.c_str()));
 	msgForNotificationChannel.text = xmlToSend.c_str();
 	event.filterable_data[0].value <<= msgForNotificationChannel;
 	
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Preparing to send XML.");
+	ACS_SHORT_LOG((LM_DEBUG,"AlarmSupplier::publishEvent(): Preparing to send XML."));
 	try{
 		BaseSupplier::publishEvent(event);
 	}
@@ -146,5 +141,5 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 		ex2.setChannelName(channelName_mp);
 		throw ex2;
 	}
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSupplier::publishEvent(): Sent XML.");
+	ACS_SHORT_LOG((LM_DEBUG,"AlarmSupplier::publishEvent(): Sent XML."));
 }

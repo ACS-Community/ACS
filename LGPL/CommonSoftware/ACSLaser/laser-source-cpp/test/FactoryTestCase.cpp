@@ -59,14 +59,12 @@ class FactoryTestCase : public CPPUNIT_NS::TestFixture
 
 FactoryTestCase::FactoryTestCase()
 {
-	ACS_TRACE("FactoryTestCase::FactoryTestCase (constructor) entering");
-	ACS_TRACE("FactoryTestCase::FactoryTestCase (constructor) exiting");
+	ACS_TRACE("FactoryTestCase::FactoryTestCase()");
 }
 
 FactoryTestCase::~FactoryTestCase()
 {
-	ACS_TRACE("FactoryTestCase::~FactoryTestCase (destructor) entering");
-	ACS_TRACE("FactoryTestCase::~FactoryTestCase (destructor) exiting");
+	ACS_TRACE("FactoryTestCase::~FactoryTestCase()");
 }
 
 void FactoryTestCase::setUp()
@@ -77,14 +75,12 @@ void FactoryTestCase::setUp()
 	orb =  CORBA::ORB_init (nargc, nargv, 0);
 	maci::Manager_ptr manager = maci::MACIHelper::resolveManager (orb.in(), nargc, nargv, 0, 0);
 	ACSAlarmSystemInterfaceFactory::init(manager);
-	ACS_TRACE("FactoryTestCase::setUp exiting");
 }
 
 void FactoryTestCase::tearDown()
 {
-	ACS_TRACE("FactoryTestCase::tearDown entering");
+	ACS_TRACE("FactoryTestCase::tearDown()");
 	ACSAlarmSystemInterfaceFactory::done();
-	ACS_TRACE("FactoryTestCase::tearDown exiting");
 }
 
 /**
@@ -95,9 +91,8 @@ void FactoryTestCase::tearDown()
  */
 void FactoryTestCase::testCERNAlarmSystem() 
 {
-	ACS_TRACE("FactoryTestCase::testCERNAlarmSystem entering");
+	ACS_TRACE("FactoryTestCase::testCERNAlarmSystem()");
 	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (CERN case)", !ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
-	ACS_TRACE("FactoryTestCase::testCERNAlarmSystem exiting");
 }
 	
 
@@ -108,10 +103,9 @@ void FactoryTestCase::testCERNAlarmSystem()
  */
 void FactoryTestCase::testFaultStateCreation()
 {
-	ACS_TRACE("FactoryTestCase::testFaultStateCreation entering");
+	ACS_TRACE("FactoryTestCase::testFaultStateCreation()");
 	auto_ptr<acsalarm::FaultState> fltstate = ACSAlarmSystemInterfaceFactory::createFaultState("Family", "Member", 0);
 	CPPUNIT_ASSERT_MESSAGE("Error creating a FS", (fltstate.get() != NULL));
-	ACS_TRACE("FactoryTestCase::testFaultStateCreation exiting");
 }
 
 /**
@@ -121,10 +115,9 @@ void FactoryTestCase::testFaultStateCreation()
  */
 void FactoryTestCase::testAlarmSourceCreation()
 {
-	ACS_TRACE("FactoryTestCase::testAlarmSourceCreation entering");
-	auto_ptr<AlarmSystemInterface> alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
-	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource.get() != NULL));
-	ACS_TRACE("FactoryTestCase::testAlarmSourceCreation exiting");
+	ACS_TRACE("FactoryTestCase::testAlarmSourceCreation()");
+	AlarmSystemInterface* alarmSource = ACSAlarmSystemInterfaceFactory::createSource();
+	CPPUNIT_ASSERT_MESSAGE("Error creating an alarm source", (alarmSource!= NULL));
 }
 	
 CPPUNIT_TEST_SUITE_REGISTRATION(FactoryTestCase);

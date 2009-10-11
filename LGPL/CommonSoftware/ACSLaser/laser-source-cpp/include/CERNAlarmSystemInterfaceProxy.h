@@ -23,9 +23,6 @@ namespace laserSource
 
 			// pointer to our publisher object
 			laserSource::AcsAlarmPublisher * laserPublisher;
-
-			// smart ptr to the logger
-			Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 	};
 };
 #endif

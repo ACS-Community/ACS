@@ -17,11 +17,9 @@ using acsalarm::ASIMessage;
  */
 CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()
 {
-	myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()");
 	setSourceName(ALARM_SOURCE_NAME);
 	init();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(): exiting.");
 }
 
 /*
@@ -31,18 +29,16 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy()
  */
 CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceName)
 {
-	myLoggerSmartPtr = getLogger();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string)");
 	string expectedSrcName(ALARM_SOURCE_NAME);
 	if(theSourceName != expectedSrcName)
 	{
 		string logString =  "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string) all should use " + expectedSrcName+" as source (source "+theSourceName+" forced to "+ALARM_SOURCE_NAME+")";
-		myLoggerSmartPtr->log(Logging::Logger::LM_WARNING, logString);
+		ACS_SHORT_LOG((LM_WARNING, logString.c_str()));
 		theSourceName=expectedSrcName;
 	}
 	setSourceName(theSourceName);
 	init();
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string): exiting.");
 }
 
 /*
@@ -50,18 +46,17 @@ CERNAlarmSystemInterfaceProxy::CERNAlarmSystemInterfaceProxy(string theSourceNam
  */
 CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy(): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy()");
 	if (laserPublisher != NULL) {
 		delete laserPublisher;
 		laserPublisher = NULL;
 	}
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::~CERNAlarmSystemInterfaceProxy(): exiting.");
 }
 
 // initialization logic
 void CERNAlarmSystemInterfaceProxy::init()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): entering.");
+	ACS_TRACE("AlarmSystemInterface::init()");
 
 	laserPublisher = NULL; 
 
@@ -71,15 +66,12 @@ void CERNAlarmSystemInterfaceProxy::init()
 	string nameStr(name);
 	hostName = (nameStr);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::init(): exiting.");
 }
 
 // cleanup logic
 void CERNAlarmSystemInterfaceProxy::close()
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): entering.");
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "AlarmSystemInterface::close(): exiting.");
-
+	ACS_TRACE("AlarmSystemInterface::close()");
 }
 
 /*
@@ -89,7 +81,7 @@ void CERNAlarmSystemInterfaceProxy::close()
  */
 bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 {
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): entering.");
+	ACS_TRACE("CERNAlarmSystemInterfaceProxy::publishMessage()");
 	bool retVal = false;
 
 	// create the topic on which to publish the alarm, by appending
@@ -107,7 +99,6 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	// publish the alarm 
 	laserPublisher->publishAlarm(msg);
 
-	myLoggerSmartPtr->log(Logging::Logger::LM_TRACE, "CERNAlarmSystemInterfaceProxy::publishMessage(): exiting.");
 	return retVal;
 }
 

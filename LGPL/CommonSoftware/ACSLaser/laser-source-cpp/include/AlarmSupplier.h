@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.h,v 1.6 2009/05/20 17:19:47 javarias Exp $"
+* "@(#) $Id: AlarmSupplier.h,v 1.7 2009/10/11 08:17:23 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -80,10 +80,6 @@ class AlarmSupplier : public BaseSupplier
 		 * Overrides method from BaseSupplier.
 		 */
 		virtual const char* getEventType() { return "ACSJMSMessageEntity"; }
-
-	private:
-		// logger smart pointer
-		Logging::Logger::LoggerSmartPtr myLoggerSmartPtr;
 
 };
 
