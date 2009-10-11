@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.12 2009/06/20 18:48:55 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.13 2009/10/11 08:16:57 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -35,8 +35,11 @@ USER_LIB = -lstdc++ -lxerces-c -lacscomponent
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = 
+EXECUTABLES     = alarmSystemClient
 EXECUTABLES_L   = testDriver testDriverAcs testDriverMultiThreaded FactoryTestCase
+
+alarmSystemClient_OBJECTS	= alarmSystemClient
+alarmSystemClient_LIBS		= maciClient
 
 # <brief description of xxxxx program>
 FactoryTestCase_OBJECTS  = FactoryTestCase 
