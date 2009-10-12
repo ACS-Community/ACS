@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.31 2007/12/04 15:54:21 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.32 2009/10/12 09:46:05 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@ PY_PACKAGES = Acspy acsncImpl ACSImpl
 
 SCRIPTS_L = 
 
-SCRIPTS   = acseventbrowser acspyInteractiveContainer
+SCRIPTS   = acseventbrowser acspyInteractiveContainer acsLoggingMonitor
 
 # 
 # IDL Files and flags
