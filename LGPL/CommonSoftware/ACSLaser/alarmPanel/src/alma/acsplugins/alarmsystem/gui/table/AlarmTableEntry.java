@@ -18,7 +18,15 @@
  */
 package alma.acsplugins.alarmsystem.gui.table;
 
+import java.net.URL;
+import java.util.Collection;
+
 import cern.laser.client.data.Alarm;
+import cern.laser.client.data.Location;
+import cern.laser.client.data.ResponsiblePerson;
+import cern.laser.client.data.Source;
+import cern.laser.client.data.Status;
+import cern.laser.client.data.Triplet;
 
 /**
  * An entry in the alarm table i.e. a row in the table
@@ -31,7 +39,7 @@ import cern.laser.client.data.Alarm;
  * @author acaproni
  *
  */
-public class AlarmTableEntry {
+public class AlarmTableEntry implements Alarm {
 	
 	/**
 	 *  An entry is new till the user look at it by pressing one mouse
@@ -60,7 +68,7 @@ public class AlarmTableEntry {
 		}
 		this.alarm=alarm;
 		isNew=true;
-		alarmType=AlarmGUIType.fromAlarm(alarm);
+		alarmType=AlarmGUIType.fromAlarm(this);
 	}
 	
 	/**
@@ -79,7 +87,7 @@ public class AlarmTableEntry {
 			throw new IllegalArgumentException("The ID of the new alarm is not equals to the old one");
 		}
 		alarm=newAlarm;
-		alarmType=AlarmGUIType.fromAlarm(alarm);
+		alarmType=AlarmGUIType.fromAlarm(this);
 		if (newAlarm.getStatus().isActive()) {
 			isNew=true;
 		}
@@ -93,14 +101,6 @@ public class AlarmTableEntry {
 		return alarmType;
 	}
 
-	/**
-	 * 
-	 * @return The alarm
-	 */
-	public Alarm getAlarm() {
-		return alarm;
-	}
-	
 	/**
 	 * Return true if the alarm is new
 	 * 
@@ -139,5 +139,190 @@ public class AlarmTableEntry {
 	 */
 	public boolean isParent() {
 		return alarm.isNodeParent() || alarm.isMultiplicityParent();
+	}
+
+	/**
+	 * @return
+	 * @throws CloneNotSupportedException
+	 * @see cern.laser.client.data.Alarm#clone()
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		return alarm.clone();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getAction()
+	 */
+	public String getAction() {
+		return alarm.getAction();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getAlarmId()
+	 */
+	public String getAlarmId() {
+		return alarm.getAlarmId();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getCategories()
+	 */
+	public Collection getCategories() {
+		return alarm.getCategories();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getCause()
+	 */
+	public String getCause() {
+		return alarm.getCause();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getConsequence()
+	 */
+	public String getConsequence() {
+		return alarm.getConsequence();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getHelpURL()
+	 */
+	public URL getHelpURL() {
+		return alarm.getHelpURL();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getIdentifier()
+	 */
+	public String getIdentifier() {
+		return alarm.getIdentifier();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getLocation()
+	 */
+	public Location getLocation() {
+		return alarm.getLocation();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getPiquetEmail()
+	 */
+	public String getPiquetEmail() {
+		return alarm.getPiquetEmail();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getPiquetGSM()
+	 */
+	public String getPiquetGSM() {
+		return alarm.getPiquetGSM();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getPriority()
+	 */
+	public Integer getPriority() {
+		return alarm.getPriority();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getProblemDescription()
+	 */
+	public String getProblemDescription() {
+		return alarm.getProblemDescription();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getResponsiblePerson()
+	 */
+	public ResponsiblePerson getResponsiblePerson() {
+		return alarm.getResponsiblePerson();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getSource()
+	 */
+	public Source getSource() {
+		return alarm.getSource();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getStatus()
+	 */
+	public Status getStatus() {
+		return alarm.getStatus();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getSystemName()
+	 */
+	public String getSystemName() {
+		return alarm.getSystemName();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#getTriplet()
+	 */
+	public Triplet getTriplet() {
+		return alarm.getTriplet();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#isInstant()
+	 */
+	public boolean isInstant() {
+		return alarm.isInstant();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#isMultiplicityChild()
+	 */
+	public boolean isMultiplicityChild() {
+		return alarm.isMultiplicityChild();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#isMultiplicityParent()
+	 */
+	public boolean isMultiplicityParent() {
+		return alarm.isMultiplicityParent();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#isNodeChild()
+	 */
+	public boolean isNodeChild() {
+		return alarm.isNodeChild();
+	}
+
+	/**
+	 * @return
+	 * @see cern.laser.client.data.Alarm#isNodeParent()
+	 */
+	public boolean isNodeParent() {
+		return alarm.isNodeParent();
 	}
 }
