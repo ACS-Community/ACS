@@ -1,6 +1,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Starting
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: CharacteristicComponent IDs ready
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
@@ -9,8 +9,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::CDBPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Exporting "BACI1"
-1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [BACI1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [BACI1 - TestContainerServices::getCDB] CDB obtained via environment: 'corbaloc:HOST:PORT/CDB'
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::DAONode] 
@@ -249,8 +249,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::createChild] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROdoubleSeqProp'
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
@@ -277,6 +277,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
@@ -308,8 +309,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROfloatSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
@@ -332,6 +333,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
@@ -418,16 +420,16 @@
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] BACI1
-1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
 1 - ----------T--:--:--.--- [BACI1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI1 exported
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Exporting "BACI2"
@@ -698,6 +700,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
@@ -753,6 +756,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] DevIO initial value set not implemented yet.
 1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createSource(string)] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorSeqCont&lt;&gt;::AlarmSystemMonitorSeqCont] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::ROSeqContImpl&lt;&gt;::ROSeqContImpl] Successfully created.
@@ -840,16 +844,16 @@
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] BACI2
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] BACI2
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI2
+1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [BACI2 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI2
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: BACI2 exported
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Writing IORS to file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Running ORB.
@@ -871,8 +875,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_property_value] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_number_of_properties = 22
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_property_value("") = ROdoubleProp,ROdoubleSeqProp,ROfloatProp,ROfloatSeqProp,ROlongProp,ROlongSeqProp,ROpatternProp,ROstringProp,RWdoubleProp,RWdoubleSeqProp,RWdoubleWithDevIOProp,RWdoubleWithErrorDevIOProp,RWfloatProp,RWfloatSeqProp,RWlongProp,RWlongSeqProp,RWpatternProp,RWstringProp,actionThreadStackSize,monitoringThreadStackSize,recentCommand,recentTimeStamp
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_all_property_names] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_property_value("") = ROdoubleProp,ROdoubleSeqProp,ROfloatProp,ROfloatSeqProp,ROlongProp,ROlongSeqProp,ROpatternProp,ROstringProp,RWdoubleProp,RWdoubleSeqProp,RWdoubleWithDevIOProp,RWdoubleWithErrorDevIOProp,RWfloatProp,RWfloatSeqProp,RWlongProp,RWlongSeqProp,RWpatternProp,RWstringProp,actionThreadStackSize,monitoringThreadStackSize,recentCommand,recentTimeStamp
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_all_property_names() = 
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	ROdoubleProp
@@ -908,12 +912,12 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::get_field] Field alma/BACI1/invalid does not exist.
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: is_property_defined("invalid") = 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: Trying to get ROdoubleProp...
-1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_number_of_properties] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_number_of_properties = 24
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_property_value] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_number_of_properties = 24
+1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_property_value("") = alarm_fault_family,alarm_fault_member,alarm_high_off,alarm_high_on,alarm_level,alarm_low_off,alarm_low_on,alarm_timer_trig,archive_delta,archive_max_int,archive_min_int,archive_priority,default_timer_trig,default_value,description,format,graph_max,graph_min,initialize_devio,min_delta_trig,min_step,min_timer_trig,resolution,units
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_all_property_names] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
@@ -949,10 +953,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying "BACI1"
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ThreadBase::stop] Thread BACI1::xxxxxxThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ThreadBase::stop] Thread BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI1::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI1 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI1...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
@@ -962,8 +966,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcontImpl&lt;&gt;::~RWcontImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcontImpl&lt;&gt;::~PcontImpl] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::~RWcommonImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI1:RWlongSeqProp
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
@@ -1240,17 +1244,17 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Destroying "BACI2"
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ThreadBase::stop] Thread BACI2::xxxxxxThread
-1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ThreadBase::stop] Thread BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] 
+1 - ----------T--:--:--.--- [GlobalLogger - ThreadBase::stop] Thread stopped:BACI2::xxxxxxThread
 1 - ----------T--:--:--.--- [BACI2 - ::BaciTestClassImpl::~BaciTestClassImpl] Destroying BACI2...
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopAllThreads] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
@@ -1299,8 +1303,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::RWcommonImpl&lt;&gt;::~RWcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::~PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Destroying: BACI2:RWfloatSeqProp
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Now I will go through monitors of 'BACI2:RWfloatSeqProp'.
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::~BACIProperty] Property 'BACI2:RWfloatSeqProp' destroyed.
@@ -1538,8 +1542,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [BACI2::xxxxxxThread - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] baciTestServer: Closing CORBA.
