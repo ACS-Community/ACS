@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eventGUI"
+      label="eventGUI"
+      version="1.0.0"
+      provider-name="European Southern Observatory"
+      plugin="eventGUI">
+
+   <description url="http://www.eso.org">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.eso.org">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.eso.org">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.rcp"
+         version="0.0.0"
+         os="linux"
+         ws="gtk"
+         arch="x86"/>
+
+   <plugin
+         id="eventGUI"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
