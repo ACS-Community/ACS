@@ -144,21 +144,21 @@ public class AlarmsContainer {
 		if (entry==null) {
 			throw new IllegalArgumentException("The entry can't be null");
 		}
-		if (entry.getAlarm().getAlarmId()==null ||entry.getAlarm().getAlarmId().length()==0) {
+		if (entry.getAlarmId()==null ||entry.getAlarmId().length()==0) {
 			throw new IllegalStateException("The alarm ID is invalid");
 		}
 		if (index.size()>=maxAlarms) {
 			throw new ArrayIndexOutOfBoundsException("Container full");
 		}
-		if (entries.containsKey(entry.getAlarm().getAlarmId())) {
+		if (entries.containsKey(entry.getAlarmId())) {
 			throw new AlarmContainerException("Alarm already in the Container");
 		}
-		if (index.contains(entry.getAlarm().getAlarmId())) {
+		if (index.contains(entry.getAlarmId())) {
 			// entries contains the key but index not!!!!
 			throw new IllegalStateException("Inconsistency between index and entries");
 		}
-		index.add(entry.getAlarm().getAlarmId());
-		entries.put(entry.getAlarm().getAlarmId(), entry);
+		index.add(entry.getAlarmId());
+		entries.put(entry.getAlarmId(), entry);
 	}
 
 	/**
@@ -243,14 +243,14 @@ public class AlarmsContainer {
 	/**
 	 * Remove the entry for the passed alarm
 	 * 
-	 * @param alarm The alarm whose entry must be removed
+	 * @param entry The alarm whose entry must be removed
 	 * @throws AlarmContainerException If the alarm is not in the container
 	 */
-	public synchronized void remove(Alarm alarm) throws AlarmContainerException {
-		if (alarm==null) {
+	public synchronized void remove(AlarmTableEntry entry) throws AlarmContainerException {
+		if (entry==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		String ID=alarm.getAlarmId();
+		String ID=entry.getAlarmId();
 		int pos=index.indexOf(ID);
 		if (pos<0) {
 			throw new AlarmContainerException("Alarm not in the container");
@@ -285,12 +285,12 @@ public class AlarmsContainer {
 			if (alarm==null) {
 				throw new IllegalStateException("Got a null alarm for key "+key);
 			}
-			if (alarm.getAlarm().getStatus().isActive()) {
+			if (alarm.getStatus().isActive()) {
 				continue;
 			}
-			if (type==AlarmGUIType.INACTIVE || alarm.getAlarm().getPriority()==type.id) {
+			if (type==AlarmGUIType.INACTIVE || alarm.getPriority()==type.id) {
 				// Remove the alarm
-				remove(alarm.getAlarm());
+				remove(alarm);
 				ret++;
 			}
 		}

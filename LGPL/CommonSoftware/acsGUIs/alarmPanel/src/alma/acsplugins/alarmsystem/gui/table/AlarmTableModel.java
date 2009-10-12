@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.23 2009/08/26 13:01:01 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.24 2009/10/12 17:08:10 acaproni Exp $
  * @since    
  */
 
@@ -294,7 +294,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param alarm The alarm to acknowledge if its priority
 	 *              if greater the the selected priority level
 	 */
-	private void autoAcknowledge(Alarm alarm) {
+	private void autoAcknowledge(AlarmTableEntry alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -331,7 +331,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param alarm The inactive alarm to acknowledge
 	 */
-	public synchronized void acknowledge(Alarm alarm) {
+	public synchronized void acknowledge(AlarmTableEntry alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -362,13 +362,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * 
 	 * @param newAlarm The alarm to put in the table
 	 */
-	private void replaceAlarm(Alarm newAlarm) {
+	private void replaceAlarm(AlarmTableEntry newAlarm) {
 		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
 		AlarmTableEntry oldAlarmEntry = items.get(newAlarm.getAlarmId());
 		AlarmGUIType oldAlarmType = oldAlarmEntry.getAlarmType();
-		boolean oldAlarmStatus = oldAlarmEntry.getAlarm().getStatus().isActive();
+		boolean oldAlarmStatus = oldAlarmEntry.getStatus().isActive();
 		try {
 			synchronized (items) {
 				items.replace(newAlarm);
@@ -480,13 +480,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param rowIndex The index of the alarm in the model
 	 * @return the alarm shown at the rowIndex row of the table
 	 */
-	public Alarm getAlarmAt(int rowIndex) {
+	public AlarmTableEntry getAlarmAt(int rowIndex) {
 		if (rowIndex<0) {
 			return null;
 		}
-		Alarm alarm;
+		AlarmTableEntry alarm;
 		synchronized (items) {
-			alarm = items.get(rowIndex,applyReductionRules).getAlarm();
+			alarm = items.get(rowIndex,applyReductionRules);
 		}
 		return alarm;
 	}
@@ -587,8 +587,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param row The number of the row showing the alarm
 	 * @return The alarm shown in the row
 	 */
-	public Alarm getRowAlarm(int row) {
-		return getRowEntry(row).getAlarm();
+	public AlarmTableEntry getRowAlarm(int row) {
+		return getRowEntry(row);
 	}
 	
 	/**
@@ -808,7 +808,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					counters.get(removedAlarm.getAlarmType()).decCounter();
 				}
 				if (items.contains(alarm.getAlarmId())) {
-					replaceAlarm(alarm);
+					replaceAlarm(new AlarmTableEntry(alarm));
 				} else {
 					addAlarm(alarm);
 				}

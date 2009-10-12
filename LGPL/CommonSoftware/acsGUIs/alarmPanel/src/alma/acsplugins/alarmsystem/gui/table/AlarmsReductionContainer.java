@@ -87,7 +87,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 */
 	public synchronized void add(AlarmTableEntry entry) throws AlarmContainerException {
 		super.add(entry);
-		addAlarm(entry.getAlarm());
+		addAlarm(entry);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param alarm The alarm to add to the container
 	 */
-	private void addAlarm(Alarm alarm) {
+	private void addAlarm(AlarmTableEntry alarm) {
 		if (!alarm.getStatus().isReduced()) {
 			indexWithReduction.add(alarm.getAlarmId());
 		}
@@ -179,7 +179,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param alarm The alarm whose entry must be removed
 	 * @throws AlarmContainerException If the alarm is not in the container
 	 */
-	public synchronized void remove(Alarm alarm) throws AlarmContainerException {
+	public synchronized void remove(AlarmTableEntry alarm) throws AlarmContainerException {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -198,7 +198,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 */
 	public synchronized AlarmTableEntry removeOldest() throws AlarmContainerException {
 		AlarmTableEntry removedEntry = super.removeOldest();
-		indexWithReduction.remove(removedEntry.getAlarm().getAlarmId());
+		indexWithReduction.remove(removedEntry.getAlarmId());
 		return removedEntry;
 	}
 	
@@ -210,7 +210,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param newAlarm The not null new alarm 
 	 * @throws AlarmContainerException if the entry is not in the container
 	 */
-	public synchronized void replace(Alarm newAlarm) throws AlarmContainerException {
+	public synchronized void replace(AlarmTableEntry newAlarm) throws AlarmContainerException {
 		super.replace(newAlarm);
 		int pos=indexWithReduction.indexOf(newAlarm.getAlarmId());
 		if (pos>=0) {

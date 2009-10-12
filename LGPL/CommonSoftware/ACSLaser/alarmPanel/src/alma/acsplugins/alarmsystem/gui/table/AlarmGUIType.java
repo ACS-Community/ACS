@@ -113,7 +113,7 @@ public enum AlarmGUIType {
 	 * 
 	 * @throws IllegalStateException If the priority of the alarm is not in range
 	 */
-	public static AlarmGUIType fromAlarm(Alarm alarm) {
+	public static AlarmGUIType fromAlarm(AlarmTableEntry alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("A null alarm can't have type!");
 		}

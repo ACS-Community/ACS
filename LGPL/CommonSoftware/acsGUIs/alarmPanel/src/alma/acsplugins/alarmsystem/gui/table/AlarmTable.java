@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.17 2009/09/28 15:28:21 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.18 2009/10/12 17:08:10 acaproni Exp $
  * @since    
  */
 
@@ -93,10 +93,12 @@ public class AlarmTable extends JTable implements ActionListener {
 	 */
 	private class AlarmTableMouseAdapter extends MouseAdapter {
 		
-		// The last selected alarm
-		//
-		// It is set when the user presses over a row (i,e. selects an alarm)
-		public Alarm selectedAlarm;
+		/**
+		 * The last selected alarm
+		 * 
+		 * It is set when the user presses over a row (i,e. selects an alarm)
+		 */
+		public AlarmTableEntry selectedAlarm;
 		/**
 		 * @see MouseListener
 		 */
@@ -554,10 +556,9 @@ public class AlarmTable extends JTable implements ActionListener {
 		if (entry==null) {
 			return emptyLbl;
 		}
-		Alarm alarm = entry.getAlarm();
 		if (col.getIdentifier().equals(AlarmTableColumn.ICON)) {
 			if (model.isRowAlarmNew(sorter.convertRowIndexToModel(rowIndex))) {
-				return AlarmGUIType.fromAlarm(alarm).flagRenderer;
+				return AlarmGUIType.fromAlarm(entry).flagRenderer;
 			} else {
 				return emptyLbl;
 			}
@@ -575,12 +576,12 @@ public class AlarmTable extends JTable implements ActionListener {
 			}
 		}
 		Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-		if (alarm.getAlarmId().equals(selectedAlarmId)) {
+		if (entry.getAlarmId().equals(selectedAlarmId)) {
 			Font f = c.getFont();
 			Font bold=f.deriveFont(Font.BOLD);
 			c.setFont(bold);
 		}
-		colorizeCell(c, alarm);
+		colorizeCell(c, entry);
 	
 		if (c instanceof JComponent) {
 			JComponent jc = (JComponent) c;
@@ -600,7 +601,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * @param c The component to color
 	 * @param priority The alarm to set the color
 	 */
-	private void colorizeCell(Component c, Alarm alarm) {
+	private void colorizeCell(Component c, AlarmTableEntry alarm) {
 		AlarmGUIType alarmType = AlarmGUIType.fromAlarm(alarm);
 		c.setForeground(alarmType.foreg);
 		c.setBackground(alarmType.backg);
