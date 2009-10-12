@@ -1,7 +1,7 @@
 2 - CORBA initialized successfully
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
-1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Starting
+1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
@@ -49,6 +49,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorEnumProp&lt;&gt;::AlarmSystemMonitorEnumProp] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] Successfully created EPTESTDEVICE1:currentStates.
@@ -77,15 +78,15 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
@@ -123,32 +124,32 @@
 3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): DISABLED (0)
 3 - ----------T--:--:--.--- [GlobalLogger - ] Setting current state to: ON
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 5
-1 - 
 3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ON (5)
+1 - 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Exit ... 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy] 
-3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ON (5)
-1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::~AlarmenumpropEventStrategy] 
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ON (5)
 1 - 
 3 - ----------T--:--:--.--- [GlobalLogger - ] Setting (non_blocking) current state to: ON
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 5
-1 - 
 3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ON (5)
+1 - 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Exit ... 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::~AlarmenumpropEventStrategy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 0
+3 - ----------T--:--:--.--- [GlobalLogger - ] Setting (async) current state to: ON
 3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ON (5)
 1 - 
-3 - ----------T--:--:--.--- [GlobalLogger - ] Setting (async) current state to: ON
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
@@ -156,9 +157,9 @@
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::setValue] Set state to: 5
 1 - 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ON (5)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::registerCallback] 
+3 - ----------T--:--:--.--- [GlobalLogger - ] Current state is (get_sync): ON (5)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 

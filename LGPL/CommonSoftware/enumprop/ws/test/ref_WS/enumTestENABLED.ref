@@ -1,7 +1,7 @@
 2 - CORBA initialized successfully
+1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Starting
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created !
 1 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
-1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Starting
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Installing signal handlers
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 1 - ----------T--:--:--.--- [GlobalLogger - ] Using ACS alarm system
@@ -33,8 +33,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOChildNode::DAOChildNode] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStates'
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStates'
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
@@ -49,6 +49,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorEnumProp&lt;&gt;::AlarmSystemMonitorEnumProp] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] Successfully created EPTESTDEVICE1:currentStates.
@@ -82,10 +83,10 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
-1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
+1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
@@ -113,8 +114,8 @@
 3 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 3 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 3 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
-3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
 3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
 3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on
 3 - ----------T--:--:--.--- [GlobalLogger - ] 2 DIAGNOSE
 3 - ----------T--:--:--.--- [GlobalLogger - ] 3 SHUTDOWN

@@ -19,8 +19,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DALChangeListenerImplementation::registerNode] 
 1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAONode::connect] 
-1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [GlobalLogger - cdb::DAOProxy::DAOProxy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::BACIComponent] Creating Component 'EPTESTDEVICE1'
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTResponseTime] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::setRTSleepTime] 
@@ -49,6 +49,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::addMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmSystemMonitorEnumProp&lt;&gt;::AlarmSystemMonitorEnumProp] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] Successfully created EPTESTDEVICE1:currentStates.
@@ -75,8 +76,8 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::actionThread - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::actionThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
@@ -113,8 +114,8 @@
 3 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
 3 - ----------T--:--:--.--- [GlobalLogger - baci::BACI_CORBA::InitCORBA] CORBA initialized successfully
 3 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
-3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
 3 - ----------T--:--:--.--- [GlobalLogger - ] 0 DISABLED     alarm_on
+3 - ----------T--:--:--.--- [GlobalLogger - ] States (7) for "currentState" are: 
 3 - ----------T--:--:--.--- [GlobalLogger - ] 1 ENABLED     alarm_on
 3 - ----------T--:--:--.--- [GlobalLogger - ] 2 DIAGNOSE
 3 - ----------T--:--:--.--- [GlobalLogger - ] 3 SHUTDOWN
@@ -129,8 +130,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::pushAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::popAction] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Exit ... 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::destroy] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Exit ... 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmenumpropEventStrategy<T, ROT, AlarmT>::~AlarmenumpropEventStrategy] 
 3 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: DISABLED (0)
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - ] enumpropTestDeviceImpl::serverShutdown
