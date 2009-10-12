@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServicesHandlerImpl.cpp,v 1.18 2009/10/06 16:09:37 msekoran Exp $"
+* "@$Id: acsServicesHandlerImpl.cpp,v 1.19 2009/10/12 14:03:15 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -548,6 +548,13 @@ ACSServicesHandlerImpl::start_acs (
 {
     bool recovery = additional_command_line && ACE_OS::strstr(additional_command_line, "-r");
     this->start_services(getServices(instance_number, false).c_str(), recovery, callback);
+
+    // set local manager reference
+    std::string host = ACSPorts::getIP();
+    std::string managerPort = ACSPorts::getManagerPort(instance_number);
+    std::string managerLocalCorbaloc = "corbaloc::" + host + ":" + managerPort + "/Manager";
+
+    this->set_manager_reference(instance_number, managerLocalCorbaloc.c_str());
 }
 
 
