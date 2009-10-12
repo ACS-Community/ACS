@@ -176,6 +176,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 */
 	public void deactivate() throws AcsJException {
 		corbaPublisher.disconnect();
+		corbaReceiver.disconnect();
         corbaPublisher.destroyNotificationChannel();
 	}
 	
