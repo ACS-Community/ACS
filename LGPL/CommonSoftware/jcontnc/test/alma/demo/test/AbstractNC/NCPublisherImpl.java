@@ -63,7 +63,7 @@ public class NCPublisherImpl
 		} catch (AcsJException ex) {
 			throw new ComponentLifecycleException(ex);
 		}
-		System.out.println("Created NC Pulisher");
+		System.out.println("Created NC Publisher");
 	}
 
     
