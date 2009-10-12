@@ -18,7 +18,7 @@ import org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 import alma.acs.eventbrowser.model.EventModel;
 
 public class DynAnyParser {
-	
+
 	private static final boolean DEBUG = false;
 	private final DynAnyFactory daFactory;
 	private DynAny dynAny = null;
@@ -46,7 +46,7 @@ public class DynAnyParser {
 	private void parseEventAny(DynAny dynAny2, String path) {
 		DynAny da = dynAny2;
 		int tcKind = da.type().kind().value();
-		ParsedAnyData entry = new ParsedAnyData(path,"","");
+		ParsedAnyData entry = new ParsedAnyData(path, "", "");
 
 		try {
 			switch (tcKind) {
@@ -58,17 +58,17 @@ public class DynAnyParser {
 				break;
 			case TCKind._tk_long:
 				entry.setType("long");
-				entry.setValue(""+da.get_long());
+				entry.setValue("" + da.get_long());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_longlong:
 				entry.setType("longlong");
-				entry.setValue(""+da.get_longlong());
+				entry.setValue("" + da.get_longlong());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_ulonglong:
 				entry.setType("ulonglong");
-				entry.setValue(""+da.get_ulonglong());
+				entry.setValue("" + da.get_ulonglong());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_string:
@@ -78,66 +78,79 @@ public class DynAnyParser {
 				break;
 			case TCKind._tk_boolean:
 				entry.setType("boolean");
-				entry.setValue(""+da.get_boolean());
+				entry.setValue("" + da.get_boolean());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_float:
 				entry.setType("float");
-				entry.setValue(""+da.get_float());
+				entry.setValue("" + da.get_float());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_double:
 				entry.setType("double");
-				entry.setValue(""+da.get_double());
+				entry.setValue("" + da.get_double());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_enum:
 				entry.setType("enum");
-				entry.setValue(((DynEnum)da).get_as_string());
+				entry.setValue(((DynEnum) da).get_as_string());
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_array:
 				entry.setType("array");
-				entry.setValue("size: "+da.component_count());
+				entry.setValue("size: " + da.component_count());
 				pdlist.add(entry);
-				int numDisplayElements = Math.min(da.component_count(),5);
+				int numDisplayElements = Math.min(da.component_count(), 5);
 				int elementType = da.type().content_type().kind().value();
 				switch (elementType) {
 				case TCKind._tk_double:
 					for (int j = 0; j < numDisplayElements; j++) {
-						String dname = path+"["+j+"]";
+						String dname = path + "[" + j + "]";
 						double value = da.current_component().get_double();
-						pdlist.add(new ParsedAnyData(dname,"double",(""+value)));
+						pdlist.add(new ParsedAnyData(dname, "double",
+								("" + value)));
 						da.next();
 					}
 					break;
-					default:
-						pdlist.add(new ParsedAnyData(path, "Unimplemented type for array: "+elementType,"Unknown"));
+				default:
+					pdlist.add(new ParsedAnyData(path,
+							"Unimplemented type for array: " + elementType,
+							"Unknown"));
 				}
 				break;
 			case TCKind._tk_struct:
 			case TCKind._tk_except:
-				DynStruct ds = (DynStruct)da;
+				DynStruct ds = (DynStruct) da;
 				String structName = ds.type().name();
-				System.out.println("Struct name: "+structName);
+				if (DEBUG)
+					System.out.println("Struct name: " + structName);
 				entry.setType("struct");
 				if (path.equals("")) {
 					entry.setName(structName);
 				} else
-					entry.setName(path+" / "+structName); // TODO: still not working -- this doesn't display Actuator Space at all!
-				
+					entry.setName(path + " / " + structName); // TODO: still not
+																// working --
+																// this doesn't
+																// display
+																// Actuator
+																// Space at all!
+
 				String members = "Members: ";
 				for (int i = 0; i < ds.component_count(); i++) {
-					members += ds.current_member_name()+((i == ds.component_count()-1) ? " ":", ");
+					members += ds.current_member_name()
+							+ ((i == ds.component_count() - 1) ? " " : ", ");
 					ds.next();
 				}
 				entry.setValue(members);
 				pdlist.add(entry);
 				ds.rewind();
-				
+
 				for (int i = 0; i < ds.component_count(); i++) {
 					String dname = ds.current_member_name();
-					System.out.println("\tMember name: "+dname+" type: "+ds.current_component().type().kind().value());
+					if (DEBUG)
+						System.out.println("\tMember name: " + dname
+								+ " type: "
+								+ ds.current_component().type().kind().value());
 					parseEventAny(ds.current_component(), dname);
 					ds.next();
 				}
@@ -150,11 +163,12 @@ public class DynAnyParser {
 					}
 				}
 				break;
-				
+
 			case TCKind._tk_sequence:
-				DynSequence dsq = (DynSequence)da;
-				String seqName = path+dsq.type().name();
-				entry.setType("sequence"+seqName); // TODO: Straighten this out
+				DynSequence dsq = (DynSequence) da;
+				String seqName = path + dsq.type().name();
+				entry.setType("sequence" + seqName); // TODO: Straighten this
+														// out
 				entry.setValue("IDL sequences not implemented yet");
 
 			default:

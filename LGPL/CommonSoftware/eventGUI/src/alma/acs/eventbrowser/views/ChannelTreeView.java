@@ -227,6 +227,11 @@ public class ChannelTreeView extends ViewPart {
 			startMonitoring();
 		}
 	}
+	
+	public TreeViewer getViewer() {
+		return viewer;
+	}
+
 
 	private void hookContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
