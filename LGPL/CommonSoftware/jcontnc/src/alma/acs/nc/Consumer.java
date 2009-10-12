@@ -24,10 +24,9 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,23 +36,24 @@ import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
-import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
-import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.container.ContainerServicesImpl;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
@@ -151,6 +151,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	
 	private AcsNcReconnectionCallback m_callback;
 
+	private final ReentrantLock disconnectLock = new ReentrantLock();
 	
 	/**
 	 * Creates a new instance of Consumer
@@ -227,11 +228,37 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		configSubscriptions();
 		configFilters();
 
-		isTraceEventsEnabled = m_helper.getChannelProperties()
-				.isTraceEventsEnabled(m_channelName);
+		isTraceEventsEnabled = m_helper.getChannelProperties().isTraceEventsEnabled(m_channelName);
+		
 		// if the factory is null, the callback is not registered
 		m_callback = new AcsNcReconnectionCallback(this);
 		m_callback.init(services, m_helper.getNotifyFactory());
+		
+		// @TODO remove this hack once NC classes are integrated into container services
+		try {
+			if (services instanceof ContainerServicesImpl) {
+				ContainerServicesImpl.CleanUpCallback cb = new ContainerServicesImpl.CleanUpCallback() {
+					@Override
+					public void containerServicesCleanUp() {
+						disconnectLock.lock();
+						try {
+							// @TODO distinguish between forgot to disconnect and failed to disconnect
+							if (m_proxySupplier != null) {
+								m_logger.warning("Looks like application code forgot to disconnect from channel " + m_channelName + " to clean up corba resources! ACS will do it now.");
+								disconnect();
+							}
+						}
+						finally {
+							disconnectLock.unlock();
+						}
+					}
+				};
+				((ContainerServicesImpl)services).registerCleanUpCallback(cb);
+			}
+		} 
+		catch (Throwable thr) {
+			m_logger.log(Level.WARNING, "Failed to set up the callback for automated resource cleanup", thr);
+		}
 	}
 	
 
@@ -782,35 +809,54 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	 * be received.
 	 */
 	public void disconnect() {
-		// do better than NPE if someone actually calls this twice
-		if (m_proxySupplier == null) {
-			throw new IllegalStateException("Consumer already disconnected");
-		}
-		
+		disconnectLock.lock();
 		try {
-			// stop receiving events
-			suspend();
-
-			// remove all filters
-			m_proxySupplier.remove_all_filters();
-
-			// remove all subscriptions
-			// DWF-fix me!
-			removeSubscription(null);
-
-			// handle notification channel cleanup
-			m_proxySupplier.disconnect_structured_push_supplier();
-			m_consumerAdmin.destroy();
-
-			// clean-up CORBA stuff
-			m_callback.disconnect();
-			getHelper().getContainerServices().deactivateOffShoot(this);
-			m_callback = null;
-			m_corbaRef = null;
-			m_consumerAdmin = null;
-			m_proxySupplier = null;
-		} catch (Exception e) {
-			m_logger.log(Level.INFO, "Failed to disconnect from NC '" + m_channelName + "'.", e);
+			// do better than NPE if someone actually calls this twice
+			if (m_proxySupplier == null) {
+				throw new IllegalStateException("Consumer already disconnected");
+			}
+			
+			try {
+				try {
+					// stop receiving events
+					suspend();
+	
+					// remove all filters
+					m_proxySupplier.remove_all_filters();
+	
+					// remove all subscriptions
+					// DWF-fix me!
+					removeSubscription(null);
+	
+					// handle notification channel cleanup
+					m_proxySupplier.disconnect_structured_push_supplier();
+					m_consumerAdmin.destroy();
+	
+					// clean-up CORBA stuff
+					m_callback.disconnect();
+					if (m_corbaRef != null) {
+						getHelper().getContainerServices().deactivateOffShoot(this);
+					}
+					m_logger.finer("Disconnected from NC '" + m_channelName + "'.");
+				}
+				catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+					// this is OK, because someone else has already destroyed the remote resources
+					m_logger.fine("Unable to release resources for channel " + m_channelName + " because the NC has been destroyed already.");
+				}
+				finally {
+					// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
+					m_callback = null;
+					m_corbaRef = null;
+					m_consumerAdmin = null;
+					m_proxySupplier = null;
+				}
+			}
+			catch (Exception ex2) {
+				m_logger.log(Level.WARNING, "Failed to disconnect from NC '" + m_channelName + "'.", ex2);
+			}
+		} 
+		finally {
+			disconnectLock.unlock();
 		}
 	}
 
@@ -824,20 +870,25 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
 	 */
 	public void suspend() {
-		
-		// do better than NPE if someone actually calls this twice
-		if (m_proxySupplier == null) {
-			throw new IllegalStateException("Consumer already disconnected");
-		}
-		
+		disconnectLock.lock();
 		try {
-			m_proxySupplier.suspend_connection();
-		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
-			// if this fails, it does not matter because the connection
-			// has already been suspended.
-		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
-			// if this fails, it does not matter because we cannot suspend
-			// a connection that isn't really connected in the first place.
+			// do better than NPE if someone actually calls this twice
+			if (m_proxySupplier == null) {
+				throw new IllegalStateException("Consumer already disconnected");
+			}
+			
+			try {
+				m_proxySupplier.suspend_connection();
+			} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
+				// if this fails, it does not matter because the connection
+				// has already been suspended.
+			} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
+				// if this fails, it does not matter because we cannot suspend
+				// a connection that isn't really connected in the first place.
+			}
+		} 
+		finally {
+			disconnectLock.unlock();
 		}
 	}
 
