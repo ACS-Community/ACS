@@ -1,5 +1,5 @@
-# $Id: platform_macros.GNU,v 1.10 2008/10/27 13:37:19 bjeram Exp $
-# VxWorks 6.6
+# $Id: platform_macros.GNU,v 1.11 2009/10/12 07:38:04 bjeram Exp $
+# VxWorks 6.7
 
 debug ?= 0
 optimize ?= 1
@@ -16,10 +16,10 @@ static_libs ?= 1
 CPPFLAGS += -DACE_USE_RCSID=1
 
 ifeq ($(VXWORKS_VERSION_FLAG),)
-  VXWORKS_VERSION_FLAG = -DACE_VXWORKS=0x660
+  VXWORKS_VERSION_FLAG = -DACE_VXWORKS=0x670
 endif # VXWORKS_VERSION_FLAG
 
-include $(ACE_ROOT)/include/makeinclude/platform_vxworks6.5.GNU
+include $(ACE_ROOT)/include/makeinclude/platform_vxworks6.6.GNU
 
 ifeq ("$(WIND_HOST_TYPE)","sun4-solaris2")
   override RM=rm -f
