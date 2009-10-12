@@ -38,6 +38,8 @@ import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceHelper;
 
+import alma.acs.util.ACSPorts;
+
 /**
  * An helper class with a set of useful methods.
  * <P>
@@ -176,10 +178,19 @@ public class AlarmServiceUtils {
 	 */
 	public AlarmService getAlarmService() throws Exception {
 		String name=alma.alarmsystem.AlarmServiceName.value;
-		NamingContext ns = getNamingContext();
-		NameComponent[] nameComponent= new NameComponent[1];
-		nameComponent[0]=new NameComponent(name,"");
-		Object alarmObj = ns.resolve(nameComponent);
+		try {
+			// try naming service first
+			NamingContext ns = getNamingContext();
+			NameComponent[] nameComponent= new NameComponent[1];
+			nameComponent[0]=new NameComponent(name,"");
+			Object alarmObj = ns.resolve(nameComponent);
+			return AlarmServiceHelper.narrow(alarmObj);
+		} catch (Throwable th) {
+			logger.info("Failed to obtain alarm service reference from naming service, trying corbaloc...");
+		}
+
+		String corbaloc = "corbaloc::" + ACSPorts.getIP() + ":" + ACSPorts.getAlarmServicePort() + "/" + name;
+		Object alarmObj = orb.string_to_object(corbaloc);
 		return AlarmServiceHelper.narrow(alarmObj);
 	}
 	
