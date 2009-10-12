@@ -277,7 +277,7 @@ public class CernSysPanel extends JPanel {
 		connecting=true;
 		connectionListener.connecting();
 		notAvaiPnl.addMessage("Connecting to the alarm service");
-		notAvaiPnl.addMessage("Instantiating teh category client");
+		notAvaiPnl.addMessage("Instantiating the category client");
 		try {
 			categoryClient = new CategoryClient(contSvc);
 		} catch (Throwable t) {
@@ -292,10 +292,11 @@ public class CernSysPanel extends JPanel {
 		/**
 		 * Try to connect to the alarm service until it becomes available
 		 */
-		notAvaiPnl.addMessage("Connecting to the categories");
 		while (true && !closed) {
+			notAvaiPnl.addMessage("Connecting to the categories");
 			try {
 				categoryClient.connect((AlarmSelectionListener)model);
+				notAvaiPnl.addMessage("CategoryClient connected");
 				// If the connection succeeded then exit the loop
 				break;
 			} catch (AcsJCannotGetComponentEx cgc) {
