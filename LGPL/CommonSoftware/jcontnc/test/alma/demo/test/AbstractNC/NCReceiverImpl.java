@@ -25,9 +25,12 @@
  */
 package alma.demo.test.AbstractNC;
 
+import java.util.logging.Logger;
+
 import alma.acs.component.ComponentImplBase;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.CorbaNotificationChannel;
+import alma.acs.nc.CorbaReceiver;
 import alma.acs.nc.Receiver;
 import alma.acsnc.EventDescription;
 import alma.demo.NCReceiverOperations;
@@ -42,27 +45,40 @@ public class NCReceiverImpl
     extends ComponentImplBase 
         implements NCReceiverOperations {
 
-    private Receiver receiver;
-    
+
+	private Receiver receiver;
+	private Logger logger;
+
     public NCReceiverImpl() {
     }
 
     public void initialize(ContainerServices containerServices) 
        throws alma.acs.component.ComponentLifecycleException {
         super.initialize(containerServices);
+        this.logger = containerServices.getLogger();
+        
         receiver = CorbaNotificationChannel.getCorbaReceiver("AbstractNC_Channel", m_containerServices);
-        System.out.println("Created NC Receiver");
+        logger.info("Created legacy CorbaReceiver for channel 'AbstractNC_Channel'");
     }
 
     public void execute() {
-        receiver.attach("alma.acsnc.EventDescription", this);
+        receiver.attach(EventDescription.class.getName(), this);
+        logger.info("Attached 'NCReceiverImpl' as receiver object for '" + EventDescription.class.getName() + "' events.");
         receiver.begin();
     }
 
+	@Override
+	public void cleanUp() {
+		// of course our receiver is a CorbaReceiver, but the old API is so messed up that we do it like this
+		if (receiver instanceof CorbaReceiver) {
+			CorbaReceiver corbaReceiver = (CorbaReceiver) receiver;
+			// check if someone else has destroyed the channel already
+			corbaReceiver.disconnect();
+		}
+		super.cleanUp();
+	}
 
     public void receive(EventDescription e) {
-        System.out.println("NC_TEST: Got temperatureDataBlockEvent in receive");
-        System.out.println("NC_TEST: "+e.name);
+        logger.info("NC_TEST: Got temperatureDataBlockEvent in receive, event=" +e.name);
     }
-
 }
