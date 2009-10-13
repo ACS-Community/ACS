@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: baciTestImpl.cpp,v 1.10 2008/10/09 09:16:35 cparedes Exp $"
+* "@(#) $Id: baciTestImpl.cpp,v 1.11 2009/10/13 10:27:19 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 #include <baciTestImpl.h>
 #include <testComponentC.h>
 
-ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.10 2008/10/09 09:16:35 cparedes Exp $")
+ACE_RCSID(acsexmpl, baciTestImpl, "$Id: baciTestImpl.cpp,v 1.11 2009/10/13 10:27:19 acaproni Exp $")
 
 using namespace baci;
 
@@ -59,7 +59,9 @@ void BaciPropTest::execute()
 	m_testPatternVar_sp->getDevIO()->write(0, timestamp);
 }
 
-/* --------------------- [ CORBA interface ] ----------------------*/
+/* --------------------- [ CORBA interface ] ----------
+ *
+ */
 ACS::ROdouble_ptr BaciPropTest::testDoubleVar () 
 {
     if (m_testDoubleVar_sp == 0)
@@ -107,6 +109,13 @@ void BaciPropTest::setPatternVar(CORBA::Long val) {
 void BaciPropTest::setEnumVar(alarmsystemPropTest::AlarmEnum val) {
 	ACS::Time timestamp;
 	m_testEnumVar_sp->getDevIO()->write(val, timestamp);
+}
+
+void  BaciPropTest::setDoubleVarComplete(CORBA::Float val, const char* faultFamily, const char* faultMember) {
+	m_testDoubleVar_sp->setAlarmFaultFamily(faultFamily);
+	m_testDoubleVar_sp->setAlarmFaultMember(faultMember);
+	ACS::Time timestamp;
+	m_testDoubleVar_sp->getDevIO()->write(val, timestamp);
 }
 
 

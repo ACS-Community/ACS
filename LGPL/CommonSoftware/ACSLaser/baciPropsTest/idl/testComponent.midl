@@ -44,6 +44,12 @@ interface BaciPropTest :  ACS::CharacteristicComponent
 		
 		// Set the value of the enum property
 		void setEnumVar(in AlarmEnum val);
+		
+		// Set the FF and FM of the property, then change its value
+		// 
+		// This method is here to test if baci generate the alarm with the
+		// passed FF and FM
+		void setDoubleVarComplete(in float val, in string faultFamily, in string faultMember);
 	
 		/**
 		 * The property to set of the limits defined in the CDB

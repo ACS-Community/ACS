@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciTestImpl.h,v 1.11 2009/06/17 21:29:54 acaproni Exp $"
+* "@(#) $Id: baciTestImpl.h,v 1.12 2009/10/13 10:27:03 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,7 +82,7 @@ class BaciPropTest: public baci::CharacteristicComponentImpl,     //Standard com
     virtual void setDoubleVar(CORBA::Float);
     virtual void setPatternVar(CORBA::Long);
     virtual void setEnumVar(alarmsystemPropTest::AlarmEnum);
-
+    virtual void setDoubleVarComplete(CORBA::Float val, const char* faultFamily, const char* faultMember);
     /**
      * Returns a reference to the double property
      */
