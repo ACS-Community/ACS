@@ -11,8 +11,8 @@ public enum StandardColors {
 	
 	TEXT_FG("333333"), // darkgray-ish
 
-	MAIN_BG("ECE9D8"), // sand-ish
-	EDITOR_BG ("F8F8F8"), // white-ish
+	MAIN_BG("F9F7F0"), // sand-ish
+	EDITOR_BG ("white"),
 	SELECTION_BG ("A0B4D2"), // blueGray-ish
 	SELECTION_NOFOCUS_BG ("lightGray"),
 
