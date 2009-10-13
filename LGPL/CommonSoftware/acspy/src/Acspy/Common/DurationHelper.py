@@ -1,4 +1,4 @@
-# @(#) $Id: DurationHelper.py,v 1.2 2005/02/23 00:04:55 dfugate Exp $
+# @(#) $Id: DurationHelper.py,v 1.3 2009/10/13 07:52:08 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -35,16 +35,18 @@ TODO:
 - EpochHelper and DurationHelper have not been fully tested yet!
 '''
 
-__revision__ = "$Id: DurationHelper.py,v 1.2 2005/02/23 00:04:55 dfugate Exp $"
+__revision__ = "$Id: DurationHelper.py,v 1.3 2009/10/13 07:52:08 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
+import sys
 import acstimeSWIG
 #--CORBA STUBS-----------------------------------------------------------------
 import acstime
 
 from ACSErrTypeCommonImpl import TypeNotFoundExImpl
 #--GLOBALS---------------------------------------------------------------------
-
+# This machine is using 64 bit integers
+PY64BIT = sys.maxint > 2**32
 #------------------------------------------------------------------------------
 class DurationHelper(acstimeSWIG.DurationHelper):
     '''
@@ -78,7 +80,7 @@ class DurationHelper(acstimeSWIG.DurationHelper):
             duration.value = value
             acstimeSWIG.DurationHelper.__init__(self, duration)
         #let them also use simple types...
-        elif isinstance(duration, long):
+        elif isinstance(duration, long) or (PY64BIT and isinstance(duration, int)):
             value = duration
             duration = acstimeSWIG.Duration()
             duration.value = value
