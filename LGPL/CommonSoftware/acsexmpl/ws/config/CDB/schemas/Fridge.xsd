@@ -17,6 +17,8 @@
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
   <xs:complexType name="Fridge">
+    <xs:complexContent>
+    <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
       <xs:element name="refTemperature" type="baci:RWdouble"/>
       <xs:element name="currTemperature" type="baci:ROdouble"/>
@@ -43,6 +45,8 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+    </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:element name="Fridge" type="Fridge"/>

@@ -16,12 +16,16 @@
   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:complexType name="MOUNT">
+    <xs:complexContent>
+    <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
       <xs:element name="cmdAz" type="baci:ROdouble"/>
       <xs:element name="cmdEl" type="baci:ROdouble"/>
       <xs:element name="actAz" type="baci:ROdouble"/>
       <xs:element name="actEl" type="baci:ROdouble"/>
     </xs:sequence>
+    </xs:extension>
+  </xs:complexContent>
   </xs:complexType>
   <xs:element name="MOUNT" type="MOUNT"/>
 </xs:schema>

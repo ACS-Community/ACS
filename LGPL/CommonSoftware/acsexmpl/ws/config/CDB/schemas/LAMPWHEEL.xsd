@@ -31,6 +31,8 @@
    </xs:complexType>
 
   <xs:complexType name="LAMPWHEEL">
+   <xs:complexContent>
+    <xs:extension base="baci:CharacteristicComponent"> 
     <xs:sequence>
       <xs:element name="position" type="baci:ROdouble"/>
       <xs:element name="desc" type="baci:ROstring"/>
@@ -38,7 +40,9 @@
       <xs:element name="Slot" type="SLOT" minOccurs="1" maxOccurs="unbounded" />
     </xs:sequence>
   <xs:attribute name="LampWheelDescription" type="xs:string" use="optional" default="UNDEFINED" />
-  <xs:attribute name="AvailableSlots" type="xs:integer" use="required" /> 
+  <xs:attribute name="AvailableSlots" type="xs:integer" use="required" />
+  </xs:extension>
+  </xs:complexContent> 
 </xs:complexType>
 
   <xs:element name="LAMPWHEEL" type="LAMPWHEEL"/>

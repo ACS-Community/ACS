@@ -21,6 +21,8 @@
   </xs:complexType>
 
     <xs:complexType name="FILTERWHEEL">
+        <xs:complexContent>
+        <xs:extension base="baci:CharacteristicComponent">
 		<xs:sequence>
 			<xs:element name="position" type="baci:ROdouble"/>
 			<xs:element name="desc" type="baci:ROstring"/>
@@ -40,6 +42,8 @@
 	
 		<xs:attribute name="FilterWheelDescription" type="xs:string" use="optional" default="UNDEFINED" />
 		<xs:attribute name="AvailableSlots" type="xs:integer" use="required" />
+		</xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
 	<xs:element name="FILTERWHEEL" type="FILTERWHEEL" />

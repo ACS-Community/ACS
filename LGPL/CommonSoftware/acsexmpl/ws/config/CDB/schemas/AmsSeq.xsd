@@ -17,12 +17,16 @@
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
   <xs:complexType name="AmsSeq">
+    <xs:complexContent>
+  <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
 
       <xs:element name="RWdoubleSeqPM" type="baci:RWdoubleSeq" />
       <xs:element name="ROdoubleSeqPM" type="baci:ROdoubleSeq" />
      
     </xs:sequence>
+    </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
   <xs:element name="AmsSeq" type="AmsSeq"/>

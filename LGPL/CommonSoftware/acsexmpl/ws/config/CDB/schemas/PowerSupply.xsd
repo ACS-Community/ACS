@@ -16,6 +16,8 @@
   <xs:import namespace="urn:schemas-cosylab-com:CDB:1.0" schemaLocation="CDB.xsd"/>
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
   <xs:complexType name="PowerSupplyType">
+  <xs:complexContent>
+  <xs:extension base="baci:CharacteristicComponent">
     <xs:sequence>
       <xs:element name="current" type="baci:RWdouble"/>
       <xs:element name="readback" type="baci:ROdouble"/>
@@ -35,6 +37,8 @@
         </xs:complexType>
       </xs:element>
     </xs:sequence>
+    </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
   <xs:element name="PowerSupply" type="PowerSupplyType"/>
 </xs:schema>
