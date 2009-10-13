@@ -19,12 +19,11 @@
 
 package alma.acs.nc.refactored;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +47,8 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 import org.omg.CosNotifyFilter.FilterNotFound;
+
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
@@ -80,12 +81,13 @@ import alma.acsnc.OSPushConsumerPOA;
  * 
  * This class is used to receive events asynchronously from notification
  * channel suppliers. 
- * Replacement of {@link Consumer}, no longer supports inheritance mode.
+ * Replacement of {@link alma.acs.nc.Consumer}, no longer supports inheritance mode.
  * 
  * @author jslopez
  */
-public class NCSubscriber extends OSPushConsumerPOA implements
-		AcsEventSubscriber, ReconnectableSubscriber {
+public class NCSubscriber <T extends IDLEntity> 
+		extends OSPushConsumerPOA 
+		implements AcsEventSubscriber<T>, ReconnectableSubscriber {
 	/**
 	 * The default maximum amount of time an event handler is given to process
 	 * event before a warning message is logged. This is used when an end-user
@@ -150,7 +152,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * Contains a list of receiver functions to be invoked when an event of a
 	 * particular type is received.
 	 */
-	protected Map<String, AcsEventSubscriber.Callback<?>> receivers = new HashMap<String, AcsEventSubscriber.Callback<?>>();
+	protected Map<String, AcsEventSubscriber.Callback<T>> receivers = new HashMap<String, AcsEventSubscriber.Callback<T>>();
 
 	/**
 	 * Contains a list of the added and removed subscriptions filters applied.
@@ -169,6 +171,9 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	private IntHolder consumerAdminID;
 
 	private IntHolder proxyID;
+	
+	private final ReentrantLock disconnectLock = new ReentrantLock();
+
 
 	/**
 	 * Creates a new instance of NCSubscriber.
@@ -239,7 +244,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 		getAdmin();
 
 		// get the proxy Supplier
-		getProxySupplier();
+		createProxySupplier();
 
 		// Little hack for testing purposes
 		// TODO: Clean this hack
@@ -288,24 +293,23 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	}
 
 	/**
-	 * Gets the proxy Supplier that will be connected to the admin.
+	 * Creates the proxy Supplier that will be connected to the admin,
+	 * and stores it in the fields {@link #proxyID} and {@link #proxySupplier}.
 	 * 
 	 * @throws AcsJException
 	 */
-	private void getProxySupplier() throws AcsJException {
+	private void createProxySupplier() throws AcsJCORBAProblemEx {
 		try {
 			proxyID = new IntHolder();
 			proxySupplier = StructuredProxyPushSupplierHelper
 					.narrow(consumerAdmin.obtain_notification_push_supplier(
 							ClientType.STRUCTURED_EVENT, proxyID));
 		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
-			Throwable cause = new Throwable(e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			throw new AcsJCORBAProblemEx(e);
 		}
 		if (proxySupplier == null) {
-			Throwable cause = new Throwable("The '" + channelName
-					+ "' channel: null proxy supplier");
-			throw new alma.ACSErrTypeJavaNative.wrappers.AcsJJavaLangEx(cause);
+			Throwable cause = new NullPointerException("The '" + channelName + "' channel: null proxy supplier");
+			throw new AcsJCORBAProblemEx(cause);
 		}
 	}
 
@@ -354,19 +358,19 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * 
 	 * The implementation cannot assume any particular event type.
 	 */
-	protected void processEvent(IDLEntity corbaData,
-			EventDescription eventDescrip) {
+	protected void processEvent(T corbaData, EventDescription eventDescrip) {
 		String eventName = corbaData.getClass().getName();
 
 		// figure out how much time this event has to be processed
-		if (!handlerTimeoutMap.containsKey(eventName))
+		if (!handlerTimeoutMap.containsKey(eventName)) {
 			// setup a timeout if it's undefined
 			handlerTimeoutMap.put(eventName, DEFAULT_MAX_PROCESS_TIME_SECONDS);
+		}
 		double maxProcessTimeSeconds = handlerTimeoutMap.get(eventName);
 
 		// Here we search the hash of registered receiver objects.
 		if (receivers.containsKey(eventName)) {
-			AcsEventSubscriber.Callback receiver = receivers.get(eventName);
+			AcsEventSubscriber.Callback<T> receiver = receivers.get(eventName);
 
 			// start timing
 			profiler.reset();
@@ -454,7 +458,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * @throws AcsJException
 	 *             Thrown if there is some CORBA problem.
 	 */
-	public <T extends IDLEntity> void addSubscription(Class<T> structClass,
+	public void addSubscription(Class<T> structClass,
 			AcsEventSubscriber.Callback<T> receiver) throws AcsJException {
 
 		// Adding the subscription to the receivers list
@@ -482,7 +486,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * @throws InvalidEventType
 	 *             Thrown if the given type is invalid.
 	 */
-	public <T extends IDLEntity> void removeSubscription(Class<T> structClass)
+	public void removeSubscription(Class<T> structClass)
 			throws AcsJException, FilterNotFound, InvalidEventType {
 
 		// Removing subscription from receivers list
@@ -562,11 +566,13 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	 * it's possible using TAO extensions.
 	 */
 	public void disconnect() {
-		if (consumerAdmin == null) {
-			throw new IllegalStateException("Consumer already disconnected");
-		}
-
+		disconnectLock.lock();
+		boolean success = false;
 		try {
+			if (consumerAdmin == null) {
+				throw new IllegalStateException("Consumer already disconnected");
+			}
+			
 			// stop receiving events
 			suspend();
 
@@ -581,24 +587,48 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 			proxySupplier.disconnect_structured_push_supplier();
 
 			// clean-up CORBA stuff
-			helper.getContainerServices().deactivateOffShoot(this);
-			corbaRef = null;
-			consumerAdmin = null;
-			proxySupplier = null;
-		} catch (Exception e) {
-			logger.log(Level.INFO, "Failed to disconnect from NC '"
-					+ channelName + "'.", e);
+			if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
+				helper.getContainerServices().deactivateOffShoot(this);
+			}
+			logger.finer("Disconnected from NC '" + channelName + "'.");
+			success = true;
+		}
+		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+			// this is OK, because someone else has already destroyed the remote resources
+			logger.fine("No need to release resources for channel " + channelName + " because the NC has been destroyed already.");
+			success = true;
+		}
+		catch (Exception ex2) {
+			logger.log(Level.WARNING, "Failed to disconnect from NC '" + channelName + "'.", ex2);
+		}
+		finally {
+			if (success) {
+				// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
+				m_callback = null;
+				corbaRef = null;
+				consumerAdmin = null;
+				proxySupplier = null;
+			}
+			disconnectLock.unlock();
 		}
 	}
 
-	/**
-	 * Used to temporarily halt receiving events of all types. If the Subscriber
-	 * has been connected already then after calling this method, incoming
-	 * events will be buffered instead of being discarded; unexpired events will
-	 * be received later, after a call to {@link #resume()}.
+	/** 
+	 * Used to temporarily halt receiving events of all types.
+	 * <p>
+	 * If the Subscriber has been connected already (method {@link #startReceivingEvents()}, 
+	 * then after calling this method, incoming events will be buffered instead of being discarded; 
+	 * unexpired events will be received later, after a call to {@link #resume()}.
+	 * <p>
+	 * This design follows CORBA NC standard, as described in 
+	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
 	 */
 	public void suspend() {
+		disconnectLock.lock();
 		try {
+			if (proxySupplier == null) {
+				throw new IllegalStateException("Consumer already disconnected");
+			}
 			proxySupplier.suspend_connection();
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
 			// if this fails, it does not matter because the connection
@@ -606,6 +636,9 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
 			// if this fails, it does not matter because we cannot suspend
 			// a connection that isn't really connected in the first place.
+		}
+		finally {
+			disconnectLock.unlock();
 		}
 	}
 
@@ -726,46 +759,41 @@ public class NCSubscriber extends OSPushConsumerPOA implements
 	/**
 	 * This method is called each time an event is received.
 	 * 
-	 * @TODO Make sure this method is final
 	 * @param structuredEvent
 	 *            The structured event sent by a supplier.
 	 * @throws Disconnected
 	 * 
 	 * @see org.omg.CosNotifyComm.StructuredPushConsumerOperations#push_structured_event(org.omg.CosNotification.StructuredEvent)
 	 */
-	public void push_structured_event(StructuredEvent structuredEvent)
+	public final void push_structured_event(StructuredEvent structuredEvent)
 			throws Disconnected {
-		EventDescription eDescrip = EventDescriptionHelper
-				.extract(structuredEvent.remainder_of_body);
+		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
-		Object convertedAny = anyAide
-				.complexAnyToObject(structuredEvent.filterable_data[0].value);
+		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
 		IDLEntity struct = null;
 		try {
 			struct = (IDLEntity) convertedAny;
 
 			if (isTraceNCEventsEnabled)
-				LOG_NC_EventReceive_OK
-						.log(
+				LOG_NC_EventReceive_OK.log(
 								logger,
 								channelName,
 								getNotificationFactoryName(),
 								structuredEvent.header.fixed_header.event_type.type_name);
-		} catch (ClassCastException e) {
+		} 
+		catch (ClassCastException e) {
 			if (isTraceNCEventsEnabled && convertedAny != null)
-				LOG_NC_EventReceive_FAIL
-						.log(
+				LOG_NC_EventReceive_FAIL.log(
 								logger,
 								channelName,
 								getNotificationFactoryName(),
 								structuredEvent.header.fixed_header.event_type.type_name);
-
 		}
 
 		if (struct != null) {
 			// process the extracted data
-			processEvent(struct, eDescrip);
+			processEvent((T)struct, eDescrip);
 		} else {
 			// @todo (HSO) unclear why we ignore events w/o data attached. At
 			// least now we log it so people can complain.
