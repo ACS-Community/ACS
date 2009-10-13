@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.24 2009/10/12 17:08:10 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.25 2009/10/13 09:17:50 acaproni Exp $
  * @since    
  */
 
@@ -184,7 +184,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * The queue of alarms received from the <code>CategoryClient</code> that will be
 	 * injected in the table
 	 */
-	private LinkedBlockingQueue<Alarm> queue = new LinkedBlockingQueue<Alarm>(QUEUE_SIZE);
+	private LinkedBlockingQueue<AlarmTableEntry> queue = new LinkedBlockingQueue<AlarmTableEntry>(QUEUE_SIZE);
 	
 	/**
 	 * The semaphore used to pause the thread
@@ -242,12 +242,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public synchronized void onAlarm(Alarm alarm) {
 		//System.out.println("Alarm received: <"+alarm.getAlarmId()+">");
 		//System.out.println("\tisNodeChild="+alarm.isNodeChild()+". isNodeParent="+alarm.isNodeParent());
+		AlarmTableEntry tableEntry = new AlarmTableEntry(alarm);
 		// Add the alarm to the queue
 		if (waitIfQueueFull) {
 			// Wait if the queue is full
 			while (!terminateThread) {
 				try {
-					queue.put(alarm);
+					queue.put(tableEntry);
 				} catch (InterruptedException e) {
 					continue;
 				}
@@ -255,14 +256,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			}
 		} else {
 			// Does not care if the queue is full
-			queue.offer(alarm);
+			queue.offer(tableEntry);
 		}
 	}
 	
 	/**
 	 * @param alarm The alarm to add
 	 */
-	private void addAlarm(Alarm alarm) {
+	private void addAlarm(AlarmTableEntry alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
@@ -271,9 +272,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			return;
 		}
 		
-		AlarmTableEntry newEntry=new AlarmTableEntry(alarm);
 		try {
-			items.add(newEntry);
+			items.add(alarm);
 		} catch (Exception e) {
 			System.err.println("Error adding an alarm: "+e.getMessage());
 			e.printStackTrace(System.err);
@@ -284,7 +284,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		counters.get(newEntry.getAlarmType()).incCounter();
+		counters.get(alarm.getAlarmType()).incCounter();
 	}
 	
 	/**
@@ -501,7 +501,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @return The string to display in the cell
 	 */
 	public Object getCellContent(int rowIndex, int columnIndex) {
-		Alarm alarm=getAlarmAt(rowIndex);
+		AlarmTableEntry alarm=getAlarmAt(rowIndex);
 		
 		AlarmTableColumn col = AlarmTableColumn.values()[columnIndex];
 		switch (col) {
@@ -759,7 +759,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public void run() {
 		// Get an alarm out of the queue
 		while (!terminateThread) {
-			Alarm alarm;
+			AlarmTableEntry alarm;
 			
 			// Get an alarm from the queue waiting until an alarm
 			// is available
@@ -808,7 +808,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 					counters.get(removedAlarm.getAlarmType()).decCounter();
 				}
 				if (items.contains(alarm.getAlarmId())) {
-					replaceAlarm(new AlarmTableEntry(alarm));
+					replaceAlarm(alarm);
 				} else {
 					addAlarm(alarm);
 				}
