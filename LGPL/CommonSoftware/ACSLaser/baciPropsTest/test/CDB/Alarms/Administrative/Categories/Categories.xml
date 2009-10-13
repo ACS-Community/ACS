@@ -5,7 +5,9 @@
   <category is-default="true" path="CATEGORY1">
     <description>Test category 1</description>
     <alarms>
-      <FaultFamily>TEST</FaultFamily>
+      <FaultFamily>BACIProperty</FaultFamily>
+      <FaultFamily>TestFF</FaultFamily>
+      <FaultFamily>AnotherFF</FaultFamily>
     </alarms>
   </category>
 </categories>
