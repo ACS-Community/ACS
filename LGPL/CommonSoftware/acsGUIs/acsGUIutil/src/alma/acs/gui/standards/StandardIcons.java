@@ -11,20 +11,31 @@ public enum StandardIcons {
 
 	 START ("play.gif")
 	,STOP ("stop.gif")
-	,CANCEL ("cross_red.gif")
-	,APPROVE ("checkbox_on.gif")
-	,DISMISS ("cross_black.gif")
 	,PAUSE ("pause.gif")
 	,RESUME ("resume.gif")
+
+	,CANCEL ("cross_red.gif")
+	,CANCEL_INACTIVE ("cross_gray.gif")
+	,APPROVE ("checkbox_on.gif")
+	,DISMISS ("cross_black.gif")
+	
 	,UNKNOWN ("questionmark.gif")
 	,WARNING ("warning.gif")
 	,WARNING_INACTIVE ("warning_gray.gif")
 	,IDEA ("bulb_yellow.gif")
 	,IDEA_INACTIVE ("bulb_gray.gif")
-	,DOT_GRAY ("dot_gray.gif")
-	,DOT_GREEN ("dot_green.gif")
-	,DOT_RED ("dot_red.gif")
-	,DOT_YELLOW ("dot_yellow.gif")
+	,LOCK ("lock.gif")
+	,TRASH ("trash.gif")
+
+	,LEFTWARD("arrow_left_yellow.gif")
+	,RIGHTWARD("arrow_right_yellow.gif")
+	,UPWARD("arrow_up_yellow.gif")
+	,DOWNWARD("arrow_down_yellow.gif")
+	
+	,DOT_GRAY ("bubble_gray.gif")
+	,DOT_GREEN ("checkmark.gif")
+	,DOT_RED ("errorstate.gif")
+	,DOT_YELLOW ("triangle.gif")
 	;
 
 	/**
