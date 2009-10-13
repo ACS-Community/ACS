@@ -18,7 +18,7 @@ baci::AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispa
 {
     ACS_TRACE("baci::AlarmSystemMonitor&lt;&gt;::AlarmSystemMonitor");
 
-  
+#ifndef MAKE_VXWORKS
     try
     {
     	//here we have access to the property so we can set several things
@@ -46,6 +46,7 @@ baci::AlarmSystemMonitor<TPROP>::AlarmSystemMonitor(TPROP * property, EventDispa
     	 */
     	throw;
     }//try-catch
+#endif
 
 //    subscribe to event dispatcher
     eventDispatcher_mp->subscribe(this);
