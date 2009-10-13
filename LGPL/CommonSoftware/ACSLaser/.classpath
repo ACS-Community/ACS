@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="acs-jms/src"/>
+	<classpathentry kind="src" path="alarmPanel/test"/>
 	<classpathentry kind="src" path="baciPropsTest/src"/>
 	<classpathentry kind="src" path="baciPropsTest/test"/>
 	<classpathentry kind="src" path="alarm-clients/src"/>
@@ -61,20 +62,18 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/AcsAlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsGUIutil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="/ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry kind="lib" path="laser-core/lib/AlarmSystem.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/acsAlarmService.jar"/>
 	<classpathentry kind="var" path="ACSROOT"/>
 	<classpathentry kind="var" path="INTROOT"/>
 	<classpathentry kind="var" path="JACORB_HOME"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsAlarmService.jar"/>
+	<classpathentry kind="lib" path="baciPropsTest/lib/baciAlTest.jar"/>
 	<classpathentry kind="output" path="alarmPanel/object/alarmPanel"/>
 </classpath>
