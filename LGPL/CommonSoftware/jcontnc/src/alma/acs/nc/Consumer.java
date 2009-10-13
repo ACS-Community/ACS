@@ -810,52 +810,50 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	 */
 	public void disconnect() {
 		disconnectLock.lock();
+		boolean success = false;
 		try {
 			// do better than NPE if someone actually calls this twice
 			if (m_proxySupplier == null) {
 				throw new IllegalStateException("Consumer already disconnected");
 			}
-			
-			try {
-				try {
-					// stop receiving events
-					suspend();
-	
-					// remove all filters
-					m_proxySupplier.remove_all_filters();
-	
-					// remove all subscriptions
-					// DWF-fix me!
-					removeSubscription(null);
-	
-					// handle notification channel cleanup
-					m_proxySupplier.disconnect_structured_push_supplier();
-					m_consumerAdmin.destroy();
-	
-					// clean-up CORBA stuff
-					m_callback.disconnect();
-					if (m_corbaRef != null) {
-						getHelper().getContainerServices().deactivateOffShoot(this);
-					}
-					m_logger.finer("Disconnected from NC '" + m_channelName + "'.");
-				}
-				catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
-					// this is OK, because someone else has already destroyed the remote resources
-					m_logger.fine("Unable to release resources for channel " + m_channelName + " because the NC has been destroyed already.");
-				}
-				finally {
-					// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
-					m_callback = null;
-					m_corbaRef = null;
-					m_consumerAdmin = null;
-					m_proxySupplier = null;
-				}
+			// stop receiving events
+			suspend();
+
+			// remove all filters
+			m_proxySupplier.remove_all_filters();
+
+			// remove all subscriptions
+			// DWF-fix me!
+			removeSubscription(null);
+
+			// handle notification channel cleanup
+			m_proxySupplier.disconnect_structured_push_supplier();
+			m_consumerAdmin.destroy();
+
+			// clean-up CORBA stuff
+			m_callback.disconnect();
+			if (m_corbaRef != null) {
+				getHelper().getContainerServices().deactivateOffShoot(this);
 			}
-			catch (Exception ex2) {
-				m_logger.log(Level.WARNING, "Failed to disconnect from NC '" + m_channelName + "'.", ex2);
-			}
-		} 
+			m_logger.finer("Disconnected from NC '" + m_channelName + "'.");
+			success = true;
+		}
+		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+			// this is OK, because someone else has already destroyed the remote resources
+			m_logger.fine("No need to release resources for channel " + m_channelName + " because the NC has been destroyed already.");
+			success = true;
+		}
+		catch (Exception ex2) {
+			m_logger.log(Level.WARNING, "Failed to disconnect from NC '" + m_channelName + "'.", ex2);
+		}
 		finally {
+			if (success) {
+				// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
+				m_callback = null;
+				m_corbaRef = null;
+				m_consumerAdmin = null;
+				m_proxySupplier = null;
+			}
 			disconnectLock.unlock();
 		}
 	}
