@@ -305,13 +305,13 @@ public class AlarmsContainer {
 	 * @param newAlarm The not null new alarm 
 	 * @throws AlarmContainerException if the entry is not in the container
 	 */
-	public synchronized void replace(Alarm newAlarm) throws AlarmContainerException {
+	public synchronized void replace(AlarmTableEntry newAlarm) throws AlarmContainerException {
 		if (newAlarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
 		int pos = index.indexOf(newAlarm.getAlarmId());
 		if (pos<0) {
-			throw new AlarmContainerException("Entry no present in the container");
+			throw new AlarmContainerException("Entry not present in the container");
 		}
 		AlarmTableEntry entry = entries.get(newAlarm.getAlarmId());
 		if (entry==null) {

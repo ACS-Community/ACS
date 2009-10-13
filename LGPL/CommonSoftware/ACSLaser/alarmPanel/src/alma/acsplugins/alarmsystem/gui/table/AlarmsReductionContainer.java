@@ -107,7 +107,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * 
 	 * @param entry The not <code>null</code> entry to hide active children
 	 */
-	private void hideReducedChildren(Alarm entry) {
+	private void hideReducedChildren(AlarmTableEntry entry) {
 		if (entry==null) {
 			throw new IllegalArgumentException("The entry can't be null");
 		}
@@ -233,7 +233,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 * @param alarm The alarm whose active children must be displayed
 	 * @param pos The position in the table where the active children must be shown
 	 */
-	private void showActiveChildren(Alarm alarm, int pos) {
+	private void showActiveChildren(AlarmTableEntry alarm, int pos) {
 		if (categoryClient==null) {
 			return;
 		}
