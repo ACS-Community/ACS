@@ -132,7 +132,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 		Alarm al = TestAlarm.generateRndAlarm("EXCEPTION");
 		boolean exceptionOccurred=false;
 		try {
-			container.remove(al);
+			container.remove(new AlarmTableEntry(al));
 		} catch (AlarmContainerException e) {
 			exceptionOccurred=true;
 		}
@@ -142,7 +142,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 		int sz = CONTAINER_SIZE/2;
 		int reducedToRemove=notReduced;
 		for (Alarm removedAlarm: alarms) {
-			container.remove(removedAlarm);
+			container.remove(new AlarmTableEntry(removedAlarm));
 			sz--;
 			if (!removedAlarm.getStatus().isReduced()) {
 				reducedToRemove--;
@@ -225,7 +225,7 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 			assertEquals(notReduced-1, container.size(true));
 		}
 		// Check if removed alarms was the oldest alarm
-		assertEquals(alarms.get(0).getAlarmId(), removedEntry.getAlarm().getAlarmId());
+		assertEquals(alarms.get(0).getAlarmId(), removedEntry.getAlarmId());
 	}
 	
 	/**
@@ -251,10 +251,10 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(newAlarm);
+		container.replace(new AlarmTableEntry(newAlarm));
 		AlarmTableEntry entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
 		
 		// replace the LAST alarm with another one changing the
 		// active attribute
@@ -267,10 +267,10 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(newAlarm);
+		container.replace(new AlarmTableEntry(newAlarm));
 		entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
 		
 		// replace a middle-list alarm with another one changing the
 		// active attribute
@@ -283,10 +283,10 @@ public class AlarmContainerTest extends ComponentClientTestCase {
 				!alarmToReplace.getStatus().isActive(),
 				alarmToReplace.getStatus().isMasked(),
 				alarmToReplace.getStatus().isReduced());
-		container.replace(newAlarm);
+		container.replace(new AlarmTableEntry(newAlarm));
 		entry = container.get(newAlarm.getAlarmId());
-		assertEquals(newAlarm.getAlarmId(), entry.getAlarm().getAlarmId());
-		assertEquals(newAlarm.getStatus().isActive(), entry.getAlarm().getStatus().isActive());
+		assertEquals(newAlarm.getAlarmId(), entry.getAlarmId());
+		assertEquals(newAlarm.getStatus().isActive(), entry.getStatus().isActive());
 	}
 	
 	/**
