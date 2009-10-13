@@ -32,12 +32,11 @@ import alma.acsnc.EventDescription;
  * 
  * @author jslopez
  */
-public interface AcsEventSubscriber {
-	public <T extends IDLEntity> void addSubscription(Class<T> structClass,
-			Callback<T> receiver) throws AcsJException;
+public interface AcsEventSubscriber <T extends IDLEntity> {
+	public void addSubscription(Class<T> structClass, Callback<T> receiver) throws AcsJException;
 
-	public <T extends IDLEntity> void removeSubscription(Class<T> structClass) throws AcsJException,
-	FilterNotFound, InvalidEventType;
+	public void removeSubscription(Class<T> structClass) 
+		throws AcsJException, FilterNotFound, InvalidEventType;
 
 	public void startReceivingEvents() throws AcsJException;
 	
@@ -55,7 +54,7 @@ public interface AcsEventSubscriber {
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
 	 */
-	public static interface Callback<T extends IDLEntity> {
+	public static interface Callback<T> {
 		public void receive(T event, EventDescription eventDescrip);
 	}
 	
