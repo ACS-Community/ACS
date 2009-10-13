@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2008/03/26 13:56:16 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.5 2009/10/13 10:28:25 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -102,7 +102,12 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = baciPropsTATPrologue baciDoublePropTest baciEnumPropTest baciPatternPropTest 
+PY_SCRIPTS_L       = \
+					baciPropsTATPrologue \
+					baciDoublePropTest \
+					baciEnumPropTest \
+					baciPatternPropTest \
+					baciDoublePropCompleteTest 
 
 PY_MODULES         =
 PY_MODULES_L       =
