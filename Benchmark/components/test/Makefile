@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2008/02/05 13:34:12 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.27 2009/10/14 11:33:21 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -241,7 +241,7 @@ endif
 #
 # TARGETS
 # -------
-all:	fix_xml do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
@@ -269,7 +269,4 @@ clean_dbm:
 	$(RM) ../doc/compMethod.dbm
 	$(RM) ../doc/compBulkData.dbm
 
-# Temporary target, to deal with changes for Manager.xml introduced with ACS 7.0
-fix_xml :
-	$(AT)cp -f CDB/MACI/Managers/Manager/Manager.xml_$(ACS_VERSION) CDB/MACI/Managers/Manager/Manager.xml
 #___oOo___
