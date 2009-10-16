@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.44 2009/10/07 15:11:56 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.45 2009/10/16 14:01:23 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -62,7 +62,7 @@
 #------------------------------------------------------------------------
 
 USER_CFLAGS =
-USER_LIB = -lACE -lTAO -lTAO_DynamicAny
+USER_LIB = -lACE -lTAO -lTAO_DynamicAny -lTAO_PortableServer
 USER_INC = 
 
 # Program to build
