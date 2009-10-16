@@ -1203,6 +1203,7 @@ public class TabPanel extends JPanel {
 					flowDialog.prepareShow("Starting Acs", remoteServicesDaemonFlowPanel);
 					master.controller.executeAcs.startRemoteDemonic(master.giveOutputListener("Acs"));
 					managerStarted();
+					break;
 
 				case ModeType.JAVA_TYPE :
 					// --- trigger two steps (code is a duplicate of the single actions)
