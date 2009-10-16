@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainer.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: maciContainer.cpp,v 1.17 2009/10/16 12:51:28 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,6 +62,7 @@
 #include <vltPort.h>
 #include <maciContainer.h>
 #include <maciHelper.h>
+#include <lokiSingleton.h>
 
 #ifdef MAKE_VXWORKS
 #	include "rebootLib.h"
@@ -73,7 +74,7 @@ int g_containerShutdownAction = 0;
 
  using namespace maci;
 
-ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.16 2006/09/01 02:20:54 cparedes Exp $")
+ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.17 2009/10/16 12:51:28 javarias Exp $")
 
 volatile bool shutting_down = false;
 
@@ -121,7 +122,10 @@ int main(int argc, char *argv[])
   ACE_OS::signal(SIGTERM, TerminationSignalHandler);  // termination request
 
 
-  ContainerImpl &container = *ACE_Singleton<ContainerImpl, ACE_Null_Mutex>::instance();
+//  ContainerImpl &container = *ACE_Singleton<ContainerImpl, ACE_Null_Mutex>::instance();
+  ContainerImpl &container = Loki::SingletonHolder<ContainerImpl,
+					 Loki::CreateUsingNew,
+					 Loki::PhoenixSingleton>::Instance();
 
   // while (container.getShutdownAction() == CONTAINER_RELOAD)
 

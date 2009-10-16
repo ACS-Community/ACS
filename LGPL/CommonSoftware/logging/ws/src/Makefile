@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.64 2009/06/03 23:16:28 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.65 2009/10/16 12:51:28 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -121,14 +121,14 @@ baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
 ##
 ##baselogging_LDFLAGS =   -lTAO_PortableServer
 ##baselogging_LIBS =    loki acsutil
-baselogging_LIBS =    loki
-baselogging_LDFLAGS = 	-lloki -ggdb
+baselogging_LIBS =    acsutil
+baselogging_LDFLAGS = -lACE -lTAO -lTAO_PortableServer -lloki -ggdb
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler 
 logging_LIBS    =	baselogging 
-logging_LDFLAGS =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
+logging_LDFLAGS =	-lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
 			            -lTAO_CosTrading -lTAO_DynamicAny \
                         -lTAO_CosNotification -lTAO_CosNotification_Serv \
