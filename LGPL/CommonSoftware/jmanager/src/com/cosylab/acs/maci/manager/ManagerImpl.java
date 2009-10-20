@@ -5843,7 +5843,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				h = components.next(h);
 			}
 		}
-
+		
 		// if we have to reactivate a dynamic component,
 		// then reread info from existing component info
 		// and do not touch CDB
@@ -5958,7 +5958,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				keepAliveTime = RELEASE_IMMEDIATELY;
 			}
 		}
-		 
+
+		// read impl. language.
+		DAOProxy dao = getComponentsDAOProxy();
+		String componentImplLang = null;
+		if (dao != null)
+		{
+			// silent read
+			componentImplLang = readStringCharacteristics(dao, name+"/ImplLang", true);
+		}
+
+		
 		// if requestor did not request activation we are finished
 		if (!activate)
 		{
@@ -6018,6 +6028,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				logger.log(Level.SEVERE, "Container '"+containerName+"' required by component '"+name+"' is not logged in.",bcex);
 				status.setStatus(ComponentStatus.COMPONENT_NOT_ACTIVATED);
 				throw bcex;
+			}
+		}
+		
+		// check container vs component ImplLang
+		ImplementationLanguage containerImplLang = containerInfo.getImplLang();
+		if (containerImplLang != null && containerImplLang != ImplementationLanguage.not_specified) {
+			if (componentImplLang != null && !componentImplLang.equals(containerImplLang.name()))
+			{
+				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx();
+				logger.log(Level.WARNING, "Component and container implementation language do not match (" + componentImplLang + " != " + containerImplLang.name() + ")", af);
+				throw af;
 			}
 		}
 
