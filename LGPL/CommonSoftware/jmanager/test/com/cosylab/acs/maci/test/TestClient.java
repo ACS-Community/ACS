@@ -92,7 +92,7 @@ public class TestClient implements Client
 	 */
 	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
 	{
-		return new AuthenticationData("", type, ImplLang.java, recover, System.currentTimeMillis(), executionId);
+		return new AuthenticationData("", type, ImplLang.cpp, recover, System.currentTimeMillis(), executionId);
 	}
 
 	/**
