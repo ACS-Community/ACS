@@ -2636,6 +2636,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// new container
 			if (h == 0)
 			{
+				long pingInterval = 0;
                 DAOProxy dao = getContainersDAOProxy();
                 if (dao != null)
                 {
@@ -2647,11 +2648,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						npe.setProtectedResource(name);
 						throw npe;
                 	}
-                	containerInfo.setImplLang(reply.getImplLang());
                 	
-                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true)*1000;
-                	if (pingInterval >= 1000)	// safety limit
-                		containerInfo.setPingInterval(pingInterval);
+                	pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true)*1000;
                 }
 
                 // allocate new handle
@@ -2674,7 +2672,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container, containerPingInterval);
+
+				containerInfo.setImplLang(reply.getImplLang());
+            	if (pingInterval >= 1000)	// safety limit
+            		containerInfo.setPingInterval(pingInterval);
+
+				
 				clientInfo = containerInfo.createClientInfo();
+
 
 				// register container to the heartbeat manager
 				PingTimerTask task = new PingTimerTask(this, logger, clientInfo, alarmSource);
