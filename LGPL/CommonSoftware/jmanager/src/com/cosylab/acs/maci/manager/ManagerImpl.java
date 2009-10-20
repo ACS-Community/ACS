@@ -2644,7 +2644,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 	ImplLang configuredImplLang = ImplLang.fromString(impLang);
                 	if (configuredImplLang != ImplLang.not_specified && configuredImplLang != reply.getImplLang()) {
 						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
-						npe.setReason("Rejecting container login, container reported '" + name + "' implementation language, but configured '" + configuredImplLang + "'.");
+						npe.setReason("Rejecting container login, container reported '" + reply.getImplLang() + "' implementation language, but configured '" + configuredImplLang + "'.");
 						npe.setProtectedResource(name);
 						throw npe;
                 	}
