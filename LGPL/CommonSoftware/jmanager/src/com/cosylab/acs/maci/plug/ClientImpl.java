@@ -44,7 +44,7 @@ public class ClientImpl implements Client
 	 */
 	public AuthenticationData authenticate(long executionId, String question) throws RemoteException
 	{
-		return new AuthenticationData("", ClientType.CLIENT, ImplLang.JAVA, true, System.currentTimeMillis(), executionId);
+		return new AuthenticationData("", ClientType.CLIENT, ImplLang.java, true, System.currentTimeMillis(), executionId);
 	}
 
 	/**

@@ -6,7 +6,6 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/prevayler-1.02.001.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cosyicons.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/icons.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
@@ -23,7 +22,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

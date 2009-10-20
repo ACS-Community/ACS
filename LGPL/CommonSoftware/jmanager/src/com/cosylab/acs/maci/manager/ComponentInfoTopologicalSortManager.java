@@ -24,6 +24,7 @@ import com.cosylab.acs.maci.RemoteException;
 /**
  * Manages TS.
  */
+@SuppressWarnings("unchecked")
 public class ComponentInfoTopologicalSortManager implements Runnable {
 	
 	/**

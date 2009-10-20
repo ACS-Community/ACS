@@ -14,6 +14,7 @@ import com.cosylab.acs.maci.HandleConstants;
 /**
  * An implementation of topological sort operating on <code>ComponentInfo</code> handle data store.
  */
+@SuppressWarnings("unchecked")
 public class ComponentInfoTopologicalSort {
 	
 	/**

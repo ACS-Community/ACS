@@ -112,11 +112,11 @@ public class ClientProxyImpl extends ClientPOA
 	{
 		switch (type)
 		{
-			case JAVA:
+			case java:
 				return ImplLangType.JAVA;
-			case CPP:
+			case cpp:
 				return ImplLangType.CPP;
-			case PYTHON:
+			case py:
 				return ImplLangType.PYTHON;
 			default:
 				throw new IllegalArgumentException("unsupported implementation language type");

@@ -82,6 +82,7 @@ import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.HandleHelper;
+import com.cosylab.acs.maci.ImplLang;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.MessageType;
@@ -93,7 +94,6 @@ import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
 import com.cosylab.acs.maci.TimeoutRemoteException;
 import com.cosylab.acs.maci.Transport;
-import com.cosylab.acs.maci.ContainerInfo.ImplementationLanguage;
 import com.cosylab.acs.maci.loadbalancing.LoadBalancingStrategy;
 import com.cosylab.acs.maci.manager.app.ManagerContainerServices;
 import com.cosylab.acs.maci.manager.recovery.AdministratorCommandAllocate;
@@ -140,6 +140,7 @@ import com.cosylab.util.WildcharMatcher;
  * @version	@@VERSION@@
  * @see		Manager
  */
+@SuppressWarnings("unchecked")
 public class ManagerImpl extends AbstractPrevalentSystem implements Manager, HandleConstants
 {
 	/**
@@ -2635,7 +2636,25 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// new container
 			if (h == 0)
 			{
-				// allocate new handle
+                DAOProxy dao = getContainersDAOProxy();
+                if (dao != null)
+                {
+                	String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
+                	ImplLang configuredImplLang = ImplLang.fromString(impLang);
+                	if (configuredImplLang != ImplLang.not_specified && configuredImplLang != reply.getImplLang()) {
+						AcsJNoPermissionEx npe = new AcsJNoPermissionEx();
+						npe.setReason("Rejecting container login, container reported '" + name + "' implementation language, but configured '" + configuredImplLang + "'.");
+						npe.setProtectedResource(name);
+						throw npe;
+                	}
+                	containerInfo.setImplLang(reply.getImplLang());
+                	
+                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true)*1000;
+                	if (pingInterval >= 1000)	// safety limit
+                		containerInfo.setPingInterval(pingInterval);
+                }
+
+                // allocate new handle
 				// !!! ACID 2
 				Integer objHandle = (Integer)executeCommand(new ContainerCommandAllocate());
 				int handle;
@@ -2655,16 +2674,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			    
 				// create new container info
 				containerInfo = new TimerTaskContainerInfo(h, name, container, containerPingInterval);
-                DAOProxy dao = getContainersDAOProxy();
-                if (dao != null)
-                {
-                	String impLang = readStringCharacteristics(dao, name + "/ImplLang", true);
-                	containerInfo.setImplLang(impLang);
-                	
-                	long pingInterval = readLongCharacteristics(dao, name + "/PingInterval", -1, true)*1000;
-                	if (pingInterval >= 1000)	// safety limit
-                		containerInfo.setPingInterval(pingInterval);
-                }
 				clientInfo = containerInfo.createClientInfo();
 
 				// register container to the heartbeat manager
@@ -2715,7 +2724,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void containerPostLoginActivation(final ContainerInfo containerInfo, boolean recoverContainer)
 	{
 		// give containers some time to fully initialize
-        if(containerInfo.getImplLang() == ImplementationLanguage.cpp || containerInfo.getImplLang() == ImplementationLanguage.not_specified){
+        if(containerInfo.getImplLang() == ImplLang.cpp || containerInfo.getImplLang() == ImplLang.not_specified){
             try
             {
                 Thread.sleep(3000);
@@ -6032,9 +6041,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 		
 		// check container vs component ImplLang
-		ImplementationLanguage containerImplLang = containerInfo.getImplLang();
-		if (containerImplLang != null && containerImplLang != ImplementationLanguage.not_specified) {
-			if (componentImplLang != null && !componentImplLang.equals(containerImplLang.name()))
+		ImplLang containerImplLang = containerInfo.getImplLang();
+		if (containerImplLang != null && containerImplLang != ImplLang.not_specified) {
+			if (componentImplLang != null && ImplLang.fromString(componentImplLang) != containerImplLang)
 			{
 				AcsJCannotGetComponentEx af = new AcsJCannotGetComponentEx();
 				logger.log(Level.WARNING, "Component and container implementation language do not match (" + componentImplLang + " != " + containerImplLang.name() + ")", af);
@@ -7086,7 +7095,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				// check if container has logged in
 				ContainerInfo info = getContainerInfo(containerName);
 				if (info != null) {
-					info.setImplLang(impLang);
 					return info;
 				}
 				waitTime = waitTime - (int)(System.currentTimeMillis() - start);

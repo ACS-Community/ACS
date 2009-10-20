@@ -41,16 +41,9 @@ public class ContainerInfo implements Serializable
 	private IntArray components;
 
     /**
-     * Enum of the implementation languages
-     */    
-    public enum ImplementationLanguage{
-        cpp, java, py, not_specified
-    }
-
-    /**
      * Manage the implementation language name
      */
-    private ImplementationLanguage ImplLang;
+    private ImplLang implLang;
     
     /**
      * Ping interval in ms.
@@ -75,7 +68,7 @@ public class ContainerInfo implements Serializable
 		this.container = container;
 		this.pingInterval = pingInterval;
 		this.components = new IntArray();
-        this.ImplLang = ImplementationLanguage.not_specified;
+        this.implLang = ImplLang.not_specified;
 	}
 
 	/**
@@ -107,11 +100,11 @@ public class ContainerInfo implements Serializable
 
 	/**
 	 * Returns the implementation language.
-	 * @return ImplementationLanguage
+	 * @return ImplLang
 	 */
-	public ImplementationLanguage getImplLang()
+	public ImplLang getImplLang()
 	{
-		return ImplLang;
+		return implLang;
 	}
 
 	/**
@@ -127,26 +120,10 @@ public class ContainerInfo implements Serializable
 	 * Sets the implementation language.
 	 * @param container The language to set
 	 */
-	public void setImplLang(String ImplLang)
+	public void setImplLang(ImplLang implLang)
 	{
-        if(ImplLang == null){
-            this.ImplLang = ImplementationLanguage.not_specified;
-            return;
-        }
-        if(ImplLang.equals("cpp")){
-            this.ImplLang = ImplementationLanguage.cpp;
-            return;
-        }
-        if(ImplLang.equals("java")){
-            this.ImplLang = ImplementationLanguage.java;
-            return;
-        }
-        if(ImplLang.equals("py")){
-            this.ImplLang = ImplementationLanguage.py;
-            return;
-        }
-        this.ImplLang = ImplementationLanguage.not_specified;
-    }
+		this.implLang = implLang;
+	}
 
 	/**
 	 * Sets the container.

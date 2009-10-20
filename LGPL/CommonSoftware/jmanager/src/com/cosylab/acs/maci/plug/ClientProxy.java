@@ -88,11 +88,11 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 	public static ImplLang toImplLang(si.ijs.maci.ImplLangType type)
 	{
 		if (type == si.ijs.maci.ImplLangType.JAVA)
-			return ImplLang.JAVA;
+			return ImplLang.java;
 		else if (type == si.ijs.maci.ImplLangType.CPP)
-			return ImplLang.CPP;
+			return ImplLang.cpp;
 		else if (type == si.ijs.maci.ImplLangType.PYTHON)
-			return ImplLang.PYTHON;
+			return ImplLang.py;
 		else
 			throw new IllegalArgumentException("unsupported implementation language type");
 	}
