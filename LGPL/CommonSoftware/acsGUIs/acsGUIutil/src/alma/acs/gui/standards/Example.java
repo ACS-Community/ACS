@@ -89,7 +89,7 @@ public class Example {
 	JComponent createWidget (String message) {
 		JLabel comp = new JLabel (message);
 		comp.setOpaque(true);
-		comp.setIcon(StandardIcons.STOP.icon);
+		comp.setIcon(StandardIcons.ACTION_STOP.icon);
 
 		return comp;
 	}
