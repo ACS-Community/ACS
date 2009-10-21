@@ -44,7 +44,7 @@ public class GuiStandards {
 				 || key.startsWith("Tree"))
 					UIManager.put(key, StandardColors.EDITOR_BG.color);
 				else 
-				if (key.startsWith("Button"))
+				if (key.startsWith("Button") || key.startsWith("ToggleButton") )
 					; // msc: changing the buttons makes it harder to recognize them
 				else
 					UIManager.put(key, StandardColors.MAIN_BG.color);
