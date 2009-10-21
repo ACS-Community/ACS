@@ -194,7 +194,7 @@ public class Range
 	 * You should normally not use this method.  
 	 */
 	public final static String generateUID(String _archiveID, String _rangeID, long _localId) {
-		String uid = "uid://X" + _archiveID + 
+		String uid = "uid://" + _archiveID + 
 		  "/X" + _rangeID + 
 		  "/X" + Long.toHexString(_localId);
 		return uid;
@@ -251,7 +251,7 @@ public class Range
 	 * Gets a String representation of the UID of this range document itself.
 	 */
 	public final String rangeIdString() {
-		String uid = "uid://X" + archiveid + 
+		String uid = "uid://" + archiveid + 
 	 	  "/X" + rangeid + 
 		  "/X0";
 		return uid;
