@@ -16,7 +16,7 @@ public enum StandardColors {
 	SELECTION_BG ("A0B4D2"), // blueGray-ish
 	SELECTION_NOFOCUS_BG ("lightGray"),
 
-	STATUS_OK_BG ("54FB3C"), // green-ish
+	STATUS_OKAY_BG ("54FB3C"), // green-ish
 	STATUS_UNAVAILABLE_BG ("gray"),
 	STATUS_UNKNOWN_BG ("gray"),
 	STATUS_WARNING_BG ("FCD152"), // orange-ish
