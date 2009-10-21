@@ -3,8 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Eventbrowser Plug-in
 Bundle-SymbolicName: ACS_eventGUI;singleton:=true
 Bundle-Version: 1.0.0
-Require-Bundle: ACS_Utility_Jars;bundle-version="1.0.0",
+Require-Bundle: alma.acs.rcp.jars,
  org.eclipse.core.runtime,
+ org.eclipse.core.databinding.observable;bundle-version="1.2.0";visibility:=reexport,
+ org.eclipse.core.databinding.property;bundle-version="1.2.0";visibility:=reexport,
  org.eclipse.ui,
  org.eclipse.ui.views
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,5 +1,5 @@
 <project name="alma.acs.rcp.eventGUI" default="build">
-	<property environment="env"/>
+	<property environment="env" />
 	<!--sets the path of the properties file-->
 	<property file="build.properties" />
 	<property file="project.properties" />
@@ -20,6 +20,11 @@
 		<copy todir="${buildDirectory}/plugins">
 			<fileset dir="${basedir}/../..">
 				<include name="eventGUI/**" />
+				<exclude name="eventGUI/test/**" />
+				<exclude name="eventGUI/object/**" />
+				<exclude name="eventGUI/bin/**" />
+				<exclude name="eventGUI/rtai/**" />
+				<exclude name="eventGUI/idl/**" />
 			</fileset>
 		</copy>
 		<copy todir="${buildDirectory}/features/${pluginID}">
@@ -28,7 +33,7 @@
 			</fileset>
 		</copy>
 	</target>
-	
+
 	<target name="createJarsPlugin">
 		<exec executable="acsPluginBuilder">
 			<arg value="-i" />
@@ -37,7 +42,7 @@
 			<arg value="${acs.jars.required}" />
 		</exec>
 	</target>
-	
+
 	<!--
 		This target actually executes the PDE Build process by launching the 
 		Eclipse antRunner application.

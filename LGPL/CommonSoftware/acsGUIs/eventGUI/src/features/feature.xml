@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eventGUI"
+      id="ACS_eventGUI"
       label="eventGUI"
       version="1.0.0"
       provider-name="European Southern Observatory"
-      plugin="eventGUI">
+      plugin="ACS_eventGUI">
 
    <description url="http://www.eso.org">
       [Enter Feature Description here.]
@@ -25,8 +25,22 @@
          ws="gtk"
          arch="x86"/>
 
+   <requires>
+      <import plugin="alma.acs.rcp.jars"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.databinding.observable" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.databinding.property" version="1.2.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import feature="org.eclipse.rcp" version="3.5.1.R35x_v20090811-9SA0FxVFqE70OL1ARMrfcO6e7BA6"/>
+   </requires>
+
    <plugin
-         id="eventGUI"
+         id="ACS_eventGUI"
+         os="linux"
+         ws="gtk"
+         nl="en_US"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"

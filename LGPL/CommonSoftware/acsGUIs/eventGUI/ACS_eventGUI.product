@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?pde version="3.4"?>
+<?pde version="3.5"?>
 
-<product name="eventGUI product" id="eventGUI.product" application="eventGUI.application" useFeatures="false">
-
+<product name="ACS_eventGUI product" uid="ACS_eventGUI" id="ACS_eventGUI.product" application="ACS_eventGUI.application" version="1.0.0" useFeatures="false" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
@@ -22,14 +21,13 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
    <plugins>
-      <plugin id="alma.acs.rcp.jars"/>
+      <plugin id="ACS_eventGUI"/>
+      <plugin id="alma.acs.rcp.jars" fragment=""/>
       <plugin id="com.ibm.icu"/>
-      <plugin id="eventGUI"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -54,5 +52,6 @@
       <plugin id="org.eclipse.ui.views"/>
       <plugin id="org.eclipse.ui.workbench"/>
    </plugins>
+
 
 </product>
