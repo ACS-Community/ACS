@@ -6,5 +6,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-gui.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cosyframework-core.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>
