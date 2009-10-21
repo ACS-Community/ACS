@@ -9,33 +9,40 @@ import javax.swing.ImageIcon;
  */
 public enum StandardIcons {
 
-	 START ("play.gif")
-	,STOP ("stop.gif")
-	,PAUSE ("pause.gif")
-	,RESUME ("resume.gif")
+	 ACTION_START ("play.gif")
+	,ACTION_STOP ("stop.gif")
+	,ACTION_PAUSE ("pause.gif")
+	,ACTION_RESUME ("resume.gif")
 
-	,CANCEL ("cross_red.gif")
-	,CANCEL_INACTIVE ("cross_gray.gif")
-	,APPROVE ("checkbox_on.gif")
-	,DISMISS ("cross_black.gif")
-	
-	,UNKNOWN ("questionmark.gif")
-	,WARNING ("warning.gif")
-	,WARNING_INACTIVE ("warning_gray.gif")
-	,IDEA ("bulb_yellow.gif")
-	,IDEA_INACTIVE ("bulb_gray.gif")
-	,LOCK ("lock.gif")
-	,TRASH ("trash.gif")
+	,ACTION_CANCEL ("cross_red.gif")
+	,ACTION_CANCEL_INACTIVE ("cross_gray.gif")
+	,ACTION_DISMISS ("cross_black.gif")
+
+	,ACTION_OPEN ("openfolder.gif")
+	,ACTION_SAVE ("floppydisk.gif")
+	,ACTION_DELETE ("cross_red.gif")
+	,ACTION_TRASH ("trash.gif")
+	,ACTION_HELP ("help.gif")
+
+	,STATUS_OKAY ("checkmark.gif")
+	,STATUS_UNKNOWN ("bubble_gray.gif")
+	,STATUS_NOTEWORTHY ("triangle.gif")
+	,STATUS_WARNING ("warning.gif")
+	,STATUS_WARNING_INACTIVE ("warning_gray.gif")
+	,STATUS_ERROR ("errorstate.gif")
 
 	,LEFTWARD("arrow_left_yellow.gif")
 	,RIGHTWARD("arrow_right_yellow.gif")
 	,UPWARD("arrow_up_yellow.gif")
 	,DOWNWARD("arrow_down_yellow.gif")
 	
-	,DOT_GRAY ("bubble_gray.gif")
-	,DOT_GREEN ("checkmark.gif")
-	,DOT_RED ("errorstate.gif")
-	,DOT_YELLOW ("triangle.gif")
+	,QUESTION ("questionmark.gif")
+	,IDEA ("bulb_yellow.gif")
+	,IDEA_INACTIVE ("bulb_gray.gif")
+	,INFO ("info.gif")
+	,APPROVED ("checkbox_on.gif")
+	,LOCK ("lock.gif")
+
 	;
 
 	/**
