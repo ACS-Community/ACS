@@ -28,8 +28,6 @@
    <requires>
       <import plugin="alma.acs.rcp.jars"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.databinding.observable" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.databinding.property" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.views"/>
       <import feature="org.eclipse.rcp" version="3.5.1.R35x_v20090811-9SA0FxVFqE70OL1ARMrfcO6e7BA6"/>
