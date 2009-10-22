@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.9 2009/10/22 04:43:39 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.10 2009/10/22 22:36:04 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -172,28 +172,27 @@ class ComponentStorage
      */
     void Destroy()
         {
-            try
+	    if (handle && pointee_ && sticky)
                 {
-                if (handle && pointee_ && sticky)
+		try
                     {
                     handle->releaseComponent(pointee_->name());
-		    pointee_ = Default();
-		    sticky = false;
                     }
-                }
-            catch(maciErrType::CannotReleaseComponentExImpl& ex)
-                {
-                ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+		catch(maciErrType::CannotReleaseComponentExImpl& ex)
+		    {
+		    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
                         (LM_ERROR, "Unable to release component"));
-                }
-            catch(...)
-                {
-                ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
+		    }
+		catch(...)
+		    {
+		    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
                          (LM_ERROR, "Unexpected exception caught when releasing component."));
-                }
+		    }
+		pointee_ = Default();
+		sticky = false;
+		}
         }
 
-// protected:
 
     // Default value to initialize the pointer
     static StoredType Default()
@@ -390,10 +389,7 @@ class SmartPtr
 
         ~SmartPtr()
         {
-            if (OP::Release(GetImpl(*static_cast<SP*>(this))))
-            {
-                SP::Destroy();
-            }
+	    release();
         }
 
         void release()

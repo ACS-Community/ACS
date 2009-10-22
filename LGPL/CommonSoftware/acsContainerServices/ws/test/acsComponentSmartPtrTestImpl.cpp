@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.3 2009/10/22 04:43:39 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.4 2009/10/22 22:36:04 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.3 2009/10/22 04:43:39 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.4 2009/10/22 22:36:04 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsComponentSmartPtrTestImpl.h"
@@ -138,13 +138,13 @@ void smartptrtest :: releaseTest(void)
     foo.release();
     CPPUNIT_ASSERT_EQUAL ((maci::MockContainerServices *)foo.handle, mcs);
     CPPUNIT_ASSERT_EQUAL (foo.sticky, false);
-    CPPUNIT_ASSERT_EQUAL (foo.isNil(), true);
+    CPPUNIT_ASSERT_EQUAL (foo.pointee_, (MockComponent *)0);
 }
 
 void smartptrtest :: isNilNotSetTest(void)
 {
     maci::SmartPtr<MockComponent> foo;
-    CPPUNIT_ASSERT_EQUAL (foo.isNil(), true);
+    CPPUNIT_ASSERT_EQUAL (foo.pointee_, (MockComponent *)0);
 }
 
 void smartptrtest :: isNilSetTest(void)
@@ -153,8 +153,7 @@ void smartptrtest :: isNilSetTest(void)
     maci::SmartPtr<MockComponent> foo(mcs, true, mcs->getComponent<MockComponent>(cname.c_str()));
     cout << "Set is running" << endl;
     cout.flush();
-    cout << "Set isNil: " << foo.isNil() << endl;
-    CPPUNIT_ASSERT_EQUAL (foo.isNil(), false);
+    CPPUNIT_ASSERT (foo.pointee_ != (MockComponent *)0);
 }
 
 /*___oOo___*/
