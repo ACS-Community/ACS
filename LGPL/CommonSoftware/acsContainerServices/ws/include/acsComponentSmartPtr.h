@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.8 2008/12/15 17:51:05 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.9 2009/10/22 04:43:39 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -156,6 +156,14 @@ class ComponentStorage
     bool inline isValid(const ComponentStorage& sp)
     { return sp.handle != (H *)0; }
 
+    /**
+     * isNil
+     * Return true if pointer is a CORBA nil value
+     */
+    bool inline isNil()
+    { return CORBA::is_nil(pointee_);}
+
+
   protected:
 
     /**
@@ -169,6 +177,8 @@ class ComponentStorage
                 if (handle && pointee_ && sticky)
                     {
                     handle->releaseComponent(pointee_->name());
+		    pointee_ = Default();
+		    sticky = false;
                     }
                 }
             catch(maciErrType::CannotReleaseComponentExImpl& ex)
@@ -182,9 +192,12 @@ class ComponentStorage
                          (LM_ERROR, "Unexpected exception caught when releasing component."));
                 }
         }
+
+// protected:
+
     // Default value to initialize the pointer
     static StoredType Default()
-        { return 0; }
+        { return T::_nil(); }
 
   private:
     // Data
@@ -382,6 +395,14 @@ class SmartPtr
                 SP::Destroy();
             }
         }
+
+        void release()
+	{
+            if (OP::Release(GetImpl(*static_cast<SP*>(this))))
+            {
+                SP::Destroy();
+            }
+	}
 
         friend inline void Release(SmartPtr& sp, typename SP::StoredType& p)
         {

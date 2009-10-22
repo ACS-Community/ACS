@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.h,v 1.2 2008/12/15 17:51:05 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.h,v 1.3 2009/10/22 04:43:39 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -51,6 +51,10 @@ class smartptrtest : public CPPUNIT_NS :: TestFixture
     CPPUNIT_TEST (parmConstructorTest);
     CPPUNIT_TEST (copyConstructorTest);
     CPPUNIT_TEST (assignmentOperatorTest);
+    CPPUNIT_TEST (isNilNotSetTest);
+    CPPUNIT_TEST (releaseTest);
+    CPPUNIT_TEST (isNilSetTest);
+//    CPPUNIT_TEST_EXCEPTION (isNilSetTest, exception);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -62,6 +66,9 @@ class smartptrtest : public CPPUNIT_NS :: TestFixture
         void parmConstructorTest (void);
         void copyConstructorTest (void);
         void assignmentOperatorTest (void);
+        void releaseTest (void);
+        void isNilSetTest (void);
+        void isNilNotSetTest (void);
 
     private:
 	maci::MockContainerServices *mcs;
