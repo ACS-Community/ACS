@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.3 2008/01/09 21:18:19 agrimstrup Exp $"
+* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.4 2009/10/22 04:32:36 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.3 2008/01/09 21:18:19 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.4 2009/10/22 04:32:36 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -94,6 +94,7 @@ int main (int argc, char **argv)
 	    assert(foo.handle == 0);
 	    assert(foo.pointee_ == 0);
 	    assert(*foo.pCount_ == 1);
+	    assert(foo.isNil() == true);
 	    ACS_SHORT_LOG((LM_INFO,"Default constructor... [OK]"));
 	    }
 	catch(...)
@@ -109,6 +110,7 @@ int main (int argc, char **argv)
 	    assert(foo.handle == &client);
 	    assert(foo.pointee_ != 0);
 	    assert(*foo.pCount_ == 1);
+	    assert(foo.isNil() == false);
 	    ACS_SHORT_LOG((LM_INFO,"Parameterized constructor... [OK]"));
 	    }
 	catch(...)
