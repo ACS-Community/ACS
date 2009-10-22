@@ -145,7 +145,7 @@
             id="product"
             point="org.eclipse.core.runtime.products">
          <product
-               application="eventGUI.application"
+               application="ACS_eventGUI.application"
                name="ALMA ACS Event Browser">
             <property
                   name="appName"
