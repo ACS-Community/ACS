@@ -90,7 +90,7 @@ public class IdentifierJMock implements IdentifierJ {
 		range.setIsLocked(false);
 		
 		String archiveIdString = Long.toHexString(archiveid);
-		archiveIdString = StringUtils.leftPad(archiveIdString,archiveIdLength, '0'); 
+		archiveIdString = "X"+StringUtils.leftPad(archiveIdString,archiveIdLength, '0'); 
 		range.setArchiveID(archiveIdString);
 		
 		RangeT ranget = new RangeT();
