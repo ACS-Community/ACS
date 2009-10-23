@@ -11,7 +11,7 @@
 1 - TEST_RUNNER_REPORT success/total: 6/6
 1 - JUnit test run succeeded
 1 -  -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.ClientLogManagerTest
-1 - TEST_RUNNER_REPORT success/total: 6/6
+1 - TEST_RUNNER_REPORT success/total: 7/7
 1 - JUnit test run succeeded
 1 -  --endorsed -- alma.acs.testsupport.tat.TATJUnitRunner alma.acs.logging.config.LogConfigTest
 1 - TEST_RUNNER_REPORT success/total: 7/7

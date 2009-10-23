@@ -24,6 +24,7 @@ package alma.acs.logging;
 import java.util.Set;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import java.util.concurrent.CyclicBarrier;
@@ -222,7 +223,7 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 	}
 	
 	/**
-	 * As of ACS 8.0.0, it is not possible to configure application loggers via the CDB.
+	 * As of ACS 8.1.0, it is not possible to configure application loggers via the CDB.
 	 * This test demonstrates how to do it programmatically, as a workaround.
 	 */
 	public void testConfigureApplicationLogger() {
@@ -249,6 +250,27 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		assertLogLevels(applLogger, localLevel, remoteLevel);
 
 		assertLogLevels(applLogger, localLevel, remoteLevel);
+	}
+	
+	public void testHibernateLoggerConfig() throws Exception {
+		LogConfig sharedLogConfig = clientLogManager.getLogConfig();
+		
+		// default levels < WARNING for first hibernate logger, should result in custom levels WARNING
+		sharedLogConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.TRACE);
+		sharedLogConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.DEBUG);
+		AcsLogger hibernateLogger1 = clientLogManager.getLoggerForCorba("hibernate", true);
+		assertLogLevels(hibernateLogger1, AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.WARNING);
+		assertTrue(sharedLogConfig.hasCustomConfig(hibernateLogger1.getLoggerName()));
+		
+		// default levels >= WARNING for second hibernate logger, should result in custom levels equal to default levels
+		sharedLogConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.ERROR);
+		sharedLogConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.WARNING);
+		AcsLogger hibernateLogger2 = clientLogManager.getLoggerForCorba("hibernateSql", true);
+		assertLogLevels(hibernateLogger2, AcsLogLevelDefinition.ERROR, AcsLogLevelDefinition.WARNING);
+		assertTrue(sharedLogConfig.hasCustomConfig(hibernateLogger2.getLoggerName()));
+		
+		// ClientLogManager should create new hibernate loggers ,no reuse
+		assertNotSame("Hibernate logger reuse should happen inside org.slf4j.impl.ACSLoggerFactory, but not in ClientLogManager.", hibernateLogger1, hibernateLogger2);
 	}
 	
 	/**
