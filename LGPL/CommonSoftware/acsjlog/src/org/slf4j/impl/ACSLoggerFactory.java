@@ -41,9 +41,12 @@ import alma.acs.logging.ClientLogManager;
 
 /**
  * ACSLoggerFactory is an implementation of {@link ILoggerFactory} returning
- * the same {@link JDK14LoggerAdapter} instance with the same underlying ACS logger,
+ * the same {@link JDK14LoggerAdapter} instance with the same underlying ACS hibernate logger,
  * regardless of the "name" parameter for the requested logger.
- * 
+ * <p>
+ * A side effect of this is that any other software package which in the future might 
+ * also rely on slf4j logging will get a logger called "hibernate" or "hibernate@&lt;process name&gt;".
+ * <p>
  * The hibernate framework tries to use separate loggers with names being those of its java classes, 
  * e.g. "org.hibernate.cfg.Ejb3Column".
  * All of these logger requests are now served with the same logger called "hibernate"
@@ -58,6 +61,8 @@ public class ACSLoggerFactory implements ILoggerFactory
 	private AcsLogger acsLoggerDelegate;
 	private Logger jdkAdapter;
 
+	public static final String HIBERNATE_LOGGER_NAME_PREFIX = "hibernate";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,11 +72,12 @@ public class ACSLoggerFactory implements ILoggerFactory
 		// protect against concurrent access of acsLoggerDelegate
 		synchronized (this) {
 			if (acsLoggerDelegate == null) {
-				acsLoggerDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba("hibernate", true);
+				acsLoggerDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_LOGGER_NAME_PREFIX, true);
 				jdkAdapter = new JDK14LoggerAdapter(acsLoggerDelegate);
 			}
 		}
-//		System.out.println("**** Got hibernate logger " + acsLoggerDelegate.getName() + " -- " + name);
+//System.out.println("**** Got hibernate logger '" + acsLoggerDelegate.getName() + "' for requested logger '" + name + "' ****");
+
 		return jdkAdapter;
 	}
 }
