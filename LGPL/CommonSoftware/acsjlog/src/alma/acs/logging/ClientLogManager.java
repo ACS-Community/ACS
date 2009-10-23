@@ -28,11 +28,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 import org.omg.DsLogAdmin.LogOperations;
+import org.slf4j.impl.ACSLoggerFactory;
 
 import si.ijs.maci.Manager;
 
@@ -637,61 +639,92 @@ public class ClientLogManager implements LogConfigSubscriber
     	}
     }
 
-    
+
 	/**
-	 * Gets a logger to be used by ORB and POA classes.
+	 * Gets a logger to be used by ORB and POA classes, or by hibernate. 
 	 * The logger is connected to the central ACS logger.
-	 * @TODO rename this method to accomodate non-corba frameworks into which we insert ACS loggers, such as hibernate,
+	 * <p>
+	 * @TODO rename this method to accommodate non-corba frameworks into which we insert ACS loggers, such as hibernate,
 	 *       see {@link org.slf4j.impl.ACSLoggerFactory}.
-	 * @param corbaName e.g. <code>jacorb</code>.
-	 * @param autoConfigureContextName  if true, the context (e.g. container name) will be appended 
-	 *                                  to this logger's name as soon as it is available, making it e.g. <code>jacorb@frodoContainer</code>.
+	 * <p>
+	 * For hibernate loggers, the logger automatically receives an initial custom log level configuration, 
+	 * to avoid jamming the log system with hibernate logs. 
+	 * The applied custom log level is the maximum of the default log level and WARNING.
+	 * Note that the hibernate logger can still be set to a more verbose level by giving it a custom log config
+	 * in the CDB, or dynamically using logLevelGUI etc.
+	 * <p>
+	 * @TODO Instead of this hard coded and probably confusing application of a custom log level,
+	 * the CDB should offer a central configuration option for all jacorb, hibernate etc loggers,
+	 * independently of the process (container or manager etc).
+	 * <p>
+	 * @param corbaName
+	 *            e.g. <code>jacorb</code>.
+	 * @param autoConfigureContextName
+	 *            if true, the context (e.g. container name) will be appended to this logger's name as soon as it is
+	 *            available, changing the logger name to something like <code>jacorb@frodoContainer</code>.
 	 */
 	public AcsLogger getLoggerForCorba(String corbaName, boolean autoConfigureContextName) {
 
 		String loggerName = corbaName;
-        AcsLogger corbaLogger = null;
+		AcsLogger corbaLogger = null;
 
-        processNameLock.lock();
-        try {
-	    	// if the process name is not known yet (e.g. during startup), then we need to schedule its update
-	        if (autoConfigureContextName && processName != null) {
-	        	// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround 
-	        	loggerName += "@" + processName;
-	        }
-	        
-	        corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
-	        // Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
-	        // As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
-	        corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
-	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
-	        corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
+		processNameLock.lock();
+		try {
+			// if the process name is not known yet (e.g. during startup), then we need to schedule its update
+			if (autoConfigureContextName && processName != null) {
+				// if the process name is already known, we can even use it for the regular logger name instead of using a later workaround
+				loggerName += "@" + processName;
+			}
 
-	        if (autoConfigureContextName && processName == null) {
-	        	// mark this logger for process name update
-	        	AcsLoggerInfo loggerInfo = loggers.get(loggerName);
-	        	loggerInfo.needsProcessNameUpdate = true;
-	        }
-        } finally {
-        	processNameLock.unlock();
-        }
-        
-        // fix levels if we suppress corba remote logging
-        if (suppressCorbaRemoteLogging) {
-        	sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
-        }
-        
-        return corbaLogger;
+			corbaLogger = getAcsLogger(loggerName, LoggerOwnerType.OrbLogger);
+			// Suppress logs inside the call to the Log service, which could happen e.g. when policies are set and jacorb-debug is enabled.
+			// As of ACS 8, that trashy log message would be "get_policy_overrides returns 1 policies"
+			corbaLogger.addIgnoreLogs("org.omg.DsLogAdmin._LogStub", "write_records");
+			corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "write_records");
+			corbaLogger.addIgnoreLogs("alma.Logging._AcsLogServiceStub", "writeRecords");
+
+			if (autoConfigureContextName && processName == null) {
+				// mark this logger for process name update
+				AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+				loggerInfo.needsProcessNameUpdate = true;
+			}
+		} 
+		finally {
+			processNameLock.unlock();
+		}
+
+		// fix levels if we suppress corba remote logging
+		if (suppressCorbaRemoteLogging) {
+			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
+		}
+		else if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) && !sharedLogConfig.hasCustomConfig(loggerName)) {
+			// Since ACS 8.1 hibernate classes are given an ACS logger via this method, see javadoc.
+			AcsLogLevelDefinition minCustomLevel = AcsLogLevelDefinition.WARNING;
+			AcsLogLevelDefinition customLevel = 
+					( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevel()) > 0 
+							? minCustomLevel 
+							: sharedLogConfig.getDefaultMinLogLevel() );
+			sharedLogConfig.setMinLogLevel(customLevel, loggerName);
+			AcsLogLevelDefinition customLevelLocal = 
+				( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevelLocal()) > 0 
+						? minCustomLevel 
+						: sharedLogConfig.getDefaultMinLogLevelLocal() );
+			sharedLogConfig.setMinLogLevelLocal(customLevelLocal, loggerName);
+			
+			m_internalLogger.info("Logger " + loggerName + " created with custom log levels local=" + customLevelLocal.name + 
+					", remote=" + customLevel.name + " to avoid hibernate log jams due to careless default log level settings.");
+		}
+
+		return corbaLogger;
 	}
-	
-	
+
+
 	/**
-	 * Gets a logger to be used by the Java container classes.
-	 * The logger is connected to the central ACS logger.
+	 * Gets a logger to be used by the Java container classes. The logger is connected to the central ACS logger.
 	 */
 	public AcsLogger getLoggerForContainer(String containerName) {
 		setProcessName(containerName);
-        return getAcsLogger(containerName, LoggerOwnerType.ContainerLogger);
+		return getAcsLogger(containerName, LoggerOwnerType.ContainerLogger);
 	}
 
     /**
@@ -777,7 +810,7 @@ public class ClientLogManager implements LogConfigSubscriber
 			} finally {
 				processNameLock.unlock();
 			}
-        }
+		}
 	}
 
 	/**
