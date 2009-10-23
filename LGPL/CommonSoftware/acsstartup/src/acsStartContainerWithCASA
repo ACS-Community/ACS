@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartContainerWithCASA,v 1.1 2009/09/17 20:31:03 agrimstrup Exp $"
+# "@(#) $Id: acsStartContainerWithCASA,v 1.2 2009/10/23 19:51:24 agrimstrup Exp $"
 #
 # who        when       what
 # --------   --------   ----------------------------------------------
@@ -39,12 +39,7 @@ PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
 LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
 
 # Start the container in the CASA environment
-if [[ "$@" =~ "-+py" ]]
-then
-   acsStartContainer "--executable=acsutilCASAPython ACSStartContainerPy" "$@"
-else
-   acsStartContainer "$@"
-fi
+acsStartContainer "$@"
 
 #
 # ___oOo___
