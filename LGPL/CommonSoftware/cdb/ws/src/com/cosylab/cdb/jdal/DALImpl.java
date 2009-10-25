@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,8 +23,10 @@ import java.util.logging.Logger;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -93,6 +96,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private boolean recoveryRead = true;
 	private DALNode rootNode = null; // used for node lisitng 
 	Logger m_logger;
+	private volatile boolean shutdown = false;
+	private Object shutdownLock = new Object();
 
 	DALImpl(String args[], ORB orb_val, POA poa_val) {
 		orb = orb_val;
@@ -118,6 +123,23 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
 		    }
 		loadFactory();
+		
+		// cache cleanup thread
+		new Thread(new Runnable() {
+			
+			public void run() {
+				while (!shutdown) {
+					checkCache();
+					synchronized (shutdownLock) {
+						try {
+							shutdownLock.wait(15000);	// 15 seconds
+						} catch (InterruptedException e) {
+							// noop
+						}
+					}
+				}
+			}
+		}, "cache-cleanup").start();
 	}
 	public void loadFactory(){
 		factory = SAXParserFactory.newInstance();
@@ -274,10 +296,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		DALNode curlNode = node.getCurlNode();
 		if(curlNode != null) {
 			String xmlPath = getRecordPath(node.getCurl());
-			File xmlFile = new File(xmlPath);
-			xmlSolver.setFirstElement(node.name);
-			saxParser.parse(xmlFile, xmlSolver);
-		
+			String xml = getFromCache(node.getCurl());
+			if (xml != null)
+			{
+				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
+			}
+			else 
+			{
+				File xmlFile = new File(xmlPath);
+				xmlSolver.setFirstElement(node.name);
+				saxParser.parse(xmlFile, xmlSolver);
+			}
+			
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
 				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
@@ -317,11 +347,13 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	public XMLHandler loadRecords(String curl, boolean toString) throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx {
 
 		// create hierarchy of all nodes if it is not created yet 
-		if( rootNode == null) {
-			//no Error thrown
-			rootNode = DALNode.getRoot(m_root);
+		synchronized (this) {
+			if( rootNode == null) {
+				//no Error thrown
+				rootNode = DALNode.getRoot(m_root);
+			}
 		}
-
+		
 		//no Error thrown
 		String strFileCurl = curl;
 		String strNodeCurl = "";
@@ -430,13 +462,85 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 
+	private LinkedHashMap<String, String> cache = new LinkedHashMap<String, String>();
+	
+	private void checkCache()
+	{
+		synchronized (cache) {
+			final Runtime r = Runtime.getRuntime();
+			long allocatedMemory = r.totalMemory();
+			long freeOfAllocatedMemory = r.freeMemory();
+			final long maxMemory = r.maxMemory();
+			
+			long totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
+			double precentageFree = totalFreeMemory/(double)maxMemory;
+
+			// make sure that there is at least 20% free
+			while (precentageFree < 0.20 && !cache.isEmpty()) {
+				String oldestKey = cache.keySet().iterator().next();
+				cache.remove(oldestKey);
+				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + oldestKey + "' removed from cache, due to low memory (" + (precentageFree*100) + "% free).");
+				System.gc();
+
+				// recalculate
+				allocatedMemory = r.totalMemory();
+				freeOfAllocatedMemory = r.freeMemory();
+				totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
+				precentageFree = totalFreeMemory/(double)maxMemory;
+			}
+		}
+	}
+	
+	private void clearCache() 
+	{
+		synchronized (cache) {
+			cache.clear();
+		}
+	}
+	
+	private String getFromCache(String curl)
+	{
+		synchronized (cache) {
+			String xml = cache.get(curl);
+			if (xml != null) {
+				// make it recent
+				cache.remove(curl);
+				cache.put(curl, xml);
+				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' retrieved from cache.");
+				return xml;
+			}
+			else
+				return null;
+		}
+	}
+	
+	private void putToCache(String curl, String xml) 
+	{
+		synchronized (cache) {
+			checkCache();
+			cache.put(curl, xml);
+			m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' put to cache.");
+		}
+	}
+	
 	/**
 	 * returns full expanded XML string
 	 */
 	public synchronized String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
+		
+		if (shutdown)
+			throw new NO_RESOURCES();
+			
 		try {
 			if (curl.lastIndexOf('/') == curl.length() - 1)
 				curl = curl.substring(0, curl.length() - 1);
+			
+			// NOTE: concurrent caching not supported,
+			// but since this method is synced, this is not a problem
+			String xml = getFromCache(curl);
+			if (xml != null)
+				return xml;
+			
 			XMLHandler xmlSolver = loadRecords(curl, true);
 			if (xmlSolver == null) {
 				// @TODO: shouldn't loadRecords be fixed to throw an exception instead??
@@ -445,7 +549,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			}
 
 			m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
-			return xmlSolver.toString(false);
+			
+			xml = xmlSolver.toString(false);
+			putToCache(curl, xml);
+			
+			return xml;
 		} catch (AcsJCDBXMLErrorEx e) {
 			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
@@ -526,6 +634,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public void shutdown() {
+		synchronized (shutdownLock) {
+			shutdown = true;
+			shutdownLock.notifyAll();
+		}
+		
 		orb.shutdown(false);
 	}
 
@@ -776,8 +889,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	
         public void clear_cache_all() {
 		loadFactory();
-		rootNode = DALNode.getRoot(m_root);
-
+		synchronized (this) {
+			rootNode = DALNode.getRoot(m_root);
+		}
+		clearCache();
+		
 		Object[] curls;
 		synchronized (listenedCurls) {
 			curls = listenedCurls.keySet().toArray();
@@ -811,8 +927,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	public String list_nodes(String name) {
 		// if we didn't create a root node yet or we are listing
 		// the root content then recreate the tree data
-		if( rootNode == null || name.length() == 0 ) {
-			rootNode = DALNode.getRoot(m_root);
+		synchronized (this) {
+			if( rootNode == null || name.length() == 0 ) {
+				rootNode = DALNode.getRoot(m_root);
+			}
 		}
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
@@ -826,8 +944,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	public String list_daos(String name) {
 		// if we didn't create a root node yet or we are listing
 		// the root content then recreate the tree data
-		if( rootNode == null || name.length() == 0 ) {
-			rootNode = DALNode.getRoot(m_root);
+		synchronized (this) {
+			if( rootNode == null || name.length() == 0 ) {
+				rootNode = DALNode.getRoot(m_root);
+			}
 		}
 		//System.out.println( "Listing " + name );
 		String list = rootNode.list(name);
@@ -884,6 +1004,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 */
 	public SAXParser getSaxParser() {
 		return saxParser;
+	}
+	
+	public boolean isShutdown() {
+		return shutdown;
 	}
 
 }

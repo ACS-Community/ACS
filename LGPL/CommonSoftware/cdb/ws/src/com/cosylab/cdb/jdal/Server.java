@@ -36,8 +36,8 @@ import org.omg.CosNaming.NamingContextHelper;
 import com.cosylab.CDB.*;
 
 import org.omg.PortableServer.*;
-import org.omg.PortableServer.POA;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import java.io.*;
 
@@ -163,8 +163,8 @@ public class Server {
 
 			// create servant and register it with the ORB
 			//DALImpl DALImpl = new DALImpl(args, orb, dalpoa);
-			org.omg.PortableServer.Servant servant = new WDALImpl(args, orb, dalpoa);
-
+			final org.omg.PortableServer.Servant servant = new WDALImpl(args, orb, dalpoa);
+			
 			//create object id
 			byte[] id = { 'C', 'D', 'B' };
 
@@ -237,6 +237,14 @@ public class Server {
                         // This is needed because the ACS startup scripts wait for this message
                         // to declare complete the startup of the CDB. 
 			System.out.println("JDAL is ready and waiting ...");
+                        
+			// preload cache
+			final JDAL dal = jdal;
+			new Thread(new Runnable() {
+				public void run() {
+					preloadCache(dal);
+				}
+			}, "preload-cache").start();
 
 			// wait for invocations from clients
 			orb.run();
@@ -252,6 +260,55 @@ public class Server {
 	public void shutdown() {
 		 jdal.shutdown();
 	} 
+	
+	
+	private static String[] PRELOAD_TABLE = {
+		"MACI/Managers/Manager",
+		"MACI/Components"
+	};
+	
+	private static String[] PRELOAD_TABLE_SUBTREE = {
+		"MACI/Containers"
+	};
+
+	private void preloadCache(JDAL jdal) {
+		try
+		{
+			for (String node : PRELOAD_TABLE)
+			{
+				try {
+					jdal.get_DAO(node);
+				} catch (alma.cdbErrType.CDBXMLErrorEx xmlerr) {
+					// noop
+				} catch (alma.cdbErrType.CDBRecordDoesNotExistEx noRec) {
+					// noop
+				}
+			}
+				
+			for (String subTree : PRELOAD_TABLE_SUBTREE)
+			{
+				String daos = jdal.list_nodes(subTree);
+				if (daos != null)
+				{
+					StringTokenizer tokenizer = new StringTokenizer(daos);
+					while (tokenizer.hasMoreTokens())
+					{
+						try {
+							jdal.get_DAO(subTree+"/"+tokenizer.nextToken());
+						} catch (alma.cdbErrType.CDBXMLErrorEx xmlerr) {
+							// noop
+						} catch (alma.cdbErrType.CDBRecordDoesNotExistEx noRec) {
+							// noop
+						}
+					}
+				}
+			}
+
+		} catch (NO_RESOURCES nores) {
+			// shutdown
+			return;
+		}
+	}
 	
 }
 
