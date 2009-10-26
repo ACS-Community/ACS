@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: mockComponentImpl.h,v 1.2 2009/10/22 04:43:39 agrimstrup Exp $"
+* "@(#) $Id: mockComponentImpl.h,v 1.3 2009/10/26 19:00:22 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,8 @@
 #include <acscomponentImpl.h>
 #include <acsContainerServices.h>
 
-class MockComponent : public virtual acscomponent::ACSComponentImpl
+class MockComponent : public virtual acscomponent::ACSComponentImpl,
+    public CORBA::Object
 {    
   public:
     /**

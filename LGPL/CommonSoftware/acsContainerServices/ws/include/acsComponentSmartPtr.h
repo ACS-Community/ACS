@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.10 2009/10/22 22:36:04 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.11 2009/10/26 19:00:22 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -394,7 +394,7 @@ class SmartPtr
 
         void release()
 	{
-            if (OP::Release(GetImpl(*static_cast<SP*>(this))))
+            if (!SP::isNil() && OP::Release(GetImpl(*static_cast<SP*>(this))))
             {
                 SP::Destroy();
             }
