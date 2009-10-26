@@ -49,11 +49,12 @@ module AcsLogLevels {
 
 	typedef short logLevelValue;
 	
-	// In the past we used the value 0 for UNKNOWN or ALL without formal definition. 
-	// Now we try without the 0 until we need it.
-	 
-	const logLevelValue TRACE_VAL = 2;
+	const logLevelValue TRACE_VAL = 1;
 	const string TRACE_NAME = "Trace";
+
+	// see COMP-3749 which describes this introduction of a new level between TRACE and DEBUG after ACS 8.1.0
+	const logLevelValue DELOUSE_VAL = 2; 
+	const string DELOUSE_NAME = "Delouse";
 
 	const logLevelValue DEBUG_VAL = 3;
 	const string DEBUG_NAME = "Debug";
@@ -81,7 +82,7 @@ module AcsLogLevels {
 	const logLevelValue EMERGENCY_VAL = 11;
 	const string EMERGENCY_NAME = "Emergency";
 	
-	// The proposed value 99 is more human friendly. Technically it would make more sense
+	// The OFF value of 99 is more human friendly. Technically it would make more sense
 	// to define OFF_VAL as the maximum allowed value (2^15 - 1).
 	const logLevelValue OFF_VAL = 99;
 	const string OFF_NAME = "Off";
