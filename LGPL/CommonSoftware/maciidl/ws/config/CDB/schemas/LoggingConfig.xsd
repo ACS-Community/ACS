@@ -101,6 +101,7 @@ For example, one may choose to use the default logging config for all component 
             <xs:documentation>Legal log level. These enumerations must be synchronized with the definitions in logging_idl.idl (module loggingidl)!</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:int">
+            <xs:enumeration value="1"/>
             <xs:enumeration value="2"/>
             <xs:enumeration value="3"/>
             <xs:enumeration value="4"/>
