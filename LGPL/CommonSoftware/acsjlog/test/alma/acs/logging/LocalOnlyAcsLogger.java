@@ -22,7 +22,7 @@ public class LocalOnlyAcsLogger extends AcsLogger {
 	private static LocalOnlyAcsLogger instance;
 	
 	private LocalOnlyAcsLogger(String namespace, LogConfig testLogConfig) {
-		super(namespace, null, new LogConfig());
+		super(namespace, null, testLogConfig);
 		addLoggerClass(LocalOnlyAcsLogger.class); 
 	}
 
