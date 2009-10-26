@@ -74,11 +74,12 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	/**
 	 * A lower level than DEBUG, just to allow finer tuning. Generally same meaning. See COMP-3749.
 	 */
-	public static final AcsLogLevel DELOUSE = new AcsLogLevel("DELOUSE", Level.FINE.intValue(), AcsLogLevelDefinition.DELOUSE);
+	public static final AcsLogLevel DELOUSE = new AcsLogLevel("DELOUSE", Level.FINER.intValue(), AcsLogLevelDefinition.DELOUSE);
 
 	/**
 	 * Messages that contain information normally of use only when
 	 * debugging a program.
+	 * Java levels FINE and CONFIG map to this DEBUG level.
 	 */
 	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.CONFIG.intValue(), AcsLogLevelDefinition.DEBUG);
 

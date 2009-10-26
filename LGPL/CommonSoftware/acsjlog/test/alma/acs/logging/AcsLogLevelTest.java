@@ -82,7 +82,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
 		assertSame(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.CONFIG));
-		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.getNativeLevel(Level.FINE));
+		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINE));
 		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.getNativeLevel(Level.FINER));
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINEST));
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.ALL));
@@ -99,7 +99,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		// compare expected and actual levels
 		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
 		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE).intValue());
-		assertEquals(500, AcsLogLevel.getNativeLevel(AcsLogLevel.DELOUSE).intValue());
+		assertEquals(400, AcsLogLevel.getNativeLevel(AcsLogLevel.DELOUSE).intValue());
 		assertEquals(700, AcsLogLevel.getNativeLevel(AcsLogLevel.DEBUG).intValue());
 		assertEquals(800, AcsLogLevel.getNativeLevel(AcsLogLevel.INFO).intValue());
 		assertEquals(801, AcsLogLevel.getNativeLevel(AcsLogLevel.NOTICE).intValue());
@@ -265,7 +265,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		String sep = System.getProperty("line.separator");
 		String expected = 
 			"Trace" +     '\t' +  "300" + '\t' +  "1" + sep + 
-			"Delouse" +   '\t' +  "500" + '\t' +  "2" + sep + 
+			"Delouse" +   '\t' +  "400" + '\t' +  "2" + sep + 
 			"Debug" +     '\t' +  "700" + '\t' +  "3" + sep + 
 			"Info" +      '\t' +  "800" + '\t' +  "4" + sep + 
 			"Notice" +    '\t' +  "801" + '\t' +  "5" + sep + 
