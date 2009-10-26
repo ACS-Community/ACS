@@ -72,6 +72,11 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	public static final AcsLogLevel TRACE = new AcsLogLevel("TRACE", Level.FINEST.intValue(), AcsLogLevelDefinition.TRACE);
 
 	/**
+	 * A lower level than DEBUG, just to allow finer tuning. Generally same meaning. See COMP-3749.
+	 */
+	public static final AcsLogLevel DELOUSE = new AcsLogLevel("DELOUSE", Level.FINE.intValue(), AcsLogLevelDefinition.DELOUSE);
+
+	/**
 	 * Messages that contain information normally of use only when
 	 * debugging a program.
 	 */

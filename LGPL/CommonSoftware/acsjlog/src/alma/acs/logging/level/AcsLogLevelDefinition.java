@@ -28,6 +28,8 @@ import alma.AcsLogLevels.CRITICAL_NAME;
 import alma.AcsLogLevels.CRITICAL_VAL;
 import alma.AcsLogLevels.DEBUG_NAME;
 import alma.AcsLogLevels.DEBUG_VAL;
+import alma.AcsLogLevels.DELOUSE_NAME;
+import alma.AcsLogLevels.DELOUSE_VAL;
 import alma.AcsLogLevels.EMERGENCY_NAME;
 import alma.AcsLogLevels.EMERGENCY_VAL;
 import alma.AcsLogLevels.ERROR_NAME;
@@ -67,6 +69,7 @@ public enum AcsLogLevelDefinition {
 ////////////////////////////////////////////////////////////////////////
 	
 	TRACE(TRACE_VAL.value,TRACE_NAME.value),
+	DELOUSE(DELOUSE_VAL.value,DELOUSE_NAME.value),
 	DEBUG(DEBUG_VAL.value,DEBUG_NAME.value),
 	INFO(INFO_VAL.value,INFO_NAME.value),
 	NOTICE(NOTICE_VAL.value,NOTICE_NAME.value),
@@ -117,7 +120,7 @@ public enum AcsLogLevelDefinition {
 		}
 		AcsJIllegalArgumentEx ex = new AcsJIllegalArgumentEx();
 		ex.setVariable("name");
-		ex.setValue(name);			
+		ex.setValue(name);
 		throw ex;
 	}
 	

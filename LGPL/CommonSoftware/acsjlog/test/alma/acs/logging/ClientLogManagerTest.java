@@ -90,7 +90,7 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 
 		Handler[] parentHandlers = acsRemoteLogger.getHandlers();
 		assertTrue(parentHandlers.length == 0);
-		assertEquals(AcsLogLevel.TRACE, remoteHandler.getLevel());
+		assertEquals(AcsLogLevel.DELOUSE, remoteHandler.getLevel());
 
 		containerLogger.info("I'm a good pedigree logger.");
 	}

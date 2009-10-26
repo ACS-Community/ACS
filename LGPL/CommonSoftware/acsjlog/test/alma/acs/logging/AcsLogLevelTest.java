@@ -31,6 +31,8 @@ import alma.AcsLogLevels.CRITICAL_NAME;
 import alma.AcsLogLevels.CRITICAL_VAL;
 import alma.AcsLogLevels.DEBUG_NAME;
 import alma.AcsLogLevels.DEBUG_VAL;
+import alma.AcsLogLevels.DELOUSE_NAME;
+import alma.AcsLogLevels.DELOUSE_VAL;
 import alma.AcsLogLevels.EMERGENCY_NAME;
 import alma.AcsLogLevels.EMERGENCY_VAL;
 import alma.AcsLogLevels.ERROR_NAME;
@@ -80,8 +82,8 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getNativeLevel(Level.WARNING));
 		assertSame(AcsLogLevel.INFO, AcsLogLevel.getNativeLevel(Level.INFO));
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.CONFIG));
-		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINE));
-		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.getNativeLevel(Level.FINER));
+		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.getNativeLevel(Level.FINE));
+		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.getNativeLevel(Level.FINER));
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.FINEST));
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getNativeLevel(Level.ALL));
 		assertSame(AcsLogLevel.OFF, AcsLogLevel.getNativeLevel(Level.OFF));
@@ -97,6 +99,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		// compare expected and actual levels
 		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.ALL).intValue());
 		assertEquals(300, AcsLogLevel.getNativeLevel(AcsLogLevel.TRACE).intValue());
+		assertEquals(500, AcsLogLevel.getNativeLevel(AcsLogLevel.DELOUSE).intValue());
 		assertEquals(700, AcsLogLevel.getNativeLevel(AcsLogLevel.DEBUG).intValue());
 		assertEquals(800, AcsLogLevel.getNativeLevel(AcsLogLevel.INFO).intValue());
 		assertEquals(801, AcsLogLevel.getNativeLevel(AcsLogLevel.NOTICE).intValue());
@@ -114,6 +117,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 	{
 		// test some
 		assertEquals("Trace", AcsLogLevel.TRACE.getEntryName());
+		assertEquals("Delouse", AcsLogLevel.DELOUSE.getEntryName());
 		assertEquals("Debug", AcsLogLevel.DEBUG.getEntryName());
 		assertEquals("Warning", AcsLogLevel.WARNING.getEntryName());
 		assertEquals("Info", AcsLogLevel.INFO.getEntryName());
@@ -124,6 +128,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertEquals("Emergency", AcsLogLevel.EMERGENCY.getEntryName());
 
 		assertEquals("TRACE", AcsLogLevel.TRACE.getName());
+		assertEquals("DELOUSE", AcsLogLevel.DELOUSE.getName());
 		assertEquals("DEBUG", AcsLogLevel.DEBUG.getName());
 		assertEquals("INFO", AcsLogLevel.INFO.getName());
 		assertEquals("NOTICE", AcsLogLevel.NOTICE.getName());
@@ -143,6 +148,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 	{
 		// Checks that our loglevel-enum correctly encapsulates the IDL-defined constants  
 		assertEquals(TRACE_VAL.value, AcsLogLevelDefinition.TRACE.value);
+		assertEquals(DELOUSE_VAL.value, AcsLogLevelDefinition.DELOUSE.value);
 		assertEquals(DEBUG_VAL.value, AcsLogLevelDefinition.DEBUG.value);
 		assertEquals(INFO_VAL.value, AcsLogLevelDefinition.INFO.value);
 		assertEquals(NOTICE_VAL.value, AcsLogLevelDefinition.NOTICE.value);
@@ -152,10 +158,11 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertEquals(ALERT_VAL.value, AcsLogLevelDefinition.ALERT.value);
 		assertEquals(EMERGENCY_VAL.value, AcsLogLevelDefinition.EMERGENCY.value);
 		assertEquals(OFF_VAL.value, AcsLogLevelDefinition.OFF.value);
-		assertEquals("Number of log levels has changed, need to update this test.", 10, AcsLogLevelDefinition.values().length);
+		assertEquals("Number of log levels has changed, need to update this test.", 11, AcsLogLevelDefinition.values().length);
 		
 		// check integer value to enum conversion
 		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevelDefinition.fromInteger(TRACE_VAL.value));
+		assertSame(AcsLogLevelDefinition.DELOUSE, AcsLogLevelDefinition.fromInteger(DELOUSE_VAL.value));
 		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.fromInteger(DEBUG_VAL.value));
 		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevelDefinition.fromInteger(INFO_VAL.value));
 		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevelDefinition.fromInteger(NOTICE_VAL.value));
@@ -166,7 +173,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevelDefinition.EMERGENCY, AcsLogLevelDefinition.fromInteger(EMERGENCY_VAL.value));
 		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevelDefinition.fromInteger(OFF_VAL.value));
 		try {
-			AcsLogLevelDefinition.fromInteger(1);
+			AcsLogLevelDefinition.fromInteger(0);
 			fail("undefined log level not allowed.");
 		} catch (AcsJIllegalArgumentEx ex) {
 			// good
@@ -182,6 +189,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		
 		// check name to enum conversion
 		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevelDefinition.fromName(TRACE_NAME.value));
+		assertSame(AcsLogLevelDefinition.DELOUSE, AcsLogLevelDefinition.fromName(DELOUSE_NAME.value));
 		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.fromName(DEBUG_NAME.value));
 		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevelDefinition.fromName(INFO_NAME.value));
 		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevelDefinition.fromName(NOTICE_NAME.value));
@@ -217,13 +225,14 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		}
 		
 		// test the next-level method that should only be used by other tests
-		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevelDefinition.TRACE.getNextHigherLevel());
+		assertSame(AcsLogLevelDefinition.DELOUSE, AcsLogLevelDefinition.TRACE.getNextHigherLevel());
 		assertSame(AcsLogLevelDefinition.ERROR, AcsLogLevelDefinition.WARNING.getNextHigherLevel()); // values 6 -> 8
 		assertNull(AcsLogLevelDefinition.EMERGENCY.getNextHigherLevel());
 		assertNull(AcsLogLevelDefinition.OFF.getNextHigherLevel());
 		
 		// AcsLogLevel (which extends/overwrites some of the JDK log Levels) each maps to exactly one AcsLogLevelDefinition enum
 		assertSame(AcsLogLevelDefinition.TRACE, AcsLogLevel.TRACE.getAcsLevel());
+		assertSame(AcsLogLevelDefinition.DELOUSE, AcsLogLevel.DELOUSE.getAcsLevel());
 		assertSame(AcsLogLevelDefinition.DEBUG, AcsLogLevel.DEBUG.getAcsLevel());
 		assertSame(AcsLogLevelDefinition.INFO, AcsLogLevel.INFO.getAcsLevel());
 		assertSame(AcsLogLevelDefinition.NOTICE, AcsLogLevel.NOTICE.getAcsLevel());
@@ -236,6 +245,7 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 
 		// ACS-core-level to ACS-Level 
 		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.TRACE));
+		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.DELOUSE));
 		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.DEBUG));
 		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.INFO));
 		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.NOTICE));
@@ -254,7 +264,8 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		
 		String sep = System.getProperty("line.separator");
 		String expected = 
-			"Trace" +     '\t' +  "300" + '\t' +  "2" + sep + 
+			"Trace" +     '\t' +  "300" + '\t' +  "1" + sep + 
+			"Delouse" +   '\t' +  "500" + '\t' +  "2" + sep + 
 			"Debug" +     '\t' +  "700" + '\t' +  "3" + sep + 
 			"Info" +      '\t' +  "800" + '\t' +  "4" + sep + 
 			"Notice" +    '\t' +  "801" + '\t' +  "5" + sep + 
