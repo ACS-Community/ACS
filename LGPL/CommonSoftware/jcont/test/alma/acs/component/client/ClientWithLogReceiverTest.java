@@ -52,7 +52,7 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
     
     protected void setUp() throws Exception {
     	// to not suppress any remote logging (would usually be configured through the CDB)  
-    	System.setProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL, "2");
+    	System.setProperty(LogConfig.PROPERTYNAME_MIN_LOG_LEVEL, "1");
         super.setUp();
         m_logger.info("------------ setUp " + getName() + " --------------");
         logReceiver = getLogReceiver();
