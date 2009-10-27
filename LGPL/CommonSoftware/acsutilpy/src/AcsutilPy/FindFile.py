@@ -1,4 +1,4 @@
-# @(#) $Id: FindFile.py,v 1.5 2009/10/23 22:22:39 agrimstrup Exp $
+# @(#) $Id: FindFile.py,v 1.6 2009/10/27 11:04:21 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -25,7 +25,7 @@ This module provides for Python the file finding algorithm used by
 ACS. It is intended to work like its namesake "acsFindFile.cpp".
 '''
 # ---------------------------------------------------------------------------
-__revision__ = "$Id: FindFile.py,v 1.5 2009/10/23 22:22:39 agrimstrup Exp $"
+__revision__ = "$Id: FindFile.py,v 1.6 2009/10/27 11:04:21 agrimstrup Exp $"
 # ---------------------------------------------------------------------------
 import os
 import os.path
@@ -69,13 +69,18 @@ def __searchSEDirs(filename):
     '''
     #build up our list of directories
     se_dirs = __getSEDirs()
+    head,tail = os.path.split(filename)
     
     for se_dir in se_dirs:
         filepath = os.path.join(se_dir, filename)
 
-        for w in os.walk(se_dir):
-            if filename in w[2]:
-                return os.path.join(w[0], filename)
+        if head:
+            if os.path.exists(filepath):
+                return(filepath)
+        else:
+            for w in os.walk(se_dir):
+                if filename in w[1] or filename in w[2]:
+                    return os.path.join(w[0], filename)
                 
     #worst-case scenario we just return None
     return None
