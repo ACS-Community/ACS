@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.11 2009/10/26 19:00:22 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.12 2009/10/28 22:48:56 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,7 +46,6 @@ functions in C++-code.
 
 namespace maci {
 
-
 /**
  *  Storage Policy class for Component Pointers.
  *  In addition to storing the pointer to the component being managed by
@@ -64,13 +63,13 @@ class ComponentStorage
     /**
      * Default Constructor
      */
-    ComponentStorage() : handle(0), sticky(true), pointee_(Default())
+    ComponentStorage() : handle(0), sticky(false), pointee_(Default())
         {}
 
     /**
      * Constructor that stores default management values with a live pointer.
      */
-    ComponentStorage(const StoredType& p) : handle(0), sticky(true), pointee_(p)
+    ComponentStorage(const StoredType& p) : handle(0), sticky(false), pointee_(p)
         {}
 
     // The storage policy doesn't initialize the stored pointer
@@ -86,7 +85,7 @@ class ComponentStorage
      * We don't allow copying of different types, so the attributes are set to default values.
      */
     template <typename U, typename V>
-    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(true), pointee_(0)
+    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(false), pointee_(0)
         {}
 
     /**
@@ -188,8 +187,6 @@ class ComponentStorage
 		    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ComponentStorage::Destroy",
                          (LM_ERROR, "Unexpected exception caught when releasing component."));
 		    }
-		pointee_ = Default();
-		sticky = false;
 		}
         }
 
@@ -279,8 +276,6 @@ class SmartPtr
         /**
          * Constructor.
          * Create a smart pointer for the component described.
-         * @param name is the name of the component.
-         * @param m is the reference of the manager used to manage the connection.
          * @param h is the handle of the requestor of the component
          * @param s is the flag indicating if the reference is sticky.
          @ @param p is the pointer to the component.
@@ -389,15 +384,18 @@ class SmartPtr
 
         ~SmartPtr()
         {
-	    release();
-        }
-
-        void release()
-	{
             if (!SP::isNil() && OP::Release(GetImpl(*static_cast<SP*>(this))))
             {
                 SP::Destroy();
             }
+        }
+
+        void release()
+	{
+	    OP temp;
+	    this->~SmartPtr();
+	    this->setValues((H *)0, false, SP::Default());
+	    OP::Swap(temp);
 	}
 
         friend inline void Release(SmartPtr& sp, typename SP::StoredType& p)

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.4 2009/10/22 22:36:04 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.5 2009/10/28 22:48:56 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.4 2009/10/22 22:36:04 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.5 2009/10/28 22:48:56 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsComponentSmartPtrTestImpl.h"
@@ -97,7 +97,7 @@ void smartptrtest :: defaultConstructorTest (void)
 {
     maci::SmartPtr<MockComponent> foo;
     CPPUNIT_ASSERT_EQUAL ((maci::MockContainerServices *)foo.handle, (maci::MockContainerServices *)0);
-    CPPUNIT_ASSERT_EQUAL (foo.sticky, true);
+    CPPUNIT_ASSERT_EQUAL (foo.sticky, false);
     CPPUNIT_ASSERT_EQUAL ((MockComponent *)foo.pointee_, MockComponent::_nil());
 }
 
@@ -136,9 +136,9 @@ void smartptrtest :: releaseTest(void)
     ACE_CString cname("Foo");
     maci::SmartPtr<MockComponent> foo(mcs, true, mcs->getComponent<MockComponent>(cname.c_str()));
     foo.release();
-    CPPUNIT_ASSERT_EQUAL ((maci::MockContainerServices *)foo.handle, mcs);
-    CPPUNIT_ASSERT_EQUAL (foo.sticky, false);
+    CPPUNIT_ASSERT_EQUAL ((maci::MockContainerServices *)foo.handle, (maci::MockContainerServices *)0);
     CPPUNIT_ASSERT_EQUAL (foo.pointee_, (MockComponent *)0);
+    CPPUNIT_ASSERT_EQUAL (foo.sticky, false);
 }
 
 void smartptrtest :: isNilNotSetTest(void)
