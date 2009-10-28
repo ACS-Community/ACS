@@ -467,27 +467,43 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private void checkCache()
 	{
 		synchronized (cache) {
+			
+			System.gc();
+			System.runFinalization();
+			System.gc();
+
 			final Runtime r = Runtime.getRuntime();
 			long allocatedMemory = r.totalMemory();
 			long freeOfAllocatedMemory = r.freeMemory();
 			final long maxMemory = r.maxMemory();
-			
+
 			long totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
-			double precentageFree = totalFreeMemory/(double)maxMemory;
+			final long requiredFreeMemory = (long)(maxMemory*0.2);	// 20%
+			final long toFree = requiredFreeMemory - totalFreeMemory;
 
-			// make sure that there is at least 20% free
-			while (precentageFree < 0.20 && !cache.isEmpty()) {
+			if (toFree <= 0)
+				return;
+				
+			m_logger.log(AcsLogLevel.DEBUG, "Low memory: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free. Cleaning cache...");
+
+			long freedEstimation = 0;
+			while (freedEstimation < toFree && !cache.isEmpty()) {
 				String oldestKey = cache.keySet().iterator().next();
-				cache.remove(oldestKey);
-				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + oldestKey + "' removed from cache, due to low memory (" + (precentageFree*100) + "% free).");
-				System.gc();
-
-				// recalculate
-				allocatedMemory = r.totalMemory();
-				freeOfAllocatedMemory = r.freeMemory();
-				totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
-				precentageFree = totalFreeMemory/(double)maxMemory;
+				String value = cache.remove(oldestKey);
+				freedEstimation += (value.length()*2 + 64) + (oldestKey.length()*2 + 64) + 68;
+				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + oldestKey + "' removed from cache.");
 			}
+			
+			System.runFinalization();
+			System.gc();
+
+			// recalculate
+			long l = totalFreeMemory;
+			allocatedMemory = r.totalMemory();
+			freeOfAllocatedMemory = r.freeMemory();
+			totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
+
+			m_logger.log(AcsLogLevel.DEBUG, "Total free memory after cache cleanup: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free (actually freed: " + (totalFreeMemory-l) + " bytes, estimated: " + freedEstimation + " bytes).");
 		}
 	}
 	
