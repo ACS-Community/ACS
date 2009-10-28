@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.2 2009/03/04 12:00:04 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2009/10/28 10:08:57 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -56,7 +56,7 @@ hibernateTest_DIRS = alma/hibernate/test
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       =  
+SCRIPTS_L       = hibernateTest
 
 #>>>>> END OF standard rules
 
