@@ -4,6 +4,7 @@ localhost address:
 runOrbThread
 initThread
 DEBUG
+DELOUSE
 ^. - [jJ]ava
 Connected to
 patching
