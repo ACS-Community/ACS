@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: baciPropsTATEnvironment,v 1.1 2008/03/25 14:05:37 acaproni Exp $"
+# "@(#) $Id: baciPropsTATEnvironment,v 1.2 2009/10/28 11:42:30 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -10,7 +10,7 @@
 set ACS_TMP $env(PWD)/tmp
 set env(ACS_TMP) $ACS_TMP
 
-set ACS_LOG_STDOUT 2
+set ACS_LOG_STDOUT 1
 set env(ACS_LOG_STDOUT) $ACS_LOG_STDOUT
 #
 # ___oOo___

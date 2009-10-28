@@ -1,6 +1,5 @@
 ACS Manager:
 ACS Interface Repository:
-java -classpath
 ^. - [jJ]ava
 Time:
 export
@@ -23,13 +22,11 @@ about to release component
 activated
 Failed to get MACI/Channels DAO from CDB
 ##
-Successfully connected to a notification channel
 component AlarmService retrieved
-Starting Java/abeans application
 DEBUG
+DELOUSE
 FINE
 DefaultSubscriberImpl
 ACSJMSTopicConnectionImpl
 HeartbeatHelper
-ACS abeans configuration directory
 MomConfig
