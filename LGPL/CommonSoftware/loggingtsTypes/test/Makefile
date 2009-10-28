@@ -193,9 +193,11 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) tmp	
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
