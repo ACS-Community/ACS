@@ -481,9 +481,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			final long requiredFreeMemory = (long)(maxMemory*0.2);	// 20%
 			final long toFree = requiredFreeMemory - totalFreeMemory;
 
-			if (toFree <= 0)
+			if (toFree <= 0 || cache.isEmpty())
+			{
+				m_logger.log(AcsLogLevel.DEBUG, "Memory status: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free.");
 				return;
-				
+			}
+	
 			m_logger.log(AcsLogLevel.DEBUG, "Low memory: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free. Cleaning cache...");
 
 			long freedEstimation = 0;
