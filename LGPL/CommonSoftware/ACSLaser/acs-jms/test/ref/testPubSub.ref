@@ -1,5 +1,6 @@
 1 -  -D user.dir=xxx -- junit.textui.TestRunner alma.acsjms.test.PubSubTest
-1 - .----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - 
+1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] -------------------------------
 1 - ----------T--:--:--.--- INFO [PubSubTest#testTopicConnection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- DEBUG [PubSubTest#testTopicConnection] Alarm system type: ACS

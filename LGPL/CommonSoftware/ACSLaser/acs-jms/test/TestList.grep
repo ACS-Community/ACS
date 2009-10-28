@@ -1,8 +1,8 @@
-java -classpath
-Starting Java application: 
+DEBUG \[acsStartJava\]
+^. - [jJ]ava
+Starting Java application:
+FINE
+FINEST
 Time:
 export
-FINEST
-FINER
-FINE
 getAdvancedContainerServices
