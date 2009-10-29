@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.4 2009/10/22 04:32:36 agrimstrup Exp $"
+* "@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.5 2009/10/29 01:56:29 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.4 2009/10/22 04:32:36 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: maciTestComponentSmartPtr.cpp,v 1.5 2009/10/29 01:56:29 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
@@ -239,6 +239,41 @@ int main (int argc, char **argv)
 	    ACS_SHORT_LOG((LM_INFO,"Name out of scope... [Failed]"));
 	    }
 	
+	// Check double release handling
+	try
+	    {
+	    ComponentSmartPtr<MACI_TEST::MaciTestClass> bonzo;
+	    {
+	    std::string tname("MACI04");
+	    bonzo = client.getComponentSmartPtr<MACI_TEST::MaciTestClass>(tname.c_str(), 0, true);
+	    bonzo.release();
+	    bonzo.release();
+	    }
+	    ACS_SHORT_LOG((LM_INFO,"Double release... [OK]"));
+	    }
+	catch(...)
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"Double release... [Failed]"));
+	    }
+	
+	// Check release and reassignment
+ 	try
+ 	    {
+	    ComponentSmartPtr<MACI_TEST::MaciTestClass> bonzo;
+	    {
+	    std::string tname("MACI04");
+	    bonzo = client.getComponentSmartPtr<MACI_TEST::MaciTestClass>(tname.c_str(), 0, true);
+	    bonzo.release();
+
+	    bonzo = client.getComponentSmartPtr<MACI_TEST::MaciTestClass>(tname.c_str(), 0, true);
+	    }
+	    ACS_SHORT_LOG((LM_INFO,"Release and re-assignment... [OK]"));
+	    }
+ 	catch(...)
+ 	    {
+ 	    ACS_SHORT_LOG((LM_INFO,"Release and re-assignment... [Failed]"));
+ 	    }
+
 	//TODO: Write some threaded tests to ensure thread-safety.
 
 	client.logout();
