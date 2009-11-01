@@ -178,7 +178,7 @@ public class CSVConverter {
 					appendField(null,str);
 				} else  if (index==Field.TIMESTAMP.ordinal()) {
 					// Write the date in the right format
-					Date dt = (Date)obj;
+					Date dt=new Date(((Long)obj).longValue());
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
 					df.format(dt,dateSB,pos);
