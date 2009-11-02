@@ -916,7 +916,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private void initializeDefaultConfiguration()
 	{
 		poolThreads = 10;
-		lockTimeout = 3 * 60000L;	// 3 minutes
+		lockTimeout = 10 * 60000L;	// 10 minutes
 		clientPingInterval = 60000;		// 60 secs
 		administratorPingInterval = 45000;		// 45 secs
 		containerPingInterval = 30000;		// 30 secs
@@ -8903,8 +8903,21 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		containerPingInterval = (int)(readDoubleCharacteristics(managerDAO, "ContainerPingInterval", containerPingInterval/(double)1000, true)*1000);
 		containerPingInterval = Math.max(1000, containerPingInterval);
 		
-		lockTimeout = (long)(readDoubleCharacteristics(managerDAO, "DeadlockTimeout", lockTimeout/(double)1000, true)*1000);
-		lockTimeout = Math.max(1000, lockTimeout);
+		try {
+			String strTimeOut = System.getProperty("jacorb.connection.client.pending_reply_timeout");
+			if (strTimeOut != null) {
+				long t = Long.valueOf(strTimeOut);
+				if (t > 0) {
+					// add 1 minute
+					lockTimeout = t + 60000;
+					// check for overflow
+					if (lockTimeout < 0)
+						lockTimeout = Long.MAX_VALUE;
+				}
+			}
+		} catch (Throwable th) {
+			// noop (left default)
+		}
 
 		poolThreads = readLongCharacteristics(managerDAO, "ServerThreads", poolThreads, true);
 		poolThreads = Math.max(3, poolThreads);
