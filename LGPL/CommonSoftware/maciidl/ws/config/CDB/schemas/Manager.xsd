@@ -65,11 +65,6 @@ configuration parameters.</xs:documentation>
 				<xs:documentation>This is the number of threads allocate to the CORBA infrastructure for the handling of concurrent invocations.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="DeadlockTimeout" type="xs:double" use="optional" default="180.0">
-			<xs:annotation>
-				<xs:documentation>The Manager internally monitors all component synchronization locks. If a lock is not released after specified amount of time and exception is thrown and lock released. The time for the deadlock timeout check is specified here in seconds.</xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
 
