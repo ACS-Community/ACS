@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
@@ -30,19 +32,20 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.cosylab.CDB.DALChangeListener;
+import com.cosylab.CDB.DALChangeListenerHelper;
+import com.cosylab.CDB.DAO;
+import com.cosylab.CDB.DAOHelper;
+import com.cosylab.CDB.JDALPOA;
+import com.cosylab.CDB.WDALOperations;
+import com.cosylab.util.FileHelper;
+
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-
-import com.cosylab.CDB.DALChangeListener;
-import com.cosylab.CDB.DALChangeListenerHelper;
-import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.DAOHelper;
-import com.cosylab.CDB.JDALPOA;
-import com.cosylab.util.FileHelper;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -65,13 +68,14 @@ import com.cosylab.util.FileHelper;
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  * @author dragan
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 
+/**
+ * A note about the inheritance structure used in this module: 
+ * The writable variant of the DAL interface delegates to an instance of DALImpl
+ * for all JDALOperations, see {@link WDALBaseImpl}.
+ * It only adds the implementation of the {@link WDALOperations} methods.
+ */
 public class DALImpl extends JDALPOA implements Recoverer {
 	/** Schema validation feature id (http://apache.org/xml/features/validation/schema). */
 	public static final String SCHEMA_VALIDATION_FEATURE_ID =
@@ -83,28 +87,51 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
 	private ORB orb;
 	private POA poa;
-	SAXParserFactory factory;
-	SAXParser saxParser;
-	static String m_root;
-	private HashMap daoMap = new HashMap();
+	private SAXParserFactory factory;
+	private SAXParser saxParser;
+	private String m_root;
+	private HashMap<String, DAO> daoMap = new HashMap<String, DAO>();
 
 	// clean cache implementation
-	private HashMap listenedCurls = new HashMap();
-	File listenersStorageFile = null;
-	Random idPool = new Random();
-	private HashMap regListeners = new HashMap();
+	private HashMap<String, ArrayList<Integer>> listenedCurls = new HashMap<String, ArrayList<Integer>>();
+	private File listenersStorageFile = null;
+	private Random idPool = new Random();
+	private HashMap<Integer, DALChangeListener> regListeners = new HashMap<Integer, DALChangeListener>();
 	private boolean recoveryRead = true;
-	private DALNode rootNode = null; // used for node lisitng 
-	Logger m_logger;
+	private DALNode rootNode = null; // used for node listening 
+	private final Logger m_logger;
 	private volatile boolean shutdown = false;
 	private Object shutdownLock = new Object();
 
-	DALImpl(String args[], ORB orb_val, POA poa_val) {
+	// preparation for future self-profiling
+	protected final AtomicLong totalDALInvocationCounter;
+//	private final ThreadLoopRunner profilingThreadLoopRunner;
+
+	/**
+	 * C'tor
+	 * @param args
+	 * @param orb_val
+	 * @param poa_val
+	 */
+	DALImpl(String args[], ORB orb_val, POA poa_val, Logger logger) {
 		orb = orb_val;
 		poa = poa_val;
-	  	m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::DALImpl", true);	
+		m_logger = logger;
 		m_root = "CDB";
 
+		// set up self-profiling
+		totalDALInvocationCounter = new AtomicLong();
+//		Runnable profileTask = new Runnable() {
+//			public void run() {
+//				totalInvocationProfilingCounter.get();
+//			}
+//		};
+//		ThreadFactory tf = new DaemonThreadFactory();
+//		profilingThreadLoopRunner = new ThreadLoopRunner(profileTask, 60, TimeUnit.SECONDS, tf, m_logger);
+//		profilingThreadLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
+//		profilingThreadLoopRunner.runLoop();
+		
+		// read args
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-root")) {
 				if (i < args.length - 1) {
@@ -118,10 +145,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
 		File rootF = new File(m_root);
 		m_root = rootF.getAbsolutePath() + '/';
-		if (Integer.getInteger("ACS.logstdout", 4) < 4)
-		    {
-			m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
-		    }
+		m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
 		loadFactory();
 		
 		// cache cleanup thread
@@ -141,6 +165,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			}
 		}, "cache-cleanup").start();
 	}
+	
 	public void loadFactory(){
 		factory = SAXParserFactory.newInstance();
 		try {
@@ -158,10 +183,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			saxParser = factory.newSAXParser();
 			// find out all schemas
 			String allURIs = getSchemas();
-			if (Integer.getInteger("ACS.logstdout", 4) < 4)
-			    {
-				m_logger.log(AcsLogLevel.INFO, "- created parser "+saxParser.getClass().getName()+" with schema location: '" + allURIs +"'");//msc:added
-			    }
+			m_logger.log(AcsLogLevel.DEBUG, "- created parser "+saxParser.getClass().getName()+" with schema location: '" + allURIs +"'");//msc:added
 			if (allURIs != null) {
 				saxParser.setProperty(EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID, allURIs);
 			} else {
@@ -199,21 +221,20 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	/**
 	 * returns string of URIs separated by ' ' for all schema files in root/schemas and
 	 * directories list given by ACS.cdbpath environment variable
+	 * 
+	 * @TODO (HSO): Is there a reason why this method is public and static, e.g. usage by TMCDB etc?
 	 */
-	public static String getSchemas(String m_root, Logger m_logger) {
+	public static String getSchemas(String root, Logger m_logger) {
 		String fileName, filePath;
 
 		// we will use only first fileName we found in search path
-		LinkedHashMap filePathMap = new LinkedHashMap();
+		LinkedHashMap<String, String> filePathMap = new LinkedHashMap<String, String>();
 
 		// first get schemas from root/schemas directory
-		getFiles(m_root + "schemas", filePathMap);
+		getFiles(root + "schemas", filePathMap);
 
-	  int dbg_nRoot = filePathMap.size();
-	  if (Integer.getInteger("ACS.logstdout", 4) < 4)
-	      {	  
-		m_logger.log(AcsLogLevel.INFO, "- found "+dbg_nRoot+" xsd-files in <-root>");//msc:added
-	      }
+		int dbg_nRoot = filePathMap.size();
+		m_logger.log(AcsLogLevel.DEBUG, "- found "+dbg_nRoot+" xsd-files in <-root>");//msc:added
 		// then all given path if any
 		String pathList = System.getProperty("ACS.cdbpath");
 		if (pathList != null) {
@@ -223,19 +244,16 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			getFiles(filePath, filePathMap);
 			}
 		}
-	  if (Integer.getInteger("ACS.logstdout", 4) < 4)
-	      {
-		m_logger.log(AcsLogLevel.INFO,"- found "+(filePathMap.size()-dbg_nRoot)+" xsd-files in <ACS.cdbpath>");//msc:added  
-	      }
+		m_logger.log(AcsLogLevel.DEBUG,"- found "+(filePathMap.size()-dbg_nRoot)+" xsd-files in <ACS.cdbpath>");//msc:added  
 		// from file list build return string
-		Iterator i = filePathMap.keySet().iterator();
+		Iterator<String> i = filePathMap.keySet().iterator();
 		if (!i.hasNext())
 			return null; // no schemas found
 
 		StringBuffer allURIs = new StringBuffer(1024);
 		while (i.hasNext()) {
-			fileName = (String) i.next();
-			filePath = (String) filePathMap.get(fileName);
+			fileName = i.next();
+			filePath = filePathMap.get(fileName);
          
 			// trim extension
 			fileName = fileName.substring(0, fileName.length() - 4);
@@ -250,7 +268,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * Adds all *.xsd files from filePath directory 
 	 * if file already exists in map it is skipped
 	 */
-	public static void getFiles(String filePath, LinkedHashMap map) {
+	public static void getFiles(String filePath, LinkedHashMap<String, String> map) {
 		String fileName;
 		File base = new File(filePath);
 		File[] basefiles = base.listFiles(new Filter());
@@ -353,7 +371,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				rootNode = DALNode.getRoot(m_root);
 			}
 		}
-		
+
 		//no Error thrown
 		String strFileCurl = curl;
 		String strNodeCurl = "";
@@ -546,10 +564,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * returns full expanded XML string
 	 */
 	public synchronized String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
-		
-		if (shutdown)
+		totalDALInvocationCounter.incrementAndGet();
+
+		if (shutdown) {
 			throw new NO_RESOURCES();
-			
+		}
+		
 		try {
 			if (curl.lastIndexOf('/') == curl.length() - 1)
 				curl = curl.substring(0, curl.length() - 1);
@@ -586,6 +606,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * create DAO servant with requested XML
 	 */
 	public synchronized DAO get_DAO_Servant(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
+		totalDALInvocationCounter.incrementAndGet();
 
 		// make sure CURL->DAO mapping is surjective function, remove leading slash
 		if (curl.length() > 1 && curl.charAt(0) == '/')
@@ -594,7 +615,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		// make sure there are no identical DAOs created
 		synchronized (daoMap) {
 			if (daoMap.containsKey(curl))
-				return (DAO) daoMap.get(curl);
+				return daoMap.get(curl);
 		}
 
 		// do the hardwork here
@@ -625,9 +646,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				// twice, but this drawback happens rarely and it pays off parallel
 				// execution when different DAO are created
 				if (daoMap.containsKey(curl))
-					return (DAO) daoMap.get(curl);
+					return daoMap.get(curl);
 
-				DAOImpl daoImp = new DAOImpl(curl, xmlSolver.m_rootNode, poa);
+				DAOImpl daoImp = new DAOImpl(curl, xmlSolver.m_rootNode, poa, m_logger);
 
 				// create object id
 				byte[] id = curl.getBytes();
@@ -652,22 +673,33 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 
+
 	public void shutdown() {
+		totalDALInvocationCounter.incrementAndGet();
+		
+//		try {
+//			profilingThreadLoopRunner.shutdown(1, TimeUnit.SECONDS);
+//		} catch (InterruptedException ex) {
+//			ex.printStackTrace();
+//		}
 		synchronized (shutdownLock) {
 			shutdown = true;
 			shutdownLock.notifyAll();
 		}
 		
+		ClientLogManager.getAcsLogManager().shutdown(true);
+		
 		orb.shutdown(false);
 	}
 
+	
 	/**
 	 * @param curl
 	 */
 	protected void object_changed(String curl) {
 		synchronized (daoMap) {
 			if (daoMap.containsKey(curl)) {
-				DAO dao = (DAO) daoMap.get(curl);
+				DAO dao = daoMap.get(curl);
 				dao.destroy();
 				daoMap.remove(curl);
 			}
@@ -731,7 +763,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 					curl = reader.readLine();
 					if (curl == null)
 						break;
-					ArrayList arr = new ArrayList();
+					ArrayList<Integer> arr = new ArrayList<Integer>();
 					while (true) {
 						line = reader.readLine();
 						if (line == null || line.length() == 0)
@@ -760,20 +792,20 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			//listenedCurls.store(new FileOutputStream(storageFile), "Listeners");
 			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 			// write listeners
-			Iterator reg = regListeners.keySet().iterator();
+			Iterator<Integer> reg = regListeners.keySet().iterator();
 			while (reg.hasNext()) {
-				Integer id = (Integer) reg.next();
+				Integer id = reg.next();
 				writer.write(id.toString());
 				writer.newLine();
-				ior = orb.object_to_string(((DALChangeListener) regListeners.get(id)));
+				ior = orb.object_to_string(regListeners.get(id));
 				writer.write(ior);
 				writer.newLine();
 			}
 			// write listened curls
-			Iterator iter = listenedCurls.keySet().iterator();
+			Iterator<String> iter = listenedCurls.keySet().iterator();
 			while (iter.hasNext()) {
-				key = (String) iter.next();
-				ArrayList arr = (ArrayList) listenedCurls.get(key);
+				key = iter.next();
+				ArrayList<Integer> arr = listenedCurls.get(key);
 				if(arr.size() == 0 )
 					continue; // don't write curls without listeners
 				// separator
@@ -794,6 +826,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public int add_change_listener(DALChangeListener listener) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		synchronized (listenedCurls) {
 			int id;
 			while (true) {
@@ -809,10 +843,12 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public void listen_for_changes(String curl, int listenerID) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		synchronized (listenedCurls) {
-			ArrayList listeners = (ArrayList) listenedCurls.get(curl);
+			ArrayList<Integer> listeners = listenedCurls.get(curl);
 			if (listeners == null) {
-				listeners = new ArrayList();
+				listeners = new ArrayList<Integer>();
 				listenedCurls.put(curl, listeners);
 			}
 			listeners.add(new Integer(listenerID));
@@ -820,16 +856,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 	public void remove_change_listener(int listenerID) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		synchronized (listenedCurls) {
-			Iterator iter = listenedCurls.keySet().iterator();
-			// deattach this listener from its curls
+			Iterator<String> iter = listenedCurls.keySet().iterator();
+			// detach this listener from its curls
 			while (iter.hasNext()) {
-				String curl = (String) iter.next();
-				ArrayList listeners = (ArrayList) listenedCurls.get(curl);
+				String curl = iter.next();
+				ArrayList<Integer> listeners = listenedCurls.get(curl);
 				if (listeners != null) {
 					//listeners.remove(listener);
 					for (int i = 0; i < listeners.size(); i++) {
-						Integer id = (Integer) listeners.get(i);
+						Integer id = listeners.get(i);
 						if (id.intValue() == listenerID) {
 							listeners.remove(i);
 							i--; // just to test shifted
@@ -847,14 +885,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * to avoid repeatedly calling invalid listeners
 	 */
 	protected void cleanListenedCurls() {
-		Iterator iter = listenedCurls.keySet().iterator();
+		Iterator<String> iter = listenedCurls.keySet().iterator();
 		while (iter.hasNext()) {
-			String curl = (String) iter.next();
-			ArrayList listeners = (ArrayList) listenedCurls.get(curl);
+			String curl = iter.next();
+			ArrayList<Integer> listeners = listenedCurls.get(curl);
 			if (listeners == null)
 				continue;
 			for (int i = 0; i < listeners.size(); i++) {
-				DALChangeListener listener = (DALChangeListener) regListeners.get(listeners.get(i));
+				DALChangeListener listener = regListeners.get(listeners.get(i));
 				if( listener == null ) {
 					listeners.remove(i);
 					i--;
@@ -864,30 +902,32 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	public void clear_cache(String curl) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		// first take care of our own map
 		object_changed(curl);
 
 		// then all registered listeners
-		ArrayList listeners;
+		ArrayList<Integer> listeners;
 		boolean needToSave = false;
 		synchronized (listenedCurls) {
-			listeners = (ArrayList) listenedCurls.get(curl);
+			listeners = listenedCurls.get(curl);
 		}
 		if (listeners == null)
 			return;
 
-		ArrayList invalidListeners = new ArrayList();
+		ArrayList<Integer> invalidListeners = new ArrayList<Integer>();
 		for (int i = 0; i < listeners.size(); i++) {
 			DALChangeListener listener;
 			synchronized (listenedCurls) {
-				listener = (DALChangeListener) regListeners.get(listeners.get(i));
+				listener = regListeners.get(listeners.get(i));
 			}
 			try {
 				//System.out.println("Calling " + listener + " ...");
 				listener.object_changed(curl);
 				//System.out.println("Done " + listener);
 			} catch (RuntimeException e) {
-				// silent here because who knows what happend with clients
+				// silent here because who knows what happened with clients
 				invalidListeners.add(listeners.get(i));
 			}
 		}
@@ -906,7 +946,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 	
-        public void clear_cache_all() {
+	public void clear_cache_all() {
+		totalDALInvocationCounter.incrementAndGet();
+
 		loadFactory();
 		synchronized (this) {
 			rootNode = DALNode.getRoot(m_root);
@@ -944,6 +986,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
     // listing
 	public String list_nodes(String name) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		// if we didn't create a root node yet or we are listing
 		// the root content then recreate the tree data
 		synchronized (this) {
@@ -961,6 +1005,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#list_daos(java.lang.String)
 	 */
 	public String list_daos(String name) {
+		totalDALInvocationCounter.incrementAndGet();
+
 		// if we didn't create a root node yet or we are listing
 		// the root content then recreate the tree data
 		synchronized (this) {
@@ -1015,6 +1061,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @see com.cosylab.CDB.DALOperations#configuration_name()
 	 */
 	public String configuration_name() {
+		totalDALInvocationCounter.incrementAndGet();
 		return "XML";
 	}
 

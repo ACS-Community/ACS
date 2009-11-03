@@ -27,6 +27,8 @@
  */
 package com.cosylab.cdb.jdal;
 
+import java.util.logging.Logger;
+
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
@@ -46,13 +48,16 @@ import com.cosylab.CDB.WJDALPOA;
 abstract public class WDALBaseImpl extends WJDALPOA implements Recoverer {
 	protected DALImpl dalImpl = null;
 
+	protected final Logger logger;
+	
 	/**
 	 * @param args
 	 * @param orb_val
 	 * @param poa_val
 	 */
-	public WDALBaseImpl(String[] args, ORB orb_val, POA poa_val) {
-		dalImpl = new DALImpl(args, orb_val, poa_val);
+	public WDALBaseImpl(String[] args, ORB orb_val, POA poa_val, Logger logger) {
+		dalImpl = new DALImpl(args, orb_val, poa_val, logger);
+		this.logger = logger;
 	}
 
 	/* (non-Javadoc)

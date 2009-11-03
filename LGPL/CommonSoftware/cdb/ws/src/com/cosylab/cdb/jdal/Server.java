@@ -27,24 +27,28 @@
  */
 package com.cosylab.cdb.jdal;
 
-import org.omg.CORBA.*;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.logging.Logger;
+
+import org.omg.CORBA.NO_RESOURCES;
+import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
+import org.omg.PortableServer.IdAssignmentPolicyValue;
+import org.omg.PortableServer.LifespanPolicyValue;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
 
-// The package containing our stubs.
-import com.cosylab.CDB.*;
+import com.cosylab.CDB.JDAL;
+import com.cosylab.CDB.JDALHelper;
 
-import org.omg.PortableServer.*;
-import java.util.Properties;
-import java.util.StringTokenizer;
-
-import java.io.*;
-
-import alma.acs.util.ACSPorts;
-import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.util.ACSPorts;
 
 public class Server {
 	
@@ -56,7 +60,7 @@ public class Server {
 	
 	public void run(String args[]) {
 		String iorFileName = null;
-		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("com.cosylab.cdb.jdal.Server", true);
+		Logger sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB", true);
 		try {
 		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
@@ -75,7 +79,7 @@ public class Server {
 				    }
 				    }
 				if (args[i].equals("-orbacus")) {
-					m_logger.log(AcsLogLevel.NOTICE, "ORBacus is no longer supported, switching to JacORB.");
+					sharedLogger.log(AcsLogLevel.NOTICE, "ORBacus is no longer supported, switching to JacORB.");
 					//System.err.println(
 					//	"ORBacus is no longer supported, switching to JacORB.");
 					useJacORB = true;
@@ -97,7 +101,7 @@ public class Server {
 			if (useJacORB) {
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
-			    m_logger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
+			    sharedLogger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
 			    }
 				properties.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
 				properties.put(
@@ -163,7 +167,7 @@ public class Server {
 
 			// create servant and register it with the ORB
 			//DALImpl DALImpl = new DALImpl(args, orb, dalpoa);
-			final org.omg.PortableServer.Servant servant = new WDALImpl(args, orb, dalpoa);
+			final org.omg.PortableServer.Servant servant = new WDALImpl(args, orb, dalpoa, sharedLogger);
 			
 			//create object id
 			byte[] id = { 'C', 'D', 'B' };
@@ -180,14 +184,7 @@ public class Server {
 				// nothing to do here
 			} else {
 				(
-					(
-						com
-							.sun
-							.corba
-							.se
-							.internal
-							.Interceptors
-							.PIORB) orb)
+					(com.sun.corba.se.internal.Interceptors.PIORB) orb)
 							.register_initial_reference(
 					"CDB",
 					rootpoa.servant_to_reference(servant));
@@ -209,11 +206,11 @@ public class Server {
                         // This situation occurrs when the NameSetvice initial reference
                         // is not set at all with the ORBInitRef.NameService property
 			catch (Exception e1) {
-				m_logger.log(AcsLogLevel.NOTICE, "JDAL is NOT registered in the name service because of: " + e1);
+				sharedLogger.log(AcsLogLevel.NOTICE, "JDAL is NOT registered in the name service because of: " + e1);
 			}
 			if (Integer.getInteger("ACS.logstdout", 4) < 4)
 			    {
-				m_logger.log(AcsLogLevel.INFO, "JDAL is listening on " + ACSPorts.getIP() + ":" + portNumber + "/CDB");
+				sharedLogger.log(AcsLogLevel.INFO, "JDAL is listening on " + ACSPorts.getIP() + ":" + portNumber + "/CDB");
 			    }
 
 			// recover (notify) clients
@@ -229,7 +226,7 @@ public class Server {
 				iorFile.close();
 			}
 
-			m_logger.log(AcsLogLevel.INFO, "JDAL is ready and waiting ...");
+			sharedLogger.log(AcsLogLevel.INFO, "JDAL is ready and waiting ...");
                         // GCH 2006-11-13
                         // Here we put also a println to be sure that the message
                         // ALWAYS appears on standart output, also if the logging level 
@@ -248,10 +245,10 @@ public class Server {
 
 			// wait for invocations from clients
 			orb.run();
-			m_logger.log(AcsLogLevel.INFO, "JDAL exiting ORB loop ...");
+			sharedLogger.log(AcsLogLevel.INFO, "JDAL exiting ORB loop ...");
 
 		} catch (Exception e) {
-			m_logger.log(AcsLogLevel.NOTICE, "ERROR: " + e);
+			sharedLogger.log(AcsLogLevel.NOTICE, "ERROR: " + e);
 			e.printStackTrace(System.out);
 		}
 	}

@@ -81,7 +81,6 @@ public class WDALImpl extends WDALBaseImpl
 {
 	private POA poa = null;
 	private HashMap wdaoMap = new HashMap();
-	Logger m_logger;
 	/**
 	 * Constructor as it is for DAL
 	 *
@@ -89,11 +88,10 @@ public class WDALImpl extends WDALBaseImpl
 	 * @param orb
 	 * @param poa
 	 */
-	public WDALImpl(String[] args, ORB orb, POA poa)
+	public WDALImpl(String[] args, ORB orb, POA poa, Logger logger)
 	{
-		super(args, orb, poa);
+		super(args, orb, poa, logger);
 		this.poa = poa;
- 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::WDALImpl", true);
 	}
 
 	/* (non-Javadoc)
@@ -102,6 +100,8 @@ public class WDALImpl extends WDALBaseImpl
 	public WDAO get_WDAO_Servant(String curl)
 		throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
 	{
+		dalImpl.totalDALInvocationCounter.incrementAndGet();
+
 		// if we already have WDAO
 		synchronized(wdaoMap) {
 			if(wdaoMap.containsKey(curl)) {
@@ -115,7 +115,7 @@ public class WDALImpl extends WDALBaseImpl
 			DAO dao = dalImpl.get_DAO_Servant(curl);
 			DAOImpl daoImpl = (DAOImpl)poa.reference_to_servant(dao);
 
-			WDAOImpl wdaoImpl = new WDAOImpl(this, curl, daoImpl, poa);
+			WDAOImpl wdaoImpl = new WDAOImpl(this, curl, daoImpl, poa, logger);
 
 			// create object id
 			String name = "WDAO-" + curl;
@@ -133,13 +133,13 @@ public class WDALImpl extends WDALBaseImpl
 		} catch(Throwable t) {
 			String info = "WDAL::get_WDAO_Servant " + t;
 			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-			m_logger.log(AcsLogLevel.NOTICE, info);
+			logger.log(AcsLogLevel.NOTICE, info);
 			throw xmlErr;
 		}
 	}
 
 	/**
-	 * Adds a new node specified by curl to the CDB initaly filed with
+	 * Adds a new node specified by curl to the CDB initially filed with
 	 *
 	 * @param curl uri for the CDB node
 	 * @param xml
@@ -151,14 +151,16 @@ public class WDALImpl extends WDALBaseImpl
 	public void add_node(String curl, String xml)
 		throws CDBRecordAlreadyExistsEx, CDBXMLErrorEx, CDBExceptionEx
 	{
-		m_logger.log(AcsLogLevel.INFO, "add_node " + curl);
+		dalImpl.totalDALInvocationCounter.incrementAndGet();
+
+		logger.log(AcsLogLevel.INFO, "add_node " + curl);
 
 		// check if node is already there
 		if(nodeExists(curl)) {
-			m_logger.log(AcsLogLevel.NOTICE, "Record already exists: " + curl);
+			logger.log(AcsLogLevel.NOTICE, "Record already exists: " + curl);
 			AcsJCDBRecordAlreadyExistsEx e2 = new AcsJCDBRecordAlreadyExistsEx();
 			e2.setCurl(curl);
-			e2.log(m_logger);
+			e2.log(logger);
 			throw e2.toCDBRecordAlreadyExistsEx();
 		}
 
@@ -166,7 +168,7 @@ public class WDALImpl extends WDALBaseImpl
 		try{
 			validateXML(xml);
 		}catch(AcsJCDBXMLErrorEx e){
-			e.log(m_logger);
+			e.log(logger);
 			throw e.toCDBXMLErrorEx();
 		}
 		// recreate dir structure and put data content 
@@ -191,11 +193,13 @@ public class WDALImpl extends WDALBaseImpl
 	public void remove_node(String curl)
 		throws CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
 	{
-		m_logger.log(AcsLogLevel.INFO, "remove_node " + curl);
+		dalImpl.totalDALInvocationCounter.incrementAndGet();
+
+		logger.log(AcsLogLevel.INFO, "remove_node " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
-			m_logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
+			logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -242,11 +246,13 @@ public class WDALImpl extends WDALBaseImpl
 		throws CDBRecordDoesNotExistEx, CDBFieldDoesNotExistEx, CDBRecordIsReadOnlyEx, 
 			CDBXMLErrorEx, CDBExceptionEx
 	{
-		m_logger.log(AcsLogLevel.INFO, "set_DAO " + curl);
+		dalImpl.totalDALInvocationCounter.incrementAndGet();
+
+		logger.log(AcsLogLevel.INFO, "set_DAO " + curl);
 
 		// check if node exisits
 		if(!nodeExists(curl)) {
-			m_logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
+			logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -272,7 +278,7 @@ public class WDALImpl extends WDALBaseImpl
 		xml = dalImpl.get_DAO(curl);
 		daoXMLSolver = new XMLHandler(false);
 		parseXML(xml, daoXMLSolver);
-		daoImp = new DAOImpl(curl, daoXMLSolver.m_rootNode, poa);
+		daoImp = new DAOImpl(curl, daoXMLSolver.m_rootNode, poa, logger);
 
 		// iterater throuth given xml and put changed attributes in map
 		LinkedHashMap map = new LinkedHashMap();
@@ -299,13 +305,13 @@ public class WDALImpl extends WDALBaseImpl
 			if(xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
 				CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-				m_logger.log(AcsLogLevel.NOTICE, info);
+				logger.log(AcsLogLevel.NOTICE, info);
 				throw xmlErr;
 			}
 		} catch(Throwable t) {
 			String info = "SAXException " + t;
 			CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
-			m_logger.log(AcsLogLevel.NOTICE, info);
+			logger.log(AcsLogLevel.NOTICE, info);
 			throw xmlErr;
 		}
 	}
@@ -437,7 +443,7 @@ public class WDALImpl extends WDALBaseImpl
 	public File getNodeFile(String curl)
 	{
 		String xmlPath = dalImpl.getRecordPath(curl);
-		m_logger.log(AcsLogLevel.DEBUG,"getNodeFile("+curl+") = "+ xmlPath);
+		logger.log(AcsLogLevel.DEBUG,"getNodeFile("+curl+") = "+ xmlPath);
 		return new File(xmlPath);
 	}
 
@@ -472,7 +478,7 @@ public class WDALImpl extends WDALBaseImpl
 			saxParser.setProperty("http://xml.org/sax/properties/lexical-handler",
 			    xmlHandler);
 
-		        m_logger.log(AcsLogLevel.DEBUG,"saveChanges('"+curl+"'): - Parsing");  
+		        logger.log(AcsLogLevel.DEBUG,"saveChanges('"+curl+"'): - Parsing");  
 			saxParser.parse(getNodeFile(curl), xmlHandler);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -513,7 +519,7 @@ public class WDALImpl extends WDALBaseImpl
 			saxParser.parse(new InputSource(new StringReader(xml)), dalSolver);
 
 			if(dalSolver.m_errorString != null) {
-				m_logger.log(AcsLogLevel.NOTICE, dalSolver.m_errorString);
+				logger.log(AcsLogLevel.NOTICE, dalSolver.m_errorString);
 				AcsJCDBXMLErrorEx e2 = new AcsJCDBXMLErrorEx();
 				e2.setErrorString(dalSolver.m_errorString);	
 				throw e2;
@@ -852,9 +858,9 @@ public class WDALImpl extends WDALBaseImpl
 		}
 	}
 	
-	public Logger getLogger() {
-		return m_logger;
-	}
+//	public Logger getLogger() {
+//		return logger;
+//	}
 }
 
 /* __oOo__ */

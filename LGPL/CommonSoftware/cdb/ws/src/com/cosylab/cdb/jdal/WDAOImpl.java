@@ -51,15 +51,15 @@ import alma.acs.logging.AcsLogLevel;
 public class WDAOImpl extends WDAOPOA {
 	private DAOImpl daoImpl = null;
 	private WDALImpl wdal = null; // used for saving - nicer if it is an interface
-	Logger m_logger;
+	private final Logger m_logger;
 	/**
 	 * 
 	 */
-	public WDAOImpl(WDALImpl wdal, String name, DAOImpl daoImpl, POA poa) {
+	public WDAOImpl(WDALImpl wdal, String name, DAOImpl daoImpl, POA poa, Logger logger) {
 		super();
 		this.wdal = wdal;
 		this.daoImpl = daoImpl;
- 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("WDAOImpl", true);
+		m_logger = logger;
 	}
 	
 	/* (non-Javadoc)

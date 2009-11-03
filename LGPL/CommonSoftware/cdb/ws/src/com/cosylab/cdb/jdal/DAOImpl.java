@@ -48,18 +48,18 @@ public class DAOImpl extends DAOPOA {
 	private XMLTreeNode m_rootNode = null;
 	private POA m_poa;
 	private boolean m_silent;
-	Logger m_logger;
+	private final Logger m_logger;
 
-	public DAOImpl(String name, XMLTreeNode rootNode, POA poa) {
-		this(name, rootNode, poa, false);
+	public DAOImpl(String name, XMLTreeNode rootNode, POA poa, Logger logger) {
+		this(name, rootNode, poa, logger, false);
 	}
 
-	public DAOImpl(String name, XMLTreeNode rootNode, POA poa, boolean silent) {
+	public DAOImpl(String name, XMLTreeNode rootNode, POA poa, Logger logger, boolean silent) {
 		m_name = name;
 		m_rootNode = rootNode;
 		m_poa = poa;
 		m_silent = silent;
- 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB::DAOImpl", true);
+ 		m_logger = logger;
 	}
 
 	public void destroy() {

@@ -88,7 +88,7 @@ public class CDBAccess
 	/**
 	 * Logger.
 	 */
-	private Logger logger = null;
+	private final Logger logger;
 
 	/**
 	 * Listener for CDB change.
@@ -243,7 +243,7 @@ public class CDBAccess
 			dalMap.clear();
 			curlMap.clear();
 		}
-	};
+	}
 
 	/**
 	 * Constructor used only when {@link #setDAL(DAL)} is called afterwards.
@@ -261,7 +261,6 @@ public class CDBAccess
 	 */
 	public CDBAccess(ORB orb, Logger logger)
 	{
-		assert (logger != null);
 		this.orb = orb;
 		this.logger = logger;
 
@@ -332,7 +331,7 @@ public class CDBAccess
 					//throw new XMLerror("XML parser error: " + xmlSolver.m_errorString);
 				}
 				// create non-CORBA related, silent DAO
-				dao = new DAOImpl(curl, xmlSolver.m_rootNode, null, true);
+				dao = new DAOImpl(curl, xmlSolver.m_rootNode, null, logger, true);
 				proxy.setElementName(xmlSolver.m_rootNode.getName());
 			}
 			
