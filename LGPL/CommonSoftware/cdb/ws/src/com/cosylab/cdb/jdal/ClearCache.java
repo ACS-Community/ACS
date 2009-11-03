@@ -1,5 +1,3 @@
-package com.cosylab.cdb.jdal;
-
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
  *    (c) European Southern Observatory, 2002
@@ -27,18 +25,25 @@ package com.cosylab.cdb.jdal;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-import org.omg.CORBA.*;
-import com.cosylab.CDB.*;
-import java.net.InetAddress;
-import alma.acs.util.ACSPorts;
 
+package com.cosylab.cdb.jdal;
+
+
+import java.net.InetAddress;
 import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
+
+import org.omg.CORBA.ORB;
+
+import com.cosylab.CDB.JDAL;
+import com.cosylab.CDB.JDALHelper;
+
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.ClientLogManager;
+import alma.acs.util.ACSPorts;
 
 public class ClearCache {
 	public static void main(String args[]) {
-		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("ClearCache", false);
+		Logger m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("cdbjDALClearCache", false);
 		try {
 			String curl = null;
 			String strIOR = null;
