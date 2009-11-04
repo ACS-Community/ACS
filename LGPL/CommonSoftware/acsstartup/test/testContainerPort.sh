@@ -12,7 +12,7 @@ function testParams
 {
 echo "---------"
 echo "--Params: $@"
-acsstartupContainerPort $@
+acsstartupContainerPort "$@"
 echo ""
 }
 
@@ -73,6 +73,10 @@ echo ""
 
 echo "*Testing Java remote debuggable*"
 testParams -java -name java2 -remoteDebuggable
+echo ""
+
+echo "*Testing passthroughProcessStart*"
+testParams -java -name java2 --passthroughProcessStart="-maxHeapSize 256m"
 echo ""
 
 echo "*Testing debug*"

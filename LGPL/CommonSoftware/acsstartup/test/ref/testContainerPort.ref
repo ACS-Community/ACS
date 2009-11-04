@@ -123,6 +123,12 @@
 1 - acsStartJavaContainer java2 alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
 1 - 
 1 - 
+1 - *Testing passthroughProcessStart*
+1 - ---------
+1 - --Params: -java -name java2 --passthroughProcessStart=-maxHeapSize 256m
+1 - acsStartJavaContainer java2 -maxHeapSize 256m alma.acs.container.AcsContainerRunner -OAIAddr a.b.c.d -OAport nnnn -m corbaloc::a.b.c.d:3000/Manager
+1 - 
+1 - 
 1 - *Testing debug*
 1 - ---------
 1 - --Params: -java -name java2 -debug
