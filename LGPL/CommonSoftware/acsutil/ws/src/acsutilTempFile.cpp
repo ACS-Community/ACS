@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilTempFile.cpp,v 1.16 2003/03/10 14:33:43 rgeorgie Exp $"
+* "@(#) $Id: acsutilTempFile.cpp,v 1.17 2009/11/04 12:43:31 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -63,6 +63,14 @@ getTempFileName(const ACE_TCHAR * fileNameEnvVar, const ACE_TCHAR * fileName)
 
       path += ACE_DIRECTORY_SEPARATOR_CHAR;
       path += TEMP_DIR;
+
+      // add host name (env. var. is being read to be consitent with scripts)
+      envVal = getenv("HOST");
+      if (envVal && *envVal) 
+      {
+          path += ACE_DIRECTORY_SEPARATOR_CHAR;
+          path += envVal;
+      }
   }
 
   path += ACE_DIRECTORY_SEPARATOR_CHAR;
@@ -77,6 +85,9 @@ getTempFileName(const ACE_TCHAR * fileNameEnvVar, const ACE_TCHAR * fileName)
 // REVISION HISTORY:
 //
 // $Log: acsutilTempFile.cpp,v $
+// Revision 1.17  2009/11/04 12:43:31  msekoran
+// ACSDATA/tmp/HOST
+//
 // Revision 1.16  2003/03/10 14:33:43  rgeorgie
 // LGPL
 //

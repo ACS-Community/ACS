@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testTmp.cpp,v 1.17 2004/03/25 01:51:17 dfugate Exp $"
+* "@(#) $Id: testTmp.cpp,v 1.18 2009/11/04 12:43:31 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -87,15 +87,17 @@ void printFileName(const char * fileName)
      *   //   unsetenv(TEST_ENV_VAR);
      */
     ACE_CString tmpFileName(getenv("ACSDATA"));
-    tmpFileName += "/tmp/someFileName";
+    tmpFileName += "/tmp/";
+    tmpFileName += getenv("HOST");
+    tmpFileName += "/someFileName";
     fileName = getTempFileName(0, "someFileName");
     if(fileName.compare(tmpFileName) == 0)
 	{
-	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/filename is OK");
+	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/filename is OK");
 	}
     else
 	{
-	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/filename failed");
+	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/filename failed");
         printFileName(fileName.c_str());
         printFileName(tmpFileName.c_str());
 	}
@@ -106,9 +108,9 @@ void printFileName(const char * fileName)
      * but I just replace it with an empty string
      */
     putenv("ACSDATA=");
-     
+    putenv("HOST=HOST");     
 
-    TEST("'/tmp/someFileName' should be returned.");
+    TEST("'/tmp/HOST/someFileName' should be returned.");
     fileName = getTempFileName(0, "someFileName");
     printFileName(fileName.c_str());
     
