@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: mockContainerServicesImpl.h,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+* "@(#) $Id: mockContainerServicesImpl.h,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@
 #include <acsContainerServices.h>
 #include <ace/Map_Manager.h>
 #include <ace/Hash_Map_Manager.h>
+#include <maciErrType.h>
 #include "mockComponentImpl.h"
 
 namespace maci {

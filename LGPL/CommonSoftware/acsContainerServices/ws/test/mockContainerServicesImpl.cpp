@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: mockContainerServicesImpl.cpp,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+* "@(#) $Id: mockContainerServicesImpl.cpp,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,7 +76,7 @@
 #include "vltPort.h"
 #include "mockContainerServicesImpl.h"
 
-static char *rcsId="@(#) $Id: mockContainerServicesImpl.cpp,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: mockContainerServicesImpl.cpp,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 //using namespace maci;
@@ -132,9 +132,13 @@ void maci::MockContainerServices::releaseComponent(const char* name)
   ACE_CString s(name);
   MockComponent *mc;
 
+  if (strcmp(name, "ShaBoom") == 0)
+      throw std::exception();
 
   if (map->find(s, mc) >= 0)
     map->unbind(s);
+  else
+    throw maciErrType::CannotReleaseComponentExImpl(__FILE__, __LINE__, "No such component");
 }
 
 void maci::MockContainerServices::releaseAllComponents()

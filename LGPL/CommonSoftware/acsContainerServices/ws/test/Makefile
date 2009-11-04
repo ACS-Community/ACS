@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/12/11 23:31:57 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = acsComponentSmartPtrTest
+EXECUTABLES_L   = acsComponentSmartPtrTest acsComponentStorageTest
 
 #
 # <brief description of xxxxx program>
@@ -60,6 +60,12 @@ acsComponentSmartPtrTest_OBJECTS   = mockContainerServicesImpl \
 				     acsComponentSmartPtrTestImpl \
 				     acsComponentSmartPtrTest
 acsComponentSmartPtrTest_LIBS      = cppunit loki acscomponent maci
+
+acsComponentStorageTest_OBJECTS   = mockContainerServicesImpl \
+				     mockComponentImpl  \
+				     acsComponentStorageTestImpl \
+				     acsComponentStorageTest
+acsComponentStorageTest_LIBS      = cppunit loki acscomponent maci
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

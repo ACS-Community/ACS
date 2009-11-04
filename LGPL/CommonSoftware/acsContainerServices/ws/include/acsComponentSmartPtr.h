@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.12 2009/10/28 22:48:56 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.13 2009/11/04 20:44:29 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,7 @@ functions in C++-code.
 #include <lokiThreads.h>
 #include <lokiSmartPtr.h>
 #include <maciErrType.h>
+#include <ACSErrTypeCommon.h>
 
 namespace maci {
 
@@ -77,7 +78,7 @@ class ComponentStorage
     /**
      * Copy Constructor
      */
-    ComponentStorage(const ComponentStorage& rhs) : handle(rhs.handle), sticky(rhs.sticky), pointee_(0)
+    ComponentStorage(const ComponentStorage& rhs) : handle(rhs.handle), sticky(rhs.sticky), pointee_(Default())
         {}
 
     /**
@@ -85,7 +86,7 @@ class ComponentStorage
      * We don't allow copying of different types, so the attributes are set to default values.
      */
     template <typename U, typename V>
-    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(false), pointee_(0)
+    ComponentStorage(const ComponentStorage<U,V>&) : handle(0), sticky(false), pointee_(Default())
         {}
 
     /**
@@ -153,7 +154,7 @@ class ComponentStorage
      * Return true if handle is a valid pointer
      */
     bool inline isValid(const ComponentStorage& sp)
-    { return sp.handle != (H *)0; }
+	{ return sp.isNil() || sp.handle != (H *)0; }
 
     /**
      * isNil
@@ -328,7 +329,7 @@ class SmartPtr
         {
             SmartPtr temp(rhs);
 	    if (!isValid(rhs))
-	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+		throw ACSErrTypeCommon::IllegalArgumentExImpl(__FILE__, __LINE__, "SmartPtr::operator=");
 	    else 
 	      temp.Swap(*this);
             return *this;
@@ -348,7 +349,7 @@ class SmartPtr
         {
             SmartPtr temp(rhs);
 	    if (!isValid(rhs))
-	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+	      throw ACSErrTypeCommon::IllegalArgumentExImpl(__FILE__, __LINE__, "SmartPtr::operator=");
 	    else 
 	      temp.Swap(*this);
             return *this;
@@ -368,7 +369,7 @@ class SmartPtr
         {
             SmartPtr temp(rhs);
 	    if (!isValid(rhs))
-	      throw std::invalid_argument("Attempt to use SmartPtr with no ContainerService or Client reference.");
+	      throw ACSErrTypeCommon::IllegalArgumentExImpl(__FILE__, __LINE__, "SmartPtr::operator=");
 	    else 
 	      temp.Swap(*this);
             return *this;
