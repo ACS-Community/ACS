@@ -99,10 +99,7 @@ public class Server {
 
 		
 			if (useJacORB) {
-			if (Integer.getInteger("ACS.logstdout", 4) < 4)
-			    {
-			    sharedLogger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
-			    }
+				sharedLogger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
 				properties.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
 				properties.put(
 					"org.omg.CORBA.ORBSingletonClass",
@@ -111,7 +108,7 @@ public class Server {
 				// port
 				properties.put("OAPort", Integer.toString(portNumber));
 
-		    		// ORB implementation name
+				// ORB implementation name
 				properties.put("jacorb.implname", "ORB");
 
 				/*
