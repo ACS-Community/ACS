@@ -6,13 +6,12 @@ Time:
 export
 Starting Java application
 -D user.dir=
-Jlog will use cache for
 Connected
 failed to flush logging queue because remote logging service has not been made available
-<Info
+DELOUSE
 DEBUG
-FINE
 INFO
+FINE
 endorsed
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 activated
