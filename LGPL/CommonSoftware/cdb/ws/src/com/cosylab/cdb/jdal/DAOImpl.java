@@ -6,14 +6,13 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
+import com.cosylab.CDB.DAOPOA;
+
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.ClientLogManager;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
-
-import com.cosylab.CDB.DAOPOA;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -130,7 +129,7 @@ public class DAOImpl extends DAOPOA {
 			value = node.getAttributeAndNodeNames();
 		}
 		if (!m_silent)
-			m_logger.log(AcsLogLevel.NOTICE,"DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
+			m_logger.log(AcsLogLevel.DEBUG, "DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
 		return value;
 	}
 

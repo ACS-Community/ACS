@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -42,6 +42,8 @@ import com.cosylab.util.FileHelper;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.logging.MultipleRepeatGuard;
+import alma.acs.logging.RepeatGuard.Logic;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
@@ -108,6 +110,23 @@ public class DALImpl extends JDALPOA implements Recoverer {
 //	private final ThreadLoopRunner profilingThreadLoopRunner;
 
 	/**
+	 * repeat guard for "Curl 'xyz' does not exist" messages.
+	 */
+	private final MultipleRepeatGuard recordNotExistLogRepeatGuard;
+	
+	/**
+	 * The time in seconds for which {@link #recordNotExistLogRepeatGuard} 
+	 * will collect identical log records to log them together upon a subsequent 
+	 * log request.
+	 * <p> 
+	 * Note that the repeat guard will not actively flush out the "aggregate" log message,
+	 * but will wait for the next log request, possibly coming much later than 
+	 * the number of seconds given here.
+	 */
+	private final int recordNotExistLogRepeatGuardTimeSeconds; 
+	
+	
+	/**
 	 * C'tor
 	 * @param args
 	 * @param orb_val
@@ -130,6 +149,15 @@ public class DALImpl extends JDALPOA implements Recoverer {
 //		profilingThreadLoopRunner = new ThreadLoopRunner(profileTask, 60, TimeUnit.SECONDS, tf, m_logger);
 //		profilingThreadLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
 //		profilingThreadLoopRunner.runLoop();
+		
+		
+		// Constructs a repeat guard for the "not exists" logs, shared between XML and DAO methods.
+		// Only every 10 seconds do we log such a message. 
+		// Log messages for different CDB nodes are counted separately, 
+		// but only for up to 100 different nodes to limit memory usage of the repeat guard mechanism.
+		recordNotExistLogRepeatGuardTimeSeconds = 10;
+		recordNotExistLogRepeatGuard = new MultipleRepeatGuard(recordNotExistLogRepeatGuardTimeSeconds, TimeUnit.SECONDS, 
+				-1, Logic.TIMER, 100);
 		
 		// read args
 		for (int i = 0; i < args.length; i++) {
@@ -175,9 +203,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				factory.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
 			} catch (IllegalArgumentException x) {
 				// This can happen if the parser does not support JAXP 1.2
-				m_logger.log(AcsLogLevel.NOTICE, "Check to see if parser conforms to JAXP 1.2 spec.");
-				m_logger.log(AcsLogLevel.NOTICE, "Error is:" + x);
-				System.exit(1);
+				m_logger.log(AcsLogLevel.NOTICE, "Check to see if parser conforms to JAXP 1.2 spec.", x);
+				System.exit(1); // @TODO: wouldn't an exception be enough? 
 			}
 			// Create the parser
 			saxParser = factory.newSAXParser();
@@ -191,7 +218,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			}
 
 		} catch (Throwable t) {
-			t.printStackTrace();
+			t.printStackTrace(); // @TODO is this right? Throw exception..?
 		}
 	}
 
@@ -386,7 +413,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		    }else break;
 		}
 		
-		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl=" + curl + "), strFileCurl=" + strFileCurl + ", strNodeCurl=" + strNodeCurl);
+		m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl=" + curl + "), strFileCurl=" + strFileCurl + ", strNodeCurl=" + strNodeCurl);
 		if (strFileCurl == null) {
 			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = new AcsJCDBRecordDoesNotExistEx();
 			recordDoesNotExist.setCurl(curl);
@@ -394,7 +421,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 		// no Error thrown
 		if(curlNode.isSimple()){
-			m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Simple");
+			m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl="+curl+"), curlNode is Simple");
 			if(curl.equals(strFileCurl)){
 			     return loadRecord(strFileCurl, toString);
 			}else{
@@ -407,7 +434,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			    }
 			}
 		}
-		m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Complex");
+		m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl="+curl+"), curlNode is Complex");
 		XMLHandler xmlSolver;
 		try {
 			//xmlSolver.startDocument();
@@ -501,7 +528,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
 			if (toFree <= 0 || cache.isEmpty())
 			{
-				m_logger.log(AcsLogLevel.DEBUG, "Memory status: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free.");
+				m_logger.log(AcsLogLevel.DELOUSE, "Memory status: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free.");
 				return;
 			}
 	
@@ -512,7 +539,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				String oldestKey = cache.keySet().iterator().next();
 				String value = cache.remove(oldestKey);
 				freedEstimation += (value.length()*2 + 64) + (oldestKey.length()*2 + 64) + 68;
-				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + oldestKey + "' removed from cache.");
+				m_logger.log(AcsLogLevel.DELOUSE, "XML record '" + oldestKey + "' removed from cache.");
 			}
 			
 			System.runFinalization();
@@ -584,20 +611,21 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			if (xmlSolver == null) {
 				// @TODO: shouldn't loadRecords be fixed to throw an exception instead??
 				m_logger.warning("xmlSolver was null.");
-				return null;				
+				return null;
 			}
 
-			m_logger.log(AcsLogLevel.INFO, "Returning XML record for: " + curl);
+			m_logger.log(AcsLogLevel.DEBUG, "Returning XML record for: " + curl);
 			
 			xml = xmlSolver.toString(false);
 			putToCache(curl, xml);
 			
 			return xml;
 		} catch (AcsJCDBXMLErrorEx e) {
+			// @todo watch if this log also needs a repeat guard, similar to logRecordNotExistWithRepeatGuard
 			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
 		} catch (AcsJCDBRecordDoesNotExistEx e) {
-			m_logger.log(AcsLogLevel.NOTICE, "Curl '" + e.getCurl() + "' does not exist.");
+			logRecordNotExistWithRepeatGuard(curl);
 			throw e.toCDBRecordDoesNotExistEx();
 		}
 	}
@@ -624,10 +652,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		try{
 			xmlSolver  = loadRecords(curl, false);
 		}catch(AcsJCDBXMLErrorEx e){
+			// @todo watch if this log also needs a repeat guard, similar to logRecordNotExistWithRepeatGuard
 			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
 		}catch(AcsJCDBRecordDoesNotExistEx e){
-			m_logger.log(AcsLogLevel.NOTICE, "Curl '" + e.getCurl() + "' does not exist.");
+			logRecordNotExistWithRepeatGuard(curl);
 			throw e.toCDBRecordDoesNotExistEx();
 		}
 		if (xmlSolver == null) {
@@ -661,7 +690,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				daoMap.put(curl, href);
 			}
 
-			m_logger.log(AcsLogLevel.INFO,"Returning DAO servant for: " + curl);
+			m_logger.log(AcsLogLevel.DEBUG,"Returning DAO servant for: " + curl);
 			return href;
 
 		} catch (Throwable t) {
@@ -715,7 +744,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		String filePath = FileHelper.getTempFileName("ACS_RECOVERY_FILE", "CDB_Recovery.txt");
 		m_logger.log(AcsLogLevel.INFO,  "Recovery file: " + filePath);
 		listenersStorageFile = new File(filePath);
-		// if file do not exists create a new one so we can set permission on it
+		// if file does not exists create a new one so we can set permission on it
 		if( !listenersStorageFile.exists() ) {
 			try {
 				listenersStorageFile.createNewFile();
@@ -1074,6 +1103,27 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	
 	public boolean isShutdown() {
 		return shutdown;
+	}
+	
+	/**
+	 * Uses a repeat guard ({@link #recordNotExistLogRepeatGuard}) to limit the occasionally excessive 
+	 * logs about a requested node not existing.
+	 * The limiting is time based, so that the first log is logged, while all other logs from intervals
+	 * of {@link #recordNotExistLogRepeatGuardTimeSeconds} seconds are logged as a single record.
+	 * @param curl  The requested node that does not exist.
+	 */
+	private void logRecordNotExistWithRepeatGuard(String curl) {
+		synchronized (recordNotExistLogRepeatGuard) {	
+			if (recordNotExistLogRepeatGuard.checkAndIncrement(curl)) {
+				// It's either the first log for this curl, or we waited long enough since the last log
+				int repeatCount = recordNotExistLogRepeatGuard.counterAtLastExecution(curl);
+				String msg = "Curl '" + curl + "' does not exist.";
+				if (repeatCount > 1) {
+					msg += " (" + repeatCount + " identical logs reduced to this log)";
+				}
+				m_logger.log(AcsLogLevel.NOTICE, msg);
+			}
+		}
 	}
 
 }
