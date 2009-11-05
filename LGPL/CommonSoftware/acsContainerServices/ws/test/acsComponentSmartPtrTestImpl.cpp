@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.5 2009/10/28 22:48:56 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.6 2009/11/05 03:20:25 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,7 +75,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.5 2009/10/28 22:48:56 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: acsComponentSmartPtrTestImpl.cpp,v 1.6 2009/11/05 03:20:25 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acsComponentSmartPtrTestImpl.h"
@@ -154,6 +154,26 @@ void smartptrtest :: isNilSetTest(void)
     cout << "Set is running" << endl;
     cout.flush();
     CPPUNIT_ASSERT (foo.pointee_ != (MockComponent *)0);
+}
+
+void smartptrtest :: assnopr_cpyarginvalidTest(void)
+{
+    ACE_CString cname("Foo");
+    maci::SmartPtr<MockComponent> foo;
+    maci::SmartPtr<MockComponent> bar((maci::MockContainerServices *) 0, false, mcs->getComponent<MockComponent>(cname.c_str()));
+    foo = bar;
+}
+
+void smartptrtest :: assnopr_constinvalidTest (void)
+{
+    ACE_CString cname("Foo");
+    maci::SmartPtr<MockComponent> foo;
+    const maci::SmartPtr<MockComponent> bar((maci::MockContainerServices *) 0, false, mcs->getComponent<MockComponent>(cname.c_str()));
+    foo = bar;
+}
+
+void smartptrtest :: assnopr_invalidTest (void)
+{
 }
 
 /*___oOo___*/
