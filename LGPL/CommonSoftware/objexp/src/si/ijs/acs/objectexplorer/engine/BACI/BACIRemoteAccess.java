@@ -787,7 +787,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						parent.getTree(),
 						this);
 			}
-
+			java.util.Arrays.sort(retVal);
+			
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeDeviceNode",
 			"Processing for node '" + node + "' complete.");
