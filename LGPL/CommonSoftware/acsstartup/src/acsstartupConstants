@@ -20,8 +20,14 @@ ACS_INFO_PRIORITY=16
 ACS_ERROR_PRIORITY=258
 
 ### Instance directories
-ACS_TMP=${ACS_TMP:-$ACSDATA/tmp/`hostname -s`}
-ACS_INSTANCES_DIR=$ACS_TMP
+DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname -s`
+ACS_TMP=${ACS_TMP:-$DEFAULT_ACS_TMP}
+## Identical to ACS_TMP, in absolute path
+ACS_INSTANCES_DIR=$(cd $ACS_TMP 2> /dev/null && pwd)
+## if ACS_TMP is not a directory
+ACS_INSTANCES_DIR=${ACS_INSTANCES_DIR:-$DEFAULT_ACS_TMP}
+unset DEFAULT_ACS_TMP
+
 ACS_PID_DIR=pids
 ACS_OUT_DIR=out
 ACS_IOR_DIR=iors
