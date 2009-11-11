@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.NonStickyComponentReleased;
-
 import alma.acs.logging.ClientLogManager;
 
 import com.cosylab.gui.components.r2.SmartTextPane;
@@ -25,6 +24,7 @@ public class NotificationBean {
   AccessDestroyWindow accessDestroyWindow=null;
   ErrorDialog errorDialog=null;
   private static boolean debugToConsole = true;
+  private static boolean confirmationDialog = false;
   private Logger consoleLogger;
  /**
  * NotificationBean constructor comment.
@@ -58,6 +58,9 @@ public SmartTextPane getTextArea() {
  */
 public boolean isDebugToConsole() {
 	return debugToConsole;
+}
+public boolean isConfirmationDialog() {
+	return confirmationDialog;
 }
 /**
  * Insert the method's description here.
@@ -158,6 +161,14 @@ public void setAccessDestroyWindow(AccessDestroyWindow adw) {
  */
 public void setDebugToConsole() {
 	debugToConsole = !debugToConsole;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (3/16/2001 10:34:10 AM)
+ * @param newDebugToConsole boolean
+ */
+public void setConfirmationDialog(boolean b) {
+	confirmationDialog = b;
 }
 /**
  * Insert the method's description here.

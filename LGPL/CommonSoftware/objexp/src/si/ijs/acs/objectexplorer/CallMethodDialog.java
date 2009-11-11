@@ -14,6 +14,8 @@ import javax.swing.*;
 import si.ijs.acs.objectexplorer.engine.*;
 
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 
 public class CallMethodDialog extends JDialog {
@@ -440,6 +442,15 @@ private javax.swing.JPanel getJPanel2() {
 			constraintsJPanel1.insets = new java.awt.Insets(4, 4, 4, 4);
 			getJPanel2().add(getJPanel1(), constraintsJPanel1);
 
+			java.awt.GridBagConstraints constraintsJPanelC = new java.awt.GridBagConstraints();
+			constraintsJPanelC.gridx = 0; constraintsJPanelC.gridy = 0;
+			constraintsJPanelC.gridwidth = 2;
+			constraintsJPanelC.fill = java.awt.GridBagConstraints.BOTH;
+			constraintsJPanelC.weightx = 1.0;
+			constraintsJPanelC.weighty = 1.0;
+			constraintsJPanelC.insets = new java.awt.Insets(4, 4, 4, 4);
+			getJPanel2().add(getConfirmationPanel(), constraintsJPanelC);
+
 			java.awt.GridBagConstraints constraintsErrorLabel = new java.awt.GridBagConstraints();
 			constraintsErrorLabel.gridx = 0; constraintsErrorLabel.gridy = 1;
 			constraintsErrorLabel.gridwidth = 2;
@@ -450,6 +461,12 @@ private javax.swing.JPanel getJPanel2() {
 
 			// do the conversion
 			Class[] types = op.getParameterTypes();
+			
+			// yatagai : as a confirmation dialog
+			boolean hasParams = (types.length > 0);
+			getJPanel1().setVisible(hasParams);
+			getConfirmationPanel().setVisible(!hasParams);
+			
 			if (converter != null)
 				types = converter.getInverseConvertParameterTypes(op.getName(), types);
 			
@@ -462,6 +479,22 @@ private javax.swing.JPanel getJPanel2() {
 		}
 	}
 	return ivjJPanel2;
+}
+
+private JPanel getConfirmationPanel() {
+	JPanel panel = new JPanel();
+	JLabel label = new JLabel("Are you sure to invoke \"" + op.toString() + "\" ?");
+	JCheckBox cb = new JCheckBox("Never ask me again");
+	cb.addActionListener(new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			boolean selected = ((JCheckBox)e.getSource()).isSelected();
+			((ListsHandlerBean)invocator).setConfirmed(selected);
+		}
+	});
+	panel.add(label);
+	panel.add(cb);
+	return panel;
 }
 /**
  * Insert the method's description here.

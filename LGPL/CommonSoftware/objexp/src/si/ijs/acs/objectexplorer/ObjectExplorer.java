@@ -64,6 +64,7 @@ public class ObjectExplorer extends JFrame {
 	private JCheckBoxMenuItem ivjJCheckBoxMenuItem2 = null;
 	private JMenu ivjJMenu2 = null;
 	private JCheckBoxMenuItem ivjdebugCheckBox = null;
+	private JCheckBoxMenuItem ivjConfirmationCheckBox = null;
 	private JMenuItem ivjconnectMenuItem = null;
 	private JPopupMenu ivjoeTreePopup = null;
 	private JMenuItem ivjdisconnectMenuItem = null;
@@ -217,6 +218,8 @@ public class ObjectExplorer extends JFrame {
 				connEtoM9(e);
 			if (e.getSource() == ObjectExplorer.this.getdebugCheckBox()) 
 				connEtoM10(e);
+			if (e.getSource() == ObjectExplorer.this.getConfirmationCheckBox()) 
+				connEtoM18(e);
 			if (e.getSource() == ObjectExplorer.this.getdisconnectMenuItem()) 
 				connEtoM11(e);
 			if (e.getSource() == ObjectExplorer.this.getconnectMenuItem()) 
@@ -357,6 +360,19 @@ public class ObjectExplorer extends JFrame {
 	}
 	
 	/**
+	 *  updates "Show confirmation dialog" menu item 
+	 *  before the menu contains it opens. 
+	 */
+	private void connEtoC5(java.awt.event.ActionEvent arg1) {
+		try {
+			JCheckBoxMenuItem item = getConfirmationCheckBox();
+			item.setSelected(getNotificationBean1().isConfirmationDialog());
+		} catch (java.lang.Throwable ivjExc) {
+			handleException(ivjExc);
+		}
+	}
+	
+	/**
 	 * connEtoM1:  (OETree1.OETreeEvent.FirstTimeExpanded(si.ijs.acs.objectexplorer.FirstTimeExpandedEvent) --> TreeHandlerBean1.getDevices(Lsi.ijs.acs.objectexplorer.FirstTimeExpandedEvent;)V)
 	 * @param arg1 si.ijs.acs.objectexplorer.FirstTimeExpandedEvent
 	 */
@@ -389,6 +405,18 @@ public class ObjectExplorer extends JFrame {
 		} catch (java.lang.Throwable ivjExc) {
 			// user code begin {3}
 			// user code end
+			handleException(ivjExc);
+		}
+	}
+	/**
+	 * connEtoM18:  (confirmationCheckBox.action.actionPerformed(java.awt.event.ActionEvent) --> NotificationBean1.setConfirmationDialog()V)
+	 * @param arg1 java.awt.event.ActionEvent
+	 */
+	private void connEtoM18(java.awt.event.ActionEvent arg1) {
+		try {
+			boolean b = ((JCheckBoxMenuItem)arg1.getSource()).isSelected();
+			getNotificationBean1().setConfirmationDialog(b);
+		} catch (java.lang.Throwable ivjExc) {
 			handleException(ivjExc);
 		}
 	}
@@ -959,6 +987,19 @@ public class ObjectExplorer extends JFrame {
 		}
 		return ivjdebugCheckBox;
 	}
+	private javax.swing.JCheckBoxMenuItem getConfirmationCheckBox() {
+		if (ivjConfirmationCheckBox == null) {
+			try {
+				ivjConfirmationCheckBox = new javax.swing.JCheckBoxMenuItem();
+				ivjConfirmationCheckBox.setName("confirmationCheckBox");
+				ivjConfirmationCheckBox.setSelected(getNotificationBean1().isConfirmationDialog());
+				ivjConfirmationCheckBox.setText("Show confirmation dialog");
+			} catch (java.lang.Throwable ivjExc) {
+				handleException(ivjExc);
+			}
+		}
+		return ivjConfirmationCheckBox;
+	}
 	/**
 	 * Return the disconnectMenuItem property value.
 	 * @return javax.swing.JMenuItem
@@ -1251,13 +1292,27 @@ public class ObjectExplorer extends JFrame {
 	private javax.swing.JMenu getJMenu2() {
 		if (ivjJMenu2 == null) {
 			try {
-				ivjJMenu2 = new javax.swing.JMenu();
+				ivjJMenu2 = new javax.swing.JMenu() {
+					// hyatagai : 11-Nov-2009
+					// Because JMenu, contrary to my expectation, does not
+					// call actionPerformed when it opens, I reluctantly 
+					// do like this.
+					@Override
+					public void setPopupMenuVisible(boolean b) {
+						if (b) {
+							ActionEvent ae = new ActionEvent(this, 0, null);
+							connEtoC5(ae);
+						}
+						super.setPopupMenuVisible(b);
+					}
+				};
 				ivjJMenu2.setName("JMenu2");
 				ivjJMenu2.setMnemonic('V');
 				ivjJMenu2.setText("View");
 				ivjJMenu2.add(getJCheckBoxMenuItem1());
 				ivjJMenu2.add(getJCheckBoxMenuItem2());
 				ivjJMenu2.add(getdebugCheckBox());
+				ivjJMenu2.add(getConfirmationCheckBox());
 				// user code begin {1}
 				// user code end
 			} catch (java.lang.Throwable ivjExc) {
@@ -1837,6 +1892,7 @@ public class ObjectExplorer extends JFrame {
 		getJCheckBoxMenuItem1().addActionListener(ivjEventHandler);
 		getJCheckBoxMenuItem2().addActionListener(ivjEventHandler);
 		getdebugCheckBox().addActionListener(ivjEventHandler);
+		getConfirmationCheckBox().addActionListener(ivjEventHandler);
 		getOETree1().addMouseListener(ivjEventHandler);
 		getOETreeByName().addMouseListener(ivjEventHandler);
 		getdisconnectMenuItem().addActionListener(ivjEventHandler);

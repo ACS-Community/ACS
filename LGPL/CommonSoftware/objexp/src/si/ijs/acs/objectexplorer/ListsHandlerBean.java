@@ -150,7 +150,7 @@ synchronized void clickedItem(Object item) {
 			for (int i = 0; i < mask.length; i++)
 				if (mask[i])
 					isUserInput = true;
-			if (isUserInput) {
+			if (isUserInput || !isConfirmed()) {
 				CallMethodDialog cmd =
 					new CallMethodDialog(
 						op,
@@ -178,6 +178,13 @@ synchronized void clickedItem(Object item) {
 	} catch (Exception e) {
 		handleException("ListsHandler clickItem", e);
 	}
+}
+
+public void setConfirmed(boolean b) {
+	notifier.setConfirmationDialog(!b);
+}
+private boolean isConfirmed() {
+	return !notifier.isConfirmationDialog();
 }
 /**
  * getEditorPanel method comment.
