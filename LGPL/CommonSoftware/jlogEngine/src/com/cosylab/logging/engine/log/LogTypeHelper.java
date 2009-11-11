@@ -45,6 +45,7 @@ public enum LogTypeHelper {
 	 * 
 	 */
     TRACE(AcsLogLevelDefinition.TRACE,"Trace"),
+    DELOUSE(AcsLogLevelDefinition.DELOUSE,"Delouse"),
     DEBUG(AcsLogLevelDefinition.DEBUG,"Debug"),
     INFO(AcsLogLevelDefinition.INFO,"Info"),
     NOTICE(AcsLogLevelDefinition.NOTICE,"Notice"),
