@@ -42,6 +42,7 @@ public enum EntryTypeIcon {
 	 * 
 	 */
     TRACE_ICON(LogTypeHelper.TRACE,"/trace.gif"),
+    DELOUSE_ICON(LogTypeHelper.DELOUSE,"/debug.gif"),
     DEBUG_ICON(LogTypeHelper.DEBUG,"/debug.gif"),
     INFO_ICON(LogTypeHelper.INFO,"/information.gif"),
     NOTICE_ICON(LogTypeHelper.NOTICE,"/notice.gif"),
