@@ -564,6 +564,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	
 	private String getFromCache(String curl)
 	{
+		// remove leading "/"
+		if (curl != null && curl.startsWith("/"))
+			curl = curl.substring(1);
+		
 		synchronized (cache) {
 			String xml = cache.get(curl);
 			if (xml != null) {
@@ -580,6 +584,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	
 	private void putToCache(String curl, String xml) 
 	{
+		// remove leading "/"
+		if (curl != null && curl.startsWith("/"))
+			curl = curl.substring(1);
+
 		synchronized (cache) {
 			checkCache();
 			cache.put(curl, xml);
