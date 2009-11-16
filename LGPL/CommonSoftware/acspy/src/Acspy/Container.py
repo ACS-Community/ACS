@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.42 2009/04/01 19:46:08 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -47,6 +47,7 @@ from new       import instance
 from traceback import print_exc
 import sys
 from os        import environ
+from threading import Event
 #--CORBA STUBS-----------------------------------------------------------------
 import PortableServer
 import maci
@@ -112,6 +113,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         print maci.Container.ContainerStatusStartupBeginMsg
         #Member variables
+        self.isReady = Event()
         self.running = 1  #As long as this is true, container is not shutdown
         self.name = name  #Container Name
         self.canRecover = True  #Whether this container is capable of recovery
@@ -125,6 +127,11 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.corbaRef = None  #reference to this object's CORBA reference
         self.logger = Log.getLogger(name) # Container's logger
         self.client_type = maci.CONTAINER_TYPE
+        self.cdbContainerInfo = {}
+        self.autoLoadPackages = []
+        #dictionary which maps package names to the number of active components
+        #using said package
+        self.compModuleCount = {}
 
         #Configure CORBA
         print maci.Container.ContainerStatusORBInitBeginMsg
@@ -140,12 +147,6 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         self.cdbAccess = CDBaccess()
 
-        self.cdbContainerInfo = {}
-        self.autoLoadPackages = []
-        #dictionary which maps package names to the number of active components
-        #using said package
-        self.compModuleCount = {}
-
         self.logger.logTrace('Starting Container: ' + self.name)
 
         #get info from the CDB
@@ -155,6 +156,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         #Run everything
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
+        self.isReady.set()
         print maci.Container.ContainerStatusStartupEndMsg
 
     #--CLIENT IDL--------------------------------------------------------------
@@ -223,6 +225,9 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         activate_component(in Handle h,in string name,in string exe,in string idl_type)
         '''
+        #Block requests while container is initializing
+        self.isReady.wait()
+
         #Check to see if this Component already exists
         comp = self.getExistingComponent(name)
         if comp != None:
@@ -411,7 +416,6 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.compModuleCount[temp[COMPMODULE]] = 1
         else:
             self.compModuleCount[temp[COMPMODULE]] = self.compModuleCount[temp[COMPMODULE]] + 1
-
         #configure the components logger from the CDB
         self.configureComponentLogger(name)
 
