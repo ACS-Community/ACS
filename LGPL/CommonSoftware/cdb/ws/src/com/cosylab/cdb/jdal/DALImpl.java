@@ -509,7 +509,17 @@ public class DALImpl extends JDALPOA implements Recoverer {
 
 	private LinkedHashMap<String, String> cache = new LinkedHashMap<String, String>();
 	
+	private volatile boolean cacheLimitReached = false;
+	
+	public boolean wasCacheLimitReached() {
+		return cacheLimitReached;
+	}
+
 	private void checkCache()
+	{
+		checkCache(false);
+	}
+	private boolean checkCache(boolean tryOnly)
 	{
 		synchronized (cache) {
 			
@@ -526,13 +536,22 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			final long requiredFreeMemory = (long)(maxMemory*0.2);	// 20%
 			final long toFree = requiredFreeMemory - totalFreeMemory;
 
+			if (tryOnly)
+			{
+				// true if we have some memory for cache left
+				boolean someFreeLeft = (toFree <= 0);
+				cacheLimitReached |= someFreeLeft;
+				return someFreeLeft;
+			}
+			
 			if (toFree <= 0 || cache.isEmpty())
 			{
 				m_logger.log(AcsLogLevel.DELOUSE, "Memory status: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free.");
-				return;
+				return true;
 			}
-	
+			
 			m_logger.log(AcsLogLevel.DEBUG, "Low memory: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free. Cleaning cache...");
+			cacheLimitReached = true;
 
 			long freedEstimation = 0;
 			while (freedEstimation < toFree && !cache.isEmpty()) {
@@ -552,6 +571,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			totalFreeMemory = maxMemory-allocatedMemory+freeOfAllocatedMemory;
 
 			m_logger.log(AcsLogLevel.DEBUG, "Total free memory after cache cleanup: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free (actually freed: " + (totalFreeMemory-l) + " bytes, estimated: " + freedEstimation + " bytes).");
+			
+			return false;
 		}
 	}
 	
@@ -598,7 +619,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	/**
 	 * returns full expanded XML string
 	 */
-	public synchronized String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
+	public String get_DAO(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
+		return internal_get_DAO(curl, false);
+	}
+
+	/**
+	 * returns full expanded XML string
+	 */
+	public synchronized String internal_get_DAO(String curl, boolean precacheStage) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx {
 		totalDALInvocationCounter.incrementAndGet();
 
 		if (shutdown) {
@@ -622,18 +650,24 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				return null;
 			}
 
-			m_logger.log(AcsLogLevel.DEBUG, "Returning XML record for: " + curl);
+			if (!precacheStage)
+				m_logger.log(AcsLogLevel.DEBUG, "Returning XML record for: " + curl);
 			
 			xml = xmlSolver.toString(false);
-			putToCache(curl, xml);
+			
+			// put to cache only if enough of space (do not override first record to be cached)
+			if (!precacheStage || checkCache(true))
+				putToCache(curl, xml);
 			
 			return xml;
 		} catch (AcsJCDBXMLErrorEx e) {
 			// @todo watch if this log also needs a repeat guard, similar to logRecordNotExistWithRepeatGuard
-			m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
+			if (!precacheStage)
+				m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
 		} catch (AcsJCDBRecordDoesNotExistEx e) {
-			logRecordNotExistWithRepeatGuard(curl);
+			if (!precacheStage)
+				logRecordNotExistWithRepeatGuard(curl);
 			throw e.toCDBRecordDoesNotExistEx();
 		}
 	}

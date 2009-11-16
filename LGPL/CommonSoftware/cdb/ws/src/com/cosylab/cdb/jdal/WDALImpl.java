@@ -50,10 +50,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
-import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.WDAO;
-import com.cosylab.CDB.WDAOHelper;
-
 import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBExceptionEx;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
@@ -65,6 +61,10 @@ import alma.cdbErrType.wrappers.AcsJCDBExceptionEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
+
+import com.cosylab.CDB.DAO;
+import com.cosylab.CDB.WDAO;
+import com.cosylab.CDB.WDAOHelper;
 
 /**
  * Implementation of Writable Data Access Layer (WDAL) interface.   Enables
@@ -93,6 +93,10 @@ public class WDALImpl extends WDALBaseImpl
 		this.poa = poa;
 	}
 
+	DALImpl getDALImplDelegate() {
+		return dalImpl;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.cosylab.CDB.WDALOperations#get_WDAO_servant(java.lang.String)
 	 */

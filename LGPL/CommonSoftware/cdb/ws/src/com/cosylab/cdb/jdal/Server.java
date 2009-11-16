@@ -60,7 +60,7 @@ public class Server {
 	
 	public void run(String args[]) {
 		String iorFileName = null;
-		Logger sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB", true);
+		final Logger sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB", true);
 		try {
 		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
@@ -164,7 +164,7 @@ public class Server {
 
 			// create servant and register it with the ORB
 			//DALImpl DALImpl = new DALImpl(args, orb, dalpoa);
-			final org.omg.PortableServer.Servant servant = new WDALImpl(args, orb, dalpoa, sharedLogger);
+			final WDALImpl servant = new WDALImpl(args, orb, dalpoa, sharedLogger);
 			
 			//create object id
 			byte[] id = { 'C', 'D', 'B' };
@@ -233,10 +233,9 @@ public class Server {
 			System.out.println("JDAL is ready and waiting ...");
                         
 			// preload cache
-			final JDAL dal = jdal;
 			new Thread(new Runnable() {
 				public void run() {
-					preloadCache(dal);
+					preloadCache(servant.getDALImplDelegate(), sharedLogger);
 				}
 			}, "preload-cache").start();
 
@@ -265,11 +264,16 @@ public class Server {
 		"MACI/Containers"
 	};
 
-	private void preloadCache(JDAL jdal) {
+	private void preloadCache(DALImpl dal, Logger sharedLogger) {
+		boolean allRead = false;
+		sharedLogger.log(AcsLogLevel.DEBUG, "Starting pre-filling cache...");
 		try
 		{
 			for (String node : PRELOAD_TABLE)
 			{
+				if (dal.wasCacheLimitReached())
+					return;
+				
 				try {
 					jdal.get_DAO(node);
 				} catch (alma.cdbErrType.CDBXMLErrorEx xmlerr) {
@@ -281,6 +285,9 @@ public class Server {
 				
 			for (String subTree : PRELOAD_TABLE_SUBTREE)
 			{
+				if (dal.wasCacheLimitReached())
+					return;
+
 				String daos = jdal.list_nodes(subTree);
 				if (daos != null)
 				{
@@ -298,10 +305,17 @@ public class Server {
 				}
 			}
 
+			allRead = true;
+			
 		} catch (NO_RESOURCES nores) {
 			// shutdown
+			sharedLogger.log(AcsLogLevel.DEBUG, "Cache filling canceled due to server shutdown.");
 			return;
 		}
+		if (allRead)
+			sharedLogger.log(AcsLogLevel.DEBUG, "Cache filling fully completed.");
+		else
+			sharedLogger.log(AcsLogLevel.DEBUG, "Cache filling partly completed, terminated since cache memory limit was reached.");
 	}
 	
 }
