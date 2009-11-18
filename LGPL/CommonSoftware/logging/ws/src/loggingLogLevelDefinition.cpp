@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.2 2008/01/16 09:57:50 cparedes Exp $"
+* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.3 2009/11/18 22:25:08 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -62,6 +62,9 @@ LogLevelDefinition LogLevelDefinition::fromInteger(int val){
     case AcsLogLevels::TRACE_VAL:
         return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
         break;
+    case AcsLogLevels::DELOUSE_VAL:
+        return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
+        break;
     case AcsLogLevels::DEBUG_VAL:
         return LogLevelDefinition(AcsLogLevels::DEBUG_VAL,AcsLogLevels::DEBUG_NAME);
         break;
@@ -95,6 +98,8 @@ LogLevelDefinition LogLevelDefinition::fromInteger(int val){
 LogLevelDefinition LogLevelDefinition::fromName(std::string name){
 
     if(name == AcsLogLevels::TRACE_NAME)
+        return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
+    else if (name == AcsLogLevels::DELOUSE_NAME)
         return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
     else if (name == AcsLogLevels::DEBUG_NAME)
         return LogLevelDefinition(AcsLogLevels::DEBUG_VAL,AcsLogLevels::DEBUG_NAME);
