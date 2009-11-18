@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.27 2009/09/24 23:08:03 javarias Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.28 2009/11/18 00:20:44 jkern Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002
  *    (c) European Southern Observatory, 2002
@@ -55,10 +55,10 @@ SimpleSupplier::publishData(T data, EventProcessingCallback<T> *evProcCallback)
    }
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{
-		acsncErrType::PublishEventFailureExImpl ex(ex, __FILE__, __LINE__, "nc::Supplier::publishData");
-		ex.setChannelName(channelName_mp);
-		ex.log(LM_DEBUG);
-		throw ex;
+		acsncErrType::PublishEventFailureExImpl nex(ex, __FILE__, __LINE__, "nc::Supplier::publishData");
+		nex.setChannelName(channelName_mp);
+		nex.log(LM_DEBUG);
+		throw nex;
 	}
 	catch(CORBA::SystemException &ex)
 	{
