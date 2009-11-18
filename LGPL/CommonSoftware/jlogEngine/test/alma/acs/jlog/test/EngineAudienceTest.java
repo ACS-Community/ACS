@@ -199,7 +199,10 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 			StringBuilder logOperatorStr = new StringBuilder("<");
 			StringBuilder logNoOperatorStr = new StringBuilder();
 			
-			if (logType==LogTypeHelper.TRACE) {
+			// HSO 2009-11 No idea why this level translation is needed, 
+			// but anyway I add the new level DELOUSE because it is similar to TRACE.
+			// (see COMP-3749 : JDK levels FINER and FINEST were previously mapped to TRACE, while now FINER maps to DELOUSE).
+			if (logType==LogTypeHelper.TRACE || logType==LogTypeHelper.DELOUSE) {
 				logType=LogTypeHelper.INFO;
 			}
 			logOperatorStr.append(logType.logEntryType);
@@ -238,7 +241,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		assertFalse("Timeout waiting for logs", waitForLogs());
 		
 		assertEquals(logs.size(), numOfReceivedXMLLogs);
-		assertEquals(14, numOfReceivedLogs);
+		assertEquals(15, numOfReceivedLogs);
 	}
 	
 	
