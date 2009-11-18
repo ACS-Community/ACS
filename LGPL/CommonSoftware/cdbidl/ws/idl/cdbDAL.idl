@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.5 2007/10/11 11:15:14 msekoran Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.6 2009/11/18 10:08:55 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -93,7 +93,7 @@ module CDB {
 	 */
 	interface DAL {
 		/**
-		 * Name of used configuration.
+		 * Name of used configuration, such as "XML" for the XML-based implementation.
 		 */
 		readonly attribute string configuration_name;
 
