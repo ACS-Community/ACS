@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.22 2009/03/11 10:01:00 bjeram Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.23 2009/11/19 20:51:47 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -81,6 +81,7 @@ if (getLogger()!=0) \
     LoggingProxy::antenna(logAntenna); \
     LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
     getLogger()->log(lr); \
+	 LoggingProxy::audience(NULL); \
 } \
 else \
 { \
@@ -139,6 +140,7 @@ if (getLogger()!=0) \
     LoggingProxy::audience(logAudience); \
     LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
     getLogger()->log(lr); \
+	 LoggingProxy::audience(NULL); \
 } \
 else \
 { \
