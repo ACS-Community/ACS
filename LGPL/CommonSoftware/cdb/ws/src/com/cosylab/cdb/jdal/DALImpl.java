@@ -341,7 +341,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		DALNode curlNode = node.getCurlNode();
 		if(curlNode != null) {
 			String xmlPath = getRecordPath(node.getCurl());
-			String xml = getFromCache(node.getCurl());
+			// NOTE: we cannot cache due to setFirstElement.... sadly :(
+			String xml = null; //getFromCache(node.getCurl());
 			if (xml != null)
 			{
 				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
