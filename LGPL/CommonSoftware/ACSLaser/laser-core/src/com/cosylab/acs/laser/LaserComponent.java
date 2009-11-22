@@ -250,7 +250,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 							try {
 								alarmMessageProcessor.process(message);
 							} catch (Exception e) {
-								logger.log(AcsLogLevel.ERROR," *** Exception processing a message:"+e.getMessage());
+								logger.log(AcsLogLevel.WARNING," *** Exception processing a message:"+e.getMessage());
 								// XXX what to do???
 							}
 						}
@@ -270,7 +270,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		} catch (Throwable t) {
 			System.err.println("Error getting CDB: "+t.getMessage());
 			t.printStackTrace(System.err);
-			logger.log(AcsLogLevel.ERROR,"Error getting CDB",t);
+			logger.log(AcsLogLevel.WARNING,"Error getting CDB",t);
 			coreAlarms.add(LaserCoreFaultCodes.CDB_UNAVAILABLE);
 		}
 
@@ -286,7 +286,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		} catch (Throwable t) {
 			System.err.println("Error loading alarms: "+t.getMessage());
 			t.printStackTrace(System.err);
-			logger.log(AcsLogLevel.ERROR,"Error loading alarms from CDB",t);
+			logger.log(AcsLogLevel.WARNING,"Catched error loading alarms from CDB");
 			coreAlarms.add(LaserCoreFaultCodes.ALARMS_CDB);
 		}
 		try {
@@ -294,7 +294,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		} catch (Throwable t) {
 			System.err.println("Error loading categories: "+t.getMessage());
 			t.printStackTrace(System.err);
-			logger.log(AcsLogLevel.ERROR,"Error loading categories from CDB",t);
+			logger.log(AcsLogLevel.WARNING,"Catched error loading categories from CDB");
 			coreAlarms.add(LaserCoreFaultCodes.CATEGORIES_CDB);
 		}
 		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
@@ -401,7 +401,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 				} catch (Throwable t) {
 					System.err.println("Error setting source listener: "+t.getMessage());
 					t.printStackTrace(System.err);
-					logger.log(AcsLogLevel.ERROR,"Error setting the source listener",t);
+					logger.log(AcsLogLevel.WARNING,"Error setting the source listener",t);
 					coreAlarms.add(LaserCoreFaultCodes.SOURCE_LISTENER);
 				}
 			}
