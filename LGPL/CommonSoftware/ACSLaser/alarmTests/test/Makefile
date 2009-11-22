@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1.1.1 2009/11/22 19:49:02 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2009/11/22 20:38:39 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -204,6 +204,7 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	@mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
