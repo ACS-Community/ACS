@@ -1,0 +1,30 @@
+ACS Manager:
+ACS Interface Repository:
+java -classpath
+^. - [jJ]ava
+Time:
+has not defined the Timeout for the component
+export
+Starting Java application
+endorsed
+ACS Name Service
+Running the following command:
+java  -classpath
+calling orbresolve_initial_references
+manager reference not yet available in method loginToManager
+Manager login done
+FINER
+FINEST
+DEBUG
+INFO
+WARN
+DELOUSE
+FINE
+CONFIG
+will retrieve remote component
+retrieved successfully
+about to release component
+has successfully released
+[0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
+Starting Java/abeans application
+ACS abeans configuration directory
