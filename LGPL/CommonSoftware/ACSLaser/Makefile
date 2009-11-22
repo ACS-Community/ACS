@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.24 2009/09/11 12:07:27 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.25 2009/11/22 19:50:28 acaproni Exp $"
 #
 #
 
@@ -30,7 +30,8 @@ MODULES_ACSLASER = laser-extlib \
 	  alarmPanel \
       demo \
       managerTest \
-      baciPropsTest
+      baciPropsTest \
+      alarmTests
 #     NetbeansACS
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
