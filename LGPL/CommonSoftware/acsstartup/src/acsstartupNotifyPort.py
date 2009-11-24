@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupNotifyPort.py,v 1.3 2009/09/18 06:39:11 hyatagai Exp $
+# @(#) $Id: acsstartupNotifyPort.py,v 1.4 2009/11/24 08:47:01 hyatagai Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -74,6 +74,7 @@ def cleanUp():
     sleepperiod = 1    
     while container_file is not None and sleepperiod <= maxsleepperiod:
         try:
+            container_file.flush()
             lockf(container_file.fileno(), LOCK_UN)
         except Exception, e:
             stderr.write("WARNING: acsstartupNotifyPort is unable to release lock.  Reason: %s Retrying in %d seconds." % (e, sleepperiod))
