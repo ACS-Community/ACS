@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.46 2006/12/20 09:29:44 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.47 2009/11/24 13:36:30 rtobar Exp $" 
 #
 # Makefile of ........
 #
@@ -87,8 +87,9 @@ LIBRARIES_L     =
 #
 # Jarfiles and their directories
 #
-JARFILES = JDALTests
+JARFILES = JDALTests PerformanceTests
 JDALTests_DIRS = com
+PerformanceTests_DIRS = alma
 
 #
 # Scripts (public and local)
