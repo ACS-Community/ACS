@@ -42,7 +42,7 @@ public class XMLConverter extends LogConverter {
 		if (log==null) {
 			throw new IllegalArgumentException("Impossible to convert a null log");
 		}
-		return log.toXMLString();
+		return log.toXMLString()+"\n";
 	}
 	
 	/**
