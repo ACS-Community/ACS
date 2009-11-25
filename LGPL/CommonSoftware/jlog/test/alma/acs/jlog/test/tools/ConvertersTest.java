@@ -362,4 +362,56 @@ public class ConvertersTest extends TestCase {
 		expected+="|"+stackId.replaceAll("\"", "")+"|\n";
 		assertEquals(expected, txt);
 	}
+	
+	/**
+	 * Check the generation of the header for the different 
+	 * log converters.
+	 * @throws Exception
+	 */
+	public void testGetHeader() throws Exception {
+		String cols="";
+		cols+=LogField.TIMESTAMP.id;
+		cols+=LogField.SOURCEOBJECT.id;
+		cols+=LogField.LOGMESSAGE.id;
+		cols+=LogField.ENTRYTYPE.id;
+		// CSV
+		CSVConverter csvConverter = new CSVConverter(cols);
+		assertNotNull(csvConverter);
+		String csvHdr=csvConverter.getHeader();
+		assertNotNull(csvHdr);
+		String expectedCsvHdr="\""+LogField.TIMESTAMP.name;
+		expectedCsvHdr+="\",\""+LogField.SOURCEOBJECT.name;
+		expectedCsvHdr+="\",\""+LogField.LOGMESSAGE.name;
+		expectedCsvHdr+="\",\""+LogField.ENTRYTYPE.name+"\"\n";
+		assertEquals(expectedCsvHdr, csvHdr);
+		
+		// XML
+		XMLConverter xmlConverter = new XMLConverter();
+		assertNotNull(xmlConverter);
+		String xmlHdr=xmlConverter.getHeader();
+		assertNotNull(xmlHdr);
+		assertTrue(xmlHdr.isEmpty());
+		
+		// Text
+		TextConverter txtConverter= new TextConverter(cols);
+		assertNotNull(txtConverter);
+		String txtHdr=txtConverter.getHeader();
+		assertNotNull(txtHdr);
+		String expectedTxtHdr=LogField.TIMESTAMP.name;
+		expectedTxtHdr+=" "+LogField.SOURCEOBJECT.name;
+		expectedTxtHdr+=" "+LogField.LOGMESSAGE.name;
+		expectedTxtHdr+=" "+LogField.ENTRYTYPE.name+"\n";
+		assertEquals(expectedTxtHdr, txtHdr);
+		
+		// Twiki table
+		TwikiTableConverter ttConverter=new TwikiTableConverter(cols);
+		assertNotNull(ttConverter);
+		String ttHdr=ttConverter.getHeader();
+		assertNotNull(ttHdr);
+		String expectedTtHdr="| *"+LogField.TIMESTAMP.name;
+		expectedTtHdr+="* | *"+LogField.SOURCEOBJECT.name;
+		expectedTtHdr+="* | *"+LogField.LOGMESSAGE.name;
+		expectedTtHdr+="* | *"+LogField.ENTRYTYPE.name+"* |\n";
+		assertEquals(expectedTtHdr, ttHdr);
+	}
 }
