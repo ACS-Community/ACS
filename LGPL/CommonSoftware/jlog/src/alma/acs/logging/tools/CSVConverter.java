@@ -1,74 +1,70 @@
+/*
+ *    ALMA - Atacama Large Millimiter Array
+ *    (c) European Southern Observatory, 2009
+ *    Copyright by ESO (in the framework of the ALMA collaboration)
+ *    and Cosylab 200, All rights reserved
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation; either
+ *    version 2.1 of the License, or (at your option) any later version.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ *
+ *    You should have received a copy of the GNU Lesser General Public
+ *    License along with this library; if not, write to the Free Software
+ *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+ *    MA 02111-1307  USA
+ */
 package alma.acs.logging.tools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-import java.util.regex.Pattern;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.util.IsoDateFormat;
 
 /**
  * Objects of this class produce a CSV string from a given log.
  * The CSV adhere to the definition in RFC4180.
- * 
- *  It is possible to select the column of the log to export and their
- *  position in the string.
- *  
+ * <P>
+ *  It is possible to select the columns of the log to export and their
+ *  positions by setting a string.
+ *  <P>
  *  A method generate the header in CSV format
- *  
+ *  <P>
  *  All the fields appear inside double quotes.
- *  If a field contains double quotes they are escaped by double quotes
- *  
- *  It is possible to define a different separator instead of a come, like
- *  for example the TAB.
- *  
+ *  If a field contains double quotes they are escaped by double quotes.
  *  It is also possible not to enclose the fields by double quotes but in that 
  *  case the content of the field is changed because some character are not
  *  allowed.
+ *  <P>
+ *  It is possible to define a different separator instead of a comma, like
+ *  for example the TAB.
  *  
  * @author acaproni
  *
  */
-public class CSVConverter {
+public class CSVConverter extends LogConverter {
 	
-	// The string describing the position and the fields of a log to export
-	// The index of each col is the same (indexes 0-15 i.e. 0-f in the string) 
-	// plus the data (index 16 or g in the string)
-	// The same col can be repeated many times
-	//
-	// FIELD_TIMESTAMP =  0 (0)
-	// FIELD_ENTRYTYPE =  1 (1)
-    // FIELD_SOURCEOBJECT=2 (2)
-	// FIELD_FILE =       3 (3)
-	// FIELD_LINE =       4 (4)
-	// FIELD_ROUTINE =    5 (5)
-	// FIELD_HOST =       6 (6)
-	// FIELD_PROCESS =    7 (7)
-	// FIELD_CONTEXT =    8 (8)
-	// FIELD_THREAD =     9 (9)
-	// FIELD_LOGID =      a (10)
-	// FIELD_PRIORITY =   b (11)
-	// FIELD_URI =        c (12)
-	// FIELD_STACKID =    d (13)
-	// FIELD_STACKLEVEL = e (14)
-	// FIELD_LOGMESSAGE=  f (15)
-	// ADDITIONAL DATA=   g (16)
-	//
-	// For example if cols==0f1 the the output will contain entries with like that: 
-	// timestamp, message, log type
-	private String colIndex="01234567890abcdefg";
-	
-	// The separator, usually a ','
+	/**
+	 * The separator, usually a ','
+	 */
 	private char separator=',';
 	
-	// If true each field is enclosed in double quotes
-	// If false the double quotes do not enclose the fields but
-	// some character in the fields will be replaced tbecause 
-	// are not allowed (like the double quotes for example)
+	/**
+	 * If <code>true</code> each field is enclosed in double quotes 
+	 * otherwise the double quotes do not enclose the fields but
+	 * some character in the fields will be replaced because 
+	 * are not allowed (like the double quotes for example)
+	 */
 	private boolean useDoubleQuotes = true;
 	
 	/**
@@ -78,9 +74,18 @@ public class CSVConverter {
 	 *             position in the output
 	 */
 	public CSVConverter(String cols) {
-		if (cols!=null) {
-			setCols(cols);
-		}
+		super(cols);
+	}
+	
+	/**
+	 * Constructor.
+	 * <P>
+	 * The converted string contains all the fields just once
+	 * and the additional data.
+	 * 
+	 */
+	public CSVConverter() {
+		super();
 	}
 	
 	/**
@@ -89,26 +94,12 @@ public class CSVConverter {
 	 * @param cols A string describing the field of the log and their
 	 *             position in the output
 	 * @param separator A character to use as fields separator
-	 * @param doubleQuotes If true the fields are enclosed by double quotes
+	 * @param doubleQuotes If <code>true</code> the fields are enclosed by double quotes
 	 */
 	public CSVConverter(String cols, char separator, boolean doubleQuotes) {
-		if (cols!=null) {
-			setCols(cols);
-		}
+		super(cols);
 		useDoubleQuotes=doubleQuotes;
 		this.separator=separator;
-	}
-	
-	/**
-	 * Set the fields of the log and their position in the output
-	 * 
-	 * @param cols
-	 */
-	public void setCols(String cols) {
-		if (!Pattern.matches("[0-9a-g]+",cols)) {
-			throw new IllegalArgumentException("Wrong format for columns: [0-9a-g]+");
-		}
-		colIndex=cols;
 	}
 	
 	/**
@@ -123,7 +114,7 @@ public class CSVConverter {
 	/**
 	 * Put or remove the double quotes around the fields
 	 * 
-	 * @param enclose If true the fields are enclosed by double quotes
+	 * @param enclose If <code>true</code> the fields are enclosed by double quotes
 	 */
 	public void encloseByDoubleQuotes(boolean enclose) {
 		useDoubleQuotes=enclose;
@@ -149,7 +140,7 @@ public class CSVConverter {
 			if (t>0) {
 				str.append(separator);
 			}
-			appendField(Field.values()[index].getName(),str);
+			appendField(LogField.values()[index].getName(),str);
 		}
 		str.append(0xD); // CR
 		str.append(0xA); // LF
@@ -163,6 +154,9 @@ public class CSVConverter {
 	 * @return The CSV string representing the log
 	 */
 	public String convert(ILogEntry log) {
+		if (log==null) {
+			throw new IllegalArgumentException("Impossible to convert a null log");
+		}
 		StringBuilder str = new StringBuilder();
 		SimpleDateFormat df = new IsoDateFormat();
 		for (int t=0; t<colIndex.length(); t++) {
@@ -170,21 +164,22 @@ public class CSVConverter {
 				str.append(separator);
 			}
 			Character c= Character.toUpperCase(colIndex.charAt(t));
-			int index;
-			if ((c>='0' && c<='9') || (c>='A' && c<='F')) {
-				index=Integer.parseInt(c.toString(),16);
-				Object obj = log.getField(Field.values()[index]);
+			if (
+					(c>='0' && c<='9') || 
+					(c>='A' && c<=Character.toUpperCase(LogField.values()[LogField.values().length-1].id))) {
+				LogField field=LogField.fromID(c);
+				Object obj = log.getField(field);
 				if (obj==null) {
 					appendField(null,str);
-				} else  if (index==Field.TIMESTAMP.ordinal()) {
+				} else  if (field==LogField.TIMESTAMP) {
 					// Write the date in the right format
 					Date dt=new Date(((Long)obj).longValue());
 					StringBuffer dateSB = new StringBuffer();
 					java.text.FieldPosition pos = new java.text.FieldPosition(0);
 					df.format(dt,dateSB,pos);
 					appendField(dateSB.toString(),str);
-				} else if (index==Field.ENTRYTYPE.ordinal()) {
-					appendField(LogTypeHelper.values()[Integer.parseInt(obj.toString())].logEntryType,str);
+				} else if (field==LogField.ENTRYTYPE) {
+					appendField(LogTypeHelper.fromLogTypeDescription(obj.toString()).logEntryType,str);
 				} else {
 					appendField(obj.toString(),str);
 				}
