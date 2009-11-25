@@ -34,13 +34,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import alma.acs.logging.tools.CSVConverter;
+import alma.acs.logging.tools.LogConverter;
+import alma.acs.logging.tools.TextConverter;
+import alma.acs.logging.tools.TwikiTableConverter;
+import alma.acs.logging.tools.XMLConverter;
 
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
@@ -56,6 +64,51 @@ import com.cosylab.logging.settings.UserInfoDlg;
  *
  */
 public class TablePopupMenu extends JPopupMenu implements ActionListener {
+	
+	/**
+	 * The file chooser to see the icon of the given type
+	 */
+	public class CustomFileChooser extends JFileChooser {
+		
+		/**
+		 * The icon to show for the file type
+		 */
+		private final ImageIcon icon;
+		
+		/**
+		 * The filter for the type of the file
+		 */
+		private final FileFilter filter;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param icon
+		 */
+		public CustomFileChooser(ImageIcon icon, FileFilter filter) {
+			System.out.println("****"+icon);
+			System.out.println("****"+filter);
+			if (icon==null || filter==null) {
+				throw new IllegalArgumentException("Invalid null param");
+			}
+			this.icon=icon;
+			this.filter=filter;
+		}
+		/* (non-Javadoc)
+		 * @see javax.swing.JFileChooser#getIcon(java.io.File)
+		 */
+		@Override
+		public Icon getIcon(File f) {
+			if (f.isDirectory()) {
+				return super.getIcon(f);
+			} else if (filter!=null && filter.accept(f)) {
+				return icon;
+			} else {
+				return super.getIcon(f);
+			}
+		}
+		
+	}
 	
 	/**
 	 * The class to set the clipboard content 
@@ -133,57 +186,77 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	 * <P>
 	 * It is enabled only if the stack ID is not null
 	 */
-	private JMenuItem showErrorStack = new JMenuItem("Show error stack");
+	private final JMenuItem showErrorStack = new JMenuItem("Show error stack");
 	
 	/** 
 	 * The menu item to copy the text to the clipboard
 	 */
-	private JMenuItem copyClipboard = new JMenuItem("to clipboard");
+	private final JMenuItem copyClipboard = new JMenuItem("to clipboard");
 	
 	/** 
 	 * The menu item to allow the user to add his information
 	 */
-	private JMenuItem addUserInfo = new JMenuItem("add Info");
+	private final JMenuItem addUserInfo = new JMenuItem("add Info");
 	
 	/** 
 	 * The icon of the menu item to save selected logs
 	 */
-	private ImageIcon saveIcon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
+	private final ImageIcon saveIcon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
 	
 	/**
 	 * The sub menu item to save the selected logs
 	 */
-	private JMenuItem saveSelected = new JMenuItem("Save selected logs...",saveIcon);
+	private final JMenu saveSelected = new JMenu("Save selected logs...");
+	
+	/** 
+	 * The icon of the menu item to save selected logs as twiki table
+	 */
+	private final ImageIcon saveXmlIcon =new ImageIcon(LogTypeHelper.class.getResource("/xml-file.png"));
 	
 	/**
 	 * The menu item to save selected logs as XML
 	 */
-	private JMenuItem saveSelectedAsXML;
+	private final JMenuItem saveSelectedAsXML=new JMenuItem("Save as XML",saveXmlIcon);
+	
+	/** 
+	 * The icon of the menu item to save selected logs as twiki table
+	 */
+	private final ImageIcon saveTextIcon =new ImageIcon(LogTypeHelper.class.getResource("/text-files.gif"));
 	
 	/**
 	 * The menu item to save selected logs as plain ASCII
 	 */
-	private JMenuItem saveSelectedAsText;
+	private final JMenuItem saveSelectedAsText=new JMenuItem("Save as text",saveTextIcon);
+	
+	/** 
+	 * The icon of the menu item to save selected logs as twiki table
+	 */
+	private final ImageIcon saveTwikiTableIcon =new ImageIcon(LogTypeHelper.class.getResource("/T-twiki.gif"));
 	
 	/**
 	 * The menu item to save selected logs as plain ASCII (twiki table)
 	 */
-	private JMenuItem saveSelectedAsTwiki;
+	private final JMenuItem saveSelectedAsTwiki=new JMenuItem("Save as twiki table",saveTwikiTableIcon);
+	
+	/** 
+	 * The icon of the menu item to save selected logs as twiki table
+	 */
+	private final ImageIcon saveCsvIcon =new ImageIcon(LogTypeHelper.class.getResource("/csv-files.png"));
 	
 	/**
 	 * The menu item to save selected logs as plain ASCII (CSV)
 	 */
-	private JMenuItem saveSelectedAsCSV;
+	private final JMenuItem saveSelectedAsCSV=new JMenuItem("Save as CSV",saveCsvIcon);
 	
 	/** 
 	 * The icon of the menu item to save selected logs
 	 */
-	private ImageIcon zoomIcon =new ImageIcon(LogTypeHelper.class.getResource("/zoom.png"));
+	private final ImageIcon zoomIcon =new ImageIcon(LogTypeHelper.class.getResource("/zoom.png"));
 	
 	/**
 	 * The menu item to save the selected logs
 	 */
-	private JMenuItem zoomOverSelected = new JMenuItem("Drill down",zoomIcon);
+	private final JMenuItem zoomOverSelected = new JMenuItem("Drill down",zoomIcon);
 	
 	private LogTableRowSorter sorter;
 	
@@ -253,6 +326,12 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		addSeparator();
 		add(showErrorStack);
 		addSeparator();
+		
+		saveSelected.add(saveSelectedAsXML);
+		saveSelected.add(saveSelectedAsText);
+		saveSelected.add(saveSelectedAsTwiki);
+		saveSelected.add(saveSelectedAsCSV);
+		
 		add(saveSelected);
 		addSeparator();
 		add(copyClipboard);
@@ -262,7 +341,10 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		showErrorStack.addActionListener(this);
 		copyClipboard.addActionListener(this);
 		addUserInfo.addActionListener(this);
-		saveSelected.addActionListener(this);
+		saveSelectedAsCSV.addActionListener(this);
+		saveSelectedAsText.addActionListener(this);
+		saveSelectedAsTwiki.addActionListener(this);
+		saveSelectedAsXML.addActionListener(this);
 	}
 	
 	/**
@@ -292,7 +374,6 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 				textTransfer.setClipboardContents(strBuffer.toString());
 			} 
 		} else if (e.getSource()==addUserInfo) {
-			System.out.println("AAAAAAAAAAAAAA");
 			// Show the dialog
 			UserInfoDlg dlg = new UserInfoDlg();
 			if (dlg.okPressed()) {
@@ -322,9 +403,15 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 				
 				loggingClient.setLogDetailContent(logEntry);
 			}
-		} else if (e.getSource()==saveSelected) {
-			saveSelectedLogs();
-		} else if (e.getSource()==showErrorStack) {
+		} else if (e.getSource()==saveSelectedAsCSV) {			
+			saveSelectedLogs(new CSVConverter(),saveCsvIcon,"txt");
+		} else if (e.getSource()==saveSelectedAsText) {
+			saveSelectedLogs(new TextConverter(null),saveTextIcon,"txt");
+		} else if (e.getSource()==saveSelectedAsTwiki) {
+			saveSelectedLogs(new TwikiTableConverter(null),saveTwikiTableIcon,"txt");
+		} else if (e.getSource()==saveSelectedAsXML) {
+			saveSelectedLogs(new XMLConverter(),saveXmlIcon,"xml");
+		}else if (e.getSource()==showErrorStack) {
 			if (stackId!=null && !stackId.isEmpty()) {
 				loggingClient.addErrorTab(stackId);
 			}
@@ -344,10 +431,18 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	}
 	
 	/**
-	 * Save the selected logs into a file
-	 *
+	 * Save the selected logs into a file in the passed format.
+	 * 
+	 * @param converter The converter to desired format
+	 * @param fileIcon The icon of the file type
 	 */
-	private void saveSelectedLogs() {
+	private void saveSelectedLogs(LogConverter converter, ImageIcon fileIcon, String extension) {
+		if (converter==null) {
+			throw new IllegalArgumentException("The converter can't be null");
+		}
+		if (extension==null || extension.isEmpty()) {
+			throw new IllegalArgumentException("Invalid file extension");
+		}
 		// Build the text to save in the file
 		StringBuilder strBuffer = new StringBuilder();
 		if (!selectionModel.isSelectionEmpty()) {
@@ -357,8 +452,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 					continue;
 				} else {
 					ILogEntry log = model.getVisibleLogEntry(sorter.convertRowIndexToModel(i));
-					strBuffer.append(log.toXMLString());
-					strBuffer.append("\n");
+					strBuffer.append(converter.convert(log));
 				}
 			}
 			if (strBuffer.length()==0) {
@@ -367,14 +461,14 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 			}
 				
 		}
-		FileFilter fileFileter = new FileNameExtensionFilter("XML file","xml");
-		JFileChooser fc = new JFileChooser();
-		fc.addChoosableFileFilter(fileFileter);
+		FileFilter fileFilter = new FileNameExtensionFilter("File "+extension,extension);
+		CustomFileChooser fc = new CustomFileChooser(fileIcon,fileFilter);
+		fc.addChoosableFileFilter(fileFilter);
 		if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
 			// If not present, add the xml extension
-			if (!file.getAbsolutePath().toLowerCase().endsWith(".xml")) {
-				file = new File(file.getAbsolutePath()+".xml");
+			if (!file.getAbsolutePath().toLowerCase().endsWith(extension)) {
+				file = new File(file.getAbsolutePath()+"."+extension);
 			}
 			FileOutputStream outFStream=null;
 			try {
