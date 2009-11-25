@@ -581,7 +581,6 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 			if (modelCount==0) {
 				continue;
 			}
-			System.out.println("\tmodel>"+LogField.values()[modelCount-1]);
 			ret+=LogField.values()[modelCount-1].id;
 		}
 		return ret;
