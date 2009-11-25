@@ -26,8 +26,7 @@ import javax.swing.RowFilter;
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
-import com.cosylab.logging.settings.LogTypeRenderer;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * The filters used to hide/show logs in the table.
@@ -106,8 +105,8 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	 * and therefore is like this:
 	 * <OL>
 	 *   <LI> - Boolean (has data)
-	 *   <LI> - ILogEntry.Field.TIMESTAMP
-	 *   <LI> - ILogEntry.Field.ENTRYTYPE
+	 *   <LI> - LogField.TIMESTAMP
+	 *   <LI> - LogField.ENTRYTYPE
 	 * 	 <LI> - ..
 	 * </OL>
 	 * <P>
@@ -125,7 +124,7 @@ public class LogTableRowFilter extends RowFilter<LogTableDataModel, Integer> {
 	@Override
 	public boolean include(Entry<? extends LogTableDataModel, ? extends Integer> entry) {
 		// Check the log level
-		if (!checkLogLevel((LogTypeHelper)entry.getValue(Field.ENTRYTYPE.ordinal()+1))) {
+		if (!checkLogLevel((LogTypeHelper)entry.getValue(LogField.ENTRYTYPE.ordinal()+1))) {
 			return false;
 		}
 		// If there are no filters defined, the entry is accepted

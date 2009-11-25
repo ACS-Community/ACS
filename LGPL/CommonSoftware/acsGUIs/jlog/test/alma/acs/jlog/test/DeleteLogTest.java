@@ -23,7 +23,6 @@ package alma.acs.jlog.test;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -35,7 +34,7 @@ import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.client.cache.LogFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import junit.framework.TestCase;
 
@@ -101,17 +100,17 @@ public class DeleteLogTest extends TestCase {
 		assertEquals("The size of the cache is wrong",cache.getSize(),510);
 		
 		log = cache.getLog(510);
-		int logNumber = Integer.parseInt((String)log.getField(Field.LOGMESSAGE));
+		int logNumber = Integer.parseInt((String)log.getField(LogField.LOGMESSAGE));
 		assertEquals("The log in last position is wrong",logNumber,510);
 		
 		// Delete a log in pos 100 
 		cache.deleteLog(100);
 		assertEquals("The size of the cache is wrong",cache.getSize(),509);
 		ILogEntry log1 = cache.getLog(99); // The record before the deleted record
-		logNumber = Integer.parseInt((String)log1.getField(Field.LOGMESSAGE));
+		logNumber = Integer.parseInt((String)log1.getField(LogField.LOGMESSAGE));
 		assertEquals("The log in position 99 is wrong",logNumber,99);
 		ILogEntry log2 = cache.getLog(101); // The record after the deleted one
-		logNumber = Integer.parseInt((String)log2.getField(Field.LOGMESSAGE));
+		logNumber = Integer.parseInt((String)log2.getField(LogField.LOGMESSAGE));
 		assertEquals("The log in position 101 is wrong",logNumber,101);
 		// Try to delete a log not in the cache
 		boolean gotAnException=false;
@@ -156,8 +155,8 @@ public class DeleteLogTest extends TestCase {
 			while (iter.hasNext()) {
 				key=iter.next();
 				assertEquals("Content of LogFileCache and collection differs",
-						cache.getLog(key).getField(Field.LOGMESSAGE),
-						logs.get(key).getField(Field.LOGMESSAGE));
+						cache.getLog(key).getField(LogField.LOGMESSAGE),
+						logs.get(key).getField(LogField.LOGMESSAGE));
 			}
 		}
 	}
@@ -218,14 +217,14 @@ public class DeleteLogTest extends TestCase {
 				key=iter.next();
 				// Compare the content of the Collection and that of the cache
 				assertEquals("Content of LogCache and collection differs",
-						cache.getLog(key).getField(Field.LOGMESSAGE),
-						logs.get(key).getField(Field.LOGMESSAGE));
+						cache.getLog(key).getField(LogField.LOGMESSAGE),
+						logs.get(key).getField(LogField.LOGMESSAGE));
 				
 				assertEquals("The types differ",
-						cache.getLog(key).getField(Field.ENTRYTYPE),
+						cache.getLog(key).getField(LogField.ENTRYTYPE),
 						cache.getLogType(key));
 				assertEquals("The times differ",
-						((Long)cache.getLog(key).getField(Field.TIMESTAMP)),
+						((Long)cache.getLog(key).getField(LogField.TIMESTAMP)),
 						cache.getLogTimestamp(key));
 			}
 		}
@@ -282,8 +281,8 @@ public class DeleteLogTest extends TestCase {
 				while (iter.hasNext()) {
 					key=iter.next();
 					assertEquals("Content of LogFileCache and collection differs",
-							cache.getLog(key).getField(Field.LOGMESSAGE),
-							logs.get(key).getField(Field.LOGMESSAGE));
+							cache.getLog(key).getField(LogField.LOGMESSAGE),
+							logs.get(key).getField(LogField.LOGMESSAGE));
 				}
 			}
 		}
@@ -328,17 +327,17 @@ public class DeleteLogTest extends TestCase {
 		assertEquals("Wrong number of log in cache",cache.getSize(),510);
 		assertEquals("Wrong number of logs in buffer ",cache.getBufferSize(),510);
 		log = cache.getLog(510);
-		int logNum = Integer.parseInt((String)(log.getField(Field.LOGMESSAGE)));
+		int logNum = Integer.parseInt((String)(log.getField(LogField.LOGMESSAGE)));
 		assertEquals("Wrong content",logNum,510);
 		// Remove one log from the middle
 		cache.deleteLog(100); // The content in pos 100 (its content is 101 because 0 was deleted)
 		assertEquals("Wrong number of log in cache",cache.getSize(),509);
 		assertEquals("Wrong number of logs in buffer ",cache.getBufferSize(),509);
 		ILogEntry log1=cache.getLog(99);
-		logNum = Integer.parseInt((String)(log1.getField(Field.LOGMESSAGE)));
+		logNum = Integer.parseInt((String)(log1.getField(LogField.LOGMESSAGE)));
 		assertEquals("Wrong content",logNum,99);
 		ILogEntry log2=cache.getLog(101);
-		logNum = Integer.parseInt((String)(log2.getField(Field.LOGMESSAGE)));
+		logNum = Integer.parseInt((String)(log2.getField(LogField.LOGMESSAGE)));
 		assertEquals("Wrong content",logNum,101);
 	}
 	
@@ -395,16 +394,16 @@ public class DeleteLogTest extends TestCase {
 		cache.deleteLog(510);
 		assertEquals("The size of the cache is wrong",cache.getSize(),510);
 		log = cache.getLog(509);
-		int logNum = Integer.parseInt((String)log.getField(Field.LOGMESSAGE));
+		int logNum = Integer.parseInt((String)log.getField(LogField.LOGMESSAGE));
 		assertEquals("The log in last position is wrong",logNum,509);
 		// Get one log from the middle (it is till in the in-memory cache)
 		cache.deleteLog(100); // The content in pos 100 is 101 because 0 was deleted
 		assertEquals("Wrong number of log in cache",cache.getSize(),509);
 		ILogEntry log1=cache.getLog(99);
-		logNum = Integer.parseInt((String)(log1.getField(Field.LOGMESSAGE)));
+		logNum = Integer.parseInt((String)(log1.getField(LogField.LOGMESSAGE)));
 		assertEquals("Wrong content",logNum,99);
 		ILogEntry log3=cache.getLog(101);
-		logNum = Integer.parseInt((String)(log3.getField(Field.LOGMESSAGE)));
+		logNum = Integer.parseInt((String)(log3.getField(LogField.LOGMESSAGE)));
 		assertEquals("Wrong content",logNum,101);
 		logDeleted=false;
 		try {
@@ -430,9 +429,9 @@ public class DeleteLogTest extends TestCase {
 		for (int t=0; t<c.size(); t++) {
 			ILogEntry logCache = cache.getLog(t);
 			ILogEntry logVector= c.get(t);
-			assertEquals("Log msgs differ",logCache.getField(Field.LOGMESSAGE),logVector.getField(Field.LOGMESSAGE));
-			assertEquals("Log type differ",logCache.getField(Field.ENTRYTYPE),logVector.getField(Field.ENTRYTYPE));
-			assertEquals("Log time differ",logCache.getField(Field.TIMESTAMP),logVector.getField(Field.TIMESTAMP));
+			assertEquals("Log msgs differ",logCache.getField(LogField.LOGMESSAGE),logVector.getField(LogField.LOGMESSAGE));
+			assertEquals("Log type differ",logCache.getField(LogField.ENTRYTYPE),logVector.getField(LogField.ENTRYTYPE));
+			assertEquals("Log time differ",logCache.getField(LogField.TIMESTAMP),logVector.getField(LogField.TIMESTAMP));
 		}
 	}
 	

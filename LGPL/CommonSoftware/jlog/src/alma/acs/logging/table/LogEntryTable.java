@@ -50,7 +50,7 @@ import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.settings.FieldChooserDialog;
 
 import alma.acs.logging.archive.zoom.ZoomManager;
@@ -293,7 +293,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		setRowSorter(rowSorter);
 		// Initially sort by timestamp
 		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-		sortKeys.add(new RowSorter.SortKey(ILogEntry.Field.TIMESTAMP.ordinal()+1, SortOrder.DESCENDING));
+		sortKeys.add(new RowSorter.SortKey(LogField.TIMESTAMP.ordinal()+1, SortOrder.DESCENDING));
 		rowSorter.setSortKeys(sortKeys); 
 		
 		initialize(initialDateFormat,initalLogTypeFormat);
@@ -411,7 +411,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 			IsoDateFormat sdf = new IsoDateFormat();
 			tempStr = sdf.format(value);
 		} else if (value instanceof Integer) {
-			if (getColumnName(col).compareTo(Field.ENTRYTYPE.getName())==0) {
+			if (getColumnName(col).compareTo(LogField.ENTRYTYPE.getName())==0) {
 				tempStr=LogTypeHelper.values()[((Integer)value).intValue()].logEntryType;
 			} else {
 				tempStr = value.toString();
@@ -478,11 +478,11 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		tc.setMaxWidth(18);
 		tc.setResizable(false);
 		
-		tc = tcm.getColumn(Field.ENTRYTYPE.ordinal() + 1);
+		tc = tcm.getColumn(LogField.ENTRYTYPE.ordinal() + 1);
 		logTypeRenderer = new EntryTypeRenderer(logTypeformat);
 		tc.setCellRenderer(logTypeRenderer);
 
-		tc = tcm.getColumn(Field.TIMESTAMP.ordinal() + 1);
+		tc = tcm.getColumn(LogField.TIMESTAMP.ordinal() + 1);
 		dateRenderer = new DateRenderer(shortDateFormat);
 		tc.setCellRenderer(dateRenderer);
 
@@ -494,7 +494,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		{
 			columnsList[i] = tcm.getColumn(i);
 			visibleColumns[i] = true;
-			if (i == Field.LOGMESSAGE.ordinal()+1)
+			if (i == LogField.LOGMESSAGE.ordinal()+1)
 			{
 				columnsList[i].setPreferredWidth(250);
 			}
@@ -504,21 +504,21 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		sizeColumnsToFit(JTable.AUTO_RESIZE_OFF);
 
         // Hide some columns (default at startup)
-		hideColumn(Field.LINE.ordinal()+1);
-		hideColumn(Field.ROUTINE.ordinal()+1);
-		hideColumn(Field.HOST.ordinal()+1);
-		hideColumn(Field.PROCESS.ordinal()+1);
-		hideColumn(Field.CONTEXT.ordinal()+1);
-		hideColumn(Field.THREAD.ordinal()+1);
-		hideColumn(Field.LOGID.ordinal()+1);
-		hideColumn(Field.PRIORITY.ordinal()+1);
-		hideColumn(Field.URI.ordinal()+1);
-        hideColumn(Field.STACKID.ordinal()+1);
-        hideColumn(Field.FILE.ordinal()+1);
-        hideColumn(Field.STACKLEVEL.ordinal()+1);
-        hideColumn(Field.AUDIENCE.ordinal()+1);
-        hideColumn(Field.ARRAY.ordinal()+1);
-        hideColumn(Field.ANTENNA.ordinal()+1);
+		hideColumn(LogField.LINE.ordinal()+1);
+		hideColumn(LogField.ROUTINE.ordinal()+1);
+		hideColumn(LogField.HOST.ordinal()+1);
+		hideColumn(LogField.PROCESS.ordinal()+1);
+		hideColumn(LogField.CONTEXT.ordinal()+1);
+		hideColumn(LogField.THREAD.ordinal()+1);
+		hideColumn(LogField.LOGID.ordinal()+1);
+		hideColumn(LogField.PRIORITY.ordinal()+1);
+		hideColumn(LogField.URI.ordinal()+1);
+        hideColumn(LogField.STACKID.ordinal()+1);
+        hideColumn(LogField.FILE.ordinal()+1);
+        hideColumn(LogField.STACKLEVEL.ordinal()+1);
+        hideColumn(LogField.AUDIENCE.ordinal()+1);
+        hideColumn(LogField.ARRAY.ordinal()+1);
+        hideColumn(LogField.ANTENNA.ordinal()+1);
 
 		// Build and set the selection model
 		selectionModel = new DefaultListSelectionModel();
@@ -610,9 +610,9 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 */
 	public void showFieldChooser()
 	{
-		String[] fieldNames = new String[Field.values().length];
+		String[] fieldNames = new String[LogField.values().length];
 		int t=0;
-		for (Field f: Field.values()) {
+		for (LogField f: LogField.values()) {
 			fieldNames[t++]=f.getName();
 		}
 		boolean[] fieldVisible = getVisibleColumns(true);
@@ -626,7 +626,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 
 		boolean[] newFields = fieldChooser.getChecked();
 
-		for (int i = 0; i < Field.values().length; i++)
+		for (int i = 0; i < LogField.values().length; i++)
 		{
 			if (newFields[i] != fieldVisible[i])
 			{
@@ -649,7 +649,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
      * @return An array of boolean describing which columns are displayed
      */
     public boolean[] getVisibleColumns(boolean zeroBased) {
-        int nFields = Field.values().length;
+        int nFields = LogField.values().length;
         // The array of visible columns to return
         boolean[] visibleCols = new boolean[nFields];
         
@@ -698,7 +698,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 	 */
 	public void setLogTypeDescriptionView(boolean showDescription) {
 		logTypeRenderer.viewDescription(showDescription);
-		TableColumn logTypeCol = columnsList[Field.ENTRYTYPE.ordinal()+1];
+		TableColumn logTypeCol = columnsList[LogField.ENTRYTYPE.ordinal()+1];
 		if (!showDescription) {
 			logTypeCol.setPreferredWidth(EntryTypeIcon.INFO_ICON.icon.getIconWidth());
 		} else {
@@ -870,7 +870,7 @@ public class LogEntryTable extends JTable implements ZoomProgressListener {
 		System.out.println("Keys "+indexes.length);
 		for (int i: indexes) {
 			ILogEntry log= getLCModel().getVisibleLogEntry(convertRowIndexToModel(i));
-			long time =((Long)log.getField(Field.TIMESTAMP)).longValue();
+			long time =((Long)log.getField(LogField.TIMESTAMP)).longValue();
 			if (time<startDate) {
 				startDate=time;
 			}

@@ -26,7 +26,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import com.cosylab.logging.engine.Filter;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * Serves the purpose of filtering according to the parameter. Used by
@@ -39,7 +39,7 @@ public abstract class FilterParameterPanel extends javax.swing.JPanel {
 	/**
 	 * The field filtered
 	 */
-	private Field field;
+	private LogField field;
 
 	private boolean lethal;
 
@@ -61,7 +61,7 @@ public abstract class FilterParameterPanel extends javax.swing.JPanel {
 	 * 
 	 * @return int
 	 */
-	public Field getFieldIndex() {
+	public LogField getFieldIndex() {
 		return field;
 	}
 
@@ -111,7 +111,7 @@ public abstract class FilterParameterPanel extends javax.swing.JPanel {
 	 * @param newFieldIndex
 	 *            int
 	 */
-	public void setFieldIndex(Field newField) {
+	public void setFieldIndex(LogField newField) {
 		field = newField;
 	}
 

@@ -31,7 +31,7 @@ import java.util.Date;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
@@ -190,7 +190,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 				System.err.println("The log that caused the exception: "+xmlLogString);
 				System.exit(-1);
 			}
-			long logDate = ((Long)log.getField(Field.TIMESTAMP));
+			long logDate = ((Long)log.getField(LogField.TIMESTAMP));
 			if (firstLogDate==-1 || logDate-firstLogDate>time) {
 				firstLogDate=logDate;
 				closeOutputFile(outF);

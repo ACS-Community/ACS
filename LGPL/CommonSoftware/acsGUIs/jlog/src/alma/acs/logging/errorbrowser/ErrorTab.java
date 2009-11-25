@@ -41,7 +41,7 @@ import alma.acs.logging.table.renderer.InfoRenderer;
 
 import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.settings.FieldChooserDialog;
 
 /**
@@ -87,7 +87,7 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 	 * i.e. the array does not contain the column showing if there
 	 * are additional data
 	 */
-	private TableColumn[] columns = new TableColumn[Field.values().length];
+	private TableColumn[] columns = new TableColumn[LogField.values().length];
 
 	/**
 	 * Constructor
@@ -125,30 +125,30 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 		tc.setMaxWidth(18);
 		tc.setResizable(false);
 		
-		tc = tcm.getColumn(Field.ENTRYTYPE.ordinal() + 1);
+		tc = tcm.getColumn(LogField.ENTRYTYPE.ordinal() + 1);
 		tc.setCellRenderer(new EntryTypeRenderer(false));
 
-		tc = tcm.getColumn(Field.TIMESTAMP.ordinal() + 1);
+		tc = tcm.getColumn(LogField.TIMESTAMP.ordinal() + 1);
 		tc.setCellRenderer(new DateRenderer(true));
 		for (int t=1; t<tcm.getColumnCount(); t++) {
 			tc=tcm.getColumn(t);
 			tc.setMinWidth(50);
 			tc.setPreferredWidth(100);
 			tc.setResizable(true);
-			tc.setIdentifier(Field.values()[t-1]);
+			tc.setIdentifier(LogField.values()[t-1]);
 			columns[t-1]=tc;
 		}
 		
 		// Set the visible columns
-		boolean[] visCols = new boolean[Field.values().length];
+		boolean[] visCols = new boolean[LogField.values().length];
 		for (int t=0; t<visCols.length; t++) {
 			visCols[t]=false;
 		}
-		visCols[Field.TIMESTAMP.ordinal()]=true;
-		visCols[Field.ENTRYTYPE.ordinal()]=true;
-		visCols[Field.SOURCEOBJECT.ordinal()]=true;
-		visCols[Field.LOGMESSAGE.ordinal()]=true;
-		visCols[Field.STACKLEVEL.ordinal()]=true;
+		visCols[LogField.TIMESTAMP.ordinal()]=true;
+		visCols[LogField.ENTRYTYPE.ordinal()]=true;
+		visCols[LogField.SOURCEOBJECT.ordinal()]=true;
+		visCols[LogField.LOGMESSAGE.ordinal()]=true;
+		visCols[LogField.STACKLEVEL.ordinal()]=true;
 		setupTableCols(visCols);
 		
 		// Add the tabs
@@ -211,12 +211,12 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 			fieldChooser=new FieldChooserDialog(ErrorTab.this);
 		}
 		
-		String[] colNames = new String[ILogEntry.Field.values().length];
+		String[] colNames = new String[LogField.values().length];
 		boolean colVisible[] = new boolean[colNames.length];
 		for (int t=0; t<colNames.length; t++) {
-			colNames[t]=Field.values()[t].getName();
+			colNames[t]=LogField.values()[t].getName();
 			try {
-				TableColumn tc = table.getColumn(Field.values()[t]);
+				TableColumn tc = table.getColumn(LogField.values()[t]);
 				colVisible[t]=true;
 			} catch (IllegalArgumentException e) {
 				colVisible[t]=false;
@@ -244,7 +244,7 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 	 * @param cols The columns to show/hide
 	 */
 	private void setupTableCols(boolean[] cols) {
-		if (cols==null || cols.length!=Field.values().length) {
+		if (cols==null || cols.length!=LogField.values().length) {
 			throw new IllegalArgumentException("(nvalid parameter");
 		}
 		for (int t=0; t<cols.length; t++) {
@@ -252,7 +252,7 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 			// Check if the column is shown by the table
 			TableColumn tc =null;
 			try {
-				tc = table.getColumn(Field.values()[t]);
+				tc = table.getColumn(LogField.values()[t]);
 			} catch (IllegalArgumentException e) {}
 			
 			

@@ -31,7 +31,7 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import com.cosylab.logging.client.cache.LogMultiFileCache;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import junit.framework.TestCase;
 
@@ -392,7 +392,7 @@ public class MultiFileCacheTest extends TestCase {
 			ILogEntry log = cache.getLog(t);
 			// To be sure the log is what we expect, it checks if the log message
 			// contains the key
-			String message = (String)log.getField(ILogEntry.Field.LOGMESSAGE);
+			String message = (String)log.getField(LogField.LOGMESSAGE);
 			assertNotNull(message);
 			assertTrue(message.contains(t.toString()));
 		}
@@ -424,7 +424,7 @@ public class MultiFileCacheTest extends TestCase {
 			cache.replaceLog(t, newLog);
 			
 			ILogEntry replacedLog =cache.getLog(t);
-			assertEquals(newLog.getField(Field.LOGMESSAGE), replacedLog.getField(Field.LOGMESSAGE));
+			assertEquals(newLog.getField(LogField.LOGMESSAGE), replacedLog.getField(LogField.LOGMESSAGE));
 		}
 	}
 		

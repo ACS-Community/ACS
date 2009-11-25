@@ -30,7 +30,7 @@ import com.cosylab.logging.engine.InvalidFilterConstraintException;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.engine.io.IOHelper;
 import alma.acs.logging.engine.io.IOPorgressListener;
@@ -189,8 +189,8 @@ public class FileHelper implements ACSRemoteErrorListener {
 		Filter dateFilter=null;
 		Filter levelFilter=null;
 		try {
-			dateFilter = new Filter(Field.TIMESTAMP,false,startTime,endTime,false);
-			levelFilter = new Filter(Field.ENTRYTYPE,false,minLogLevel.ordinal(),maxLogLevel.ordinal(),false);
+			dateFilter = new Filter(LogField.TIMESTAMP,false,startTime,endTime,false);
+			levelFilter = new Filter(LogField.ENTRYTYPE,false,minLogLevel.ordinal(),maxLogLevel.ordinal(),false);
 		} catch (InvalidFilterConstraintException e) {
 			throw new ZoomException("Error setting the filters", e);
 		}

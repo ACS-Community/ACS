@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.Filter;
 
 /**
@@ -63,7 +63,7 @@ public class FieldClassChooser extends JComboBox {
 	public FieldClassChooser() {
 		super();
 
-		for (Field field : Field.values()) {
+		for (LogField field : LogField.values()) {
 			addItem(field.getName());
 		}
 
@@ -127,7 +127,7 @@ public class FieldClassChooser extends JComboBox {
 	 * @return java.lang.Class
 	 */
 	public Class getSelectedClass() {
-		return Field.values()[getSelectedIndex()].getType();
+		return LogField.values()[getSelectedIndex()].getType();
 	}
 
 	/**
@@ -158,7 +158,7 @@ public class FieldClassChooser extends JComboBox {
 				c.weightx = 1.0;
 				c.weighty = 1.0;
 
-				newEditor.setFieldIndex(Field.values()[getSelectedIndex()]);
+				newEditor.setFieldIndex(LogField.values()[getSelectedIndex()]);
 				newEditor.setLethal(false);
 
 				// mainPanel.add(new JLabel("Test"), c);

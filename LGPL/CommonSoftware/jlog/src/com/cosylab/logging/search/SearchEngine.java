@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.table.LogEntryTable;
 import alma.acs.logging.table.LogTableDataModel;
@@ -137,12 +137,12 @@ public class SearchEngine {
         	ILogEntry log = logTableDataModel.getVisibleLogEntry(logEntryTable.convertRowIndexToModel(cursor));
         	String string=null; // The value of the field
         	for (int t=0; t<cols.length-1; t++) {
-        		Object obj = log.getField(Field.values()[t]);
+        		Object obj = log.getField(LogField.values()[t]);
         		if (obj==null) {
         			continue;
         		}
         		if (cols[t]) {
-        			switch (Field.values()[t]) {
+        			switch (LogField.values()[t]) {
         				case TIMESTAMP: {
         					SimpleDateFormat df = new IsoDateFormat();
         					Date dt = new Date((Long)obj);

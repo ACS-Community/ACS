@@ -36,7 +36,7 @@ import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * An object to extract the logs that matches the given criteria.
@@ -266,7 +266,7 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 	 *              end date (inclusive)
 	 */
 	private boolean checkDate(ILogEntry log) {
-		Long date = (Long)log.getField(Field.TIMESTAMP);
+		Long date = (Long)log.getField(LogField.TIMESTAMP);
 		boolean matches = true;
 		matches = date>=start;
 		if (matches && end!=-1) {

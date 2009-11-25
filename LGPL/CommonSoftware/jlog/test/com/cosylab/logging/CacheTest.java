@@ -10,7 +10,7 @@ import java.util.Set;
 
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.engine.parser.ACSLogParser;
 import alma.acs.logging.engine.parser.ACSLogParserFactory;
@@ -141,7 +141,7 @@ public class CacheTest extends junit.framework.TestCase {
 		cache.add(newLog);
 		assertEquals("Error adding a log",cache.getSize(),oldSize+1);
 		ILogEntry log = cache.getLog(cache.getSize()-1);
-		String msg = (String)log.getField(Field.LOGMESSAGE);
+		String msg = (String)log.getField(LogField.LOGMESSAGE);
 		assertEquals("Error adding a log",logMsg,msg);
 	}
 	
@@ -156,14 +156,14 @@ public class CacheTest extends junit.framework.TestCase {
 		ILogEntry newLog = parser.parse(logStr);
 		// Replace the first log
 		cache.replaceLog(0,newLog);
-		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(Field.LOGMESSAGE));
+		assertEquals("Error replacing log "+0,logMsg,(String)cache.getLog(0).getField(LogField.LOGMESSAGE));
 		// Replace the last log
 		cache.replaceLog(cache.getSize()-1,newLog);
-		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(Field.LOGMESSAGE));
+		assertEquals("Error replacing log "+(cache.getSize()-1),logMsg,(String)cache.getLog(cache.getSize()-1).getField(LogField.LOGMESSAGE));
 		// Replace a log in the middle
 		int pos = cache.getSize()/2;
 		cache.replaceLog(pos,newLog);
-		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(Field.LOGMESSAGE));
+		assertEquals("Error replacing log "+pos,logMsg,(String)cache.getLog(pos).getField(LogField.LOGMESSAGE));
 	}
 	
 	/**
@@ -187,21 +187,21 @@ public class CacheTest extends junit.framework.TestCase {
 	 */
 	public void testMemoryCache() throws Exception {
 		int first = 0;
-		String firstMsg = (String)cache.getLog(first).getField(Field.LOGMESSAGE);
+		String firstMsg = (String)cache.getLog(first).getField(LogField.LOGMESSAGE);
 		int last = cache.getSize()-1;
-		String lastMsg = (String)cache.getLog(last).getField(Field.LOGMESSAGE);
+		String lastMsg = (String)cache.getLog(last).getField(LogField.LOGMESSAGE);
 		int pos = cache.getSize()/2;
-		String posMsg = (String)cache.getLog(pos).getField(Field.LOGMESSAGE);
+		String posMsg = (String)cache.getLog(pos).getField(LogField.LOGMESSAGE);
 		
 		// Scans the list
 		for (int t=0; t<last; t++) {
 			cache.getLog(t);
 			ILogEntry firstLog = cache.getLog(first);
-			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(Field.LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+first,firstMsg, firstLog.getField(LogField.LOGMESSAGE));
 			ILogEntry lastLog = cache.getLog(last);
-			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(Field.LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+last,lastMsg, lastLog.getField(LogField.LOGMESSAGE));
 			ILogEntry posLog = cache.getLog(pos);
-			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(Field.LOGMESSAGE));
+			assertEquals("Error in mem cache pos "+pos,posMsg, posLog.getField(LogField.LOGMESSAGE));
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class CacheTest extends junit.framework.TestCase {
 		// Mark as true the logs in the Collection
 		for (Integer logN: logs) {
 			ILogEntry log = cache.getLog(logN);
-			String msg = (String)log.getField(Field.LOGMESSAGE);
+			String msg = (String)log.getField(LogField.LOGMESSAGE);
 			msg=msg.replaceFirst("Test","");
 			Integer pos = Integer.parseInt(msg);
 			returned[pos-1]=true;

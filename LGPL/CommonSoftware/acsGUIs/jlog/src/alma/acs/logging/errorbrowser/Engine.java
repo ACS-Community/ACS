@@ -22,7 +22,7 @@
 package alma.acs.logging.errorbrowser;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.table.LogEntryTableModelBase;
 
@@ -103,7 +103,7 @@ public class Engine extends Thread {
 			if (log==null) {
 				continue;
 			}
-			if (stackId.equals((String)log.getField(Field.STACKID))) {
+			if (stackId.equals((String)log.getField(LogField.STACKID))) {
 				dstModel.appendLog(log);
 			}
 		}

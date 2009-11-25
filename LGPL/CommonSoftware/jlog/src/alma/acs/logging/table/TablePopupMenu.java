@@ -45,7 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.settings.UserInfoDlg;
 
 /**
@@ -151,9 +151,29 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	private ImageIcon saveIcon =new ImageIcon(LogTypeHelper.class.getResource("/disk.png"));
 	
 	/**
-	 * The menu item to save the selected logs
+	 * The sub menu item to save the selected logs
 	 */
 	private JMenuItem saveSelected = new JMenuItem("Save selected logs...",saveIcon);
+	
+	/**
+	 * The menu item to save selected logs as XML
+	 */
+	private JMenuItem saveSelectedAsXML;
+	
+	/**
+	 * The menu item to save selected logs as plain ASCII
+	 */
+	private JMenuItem saveSelectedAsText;
+	
+	/**
+	 * The menu item to save selected logs as plain ASCII (twiki table)
+	 */
+	private JMenuItem saveSelectedAsTwiki;
+	
+	/**
+	 * The menu item to save selected logs as plain ASCII (CSV)
+	 */
+	private JMenuItem saveSelectedAsCSV;
 	
 	/** 
 	 * The icon of the menu item to save selected logs
@@ -395,7 +415,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		
 		if (singleLineSelected) {
 			ILogEntry selectedLog = model.getVisibleLogEntry(table.convertRowIndexToModel(row));
-			stackId = (String)selectedLog.getField(Field.STACKID);
+			stackId = (String)selectedLog.getField(LogField.STACKID);
 			showErrorStack.setEnabled(stackId!=null && !stackId.isEmpty());
 		} else {
 			stackId=null;

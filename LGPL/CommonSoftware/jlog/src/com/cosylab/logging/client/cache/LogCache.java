@@ -34,7 +34,7 @@ import java.util.Set;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * The class extends the cache on file keeping a set of logs in memory to avoid to access 
@@ -145,7 +145,7 @@ public class LogCache extends LogMultiFileCache implements ILogMap {
 	public synchronized int add(ILogEntry log) throws LogCacheException {
 		Integer key = super.add(log);
 		logTypes.put(key,(log.getType()));
-		logTimes.put(key,(Long)log.getField(Field.TIMESTAMP));
+		logTimes.put(key,(Long)log.getField(LogField.TIMESTAMP));
 		return key;
 	}
 

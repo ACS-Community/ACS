@@ -31,7 +31,7 @@ import javax.swing.table.AbstractTableModel;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * The table model with basic functionalities.
@@ -159,7 +159,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 */
 	@Override
 	public final int getColumnCount() {
-		return Field.values().length+1;
+		return LogField.values().length+1;
 	}
 	
 	/**
@@ -226,7 +226,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 			if (column == 0) {
 				return Boolean.valueOf(log.hasDatas());
 			} else {
-				return log.getField(Field.values()[column-1]);
+				return log.getField(LogField.values()[column-1]);
 			}
 		}
 		}
@@ -351,8 +351,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	
 		columnIndex=columnIndex-1;
 		
-		return (columnIndex>=0 && columnIndex<Field.values().length) ? 
-			Field.values()[columnIndex].getName() : "";
+		return (columnIndex>=0 && columnIndex<LogField.values().length) ? 
+			LogField.values()[columnIndex].getName() : "";
 	}
 		
 	/**
@@ -367,8 +367,8 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		} else {
 			int col=column-1;
 		
-			if (col>=0 && col<Field.values().length) {
-				return Field.values()[col].getType();
+			if (col>=0 && col<LogField.values().length) {
+				return LogField.values()[col].getType();
 			}
 			return String.class;
 		}

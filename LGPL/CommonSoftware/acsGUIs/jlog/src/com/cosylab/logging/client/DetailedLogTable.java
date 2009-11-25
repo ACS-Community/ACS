@@ -20,7 +20,7 @@ import javax.swing.table.TableCellRenderer;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.logging.table.LogTooltipHelper;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
@@ -123,7 +123,7 @@ public class DetailedLogTable extends JTable
 		@Override
 		public Object getValueAt(int row, int col)
 		{
-			if (col==1 && row==Field.ENTRYTYPE.ordinal()) {
+			if (col==1 && row==LogField.ENTRYTYPE.ordinal()) {
 				return logType;
 			}
 			return nameValue[row][col];
@@ -177,7 +177,7 @@ public class DetailedLogTable extends JTable
         setCellSelectionEnabled(false);
         setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         
-		getColumnModel().getColumn(0).setHeaderValue("Field");
+		getColumnModel().getColumn(0).setHeaderValue("LogField");
 		getColumnModel().getColumn(1).setHeaderValue("Value");
 		
 		getColumnModel().getColumn(0).setMinWidth(110);
@@ -192,10 +192,10 @@ public class DetailedLogTable extends JTable
 	 *
 	 */
 	private void setEmptyContent() {
-		rowsNum = Field.values().length;
+		rowsNum = LogField.values().length;
 		nameValue = new String[rowsNum][2];
-		for (int i=0; i<Field.values().length; i++) {
-			nameValue[i][0]= "<HTML><B>"+Field.values()[i].getName()+"</B>";
+		for (int i=0; i<LogField.values().length; i++) {
+			nameValue[i][0]= "<HTML><B>"+LogField.values()[i].getName()+"</B>";
 			nameValue[i][1]=NOT_AVAILABLE;
 		}
 		
@@ -216,21 +216,21 @@ public class DetailedLogTable extends JTable
 		// The number of rows in the table is given by the number of fields
 		// of each LogEntry plus the number of the "data" elements for the selected log
 		Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
-		rowsNum = Field.values().length;
+		rowsNum = LogField.values().length;
 		if (additionalData!=null) {
 			rowsNum+=additionalData.size();
 		}
 		if (rowsNum > 0) {
 			nameValue = new String[rowsNum][2];
-			for (int i=0; i<Field.values().length; i++) {
-				Field field = Field.values()[i];
+			for (int i=0; i<LogField.values().length; i++) {
+				LogField field = LogField.values()[i];
 				nameValue[i][0]= "<HTML><B>"+field.getName()+"</B>";
 				Object obj = log.getField(field);
 				if (obj!=null) {
-					if (field==Field.ENTRYTYPE) {
+					if (field==LogField.ENTRYTYPE) {
 						nameValue[i][1]=obj.toString();
 						dataModel.logType=(LogTypeHelper)obj;
-					} else if (field==Field.TIMESTAMP) {
+					} else if (field==LogField.TIMESTAMP) {
 						SimpleDateFormat df = new IsoDateFormat();
 						Date dt = new Date((Long)obj);
 						StringBuffer dateSB = new StringBuffer();
@@ -244,9 +244,9 @@ public class DetailedLogTable extends JTable
 					nameValue[i][1]="";
 				}
 			}
-			for (int i=Field.values().length; i < rowsNum; i++) {
-				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-Field.values().length).name+"</I>";
-				String temp = new String ((String)additionalData.get(i-Field.values().length).value);
+			for (int i=LogField.values().length; i < rowsNum; i++) {
+				nameValue[i][0] = "<HTML><B>Additional</B> <I>"+additionalData.get(i-LogField.values().length).name+"</I>";
+				String temp = new String ((String)additionalData.get(i-LogField.values().length).value);
 				nameValue[i][1] = temp;
 			}
 			
@@ -278,7 +278,7 @@ public class DetailedLogTable extends JTable
 		if (column==0) {
 			return super.getCellRenderer(row, column);
 		} else {
-			if (row!=Field.ENTRYTYPE.ordinal()) {
+			if (row!=LogField.ENTRYTYPE.ordinal()) {
 				return logMessageRenderer;
 			} else {
 				return entryTypeRenderer;
