@@ -86,8 +86,6 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		 * @param icon
 		 */
 		public CustomFileChooser(ImageIcon icon, FileFilter filter) {
-			System.out.println("****"+icon);
-			System.out.println("****"+filter);
 			if (icon==null || filter==null) {
 				throw new IllegalArgumentException("Invalid null param");
 			}
@@ -189,11 +187,6 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	private final JMenuItem showErrorStack = new JMenuItem("Show error stack");
 	
 	/** 
-	 * The menu item to copy the text to the clipboard
-	 */
-	private final JMenuItem copyClipboard = new JMenuItem("to clipboard");
-	
-	/** 
 	 * The menu item to allow the user to add his information
 	 */
 	private final JMenuItem addUserInfo = new JMenuItem("add Info");
@@ -259,6 +252,36 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 	private final JMenuItem zoomOverSelected = new JMenuItem("Drill down",zoomIcon);
 	
 	private LogTableRowSorter sorter;
+	
+	/** 
+	 * The icon of the clipboard menu item
+	 */
+	private final ImageIcon clipboardIcon =new ImageIcon(LogTypeHelper.class.getResource("/clipboard.png"));
+	
+	/** 
+	 * The menu to copy the text to the clipboard
+	 */
+	private final JMenu copyClipboard = new JMenu("to clipboard");
+	
+	/**
+	 * Copy the clipboard as text
+	 */
+	private JMenuItem copyClipTxt= new JMenuItem("Copy as text",saveTextIcon);
+	
+	/**
+	 * Copy the clipboard as XML
+	 */
+	private JMenuItem copyClipXml= new JMenuItem("Copy as XML",saveXmlIcon);
+	
+	/**
+	 * Copy the clipboard as twiki table
+	 */
+	private JMenuItem copyClipTwikiTable= new JMenuItem("Copy as TwikiTable",saveTwikiTableIcon);
+	
+	/**
+	 * Copy the clipboard as CSV
+	 */
+	private JMenuItem copyClipCSV= new JMenuItem("Copy as CSV",saveCsvIcon);
 	
 	/** 
 	 * The text to copy
@@ -335,12 +358,21 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		
 		add(saveSelected);
 		addSeparator();
+		copyClipboard.setIcon(clipboardIcon);
+		copyClipboard.add(copyClipXml);
+		copyClipboard.add(copyClipTxt);
+		copyClipboard.add(copyClipTwikiTable);
+		copyClipboard.add(copyClipCSV);
+		
 		add(copyClipboard);
 		add(addUserInfo);
 		
 		// Add the listeners
 		showErrorStack.addActionListener(this);
-		copyClipboard.addActionListener(this);
+		copyClipXml.addActionListener(this);
+		copyClipTxt.addActionListener(this);
+		copyClipTwikiTable.addActionListener(this);
+		copyClipCSV.addActionListener(this);
 		addUserInfo.addActionListener(this);
 		saveSelectedAsCSV.addActionListener(this);
 		saveSelectedAsText.addActionListener(this);
@@ -357,23 +389,14 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		if (textToCopy==null) {
 			return;
 		}
-		if (e.getSource()==copyClipboard) {
-			// Build the text to copy in the clipboard
-			if (!selectionModel.isSelectionEmpty()) {
-				StringBuffer strBuffer = new StringBuffer();
-				for (int i=selectionModel.getMinSelectionIndex(); 
-					i<=selectionModel.getMaxSelectionIndex(); i++) {
-					if (!selectionModel.isSelectedIndex(i)) {
-						continue;
-					} else {
-						ILogEntry log = model.getVisibleLogEntry(table.convertRowIndexToModel(i));
-						strBuffer.append(log.toXMLString());
-						strBuffer.append("\n");
-					}
-				}
-				// Copy the text to the clipboard
-				textTransfer.setClipboardContents(strBuffer.toString());
-			} 
+		if (e.getSource()==copyClipXml) {
+			copyToClipboard(new XMLConverter());
+		} else if (e.getSource()==copyClipTxt) {
+			copyToClipboard(new TextConverter(null));
+		} else if (e.getSource()==copyClipTwikiTable) {
+			copyToClipboard(new TwikiTableConverter(null));
+		} else if (e.getSource()==copyClipCSV) {
+			copyToClipboard(new CSVConverter());
 		} else if (e.getSource()==addUserInfo) {
 			// Show the dialog
 			UserInfoDlg dlg = new UserInfoDlg();
@@ -562,5 +585,27 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 			ret+=LogField.values()[modelCount-1].id;
 		}
 		return ret;
+	}
+	
+	private void copyToClipboard(LogConverter converter) {
+		if (converter==null) {
+			throw new IllegalArgumentException("Invalid null converter");
+		}
+		converter.setCols(buildFields());
+		// Build the text to copy in the clipboard
+		if (!selectionModel.isSelectionEmpty()) {
+			StringBuffer strBuffer = new StringBuffer();
+			for (int i=selectionModel.getMinSelectionIndex(); 
+				i<=selectionModel.getMaxSelectionIndex(); i++) {
+				if (!selectionModel.isSelectedIndex(i)) {
+					continue;
+				} else {
+					ILogEntry log = model.getVisibleLogEntry(table.convertRowIndexToModel(i));
+					strBuffer.append(converter.convert(log));
+				}
+			}
+			// Copy the text to the clipboard
+			textTransfer.setClipboardContents(strBuffer.toString());
+		}
 	}
 }
