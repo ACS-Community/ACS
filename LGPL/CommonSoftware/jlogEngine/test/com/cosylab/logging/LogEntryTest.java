@@ -32,7 +32,7 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import java.util.Vector;
 
@@ -127,7 +127,7 @@ public class LogEntryTest extends junit.framework.TestCase
 	public void testGetEntryTypeAsString()
 	{ //public String getEntryTypeAsString()  
 
-		String actualEntryType = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType;
+		String actualEntryType = ((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).logEntryType;
 		String expectedEntryType = "Trace";
 		assertEquals(
 			"The two logs are not equal.",
@@ -144,11 +144,11 @@ public class LogEntryTest extends junit.framework.TestCase
 			String actualEntryTypeDesc = LogTypeHelper.values()[j].logEntryType;
 			// can be anything: trace, debug, info
 			if (actualEntryTypeDesc
-				.equalsIgnoreCase(((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType));
+				.equalsIgnoreCase(((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).logEntryType));
 				actual = actualEntryTypeDesc; // is the one that matches
 				break;
 		}
-		String expected = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType;
+		String expected = ((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).logEntryType;
 		assertEquals("The two logs are not equal.", expected, actual);
 	}
 
@@ -160,8 +160,8 @@ public class LogEntryTest extends junit.framework.TestCase
 
 		Object expectedField = "maciHeartbeatController.cpp";
 
-		Field fileField=Field.FILE;
-		actualField = log.getField(Field.FILE);
+		LogField fileField=LogField.FILE;
+		actualField = log.getField(LogField.FILE);
 		
 		assertEquals("The two logs are not equal.", expectedField, actualField);
 	}
@@ -176,7 +176,7 @@ public class LogEntryTest extends junit.framework.TestCase
 		currentFieldDesc = "File";
 		Class expectedFieldClass = String.class;
 
-		for (Field f: Field.values())
+		for (LogField f: LogField.values())
 		{
 			curFieldDesc = f.getName();
 			// can be anything: timstamp, entrytype, field
@@ -210,7 +210,7 @@ public class LogEntryTest extends junit.framework.TestCase
 		String expectedFieldDesc = "File";
 		String expectedField = "maciHeartbeatController.cpp";
 
-		for (Field field: Field.values())
+		for (LogField field: LogField.values())
 		{
 			fieldContent = log.getField(field); // all the fields 		
 			f = "" + fieldContent;

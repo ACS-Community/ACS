@@ -27,7 +27,7 @@ import java.util.regex.PatternSyntaxException;
 
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 
 /**
@@ -61,7 +61,7 @@ public class Filter {
 	}
 	
 	// Filterable field
-	public Field field = null;
+	public LogField field = null;
 	// Constraint type
 	public Constraint constraint = null;
 	
@@ -87,7 +87,7 @@ public class Filter {
 	 * @param isLethal The activation state of the filter 
 	 * @param notFilter Usage of the filter (normal or not)
 	 */
-	private Filter(Field field, Constraint constraint, boolean isLethal,
+	private Filter(LogField field, Constraint constraint, boolean isLethal,
 			boolean notFilter) {
 		this.field = field;
 		this.constraint = constraint;
@@ -98,7 +98,7 @@ public class Filter {
 	/**
 	 * Constructor
 	 */
-	public Filter(Field field, boolean isLethal, Comparable minimum,
+	public Filter(LogField field, boolean isLethal, Comparable minimum,
 			Comparable maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.MINMAX, isLethal, notFilter);
@@ -128,7 +128,7 @@ public class Filter {
 	/**
 	 * 
 	 */
-	public Filter(Field field, boolean isLethal, Integer exact,
+	public Filter(LogField field, boolean isLethal, Integer exact,
 			boolean notFilter) throws InvalidFilterConstraintException {
 		this(field, Constraint.EXACT, isLethal, notFilter);
 
@@ -147,7 +147,7 @@ public class Filter {
 	 * @param maximum
 	 *            java.lang.Integer
 	 */
-	public Filter(Field field, boolean isLethal, Integer minimum,
+	public Filter(LogField field, boolean isLethal, Integer minimum,
 			Integer maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.MINMAX, isLethal, notFilter);
@@ -173,7 +173,7 @@ public class Filter {
 	/**
 	 * 
 	 */
-	public Filter(Field field, boolean isLethal, Object exact, boolean notFilter)
+	public Filter(LogField field, boolean isLethal, Object exact, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.EXACT, isLethal, notFilter);
 
@@ -188,7 +188,7 @@ public class Filter {
 	 * Build a filter with a regular expression Check if the string is a valid
 	 * regular expression
 	 */
-	public Filter(Field field, boolean isLethal, String regularExpression,
+	public Filter(LogField field, boolean isLethal, String regularExpression,
 			boolean notFilter) throws InvalidFilterConstraintException,
 			PatternSyntaxException {
 		this(field, Constraint.STRING_WILDCHAR, isLethal, notFilter);
@@ -218,7 +218,7 @@ public class Filter {
 	 * @param maximum
 	 *            java.lang.String
 	 */
-	public Filter(Field field, boolean isLethal, String minimum,
+	public Filter(LogField field, boolean isLethal, String minimum,
 			String maximum, boolean notFilter)
 			throws InvalidFilterConstraintException {
 		this(field, Constraint.MINMAX, isLethal, notFilter);
@@ -253,7 +253,7 @@ public class Filter {
 	 * @param maximum
 	 *            java.util.Date
 	 */
-	public Filter(Field field, boolean isLethal, Date minimum, Date maximum,
+	public Filter(LogField field, boolean isLethal, Date minimum, Date maximum,
 			boolean notFilter) throws InvalidFilterConstraintException {
 		this(field, Constraint.MINMAX, isLethal, notFilter);
 		// System.out.println("short, boolean, Comparable, Comparable");
@@ -309,7 +309,7 @@ public class Filter {
 		boolean maximumCondition = true;
 		
 		// The log type is converted to Integer
-		if (field == ILogEntry.Field.ENTRYTYPE) {
+		if (field == LogField.ENTRYTYPE) {
 			obj = Integer.valueOf(((LogTypeHelper) obj).ordinal());
 		}
 
@@ -362,13 +362,13 @@ public class Filter {
 		switch (constraint) {
 		case MINMAX:
 			type.append("Mininum = ");
-			if (field == Field.ENTRYTYPE)
+			if (field == LogField.ENTRYTYPE)
 				type.append(LogTypeHelper.values()[(Integer.parseInt(minimum
 						.toString()))].logEntryType);
 			else
 				type.append(minimum.toString());
 			type.append(", Maximum = ");
-			if (field == Field.ENTRYTYPE)
+			if (field == LogField.ENTRYTYPE)
 				type.append(LogTypeHelper.values()[(Integer.parseInt(maximum
 						.toString()))].logEntryType);
 			else
@@ -376,7 +376,7 @@ public class Filter {
 			break;
 		case MINIMUM:
 			type.append("Minimum = ");
-			if (field == Field.ENTRYTYPE)
+			if (field == LogField.ENTRYTYPE)
 				type.append(LogTypeHelper.values()[(Integer.parseInt(minimum
 						.toString()))].logEntryType);
 			else
@@ -384,7 +384,7 @@ public class Filter {
 			break;
 		case MAXIMUM:
 			type.append("Maximum = ");
-			if (field == Field.ENTRYTYPE)
+			if (field == LogField.ENTRYTYPE)
 				type.append(LogTypeHelper.values()[(Integer.parseInt(maximum
 						.toString()))].logEntryType);
 			else
@@ -395,7 +395,7 @@ public class Filter {
 			break;
 		case EXACT:
 			type.append("Exact value = ");
-			if (field == Field.ENTRYTYPE)
+			if (field == LogField.ENTRYTYPE)
 				type.append(LogTypeHelper.values()[(Integer.parseInt(exact
 						.toString()))].logEntryType);
 			else
@@ -426,7 +426,7 @@ public class Filter {
 		}
 		
 		buffer.append("\">\n");
-		// Field
+		// LogField
 		buffer.append("\t\t<FIELD>" + field.getName() + "</FIELD>\n");
 		// IsLethal
 		buffer.append("\t\t<LETHAL>");
@@ -540,7 +540,7 @@ public class Filter {
 	 * @throws Exception
 	 *             in case of error building the filter
 	 */
-	public static Filter buildFilter(Field field, String lethal, String not,
+	public static Filter buildFilter(LogField field, String lethal, String not,
 			String min, String minType, String max, String maxType,
 			String exact, String exactType, String wildChar) throws Exception {
 		Filter f = null;
@@ -715,7 +715,7 @@ public class Filter {
 	 * 
 	 * @return The type of the filter
 	 */
-	public Field getField() {
+	public LogField getField() {
 		return field;
 	}
 

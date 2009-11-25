@@ -37,6 +37,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import junit.framework.TestCase;
@@ -323,7 +324,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 			if (logEntry.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
 				return;
 			}
-			String logStrAudience = (String)logEntry.getField(ILogEntry.Field.AUDIENCE);
+			String logStrAudience = (String)logEntry.getField(LogField.AUDIENCE);
 			EngineAudienceHelper logAudience=EngineAudienceHelper.fromString(logStrAudience);
 			if (!EngineAudienceHelper.OPERATOR.equals(logAudience)) {
 				System.out.println("This log did not match for OPERATOR audience: "+logEntry.toString());

@@ -5,7 +5,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRawLogListener{
 	
@@ -47,11 +47,11 @@ public class LogListenerStressTest implements ACSRemoteLogListener, ACSRemoteRaw
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener
 	 */
 	public void logEntryReceived(ILogEntry log) {
-		if (log.getField(Field.FILE).toString().indexOf("logClient.cpp")>=0) {
+		if (log.getField(LogField.FILE).toString().indexOf("logClient.cpp")>=0) {
 			logReceived++;
-			Integer logType = ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).ordinal();
+			Integer logType = ((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).ordinal();
 			logTypeReceived[logType]++;
-			if (log.getField(Field.LOGMESSAGE).toString().indexOf("Done")>=0) {
+			if (log.getField(LogField.LOGMESSAGE).toString().indexOf("Done")>=0) {
 				System.out.println("logEntryReceived => Done received");
 				printNums();
 			}

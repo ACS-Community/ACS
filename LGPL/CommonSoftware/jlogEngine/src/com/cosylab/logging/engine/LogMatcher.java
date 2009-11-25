@@ -21,7 +21,7 @@ package com.cosylab.logging.engine;
 import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * Objects from this class checks if a log matches with the constraints.
@@ -110,7 +110,7 @@ public class LogMatcher {
 			if (log.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
 				return true;
 			}
-			String logAudience = (String)log.getField(Field.AUDIENCE);
+			String logAudience = (String)log.getField(LogField.AUDIENCE);
 			return EngineAudienceHelper.OPERATOR.val.equalsIgnoreCase(logAudience);
 		}
 		default: {

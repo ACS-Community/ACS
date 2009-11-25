@@ -33,7 +33,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import junit.framework.TestCase;
 import alma.acs.logging.engine.io.IOHelper;
@@ -435,7 +435,7 @@ public class LoadSaveTest extends TestCase implements IOPorgressListener, ACSRem
 			assertNotNull(savedLog);
 			
 			// Check the fields
-			for (Field f: Field.values()) {
+			for (LogField f: LogField.values()) {
 				Object original= originalLog.getField(f);
 				Object saved=savedLog.getField(f);
 				assertEquals("Fields "+f+" differ",original, saved);

@@ -16,7 +16,7 @@ import alma.acs.util.IsoDateFormat;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * The class to test parsing.
@@ -96,8 +96,8 @@ public class ACSLogParserTest extends TestCase {
 			ILogEntry log = parser.parse(xmlLogWarningWithException);
 			
 			// verify some fields
-			assertEquals("wrong typename string", "Warning", ((LogTypeHelper)log.getField(Field.ENTRYTYPE)).logEntryType);
-			assertEquals("wrong type code", LogTypeHelper.WARNING, ((LogTypeHelper)log.getField(Field.ENTRYTYPE)));
+			assertEquals("wrong typename string", "Warning", ((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).logEntryType);
+			assertEquals("wrong type code", LogTypeHelper.WARNING, ((LogTypeHelper)log.getField(LogField.ENTRYTYPE)));
 			
 			Vector<ILogEntry.AdditionalData> additionalData = log.getAdditionalData();
 			assertFalse("There should have been 2 pieces of additional data!", additionalData == null || additionalData.size() != 2);
@@ -130,7 +130,7 @@ public class ACSLogParserTest extends TestCase {
 			assertNotNull(log);
 			
 			// Check the date
-			Long logDate = (Long)log.getField(Field.TIMESTAMP);
+			Long logDate = (Long)log.getField(LogField.TIMESTAMP);
 			assertNotNull(logDate);
 			Long xmlDate=null;
 			SimpleDateFormat dateFormat = new IsoDateFormat();
@@ -139,49 +139,49 @@ public class ACSLogParserTest extends TestCase {
 			assertEquals("The dates differ", xmlDate,logDate);
 			
 			// Check the log type
-			assertEquals(LogTypeHelper.INFO,(LogTypeHelper)log.getField(Field.ENTRYTYPE));
+			assertEquals(LogTypeHelper.INFO,(LogTypeHelper)log.getField(LogField.ENTRYTYPE));
 			
 			// Check the file
-			assertEquals("maciContainerImpl.cpp", log.getField(Field.FILE));
+			assertEquals("maciContainerImpl.cpp", log.getField(LogField.FILE));
 			
 			// Check the line
-			assertEquals(Integer.valueOf(1454), log.getField(Field.LINE));
+			assertEquals(Integer.valueOf(1454), log.getField(LogField.LINE));
 			
 			// Check the routine
-			assertEquals("maci::ContainerImpl::initThread",log.getField(Field.ROUTINE));
+			assertEquals("maci::ContainerImpl::initThread",log.getField(LogField.ROUTINE));
 			
 			// Check the host
-			assertEquals("gas",log.getField(Field.HOST));
+			assertEquals("gas",log.getField(LogField.HOST));
 			
 			// Check the process
-			assertEquals("maciContainer",log.getField(Field.PROCESS));
+			assertEquals("maciContainer",log.getField(LogField.PROCESS));
 			
 			// Check the thread
-			assertEquals("ARCHIVE_BULKSENDER::actionThread",log.getField(Field.THREAD));
+			assertEquals("ARCHIVE_BULKSENDER::actionThread",log.getField(LogField.THREAD));
 			
 			// Check the Antenna
-			assertEquals("CTXT", log.getField(Field.CONTEXT));
+			assertEquals("CTXT", log.getField(LogField.CONTEXT));
 			
 			// Check the source object
-			assertEquals("ARCHIVE_BULKSENDER::source",log.getField(Field.SOURCEOBJECT));
+			assertEquals("ARCHIVE_BULKSENDER::source",log.getField(LogField.SOURCEOBJECT));
 			
 			// Check the stack level
-			assertEquals(10,log.getField(Field.STACKLEVEL));
+			assertEquals(10,log.getField(LogField.STACKLEVEL));
 			
 			// Check the stack level
-			assertEquals(3,log.getField(Field.PRIORITY));
+			assertEquals(3,log.getField(LogField.PRIORITY));
 			
 			// Check the stack level
-			assertEquals("TheStackID",log.getField(Field.STACKID));
+			assertEquals("TheStackID",log.getField(LogField.STACKID));
 			
 			// Check the Audience
-			assertEquals("Operator",log.getField(Field.AUDIENCE));
+			assertEquals("Operator",log.getField(LogField.AUDIENCE));
 			
 			// Check the Array
-			assertEquals("AnArray", log.getField(Field.ARRAY));
+			assertEquals("AnArray", log.getField(LogField.ARRAY));
 			
 			// Check the Antenna
-			assertEquals("ThisIsTheAntenna", log.getField(Field.ANTENNA));
+			assertEquals("ThisIsTheAntenna", log.getField(LogField.ANTENNA));
 		}
 	}
 	
@@ -236,7 +236,7 @@ public class ACSLogParserTest extends TestCase {
 				} else {
 					System.out.println("The log has no additional data entries");
 				}
-				System.out.println("Body: "+log.getField(Field.LOGMESSAGE));
+				System.out.println("Body: "+log.getField(LogField.LOGMESSAGE));
 			}
 		}
 	}

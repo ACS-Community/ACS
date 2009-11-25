@@ -21,7 +21,7 @@ import org.jdom.input.DOMBuilder;
 import org.jdom.adapters.JAXPDOMAdapter;
 
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 /**
  * @author acaproni
@@ -296,14 +296,14 @@ public class FiltersVector extends Vector<Filter> {
         	if (fieldElement!=null) {
         		fieldStr=fieldElement.getText();
         	}
-        	// Build the Field.
-        	Field field = Field.fromName(fieldStr);
+        	// Build the LogField.
+        	LogField field = LogField.fromName(fieldStr);
         	if (field==null) {
         		// Ooops the field has not been found
         		// Check if this String contains an Integer representing the
-        		// position of this field in the enum Field (it was in the old format)
+        		// position of this field in the enum LogField (it was in the old format)
         		Integer i = Integer.parseInt(fieldStr);
-        		field = Field.values()[i];
+        		field = LogField.values()[i];
         	}
         	
         	

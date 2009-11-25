@@ -33,7 +33,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.AcsLogLevel;
@@ -232,7 +232,7 @@ public class EngineFilteringTest
 		assertNull(engine.getFilters());
 		
 		// Create a filter
-		Filter f = new Filter(Field.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
 		assertNotNull(f);
 		
 		// Add the filter
@@ -243,7 +243,7 @@ public class EngineFilteringTest
 		assertTrue(engine.getFilters().hasActiveFilters());
 		
 		// Create and add another filter
-		Filter f2 = new Filter(Field.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
+		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
 		assertNotNull(f2);
 		assertEquals("Sizes differ", 1, engine.getFilters().size());
 		
@@ -260,11 +260,11 @@ public class EngineFilteringTest
 		assertNull(engine.getFilters());
 		
 		// Create a filter
-		Filter f = new Filter(Field.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
 		assertNotNull(f);
 		
 		// Create and add another filter
-		Filter f2 = new Filter(Field.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
+		Filter f2 = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.DEBUG.ordinal(),false);
 		assertNotNull(f2);
 		
 		// Setup the filters vector
@@ -309,11 +309,11 @@ public class EngineFilteringTest
 		Collection<ILogEntry> flushLogs = CacheUtils.generateLogsType(100, LogTypeHelper.NOTICE);
 		
 		// Create a filter for the type INFO
-		Filter f = new Filter(Field.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
+		Filter f = new Filter(LogField.ENTRYTYPE,false,LogTypeHelper.INFO.ordinal(),false);
 		assertNotNull(f);
 		
 		// And a filter for the source name
-		Filter nameFilter = new Filter(Field.ROUTINE,false,getName(),false);
+		Filter nameFilter = new Filter(LogField.ROUTINE,false,getName(),false);
 		assertNotNull(nameFilter);
 		
 		// No filters exists in the engine
@@ -340,7 +340,7 @@ public class EngineFilteringTest
 		int infos=0;
 		for (ILogEntry log: logs) {
 			AcsLogLevel level=AcsLogLevel.fromAcsCoreLevel(log.getType().acsCoreLevel);
-			m_logger.log(level,(String)log.getField(ILogEntry.Field.LOGMESSAGE));
+			m_logger.log(level,(String)log.getField(LogField.LOGMESSAGE));
 			if (log.getType()==LogTypeHelper.INFO) {
 				infos++;
 			}
@@ -359,7 +359,7 @@ public class EngineFilteringTest
 		System.out.println("Flushing");
 		for (ILogEntry log: flushLogs) {
 			AcsLogLevel level=AcsLogLevel.fromAcsCoreLevel(log.getType().acsCoreLevel);
-			m_logger.log(level,(String)log.getField(ILogEntry.Field.LOGMESSAGE));
+			m_logger.log(level,(String)log.getField(LogField.LOGMESSAGE));
 		}
 		
 		// wait till all the logs are received

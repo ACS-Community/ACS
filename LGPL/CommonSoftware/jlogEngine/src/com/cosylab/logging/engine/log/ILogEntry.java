@@ -69,113 +69,6 @@ public interface ILogEntry extends Serializable {
 		
 	}
 	
-	/**
-	 * An enumerated describing each field of the log.
-	 * This allows to have all the attributes describing the fields
-	 * written together limiting the chance of typos, errors and so on.
-	 * 
-	 * NOTE: before introducing this enum each filed has an integer, the entryType.
-	 * This integer can be obtained with the ordinal() method of enum.
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	public enum Field {
-		TIMESTAMP("TimeStamp",Long.class,"TimeStamp"),
-		ENTRYTYPE("Entry Type",LogTypeHelper.class,null),
-	    SOURCEOBJECT("Source Object",String.class,"SourceObject"),
-		FILE("File",String.class,"File"),
-		LINE("Line",Integer.class,"Line"),
-		ROUTINE("Routine",String.class,"Routine"),
-		HOST("Host",String.class,"Host"),
-		PROCESS("Process",String.class,"Process"),
-		CONTEXT("Context",String.class,"Context"),
-		THREAD("Thread",String.class,"Thread"),
-		LOGID("Log ID",String.class,"LogId"),
-		PRIORITY("Priority",Integer.class,"Priority"),
-		URI("URI",String.class,"URI"),
-		STACKID("Stack ID",String.class,"StackId"),
-		STACKLEVEL("Stack Level",Integer.class,"StackLevel"),
-		LOGMESSAGE("Log Message",String.class,null),
-	    AUDIENCE("Audience",String.class, "Audience"),
-	    ARRAY("Array",String.class,"Array"),
-	    ANTENNA("Antenna",String.class,"Antenna");
-		
-		// The name of the field
-		private String name;
-		
-		// The class of the field
-		private Class fieldClass;
-		
-		// The name of the XML attribute containing this field 
-		// 
-		// It is null for non attribute fields (like the entry type or the log message)
-		private String tagAttribute;
-		
-		/**
-		 * Constructor 
-		 * 
-		 * @param type The type of this fields
-		 * @param name The name of the field
-		 * @param fClass The class of the field
-		 * @param tag The name of the XML tag containing this attribute
-		 *           (<code>null</code> for non tag attributes like the log message)
-		 */
-		Field(String name, Class fClass, String tag) {
-			if (name==null || fClass==null) {
-				throw new IllegalArgumentException("Invalid null initializer");
-			}
-			this.name=name;
-			fieldClass=fClass;
-			tagAttribute=tag;
-		}
-		
-		/**
-		 * Getter
-		 * 
-		 * @return The name of the field
-		 * 
-		 */
-		public String getName() {
-			return name;
-		}
-		
-		/**
-		 * Getter
-		 * 
-		 * @return The class of the field
-		 * 
-		 */
-		public Class<?> getType() {
-			return fieldClass;
-		}
-		
-		/**
-		 * Getter
-		 * 
-		 * @return The XML tag name of the field
-		 * 
-		 */
-		public String getTagAttribute() {
-			return tagAttribute;
-		}
-		
-		/**
-		 * Return a <code>Field</code> from its name
-		 * 
-		 * @return The field with the given name
-		 *         or <code>null</code> if a field with that name does not exist
-		 */
-		public static Field fromName(String fieldName) {
-			for (Field f: Field.values()) {
-				if (f.getName().equals(fieldName)) {
-					return f;
-				}
-			}
-			return null;
-		}
-	}
-	
 	public static final String DATA_ELEMENT_TAG_NAME = "Data";
 	public static final String HEADER_ELEMENT_TAG_NAME = "Header";
 	public static final String LOG_ELEMENT_TAG_NAME = "Log";
@@ -204,7 +97,7 @@ public interface ILogEntry extends Serializable {
 	 * @param fieldIndex
 	 * @return Return the object in the field of the passed index
 	 */
-	public Object getField(Field field);
+	public Object getField(LogField field);
 	
 	/**
 	 * 

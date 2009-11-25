@@ -41,7 +41,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import si.ijs.maci.Manager;
 
@@ -363,7 +363,7 @@ public class LogReceiver {
 			logRecordIndex = logRecordCounter.incrementAndGet();
 			this.logEntry = logEntry;
             this.delayTimeMillis = delayTimeMillis;
-			Date logDate = new Date((Long)logEntry.getField(Field.TIMESTAMP));
+			Date logDate = new Date((Long)logEntry.getField(LogField.TIMESTAMP));
 			// if log record has a time stamp in the future (according to local machine time), then we clip it to the current time
 			long adjustedLogTimestamp = Math.min(System.currentTimeMillis(), logDate.getTime());
 			triggerTimeMillis = adjustedLogTimestamp + delayTimeMillis;
@@ -481,47 +481,47 @@ public class LogReceiver {
 		}
 		
 		public Date getTimestamp() {
-			return new Date((Long)jlogRecord.getField(ILogEntry.Field.TIMESTAMP));
+			return new Date((Long)jlogRecord.getField(LogField.TIMESTAMP));
 		}
 		
 		public LogTypeHelper getLevel() {
-			return (LogTypeHelper)jlogRecord.getField(ILogEntry.Field.ENTRYTYPE);
+			return (LogTypeHelper)jlogRecord.getField(LogField.ENTRYTYPE);
 		}
 		
 		public String getSourceObject() {
-			return (String)jlogRecord.getField(ILogEntry.Field.SOURCEOBJECT);
+			return (String)jlogRecord.getField(LogField.SOURCEOBJECT);
 		}
 
 		public String getFile() {
-			return (String)jlogRecord.getField(ILogEntry.Field.FILE);
+			return (String)jlogRecord.getField(LogField.FILE);
 		}
 
 		public int getLine() {
-			return ((Integer)jlogRecord.getField(ILogEntry.Field.LINE)).intValue();
+			return ((Integer)jlogRecord.getField(LogField.LINE)).intValue();
 		}
 
 		public String getRoutine() {
-			return (String)jlogRecord.getField(ILogEntry.Field.ROUTINE);
+			return (String)jlogRecord.getField(LogField.ROUTINE);
 		}
 
 		public String getHost() {
-			return (String)jlogRecord.getField(ILogEntry.Field.HOST);
+			return (String)jlogRecord.getField(LogField.HOST);
 		}
 
 		public String getProcess() {
-			return (String)jlogRecord.getField(ILogEntry.Field.PROCESS);
+			return (String)jlogRecord.getField(LogField.PROCESS);
 		}
 
 		public String getLogID() {
-			return (String)jlogRecord.getField(ILogEntry.Field.LOGID);
+			return (String)jlogRecord.getField(LogField.LOGID);
 		}
 
 		public String getThread() {
-			return (String)jlogRecord.getField(ILogEntry.Field.THREAD);
+			return (String)jlogRecord.getField(LogField.THREAD);
 		}
 
 		public String getMessage() {
-			return (String)jlogRecord.getField(ILogEntry.Field.LOGMESSAGE);
+			return (String)jlogRecord.getField(LogField.LOGMESSAGE);
 		}
 
 		// @TODO add more getter methods if required...

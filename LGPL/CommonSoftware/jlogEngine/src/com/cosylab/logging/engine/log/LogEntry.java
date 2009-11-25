@@ -149,7 +149,7 @@ public class LogEntry implements ILogEntry {
 	 * @see LogEntryXML
 	 */
 	public LogEntry(LogEntryXML logXML) {
-		for (Field f: Field.values()) {
+		for (LogField f: LogField.values()) {
 			setField(f,logXML.getField(f));
 		}
 		// Add the additional datas, if any
@@ -169,13 +169,13 @@ public class LogEntry implements ILogEntry {
 		String logType =type.logEntryType;
 		sb.append("<"+logType);
 		
-		for (Field t: Field.values()) {
-			if (t==Field.LOGMESSAGE || t==Field.ENTRYTYPE) {
+		for (LogField t: LogField.values()) {
+			if (t==LogField.LOGMESSAGE || t==LogField.ENTRYTYPE) {
 				continue;
 			}
 			Object attrValue = getField(t);
 			if (attrValue!=null) {
-				if (t==Field.TIMESTAMP) {
+				if (t==LogField.TIMESTAMP) {
 					SimpleDateFormat df = new IsoDateFormat();
 					Date dt = new Date((Long)attrValue);
 					StringBuffer dateSB = new StringBuffer();
@@ -240,7 +240,7 @@ public class LogEntry implements ILogEntry {
 	 * @param field The field to get
 	 * @return The object of the given index
 	 */
-	public Object getField(Field field) {
+	public Object getField(LogField field) {
 		switch (field) {
 			case TIMESTAMP: {
 				return date;
@@ -312,7 +312,7 @@ public class LogEntry implements ILogEntry {
 	 * @param field The field to set
 	 * @param value java.lang.Object value to set
 	 */
-	protected void setField(Field field, Object value)
+	protected void setField(LogField field, Object value)
 	{
 		switch (field) {
 			case TIMESTAMP: {
@@ -425,13 +425,13 @@ public class LogEntry implements ILogEntry {
 		StringBuffer sb = new StringBuffer("--- LogEntry ---\n");
 
 		/* Attributes */
-		for (Field f: Field.values())
+		for (LogField f: LogField.values())
 		{
 			if (getField(f) != null) {
 				sb.append(f.getName() + ": ");
-				if (f == Field.ENTRYTYPE) {
+				if (f == LogField.ENTRYTYPE) {
 					sb.append(type.logEntryType);
-				} else if(f==Field.TIMESTAMP) {
+				} else if(f==LogField.TIMESTAMP) {
 					SimpleDateFormat df = new IsoDateFormat();
 					FieldPosition pos = new FieldPosition(0);
 					df.format(date,sb,pos);

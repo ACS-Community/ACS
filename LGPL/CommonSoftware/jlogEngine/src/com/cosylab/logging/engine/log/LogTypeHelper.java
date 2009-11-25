@@ -21,8 +21,6 @@
  */
 package com.cosylab.logging.engine.log;
 
-import com.cosylab.logging.engine.log.ILogEntry.Field;
-
 import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**
@@ -85,7 +83,7 @@ public enum LogTypeHelper {
         if (log==null) {
             throw new IllegalArgumentException("Impossible to get the type of a null log");
         }
-        Integer type = (Integer)log.getField(Field.ENTRYTYPE);
+        Integer type = (Integer)log.getField(LogField.ENTRYTYPE);
         if (type==null || type.intValue()<0 || type.intValue()>LogTypeHelper.values().length) {
             return "Undeclared";
         } else {

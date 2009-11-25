@@ -34,7 +34,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
@@ -268,39 +268,39 @@ public class LogDispatcherTest extends TestCase {
 	 */
 	private LogBinaryRecord convertLogToBinary(ILogEntry log) throws Exception {
 		LogBinaryRecord logBin = new LogBinaryRecord();
-		logBin.Audience=(String)log.getField(Field.AUDIENCE);
-		logBin.File=(String)log.getField(Field.FILE);
-		logBin.Host=(String)log.getField(Field.HOST);
-		Integer line =(Integer)log.getField(Field.LINE);
+		logBin.Audience=(String)log.getField(LogField.AUDIENCE);
+		logBin.File=(String)log.getField(LogField.FILE);
+		logBin.Host=(String)log.getField(LogField.HOST);
+		Integer line =(Integer)log.getField(LogField.LINE);
 		if (line!=null) {
 			logBin.Line=line;
 		} else {
 			logBin.Line=0;
 		}
-		logBin.LogContext=(String)log.getField(Field.CONTEXT);
-		logBin.LogId=(String)log.getField(Field.LOGID);
-		logBin.MsgData=(String)log.getField(Field.LOGMESSAGE);
-		Integer priority=(Integer)log.getField(Field.PRIORITY);
+		logBin.LogContext=(String)log.getField(LogField.CONTEXT);
+		logBin.LogId=(String)log.getField(LogField.LOGID);
+		logBin.MsgData=(String)log.getField(LogField.LOGMESSAGE);
+		Integer priority=(Integer)log.getField(LogField.PRIORITY);
 		if (priority!=null) {
 			logBin.Priority=priority;
 		} else {
 			logBin.Priority=0;
 		}
-		logBin.Process=(String)log.getField(Field.PROCESS);
-		logBin.Routine=(String)log.getField(Field.ROUTINE);
-		logBin.SourceObject=(String)log.getField(Field.SOURCEOBJECT);
-		logBin.StackId=(String)log.getField(Field.STACKID);
-		Integer stackL=(Integer)log.getField(Field.STACKLEVEL);
+		logBin.Process=(String)log.getField(LogField.PROCESS);
+		logBin.Routine=(String)log.getField(LogField.ROUTINE);
+		logBin.SourceObject=(String)log.getField(LogField.SOURCEOBJECT);
+		logBin.StackId=(String)log.getField(LogField.STACKID);
+		Integer stackL=(Integer)log.getField(LogField.STACKLEVEL);
 		if (stackL!=null) {
 			logBin.StackLevel=stackL;
 		} else {
 			logBin.StackLevel=0;
 		}
-		logBin.Thread=(String)log.getField(Field.THREAD);
-		final Date date = new Date((Long)log.getField(Field.TIMESTAMP));
+		logBin.Thread=(String)log.getField(LogField.THREAD);
+		final Date date = new Date((Long)log.getField(LogField.TIMESTAMP));
 		logBin.TimeStamp=IsoDateFormat.formatDate(date);
 		logBin.type=(short)log.getType().ordinal();
-		logBin.Uri=(String)log.getField(Field.URI);
+		logBin.Uri=(String)log.getField(LogField.URI);
 		if (log.hasDatas()) {
 			Vector<AdditionalData> data=log.getAdditionalData();
 			logBin.log_data=new NameValue[data.size()];

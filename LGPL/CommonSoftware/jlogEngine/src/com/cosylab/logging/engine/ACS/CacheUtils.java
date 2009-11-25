@@ -29,7 +29,7 @@ import com.cosylab.logging.engine.LogEngineException;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
-import com.cosylab.logging.engine.log.ILogEntry.Field;
+import com.cosylab.logging.engine.log.LogField;
 
 import alma.ACSLoggingLog.LogBinaryRecord;
 import alma.ACSLoggingLog.NameValue;
@@ -141,9 +141,9 @@ public class CacheUtils {
 		}
         
         Vector<ILogEntry.AdditionalData> addDatas = null;
-        if (strs.length>Field.values().length) {
+        if (strs.length>LogField.values().length) {
         	addDatas = new Vector<ILogEntry.AdditionalData>();
-        	for (int t=Field.values().length; t<strs.length; t+=2) {
+        	for (int t=LogField.values().length; t<strs.length; t+=2) {
         		addDatas.add(new AdditionalData(strs[t],strs[t+1]));
         	}
         }

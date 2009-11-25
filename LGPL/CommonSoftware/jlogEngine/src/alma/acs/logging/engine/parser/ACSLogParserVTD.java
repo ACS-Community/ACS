@@ -35,6 +35,7 @@ import alma.acs.util.XmlNormalizer;
 import com.cosylab.logging.engine.ACS.LogParseException;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogEntry;
+import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 
@@ -499,100 +500,100 @@ public class ACSLogParserVTD implements ACSLogParser {
 				LogTypeHelper entryType = determineEntryType(vtdNav);
 
 				// test for timestamp attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.TIMESTAMP.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.TIMESTAMP.getTagAttribute())){
 					milliseconds = getLongFromTimestamp(vtdNav, os, 
-							ILogEntry.Field.TIMESTAMP.getTagAttribute(), bytesArray);
+							LogField.TIMESTAMP.getTagAttribute(), bytesArray);
 				}
 				
 				// test for File attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.FILE.getTagAttribute())){
-					fileName = this.getString(vtdNav, os, ILogEntry.Field.FILE.getTagAttribute(), bytesArray);
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.FILE.getTagAttribute())){
+					fileName = this.getString(vtdNav, os, LogField.FILE.getTagAttribute(), bytesArray);
 				}
 				
 				// test for Line attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.LINE.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.LINE.getTagAttribute())){
 					line = getInteger(vtdNav, os, 
-							ILogEntry.Field.LINE.getTagAttribute(), bytesArray);
+							LogField.LINE.getTagAttribute(), bytesArray);
 				}
 				
 				// test for Routine attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.ROUTINE.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.ROUTINE.getTagAttribute())){
 					routineName = this.getString(vtdNav, os, 
-							ILogEntry.Field.ROUTINE.getTagAttribute(), bytesArray);
+							LogField.ROUTINE.getTagAttribute(), bytesArray);
 				}
 				
 				// test for host attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.HOST.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.HOST.getTagAttribute())){
 					hostName = this.getString(vtdNav, os, 
-							ILogEntry.Field.HOST.getTagAttribute(), bytesArray);
+							LogField.HOST.getTagAttribute(), bytesArray);
 				}
 				
 				// test for process attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.PROCESS.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.PROCESS.getTagAttribute())){
 					processName = this.getString(vtdNav, os, 
-							ILogEntry.Field.PROCESS.getTagAttribute(), bytesArray);
+							LogField.PROCESS.getTagAttribute(), bytesArray);
 				}
 				
 				// test for context attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.CONTEXT.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.CONTEXT.getTagAttribute())){
 					contextName = this.getString(vtdNav, os, 
-							ILogEntry.Field.CONTEXT.getTagAttribute(), bytesArray);
+							LogField.CONTEXT.getTagAttribute(), bytesArray);
 				}
 				
 				// test for thread attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.THREAD.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.THREAD.getTagAttribute())){
 					threadName = this.getString(vtdNav, os, 
-							ILogEntry.Field.THREAD.getTagAttribute(), bytesArray);
+							LogField.THREAD.getTagAttribute(), bytesArray);
 				}
 				
 				// test for logid attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.LOGID.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.LOGID.getTagAttribute())){
 					logId = this.getString(vtdNav, os, 
-							ILogEntry.Field.LOGID.getTagAttribute(), bytesArray);
+							LogField.LOGID.getTagAttribute(), bytesArray);
 				}
 				
 				// test for priority attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.PRIORITY.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.PRIORITY.getTagAttribute())){
 					priority = getInteger(vtdNav, os, 
-							ILogEntry.Field.PRIORITY.getTagAttribute(), bytesArray);
+							LogField.PRIORITY.getTagAttribute(), bytesArray);
 				}
 				
 				// test for uri attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.URI.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.URI.getTagAttribute())){
 					uri = this.getString(vtdNav, os, 
-							ILogEntry.Field.URI.getTagAttribute(), bytesArray);
+							LogField.URI.getTagAttribute(), bytesArray);
 				}
 				
 				// test for stackid attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.STACKID.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.STACKID.getTagAttribute())){
 					stackId = this.getString(vtdNav, os, 
-							ILogEntry.Field.STACKID.getTagAttribute(), bytesArray);
+							LogField.STACKID.getTagAttribute(), bytesArray);
 				}
 				
 				// test for stacklevel attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.STACKLEVEL.getTagAttribute())){
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.STACKLEVEL.getTagAttribute())){
 					stackLevel = getInteger(vtdNav, os, 
-							ILogEntry.Field.STACKLEVEL.getTagAttribute(), bytesArray);
+							LogField.STACKLEVEL.getTagAttribute(), bytesArray);
 				}
 				
 				// test for srcObject attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.SOURCEOBJECT.getTagAttribute())){
-					srcObjectName = getString(vtdNav, os, ILogEntry.Field.SOURCEOBJECT.getTagAttribute(), bytesArray);
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.SOURCEOBJECT.getTagAttribute())){
+					srcObjectName = getString(vtdNav, os, LogField.SOURCEOBJECT.getTagAttribute(), bytesArray);
 				} 
 				
 				// test for Audience attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.AUDIENCE.getTagAttribute())){
-					audience = getString(vtdNav, os, ILogEntry.Field.AUDIENCE.getTagAttribute(), bytesArray);
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.AUDIENCE.getTagAttribute())){
+					audience = getString(vtdNav, os, LogField.AUDIENCE.getTagAttribute(), bytesArray);
 				} 
 				
 				// test for Array attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.ARRAY.getTagAttribute())){
-					array = getString(vtdNav, os, ILogEntry.Field.ARRAY.getTagAttribute(), bytesArray);
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.ARRAY.getTagAttribute())){
+					array = getString(vtdNav, os, LogField.ARRAY.getTagAttribute(), bytesArray);
 				} 
 				
 				// test for Antenna attribute
-				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,ILogEntry.Field.ANTENNA.getTagAttribute())){
-					antenna = getString(vtdNav, os, ILogEntry.Field.ANTENNA.getTagAttribute(), bytesArray);
+				if ((Boolean)VTDNav_hasAttr.invoke(vtdNav,LogField.ANTENNA.getTagAttribute())){
+					antenna = getString(vtdNav, os, LogField.ANTENNA.getTagAttribute(), bytesArray);
 				} 
 				
 				// Get the body of the message
