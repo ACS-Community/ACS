@@ -44,4 +44,12 @@ public class XMLConverter extends LogConverter {
 		}
 		return log.toXMLString();
 	}
+	
+	/**
+	 * @see LogConverter
+	 */
+	@Override
+	public String getHeader() {
+		return "";
+	}
 }

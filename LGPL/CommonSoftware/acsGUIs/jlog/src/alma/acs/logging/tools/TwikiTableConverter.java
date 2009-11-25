@@ -53,4 +53,17 @@ public class TwikiTableConverter extends CSVConverter {
 		String ret=super.convert(log);
 		return "|"+ret.substring(0, ret.length()-1)+"|\n";
 	}
+
+	/**
+	 * @see alma.acs.logging.tools.CSVConverter#getHeader()
+	 */
+	@Override
+	public String getHeader() {
+		String ret=super.getHeader();
+		ret=ret.replaceAll("\\|", "* | *");
+		String hdr = "| *"+ret.substring(0, ret.length()-1)+"* |\n";
+		return hdr;
+	}
+	
+	
 }

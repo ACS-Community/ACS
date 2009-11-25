@@ -168,4 +168,12 @@ public abstract class LogConverter {
 	 * @return An ASCII string with the selected format
 	 */
 	public abstract String convert(ILogEntry log);
+	
+	/**
+	 * Generate the header for the given converter.
+	 * <P>
+	 * If no header is needed, the heder return an empty string.
+	 * @return
+	 */
+	public abstract String getHeader();
 }

@@ -142,8 +142,7 @@ public class CSVConverter extends LogConverter {
 			}
 			appendField(LogField.values()[index].getName(),str);
 		}
-		str.append(0xD); // CR
-		str.append(0xA); // LF
+		str.append('\n');
 		return str.toString();
 	}
 	
@@ -192,8 +191,7 @@ public class CSVConverter extends LogConverter {
 				}
 			}
 		}
-		str.append('\n');//0xD); // CR
-		//str.append(0xA); // LF
+		str.append('\n');
 		return str.toString();
 	}
 	
