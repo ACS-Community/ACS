@@ -443,6 +443,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		if (extension==null || extension.isEmpty()) {
 			throw new IllegalArgumentException("Invalid file extension");
 		}
+		converter.setCols(buildFields());
 		// Build the text to save in the file
 		StringBuilder strBuffer = new StringBuilder();
 		if (!selectionModel.isSelectionEmpty()) {
@@ -467,7 +468,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 			File file = fc.getSelectedFile();
 			// If not present, add the xml extension
-			if (!file.getAbsolutePath().toLowerCase().endsWith(extension)) {
+			if (!file.getAbsolutePath().toLowerCase().endsWith("."+extension)) {
 				file = new File(file.getAbsolutePath()+"."+extension);
 			}
 			FileOutputStream outFStream=null;
@@ -542,5 +543,23 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		show(invoker, x, y);
 	}
 	
-	
+	/**
+	 * Build the string of log fields to write in the output
+	 * 
+	 * @return the string of log fields to write in the output
+	 */
+	private String buildFields() {
+		int colCount=table.getColumnCount();
+		String ret="";
+		
+		for (int t=0; t<colCount; t++) {
+			int modelCount = table.convertColumnIndexToModel(t);
+			if (modelCount==0) {
+				continue;
+			}
+			System.out.println("\tmodel>"+LogField.values()[modelCount-1]);
+			ret+=LogField.values()[modelCount-1].id;
+		}
+		return ret;
+	}
 }
