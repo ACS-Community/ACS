@@ -327,6 +327,7 @@ public class TablePopupMenu extends JPopupMenu implements ActionListener {
 		add(showErrorStack);
 		addSeparator();
 		
+		saveSelected.setIcon(saveIcon);
 		saveSelected.add(saveSelectedAsXML);
 		saveSelected.add(saveSelectedAsText);
 		saveSelected.add(saveSelectedAsTwiki);
