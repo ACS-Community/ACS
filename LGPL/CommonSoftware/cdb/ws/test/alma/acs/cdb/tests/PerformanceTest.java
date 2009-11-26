@@ -14,6 +14,11 @@ import com.cosylab.CDB.JDALHelper;
 
 import junit.framework.TestCase;
 
+/**
+ * This class stresses the DAL, by sending it different calls combinations, sequentially or concurrently.
+ * It prints some nice numbers on the screen, but it could also give some simple asserts as it is a unit test
+ * @author rtobar
+ */
 public class PerformanceTest extends TestCase {
 
 	private String strIOR = "corbaloc::" + ACSPorts.getIP() + ":" + ACSPorts.getCDBPort() + "/CDB";
@@ -26,6 +31,8 @@ public class PerformanceTest extends TestCase {
 	private static final int CONCURRENT_CALLS_ITERATIONS = 50;
 	private static final int NUMBER_OF_SEQUENTIAL_CALLS = 100;
 	private static final int NUMBER_OF_CONCURRENT_CALLS = 100;
+
+	private static final int [] concurrentCallsIterations = {1, 2, 4, 8, 16};
 
 	private static final String MANAGER_DAO     = "MACI/Managers/Manager";
 	private static final String CONTAINER_DAO   = "MACI/Containers/Container";
@@ -55,7 +62,7 @@ public class PerformanceTest extends TestCase {
 	private void runConcurrentCalls(String []daos) throws Exception {
 		long start;
 		long end;
-		double average = 0;
+		double average;
 		ThreadBurstExecutorService service;
 		ThreadFactory threadFactory = new ThreadFactory(){
 			public Thread newThread(Runnable r) {
@@ -63,21 +70,33 @@ public class PerformanceTest extends TestCase {
 			}
 		};
 
-		for (int iteration = 0; iteration != CONCURRENT_CALLS_ITERATIONS; iteration++) {
+		for (int j = 0; j != concurrentCallsIterations.length; j++) {
 
-			service = new ThreadBurstExecutorService(threadFactory);
+			System.out.println(" Asking for " + concurrentCallsIterations[j] + " nodes on each call");
+			average = 0;
+			for (int iteration = 0; iteration != CONCURRENT_CALLS_ITERATIONS; iteration++) {
 
-			for (int i = 0; i != NUMBER_OF_CONCURRENT_CALLS; i++)
-				service.submit(new DALClientCallable(daos), 30, TimeUnit.SECONDS);
+				service = new ThreadBurstExecutorService(threadFactory);
 
-			start = System.currentTimeMillis();
-			service.executeAllAndWait(30, TimeUnit.SECONDS);
-			end = System.currentTimeMillis();
-			average += (end - start);
+				for (int i = 0; i != NUMBER_OF_CONCURRENT_CALLS; i++)
+					service
+							.submit(new DALClientCallable(daos,
+									concurrentCallsIterations[j]), 30,
+									TimeUnit.SECONDS);
 
+				start = System.currentTimeMillis();
+				service.executeAllAndWait(30, TimeUnit.SECONDS);
+				end = System.currentTimeMillis();
+				average += (end - start);
+			}
+
+			System.out.println("  Concurrent calls: " + NUMBER_OF_CONCURRENT_CALLS
+					+ ". Different nodes: " + daos.length
+					+ ". Tries: " + CONCURRENT_CALLS_ITERATIONS
+					+ ". Average time: " + average
+					/ CONCURRENT_CALLS_ITERATIONS + " [ms]");
 		}
-
-		System.out.println("Concurrent calls: " + NUMBER_OF_CONCURRENT_CALLS + ". Different DAOs: " + daos.length + ". Tries: " + CONCURRENT_CALLS_ITERATIONS + ". Average time: " + average/CONCURRENT_CALLS_ITERATIONS + " [ms]");
+		System.out.println("");
 	}
 
 	private void runSequentialCalls(String []daos) throws Exception {
@@ -96,11 +115,13 @@ public class PerformanceTest extends TestCase {
 			average += (end-start);
 		}
 
-		System.out.println("Sequential calls: " + NUMBER_OF_SEQUENTIAL_CALLS + ". Different DAOs: " + daos.length + ". Tries: " + SEQUENTIAL_CALLS_ITERATIONS + ". Average time: " + average/SEQUENTIAL_CALLS_ITERATIONS + " [ms]");		
+		System.out.println("Sequential calls: " + NUMBER_OF_SEQUENTIAL_CALLS + ". Different nodes: " + daos.length + ". Tries: " + SEQUENTIAL_CALLS_ITERATIONS + ". Average time: " + average/SEQUENTIAL_CALLS_ITERATIONS + " [ms]");		
 	}
 
 	public void testConcurrentCalls() throws Exception {
 
+		System.out.println("Stressing the get_DAO() method with concurrent threads");
+		System.out.println("======================================================");
 		runConcurrentCalls( new String[] {MANAGER_DAO} );
 		runConcurrentCalls( new String[] {MANAGER_DAO, CONTAINER_DAO, TESTPS_DAO, FILTERWHEEL_DAO} );
 		runConcurrentCalls(
@@ -113,6 +134,8 @@ public class PerformanceTest extends TestCase {
 
 	public void testSequentialCalls() throws Exception {
 
+		System.out.println("Stressing the get_DAO() method with sequential threads");
+		System.out.println("======================================================");
 		runSequentialCalls( new String[] {MANAGER_DAO} );
 		runSequentialCalls( new String[] {MANAGER_DAO, CONTAINER_DAO, TESTPS_DAO, FILTERWHEEL_DAO} );
 		runSequentialCalls(
@@ -125,6 +148,8 @@ public class PerformanceTest extends TestCase {
 
 	public void testCallsPerSecond() throws Exception {
 
+		System.out.println("Measuring average call/s");
+		System.out.println("========================");
 		double average = 0;
 		for(int i=0; i!= CALLS_PER_SECOND_TRIES; i++) {
 			CallerTask ct = new CallerTask();
@@ -145,15 +170,19 @@ public class PerformanceTest extends TestCase {
 
 	private class DALClientCallable implements Callable<Void> {
 
+		private int _iterations;
 		private String[] _daos;
 
-		public DALClientCallable(String []daos) {
+		public DALClientCallable(String []daos, int iterations) {
 			_daos = daos;
+			_iterations = iterations;
 		}
 
 		public Void call() throws Exception {
-			int index = (int)(Math.random()*(_daos.length-1));
-			dal.get_DAO(_daos[index]);
+			for(int i=0; i!= _iterations; i++) {
+				int index = (int)(Math.random()*(_daos.length-1));
+				dal.get_DAO(_daos[index]);
+			}
 			return null;
 		}
 	}
