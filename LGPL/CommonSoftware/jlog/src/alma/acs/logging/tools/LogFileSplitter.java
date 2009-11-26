@@ -21,15 +21,17 @@
  */
 package alma.acs.logging.tools;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.FieldPosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
-import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -51,7 +53,7 @@ import alma.acs.util.IsoDateFormat;
  * @author acaproni
  *
  */
-public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorListener, IOPorgressListener {
+public class LogFileSplitter implements ACSRemoteLogListener, ACSRemoteErrorListener, IOPorgressListener {
 
 	/**
 	 * The name of the input files
@@ -91,11 +93,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 	private long firstLogDate=-1;
 	
 	/**
-	 * The parser to translate XML logs into ILogEntry
-	 */
-	private final ACSLogParser parser;
-	
-	/**
 	 * The size of the buffer for writing 
 	 */
 	private final int OUTPUT_BUFFER_SIZE=8192;
@@ -130,10 +127,10 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 			Integer num, 
 			Integer mins,
 			LogConverter converter) {
-		if (inputFiles==null || outputFiles==null) {
-			throw new IllegalArgumentException("The sorce and dest file name can't be null");
+		if (outputFiles==null) {
+			throw new IllegalArgumentException("The dest file name can't be null");
 		}
-		if (inputFiles.length==0) {
+		if (inputFiles!=null && inputFiles.length==0) {
 			throw new IllegalArgumentException("No source files");
 		}
 		if (num==null && mins==null) {
@@ -155,12 +152,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 			throw new IllegalArgumentException("The converter can't be null");
 		}
 		this.converter=converter;
-		// Create the parser
-		try {
-			parser = ACSLogParserFactory.getParser();
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Error creating the parser"+e);
-		}
 		inFileNames=inputFiles;
 		destFileName=outputFiles;
 		number=num;
@@ -176,53 +167,18 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 	 */
 	public void split() throws Exception {
 		IOHelper ioHelper = new IOHelper();
-		for (String inFileName: inFileNames) {
-			System.out.println("Processing "+inFileName);
-			ioHelper.loadLogs(inFileName, null, this, this, this);
+		if (inFileNames==null) {
+			// Read from stdin
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			ioHelper.loadLogs(in, this, null, this, this);
+		} else {
+			for (String inFileName: inFileNames) {
+				System.out.println("Processing "+inFileName);
+				ioHelper.loadLogs(inFileName, this, null, this, this);
+			}
 		}
 		if (outF!=null) {
 			closeOutputFile(outF);
-		}
-	}
-	
-	/**
-	 * Exceuted when a new log has been read
-	 * 
-	 * @param xmlLogString The XML log read
-	 */
-	@Override
-	public void xmlEntryReceived(String xmlLogString) {
-		ILogEntry log = null;
-		try {
-			log = parser.parse(xmlLogString);
-		} catch (Exception e) {
-			System.err.println("Error parsing a log: "+e.getMessage());
-			System.err.println("The log that caused the exception: "+xmlLogString);
-			e.printStackTrace();
-			System.exit(-1);
-		}
-		
-		if (number!=null ) {
-			// Number criteria
-			if (outF==null || ++logsRead>number) {
-				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,null);
-				logsRead=1;
-			}
-		} else {
-			// Time criteria
-			long logDate = ((Long)log.getField(LogField.TIMESTAMP));
-			if (firstLogDate==-1 || logDate-firstLogDate>time) {
-				firstLogDate=logDate;
-				closeOutputFile(outF);
-				outF=getOutputFile(destFileName,index++,new Date(logDate));
-			}
-		}
-		try {
-			outF.write(converter.convert(log));
-		} catch (IOException e) {
-			System.err.println("Error writing a log: " + e.getMessage());
-			System.exit(-1);
 		}
 	}
 	
@@ -288,52 +244,69 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 	}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
 	 */
 	@Override
-	public void bytesRead(long bytes) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void bytesRead(long bytes) {}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
 	 */
 	@Override
-	public void bytesWritten(long bytes) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void bytesWritten(long bytes) {}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
 	 */
 	@Override
-	public void logsRead(int numOfLogs) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void logsRead(int numOfLogs) {}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
 	 */
 	@Override
-	public void logsWritten(int numOfLogs) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void logsWritten(int numOfLogs) {}
 
 
-	/* (non-Javadoc)
+	/**
 	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
 	 */
 	@Override
 	public void errorReceived(String xml) {
-		System.err.println("Error with the following: "+xml);
-		
+		System.err.println("Error parsing the following: ["+xml+"]");
+	}
+
+
+	/**
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#logEntryReceived(com.cosylab.logging.engine.log.ILogEntry)
+	 */
+	@Override
+	public void logEntryReceived(ILogEntry logEntry) {
+		if (number!=null ) {
+			// Number criteria
+			if (outF==null || ++logsRead>number) {
+				closeOutputFile(outF);
+				outF=getOutputFile(destFileName,index++,null);
+				logsRead=1;
+			}
+		} else {
+			// Time criteria
+			long logDate = ((Long)logEntry.getField(LogField.TIMESTAMP));
+			if (firstLogDate==-1 || logDate-firstLogDate>time) {
+				firstLogDate=logDate;
+				closeOutputFile(outF);
+				outF=getOutputFile(destFileName,index++,new Date(logDate));
+			}
+		}
+		try {
+			outF.write(converter.convert(logEntry));
+		} catch (IOException e) {
+			System.err.println("Error writing a log: " + e.getMessage());
+			System.exit(-1);
+		}
 	}
 }

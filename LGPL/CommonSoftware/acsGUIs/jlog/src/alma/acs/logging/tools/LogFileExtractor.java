@@ -21,10 +21,12 @@
  */
 package alma.acs.logging.tools;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import alma.acs.logging.engine.io.IOHelper;
@@ -34,7 +36,7 @@ import alma.acs.logging.engine.parser.ACSLogParserFactory;
 
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
-import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
+import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -49,7 +51,7 @@ import com.cosylab.logging.engine.log.LogField;
  * @author acaproni
  *
  */
-public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteErrorListener, IOPorgressListener {
+public class LogFileExtractor implements ACSRemoteLogListener, ACSRemoteErrorListener, IOPorgressListener {
 	
 	// The start and end date of the logs in millisec.
 	// If one of them is -1, the test is assumed passed
@@ -76,11 +78,6 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 	 * The name of the output file
 	 */
 	private String destFileName;
-	
-	/**
-	 * The parser to translate XML logs into ILogEntry
-	 */
-	private ACSLogParser parser = null;
 	
 	/**
 	 * The size of the buffer for writing
@@ -123,10 +120,10 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		if (startDate==null && endDate==null && filterName==null){
 			throw new IllegalArgumentException("No criteria for extraction");
 		}
-		if (inputFiles==null || outputFile==null) {
-			throw new IllegalArgumentException("The source and destination files can't be null");
+		if (outputFile==null) {
+			throw new IllegalArgumentException("The source can't be null");
 		}
-		if (inputFiles.length==0) {
+		if (inputFiles!=null && inputFiles.length==0) {
 			throw new IllegalArgumentException("No source files");
 		}
 		if (converter==null) {
@@ -164,45 +161,6 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 			filters = new FiltersVector();
 			filters.loadFilters(f,true,null);
 		}
-		// Create the parser
-		try {
-			parser = ACSLogParserFactory.getParser();
-		} catch (Exception e) {
-			System.err.println("Error creating the parser: "+e.getMessage());
-			System.exit(-1);
-		}
-	}
-	
-	/**
-	 * Exceuted when a new log has been read
-	 * 
-	 * @param xmlLogString The XML log read
-	 */
-	@Override
-	public void xmlEntryReceived(String xmlLogString) {
-		boolean matches=true;
-		ILogEntry log=null;
-		try { 
-			log= parser.parse(xmlLogString);
-		} catch (Exception e) {
-			System.err.println("Error parsing a log: "+e.getMessage());
-			System.err.println("The log that caused the exception: "+xmlLogString);
-			System.exit(-1);
-		}
-		if (start!=-1 || end!=-1) {
-			matches = checkDate(log);
-		}
-		if (matches && filters!=null) {
-			matches = filters.applyFilters(log);
-		}
-		if (matches) {
-			try {
-				outF.write(converter.convert(log));
-			} catch (IOException e) {
-				System.err.println("Error writing a log: "+e.getMessage());
-				System.exit(-1);
-			}
-		}
 	}
 
 	/**
@@ -239,9 +197,13 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		IOHelper inputHelper = new IOHelper();
 		openDestFile();
 		// Start the loading
-		for (String inFileName: inFileNames) {
+		if (inFileNames==null) {
+			// Read from stdin
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			inputHelper.loadLogs(in, this, null, this, this);
+		} else for (String inFileName: inFileNames) {
 			System.out.println("Processing "+inFileName);
-			inputHelper.loadLogs(inFileName, null, this, this, this);
+			inputHelper.loadLogs(inFileName, this, null, this, this);
 		}
 		// Flush and close the output
 		outF.flush();
@@ -267,47 +229,56 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		return matches;
 	}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesRead(long)
 	 */
 	@Override
-	public void bytesRead(long bytes) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void bytesRead(long bytes) {}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#bytesWritten(long)
 	 */
 	@Override
-	public void bytesWritten(long bytes) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void bytesWritten(long bytes) {}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsRead(int)
 	 */
 	@Override
-	public void logsRead(int numOfLogs) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void logsRead(int numOfLogs) {}
 
-	/* (non-Javadoc)
+	/**
 	 * @see alma.acs.logging.engine.io.IOPorgressListener#logsWritten(int)
 	 */
 	@Override
-	public void logsWritten(int numOfLogs) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void logsWritten(int numOfLogs) {}
 
-	/* (non-Javadoc)
-	 * @see com.cosylab.logging.engine.ACS.ACSRemoteErrorListener#errorReceived(java.lang.String)
+	/**
 	 */
 	@Override
 	public void errorReceived(String xml) {
 		System.err.println("Error with the following: "+xml);
+	}
+
+	/**
+	 * @see com.cosylab.logging.engine.ACS.ACSRemoteLogListener#logEntryReceived(com.cosylab.logging.engine.log.ILogEntry)
+	 */
+	@Override
+	public void logEntryReceived(ILogEntry logEntry) {
+		boolean matches=true;
+		if (start!=-1 || end!=-1) {
+			matches = checkDate(logEntry);
+		}
+		if (matches && filters!=null) {
+			matches = filters.applyFilters(logEntry);
+		}
+		if (matches) {
+			try {
+				outF.write(converter.convert(logEntry));
+			} catch (IOException e) {
+				System.err.println("Error writing a log: "+e.getMessage());
+				System.exit(-1);
+			}
+		}
 	}
 }
