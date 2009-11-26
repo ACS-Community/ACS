@@ -248,7 +248,6 @@ public class LogAssistant {
 			} 
 			cols=val[0];
 		}
-		System.out.println("Columns "+cols);
 		// Output format
 		int count=0; // How many output options?
 		if (cmdLineArgs.isSpecified(csvOtuputFormat)) {
@@ -287,7 +286,8 @@ public class LogAssistant {
 				throw new IllegalStateException("Wrong or missing source file names");
 			} 
 		} else {
-			throw new IllegalStateException("No source files in command line.");
+			// This is not an error: if the param is missing, the
+			// the tool read logs from the command line
 		}
 		
 		// DESTINATION
@@ -299,13 +299,7 @@ public class LogAssistant {
 			destFileName=val[0];
 		} else {
 			throw new IllegalStateException("No destination file in command line.");
-		}
-		
-		System.out.println("DEST="+destFileName);
-		System.out.println("SOURCES:");
-		for (String s: sourceFileNames) {
-			System.out.println("\t"+s);
-		}
+		}		
 	}
 	
 	/**
@@ -359,19 +353,21 @@ public class LogAssistant {
 			}
 		}
 		// Check if the input files exist and are readable
-		for (String fileName: sourceFileNames) {
-			if (fileName==null || fileName.isEmpty()) {
-				System.out.println("Invalid source file name: "+fileName);
-				return false;
-			}
-			File inF = new File(fileName);
-			if (!inF.exists()) {
-				System.err.println(fileName+" does not exist!");
-				return false;
-			}
-			if (!inF.canRead()) {
-				System.out.println(fileName+" is unreadable");
-				return false;
+		if (sourceFileNames!=null) {
+			for (String fileName: sourceFileNames) {
+				if (fileName==null || fileName.isEmpty()) {
+					System.out.println("Invalid source file name: "+fileName);
+					return false;
+				}
+				File inF = new File(fileName);
+				if (!inF.exists()) {
+					System.err.println(fileName+" does not exist!");
+					return false;
+				}
+				if (!inF.canRead()) {
+					System.out.println(fileName+" is unreadable");
+					return false;
+				}
 			}
 		}
 		return true;
@@ -434,7 +430,7 @@ public class LogAssistant {
 	 * @param prgName The program name
 	 */
 	private static void usage(String prgName) {
-		System.out.println("USAGE: "+prgName+" command command_params [options] -dest <FileName> -src <FileName> <FileName> ....");
+		System.out.println("USAGE: "+prgName+" command command_params [options] [-dest <FileName>] -src <FileName> <FileName> ....");
 		System.out.println("command:");
 		System.out.println("\t-extract|-x: extract logs depending on the command_params criteria");
 		System.out.println("\tcommand_params for extraction (applied as AND):");
@@ -452,9 +448,11 @@ public class LogAssistant {
 		System.out.println("\t-txt: write the output as plain ASCII text");
 		System.out.println("\t-twiki: write the output as Twiki table");
 		System.out.println("\t-col|-l columns: select the columns to write in the csv (not supported by XML)");
-		System.out.println("-dest <filename>: the name of the destionation file(s)");
+		System.out.println("[-dest <filename>]: the name of the destionation file(s)");
 		System.out.println("-src <filename>...: the name of the source files ");
-		System.out.println("See ACS manual for further details");
+		System.out.println("                    Read logs from stdin -src is missing in the cmd line");
+		System.out.println("Read logs from stdin if no");
+		System.out.println("\nSee ACS manual for further details.\n");
 	}
 
 	/**
