@@ -7,6 +7,9 @@
 
 package cl.utfsm.cdbChecker;
 
+import gnu.getopt.Getopt;
+import gnu.getopt.LongOpt;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,14 +21,21 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Repository;
-import org.omg.CORBA.RepositoryHelper;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.xerces.parsers.SAXParser;
+import org.omg.CORBA.ORB;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import gnu.getopt.Getopt;
-import gnu.getopt.LongOpt;
+import org.omg.CORBA.Repository;
+import org.omg.CORBA.RepositoryHelper;
+
+
 
 public class CDBChecker {
 	
@@ -41,6 +51,11 @@ public class CDBChecker {
 
 	private static String targetNamespace;
 	public  static Vector reqSchemas;
+	
+	private String componentsFolder = null;
+	private String containersFolder = null;
+	
+	private boolean foundErr = false;
 
   /**
 	 * This errorFlag is used to signal from the parser
@@ -57,7 +72,7 @@ public class CDBChecker {
 	 * failed and therefore we have to return with a failure
 	 * error code.
 	 */
-        public  static boolean globalErrorFlag = false;
+    public  static boolean globalErrorFlag = false;
 	public static Repository rep= null;
 
 	// Command line parameter flags
@@ -65,7 +80,8 @@ public class CDBChecker {
 	private         boolean network       = false;
 	public  static 	boolean checkidl      = false;
 	private         boolean recursive     = true;
-
+	public  static 	boolean allImplLang   = false;
+	
 	/**
 	 * This get the filenames of type 'type' from the given path. 
 	 * There could be several paths separated by ":". 
@@ -83,6 +99,7 @@ public class CDBChecker {
 		/*
 		 * Scans the list of paths.
 		 */
+
 		for(int i=0;i<paths.length;i++)
 		    {
 		    if(paths[i].length() != 0) 
@@ -149,7 +166,7 @@ public class CDBChecker {
                                         SP.setFeature("http://xml.org/sax/features/namespaces",true);
                                         SP.setErrorHandler(new CDBErrorHandler());	
                                         SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
-                                        SP.parse((String)filename.get(i));
+                                	    SP.parse((String)filename.get(i));
                                         if(verbose && !errorFlag)
                                                 System.out.println("[OK]");
                                 }catch (SAXException e){e.printStackTrace();}
@@ -358,6 +375,7 @@ public class CDBChecker {
 		System.out.println("                            when searching for .xml/.xsd files");
 		System.out.println("      -n | --network        Get required schemas from the network");
 		System.out.println("      -c | --checkIdlTypes  Check if the idl types in CDB are available");
+		System.out.println("      -a | --allImplLang    Check all files for implLang match (default is false, independent of -r)");
 		System.out.println("      -h | --help           Show this help");
 		System.out.println("\n    The XMLPath and XSDPath can have multiple paths separated by \":\".");
 		System.out.println("    The paths must be absolute (i.e. they should start with '/')");
@@ -379,13 +397,14 @@ public class CDBChecker {
 		boolean retVal = true;
 		int c;
 		String arg;
-		LongOpt[] longopts = new LongOpt[5];
+		LongOpt[] longopts = new LongOpt[6];
 		longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
 		longopts[1] = new LongOpt("network", LongOpt.NO_ARGUMENT, null, 'n'); 
 		longopts[2] = new LongOpt("verbose", LongOpt.NO_ARGUMENT, null, 'v');
 		longopts[3] = new LongOpt("recursive", LongOpt.NO_ARGUMENT, null, 'r');
 		longopts[4] = new LongOpt("checkIdlTypes", LongOpt.NO_ARGUMENT, null, 'c');
-		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhncvW;", longopts);
+		longopts[5] = new LongOpt("allImplLang", LongOpt.NO_ARGUMENT, null, 'a');
+		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhncvaW;", longopts);
 		myGetOpt.setOpterr(false); // We'll do our own error handling
 
 		while ((c = myGetOpt.getopt()) != -1) {
@@ -404,6 +423,9 @@ public class CDBChecker {
 					break;
 				case 'c':
 					this.checkidl = true;
+					break;
+				case 'a':
+					this.allImplLang = true;
 					break;
 				case 'W':
 					System.out.println("[Error] : you tried a -W with an incorrect long option name");
@@ -427,10 +449,11 @@ public class CDBChecker {
 			}
 		}
 
-		// do the following only if we aren't already needing to print a usage statement (i.e. retVal is not false)
+		// do the following only if we aren't already needing to pretVal is not false)
 		if(retVal) {
 			// check for the additional (optional) command line arguments, XMLPath and XSDPath
 			for (int i = myGetOpt.getOptind(); i < args.length ; i++) {
+				
 				if(myGetOpt.getOptind() == i) {
 					if(args[i].startsWith("/")) {
 						this.XMLPath = args[i];
@@ -481,7 +504,7 @@ public class CDBChecker {
       String tmp_path;
       
       if((config_path = props.getProperty("ACS.config_path"))==null){
-	 System.out.println("There is no config_path defined");
+	 System.out.println("config_path not defined");
 	 return false;
       }
       
@@ -504,7 +527,7 @@ public class CDBChecker {
 	 SP.parse(config_path+"/config/reqSchemas.xml");
       }catch(SAXException e){e.getMessage();}
       catch (IOException e){
-	 System.out.println("[IOException] Probably the configuration file doesn't exists.");return false;
+	 System.out.println("[IOException] Probably the configuration file doesn't exist.");return false;
       }
       if(this.network){
 	 tmpDir=new File(tmp_path, "cdbchecker." + System.currentTimeMillis () +
@@ -580,7 +603,13 @@ public class CDBChecker {
 				    {
 				    // We assume that cdbchecker.XSDPath is at least
                                     // initialised to the empty string and never null
-				    cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
+				    	//Modify panta@naoj 2009/10/15
+				    	if(cdbchecker.XSDPath == null){
+				    		cdbchecker.XSDPath = ACS_cdbpath;
+				    	}
+				    	else{
+				    		cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
+				    	}
 				    }
 				if(cdbchecker.verbose && checkidl){
 					System.out.println("*** Checking Idl Types");
@@ -591,10 +620,23 @@ public class CDBChecker {
 				String paths[]=cdbchecker.XSDPath.split(""+File.pathSeparatorChar);
 				Vector XSDFilenames=new Vector();
 				XSDFilenames=cdbchecker.getFilenames(paths,"xsd");
+			
+				String pathsMulti[]=cdbchecker.XMLPath.split(":");
+				for(int i = 0; i < pathsMulti.length; i++){
+					File file_ = new File(pathsMulti[i]);
+					if(!file_.exists()){
+						System.out.println("*** Specified path " + file_+ " does not exist");
+						globalErrorFlag = true;
+						cdbchecker.showEndResult();
+						break;
+					}
+				}
+				
 				
 				if(cdbchecker.verbose)System.out.println("*** Reading given XML files");			
 				// We assume that cdbchecker.XMLPath is at least
 				// initialised to the empty string and never null
+		
 				paths=cdbchecker.XMLPath.split(""+File.pathSeparatorChar);
 				Vector XMLFilenames=new Vector();
 				XMLFilenames=cdbchecker.getFilenames(paths,"xml");
@@ -611,6 +653,42 @@ public class CDBChecker {
 				if(cdbchecker.verbose)System.out.println("*** Validating XML files");						
 				cdbchecker.XMLValidate(XMLFilenames);
 				
+				//add panta@naoj 2009/10/05
+				//checks if implLang matches, those written in XXComponents.xml and XXContainers.xml
+				
+				for(int i = 0; i < pathsMulti.length; i++){
+					cdbchecker.componentsFolder= pathsMulti[i] + "/MACI/Components";
+					cdbchecker.containersFolder= pathsMulti[i] + "/MACI/Containers";
+				
+					File compFolder = new File(cdbchecker.componentsFolder);
+					File contFolder = new File(cdbchecker.containersFolder);
+					
+					if(compFolder.exists()){
+						if(contFolder.exists()){
+							//System.out.println("compFolder: " + compFolder);
+							//System.out.println("contFolder: " + contFolder);
+							globalErrorFlag = cdbchecker.checkImplLangMatch(compFolder, contFolder);
+							
+							if(cdbchecker.allImplLang){
+								if(globalErrorFlag==true) {
+								    System.out.println("\n[Error] Errors were found\n");
+								}
+								else {
+								    System.out.println("\nNo errors found\n");
+								}
+								
+							}
+						}
+						else{
+							System.out.println("\nContainers folder not found for " + pathsMulti[i]);
+						}
+					}
+					else{
+						System.out.println("\nComponents folder not found for " + pathsMulti[i]);
+					}
+				}
+				//add panta@naoj 2009/10/05 end
+				
 			}
 		} 
       else {
@@ -618,6 +696,12 @@ public class CDBChecker {
 		}
 
 		cdbchecker.cleanUp();
+		
+		cdbchecker.showEndResult();
+		
+	}
+	
+	private void showEndResult(){
 		if(globalErrorFlag==true) {
 		    System.out.println("\n[Error] CDBChecker exiting. Errors were found\n");
 		    System.exit(1);
@@ -627,5 +711,163 @@ public class CDBChecker {
 		    System.exit(0);
 		}
 	}
+	
+	/******************************************************************
+	 * This method finds files in "Components" and "Containers" 
+	 * directories and sub-directories. It then extracts "implLang" 
+	 * properties, and compares. Error messages are displayed if
+	 * Components.xml's implLang and Containers.xml's implLang
+	 * don't match.
+	 * Returns 'true' if error is found, false otherwise
+	 * added by panta@naoj 2009/10/05 
+	 *****************************************************************/
+	protected boolean checkImplLangMatch(File compFolder, File contFolder){ 
+		
+		CDBChecker cdbchecker=new CDBChecker();
+		
+		File[] files = compFolder.listFiles();
+	 
+		search:
+	  	for (int x = 0; x < files.length; x++){
+	  		
+	  		if(!cdbchecker.allImplLang){
+	  			if(foundErr){
+	  				break search;
+	  			}
+	  		}
+	  		
+	    	if (files[x].isDirectory()){
+	    		if(!files[x].getName().equals("CVS")){
+	    			checkImplLangMatch(files[x], contFolder); //recursive call
+	    		}
+	    	}
+	    	else{
+	    		//only process .xml files
+	   			String ext = "";
+	    		
+	    		int iExt = files[x].getName().lastIndexOf(".");
+	   			ext=files[x].getName().substring(iExt+1,files[x].getName().length());
+	    		
+    			if(!ext.equals("xml")){
+    				continue;
+    			}
+	    		//System.out.println("\nChecking.. " + files[x]);
+		    	DocumentBuilderFactory dbfComp = DocumentBuilderFactory.newInstance();
+				DocumentBuilder dbComp = null;
+				try {
+					dbComp = dbfComp.newDocumentBuilder();
+				} catch (ParserConfigurationException e) {
+					e.printStackTrace();
+				}	
+				Document docComp = null;
+				try {
+					docComp = dbComp.parse(files[x]);
+				} catch (SAXException e) {
+				e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+	    		docComp.getDocumentElement().normalize();
+				NodeList compNodeList = docComp.getElementsByTagName( "Component" ); 
+	    	
+	    		if(compNodeList.getLength() == 0) {
+	    			compNodeList = docComp.getElementsByTagName( "_" );
+	    			if(compNodeList.getLength() == 0) {
+	    				continue;
+	    			}
+	    		}
+	    	
+		    	//this part extracts "implLang" for each component
+	    		for( int j = 0; j < compNodeList.getLength(); j++ ) {
+		      
+		      		Element elm = (Element) compNodeList.item( j );
+		      		String compName = null;
+		      		String implLang = null;
+		      		String tempContainersFolder = null;
+		      
+		      		compName = elm.getAttribute("Name" );
+	    			implLang = elm.getAttribute("ImplLang" );
+	    			
+	    	  		if(compName.equals("*")){ //--> dynamic component
+	    	  			if(implLang.equals("") || implLang.equals("*")){
+				  			continue;
+			  			}
+	    	  			//some dynamic components may not have predefined Containers
+	    	  			if(elm.getAttribute("Container" ).equals("") || elm.getAttribute("Container" ).equals("*")){
+		    				continue;
+		    			}
+	    	  		}
+	    			else{//actually, ImpLang field in the CDB is mandatory since ACS 8
+	    				if(implLang.equals("")){
+	    					System.out.println("\nFile being checked: " + files[x] );
+				  			System.out.print("\n'ImplLang' missing for component: " + compName);
+	    					foundErr = true;
+				  			if(!cdbchecker.allImplLang){
+	    						break search;
+	    					}
+	              		}
+	    			}
+	    			
+		 			//go get containers at the "Container" location
+		  			tempContainersFolder = containersFolder + "/" + elm.getAttribute("Container" );
+	    			
+		      		//open the container file and have a look
+		  			DocumentBuilderFactory dbfCont = DocumentBuilderFactory.newInstance();
+		  			DocumentBuilder dbCont = null;
+		  			try {
+		  				dbCont = dbfCont.newDocumentBuilder();
+		  			} catch (ParserConfigurationException e) {
+		  				e.printStackTrace();
+		  			}
+		  			Document docCont = null;
+		  			try {
+		  				//System.out.println("\ntempContainersFolder " + tempContainersFolder);
+		  				File contFile = new File(tempContainersFolder + "//" + new File(tempContainersFolder).getName()+ ".xml");
+		  				if(contFile.exists()){
+		  					//System.out.println("Container file being checked : " + contFile);
+		  					docCont = dbCont.parse(contFile);
+		  					
+		  					docCont.getDocumentElement().normalize();
+		  					
+				  			NodeList contNodeList = docCont.getElementsByTagName( "Container" );
+			  	  		
+				  			//Go through Container files and check ImplLang
+				  			for( int k = 0; k < contNodeList.getLength(); k++ ) {
+				  				Element elmCont = (Element) contNodeList.item( k );
+				  				//check if Component ImplLang and Container ImplLang match
+				  				if(implLang.equals(elmCont.getAttribute("ImplLang" ))){
+				  				}
+				  				else{
+				  					System.out.println("\nFile being checked: " + files[x] );
+				  					System.out.print("'ImplLang' does not match for component: " + compName +".");
+				  					System.out.println("\nCorresponding Container is : " + contFile);
+				  					foundErr = true;
+						  			if(!cdbchecker.allImplLang){
+			    						break search;
+			    					}
+				      			}
+					    	}//Container for loop
+		  				}
+		  				else{
+		  					System.out.print("\nFile being checked: " + files[x] );
+		  					System.out.print("\nMissing Container " + new File(tempContainersFolder));
+		  					System.out.println("");
+		  					foundErr = true;
+				  			if(!cdbchecker.allImplLang){
+	    						break search;
+	    					}
+		  				}
+		  			} catch (SAXException e) {
+		  				e.printStackTrace();
+		  			} catch (IOException e) {
+		  				e.printStackTrace();
+		  			}
+	    		}//Component for loop
+	   		}//is a file (not dir)
+	  	}//all files for loop
+		
+		return foundErr;
+	}
 
-}
+}//class
