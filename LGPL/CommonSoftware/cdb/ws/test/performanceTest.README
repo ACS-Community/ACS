@@ -1,0 +1,36 @@
+================
+Running the test
+================
+
+To run the performance tests for the CDB you should follow the next steps:
+
+ * Open two terminals
+ * In one terminal, change to the present directory and execute the cdbjDAL for
+   the CDB-MIX CDB:
+
+    $> export CDB=$PWD/CDB-MIX
+    $> cdbjDAL
+
+ * You can optionally supress the (huge) output of cdbjDAL by doing:
+
+    $> cdbjDAL &> /dev/null
+
+ * In the second terminal run the test:
+
+    $> make clean all
+    $> acsStartJava junit.textui.TestRunner alma.acs.cdb.tests.PerformanceTest
+
+ * The results will be printed in the screen once they are calculated
+
+
+================
+Expected results
+================
+
+In
+
+http://jira.alma.cl/browse/COMP-3789
+
+you will find the results that have been collected by this test for the current
+CDB implementation. You should refer to them to check if the implementation of
+the CDB that you are using is better or worse than previous ones
