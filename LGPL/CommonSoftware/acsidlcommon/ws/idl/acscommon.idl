@@ -122,6 +122,7 @@ module log_audience
     const string SYSADMIN = "Sysadmin";
     const string DBA = "DBA";
     const string NO_AUDIENCE = "";
+    const string SCILOG = "SciLog";
 };
 
 
