@@ -57,35 +57,45 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 	private long start=-1;
 	private long end=-1;
 	
-	// The name of the file of filter
+	/**
+	 * The name of the file of filter
+	 */
 	private String filterFileName=null;
 	
-	// The filters
+	/**
+	 * The filters
+	 */
 	private FiltersVector filters = null;
 	
-	// The name of the file for reading
-	private String inFileName;
-	
-	// The name of the output file
-	private String destFileName;
-	
-	// The parser to translate XML logs into ILogEntry
-	private ACSLogParser parser = null;
-	
-	// The writer to write the destination files
-	private final int OUTPUT_BUFFER_SIZE=8192;
-	private BufferedWriter outF=null;
-	
-	// If true the output is written as CSV
-	private boolean writeAsCSV = false;
-	
-	// The converter from ILogEntry to CSV
-	private CSVConverter csv;
+	/**
+	 * The name of the files for reading
+	 */
+	private String[] inFileNames;
 	
 	/**
-	 * The helper to write log into
+	 * The name of the output file
 	 */
-	private IOHelper outHelper;
+	private String destFileName;
+	
+	/**
+	 * The parser to translate XML logs into ILogEntry
+	 */
+	private ACSLogParser parser = null;
+	
+	/**
+	 * The size of the buffer for writing
+	 */
+	private final int OUTPUT_BUFFER_SIZE=8192;
+	
+	/**
+	 * The writer to write the destination files
+	 */
+	private BufferedWriter outF=null;
+	
+	/**
+	 * The converter to format the log before saving
+	 */
+	private final LogConverter converter;
 	
 	/**
 	 * Constructor
@@ -94,32 +104,48 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 	 * All the criteria are applied in AND.
 	 * If the start/end date are not present, the dates are not checked.
 	 * 
-	 * @param inputFile The name of the file of logs for input
+	 * @param inputFiles The name of the files of logs for input
 	 * @param outputFile The name of the file with the selected logs
 	 * @param startDate The start date of logs (can be null)
 	 * @param endDate The end date of the logs (can be null) 
 	 * @param filterName The name of a file of filters to apply to select
 	 *                   logs (can be null)
-	 * @param csvFormat if true the output is written as CSV instead of XML
-	 * @param cols The fields to write in the CSV
+	 * @param converter The convert to save logs in different output formats
 	 * @throws <code>Exception</code> In case of error
 	 */
 	public LogFileExtractor(
-			String inputFile, 
+			String inputFiles[], 
 			String outputFile, 
 			Date startDate, 
 			Date endDate, 
 			String filterName,
-			boolean csvFormat,
-			String cols)  throws Exception {
+			LogConverter converter)  throws Exception {
 		if (startDate==null && endDate==null && filterName==null){
 			throw new IllegalArgumentException("No criteria for extraction");
 		}
-		if (inputFile==null || outputFile==null) {
+		if (inputFiles==null || outputFile==null) {
 			throw new IllegalArgumentException("The source and destination files can't be null");
 		}
-		inFileName=inputFile;
+		if (inputFiles.length==0) {
+			throw new IllegalArgumentException("No source files");
+		}
+		if (converter==null) {
+			throw new IllegalArgumentException("The converter can't be null");
+		}
+		this.converter=converter;
+		inFileNames=inputFiles;
 		destFileName=outputFile;
+		// Add the extension to the outputfilename if not
+		// already present
+		String extension;
+		if (converter instanceof XMLConverter) {
+			extension=".xml";
+		} else {
+			extension=".txt";
+		}
+		if (!destFileName.toLowerCase().endsWith(extension)) {
+			destFileName=destFileName+extension;
+		}
 		if (startDate!=null) {
 			start=startDate.getTime();}
 		
@@ -138,11 +164,6 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 			filters = new FiltersVector();
 			filters.loadFilters(f,true,null);
 		}
-		writeAsCSV=csvFormat;
-		if (writeAsCSV) {
-			csv = new CSVConverter(cols);
-		}
-		
 		// Create the parser
 		try {
 			parser = ACSLogParserFactory.getParser();
@@ -175,21 +196,11 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 			matches = filters.applyFilters(log);
 		}
 		if (matches) {
-			if (writeAsCSV) {
-				try {
-					outF.write(
-							csv.convert(log));
-				} catch (IOException e) {
-					System.err.println("Error writing a log: "+e.getMessage());
-					System.exit(-1);
-				}
-			} else {
-				try {
-					outHelper.saveLog(outF, log);
-				} catch (IOException e) {
-					System.err.println("Error writing a log: "+e.getMessage());
-					System.exit(-1);
-				}
+			try {
+				outF.write(converter.convert(log));
+			} catch (IOException e) {
+				System.err.println("Error writing a log: "+e.getMessage());
+				System.exit(-1);
 			}
 		}
 	}
@@ -210,29 +221,12 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		if (destFileName.length()==0) {
 			throw new IllegalArgumentException("Wrong dest file name");
 		}
-		String temp = destFileName.toLowerCase();
-		if (!temp.endsWith(".xml") && !writeAsCSV) {
-			destFileName=destFileName.concat(".xml");
-		}
-		if (!writeAsCSV) {
-			outHelper = new IOHelper();
-			try {
-				outF=outHelper.getBufferedWriter(destFileName, false, false);
-				outHelper.writeHeader(outF);
-			} catch (Exception e) {
-				System.err.println("Error creating a file for saving named "+destFileName);
-				e.printStackTrace(System.err);
-				System.exit(-1);
-			}
-		} else {
-			outHelper=null;
-			try {
-				outF = new BufferedWriter(new FileWriter(destFileName));
-			} catch (Exception e) {
-				System.err.println("Error creating a file for saving named "+destFileName);
-				e.printStackTrace(System.err);
-				System.exit(-1);
-			}
+		try {
+			outF = new BufferedWriter(new FileWriter(destFileName));
+		} catch (Exception e) {
+			System.err.println("Error creating a file for saving named "+destFileName);
+			e.printStackTrace(System.err);
+			System.exit(-1);
 		}
 	}
 	
@@ -245,16 +239,14 @@ public class LogFileExtractor implements ACSRemoteRawLogListener, ACSRemoteError
 		IOHelper inputHelper = new IOHelper();
 		openDestFile();
 		// Start the loading
-		inputHelper.loadLogs(inFileName, null, this, this, this);
-		// Flush and close the output
-		if (!writeAsCSV) {
-			outHelper.terminateSave(outF, true);
-		} else {
-			outF.flush();
-			outF.close();
+		for (String inFileName: inFileNames) {
+			System.out.println("Processing "+inFileName);
+			inputHelper.loadLogs(inFileName, null, this, this, this);
 		}
+		// Flush and close the output
+		outF.flush();
+		outF.close();
 		outF=null;
-		outHelper=null;
 	}
 	
 	/**

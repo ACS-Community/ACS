@@ -53,66 +53,88 @@ import alma.acs.util.IsoDateFormat;
  */
 public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorListener, IOPorgressListener {
 
-	// The name of the input file
-	private String inFileName;
+	/**
+	 * The name of the input files
+	 */
+	private String[] inFileNames;
 	
-	// The name for the output files 
-	// A progressive number/starting date is appended at the end of each name
+	/**
+	 * The name for the output files
+	 * <P>
+	 * A progressive number/starting date is appended at the end of each name
+	 */
 	private String destFileName;
 	
-	// The progressive number appended at the end of each generated file
+	/**
+	 * The progressive number appended at the end of each generated file
+	 */
 	private int index=0;
 	
-	// The number of logs in each splitted file
+	/**
+	 * The number of logs in each splitted file
+	 */
 	private Integer number=null;
 	
-	// The time frame of the logs in each splitted file (in msec)
+	/**
+	 * The time frame of the logs in each splitted file (in msec)
+	 */
 	private Integer time=null;
 	
-	// Counts the number of logs read (needed for number criteria)
+	/**
+	 * Counts the number of logs read (needed for number criteria)
+	 */
 	private int logsRead=0;
 	
-	// The date of the first log in the current output file (needed for time criteria)
+	/**
+	 * The date of the first log in the current output file (needed for time criteria)
+	 */
 	private long firstLogDate=-1;
 	
-	// The parser to translate XML logs into ILogEntry
-	private ACSLogParser parser = null;
+	/**
+	 * The parser to translate XML logs into ILogEntry
+	 */
+	private final ACSLogParser parser;
 	
-	// The writer to write the destination files
+	/**
+	 * The size of the buffer for writing 
+	 */
 	private final int OUTPUT_BUFFER_SIZE=8192;
+	
+	/**
+	 * The writer to write the destination files
+	 */
 	private BufferedWriter outF=null;
 	
-	// The format of the date in the name of the file
+	/**
+	 * The format of the date in the name of the file
+	 */
 	private SimpleDateFormat dateFormat = new IsoDateFormat();
 	
-//	 If true the output is written as CSV
-	private boolean writeAsCSV = false;
-	
-	// The converter from ILogEntry to CSV
-	private CSVConverter csv;
-	
-	// The fields and thier positions in the CSV
-	private String cols=null;
+	/**
+	 * The converter to format the log before saving
+	 */
+	private final LogConverter converter;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param inputFile The file of log to read
+	 * @param inputFiles The files of log to read
 	 * @param outputFiles The names of the files created splitting
 	 * @param num The number of logs per file (can be null)
 	 * @param mins The minutes of the logs per file (can be null)
-	 * @param csvFormat if true the output is written as CSV instead of XML
-	 * @param cols The fields to write in the CSV
+	 * @param converter The converter to format the logs before saving
 	 */
 	public LogFileSplitter(
-			String inputFile, 
+			String[] inputFiles, 
 			String outputFiles, 
 			Integer num, 
 			Integer mins,
-			boolean csvFormat,
-			String cols) {
-		if (inputFile==null || outputFiles==null) {
+			LogConverter converter) {
+		if (inputFiles==null || outputFiles==null) {
 			throw new IllegalArgumentException("The sorce and dest file name can't be null");
+		}
+		if (inputFiles.length==0) {
+			throw new IllegalArgumentException("No source files");
 		}
 		if (num==null && mins==null) {
 			throw new IllegalArgumentException("Missing criteria (num and time are null)");
@@ -129,28 +151,22 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 		if (num!=null && num<50000) {
 			System.out.println("Warning splitting for less then 50000 logs can create a big number of files");
 		}
-		if (mins!=null) {
-			// Create the parser
-			try {
-				parser = ACSLogParserFactory.getParser();
-			} catch (Exception e) {
-				System.err.println("Error creating the parser: "+e.getMessage());
-				System.exit(-1);
-			}
+		if (converter==null) {
+			throw new IllegalArgumentException("The converter can't be null");
 		}
-		inFileName=inputFile;
+		this.converter=converter;
+		// Create the parser
+		try {
+			parser = ACSLogParserFactory.getParser();
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Error creating the parser"+e);
+		}
+		inFileNames=inputFiles;
 		destFileName=outputFiles;
 		number=num;
 		if (mins!=null) {
 			time=mins*60*1000;
 		}
-		
-		writeAsCSV=csvFormat;
-		if (writeAsCSV) {
-			this.cols=cols;
-			csv = new CSVConverter(this.cols);
-		}
-		
 	}
 	
 	
@@ -160,7 +176,10 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 	 */
 	public void split() throws Exception {
 		IOHelper ioHelper = new IOHelper();
-		ioHelper.loadLogs(inFileName, null, this, this, this);
+		for (String inFileName: inFileNames) {
+			System.out.println("Processing "+inFileName);
+			ioHelper.loadLogs(inFileName, null, this, this, this);
+		}
 		if (outF!=null) {
 			closeOutputFile(outF);
 		}
@@ -174,6 +193,15 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 	@Override
 	public void xmlEntryReceived(String xmlLogString) {
 		ILogEntry log = null;
+		try {
+			log = parser.parse(xmlLogString);
+		} catch (Exception e) {
+			System.err.println("Error parsing a log: "+e.getMessage());
+			System.err.println("The log that caused the exception: "+xmlLogString);
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		
 		if (number!=null ) {
 			// Number criteria
 			if (outF==null || ++logsRead>number) {
@@ -183,13 +211,6 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 			}
 		} else {
 			// Time criteria
-			try {
-				log = parser.parse(xmlLogString);
-			} catch (Exception e) {
-				System.err.println("Error parsing a log: "+e.getMessage());
-				System.err.println("The log that caused the exception: "+xmlLogString);
-				System.exit(-1);
-			}
 			long logDate = ((Long)log.getField(LogField.TIMESTAMP));
 			if (firstLogDate==-1 || logDate-firstLogDate>time) {
 				firstLogDate=logDate;
@@ -197,31 +218,12 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 				outF=getOutputFile(destFileName,index++,new Date(logDate));
 			}
 		}
-		if (writeAsCSV) {
-			if (log == null) {
-				try {
-					log = parser.parse(xmlLogString);
-				} catch (Exception e) {
-					System.err.println("Error parsing a log: " + e.getMessage());
-					System.err.println("The log that caused the exception: "+ xmlLogString);
-					System.exit(-1);
-				}
-			}
-			try {
-				outF.write(csv.convert(log));
-			} catch (IOException e) {
-				System.err.println("Error writing a log: " + e.getMessage());
-				System.exit(-1);
-			}
-		} else {
-			try {
-				outF.write(xmlLogString);
-			} catch (IOException e) {
-				System.err.println("Error writing a log: " + e.getMessage());
-				System.exit(-1);
-			}
+		try {
+			outF.write(converter.convert(log));
+		} catch (IOException e) {
+			System.err.println("Error writing a log: " + e.getMessage());
+			System.exit(-1);
 		}
-		
 	}
 	
 	/**
@@ -246,9 +248,12 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 			dateFormat.format(startingDate,buffer, new FieldPosition(0));
 			name.append(buffer.toString()); 
 		}
-		if (!writeAsCSV) {
+		// Add the extension
+		if (converter instanceof XMLConverter) {
 			name.append(".xml");
-		} 
+		} else {
+			name.append(".txt");
+		}
 		// Create and return the file
 		FileWriter outFile=null;
 		try {
@@ -258,6 +263,7 @@ public class LogFileSplitter implements ACSRemoteRawLogListener, ACSRemoteErrorL
 			System.err.print(e.getMessage());
 			System.exit(-1);
 		}
+		System.out.println("Writing logs on "+name);
 		return new BufferedWriter(outFile,OUTPUT_BUFFER_SIZE);
 	}
 	
