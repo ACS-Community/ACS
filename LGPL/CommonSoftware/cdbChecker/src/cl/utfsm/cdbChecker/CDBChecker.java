@@ -54,7 +54,6 @@ public class CDBChecker {
 	
 	private String componentsFolder = null;
 	private String containersFolder = null;
-	
 	private boolean foundErr = false;
 
   /**
@@ -80,7 +79,6 @@ public class CDBChecker {
 	private         boolean network       = false;
 	public  static 	boolean checkidl      = false;
 	private         boolean recursive     = true;
-	public  static 	boolean allImplLang   = false;
 	
 	/**
 	 * This get the filenames of type 'type' from the given path. 
@@ -375,7 +373,6 @@ public class CDBChecker {
 		System.out.println("                            when searching for .xml/.xsd files");
 		System.out.println("      -n | --network        Get required schemas from the network");
 		System.out.println("      -c | --checkIdlTypes  Check if the idl types in CDB are available");
-		System.out.println("      -a | --allImplLang    Check all files for implLang match (default is false, independent of -r)");
 		System.out.println("      -h | --help           Show this help");
 		System.out.println("\n    The XMLPath and XSDPath can have multiple paths separated by \":\".");
 		System.out.println("    The paths must be absolute (i.e. they should start with '/')");
@@ -397,13 +394,13 @@ public class CDBChecker {
 		boolean retVal = true;
 		int c;
 		String arg;
-		LongOpt[] longopts = new LongOpt[6];
+		LongOpt[] longopts = new LongOpt[5];
 		longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
 		longopts[1] = new LongOpt("network", LongOpt.NO_ARGUMENT, null, 'n'); 
 		longopts[2] = new LongOpt("verbose", LongOpt.NO_ARGUMENT, null, 'v');
 		longopts[3] = new LongOpt("recursive", LongOpt.NO_ARGUMENT, null, 'r');
 		longopts[4] = new LongOpt("checkIdlTypes", LongOpt.NO_ARGUMENT, null, 'c');
-		longopts[5] = new LongOpt("allImplLang", LongOpt.NO_ARGUMENT, null, 'a');
+		
 		Getopt myGetOpt = new Getopt("cdbChecker", args, "rhncvaW;", longopts);
 		myGetOpt.setOpterr(false); // We'll do our own error handling
 
@@ -423,9 +420,6 @@ public class CDBChecker {
 					break;
 				case 'c':
 					this.checkidl = true;
-					break;
-				case 'a':
-					this.allImplLang = true;
 					break;
 				case 'W':
 					System.out.println("[Error] : you tried a -W with an incorrect long option name");
@@ -586,6 +580,20 @@ public class CDBChecker {
 		 */
        
        if(cdbchecker.checkArgs(args)) {
+       		//add panta@naoj 2009/10/05
+       		String pathsMulti[]=cdbchecker.XMLPath.split(":");
+       	
+       		for(int i = 0; i < pathsMulti.length; i++){
+				File file_ = new File(pathsMulti[i]);
+				if(!file_.exists()){
+					System.out.println("*** ImplLang Check: Specified path " + file_+ " does not exist");
+					globalErrorFlag = true;
+					cdbchecker.showEndResult();
+					break;
+				}
+			}
+       		//add panta@naoj 2009/10/05 end
+       	
 			//Creating the parser
 			cdbchecker.SP=new SAXParser();
 			cdbchecker.xsd_targetns=new Hashtable();
@@ -621,18 +629,6 @@ public class CDBChecker {
 				Vector XSDFilenames=new Vector();
 				XSDFilenames=cdbchecker.getFilenames(paths,"xsd");
 			
-				String pathsMulti[]=cdbchecker.XMLPath.split(":");
-				for(int i = 0; i < pathsMulti.length; i++){
-					File file_ = new File(pathsMulti[i]);
-					if(!file_.exists()){
-						System.out.println("*** Specified path " + file_+ " does not exist");
-						globalErrorFlag = true;
-						cdbchecker.showEndResult();
-						break;
-					}
-				}
-				
-				
 				if(cdbchecker.verbose)System.out.println("*** Reading given XML files");			
 				// We assume that cdbchecker.XMLPath is at least
 				// initialised to the empty string and never null
@@ -662,29 +658,21 @@ public class CDBChecker {
 				
 					File compFolder = new File(cdbchecker.componentsFolder);
 					File contFolder = new File(cdbchecker.containersFolder);
+					//System.out.println("compFolder: " + compFolder);
+					//System.out.println("contFolder: " + contFolder);
 					
-					if(compFolder.exists()){
-						if(contFolder.exists()){
-							//System.out.println("compFolder: " + compFolder);
-							//System.out.println("contFolder: " + contFolder);
-							globalErrorFlag = cdbchecker.checkImplLangMatch(compFolder, contFolder);
-							
-							if(cdbchecker.allImplLang){
-								if(globalErrorFlag==true) {
-								    System.out.println("\n[Error] Errors were found\n");
-								}
-								else {
-								    System.out.println("\nNo errors found\n");
-								}
-								
-							}
-						}
-						else{
-							System.out.println("\nContainers folder not found for " + pathsMulti[i]);
+					if(compFolder.exists() && contFolder.exists()){
+						globalErrorFlag = cdbchecker.checkImplLangMatch(compFolder, contFolder);
+						
+						//exit if error
+						if(globalErrorFlag==true) {
+						    break;
 						}
 					}
 					else{
-						System.out.println("\nComponents folder not found for " + pathsMulti[i]);
+						System.out.println("\nCannot check implLang match because ");
+						System.out.println("Components and/or Containers folder(s) not found");
+						break;
 					}
 				}
 				//add panta@naoj 2009/10/05 end
@@ -730,13 +718,11 @@ public class CDBChecker {
 		search:
 	  	for (int x = 0; x < files.length; x++){
 	  		
-	  		if(!cdbchecker.allImplLang){
-	  			if(foundErr){
-	  				break search;
-	  			}
-	  		}
-	  		
-	    	if (files[x].isDirectory()){
+	  		if(foundErr){
+  				break search;
+  			}
+
+	  		if (files[x].isDirectory()){
 	    		if(!files[x].getName().equals("CVS")){
 	    			checkImplLangMatch(files[x], contFolder); //recursive call
 	    		}
@@ -803,9 +789,7 @@ public class CDBChecker {
 	    					System.out.println("\nFile being checked: " + files[x] );
 				  			System.out.print("\n'ImplLang' missing for component: " + compName);
 	    					foundErr = true;
-				  			if(!cdbchecker.allImplLang){
-	    						break search;
-	    					}
+	    					break search;
 	              		}
 	    			}
 	    			
@@ -841,11 +825,8 @@ public class CDBChecker {
 				  				else{
 				  					System.out.println("\nFile being checked: " + files[x] );
 				  					System.out.print("'ImplLang' does not match for component: " + compName +".");
-				  					System.out.println("\nCorresponding Container is : " + contFile);
 				  					foundErr = true;
-						  			if(!cdbchecker.allImplLang){
-			    						break search;
-			    					}
+				  					break search;
 				      			}
 					    	}//Container for loop
 		  				}
@@ -854,9 +835,7 @@ public class CDBChecker {
 		  					System.out.print("\nMissing Container " + new File(tempContainersFolder));
 		  					System.out.println("");
 		  					foundErr = true;
-				  			if(!cdbchecker.allImplLang){
-	    						break search;
-	    					}
+		  					break search;
 		  				}
 		  			} catch (SAXException e) {
 		  				e.printStackTrace();
