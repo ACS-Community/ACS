@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.28 2008/08/07 13:44:52 mzampare Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.29 2009/11/27 08:33:07 bjeram Exp $"
 #
 #************************************************************************
 #   NAME
@@ -121,7 +121,11 @@ then
     #
     echo "	\$(AT)echo \"USR_INC := $USR_INC\"   >> Kbuild"
     echo "	\$(AT)echo \"EXTRA_CFLAGS := \$(shell \$(RTAI_CONFIG) --module-cflags) -Werror-implicit-function-declaration \$(USR_INC) \$(USER_RTAI_CFLAGS) -DRTAI_HOME\" >> Kbuild"
-    echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=1 modules"
+    echo "ifdef MAKE_VERBOSE"
+    echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=2 modules"
+    echo "else"
+    echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=0 modules"
+    echo "endif"
     echo "	\$(AT)rm Kbuild"
     echo "	\$(AT)mv ${modName}.ko ../rtai/\$(osrev)"
     echo ""
