@@ -11,6 +11,9 @@
 1 -     /PATH/basic/bad/reqSchemas.xml:12:110 [Error]
 1 - 	 cvc-complex-type.3.2.2: Attribute 'Error' is not allowed to appear in element 'SchemaLocation'.
 1 - 
+1 - Cannot check implLang match because 
+1 - Components and/or Containers folder(s) not found
+1 - 
 1 - [Error] CDBChecker exiting. Errors were found
 1 - 
 1 - return code is: 1
@@ -28,6 +31,9 @@
 1 -     /PATH/basic/good/reqSchemas.xml:13:64 [Error]
 1 - 	 s4s-elt-invalid-content.1: The content of 'SchemaInfo' is invalid.  Element 'attribut' is invalid, misplaced, or occurs too often.
 1 - 
+1 - Cannot check implLang match because 
+1 - Components and/or Containers folder(s) not found
+1 - 
 1 - [Error] CDBChecker exiting. Errors were found
 1 - 
 1 - return code is: 1
@@ -42,6 +48,9 @@
 1 -     /PATH/basic/good/reqSchemas.xsd[OK]
 1 - *** Validating XML files
 1 -     /PATH/basic/good/reqSchemas.xml[OK]
+1 - 
+1 - Cannot check implLang match because 
+1 - Components and/or Containers folder(s) not found
 1 - 
 1 - CDBChecker exiting. No errors found
 1 - 

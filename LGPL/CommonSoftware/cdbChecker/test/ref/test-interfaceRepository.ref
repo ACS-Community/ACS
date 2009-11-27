@@ -4,9 +4,83 @@
 1 - 
 1 - 
 1 - 
-1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - /alma/ACS-8.1/acsdata/config/defaultCDB/CDB/schemas/TestPowerSupplyACS.xsd:10:392 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/AmsSeq.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LAMP.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Manager.xsd:11:318 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LoggingConfig.xsd:2:232 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Components.xsd:11:324 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/ASIMessage.xsd:2:58 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xsd:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/ErrorExplorer.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Component.xsd:2:322 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/HierarchicalComponent.xsd:11:292 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/RampedPowerSupply.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/acsalarm-categories.xsd:2:211 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/PowerSupply.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/MOUNT.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/SAMP.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataSender.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataReceiver.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Door.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/MasterComponent.xsd:10:69 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/CLOCK.xsd:3:306 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/FILTERWHEEL.xsd:13:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LAMPWHEEL.xsd:13:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Calendar.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/xml.xsd:2:125 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Container.xsd:11:322 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/acsalarm-fault-family.xsd:2:213 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Channels.xsd:2:222 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/SimulatedComponent.xsd:11:242 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Building.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataDistributer.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/AcsAlarmSystem.xsd:17:47 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/EventChannel.xsd:5:230 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Fridge.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/CDB.xsd:12:112 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BACI.xsd:11:258 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Tower.xsd:17:58 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
 1 - [Error] IDL: BadIdlType2:1.0 not found in Interface Repository.
 1 - [Error] IDL: BadIdlType:1.0 not found in Interface Repository.
+1 - 
+1 - Cannot check implLang match because 
+1 - Components and/or Containers folder(s) not found
 1 - 
 1 - [Error] CDBChecker exiting. Errors were found
 1 - 
@@ -17,8 +91,82 @@
 1 - 
 1 - 
 1 - 
-1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - /alma/ACS-8.1/acsdata/config/defaultCDB/CDB/schemas/TestPowerSupplyACS.xsd:10:392 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/AmsSeq.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LAMP.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Manager.xsd:11:318 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LoggingConfig.xsd:2:232 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Components.xsd:11:324 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/ASIMessage.xsd:2:58 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xsd:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/ErrorExplorer.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Component.xsd:2:322 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/HierarchicalComponent.xsd:11:292 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/RampedPowerSupply.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/acsalarm-categories.xsd:2:211 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/PowerSupply.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/MOUNT.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/SAMP.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataSender.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataReceiver.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Door.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/MasterComponent.xsd:10:69 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/CLOCK.xsd:3:306 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/FILTERWHEEL.xsd:13:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/LAMPWHEEL.xsd:13:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Calendar.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/xml.xsd:2:125 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Container.xsd:11:322 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/acsalarm-fault-family.xsd:2:213 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Channels.xsd:2:222 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/SimulatedComponent.xsd:11:242 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Building.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BulkDataDistributer.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/AcsAlarmSystem.xsd:17:47 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/EventChannel.xsd:5:230 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Fridge.xsd:15:115 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/CDB.xsd:12:112 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/BACI.xsd:11:258 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
+1 - /alma/ACS-8.1/ACSSW/config/CDB/schemas/Tower.xsd:17:58 [Error]
+1 - 	 cvc-elt.1: Cannot find the declaration of element 'xs:schema'.
 1 - 
-1 - CDBChecker exiting. No errors found
+1 - Cannot check implLang match because 
+1 - Components and/or Containers folder(s) not found
+1 - 
+1 - [Error] CDBChecker exiting. Errors were found
 1 - 
 1 - Killing Interface Repository
