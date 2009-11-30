@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.86 2009/10/08 07:11:54 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.87 2009/11/30 17:46:46 agrimstrup Exp $"
 #
 #
 #
@@ -586,7 +586,7 @@ then
    if [ -e $ALMASW_INSTDIR/casa ]
    then
       export CASA_ROOT=$ALMASW_INSTDIR/casa
-      export AIPSPATH="$CASA_ROOT local `uname -n`"
+      export CASAPATH="$CASA_ROOT $(uname -s | tr [:upper:] [:lower:]) local $(uname -n)"
    fi
 fi
 
