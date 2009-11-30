@@ -1,4 +1,4 @@
-«REM»
+Â«REMÂ»
 	ALMA - Atacama Large Millimiter Array
 	(c) European Southern Observatory, 2002
 	Copyright by ESO (in the framework of the ALMA collaboration),
@@ -18,13 +18,13 @@
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 	MA 02111-1307  USA
-«ENDREM» 
+Â«ENDREMÂ» 
 
-«IMPORT uml»
-«EXTENSION templates::util»
+Â«IMPORT umlÂ»
+Â«EXTENSION templates::utilÂ»
 
 
-«REM»	Expansions for the StateMachine.
+Â«REMÂ»	Expansions for the StateMachine.
 		For StateMachine in a UML Model, it expands:
 			- ActionInterface: An interface which has all the actions definitions
 			- SuperContextClass: The outermost context. It handles most of the StateMachine functions.
@@ -39,39 +39,39 @@
 		TODO: The final state is handled in a different way, It is identified by the name. Should use UML to detect final states.
 		TODO: Introduce global variables for:
 				- Package for generated classes.
-«ENDREM»
-«DEFINE Root FOR StateMachine»
-	«EXPAND ActionInterface»
-	«EXPAND SuperContextClass»
-	«EXPAND AbstractStateClass»
-	«EXPAND MiddleStateClass FOREACH allOwnedElements().typeSelect(State).select(e|e.isComposite())»
-	«EXPAND StateClass FOREACH allOwnedElements().typeSelect(State).select(e| !(e.isComposite()) && (e.name != "Unavailable") )»
-«ENDDEFINE»
+Â«ENDREMÂ»
+Â«DEFINE Root FOR StateMachineÂ»
+	Â«EXPAND ActionInterfaceÂ»
+	Â«EXPAND SuperContextClassÂ»
+	Â«EXPAND AbstractStateClassÂ»
+	Â«EXPAND MiddleStateClass FOREACH allOwnedElements().typeSelect(State).select(e|e.isComposite())Â»
+	Â«EXPAND StateClass FOREACH allOwnedElements().typeSelect(State).select(e| !(e.isComposite()) && (e.name != "Unavailable") )Â»
+Â«ENDDEFINEÂ»
 
 
 
-«REM»	Expansions for the ActionInterface. Every Action available for the StateMachine is putted in this interface.
-«ENDREM»
-«DEFINE ActionInterface FOR StateMachine»
-  «FILE "alma/ACS/MasterComponentImpl/statemachine/" + this.name + "Actions.java"»
+Â«REMÂ»	Expansions for the ActionInterface. Every Action available for the StateMachine is putted in this interface.
+Â«ENDREMÂ»
+Â«DEFINE ActionInterface FOR StateMachineÂ»
+  Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + this.name + "Actions.java"Â»
     package alma.ACS.MasterComponentImpl.statemachine;
     
     import alma.acs.genfw.runtime.sm.AcsStateActionException;
 
-    public interface «this.name»Actions {
-      «FOREACH listActions().sortBy(e|e.name) AS act»
-        void «act.name»() throws AcsStateActionException;
-      «ENDFOREACH»
+    public interface Â«this.nameÂ»Actions {
+      Â«FOREACH listActions().sortBy(e|e.name) AS actÂ»
+        void Â«act.nameÂ»() throws AcsStateActionException;
+      Â«ENDFOREACHÂ»
     }
-  «ENDFILE»
-«ENDDEFINE»
+  Â«ENDFILEÂ»
+Â«ENDDEFINEÂ»
 
 
 
-«REM»	First context class. This "SuperContext" class has the current state, and the action delegation.
-«ENDREM»
-«DEFINE SuperContextClass FOR StateMachine»
-  		«FILE "alma/ACS/MasterComponentImpl/statemachine/" + this.name + "Context.java"»
+Â«REMÂ»	First context class. This "SuperContext" class has the current state, and the action delegation.
+Â«ENDREMÂ»
+Â«DEFINE SuperContextClass FOR StateMachineÂ»
+  		Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + this.name + "Context.java"Â»
 package alma.ACS.MasterComponentImpl.statemachine;
 
 import java.util.ArrayList;
@@ -90,12 +90,12 @@ import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
 import alma.acs.logging.AcsLogger;
 
 /**
- * The super context class for the «name» state machine.
+ * The super context class for the Â«nameÂ» state machine.
  */
-public class «name»Context 
+public class Â«nameÂ»Context 
 {	    
-	private «name»StateAbstract m_currentState;
-	private «name»Actions m_actionDelegate;
+	private Â«nameÂ»StateAbstract m_currentState;
+	private Â«nameÂ»Actions m_actionDelegate;
 	
 	private List<AcsStateChangeListener> m_stateChangeListeners;	
 	private AcsState[] m_oldHierarchy;	
@@ -112,11 +112,11 @@ public class «name»Context
 	private boolean m_verbose = false;
       
 	// state objects
-    	«FOREACH listStates() AS st-»
-	public «st.name»State m_state«st.name»;
-    	«ENDFOREACH»
+    	Â«FOREACH listStates() AS st-Â»
+	public Â«st.nameÂ»State m_stateÂ«st.nameÂ»;
+    	Â«ENDFOREACHÂ»
     
-    public «this.name»Context(«this.name»Actions actions, AcsLogger logger, ThreadFactory threadFactory) {
+    public Â«this.nameÂ»Context(Â«this.nameÂ»Actions actions, AcsLogger logger, ThreadFactory threadFactory) {
     	m_stateChangeListeners = new ArrayList<AcsStateChangeListener>();
 		m_logger = logger;
 		// This choice of parameters is copied from the implementation of 
@@ -127,12 +127,12 @@ public class «name»Context
 			new LinkedBlockingQueue<Runnable>(),
 			threadFactory);
 		m_actionDelegate = actions;
-    	«FOREACH listStates() AS st-»
-		m_state«st.name» = new «st.name»State(«st.getHierarcharchyString()»);
-		«ENDFOREACH-»
+    	Â«FOREACH listStates() AS st-Â»
+		m_stateÂ«st.nameÂ» = new Â«st.nameÂ»State(Â«st.getHierarcharchyString()Â»);
+		Â«ENDFOREACH-Â»
 		
 		// initial state
-		m_state«getInitialState().name».activate("<init>");
+		m_stateÂ«getInitialState().nameÂ».activate("<init>");
 		m_oldHierarchy = getCurrentTopLevelState().getStateHierarchy();
 	}
 	
@@ -144,8 +144,8 @@ public class «name»Context
 		m_stateChangeListeners.add(listener);
 	}
 	
-	public void setState(«this.name»StateAbstract newState, String eventName) {
-		«this.name»StateAbstract oldState = m_currentState;
+	public void setState(Â«this.nameÂ»StateAbstract newState, String eventName) {
+		Â«this.nameÂ»StateAbstract oldState = m_currentState;
 		if (oldState != newState) {
 			logTransition(m_currentState, newState, eventName);
 			m_currentState = newState;
@@ -171,20 +171,20 @@ public class «name»Context
 	//======================================================================
 	// delegates incoming events to current state class
 	//======================================================================
-		«FOREACH getUniqueSignalsNames() AS sg-»
-	public void «sg»() throws AcsJIllegalStateEventEx {
-		m_currentState.«sg»();
+		Â«FOREACH getUniqueSignalsNames() AS sg-Â»
+	public void Â«sgÂ»() throws AcsJIllegalStateEventEx {
+		m_currentState.Â«sgÂ»();
 	}
-    	«ENDFOREACH-»
+    	Â«ENDFOREACH-Â»
     
 	//======================================================================
 	// delegates actions to user-provided action handler
 	// Note that actions of activity states are run in separate threads 
 	//======================================================================
-	«FOREACH listActions() AS act»
-	public void «act.name»() throws AcsStateActionException {
+	Â«FOREACH listActions() AS actÂ»
+	public void Â«act.nameÂ»() throws AcsStateActionException {
 		try {
-			m_actionDelegate.«act.name»();
+			m_actionDelegate.Â«act.nameÂ»();
 		}
 		catch (AcsStateActionException ex) {
 			throw ex;
@@ -193,7 +193,7 @@ public class «name»Context
 			throw new AcsStateActionException(thr);
 		}
 	}
-    «ENDFOREACH»
+    Â«ENDFOREACHÂ»
     
     //======================================================================
 	// util methods
@@ -236,12 +236,12 @@ public class «name»Context
 		sharedActivityExecutor.shutdownNow();
 	}
 }
-	«ENDFILE»
-«ENDDEFINE»
+	Â«ENDFILEÂ»
+Â«ENDDEFINEÂ»
 
 
-«DEFINE AbstractStateClass FOR uml::StateMachine»
-	«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "StateAbstract.java"-»
+Â«DEFINE AbstractStateClass FOR uml::StateMachineÂ»
+	Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "StateAbstract.java"-Â»
 package alma.ACS.MasterComponentImpl.statemachine;
     
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
@@ -251,11 +251,11 @@ import alma.acs.genfw.runtime.sm.AcsState;
   * Abstract state class. Concrete subclass receives delegation calls from the
   * SM's super context class.
   */
-public abstract class «name»StateAbstract implements AcsState
+public abstract class Â«nameÂ»StateAbstract implements AcsState
 {
-	protected «name»Context m_superContext;
+	protected Â«nameÂ»Context m_superContext;
     
-	public «name»StateAbstract(«name»Context superContext) {
+	public Â«nameÂ»StateAbstract(Â«nameÂ»Context superContext) {
 		m_superContext = superContext;
 	}
 	
@@ -264,55 +264,55 @@ public abstract class «name»StateAbstract implements AcsState
       
 	// all events that the master component can handle
 	// make all events illegal here, and let subclasses allow certain events 
-		«FOREACH getUniqueSignalsNames().sortBy(e|e) AS sg»
-	public void «sg»() throws AcsJIllegalStateEventEx {
-		m_superContext.illegalEvent(stateName(), "«sg»");
+		Â«FOREACH getUniqueSignalsNames().sortBy(e|e) AS sgÂ»
+	public void Â«sgÂ»() throws AcsJIllegalStateEventEx {
+		m_superContext.illegalEvent(stateName(), "Â«sgÂ»");
 	}
-    	«ENDFOREACH-»
+    	Â«ENDFOREACH-Â»
 
 	// entry, exit, events
 	public abstract void entry();
 	public void exit() {}
 }
-	«ENDFILE»
-«ENDDEFINE»
+	Â«ENDFILEÂ»
+Â«ENDDEFINEÂ»
 
 
-«DEFINE MiddleStateClass FOR State»
-	«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "State.java"-»
+Â«DEFINE MiddleStateClass FOR StateÂ»
+	Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "State.java"-Â»
 package alma.ACS.MasterComponentImpl.statemachine;
     
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
 import alma.acs.genfw.runtime.sm.AcsState;
-		«IF !isComposite()-»
+		Â«IF !isComposite()-Â»
 import alma.acs.logging.AcsLogger;
-		«ENDIF-»
+		Â«ENDIF-Â»
     
-public class «name»State
-    	«IF isTopState()-»
-	extends «containingStateMachine().name»StateAbstract
-    	«ELSE-»
-	extends «getContextName()»SubStateAbstract
-    	«ENDIF-» 
+public class Â«nameÂ»State
+    	Â«IF isTopState()-Â»
+	extends Â«containingStateMachine().nameÂ»StateAbstract
+    	Â«ELSE-Â»
+	extends Â«getContextName()Â»SubStateAbstract
+    	Â«ENDIF-Â» 
 {
-	public «name»SubStateAbstract m_subState;
-	«IF !isTopState() && isComposite()-»
+	public Â«nameÂ»SubStateAbstract m_subState;
+	Â«IF !isTopState() && isComposite()-Â»
 	public boolean newEntryToThis = false;
-	«ENDIF-»
+	Â«ENDIF-Â»
       
-    	«EXPAND StateConstructor-»
+    	Â«EXPAND StateConstructor-Â»
 
 	/**
 	 * @see alma.acs.genfw.runtime.sm.AcsState#stateName()
 	 */      
 	public String stateName() {
-		return "«name.toUpperCase()»";
+		return "Â«name.toUpperCase()Â»";
 	}
 
 	/**
 	 * @see alma.acs.genfw.runtime.sm.AcsState#getStateHierarchy()
 	 */
-	public «IF isTopState()-»synchronized«ENDIF-» AcsState[] getStateHierarchy() 
+	public Â«IF isTopState()-Â»synchronizedÂ«ENDIF-Â» AcsState[] getStateHierarchy() 
 	{
 		AcsState[] substates = m_subState.getStateHierarchy();
 		AcsState[] hierarchy = new AcsState[substates.length + 1];
@@ -321,101 +321,101 @@ public class «name»State
 		return hierarchy;
 	}
       
-	public void setSubstate(«name»SubStateAbstract newSubState, String eventName) {
-		«name»SubStateAbstract oldSubState = m_subState;
+	public void setSubstate(Â«nameÂ»SubStateAbstract newSubState, String eventName) {
+		Â«nameÂ»SubStateAbstract oldSubState = m_subState;
 		if (oldSubState != newSubState) {
 			m_superContext.logTransition(oldSubState, newSubState, eventName);
 			m_subState = newSubState;
 		}
 		
-		// always propagate state change upwards. «IF !isTopState()» May result in a call to entry() if the previous state was not a substate of this state.«ENDIF»
-		«IF isTopState()-»
+		// always propagate state change upwards. Â«IF !isTopState()Â» May result in a call to entry() if the previous state was not a substate of this state.Â«ENDIFÂ»
+		Â«IF isTopState()-Â»
 		m_superContext.setState(this, eventName);
-		«ELSE-»
+		Â«ELSE-Â»
 		m_context.setSubstate(this, eventName);
-		«ENDIF-» 
+		Â«ENDIF-Â» 
 		
-		«IF isTopState()-»
+		Â«IF isTopState()-Â»
 		// from UML spec (1.5):
 		// If the transition goes to a substate of the composite state, then that
 		// substate becomes active and its entry code is executed after the execution of the
 		// entry code of the composite state. This rule applies recursively if the transition
 		// terminates on a transitively nested substate.
-		«ENDIF-»
-		if («IF !isTopState()»newEntryToThis || «ENDIF»oldSubState != newSubState) {
+		Â«ENDIF-Â»
+		if (Â«IF !isTopState()Â»newEntryToThis || Â«ENDIFÂ»oldSubState != newSubState) {
 			m_subState.entry();
 		}
-		«IF !isTopState()-»
+		Â«IF !isTopState()-Â»
 		newEntryToThis = false;
-		«ENDIF-»
+		Â«ENDIF-Â»
 	}
 	
 	public void entry() 
 	{ 
-		«IF !isTopState()-»
+		Â«IF !isTopState()-Â»
 		newEntryToThis = true;
-		«ELSE-»
+		Â«ELSE-Â»
 		// todo: generate entry action if required
-		«ENDIF-»		
+		Â«ENDIF-Â»		
 	}
 
   	
-    	«FOREACH allOwnedElements().typeSelect(Transition) AS sg»
-    		«IF sg.hasTrigger()-»
-	public void «getSignalName( sg )»()  throws AcsJIllegalStateEventEx {
-		m_subState.«getSignalName( sg )»();
+    	Â«FOREACH allOwnedElements().typeSelect(Transition) AS sgÂ»
+    		Â«IF sg.hasTrigger()-Â»
+	public void Â«getSignalName( sg )Â»()  throws AcsJIllegalStateEventEx {
+		m_subState.Â«getSignalName( sg )Â»();
 	}
-			«ENDIF-»
-    	«ENDFOREACH-»
+			Â«ENDIF-Â»
+    	Â«ENDFOREACH-Â»
     	
-    	«IF isTopState()-»
-    		«FOREACH getOthersSignalsNames() AS sg»
-	public void «sg»() {
-		m_subState.«sg»();		
+    	Â«IF isTopState()-Â»
+    		Â«FOREACH getOthersSignalsNames() AS sgÂ»
+	public void Â«sgÂ»() {
+		m_subState.Â«sgÂ»();		
 	}
-    		«ENDFOREACH-»
-    	«ENDIF-»
+    		Â«ENDFOREACH-Â»
+    	Â«ENDIF-Â»
 
 }
-	«ENDFILE»
+	Â«ENDFILEÂ»
   
-	«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "SubStateAbstract.java"-»
+	Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "SubStateAbstract.java"-Â»
 package alma.ACS.MasterComponentImpl.statemachine;
 
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
-«IF !isTopState()-»
+Â«IF !isTopState()-Â»
 import alma.acs.logging.AcsLogger;
-«ENDIF-»
+Â«ENDIF-Â»
     
 /**
-  * Abstract class for substates of composite state '«name»'.
+  * Abstract class for substates of composite state 'Â«nameÂ»'.
   */
-public abstract class «name»SubStateAbstract implements AcsState
+public abstract class Â«nameÂ»SubStateAbstract implements AcsState
 {
-	public «containingStateMachine().name»Context m_superContext;
-	«IF !isTopState()-»
+	public Â«containingStateMachine().nameÂ»Context m_superContext;
+	Â«IF !isTopState()-Â»
 	protected final AcsLogger logger;	
-	protected «name»State m_«name.toLowerCase()»Context;
-	«ENDIF-»
+	protected Â«nameÂ»State m_Â«name.toLowerCase()Â»Context;
+	Â«ENDIF-Â»
 	
-	«IF isTopState()-»
+	Â«IF isTopState()-Â»
 	// the nested state AvailableState serves as both state class and context class for its substates
     protected AvailableState m_context;
-    «ENDIF-»
+    Â«ENDIF-Â»
     
-    «IF isTopState()-»
-    public «name»SubStateAbstract(«containingStateMachine().name»Context superContext, «name»State context ) {
+    Â«IF isTopState()-Â»
+    public Â«nameÂ»SubStateAbstract(Â«containingStateMachine().nameÂ»Context superContext, Â«nameÂ»State context ) {
         m_superContext = superContext;
         m_context = context;
     }
-    «ELSE-»
-	public «name»SubStateAbstract(«containingStateMachine().name»Context superContext, «name»State «name.toLowerCase()»Context, AcsLogger logger ) {
+    Â«ELSE-Â»
+	public Â«nameÂ»SubStateAbstract(Â«containingStateMachine().nameÂ»Context superContext, Â«nameÂ»State Â«name.toLowerCase()Â»Context, AcsLogger logger ) {
 		this.logger = logger;
         m_superContext = superContext;
-        m_«name.toLowerCase()»Context = «name.toLowerCase()»Context;
+        m_Â«name.toLowerCase()Â»Context = Â«name.toLowerCase()Â»Context;
 	}
-	«ENDIF-»      
+	Â«ENDIF-Â»      
 	public abstract AcsState[] getStateHierarchy();
 	public abstract String stateName();
 	
@@ -423,77 +423,77 @@ public abstract class «name»SubStateAbstract implements AcsState
     
     // events to be dealt with by subclasses
     
-    	«FOREACH allOwnedElements().typeSelect(Transition) AS sg-»
-    		«IF sg.hasTrigger()-»
-	public void «getSignalName( sg )»()  throws AcsJIllegalStateEventEx {
-		m_superContext.illegalEvent(stateName(), "«getSignalName(sg)»");
+    	Â«FOREACH allOwnedElements().typeSelect(Transition) AS sg-Â»
+    		Â«IF sg.hasTrigger()-Â»
+	public void Â«getSignalName( sg )Â»()  throws AcsJIllegalStateEventEx {
+		m_superContext.illegalEvent(stateName(), "Â«getSignalName(sg)Â»");
 	}
-			«ENDIF-»
-    	«ENDFOREACH-»
+			Â«ENDIF-Â»
+    	Â«ENDFOREACH-Â»
 
 	// events handled by this base class 
-	«IF !(!isTopState() && isComposite)-»
-    	«FOREACH getOthersSignalsNames() AS sg-»
-	public void «sg»() {
-			«IF sg == "error"-»
+	Â«IF !(!isTopState() && isComposite)-Â»
+    	Â«FOREACH getOthersSignalsNames() AS sg-Â»
+	public void Â«sgÂ»() {
+			Â«IF sg == "error"-Â»
 		m_context.setSubstate(m_superContext.m_stateError, "error");
-			«ELSE-»
-		m_superContext.m_state«containingStateMachine().allOwnedElements().typeSelect(Transition).selectFirst(e|hasTrigger(e) && getSignalName(e) == sg ).target.name».activate("«sg»");
-			«ENDIF-»
+			Â«ELSE-Â»
+		m_superContext.m_stateÂ«containingStateMachine().allOwnedElements().typeSelect(Transition).selectFirst(e|hasTrigger(e) && getSignalName(e) == sg ).target.nameÂ».activate("Â«sgÂ»");
+			Â«ENDIF-Â»
 	}
-    	«ENDFOREACH-»
-    «ENDIF»
+    	Â«ENDFOREACH-Â»
+    Â«ENDIFÂ»
 }
-	«ENDFILE»
-«ENDDEFINE»
+	Â«ENDFILEÂ»
+Â«ENDDEFINEÂ»
 
-«DEFINE StateConstructor FOR State»
-    «IF isTopState()-»
-	public «name»State(«containingStateMachine().name»Context superContext) {
+Â«DEFINE StateConstructor FOR StateÂ»
+    Â«IF isTopState()-Â»
+	public Â«nameÂ»State(Â«containingStateMachine().nameÂ»Context superContext) {
 		super(superContext);
-    «ELSE-»
-    	«IF isComposite()-»
-	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context ) {
+    Â«ELSE-Â»
+    	Â«IF isComposite()-Â»
+	public Â«nameÂ»State(Â«containingStateMachine().nameÂ»Context superContext, Â«parentState().nameÂ»State context ) {
 		super(superContext, context );
-		«ELSE-»
-			«IF parentState().isTopState()-»
-	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context ) {
+		Â«ELSE-Â»
+			Â«IF parentState().isTopState()-Â»
+	public Â«nameÂ»State(Â«containingStateMachine().nameÂ»Context superContext, Â«parentState().nameÂ»State context ) {
 		super(superContext, context );
-			«ELSE-»
-	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context, AcsLogger logger) {
+			Â«ELSE-Â»
+	public Â«nameÂ»State(Â«containingStateMachine().nameÂ»Context superContext, Â«parentState().nameÂ»State context, AcsLogger logger) {
 		super(superContext, context, logger );
-			«ENDIF-»
-		«ENDIF-»
-    «ENDIF-»
+			Â«ENDIF-Â»
+		Â«ENDIF-Â»
+    Â«ENDIF-Â»
 	}
-«ENDDEFINE»
+Â«ENDDEFINEÂ»
 
 
-«DEFINE StateClass FOR uml::State»
-	«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "State.java"-»
+Â«DEFINE StateClass FOR uml::StateÂ»
+	Â«FILE "alma/ACS/MasterComponentImpl/statemachine/" + name + "State.java"-Â»
 package alma.ACS.MasterComponentImpl.statemachine;
     
 import alma.acs.genfw.runtime.sm.AcsSimpleState;
 import alma.acs.genfw.runtime.sm.AcsState;
-		«IF !parentState().isTopState()»
+		Â«IF !parentState().isTopState()Â»
 import alma.acs.logging.AcsLogger;
-		«ENDIF»
-		«IF doActivity != null-»
+		Â«ENDIFÂ»
+		Â«IF doActivity != null-Â»
 import alma.acs.genfw.runtime.sm.AcsDoActivity;
 import alma.acs.genfw.runtime.sm.AcsStateActionException;
-		«ENDIF-»
+		Â«ENDIF-Â»
     
-public class «name»State extends «parentState().name»SubStateAbstract implements AcsSimpleState
+public class Â«nameÂ»State extends Â«parentState().nameÂ»SubStateAbstract implements AcsSimpleState
 {
-		«IF doActivity != null-»
+		Â«IF doActivity != null-Â»
 	private AcsDoActivity m_doActivity;
-		«ENDIF-»
+		Â«ENDIF-Â»
 	
-		«EXPAND StateConstructor-»
+		Â«EXPAND StateConstructor-Â»
     
 	public String stateName() 
 	{
-		return "«name.toUpperCase()»";
+		return "Â«name.toUpperCase()Â»";
 	}
 
 	/**
@@ -507,72 +507,72 @@ public class «name»State extends «parentState().name»SubStateAbstract implements
 	public void activate(String eventName) 
 	{
 		synchronized (m_superContext) {
-		«IF parentState().isTopState()-»
+		Â«IF parentState().isTopState()-Â»
 		m_context.setSubstate(this, eventName);
-		«ELSE-»
-		m_«parentState().name.toLowerCase()»Context.setSubstate(this, eventName);
-		«ENDIF-»
+		Â«ELSE-Â»
+		m_Â«parentState().name.toLowerCase()Â»Context.setSubstate(this, eventName);
+		Â«ENDIF-Â»
 		}
 	}
 	
     public void entry() 
     {
-		«IF doActivity != null-»
+		Â«IF doActivity != null-Â»
       // perform do/ action asynchronously
       if (m_doActivity == null) {
         // todo : get error state from a new stereotype (instead of name "Error")
-        m_doActivity = new AcsDoActivity("«name»", m_superContext.m_state«outgoing.get(0).target.name», m_superContext.m_stateError, logger, m_superContext.getSharedActivityExecutor() ) {
+        m_doActivity = new AcsDoActivity("Â«nameÂ»", m_superContext.m_stateÂ«outgoing.get(0).target.nameÂ», m_superContext.m_stateError, logger, m_superContext.getSharedActivityExecutor() ) {
           public void runActions() throws AcsStateActionException 
           {
-			«EXPAND ActionMethodCall FOR doActivity-»
+			Â«EXPAND ActionMethodCall FOR doActivity-Â»
           }
         };
       }
       m_doActivity.execute();
-		«ENDIF-»
+		Â«ENDIF-Â»
 	}
 
 	public void exit()
 	{
-		«IF doActivity != null-»
+		Â«IF doActivity != null-Â»
       m_doActivity.terminateActions();
-		«ENDIF-»
+		Â«ENDIF-Â»
 	}
     
 	// events handled by this state:
-		«IF parentState().isTopState()»
-			«EXPAND ConcreteEventMethod2 FOREACH outgoing»
-		«ELSE»
-			«EXPAND ConcreteEventMethod FOREACH outgoing»
-		«ENDIF»
+		Â«IF parentState().isTopState()Â»
+			Â«EXPAND ConcreteEventMethod2 FOREACH outgoingÂ»
+		Â«ELSEÂ»
+			Â«EXPAND ConcreteEventMethod FOREACH outgoingÂ»
+		Â«ENDIFÂ»
 		
     
 }    
-	«ENDFILE»
-«ENDDEFINE»
+	Â«ENDFILEÂ»
+Â«ENDDEFINEÂ»
 
-«DEFINE ActionMethodCall FOR Behavior»
-		m_superContext.«name»();
-«ENDDEFINE»
+Â«DEFINE ActionMethodCall FOR BehaviorÂ»
+		m_superContext.Â«nameÂ»();
+Â«ENDDEFINEÂ»
 
-«DEFINE ConcreteEventMethod FOR Transition»
-	«IF !trigger.isEmpty-»
-	public void «getSignalName(this)»() {    
-		«IF effect != null-»
-			«EXPAND ActionMethodCall FOR effect-»
-		«ENDIF-»
-		m_superContext.m_state«target.name».activate("«getSignalName(this)»");
+Â«DEFINE ConcreteEventMethod FOR TransitionÂ»
+	Â«IF !trigger.isEmpty-Â»
+	public void Â«getSignalName(this)Â»() {    
+		Â«IF effect != null-Â»
+			Â«EXPAND ActionMethodCall FOR effect-Â»
+		Â«ENDIF-Â»
+		m_superContext.m_stateÂ«target.nameÂ».activate("Â«getSignalName(this)Â»");
 	}
-	«ENDIF-»
-«ENDDEFINE»
+	Â«ENDIF-Â»
+Â«ENDDEFINEÂ»
 
-«DEFINE ConcreteEventMethod2 FOR Transition»
-	«IF !trigger.isEmpty-»
-	public void «getSignalName(this)»() {    
-		«IF effect != null-»
-			«EXPAND ActionMethodCall FOR effect-»
-		«ENDIF-»
-		m_context.setSubstate(m_superContext.m_state«target.name», "«getSignalName(this)»");
+Â«DEFINE ConcreteEventMethod2 FOR TransitionÂ»
+	Â«IF !trigger.isEmpty-Â»
+	public void Â«getSignalName(this)Â»() {    
+		Â«IF effect != null-Â»
+			Â«EXPAND ActionMethodCall FOR effect-Â»
+		Â«ENDIF-Â»
+		m_context.setSubstate(m_superContext.m_stateÂ«target.nameÂ», "Â«getSignalName(this)Â»");
 	}
-	«ENDIF-»
-«ENDDEFINE»
+	Â«ENDIF-Â»
+Â«ENDDEFINEÂ»
