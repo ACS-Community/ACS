@@ -33,6 +33,8 @@ package alma.acs.genfw.runtime.sm;
 public class AcsStateActionException extends Exception
 {
 
+	private static final long serialVersionUID = -4889646502613966074L;
+
 	/**
 	 * 
 	 */

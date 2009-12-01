@@ -13,9 +13,22 @@ State getTopState( StateMachine this ):
 
 // Get the State that contains this state. In case of the topmost, returns null
 State parentState( State this ): 
-	this.container.state;
+	if( this.container != null) then
+		this.container.state
+	else
+		null;
 State parentState( Pseudostate this ): 
-	this.container.state;  
+	if( this.container != null) then
+		this.container.state
+	else
+		null;
+			
+// Return true if it has a parent state. False in other cases
+boolean hasParentState( State this ):
+	if( this.container != null )
+		then true
+	else
+		false;
 
 // Lists States, including final
 List[State] listStates( State this ): 
@@ -77,13 +90,13 @@ List[Action] listActions( State this ):
 
 // If this State is the topmost, returns true.
 boolean isTopState( State this ): 
-	if( this.container.owner == containingStateMachine() ) 
+	if( ((Region)this.container).owner == containingStateMachine() ) 
 		then true 
 	else false;
-boolean isTopState( Pseudostate this ): 
-	if( this.container.owner == containingStateMachine() ) 
-		then true 
-	else false;
+//boolean isTopState( Pseudostate this ): 
+//	if( ((Region)this.container).owner == containingStateMachine() ) 
+//		then true 
+//	else false;
 
 // If this is a Composiite States, and is not the topmost state (Is a Compositie Substate), return true.
 boolean isCompositeSubState( State this ): 
@@ -105,7 +118,7 @@ string getHierarcharchyString( State this ) :
 		else
 			"this, m_state" + this.getContextName() + ", m_logger";
 string getHierarcharchyString( Pseudostate this ) : 
-	if isTopState() then
+	if state.isTopState() then
 		"this"
 	else 
 		"this, m_state" + this.getContextName() + ", m_logger";

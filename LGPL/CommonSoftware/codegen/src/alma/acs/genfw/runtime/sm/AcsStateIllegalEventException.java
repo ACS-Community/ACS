@@ -29,6 +29,8 @@ package alma.acs.genfw.runtime.sm;
 public class AcsStateIllegalEventException extends Exception
 {
 
+	private static final long serialVersionUID = 7796250422838730080L;
+
 	/**
 	 * 
 	 */
