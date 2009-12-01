@@ -1,0 +1,8 @@
+import tmcdbTables;
+
+String getPossibleValuesAsSQL(PossibleValues this):
+
+	if IntegerPossibleValues.isInstance(this)
+		then ((IntegerPossibleValues)this).possibleValues.toString(", ")
+	else if StringPossibleValues.isInstance(this)
+		then "'" + ((StringPossibleValues)this).possibleValues.toString("', '") + "'";

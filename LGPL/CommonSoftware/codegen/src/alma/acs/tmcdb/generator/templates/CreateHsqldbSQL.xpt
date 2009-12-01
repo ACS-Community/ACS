@@ -1,0 +1,63 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+«EXTENSION alma::acs::tmcdb::generator::templates::hsqldbutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "SQL/CreateHsqldbTables.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+«REM»We add all the table definitions«ENDREM»
+«EXPAND TableDefinition FOREACH tables» 
+
+«REM»And we populate the TMCDBVersion table«ENDREM»
+INSERT INTO TMCDBVersion VALUES ( 'TMCDB', '«header.version»', '«header.versionTS»' );
+
+COMMIT;
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»
+Expansion for each of the tables.
+For each table, we generate the following, in this order:
+
+ 1) Each of the columns of the table (for generated keys, the syntax is sligthly different)
+ 2) The FOREIGN KEY constraints (these are not mandatory)
+ 3) The CHECK constraints (these are not mandatory)
+ 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 5) The PRIMARY KEY constraint
+ 
+ 6) The sequence and trigger for the generated keys, if needed
+«ENDREM»
+«DEFINE TableDefinition FOR Table-»
+CREATE TABLE «this.name» (
+«FOREACH this.getColumns() AS c ITERATOR iter-»
+«IF key.isGenerated && c.name == key.columns.first().name-»
+	«c.name» «c.type.getHsqldbType()»«c.type.getHsqldbLength()» IDENTITY,
+«ELSE-»
+	«c.name» «c.type.getHsqldbType()»«c.type.getHsqldbLength()» «c.specifier.getHsqldbSpecifier()»,
+«ENDIF-»
+«ENDFOREACH-»
+«FOREACH getForeignKeyConstraints() AS const-»
+	CONSTRAINT «const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.table.name»,
+«ENDFOREACH-»
+«FOREACH getCheckConstraints() AS const-»
+	CONSTRAINT «const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
+«ENDFOREACH-»
+«IF key.isGenerated-»
+	CONSTRAINT «shortTableName()»AltKey UNIQUE («key.pieces.name.toString(", ")»)
+«ELSE-»
+	CONSTRAINT «shortTableName()»Key PRIMARY KEY («key.columns.name.toString(", ")»)
+«ENDIF-»
+);
+«ENDDEFINE»
+
+«ENDFOREACH-»

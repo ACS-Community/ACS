@@ -1,0 +1,19 @@
+«IMPORT tmcdbTables»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "SQL/DropAllTables.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «this.header.version» «this.header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+
+«FOREACH this.tables.reverse() AS t-»
+DROP TABLE «t.name»;
+«ENDFOREACH-»
+«ENDFILE»
+«ENDDEFINE»

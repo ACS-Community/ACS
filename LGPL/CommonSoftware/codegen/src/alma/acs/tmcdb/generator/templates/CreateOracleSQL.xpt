@@ -1,0 +1,79 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+«EXTENSION alma::acs::tmcdb::generator::templates::oracleutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "SQL/CreateOracleTables.sql"-»
+-- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
+--
+-- /////////////////////////////////////////////////////////////////
+-- // WARNING!  DO NOT MODIFY THIS FILE!                          //
+-- //  ---------------------------------------------------------  //
+-- // | This is generated code!  Do not modify this file.       | //
+-- // | Any changes will be lost when the file is re-generated. | //
+-- //  ---------------------------------------------------------  //
+-- /////////////////////////////////////////////////////////////////
+«REM»We add all the table definitions«ENDREM»
+«EXPAND TableDefinition FOREACH tables» 
+
+«REM»And we populate the TMCDBVersion table«ENDREM»
+INSERT INTO TMCDBVersion VALUES ( 'TMCDB', '«header.version»', '«header.versionTS»' );
+
+COMMIT;
+«ENDFILE»
+«ENDDEFINE»
+
+«REM»
+Expansion for each of the tables.
+For each table, we generate the following, in this order:
+
+ 1) Each of the columns of the table
+     1.5) For the boolean types, we generate a constraint check in '0','1'
+ 2) The FOREIGN KEY constraints (these are not mandatory)
+ 3) The CHECK constraints (these are not mandatory)
+ 4) The UNIQUE constraint (depending if the key is GENERATED FROM)
+ 5) The PRIMARY KEY constraint
+ 
+ 6) The sequence and trigger for the generated keys, if needed
+«ENDREM»
+«DEFINE TableDefinition FOR Table-»
+CREATE TABLE «this.name» (
+«FOREACH this.getColumns() AS c ITERATOR iter-»
+	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()» «c.specifier.getOracleSpecifier()»,
+«ENDFOREACH-»
+«FOREACH getBooleanColumns() AS c-»
+	CONSTRAINT «shortTableName()»«c.shortColName()» CHECK («c.name» IN ('0', '1')),
+«ENDFOREACH-»
+«IF key.pieces.size > 0-»
+	CONSTRAINT «shortTableName()»AltKey UNIQUE («key.pieces.name.toString(", ")»),
+«ENDIF-»
+«FOREACH getForeignKeyConstraints() AS const-»
+	CONSTRAINT «const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.table.name»,
+«ENDFOREACH-»
+«FOREACH getCheckConstraints() AS const-»
+	CONSTRAINT «const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
+«ENDFOREACH-»
+	CONSTRAINT «this.shortTableName()»Key PRIMARY KEY («key.columns.name.toString(", ")»)
+);
+«IF key.isGenerated-»
+-- create sequence for auto-generated primary key«REM»-- create sequence and trigger for auto-generated primary key on table «name»«ENDREM»
+CREATE SEQUENCE «shortTableName()»_seq;
+-- create trigger
+CREATE OR REPLACE TRIGGER «shortTableName()»_SETID_TBI
+BEFORE INSERT ON «name»
+	FOR EACH ROW
+	DECLARE
+		cannot_generate_id EXCEPTION;
+	BEGIN
+		select «shortTableName()»_seq.nextval INTO :new.«key.columns.name.toString("")» from dual;
+	EXCEPTION
+		WHEN cannot_generate_id THEN
+			raise_application_error(-20000, 'Cannot generate unique ID');
+	END;
+/ «REM»This slash is ignored by the loadAndExecuteScript() method, but needed by PL/SQL.«ENDREM»
+«ENDIF-»
+«ENDDEFINE»
+
+«ENDFOREACH-»

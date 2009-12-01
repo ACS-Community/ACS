@@ -1,0 +1,1203 @@
+TMCDB SQL TABLE DEFINITIONS     VERSION 2.1.13  2009-10-17T0022:30:10.0
+
+NOTE
+"CHANGES (from the previous version in ACS 7.0 released in late 2007)
+1. For ChangeLog please follow http://almasw.hq.eso.org/almasw/bin/view/Archive/TMCDBDatabaseLayer" 
+ENDNOTE
+
+// The TMCDBVersion table records the database name, version and date from this file.  
+// It is automatically filled by the generated CreateOracleTables.sql and CreateHsqldbTables.sql scripts.
+// There is only one row in this table.  It must be updated each time the structure of the database changes.
+TABLE TMCDBVersion
+     DBName                  LONGVARCHAR (32)            NOT NULL
+     DBVersion               LONGVARCHAR (32)            NOT NULL
+     DBDate                  LONGVARCHAR (32)            NOT NULL
+     KEY DBName
+ENDTABLE
+
+// The ComponentType  characterizes a "type" of component.
+// For example, the DataCapture component is dynamically created by Control
+// whenever a scheduling blocks is executed.
+// The ComponentType table can be used to describe this kind of component.
+TABLE ComponentType
+     ComponentTypeId         INTEGER                     NOT NULL
+     IDL                     LONGNAME                    NOT NULL
+     URN                     LONGVARCHAR (512)           NULL
+     KEY ComponentTypeId     GENERATED FROM IDL
+ENDTABLE
+
+// LRUType represents the types of Line Replacable Units (LRU).  These are hardware units that are taken out of field, carried back to the lab, repaired or replaced and brought back to the field.
+TABLE LRUType
+     LRUName                 NAME                    NOT NULL
+     FullName                LONGNAME                NOT NULL
+     ICD                     LONGNAME                NOT NULL
+     ICDDate                 TIME                    NOT NULL
+     Description             TEXT                    NOT NULL
+     Notes                   TEXT                    NULL
+     KEY LRUName
+ENDTABLE
+
+// AssemblyType represents assemblies that are part of an LRU.  All LRUs are made up of one or more assemblies. 
+// All monitored properties are tied to specific assemblies.
+// AssemblyName is the unique key.  This requires that names of assemblies be unique across all hardware
+// devices and the entire database.  We could relax this to require that the combination of LRU_Name and
+// Assembly_Name be unique.  However, this is easier to deal with and is almost always the case anyway.
+TABLE AssemblyType
+    AssemblyTypeName        LONGNAME                NOT NULL
+    BaseElementType         LONGVARCHAR (24)        NOT NULL
+    LRUName                 NAME                    NOT NULL
+    FullName                LONGNAME                NOT NULL
+    Description             TEXT                    NOT NULL
+    Notes                   TEXT                    NULL
+    ComponentTypeId         INTEGER                     NULL
+    Data                    CLOB                    NULL
+    KEY AssemblyTypeName
+    CONSTRAINT AssemblyTypeLRUName FOREIGN KEY (LRUName) REFERENCES LRUType
+    CONSTRAINT AssemblyTypeBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+ENDTABLE
+
+// This table stores the system XML Schemas. The ComponentType table
+// references the URN column. This table also stores the XML Schemas
+// not directly associated with Component types.
+TABLE Schemas
+     SchemaId                INTEGER                     NOT NULL
+     URN                     LONGVARCHAR (512)       NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     Schema                  CLOB                    NULL
+     KEY SchemaId GENERATED FROM URN ConfigurationId
+ENDTABLE
+
+// The Default Component table have the static information coming from ALMA Components
+
+TABLE DefaultComponent
+    DefaultComponentId      INTEGER                 NOT NULL
+    ComponentTypeId         INTEGER                 NOT NULL
+    AssemblyTypeName        LONGNAME                NOT NULL
+    ImplLang                LONGVARCHAR (6)         NOT NULL
+    RealTime                BOOLEAN                 NOT NULL
+    Code                    LONGNAME                NOT NULL
+    Path                    LONGNAME                NOT NULL 
+    IsAutostart             BOOLEAN                 NOT NULL
+    IsDefault               BOOLEAN                 NOT NULL
+    IsStandaloneDefined     BOOLEAN                 NULL
+    KeepAliveTime           INTEGER                 NOT NULL      
+    MinLogLevel             TINYINT                 DEFAULT -1
+    MinLogLevelLocal        TINYINT                 DEFAULT -1
+    XMLDoc                  CLOB                    NULL
+    KEY DefaultComponentId
+    CONSTRAINT DefaultComponentImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
+    CONSTRAINT DefaultComponentTypeId   FOREIGN KEY (ComponentTypeId)  REFERENCES ComponentType
+    CONSTRAINT DefaultComponentAssemblyId FOREIGN KEY (AssemblyTypeName) REFERENCES AssemblyType
+ENDTABLE
+
+//For supporting dynamic discovery of device-serial number, next two tables 
+//with default information was added
+TABLE DefaultBaciProperty
+     DefaultBaciPropId     INTEGER                    NOT NULL
+     DefaultComponentId    INTEGER                    NOT NULL
+     PropertyName          NAME                   NOT NULL
+     description           TEXT                   NOT NULL
+     format                LONGVARCHAR (16)       NOT NULL
+     units                 LONGVARCHAR (24)       NOT NULL
+     resolution            LONGVARCHAR (10)       NOT NULL
+     archive_priority      INTEGER                    NOT NULL
+     archive_min_int       DOUBLE                 NOT NULL
+     archive_max_int       DOUBLE                 NOT NULL
+     default_timer_trig    DOUBLE                 NOT NULL
+     min_timer_trig        DOUBLE                 NOT NULL
+     initialize_devio      BOOLEAN                NOT NULL
+     min_delta_trig        DOUBLE                 NULL
+     default_value         TEXT                   NOT NULL
+     graph_min             DOUBLE                 NULL
+     graph_max             DOUBLE                 NULL
+     min_step              DOUBLE                 NULL
+     archive_delta         DOUBLE                 NOT NULL
+     alarm_high_on         DOUBLE                 NULL
+     alarm_low_on          DOUBLE                 NULL
+     alarm_high_off        DOUBLE                 NULL
+     alarm_low_off         DOUBLE                 NULL
+     alarm_timer_trig      DOUBLE                 NULL
+     min_value             DOUBLE                 NULL
+     max_value             DOUBLE                 NULL
+     bitDescription        TEXT                   NULL
+     whenSet               TEXT                   NULL
+     whenCleared           TEXT                   NULL
+     statesDescription     TEXT                   NULL
+     condition             TEXT                   NULL
+     alarm_on              TEXT                   NULL
+     alarm_off             TEXT                   NULL
+     Data                  TEXT                   NULL
+     KEY DefaultBaciPropId
+     CONSTRAINT DefBACIDefaultComponentTypeId   FOREIGN KEY (DefaultComponentId)  REFERENCES DefaultComponent
+ENDTABLE
+
+//Next table allows for the feature Dynamic discovery of Device-SerialNumber
+TABLE DefaultMonitorPoint
+    DefaultMonitorPointId          INTEGER                     NOT NULL
+    DefaultBACIPropertyId          INTEGER                     NOT NULL
+    MonitorPointName         NAME                   NOT NULL
+    Indice                  INTEGER                     NOT NULL
+    DataType                LONGVARCHAR (16)            NOT NULL
+    RCA                     LONGVARCHAR (16)            NOT NULL
+    TeRelated               BOOLEAN                 NOT NULL
+    RawDataType             LONGVARCHAR (24)            NOT NULL
+    WorldDataType           LONGVARCHAR (24)            NOT NULL
+    Units                   LONGVARCHAR (24)            NULL
+    Scale                   DOUBLE                  NULL
+    Offset                  LENGTH                  NULL
+    MinRange                LONGVARCHAR (24)        NULL
+    MaxRange                LONGVARCHAR (24)        NULL
+    Description             TEXT                    NOT NULL
+    KEY DefaultMonitorPointId
+    CONSTRAINT DefaulPntId FOREIGN KEY (DefaultBACIPropertyId) REFERENCES DefaultBaciProperty
+ENDTABLE
+
+// The Configuration table is a major partitioning of the database.  The TMCDB is capable of supporting
+// multiple, independent configurations.  This is especially useful for simulations, for example; but it
+// also implies that TMCDB databases can be combined or split apart.
+// If a Configuration is kept in the database only for historical reasons, but it doesnt reflect
+// any hardware or simulation deployment, then its Active flag should be false.
+TABLE Configuration
+    ConfigurationId         INTEGER                     NOT NULL
+    ConfigurationName       NAME                    NOT NULL
+    FullName                LONGNAME                NOT NULL
+    Active                  BOOLEAN                 NOT NULL
+    CreationTime            TSTAMP                  NOT NULL
+    Description             TEXT                    NOT NULL
+    KEY ConfigurationId GENERATED FROM ConfigurationName
+ENDTABLE
+
+// The entries in this table are the computers that belong to the configuration.
+// Included are the full host name, whether the computer is real-time or not, and whether it is a uni-processor or an SMP.
+TABLE Computer
+    ComputerId              INTEGER                     NOT NULL
+    ComputerName            LONGNAME                NOT NULL
+    ConfigurationId         INTEGER                     NOT NULL
+    HostName                LONGNAME                NOT NULL
+    RealTime                BOOLEAN                 NOT NULL
+    ProcessorType           CHAR (3)                NOT NULL
+    PhysicalLocation        TEXT                    NULL
+    KEY ComputerId GENERATED FROM ComputerName ConfigurationId
+    CONSTRAINT ComputerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+    CONSTRAINT ComputerProcessorType CHECK (ProcessorType IN ('uni', 'smp'))
+ENDTABLE
+
+// An entry in the LoggingConfig table describes the logging configuration for a process such as a container or the ACS manager
+// which sends log records to a central log service.
+// Log levels (thresholds) can be specified here as a default for all loggers that run inside this process,
+// or can be refined by entries in the NamedLoggerConfig table.
+// Attribute description:
+// MinLogLevelDefault         All logs with priority lower than this value will be discarded and never sent to the logging system. 
+//                            On a normally running system, priority is kept to INFO level (4) or higher to avoid flooding the logging system. 
+//                            While debugging, it might be useful to increase the verbosity of the system by setting the priority to 0 or 2.
+// MinLogLevelLocalDefault    Same as "minLogLevelDefault", but controlling the printing of the log to stdout independently of sending the log to the log service.
+//                            Note that printing logs on the command line degrades performance much more than sending them to the log service.
+//                            This value can be overridden by the env variable "ACS_LOG_STDOUT"
+// CentralizedLogger          Name of the service representing the logging service. This is the name used to query the Manager for the reference to the logging service. 
+//                            In the current installations the default value is normally used. The value can be changed to distribute logs to different instances of the service 
+//                            in order to improve performance and scalability of the system. In the future it will be possible to federate instances of the logging service, 
+//                            but this is not implemented yet.
+// DispatchPacketSize         In order to improve performance and reduce network traffic, containers do not send immediately logs to the logging system. 
+//                            This parameter specifies how many logs are packaged together and sent to the logging system in one call. 
+//                            Note that the real package size may be smaller if sending off the records is also triggered by a timer and/or by the log level. 
+//                            For debugging purposes it may be convenient to set the cache to 0, to avoid losing logs when a Container crashes. 
+// ImmediateDispatchLevel     Normally a number of log records are sent together to the logging system, as described for "DispatchPacketSize". 
+//                            The "ImmediateDispatchLevel" triggers sending all cached log records immediately once a record with the given (or higher) log level appears, 
+//                            even before the specified packet size has been reached.
+// FlushPeriodSeconds         If log records are queued locally in order to send a bunch of them together to the remote log service, we still may want to send 
+//                            packages with fewer records after a certain time. This makes sure that log receivers see the messages in time, even if very few records get produced. 
+//                            This value sets the time period in seconds after which the log record queue should be flushed if it contains log records, 
+//                            regardless of the resulting 'dispatchPacketSize'.  A value "0" turns off the time-triggered flushing.
+// MaxLogQueueSize            Log records are stored in a queue not only to send them in a packet over the wire (see dispatchPacketSize), but also to not lose any records 
+//                            in times when the log service is not available (e.g. during container start, or any kind of network and service failure). 
+//                            Thus they get stored in a queue, which gets drained once the log service becomes available. However, logging should not compete for memory with the functional parts of the software, so we limit this queue. 
+//                            Values below "DispatchPacketSize"  will be ignored, as we first must queue the records that should be sent together.
+// Constraint description:    
+// MaxLogQueueSize 
+TABLE LoggingConfig
+    LoggingConfigId         INTEGER                     NOT NULL
+    ConfigurationId         INTEGER                     NOT NULL
+    MinLogLevelDefault      TINYINT                 DEFAULT 2
+    MinLogLevelLocalDefault TINYINT                 DEFAULT 2
+    CentralizedLogger       LONGVARCHAR (16)           DEFAULT 'Log'
+    DispatchPacketSize      TINYINT                 DEFAULT 10
+    ImmediateDispatchLevel  TINYINT                 DEFAULT 10
+    FlushPeriodSeconds      TINYINT                 DEFAULT 10
+    MaxLogQueueSize         INTEGER                     DEFAULT 1000
+    KEY LoggingConfigId GENERATED FROM
+    CONSTRAINT LoggingConfigConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// An entry in the NamedLoggerConfig table specifies the configuration of a particular logger in the process / application
+// whose logging settings are configured in the referenced table LoggingConfig.
+// Given the name of a logger, its log levels can be tweaked, overriding LoggingConfig.MinLogLevelDefault and LoggingConfig.MinLogLevelLocalDefault.
+// The logger name can identify the logger used by the container, or the logger used by the ORB, or a logger used by a component that runs inside the container.
+//
+// Attribute description:
+// TODO
+// Constraint description:
+TABLE NamedLoggerConfig
+    NamedLoggerConfigId     INTEGER                     NOT NULL
+    LoggingConfigId         INTEGER                     NOT NULL
+    Name                    LONGVARCHAR (64)            NOT NULL
+    MinLogLevel             TINYINT                 DEFAULT 2
+    MinLogLevelLocal        TINYINT                 DEFAULT 2
+    KEY NamedLoggerConfigId GENERATED FROM LoggingConfigId Name  
+    CONSTRAINT NamedLoggerConfigLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig
+ENDTABLE
+
+// The entries in this table are the managers that belong to the configuration.
+// LoggingConfigId  Link to the logging configuration for a container.
+// ServerThreads    The number of threads allocated to the CORBA infrastructure for the handling of concurrent invocations.
+// TODO attribute description
+TABLE Manager
+    ManagerId                 INTEGER                     NOT NULL
+    ConfigurationId           INTEGER                     NOT NULL
+    LoggingConfigId           INTEGER                     NOT NULL
+    Startup                   LONGVARCHAR (256)           NULL
+    ServiceComponents         LONGVARCHAR (256)           NULL
+    Timeout                   INTEGER                     DEFAULT 50
+    ClientPingInterval        INTEGER                     DEFAULT 60
+    AdministratorPingInterval INTEGER                     DEFAULT 45
+    ContainerPingInterval     INTEGER                     DEFAULT 30
+    ServerThreads             TINYINT                 DEFAULT 10
+    DeadlockTimeout           INTEGER                     DEFAULT 180
+    KEY ManagerId		GENERATED FROM ConfigurationId LoggingConfigId Startup ServiceComponents Timeout ClientPingInterval AdministratorPingInterval ContainerPingInterval ServerThreads DeadlockTimeout
+    CONSTRAINT ManagerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig
+    CONSTRAINT ManagerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// The entries in this table are the containers that belong to the configuration.
+// If this is a real-time container and kernel modules are to be loaded on startup, their directory location is specified in KernelModuleLocation.  
+// LoggingConfigId  Link to the logging configuration for a container.
+// ComputerId       Links to the computer on which this container is supposed to run. Only applies when the container is started automatically by ACS.
+// ImplLang         the programming language (PL) this container is written in (see constraint ContainerImplLang below).
+//                  The container PL must match the component PL for all components configured to run in this container.
+// TypeModifiers    Optional space-separated list of type modifiers such as "debug pipeline-mode single-threaded".
+// KernelModule     Contains a comma-separated list of kernel module names to be loaded.
+// AcsInstance      The ACS instance to which this container should belong. Only applies when the container is started automatically by ACS
+//                  and should always be 0 in operational environments. (The ACS instance number is used to isolate instances of ACS running on one (group of) computer(s)).
+// CmdLineArgs      additional comman line arguments to be used when starting this container. Only applies when the container is started automatically by ACS.
+// KeepAliveTime    The time in seconds for which the container should not be shut down even when it no longer hosts any components. Negative values mean infinite time.
+//                  Only applies when the container is started automatically by ACS.
+// ServerThreads    The number of threads allocated to the CORBA infrastructure for the handling of concurrent invocations.
+// ManagerRetry     How many times the Container shall try to contact the Manager upon startup before bailing out. 0 means forever.
+// CallTimeout      Standard timeout in seconds for remote (CORBA) calls. Every call will timeout after this period of time, ensuring protection from deadlock. 
+//                  Notice that ACS QoS features can be used to trim specific calls.
+// Recovery         By default when a Container that crashes is restarted, the system tries to reload all the same Components that were active at the time of the crash. 
+//                  This can lead to problems, for example, trying to debug a component that causes the crash of the container just at activation time. 
+//                  Therefore it is possible to set this options to prevent reloading the components and getting into a deadlock situation.
+// AutoloadSharedLibs Blank-separated list of shared libraries (C++ container only) that must be automatically loaded by the container.
+//                  It does not seem necessary to break down storage further, e.g. using tables "SharedLibs" and "ContainerToAutoloadedSharedLibs".
+//
+TABLE Container
+    ContainerId             INTEGER                     NOT NULL
+    ContainerName           LONGNAME                NOT NULL
+    Path                    LONGNAME                NOT NULL 
+    ConfigurationId         INTEGER                     NOT NULL
+    LoggingConfigId         INTEGER                     NOT NULL
+    ComputerId              INTEGER                     NULL
+    ImplLang                LONGVARCHAR (6)             NOT NULL
+    TypeModifiers           LONGVARCHAR (64)            NULL
+    RealTime                BOOLEAN                 DEFAULT FALSE
+    RealTimeType            LONGVARCHAR (4)             DEFAULT 'NONE'
+    KernelModuleLocation    TEXT                    NULL
+    KernelModule            TEXT                    NULL
+    AcsInstance             TINYINT                 DEFAULT 0
+    CmdLineArgs             LONGVARCHAR (256)           NULL
+    KeepAliveTime           INTEGER                     DEFAULT -1
+    ServerThreads           TINYINT                 DEFAULT 5
+    ManagerRetry            INTEGER                     DEFAULT 10
+    CallTimeout             INTEGER                     DEFAULT 240
+    Recovery                BOOLEAN                 DEFAULT TRUE
+    AutoloadSharedLibs      LONGVARCHAR (128)            NULL
+    KEY ContainerId GENERATED FROM ContainerName Path ConfigurationId
+    CONSTRAINT ContainerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+    CONSTRAINT ContainerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig
+    CONSTRAINT ContainerImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
+    CONSTRAINT ContainerRealTimeType CHECK (RealTimeType IN ('NONE', 'ABM', 'CORR'))
+ENDTABLE
+
+// Entries in the Component table are the software components for the given configuration that run in containers.
+// Attribute description:
+// ContainerId Statically defined component instances link to the container they must be run in (Container.ContainerId). 
+//             Otherwise -1 to indicate that the container will be assigned only at runtime. 
+//             We do not use NULL because with JDBC it would be awkward to distinguish NULL from 0.
+// ImplLang    the PL this component is written in (see constraint ComponentImplLang below).
+//             This attribute be redundant with Container.Type for all static components and some dynamic components.
+//             Other dynamic components only get a container assigned at runtime, in which case it is useful to keep the component PL language separately.
+// IDL         The IDL type, such as "IDL:alma/MOUNT_ACS/Mount:1.0"
+// Path        The optional hierarchical path, not including the component name itself. Empty string if the component name does not have a qualifying path.
+//             This path was used in the old CDB for nesting component configurations, and it is not clear yet how much of it will be exposed in the TMCDB.
+// IsAutostart If true, then the ACS manager is supposed to trigger the starting of this component, before another client may ask for it later.
+// IsDefault   If true, this static component instance will be considered the default instance of its IDL type.
+//             The value is ignored for partially configured dynamic components, for which it must be provided at runtime (@Todo: check if there are cases where it still makes sense for dyn comps)
+// IsStandaloneDefined This attribute is only needed for the roundtrip from the old CDB to the TMCDB and back. If true, the component config info comes from a single xml file.
+//             @Todo: perhaps use one attribute "classicCdbMapping" which could contain many such data items, e.g. in Java properties format.
+// KeepAliveTime The inertia for unloading components whose clients no longer need them. If negative, the component will never be unloaded automatically.
+// MinLogLevel Optional log level for this component. Value -1 denotes NULL, since 0 is a valid setting.
+// MinLogLevelLocal Optional stdout log level for for this component. Value -1 denotes NULL, since 0 is a valid setting.
+TABLE Component
+     ComponentId             INTEGER                     NOT NULL
+     ComponentTypeId         INTEGER                     NOT NULL
+     ComponentName           LONGNAME                NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     ContainerId             INTEGER                     NOT NULL
+     ImplLang                LONGVARCHAR (6)         NOT NULL
+     RealTime                BOOLEAN                 NOT NULL
+     Code                    LONGNAME                NOT NULL
+     Path                    LONGNAME                NOT NULL
+     IsAutostart             BOOLEAN                 NOT NULL
+     IsDefault               BOOLEAN                 NOT NULL
+     IsStandaloneDefined     BOOLEAN                 NULL
+     KeepAliveTime           INTEGER                     NOT NULL
+     MinLogLevel             TINYINT                 DEFAULT -1
+     MinLogLevelLocal        TINYINT                 DEFAULT -1
+     XMLDoc                  CLOB                    NULL
+     KEY ComponentId GENERATED FROM Path ComponentName ConfigurationId
+     CONSTRAINT ComponentIDL FOREIGN KEY (ComponentTypeId) REFERENCES ComponentType
+     CONSTRAINT ComponentConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT ComponentImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
+ENDTABLE
+
+// An Assembly is an instance of an assembly type.  All monitored property data are tied to an instance of an assembly.
+// <nop>AssemblyId is a generated unique key.  The real requirement is that combination of SerialNumber and ConfigurationId are unique.  This means that the same hardware device may appear in different configurations, thus enabling us to track the entire life history a device as it moves from lab to ATF to commissioning, while keeping the property data separate as well.  
+// The reason for choosing a generated key is that this key is referenced in the property tables and we want these to be as small as possible because this is where the bulk of the data is located.
+// The number of assemblies in full ALMA operations will be between three and four thousand.  Allowing for a small number of possible configurations increases this number of entries in the table.  To be on the safe size we allow 6 digits for the <nop>AssemblyId.  (Four digits is probably too small.)
+//pburgos: Maybe add a date on this table in the future to keep track of SN
+TABLE Assembly
+     AssemblyId              INTEGER                     NOT NULL
+     AssemblyTypeName        LONGNAME                NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     SerialNumber            LONGNAME                NOT NULL
+     Data                    CLOB                    NULL
+     KEY AssemblyId GENERATED FROM SerialNumber ConfigurationId
+     CONSTRAINT AssemblyConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT AssemblyName FOREIGN KEY (AssemblyTypeName) REFERENCES AssemblyType
+ENDTABLE
+
+// THIS TABLE IS TEMPORARY. It will be removed when CONTROL modifies the way
+// its devices are getting the CAN address, which currently is exclusively
+// from DAL. This should be modified so the address is retrieved directly from
+// the TMCDB, falling back to DAL only if a TMCDB connection doesn't exist.
+//   This table allows to decouple the TMCDB SW Configuration from the
+// HW Configuration, simplifying the interaction of the TMCDB DAL service with
+// CONTROL HW configuration tables (AssemblyStartup, AssemblyRole, etc.)
+// allowing the TMCDB DAL service to get the CAN parameters for CONTROL devices
+// without having to create dummy entries in these tables in order to fullfill
+// the round-trip requirement.
+//   While this table exists, the TMCDB DAL service will populate this
+// table from the CDB if the LOAD_FROM_XML option is set; and will use the table
+// to form the alma/CONTROL/<component...>/Address nodes. This address is
+// overriden if a TMCDB_STARTUP_NAME has been set, in which case the Adress will
+// be taken from AssemblyRole. This is the only case where the logic in the
+// TMCDB DAL service needs to deal with the HW Configuration tables.
+//   When CONTROL devices are changed as described in the beginning and this
+// table is removed, the TMCDB DAL service doesn't have to deal with the CAN
+// Address anymore.
+TABLE DefaultCanAddress
+     ComponentId             INTEGER                     NOT NULL
+     NodeAddress             VARCHAR (16)            NOT NULL
+     ChannelNumber           TINYINT                 NOT NULL
+     BaseAddress             VARCHAR (16)            NULL
+     KEY ComponentId
+     CONSTRAINT DefCanAddComp FOREIGN KEY (ComponentId) REFERENCES Component
+ENDTABLE
+
+
+// Role played by an AssemblyType in the system. Some types of assemblies are installed
+// multiple times in the same BaseElement. For example, four SecondLOs can are installed
+// in an antenna. The role is used to differentiate them and define their CAN parameters.
+TABLE AssemblyRole
+     RoleName                NAME                    NOT NULL
+     NodeAddress             LONGVARCHAR (16)        NOT NULL
+     ChannelNumber           TINYINT                 NOT NULL
+     BaseAddress             LONGVARCHAR (16)        NULL
+     AssemblyTypeName        LONGNAME                NOT NULL
+     KEY RoleName
+     CONSTRAINT AssemblyRoleAssembly FOREIGN KEY (AssemblyTypeName) REFERENCES AssemblyType
+ENDTABLE
+
+TABLE BACIProperty
+	BACIPropertyId          INTEGER                    	 NOT NULL
+ 	ComponentId             INTEGER                      NOT NULL
+	PropertyName            NAME                     NOT NULL
+ 	description             TEXT					 NOT NULL
+	isSequence          	BOOLEAN                  NOT NULL
+	format				 	LONGVARCHAR (16)		 NOT NULL
+	units					LONGVARCHAR (24)		 NOT NULL
+	resolution				LONGVARCHAR (10)		 NOT NULL
+	archive_priority		INTEGER						 NOT NULL
+	archive_min_int			DOUBLE					 NOT NULL
+	archive_max_int			DOUBLE					 NOT NULL
+	default_timer_trig		DOUBLE					 NOT NULL
+	min_timer_trig			DOUBLE					 NOT NULL
+	initialize_devio		BOOLEAN					 NOT NULL
+	min_delta_trig			DOUBLE					 NULL
+	default_value			TEXT					 NOT NULL
+	graph_min				DOUBLE					 NULL
+	graph_max				DOUBLE					 NULL
+	min_step				DOUBLE					 NULL
+	archive_delta			DOUBLE					 NOT NULL
+ 	alarm_high_on			DOUBLE					 NULL
+ 	alarm_low_on			DOUBLE					 NULL
+ 	alarm_high_off			DOUBLE					 NULL
+ 	alarm_low_off			DOUBLE					 NULL
+ 	alarm_timer_trig		DOUBLE					 NULL
+ 	min_value				DOUBLE					 NULL
+	max_value				DOUBLE					 NULL
+ 	bitDescription			TEXT					 NULL
+	whenSet					TEXT					 NULL
+	whenCleared				TEXT					 NULL
+	statesDescription			TEXT					 NULL
+	condition				TEXT					 NULL
+	alarm_on				TEXT					 NULL
+	alarm_off				TEXT					 NULL
+  	Data					TEXT					 NULL
+	KEY BACIPropertyId GENERATED FROM PropertyName ComponentId
+	CONSTRAINT BACIPropertyCompId FOREIGN KEY (ComponentId) REFERENCES Component
+ENDTABLE
+
+// MonitorPoint represents the monitored properties of an assembly.
+// MonitorPointId is a generated unique key.  The real requirement is that combination of AssemblyName and PropertyName are unique.
+// The reason for choosing a generated key is that this key is referenced in the property tables and we want these to be as small as possible because this is where the bulk of the data is located.
+// The number of property types will be in the thousands, but will not exceed 10,000.
+TABLE MonitorPoint
+     MonitorPointId          INTEGER                     NOT NULL
+     BACIPropertyId          INTEGER                     NOT NULL
+     MonitorPointName        NAME                    NOT NULL
+     AssemblyId              INTEGER                	 NOT NULL
+     Indice                  INTEGER                	 NOT NULL
+     DataType                LONGVARCHAR (16)        NOT NULL
+     RCA                     LONGVARCHAR (16)        NOT NULL
+     TeRelated               BOOLEAN                 NOT NULL
+     RawDataType             LONGVARCHAR (24)        NOT NULL
+     WorldDataType           LONGVARCHAR (24)        NOT NULL
+     Units                   LONGVARCHAR (24)        NULL
+     Scale                   DOUBLE                  NULL
+     Offset                  LENGTH                  NULL
+     MinRange                LONGVARCHAR (24)        NULL
+     MaxRange                LONGVARCHAR (24)        NULL
+     Description             TEXT                    NOT NULL
+     KEY MonitorPointId 
+     CONSTRAINT MonitorPointAssemblyId FOREIGN KEY (AssemblyId) REFERENCES Assembly
+     CONSTRAINT MonitorPointDatatype CHECK (DataType IN ('float', 'double', 'boolean', 'string', 'integer', 'enum', 'clob'))
+     CONSTRAINT MonitorPointBACIPropertyId FOREIGN KEY (BACIPropertyId) REFERENCES BACIProperty
+ENDTABLE
+
+TABLE MonitorData
+     MonitorPointId          INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                   NOT NULL
+     MonitorTS                TSTAMP               NOT NULL
+     SampleSize              INTEGER                     NOT NULL
+     MonitorClob             CLOB                    NOT NULL
+     MinStat                     DOUBLE                   NULL
+     MaxStat                     DOUBLE                   NULL
+     MeanStat                    DOUBLE                   NULL
+     StdDevStat                  DOUBLE                   NULL
+     KEY MonitorPointId  MonitorTS
+     CONSTRAINT MonitorDataMonitorPointId FOREIGN KEY (MonitorPointId) REFERENCES MonitorPoint
+ENDTABLE
+
+// The BaseElement table provides access to the various types of base elements.
+// BaseId refers to the BaseElementId of that particular type.
+TABLE BaseElement
+     BaseElementId           INTEGER                     NOT NULL
+     BaseType                LONGVARCHAR (24)            NOT NULL
+     BaseElementName         LONGVARCHAR (24)            NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     KEY BaseElementId GENERATED FROM BaseElementName ConfigurationId
+     CONSTRAINT BEConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT BEType CHECK (BaseType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+ENDTABLE
+
+// The BaseElementOnline table provides a list of the base elements that are online.
+// A base element is one of a set of high-level structures that make up the ALMA telescope.  This set includes: Antenna, Pad, Weather Station, Correlator, Master Clock, Central Rack, Holography Tower, and Array. 
+// BaseElementOnlineId is the unique key.  It is auto-generated as entries are added to the table.  The real unique key is BaseElementId plus ConfigurationId plus StartTime.
+// Array is included here because arrays change how the antennas are commanded.  The array that is represented here are the arrays that Scheduling defines, for example, the baseline array and the ACA array, not the detailed sub-arrays that are created within an observing script.  Furthermore, this array concept keeps track of scheduling blocks executed on the array, thus tying the TMCDB to the project and science databases.
+// The data associated with these base elements are dependent on the configuration, but not on a system execution; i.e., they may be shared between system executions within the same configuration.  If anything changes in a base element, a new base element entry is created and it becomes a part of a new base element online instance.
+TABLE BaseElementOnline
+     BaseElementOnlineId     INTEGER                     NOT NULL
+     BaseElementId           INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY BaseElementOnlineId GENERATED FROM BaseElementId ConfigurationId StartTime
+     CONSTRAINT BEOnlineId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT BEOnlineConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// The Antenna table represents the general properties of an ALMA antenna.
+// The x-y-z position is the position from the pad position to the point of rotation of the antenna.  The x-y-z offset is the offset, if any, from that position to the point from which the feeds offsets are measured.
+// Included is the name of the software component that executes the antenna.
+TABLE Antenna
+     BaseElementId           INTEGER                     NOT NULL
+     AntennaName             NAME                    NULL
+     AntennaType             LONGVARCHAR (4)         NOT NULL
+     DishDiameter            LENGTH                  NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     XPosition               LENGTH                  NOT NULL
+     YPosition               LENGTH                  NOT NULL
+     ZPosition               LENGTH                  NOT NULL
+     XOffset                 LENGTH                  NOT NULL
+     YOffset                 LENGTH                  NOT NULL
+     ZOffset                 LENGTH                  NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY BaseElementId
+     CONSTRAINT AntennaBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT AntennaComponent FOREIGN KEY (ComponentId) REFERENCES Component
+     CONSTRAINT AntennaType CHECK (AntennaType IN ('VA', 'AEC', 'ACA'))
+ENDTABLE
+
+// The most important thing about pads is their location.  Locations are in meters.
+TABLE Pad
+     BaseElementId           INTEGER                     NOT NULL
+     PadName                 NAME                    NULL
+     CommissionDate          TIME                    NOT NULL
+     XPosition               LENGTH                  NOT NULL
+     YPosition               LENGTH                  NOT NULL
+     ZPosition               LENGTH                  NOT NULL
+     KEY BaseElementId
+     CONSTRAINT PadBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+ENDTABLE
+
+// CorrHWConfiguration determines the type of correlator in use.  A configuration may have up to 4 quadrants depending on its type.
+TABLE CorrHWConfiguration
+     BaseElementId           INTEGER                     NOT NULL
+     CorrHWName              NAME                    NOT NULL
+     CorrHWType              LONGVARCHAR(30)             NOT NULL
+     KEY BaseElementId
+     CONSTRAINT CorrHWBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT CorrelatorHWType CHECK (CorrHWType IN ('CORRELATOR_12m_2ANTS','CORRELATOR_12m_1QUADRANT','CORRELATOR_12m_2QUADRANT','CORRELATOR_12m_4QUADRANT'))
+ENDTABLE
+
+// Correlator quadrant belongs here rather than Correlator because each quadrant can separately be on-line or off-line.
+// A correlator quadrant is composed of racks.  In addition, each correlator quadrant has a number, a CAN channel, 
+// number of antennas, and bins associated with it.  Quadrants may be turned on/off independetly within a HW configuration 
+// (e.g. during maintenance, testing, etc.).  The ON/OFF status of a given quadrant within a given correlator 
+// hardware configuration is indicated by the Active field.
+// 
+TABLE CorrQuadrant
+     CorrQuadrantId          INTEGER                     NOT NULL
+     CorrHWConfigId          INTEGER                     NOT NULL
+     BaseElementId           INTEGER                     NOT NULL
+     CorrName                NAME                    NOT NULL
+     Quadrant                TINYINT                 NOT NULL
+     ChannelNumber           TINYINT                 NOT NULL
+     NumberOfAntennas        TINYINT                 NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     NumberOfRacks           TINYINT                 NOT NULL
+     NumberOfBins            TINYINT                 NOT NULL
+     Active                  BOOLEAN                 NOT NULL
+     KEY CorrQuadrantId GENERATED FROM CorrName Quadrant BaseElementId
+     CONSTRAINT CorrHWConfig FOREIGN KEY (BaseElementId) REFERENCES CorrHWConfiguration
+     CONSTRAINT CorrQuadNumber CHECK (Quadrant IN (0, 1, 2, 3))
+ENDTABLE
+
+// CorrQuadrantRack gives the racks that belong to a correlator quadrant.  There are two types of racks, those that contain
+// station cards and those that contain correlator cards.  Racks may be turned on/off independently within a quadrant 
+// (e.g. during maintenance, testing, etc.).  The ON/OFF status of a given rack within a given quadrant is indicated by 
+// the Active field.
+TABLE CorrQuadrantRack
+     CorrQuadrantRackId      INTEGER                     NOT NULL
+     CorrQuadrantId          INTEGER                     NOT NULL
+     RackName                NAME                    NOT NULL
+     RackType		      LONGVARCHAR (10)	      NOT NULL
+     NumberOfBins            TINYINT                 NOT NULL
+     Active                  BOOLEAN                 NOT NULL
+     KEY CorrQuadrantRackId GENERATED FROM RackName CorrQuadrantId
+     CONSTRAINT CorrRackType CHECK (RackType IN ('Station', 'Correlator'))
+     CONSTRAINT CorrQuad FOREIGN KEY (CorrQuadrantId) REFERENCES CorrQuadrant
+ENDTABLE
+
+// CorrStationBin gives the station bins that belong to a correlator station rack.  A station bin must contain at least a
+// single station control card with a CAN node address.  Additionally, there are 5 types of other cards (not in the CAN bus)
+// with monitor points populating a station bin: station cards, TFB cards, DRX cards, station interface cards, and power supply cards.
+TABLE CorrStationBin
+     CorrStationBinId       INTEGER                      NOT NULL
+     CorrQuadrantRackId     INTEGER                      NOT NULL
+     StationBinName         NAME                     NOT NULL
+     StationNodeAddr        INTEGER                      NOT NULL
+     NumberOfStationCards   SMALLINT                 NOT NULL
+     NumberOfTFBCards       SMALLINT                 NOT NULL
+     NumberOfDRXCards       SMALLINT                 NOT NULL
+     NumberOfInterfaceCards SMALLINT                 NOT NULL
+     NumberOfPSCards        SMALLINT                 NOT NULL
+     Active                 BOOLEAN                  NOT NULL
+     KEY CorrStationBinId GENERATED FROM StationBinName CorrQuadrantRackId
+     CONSTRAINT CorrRack FOREIGN KEY (CorrQuadrantRackId) REFERENCES CorrQuadrantRack
+ENDTABLE
+
+// CorrBin gives the bins that belong to a correlator rack.  A correlator bin must contain at least a
+// single LTA with a CAN node address.  Additionally, there are 3 types of other cards (not in the CAN bus)
+// with monitor points populating a correlator bin: correlator cards, correlator interface cards, and power supply cards
+TABLE CorrelatorBin
+     CorrelatorBinId        INTEGER                      NOT NULL
+     CorrQuadrantRackId     INTEGER                      NOT NULL
+     CorrelatorBinName      NAME                     NOT NULL
+     LTANodeAddr            INTEGER                      NOT NULL
+     NumberOfCorrelatorCards SMALLINT                NOT NULL
+     NumberOfInterfaceCards SMALLINT                 NOT NULL
+     NumberOfPSCards        SMALLINT                 NOT NULL
+     Active                 BOOLEAN                  NOT NULL
+     KEY CorrelatorBinId GENERATED FROM CorrelatorBinName CorrQuadrantRackId
+     CONSTRAINT CorrStationRack FOREIGN KEY (CorrQuadrantRackId) REFERENCES CorrQuadrantRack
+ENDTABLE
+
+// The front end is a base element because it can be moved from one antenna to another.
+// Included is the name of the software component that executes the front end.  
+TABLE FrontEnd
+     BaseElementId           INTEGER                     NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY BaseElementId
+     CONSTRAINT FrontEndBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT FrontEndComponent FOREIGN KEY (ComponentId) REFERENCES Component
+ENDTABLE
+
+// It is assumed that weather stations are stationary.
+// Included is the name of the software component that executes the weather station.
+TABLE WeatherStation
+     BaseElementId           INTEGER                     NOT NULL
+     SerialNumber            NAME                    NOT NULL
+     WeatherStationType      NAME                    NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     XPosition               LENGTH                  NOT NULL
+     YPosition               LENGTH                  NOT NULL
+     ZPosition               LENGTH                  NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY BaseElementId
+     CONSTRAINT WeatherStationComponent FOREIGN KEY (ComponentId) REFERENCES Component
+     CONSTRAINT WeatherStationBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+ENDTABLE
+
+// This table is really only a place-holder to be filled in later with more interesting properties.
+TABLE CentralRack
+     BaseElementId           INTEGER                     NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY BaseElementId
+     CONSTRAINT CentralRackComponent FOREIGN KEY (ComponentId) REFERENCES Component
+     CONSTRAINT CentralRackBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+ENDTABLE
+
+// This table is really only a place-holder to be filled in later with more interesting properties.
+TABLE MasterClock
+     BaseElementId           INTEGER                     NOT NULL
+     CommissionDate          TIME                    NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY BaseElementId
+     CONSTRAINT MasterClockComponent FOREIGN KEY (ComponentId) REFERENCES Component
+     CONSTRAINT MasterClockBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+ENDTABLE
+
+// The most interesting about the holography tower is its location.
+TABLE HolographyTower
+     BaseElementId            INTEGER                    NOT NULL
+     CommissionDate           TIME                   NOT NULL
+     XPosition                LENGTH                 NOT NULL
+     YPosition                LENGTH                 NOT NULL
+     ZPosition                LENGTH                 NOT NULL
+     KEY BaseElementId
+     CONSTRAINT HolographyTowerBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+ENDTABLE
+
+// As previously stated, arrays are added to a configuration because they are an important aspect of how an antenna behaves.  These are high-level arrays; the ones that the Scheduling subsystem creates (not the sub-arrays created within an observing script).
+// Arrays are dynamic and are specific to a system execution.
+// Arrays are either automatic or manual.  If the array is manual, the user-id of the ALMA staff person responsible for the array is included.
+// The AntennaToArray table gives the list of antennas in the array.
+// If the array is an automatic array, the scheduling blocks executed by the array are contained in the SBExecution table.  This table ties the TMCDB to the APDM and ASDM databases.
+TABLE Array
+     ArrayId                 INTEGER                     NOT NULL
+     BaseElementId           INTEGER                     NOT NULL
+     Type                    LONGVARCHAR (9)             NOT NULL
+     UserId                  LONGNAME                NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     KEY ArrayId GENERATED FROM StartTime BaseElementId
+     CONSTRAINT ArrayComponent FOREIGN KEY (ComponentId) REFERENCES Component
+     CONSTRAINT ArrayBEId FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT ArrayType CHECK (Type IN ('automatic', 'manual'))
+ENDTABLE
+
+// The AntennaToPad table gives the pad that an antenna is on at the indicated time.  If the Planned flag is 'y', then it indicates this is a planned move and not an actual one.  Planned entries are ignored when determining what is or was actually online.
+TABLE AntennaToPad
+     AntennaId               INTEGER                     NOT NULL
+     PadId                   INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     Planned                 BOOLEAN                 NOT NULL
+     KEY AntennaId PadId StartTime
+     CONSTRAINT AntennaToPadAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
+     CONSTRAINT AntennaToPadPadId FOREIGN KEY (PadId) REFERENCES Pad
+ENDTABLE
+
+// The AntennaPointingModel table gives the measured parameters of the pointing model
+// for the designated antenna that is associated with the designated pad.
+// The terms of the pointing model are given in the AntennaPointingModelTerm table.
+TABLE AntennaPointingModel
+      PointingModelId         INTEGER                     NOT NULL
+      AntennaId               INTEGER                     NOT NULL
+      PadId                   INTEGER                     NOT NULL
+      ReceiverBand            NAME                    NOT NULL
+      StartTime               TIME                    NOT NULL
+      StartValidTime          TIME                    NOT NULL
+      EndValidTime            TIME                    NULL
+      AsdmUID                 LONGNAME                NOT NULL
+      KEY PointingModelId GENERATED FROM AntennaId PadId ReceiverBand StartValidTime
+      CONSTRAINT AntennaPMAntToPad FOREIGN KEY (AntennaId, PadId, StartTime) REFERENCES AntennaToPad
+      CONSTRAINT AntennaPMBand CHECK (ReceiverBand IN ('band1', 'band2', 'band3', 'band4', 'band5', 'band6', 'band7', 'band8', 'band9', 'band10'))
+ENDTABLE
+
+// The AntennaPointingModelTerm table gives the terms of a given pointing model.
+TABLE AntennaPointingModelTerm
+     PointingModelId         INTEGER                     NOT NULL
+     CoeffName               NAME                    NOT NULL
+     CoeffValue              FLOAT                   NOT NULL 
+     CoeffError              FLOAT                   NOT NULL 
+     KEY PointingModelId CoeffName
+     CONSTRAINT AntPMTermPointingModelId FOREIGN KEY (PointingModelId) REFERENCES AntennaPointingModel
+ENDTABLE
+
+// The AntennaFocusModel table gives the measured parameters of the focus model for the designated antenna.
+// The terms of the Focus model are given in the AntennaFocusModelTerm table.
+TABLE AntennaFocusModel
+     FocusModelId            INTEGER                     NOT NULL
+     AntennaId               INTEGER                     NOT NULL
+     ReceiverBand            NAME                    NOT NULL
+     StartValidTime          TIME                    NOT NULL
+     EndValidTime            TIME                    NULL
+     AsdmUID                 LONGNAME                NOT NULL
+     KEY FocusModelId GENERATED FROM AntennaId ReceiverBand StartValidTime
+     CONSTRAINT AntennaFPMAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
+     CONSTRAINT AntennaFMBand CHECK (ReceiverBand IN ('band1', 'band2', 'band3', 'band4', 'band5', 'band6', 'band7', 'band8', 'band9', 'band10'))
+ENDTABLE
+
+// The AntennaFocusModelTerm table gives the terms of a given Focus model.
+TABLE AntennaFocusModelTerm
+     FocusModelId            INTEGER                     NOT NULL
+     CoeffName               NAME                    NOT NULL
+     CoeffValue              FLOAT                   NOT NULL 
+     CoeffError              FLOAT                   NOT NULL 
+     KEY FocusModelId CoeffName
+     CONSTRAINT AntFMTermFocusModelId FOREIGN KEY (FocusModelId) REFERENCES AntennaFocusModel
+ENDTABLE
+
+// The antenna delay model gives the measured terms for calculating delays associated
+// with the antenna, pad and receiver band.
+TABLE AntennaDelayModel
+      DelayModelId            INTEGER                     NOT NULL
+      AntennaId               INTEGER                     NOT NULL
+      PadId                   INTEGER                     NOT NULL
+      ReceiverBand            NAME                    NOT NULL
+      StartTime               TIME                    NOT NULL
+      StartValidTime          TIME                    NOT NULL
+      EndValidTime            TIME                    NULL
+      AsdmUID                 LONGNAME                NOT NULL
+      KEY DelayModelId GENERATED FROM AntennaId PadId ReceiverBand StartValidTime
+      CONSTRAINT AntennaDMAntToPad FOREIGN KEY (AntennaId, PadId, StartTime) REFERENCES AntennaToPad
+ENDTABLE
+
+// The AntennaDelayModelTerm table gives the measured terms for the designated antenna delay model.
+TABLE AntennaDelayModelTerm
+     DelayModelId            INTEGER                     NOT NULL
+     CoeffName               NAME                    NOT NULL
+     CoeffValue              DOUBLE                  NOT NULL 
+     CoeffError              DOUBLE                  NOT NULL 
+     KEY DelayModelId CoeffName
+     CONSTRAINT DelayTermDelayModelId FOREIGN KEY (DelayModelId) REFERENCES AntennaDelayModel
+ENDTABLE
+
+// The AntennaToFrontEnd table gives the front end that is on an antenna at the indicated time.
+TABLE AntennaToFrontEnd
+     AntennaId               INTEGER                     NOT NULL
+     FrontEndId              INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     KEY AntennaId FrontEndId StartTime
+     CONSTRAINT AntennaToFEAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
+     CONSTRAINT AntennaToFEFrontEndId FOREIGN KEY (FrontEndId) REFERENCES FrontEnd
+ENDTABLE
+
+// The AntennaToArray table give the antennas that belong to an array.
+TABLE AntennaToArray
+     AntennaId               INTEGER                     NOT NULL
+     ArrayId                 INTEGER                     NOT NULL
+     KEY AntennaId ArrayId
+     CONSTRAINT AntennaToArrayAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
+     CONSTRAINT AntennaToArrayArrayid FOREIGN KEY (ArrayId) REFERENCES Array
+ENDTABLE
+
+// The SBExecution table gives the UIDs of the scheduling blocks executed by the indicated array.
+TABLE SBExecution
+     ArrayId                 INTEGER                     NOT NULL
+     SbUID                   LONGNAME                NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY ArrayId SbUID StartTime
+     CONSTRAINT SBExecutionArrayId FOREIGN KEY (ArrayId) REFERENCES Array
+ENDTABLE
+
+// The AntennaToCorr table gives the mapping of antennas to correlator quadrants.  The AntennaNumber is the number of that antenna within the correlator quadrant.
+TABLE AntennaToCorr
+     AntennaId               INTEGER                     NOT NULL
+     CorrId                  INTEGER                     NOT NULL
+     AntennaNumber           TINYINT                 NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     KEY AntennaId CorrId StartTime
+     CONSTRAINT AntToCorrAntennaId FOREIGN KEY (AntennaId) REFERENCES Antenna
+     CONSTRAINT AntToCorrId FOREIGN KEY (CorrId) REFERENCES CorrQuadrant
+ENDTABLE
+
+// The WeatherStationToPad table gives the pad that a weather station is on at the indicated time.  If the Planned flag is 'y', then it indicates this is a planned weather station and not an actual one.  Planned entries are ignored when determining what is or was actually online.
+TABLE WeatherStationToPad
+     WeatherStationId        INTEGER                     NOT NULL
+     PadId                   INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     Planned                 BOOLEAN                 NOT NULL
+     KEY WeatherStationId PadId StartTime
+     CONSTRAINT WSToPadWeatherStationId FOREIGN KEY (WeatherStationId) REFERENCES WeatherStation
+     CONSTRAINT WSToPadPadId FOREIGN KEY (PadId) REFERENCES Pad
+ENDTABLE
+
+// The BaseElementAssemblyList gives the list of assemblies that belong to the assembly group of
+// the indicated base element.
+// The base element assemblies may be grouped with an associated name.  If GroupName is not NULL
+// then this assembly is a member of that group; otherwise, it is not part of a group.  The members
+// of the list may or may not be ordered. The ordering is relative to a group.
+// GroupName is used by the correlator in conjunction with racks and bins.  The GroupName is 
+// "RackName.BinName" and the assemblies within such a group must be ordered.
+TABLE BaseElementAssemblyList
+     AssemblyId              INTEGER                     NOT NULL
+     BaseElementOnlineId     INTEGER                     NOT NULL
+     GroupName               NAME                    NULL
+     OrderTag                SMALLINT                NULL
+     ComponentId             INTEGER                     NOT NULL
+     RoleName                NAME                    NULL
+     ChannelNumber           TINYINT                 NULL
+     NodeAddress             LONGVARCHAR (16)            NULL
+     BaseAddress             LONGVARCHAR (16)            NULL
+     KEY AssemblyId BaseElementOnlineId
+     CONSTRAINT BEAssemblyListId FOREIGN KEY (BaseElementOnlineId) REFERENCES BaseElementOnline
+     CONSTRAINT BEAssemblyListAssemblyId FOREIGN KEY (AssemblyId) REFERENCES Assembly
+     CONSTRAINT BEAssemblyListComponentId FOREIGN KEY (ComponentId) REFERENCES Component
+ENDTABLE
+
+// Entries in the MasterComponent table are the software master components for a particular software subsystem.
+TABLE MasterComponent
+     MasterComponentId       INTEGER                     NOT NULL
+     ComponentId			  INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     SubsystemName           LONGNAME                NOT NULL
+     KEY MasterComponentId GENERATED FROM ComponentId ConfigurationId
+     CONSTRAINT MComponentConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT MComponentId FOREIGN KEY (ComponentId) REFERENCES Component
+ENDTABLE
+
+// Entries in the ComponentExecution table record when the indicated computer was executing.  The start and end times denote when the ALMA software system began execution and ended execution on the computer, not the actual times the computer was booted and shutdown.
+TABLE ComputerExecution
+     ComputerExecutionId     INTEGER                     NOT NULL	
+     ComputerId              INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY ComputerExecutionId GENERATED FROM ComputerId ConfigurationId StartTime
+     CONSTRAINT ComputerExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT ComputerExecComputer FOREIGN KEY (ComputerId) REFERENCES Computer
+ENDTABLE
+
+// Entries in the ContainerExecution table record when a container was executed on a particular computer.
+// There is an implied constraint here: real-time containers must run on real-time computers.  
+TABLE ContainerExecution
+     ContainerExecutionId    INTEGER                     NOT NULL
+     ContainerId             INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     ComputerId              INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY ContainerExecutionId GENERATED FROM ContainerId ComputerId StartTime ConfigurationId
+     CONSTRAINT ContainerExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT ContainerExecContainer FOREIGN KEY (ContainerId) REFERENCES Container   
+     CONSTRAINT ContainerExecComputer FOREIGN KEY (ComputerId) REFERENCES Computer
+ENDTABLE
+
+// Entries in the ComponentExecution table record when a component was executed in a particular container.
+// There is an implied constraint here: components must run in containers that support their type and
+// real-time status.
+TABLE ComponentExecution
+     ComponentExecutionId    INTEGER                     NOT NULL
+     ComponentExecutionAcsId BIGINT                  NOT NULL
+     ComponentId             INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     ContainerId             INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     BaseElementOnlineId     INTEGER                     NULL	
+     AssemblyId              INTEGER                     NULL
+     KEY ComponentExecutionId GENERATED FROM ComponentId StartTime ConfigurationId
+     CONSTRAINT ComponentExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT ComponentExecComponent FOREIGN KEY (ComponentId) REFERENCES Component    
+     CONSTRAINT ComponentExecContainer FOREIGN KEY (ContainerId) REFERENCES Container
+     CONSTRAINT ComponentExecBaseElement FOREIGN KEY (BaseElementOnlineId) REFERENCES BaseElementOnline
+     CONSTRAINT ComponentExecAssembly FOREIGN KEY (AssemblyId) REFERENCES Assembly
+ENDTABLE
+
+// Entries in the MasterComponentExecution table record when a master component was executed in a
+// particular container.
+// There is an implied constraint here: components must run in containers that support their type.
+TABLE MasterComponentExecution
+     MasterComponentExecId   INTEGER                     NOT NULL
+     MasterComponentId       INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     ContainerId             INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY MasterComponentExecId GENERATED FROM MasterComponentId ContainerId StartTime ConfigurationId
+     CONSTRAINT MComponentExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT MComponentExecComponent FOREIGN KEY (MasterComponentId) REFERENCES MasterComponent     
+     CONSTRAINT MComponentExecContainer FOREIGN KEY (ContainerId) REFERENCES Container
+ENDTABLE
+
+// The ACS table contains values of environment variables and other information needed to start ACS.
+// Only one computer is referenced but in the future there may be more than one referenced to specify where Major ACS modules may run.
+// This table is obviously incomplete, but will be in the future.  The intention is to specify values of variables that might be overridden from the ACS installation in a run-time configuration.
+TABLE ACS
+     ACSId                   INTEGER                     NOT NULL
+     ACSVersion              LONGNAME                NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     ComputerId              INTEGER                     NOT NULL
+     Var1                    LONGNAME                NULL
+     Var2                    LONGNAME                NULL
+     Var3                    LONGNAME                NULL
+     KEY ACSId GENERATED FROM ACSVersion ConfigurationId ComputerId
+     CONSTRAINT ACSComputer FOREIGN KEY (ComputerId) REFERENCES Computer
+     CONSTRAINT ACSConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration      
+ENDTABLE
+
+// The ACSExecution table records when ACS started and stopped.
+TABLE ACSExecution
+     ACSId                   INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY ACSId ConfigurationId StartTime
+     CONSTRAINT ACSExecACS FOREIGN KEY (ACSId) REFERENCES ACS
+     CONSTRAINT ACSExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// The NotificationChannel table records notification channels required by the system.
+// This table is obviously incomplete, but will be in the future.  The intention is to
+// specify quality of service parameters.
+TABLE NotificationChannel
+     NCId                    INTEGER                     NOT NULL
+     NCName                  LONGNAME                NOT NULL
+     SubsystemName           LONGNAME                NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     QOS1                    LONGNAME                NULL
+     QOS2                    LONGNAME                NULL
+     QOS3                    LONGNAME                NULL
+     KEY NCId GENERATED FROM NCName ConfigurationId
+     CONSTRAINT NCConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration      
+ENDTABLE
+
+// The NCExecution table records when notification channels are started and stopped.
+TABLE NCExecution
+     NCId                    INTEGER                     NOT NULL
+     ACSId                   INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY NCId ConfigurationId StartTime
+     CONSTRAINT NCExecNC FOREIGN KEY (NCId) REFERENCES NotificationChannel
+     CONSTRAINT NCExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT NCExecACS FOREIGN KEY (ACSId) REFERENCES ACS
+ENDTABLE
+
+// The Startup table designates a startup configuration.
+TABLE Startup
+     StartupId               INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartupName             LONGNAME                NOT NULL
+     KEY StartupId GENERATED FROM StartupName ConfigurationId
+     CONSTRAINT StartupConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// The SystemExecution table records when the ALMA software system started and stopped.
+TABLE SystemExecution
+     StartupId               INTEGER                     NOT NULL
+     ConfigurationId         INTEGER                     NOT NULL
+     StartTime               TIME                    NOT NULL
+     EndTime                 TIME                    NULL
+     NormalStart             BOOLEAN                 NOT NULL
+     NormalTermination       BOOLEAN                 NOT NULL
+     KEY StartupId ConfigurationId StartTime
+     CONSTRAINT SystemExecConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+     CONSTRAINT SystemExecStartupId FOREIGN KEY (StartupId) REFERENCES Startup
+ENDTABLE
+
+// The DeploymentStartup table specifies a deployment element, either ACS or a computer, container
+// or component, to be started.
+// Name and Path are the name and path, if present, of the particular deployment item. 
+// The DependsOnType and DependsOnId are used to indicate dependencies between these items.
+TABLE DeploymentStartup
+     Name                    LONGNAME                NOT NULL
+     Path                    LONGNAME                NOT NULL
+     StartupType             LONGVARCHAR (10)            NOT NULL
+     StartupId               INTEGER                     NOT NULL
+     DependsOnName           LONGNAME                NULL
+     DependsOnPath           LONGNAME                NULL
+     DependsOnType           LONGVARCHAR (10)            NULL
+     KEY Name Path StartupType StartupId
+     CONSTRAINT DeployStartupId FOREIGN KEY (StartupId) REFERENCES Startup
+     CONSTRAINT DeployStartupType CHECK (StartupType IN ('ACS', 'computer', 'container', 'component'))      
+     CONSTRAINT DeployDependsOnType CHECK (DependsOnType IN ('computer', 'container'))      
+ENDTABLE
+
+// The BaseElementStartup table specifies which base elements are to be started.
+TABLE BaseElementStartup
+      BaseElementStartupId    INTEGER                     NOT NULL
+      BaseElementId           INTEGER                     NULL
+      StartupId               INTEGER                     NULL
+      BaseElementType         VARCHAR (24)            NOT NULL
+      Parent                  INTEGER                     NULL
+      IsGeneric               VARCHAR (5)             NOT NULL
+      KEY BaseElementStartupId GENERATED FROM StartupId BaseElementId Parent BaseElementType
+      CONSTRAINT BEStartupId FOREIGN KEY (StartupId) REFERENCES Startup
+      CONSTRAINT BEStartupIdBE FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+      CONSTRAINT BEStartupParent FOREIGN KEY (Parent) REFERENCES BaseElementStartup
+      CONSTRAINT BEStartupBEType CHECK (BaseElementType IN ('Antenna', 'Pad', 'CorrHWConfiguration', 'FrontEnd', 'WeatherStation', 'CentralRack', 'MasterClock', 'HolographyTower', 'Array'))
+ENDTABLE
+
+// The AssociatedBaseElement table specifies which base elements are associated with a given
+// base element in the startup list.
+// (RHV) This table seems to be redundant.
+TABLE AssociatedBaseElement
+     BaseElementId           INTEGER                     NOT NULL
+     StartupId               INTEGER                     NOT NULL
+     AssociatedId            INTEGER                     NOT NULL
+     AssociationType         LONGVARCHAR (24)            NOT NULL
+     KEY BaseElementId StartupId AssociatedId
+     CONSTRAINT ABEStartupIdBE FOREIGN KEY (BaseElementId) REFERENCES BaseElement
+     CONSTRAINT ABEStartupId FOREIGN KEY (StartupId) REFERENCES Startup
+     CONSTRAINT ABEAssociated FOREIGN KEY (AssociatedId) REFERENCES BaseElement
+     CONSTRAINT ABEAssociationType CHECK (AssociationType IN ('AntennaToPad', 'AntennaToFrontEnd', 'AntennaToCorr'))
+ENDTABLE
+
+// The AssemblyStartup table specifies which assemblies are to be started.
+// The component associated with the assembly and the container in which it is
+// to be executed must be supplied.
+TABLE AssemblyStartup
+      AssemblyStartupId       INTEGER                     NOT NULL
+      RoleName                NAME                    NOT NULL
+      ComponentId             INTEGER                     NOT NULL
+      BaseElementStartupId    INTEGER                     NOT NULL
+      KEY AssemblyStartupId GENERATED FROM BaseElementStartupId RoleName
+      CONSTRAINT AssemblyStartupComponent FOREIGN KEY (ComponentId) REFERENCES Component
+      CONSTRAINT AssemblyStartupRole FOREIGN KEY (RoleName) REFERENCES AssemblyRole
+      CONSTRAINT AssemblyStartupBEStartup FOREIGN KEY (BaseElementStartupId) REFERENCES BaseElementStartup
+ENDTABLE
+
+// The SystemCounters table records keeps track of counters that are used by Control to generate names of arrays and Data Capture components.
+// The counters are initialized to 1 at the initial database load and increase to 9,999, at which point they role over to 1 again.
+// There is only one row per configuration in this table.
+TABLE SystemCounters
+     ConfigurationId         INTEGER                     NOT NULL
+     UpdateTime              TIME                    NOT NULL
+     AutoArrayCount          SMALLINT                NOT NULL
+     ManArrayCount           SMALLINT                NOT NULL
+     DataCaptureCount        SMALLINT                NOT NULL
+     KEY ConfigurationId
+     CONSTRAINT SystemCountersConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
+ENDTABLE
+
+// The following tables contain the alarm definitions and configuration
+TABLE Location
+		LocationId INTEGER      NOT NULL
+		Building   LONGNAME NULL
+		Floor      NAME     NULL
+		Room       LONGNAME NULL
+		Mnemonic   LONGNAME NULL
+		LocationPosition   LONGNAME NULL
+		KEY LocationId GENERATED FROM Building Floor Room Mnemonic LocationPosition
+ENDTABLE
+
+TABLE Contact
+		ContactId   INTEGER      NOT NULL
+		ContactName LONGNAME NOT NULL
+		Email       LONGNAME NULL
+		Gsm         LONGNAME NULL
+       KEY ContactId GENERATED FROM ContactName
+ENDTABLE
+
+TABLE AlarmCategory
+     AlarmCategoryName       NAME                   NOT NULL
+       Description     TEXT     NOT NULL
+       Path            LONGNAME NOT NULL
+       IsDefault       BOOLEAN  NOT NULL
+     KEY AlarmCategoryName
+ENDTABLE
+
+TABLE FaultFamily
+		FaultFamilyId INTEGER      NOT NULL
+		FamilyName    LONGNAME NOT NULL
+               AlarmCategoryName      NAME                    NULL
+		AlarmSource   LONGNAME DEFAULT 'ALARM_SYSTEM_SOURCES'
+		HelpURL       LONGNAME NULL
+		ContactId     INTEGER      NOT NULL
+		KEY FaultFamilyId GENERATED FROM FamilyName
+		CONSTRAINT FaultFamilyContact FOREIGN KEY (ContactId) REFERENCES Contact
+     CONSTRAINT FaultFamilyCategoryName FOREIGN KEY (AlarmCategoryName) REFERENCES AlarmCategory
+ENDTABLE
+
+TABLE FaultMember
+       MemberName     LONGNAME NOT NULL
+       FaultFamilyId  INTEGER      NOT NULL
+       LocationId     INTEGER      NULL
+       KEY MemberName
+       CONSTRAINT MemberFaultFamilyRef FOREIGN KEY (FaultFamilyId) REFERENCES FaultFamily
+       CONSTRAINT LocationRef FOREIGN KEY (LocationId) REFERENCES Location
+ENDTABLE
+
+TABLE DefaultMember
+       DefaultMemberId INTEGER     NOT NULL
+       FaultFamilyId   INTEGER     NOT NULL
+       LocationID      INTEGER     NULL
+       KEY DefaultMemberId
+       CONSTRAINT DefaultMemberFaultFamilyRef FOREIGN KEY (FaultFamilyId) REFERENCES FaultFamily
+       CONSTRAINT DefaultMemberLocationRef FOREIGN KEY (LocationID) REFERENCES Location
+ENDTABLE
+
+TABLE FaultCode
+		FaultCodeId        INTEGER      NOT NULL
+		FaultFamilyId      INTEGER      NOT NULL
+		CodeValue          INTEGER      NOT NULL
+		Priority           INTEGER      NOT NULL
+		Cause              LONGNAME NULL
+		Action             TEXT     NULL
+		Consequence        TEXT     NULL
+		ProblemDescription TEXT     NOT NULL
+		IsInstant          BOOLEAN  NOT NULL
+       KEY FaultCodeId GENERATED FROM FaultFamilyId CodeValue
+		CONSTRAINT CodeFaultFamilyRef FOREIGN KEY (FaultFamilyId) REFERENCES FaultFamily
+		CONSTRAINT PriorityValue CHECK (Priority IN (0,1,2,3))
+ENDTABLE
