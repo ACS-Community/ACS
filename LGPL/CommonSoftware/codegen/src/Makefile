@@ -28,7 +28,7 @@ SCRIPTS_L       =
 # Jarfiles and their directories
 #
 JARFILES=acscodegen
-acscodegen_DIRS=alma
+acscodegen_DIRS=alma/acs/genfw/
 acscodegen_EXTRAS= 
 
 #
