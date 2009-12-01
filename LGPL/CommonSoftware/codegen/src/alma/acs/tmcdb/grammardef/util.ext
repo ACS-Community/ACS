@@ -1,0 +1,53 @@
+import tmcdbTables;
+
+TMCDBModel getModel(Table this):
+	(TMCDBModel)this.eContainer;
+
+List[Table] allTables(TMCDBModel this):
+	this.tables;
+
+Table getTable(Key this):
+	(Table)this.eContainer;
+
+List[Column] allColumns(Table this):
+	this.eAllContents.typeSelect(Column);
+
+Table getTable(Column this):
+	(Table)this.eContainer;
+
+String shortTableName(Table this):
+	this.name.length <= 12 ?
+		this.name :
+		name.subString(0,6) + name.subString(6,name.length-1).toCharList().select(e| e.matches("^[A-Z]") ).toString("");
+
+String shortColName(Column this):
+	this.name.length <= 12 ?
+		this.name :
+		name.subString(0,6) + name.subString(6,name.length-1).toCharList().select(e| e.matches("^[A-Z]") ).toString("");	
+
+List[Column] getColumns(Table this) :
+	this.columns;
+
+List[Column] getKeyColumns(Table this) :
+	this.key.columns;
+
+List[ForeignConstraint] getForeignKeyConstraints(Table this):
+	this.constraints.typeSelect(ForeignConstraint);
+
+List[CheckConstraint] getCheckConstraints(Table this):
+	this.constraints.typeSelect(CheckConstraint);
+
+List[Column] getBooleanColumns(Table this):
+	this.columns.select(e|BooleanType.isInstance(e.type));
+
+List[Table] getTablesWithGeneratedKey(TMCDBModel this):
+	this.tables.select(e|e.key.isGenerated);
+
+Column getColumn(Specifier this):
+	(Column)this.eContainer;
+
+CheckConstraint getCheckConstraint(PossibleValues this):
+	(CheckConstraint)this.eContainer;
+	
+Table getTable(PossibleValues this):
+	(Table)getCheckConstraint().eContainer;

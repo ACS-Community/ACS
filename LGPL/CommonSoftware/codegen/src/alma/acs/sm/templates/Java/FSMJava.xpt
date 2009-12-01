@@ -1,0 +1,54 @@
+«REM»
+	ALMA - Atacama Large Millimiter Array
+	(c) European Southern Observatory, 2002
+	Copyright by ESO (in the framework of the ALMA collaboration),
+	All rights reserved
+	
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+	
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+	 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+	MA 02111-1307  USA
+«ENDREM»
+
+«IMPORT uml»
+«EXTENSION alma::acs::sm::templates::util»
+
+
+«REM»	Expansions for the StateMachine.
+		For StateMachine in a UML Model, it expands:
+			- ActionInterface: An interface which has all the actions definitions
+			- SuperContextClass: The outermost context. It handles most of the StateMachine functions.
+			- AbstractStateClass: For each Composite State, an abstract class is created which specifies common functions for inner states.
+			- MiddleStateClass: For each State in the middle of the hierarchy (is not a leaf state), the State class is generated.
+			- StateClass: For each State that is a leaf (is not composite), the State class is generated.
+		
+		@author Arturo Hoffstadt Urrutia <ahoffsta@inf.utfsm.cl>
+		
+		TODO: Separate templates for different classes into different files
+		TODO: The error state is handled in a different way. It is identified by the name. Should use Stereotypes.
+		TODO: The final state is handled in a different way, It is identified by the name. Should use UML to detect final states.
+		TODO: Introduce global variables for:
+				- Package for generated classes.
+«ENDREM»
+
+«DEFINE Root FOR uml::Model»
+	«EXPAND FSM FOREACH allOwnedElements().typeSelect(uml::StateMachine)»
+«ENDDEFINE»
+
+«DEFINE FSM FOR StateMachine»
+	«EXPAND ActionInterface::Root»
+	«EXPAND SuperContextClass::Root»
+	«EXPAND AbstractStateClass::Root»
+	«EXPAND MiddleStateClass::Root FOREACH allOwnedElements().typeSelect(State).select(e|e.isComposite())»
+	«EXPAND StateClass::Root FOREACH allOwnedElements().typeSelect(State).select(e| !(e.isComposite()) && (e.name != "Unavailable") )»
+«ENDDEFINE»

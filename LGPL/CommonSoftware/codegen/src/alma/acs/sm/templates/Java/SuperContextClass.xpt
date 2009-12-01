@@ -1,0 +1,196 @@
+«REM»
+	ALMA - Atacama Large Millimiter Array
+	(c) European Southern Observatory, 2002
+	Copyright by ESO (in the framework of the ALMA collaboration),
+	All rights reserved
+	
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+	
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+	 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+	MA 02111-1307  USA
+«ENDREM» 
+
+«IMPORT uml»
+«EXTENSION alma::acs::sm::templates::util»
+
+
+«REM»	First context class. This "SuperContext" class has the current state, and the action delegation.
+«ENDREM»
+«DEFINE Root FOR StateMachine»
+  		«FILE "alma/ACS/"+this.name+"Impl/statemachine/" + this.name + "Context.java"»
+package alma.ACS.«this.name»Impl.statemachine;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import alma.ACSErrTypeCommon.wrappers.AcsJIllegalStateEventEx;
+import alma.acs.genfw.runtime.sm.AcsState;
+import alma.acs.genfw.runtime.sm.AcsStateActionException;
+import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
+import alma.acs.logging.AcsLogger;
+
+/**
+ * The super context class for the «name» state machine.
+ */
+public class «name»Context 
+{	    
+	private «name»StateAbstract m_currentState;
+	private «name»Actions m_actionDelegate;
+	
+	private List<AcsStateChangeListener> m_stateChangeListeners;	
+	private AcsState[] m_oldHierarchy;	
+	private final AcsLogger m_logger;
+	
+	/**
+	 * Executor for do/ actions in activity states.
+	 * This executor only has one worker thread and therefore synchronizes
+	 * concurrent requests.
+	 * @TODO: Discuss if and how we want to escape from a hanging action method. 
+	 *        Both timeout and asynchronous actions pose ugly implementation issues for the subsystem MCs.
+	 */
+	private final ThreadPoolExecutor sharedActivityExecutor;	
+	private boolean m_verbose = false;
+      
+	// state objects
+    	«FOREACH listStates() AS st-»
+	public «st.name»State m_state«st.name»;
+    	«ENDFOREACH»
+    
+    public «this.name»Context(«this.name»Actions actions, AcsLogger logger, ThreadFactory threadFactory) {
+    	m_stateChangeListeners = new ArrayList<AcsStateChangeListener>();
+		m_logger = logger;
+		// This choice of parameters is copied from the implementation of 
+		// Executors.newSingleThreadExecutor which unfortunately hides 
+		// in its returned type some methods we need.
+		sharedActivityExecutor = new ThreadPoolExecutor(1, 1,
+			0L, TimeUnit.MILLISECONDS,
+			new LinkedBlockingQueue<Runnable>(),
+			threadFactory);
+		m_actionDelegate = actions;
+    	«FOREACH listStates() AS st-»
+		m_state«st.name» = new «st.name»State(«st.getHierarcharchyString()»);
+		«ENDFOREACH-»
+		
+		// initial state
+		m_state«getInitialState().name».activate("<init>");
+		m_oldHierarchy = getCurrentTopLevelState().getStateHierarchy();
+	}
+	
+	/**
+	 * Registers an object that will be notified about any state change in this state machine.
+	 * @param listener
+	 */
+	public synchronized void addAcsStateChangeListener(AcsStateChangeListener listener) {
+		m_stateChangeListeners.add(listener);
+	}
+	
+	public void setState(«this.name»StateAbstract newState, String eventName) {
+		«this.name»StateAbstract oldState = m_currentState;
+		if (oldState != newState) {
+			logTransition(m_currentState, newState, eventName);
+			m_currentState = newState;
+			m_currentState.entry();
+		}
+		AcsState[] currentHierarchy = getCurrentTopLevelState().getStateHierarchy();
+		// check if there was a state change down the nesting hierarchy		
+		if (!Arrays.equals(currentHierarchy, m_oldHierarchy)) {
+			// if so, notify listeners
+			for (Iterator<AcsStateChangeListener> iter = m_stateChangeListeners.iterator(); iter.hasNext();) {
+				AcsStateChangeListener listener = iter.next();
+				listener.stateChangedNotify(m_oldHierarchy, currentHierarchy);
+			}
+			m_oldHierarchy = currentHierarchy;
+		}
+	}
+	
+	public synchronized AlmaSubsystemStateAbstract getCurrentTopLevelState()
+	{
+		return m_currentState;
+	}
+	
+	//======================================================================
+	// delegates incoming events to current state class
+	//======================================================================
+		«FOREACH getUniqueSignalsNames() AS sg-»
+	public void «sg»() throws AcsJIllegalStateEventEx {
+		m_currentState.«sg»();
+	}
+    	«ENDFOREACH-»
+    
+	//======================================================================
+	// delegates actions to user-provided action handler
+	// Note that actions of activity states are run in separate threads 
+	//======================================================================
+	«FOREACH listActions() AS act»
+	public void «act.name»() throws AcsStateActionException {
+		try {
+			m_actionDelegate.«act.name»();
+		}
+		catch (AcsStateActionException ex) {
+			throw ex;
+		}
+		catch (Throwable thr) {
+			throw new AcsStateActionException(thr);
+		}
+	}
+    «ENDFOREACH»
+    
+    //======================================================================
+	// util methods
+	//======================================================================
+
+	public void illegalEvent(String stateName, String eventName) throws AcsJIllegalStateEventEx
+	{
+		String msg = "illegal event '" + eventName + "' in state '" + stateName + "'.";
+		if (m_verbose) {
+			m_logger.warning(msg);
+		}
+//		for (Iterator iter = m_stateChangeListeners.iterator(); iter.hasNext();) {
+//			AcsStateChangeListener listener = (AcsStateChangeListener) iter.next();
+//			listener.illegalEventNotify(stateName, eventName);			
+//		}
+		AcsJIllegalStateEventEx ex = new AcsJIllegalStateEventEx();
+		ex.setEvent(eventName);
+		ex.setState(stateName);
+		throw ex;
+	}
+	
+	public void logTransition(AcsState sourceState, AcsState targetState, String eventName) {
+		if (m_verbose && sourceState != null) {  // sourceState is null at initial state setting
+			String msg = "event '" + eventName + "' causes transition from '" + 
+			sourceState.stateName() + "' to '" + targetState.stateName() + "'.";
+			m_logger.info(msg);
+		}
+	}
+
+	public ThreadPoolExecutor getSharedActivityExecutor() {
+		return sharedActivityExecutor;
+	}
+
+	/**
+	 * Final clean-up, must be called before unloading this class.
+	 * Afterwards it may be in an undefined state.
+	 */
+	public void cleanUp() {
+		// wake up and terminate the activity worker thread.
+		sharedActivityExecutor.shutdownNow();
+	}
+}
+	«ENDFILE»
+«ENDDEFINE»

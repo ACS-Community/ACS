@@ -1,0 +1,45 @@
+«REM»
+	ALMA - Atacama Large Millimiter Array
+	(c) European Southern Observatory, 2002
+	Copyright by ESO (in the framework of the ALMA collaboration),
+	All rights reserved
+	
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 2.1 of the License, or (at your option) any later version.
+	
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+	 
+	You should have received a copy of the GNU Lesser General Public
+	License along with this library; if not, write to the Free Software
+	Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+	MA 02111-1307  USA
+«ENDREM» 
+
+«IMPORT uml»
+«EXTENSION alma::acs::sm::templates::util»
+
+«DEFINE StateConstructor FOR State»
+    «IF isTopState()-»
+	public «name»State(«containingStateMachine().name»Context superContext) {
+		super(superContext);
+    «ELSE-»
+    	«IF isComposite()-»
+	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context ) {
+		super(superContext, context );
+		«ELSE-»
+			«IF parentState().isTopState()-»
+	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context ) {
+		super(superContext, context );
+			«ELSE-»
+	public «name»State(«containingStateMachine().name»Context superContext, «parentState().name»State context, AcsLogger logger) {
+		super(superContext, context, logger );
+			«ENDIF-»
+		«ENDIF-»
+    «ENDIF-»
+	}
+«ENDDEFINE»

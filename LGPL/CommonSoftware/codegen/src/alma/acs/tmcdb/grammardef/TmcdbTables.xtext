@@ -1,0 +1,144 @@
+grammar alma.acs.tmcdb.grammardef.TmcdbTables with org.eclipse.xtext.common.Terminals
+
+generate tmcdbTables "http://www.grammardef.tmcdb.acs.alma/TmcdbTables"
+
+TMCDBModel:
+	(header=Header)
+	(note=Note)?
+	(tables+=Table)+;
+
+Header:
+	name="TMCDB" "SQL" "TABLE" "DEFINITIONS" "VERSION" version=VersionType versionTS=TimestampType;
+
+terminal VersionType:
+	INT('.'INT)+;
+
+terminal TimestampType:
+	INT'-'INT'-'INT'T'INT':'INT':'INT'.'INT;
+
+Note:
+	"NOTE"
+	note=STRING*
+	"ENDNOTE";
+
+Table:
+	'TABLE' name=ID
+		(columns+=Column)+
+		key=Key
+		(constraints+=Constraint)*
+	'ENDTABLE';
+
+Column:
+	name=ID type=Type specifier=Specifier;
+
+Key:
+	"KEY" columns+=[Column] ( (isGenerated?="GENERATED FROM" (pieces+=[Column])*) | (columns+=[Column])* );
+
+Type:
+	IntTypes | LengthDefinedTypes | TextTypes | TimeTypes | OtherTypes;
+
+IntTypes:
+	IntType | TinyintType | SmallintType | BigintType | LengthType;
+
+LengthDefinedTypes:
+	CharType | VarcharType | LongvarcharType;
+
+TextTypes:
+	TextType | NameType | LongnameType;
+
+TimeTypes:
+	TstampType | TimeType;
+
+OtherTypes:
+	BooleanType | DoubleType | FloatType | ClobType;
+
+// Individual types definitions
+IntType:
+	name="INTEGER"; // INT gives problem?
+
+SmallintType:
+	name="SMALLINT";
+
+BigintType:
+	name="BIGINT";
+
+TinyintType:
+	name="TINYINT";
+
+LengthType:
+	name="LENGTH";
+
+CharType:
+	name="CHAR" ("("(length=INT)")");
+
+VarcharType:
+	name="VARCHAR" "("(length=INT)")";
+
+LongvarcharType:
+	name="LONGVARCHAR" "("(length=INT)")";
+
+TextType:
+	name="TEXT";
+
+NameType:
+	name="NAME";
+
+LongnameType:
+	name="LONGNAME";
+	
+TstampType:
+	name="TSTAMP";
+
+TimeType:
+	name="TIME";
+
+BooleanType:
+	name="BOOLEAN";
+
+DoubleType:
+	name="DOUBLE";
+
+FloatType:
+	name="FLOAT";
+
+ClobType:
+	name="CLOB";
+
+Specifier:
+	NullitySpecifier | DefaultSpecifier;
+
+NullitySpecifier:
+	(isNotNull?="NOT")? specifier="NULL";
+
+DefaultSpecifier:
+	"DEFAULT" defaultValue=DefaultValue;
+
+DefaultValue:
+	DefaultIntValue | DefaultStringValue | DefaultBooleanValue;
+
+DefaultIntValue:
+	(isNegative?="-")? value=INT;
+
+DefaultStringValue:
+	value=STRING;
+
+DefaultBooleanValue:
+	isTrue?="TRUE" | isFalse?="FALSE";
+
+Constraint:
+	ForeignConstraint | CheckConstraint;
+
+ForeignConstraint:
+	"CONSTRAINT" name=ID "FOREIGN" "KEY" "(" columns+=[Column] (',' columns+=[Column])* ")" "REFERENCES" table=[Table];
+
+CheckConstraint:
+	"CONSTRAINT" name=ID "CHECK" "(" column=[Column] "IN" possibleValues=PossibleValues ")";
+
+PossibleValues:
+	IntegerPossibleValues | StringPossibleValues;
+
+IntegerPossibleValues:
+	"(" possibleValues+=INT (',' possibleValues+=INT)* ")";
+
+StringPossibleValues:
+	"(" possibleValues+=STRING (',' possibleValues+=STRING)* ")";
