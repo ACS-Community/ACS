@@ -1,26 +1,31 @@
+Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: alma.acs.codegen
-Bundle-SymbolicName: alma.acs.codegen; singleton:=true
+Bundle-Name: codegen
+Bundle-Vendor: ESO
 Bundle-Version: 1.0.0
-Require-Bundle: org.eclipse.xtend.typesystem.uml2;bundle-version="0.7.0",
- org.eclipse.xtend.util.stdlib;bundle-version="0.7.0",
- org.eclipse.xpand;bundle-version="0.7.0",
- org.eclipse.xtend;bundle-version="0.7.0",
- org.eclipse.xtend.typesystem.emf;bundle-version="0.7.0",
- org.eclipse.emf.mwe.utils;bundle-version="0.7.2",
- org.antlr.runtime;bundle-version="3.0.0",
- com.ibm.icu;bundle-version="4.0.1",
- org.eclipse.xtext.generator;bundle-version="0.7.2",
- org.eclipse.xtext.log4j;bundle-version="1.2.15",
- org.eclipse.xtext.logging;bundle-version="0.7.2",
- de.itemis.xtext.antlr;bundle-version="0.7.2",
- org.eclipse.emf.codegen;bundle-version="2.5.0",
- org.eclipse.emf.codegen.ecore;bundle-version="2.5.0",
- org.eclipse.xtext;bundle-version="0.7.2",
- org.eclipse.xtext.xtend;bundle-version="0.7.2"
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
+Bundle-SymbolicName: codegen; singleton:=true
+Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.generator;resolution:=optional,
+ de.itemis.xtext.antlr;resolution:=optional,
+ org.apache.commons.logging;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.xtext.log4j;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe.core;resolution:=optional,
+ com.ibm.icu;resolution:=optional,
+ org.eclipse.xtext.xtend;resolution:=optional,
+ org.eclipse.xtend.typesystem.uml2,
+ org.eclipse.core.runtime,
  org.eclipse.jdt.core,
- org.eclipse.jface.text
+ org.eclipse.jface.text,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.antlr.runtime,
+ org.eclipse.xtend
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: alma.acs.tmcdb.grammardef,
  alma.acs.tmcdb.grammardef.validation,
  alma.acs.tmcdb.grammardef.services,
@@ -29,4 +34,3 @@ Export-Package: alma.acs.tmcdb.grammardef,
  alma.acs.tmcdb.grammardef.tmcdbTables.util,
  alma.acs.tmcdb.grammardef.parseTreeConstruction,
  alma.acs.tmcdb.grammardef.parser.antlr
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
