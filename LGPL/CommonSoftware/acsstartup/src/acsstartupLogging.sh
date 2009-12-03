@@ -26,10 +26,13 @@ then
 
     if [ ! -e $OUTPUT_FILE ]
     then
-	if ! mkdir $OUTPUT_FILE
+	if ! mkdir $OUTPUT_FILE 2> /dev/null
         then
-            echo "Cannot create $OUTPUT_FILE"
-            exit $EC_CANNOTCREATE
+            if [ ! -d $OUTPUT_FILE ]
+            then
+                echo "Cannot create $OUTPUT_FILE"
+                exit $EC_CANNOTCREATE
+            fi
         fi
     fi
 	chmod 777 $OUTPUT_FILE
@@ -236,9 +239,8 @@ then
         then
             # LOGDIR is supposed to be $ACSDATA/tmp/{hostname}
             TMPDIR=`dirname $LOGDIR`
-            if [ ! -d $TMPDIR ]
+            if `mkdir $TMPDIR 2> /dev/null`
             then
-                mkdir $TMPDIR
                 chmod 777 $TMPDIR
             fi
             if ! mkdir $LOGDIR
