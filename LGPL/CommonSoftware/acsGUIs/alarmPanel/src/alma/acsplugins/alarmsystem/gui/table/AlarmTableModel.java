@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.25 2009/10/13 09:17:50 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.26 2009/12/03 21:48:35 acaproni Exp $
  * @since    
  */
 
@@ -116,7 +116,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		HIGH("HIGH", new Color(255,165,31)),
 		MEDIUM("MEDIUM",Color.yellow),
 		LOW("LOW",new Color(188,255,188));
-		
+
 		/**
 		 * The description label
 		 */
@@ -136,6 +136,14 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		private PriorityLabel(String desc, Color col) {
 			description=desc;
 			color=col;
+		}
+		
+		/**
+		 * @return The human readable description of the
+		 * 			priority 
+		 */
+		public String toString() {
+			return description;
 		}
 		
 		/**
@@ -516,7 +524,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		case PRIORITY: {
 			int priority = alarm.getPriority().intValue();
-			return PriorityLabel.fromPriorityDesc(priority);
+			return PriorityLabel.fromPriorityNumber(priority);
 		}
 		case DESCRIPTION: {
 			return alarm.getProblemDescription();
@@ -581,6 +589,23 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		return AlarmTableColumn.values()[col].title;
 	}
 	
+	
+	
+	/**
+	 * The model needs to know that class of the PRIORITY
+	 * column in order to sort by priority (otherwise
+	 * the table sorts for the displayed string).
+	 * 
+	 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+	 */
+	@Override
+	public Class<?> getColumnClass(int columnIndex) {
+		if (columnIndex==AlarmTableColumn.PRIORITY.ordinal()) {
+			return PriorityLabel.class;
+		}
+		return super.getColumnClass(columnIndex);
+	}
+
 	/**
 	 * Return the alarm whose content fills the given row
 	 * 
