@@ -6,7 +6,7 @@
 	     even though at the moment (2007-04) the archive does not generate such UIDs -->
 	<xsd:simpleType name="EntityIdT">
 		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="[uU][iI][dD]:/(/[xX][0-9a-fA-F]+){3}(#[a-zA-Z0-9_]+)*"/>
+			<xsd:pattern value="[uU][iI][dD]://[0-9a-zA-Z]+(/[xX][0-9a-fA-F]+){2}(#\\w{1,}){0,}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	<!-- locally unique id for subnodes of entity objects (integer numbers);
