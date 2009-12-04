@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.178 2009/06/23 07:52:13 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.179 2009/12/04 09:32:54 mzampare Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -335,6 +335,10 @@ PWD = $(shell pwd)
 # 
 os     = $(shell uname)
 osrev  = $(shell uname -r)
+ifdef LINUX_HOME
+rtai_instal_subfold = $(shell egrep --regexp="define[[:space:]]+UTS_RELEASE" $(LINUX_HOME)/include/linux/* | cut --delimiter="\"" --fields=2)
+endif
+
 mustBuild = $(if $(MAKE_ONLY),$(if $(findstring $(1),$(MAKE_ONLY)),true,false),true)
 # usage:
 #
@@ -1357,7 +1361,7 @@ default : all
 # *********************************************
 
 # Removal of dbl dir in hte next line due to spr ALMASW2004040
-CREATE_DIRS = include object doc rtai/$(osrev) bin lib lib/ACScomponents lib/python/site-packages idl config 
+CREATE_DIRS = include object doc rtai/$(rtai_instal_subfold) bin lib lib/ACScomponents lib/python/site-packages idl config 
 
 ifneq ($(strip $(MAKE_VXWORKS)),)
 CREATE_DIRS += src/.obj
@@ -2115,14 +2119,14 @@ endif
 ##
 install_rtai:
 ifneq ($(strip $(RTAI_MODULES)),)
-	-@$(ECHO) "install_rtai: rtai_begin $(foreach member, $(RTAI_MODULES), $(VLTTOP)/rtai/$(osrev)/$(member).ko  )" >>$(FILE)
+	-@$(ECHO) "install_rtai: rtai_begin $(foreach member, $(RTAI_MODULES), $(VLTTOP)/rtai/$(rtai_instal_subfold)/$(member).ko  )" >>$(FILE)
 	-@$(ECHO) "rtai_begin:" >>$(FILE)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......RTAI modules:\"" >>$(FILE)
 	-$(AT) for member in $(foreach name, $(RTAI_MODULES), $(name) ); \
 		do \
-		    $(ECHO) "$(VLTTOP)/rtai/$(osrev)/$${member}.ko: ../rtai/$(osrev)/$${member}.ko" >>$(FILE);\
+		    $(ECHO) "$(VLTTOP)/rtai/$(rtai_instal_subfold)/$${member}.ko: ../rtai/$(rtai_instal_subfold)/$${member}.ko" >>$(FILE);\
 		    $(ECHO) "	-\$$(AT)echo \"\t$${member}.ko\"" >>$(FILE);\
-		    $(ECHO) "	-\$$(AT)if [ ! -d $(VLTTOP)/rtai/$(osrev) ]; then mkdir $(VLTTOP)/rtai/$(osrev) ; fi"  >>$(FILE);\
+		    $(ECHO) "	-\$$(AT)if [ ! -d $(VLTTOP)/rtai/$(rtai_instal_subfold) ]; then mkdir $(VLTTOP)/rtai/$(rtai_instal_subfold) ; fi"  >>$(FILE);\
 		    if [ -f load$${member}.cpp ]; then \
 		    if [ "$(MAKE_RTAI_IGNORE_INSTALL_FAILURE)" != "" ]; then  \
 		     $(ECHO) "	\$$(AT)if ssh -q -oPasswordAuthentication=no  root@${HOST} ${PWD}/../bin/installLKM-$${member}; then echo \"Kernel module \\\"$${member}\\\" installed.\";  else echo \"WARNING: Kernel module \\\"$${member}\\\" not installed.\"; fi" >> $(FILE); \
