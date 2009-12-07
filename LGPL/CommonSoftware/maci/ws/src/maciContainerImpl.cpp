@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.115 2009/09/10 06:33:33 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.116 2009/12/07 14:14:52 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.115 2009/09/10 06:33:33 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.116 2009/12/07 14:14:52 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1622,7 +1622,7 @@ ContainerImpl::activate_component (
     {
       if (CORBA::is_nil(currentInfo.info.reference.in()))
 	{
-	char re[100];
+	char re[255];
 	sprintf(re, "Component with handle %u is marked to be deactivated, but is still waiting for POA to etherealizate it...", h);
 	maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
 						  "maci::ContainerImpl::activate_component");
@@ -1682,7 +1682,7 @@ ContainerImpl::activate_component (
 
 	    if (CORBA::is_nil(entry->int_id_.info.reference.in()))
 	      {
-	      	char re[100];
+	      	char re[255];
 		sprintf(re, "Component with handle %u is marked to be deactivated, but is still waiting for POA to etherealizate it...", h);
 
 		maciErrType::CannotActivateComponentExImpl ex(__FILE__, __LINE__,
@@ -1956,7 +1956,7 @@ ContainerImpl::activate_component (
   if (m_activeComponents.bind(h, info)==-1)
     {
       // failed to bind
-    char re[64];
+    char re[100];
     sprintf(re, "Failed to bind the component with handle %d to HashMap!", h);
 
     // deactivate & destroy
