@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.110 2008/08/22 11:27:01 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.111 2009/12/07 22:28:55 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -2327,6 +2327,8 @@ proc doMakeEnv {} {
 	puts "Test session already active"
     } else {
 	execMakeAll $gv(noClean) $gv(TAT_MAKE_ARGS)
+        # JIRA COMP-3949: allocEnv is executed before sourcing the source script
+	allocEnv
 	# source script handling
 	if { $gv(sourceScript) != "" } {
 	    tatPuts "Sourcing script..."
@@ -2341,7 +2343,6 @@ proc doMakeEnv {} {
 	    }
 	    tatPuts "End of prologue script"
 	}
-	allocEnv
 	replaceScanEnv
 	makeEnv
     }
@@ -2406,6 +2407,8 @@ proc doRunTest  {} {
 
 	 if { ![file exists $gv(sessionFile)] } {
 
+             # JIRA COMP-3949: allocEnv is executed before sourcing the source script
+	     allocEnv
 	     # source script handling
 	     if { $gv(sourceScript) != "" } {
 		 tatPuts "Sourcing script..."
@@ -2421,7 +2424,6 @@ proc doRunTest  {} {
 		 tatPuts "End of prologue script"
 	     }
 
-	     allocEnv
 	     replaceScanEnv
 	     makeEnv
 	     # cannot be done any more in allocEnv (vcc conflict)
