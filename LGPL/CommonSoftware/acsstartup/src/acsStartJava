@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.61 2009/10/19 11:22:11 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.62 2009/12/09 09:58:58 rtobar Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -84,11 +84,12 @@ CL_NCL=
 CL_DEBUGPORT=
 CL_NODIRECTORY=
 CL_VMTOOLS=
+CL_SPLASHFILE=
 
 #
 # These options can be recognized (longopts comma-separated. colon means argument is required)
 #
-LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools
+LONGOPTS=help,clientVM,maxHeapSize:,threadStackSize:,noexport,managerReference:,baseport:,jarpath:,endorsed,addToClasspath:,noClassLoader,noAutoClasspath,debugport:,noDirectory,vmtools,splash:
 SHORTOPTS=hm:b:D:j:
 
 #
@@ -116,6 +117,7 @@ function printUsage {
 	echo "   -debugport PORT                                  the port on which a remote debugger may access the JVM"
 	echo "   -noDirectory                                     do not create an acs instance directory"
 	echo "   -vmtools                                         start JVM Tools together with the application"
+	echo "   -splash FILE                                     uses file FILE for splash screen (if needed)"
 	echo "   -h | -help                                       prints this help and exits"
 	echo "Environment Variables:"
 	echo "   MANAGER_REFERENCE        if is not set, take the HOST to construct it. Used if not given as parameter"
@@ -184,6 +186,7 @@ do
 	--debugport)        CL_DEBUGPORT=$2 ; shift ;;
 	--noDirectory)      CL_NODIRECTORY=true ;;
 	--vmtools)          CL_VMTOOLS=true ;;
+	--splash)           CL_SPLASHFILE=$2; shift ;;
 	--help)             CL_HELP=true ;; 
 	-h)                 CL_HELP=true ;; 
 	--) break ;;
@@ -514,6 +517,14 @@ if [ "$CL_VMTOOLS" ] ; then
    LAUNCHER=alma.acs.vmtools.Launcher
 fi
 ### ---------- End of "vmtools" handling -------------
+
+###
+### ------------- "splash" handling -------------------
+###
+if [ "$CL_SPLASHFILE" ] ; then
+   JAVA_OPTIONS="$JAVA_OPTIONS -splash:$CL_SPLASHFILE"
+fi
+### ---------- End of "splash" handling -------------
 
 
 ###
