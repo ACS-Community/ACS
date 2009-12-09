@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciLibraryManager.cpp,v 1.88 2009/09/14 11:36:29 bjeram Exp $"
+* "@(#) $Id: maciLibraryManager.cpp,v 1.89 2009/12/09 20:21:37 agrimstrup Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -15,7 +15,7 @@
 
 #include <logging.h>
 
-ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.88 2009/09/14 11:36:29 bjeram Exp $");
+ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.89 2009/12/09 20:21:37 agrimstrup Exp $");
 
 namespace maci {
 
@@ -735,7 +735,12 @@ LibraryManager::unload(int i)
       if (dllClose!=0)
 	{
 	  ACS_DEBUG("maci::LibraryManager::unload", "Executing DLLClose");
-	  dllClose();
+	  if (dlopen (m_libraries[i].path.c_str(), RTLD_GLOBAL | RTLD_NOLOAD) != 0) 
+	      dllClose();
+	  else
+	      ACS_DEBUG_PARAM("maci::LibraryManager::unload", "Library %s has not been previously loaded.",
+			      m_libraries[i].path.c_str());
+
 	  ACS_DEBUG("maci::LibraryManager::unload", "DLLClose executed");
 	}
 
