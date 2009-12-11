@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: TypeSafeLog.h,v 1.2 2007/03/23 07:53:06 nbarriga Exp $"
+* "@(#) $Id: TypeSafeLog.h,v 1.3 2009/12/11 08:56:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,6 +36,8 @@
 namespace Logging{
         class TypeSafeLog{
                 public:
+						virtual ~TypeSafeLog(){};
+
                         virtual void log()=0;
         };
 };
