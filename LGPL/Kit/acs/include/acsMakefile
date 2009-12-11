@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.180 2009/12/11 07:25:05 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.181 2009/12/11 08:10:28 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -930,8 +930,8 @@ ifndef MAKE_VXWORKS
   CPPFLAGS = -fcheck-new
 #endif
 else
-  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x660 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
-  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r 
+  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x670 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
 
 endif
 endif  
