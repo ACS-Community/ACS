@@ -1,0 +1,15 @@
+DAO implementations are tied to the LaserComponent component:
+ * The ConfigurationAccessor can't use directly the DAL, it needs the
+   ContainerServices
+ * Exception types used by the DAOImpls should be less generic, and reflect
+   with more detail why are they occurring, not just a string.
+ * There is no AlarmSystemConfigurationDAO (nor its implementation).
+ * ACSSourceDAOImpl should load the sources from the CDB, not as parameter,
+   and use the Source class to store them.
+
+Check out which types should be used. There are several objects that seems
+to be quite similar:
+ * alma.acs.alarmsystem.generated.*
+ * alma.alarmsystem.alarmmessage.generated.*
+ * com.cosylab.acs.laser.dao.xml.*
+ * cern.laser.business.data.*
