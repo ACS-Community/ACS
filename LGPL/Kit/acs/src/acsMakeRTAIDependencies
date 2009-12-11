@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeRTAIDependencies,v 1.30 2009/12/04 09:32:54 mzampare Exp $"
+# "@(#) $Id: acsMakeRTAIDependencies,v 1.31 2009/12/11 07:25:05 mzampare Exp $"
 #
 #************************************************************************
 #   NAME
@@ -115,7 +115,7 @@ then
     done
     echo ""
     
-    echo "../rtai/\$(rtai_instal_subfold)/${modName}.ko: \$(xyz_${modName}_SRC) ${INSTLKM}"
+    echo "../rtai/\$(rtai_install_subfold)/${modName}.ko: \$(xyz_${modName}_SRC) ${INSTLKM}"
     echo "	@echo \"== Making RTAI Module: ${modName}\" "
     echo "# here we have to generate the hineous Kbuild file"
     echo "	\$(AT)echo \"obj-m += ${modName}.o\" > Kbuild"
@@ -130,14 +130,14 @@ then
     echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) V=0 modules"
     echo "endif"
     echo "	\$(AT)rm Kbuild"
-    echo "	\$(AT)mv ${modName}.ko ../rtai/\$(rtai_instal_subfold)"
+    echo "	\$(AT)mv ${modName}.ko ../rtai/\$(rtai_install_subfold)"
     echo ""
     echo "# LKM Support binaries"
     echo ""
 # clean target
     echo "clean${modName}:"
     echo "	\$(AT)make -C \$(KDIR) CC=\$(CC) ARCH=i386 RTAI_CONFIG=\$(RTAI_CONFIG) M=\$(PWD) clean"
-    echo "	\$(AT)rm ../rtai/\$(rtai_instal_subfold)/${modName}.ko"
+    echo "	\$(AT)rm ../rtai/\$(rtai_install_subfold)/${modName}.ko"
     echo ""
     
 
@@ -154,7 +154,7 @@ then
 	then
 	OWNER=${USER}
 	GROUP=`groups | awk '{print $1}'`
-	DEST=${VLTTOP}/rtai/${rtai_instal_subfold}
+	DEST=${VLTTOP}/rtai/${rtai_install_subfold}
     else
 	echo "	@echo \"echo 'WARNING: missing ACSROOT/INTROOT installation dir'\" > ${INSTLKM}"
 	DEST=/lib/modules/${VER}/alma
@@ -171,7 +171,7 @@ then
 #
     echo "	@echo \"if [ ! -d ${DEST} ]; then mkdir ${DEST}; fi\" >> ${INSTLKM}" 
     echo "	@echo \"install -d ${DEST}\" >> ${INSTLKM}" 
-    echo "	@echo \"install -m ${P644} -c `pwd`/../rtai/\$(rtai_instal_subfold)/${modName}.ko ${DEST}\" >> ${INSTLKM}"
+    echo "	@echo \"install -m ${P644} -c `pwd`/../rtai/\$(rtai_install_subfold)/${modName}.ko ${DEST}\" >> ${INSTLKM}"
 #    echo "	@echo \"echo 'running depmod..'\" >> ${INSTLKM}"
 #    echo "	@echo \"/sbin/depmod\" >> ${INSTLKM}"
     if [ $AUXPROG = "1" ] 
@@ -198,7 +198,7 @@ then
     echo "	@vltMakeExecutableDependencies unload${modName} \"unload${modName}\" \"\" \"LKM C++\" \"\" > ../object/unload${modName}.dx" 
     echo "-include ../object/unload${modName}.dx" 
 else
-    echo "../rtai/\$(rtai_instal_subfold)/${modName}.ko: "
+    echo "../rtai/\$(rtai_install_subfold)/${modName}.ko: "
     echo "	@echo \"== Making RTAI Module: ${modName}\" "
     echo "	@echo \" ERROR: ${modName}_OBJECTS is not defined. Nothing to do here.\""
     echo "	@echo \" Makefile should define the action for target  '${modName}'\""
