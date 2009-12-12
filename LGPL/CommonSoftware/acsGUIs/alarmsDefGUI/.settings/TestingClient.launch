@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/acg"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.debug.core.appendEnvironmentVariables" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="cl.utfsm.acs.acg.test.TestingClient"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="acg"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.manager=corbaloc::localhost:3000/Manager"/>
+</launchConfiguration>
