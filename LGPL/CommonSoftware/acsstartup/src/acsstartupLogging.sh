@@ -30,8 +30,10 @@ then
         then
             if [ ! -d $OUTPUT_FILE ]
             then
-                echo "Cannot create $OUTPUT_FILE"
+                echo "Cannot create $OUTPUT_FILE (getLogFile function)"
                 exit $EC_CANNOTCREATE
+			else
+				echo "Diagnostic Message(getLogFile): $OUTPUT_FILE exists (OK)" >&2
             fi
         fi
     fi
@@ -239,14 +241,19 @@ then
         then
             # LOGDIR is supposed to be $ACSDATA/tmp/{hostname}
             TMPDIR=`dirname $LOGDIR`
-            if `mkdir $TMPDIR 2> /dev/null`
+            if mkdir $TMPDIR 2> /dev/null
             then
                 chmod 777 $TMPDIR
             fi
-            if ! mkdir $LOGDIR
+            if ! mkdir $LOGDIR 2> /dev/null
             then
-                echo "Cannot create $LOGDIR"
-                exit $EC_CANNOTCREATE
+				if [ ! -d $LOGDIR ]
+				then
+                	echo "Cannot create $LOGDIR (ACS_LOG_COMMAND function)"
+                	exit $EC_CANNOTCREATE
+				else
+					echo "Diagnostic Message(ACS_LOG_COMMAND): $LOGDIR exists (OK)" >&2
+				fi
             fi
             chmod 777 $LOGDIR
         fi
