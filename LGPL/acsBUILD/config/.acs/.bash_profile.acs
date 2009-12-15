@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.89 2009/12/11 23:11:08 javarias Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.90 2009/12/15 14:11:26 bjeram Exp $"
 #
 #
 #
@@ -628,31 +628,28 @@ then
    fi
 fi
 
-
-if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/WindRiver-3.2 ]
+if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/WindRiver-3.7 ]
 then
-    export WIND_HOST_TYPE=x86-linux2
-    export WIND_PREFERRED_PACKAGES=vxworks-6.2
-    export WIND_HOME=$ALMASW_INSTDIR/WindRiver-3.2
-    WIND_BASE=$WIND_HOME/vxworks-6.2
-    export WIND_USR=$WIND_BASE/target/usr
-    export WIND_DIAB_PATH=$WIND_HOME/diab/5.3.1.0
-    export WRSD_LICENSE_FILE=$WIND_HOME/license:$WIND_HOME/license/WRSLicense.lic
-    export WIND_GNU_PATH=$WIND_HOME/gnu/3.3.2-vxworks-6.2
+    export WIND_HOME=$ALMASW_INSTDIR/WindRiver-3.7
+    export WIND_TOOLS=$WIND_HOME/workbench-3.1
+     WIND_BASE=$WIND_HOME/vxworks-6.7
     export WIND_DOCS=$WIND_HOME/docs
-    export WIND_TOOLS=$WIND_HOME/workbench-2.4
-    export WIND_DFW_PATH=$WIND_HOME/workbench-2.4/dfw/0128
-    export WIND_JRE_HOME=$WIND_HOME/jre/1.4.2/x86-linux2
-    export WIND_WRWB_PATH=$WIND_HOME/workbench-2.4/wrwb/2.4
-    export WIND_FOUNDATION_PATH=$WIND_HOME/workbench-2.4/foundation/4.0.7
-    export WIND_WRSV_PATH=$WIND_HOME/workbench-2.4/wrsv/4.7
-    export WIND_SAMPLES=$WIND_BASE/target/usr/apps/samples:$WIND_BASE/target/src/demo:$WIND_HOME/scopetools-5.4/target/src/linux:$WIND_HOME/scopetools-5.4/target/src/vxworks:$WIND_HOME/workbench-2.4/samples
-    export WIND_USERMODE_AGENT_PATH=$WIND_HOME/linux-2.x/usermode-agent/1.1
-    export WIND_SCOPETOOLS_54=$WIND_HOME/scopetools-5.4
-    export WIND_EXTENSIONS=$WIND_HOME/scopetools-5.4/extensions
-    export TCLLIBPATH=$WIND_BASE/host/resource/tcl
-    export WIND_PLATFORM=vxworks-6.2	
-    export MANPATH=$MANPATH:$WIND_BASE/man
+    export WIND_DFW_PATH=$WIND_TOOLS/dfw/0199_1
+    export WIND_SCOPETOOLS_BASE=$WIND_HOME/scopetools-6.0
+    export WIND_JRE_HOME=$WIND_HOME/jre/1.6.0_06/x86-linux2
+    export WIND_WRWB_PATH=$WIND_TOOLS/wrwb/platform/eclipse
+    export WIND_WRLINUX_LAYERS=$WIND_HOME/scopetools-6.0/wrlinux
+    export WIND_USERMODE_AGENT_PATH=$WIND_HOME/linux-2.x/usermode-agent
+    export WIND_OCD_PATH=$WIND_TOOLS/ocd/0127
+    export WIND_PREFERRED_PACKAGES=workbench-3.1:vxworks-6.7
+    export WIND_SAMPLES=$WIND_HOME/scopetools-6.0/target/src/linux:$WIND_HOME/scopetools-6.0/target/src/vxworks:$WIND_TOOLS/samples:$WIND_HOME/components/ip_net2-6.7/samples:$WIND_HOME/vxworks-6.7/target/usr/apps/samples:$WIND_HOME/vxworks-6.7/target/src/demo:/alma
+#    export WIND_FOUNDATION_PATH=$WIND_TOOLS/foundation/4.1.1
+    export WRSD_LICENSE_FILE=$WIND_HOME/license:$WIND_HOME/license/WRSLicense.lic
+    export WIND_WRSV_PATH=$WIND_TOOLS/wrsv/4.10
+    export WIND_SCOPETOOLS_RPMS_BASE=$WIND_HOME/scopetools-6.0/target/RPMS
+    export DFW_PLUGIN_PATH=$WIND_TOOLS/ocd/0127
+    export WIND_HOST_TYPE=x86-linux2
+    export WIND_USERMODE_AGENT=$WIND_HOME/linux-2.x/usermode-agent/bin/usermode-agent.sh
 
     export ACC_HOST=$HOSTNAME
     CPU=${CPU:-PPC604}
@@ -753,8 +750,7 @@ fi
 
 if [ X"$WIND_BASE" != X ]
 then
-       PATH=$PATH:$WIND_BASE/host/x86-linux2/bin:$WIND_HOME/scopetools-5.4/host/bin/x86-linux2:$WIND_HOME:$WIND_HOME/workbench-2.4/x86-linux2/bin:$WIND_HOME/workbench-2.4/foundation/4.0.7/x86-linux2/bin:$WIND_HOME/gnu/3.3.2-vxworks-6.2/x86-linux2/bin:$WIND_HOME/diab/5.3.1.0/LINUX386/bin
-#      PATH=$PATH:$WIND_BASE/host/$WIND_HOST_TYPE/bin
+	PATH=$PATH:$WIND_HOME/components/ip_net2-6.7/host/x86-linux2/bin:$WIND_BASE/host/x86-linux2/bin:$WIND_BASE/vxtest/src/scripts:$WIND_HOME/scopetools-6.0/host/bin/x86-linux2:$WIND_HOME:$WIND_TOOLS/x86-linux2/bin:$WIND_TOOLS/foundation/4.1.1/x86-linux2/bin:$WIND_HOME/gnu/4.1.2-vxworks-6.7/x86-linux2/bin:$WIND_HOME/diab/5.7.0.0/LINUX386/bin:$WIND_HOME/utilities-1.0/x86-linux2/bin
 fi
 
 # the PATH which comes with the operating system is preserved.
@@ -838,8 +834,7 @@ fi
 
 if [ X"$WIND_BASE" != X ]
 then
-       LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/x86-linux2/lib:$WIND_HOME/scopetools-5.4/host/bin/x86-linux2:$WIND_HOME/workbench-2.4/x86-linux2/lib:$WIND_HOME/workbench-2.4/foundation/4.0.7/x86-linux2/lib:
-#      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_BASE/host/$WIND_HOST_TYPE/lib
+	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_HOME/scopetools-6.0/host/bin/x86-linux2:$WIND_TOOLS/wrwb/platform/eclipse/x86-linux2/bin:$WIND_TOOLS/x86-linux2/lib:$WIND_TOOLS/foundation/x86-linux2/lib:
 fi
 
 if  [ X"$INTLIST" != X ]
