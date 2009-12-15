@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupProcesses,v 1.6 2009/02/06 16:54:56 jschwarz Exp $"
+# "@(#) $Id: acsstartupProcesses,v 1.7 2009/12/15 18:21:56 javarias Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -31,6 +31,7 @@
 #defined within this script. also child processes started by these commands will not
 #be killed
 SAFE_LIST="killACS"
+SAFE_LIST_REGEX="killACS\|acsKillProc\|vim\|emacs\|eclipse"
 
 #function returns a list of all "safe" process IDs that should not be terminated
 function getSafePids
@@ -185,7 +186,7 @@ COMMAND=$1
 PID=
 
 #Get a list containing all the process IDs of the command
-COMMAND_PIDS=`pgrep  -f -l $COMMAND |grep -w $COMMAND | awk '{print $1}'`
+COMMAND_PIDS=`pgrep  -f -l $COMMAND |grep -w $COMMAND | grep -v $SAFE_LIST_REGEX | awk '{print $1}'`
 
 #cycle through the list killing each pid
 for PID in $COMMAND_PIDS
