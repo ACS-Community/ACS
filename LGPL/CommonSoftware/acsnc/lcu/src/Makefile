@@ -20,12 +20,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.39 2005/07/11 07:26:23 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.40 2009/12/17 09:44:58 bjeram Exp $"
 #
 # Makefile for base class push structured event supplier & consumer
 #    None
 #------------------------------------------------------------------------
-LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp
+LINK_FILES = acsncCDBProperties.cpp acsncArchiveConsumer.cpp acsncConsumerImpl.cpp acsncSupplierImpl.cpp acsncHelperImpl.cpp acsncORBHelperImpl.cpp acsncSimpleSupplierImpl.cpp acsncRTSupplierImpl.cpp acsncSimpleConsumerImpl.cpp acsncServiceChecker.cpp acsncCircularQueue.cpp acsncReconnectionCallback.cpp
+
 
 #
 # C programs (public and local)
@@ -40,7 +41,10 @@ acsnc_OBJECTS = acsncCDBProperties \
 		acsncArchiveConsumer \
 		acsncConsumerImpl acsncSimpleConsumerImpl \
 		acsncSupplierImpl acsncSimpleSupplierImpl acsncRTSupplierImpl \
-		acsncHelperImpl acsncORBHelperImpl
+		acsncHelperImpl acsncORBHelperImpl \
+		acsncServiceChecker \
+		acsncReconnectionCallback acsncCircularQueue
+
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
