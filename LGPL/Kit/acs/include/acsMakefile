@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.181 2009/12/11 08:10:28 bjeram Exp $" 
+# "@(#) $Id: acsMakefile,v 1.182 2009/12/17 08:35:08 bjeram Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -983,9 +983,9 @@ endif
 #
 # ... for software products
 ifdef MAKE_VXWORKS
-    VXINC = -I$(VXROOT)/h -I$(VXROOT)/h/types -I$(VXROOT)/h/wrn/coreip/
+    VXINC = -I$(VXROOT)/h/wrn/coreip/
     ifeq ($(VX_CPU_FAMILY),ppc)
-        VXINC := $(VXINC) -I$(VXROOT)/h/arch/ppc
+        VXINC := $(VXINC)
     endif
     VXLIB = -L$(VXROOT)/lib
 else
