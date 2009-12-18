@@ -32,6 +32,9 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
@@ -215,7 +218,7 @@ MessageWidgetListener
 	/**
 	 * The error dialog
 	 */
-	private ErrorLogDialog errorDialog = new ErrorLogDialog(null,"jlog: Error log", false);
+	private ErrorLogDialog errorDialog;
     
     /** 
      * The progress bar for long time operations
@@ -292,6 +295,12 @@ MessageWidgetListener
 	 * with the DB is shown 
 	 */
 	private JLabel connectionDBLbl;
+	
+	/**
+	 * The label where appears the icon to tell that there are
+	 * error in the jlog error log dialog
+	 */
+	private final JLabel jlogErrorLbl =new JLabel(new ImageIcon(this.getClass().getResource("/errorLogIcon.png")));
 	
     /**
      * The toolbar
@@ -437,7 +446,8 @@ MessageWidgetListener
             	ShowStatisticDlg showStat = new ShowStatisticDlg();
             	SwingUtilities.invokeLater(showStat);
             } else if (e.getSource()==menuBar.getViewErrorLogMenuItem()) { 
-            		errorDialog.setVisible(true);
+            		getJLogErroDialog().setVisible(true,LoggingClient.this);
+            		jlogErrorLbl.setVisible(false);
             } else if (e.getSource()==menuBar.getViewErrorBrowserMenuItem()) { 
             		getErrorDialog().setVisible(true);
             } else if (e.getSource()==menuBar.getViewStatusAreaMenuItem()) {
@@ -1226,9 +1236,25 @@ MessageWidgetListener
 				constraintsConnectionDBStatus.gridy = 0;
 				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionDBLbl,constraintsConnectionDBStatus);
+				
+				GridBagConstraints constraintsJlogErrors = new GridBagConstraints();
+				constraintsConnectionDBStatus.gridx = 6;
+				constraintsConnectionDBStatus.gridy = 0;
+				constraintsConnectionDBStatus.insets = new Insets(1, 2, 1, 2);
+				statusLinePnl.add(jlogErrorLbl,constraintsJlogErrors);
+				jlogErrorLbl.setVisible(false);
+				jlogErrorLbl.setToolTipText("Error reading logs");
+				jlogErrorLbl.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						jlogErrorLbl.setVisible(false);
+						errorDialog.setVisible(true,LoggingClient.this);
+						super.mouseClicked(e);
+					}
+				});
 		        
 				GridBagConstraints constraintsConnectionStatus = new GridBagConstraints();
-				constraintsConnectionStatus.gridx = 6;
+				constraintsConnectionStatus.gridx = 7;
 				constraintsConnectionStatus.gridy = 0;
 				constraintsConnectionStatus.insets = new Insets(1, 2, 1, 2);
 				statusLinePnl.add(connectionStatusLbl,constraintsConnectionStatus);
@@ -1667,9 +1693,11 @@ MessageWidgetListener
 		if (engine!=null) {
 			engine.close(sync);
 		}
-		errorDialog.setVisible(false);
-		errorDialog.dispose();
-		errorDialog=null;
+		if (errorDialog!=null) {
+			errorDialog.setVisible(false);
+			errorDialog.dispose();
+			errorDialog=null;
+		}
 		if (statsDlg!=null) {
 			statsDlg.setVisible(false);
 			statsDlg.dispose();
@@ -1723,7 +1751,10 @@ MessageWidgetListener
 		StringBuilder str = new StringBuilder("Error parsing the following log: \n");
 		str.append(xml);
 		str. append("\n The log has been lost.\n\n");
-		errorDialog.appendText(str.toString());
+		getJLogErroDialog().appendText(str.toString());
+		if (!getJLogErroDialog().isVisible()) {
+			jlogErrorLbl.setVisible(true);
+		}
 	}
 	
 	/**
@@ -1810,6 +1841,17 @@ MessageWidgetListener
 	}
 	
 	/**
+	 * 
+	 * @return The jlog error dialog
+	 */
+	private ErrorLogDialog getJLogErroDialog() {
+		if (errorDialog==null) {
+			errorDialog = new ErrorLogDialog(logFrame,"jlog: Error log", false);
+		}
+		return errorDialog;
+	}
+	
+	/**
 	 * Add a new error stack to the error browser dialog
 	 * 
 	 * @param stackID The <code>STACKID</code> of the error trace in the tab
@@ -1817,7 +1859,7 @@ MessageWidgetListener
 	public void addErrorTab(final String stackID) {
 		Runnable runnable = new Runnable() {
 			public void run() {
-				getErrorDialog().addErrorTab(getLCModel1(),stackID);		
+				getErrorDialog().addErrorTab(getLCModel1(),stackID);
 			}
 		};
 		Thread t = new Thread(runnable,"LoggingClient.addErrorTab");
