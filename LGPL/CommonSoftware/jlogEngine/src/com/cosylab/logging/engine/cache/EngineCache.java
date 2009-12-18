@@ -169,12 +169,14 @@ public class EngineCache extends Thread {
 		String name=null;
 		File f=null;
 		try {
-			// Try to create the file in $ACSDATA/tmp
-			String acsdata = System.getProperty("ACS.data");
-			acsdata=acsdata+File.separator+"tmp"+File.separator;
-			File dir = new File(acsdata);
+			// Try to create the file in $ACS_TMP
+			String acstmp = System.getProperty("ACS.tmp");
+			if (!acstmp.endsWith(File.separator)) {
+				acstmp=acstmp+File.separator;
+			}
+			File dir = new File(acstmp);
 			f = File.createTempFile("jlogEngineCache",".tmp",dir);
-			name=acsdata+f.getName();
+			name=f.getAbsolutePath();
 		} catch (IOException ioe) {
 			// An error :-O
 			String homeDir = System.getProperty("user.dir");
