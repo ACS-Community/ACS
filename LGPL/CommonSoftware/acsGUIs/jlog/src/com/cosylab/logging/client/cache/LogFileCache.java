@@ -207,9 +207,11 @@ public class LogFileCache implements ILogMap {
 		//name = FileHelper.getTempFileName(null,"jlog"+Math.abs(random)+".tmp");
 		
 		try {
-			// Try to create the cache in $ACSDATA/tmp
-			String acsdata = System.getProperty("ACS.data");
-			acsdata=acsdata+File.separator+"tmp"+File.separator;
+			// Try to create the cache in $ACS_TMP
+			String acsdata = System.getProperty("ACS.tmp");
+			if (!acsdata.endsWith(File.separator)) {
+				acsdata=acsdata+File.separator;
+			}
 			File dir = new File(acsdata);
 			f = File.createTempFile("jlog",".tmp",dir);
 		} catch (IOException ioe) {
