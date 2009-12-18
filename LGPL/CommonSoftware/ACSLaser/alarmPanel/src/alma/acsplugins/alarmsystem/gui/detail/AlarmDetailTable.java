@@ -219,7 +219,7 @@ public class AlarmDetailTable extends JTable {
 			case URL: return alarm.getHelpURL();
 			case PRIORITY: {
 				int priority=alarm.getPriority().intValue();
-				return AlarmTableModel.PriorityLabel.fromPriorityDesc(priority);
+				return AlarmTableModel.PriorityLabel.fromPriorityNumber(priority);
 			}
 			case TIMESTAMP: {
 				return dateFormat.format(alarm.getStatus().getSourceTimestamp());
