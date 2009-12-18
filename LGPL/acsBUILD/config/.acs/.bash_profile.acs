@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.90 2009/12/15 14:11:26 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.91 2009/12/18 17:29:44 javarias Exp $"
 #
 #
 #
@@ -404,7 +404,7 @@ then
 	fi	
 fi
 
-# set the following variable to activate the improved logging service in ACS
+# Activate the improved logging service in ACS by default
 if  [ X"$LOG_SERVICE_USE_EXTENSIONS" = X ]
 then
 	LOG_SERVICE_USE_EXTENSIONS=1
