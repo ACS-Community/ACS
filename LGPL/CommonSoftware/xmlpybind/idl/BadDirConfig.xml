@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<EntitybuilderSettings>
+
+    <!-- EntitySchema schemaName="TestSchemaSameDir.xsd" xmlNamespace="TestSchemaSameDir"/ -->
+    <EntitySchema schemaName="TestSchemaOtherDir.xsd" relativePathSchemafile="../config/test_idl_bad" xmlNamespace="TestSchemaOtherDir"/>
+
+    <XmlNamespace2JPackage xmlNamespace="TestSchemaSameDir" jPackage="alma.tools.entitybuilder.test.binding1"/>
+    <XmlNamespace2JPackage xmlNamespace="TestSchemaOtherDir" jPackage="alma.tools.entitybuilder.test.binding2"/>
+    
+</EntitybuilderSettings>
