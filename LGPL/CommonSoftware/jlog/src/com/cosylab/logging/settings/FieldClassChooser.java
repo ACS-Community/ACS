@@ -207,14 +207,12 @@ public class FieldClassChooser extends JComboBox {
 		if (c == String.class) {
 			replaceEditor(stringEditor);
 		} else if (c == LogTypeHelper.class) {
-			if (getSelectedIndex() == 1) {
-				replaceEditor(typeEditor);
-			} else {
-				replaceEditor(intEditor);
-			}
+			replaceEditor(typeEditor);
 		} else if (c == Long.class) {
 			replaceEditor(dateEditor);
-		} else {
+		} else if (c == Integer.class) {
+			replaceEditor(intEditor);
+		}  else {
 			JOptionPane.showMessageDialog(null,
 					"Unknown class: " + c.getName(), "Error",
 					JOptionPane.ERROR_MESSAGE);
