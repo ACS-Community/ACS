@@ -19,6 +19,7 @@
 package alma.acs.logging.dialogs.error;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -368,5 +369,16 @@ public class ErrorLogDialog extends JDialog implements ActionListener {
 		super.dispose();
 	}
 	
-	
+	/**
+	 * Make the dialog visible and position it over the passed component
+	 * 
+	 * @param visible If <code>true</code> show the component
+	 * @param c The component to show this dialog over
+	 */
+	public void setVisible(boolean visible, Component c) {
+		super.setVisible(visible);
+		if (visible) {
+			setLocationRelativeTo(c);
+		}
+	}
 }
