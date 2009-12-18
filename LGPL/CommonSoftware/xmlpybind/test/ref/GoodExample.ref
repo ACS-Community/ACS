@@ -1,0 +1,5 @@
+1 - urn:uuid:X-X-X-X-X
+1 - Python for TestSchemaOtherDir requires 1 modules
+1 - Saved binding source to ../lib/python/site-packages/TestBindingConfig/TestSchemaOtherDir.py
+1 - MR[urn:uuid:X-X-X-X-X]@TestSchemaOtherDir
+1 - Saved parsed schema to ../lib/python/site-packages/TestBindingConfig.wxs URI
