@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.53 2009/11/10 05:28:44 hyatagai Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.54 2009/12/18 16:34:16 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -145,10 +145,14 @@ fi
 export JVM_GC_LOG_NAME=jmanager
 
 #
-# As of 2009-02, using acsStartJava instead of a custom classpath has worked well since ACS 7.0, so 
-# that it becomes the only available choice here.
+# With ACS 8.1, more demanding testing at the OSF exposed connection problems to the manager, 
+# which  may be caused by too many open file and TCP connections. While investigating this, we go back to using a custom classpath,
+# so that not all jar files from all subsystems compete with the manager's TCP connections for the limited number of handles.
+# As a first step, I put all ACS jar files except for the most obviously not needed ones on the classpath. 
+# Later we need to remove some of them, taking into account that CERN alarm stuff is loaded via classForName. 
 #
 acsStartJava -endorsed \
+    -noClassLoader -noAutoClasspath -addToClasspath abeansR2Components.jar:AbsoluteLayout.jar:acsAlarmClients.jar:acsalarmSchemaBindings.jar:acsAlarmService.jar:AcsAlarmSystem.jar:acsASsources.jar:acsCallbacksSupport.jar:acscodegen.jar:acscommon.jar:acscomponent.jar:ACScomponentcontLogTestComp.jar:ACScomponentcounterConsumerComp.jar:ACScomponentcounterSupplierComp.jar:ACScomponentjcontexmplComp.jar:acsContainerServices.jar:acsdaemon.jar:acsdaemonErrType.jar:acserr.jar:acserrHandlersErr.jar:acserrj.jar:ACSError.jar:ACSErrTypeAlarm.jar:acsErrTypeAlarmSourceFactory.jar:ACSErrTypeCommon.jar:acsErrTypeComponent.jar:acsErrTypeContainerServices.jar:ACSErrTypeCORBA.jar:ACSErrTypeCppNative.jar:ACSErrTypeDevIO.jar:ACSErrTypeJavaNative.jar:acsErrTypeLifeCycle.jar:ACSErrTypeMonitor.jar:ACSErrTypeOK.jar:ACSErrTypePythonNative.jar:acsGUIutil.jar:ACSIRSentinel.jar:acsjlog.jar:acsjlogSLF4j.jar:acsjms.jar:ACSJMSMessageEntity.jar:acslog.jar:acsnc.jar:acsncErrType.jar:acsncSchemaBindings.jar:AcsNCTraceLogLTS.jar:acspluginbuilder.jar:acsQoSErrType.jar:acssamp.jar:acstestcomp.jar:acsTestEntities.jar:acsthreadErrType.jar:acstime.jar:ACSTimeError.jar:activation.jar:ahclib-1.2.jar:alarmPanel.jar:alarmSourceGui.jar:AlarmSystem.jar:alarmsysteminterface.jar:antlr.jar:archive_xmlstore_if.jar:ArchiveIdentifierError.jar:asdemo.jar:avalon-framework.jar:baci.jar:baciErrTypeDevIO.jar:baciErrTypeProperty.jar:boot.jar:bulkData.jar:bulkDataDistributer.jar:bulkDataReceiver.jar:bulkDataSender.jar:castor.jar:CDB.jar:CDBBrowser.jar:cdbChecker.jar:cdbDAL.jar:cdbErrType.jar:cdbjDAL.jar:cdbSchemaBindings.jar:characteristicTask.jar:cmwmom.jar:commons-cli-1.0.jar:commons-collections-3.1.jar:commons-lang-2.1.jar:commons-logging.jar:commontypes.jar:comphelpgen.jar:concurrent.jar:contLogTest_IF.jar:contLogTestClient.jar:contNcTest_IF.jar:core-windows.jar:core.jar:demoComponents.jar:dom4j-1.6.1.jar:ebe.jar:ejb3-persistence.jar:endorsexercesImpl.jar:enumpropStd.jar:ErrorSystemComponent.jar:ErrorSystemErrType.jar:EventComponent.jar:gnu-regexp-1.1.4.jar:gp.jar:gpopenide.jar:hibernate-annotations.jar:hibernate-cglib-repack-2.1_3.jar:hibernate-commons-annotations.jar:hibernate3.jar:icons.jar:infobus.jar:jacstime.jar:jACSUtil.jar:jakarta-:oro-2.0.5.jar:jakarta-regexp-1.2.jar:java-getopt-1.0.12.jar:JavaContainerError.jar:JavaOnlyAcsConfig.jar:javassist-3.4.GA.jar:jaxen-core.jar:jaxen-jdom.jar:jcont.jar:jcontnc.jar:jdom.jar:jfits.jar:jfree-jcommon-1.0.10.jar:jfreechart-1.0.6.jar:jhall-2.0_02.jar:jlibeps-0.1.jar:jManager.jar:jmanagerErrType.jar:jms.jar:jnlp.jar:jta-1.1.jar:laserclient.jar:laserconsole.jar:lasercore.jar:laserdefinition.jar:laserguiplatform.jar:laserutil.jar:lc.jar:lcEngine.jar:log4j-1.2.8.jar:logging_idl.jar:logkit.jar:maci.jar:maciErrType.jar:maciSchemaBindings.jar:mastercomp_if.jar:NotificationServiceMC.jar:NotifyExt.jar:NotifyMonitoringExt.jar:openide-io.jar:openide.jar:openorb13Debug.jar:PatternAlarmCleared.jar:PatternAlarmTriggered.jar:prevayler-1.02.001.jar:repeatGuard.jar:samplingSystemUI.jar:saxpath.jar:selector-1.1.jar:Simulator.jar:slf4j-api-1.5.8.jar:systementities.jar:tablelayout.jar:typeSafeLogsLTS.jar:vtd-xml.jar:xalan.jar:xalan_serializer.jar:xmlentity.jar:xmljbind.jar:xtmodcoll-3.0.jar \
     -Djacorb.poa.thread_pool_max=200 \
     -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE \
     -DDAL.defaultReference=$ACS_DAL_REF \
