@@ -20,5 +20,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: alarmService,v 1.1 2009/06/20 17:09:00 acaproni Exp $"
+# "@(#) $Id: alarmService,v 1.2 2009/12/20 17:13:20 acaproni Exp $"
+
+# Set logger levels to INFO unless the env vars are set already.
+# This is to avoid especially the verbose jacorb logging we would get from the currently low schema default log levels of 2
+if [ "X$ACS_LOG_STDOUT" = "X" ]; then
+    export ACS_LOG_STDOUT=4
+fi
+if [ "X$ACS_LOG_CENTRAL" = "X" ]; then
+    export ACS_LOG_CENTRAL=4
+fi
 acsStartJava -endorsed alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer -jacorb $*
