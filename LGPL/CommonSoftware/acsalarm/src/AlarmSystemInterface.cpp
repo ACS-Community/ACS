@@ -106,7 +106,7 @@ void AlarmSystemInterface::commonPush(vector<FaultState> & states, bool backup)
 		msg+=msgA;
 		msg+="> ";
 		msg+=(*it).getDescriptor();
-		ACS_SHORT_LOG((LM_ALERT, msg.c_str()));
+		ACS_SHORT_LOG((LM_DEBUG, msg.c_str()));
 	}
 }
 
