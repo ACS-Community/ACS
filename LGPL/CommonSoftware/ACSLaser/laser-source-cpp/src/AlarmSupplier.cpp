@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmSupplier.cpp,v 1.11 2009/10/11 08:17:23 acaproni Exp $"
+* "@(#) $Id: AlarmSupplier.cpp,v 1.12 2009/12/20 15:08:37 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -141,5 +141,5 @@ void AlarmSupplier::publishEvent(ASIMessage &msg)
 		ex2.setChannelName(channelName_mp);
 		throw ex2;
 	}
-	ACS_SHORT_LOG((LM_DEBUG,"AlarmSupplier::publishEvent(): Sent XML."));
+	//ACS_SHORT_LOG((LM_DEBUG,"AlarmSupplier::publishEvent(): Sent XML."));
 }
