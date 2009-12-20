@@ -35,7 +35,7 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 			StringBuilder logStr = new StringBuilder("Exception "+t.getMessage()+" throwing alarm <");
 			logStr.append(state.getFamily()+','+state.getMember()+','+state.getCode()+">");
 			logStr.append(" "+state.getDescriptor());
-			logger.log(AcsLogLevel.ALERT,logStr.toString());
+			logger.log(AcsLogLevel.ERROR,logStr.toString());
 		}
 	}
 	
@@ -59,6 +59,6 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 		StringBuilder sb = new StringBuilder("Alarm sent: <");
 		sb.append(fs.getFamily()+','+fs.getMember()+','+fs.getCode()+">");
 		sb.append(" "+fs.getDescriptor());
-		logger.log(AcsLogLevel.ALERT,XmlNormalizer.normalize(sb.toString()));
+		logger.log(AcsLogLevel.DEBUG,XmlNormalizer.normalize(sb.toString()));
 	}
 }
