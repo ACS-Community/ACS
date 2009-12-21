@@ -4,20 +4,25 @@
 package alma.acs.commandcenter.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpringLayout;
 
 import alma.acs.commandcenter.gui.CommandCenterGui.BackgroundAction;
 import alma.acs.commandcenter.gui.thirdparty.SpringUtilities;
-import alma.acs.util.AcsLocations;
+import alma.acs.commandcenter.util.MiscUtils;
 
 
 
@@ -28,8 +33,8 @@ class AddToDeployTree extends JPanel {
 
 	private final CommandCenterGui master;
 	private final DeploymentTree deployTree;
-	protected JTextField hostF = new JTextField(10);
-	protected JTextField portF = new JTextField(4);
+	protected JPanel content, content2;
+	protected JTextField addressF = new JTextField(10);
 
 	public AddToDeployTree(CommandCenterGui gui, DeploymentTree deployTree) {
 
@@ -37,29 +42,40 @@ class AddToDeployTree extends JPanel {
 		JButton btnAdd;
 		JButton btnRefresh;
 		JToggleButton btnFreeze;
-		JPanel temp;
 
 		this.master = gui;
 		this.deployTree = deployTree;
 
 		this.setLayout(new BorderLayout());
 
-		temp = new JPanel(new SpringLayout());
-		this.add(temp, BorderLayout.WEST);
+		content = new JPanel(new SpringLayout());
+		this.add(content, BorderLayout.WEST);
 
-		temp.add(lbl = new JLabel("Mgr Host"));
-		temp.add(new JLabel("Port"));
-		temp.add(new JPanel(/* empty */));
+		content.add(btnRefresh = new JButton(new ActionRefresh()));
+		content.add(btnFreeze = new JToggleButton()); /* action assigned below */
+		content.add(new JSeparator(JSeparator.VERTICAL));
+		content.add(new JButton(new ActionShowAdd()));
 
-		temp.add(hostF);
-		temp.add(portF);
+		SpringUtilities.makeCompactGrid(content, 0, 4);
+
+
+		content2 = new JPanel();
+		this.add(content2, BorderLayout.SOUTH);
+		content2.setVisible(false);
+
+		content2.add(lbl = new JLabel("Enter \"host:instance\", corbaloc, or IOR:"));
+		content2.add(Box.createVerticalStrut(5));
+		content2.add(addressF);
+		JPanel temp = new JPanel();
+		content2.add(temp);
 		temp.add(btnAdd = new JButton(new ActionAdd()));
+		temp.add(new JButton(new ActionCancelAdd()));
 
-		temp.add(btnFreeze = new JToggleButton()); /* action assigned below */
-		temp.add(new JPanel(/* empty */));
-		temp.add(btnRefresh = new JButton(new ActionRefresh()));
+		content2.setLayout(new BoxLayout(content2, BoxLayout.PAGE_AXIS));
+		// http://java.sun.com/docs/books/tutorial/uiswing/layout/box.html#features
+		for (Component c : content2.getComponents())
+			((JComponent)c).setAlignmentX(LEFT_ALIGNMENT);
 
-		SpringUtilities.makeCompactGrid(temp, 0, 3);
 
 		btnFreeze.setAction(new ActionFreeze(btnFreeze));
 		/* initially sync the button state with the tree.
@@ -68,18 +84,16 @@ class AddToDeployTree extends JPanel {
 		 * deploytree's freeze flag, we'll be out of sync. */
 		btnFreeze.setSelected(deployTree.isViewFrozen()); 
 
-		lbl.setLabelFor(hostF);
+		lbl.setLabelFor(addressF);
 		lbl.setDisplayedMnemonic(KeyEvent.VK_M);
-		hostF.setText("");
-		portF.setText("");
+		addressF.setText("");
 		btnAdd.setToolTipText("Add specified Manager to Deployment Info");
 		btnRefresh.setToolTipText("Refresh all Managers in Deployment Info");
 		btnFreeze.setToolTipText("Halt automatic Refresh of Deployment Info");
 
 		btnAdd.setName("btn_Add_To_DeployTree");
 		btnRefresh.setName("btn_Refresh_DeployTree");
-		hostF.setName("txt_Add_Mgr_Host");
-		portF.setName("txt_Add_Mgr_Port");
+		addressF.setName("txt_Add_Mgr_Host");
 	}
 
 	
@@ -117,6 +131,35 @@ class AddToDeployTree extends JPanel {
 		}
 		abstract protected void myActionPerformed() throws Throwable;
 	}
+
+	protected class ActionShowAdd extends MyActionBaseClass {
+
+		public ActionShowAdd() {
+			super("Add...");
+			super.putValue(SHORT_DESCRIPTION, "Manually add a Manager to Deployment Info");
+		}
+
+		@Override
+		protected void myActionPerformed () throws Throwable {
+			content.setVisible(false);
+			content2.setVisible(true);
+		}
+		
+	}
+
+	protected class ActionCancelAdd extends MyActionBaseClass {
+
+		public ActionCancelAdd() {
+			super("Cancel");
+		}
+
+		@Override
+		protected void myActionPerformed () throws Throwable {
+			content2.setVisible(false);
+			content.setVisible(true);
+		}
+		
+	}
 	
 	protected class ActionAdd extends MyActionBaseClass {
 
@@ -126,34 +169,37 @@ class AddToDeployTree extends JPanel {
 
 		@Override
 		protected void myActionPerformed () throws Throwable {
-			String host = hostF.getText().trim();
-			String port = portF.getText().trim();
+			String input = addressF.getText().trim();
 
-			if (host == null || "".equals(host)) {
-				JOptionPane.showMessageDialog(deployTree, "The specified Host is invalid");
+			if (input == null || "".equals(input)) {
+				JOptionPane.showMessageDialog(AddToDeployTree.this, "Please enter the network address of an Acs Manager");
 				return;
 			}
 
-			if (host.length() > 4 && host.substring(0,4).equalsIgnoreCase("IOR:")) {
-				// msc 2005-05: we allow (for now)
-				// to give an IOR in the host field
-				deployTree.shieldedAddManager(host);
-				return;
+			String host;
+			if (input.length() > 4 && input.substring(0,4).equalsIgnoreCase("IOR:")) {
+				// msc 2005-05: we allow to give an IOR in the host field
+				host = input;
 			} 
-
-			if (host.length() > 9 && host.substring(0,9).equalsIgnoreCase("corbaloc:")) {
-				// msc 2006-10: we allow (for now)
-				// to give an corbaloc in the host field
-				deployTree.shieldedAddManager(host);
-				return;
+			else
+			if (input.length() > 9 && input.substring(0,9).equalsIgnoreCase("corbaloc:")) {
+				// msc 2006-10: we allow to give an corbaloc in the host field
+				host = input;
 			} 
-			
-			if (port == null || "".equals(port) || port.length() < 4) {
-					JOptionPane.showMessageDialog(deployTree, "The specified TCP Port is invalid");
+			else {
+				String quick = MiscUtils.convertShortNotationToCorbaloc(input);
+				if (quick != null) {
+					// msc 2009-12: we allow to give "host:instance" in the host field
+					host = quick;
+				} else {
+					JOptionPane.showMessageDialog(AddToDeployTree.this, "Cannot parse your input, please use a supported address format");
 					return;
+				}
 			}
-						
-			deployTree.shieldedAddManager(AcsLocations.convertToManagerLocation(host, port));
+
+			content2.setVisible(false);
+			content.setVisible(true);
+			deployTree.shieldedAddManager(host);
 		}
 
 	}
@@ -162,7 +208,7 @@ class AddToDeployTree extends JPanel {
 	protected class ActionRefresh extends MyActionBaseClass {
 
 		public ActionRefresh() {
-			super("Full Refresh");
+			super("Refresh");
 		}
 
 		@Override
@@ -195,7 +241,7 @@ class AddToDeployTree extends JPanel {
 		protected JToggleButton btn;
 		
 		public ActionFreeze (JToggleButton btn) {
-			super("Freeze View");
+			super("Freeze");
 			this.btn = btn;
 		}
 		

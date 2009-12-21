@@ -6,6 +6,9 @@ package alma.acs.commandcenter.util;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import alma.acs.util.ACSPorts;
+import alma.acs.util.AcsLocations;
+
 
 
 
@@ -50,6 +53,25 @@ public class MiscUtils {
 			return 0;
 		}
 	}
+
+	/**
+	 * This parses the quick notation ("host:instance") of a manager location,
+	 * and converts it to a corbaloc. Returns a corbaloc, or null if not parsable.
+	 * 
+	 * @return a corbaloc from a quick notation, or null.
+	 */
+   public static String convertShortNotationToCorbaloc (String manager) {
+		try {
+			String[] ss = manager.split(":");
+			if (ss.length != 2) return null;      // only one colon in string
+			if (ss[1].length() != 1) return null; // only one digit after colon
+			String mgrPort = ACSPorts.globalInstance(Integer.parseInt(ss[1])).giveManagerPort();
+			return AcsLocations.convertToManagerLocation(ss[0], mgrPort);
+		} catch (Exception exc) {
+			return null;
+		}
+   }
+	
 
 	/**
 	 * Returns the specified strings concatenated as one comma-separated string.

@@ -25,8 +25,6 @@ import java.util.logging.Logger;
 import alma.acs.commandcenter.app.CommandCenterLogic;
 import alma.acs.commandcenter.app.CommandCenterLogic.StartupOptions;
 import alma.acs.commandcenter.util.MiscUtils;
-import alma.acs.util.ACSPorts;
-import alma.acs.util.AcsLocations;
 
 /**
  * Launches AcsCommandCenter.
@@ -110,7 +108,7 @@ public class CommandCenter {
 					startupOptions.manager = standalone;
 					continue;
 				}
-				String mgrArg = parseAsManagerArgument(standalone);
+				String mgrArg = MiscUtils.convertShortNotationToCorbaloc(standalone);
 				if (mgrArg != null) {
 					startupOptions.manager = mgrArg;
 					continue;
@@ -167,17 +165,6 @@ public class CommandCenter {
       s.println(msg);
    }
 	
-   private static String parseAsManagerArgument (String manager) {
-		try {
-			String[] ss = manager.split(":");
-			if (ss.length != 2) return null;      // only one colon in string
-			if (ss[1].length() != 1) return null; // only one digit after colon
-			String mgrPort = ACSPorts.globalInstance(Integer.parseInt(ss[1])).giveManagerPort();
-			return AcsLocations.convertToManagerLocation(ss[0], mgrPort);
-		} catch (Exception exc) {
-			return null;
-		}
-   }
 
    
    //
