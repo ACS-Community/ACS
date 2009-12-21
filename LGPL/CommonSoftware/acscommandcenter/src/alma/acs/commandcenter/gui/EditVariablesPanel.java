@@ -115,7 +115,7 @@ class EditVariablesPanel extends JPanel {
 			for (int row=0; row < nRows ; row++) {
 				String key = tableM.getValueAt(row, 0).toString();
 				Object value = tableM.getValueAt(row, 1);
-				if (m instanceof Hashtable && value == null) {
+				if (m instanceof Hashtable<?,?> && value == null) {
 					// skip
 				} else {
 					m.put(key, value);
