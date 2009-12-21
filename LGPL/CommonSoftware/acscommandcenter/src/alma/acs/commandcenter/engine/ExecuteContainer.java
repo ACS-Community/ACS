@@ -209,6 +209,10 @@ public class ExecuteContainer {
        String mgrLoc  = AcsLocations.convertToManagerLocation(mgrHost, mgrPort);
        String cmdFlags = "-m "+mgrLoc;
 
+       String contHeap = runModel.getContainerHeapSize();
+       if (contHeap != null)
+      	 cmdFlags += " --passthroughProcessStart=\"-maxHeapSize="+contHeap+"m\"";
+
        boolean startStop = true;
 
 		// (2008-08-05): we keep this for backward-compatibility (see COMP-1316 and COMP-1996)

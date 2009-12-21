@@ -72,7 +72,8 @@
   <xsd:sequence>
 	<xsd:element name="name"								type="xsd:string"/>
 	<xsd:element name="type"								type="xsd:string"/>
-	<xsd:element name="typeModifier"						type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>  <!-- new in Acs7.1 -->  
+	<xsd:element name="typeModifier"						type="xsd:string"  minOccurs="0" maxOccurs="unbounded"/>  <!-- new in Acs7.1 -->  
+	<xsd:element name="heapSizeMB"						type="xsd:string"  minOccurs="0" maxOccurs="1"/>  <!-- new in Acs8.1 -->  
 
 	<xsd:element name="useDedicatedSettings"			type="xsd:boolean"/>
 	<xsd:element name="scriptBase"						type="xsd:string"/>

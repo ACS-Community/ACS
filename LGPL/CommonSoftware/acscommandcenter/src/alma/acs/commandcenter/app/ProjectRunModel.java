@@ -280,6 +280,10 @@ public class ProjectRunModel implements RunModel {
 		return ss;
 	}
 
+   public String getContainerHeapSize() {  // new in Acs 8.1
+   	return read (selectedContainer().getHeapSizeMB());
+   }
+
 	public String getContainerScriptBase () {
 		if (selectedContainer().getUseDedicatedSettings())
 			return read(selectedContainer().getScriptBase());

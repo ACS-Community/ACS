@@ -556,7 +556,8 @@ public class CommandCenterGui {
 
 		String modif = MiscUtils.join(cont.getTypeModifier());
 		dlgContainerSettings.modifF.setText(modif);
-		
+		dlgContainerSettings.heapF.setText(cont.getHeapSizeMB());
+
 		dlgContainerSettings.defaultScriptBaseF.setText(controller.project.getScriptBase());
 		dlgContainerSettings.defaultHostF.setText(controller.project.getRemoteHost());
 		dlgContainerSettings.defaultAccountF.setText(controller.project.getRemoteAccount());
@@ -575,7 +576,8 @@ public class CommandCenterGui {
 	protected void writeContainerSettingsDialogToModel (ContainerT cont) {
 
 		cont.setTypeModifier(MiscUtils.split(dlgContainerSettings.modifF.getText().trim()));
-		
+		cont.setHeapSizeMB(dlgContainerSettings.heapF.getText().trim());
+
 		cont.setScriptBase(dlgContainerSettings.scriptbaseF.getText().trim());
 		cont.setRemoteHost(dlgContainerSettings.hostF.getText().trim());
 		cont.setRemoteAccount(dlgContainerSettings.accountF.getText().trim());

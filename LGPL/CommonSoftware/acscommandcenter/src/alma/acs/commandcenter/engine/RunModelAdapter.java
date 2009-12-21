@@ -94,6 +94,10 @@ public class RunModelAdapter implements RunModel {
    public String[] getContainerTypeModifiers() {  // new in Acs 7.1
    	throw new UnsupportedOperationException("add method implementation to this instance of RunModelAdapter: "+toString());
    }
+
+   public String getContainerHeapSize() {  // new in Acs 8.1
+   	throw new UnsupportedOperationException("add method implementation to this instance of RunModelAdapter: "+toString());
+   }
    
    public String getContainerScriptBase() {
       throw new UnsupportedOperationException("add method implementation to this instance of RunModelAdapter: "+toString());

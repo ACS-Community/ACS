@@ -555,6 +555,8 @@ public class TabPanel extends JPanel {
 				master.dlgContainerSettings.passwordF.setEnabled(remoteBuiltin);
 				master.dlgContainerSettings.modifL.setEnabled(remoteDaemon);
 				master.dlgContainerSettings.modifF.setEnabled(remoteDaemon);
+				master.dlgContainerSettings.heapL.setEnabled(remoteDaemon);
+				master.dlgContainerSettings.heapF.setEnabled(remoteDaemon);
 			}
 
 			for (ContainerLine contline : containerLines) {

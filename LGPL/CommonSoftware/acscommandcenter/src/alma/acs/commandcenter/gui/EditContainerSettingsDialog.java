@@ -28,8 +28,8 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 
 	private final CommandCenterGui master;
 	JRadioButton btnGlobal, btnCustom;
-	JTextField modifF;
-	JLabel modifL;
+	JTextField modifF, heapF;
+	JLabel modifL, heapL;
 	JTextField defaultScriptBaseF, defaultHostF, defaultAccountF, defaultPasswordF;
 	JTextField scriptbaseF, hostF, accountF, passwordF;
 	JLabel scriptbaseL, hostL, accountL, passwordL;
@@ -46,14 +46,17 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 		JPanel content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
-		JPanel pnlModifiers = new JPanel();
-		pnlModifiers.setBorder(master.createTitledBorder(" Tweak type of container "));
-		pnlModifiers.setLayout(new SpringLayout());
-		pnlModifiers.add(modifL = new JLabel("Type Modifiers"));
-		pnlModifiers.add(modifF = new JTextField());
+		JPanel pnlFlagsAndMods = new JPanel();
+		pnlFlagsAndMods.setBorder(master.createTitledBorder(" Tweak container "));
+		pnlFlagsAndMods.setLayout(new SpringLayout());
+		pnlFlagsAndMods.add(modifL = new JLabel("Type Modifiers"));
+		pnlFlagsAndMods.add(modifF = new JTextField());
+		pnlFlagsAndMods.add(heapL = new JLabel("Heap Size (MB)"));
+		pnlFlagsAndMods.add(heapF = new JTextField());
+		heapF.setToolTipText("Enter custom heap size (in Megabytes)");
 		modifF.setToolTipText("Enter comma-separated Modifiers, e.g. \"archiveContainer\"");
-		SpringUtilities.makeCompactGrid(pnlModifiers, 0, 2);
-		content.add(pnlModifiers);
+		SpringUtilities.makeCompactGrid(pnlFlagsAndMods, 0, 2);
+		content.add(pnlFlagsAndMods);
 
 		JPanel pnlLocation = new JPanel();
 		pnlLocation.setBorder(master.createTitledBorder(" Where to run this container "));
