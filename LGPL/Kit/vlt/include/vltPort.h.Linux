@@ -1,7 +1,7 @@
 /*************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: vltPort.h.Linux,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+* "@(#) $Id: vltPort.h.Linux,v 1.2 2009/12/21 13:11:50 gchiozzi Exp $" 
 *
 * vltPort.h for Linux
 *
@@ -28,6 +28,13 @@
 
 #ifndef VLTPORT_H
 #define VLTPORT_H
+
+#ifdef __GNUC__
+#define ATTRIBUTE_UNUSED __attribute__((__unused__))
+#else
+#define ATTRIBUTE_UNUSED
+#endif
+
 
 /*
 * When it is used, vltPort.h MUST be the very first file included
