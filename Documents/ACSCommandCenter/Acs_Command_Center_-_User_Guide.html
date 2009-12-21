@@ -216,7 +216,7 @@ workers run on localhost.<br>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 <tbody>
 <tr>
-<td valign="top"><img style="width: 840px; height: 765px;" src="images/figureC.jpg" alt="Figure C - Main Window"> <br>
+<td valign="top"><img style="width: 862px; height: 804px;" src="images/figureC.jpg" alt="Figure C - Main Window"> <br>
 </td>
 </tr>
 <tr align="center">
@@ -524,7 +524,7 @@ it will (hopefully) support you in tracking down failures.<br>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 <tbody>
 <tr>
-<td valign="top"><img style="width: 338px; height: 185px;" src="images/figureE.jpg" alt="figure E - Progress Panel"> <br>
+<td valign="top"><img style="width: 335px; height: 171px;" src="images/figureE.jpg" alt="figure E - Progress Panel"> <br>
 </td>
 </tr>
 <tr>
@@ -543,25 +543,27 @@ Info View</a></h3>
 information about an
 Acs Manager and its related workers. When you start a Manager via the
 Acs Command Center, the Manager is automatically added
-to the Deployment Info View. Still, you can add any Manager manually
-provided you know which host and port it runs on: according to the Acs
-conventions, the port of a Manager is "3x00", where "x" is the Acs
-instance (0-9). Simply type in the Manager's host and port into the
-fields above the Deployment Info View and press the "Add to View"
-button.<br>
-<br>
+to the Deployment Info View.
+<br><br>
+Still, you can add any Manager manually,
+provided you know which host and Acs Instance it runs on. 
+Press "Add..." to bring up a dialog that lets you enter the network
+address of an existing Acs Manager. Network addresses are understood
+in a couple of formats: the easiest being the short notation "host:instance"
+(e.g. <i>alma:0</i> for Acs Instance 0 on host alma), or alternatively
+a corbaloc (e.g. <i>corbaloc::alma:3900/Manager</i> for Acs Instance 9 on host alma),
+or a full Corba IOR (like <i>IOR:&lt;really long hex number&gt;</i>).
+<br><br>
 The shown information will be refreshed automatically. Be aware that&nbsp;this automatism cannot detect all changes on the
 server-side instantaneously, in some situations there may be delays of about 10 seconds or more. To
-refresh the display manually, press the "Full Refresh" button. If,
-opposed to that, you're overwhelmed with data you can
-pause&nbsp;the
-automatic refresh through "Freeze View".<br>
+refresh the display manually, press the "Refresh" button. If, opposed to that, you're overwhelmed with data you can
+pause automatic refresh through "Freeze".
 <br>
 <br>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
 <tbody>
 <tr>
-<td valign="top"><img src="images/figureF.jpg" alt="Figure F - Deployment" style="width: 429px; height: 475px;" hspace="10"> <br>
+<td valign="top"><img src="images/figureF.jpg" alt="Figure F - Deployment" style="width: 418px; height: 394px;" hspace="10"> <br>
 </td>
 </tr>
 <tr>
@@ -657,21 +659,11 @@ The change log for the different versions is on the <a href="AcsCommandCenter-Ne
 <td align="center" valign="top"><code>Changes</code><br>
 </td>
 </tr>
+<tr><td>2009-12-21</td><td>Marcus Schilling</td><td>Adjusted to Acs8.1</td></tr><tr>
 <tr><td>2009-05-04</td><td>Marcus Schilling</td><td>Adjusted to Acs8.0.1</td></tr><tr>
-<td>2008-10-28</td>
-<td>Marcus Schilling</td>
-<td>Adjusted to Acs8.0</td>
-</tr>
-<tr>
-<td>2007-02-09</td>
-<td>Marcus Schilling</td>
-<td>Adjusted to Acs6.0</td>
-</tr>
-<tr>
-<td>2005-10-28</td>
-<td>Marcus Schilling</td>
-<td>Adjusted to Acs5.0</td>
-</tr>
+<td>2008-10-28</td><td>Marcus Schilling</td><td>Adjusted to Acs8.0</td></tr>
+<tr><td>2007-02-09</td><td>Marcus Schilling</td><td>Adjusted to Acs6.0</td></tr>
+<tr><td>2005-10-28</td><td>Marcus Schilling</td><td>Adjusted to Acs5.0</td></tr>
 <tr>
 <td style="vertical-align: top;">2005-07-26<br>
 </td>
