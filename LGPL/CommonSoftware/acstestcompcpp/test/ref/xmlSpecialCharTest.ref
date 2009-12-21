@@ -5,7 +5,6 @@
 1 - ----------T--:--:--.--- INFO [Manager] Activating component 'COMP99' on container 'Container'.
 1 - ----------T--:--:--.--- INFO [Manager] 'COMP99' requested component 'curl:///CDB'.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///CDB' provided to 'COMP99'.
-1 - ----------T--:--:--.--- INFO [CDB] Returning XML record for: alma/COMP99
 1 - ----------T--:--:--.--- INFO [Manager] Component 'COMP99' activated successfully.
 1 - ----------T--:--:--.--- SEVERE [Manager] Activated component 'COMP99' does not implement specified type 'IDL:alma/TESTCDBCOMP_ACS/TestCDBComp:1.0'.
 1 - ----------T--:--:--.--- INFO [Manager] Component 'curl:///COMP99' provided to 'Python Client'.
