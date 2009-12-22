@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.7 2009/07/13 20:40:30 msekoran Exp $"
+* "@(#) $Id: acsNotificationServiceImpHandlerImpl.h,v 1.8 2009/12/22 10:46:43 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -145,10 +145,14 @@ public:
       NotificationServiceMonitor* nsm = monitorMap[desc];
       CORBA::ULongLong rtt = nsm->getAndResetRTT();
       nsm->issuePingEvent();
-      if (rtt < 0) // no response
+      if (rtt < 0) { // no response
+        ACS_SHORT_LOG((LM_DEBUG, "%s is not responsive, reported as defunctional.", desc->getName()));
         return acsdaemon::DEFUNCT;
-      else if (rtt > 200000) // > 200ms
+      }
+      else if (rtt > 200000) { // > 200ms
+        ACS_SHORT_LOG((LM_DEBUG, "%s response time is slow, reported as degraded.", desc->getName()));
         return acsdaemon::DEGRADED;
+      }
       else
         return acsdaemon::RUNNING;
     }
