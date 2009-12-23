@@ -21,14 +21,18 @@ namespace laserSource
 			/*
  			 * Method to publish an alarm to the laser alarm server.
 			 * @param msg the ASIMessage to publish.
+			 * @throw In case of error publishing the message
 			 */
-			virtual bool publishAlarm(acsalarm::ASIMessage msg);
+			virtual void publishAlarm(acsalarm::ASIMessage msg);
 
 		private:
 			AlarmSupplier * alarmSupplier;
 
 			/**
 			 * Get the NameService from the manager
+			 *
+			 * @throw ACSErrTypeCORBA::CORBAReferenceNilExImpl
+			 * @throw ACSErrTypeCORBA::NarrowFailedExImpl
 			 */
 			CosNaming::NamingContext_var getNamingService();
 
