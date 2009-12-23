@@ -286,7 +286,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		} catch (Throwable t) {
 			System.err.println("Error loading alarms: "+t.getMessage());
 			t.printStackTrace(System.err);
-			logger.log(AcsLogLevel.WARNING,"Catched error loading alarms from CDB");
+			logger.log(AcsLogLevel.WARNING,"Error loading alarms from CDB",t);
 			coreAlarms.add(LaserCoreFaultCodes.ALARMS_CDB);
 		}
 		try {
@@ -294,7 +294,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		} catch (Throwable t) {
 			System.err.println("Error loading categories: "+t.getMessage());
 			t.printStackTrace(System.err);
-			logger.log(AcsLogLevel.WARNING,"Catched error loading categories from CDB");
+			logger.log(AcsLogLevel.WARNING,"Error loading categories from CDB",t);
 			coreAlarms.add(LaserCoreFaultCodes.CATEGORIES_CDB);
 		}
 		sourceDAO = new ACSSourceDAOImpl(logger,alarmDAO.getSources());
