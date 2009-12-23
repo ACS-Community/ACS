@@ -1,3 +1,5 @@
+#include <ACSErrTypeCORBA.h>
+#include <errTypeAlarmService.h>
 #include "AcsAlarmPublisher.h"
 #include "ACSJMSMessageEntityS.h"
 #include <orbsvcs/CosNamingC.h>
@@ -49,11 +51,18 @@ AcsAlarmPublisher::~AcsAlarmPublisher()
 /*
  * Public method to publish an alarm to the laser alarm server.
  */
-bool AcsAlarmPublisher::publishAlarm(ASIMessage msg)
+void AcsAlarmPublisher::publishAlarm(ASIMessage msg)
 {
 	ACS_TRACE("AcsAlarmPublisher::publishAlarm()");
-	alarmSupplier->publishEvent(msg);
-	return true;
+	try {
+		alarmSupplier->publishEvent(msg);
+	} catch (ACSErr::ACSbaseExImpl ex) {
+		errTypeAlarmService::AlarmsNotSentExImpl ex2(ex,__FILE__, __LINE__, "AcsAlarmPublisher::publishAlarm");
+		throw ex2;
+	} catch (...) {
+		errTypeAlarmService::AlarmsNotSentExImpl ex(__FILE__, __LINE__, "AcsAlarmPublisher::publishAlarm");
+		throw ex;
+	}
 }
 
 CosNaming::NamingContext_var AcsAlarmPublisher::getNamingService() {
@@ -62,15 +71,29 @@ CosNaming::NamingContext_var AcsAlarmPublisher::getNamingService() {
 		return naming_v;
 	}
 	maci::Manager_ptr mgr = ACSAlarmSystemInterfaceFactory::getManager();
-	CORBA::Object_var namingObj = mgr->get_service(0, "NameService", true);
-	naming_v = CosNaming::NamingContext::_narrow(namingObj.ptr());
+	if (CORBA::is_nil(mgr)) {
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl
+			ex(__FILE__, __LINE__, "AcsAlarmPublisher::getNamingService");
+		ex.setVariable("mgr");
+		throw ex;
+	}
 
-	if(CORBA::is_nil(naming_v)) {
-		ACS_SHORT_LOG((LM_ERROR,"AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was nil."));
+	CORBA::Object_var namingObj = mgr->get_service(0, "NameService", true);
+	if (CORBA::is_nil(namingObj)) {
+		ACSErrTypeCORBA::CORBAReferenceNilExImpl
+					ex(__FILE__, __LINE__, "AcsAlarmPublisher::getNamingService");
+				ex.setVariable("namingObj");
+				throw ex;
 	}
-	else {
-		ACS_SHORT_LOG((LM_DEBUG,"AcsAlarmPublisher::AcsAlarmPublisher(): naming_v was not nil."));
+	try {
+		naming_v = CosNaming::NamingContext::_narrow(namingObj.ptr());
+	} catch (...) {
+		ACSErrTypeCORBA::NarrowFailedExImpl
+							ex(__FILE__, __LINE__, "AcsAlarmPublisher::getNamingService");
+						ex.setNarrowType("NamingContext");
+						throw ex;
 	}
+
 	return AcsAlarmPublisher::naming_v;
 }
 

@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/param.h>
 #include <dlfcn.h>
+#include <acserrACSbaseExImpl.h>
 #include "CERNAlarmSystemInterfaceProxy.h"
 #include "asiConfigurationConstants.h"
 #include "AcsAlarmPublisher.h"
@@ -82,7 +83,6 @@ void CERNAlarmSystemInterfaceProxy::close()
 bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 {
 	ACS_TRACE("CERNAlarmSystemInterfaceProxy::publishMessage()");
-	bool retVal = false;
 
 	// create the topic on which to publish the alarm, by appending
 	// the source name to the topic prefix provided by the configuration
@@ -91,14 +91,39 @@ bool CERNAlarmSystemInterfaceProxy::publishMessage(ASIMessage msg)
 	topicName.append(".");
 	topicName.append(msg.getSourceName());
 
+	// If the laserPublisher has not yet been built then try to build a new one.
+	//
+	// If an exception happens at this point we log a message but do not
+	// propagate the exception to avoid problems to the caller
+	// i.e. we do not want that the caller crashes because of a problem in the
+	// alarm system
 	if(laserPublisher == NULL)
 	{
-		laserPublisher = new AcsAlarmPublisher(topicName);
+		try {
+			laserPublisher = new AcsAlarmPublisher(topicName);
+		} catch (ACSErr::ACSbaseExImpl ex) {
+			laserPublisher=NULL;
+			ex.log();
+			return false;;
+		} catch (...) {
+			laserPublisher=NULL;
+			ACS_SHORT_LOG((LM_ERROR,"Error building the AcsAlarmPublisher"))
+			return false;
+		}
 	}
 
-	// publish the alarm 
-	laserPublisher->publishAlarm(msg);
+	// publish the alarm
+	try {
+		laserPublisher->publishAlarm(msg);
+	}catch (ACSErr::ACSbaseExImpl ex) {
+		laserPublisher=NULL;
+		ex.log();
+		return false;;
+	} catch (...) {
+		ACS_SHORT_LOG((LM_ERROR,"Error publishing source alarms %s: ",msg.toXML().c_str()));
+		return false;
+	}
 
-	return retVal;
+	return true;
 }
 
