@@ -12,10 +12,6 @@
             xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<_ Name="AlarmService"
-	   Code="alma.alarmsystem.AlarmServiceImpl.AlarmServiceHelper"
-	   Type="IDL:alma/alarmsystem/AlarmService:1.0"
-	   Container="frodoContainer"  ImplLang="java" />
         <_ Name="TEST_COMPONENT"
 	   Type="IDL:alma/alarmsystemPropTest/BaciPropTest:1.0"
 	   Code="baciTest" 

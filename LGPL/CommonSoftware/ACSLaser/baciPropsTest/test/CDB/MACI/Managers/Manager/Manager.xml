@@ -17,7 +17,6 @@
       ContainerPingInterval="10.0"
       AdministratorPingInterval="10.0">
 	<Startup>
-		<cdb:_ string="AlarmService"/> 
 	</Startup> 
 	<ServiceComponents>
 		<cdb:_ string="Log"/>
@@ -29,6 +28,7 @@
 		<cdb:_ string="CDB"/>
 		<cdb:_ string="ACSLogSvc"/>
 		<cdb:_ string="PDB"/>
+		<cdb:_ string="AcsAlarmService"/>
 	</ServiceComponents>
 
 	<LoggingConfig immediateDispatchLevel="99">
