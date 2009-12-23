@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2006/10/19 17:50:02 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2009/12/23 15:23:15 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -61,7 +61,7 @@ LIBRARIES_L     =
 
 # laserSourceAcsSpecific library is for the ACS-(CERN-style)-specific code not to be reused by 3rd parties
 laserSourceAcsSpecific_OBJECTS   = CERNAlarmSystemInterfaceFactory CERNAlarmSystemInterfaceProxy AcsAlarmPublisher AlarmSupplier
-laserSourceAcsSpecific_LIBS = basenc ACSJMSMessageEntityStubs acsnc acsAlSysSource 
+laserSourceAcsSpecific_LIBS = basenc ACSJMSMessageEntityStubs acsnc acsAlSysSource errTypeAlarmService 
 laserSourceAcsSpecific_LDFLAGS = --export-dynamic -dl -fpic
 
 #
