@@ -81,7 +81,7 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	 * debugging a program.
 	 * Java levels FINE and CONFIG map to this DEBUG level.
 	 */
-	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.CONFIG.intValue(), AcsLogLevelDefinition.DEBUG);
+	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.FINE.intValue(), AcsLogLevelDefinition.DEBUG);
 
 	/**
 	 * Informational messages.
