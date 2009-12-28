@@ -81,7 +81,7 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	 * debugging a program.
 	 * Java levels FINE and CONFIG map to this DEBUG level.
 	 */
-	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.FINE.intValue(), AcsLogLevelDefinition.DEBUG);
+	public static final AcsLogLevel DEBUG = new AcsLogLevel("DEBUG", Level.CONFIG.intValue(), AcsLogLevelDefinition.DEBUG);
 
 	/**
 	 * Informational messages.
@@ -163,32 +163,54 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 		}
 
 		// save for fast lookups
-		synchronized (lookup)
-		{
+		synchronized (lookup) {
 			lookup.put(this, this);
 		}
 	}
 
 	/**
-	 * Converts an ACS core log level (as defined in ACS, Unix or similar) 
-	 * to the matching AcsLogLevel.
-	 * If no AcsLogLevel directly corresponds to the given core level, then the AcsLogLevel
-	 * whose associated acsCoreLevel is >= the given core level is chosen.
+	 * Converts an ACS core log level (small integer as defined in ACS IDL) 
+	 * to the matching AcsLogLevel or JDK Level.
 	 * <p>
-	 * @TODO: In the past the acsCoreLevel param was an int, in which case the iteration over "known" level list made sense.
-	 *        Now that these are enums we should translate more directly.
+	 * Since 
 	 * @param acsCoreLevel
 	 * @return
 	 */
-	public static AcsLogLevel fromAcsCoreLevel(AcsLogLevelDefinition acsCoreLevel) {
-		AcsLogLevel ret = null;
-		for (AcsLogLevel acsLogLevel : known) {
-			ret = acsLogLevel;
-			if (!(ret.getAcsLevel().compareTo(acsCoreLevel) < 0)) {
-				break;
-			}
+	public static Level getLowestMatchingJdkLevel(AcsLogLevelDefinition acsCoreLevel) {
+		switch (acsCoreLevel) {
+		case TRACE:
+			// numerically the same as Level.FINEST
+			return AcsLogLevel.TRACE;
+		case DELOUSE:
+			// numerically the same as Level.FINER
+			return AcsLogLevel.DELOUSE;
+		case DEBUG:
+			// Both JDK levels FINE and CONFIG map to AcsLogLevel.DEBUG.
+			// AcsLogLevel.DEBUG is numerically the same as CONFIG, which is higher than FINE (reasons related to logic in getNativeLevel()).
+			return Level.FINE;
+		case INFO:
+			// numerically the same as Level.INFO
+			return AcsLogLevel.INFO;
+		case NOTICE:
+			return AcsLogLevel.NOTICE;
+		case WARNING:
+			// numerically the same as Level.WARNING
+			return AcsLogLevel.WARNING;
+		case ERROR:
+			return AcsLogLevel.ERROR;
+		case CRITICAL:
+			return AcsLogLevel.CRITICAL;
+		case ALERT:
+			return AcsLogLevel.ALERT;
+		case EMERGENCY:
+			// numerically the same as Level.SEVERE
+			return AcsLogLevel.EMERGENCY;
+		case OFF:
+			// numerically the same as Level.OFF
+			return AcsLogLevel.OFF;
+		default:
+			throw new IllegalArgumentException("Unexpected enum literal AcsLogLevelDefinition." + acsCoreLevel.name);
 		}
-		return ret;
 	}
 	
 	
@@ -231,42 +253,43 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 
 	/**
 	 * Maps any (JDK or ACS) level to an ACS native level.
+	 * <p>
+	 * Note that for some strange historical reason, the ACS log level is called "native" here, 
+	 * to confuse those who think that JDK levels would be native...
+	 * 
 	 * @param level	any level
 	 * @return 		native level, can be <code>null</code> if no native level is found or if level==Level.OFF
 	 */
 	public static AcsLogLevel getNativeLevel(Level level)
 	{
-		// save for fast lookups
-		Object luLevel = null;
-		synchronized (lookup)
-		{
+		// try fast lookup
+		AcsLogLevel luLevel = null;
+		synchronized (lookup) {
 			luLevel = lookup.get(level);
 		}
-		if (luLevel != null)
-			return (AcsLogLevel) luLevel;
+		if (luLevel != null) {
+			return luLevel;
+		}
 
-		// check if there is any native level
-		// of OFF
+		// check if there is any native level of OFF
 		if (known.size() == 0 || level.intValue() == Level.OFF.intValue())
 			return null;
 //		if (level.intValue() == Level.ALL.intValue())
 //			return AcsLogLevel.ALL;
 
 		// search through iterator and find the most appropriate. Relies on "known" being a sorted set with low levels first.
-		synchronized (known)
-		{
+		synchronized (known) {
 			Iterator<AcsLogLevel> iter = known.iterator();
-			AcsLogLevel nativeLevel = iter.next();
-			while (level.intValue() > nativeLevel.intValue() && iter.hasNext())
-				nativeLevel = iter.next();
-
+			AcsLogLevel acsLevel = iter.next();
+			while (level.intValue() > acsLevel.intValue() && iter.hasNext()) {
+				acsLevel = iter.next();
+			}
 			// save for lookup
-			synchronized (lookup)
-			{
-				lookup.put(level, nativeLevel);
+			synchronized (lookup) {
+				lookup.put(level, acsLevel);
 			}
 
-			return nativeLevel;
+			return acsLevel;
 		}
 	}
 	
@@ -277,12 +300,13 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 	 */
 	static void printMappings(PrintStream ps) {
 		final String delim = "\t";
-		for (Iterator<AcsLogLevel> iter = known.iterator(); iter.hasNext();) {
-			AcsLogLevel level = iter.next();
-			String acsLevelName = level.getEntryName();
-			int levelValue = level.intValue();
-			int coreLevelValue = level.getAcsLevel().value;
-			ps.println(acsLevelName + delim + levelValue + delim + coreLevelValue);
+		synchronized (known) {
+			for (AcsLogLevel level : known) {
+				String acsLevelName = level.getEntryName();
+				int levelValue = level.intValue();
+				int coreLevelValue = level.getAcsLevel().value;
+				ps.println(acsLevelName + delim + levelValue + delim + coreLevelValue);
+			}
 		}
 	}
 }

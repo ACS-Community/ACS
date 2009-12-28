@@ -208,16 +208,16 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		config.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.INFO);
 		config.setDefaultMinLogLevel(AcsLogLevelDefinition.DEBUG);
 		// the log level must be the smaller one of stdout and remote level
-		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog1.getLevel().intValue());
-		assertEquals(AcsLogLevel.DEBUG.intValue(), orbLog2.getLevel().intValue());
-		assertEquals(AcsLogLevel.DEBUG.intValue(), contLog.getLevel().intValue());
+		assertEquals(Level.FINE, orbLog1.getLevel());
+		assertEquals(Level.FINE, orbLog2.getLevel());
+		assertEquals(Level.FINE, contLog.getLevel());
 		
 		clientLogManager.suppressCorbaRemoteLogging();
 		
 		// now for corba loggers the remote handler's level must be infinite, and the local level should determine the logger level. 
-		assertEquals(AcsLogLevel.INFO.intValue(), orbLog1.getLevel().intValue()); // todo: check levels directly on the handlers
-		assertEquals(AcsLogLevel.INFO.intValue(), orbLog2.getLevel().intValue());
-		assertEquals(AcsLogLevel.DEBUG.intValue(), contLog.getLevel().intValue());
+		assertEquals(AcsLogLevel.INFO, orbLog1.getLevel()); // todo: check levels directly on the handlers
+		assertEquals(AcsLogLevel.INFO, orbLog2.getLevel());
+		assertEquals(AcsLogLevel.FINE, contLog.getLevel());
 		
 		assertEquals(4, loggerNames.size()); 
 	}
@@ -293,7 +293,7 @@ public class ClientLogManagerTest extends junit.framework.TestCase
 		assertNotNull(localHandler);
 		assertNotNull(remoteHandler);
 
-		assertEquals(AcsLogLevel.fromAcsCoreLevel(expectedLocalLevel), localHandler.getLevel());
-		assertEquals(AcsLogLevel.fromAcsCoreLevel(expectedRemoteLevel), remoteHandler.getLevel());
+		assertEquals(AcsLogLevel.getLowestMatchingJdkLevel(expectedLocalLevel), localHandler.getLevel());
+		assertEquals(AcsLogLevel.getLowestMatchingJdkLevel(expectedRemoteLevel), remoteHandler.getLevel());
 	}
 }

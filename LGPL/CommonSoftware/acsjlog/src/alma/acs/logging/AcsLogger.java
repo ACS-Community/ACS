@@ -429,8 +429,7 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 					? loggerConfig.getMinLogLevel()
 					: loggerConfig.getMinLogLevelLocal());
 
-			AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
-			setLevel(minLogLevelJDK);
+			setLevel(AcsLogLevel.getLowestMatchingJdkLevel(minLogLevelACS));
 		} catch (Exception ex) {
 			log(Level.INFO, "Failed to configure logger.", ex);
 		}

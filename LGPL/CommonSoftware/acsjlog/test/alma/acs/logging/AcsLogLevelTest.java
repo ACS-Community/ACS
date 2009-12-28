@@ -244,23 +244,23 @@ public class AcsLogLevelTest extends junit.framework.TestCase
 		assertSame(AcsLogLevelDefinition.OFF, AcsLogLevel.OFF.getAcsLevel());
 
 		// ACS-core-level to ACS-Level 
-		assertSame(AcsLogLevel.TRACE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.TRACE));
-		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.DELOUSE));
-		assertSame(AcsLogLevel.DEBUG, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.DEBUG));
-		assertSame(AcsLogLevel.INFO, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.INFO));
-		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.NOTICE));
-		assertSame(AcsLogLevel.WARNING, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.WARNING));
-		assertSame(AcsLogLevel.ERROR, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.ERROR));
-		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.CRITICAL));
-		assertSame(AcsLogLevel.ALERT, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.ALERT));
-		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.EMERGENCY));
-		assertSame(AcsLogLevel.OFF, AcsLogLevel.fromAcsCoreLevel(AcsLogLevelDefinition.OFF));
+		assertSame(AcsLogLevel.TRACE, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.TRACE));
+		assertSame(AcsLogLevel.DELOUSE, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.DELOUSE));
+		assertSame(Level.FINE, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.DEBUG));
+		assertSame(AcsLogLevel.INFO, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.INFO));
+		assertSame(AcsLogLevel.NOTICE, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.NOTICE));
+		assertSame(AcsLogLevel.WARNING, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.WARNING));
+		assertSame(AcsLogLevel.ERROR, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.ERROR));
+		assertSame(AcsLogLevel.CRITICAL, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.CRITICAL));
+		assertSame(AcsLogLevel.ALERT, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.ALERT));
+		assertSame(AcsLogLevel.EMERGENCY, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.EMERGENCY));
+		assertSame(AcsLogLevel.OFF, AcsLogLevel.getLowestMatchingJdkLevel(AcsLogLevelDefinition.OFF));
 	}
 	
 	public void testPrintMappings() {
 		StringOutputStream stringOut = new StringOutputStream();
 		AcsLogLevel.printMappings(new PrintStream(stringOut));
-		System.out.println("Printed level mappings: " + stringOut);
+		System.out.println("Printed level mappings:\n" + stringOut);
 		
 		String sep = System.getProperty("line.separator");
 		String expected = 

@@ -79,14 +79,8 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
         try {
         	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(
         			logConfig.getNamedLoggerConfig(loggerName).getMinLogLevel() );
-            AcsLogLevel minLogLevelJDK = AcsLogLevel.fromAcsCoreLevel(minLogLevelACS); // JDK Level style
-            if (minLogLevelJDK != null) {
-            	setLevel(minLogLevelJDK);
-            }
-            else {
-            	throw new NullPointerException("No JDK log level found for ACS log level " + minLogLevelACS);
-            }
-            immediateDispatchLevel = logConfig.getImmediateDispatchLevel();
+			setLevel(AcsLogLevel.getLowestMatchingJdkLevel(minLogLevelACS));
+			immediateDispatchLevel = logConfig.getImmediateDispatchLevel();
         } catch (Exception ex) {
         	publish(new LogRecord(Level.WARNING, "Failed to configure remote log handler: " + ex.toString()));
         }
