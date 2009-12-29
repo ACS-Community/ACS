@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2009/12/18 23:01:20 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.3 2009/12/29 16:52:36 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -59,6 +59,7 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all
+	@rm -rf ../lib/python/site-packages/TestBindingConfig*
 	@rm -rf tmp
 	@rm -rf tatlogs
 	@rm -f sed.scan 

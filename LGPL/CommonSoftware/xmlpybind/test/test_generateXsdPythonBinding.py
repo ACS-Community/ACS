@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.1 2009/12/18 22:47:32 agrimstrup Exp $"
+# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.2 2009/12/29 16:52:36 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -32,14 +32,14 @@ import generateXsdPythonBinding
 class TestFindSchemaFiles(unittest.TestCase):
     def test_no_content(self):
         ebs = generateXsdPythonBinding.xmlpybind.EntitybuilderSettings.EntitybuilderSettings()
-        self.assertEqual([], generateXsdPythonBinding.find_schema_files(ebs))
+        self.assertEqual([], generateXsdPythonBinding.find_schema_files(ebs, '.'))
 
     @mock.patch('os.path.isfile')
     def test_no_file(self, isfile_mock):
         xml = '<?xml version="1.0" encoding="ISO-8859-1"?>\n<EntitybuilderSettings>\n<EntitySchema schemaName="TestSchemaOtherDir.xsd" relativePathSchemafile="../config/test_idl" xmlNamespace="TestSchemaOtherDir"/>\n</EntitybuilderSettings>\n'
         isfile_mock.return_value = False
         ebs = generateXsdPythonBinding.xmlpybind.EntitybuilderSettings.CreateFromDocument(xml)
-        self.assertRaises(IOError, generateXsdPythonBinding.find_schema_files,ebs)
+        self.assertRaises(IOError, generateXsdPythonBinding.find_schema_files,ebs, '.')
 
     @mock.patch('os.path.isfile')
     def test_with_content(self, isfile_mock):
@@ -47,7 +47,7 @@ class TestFindSchemaFiles(unittest.TestCase):
         isfile_mock.return_value = True
         ebs = generateXsdPythonBinding.xmlpybind.EntitybuilderSettings.CreateFromDocument(xml)
         self.assertEqual([(u'../config/test_idl/TestSchemaOtherDir.xsd', u'TestSchemaOtherDir')],
-                         generateXsdPythonBinding.find_schema_files(ebs))
+                         generateXsdPythonBinding.find_schema_files(ebs,'.'))
 
 
 class TestGenerateBindings(unittest.TestCase):

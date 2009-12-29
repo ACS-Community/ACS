@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: generateXsdPythonBinding.py,v 1.1 2009/12/18 22:47:32 agrimstrup Exp $"
+# "@(#) $Id: generateXsdPythonBinding.py,v 1.2 2009/12/29 16:52:36 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,8 +29,13 @@ import os
 from subprocess import call
 import xmlpybind.EntitybuilderSettings
 
-def find_schema_files(ebs):
+def find_schema_files(ebs, cfgfilename):
     '''Extract the file location and namespace information from the configuration.'''
+
+    # xmljbind takes the location of the configuration as the base directory of the
+    # schema files.  The relativePathSchemafile attribute then computes the location
+    # from that point.
+    basedir, cfgfile = os.path.split(cfgfilename)
 
     # The data we want is returned as a list of tuples containing the filename, with path,
     # and the namespace.
@@ -40,7 +45,7 @@ def find_schema_files(ebs):
         # The XmlNamespace2JPackage elements are ignored because they contain information that
         # is only needed for the Java bindings.
         if elem._element().name() == 'EntitySchema':
-            filename = os.path.join(elem.relativePathSchemafile, elem.schemaName)
+            filename = os.path.join(basedir, elem.relativePathSchemafile, elem.schemaName)
             if os.path.isfile(filename):
                 flist.append((filename, elem.xmlNamespace))
             else:
@@ -82,17 +87,17 @@ def main(args):
     if not args:
         print "Usage: generateXsdPythonBinding <binding specification file>"
         return 0
-    
+
     try:
         # Retrieve the settings for this set of bindings.
         #
         # By convention, XSD binding files are stored in the idl directory of the
         # module being compiled.  They are XML documents that follow the
         # EntitybuilderSettings schema.
-        xml = open('../idl/%s.xml' % args[0]).read()
-        ebs = xmlpybind.EntitybuilderSettings.CreateFromDocument(xml)
+        xml = open('../idl/%s.xml' % args[0])
+        ebs = xmlpybind.EntitybuilderSettings.CreateFromDocument(xml.read())
 
-        flist = find_schema_files(ebs)
+        flist = find_schema_files(ebs, xml.name)
 
         # If no schema were provided in the specification, the list will be empty.
         if flist:

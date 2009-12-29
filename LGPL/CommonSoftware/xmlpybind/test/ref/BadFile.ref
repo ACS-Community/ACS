@@ -1,1 +1,1 @@
-1 - BadFileConfig: ../config/test_idl/TestSchemaOtherDirBad.xsd not found
+1 - BadFileConfig: ../idl/../config/test_idl/TestSchemaOtherDirBad.xsd not found
