@@ -23,6 +23,7 @@ package alma.acs.jlog.test;
 
 import java.util.Collection;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.FiltersVector;
@@ -32,8 +33,8 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
 import com.cosylab.logging.engine.ACS.LCEngine;
 import com.cosylab.logging.engine.log.ILogEntry;
-import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
 
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.logging.AcsLogLevel;
@@ -339,7 +340,7 @@ public class EngineFilteringTest
 		// publish all the logs and count the number of INFO logs
 		int infos=0;
 		for (ILogEntry log: logs) {
-			AcsLogLevel level=AcsLogLevel.fromAcsCoreLevel(log.getType().acsCoreLevel);
+			Level level = AcsLogLevel.getLowestMatchingJdkLevel(log.getType().acsCoreLevel);
 			m_logger.log(level,(String)log.getField(LogField.LOGMESSAGE));
 			if (log.getType()==LogTypeHelper.INFO) {
 				infos++;
@@ -358,7 +359,7 @@ public class EngineFilteringTest
 		} catch (Exception e) {}
 		System.out.println("Flushing");
 		for (ILogEntry log: flushLogs) {
-			AcsLogLevel level=AcsLogLevel.fromAcsCoreLevel(log.getType().acsCoreLevel);
+			Level level = AcsLogLevel.getLowestMatchingJdkLevel(log.getType().acsCoreLevel);
 			m_logger.log(level,(String)log.getField(LogField.LOGMESSAGE));
 		}
 		
