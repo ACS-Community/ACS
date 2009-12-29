@@ -97,11 +97,12 @@ public class ClientWithLogReceiverTest extends ComponentClientTestCase {
         // loop for sending several test logs
         for (int i=0; i < numberOfTestLogs; i++) {
         	AcsLogLevelDefinition coreLevel = coreLevels[random.nextInt(coreLevels.length)];
-        	AcsLogLevel acsJdkLevel = AcsLogLevel.fromAcsCoreLevel(coreLevel);
+        	// TODO: using getLowestMatchingJdkLevel here may be temporary, see COMP-3925. 
+        	Level jdkLevel = AcsLogLevel.getLowestMatchingJdkLevel(coreLevel);
         	
         	// Log the test record
             String logMessage = "This is log number " + i;
-            m_logger.log(acsJdkLevel, logMessage);
+            m_logger.log(jdkLevel, logMessage);
             
             // Wait for the test record to come back from the Log service.
             // In spite of zero queue sorting delay, we need a long timeout 
