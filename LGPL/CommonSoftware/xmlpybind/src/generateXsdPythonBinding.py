@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: generateXsdPythonBinding.py,v 1.2 2009/12/29 16:52:36 agrimstrup Exp $"
+# "@(#) $Id: generateXsdPythonBinding.py,v 1.3 2009/12/31 18:06:31 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -26,8 +26,17 @@
 
 import sys
 import os
+import re
 from subprocess import call
+import pyxb
 import xmlpybind.EntitybuilderSettings
+
+# Table containing all characters to be removed from a filename
+DELTBL = u' !"#$%&\'()*+,-./:;<=>?@[\\]^`{|}~'
+
+# In some of the ACS modules, the configuration file does not conform to the XML
+# Schema.  Castor accepts these broken documents so this script should as well.
+pyxb.RequireValidWhenParsing(False)
 
 def find_schema_files(ebs, cfgfilename):
     '''Extract the file location and namespace information from the configuration.'''
@@ -46,8 +55,21 @@ def find_schema_files(ebs, cfgfilename):
         # is only needed for the Java bindings.
         if elem._element().name() == 'EntitySchema':
             filename = os.path.join(basedir, elem.relativePathSchemafile, elem.schemaName)
+
+            # The module's name is the same as the root of the file name.  Unlike the xmlNamespace,
+            # I know that will be unique.
+            nsname, ext = os.path.splitext(elem.schemaName)
+
+            # Some filenames are not legal Python module names, so we have to fix them as well.
+            if re.compile('\A([a-zA-Z_])\w*\Z').match(nsname) is None:
+                clist = list(nsname)
+                for c in clist:
+                    if c in DELTBL:
+                        clist.remove(c)
+                nsname = ''.join(clist)
+            
             if os.path.isfile(filename):
-                flist.append((filename, elem.xmlNamespace))
+                flist.append((filename, nsname))
             else:
                 # It does not make sense to generate an incomplete set of bindings so, should
                 # any specified schema file be missing, we must stop processing.
