@@ -41,6 +41,7 @@ USER_IDL =
 
 #
 # Jarfiles and their directories
+# TODO: rename acsjlogSLF4j to slf4j-acs.jar to comply with slf4j conventions
 #
 JARFILES = acsjlog acsjlogSLF4j
 acsjlog_DIRS =  alma
