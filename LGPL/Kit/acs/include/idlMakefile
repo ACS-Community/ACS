@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.113 2009/02/19 10:09:54 eallaert Exp $"
+# "@(#) $Id: idlMakefile,v 1.114 2010/01/04 15:36:19 gchiozzi Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -65,6 +65,10 @@
 #   Also, IDL files specified in the ABEANS variable are used with the
 #   ACS Beans generator and produce jarfiles in ../lib.
 #   These are installed by the install target and cleaned by the clean target.
+#
+#   Files with the extension .midl are pre-processed with cpp and saved as .idl
+#   The variable $(MIDL_FLAGS) is used to pass definitions to the pre-processor
+#   Pragma instructions are passed over as they are (see JacPrep for details).
 #
 #   FILES
 #
@@ -316,7 +320,7 @@ endif  #IDL_FILES
 
 %.idl: %.midl
 	- @echo "== (preprocessing) $(<F)"
-	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  ../idl/$(*F).idl
+	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$(*F).idl
 
 
 ../object/.%.fake ../object/%S.cpp ../object/%C.cpp ../object/%C.h ../object/%C.inl ../object/%S.h ../object/%S.inl ../object/%S_T.cpp ../object/%S_T.h ../object/%S_T.inl : %.idl Makefile
