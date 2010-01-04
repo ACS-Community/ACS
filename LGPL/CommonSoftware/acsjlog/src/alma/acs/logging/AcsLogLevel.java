@@ -168,13 +168,38 @@ public class AcsLogLevel extends Level implements Comparable<AcsLogLevel>
 		}
 	}
 
+	
 	/**
 	 * Converts an ACS core log level (small integer as defined in ACS IDL) 
-	 * to the matching AcsLogLevel or JDK Level.
+	 * to the largest matching AcsLogLevel.
+	 */
+	public static AcsLogLevel fromAcsCoreLevel(AcsLogLevelDefinition acsCoreLevel) {
+		AcsLogLevel ret = null;
+		for (AcsLogLevel acsLogLevel : known) {
+			ret = acsLogLevel;
+			if (!(ret.getAcsLevel().compareTo(acsCoreLevel) < 0)) {
+				break;
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Converts an ACS core log level (small integer as defined in ACS IDL) 
+	 * to the lowest matching AcsLogLevel or JDK Level.
 	 * <p>
-	 * Since 
-	 * @param acsCoreLevel
-	 * @return
+	 * Note the difference to {@link #fromAcsCoreLevel(AcsLogLevelDefinition)}: 
+	 * <ul>
+	 *   <li>If more than one JDK-style log level gets mapped to the given core level,
+	 *       then the <em>lowest</em> of these levels gets returned.
+	 *       <em>This method is therefore suitable to compute JDK log levels for filtering</em>
+	 *       when logs with all matching JDK levels should be allowed.</li>
+	 *   <li>Currently this method is implemented with hard-wired levels, which means that 
+	 *       user-defined subclasses of AcsLogLevel are not considered. 
+	 *       (As of ACS 8.x, there is no known usage of custom log levels.
+	 *       Supporting them for this method would require to keep a list similar to {@link #known}
+	 *       that includes all JDK Level and AcsLogLevel objects.)
+	 * </ul>
 	 */
 	public static Level getLowestMatchingJdkLevel(AcsLogLevelDefinition acsCoreLevel) {
 		switch (acsCoreLevel) {
