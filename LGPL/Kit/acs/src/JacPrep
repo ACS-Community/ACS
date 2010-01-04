@@ -4,12 +4,14 @@
 #   JacPrep 
 # 
 #   SYNOPSIS
-#   JacPrep input_file.idl [idl_paths] 
+#   JacPrep input_file.idl [idl_paths and options] 
 # 
 #   DESCRIPTION
 #   JacPrep preprocesses a .idl file expanding macros and preserving
 #   all the lines starting with #include and #pragma.
 #   The output(standard) is in a suitable format to be processed by JacORB.
+#   After the name of the input file, pass cpp options like, typically,
+#   IDL path and define arguments as one single parameter string.
 #
 #   AUTHOR
 #   Michele Zamparelli, Moreno Pasquato
@@ -24,22 +26,23 @@
 #   CAUTIONS
 #
 #   EXAMPLES
-#   JacPrep alpha.idl -I/alma/ACS-2.0/ACSSW/idl 
-#  
+#   JacPrep alpha.idl "-I/alma/ACS-2.0/ACSSW/idl"
+#   JacPrep ../idl/tdemTOPICS.midl " -I/alma/ACS-8.0/JacORB/idl/jacorb -DDDS_USE -DDDS_USE_OPENDDS"
+#
 #   SEE ALSO
 #
 #   BUGS     
 #
 #------------------------------------------------------------------------
 
-$rcsId = '$Id: JacPrep,v 1.12 2005/04/05 13:29:24 mzampare Exp $';
+$rcsId = '$Id: JacPrep,v 1.13 2010/01/04 15:34:48 gchiozzi Exp $';
 
 # Check for idl file argument
 die "supply an IDL filename \n" if ($#ARGV < 0);
 
 # Variable setting
 $inputFile = $ARGV[0];
-$INCLUDE_PATH = $ARGV[1];
+$CPP_OPTIONS = $ARGV[1];
 
 $namespace = $ARGV[0];
 $namespace =~ 	s/.*\///g;
@@ -66,7 +69,7 @@ foreach (grep (/^#/, <rfd>) ) {
 close(rfd);
 
 # File preprocessed using cpp and output stored in array @lines 
-open( nfd, "cpp $INCLUDE_PATH -E $inputFile |");
+open( nfd, "cpp $CPP_OPTIONS -E $inputFile |");
 	 if ($?) { 
 	     die "JacPrep: failed to cpp $INCLUDE_PATH -E $inputFile\n";
 	 }
