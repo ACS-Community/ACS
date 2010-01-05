@@ -28,7 +28,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -658,7 +657,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * independently of the process (container or manager etc).
 	 * <p>
 	 * @param corbaName
-	 *            e.g. <code>jacorb</code>.
+	 *            e.g. <code>jacorb</code>. @TODO rename it.
 	 * @param autoConfigureContextName
 	 *            if true, the context (e.g. container name) will be appended to this logger's name as soon as it is
 	 *            available, changing the logger name to something like <code>jacorb@frodoContainer</code>.
@@ -697,22 +696,29 @@ public class ClientLogManager implements LogConfigSubscriber
 		if (suppressCorbaRemoteLogging) {
 			sharedLogConfig.setAndLockMinLogLevel(AcsLogLevelDefinition.OFF, loggerName);
 		}
-		else if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) && !sharedLogConfig.hasCustomConfig(loggerName)) {
-			// Since ACS 8.1 hibernate classes are given an ACS logger via this method, see javadoc.
-			AcsLogLevelDefinition minCustomLevel = AcsLogLevelDefinition.WARNING;
-			AcsLogLevelDefinition customLevel = 
+		else if (!sharedLogConfig.hasCustomConfig(loggerName)) {
+			// In the absence of their own custom logger config, some very verbose loggers 
+			// get a minimum log level applied to ensure that a carelessly set low default log level
+			// does not swamp the system with log messages.
+			if (corbaName.startsWith(ACSLoggerFactory.HIBERNATE_LOGGER_NAME_PREFIX) ||
+				corbaName.startsWith(ACSLoggerFactory.HIBERNATE_SQL_LOGGER_NAME_PREFIX)) {
+
+				AcsLogLevelDefinition minCustomLevel = AcsLogLevelDefinition.WARNING;
+				AcsLogLevelDefinition customLevel = 
 					( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevel()) > 0 
 							? minCustomLevel 
 							: sharedLogConfig.getDefaultMinLogLevel() );
-			sharedLogConfig.setMinLogLevel(customLevel, loggerName);
-			AcsLogLevelDefinition customLevelLocal = 
-				( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevelLocal()) > 0 
-						? minCustomLevel 
-						: sharedLogConfig.getDefaultMinLogLevelLocal() );
-			sharedLogConfig.setMinLogLevelLocal(customLevelLocal, loggerName);
-			
-			m_internalLogger.info("Logger " + loggerName + " created with custom log levels local=" + customLevelLocal.name + 
-					", remote=" + customLevel.name + " to avoid hibernate log jams due to careless default log level settings.");
+				sharedLogConfig.setMinLogLevel(customLevel, loggerName);
+				
+				AcsLogLevelDefinition customLevelLocal = 
+					( minCustomLevel.compareTo(sharedLogConfig.getDefaultMinLogLevelLocal()) > 0 
+							? minCustomLevel 
+							: sharedLogConfig.getDefaultMinLogLevelLocal() );
+				sharedLogConfig.setMinLogLevelLocal(customLevelLocal, loggerName);
+				
+				m_internalLogger.info("Logger " + loggerName + " created with custom log levels local=" + customLevelLocal.name + 
+						", remote=" + customLevel.name + " to avoid hibernate log jams due to careless default log level settings.");
+			}
 		}
 
 		return corbaLogger;

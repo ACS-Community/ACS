@@ -40,28 +40,52 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
 /**
- * ACSLoggerFactory is an implementation of {@link ILoggerFactory} returning
- * the same {@link JDK14LoggerAdapter} instance with the same underlying ACS hibernate logger,
- * regardless of the "name" parameter for the requested logger.
+ * ACSLoggerFactory is an implementation of slf4j's {@link ILoggerFactory} based on {@link AcsLogger}s, 
+ * allowing for hibernate logs to be streamed into the ACS logging system.
+ * This class gets connected to the slf4j framework via {@link StaticLoggerBinder}, which is pulled in by slf4j from the classpath.
+ * Therefore no other slf4j bindings to different logging frameworks are allowed on the classpath.
  * <p>
  * A side effect of this is that any other software package which in the future might 
  * also rely on slf4j logging will get a logger called "hibernate" or "hibernate@&lt;process name&gt;".
  * <p>
+ * Simplification of the large number of hibernate loggers:
  * The hibernate framework tries to use separate loggers with names being those of its java classes, 
  * e.g. "org.hibernate.cfg.Ejb3Column".
- * All of these logger requests are now served with the same logger called "hibernate"
- * or "hibernate@<container name>" if a process/container name is known to the ACS logging libs.
- * The same name reduction is used for JacORB logs, see 
+ * ACS maps all of these logger requests to only 2 different loggers, which can be configured separately:
+ * <ul>
+ *   <li>The default logger is called "hibernate", 
+ *       or "hibernate@&lt;process-name&gt;" if a process/container name is known to the ACS logging libs.
+ *       See also {@link #HIBERNATE_LOGGER_NAME_PREFIX}.</li>
+ *   <li>SQL related hibernate loggers are mapped to "hibernateSQL", 
+ *       or "hibernateSQL@&lt;process-name&gt;" if a process/container name is known to the ACS logging libs.
+ *       See also {@link #HIBERNATE_SQL_LOGGER_NAME_PREFIX}.</li>
+ * </ul>
+ * A similar name reduction is used for JacORB loggers, see 
  * {@link alma.acs.logging.adapters.JacORBLoggerFactory#getNamedLogger(String)}.
  * 
- * @author msekoranja
+ * @author msekoranja, hsommer
  */
 public class ACSLoggerFactory implements ILoggerFactory
 {
-	private AcsLogger acsLoggerDelegate;
-	private Logger jdkAdapter;
+	private AcsLogger acsLoggerDelegateDefault;
+	private Logger jdkAdapterDefault;
 
+	private AcsLogger acsLoggerDelegateSql;
+	private Logger jdkAdapterSql;
+
+	/**
+	 * Mapped to all hibernate loggers except those from {@link #HIBERNATE_SQL_LOGGER_NAME_PREFIX}.
+	 */
 	public static final String HIBERNATE_LOGGER_NAME_PREFIX = "hibernate";
+	
+	/**
+	 * Mapped to hibernate loggers "org.hibernate.SQL" (for SQL statements)
+	 * and "org.hibernate.type" (for SQL binding parameters).
+	 * <p>
+	 * Hibernate announces that version 4 will rename the SQL logger to "org.hibernate.jdbc.util.SQLStatementLogger"
+	 * which is why we already map that currently not existing logger name to the same sql logger.
+	 */
+	public static final String HIBERNATE_SQL_LOGGER_NAME_PREFIX = "hibernateSQL";
 	
 	/*
 	 * (non-Javadoc)
@@ -69,15 +93,25 @@ public class ACSLoggerFactory implements ILoggerFactory
 	 * @see org.slf4j.ILoggerFactory#getLogger(java.lang.String)
 	 */
 	public synchronized Logger getLogger(String name) {
-		// protect against concurrent access of acsLoggerDelegate
+		// protect against concurrent access of acsLoggerDelegateXyz
 		synchronized (this) {
-			if (acsLoggerDelegate == null) {
-				acsLoggerDelegate = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_LOGGER_NAME_PREFIX, true);
-				jdkAdapter = new JDK14LoggerAdapter(acsLoggerDelegate);
+			if (name.equals("org.hibernate.SQL") || 
+				name.equals("org.hibernate.type") || 
+				name.equals("org.hibernate.jdbc.util.SQLStatementLogger")) {
+				if (acsLoggerDelegateSql == null) {
+					acsLoggerDelegateSql = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_SQL_LOGGER_NAME_PREFIX, true);
+					jdkAdapterSql = new JDK14LoggerAdapter(acsLoggerDelegateSql);
+				}
+				return jdkAdapterSql;
+			}
+			else {
+				if (acsLoggerDelegateDefault == null) {
+					acsLoggerDelegateDefault = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_LOGGER_NAME_PREFIX, true);
+					jdkAdapterDefault = new JDK14LoggerAdapter(acsLoggerDelegateDefault);
+				}
+				return jdkAdapterDefault;
+				//System.out.println("**** Got hibernate logger '" + acsLoggerDelegate.getName() + "' for requested logger '" + name + "' ****");
 			}
 		}
-//System.out.println("**** Got hibernate logger '" + acsLoggerDelegate.getName() + "' for requested logger '" + name + "' ****");
-
-		return jdkAdapter;
 	}
 }
