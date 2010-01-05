@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.29 2008/07/25 15:29:24 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.30 2010/01/05 15:37:14 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -40,6 +40,11 @@ PYXML: PyXML-0.8.4.tar.gz
 	@echo "== Building PYXML"
 	@gtar -zxvf PyXML-0.8.4.tar.gz; 
 	@cd PyXML-0.8.4; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+
+PYXB: PyXB-1.1.1-DEV.tar.gz
+	@echo "== Building PyXB"
+	@gtar -zxvf PyXB-1.1.1-DEV.tar.gz; 
+	@cd PyXB-1.1.1-DEV; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
 PMW: Pmw.1.2.tar.gz
 	@echo "== Building Python Mega Widgets"
@@ -122,7 +127,7 @@ PY_DOC :
 
 
 #PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP PYXML
-PY_DISUTIL_BUILD : PYXML
+PY_DISUTIL_BUILD : PYXML PYXB
 	echo "== Building/Installing external Python modules now..."
 
 #
