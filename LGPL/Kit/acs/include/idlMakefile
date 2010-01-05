@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.114 2010/01/04 15:36:19 gchiozzi Exp $"
+# "@(#) $Id: idlMakefile,v 1.115 2010/01/05 15:20:07 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -318,12 +318,14 @@ endif  #IDL_FILES
 ## ALL
 ##
 
+%.idl: TMPSRC = "../object/$*/src"
 %.idl: %.midl
 	- @echo "== (preprocessing) $(<F)"
 	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$(*F).idl
 
 
-../object/.%.fake ../object/%S.cpp ../object/%C.cpp ../object/%C.h ../object/%C.inl ../object/%S.h ../object/%S.inl ../object/%S_T.cpp ../object/%S_T.h ../object/%S_T.inl : %.idl Makefile
+../object/.%.fake ../object/%S.cpp ../object/%C.cpp ../object/%C.h ../object/%C.inl ../object/%S.h ../object/%S.inl ../object/%S_T.cpp ../object/%S_T.h ../object/%S_T.inl : TMPSRC = "../object/$*/src"
+../object/.%.fake ../object/%S.cpp ../object/%C.cpp ../object/%C.h ../object/%C.inl ../object/%S.h ../object/%S.inl ../object/%S_T.cpp ../object/%S_T.h ../object/%S_T.inl : %.idl Makefile 
 	$(AT) $(RM)  .$(*F).fake
 	$(AT) if [ ! -f .idl-compilation-start ]; then touch .idl-compilation-start ; fi
 
@@ -350,9 +352,9 @@ ifndef MAKE_VXWORKS
 ifeq ($(call mustBuild,Java),true)
 	- @echo "== (preprocessing) $(<F)"
 	$(AT) JacPrep $< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  /tmp/$(UNIQUE_NUMBER).$(<F)
-	- @echo "== IDL Compiling for JacORB (Java): $(<F)"
-	$(AT) 	mkdir -p ../object/src ; if [ -s /tmp/$(UNIQUE_NUMBER).$(<F) ]; then \
-	$(JAVA_IDL) -auto_prefix   $(JACORB_MK_IDL_PATH) $(MK_IDL_PATH) -d ../object/src   /tmp/$(UNIQUE_NUMBER).$(<F) ;\
+	- @echo "== IDL Compiling for JacORB (Java): $(<F) "
+	$(AT) 	mkdir -p $(TMPSRC) ; if [ -s /tmp/$(UNIQUE_NUMBER).$(<F) ]; then \
+	$(JAVA_IDL) -auto_prefix   $(JACORB_MK_IDL_PATH) $(MK_IDL_PATH) -d $(TMPSRC)   /tmp/$(UNIQUE_NUMBER).$(<F) ;\
 	fi
 	$(AT) $(RM) /tmp/$(UNIQUE_NUMBER).$(<F)
 ifneq ($(strip $(XML_IDL)),)
@@ -369,25 +371,24 @@ endif #end $(strip $(XML_IDL))
 # the assumption made here is that there are no other java files under
 # ../object besides those which result from processing IDL files
 # 
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
+	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find $(TMPSRC) ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d $(TMPSRC) $$FILES; fi;
 #
 #
 # putting it into the jarfile
 #
 ifeq ($(strip $(DEBUG)),on)
 # first put the class files
-	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$FILES ; fi
+	$(AT) cd $(TMPSRC); FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../../lib/$(basename $(<F)).jar $$FILES ; fi
 # then, carefully, the java files prefixed with 'src'.
-	$(AT) cd ../object;  FILES=`find src ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../lib/$(basename $(<F)).jar $$FILES ; fi; 
+	$(AT) cd ../object/$*;  FILES=`find src ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../../lib/$(basename $(<F)).jar $$FILES ; fi; 
 	$(AT) echo "ACS-Generated-FromFile: $(<F)" >  ../object/$(basename $(<F)).manifest; \
 	      jar ufm ../lib/$(basename $(<F)).jar ../object/$(basename $(<F)).manifest; \
               rm ../object/$(basename $(<F)).manifest
 else
-	$(AT) cd ../object/src; CLASSES=`find . -name \*.class`; export CLASSES;  if [ "$$CLASSES" != "" ] ; then jar cf ../../lib/$(basename $(<F)).jar $$CLASSES ; fi
-
+	$(AT) cd $(TMPSRC) && CLASSES=`find . -name \*.class` ; export CLASSES;  if [ "$$CLASSES" != "" ] ; then jar cf ../../../lib/$(basename $(<F)).jar $$CLASSES ; fi
 endif # DEBUG
 #	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
-	$(AT) $(RM) ../object/src
+	$(AT) $(RM) ../object/$*
 endif # must build Java
 
 # Python
@@ -464,7 +465,7 @@ endif
 # compile
 	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find ../object/src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d ../object/src $$FILES; fi;
 # add to jarfile
-	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../lib/$(basename $(<F))Abeans.jar $$FILES ; fi
+	$(AT) cd ../object/src; FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../../lib/$(basename $(<F))Abeans.jar $$FILES ; fi
 # cleanup
 	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
 
