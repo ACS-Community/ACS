@@ -99,7 +99,7 @@ public class Server {
 
 		
 			if (useJacORB) {
-				sharedLogger.log(AcsLogLevel.INFO, "DALfs will use JacORB ORB");
+				sharedLogger.log(AcsLogLevel.DELOUSE, "DALfs will use JacORB ORB");
 				properties.put("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
 				properties.put(
 					"org.omg.CORBA.ORBSingletonClass",

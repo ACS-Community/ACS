@@ -210,7 +210,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			saxParser = factory.newSAXParser();
 			// find out all schemas
 			String allURIs = getSchemas();
-			m_logger.log(AcsLogLevel.DEBUG, "- created parser "+saxParser.getClass().getName()+" with schema location: '" + allURIs +"'");//msc:added
+			m_logger.log(AcsLogLevel.DELOUSE, "created parser " + saxParser.getClass().getName() + 
+					" with schema location: '" + allURIs +"'");//msc:added
 			if (allURIs != null) {
 				saxParser.setProperty(EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID, allURIs);
 			} else {
@@ -547,7 +548,8 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			
 			if (toFree <= 0 || cache.isEmpty())
 			{
-				m_logger.log(AcsLogLevel.DELOUSE, "Memory status: " + ((totalFreeMemory/(double)maxMemory)*100) + "% free.");
+				// round to 0.1%
+				m_logger.log(AcsLogLevel.DELOUSE, "Memory status: " + ((1000 * totalFreeMemory / maxMemory) / 10.) + "% free.");
 				return true;
 			}
 			
