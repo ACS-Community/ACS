@@ -9005,7 +9005,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
                 String prefix = iter.next().toString();
                 if (prefix.length() > 0)
                     prefix += "/";
-                String attributes = (String) dc.get_field_data(prefix + "_characteristics");
+                String attributes = dc.get_field_data(prefix + "_characteristics");
 
                 // convert into array
                 StringTokenizer tokenizer = new StringTokenizer(attributes, ",");
@@ -9469,7 +9469,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (raise)
 			logger.log(Level.SEVERE, "Manager persistence subsystem failed to store pesistent data.", alarmEx);
 		else
-			logger.log(Level.INFO, "Manager peristence subsystem is functional.");
+			logger.log(Level.INFO, "Manager persistence subsystem is functional.");
 		
 		// if no alarm system initialized ignore
 		if (alarmSource == null)
