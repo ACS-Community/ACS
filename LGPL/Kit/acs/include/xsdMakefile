@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: xsdMakefile,v 1.72 2007/06/13 09:46:42 mzampare Exp $"
+# "@(#) $Id: xsdMakefile,v 1.73 2010/01/07 14:22:18 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -106,12 +106,14 @@ endif
 ##
 clean_xsd:
 	-$(AT)$(RM) ../lib/$(XSDBIND).jar
+	-$(AT)$(RM) ../lib/python/site-packages/$(XSDBIND)
+	-$(AT)$(RM) ../lib/python/site-packages/$(XSDBIND).wxs
 	-@$(ECHO) " .\c"
 
 ## install
 ##
 install_xsd:
-	-@$(ECHO) "install_xsd: xsd_begin $(VLTTOP)/idl/$(XSDBIND).xml  $(VLTTOP)/lib/$(XSDBIND).jar " >>$(FILE)
+	-@$(ECHO) "install_xsd: xsd_begin $(VLTTOP)/idl/$(XSDBIND).xml  $(VLTTOP)/lib/$(XSDBIND).jar $(VLTTOP)/lib/python/site-packages/$(XSDBIND).wxs $(VLTTOP)/lib/python/site-packages/$(XSDBIND) " >>$(FILE)
 	-@$(ECHO) "xsd_begin:" >>$(FILE)
 	-@$(ECHO) "	-@echo \"\"; $(ECHO) \"......XML schemas:\"" >>$(FILE)
 	-@$(ECHO) "$(VLTTOP)/idl/$(XSDBIND).xml: ../idl/$(XSDBIND).xml" >>$(FILE);
@@ -123,6 +125,13 @@ install_xsd:
 	-@$(ECHO) "	-\$$(AT)echo \"\t$(XSDBIND).jar\";" >>$(FILE);
 	-@$(ECHO) "	-$(AT)cp ../lib/$(XSDBIND).jar $(VLTTOP)/lib/   " >>$(FILE);
 	-@$(ECHO) "	-$(AT)chmod $(P755) $(VLTTOP)/lib/$(XSDBIND).jar" >>$(FILE);
+	-@$(ECHO) "$(VLTTOP)/lib/python/site-packages/$(XSDBIND).wxs: ../lib/python/site-packages/$(XSDBIND).wxs" >>$(FILE);
+	-@$(ECHO) "	-\$$(AT)echo \"\t$(XSDBIND).wxs\";" >>$(FILE);
+	-@$(ECHO) "	-$(AT)cp ../lib/python/site-packages/$(XSDBIND).wxs $(VLTTOP)/lib/python/site-packages   " >>$(FILE);
+	-@$(ECHO) "	-$(AT)chmod $(P644) $(VLTTOP)/lib/python/site-packages/$(XSDBIND).wxs" >>$(FILE);
+	-@$(ECHO) "$(VLTTOP)/lib/python/site-packages/$(XSDBIND): ../lib/python/site-packages/$(XSDBIND)" >>$(FILE);
+	-@$(ECHO) "	-\$$(AT)echo \"\tlib/python/site-packages/$(XSDBIND)\";" >>$(FILE);
+	-@$(ECHO) "	-$(AT)cp -pr ../lib/python/site-packages/$(XSDBIND) $(VLTTOP)/lib/python/site-packages   " >>$(FILE);
 ##
 #########################################
 ## ALL
@@ -154,11 +163,17 @@ else
 endif # DEBUG
 	$(AT) find ../object -type d ! -name object | $(XARGS) -i $(RM) {}
 ###################  CASTOR END  ####################################
+
+../lib/python/site-packages/$(XSDBIND): ../idl/$(XSDBIND).xml
+	- @echo "== XSD Compiling with pyxbgen (Python): $(<F)"
+	- $(AT)generateXsdPythonBinding $(XSDBIND)
+	- $(AT)(cd ../lib/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(XSDBIND))
+
 #####################################################################
 
 ifdef XSDBIND
 ifeq ($(call mustBuild,Java),true)
-do_xsd: ../lib/$(XSDBIND).jar
+do_xsd: ../lib/$(XSDBIND).jar ../lib/python/site-packages/$(XSDBIND)
 else 
 do_xsd:
 endif
