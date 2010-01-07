@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.115 2010/01/05 15:20:07 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.116 2010/01/07 09:00:14 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -145,7 +145,7 @@ else
 endif
 CompHelpOutRootDirDef=-Dalma.acs.tools.comphelpergen.outRootDir=.
 
-XMLIDL=java $(CompHelpDoGenerateDef) $(CompHelpOutRootDirDef) -DACS.idl2jbind=$(XML_IDL) $(AlmaIDLMainClass) -d ../object/src -notie $(verboseDef) 
+XMLIDL=java $(CompHelpDoGenerateDef) $(CompHelpOutRootDirDef) -DACS.idl2jbind=$(XML_IDL) $(AlmaIDLMainClass) -d $(TMPSRC) -notie $(verboseDef) 
 
 # set search path for idl files
 
