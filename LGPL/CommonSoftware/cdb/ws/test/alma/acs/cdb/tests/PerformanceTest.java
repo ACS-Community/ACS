@@ -34,6 +34,7 @@ public class PerformanceTest extends TestCase {
 
 	private static final int [] concurrentCallsIterations = {1, 2, 4, 8, 16};
 
+	// Existing nodes in the CDB used for querying
 	private static final String MANAGER_DAO     = "MACI/Managers/Manager";
 	private static final String CONTAINER_DAO   = "MACI/Containers/Container";
 	private static final String TESTPS_DAO      = "alma/TEST_PS_1";
@@ -50,6 +51,24 @@ public class PerformanceTest extends TestCase {
 	private static final String SNDLONODE41_DAO = "MACI/Components/CONTROL/SecondLO/Node0x41/Generic";
 	private static final String SNDLONODE42_DAO = "MACI/Components/CONTROL/SecondLO/Node0x42/Generic";
 	private static final String SNDLONODE43_DAO = "MACI/Components/CONTROL/SecondLO/Node0x43/Generic";
+
+	// Non-existing nodes in the CDB used for querying
+	private static final String NONEXISTING01 = "MACI/Components/CONTROL/MyOwnAntenna01";
+	private static final String NONEXISTING02 = "MACI/Components/CONTROL/MyOwnAntenna02";
+	private static final String NONEXISTING03 = "MACI/Components/CONTROL/MyOwnAntenna03";
+	private static final String NONEXISTING04 = "MACI/Components/CONTROL/MyOwnAntenna04";
+	private static final String NONEXISTING05 = "MACI/Components/CONTROL/MyOwnAntenna05";
+	private static final String NONEXISTING06 = "MACI/Components/CONTROL/MyOwnAntenna06";
+	private static final String NONEXISTING07 = "MACI/Components/CONTROL/MyOwnAntenna07";
+	private static final String NONEXISTING08 = "MACI/Components/CONTROL/MyOwnAntenna08";
+	private static final String NONEXISTING09 = "Lala/Lalo09";
+	private static final String NONEXISTING10 = "Lala/Lalo10";
+	private static final String NONEXISTING11 = "Lala/Lalo11";
+	private static final String NONEXISTING12 = "Lala/Lalo12";
+	private static final String NONEXISTING13 = "Lala/Lalo13";
+	private static final String NONEXISTING14 = "Lala/Lalo14";
+	private static final String NONEXISTING15 = "Lala/Lalo15";
+	private static final String NONEXISTING16 = "Lala/Lalo16";
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -99,7 +118,7 @@ public class PerformanceTest extends TestCase {
 		System.out.println("");
 	}
 
-	private void runSequentialCalls(String []daos) throws Exception {
+	private void runSequentialCalls(String []daos) {
 
 		long start;
 		long end;
@@ -109,7 +128,11 @@ public class PerformanceTest extends TestCase {
 			start = System.currentTimeMillis();
 			for (int i = 0; i != NUMBER_OF_SEQUENTIAL_CALLS; i++) {
 				int index = (int)(Math.random()*(daos.length-1));
-				dal.get_DAO(daos[index]);
+				try {
+					dal.get_DAO(daos[index]);
+				} catch (Exception e) {
+					// Do nothing
+				}
 			}
 			end = System.currentTimeMillis();
 			average += (end-start);
@@ -129,7 +152,6 @@ public class PerformanceTest extends TestCase {
 				              COMPONENTS_DAO, ABM001_DAO, ABM002_DAO, ARTM_DAO,
 				              DMC_DAO, ANTENNA_DAO, GPS_DAO, OPERATOR_DAO,
 				              SNDLONODE40_DAO, SNDLONODE41_DAO, SNDLONODE42_DAO, SNDLONODE43_DAO} );
-
 	}
 
 	public void testSequentialCalls() throws Exception {
@@ -143,7 +165,6 @@ public class PerformanceTest extends TestCase {
 				              COMPONENTS_DAO, ABM001_DAO, ABM002_DAO, ARTM_DAO,
 				              DMC_DAO, ANTENNA_DAO, GPS_DAO, OPERATOR_DAO,
 				              SNDLONODE40_DAO, SNDLONODE41_DAO, SNDLONODE42_DAO, SNDLONODE43_DAO} );
-
 	}
 
 	public void testCallsPerSecond() throws Exception {
@@ -160,6 +181,32 @@ public class PerformanceTest extends TestCase {
 			average += ct.numberOfCalls();
 		}
 		System.out.println("Average sequential calls/s: " + (average/CALLS_PER_SECOND_TRIES));
+	}
+
+	public void testNonExistingConcurrentCalls() throws Exception {
+
+		System.out.println("Stressing the get_DAO() MISSING NODES (concurrent threads)");
+		System.out.println("==========================================================");
+		runConcurrentCalls( new String[] {NONEXISTING01} );
+		runConcurrentCalls( new String[] {NONEXISTING01, NONEXISTING02, NONEXISTING03, NONEXISTING04} );
+		runConcurrentCalls(
+				new String[] {NONEXISTING01, NONEXISTING02, NONEXISTING03, NONEXISTING04,
+				              NONEXISTING05, NONEXISTING06, NONEXISTING07, NONEXISTING08,
+				              NONEXISTING09, NONEXISTING10, NONEXISTING11, NONEXISTING12,
+				              NONEXISTING13, NONEXISTING14, NONEXISTING15, NONEXISTING16} );
+	}
+
+	public void testNonExistingSequentialCalls() throws Exception {
+
+		System.out.println("Stressing the get_DAO() MISSING NODES (sequential threads)");
+		System.out.println("==========================================================");
+		runSequentialCalls( new String[] {NONEXISTING01} );
+		runSequentialCalls( new String[] {NONEXISTING01, NONEXISTING02, NONEXISTING03, NONEXISTING04} );
+		runSequentialCalls(
+				new String[] {NONEXISTING01, NONEXISTING02, NONEXISTING03, NONEXISTING04,
+			                  NONEXISTING05, NONEXISTING06, NONEXISTING07, NONEXISTING08,
+			                  NONEXISTING09, NONEXISTING10, NONEXISTING11, NONEXISTING12,
+			                  NONEXISTING13, NONEXISTING14, NONEXISTING15, NONEXISTING16} );
 	}
 
 	protected void tearDown() throws Exception {
