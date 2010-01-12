@@ -173,7 +173,7 @@ public class PerformanceTest extends TestCase {
 		System.out.println("========================");
 		double average = 0;
 		for(int i=0; i!= CALLS_PER_SECOND_TRIES; i++) {
-			CallerTask ct = new CallerTask();
+			CallerTask ct = new CallerTask(MANAGER_DAO);
 			Thread t = new Thread(ct);
 			t.start();
 			Thread.sleep(1000);
@@ -209,6 +209,22 @@ public class PerformanceTest extends TestCase {
 			                  NONEXISTING13, NONEXISTING14, NONEXISTING15, NONEXISTING16} );
 	}
 
+	public void testNonExistingCallsPerSecond() throws Exception {
+
+		System.out.println("Measuring average call/s MISSING NODES");
+		System.out.println("======================================");
+		double average = 0;
+		for(int i=0; i!= CALLS_PER_SECOND_TRIES; i++) {
+			CallerTask ct = new CallerTask(NONEXISTING01);
+			Thread t = new Thread(ct);
+			t.start();
+			Thread.sleep(1000);
+			ct.end();
+			average += ct.numberOfCalls();
+		}
+		System.out.println("Average sequential calls/s: " + (average/CALLS_PER_SECOND_TRIES));
+	}
+
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		dal._release();
@@ -238,16 +254,21 @@ public class PerformanceTest extends TestCase {
 
 		private boolean keepRunning = true;
 		private long _calls = 0;
+		private String _dao;
 
+		public CallerTask(String dao) {
+			_dao = dao;
+		}
+		
 		public void run() {
-			try {
 				while (keepRunning) {
-					dal.get_DAO(MANAGER_DAO);
-					_calls++;
+					try {
+						_calls++;
+						dal.get_DAO(_dao);
+					} catch (Exception e) {
+						// Nothing special
+					}
 				}
-			} catch (Exception e) {
-				// Nothing, should't happen
-			}
 		}
 
 		public void end() {
