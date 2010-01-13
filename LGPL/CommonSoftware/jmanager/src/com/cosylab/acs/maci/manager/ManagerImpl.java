@@ -54,6 +54,7 @@ import org.prevayler.implementation.SnapshotPrevayler;
 import si.ijs.maci.ClientOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
+import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.util.ACSPorts;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -857,7 +858,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		
 		threadPool = new ThreadPoolExecutor(poolThreads, poolThreads,
 				  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-				  new LinkedBlockingQueue());
+				  new LinkedBlockingQueue(),
+				  new DaemonThreadFactory("managerThreadPool"));
 
 		managerCache = new HashMap();
 
