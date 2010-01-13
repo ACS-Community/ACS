@@ -25,7 +25,7 @@ public class PerformanceTest extends TestCase {
 	private ORB orb;
 	private DAL dal;
 
-	private static final int CALLS_PER_SECOND_TRIES = 50;
+	private static final int CALLS_PER_SECOND_TRIES = 500;
 
 	private static final int SEQUENTIAL_CALLS_ITERATIONS = 50;
 	private static final int CONCURRENT_CALLS_ITERATIONS = 50;
@@ -69,6 +69,24 @@ public class PerformanceTest extends TestCase {
 	private static final String NONEXISTING14 = "Lala/Lalo14";
 	private static final String NONEXISTING15 = "Lala/Lalo15";
 	private static final String NONEXISTING16 = "Lala/Lalo16";
+
+	// Semi-existing nodes in the CDB used for querying
+	private static final String SEMIEXISTING01 = "MACI/Containers/EmptyContainerDefinition01";
+	private static final String SEMIEXISTING02 = "MACI/Containers/EmptyContainerDefinition02";
+	private static final String SEMIEXISTING03 = "MACI/Containers/EmptyContainerDefinition03";
+	private static final String SEMIEXISTING04 = "MACI/Containers/EmptyContainerDefinition04";
+	private static final String SEMIEXISTING05 = "MACI/Containers/EmptyContainerDefinition05";
+	private static final String SEMIEXISTING06 = "MACI/Containers/EmptyContainerDefinition06";
+	private static final String SEMIEXISTING07 = "MACI/Containers/EmptyContainerDefinition07";
+	private static final String SEMIEXISTING08 = "MACI/Containers/EmptyContainerDefinition08";
+	private static final String SEMIEXISTING09 = "MACI/Containers/EmptyContainerDefinition09";
+	private static final String SEMIEXISTING10 = "MACI/Containers/EmptyContainerDefinition10";
+	private static final String SEMIEXISTING11 = "MACI/Containers/EmptyContainerDefinition11";
+	private static final String SEMIEXISTING12 = "MACI/Containers/EmptyContainerDefinition12";
+	private static final String SEMIEXISTING13 = "MACI/Containers/EmptyContainerDefinition13";
+	private static final String SEMIEXISTING14 = "MACI/Containers/EmptyContainerDefinition14";
+	private static final String SEMIEXISTING15 = "MACI/Containers/EmptyContainerDefinition15";
+	private static final String SEMIEXISTING16 = "MACI/Containers/EmptyContainerDefinition16";
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -216,6 +234,48 @@ public class PerformanceTest extends TestCase {
 		double average = 0;
 		for(int i=0; i!= CALLS_PER_SECOND_TRIES; i++) {
 			CallerTask ct = new CallerTask(NONEXISTING01);
+			Thread t = new Thread(ct);
+			t.start();
+			Thread.sleep(1000);
+			ct.end();
+			average += ct.numberOfCalls();
+		}
+		System.out.println("Average sequential calls/s: " + (average/CALLS_PER_SECOND_TRIES));
+	}
+
+	public void testSemiExistingConcurrentCalls() throws Exception {
+
+		System.out.println("Stressing the get_DAO() MISSING NODES (concurrent threads)");
+		System.out.println("==========================================================");
+		runConcurrentCalls( new String[] {SEMIEXISTING01} );
+		runConcurrentCalls( new String[] {SEMIEXISTING01, SEMIEXISTING02, SEMIEXISTING03, SEMIEXISTING04} );
+		runConcurrentCalls(
+				new String[] {SEMIEXISTING01, SEMIEXISTING02, SEMIEXISTING03, SEMIEXISTING04,
+				              SEMIEXISTING05, SEMIEXISTING06, SEMIEXISTING07, SEMIEXISTING08,
+				              SEMIEXISTING09, SEMIEXISTING10, SEMIEXISTING11, SEMIEXISTING12,
+				              SEMIEXISTING13, SEMIEXISTING14, SEMIEXISTING15, SEMIEXISTING16} );
+	}
+
+	public void testSemiExistingSequentialCalls() throws Exception {
+
+		System.out.println("Stressing the get_DAO() MISSING NODES (sequential threads)");
+		System.out.println("==========================================================");
+		runSequentialCalls( new String[] {SEMIEXISTING01} );
+		runSequentialCalls( new String[] {SEMIEXISTING01, SEMIEXISTING02, SEMIEXISTING03, SEMIEXISTING04} );
+		runSequentialCalls(
+				new String[] {SEMIEXISTING01, SEMIEXISTING02, SEMIEXISTING03, SEMIEXISTING04,
+			                  SEMIEXISTING05, SEMIEXISTING06, SEMIEXISTING07, SEMIEXISTING08,
+			                  SEMIEXISTING09, SEMIEXISTING10, SEMIEXISTING11, SEMIEXISTING12,
+			                  SEMIEXISTING13, SEMIEXISTING14, SEMIEXISTING15, SEMIEXISTING16} );
+	}
+
+	public void testSemiExistingCallsPerSecond() throws Exception {
+
+		System.out.println("Measuring average call/s MISSING NODES");
+		System.out.println("======================================");
+		double average = 0;
+		for(int i=0; i!= CALLS_PER_SECOND_TRIES; i++) {
+			CallerTask ct = new CallerTask(SEMIEXISTING01);
 			Thread t = new Thread(ct);
 			t.start();
 			Thread.sleep(1000);
