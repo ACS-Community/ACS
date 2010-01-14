@@ -92,9 +92,10 @@ public class AlarmTableEntry implements Alarm {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
 		if (alarm instanceof AlarmTableEntry) {
-			throw new IllegalArgumentException("The alarm can't be an AlarmTableEntry");
+			this.alarm=((AlarmTableEntry)alarm).getEncapsulatedAlarm();
+		} else {
+			this.alarm=alarm;
 		}
-		this.alarm=alarm;
 		isNew=true;
 		alarmType=AlarmGUIType.fromAlarm(this);
 	}

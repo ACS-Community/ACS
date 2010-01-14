@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.18 2009/10/12 17:08:10 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.19 2010/01/14 19:51:45 acaproni Exp $
  * @since    
  */
 
@@ -667,7 +667,7 @@ public class AlarmTable extends JTable implements ActionListener {
 	 * 
 	 * @param alarm The alarm whose children must be shown in a dialog
 	 */
-	private void showReductionChain(Alarm alarm) {
+	private void showReductionChain(AlarmTableEntry alarm) {
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
