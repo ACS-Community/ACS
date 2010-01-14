@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.5 2010/01/14 17:36:33 javarias Exp $
+# @(#) $Id: acsdataClean.py,v 1.6 2010/01/14 17:39:25 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -47,7 +47,7 @@ import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.5 2010/01/14 17:36:33 javarias Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.6 2010/01/14 17:39:25 javarias Exp $"
 #------------------------------------------------------------------------------
 
 ################################################################################################
@@ -113,7 +113,7 @@ def cleanDirectory(dir):
        print "An exception occured in acsdataClean.py's main:", e
 
 
-if argv.count("-h")==0 or argv.count("--help")==0:
+if argv.count("-h")!=0 or argv.count("--help")!=0:
    print "Clean the temporal directories of ACS"
    print "Options:"
    print "-h or --help : Show this message and then exit.\n"
