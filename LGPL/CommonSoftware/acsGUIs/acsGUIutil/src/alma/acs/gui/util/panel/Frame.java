@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
@@ -110,7 +111,7 @@ public class Frame extends JFrame {
 			panel = loadPanel(params[0]);
 			initialize(panel);
 		} catch (Throwable t) {
-			throw new PanelException("Error building PanelFrame",t);
+			throw new PanelException("Error connecting the ACS component client",t);
 		}
 		addWindowListener(windowListener);
 		// Stert the panel
@@ -118,7 +119,7 @@ public class Frame extends JFrame {
 			panel.setACSContainerServices(contSvc);
 			panel.start();
 		} catch (Throwable t) {
-			throw new PanelException("Error building PanelFrame",t);
+			throw new PanelException("Error starting IPanel "+params[0],t);
 		}
 	}
 	
@@ -202,6 +203,9 @@ public class Frame extends JFrame {
 					System.err.println(t.getMessage());
 					t.printStackTrace(System.err);
 					printUsage("PanelFrame");
+					String msg = "<HTML><BODY>Error opening panel: <I>"+t.getMessage();
+					msg+="</I><P>Is ACS running?";
+					JOptionPane.showMessageDialog(null, msg, "Error opening panel", JOptionPane.ERROR_MESSAGE);
 					System.exit(-1);
 				}
 			}
