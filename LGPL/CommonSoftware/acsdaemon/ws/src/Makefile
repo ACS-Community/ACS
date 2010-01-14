@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.25 2009/10/06 16:09:37 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.26 2010/01/14 10:55:16 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -116,7 +116,7 @@ acsdaemonImpStop_LIBS      =       acscomponentStubs acsdaemonErrType acsdaemonS
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = acsDaemonImpl.h
+INCLUDES        = acsDaemonImpl.h acsdaemonORBTask.h
 
 #
 # Libraries (public and local)
