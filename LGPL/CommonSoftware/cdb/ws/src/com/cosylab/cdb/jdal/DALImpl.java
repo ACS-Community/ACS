@@ -603,14 +603,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				cache.remove(curl);
 				cache.put(curl, cachedObject);
 				
-				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' retrieved from cache.");
-
-				if (cachedObject instanceof String)
+				if (cachedObject instanceof String) {
+					m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' retrieved from cache.");
 					return (String)cachedObject;
-				else if (cachedObject instanceof CDBRecordDoesNotExistEx)
+				}
+				else if (cachedObject instanceof CDBRecordDoesNotExistEx) {
+					m_logger.log(AcsLogLevel.DEBUG, "CDBRecordDoesNotExist exception for record '" + curl + "' retrieved from cache.");
 					throw (CDBRecordDoesNotExistEx)cachedObject;
-				else if (cachedObject instanceof CDBXMLErrorEx)
+				}
+				else if (cachedObject instanceof CDBXMLErrorEx) {
+					m_logger.log(AcsLogLevel.DEBUG, "CDBXMLError exception for record '" + curl + "' retrieved from cache.");
 					throw (CDBXMLErrorEx)cachedObject;
+				}
 				else
 					throw new RuntimeException("Unable to handle object of class: " + cachedObject.getClass() + ", value: " + cachedObject);
 			}
