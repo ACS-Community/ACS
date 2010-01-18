@@ -343,7 +343,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		if(curlNode != null) {
 			String xmlPath = getRecordPath(node.getCurl());
 			// NOTE: we cannot cache due to setFirstElement.... sadly :(
-			String xml = null; //getFromCache(node.getCurl());
+			String xml = null; //getFromCache(node.getCurl()); + check if string instance
 			if (xml != null)
 			{
 				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
@@ -509,7 +509,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 
-	private LinkedHashMap<String, String> cache = new LinkedHashMap<String, String>();
+	private LinkedHashMap<String, Object> cache = new LinkedHashMap<String, Object>();
 	
 	private volatile boolean cacheLimitReached = false;
 	
@@ -559,7 +559,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			long freedEstimation = 0;
 			while (freedEstimation < toFree && !cache.isEmpty()) {
 				String oldestKey = cache.keySet().iterator().next();
-				String value = cache.remove(oldestKey);
+				Object cachedObject = cache.remove(oldestKey);
+				// for non-string objects their string representation is also used
+				// String.toString() returns "this", so we are safe of creating another string instance
+				String value = cachedObject.toString();	 
 				freedEstimation += (value.length()*2 + 64) + (oldestKey.length()*2 + 64) + 68;
 				m_logger.log(AcsLogLevel.DELOUSE, "XML record '" + oldestKey + "' removed from cache.");
 			}
@@ -586,27 +589,37 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 	}
 	
-	private String getFromCache(String curl)
+	private String getFromCache(String curl) throws CDBRecordDoesNotExistEx, CDBXMLErrorEx
 	{
 		// remove leading "/"
 		if (curl != null && curl.startsWith("/"))
 			curl = curl.substring(1);
 		
 		synchronized (cache) {
-			String xml = cache.get(curl);
-			if (xml != null) {
+			Object cachedObject = cache.get(curl);
+			if (cachedObject != null)
+			{
 				// make it recent
 				cache.remove(curl);
-				cache.put(curl, xml);
+				cache.put(curl, cachedObject);
+				
 				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' retrieved from cache.");
-				return xml;
+
+				if (cachedObject instanceof String)
+					return (String)cachedObject;
+				else if (cachedObject instanceof CDBRecordDoesNotExistEx)
+					throw (CDBRecordDoesNotExistEx)cachedObject;
+				else if (cachedObject instanceof CDBXMLErrorEx)
+					throw (CDBXMLErrorEx)cachedObject;
+				else
+					throw new RuntimeException("Unable to handle object of class: " + cachedObject.getClass() + ", value: " + cachedObject);
 			}
 			else
 				return null;
 		}
 	}
 	
-	private void putToCache(String curl, String xml) 
+	private void putToCache(String curl, Object xml) 
 	{
 		// remove leading "/"
 		if (curl != null && curl.startsWith("/"))
@@ -664,11 +677,19 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			
 			return xml;
 		} catch (AcsJCDBXMLErrorEx e) {
+			// negative cache
+			if (!precacheStage || checkCache(true))
+				putToCache(curl, e);
+			
 			// @todo watch if this log also needs a repeat guard, similar to logRecordNotExistWithRepeatGuard
 			if (!precacheStage)
 				m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
 			throw e.toCDBXMLErrorEx();
 		} catch (AcsJCDBRecordDoesNotExistEx e) {
+			// negative cache
+			if (!precacheStage || checkCache(true))
+				 putToCache(curl, e);
+
 			if (!precacheStage)
 				logRecordNotExistWithRepeatGuard(curl);
 			throw e.toCDBRecordDoesNotExistEx();
