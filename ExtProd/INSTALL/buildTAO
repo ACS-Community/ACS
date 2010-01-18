@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.33 2009/10/13 15:23:51 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.34 2010/01/18 12:55:07 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -94,6 +94,9 @@ echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
+echo "- IFR.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/IFR.patch
+
 if [ ! "X$WIND_BASE" = X ]
 then
   echo "- ACE_vx6.7.patch"
