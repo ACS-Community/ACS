@@ -677,22 +677,26 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			
 			return xml;
 		} catch (AcsJCDBXMLErrorEx e) {
+			CDBXMLErrorEx ex = e.toCDBXMLErrorEx();
+			
 			// negative cache
 			if (!precacheStage || checkCache(true))
-				putToCache(curl, e);
+				putToCache(curl, ex);
 			
 			// @todo watch if this log also needs a repeat guard, similar to logRecordNotExistWithRepeatGuard
 			if (!precacheStage)
 				m_logger.log(AcsLogLevel.NOTICE, "Failed to read curl '" + curl + "'.", e);
-			throw e.toCDBXMLErrorEx();
+			throw ex;
 		} catch (AcsJCDBRecordDoesNotExistEx e) {
+			CDBRecordDoesNotExistEx ex = e.toCDBRecordDoesNotExistEx();
+				
 			// negative cache
 			if (!precacheStage || checkCache(true))
-				 putToCache(curl, e);
+				 putToCache(curl, ex);
 
 			if (!precacheStage)
 				logRecordNotExistWithRepeatGuard(curl);
-			throw e.toCDBRecordDoesNotExistEx();
+			throw ex;
 		}
 	}
 
