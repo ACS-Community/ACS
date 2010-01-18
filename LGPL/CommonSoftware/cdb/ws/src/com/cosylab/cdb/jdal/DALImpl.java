@@ -632,7 +632,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		synchronized (cache) {
 			checkCache();
 			cache.put(curl, xml);
-			m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' put to cache.");
+			if (xml instanceof String)
+				m_logger.log(AcsLogLevel.DEBUG, "XML record '" + curl + "' put to cache.");
+			else
+				m_logger.log(AcsLogLevel.DEBUG, "Exception for record '" + curl + "' put to cache.");
 		}
 	}
 	
