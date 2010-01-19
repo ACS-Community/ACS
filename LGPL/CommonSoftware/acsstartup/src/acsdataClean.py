@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.6 2010/01/14 17:39:25 javarias Exp $
+# @(#) $Id: acsdataClean.py,v 1.7 2010/01/19 17:26:47 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -47,7 +47,7 @@ import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.6 2010/01/14 17:39:25 javarias Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.7 2010/01/19 17:26:47 javarias Exp $"
 #------------------------------------------------------------------------------
 
 ################################################################################################
@@ -128,6 +128,9 @@ if argv.count("-other_hosts")==0:
 else:
    print "Cleanning all the possible hosts' temporary directories"
    myDir = myDir + "/../"
+   if not exists(myDir):
+      print "'", myDir, "' does not exist!"
+      exit(1)
    fileList = listdir(myDir)
    for file in fileList:
       if isdir(myDir + file):
