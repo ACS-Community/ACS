@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.111 2009/06/09 00:03:54 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.112 2010/01/21 00:02:56 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -74,7 +74,8 @@ SimpleClient::SimpleClient ():
     m_initialized(false),
     m_loggedin(false),
     m_executionId(0),
-    m_startTime(::getTimeStamp())
+    m_startTime(::getTimeStamp()),
+	 m_ContServ(0)
 {
   if (m_logger==0) {
 	m_logger = new LoggingProxy(0,0,31);
@@ -118,6 +119,7 @@ SimpleClient::destroy ()
 
   LoggingProxy::done();
 
+  delete m_ContServ;
   delete m_logger;
   m_logger =0;
   return result;
@@ -379,6 +381,7 @@ SimpleClient::init(int argc, char *argv[])
   LoggingProxy::init (m_logger);
   ACS_SHORT_LOG((LM_INFO, "Logging proxy successfully created."));
 
+
   /**
    * Start the TRY block
    */
@@ -491,6 +494,7 @@ SimpleClient::init(int argc, char *argv[])
     }
   */
 
+
   return 0;
 }
 
@@ -589,6 +593,195 @@ long  SimpleClient::releaseComponent(const char* name)
 	throw ex;
 	}//try-catch					}
 }//releaseComponent
+
+CORBA::Object* SimpleClient::getCORBADefaultComponent(const char* idlType)
+{
+	ComponentInfo_var cInfo;
+	ACS_TRACE("maci::SimpleClient::getCORBADefaultComponent");
+	try{
+		cInfo  = m_manager->get_default_component(m_handle, idlType);
+		CORBA::Object_var obj = cInfo->reference;
+		if (CORBA::is_nil(obj.in())){
+			ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__,
+					"maci::SimpleClient::getCORBADefaultComponent");
+			ex.setVariable("cInfo->reference");
+			throw ex;
+		}
+		return CORBA::Object::_narrow(obj.in());
+	}
+	catch (maciErrType::NoPermissionEx &ex){
+		throw maciErrType::NoPermissionExImpl (ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+	}
+	catch (maciErrType::NoDefaultComponentEx &ex){
+		throw maciErrType::NoDefaultComponentExImpl (ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+	}
+	catch (maciErrType::CannotGetComponentEx &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		lex.setCURL("IDL type:"+ACE_CString(idlType));
+		throw lex;
+	}
+	catch(ACSErr::ACSbaseExImpl &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		lex.setCURL("IDL type:"+ACE_CString(idlType));
+		throw lex;
+	}
+	catch( CORBA::SystemException &ex ){
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		corbaProblemEx.setMinor(ex.minor());
+		corbaProblemEx.setCompletionStatus(ex.completed());
+		corbaProblemEx.setInfo(ex._info().c_str());
+
+		maciErrType::CannotGetComponentExImpl lex(corbaProblemEx, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		lex.setCURL("IDL type:"+ACE_CString(idlType));
+		throw lex;
+	}
+	catch(...){
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBADefaultComponent");
+		lex.setCURL("IDL type:"+ACE_CString(idlType));
+		throw lex;
+	}
+}
+
+CORBA::Object* SimpleClient::getCORBACollocatedComponent(
+		maci::ComponentSpec compSpec, bool markAsDefault, 
+		const char* targetComponent)
+{
+	ComponentInfo_var cInfo;
+	ACS_TRACE("maci::SimpleClient::getCORBACollocatedComponent");
+	try{
+		cInfo = m_manager->get_collocated_component(m_handle, compSpec,
+				markAsDefault, targetComponent);
+		CORBA::Object_var obj = cInfo->reference;
+		if (CORBA::is_nil(obj.in())) {
+			ACSErrTypeCORBA::CORBAReferenceNilExImpl ex(__FILE__, __LINE__,
+					"maci::SimpleClient::getCORBACollocatedComponent");
+			ex.setVariable("cInfo->reference");
+			throw ex;
+		}
+		return CORBA::Object::_narrow(obj.in());
+	}
+	catch (maciErrType::NoPermissionEx &_ex){
+		maciErrType::NoPermissionExImpl ex(__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		throw ex;
+	}
+	catch (maciErrType::IncompleteComponentSpecEx &ex){
+		maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (maciErrType::InvalidComponentSpecEx &ex){
+		maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		throw lex;
+	}
+	catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentEx &ex){
+		maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex,
+			  	__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (maciErrType::CannotGetComponentEx &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch(ACSErr::ACSbaseExImpl &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch( CORBA::SystemException &ex ){
+		ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		corbaProblemEx.setMinor(ex.minor());
+		corbaProblemEx.setCompletionStatus(ex.completed());
+		corbaProblemEx.setInfo(ex._info().c_str());
+
+		maciErrType::CannotGetComponentExImpl lex(corbaProblemEx,
+				__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (...){
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCORBACollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+}
+
+ACE_CString_Vector SimpleClient::findComponents(const char *nameWildcard,
+		const char *typeWildcard)
+{
+	ACE_CString_Vector names;
+
+	if(nameWildcard == NULL)
+	{
+		nameWildcard = "*";
+	}
+
+	if(typeWildcard == NULL)
+	{
+		typeWildcard = "*";
+	}
+
+	maci::HandleSeq seq;
+	maci::ComponentInfoSeq_var devs = m_manager->get_component_info(
+			m_handle,seq,nameWildcard,typeWildcard,false);
+
+	CORBA::ULong len = devs->length ();
+
+	for (CORBA::ULong i=0; i < len; i++){
+		names.push_back(devs[i].name.in());
+	}
+	return names;
+}
+
+maci::ComponentInfo SimpleClient::getComponentDescriptor(
+		const char* componentName)
+{
+	maci::HandleSeq seq;
+	ComponentInfoSeq_var compInfoSeq =
+		m_manager->get_component_info(m_handle,seq,componentName,"*",false);
+
+	if (compInfoSeq!=NULL && compInfoSeq->length()==1){
+		return (*compInfoSeq)[0];
+	}
+	else{
+		acsErrTypeContainerServices::GettingCompInfoExImpl
+			ex(__FILE__,__LINE__,"maci::SimpleClient::getComponentDescriptor");
+		ex.setCURL(componentName);
+		throw ex;
+	}
+}
+
+ContainerServices* SimpleClient::getContainerServices()
+{
+	if (m_ContServ == NULL){
+		ACE_CString clientName("SimpleClient-ContainerServices");
+		m_ContServ =  new MACIContainerServices(m_handle, 
+				clientName, m_poaRoot.in());
+	}
+	return m_ContServ;
+}
+
 
 /* ----------------------------------------------------------------*/
 /* ------------------ [ CORBA Client interface ] ------------------*/

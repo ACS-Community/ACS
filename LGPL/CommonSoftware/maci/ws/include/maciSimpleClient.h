@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.109 2009/05/13 17:16:06 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.110 2010/01/21 00:02:56 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -32,6 +32,8 @@
 #include <ACSErrTypeCORBA.h>
 
 #include <acsComponentSmartPtr.h>
+#include <maciContainerServices.h>
+#include <acscomponentC.h>
 
 namespace maci {
 
@@ -309,6 +311,135 @@ public:
      */
     long releaseComponent(const char* name);
 
+	 /**
+	  * Gets the default component specified by the IDL component type
+	  * 
+	  * @param idlType: the idl type of the component to activate
+	  *                 For example IDL:alma/PS/PowerSupply:1.0
+	  * @tparam T: The type of the object to be returned
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::NoDefaultComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return The reference to the component
+	  */
+	 template<class T>
+	 T* getDefaultComponent(const char* idlType);
+
+	 /**
+	  * Gets a smart pointer to the default component specified by the IDL component type.
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param idlType: the idl type of the component to activate
+	  *                 For example IDL:alma/PS/PowerSupply:1.0
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::NoDefaultComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return A smart pointer containing the reference to the component
+	  */
+	 template <typename T>
+		 SmartPtr<T> getDefaultComponentSmartPtr(const char* idlType);
+
+	 /**
+	  * Gets the default component specified by the IDL component type as a 
+	  * CORBA object.
+	  * 
+	  * @param idlType: the idl type of the component to activate
+	  *                 For example IDL:alma/PS/PowerSupply:1.0
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::NoDefaultComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return The reference to the component
+	  */
+	 CORBA::Object* getCORBADefaultComponent(const char* idlType);
+
+
+	 /**
+	  * Gets a collocated component
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param compSpec The description of the component to activate
+	  * @param markAsDefault If true, the component becomes the default component 
+	  *                      for that IDL type
+	  * @param targetComponent name of the target component (where to activate component)
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::IncompleteComponentSpecExImpl
+	  * @throw maciErrType::InvalidComponentSpecExImpl
+	  * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return The reference to the component
+	  */
+	 template<class T> 
+		 T* getCollocatedComponent(maci::ComponentSpec compSpec, 
+				 bool markAsDefault, const char* targetComponent);
+
+	 /**
+	  * Gets a smart ponter to a collocated component
+	  * This method uses templates, so no cast to the request object is required
+	  * 
+	  * @param compSpec The description of the component to activate
+	  * @param markAsDefault If true, the component becomes the default component 
+	  *                      for that IDL type
+	  * @param targetComponent name of the target component (where to activate component)
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::IncompleteComponentSpecExImpl
+	  * @throw maciErrType::InvalidComponentSpecExImpl
+	  * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return A smart pointer containing the reference to the component
+	  */
+	 template <typename T>
+		 SmartPtr<T> getCollocatedComponentSmartPtr(maci::ComponentSpec compSpec, bool markAsDefault, const char* targetComponent);
+
+
+	 /**
+	  * Gets a collocated component as a Corba object. 
+	  * 
+	  * @param compSpec The description of the component to activate
+	  * @param markAsDefault If true, the component becomes the default component 
+	  *                      for that IDL type
+	  * @param targetComponent name of the target component (where to activate component)
+	  * @throw maciErrType::NoPermissionExImpl
+	  * @throw maciErrType::IncompleteComponentSpecExImpl
+	  * @throw maciErrType::InvalidComponentSpecExImpl
+	  * @throw maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl
+	  * @throw maciErrType::CannotGetComponentExImpl
+	  * @return The reference to the component
+	  */
+	 CORBA::Object* getCORBACollocatedComponent(maci::ComponentSpec compSpec, 
+			 bool markAsDefault, const char* targetComponent);
+
+	 /**
+	  * Finds components by their instance name (curl) and/or by their type.
+	  * Wildcards can be used for the curl and type.
+	  * This method returns a possibly empty array of component curls; 
+	  * for each curl, you may use {@link #getComponent} to obtain the reference.
+	  * 
+	  * @param nameWildcard (<code>null</code> is understood as "*")
+	  * @param typeWildcard (<code>null</code> is understood as "*")
+	  * @return A vector of ACE_CString that contains the name of the component(s) that
+	  * match the search.
+	  * @htmlonly
+	  * <br><hr>
+	  * @endhtmlonly
+	  */
+	 ACE_CString_Vector findComponents(const char *nameWilcard,
+			 const char *typeWildcard);
+
+	 /**
+	  * Gets the component info for the component
+	  * 
+	  * @param componentName The name of the component
+	  * @throw acsErrTypeContainerServices::GettingCompInfoExImpl
+	  * @return The ComponentInfo struct of the component
+	  */
+	 maci::ComponentInfo getComponentDescriptor(
+			 const char* componentName);
+
+	 /**
+		* Gets the Container Services reference
+		*/
+	 ContainerServices* getContainerServices();
+
   /* ----------------------------------------------------------------*/
   /* ------------------ [ CORBA Client interface ] ------------------*/
   /* ----------------------------------------------------------------*/
@@ -435,6 +566,9 @@ private:
 
   /// client start time
   ACS::Time m_startTime;
+
+  ///Container Services Reference
+  ContainerServices* m_ContServ;
 }; /* end class SimpleClient */
 
 /*
@@ -785,6 +919,152 @@ ComponentSmartPtr<T> SimpleClient::getComponentNonStickySmartPtr(const char *nam
     return ComponentSmartPtr<T>(this, false, this->getComponentNonSticky<T>(name));
 }
 
-};
+template<class T>
+    T* SimpleClient::getDefaultComponent(const char* idlType)
+{
+	CORBA::Object* obj =T::_nil();
 
+	ACS_TRACE("maci::SimpleClient::getDefaultComponent");
+
+	try{
+		obj = getCORBADefaultComponent(idlType);
+		T* tmpRef = T::_narrow(obj);
+		if (tmpRef==T::_nil()){
+		//	here we try to obtain name of the default component that we 
+		//	can release it
+			ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
+			if(tComp!=ACS::ACSComponent::_nil()){
+				char *cName = tComp->name();
+				releaseComponent(cName);
+				CORBA::string_free(cName);
+			}
+			ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__,
+					"maci::SimpleClient::getDefaultComponent");
+			ex.setNarrowType(typeid(T).name());
+			throw ex;
+		}
+		return tmpRef;
+	}
+	catch(maciErrType::NoPermissionEx &_ex)
+	{
+		throw maciErrType::NoPermissionExImpl(__FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");   
+	}
+	catch (maciErrType::NoDefaultComponentExImpl &ex)
+	{
+		maciErrType::NoDefaultComponentExImpl lex(ex,
+				__FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");
+		throw lex;
+	}
+	catch (maciErrType::CannotGetComponentExImpl &ex)
+	{
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");
+		throw lex;
+	}
+	catch (ACSErr::ACSbaseExImpl &ex)
+	{
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");
+		throw lex;
+	}
+	catch (...)
+	{
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");
+		maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				"maci::SimpleClient::getDefaultComponent");
+		throw lex;
+	}
+}
+
+template <typename T>
+	maci::SmartPtr<T> SimpleClient::getDefaultComponentSmartPtr(
+			const char* idlType)
+{
+	return maci::SmartPtr<T>(this, true, this->getDefaultComponent<T>(idlType));
+}
+
+template<class T> 
+T* SimpleClient::getCollocatedComponent(maci::ComponentSpec compSpec, 
+		bool markAsDefault, const char* targetComponent)
+{
+	CORBA::Object* obj =T::_nil();
+	ACS_TRACE("maci::SimpleClient::getCollocatedComponent");
+	try{
+		obj = getCORBACollocatedComponent(compSpec,markAsDefault,targetComponent);
+		T* tmpRef = T::_narrow(obj);
+		if (tmpRef==T::_nil()){
+			ACS::ACSComponent* tComp =  ACS::ACSComponent::_narrow(obj);
+			if ( tComp!=ACS::ACSComponent::_nil() ){
+				char *cName = tComp->name();
+				releaseComponent(cName);
+				CORBA::string_free(cName);
+			}
+			else{
+			//	 releaseComponent(compSpec.component_name.in());
+			}
+			ACSErrTypeCORBA::NarrowFailedExImpl ex(__FILE__, __LINE__, 
+					"maci::SimpleClient::getCollocatedComponent");
+			ex.setNarrowType(typeid(T).name());
+			throw ex;
+		}
+		return tmpRef;
+	}
+	catch (maciErrType::NoPermissionExImpl &ex){
+		maciErrType::NoPermissionExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		throw lex;
+	}
+	catch (maciErrType::IncompleteComponentSpecExImpl &ex){
+		maciErrType::IncompleteComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (maciErrType::InvalidComponentSpecExImpl &ex){
+		maciErrType::InvalidComponentSpecExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		throw lex;
+	}
+	catch (maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl &ex){
+		maciErrType::ComponentSpecIncompatibleWithActiveComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (maciErrType::CannotGetComponentExImpl &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (ACSErr::ACSbaseExImpl &ex){
+		maciErrType::CannotGetComponentExImpl lex(ex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+	catch (...){
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		maciErrType::CannotGetComponentExImpl lex(uex, __FILE__, __LINE__,
+				"maci::SimpleClient::getCollocatedComponent");
+		lex.setCURL(compSpec.component_name.in());
+		throw lex;
+	}
+}
+
+template <typename T>
+	maci::SmartPtr<T> SimpleClient::getCollocatedComponentSmartPtr(
+			maci::ComponentSpec compSpec, bool markAsDefault, 
+			const char* targetComponent)
+{
+	    return maci::SmartPtr<T>(this, true, 
+				 this->getCollocatedComponent<T>(compSpec, markAsDefault, 
+					 targetComponent));
+}
+
+};
 #endif  /* maciSimpleClient_H */
