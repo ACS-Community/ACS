@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsIrfeed,v 1.15 2008/04/10 05:24:41 cparedes Exp $"
+# "@(#) $Id: acsIrfeed,v 1.16 2010/01/22 09:57:44 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -90,13 +90,18 @@ export HOST=`getIP`
 
 #Find the port number of the IR
 ACS_IR_PORT=`getIRPort`
+ACS_IFR_PER_FILE=$ACS_TMP/ifr_per
 
-IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/DefaultRepository"
+# for mico: IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/DefaultRepository"
+# for TAO:
+IRcorbaloc="corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository"
 
 while [ $# -gt 0 ]
 do
    case "$1" in
     -c*) CHECK=on
+    ;;
+    -u*) UPDATE=on
     ;;
     -IRcorbaloc) IRcorbaloc=$2
     shift
@@ -113,6 +118,32 @@ then
 else
     FUNCTION_STRING="Loading"
 fi
+
+# Here we check if IFR persistent file is there, we should do this just if update is on, but it does not matter
+if [ ! -f $ACS_IFR_PER_FILE ]
+then
+    UPDATE=
+fi
+
+# so here we have for sure the persistent file
+# and we check its seize to see if it is empty or not
+# this could be done probably with some call to IFR
+if [ "$UPDATE" = "on" ]
+then
+    ifr_per_size=`stat -c%s  $ACS_IFR_PER_FILE`
+    if [ $ifr_per_size -le 58000 ]
+    then
+	echo "The IFR is empty so we are going to fill it all"
+	UPDATE=
+    fi
+fi
+
+#here we set options for find command depend if we just update the IFR or we loooad it fully
+if [ "$UPDATE" = "on" ]
+then
+   FIND_CMD_OPT="-newer $ACS_IFR_PER_FILE"
+fi
+
 
 ACS_LOG_INFO "acsIrFeed" "$FUNCTION_STRING IDL interfaces in Interface Repository"
 
@@ -134,9 +165,14 @@ else
     #   ../idl, $INTROOT/idl, $ACSROOT/idl
     # are loaded
     
-    mod_list=`/bin/ls -1 ../idl/*.idl 2>/dev/null` 
-    int_list=`/bin/ls -1 $INTROOT/idl/*.idl 2>/dev/null`
-    acs_list=`/bin/ls -1 $ACSROOT/idl/*.idl 2>/dev/null`
+    mod_list=`/usr/bin/find ../idl/  $FIND_CMD_OPT -name '*.idl' 2>/dev/null` 
+    int_list=`/usr/bin/find $INTROOT/idl/ $FIND_CMD_OPT -name '*.idl' 2>/dev/null`
+    acs_list=`/usr/bin/find $ACSROOT/idl/ $FIND_CMD_OPT -name '*.idl' 2>/dev/null`
+   
+
+#    mod_list=`/bin/ls -1 ../idl/*.idl 2>/dev/null` 
+#    int_list=`/bin/ls -1 $INTROOT/idl/*.idl 2>/dev/null`
+#    acs_list=`/bin/ls -1 $ACSROOT/idl/*.idl 2>/dev/null`
     
     intlist_list=""
 
@@ -210,16 +246,22 @@ echo "*/" >> $ACS_IDL_IRFEED_FILE
 
 echo "" >> $ACS_IDL_IRFEED_FILE
 
-echo "#define local" >> $ACS_IDL_IRFEED_FILE
-echo "#include <CosProperty.idl>" >> $ACS_IDL_IRFEED_FILE
-echo "#undef local" >> $ACS_IDL_IRFEED_FILE
-echo "" >> $ACS_IDL_IRFEED_FILE
+if [ "$UPDATE" != "on" ]
+then
+  echo "#define local" >> $ACS_IDL_IRFEED_FILE
+  echo "#include <CosProperty.idl>" >> $ACS_IDL_IRFEED_FILE
+  echo "#undef local" >> $ACS_IDL_IRFEED_FILE
+  echo "" >> $ACS_IDL_IRFEED_FILE
+fi
 
 #
 # For some reasons, it seems that acserr.idl must be included first.
 #
-echo "#include <acserr.idl>" >> $ACS_IDL_IRFEED_FILE
-echo "" >> $ACS_IDL_IRFEED_FILE
+if [ "$UPDATE" != "on" ]
+then
+  echo "#include <acserr.idl>" >> $ACS_IDL_IRFEED_FILE
+  echo "" >> $ACS_IDL_IRFEED_FILE
+fi
 
 #
 # File body
@@ -228,6 +270,8 @@ for file in `echo $tot_list`
 do
     file_name=`basename $file`
     echo "#include <$file_name>" >> $ACS_IDL_IRFEED_FILE
+#    echo "\$ACE_ROOT/TAO/orbsvcs/IFR_Service/tao_ifr  -Si  $IDL_PATH -ORBInitRef InterfaceRepository=file://$ACS_TMP/ACS_INSTANCE.7/iors/InterfaceRepositoryIOR $INTROOT/idl/$file_name" >> ./fbf
+#    chmod a+x ./fbf
 done
 
 # uncomment for debug purposes
@@ -247,7 +291,7 @@ ACS_LOG_DEBUG "acsIrfeed" "            loading: $ACS_IDL_IRFEED_FILE"
 #
 # This is the line that would be used with tha TAO interface repository
 #
-# IRFEED_CMD="$ACE_ROOT/TAO/orbsvcs/IFR_Service/tao_ifr  $IDL_PATH -ORBInitRef $ORBInitRef $ACS_IDL_IRFEED_FILE $files"
+IRFEED_CMD="$ACE_ROOT/TAO/orbsvcs/IFR_Service/tao_ifr $IDL_PATH -ORBInitRef $ORBInitRef $ACS_IDL_IRFEED_FILE"
 
 #
 # But now we use MICO.
@@ -255,19 +299,31 @@ ACS_LOG_DEBUG "acsIrfeed" "            loading: $ACS_IDL_IRFEED_FILE"
 LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
 PATH=$MICO_HOME/bin:$PATH
 
-if [ "$CHECK" = "on" ]
-then
-    rm -f result.idl
-    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
-else
-    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
-fi
+#if [ "$CHECK" = "on" ]
+#then
+#    rm -f result.idl
+#    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
+#else
+#    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir  -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+#fi
 
 #
 # Execute the final command line
 #
 ACS_SILENT_LOG "Final command-line: $IRFEED_CMD"
-$IRFEED_CMD
+echo  $IRFEED_CMD
+cat $ACS_IDL_IRFEED_FILE
+date
+if [ "$UPDATE" = "on" ]
+then
+  # if we update we have to remove the previos one and load it again, but do not care about includes
+  $IRFEED_CMD -Si -r
+  $IRFEED_CMD -Si
+  touch  $ACS_IFR_PER_FILE
+else
+  $IRFEED_CMD
+fi
+date
 RET_CODE=$?
 
 #
