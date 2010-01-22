@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.112 2010/01/21 00:02:56 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.113 2010/01/22 00:50:33 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -775,9 +775,9 @@ maci::ComponentInfo SimpleClient::getComponentDescriptor(
 ContainerServices* SimpleClient::getContainerServices()
 {
 	if (m_ContServ == NULL){
-		ACE_CString clientName("SimpleClient-ContainerServices");
+		ACE_CString clientName(name());
 		m_ContServ =  new MACIContainerServices(m_handle, 
-				clientName, m_poaRoot.in());
+				clientName, m_poaRoot.in(), m_manager.in());
 	}
 	return m_ContServ;
 }

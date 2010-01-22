@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.30 2008/10/09 07:05:37 cparedes Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.31 2010/01/22 00:50:33 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -58,12 +58,21 @@ class MACIContainerServices: public ContainerServices
   public:
   
   /**
-   * Constructor
+   * Constructor to be used in Container instances
    */
   MACIContainerServices(
     const maci::Handle componentHandle, 
     ACE_CString& name,
     PortableServer::POA_ptr poa);
+
+  /**
+	 * Constructor to be used in client instances
+	 */
+  MACIContainerServices(
+		  const maci::Handle componentHandle,
+		  ACE_CString& name,
+		  PortableServer::POA_ptr poa,
+		  Manager_ptr manager);
 
   /**
    * Destructor

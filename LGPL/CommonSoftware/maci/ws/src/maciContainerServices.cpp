@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.33 2009/03/25 11:38:34 bjeram Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.34 2010/01/22 00:50:33 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -48,6 +48,21 @@ MACIContainerServices::MACIContainerServices(
   m_manager = maci::Manager::_duplicate(m_containerImpl->getManager());
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
+  m_poa = PortableServer::POA::_duplicate(m_containerImpl->getContainerPOA().in());
+}
+
+MACIContainerServices::MACIContainerServices(
+	const maci::Handle componentHandle,
+	ACE_CString& name,
+	PortableServer::POA_ptr poa,
+	Manager_ptr manager) :
+	ContainerServices(name, poa), m_manager(0), 
+	m_componentHandle(componentHandle)
+{
+	ACS_TRACE("maci::MACIContainerServices::MACIContainerServices");
+	m_manager = maci::Manager::_duplicate(manager);
+	m_offShootPOA = PortableServer::POA::_nil();
+	componentStateManager_mp = new MACIComponentStateManager(name);
 }
 
 //
@@ -741,7 +756,7 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
 	}
 
   // get the container POA
-  PortableServer::POA_var containerPOA = m_containerImpl->getContainerPOA();
+  PortableServer::POA_var containerPOA = m_poa;
 
   try{
 	  m_offShootPOA = containerPOA->find_POA("OffShootPOA", false);
@@ -751,7 +766,7 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
   }
 
   // get the POA Manager
-  PortableServer::POAManager_var poaManager = m_containerImpl->getPOAManager();
+  PortableServer::POAManager_var poaManager = m_poa->the_POAManager();
 
   //
   // Prepare policies OffShoot POA will be using.
