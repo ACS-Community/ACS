@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.62 2009/12/09 09:58:58 rtobar Exp $"
+# "@(#) $Id: acsStartJava,v 1.63 2010/01/25 11:48:54 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -544,7 +544,7 @@ then
     then
         JAVA_OPTIONS_MEMORY="-client"
     else
-        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode"
+        JAVA_OPTIONS_MEMORY="-server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+CMSParallelRemarkEnabled"
     fi
 
     # Since ACS 8.0 we support dedicated options for JVM heap size and thread stack size (instead of accepting the generic -jvmOption)
