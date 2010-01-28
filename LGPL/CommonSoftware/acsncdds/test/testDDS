@@ -5,7 +5,7 @@ total=0
 ok=0
 
 # timer
-start_time=$(date +%s)
+#start_time=$(date +%s)
 
 for number in 1 10 20 30 50 100; do
 	echo "$number"
@@ -49,6 +49,6 @@ done
 echo "==="
 echo "Finished ($ok/$total test done properly)"
 
-finish_time=$(date +%s)
+#finish_time=$(date +%s)
 
-echo "Time duration: $((finish_time - start_time)) secs."
+#echo "Time duration: $((finish_time - start_time)) secs."
