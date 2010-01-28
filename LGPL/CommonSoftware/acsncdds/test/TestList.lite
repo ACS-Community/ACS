@@ -1,0 +1,5 @@
+SOURCE TATEnvironment
+PROLOGUE TATPrologue
+1 testDDSbash testDDS
+EPILOGUE TATEpilogue
+

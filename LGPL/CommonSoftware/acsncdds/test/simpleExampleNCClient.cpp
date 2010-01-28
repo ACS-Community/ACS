@@ -5,7 +5,7 @@
 
 void handlerFunction(DDS_SIMPLE_EXAMPLE::simpleMessage m, void *other)
 {
-	std::cout << "Arrived message" << std::endl;
+	std::cout << "Arrived message!!" << std::endl;
 
 }
 

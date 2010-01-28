@@ -3,10 +3,14 @@
 #include <DDSSubscriber.h>
 #include "simpleMessageTypeSupportImpl.h"
 
+
+int testNum=0;
+
 void handlerFunction(DDS_SIMPLE_EXAMPLE::simpleMessage m, void *other)
 {
-	std::cout << "Arrived message" << std::endl;
-
+	testNum++;
+	std::cout << "Arrived message!" << std::endl;
+	std::cout << m.seqnum << std::endl;
 }
 
 int main(int argc, char**argv)
@@ -15,7 +19,7 @@ int main(int argc, char**argv)
 
 	client.init(argc,argv);
 	client.login();
-
+	
 	ddsnc::DDSSubscriber *sub_p=0;
 	
 	ACS_NEW_DDS_SUBSCRIBER(sub_p, DDS_SIMPLE_EXAMPLE::simpleMessage,
@@ -30,8 +34,10 @@ int main(int argc, char**argv)
 	ACE_OS::sleep(5);
 
 	sub_p->disconnect();
-	delete sub_p;
+	std::cout<< "Number of message: ";
+	std::cout<< testNum << std::endl;	
 
+	delete sub_p;
 	return 0;
 
 }

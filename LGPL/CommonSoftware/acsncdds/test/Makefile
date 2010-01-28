@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.1 2009/06/29 21:52:58 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/01/28 18:36:44 utfsm Exp $"
 #
 # Makefile of ........
 #
@@ -125,7 +125,7 @@ acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       =
+SCRIPTS_L       = testDDS TATEnvironment TATEpilogue TATPrologue
 
 
 #

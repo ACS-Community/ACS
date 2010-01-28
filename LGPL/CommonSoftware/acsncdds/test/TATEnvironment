@@ -1,0 +1,25 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TATEnvironment,v 1.1 2010/01/28 18:36:44 utfsm Exp $"
+#
+# $Log: TATEnvironment,v $
+# Revision 1.1  2010/01/28 18:36:44  utfsm
+# Adding the TAT files
+#
+# Revision 1.1.1.1  2007/07/09 12:47:39  wg8
+# Repository Setup
+#
+#
+global env
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+set env(ACS_LOG_STDOUT) 4
+set env(MACI_RECOVERY_FILE_NAME) $ACS_TMP/maciRecovery
+set env(ACS_BACI_RECOVERY_FILE) $ACS_TMP/baciRecovery
+set env(ACS_LOG_FILE) $ACS_TMP/log_cache.dat
+
+#
+# ___oOo___
+

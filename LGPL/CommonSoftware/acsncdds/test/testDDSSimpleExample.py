@@ -6,8 +6,9 @@ simpleClient = PySimpleClient.getInstance()
 
 simple = simpleClient.getComponent("DDS_SIMPLE_EXAMPLE")
 
-for i in range(100):
+for i in range(1000):
 	simple.sendMessage()
+	print i
 
 simpleClient.releaseComponent("DDS_SIMPLE_EXAMPLE")
 simpleClient.disconnect()
