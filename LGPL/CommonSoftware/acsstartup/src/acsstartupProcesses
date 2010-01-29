@@ -21,7 +21,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupProcesses,v 1.9 2010/01/21 17:57:41 javarias Exp $"
+# "@(#) $Id: acsstartupProcesses,v 1.10 2010/01/29 17:28:37 javarias Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -172,7 +172,7 @@ kill -9 $PARENT_PID 2> /dev/null
 #check if it is dead
 if kill -9 $PARENT_PID 2> /dev/null
 then
-	sleep 1
+	sleep 0.25
 	if kill -9 $PARENT_PID 2> /dev/null
 	then
 		echo "Process with PID $PARENT_PID cannot be killed."
