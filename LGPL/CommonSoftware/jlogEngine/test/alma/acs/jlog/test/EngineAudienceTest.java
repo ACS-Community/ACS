@@ -35,7 +35,9 @@ import com.cosylab.logging.engine.ACS.ACSListenersDispatcher;
 import com.cosylab.logging.engine.ACS.ACSLogRetrieval;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteRawLogListener;
-import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
+import com.cosylab.logging.engine.audience.Audience;
+import com.cosylab.logging.engine.audience.OperatorAudience;
+import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -87,7 +89,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 	// The audience under testing 
 	// At the present only OPERATOR is implemented but the test has to check
 	// also the NO_AUDIENCE case
-	private EngineAudienceHelper audience;
+	private Audience audience;
 	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -122,16 +124,12 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 	 */
 	public void testSetMode() throws Exception {
 		// Set valid modes
-		logRetieval.setAudience(EngineAudienceHelper.OPERATOR);
-		assertEquals(EngineAudienceHelper.OPERATOR, logRetieval.getAudience());
-		logRetieval.setAudience(EngineAudienceHelper.DEVELOPER);
-		assertEquals(EngineAudienceHelper.DEVELOPER, logRetieval.getAudience());
-		logRetieval.setAudience(EngineAudienceHelper.SYSADMIN);
-		assertEquals(EngineAudienceHelper.SYSADMIN, logRetieval.getAudience());
-		logRetieval.setAudience(EngineAudienceHelper.DBA);
-		assertEquals(EngineAudienceHelper.DBA, logRetieval.getAudience());
-		logRetieval.setAudience(EngineAudienceHelper.NO_AUDIENCE);
-		assertEquals(EngineAudienceHelper.NO_AUDIENCE, logRetieval.getAudience());
+		logRetieval.setAudience(AudienceInfo.OPERATOR.getAudience());
+		assertEquals(AudienceInfo.OPERATOR.getAudience(), logRetieval.getAudience());
+		logRetieval.setAudience(AudienceInfo.SCILOG.getAudience());
+		assertEquals(AudienceInfo.SCILOG.getAudience(), logRetieval.getAudience());
+		logRetieval.setAudience(AudienceInfo.ENGINEER.getAudience());
+		assertEquals(AudienceInfo.ENGINEER.getAudience(), logRetieval.getAudience());
 		
 		// Setting a null value should throw an exception
 		try {
@@ -158,7 +156,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 	 * @throws Exception
 	 */
 	public void testOperatorModeFiltering() throws Exception {
-		audience=EngineAudienceHelper.OPERATOR;
+		audience=AudienceInfo.OPERATOR.getAudience();
 		logRetieval.setAudience(audience);
 		//
 		// Step 1: generate a collection of logs with no audience
@@ -213,8 +211,8 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 			
 			// Insert the audience
 			logNoOperatorStr = new StringBuilder(logOperatorStr);
-			logOperatorStr.append(EngineAudienceHelper.OPERATOR.val);
-			logNoOperatorStr.append(EngineAudienceHelper.DEVELOPER.val);
+			logOperatorStr.append(alma.log_audience.OPERATOR.value);
+			logNoOperatorStr.append(alma.log_audience.DEVELOPER.value);
 			
 			logOperatorStr.append(logEndOfBodyStr);
 			logNoOperatorStr.append(logEndOfBodyStr);
@@ -247,12 +245,12 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 	
 	
 	/**
-	 * Test the case of NO_AUDIENCE i.e. no filtering
+	 * Test the case of ENGINEER i.e. no filtering
 	 * 
 	 * @throws Exception
 	 */
 	public void testNoAudienceModeFiltering() throws Exception {
-		audience=EngineAudienceHelper.NO_AUDIENCE;
+		audience=AudienceInfo.ENGINEER.getAudience();
 		logRetieval.setAudience(audience);
 		Collection<ILogEntry> logs = CacheUtils.generateLogs(10000);
 		for (ILogEntry log: logs) {
@@ -318,19 +316,16 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 	@Override
 	public void logEntryReceived(ILogEntry logEntry) {
 		numOfReceivedLogs++;
-		switch (audience) {
-		case OPERATOR: {
+		if (audience instanceof OperatorAudience) {
 			
 			if (logEntry.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
 				return;
 			}
 			String logStrAudience = (String)logEntry.getField(LogField.AUDIENCE);
-			EngineAudienceHelper logAudience=EngineAudienceHelper.fromString(logStrAudience);
-			if (!EngineAudienceHelper.OPERATOR.equals(logAudience)) {
+			String logAudience=alma.log_audience.OPERATOR.value;
+			if (!logStrAudience.equals(logAudience)) {
 				System.out.println("This log did not match for OPERATOR audience: "+logEntry.toString());
 			}
-		}
-		default: { }
 		}
 	}
 }

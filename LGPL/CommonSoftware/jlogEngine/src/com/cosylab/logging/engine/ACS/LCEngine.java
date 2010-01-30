@@ -31,6 +31,7 @@ import com.cosylab.logging.engine.Filter;
 import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
+import com.cosylab.logging.engine.audience.Audience;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -79,13 +80,6 @@ public class LCEngine implements Filterable {
 
 	private RemoteAccess remoteAccess = null;
 	
-	/** 
-	 * The audience used to filter out messages
-	  * 
-	  * @see setAudience()
-	  */
-	private EngineAudienceHelper audience = EngineAudienceHelper.NO_AUDIENCE;
-
 	/**
 	 * The filters to apply to the incoming logs.
 	 * 
@@ -567,12 +561,11 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @param newAudience The not <code>null</code >audience
 	 */
-	public void setAudience(EngineAudienceHelper newAudience) {
+	public void setAudience(Audience newAudience) {
 		if (newAudience==null) {
 			throw new IllegalArgumentException("The audience can't be null");
 		}
 		logRetrieval.setAudience(newAudience);
-		audience=newAudience;
 	}
 
 	/**
@@ -655,7 +648,7 @@ public class LCEngine implements Filterable {
 	 * 
 	 * @return The discard level (can be <code>null</code>)
 	 */
-	public EngineAudienceHelper getAudience() {
+	public Audience getAudience() {
 		return logRetrieval.getAudience();
 	}
 

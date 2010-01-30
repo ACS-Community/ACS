@@ -21,6 +21,8 @@
  */
 package com.cosylab.logging.engine.log;
 
+import com.cosylab.logging.engine.log.LogField;
+
 import alma.acs.logging.level.AcsLogLevelDefinition;
 
 /**

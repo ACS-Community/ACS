@@ -24,7 +24,6 @@ package com.cosylab.logging.engine.simulator;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.log.LogEntryXML;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
-import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 
 import org.omg.CORBA.ORB;
 

@@ -296,7 +296,7 @@ public class FiltersVector extends Vector<Filter> {
         	if (fieldElement!=null) {
         		fieldStr=fieldElement.getText();
         	}
-        	// Build the LogField.
+        	// Build the Field.
         	LogField field = LogField.fromName(fieldStr);
         	if (field==null) {
         		// Ooops the field has not been found

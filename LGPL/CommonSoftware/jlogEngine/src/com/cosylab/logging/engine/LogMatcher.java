@@ -18,7 +18,7 @@
  */
 package com.cosylab.logging.engine;
 
-import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
+import com.cosylab.logging.engine.audience.Audience;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.engine.log.LogField;
@@ -54,7 +54,7 @@ public class LogMatcher {
 	 * 
 	 * @see <code>LCEngine.setFilters()</code>
 	 */
-	private EngineAudienceHelper audience=EngineAudienceHelper.NO_AUDIENCE; 
+	private Audience audience=Audience.AudienceInfo.ENGINEER.getAudience(); 
 	
 	/**
 	 * The filters to apply before publishing logs to the listeners.
@@ -80,7 +80,7 @@ public class LogMatcher {
 	 * @param newAudience The new audience as defined in log_audience IDL module
 	 * @see <code>LCEngine.setFilters()</code>
 	 */
-	public void setAudience(EngineAudienceHelper newAudience) {
+	public void setAudience(Audience newAudience) {
 		if (newAudience==null) {
 			throw new IllegalArgumentException("The audience can't be null");
 		}
@@ -90,33 +90,8 @@ public class LogMatcher {
 	/**
 	 * @return the audience
 	 */
-	public EngineAudienceHelper getAudience() {
+	public Audience getAudience() {
 		return audience;
-	}
-	
-	/**
-	 * Check if a log matches with the audience
-	 * 
-	 * @param log The not <code>null</code> log to check
-	 * @return <code>true</code> if the log matches with the defined 
-	 *                           audience
-	 */
-	private boolean checkAudience(ILogEntry log) {
-		if (log==null) {
-			throw new IllegalArgumentException("The log can't be null");
-		}
-		switch (audience) {
-		case OPERATOR: {
-			if (log.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
-				return true;
-			}
-			String logAudience = (String)log.getField(LogField.AUDIENCE);
-			return EngineAudienceHelper.OPERATOR.val.equalsIgnoreCase(logAudience);
-		}
-		default: {
-			return true;
-			}
-		}
 	}
 
 	/**
@@ -154,7 +129,7 @@ public class LogMatcher {
 				return false;
 		}
 		// Check the log against the audience
-		if (!checkAudience(log)) {
+		if (!audience.matches(log)) {
 			return false;
 		}
 		if (filters==null) {

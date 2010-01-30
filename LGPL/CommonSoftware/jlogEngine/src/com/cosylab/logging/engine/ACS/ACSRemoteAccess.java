@@ -78,9 +78,6 @@ public final class ACSRemoteAccess implements RemoteAccess {
 	// The engine filters 
 	private FiltersVector filters = null;
 	
-	// The audience
-	private EngineAudienceHelper audience = EngineAudienceHelper.NO_AUDIENCE;
-	
 	// The object to send new logs to
 	private ACSLogRetrieval logRetrieval;
 	
