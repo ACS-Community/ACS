@@ -35,6 +35,7 @@ import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 import javax.swing.event.MenuListener;
 
+import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -112,11 +113,24 @@ public class LogMenuBar extends JMenuBar {
      */
     private JCheckBoxMenuItem viewStatusAreaMI;
     
-    // The menu to choose between operator and standard mode
+    /**
+     * The menu to select the operator mode
+     */
     private JRadioButtonMenuItem operatorMode;
+    
+    /**
+     * The menu to select the engineering mode
+     */
     private JRadioButtonMenuItem engineeringMode;
     
-    // The menu to add filters to the engine
+    /**
+     * The menu to select the SciLog mode
+     */
+    private JRadioButtonMenuItem sciLogMode;
+    
+    /**
+     * The menu to add filters to the engine
+     */
     private JMenuItem engineFiltersMI;
     
     /**
@@ -211,9 +225,11 @@ public class LogMenuBar extends JMenuBar {
         expertMenu.add(modeMenu);
         modeMenu.add(getOperatorMode());
         modeMenu.add(getEngineeringMode());
+        modeMenu.add(getSciLogMode());
         ButtonGroup group = new ButtonGroup();
         group.add(getOperatorMode());
         group.add(getEngineeringMode());
+        group.add(getSciLogMode());
         expertMenu.addSeparator();
         expertMenu.add(getSuspendMenuItem());
         expertMenu.add(getPrefsMenuItem());
@@ -431,6 +447,7 @@ public class LogMenuBar extends JMenuBar {
 		
 		operatorMode.addActionListener(actionListener); // Operator mode
 		engineeringMode.addActionListener(actionListener); // Engineering mode
+		sciLogMode.addActionListener(actionListener); // SciLog mode
 		engineFiltersMI.addActionListener(actionListener); // Engine filters
 		
 		zoomPrefsMI.addActionListener(actionListener); // zoom preferences
@@ -612,7 +629,7 @@ public class LogMenuBar extends JMenuBar {
 	 */
 	public JRadioButtonMenuItem getOperatorMode() {
 		if (operatorMode==null) {
-			operatorMode= new JRadioButtonMenuItem("Operator");
+			operatorMode= new JRadioButtonMenuItem(AudienceInfo.OPERATOR.name);
 		}
 		return operatorMode;
 	}
@@ -622,9 +639,19 @@ public class LogMenuBar extends JMenuBar {
 	 */
 	public JRadioButtonMenuItem getEngineeringMode() {
 		if (engineeringMode==null) {
-			engineeringMode=new JRadioButtonMenuItem("Engineering");
+			engineeringMode=new JRadioButtonMenuItem(AudienceInfo.ENGINEER.name);
 		}
 		return engineeringMode;
+	}
+	
+	/**
+	 * @return the SciLog mode
+	 */
+	public JRadioButtonMenuItem getSciLogMode() {
+		if (sciLogMode==null) {
+			sciLogMode=new JRadioButtonMenuItem(AudienceInfo.SCILOG.name);
+		}
+		return sciLogMode;
 	}
 
 	/**

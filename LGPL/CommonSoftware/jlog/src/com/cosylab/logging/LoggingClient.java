@@ -34,7 +34,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
@@ -82,8 +81,8 @@ import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.ACS.ACSRemoteErrorListener;
 import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.ACS.ACSLogConnectionListener;
-import com.cosylab.logging.engine.ACS.EngineAudienceHelper;
 import com.cosylab.logging.engine.ACS.LCEngine;
+import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.search.SearchDialog;
@@ -144,11 +143,11 @@ MessageWidgetListener
 	/**
 	 * The name of the property to set for enabling the operator mode at startup.
 	 * 
-	 * If the property is not found, NO_AUDIENCE is set in the engine
+	 * If the property is not found, ENGINEER audience is set in the engine
 	 * 
 	 * @sse <code>initAudience()</code>
 	 */
-	private static final String AUDIENCE_PROPERTY = "jlog.mode.operator";
+	private static final String AUDIENCE_PROPERTY = "jlog.mode.audience";
 	
 	/**
 	 * The audience in use by the engine and shown in the status line
@@ -509,11 +508,14 @@ MessageWidgetListener
             		}
             	}
             } else if (e.getSource()==menuBar.getOperatorMode()) {
-            	getEngine().setAudience(EngineAudienceHelper.OPERATOR);
-            	audienceLbl.setText(" "+EngineAudienceHelper.OPERATOR.val+" ");
+            	getEngine().setAudience(AudienceInfo.OPERATOR.getAudience());
+            	audienceLbl.setText(" "+AudienceInfo.OPERATOR.name+" ");
             } else if (e.getSource()==menuBar.getEngineeringMode()) {
-            	getEngine().setAudience(EngineAudienceHelper.NO_AUDIENCE);
-            	audienceLbl.setText(" Engineering ");
+            	getEngine().setAudience(AudienceInfo.ENGINEER.getAudience());
+            	audienceLbl.setText(" "+AudienceInfo.ENGINEER.name+" ");
+            } else if (e.getSource()==menuBar.getSciLogMode()) {
+            	getEngine().setAudience(AudienceInfo.SCILOG.getAudience());
+            	audienceLbl.setText(" "+AudienceInfo.SCILOG.name+" ");
             } else if (e.getSource()==menuBar.getEngineFiltersMenuItem()) {
             	showEngineFiltersDialog();
             } else if (e.getSource()==menuBar.getZoomPrefsMI()) {
@@ -589,7 +591,7 @@ MessageWidgetListener
 		super();
 		logFrame=null;
 		initialize(DEFAULT_LOGLEVEL,DEFAULT_DISCARDLEVEL,false);
-		initAudience();
+		initAudience(null);
 	}
 	
 	/**
@@ -604,13 +606,18 @@ MessageWidgetListener
 	 * @param unlimited If <code>true</code> the number of logs in memory is unlimited, 
 	 *                  otherwise the default is used
 	 */
-	public LoggingClient(LogFrame frame, LogTypeHelper logLevel, LogTypeHelper discardLevel, boolean unlimited)
+	public LoggingClient(
+			LogFrame frame, 
+			LogTypeHelper logLevel, 
+			LogTypeHelper discardLevel, 
+			boolean unlimited,
+			AudienceInfo aInfo)
 	{
 		super();
 		isStopped=false;
 		logFrame=frame;
 		initialize(logLevel, discardLevel, unlimited);
-		initAudience();
+		initAudience(aInfo);
 	}
 	
 	
@@ -1770,14 +1777,57 @@ MessageWidgetListener
 	}
 	
 	/**
-	 * Init the audience
+	 * Init the audience.
+	 * <P>
+	 * If an audience has been specified in the command line then
+	 * it will be used otherwise it tries to check if a java property 
+	 * has been set.
+	 * <BR>
+	 * The audience dafaults to ENGINEER.
+	 * 
+	 * @param audienceInfo The audience: it can be <code>null</code>.
 	 */
-	private void initAudience() {
-		if (Boolean.getBoolean(AUDIENCE_PROPERTY)) {
-			menuBar.getOperatorMode().doClick();
+	private void initAudience(AudienceInfo audienceInfo) {
+		AudienceInfo aInfo=null;
+		if (audienceInfo!=null) {
+			// Audience set in the command line
+			aInfo=audienceInfo;
 		} else {
-			// Default
+			String audienceProp=System.getProperty(AUDIENCE_PROPERTY);
+			if (audienceProp==null || audienceProp.isEmpty()) {
+				menuBar.getEngineeringMode().doClick();
+				return;
+			}
+			aInfo=AudienceInfo.fromShortName(audienceProp);
+			if (aInfo==null) {
+				// Invalid property name
+				System.err.println(audienceProp+" is not a valid audience: using default audience");
+				System.err.println("Available audiences are: ");
+				for (String aShortName: AudienceInfo.getShortNames()) {
+					System.err.println("\t"+aShortName);
+				}
+				menuBar.getEngineeringMode().doClick();
+				return;
+			}
+		}
+		switch (aInfo) {
+		case ENGINEER: {
 			menuBar.getEngineeringMode().doClick();
+			return;
+		}
+		case OPERATOR: {
+			menuBar.getOperatorMode().doClick();
+			return;
+		}
+		case SCILOG: {
+			menuBar.getSciLogMode().doClick();
+			return;
+		}
+			default: {
+				// Unknown audience
+				menuBar.getEngineeringMode().doClick();
+				return;
+			}
 		}
 	}
 	
