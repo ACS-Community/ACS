@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.91 2009/12/18 17:29:44 javarias Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.92 2010/02/01 13:47:52 jschwarz Exp $"
 #
 #
 #
@@ -147,7 +147,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-8.1
+   ALMASW_RELEASE=ACS-8.2
 fi
 # Combined absolute path where ACS software and tools are installed.
 ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
@@ -471,7 +471,7 @@ fi
 # java from our distribution.
 if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-  	JAVA_HOME=/usr/java/jdk1.6.0_14
+  	JAVA_HOME=/usr/java/jdk1.6.0_18
 fi
 
 # If not explicitly set by hand,
