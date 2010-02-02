@@ -156,7 +156,8 @@ namespace ddsnc{
 			drQos.reliability.max_blocking_time.sec = 1;
 
 			drQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
-			drQos.history.depth = 100;
+			// drQos.history.depth = 100;
+			drQos.history.depth = 1;
 		}
 	};
 }

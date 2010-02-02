@@ -48,7 +48,8 @@ void DDSPublisher::initialize()
 	dwQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
 	dwQos.reliability.max_blocking_time.sec = 1;
 	dwQos.history.kind = ::DDS::KEEP_LAST_HISTORY_QOS;
-	dwQos.history.depth = 100;
+	//dwQos.history.depth = 100;
+	dwQos.history.depth = 1;
 
 	dwQos.durability.kind = ::DDS::TRANSIENT_LOCAL_DURABILITY_QOS;
 	dwQos.durability.service_cleanup_delay.sec = 10;

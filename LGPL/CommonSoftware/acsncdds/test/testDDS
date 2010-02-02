@@ -4,10 +4,7 @@
 total=0
 ok=0
 
-# timer
-#start_time=$(date +%s)
-
-for number in 1 10 20 30 50 100; do
+for number in 1 10 20; do
 	echo "$number"
 
 	mkdir -p $number
@@ -16,13 +13,13 @@ for number in 1 10 20 30 50 100; do
 		FILE=$(echo $I"_DDSNC")
 		ddsSubscriber >& $number/$FILE &
 	done
-	sleep 60
+	sleep 35
 	if [[ $(echo $PWD | grep "test$") != "" ]];then
 		./testDDSNCBenchmarkClient.py
 	else
 		python "../test/testDDSNCBenchmarkClient.py";
 	fi
-	sleep 60
+	sleep 35
 	# test	
 	for I in $number; do
 		echo "Processing results of test: " $I
@@ -48,7 +45,3 @@ for number in 1 10 20 30 50 100; do
 done
 echo "==="
 echo "Finished ($ok/$total test done properly)"
-
-#finish_time=$(date +%s)
-
-#echo "Time duration: $((finish_time - start_time)) secs."

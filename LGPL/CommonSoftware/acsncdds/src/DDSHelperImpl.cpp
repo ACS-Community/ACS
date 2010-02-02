@@ -4,13 +4,32 @@
 #include <stdlib.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpGenerator.h>
 
+#include <maciHelper.h>
+#include <loggingACEMACROS.h>
+
+
 using namespace ddsnc;
 
 static bool factories_init = false;
 
 DDSHelper::DDSHelper(const char* channelName)
 {
-	init(channelName, "corbaloc:iiop:127.0.0.1:3999/DCPSInfoRepo");
+	ACE_CString managerName;
+	try
+	{
+	   managerName = maci::MACIHelper::getManagerHostname(1,NULL);
+	}
+	catch(CORBA::TRANSIENT &ex)
+	{
+	   ACS_STATIC_SHORT_LOG((LM_ERROR, "DDSHelper::DDSHelper", "Manager ref null."));
+	   exit(1);
+        }
+	ACE_CString tmpRoute = "corbaloc:iiop:";
+	tmpRoute += managerName;
+	tmpRoute +=":3999/DCPSInfoRepo";
+	char* route = tmpRoute.rep();
+	init(channelName, route);
+	
 }
 
 DDSHelper::DDSHelper(const char* channelName, const char *DCPSInfoRepoLoc)
