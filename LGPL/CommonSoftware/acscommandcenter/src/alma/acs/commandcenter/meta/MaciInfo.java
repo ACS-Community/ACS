@@ -5,6 +5,7 @@ package alma.acs.commandcenter.meta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
@@ -132,9 +133,9 @@ public class MaciInfo extends DefaultTreeModel {
 	}	
 
 	// each of these references is written and read atomically 
-   private volatile List<SortingTreeNode> componentNodes_currentcopy;
-   private volatile List<SortingTreeNode> containerNodes_currentcopy;
-   private volatile List<SortingTreeNode> clientNodes_currentcopy;
+   private volatile List<SortingTreeNode> componentNodes_currentcopy = Collections.EMPTY_LIST;
+   private volatile List<SortingTreeNode> containerNodes_currentcopy = Collections.EMPTY_LIST;
+   private volatile List<SortingTreeNode> clientNodes_currentcopy = Collections.EMPTY_LIST;
 
 	// ====================================================================
 	// Not-so-public API
