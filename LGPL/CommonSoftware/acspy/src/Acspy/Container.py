@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $
+# @(#) $Id: Container.py,v 1.44 2010/02/04 21:45:16 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $"
+# "@(#) $Id: Container.py,v 1.44 2010/02/04 21:45:16 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.43 2009/11/16 18:47:20 agrimstrup Exp $"
+__revision__ = "$Id: Container.py,v 1.44 2010/02/04 21:45:16 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -160,7 +160,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         print maci.Container.ContainerStatusStartupEndMsg
 
     #--CLIENT IDL--------------------------------------------------------------
-    def disconnect(self):
+    def disconnect(self): # pragma: NO COVER
         '''
         Disconnect from manager.
 
@@ -170,7 +170,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.shutdown(ACTIVATOR_EXIT<<8)
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def taggedmessage (self, message_type, message_id, message):
+    def taggedmessage (self, message_type, message_id, message): # pragma: NO COVER
         '''
         The Manager and administrators use this method for sending textual messages
         to the client.
@@ -424,7 +424,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         return self.components[name][COMPONENTINFO]
 
     #--------------------------------------------------------------------------
-    def failedActivation(self, comp_entry):
+    def failedActivation(self, comp_entry): # pragma: NO COVER
         '''
         Helper method used to destroy various things if the component cannot
         be created.
@@ -568,7 +568,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
-    def get_default_logLevels(self):
+    def get_default_logLevels(self): # pragma: NO COVER
         '''
         Retrieve the default log levels used in this container.
 
@@ -579,7 +579,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         return Log.getDefaultLevels()
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
-    def set_default_logLevels(self, levels):
+    def set_default_logLevels(self, levels): # pragma: NO COVER
         '''
         Set the default log level for this container.
 
@@ -591,7 +591,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         Log.setDefaultLevels(levels)
 
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
-    def get_logger_names(self):
+    def get_logger_names(self): # pragma: NO COVER
         '''
         Retrieve the names of the currently active loggers
 
@@ -742,7 +742,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.logger.logWarning("Unable to process 'shutdown' request at this time: " + str(action))
 
     #----------------------------------------------------------------------------
-    def set_component_shutdown_order(self, handles):
+    def set_component_shutdown_order(self, handles): # pragma: NO COVER
         '''
         Set component shutdown order.
 
@@ -818,7 +818,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 print_exc()
 
     #--------------------------------------------------------------------------
-    def configCORBA(self):
+    def configCORBA(self): # pragma: NO COVER
         '''
         configCORBA is a helper method responsible for initializing the ORB,
         POAs, etc.
@@ -878,7 +878,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             print_exc()
             raise CORBAProblemExImpl()
     #--------------------------------------------------------------------------
-    def getManagerHost(self):
+    def getManagerHost(self): # pragma: NO COVER
         '''
         Helper function returns a string consisting of managers host.
 
@@ -891,7 +891,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         words = temp.split(':')
         return words[2]
     #--------------------------------------------------------------------------
-    def run(self):
+    def run(self): # pragma: NO COVER
         '''
         Runs the container until a sig-int is caught.
 
@@ -906,7 +906,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         print "Goodbye"
         sys.stdout.flush()
     #--------------------------------------------------------------------------
-    def handler(self, signum, frame):
+    def handler(self, signum, frame): # pragma: NO COVER
         '''
         Catches SIGINTs and shuts down the container.
 
@@ -936,7 +936,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         self.shutdown(ACTIVATOR_EXIT<<8)
     #--------------------------------------------------------------------------
-    def createPOAForComponent(self, comp_name):
+    def createPOAForComponent(self, comp_name): # pragma: NO COVER
         '''
         Creates a new POA that is responsible for exactly one component and
         the new POA is created as a child of the ComponentPOA.
@@ -949,7 +949,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         '''
         return self.componentPOA.create_POA("ComponentPOA" + comp_name, ACSCorba.getPOAManager(), self.compPolicies)
     #--------------------------------------------------------------------------
-    def destroyCORBA(self):
+    def destroyCORBA(self): # pragma: NO COVER
         '''
         Helper function designed to shutdown/destroy all CORBA associated with
         this specific container.
@@ -970,7 +970,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             self.logger.logWarning("Failed to destroy the container's CORBA object: " + str(e))
             print_exc()
     #--------------------------------------------------------------------------
-    def getExistingComponent(self, name):
+    def getExistingComponent(self, name): # pragma: NO COVER
         '''
         Searches to see if the component "name" has already been activated by
         this container.
@@ -1043,10 +1043,10 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             return self.corbaRef
 
         #otherwise return the saved reference
-        else:
+        else: # pragma: NO COVER
             return self.corbaRef
     #--------------------------------------------------------------------------
-    def getCode(self):
+    def getCode(self): # pragma: NO COVER
         '''
         Overriden from BaseClient
         '''

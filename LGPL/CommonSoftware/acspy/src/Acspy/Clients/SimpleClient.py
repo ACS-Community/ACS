@@ -1,4 +1,4 @@
-# @(#) $Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $
+# @(#) $Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $"
+# "@(#) $Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -39,7 +39,7 @@ TODO:
 - integrate with the ACS Error System
 '''
 
-__revision__ = "$Id: SimpleClient.py,v 1.11 2006/04/03 18:06:13 dfugate Exp $"
+__revision__ = "$Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -83,10 +83,10 @@ class PySimpleClient(BaseClient, ContainerServices):
         
         #call superclass constructors
         ContainerServices.__init__(self)
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "Got past ContainerServices in SimpleClient"
         BaseClient.__init__(self, name)
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "Got past BaseClient in SimpleClient"
 
         #set some things to make ContainerServices happy
@@ -94,7 +94,7 @@ class PySimpleClient(BaseClient, ContainerServices):
                     self.token,
                     self.token.h,
                     self.__activateOffShoot)
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "Got past Constructor in SimpleClient"
     #--------------------------------------------------------------------------
     #The following objects and functions all deal with a singleton instance of
@@ -125,7 +125,7 @@ class PySimpleClient(BaseClient, ContainerServices):
     #--------------------------------------------------------------------------
     def __activateOffShoot(self,
                            comp_name,
-                           py_object):
+                           py_object): # pragma: NO COVER
         '''
         A method designed to activate ACS::OffShoot IDL interfaces as CORBA
         objects.
@@ -138,7 +138,7 @@ class PySimpleClient(BaseClient, ContainerServices):
 
         Raises: CORBAProblemExImpl
         '''
-        try:
+        try: 
             return py_object._this()
         except:
             print_exc()

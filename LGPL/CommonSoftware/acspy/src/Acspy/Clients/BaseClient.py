@@ -1,4 +1,4 @@
-# @(#) $Id: BaseClient.py,v 1.14 2007/12/03 17:53:02 agrimstrup Exp $
+# @(#) $Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: BaseClient.py,v 1.14 2007/12/03 17:53:02 agrimstrup Exp $"
+# "@(#) $Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@ designed to be used in all Python servant implementations derived from Client.
 BaseClient is more of a helper class than anything else.
 '''
 
-__revision__ = "$Id: BaseClient.py,v 1.14 2007/12/03 17:53:02 agrimstrup Exp $"
+__revision__ = "$Id: BaseClient.py,v 1.15 2010/02/04 21:45:16 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -98,7 +98,7 @@ class BaseClient(Client):
             raise CORBAProblemExImpl()
         
     #--CLIENT IDL--------------------------------------------------------------
-    def _get_name(self):
+    def _get_name(self): # pragma: NO COVER
         '''
         Returns the name of this client.
         
@@ -207,7 +207,7 @@ class BaseClient(Client):
         else:
             self.logger.logInfo("Message of unknown type from the manager: " + message)
     #--CLIENT IDL--------------------------------------------------------------
-    def ping(self):
+    def ping(self): # pragma: NO COVER
         '''
         Manager pings its clients to verify they still exist.
 
@@ -221,7 +221,7 @@ class BaseClient(Client):
         '''
         return TRUE
     #--CLIENT IDL--------------------------------------------------------------
-    def components_available(self, components):
+    def components_available(self, components): # pragma: NO COVER
         '''
         Notify client about the change (availability) of the components currently
         in use by this client. For administrative clients, notification is issued
@@ -251,7 +251,7 @@ class BaseClient(Client):
 
         Raises: Nothing
         
-	oneway void Compoents_unavailable (in stringSeq component_names)
+	oneway void Components_unavailable (in stringSeq component_names)
         '''
         #look at each individual name
         for name in component_names:
@@ -264,7 +264,7 @@ class BaseClient(Client):
                     self.managerComponents.remove(comp_descrip)
         return
     #--------------------------------------------------------------------------
-    def getMyCorbaRef(self):
+    def getMyCorbaRef(self): # pragma: NO COVER
         '''
         Helper method which returns this Python objects underlying CORBA servant
         reference.
@@ -304,7 +304,7 @@ class BaseClient(Client):
         else:
             return self.corbaRef
     #--------------------------------------------------------------------------
-    def getCode(self):
+    def getCode(self): # pragma: NO COVER
         '''
         Returns the code to be used when manager tries to authenticate this
         object
