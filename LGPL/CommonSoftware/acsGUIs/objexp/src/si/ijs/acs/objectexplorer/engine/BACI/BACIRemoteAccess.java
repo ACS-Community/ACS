@@ -1,5 +1,7 @@
 package si.ijs.acs.objectexplorer.engine.BACI;
 
+
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +64,7 @@ import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
@@ -185,7 +188,14 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			return true;
 		}
 	}
-
+	
+	//2010.02.05 panta@naoj, for sorting components, baci properties, etc
+	class MyComparator implements Comparator<String> {
+	  public int compare(String strA, String strB) {
+	    return strA.compareToIgnoreCase(strB);
+	  }
+	}
+	//--
 	private class CallbackImpl
 		extends org.omg.PortableServer.DynamicImplementation {
 		private String[] allIDs = new String[1];
@@ -524,6 +534,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private Hashtable devices = null;
 	private boolean destroyed = false;
 	private boolean connectNonSticky = false;
+	
+	
 	/**
 	 * ESORemoteAccess constructor comment.
 	 */
@@ -788,10 +800,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 						this);
 			}
 			java.util.Arrays.sort(retVal);
-			
-		notifier.reportDebug(
+			notifier.reportDebug(
 			"BACIRemoteAccess::explodeDeviceNode",
 			"Processing for node '" + node + "' complete.");
+			java.util.Arrays.sort(retVal); //2010.02.05 panta@naoj
 		return retVal;
 	}
 	/**
@@ -895,6 +907,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeDomainNode",
 			"Processing for node '" + n + "' complete.");
+		java.util.Arrays.sort(retVal); //2010.02.05 panta@naoj
 		return retVal;
 
 	}
@@ -911,6 +924,8 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeDomainNodeByName",
 			"Processing for node '" + n + "' complete.");
+		//2010.02.05 panta@naoj
+		java.util.Arrays.sort(retVal);
 		return retVal;
 
 	}
@@ -1331,7 +1346,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		if (node.childrenHolder == null || node.childrenHolder.size() == 0)
 			return new BACITreeDataNode[0];
 		BACIRemoteNode[] retVal = new BACIRemoteNode[node.childrenHolder.size()];
-		java.util.Collections.sort(node.childrenHolder);
+		//-------------------------------------------
+		//2010.02.05 panta@naoj
+		MyComparator myComp = new MyComparator();
+		//java.util.Collections.sort(node.childrenHolder); 
+		java.util.Collections.sort(node.childrenHolder, myComp);
+		//---------
 		for (int i = 0; i < retVal.length; i++) {
 			String curl = (String) node.childrenHolder.get(i);
 			String cob = BACICURLResolver.resolveName(curl);
@@ -1357,6 +1377,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		if (node == null)
 			throw new NullPointerException("node");
 		if (node.childrenHolder == null) return new BACITreeDataNode[0];
+		
 		BACITreeDataNode[] retVal = new BACITreeDataNode[node.childrenHolder.size()];
 		for (int i = 0; i < retVal.length; i++) {
 			retVal[i] = (BACITreeDataNode)node.childrenHolder.get(i);
@@ -1364,6 +1385,9 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		notifier.reportDebug(
 			"BACIRemoteAccess::explodeDummyNode",
 			"Processing for node '" + node + "' complete.");
+		
+		//2010.02.05 panta@naoj
+		java.util.Arrays.sort(retVal);
 		return retVal;
 	}
 
@@ -1404,7 +1428,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 	private static final class BACIAttributeNameComparator implements Comparator<Attribute> {
 		public int compare(Attribute o1, Attribute o2) {
-			return o1.toString().compareTo(o2.toString());
+			return o1.toString().compareTo(o2.toString()); 
 		}
 	}
 	private static final Comparator<Attribute> ATTRIBUTE_COMPARATOR = new BACIAttributeNameComparator();
@@ -1558,7 +1582,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 	private static final class BACIOperationNameComparator implements Comparator<Operation> {
 		public int compare(Operation o1, Operation o2) {
-			return o1.getName().compareTo(o2.getName());
+			return o1.getName().compareTo(o2.getName()); 
 		}
 	}
 	private static final Comparator<Operation> OPERATION_COMPARATOR = new BACIOperationNameComparator();
