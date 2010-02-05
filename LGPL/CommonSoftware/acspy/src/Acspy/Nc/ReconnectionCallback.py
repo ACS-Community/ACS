@@ -14,7 +14,7 @@ import CORBA
 
 class ReconnectionCallback (OSReconnectionCallback):
 
-   def __init__ (self, NCSub):
+   def __init__ (self, NCSub): # pragma: NO COVER
       '''
       Constructor.
 
@@ -32,10 +32,10 @@ class ReconnectionCallback (OSReconnectionCallback):
       self.id_is_valid = False
 
 
-   def is_alive(self):
+   def is_alive(self): # pragma: NO COVER
       return true
 
-   def reconnect(self, new_connection):
+   def reconnect(self, new_connection): # pragma: NO COVER
       self.ecf = new_connection._narrow(EventChannelFactory)
       if self.ecf != None:
          self.sub.reconnect(self.ecf)
@@ -62,7 +62,7 @@ class ReconnectionCallback (OSReconnectionCallback):
          callback = self._this()
          registry = self.ecf._narrow(ReconnectionRegistry)
          self.callback_id = registry.register_callback(callback)
-         id_is_valid = True
+         self.id_is_valid = True
       except AttributeError, e:
          pass
 
@@ -78,6 +78,6 @@ class ReconnectionCallback (OSReconnectionCallback):
       '''
       if self.id_is_valid :
          registry = self.ecf._narrow(ReconnectionRegistry)
-         registry.unregister_callback(seld.callback_id)
+         registry.unregister_callback(self.callback_id)
          self.id_is_valid = False
 

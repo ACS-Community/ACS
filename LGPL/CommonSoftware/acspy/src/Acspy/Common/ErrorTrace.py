@@ -272,7 +272,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().shortDescription
     #--------------------------------------------------------------------------
-    def getFileName(self):
+    def getFileName(self): # pragma: NO COVER
         '''
         Returns file name information of the error
         
@@ -284,7 +284,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().file
     #--------------------------------------------------------------------------
-    def getLineNumber(self):
+    def getLineNumber(self): # pragma: NO COVER
         '''
         Returns line number information of the error
         
@@ -296,7 +296,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().lineNum
     #--------------------------------------------------------------------------
-    def getRoutine(self):
+    def getRoutine(self): # pragma: NO COVER
         '''
         Returns routine information of the error
 
@@ -308,7 +308,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().routine
     #--------------------------------------------------------------------------
-    def getHostName(self):
+    def getHostName(self): # pragma: NO COVER
         '''
         Returns host name information of the error
         
@@ -320,7 +320,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().host
     #--------------------------------------------------------------------------
-    def getProcess(self):
+    def getProcess(self): # pragma: NO COVER
         '''
         Returns process information of the error. Its name or process ID.
 
@@ -332,7 +332,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().process
     #--------------------------------------------------------------------------
-    def getThread(self):
+    def getThread(self): # pragma: NO COVER
         '''
         Returns thread information of the error. The name of thread or its ID.
 
@@ -344,7 +344,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().thread
     #--------------------------------------------------------------------------
-    def getTimeStamp(self):
+    def getTimeStamp(self): # pragma: NO COVER
         '''
         Returns time stamp of the error in 100th of nanoseconds.
 
@@ -356,7 +356,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().timeStamp
     #--------------------------------------------------------------------------
-    def getErrorCode(self):
+    def getErrorCode(self): # pragma: NO COVER
         '''
         Returns error code
         
@@ -368,7 +368,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().errorCode
     #--------------------------------------------------------------------------
-    def getErrorType(self):
+    def getErrorType(self): # pragma: NO COVER
         '''
         Returns error type
 
@@ -380,7 +380,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().errorType
     #--------------------------------------------------------------------------
-    def getSeverity(self):
+    def getSeverity(self): # pragma: NO COVER
         '''
         Returns error severity
         
@@ -392,7 +392,7 @@ class ErrorTraceHelper:
         '''
         return self.getErrorTrace().severity
     #--------------------------------------------------------------------------
-    def setTimeStamp(self, time):
+    def setTimeStamp(self, time): # pragma: NO COVER
         '''
         Sets time stamp of the error in 100th of nanoseconds.
 
@@ -404,7 +404,7 @@ class ErrorTraceHelper:
         '''
         self.getErrorTrace().timeStamp = time
     #--------------------------------------------------------------------------
-    def setFileName(self,file_name):
+    def setFileName(self,file_name): # pragma: NO COVER
         '''
         Sets file name
         
@@ -416,7 +416,7 @@ class ErrorTraceHelper:
         '''
         self.getErrorTrace().file = str(file_name)
     #--------------------------------------------------------------------------
-    def setLineNumber(self, line_number):
+    def setLineNumber(self, line_number): # pragma: NO COVER
         '''
         Sets line number
         
@@ -444,7 +444,7 @@ class ErrorTraceHelper:
         else:
             raise ValueError('Bad parameters')
     #--------------------------------------------------------------------------
-    def setSeverity(self, severity):
+    def setSeverity(self, severity): # pragma: NO COVER
         '''
         Sets error severity
         

@@ -1,4 +1,4 @@
-# @(#) $Id: CDBAccess.py,v 1.9 2006/09/28 14:30:47 gchiozzi Exp $
+# @(#) $Id: CDBAccess.py,v 1.10 2010/02/05 23:39:35 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -31,7 +31,7 @@ TODO:
 - Fix bug involving an XML with a sequence of identical elements
 '''
 
-__revision__ = "$Id: CDBAccess.py,v 1.9 2006/09/28 14:30:47 gchiozzi Exp $"
+__revision__ = "$Id: CDBAccess.py,v 1.10 2010/02/05 23:39:35 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from   xml.sax             import ContentHandler, parseString
@@ -65,7 +65,7 @@ class CDBhandler(ContentHandler):
         self.tempName = ""
         self.return_values = []
 
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print self.__dict__
     #--------------------------------------------------------------------------
     def startElement(self, name, attrs):
@@ -80,18 +80,18 @@ class CDBhandler(ContentHandler):
 
         Raises: ???
         '''
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "SE", self.tempName, name
             
         self.tempName = self.tempName + name.encode('ascii')
 
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "   SE Equality: '%s' '%s'" % (self.tempName, self.element_name)
             print "   SE Equality:", type(self.tempName), type(self.element_name)
             print "   SE Equality:", len(self.tempName), len(self.element_name)
             
         if self.tempName == self.element_name:  #we're done
-            if _DEBUG:
+            if _DEBUG: # pragma: NO COVER
                 print "SE Match:", self.tempName
             return_value = {}
             for name in attrs.getNames():
@@ -112,7 +112,7 @@ class CDBhandler(ContentHandler):
 
         Raises: ???
         '''
-        if _DEBUG:
+        if _DEBUG: # pragma: NO COVER
             print "EE", name, self.tempName, self.tempName.replace(name.encode('ascii') + "/", "", 1)
         self.tempName = self.tempName.replace(name.encode('ascii') + "/", "", 1)
 #------------------------------------------------------------------------------

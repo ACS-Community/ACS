@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.13 2008/02/25 21:02:42 agrimstrup Exp $
+# @(#) $Id: CDBProperties.py,v 1.14 2010/02/05 23:39:35 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.13 2008/02/25 21:02:42 agrimstrup Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.14 2010/02/05 23:39:35 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -50,7 +50,7 @@ _nsmappings = { 'Channel': 'Channels/NotificationServiceMapping/Channels_/_',
                 'Default' : 'Channels/NotificationServiceMapping'
                 }
 
-def get_cdb_access():
+def get_cdb_access(): # pragma: NO COVER
     '''
     This function is only around to fix some problems with pydoc documentation
     issues. That is, CDBaccess() cannot be called globally or everything NC-related
@@ -105,7 +105,7 @@ def cdb_channel_config_exists(channel_name):
         return 0
     
 #------------------------------------------------------------------------------
-def get_channel_dict(channel_name):
+def get_channel_dict(channel_name): # pragma : NO COVER
     '''
     Function which retrieves event channel config data from the CDB.
 
@@ -126,9 +126,7 @@ def get_channel_dict(channel_name):
 INTEGRATION_LOGS = {}
 
 def get_integration_logs(channel_name):
-    '''
-    Requested by HLA/ITS. Should be removed at some later date.
-    '''
+
     global INTEGRATION_LOGS
 
     #check to see if this function has been called before to save system
