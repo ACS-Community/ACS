@@ -108,7 +108,10 @@ public class ExecuteAcs {
 	// ========================================================================================
 	//
 
-	public void startRemoteDemonic (NativeCommand.Listener listener) {
+	/**
+	 * @return any exception while starting Acs, or {@code null} if all went well.
+	 */
+	public Exception startRemoteDemonic (NativeCommand.Listener listener) {
 		
 		String host = runModel.getRemoteHost();
 		int instance = MiscUtils.parseInt(runModel.getScriptBase());
@@ -119,10 +122,10 @@ public class ExecuteAcs {
 		// but not the actual execution state of the acsStart script.
 		String cmdFlags = "-nowaitifr";
 
-		Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
+		return Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
 	}
 	
-	public void stopRemoteDemonic (NativeCommand.Listener listener) {
+	public Exception stopRemoteDemonic (NativeCommand.Listener listener) {
 		
 		String host = runModel.getRemoteHost();
 		int instance = MiscUtils.parseInt(runModel.getScriptBase());
@@ -130,7 +133,7 @@ public class ExecuteAcs {
 		boolean startStop = false;
 		String cmdFlags = "";
 		
-		Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
+		return Executor.remoteDaemonForServices(host, instance, startStop, cmdFlags, listener);
 	}
 
 }

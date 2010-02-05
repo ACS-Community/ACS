@@ -24,6 +24,7 @@ import alma.acs.commandcenter.util.PreparedString;
 import alma.acs.commandcenter.util.StringRingBuffer;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.util.AcsLocations;
 import alma.acsdaemon.ContainerDaemon;
 import alma.acsdaemon.ContainerDaemonHelper;
@@ -589,33 +590,39 @@ public class Executor {
 	/**
 	 * Starts or stops ACS via the ACS services daemon. 
 	 * This call returns only when the action has completed.
+	 * Exceptions will be returned instead of thrown.
+	 * @return any exception that occurs underways
 	 */
-	static public void remoteDaemonForServices(String host, int instance, boolean startStop, String cmdFlags,
+	/* msc 2009-12: this method has never thrown exceptions, instead they can be detected through
+	 * Flow listening, and as of today also by looking at the return value. Starting to throw exceptions
+	 * would be too big a change that I don't want to risk. I have no time to verify it doesn't harm. */
+	static public Exception remoteDaemonForServices(String host, int instance, boolean startStop, String cmdFlags,
 			NativeCommand.Listener listener) {
 		if (listener != null) {
 			listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n"
 					+ "See logs in <daemon-owner>/.acs/commandcenter on host " + host + "\n");
 		}
 
-		String info = ((startStop) ? "Starting" : "Stopping") + " Acs Suite on host '" + host + "' (instance "
-				+ instance + ")";
+		String info = ((startStop) ? "Starting" : "Stopping") + " Acs Suite on host '" + host + "' (instance "+ instance + ")";
 		remoteServicesDaemonFlow.reset(info);
 
 		String daemonLoc = AcsLocations.convertToServicesDaemonLocation(host);
 
 		org.omg.CORBA.ORB orb;
 		AcsCorba acsCorba = null;
+		remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.INIT_CORBA);
 		try {
 			acsCorba = firestarter.giveAcsCorba();			
 			orb = acsCorba.getORB();
 		} catch (OrbInitException exc) {
 			remoteServicesDaemonFlow.failure(exc);
-			return;
+			return new Exception(RemoteServicesDaemonFlow.INIT_CORBA+": "+exc.getMessage(), exc);
 		}
 		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.INIT_CORBA);
 
-		
+
 		ServicesDaemon daemon;
+		remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.CONNECT_DAEMON);
 		try {
 			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
 			daemon = ServicesDaemonHelper.narrow(object);
@@ -625,54 +632,56 @@ public class Executor {
 				throw new RuntimeException("acsdaemon not existing on "+host);
 		} catch (RuntimeException exc) {
 			remoteServicesDaemonFlow.failure(exc);
-			return;
+			return new Exception(RemoteServicesDaemonFlow.CONNECT_DAEMON+": "+exc.getMessage(), exc);
 		}
 		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.CONNECT_DAEMON);
-		
+
 		try {
+
+			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.SEND_COMMAND);
 			final BlockingQueue<Completion> sync = new ArrayBlockingQueue<Completion>(1);
 			DaemonSequenceCallbackPOA daemonCallbackImpl = new DaemonSequenceCallbackPOA() {
-				public void done(Completion comp) {
-					sync.add(comp);
-				}
-				public void working(String service, String host, short instance_number, Completion comp) {
-					// @TODO negotiate with daemon module developers 
-					//       what intermittent data should be sent when, if at all.
-				}
+				public void done(Completion comp) {sync.add(comp);}
+				public void working(String service, String host, short instance_number, Completion comp) {}
 			};
-			DaemonSequenceCallback daemonCallback = DaemonSequenceCallbackHelper.narrow(
-					acsCorba.activateOffShoot(daemonCallbackImpl, acsCorba.getRootPOA()) );
-			if (startStop == true) {
+			DaemonSequenceCallback daemonCallback = DaemonSequenceCallbackHelper.narrow(acsCorba.activateOffShoot(daemonCallbackImpl, acsCorba.getRootPOA()) );
+
+			if (startStop == true)
 				daemon.start_acs(daemonCallback, (short)instance, cmdFlags);
-			} else {
+			else
 				daemon.stop_acs(daemonCallback, (short)instance, cmdFlags);
-			}
 			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.SEND_COMMAND);
-			
+
+
 			// The services daemon's start/stop methods are implemented asynchronously,
 			// which means we need to wait for the callback notification.
 			// @TODO: Perhaps a 10 minute timeout is too much though?
-			long timeout = 10;
-			TimeUnit timeoutUnit = TimeUnit.MINUTES;
+			remoteServicesDaemonFlow.trying(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
+			long timeout = 10; TimeUnit timeoutUnit = TimeUnit.MINUTES;
 			Completion daemonReplyRaw = sync.poll(timeout, timeoutUnit);
 			if (daemonReplyRaw != null) {
 				AcsJCompletion daemonReply = AcsJCompletion.fromCorbaCompletion(daemonReplyRaw);
 				if (daemonReply.isError()) {
-					remoteServicesDaemonFlow.failure(daemonReply.getAcsJException());
+					AcsJException exc = daemonReply.getAcsJException();
+					remoteServicesDaemonFlow.failure(exc);
+					return new Exception(RemoteServicesDaemonFlow.AWAIT_RESPONSE+": "+exc.getMessage(), exc);
 				}
 			}
 			else {
-				// timeout while waiting for callback from the daemon
-				remoteServicesDaemonFlow.failure("ACS services daemon did not finish to " + 
-						( startStop ? "start" : "stop" ) + " ACS within timeout of " +
-						timeout + " " + timeoutUnit.toString());
-				return;
+				// Timeout while waiting for callback from the daemon
+				RuntimeException exc = new RuntimeException("Timeout: Acs daemon did not "+(startStop?"start":"stop")+" Acs within "+timeout+" "+timeoutUnit.toString());
+				remoteServicesDaemonFlow.failure(exc);
+				return new Exception(RemoteServicesDaemonFlow.AWAIT_RESPONSE+": "+exc.getMessage(), exc);
 			}
+
+			remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
+			return null;
+
+
 		} catch (Exception exc) {
 			remoteServicesDaemonFlow.failure(exc);
-			return;
+			return new Exception(remoteServicesDaemonFlow.current()+": "+exc.getMessage(), exc);
 		}
-		remoteServicesDaemonFlow.success(RemoteServicesDaemonFlow.AWAIT_RESPONSE);
 	}
 
    public static class RemoteServicesDaemonFlow extends Flow {
@@ -691,7 +700,10 @@ public class Executor {
     * @param contTypeMods - only needed for starting (i.e. startStop==true)
     * @see http://www.eso.org/projects/alma/develop/acs/OnlineDocs/ACS_docs/schemas/urn_schemas-cosylab-com_Container_1.0/complexType/DeployInfo.html 
     */
-   static public void remoteDaemonForContainers (String host, int instance, boolean startStop, String contName, String contType, String[] contTypeMods, String cmdFlags, NativeCommand.Listener listener) {
+	/* msc 2010-02: this method has never thrown exceptions, instead they can be detected through
+	 * Flow listening, and as of today also by looking at the return value. Starting to throw exceptions
+	 * would be too big a change that I don't want to risk. I have no time to verify it doesn't harm. */
+   static public Exception remoteDaemonForContainers (String host, int instance, boolean startStop, String contName, String contType, String[] contTypeMods, String cmdFlags, NativeCommand.Listener listener) {
    	if (listener != null) {
    		listener.stdoutWritten(null, "\nIn daemon mode, output cannot be displayed.\n" +
    				"See logs in <daemon-owner>/.acs/commandcenter on host "+host+"\n");
@@ -703,16 +715,18 @@ public class Executor {
 		String daemonLoc = AcsLocations.convertToContainerDaemonLocation(host);
 
 		org.omg.CORBA.ORB orb = null;
+		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.INIT_CORBA);
 		try {
 			orb = firestarter.giveOrb();
 		} catch (OrbInitException exc) {
 			remoteContainerDaemonFlow.failure(exc);
-			return;
+			return new Exception(RemoteContainerDaemonFlow.INIT_CORBA+": "+exc.getMessage());
 		}
 		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.INIT_CORBA);
 		
 		
 		ContainerDaemon daemon;
+		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.CONNECT_DAEMON);
 		try {
 			org.omg.CORBA.Object object = orb.string_to_object(daemonLoc);
 			daemon = ContainerDaemonHelper.narrow(object);
@@ -722,12 +736,12 @@ public class Executor {
 				throw new RuntimeException("acsdaemon not existing on "+host);
 		} catch (RuntimeException exc) {
 			remoteContainerDaemonFlow.failure(exc);
-			return;
+			return new Exception(RemoteContainerDaemonFlow.CONNECT_DAEMON+": "+exc.getMessage());
 		}
 		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.CONNECT_DAEMON);
 
 		
-		
+		remoteContainerDaemonFlow.trying(RemoteContainerDaemonFlow.SEND_COMMAND);
 		try {
 			if (startStop == true) {
 				daemon.start_container(contType, contName, (short)instance, contTypeMods, cmdFlags);
@@ -736,7 +750,7 @@ public class Executor {
 			}
 		} catch (Exception exc) {
 			remoteContainerDaemonFlow.failure(exc);
-			return;
+			return new Exception(RemoteContainerDaemonFlow.SEND_COMMAND+": "+exc.getMessage());
 		}
 
 		// i'm adding this possibility to sleep a little simply because 
@@ -747,7 +761,7 @@ public class Executor {
 		} catch (InterruptedException exc) {}
 		
 		remoteContainerDaemonFlow.success(RemoteContainerDaemonFlow.SEND_COMMAND);
-
+		return null;
    }
 
    static public int remoteDaemonForContainersCompletionDelay = 2500;

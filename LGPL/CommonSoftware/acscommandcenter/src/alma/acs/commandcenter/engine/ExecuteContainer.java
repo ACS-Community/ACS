@@ -196,7 +196,10 @@ public class ExecuteContainer {
     // ========================================================================================
     //
     
-    public void startRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
+ 	/**
+ 	 * @return any exception while starting the Container, or {@code null} if all went well.
+ 	 */
+    public Exception startRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {
 
    	 String   contHost = runModel.getContainerRemoteHost();
    	 String   contName = runModel.getContainerName();
@@ -221,7 +224,7 @@ public class ExecuteContainer {
 			contMods = new String[]{"archiveContainer"};
 		}
 
-		Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, contMods, cmdFlags, listener);
+		return Executor.remoteDaemonForContainers(contHost, instance, startStop, contName, contType, contMods, cmdFlags, listener);
 	}
 
 	public void stopRemoteDemonic (RunModel runModel, NativeCommand.Listener listener) {

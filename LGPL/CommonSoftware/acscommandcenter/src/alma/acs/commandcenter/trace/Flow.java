@@ -47,6 +47,33 @@ public class Flow {
    protected Node latestSuccess = UNDEF;
    protected Node nowTrying = UNDEF;
 
+   public String current() {
+
+      // if the current step was announced, it is easy
+      Node step = nowTrying;
+
+      // if not, we try to determine it ourselves
+      if (step == UNDEF) {
+         try {
+
+            // determine step after latest success
+            Node current = latestSuccess;
+            if (current == null)
+               current = node(null);
+            step = (Node) current.getNextLeaf(); //PENDING(msc): this assumption won't hold
+
+            // otherwise assume first step is the current one
+            if (step == null)
+               step = ((Node) node(null).getChildAt(0));
+
+         } catch (Exception exc) {
+            System.err.println("Flow.failure: "+exc);
+            step = UNDEF;
+         }
+      }
+      return step.getName();
+   }
+   
    public void reset (Object info) {
       this.latestSuccess = UNDEF;
       this.nowTrying = UNDEF;
@@ -68,30 +95,8 @@ public class Flow {
    }
 
    public void failure (Object info) {
-
-      // if the failed step was announced, it is easy
-      Node failed = nowTrying;
-
-      // if not, we try to determine it ourselves
-      if (failed == UNDEF)
-         try {
-
-            // determine step after latest success
-            Node current = latestSuccess;
-            if (current == null)
-               current = node(null);
-            failed = (Node) current.getNextLeaf(); //PENDING(msc): this assumption won't hold
-
-            // otherwise assume first step failed
-            if (failed == null)
-               failed = ((Node) node(null).getChildAt(0));
-
-         } catch (Exception exc) {
-            System.err.println("Flow.failure: "+exc);
-         }
-
-      fireFailure(failed.getName(), info);
-
+   	String failed = current();
+      fireFailure(failed, info);
    }
 
    // --- helpers for the foregoing section ---
