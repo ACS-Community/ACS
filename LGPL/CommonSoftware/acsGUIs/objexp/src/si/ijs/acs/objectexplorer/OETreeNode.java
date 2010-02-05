@@ -67,7 +67,7 @@ public boolean areChildrenDefined() {
  * compareTo method comment.
  */
 public int compareTo(java.lang.Object o) {
-	return(toString().compareTo(o.toString()));
+	return(toString().compareToIgnoreCase(o.toString())); //2010.02.05 panta@naoj
 }
 /**
  * Insert the method's description here.
