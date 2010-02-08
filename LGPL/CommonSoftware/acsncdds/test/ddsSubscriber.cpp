@@ -14,9 +14,9 @@ void handlerFunction(NC_BENCHMARK::Message m, void *other)
 
 int main(int argc, char**argv)
 {
-	//maci::SimpleClient client;
-	//client.init(argc,argv);
-	//client.login();
+	maci::SimpleClient client;
+	client.init(argc,argv);
+	client.login();
 	
 	ddsnc::DDSSubscriber *sub_p;
 
@@ -29,8 +29,8 @@ int main(int argc, char**argv)
 	sub_p->disconnect();
 	delete sub_p;
 
-	//client.logout();
-	//ACE_OS::sleep(5);
+	client.logout();
+	ACE_OS::sleep(5);
 	
 	return 0;
 }

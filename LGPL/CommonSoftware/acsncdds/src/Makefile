@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.14 2009/06/29 21:52:58 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.15 2010/02/08 22:33:35 utfsm Exp $"
 #
 # Makefile of ........
 #
@@ -66,6 +66,7 @@ EXECUTABLES_L   =
 # ---------------------------------
 INCLUDES      =  DDSHelper.h DDSPublisher.h DDSSubscriber.h \
 		 DataReaderListener.h acsddsncDataReaderListener.h \
+		 acsddsncCDBProperties.h 
 
 #
 # Libraries (public and local)
@@ -75,7 +76,7 @@ LIBRARIES_L     =
 
 #
 # Library that provides all the core functionality of DDS Notification Channel in ACS
-acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl
+acsddsnc_OBJECTS  = DDSHelperImpl DDSPublisherImpl DDSSubscriberImpl DataReaderListenerImpl acsddsncCDBPropertiesImpl
 acsddsnc_LIBS	  = OpenDDS_Dcps SimpleTcp ACE
 
 #

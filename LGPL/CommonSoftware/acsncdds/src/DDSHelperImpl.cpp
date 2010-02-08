@@ -6,6 +6,7 @@
 
 #include <maciHelper.h>
 #include <loggingACEMACROS.h>
+#include "acsddsncCDBProperties.h"
 
 
 using namespace ddsnc;
@@ -14,6 +15,19 @@ static bool factories_init = false;
 
 DDSHelper::DDSHelper(const char* channelName)
 {
+
+	
+	std::cout<<"getCDBQoSProps:"<<std::endl;
+	// obtener QoS
+	CosNotification::QoSProperties tmpVal;
+	tmpVal = ddsnc::CDBProperties::getCDBQoSProps(channelName);
+	int i;
+	for(i=0;i<5;i++)
+	{
+		// Imprimir nombres de los QoS para verificar la lectura
+		cout<<tmpVal[i].name<<endl;
+	}
+	// Obtencion manager ref
 	ACE_CString managerName;
 	try
 	{
