@@ -191,6 +191,9 @@ namespace AcsBulkdata
 		handleMap_m.rebind(flowName,handle);	
 	    }
 
+	void setCbTimeout(const char * cbTimeout);
+
+
       private:
 
 	typedef ACE_Hash_Map_Manager<ACE_CString, BulkDataFlowConsumer<TReceiverCallback> *, ACE_Null_Mutex> FepObjects;
@@ -329,6 +332,8 @@ namespace AcsBulkdata
 	CORBA::Boolean closeReceiverFlag;
 
 	ACS::CBvoid_ptr locNotifCb_p;
+
+	ACE_Time_Value cbTimeout_m;
 
 	/**
 	 * ALMA C++ coding standards state copy operators should be disabled.

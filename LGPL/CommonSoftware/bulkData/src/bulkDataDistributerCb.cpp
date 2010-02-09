@@ -58,6 +58,9 @@ int BulkDataDistributerCb::handle_stop (void)
 {
     //ACS_TRACE("BulkDataDistributerCb::handle_stop");
 
+    //cout << flowname_m.c_str() << " - wait_period  sec: " << waitPeriod_m.sec() << endl;
+    //cout << flowname_m.c_str() << " - wait_period usec: " << waitPeriod_m.usec() << endl;
+
     int locLoop;
 
     locLoop = loop_m;
@@ -454,6 +457,13 @@ ACE_HANDLE BulkDataDistributerCb::getHandle()
     return handle;
 }
 
+
+void
+BulkDataDistributerCb::setCbTimeout(ACE_Time_Value cbTimeout)
+{
+    waitPeriod_m = cbTimeout;
+    //ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::setCbTimeout - distributor timeout set to %ld sec - %ld usec",waitPeriod_m.sec(),waitPeriod_m.usec()));
+}
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>

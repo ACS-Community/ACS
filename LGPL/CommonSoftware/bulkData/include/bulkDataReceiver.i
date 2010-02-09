@@ -18,6 +18,8 @@ AcsBulkdata::BulkDataReceiver<TReceiverCallback>::BulkDataReceiver() : closeRece
 	ACSBulkDataError::AVReceiverConfigErrorExImpl err = ACSBulkDataError::AVReceiverConfigErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::BulkDataReceiver");
 	throw err;
 	}
+
+    cbTimeout_m.set(0L,10L); // timeout default value, 0 sec, 10 usec
 }
 
 
@@ -160,6 +162,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	defProt.length(1);
 
 	TAO_Tokenizer addressToken(fepsConfig, '/');
+
 	int numOtherFeps = addressToken.num_tokens();
 	if(numOtherFeps > 19)
 	    {
@@ -510,6 +513,17 @@ AVStreams::FlowConsumer_ptr AcsBulkdata::BulkDataReceiver<TReceiverCallback>::cr
     if(localFepB_p == 0)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB Flow Consumer null"));
+	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
+	throw err;
+	}
+
+    try
+	{
+	localFepB_p->setCbTimeout(cbTimeout_m);
+	}
+    catch(...)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createFepConsumerB error setting callback timeout in Flow Consumer"));
 	ACSBulkDataError::AVFlowEndpointErrorExImpl err = ACSBulkDataError::AVFlowEndpointErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::createFepConsumerB");
 	throw err;
 	}
@@ -910,4 +924,52 @@ bulkdata::Connection AcsBulkdata::BulkDataReceiver<TReceiverCallback>::checkFlow
 	}
 
     return connState;    
+}
+
+
+template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::setCbTimeout(const char * cbTimeout)
+{
+    TAO_Tokenizer timeoutToken(cbTimeout,':');
+    int numTokens = timeoutToken.num_tokens();
+    if(numTokens != 2)
+	{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setCbTimeout wrong number of timeout entries in CDB"));
+	ACSBulkDataError::AVCDBTimeoutErrorExImpl err = ACSBulkDataError::AVCDBTimeoutErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setCbTimeout");
+	throw err;
+	}
+
+    std::string timeoutSec(timeoutToken[0]); 
+    std::string timeoutUsec(timeoutToken[1]);
+
+    for(unsigned int i = 0; i < timeoutSec.length(); i++)
+	{
+	if(!std::isdigit(timeoutSec[i]))
+	    { 
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setCbTimeout wrong timeout entry format in CDB"));
+	    ACSBulkDataError::AVCDBTimeoutErrorExImpl err = ACSBulkDataError::AVCDBTimeoutErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setCbTimeout");
+	    throw err;
+	    }
+	}
+
+    for(unsigned int i = 0; i < timeoutUsec.length(); i++)
+	{
+	if(!std::isdigit(timeoutUsec[i]))
+	    {
+	    ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::setCbTimeout wrong timeout entry format in CDB"));
+	    ACSBulkDataError::AVCDBTimeoutErrorExImpl err = ACSBulkDataError::AVCDBTimeoutErrorExImpl(__FILE__,__LINE__,"BulkDataReceiver::setCbTimeout");
+	    throw err;
+	    }
+	}
+
+    std::istringstream iss0(timeoutToken[0]);
+    std::istringstream iss1(timeoutToken[1]);
+
+    CORBA::ULong timeout_sec;
+    CORBA::ULong timeout_usec;
+
+    iss0 >> timeout_sec;
+    iss1 >> timeout_usec;
+
+    cbTimeout_m.set(timeout_sec,timeout_usec);
 }

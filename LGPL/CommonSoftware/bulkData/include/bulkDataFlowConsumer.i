@@ -13,6 +13,8 @@ AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::BulkDataFlowConsumer(const
     
   cb_p = 0;
 
+  cbTimeout_m.set(0,10); // default value, 0 sec, 10 usec
+
   try    
     {
       set_protocol_restriction(protocols);
@@ -47,6 +49,8 @@ int AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::get_callback(const cha
     {
       ACE_ERROR_RETURN((LM_ERROR,"BulkDataFlowConsumer<>::get_callback not initialized."),-1);
     }
+
+  callback_p->setCbTimeout(cbTimeout_m);
 
   callback = callback_p;
 

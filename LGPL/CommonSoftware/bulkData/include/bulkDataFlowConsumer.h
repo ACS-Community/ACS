@@ -112,6 +112,11 @@ namespace AcsBulkdata
 
       virtual  TAO_AV_Flow_Handler * getFlowHandler();
 
+      virtual void setCbTimeout(ACE_Time_Value cbTimeout)
+          {
+	      cbTimeout_m = cbTimeout;
+          }	
+
     private:
 
       TReceiverCallback *cb_p;
@@ -121,6 +126,8 @@ namespace AcsBulkdata
       TAO_AV_Protocol_Object *protObj_p;
 
       TAO_AV_Flow_Handler *handler_p;
+
+      ACE_Time_Value cbTimeout_m;	
     };
 
 

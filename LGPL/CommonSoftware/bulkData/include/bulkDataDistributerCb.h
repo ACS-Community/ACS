@@ -83,6 +83,9 @@ class BulkDataDistributerCb : public TAO_AV_Callback
 	    return isFepAlive_m;
 	}
 
+    virtual void setCbTimeout(ACE_Time_Value cbTimeout);
+
+
   protected:
 
     ACE_CString flowname_m;

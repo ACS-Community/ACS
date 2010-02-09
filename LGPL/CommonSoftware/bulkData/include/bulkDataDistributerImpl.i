@@ -344,6 +344,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
     ACS_TRACE("BulkDataDistributerImpl<>::openReceiver");
   
     char buf[BUFSIZ];
+    char buf1[BUFSIZ];
 
     ACE_CString CDBpath="alma/";
     CDBpath += name();
@@ -356,7 +357,17 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
 	throw err.getAVOpenReceiverErrorEx();	
 	}
     
-    ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
+    ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols")); // add error handling?
+
+    try
+	{
+	ACE_OS::strcpy(buf1,dao_p->get_string("distrcb_timeout"));
+	}
+    catch(...)
+	{
+	ACE_OS::strcpy(buf1,"0:10"); // timeout default value, 0 sec, 10 usec
+	}
+
 
     AcsBulkdata::BulkDataReceiver<TReceiverCallback> *recv = distributer.getReceiver();
     if(recv == 0)
@@ -369,6 +380,8 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::openReceiver()
     try
 	{
 	recv->initialize();
+
+	recv->setCbTimeout(buf1);
 
 	recv->createMultipleFlows(buf);
 	}

@@ -83,6 +83,11 @@ class BulkDataCallback : public TAO_AV_Callback
 	    return isFepAlive_m;
 	}
 
+    virtual void setCbTimeout(ACE_Time_Value cbTimeout)
+	{
+	    // empty
+	}
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
