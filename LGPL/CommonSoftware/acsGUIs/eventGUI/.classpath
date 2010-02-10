@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
-	<classpathentry kind="lib" path="/ACS_Utility_Jars/logging_idl.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsalarmSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsASsources.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acscommon.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acscomponent.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsContainerServices.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acserr.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acserrj.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/ACSError.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsErrTypeContainerServices.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/ACSErrTypeCORBA.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/ACSErrTypeJavaNative.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsjlog.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsnc.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsncErrType.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/acsncSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/AcsNCTraceLogLTS.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/avalon-framework.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/castor.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/CDB.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/cdbDAL.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/cdbErrType.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/cdbjDAL.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/cmwmom.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/jacorb.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/jACSUtil.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/JavaContainerError.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/jcont.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/jcontnc.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/jms.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/junit.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/logging_idl.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/logkit.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/maci.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/maciErrType.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/maciSchemaBindings.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/NotificationServiceMC.jar"/>
+	<classpathentry kind="lib" path="object/headlessTemp/plugins/alma.acs.rcp.jars/NotifyMonitoringExt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
