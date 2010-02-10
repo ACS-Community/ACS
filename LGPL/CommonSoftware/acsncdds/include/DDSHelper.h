@@ -49,7 +49,7 @@ namespace ddsnc{
 		 * partition.
 		 * 
 		 */
-		DDSHelper(const char *channelName);
+		DDSHelper(CORBA::String_var channelName);
 
 		/**
 		 * Constructor for DDSHelper

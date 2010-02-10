@@ -3,6 +3,12 @@
 
 using namespace ddsnc;
 
+
+DDSSubscriber::DDSSubscriber(CORBA::String_var channel_name):
+	DDSHelper(channel_name)
+{
+}
+
 int DDSSubscriber::createSubscriber()
 {
 	std::cerr << "DDSSubscriber::createSubscriber" << std::endl;

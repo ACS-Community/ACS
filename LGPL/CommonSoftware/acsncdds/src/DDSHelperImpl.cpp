@@ -13,14 +13,14 @@ using namespace ddsnc;
 
 static bool factories_init = false;
 
-DDSHelper::DDSHelper(const char* channelName)
+DDSHelper::DDSHelper(CORBA::String_var channelName)
 {
 
 	
 	std::cout<<"getCDBQoSProps:"<<std::endl;
 	// obtener QoS
 	CosNotification::QoSProperties tmpVal;
-	tmpVal = ddsnc::CDBProperties::getCDBQoSProps(channelName);
+	tmpVal = ddsnc::CDBProperties::getCDBQoSProps(channelName.in());
 	int i;
 	for(i=0;i<5;i++)
 	{

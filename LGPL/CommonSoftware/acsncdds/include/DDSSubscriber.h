@@ -47,10 +47,7 @@ namespace ddsnc{
 		 *
 		 * @see DDSHelper
 		 */
-		DDSSubscriber(const char *channelName) : 
-			ddsnc::DDSHelper(channelName)
-		{
-		}
+		DDSSubscriber(CORBA::String_var channel_name);
 		
 		~DDSSubscriber()
 		{
