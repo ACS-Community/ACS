@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.junit.launchconfig">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/eventGUI/test/alma/acs/eventbrowser/model/EventReceivingTest.java"/>
+<listEntry value="/ACS_eventGUI/test/alma/acs/eventbrowser/model/EventReceivingTest.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -11,6 +11,6 @@
 <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.eventbrowser.model.EventReceivingTest"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="eventGUI"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::pc013018:3001/NameService -DACS.Manager=corbaloc::pc013018:3000/Manager"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_eventGUI"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DORBInitRef.NameService=corbaloc::baez:3001/NameService -DACS.Manager=corbaloc::baez:3000/Manager"/>
 </launchConfiguration>

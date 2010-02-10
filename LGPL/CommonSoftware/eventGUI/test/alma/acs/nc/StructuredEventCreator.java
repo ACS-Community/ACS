@@ -3,6 +3,16 @@ package alma.acs.nc;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.portable.IDLEntity;
+import org.omg.CosNotification.EventHeader;
+import org.omg.CosNotification.EventType;
+import org.omg.CosNotification.FixedEventHeader;
+import org.omg.CosNotification.Property;
+import org.omg.CosNotification.StructuredEvent;
+
+import alma.acs.container.ContainerServicesBase;
+import alma.acs.exceptions.AcsJException;
+import alma.acsnc.EventDescription;
+import alma.acsnc.EventDescriptionHelper;
 
 public class StructuredEventCreator {
 	private ContainerServicesBase m_services;

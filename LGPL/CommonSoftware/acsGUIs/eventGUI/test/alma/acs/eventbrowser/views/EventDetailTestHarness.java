@@ -38,10 +38,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.omg.CORBA.Any;
+import org.omg.CosNotification.StructuredEvent;
+
 import tdem.TDEM_TOPICS.actuatorSpace;
 import tdem.TDEM_TOPICS.pttDataEvent;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.StructuredEventCreator;
+import alma.acs.util.StopWatch;
 
 /**
  * A simple TableViewer to demonstrate usage

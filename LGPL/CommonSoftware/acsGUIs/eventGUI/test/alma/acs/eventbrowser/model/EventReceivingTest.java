@@ -1,6 +1,10 @@
 package alma.acs.eventbrowser.model;
 
+import alma.acs.component.ComponentLifecycleException;
+import alma.acs.container.ContainerServices;
 import alma.acs.eventbrowser.Application;
+import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogger;
 import junit.framework.TestCase;
 
 public class EventReceivingTest extends TestCase {
