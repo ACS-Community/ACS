@@ -59,10 +59,13 @@ public class OperatorAudience implements Audience {
 	 */
 	@Override
 	public boolean matches(ILogEntry log){
-		if (log.getType().ordinal()>=LogTypeHelper.WARNING.ordinal()) {
-			return true;
-		}
-		String logAudience = (String)log.getField(LogField.AUDIENCE);
-		return audience.equalsIgnoreCase(logAudience);
-	}
+		String logAudience=(String)log.getField(LogField.AUDIENCE);
+                if (audience.equalsIgnoreCase(logAudience) || alma.log_audience.SCILOG.value.equalsIgnoreCase(logAudience)) {
+                        return true;
+                }
+                if (log.getType().ordinal()>=LogTypeHelper.WARNING.ordinal() && !alma.log_audience.DEVELOPER.value.equalsIgnoreCase(logAudience)) {
+                        return true;
+                }
+                return false;
+        }
 }
