@@ -18,6 +18,7 @@ public class BACIMenu extends javax.swing.JMenu {
 	private String managerLoc = null;
 	private String IRloc = null;
 	private boolean connectNonSticky;
+	private static boolean nonStickyModefromNowOn = false;
 	
 /**
  * BACIMenu constructor comment.
@@ -42,7 +43,16 @@ public BACIMenu(BACIRemoteAccess ra) {
 	IRloc = props.getProperty(BACIRemoteAccess.IR_CORBALOC);
 	// now non-sticky is the default connection type
 	String nonStickyStr = props.getProperty(BACIRemoteAccess.CONNECT_NON_STICKY_FLAG); 
-	connectNonSticky = ( nonStickyStr == null ? true : Boolean.parseBoolean(nonStickyStr));  
+	
+	//when user clicks "switch to non-sticky mode from now on"
+	//2010-02-12 panta@naoj
+	if(nonStickyModefromNowOn){
+		connectNonSticky = false;
+	}
+	else{
+		connectNonSticky = ( nonStickyStr == null ? true : Boolean.parseBoolean(nonStickyStr));  
+	}
+	
 	this.ra.setConnectNonSticky(connectNonSticky);
 
 	cacheItem.setSelected(this.ra.getCaching());
@@ -94,6 +104,7 @@ public BACIMenu(BACIRemoteAccess ra) {
  * @param b
  */
 public void setNonSticky(boolean b) {
+	nonStickyModefromNowOn = true;
 	nonStickyItem.setSelected(b);
 	for (ActionListener al : nonStickyItem.getListeners(ActionListener.class)) {
 		al.actionPerformed(new ActionEvent(this, 0, null));
