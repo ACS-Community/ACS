@@ -1,12 +1,9 @@
-1 - 
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppend] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppend] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppend] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppend] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to log out from manager...
@@ -17,8 +14,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to log out from manager...
@@ -29,8 +24,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testCopy] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testCopy] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to log out from manager...
@@ -41,8 +34,6 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] POA activated
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager reference not yet available in method loginToManager; will try to find the manager first...
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager corbaloc 'corbaloc::xxxxxxx:yyyy/Manager' resolved.
-1 - ----------T--:--:--.--- FINEST [alma.acs.jlog.test.ErrorLogFileTest#testClear] manager narrow successful.
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] Manager login donee, handle 'xxxxxxxxxx' obtained.
 1 - ----------T--:--:--.--- DEBUG [alma.acs.jlog.test.ErrorLogFileTest#testClear] Alarm system type: ACS
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] about to log out from manager...
