@@ -2,6 +2,7 @@ package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.TCKind;
 import org.omg.CORBA.TypeCodePackage.BadKind;
@@ -24,6 +25,8 @@ public class DynAnyParser {
 	private DynAny dynAny = null;
 	private ArrayList<ParsedAnyData> pdlist = new ArrayList<ParsedAnyData>(100);
 	private String eventName;
+	private IProgressMonitor monitor;
+	private boolean cancelFlag = false;
 
 	public DynAnyParser(Any anyToParse, String eventName) {
 		daFactory = EventModel.getDynAnyFactory();
@@ -38,12 +41,18 @@ public class DynAnyParser {
 		}
 	}
 
-	public ParsedAnyData[] getParsedResults() {
+	public ParsedAnyData[] getParsedResults(IProgressMonitor monitor) {
+		this.monitor = monitor;
+		if (cancelFlag  == true) return null;
 		parseEventAny(dynAny, "");
 		return pdlist.toArray(new ParsedAnyData[0]);
 	}
 
 	private void parseEventAny(DynAny dynAny2, String path) {
+		if (monitor != null && monitor.isCanceled()) {
+			cancelFlag = true;
+			return; // Check for cancellation each time through
+		}
 		DynAny da = dynAny2;
 		int tcKind = da.type().kind().value();
 		ParsedAnyData entry = new ParsedAnyData(path, "", "");

@@ -53,22 +53,10 @@ public class PopulateEventList {
 						if (numberDrained == 0)
 							return;
 						totalNumberDrained += numberDrained;
-						try {
-							viewer.add(c.toArray());
-						} catch (SWTException e) {
-							if (display.isDisposed()) {
-								System.out.println("************** Display has been disposed!!!");
-								return;
-							}
-							else
-								throw e;
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
-						} 
-						//					logger.fine("Table item count: "
-						//							+ viewer.getTable().getItemCount()
-						//							+ "; number of events drained from queue: "+numberDrained);
-
+						synchronized (this) { // TODO -- figure out why this doesn't work; need same lock on display everywhere?
+							if (!display.isDisposed())
+								viewer.add(c.toArray());
+						}
 						if (cycles++%CHECK_MEMORY_FREQUENCY == 0) {
 							StopWatch sw = new StopWatch(logger);
 							freeMemoryIfNecessary();
@@ -82,22 +70,26 @@ public class PopulateEventList {
 			public void run() {
 				//final Display display = viewer.getControl().getDisplay();
 
-				while (true) {
+				while (!Thread.currentThread().isInterrupted()) {
 					if (display.isDisposed())
 						return;
-					display.syncExec(r);
-					//display.asyncExec(r);
 					try {
+						display.syncExec(r);
+					//display.asyncExec(r);
+
 						Thread.sleep(1000);
 						//					System.out.println("Event list iteration " + ++i);
 						//					System.out.println("Queue has "
 						//							+ Application.equeue.remainingCapacity()
 						//							+ " slots left.");
 					} catch (InterruptedException e) {
-						System.out.println("Monitoring was interrupted!");
+						System.out.println("Event monitoring was interrupted!");
 						break;
 						// Application.setMonitoring(false);
 						// startMonitoringAction.setEnabled(true);
+					} catch (SWTException e) {
+						// eat it
+						break;
 					}
 				}
 				// Application.setMonitoring(false);
@@ -113,18 +105,18 @@ public class PopulateEventList {
 		final Thread subscrTh = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while (true) {
+				while (!Thread.currentThread().isInterrupted()) {
 					logger.info("Refreshing channel subscriptions");
 					em.refreshChannelSubscriptions();
 					try {
 						Thread.sleep(60000); // Check for new channels every minute
 					} catch (InterruptedException e) {
 						logger.fine("Subscription thread interrupted.");
-						e.printStackTrace();
+						break;
 					}
 				}
 			}
-		}, "");
+		}, "Channel Refresh");
 		return subscrTh;
 	}
 

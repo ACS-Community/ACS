@@ -68,6 +68,7 @@ public class ServiceSummaryView extends ViewPart {
 	private long howOften = 10000l;
 	
 	public static final String ID = "alma.acs.eventbrowser.views.servicesummary";
+	private Thread serviceMonitoringThread;
 
 	/*
 	 * The content provider class is responsible for
@@ -83,6 +84,7 @@ public class ServiceSummaryView extends ViewPart {
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
 		public void dispose() {
+			if (serviceMonitoringThread != null) serviceMonitoringThread.interrupt();
 		}
 		public Object[] getElements(Object parent) {
 			ChannelData[] a = new ChannelData[4];
@@ -323,7 +325,7 @@ public class ServiceSummaryView extends ViewPart {
 			public void run() {
 				final Display display = viewer.getControl().getDisplay();
 
-				while (Application.isMonitoring()) {
+				while (Application.isMonitoring() && !serviceMonitoringThread.isInterrupted()) {
 					if (!display.isDisposed())
 						display.asyncExec(r);
 					try {
@@ -339,8 +341,8 @@ public class ServiceSummaryView extends ViewPart {
 				startMonitoringAction.setEnabled(true);
 			}
 		};
-		Thread th = new Thread(t);
-		th.start();
+		serviceMonitoringThread = new Thread(t,"ServiceMonitoring");
+		serviceMonitoringThread.start();
 	}
 
 }

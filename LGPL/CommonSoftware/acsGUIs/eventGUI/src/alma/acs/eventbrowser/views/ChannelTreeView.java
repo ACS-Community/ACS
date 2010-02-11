@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -55,6 +56,7 @@ public class ChannelTreeView extends ViewPart {
 	private long howOften = 10000l; // Default is every 10 seconds
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
+	private Thread channelTreeThread;
 
 	/*
 	 * The content provider class is responsible for
@@ -345,25 +347,28 @@ public class ChannelTreeView extends ViewPart {
 			public void run() {
 				final Display display = viewer.getControl().getDisplay();
 
-				while (Application.isMonitoring()) {
+				while (Application.isMonitoring() && !Thread.currentThread().isInterrupted()) {
 					vcp.initialize();
-					if (!display.isDisposed())
-						display.asyncExec(r);
 					try {
+						if (!display.isDisposed())
+							display.asyncExec(r);
+
 						Thread.sleep(howOften);
 						System.out.println("Iteration "+ ++i);
 					} catch (InterruptedException e) {
-						System.out.println("Monitoring was interrupted!");
-						Application.setMonitoring(false);
-						startMonitoringAction.setEnabled(true);
+						System.out.println("Channel monitoring was interrupted!");
+						break;
+					} catch (SWTException e) {
+						// eat it
+						break;
 					}
 				}
 				Application.setMonitoring(false);
 				startMonitoringAction.setEnabled(true);
 			}
 		};
-		Thread th = new Thread(t);
-		th.start();
+		channelTreeThread = new Thread(t,"Channel Tree");
+		channelTreeThread.start();
 	}
 
 }

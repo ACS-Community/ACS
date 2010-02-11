@@ -46,6 +46,8 @@ public class EventListView extends ViewPart {
 	private Logger logger;
 
 	public static final String ID = "alma.acs.eventbrowser.views.eventlist";
+	private Thread eventListThread;
+	private Thread channelRefreshThread;
 
 
 	public EventListView() {
@@ -130,12 +132,12 @@ public class EventListView extends ViewPart {
 
 		pel = new PopulateEventList(logger, viewer, em);
 		
-		final Thread subscrTh = pel.getChannelRefreshThread();
-		subscrTh.start();
+		channelRefreshThread = pel.getChannelRefreshThread();
+		channelRefreshThread.start();
 //		em.refreshChannelSubscriptions(); // TODO: remove workaround
 		
-		Thread th = pel.getThreadForEventList();
-		th.start();
+		eventListThread = pel.getThreadForEventList();
+		eventListThread.start();
 	}
 	
 	private void buildCustomToolBar(Composite parent) {
@@ -233,8 +235,10 @@ public class EventListView extends ViewPart {
 
 	@Override
 	public void dispose() {
-		super.dispose();
+		channelRefreshThread.interrupt();
+		eventListThread.interrupt();
 		em.closeAllConsumers();
+		super.dispose();
 	}
 
 
