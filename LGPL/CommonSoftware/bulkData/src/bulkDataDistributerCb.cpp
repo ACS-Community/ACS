@@ -462,7 +462,7 @@ void
 BulkDataDistributerCb::setCbTimeout(ACE_Time_Value cbTimeout)
 {
     waitPeriod_m = cbTimeout;
-    //ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::setCbTimeout - distributor timeout set to %ld sec - %ld usec",waitPeriod_m.sec(),waitPeriod_m.usec()));
+    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::setCbTimeout - distributor timeout set to %ld sec - %ld usec",waitPeriod_m.sec(),waitPeriod_m.usec()));
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
