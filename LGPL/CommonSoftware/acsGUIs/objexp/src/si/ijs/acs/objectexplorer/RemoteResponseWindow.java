@@ -1470,7 +1470,9 @@ public void jCheckBoxMenuItem1_ActionPerformed(java.awt.event.ActionEvent action
  * Comment
  */
 public void jList2_MouseClicked(java.awt.event.MouseEvent mouseEvent) {
-	if ((mouseEvent.getClickCount() == 2)
+	//2010-02-12 panta@naoj
+	//if ((mouseEvent.getClickCount() == 2)
+	if ((mouseEvent.getClickCount() == 1)
 		&& (mouseEvent.getModifiers() == InputEvent.BUTTON1_MASK)) {
 		if (getoperationsList()
 			.locationToIndex(new java.awt.Point(10, mouseEvent.getY()))
