@@ -240,7 +240,7 @@ public class EngineAudienceTest extends TestCase implements  ACSRemoteLogListene
 		assertFalse("Timeout waiting for logs", waitForLogs());
 		
 		assertEquals(logs.size(), numOfReceivedXMLLogs);
-		assertEquals(15, numOfReceivedLogs);
+		assertEquals(10, numOfReceivedLogs);
 	}
 	
 	
