@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.29 2009/01/15 23:20:56 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ class ContainerServices:
     useless until its setAll method has been invoked properly.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         Components derived from ContainerServices must invoke this constructor!
         Automatically taken care of in PySimpleClient objects.
@@ -91,7 +91,7 @@ class ContainerServices:
         #as it invokes the setAll(...) method.
         self.activateOffShootMethod = None
     #--------------------------------------------------------------------------
-    def getName(self):
+    def getName(self): # pragma: NO COVER
         '''
         Returns our name.
 
@@ -103,7 +103,7 @@ class ContainerServices:
         '''
         return self.__name
     #--------------------------------------------------------------------------
-    def getContName(self):
+    def getContName(self): # pragma: NO COVER
         '''
         Returns our container name.
 
@@ -115,7 +115,7 @@ class ContainerServices:
         '''
         return self.__contname
     #--------------------------------------------------------------------------
-    def getCDBRecord(self, record_name):
+    def getCDBRecord(self, record_name): # pragma: NO COVER
         '''
         Returns the stringified version of an XML record in the ACS
         configuration database defined by record_name.
@@ -131,7 +131,7 @@ class ContainerServices:
         return self.__cdb_access.getField(record_name)
     
     #--------------------------------------------------------------------------
-    def getCDBElement(self, record_name, ele_name):
+    def getCDBElement(self, record_name, ele_name): # pragma: NO COVER
         '''
         This method returns all of the attributes in the form of a dictionary
         for a given XML element within an XML file.
@@ -218,7 +218,9 @@ class ContainerServices:
                 or found
         '''
         #if the user is trying to get a "normal" static component
-        if (comp_name is not None)and(comp_idl_type is None)and(comp_code is None)and(container_name is None)and(is_dynamic == 0):
+        if (comp_name is not None) and (comp_idl_type is None) and \
+           (comp_code is None) and (container_name is None) and \
+           (is_dynamic == 0):
             
             #Import the correct Python CORBA stub for the developer.
             comp_class = self.__importComponentStubs(comp_name, comp_idl_type)
@@ -232,7 +234,9 @@ class ContainerServices:
             return self.__narrowComponentReference(corba_obj, comp_class)
             
         #if the user is trying to get a static default component
-        elif (comp_idl_type is not None)and(comp_name is None)and(comp_code is None)and(container_name is None)and(is_dynamic == 0):
+        elif (comp_idl_type is not None) and (comp_name is None) and \
+             (comp_code is None) and (container_name is None) and \
+             (is_dynamic == 0):
             return self.getDefaultComponent(str(comp_idl_type))
             
         #user must be trying to get a dynamic component
@@ -341,7 +345,7 @@ class ContainerServices:
                 
             return corba_obj
     #--------------------------------------------------------------------------
-    def getDefaultComponent(self, comp_type):
+    def getDefaultComponent(self, comp_type): # pragma: NO COVER
         '''
         Gets the default component specified by the component type.
         The type is the IDL type, such as "IDL:alma/PS/PowerSupply:1.0"
@@ -365,7 +369,7 @@ class ContainerServices:
         
         return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
-    def getComponentNonSticky(self, comp_name):
+    def getComponentNonSticky(self, comp_name): # pragma: NO COVER
         '''
         Gets the component in a non stick way.
         The comp_name is a name of the component.
@@ -392,7 +396,7 @@ class ContainerServices:
                             comp_type,       #IR IDL location
                             code,       #shared library implementing comp
                             container,  #container to activate component
-                            ):
+                            ): # pragma: NO COVER
         '''
         Gets a component whose instance is not registered in the CDB 
         at deployment time.
@@ -437,7 +441,7 @@ class ContainerServices:
             
         return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
-    def releaseComponent(self, comp_name):
+    def releaseComponent(self, comp_name): # pragma: NO COVER
         '''
         Release the component defined by comp_name.
 
@@ -450,7 +454,7 @@ class ContainerServices:
         return getManager().release_component(self.__handle, comp_name)
     
     #--------------------------------------------------------------------------
-    def forceReleaseComponent(self, comp_name):
+    def forceReleaseComponent(self, comp_name): # pragma: NO COVER
         '''
         Forcefully releases the component defined by comp_name.
 
@@ -467,7 +471,7 @@ class ContainerServices:
     def findComponents(self, 
                        curl_wildcard="*", 
                        type_wildcard="*",
-                       activated=CORBA.FALSE):
+                       activated=CORBA.FALSE): # pragma: NO COVER
         '''
         Finds components by their instance name and/or by their type.
 
@@ -513,7 +517,7 @@ class ContainerServices:
     def availableComponents(self,
                             name_wildcard="*",
                             type_wildcard="*",
-                            activated=0):
+                            activated=0): # pragma: NO COVER
         '''
         Returns a list of ComponentInfos consisting of all Components known 
         to manager.
@@ -543,7 +547,7 @@ class ContainerServices:
     #--------------------------------------------------------------------------
     def makeCompImmortal(self,
                          comp_name,
-                         state):
+                         state): # pragma: NO COVER
         '''
         Change mortality state of a component.
         Compnent must be already active.
@@ -566,7 +570,7 @@ class ContainerServices:
 
     #--------------------------------------------------------------------------
     def restartComp(self,
-                    comp_name):
+                    comp_name): # pragma: NO COVER
         '''
         Restarts a component.
         
@@ -585,7 +589,7 @@ class ContainerServices:
     def getCollocatedComp(self,
                           comp_spec,
                           mark_as_default,
-                          target_comp):
+                          target_comp): # pragma: NO COVER
         '''
         Activation of a component so that it runs in the same process as
         another given component.
@@ -618,7 +622,7 @@ class ContainerServices:
             return None
     
     #--------------------------------------------------------------------------
-    def activateOffShoot(self, py_obj):
+    def activateOffShoot(self, py_obj): # pragma: NO COVER
         '''
         Activates an OffShoot derived object as a CORBA object.
 
@@ -633,7 +637,7 @@ class ContainerServices:
         '''
         return self.activateOffShootMethod(self.__name, py_obj)
     #--------------------------------------------------------------------------
-    def corbaObjectToString(self, comp_ref):
+    def corbaObjectToString(self, comp_ref): # pragma: NO COVER
         '''
         Converts a CORBA object its string representation.
 
@@ -645,7 +649,7 @@ class ContainerServices:
         '''
         return getORB().object_to_string(comp_ref)
     #--------------------------------------------------------------------------
-    def corbaObjectFromString(self, obj_uri):
+    def corbaObjectFromString(self, obj_uri): # pragma: NO COVER
         '''
         Converts a string to a CORBA object reference.
         
@@ -663,7 +667,7 @@ class ContainerServices:
                   target,
                   name,
                   args=None,
-                  kwargs=None):
+                  kwargs=None): # pragma: NO COVER
         '''
         This method returns a Python threading.Thread object.
         
@@ -700,7 +704,7 @@ class ContainerServices:
                handle, #Security handle from manager
                activate_offshoot_method,  #Container's method
                contname=None # Container's name
-               ):
+               ): # pragma: NO COVER
         '''
         This method should only be invoked by the container and provides the
         component with all container services. DO NOT INVOKE FROM YOUR CODE!!!

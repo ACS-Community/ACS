@@ -1,4 +1,4 @@
-# @(#) $Id: ComponentLifecycle.py,v 1.5 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: ComponentLifecycle.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ComponentLifecycle.py,v 1.5 2005/02/25 23:42:32 dfugate Exp $"
+# "@(#) $Id: ComponentLifecycle.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -46,7 +46,7 @@ to use within components. Submit an SPR which will hopefully result in
 ComponentLifeCycleException class in this module being removed.
 '''
 
-__revision__ = "$Id: ComponentLifecycle.py,v 1.5 2005/02/25 23:42:32 dfugate Exp $"
+__revision__ = "$Id: ComponentLifecycle.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 import exceptions
@@ -68,12 +68,12 @@ class ComponentLifecycle:
     servant not being activated!
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         '''
         pass
     #--------------------------------------------------------------------------
-    def initialize (self):
+    def initialize (self): # pragma: NO COVER
         '''
         Called to give the component time to initialize itself.    
         For instance, the component could retrieve connections, read in 
@@ -93,7 +93,7 @@ class ComponentLifecycle:
         '''
         pass
     #--------------------------------------------------------------------------
-    def execute (self):
+    def execute (self): # pragma: NO COVER
         '''
         Called after initialize to tell the component that it has to be ready
         to accept incoming functional calls at any time. 
@@ -115,7 +115,7 @@ class ComponentLifecycle:
         '''
         pass
     #--------------------------------------------------------------------------
-    def cleanUp (self):
+    def cleanUp (self): # pragma: NO COVER
         '''
         Called after the last functional call to the component has finished.
         The component should then orderly release resources etc.
@@ -130,7 +130,7 @@ class ComponentLifecycle:
         '''
         pass
     #--------------------------------------------------------------------------
-    def aboutToAbort (self):
+    def aboutToAbort (self): # pragma: NO COVER
         '''
         Called when due to some error condition the component is about to be
         forcefully removed some unknown amount of time later (usually not very

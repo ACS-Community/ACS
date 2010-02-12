@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.25 2008/01/15 00:41:40 agrimstrup Exp $
+# @(#) $Id: ACSCorba.py,v 1.26 2010/02/12 22:15:19 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.25 2008/01/15 00:41:40 agrimstrup Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.26 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -108,7 +108,7 @@ def getManagerCorbaloc(new_corbaloc=None):
 
     return MGR_CORBALOC
 #----------------------------------------------------------------------------
-def getManagerHost():
+def getManagerHost(): # pragma: NO COVER
     '''
     Returns the hostname manager is running on.
     '''
@@ -229,7 +229,7 @@ class _Client (maci__POA.Client):
     the MACI manager. Developers should ignore this class entirely.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         Constructor
         '''
@@ -262,13 +262,13 @@ class _Client (maci__POA.Client):
         register(self.disconnect)
     
     #--CLIENT IDL--------------------------------------------------------------
-    def _get_name(self):
+    def _get_name(self): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
         return 'acsCORBA Client'
     #--CLIENT IDL--------------------------------------------------------------
-    def disconnect(self):
+    def disconnect(self): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
@@ -312,7 +312,7 @@ class _Client (maci__POA.Client):
 
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def authenticate(self, execution_id, question):
+    def authenticate(self, execution_id, question): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
@@ -320,31 +320,31 @@ class _Client (maci__POA.Client):
         return AuthenticationData("CacsCORBA Client", maci.CLIENT_TYPE,
                                   maci.PYTHON, False, getTimeStamp().value, execution_id)
     #--CLIENT IDL--------------------------------------------------------------
-    def message(self, message_type, message):
+    def message(self, message_type, message): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def ping(self):
+    def ping(self): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
         return 1
     #--CLIENT IDL--------------------------------------------------------------
-    def components_available(self, components):
+    def components_available(self, components): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def components_unavailable(self, components):
+    def components_unavailable(self, components): # pragma: NO COVER
         '''
         Implementation of IDL method.
         '''
         return
     #--------------------------------------------------------------------------
-    def getService(self, curl, activate = 1):
+    def getService(self, curl, activate = 1): # pragma: NO COVER
         '''
         Return object reference (properly narrowed if Python module for the
         device IDL has been previously imported.) Mainly used to get MACI/CORBA
@@ -388,7 +388,7 @@ def getClient():
 
     return SINGLETON_CLIENT
 #----------------------------------------------------------------------------
-def log():
+def log(): # pragma: NO COVER
     '''
     Returns log service reference.
     
@@ -400,7 +400,7 @@ def log():
     '''
     return getClient().getService('Log')
 #----------------------------------------------------------------------------
-def logFactory():
+def logFactory(): # pragma: NO COVER
     '''
     Returns log factory reference
     
@@ -412,7 +412,7 @@ def logFactory():
     '''
     return getClient().getService('LogFactory')
 #----------------------------------------------------------------------------
-def notifyEventChannelFactory():
+def notifyEventChannelFactory(): # pragma: NO COVER
     '''
     Returns Notification Event Channel factory reference
     
@@ -425,7 +425,7 @@ def notifyEventChannelFactory():
     necf = getClient().getService('NotifyEventChannelFactory')
     return necf._narrow(CosNotifyChannelAdmin.EventChannelFactory)
 #----------------------------------------------------------------------------
-def archivingChannel():
+def archivingChannel(): # pragma: NO COVER
     '''
     Returns archiving channel reference
     
@@ -437,7 +437,7 @@ def archivingChannel():
     '''
     return getClient().getService('ArchivingChannel')
 #----------------------------------------------------------------------------
-def loggingChannel():
+def loggingChannel(): # pragma: NO COVER
     '''
     Returns logging channel reference
     
@@ -455,7 +455,7 @@ def loggingChannel():
 
     return getClient().getService(loggingChannelName)
 #----------------------------------------------------------------------------
-def interfaceRepository():
+def interfaceRepository(): # pragma: NO COVER
     '''
     Returns interface repository reference
     
@@ -468,7 +468,7 @@ def interfaceRepository():
     ifr = getClient().getService('InterfaceRepository')
     return ifr._narrow(CORBA.Repository)
 #----------------------------------------------------------------------------
-def cdb():
+def cdb(): # pragma: NO COVER
     '''
     Returns configuration database reference
     
@@ -481,7 +481,7 @@ def cdb():
     cdb_obj = getClient().getService('CDB')
     return cdb_obj._narrow(CDB.DAL)
 #----------------------------------------------------------------------------
-def acsLogSvc():
+def acsLogSvc(): # pragma: NO COVER
     '''
     Returns ACS Log Service reference
     
@@ -494,7 +494,7 @@ def acsLogSvc():
     als = getClient().getService('ACSLogSvc')
     return als._narrow(ACSLog.LogSvc)
 #----------------------------------------------------------------------------
-def nameService():
+def nameService(): # pragma: NO COVER
     '''
     Returns name service reference
     
@@ -507,7 +507,7 @@ def nameService():
     ns = getClient().getService('NameService')
     return ns._narrow(CosNaming.NamingContext)
 #----------------------------------------------------------------------------
-def maxRetry(cookie, retries, exc):
+def maxRetry(cookie, retries, exc): # pragma: NO COVER
     if retries < 5:
         return True
     else:

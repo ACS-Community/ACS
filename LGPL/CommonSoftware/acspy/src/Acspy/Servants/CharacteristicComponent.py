@@ -1,4 +1,4 @@
-# @(#) $Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
+# @(#) $Id: CharacteristicComponent.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
+# "@(#) $Id: CharacteristicComponent.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -35,7 +35,7 @@ TODO:
 - descriptor implementation is bad.
 '''
 
-__revision__ = "$Id: CharacteristicComponent.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
+__revision__ = "$Id: CharacteristicComponent.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -53,7 +53,7 @@ class CharacteristicComponent(ACSComponent, CharacteristicModel):
     derives from ACS::CharacteristicComponent.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         Developer must invoke this from their components constructor. The
         alternative is for them to not provide a constructor at all (implying
@@ -68,7 +68,7 @@ class CharacteristicComponent(ACSComponent, CharacteristicModel):
         ACSComponent.__init__(self)
         CharacteristicModel.__init__(self)
     #--------------------------------------------------------------------------
-    def descriptor(self):
+    def descriptor(self): # pragma: NO COVER
         '''
         Implementation of the descriptor method found in the
         CharacteristicComponent IDL interface.

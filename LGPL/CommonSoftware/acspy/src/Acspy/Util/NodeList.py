@@ -1,6 +1,6 @@
-# @(#) $Id: NodeList.py,v 1.4 2005/03/02 16:32:40 dfugate Exp $
+# @(#) $Id: NodeList.py,v 1.5 2010/02/12 22:15:19 agrimstrup Exp $
 
-__revision__ = "$Id: NodeList.py,v 1.4 2005/03/02 16:32:40 dfugate Exp $"
+__revision__ = "$Id: NodeList.py,v 1.5 2010/02/12 22:15:19 agrimstrup Exp $"
 
 '''
 TODO:
@@ -13,7 +13,7 @@ TODO:
 import CosNaming
 
 class nodeList:
-  def __init__ (self, context):
+  def __init__ (self, context): # pragma: NO COVER
     (self.list, self.it) = context.list(1024) #DWF-changed from 80
 
   def listdir (self):
@@ -30,7 +30,7 @@ class nodeList:
 
     return list
 
-  def ls (self):
+  def ls (self): # pragma: NO COVER
     for binding in self.list:            # binding - Name, binding type
       name = binding.binding_name   # sequence of name components, 1 deep
       type = binding.binding_type
@@ -42,7 +42,7 @@ class nodeList:
         print name[0].id + "." + name[0].kind
 
   # return the object found.  should be a naming context
-  def find (self, name, kind):
+  def find (self, name, kind): # pragma: NO COVER
     for binding in self.list:
       n = binding.binding_name
       if ((n[0].id == name) & (n[0].kind == kind)):

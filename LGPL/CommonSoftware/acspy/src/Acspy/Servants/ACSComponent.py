@@ -1,4 +1,4 @@
-# @(#) $Id: ACSComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $
+# @(#) $Id: ACSComponent.py,v 1.5 2010/02/12 22:15:19 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ACSComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+# "@(#) $Id: ACSComponent.py,v 1.5 2010/02/12 22:15:19 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -35,7 +35,7 @@ TODO:
 - real test.
 '''
 
-__revision__ = "$Id: ACSComponent.py,v 1.4 2005/02/25 23:42:32 dfugate Exp $"
+__revision__ = "$Id: ACSComponent.py,v 1.5 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -49,7 +49,7 @@ class ACSComponent:
     ACS::ACSComponent. Almost always the case.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         Developer must invoke this from their components constructor. The alternative
         is for them to not provide a constructor at all (implying the Container
@@ -64,7 +64,7 @@ class ACSComponent:
         self.name = None
         self.componentState = ACS.COMPSTATE_NEW
     #--CORBA ATTRIBUTE---------------------------------------------------------
-    def _get_name(self):
+    def _get_name(self): # pragma: NO COVER
         '''
         Implementation of the name attribute defined in the ACSComponent
         interface.
@@ -79,7 +79,7 @@ class ACSComponent:
         '''
         return str(self.name)
     #--------------------------------------------------------------------------
-    def setName(self, name):
+    def setName(self, name): # pragma: NO COVER
         '''
         Only the container should invoke this method.
         
@@ -92,7 +92,7 @@ class ACSComponent:
         self.name = str(name)
         return
     #--CORBA ATTRIBUTE---------------------------------------------------------
-    def _get_componentState(self):
+    def _get_componentState(self): # pragma: NO COVER
         '''
         Implementation of the componentState attribute defined in the ACSComponent
         interface.
@@ -107,7 +107,7 @@ class ACSComponent:
         '''
         return self.componentState
     #--------------------------------------------------------------------------
-    def setComponentState(self, state):
+    def setComponentState(self, state): # pragma: NO COVER
         '''
         The developer should feel free to invoke this method.
         

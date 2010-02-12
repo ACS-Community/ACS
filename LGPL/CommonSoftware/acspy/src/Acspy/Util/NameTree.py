@@ -1,6 +1,6 @@
-# @(#) $Id: NameTree.py,v 1.7 2007/10/04 21:56:15 agrimstrup Exp $
+# @(#) $Id: NameTree.py,v 1.8 2010/02/12 22:15:19 agrimstrup Exp $
 
-__revision__ = "$Id: NameTree.py,v 1.7 2007/10/04 21:56:15 agrimstrup Exp $"
+__revision__ = "$Id: NameTree.py,v 1.8 2010/02/12 22:15:19 agrimstrup Exp $"
 
 '''
 TODO:
@@ -62,7 +62,7 @@ class nameTree:
   #
   # ls ()
   #
-  def ls (self):
+  def ls (self): # pragma: NO COVER
     (n, cwd) = self.path[-1]
     nl = NodeList.nodeList(cwd)
     nl.ls()
@@ -70,7 +70,7 @@ class nameTree:
   #
   # listdir ()
   #
-  def listdir (self):
+  def listdir (self): # pragma: NO COVER
     (n, cwd) = self.path[-1]
     nl = NodeList.nodeList(cwd)
     return nl.listdir()
@@ -154,7 +154,7 @@ class nameTree:
     try: return cwd.resolve (leaf)
     except CosNaming.NamingContext.NotFound:
       raise
-    else:
+    except:
       print 'name service error resolving ', self.path, name, type
       print sys.exc_info()
 
@@ -163,7 +163,7 @@ class nameTree:
   # name.  If name does not exist, make it.  If no object, then
   # make a placeholder
   #
-  def putObject (self, name, type, object):
+  def putObject (self, name, type, object): # pragma: NO COVER
     "this does not handle absolute or relative path, just cwd"
     # first just try a rebind()  if that fails, then see if
     # path and name.  If it is a path, then check the path
@@ -178,7 +178,7 @@ class nameTree:
   # name.  If name does not exist, make it.  If no object, then
   # make a placeholder
   #
-  def delObject (self, name, type):
+  def delObject (self, name, type): # pragma: NO COVER
     "this does not handle absolute or relative path, just cwd"
     # Unbind something.
 
@@ -200,7 +200,7 @@ class nameTree:
   #
   # rm()
   #
-  def rm (self, name, args="noforce"):
+  def rm (self, name, args="noforce"): # pragma: NO COVER
     # pushd this directory, cd to other directory less last name,
     # get the objet for last name, and if it is a context, check
     # force flag.  if it is to go, follow the directory tree and
@@ -211,13 +211,13 @@ class nameTree:
   #
   # cp()
   #
-  def cp (self, name):
+  def cp (self, name): # pragma: NO COVER
     return
 
   #
   # pushd()
   #
-  def pushd (self, l=""):
+  def pushd (self, l=""): # pragma: NO COVER
     if (l == "?"):
       i = 0
       for path in self.pathcopy:
@@ -233,17 +233,17 @@ class nameTree:
   #
   # popd()
   #
-  def popd (self, index=-1):
+  def popd (self, index=-1): # pragma: NO COVER
     try:
       self.path = self.pathcopy.pop(index)
     except:
       print "top of list, no pop"
     return
 
-if (__name__ == "__main__"):
+if (__name__ == "__main__"): # pragma: NO COVER
   print '==> Testing nameTree class'
   testlevel = 0
-  nt = nameTree(getORB())
+  nt = nameTree(None)
 
   print '==> Naming service variable name is: nt'
   print '==> Listing entries in Naming Service:'

@@ -1,4 +1,4 @@
-# @(#) $Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $
+# @(#) $Id: CharacteristicModel.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
+# "@(#) $Id: CharacteristicModel.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -35,7 +35,7 @@ TODO:
 - replace dummie implementations of all methods.
 '''
 
-__revision__ = "$Id: CharacteristicModel.py,v 1.5 2006/07/18 21:52:57 dfugate Exp $"
+__revision__ = "$Id: CharacteristicModel.py,v 1.6 2010/02/12 22:15:19 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 #--CORBA STUBS-----------------------------------------------------------------
@@ -51,7 +51,7 @@ class CharacteristicModel:
     ACS::CharacteristicModel.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self): # pragma: NO COVER
         '''
         Developer must invoke this from their components constructor. The alternative
         is for them to not provide a constructor at all (implying the Container
@@ -65,7 +65,7 @@ class CharacteristicModel:
         '''
         self._corbaRef = None
     #--------------------------------------------------------------------------
-    def get_characteristic_by_name(self, name):
+    def get_characteristic_by_name(self, name): # pragma: NO COVER
         '''
         Implementation of the descriptor method found in the CharacteristicModel
         IDL interface.
@@ -85,7 +85,7 @@ class CharacteristicModel:
         name = None
         return any.to_any(0L)
     #--------------------------------------------------------------------------
-    def find_characteristic(self, reg_exp):
+    def find_characteristic(self, reg_exp): # pragma: NO COVER
         '''
         Implementation of the descriptor method found in the CharacteristicModel
         IDL interface.
@@ -104,7 +104,7 @@ class CharacteristicModel:
         reg_exp = None
         return ()
     #--------------------------------------------------------------------------
-    def get_all_characteristics(self):
+    def get_all_characteristics(self): # pragma: NO COVER
         '''
         Implementation of the descriptor method found in the CharacteristicModel
         IDL interface.
