@@ -35,6 +35,7 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.Helper;
+import alma.acs.util.StopWatch;
 
 public class EventModel {
 	private final ORB orb;
@@ -313,6 +314,8 @@ public class EventModel {
 	}
 
 	public ArrayList<AdminConsumer> getAllConsumers() {
+		int channelsProcessed = 0;
+		StopWatch sw = new StopWatch(m_logger);
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		nctx.list(-1, bl, bi);
@@ -330,12 +333,14 @@ public class EventModel {
 						channelMap.put(channelName, ec);
 						consumer = getAdminConsumer(channelName);
 						consumers.add(consumer);
+						channelsProcessed++;
 					}
 				} catch (AcsJException e) {
 					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
 				}
 			}
 		}
+		sw.logLapTime(" to create "+channelsProcessed+" channels ");
 		return consumers;
 	}
 	
