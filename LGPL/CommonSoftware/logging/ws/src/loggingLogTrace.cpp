@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogTrace.cpp,v 1.4 2006/01/05 18:45:10 dfugate Exp $"
+* "@(#) $Id: loggingLogTrace.cpp,v 1.5 2010/02/12 07:33:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,8 +24,10 @@
 */
 
 #include "loggingLogTrace.h"
+#include <iostream>
 
-static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.4 2006/01/05 18:45:10 dfugate Exp $"; 
+
+static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.5 2010/02/12 07:33:09 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace Logging {
@@ -66,11 +68,19 @@ namespace Logging {
 		       std::string file,
 		       unsigned long line)
     {
-	logger->log(Logger::LM_TRACE,
-		    std::string("Entering..."),
-		    file,
-		    line,
-		    method);	
+    	if (logger!=0)
+    	{
+    		logger->log(Logger::LM_TRACE,
+    				std::string("Entering..."),
+    				file,
+    				line,
+    				method);
+    	}
+    	else
+    	{
+    		std::cerr << "SEVERE LOGGING ERROR IN LogTrace/AUTO_TRACE - logger/getLogger() is NULL: routine=";
+    		std::cerr << method << " file: " << file << " line: " << line << std::endl;
+    	}//if-else
     }
     //------------------------------------------------------------------------------
     LogTrace::~LogTrace()
