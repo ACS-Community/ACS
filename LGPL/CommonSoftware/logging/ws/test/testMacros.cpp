@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.9 2007/01/05 10:19:12 bjeram Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.10 2010/02/12 07:33:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,6 +83,12 @@ namespace Logging {
     };
 };
 
+
+void testAutoTraceFunc()
+{
+	 AUTO_TRACE("testAutoTraceFunc");
+}
+
 int main(int argc, char *argv[])
 {
     char *tooLong_p = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
@@ -93,6 +99,8 @@ int main(int argc, char *argv[])
 
     ACS_CHECK_LOGGER;
     AUTO_TRACE("someFunc");
+
+    testAutoTraceFunc();
 
     ACS_SHORT_LOG((LM_INFO, "%s a %s b %s c %s d %s e %s f %s g %s h %s i %s j %s k Should never see this...\n", 
 		   tooLong_p,
