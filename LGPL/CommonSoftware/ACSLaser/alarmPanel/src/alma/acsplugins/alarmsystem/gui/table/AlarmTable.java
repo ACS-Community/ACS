@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.19 2010/01/14 19:51:45 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.20 2010/02/15 15:23:49 acaproni Exp $
  * @since    
  */
 
@@ -479,6 +479,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		sorter.setSortsOnUpdates(true);
 		// Initially sort by timestamp
 		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(AlarmTableColumn.PRIORITY.ordinal(), SortOrder.ASCENDING));
 		sortKeys.add(new RowSorter.SortKey(AlarmTableColumn.TIME.ordinal(), SortOrder.DESCENDING));
 		sorter.setSortKeys(sortKeys); 
 

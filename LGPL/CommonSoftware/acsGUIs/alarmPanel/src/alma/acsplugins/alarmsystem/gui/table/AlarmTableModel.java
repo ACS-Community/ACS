@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.26 2009/12/03 21:48:35 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.27 2010/02/15 15:23:49 acaproni Exp $
  * @since    
  */
 
@@ -111,6 +111,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			
 	};
 	
+	/**
+	 * The label of the priority column of the table
+	 * 
+	 * @author acaproni
+	 *
+	 */
 	public static enum PriorityLabel {
 		VERY_HIGH("VERY HIGH",Color.red),
 		HIGH("HIGH", new Color(255,165,31)),
@@ -169,6 +175,64 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		public static String fromPriorityDesc(int n) {
 			return fromPriorityNumber(n).description;
 		}
+	}
+	
+	/**
+	 * The content of the priority columns is composed of the label
+	 * and a reference to the {@link AlarmTableEntry} needed to compare
+	 * two entries and sort.
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public class Priority implements Comparable<Priority> {
+		
+		/**
+		 * The priority
+		 */
+		public final int priority;
+		
+		/**
+		 * It is <code>true</code> if the alarm is active
+		 */
+		public final AlarmGUIType type;
+		
+		public Priority(int priority, AlarmGUIType type) {
+			this.priority=priority;
+			this.type=type;
+		}
+		
+		@Override
+		public String toString() {
+			return PriorityLabel.fromPriorityNumber(priority).toString();
+		}
+
+		/**
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
+		@Override
+		public int compareTo(Priority o) {
+			if (o==null) {
+				throw new NullPointerException();
+			}
+			if (priority==o.priority && type==o.type) {
+				return 0;
+			}
+			
+			boolean thisActive=type!=AlarmGUIType.INACTIVE;
+			boolean oActive=o.type!=AlarmGUIType.INACTIVE;
+			
+			if (thisActive==oActive) {
+				// Same types but different priorities
+				Integer thisInteger=Integer.valueOf(priority);
+				return thisInteger.compareTo(o.priority);
+			} else if (thisActive){
+				return -1;
+			} else {
+				return +1;
+			}
+		}
+		
 	}
 	
 	/** 
@@ -524,7 +588,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 		case PRIORITY: {
 			int priority = alarm.getPriority().intValue();
-			return PriorityLabel.fromPriorityNumber(priority);
+			return new Priority(priority,alarm.getAlarmType());
 		}
 		case DESCRIPTION: {
 			return alarm.getProblemDescription();
@@ -589,8 +653,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		return AlarmTableColumn.values()[col].title;
 	}
 	
-	
-	
 	/**
 	 * The model needs to know that class of the PRIORITY
 	 * column in order to sort by priority (otherwise
@@ -601,7 +663,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		if (columnIndex==AlarmTableColumn.PRIORITY.ordinal()) {
-			return PriorityLabel.class;
+			return Priority.class;
 		}
 		return super.getColumnClass(columnIndex);
 	}
@@ -848,5 +910,16 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public void close() {
 		terminateThread=true;
 		thread.interrupt();
+	}
+
+	/**
+	 * Check if the container has alarm not yet acknowledged.
+	 * 
+	 * @return   -1 if there are not alarm to acknowledge;
+	 * 			the highest priority of the alarm to acknowledge 
+	 * @see alma.acsplugins.alarmsystem.gui.table.AlarmsContainer#hasNotAckAlarms()
+	 */
+	public int hasNotAckAlarms() {
+		return items.hasNotAckAlarms(applyReductionRules);
 	}
 }
