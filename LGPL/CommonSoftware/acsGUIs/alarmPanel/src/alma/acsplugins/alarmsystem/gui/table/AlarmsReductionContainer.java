@@ -21,6 +21,7 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.util.Vector;
 
 import cern.laser.client.data.Alarm;
+import cern.laser.guiplatform.alarms.AlarmContainer;
 
 import alma.alarmsystem.clients.CategoryClient;
 
@@ -268,5 +269,33 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	 */
 	public CategoryClient getCategoryClient() {
 		return categoryClient;
+	}
+	
+	/**
+	 * Check if the container has alarm not yet acknowledged.
+	 * <P>
+	 * if there are alarms to be acknowledged by the user, this
+	 * method returns the highest of their priority.
+	 * Note that for alarm system the highest priority is 0.
+	 * 
+	 * @return  -1 if there are not alarm to acknowledge;
+	 * 			the highest priority of the alarm to acknowledge
+	 * @see AlarmContainer#hasNotAckAlarms()
+	 */
+	public synchronized int hasNotAckAlarms(boolean reduced) {
+		if (!reduced) {
+			return super.hasNotAckAlarms();
+		}
+		int ret=Integer.MAX_VALUE;
+		for (String id: indexWithReduction) {
+			AlarmTableEntry entry = get(id);
+			if (entry.isNew() && entry.getPriority()<ret) {
+				ret=entry.getPriority();
+			}
+			if (ret==0) {
+				break;
+			}
+		}
+		return (ret==Integer.MAX_VALUE)?-1:ret;
 	}
 }

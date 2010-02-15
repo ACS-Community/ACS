@@ -19,6 +19,7 @@
 package alma.acsplugins.alarmsystem.gui.table;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Vector;
 
 import cern.laser.client.data.Alarm;
@@ -326,5 +327,29 @@ public class AlarmsContainer {
 		}
 	}
 	
-	
+	/**
+	 * Check if the container has alarm not yet acknowledged.
+	 * <P>
+	 * If there are alarms to be acknowledged by the user, this
+	 * method returns the highest of their priorities.
+	 * Note that for alarm system the highest priority 
+	 * is 0 and lowest is 3.
+	 * 
+	 * @return  -1 if there are not alarm to acknowledge;
+	 * 			the highest priority of the alarm to acknowledge
+	 */
+	public synchronized int hasNotAckAlarms() {
+		int ret=Integer.MAX_VALUE;
+		Set<String> keys=entries.keySet();
+		for (String key: keys) {
+			AlarmTableEntry entry=entries.get(key);
+			if (entry.isNew() && entry.getPriority()<ret) {
+				ret=entry.getPriority();
+			}
+			if (ret==0) {
+				break;
+			}
+		}
+		return (ret==Integer.MAX_VALUE)?-1:ret;
+	}
 }
