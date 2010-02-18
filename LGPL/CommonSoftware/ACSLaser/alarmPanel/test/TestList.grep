@@ -14,3 +14,6 @@ failed to flush logging queue because remote logging service has not been made a
 [jacorb.poa]
 endorsed
 user.dir
+DEBUG
+FINEST
+FINE

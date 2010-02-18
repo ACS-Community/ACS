@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2008/10/22 10:15:31 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/02/18 13:12:59 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -94,7 +94,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = panelTATPrologue testAlarmContainer
+PY_SCRIPTS_L       = panelTATPrologue testAlarmContainer testSpecialAlarm
 
 PY_MODULES         =
 PY_MODULES_L       =
