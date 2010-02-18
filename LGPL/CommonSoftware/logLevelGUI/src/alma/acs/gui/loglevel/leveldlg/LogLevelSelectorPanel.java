@@ -47,6 +47,7 @@ import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.maciErrType.LoggerDoesNotExistEx;
 
 import com.cosylab.logging.client.EntryTypeIcon;
 import com.cosylab.logging.engine.log.LogTypeHelper;
@@ -92,7 +93,8 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * @param title The name of the configurable to add to the tile
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws LogLvlSelNotSupportedException {
+	//public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws LogLvlSelNotSupportedException {
+	public LogLevelSelectorPanel(LoggingConfigurableOperations configurable, String name) throws Exception {
 		if (configurable==null) {
 			throw new IllegalArgumentException("Invalid null LoggingConfigurable in constructor");
 		}
@@ -126,7 +128,8 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * 
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	private void initialize(String name) throws LogLvlSelNotSupportedException {
+	//private void initialize(String name) throws LogLvlSelNotSupportedException {
+	private void initialize(String name) throws Exception {
 		BoxLayout layout = new BoxLayout(this,BoxLayout.Y_AXIS);
 		setLayout(layout);
 		
@@ -164,12 +167,25 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * 
 	 * @throws LogLvlSelNotSupportedException If the configurable does not support selection
 	 */
-	private JComponent initLogLevelsPanel() throws LogLvlSelNotSupportedException {
+	//private JComponent initLogLevelsPanel() throws LogLvlSelNotSupportedException {
+	private JComponent initLogLevelsPanel() throws Exception {
 		LogLevelHelper[] levels=null;
 		try {
 			levels = loggersLbl();
+		//} catch (Exception e) {
+		//	throw new LogLvlSelNotSupportedException("Function not yet implemented by "+getName(),e);
+		//}
+		//added to deal with unresponsive CORBA call
+		//2010-02-17 panta@naoj
+		} catch (org.omg.CORBA.SystemException cse) {
+			throw new Exception(cse.toString());
+		
+		} catch (LoggerDoesNotExistEx lde) {
+			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel LoggerDoesNotExistEx "+lde.toString());
+			throw new LoggerDoesNotExistEx(lde.getMessage(), lde.errorTrace);
 		} catch (Exception e) {
-			throw new LogLvlSelNotSupportedException("Function not yet implemented by "+getName(),e);
+			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel exception "+e.toString());
+			throw new Exception(e.toString());
 		}
 		
 		model = new LogLevelModel(levels);
