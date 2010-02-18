@@ -179,10 +179,13 @@ public class TreeMouseListener extends MouseAdapter {
 			LogLevelSelectorPanel pnl;
 			try {
 				pnl = new LogLevelSelectorPanel(logConf,targetNode.getUserObject().toString());
-			} catch (LogLvlSelNotSupportedException ex) {
+			//} catch (LogLvlSelNotSupportedException ex) {
+			} catch (Exception t) {
 				JOptionPane.showMessageDialog(
 						tree,
-						"<HTML>"+targetNode.getUserObject().toString()+" does not support selection of log levels:<BR>"+ex.getMessage(),
+						//2010-02-17 panta@naoj
+						//"<HTML>"+targetNode.getUserObject().toString()+" does not support selection of log levels:<BR>"+ex.getMessage(),
+						"<HTML>"+targetNode.getUserObject().toString()+" Error selecting log level panel:<BR>"+t.getMessage(),
 						"Error", 
 						JOptionPane.ERROR_MESSAGE);
 				return;
