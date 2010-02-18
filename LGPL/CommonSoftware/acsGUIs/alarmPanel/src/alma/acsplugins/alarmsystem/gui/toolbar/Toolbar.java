@@ -20,7 +20,6 @@ package alma.acsplugins.alarmsystem.gui.toolbar;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -40,7 +38,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -48,8 +45,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import alma.acsplugins.alarmsystem.gui.AlarmPanel;
 import alma.acsplugins.alarmsystem.gui.CernSysPanel;
+import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
@@ -310,14 +307,18 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 	 */
 	private final AlarmTableModel model;
 	
+	private final SoundWidget soundComponent;
+	
 	/**
 	 * Constructor
 	 * 
+	 * @param table The table of alarms
 	 * @param model The table model
+	 * @param alarmSound The object playing audibles
 	 * @param reduce <code>true</code> if the reduction rules are applied at startup
 	 * @param panel The panel showing the toolbar
 	 */
-	public Toolbar(AlarmTable table, AlarmTableModel model, boolean reduce, CernSysPanel panel) {
+	public Toolbar(AlarmTable table, AlarmTableModel model, AlarmSound alarmSound, boolean reduce, CernSysPanel panel) {
 		super();
 		if (table==null) {
 			throw new IllegalArgumentException("The table can't be null");
@@ -328,6 +329,7 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		if (panel==null) {
 			throw new IllegalArgumentException("The panel can't be null");
 		}
+		soundComponent=new SoundWidget(alarmSound);
 		this.table=table;
 		this.model=model;
 		this.alarmPanel=panel;
@@ -343,6 +345,8 @@ public class Toolbar extends JPanel implements ActionListener, DocumentListener 
 		setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
 		setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		
+		// Add the button to inhibit sounds
+		add(soundComponent);
 		// Add the label and the combobox for auto ack
 		Font fnt = autoAckLbl.getFont();
 		Font newFont = fnt.deriveFont(fnt.getSize()*80/100);

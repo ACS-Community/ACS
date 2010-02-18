@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2008/02/16 18:23:23 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/02/18 13:12:28 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -120,7 +120,8 @@ USER_IDL =
 #
 JARFILES= alarmPanel
 alarmPanel_DIRS= alma
-alarmPanel_EXTRAS= alma/acsplugins/alarmsystem/gui/resources
+alarmPanel_EXTRAS= alma/acsplugins/alarmsystem/gui/resources \
+					alma/acsplugins/alarmsystem/gui/sound/resources
 #
 # java sources in Jarfile on/off
 DEBUG= 

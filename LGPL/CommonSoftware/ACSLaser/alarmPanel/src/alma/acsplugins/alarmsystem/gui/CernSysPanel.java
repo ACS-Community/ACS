@@ -18,6 +18,7 @@ import cern.laser.client.services.selection.AlarmSelectionListener;
 
 import alma.acs.container.ContainerServices;
 import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
+import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
@@ -63,6 +64,11 @@ public class CernSysPanel extends JPanel {
 	 * The table with the details of an alarm
 	 */
 	private AlarmDetailTable detailTable;
+	
+	/**
+	 * The object to play sounds for alarms
+	 */
+	private AlarmSound alarmSound;
 	
 	/**
 	 * The scroll pane of the table
@@ -152,6 +158,7 @@ public class CernSysPanel extends JPanel {
 		
 		// Build GUI objects
 		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
+		alarmSound= new AlarmSound(model);
 		alarmTable = new AlarmTable(model,this);
 		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
@@ -187,7 +194,7 @@ public class CernSysPanel extends JPanel {
 		add(splitPane,BorderLayout.CENTER);
 		
 		// Add the toolbar
-		toolbar=new Toolbar(alarmTable,model,ACTIVATE_RDUCTION_RULES,this);
+		toolbar=new Toolbar(alarmTable,model,alarmSound,ACTIVATE_RDUCTION_RULES,this);
 		add(toolbar,BorderLayout.NORTH);
 		
 		// Add the status line
@@ -198,6 +205,7 @@ public class CernSysPanel extends JPanel {
 	 * Closes the panel
 	 */
 	public void close() {
+		alarmSound.close();
 		model.close();
 		alarmTable.close();
 	}
@@ -312,6 +320,8 @@ public class CernSysPanel extends JPanel {
 					} catch (Exception e) {}
 					t++;
 				}
+				cgc.printStackTrace();
+				
 				continue; // Try again
 			} catch (Throwable t) {
 				System.err.println("Error connecting CategoryClient: "+t.getMessage()+", "+t.getClass().getName());
