@@ -3,6 +3,7 @@
 
 #include <DDSHelper.h>
 #include <dds/DCPS/PublisherImpl.h>
+#include "acsddsncCDBProperties.h"
 
 namespace ddsnc{
 

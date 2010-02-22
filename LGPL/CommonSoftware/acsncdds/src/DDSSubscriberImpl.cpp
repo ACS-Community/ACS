@@ -3,7 +3,6 @@
 
 using namespace ddsnc;
 
-
 DDSSubscriber::DDSSubscriber(CORBA::String_var channel_name):
 	DDSHelper(channel_name)
 {

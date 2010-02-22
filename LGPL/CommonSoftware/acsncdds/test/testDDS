@@ -27,8 +27,9 @@ for number in 1 10 20; do
 		b=0
 		total=$((total+1))
 		for i in $(ls);do
-			a=$(cat $i | egrep "^[0-9]{1,3}" |sed 's/,[0-9]*//g' | sort -n | uniq | wc -l)
-			if [[ $a ==  1000 ]];then
+			a=$(cat $i | egrep "[0-9]{1,3},[0-9]{1,3}" | sed 's/,[0-9]*//g' | sort -n | uniq | wc -l)
+
+			if [[ $a == 1000 ]];then
 				b=$((b+1))
 			else
 				b=$((b-1))

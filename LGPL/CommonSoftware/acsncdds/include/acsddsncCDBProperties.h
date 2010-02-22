@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsddsncCDBProperties.h,v 1.1 2010/02/08 22:33:35 utfsm Exp $"
+* "@(#) $Id: acsddsncCDBProperties.h,v 1.2 2010/02/22 21:32:40 utfsm Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,8 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <orbsvcs/CosNotificationC.h>
+
+#include <dds/DdsDcpsInfrastructureC.h>
 #include <cdbDALC.h>
 #include <iostream>
 #include <string>
@@ -46,10 +47,10 @@ namespace ddsnc {
 
       public:
 	static bool 
-	cdbChannelConfigExists(const std::string& channelName);
+	cdbChannelConfigExists(CORBA::String_var channelName);
 
-	static CosNotification::QoSProperties
-	getCDBQoSProps(const std::string& channelName);
+	static DDS::QosPolicyCountSeq
+	getCDBQoSProps(CORBA::String_var channelName);
 
 	static CDB::DAL_ptr
 	getCDB();

@@ -113,6 +113,7 @@ namespace ddsnc{
 		DDS::TopicQos topicQos;
 
 		static void cleanUp();
+		CORBA::String_var getChannelName();
 
 	};
 }

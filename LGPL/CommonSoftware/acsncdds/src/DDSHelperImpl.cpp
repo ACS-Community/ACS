@@ -3,31 +3,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <dds/DCPS/transport/simpleTCP/SimpleTcpGenerator.h>
-
 #include <maciHelper.h>
 #include <loggingACEMACROS.h>
-#include "acsddsncCDBProperties.h"
-
 
 using namespace ddsnc;
 
 static bool factories_init = false;
+static CORBA::String_var channel_name;
 
 DDSHelper::DDSHelper(CORBA::String_var channelName)
 {
-
-	
-	std::cout<<"getCDBQoSProps:"<<std::endl;
-	// obtener QoS
-	CosNotification::QoSProperties tmpVal;
-	tmpVal = ddsnc::CDBProperties::getCDBQoSProps(channelName.in());
-	int i;
-	for(i=0;i<5;i++)
-	{
-		// Imprimir nombres de los QoS para verificar la lectura
-		cout<<tmpVal[i].name<<endl;
-	}
-	// Obtencion manager ref
+	channel_name = channelName;
 	ACE_CString managerName;
 	try
 	{
@@ -42,6 +28,7 @@ DDSHelper::DDSHelper(CORBA::String_var channelName)
 	tmpRoute += managerName;
 	tmpRoute +=":3999/DCPSInfoRepo";
 	char* route = tmpRoute.rep();
+
 	init(channelName, route);
 	
 }
@@ -141,7 +128,6 @@ void DDSHelper::initializeTransport(){
 			TheTransportFactory->get_configuration(transport_impl_id);
 		OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
 			dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
-
 		::std::cerr << "TCP Address: "<< 
 			tcp_config->local_address_str_ << ::std::endl;
 
@@ -227,4 +213,9 @@ void DDSHelper::cleanUp()
 		TheTransportFactory->release();
 		TheServiceParticipant->shutdown();
 	}
+}
+
+CORBA::String_var DDSHelper::getChannelName()
+{
+return channel_name;
 }

@@ -16,19 +16,21 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.1 2010/02/08 22:33:35 utfsm Exp $"
+* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.2 2010/02/22 21:32:40 utfsm Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * almadave  2005-04-24  created 
 */
-#include "acsddsncCDBProperties.h"
-#include <maciContainerImpl.h>
-//#include <maciSimpleClient.h>
-#include <acsContainerServices.h>
-#include <loggingACEMACROS.h>
 
-static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.1 2010/02/08 22:33:35 utfsm Exp $"; 
+#include <orbsvcs/CosNotificationC.h>
+#include "acsddsncCDBProperties.h"
+#include <maciHelper.h>
+#include <loggingACEMACROS.h>
+#include <acsutilPorts.h>
+#include <acsutil.h> 
+
+static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.2 2010/02/22 21:32:40 utfsm Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace ddsnc {
@@ -36,49 +38,60 @@ namespace ddsnc {
     CDB::DAL_ptr
     CDBProperties::getCDB()
     {
-	//maci::SimpleClient client;
-	//maci::Manager_ptr manRef; 
-	//CORBA::Object_var cdb; 
-	//CDB:: DAL_var retVal = 0;
+	ACE_CString nameService;
+	ACE_CString managerName;
 
-	//cout<<"client.init" <<endl;
-        //client.init(0,NULL);
-	//cout<<"client.login" <<endl;
-        //client.login();
+	managerName = maci::MACIHelper::getManagerHostname(1,NULL);
+	//get NameService Reference
+	nameService += acscommon::NAMING_SERVICE_NAME;
+	nameService +="=corbaloc::";
+	nameService += managerName;
+	nameService += ":";
+	nameService += ACSPorts::getNamingServicePort().c_str();
+	nameService += "/";
+	nameService += acscommon::NAMING_SERVICE_NAME;
 
-	//cout<<"client.manager" <<endl;
-	//manRef = client.manager();
-	//cdb = manRef->get_service(0, "CDB", true);
-	//retVal = CDB::DAL::_narrow(cdb.in());
-	//client.logout();
+	// ORB
+	int argc = 5;
+	const char* orbArgs[] = { "",
+				"-ORBInitRef",
+				nameService.c_str(),
+				"-ORBDottedDecimalAddresses",
+				"1"};
 
-	//return retVal._retn();
+	CORBA::ORB_var m_orb;
+	m_orb = CORBA::ORB_init(argc, const_cast<char**>(orbArgs), "");
 
-	//initialize return value to 0
-        CDB::DAL_var retVal = 0;
+	ACE_CString cdbLoc;
+	cdbLoc += "corbaloc::";
+	cdbLoc += managerName;
+	cdbLoc += ":";
+	cdbLoc += ACSPorts::getCDBPort().c_str();
+	cdbLoc += "/CDB";
 
-        //use a nice little trick to get at the CDB reference
-        if ((maci::ContainerImpl::getContainer() != 0) &&
-            (maci::ContainerImpl::getContainer()->getContainerCORBAProxy() != maci::Container::_nil()))
-            {
-            retVal = maci::ContainerImpl::getContainer()->getService<CDB::DAL>("CDB",
-                                                                         0,
-                                                                         true);
-            }
-        else
-            {
-            ACS_STATIC_SHORT_LOG((LM_ERROR,
-                                 "CDBProperties::getCDB",
-                                 "Container ref null."));
-            }
-        return retVal._retn();
+	CDB::DAL_var dalObj = CDB::DAL::_nil();
+	CORBA::Object_var obj = m_orb->string_to_object(cdbLoc.rep());
+	    
+	if (!CORBA::is_nil(obj.in()))
+	   {
+		dalObj = CDB::DAL::_narrow(obj.in());
+		if (CORBA::is_nil(dalObj.in())) 
+		    {
+		    cout<<"Failed to narrow CDB"<<endl;
+		    }
+	   }
+
+        return dalObj._retn();
+
     }
     //------------------------------------------------------
     bool 
-    CDBProperties::cdbChannelConfigExists(const std::string& channelName)
+    CDBProperties::cdbChannelConfigExists(CORBA::String_var channelName)
     {
 	//complete name of the channel within the CDB
-	std::string cdbChannelName = "MACI/Channels/" + channelName;
+	std::string tmpChannelName(channelName._retn());
+	std::string cdbChannelName = "MACI/Channels/" + tmpChannelName;
+	 
 	//delegate obtaining a reference to the CDB
 	CDB::DAL_var cdbRef = getCDB();
 
@@ -122,135 +135,105 @@ namespace ddsnc {
 	    }
     }
     //------------------------------------------------------
-    CosNotification::QoSProperties
-    CDBProperties::getCDBQoSProps(const std::string& channelName)
+    DDS::QosPolicyCountSeq
+    CDBProperties::getCDBQoSProps(CORBA::String_var channelName)
     {
-	CosNotification::QoSProperties retVal;
+	DDS::QosPolicyCountSeq retVal;
 	retVal.length(0);
 
-        cout<<"Sanity check......"<<endl;
 	//sanity check
 	if (cdbChannelConfigExists(channelName)==false)
 	    {
 	    return retVal;
 	    }
-
-        cout<<"MACI/Channels......"<<endl;
-	
 	//CDB
 	//complete name of the channel within the CDB
-	std::string cdbChannelName = "MACI/Channels/" + channelName;
+	std::string tmpChannelName(channelName._retn());
+	std::string cdbChannelName = "MACI/Channels/" + tmpChannelName;
 	CDB::DAL_var cdbRef = getCDB();
 	CDB::DAO_var tempDAO = cdbRef->get_DAO_Servant(cdbChannelName.c_str());
 
-        cout<<"END MACI/Channels......"<<endl;
-
-	//temporary pointer points to the name of the CosNotification
 	//property
 	const char *name_p;
 	//temporary counter
 	unsigned int i = 0U;
+
 	
-	//Priority/////////////////////////////////////////////////////
+	//Transport Priority/////////////////////////////////////////////////////
 	{
-	name_p = CosNotification::Priority;
+	//name_p = DDS::TRANSPORTPRIORITY_QOS_POLICY_NAME;
+	name_p = "Priority";
 	//allocate one extra element
 	i++;
 	retVal.length(i);
-	retVal[i-1].name = CORBA::string_dup(name_p);
-	retVal[i-1].value <<= static_cast<CORBA::Short>(tempDAO->get_long(name_p));
+	retVal[i-1].policy_id = DDS::TRANSPORTPRIORITY_QOS_POLICY_ID;
+	retVal[i-1].count <<= static_cast<CORBA::Short>(tempDAO->get_long(name_p));
 	}
 	//Timeout//////////////////////////////////////////////////////
 	{
-	name_p = CosNotification::Timeout;
+	//name_p = CosNotification::Timeout;
+	name_p = "Timeout";
+	//This is a simpleTCP !
 	//allocate one extra element
 	i++;
 	retVal.length(i);
-	retVal[i-1].name = CORBA::string_dup(name_p);
-	retVal[i-1].value <<= static_cast<TimeBase::TimeT>(tempDAO->get_long(name_p));
+	retVal[i-1].policy_id = 30; 
+	retVal[i-1].count <<= static_cast<TimeBase::TimeT>(tempDAO->get_long(name_p));
 	}
+
 	//OrderPolicy///////////////////////////////////////////////
 	{
-	name_p = CosNotification::OrderPolicy;
+	name_p = "OrderPolicy";
 	//allocate one extra element
 	i++;
 	retVal.length(i);
-	retVal[i-1].name = CORBA::string_dup(name_p);
+	retVal[i-1].policy_id = DDS::DESTINATIONORDER_QOS_POLICY_ID;
 	std::string tStringOP = tempDAO->get_string(name_p);
 	if(tStringOP=="AnyOrder")
 	    {
-	    retVal[i-1].value <<= CosNotification::AnyOrder; 
+	    retVal[i-1].count <<= 0;
 	    }
 	else if(tStringOP=="FifoOrder")
 	    {
-	    retVal[i-1].value <<= CosNotification::FifoOrder; 
+	    retVal[i-1].count <<= 0;
 	    }
 	else if(tStringOP=="PriorityOrder")
 	    {
-	    retVal[i-1].value <<= CosNotification::PriorityOrder; 
+	    retVal[i-1].count <<= 1;
 	    }
 	else if(tStringOP=="DeadlineOrder")
 	    {
-	    retVal[i-1].value <<= CosNotification::DeadlineOrder; 
+ 	    retVal[i-1].count <<= 1;
 	    }
 	else
 	    {
 	    //DWF-throw exception
 	    }
 	}
-	//DiscardPolicy///////////////////////////////////////////////
-	{
-	name_p = CosNotification::DiscardPolicy;
-	//allocate one extra element
-	i++;
-	retVal.length(i);
-	retVal[i-1].name = CORBA::string_dup(name_p);
-	std::string tStringDP = tempDAO->get_string(name_p);
-	if(tStringDP=="AnyOrder")
-	    {
-	    retVal[i-1].value <<= CosNotification::AnyOrder; 
-	    }
-	else if(tStringDP=="FifoOrder")
-	    {
-	    retVal[i-1].value <<= CosNotification::FifoOrder; 
-	    }
-	else if(tStringDP=="PriorityOrder")
-	    {
-	    retVal[i-1].value <<= CosNotification::PriorityOrder; 
-	    }
-	else if(tStringDP=="DeadlineOrder")
-	    {
-	    retVal[i-1].value <<= CosNotification::DeadlineOrder; 
-	    }
-	else if(tStringDP=="LifoOrder")
-	    {
-	    retVal[i-1].value <<= CosNotification::LifoOrder; 
-	    }
-	else
-	    {
-	    //DWF-throw exception
-	    }
-	}
-	
 	//MaxQueueLength - TAO 1.1 had a queque of ~5 events.  TAO 1.3 allows an
 	//                 infinite amount of events to be stored.  20 seems like
 	//                 a reasonable default.
 	{
-	name_p = CosNotification::MaxQueueLength;
+	name_p = "MaxQueueLength";
 	//allocate one extra element
 	i++;
 	retVal.length(i);
-	
-	retVal[i-1].name = CORBA::string_dup(name_p);
-	retVal[i-1].value <<= tempDAO->get_long(name_p);
+	retVal[i-1].policy_id = DDS::HISTORY_QOS_POLICY_ID; 
+	retVal[i-1].count <<= tempDAO->get_long(name_p);
+	// 0 is not valid, the integer must be > 1
+	if( retVal[i-1].count == 0)
+		retVal[i-1].count += 2;
+	if( retVal[i-1].count == 1)
+		retVal[i-1].count += 1;
 	}
 
 	//for debugging purposes only
 	std::string debugMessage = "Length=" + retVal.length();
 	STATIC_LOG(Logging::BaseLog::LM_DEBUG, 
-		   "nc::CDBProperties::getCDBQoSProps",
+		   "ddsnc::CDBProperties::getCDBQoSProps",
 		   debugMessage);
-	
+
 	return retVal;
+
     }
 }

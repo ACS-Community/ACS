@@ -6,7 +6,7 @@ simpleClient = PySimpleClient.getInstance()
 
 simple = simpleClient.getComponent("DDS_SIMPLE_EXAMPLE")
 
-for i in range(1000):
+for i in range(5):#1000):
 	simple.sendMessage()
 	print i
 
