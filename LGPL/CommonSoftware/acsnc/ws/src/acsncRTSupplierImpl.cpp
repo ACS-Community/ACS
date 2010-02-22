@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.15 2008/07/25 07:35:19 cparedes Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.16 2010/02/22 18:31:17 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,6 +43,12 @@ RTSupplier::RTSupplier(const char* channelName,
 			      (void*)RTSupplier::worker, 
 			      static_cast<void *>(this));
     threadManager_mp->resume("worker");
+	 if(rtSupGuardb != NULL)
+		 rtSupGuardb = new Logging::RepeatGuardLogger<Logging::BaseLog>
+			 (30000000,50);
+	 if(rtSupGuardex != NULL)
+		 rtSupGuardex = new Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl>
+			 (30000000,50);
 }
 //-----------------------------------------------------------------------------
 void 
@@ -127,29 +133,48 @@ RTSupplier::worker(void* param_p)
 		    }
 		catch(ACSErrTypeCommon::CORBAProblemEx &_ex)
 		    {
-		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-				   supplier_p->channelName_mp));
+				 char strlog[1024];
+				 Logging::Logger::LoggerSmartPtr logger = getLogger();
+				 sprintf(strlog, " %s channel - problem publishing a saved event!",
+						 supplier_p->channelName_mp);
+				 rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+						 strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+	//	    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
+	//			   supplier_p->channelName_mp));
 		    ACSErrTypeCommon::CORBAProblemExImpl ex(_ex);
-		    ex.log();
+			 rtSupGuardex->log(ex);
 		    }
-		catch(CORBA::SystemException &ex)
-		    {
-//tbd: we have to improve here the erro handling. Now we print out more that is necessary
-		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-				   supplier_p->channelName_mp));
-		    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-							    "MACIContainerServices::getCORBAComponentNonSticky");
-		    corbaProblemEx.setMinor(ex.minor());
-		    corbaProblemEx.setCompletionStatus(ex.completed());
-		    corbaProblemEx.setInfo(ex._info().c_str());
-		    corbaProblemEx.log();
-		    }
-		catch(...)
-		    {
-		    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-				   supplier_p->channelName_mp));
-		    }
-		}
+      catch(CORBA::SystemException &ex)
+      {
+         //tbd: we have to improve here the erro handling. Now we print out more that is necessary
+         // ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
+         //	   supplier_p->channelName_mp));
+         char strlog[1024];
+         Logging::Logger::LoggerSmartPtr logger = getLogger();
+         sprintf(strlog, " %s channel - problem publishing a saved event!",
+               supplier_p->channelName_mp);
+         rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+               strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+         ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+               "MACIContainerServices::getCORBAComponentNonSticky");
+         corbaProblemEx.setMinor(ex.minor());
+         corbaProblemEx.setCompletionStatus(ex.completed());
+         corbaProblemEx.setInfo(ex._info().c_str());
+         // corbaProblemEx.log();
+         rtSupGuardex->log(corbaProblemEx);
+      }
+      catch(...)
+      {
+         //    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
+         //		   supplier_p->channelName_mp));
+         char strlog[1024];
+         Logging::Logger::LoggerSmartPtr logger = getLogger();
+         sprintf(strlog, " %s channel - problem publishing a saved event!",
+               supplier_p->channelName_mp);
+         rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+               strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+      }
+      }
 	    }
 	myself_p->sleep();
 	}

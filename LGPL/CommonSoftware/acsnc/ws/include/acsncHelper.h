@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelper.h,v 1.73 2009/08/07 17:55:03 javarias Exp $"
+* "@(#) $Id: acsncHelper.h,v 1.74 2010/02/22 18:31:17 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -145,7 +145,7 @@ class Helper
 
     /** 
       * This method allow to the Helper reconnect to the Notification Channel
-      * in case of Notify Service cracs. It is used by the the Persistance 
+      * in case of Notify Service crashes. It is used by the the Persistance 
       * Notify Service extension and must be
       * called only from the Reconnection Callback.
       * 

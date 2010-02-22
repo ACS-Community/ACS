@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.19 2008/10/09 07:57:41 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.20 2010/02/22 18:31:17 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -147,7 +147,10 @@ class RTSupplier : public Supplier
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     RTSupplier(const RTSupplier&);
+
 };
+	Logging::RepeatGuardLogger<Logging::BaseLog> *rtSupGuardb;
+	Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> *rtSupGuardex;
  }; 
 
 
