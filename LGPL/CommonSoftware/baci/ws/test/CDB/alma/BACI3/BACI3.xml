@@ -15,7 +15,7 @@
 <ROfloatProp archive_min_int="0.5" archive_max_int="2.0" />
 
 <RWlongProp />
-<ROlongProp archive_min_int="0.5"archive_max_int="2.0" archive_delta="3"/>
+<ROlongProp archive_min_int="0.5" archive_max_int="2.0" archive_delta="3"/>
 
 <RWpatternProp />
 <ROpatternProp />
