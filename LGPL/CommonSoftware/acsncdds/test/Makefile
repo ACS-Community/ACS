@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.2 2010/01/28 18:36:44 utfsm Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/02/26 16:44:31 utfsm Exp $"
 #
 # Makefile of ........
 #
@@ -96,7 +96,7 @@ INCLUDES      =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       = acsddsncTypeSupport simpleExampleNCImpl simpleExampleDDSImpl \
-		  NCBenchmarkImpl DDSNCBenchmarkImpl
+		  NCBenchmarkImpl DDSNCBenchmarkImpl testCDBProps
 LIBRARIES_L     =
 
 #
@@ -116,6 +116,9 @@ NCBenchmarkImpl_LIBS    =  NCBenchmarkStubs MessageTypeSupportStubs acsnc
 DDSNCBenchmarkImpl_OBJECTS = DDSNCBenchmarkImpl
 DDSNCBenchmarkImpl_LIBS    = NCBenchmarkStubs MessageTypeSupportStubs acsddsncTypeSupport acsddsnc
 
+testCDBProps_OBJECTS =  testCDBProps
+testCDBProps_LIBS    =  acsddsnc acscomponent CDBPropsStubs
+
 #
 # <brief description of acsddsncTypeSupport library>
 acsddsncTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
@@ -125,7 +128,7 @@ acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = testDDS TATEnvironment TATEpilogue TATPrologue
+SCRIPTS_L       = testDDS testCDB TATEnvironment TATEpilogue TATPrologue
 
 
 #
@@ -136,8 +139,8 @@ CDB_SCHEMAS =
 # 
 # DDS and IDL Files and flags
 # 
-DDS_FILES = NCBenchmark SimpleExample
-IDL_FILES = NCBenchmark SimpleExample
+DDS_FILES = NCBenchmark SimpleExample #CDBProps 
+IDL_FILES = NCBenchmark SimpleExample CDBProps
 
 # man pages to be done
 # --------------------

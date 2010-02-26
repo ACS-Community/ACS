@@ -24,5 +24,8 @@
                              Type="IDL:alma/NC_BENCHMARK/testNCSupplier:1.0"
                              Container="Container"/>
 
-
+      <_ Name="CDB_PROPS"    Code="testCDBProps"
+			     ImplLang="cpp"
+			     Type="IDL:alma/CDB_PROPS/cdbProps:1.0"
+			     Container="Container" />
 </Components>

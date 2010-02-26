@@ -27,9 +27,9 @@ int main(int argc, char**argv)
 	sleep(200);
 		
 	sub_p->disconnect();
+	sub_p->cleanUp();
 	delete sub_p;
 
-	client.logout();
 	ACE_OS::sleep(5);
 	
 	return 0;

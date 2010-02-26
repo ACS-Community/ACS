@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.2 2010/02/22 21:32:40 utfsm Exp $"
+* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.3 2010/02/26 16:44:31 utfsm Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <acsutilPorts.h>
 #include <acsutil.h> 
 
-static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.2 2010/02/22 21:32:40 utfsm Exp $"; 
+static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.3 2010/02/26 16:44:31 utfsm Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace ddsnc {
@@ -77,7 +77,9 @@ namespace ddsnc {
 		dalObj = CDB::DAL::_narrow(obj.in());
 		if (CORBA::is_nil(dalObj.in())) 
 		    {
-		    cout<<"Failed to narrow CDB"<<endl;
+		    ACS_STATIC_SHORT_LOG((LM_ERROR,
+				  "CDBProperties::getCDB",
+				  "Failed to narrow CDB."));
 		    }
 	   }
 

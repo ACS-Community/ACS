@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsddsncCDBProperties.h,v 1.2 2010/02/22 21:32:40 utfsm Exp $"
+* "@(#) $Id: acsddsncCDBProperties.h,v 1.3 2010/02/26 16:44:31 utfsm Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,14 +46,15 @@ namespace ddsnc {
     class CDBProperties {
 
       public:
+
+	static CDB::DAL_ptr
+	getCDB();
+
 	static bool 
 	cdbChannelConfigExists(CORBA::String_var channelName);
 
 	static DDS::QosPolicyCountSeq
 	getCDBQoSProps(CORBA::String_var channelName);
-
-	static CDB::DAL_ptr
-	getCDB();
 
     };
 };
