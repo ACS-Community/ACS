@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string.h>
+#include <loggingACEMACROS.h>
 #include <dds/DCPS/Service_Participant.h>
 #include <dds/DCPS/Marked_Default_Qos.h>
 #include <dds/DCPS/transport/framework/TheTransportFactory.h>

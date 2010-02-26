@@ -20,7 +20,9 @@ void DataReaderListenerImpl::on_requested_deadline_missed (
     const DDS::RequestedDeadlineMissedStatus &)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_requested_deadline_missed" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_requested_deadline_missed",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_requested_incompatible_qos (
@@ -28,7 +30,9 @@ void DataReaderListenerImpl::on_requested_incompatible_qos (
     const DDS::RequestedIncompatibleQosStatus &)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_requested_incompatible_qos" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_requested_incompatible_qos",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_liveliness_changed (
@@ -36,7 +40,9 @@ void DataReaderListenerImpl::on_liveliness_changed (
     const DDS::LivelinessChangedStatus &)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_liveliness_changed" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_liveliness_changed",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_subscription_match (
@@ -44,7 +50,9 @@ void DataReaderListenerImpl::on_subscription_match (
     const DDS::SubscriptionMatchStatus &)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_subscription_match" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_subscription_match",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_sample_rejected(
@@ -52,7 +60,9 @@ void DataReaderListenerImpl::on_sample_rejected(
     const DDS::SampleRejectedStatus&)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_sample_rejected" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_sample_rejected",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_sample_lost(
@@ -60,11 +70,16 @@ void DataReaderListenerImpl::on_sample_lost(
   const DDS::SampleLostStatus&)
   throw (CORBA::SystemException)
 {
-  cerr << "DataReaderListenerImpl::on_sample_lost" << endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_sample_lost",
+                              ""));
 }
 
 void DataReaderListenerImpl::on_data_available(
   DDS::DataReader_ptr reader)
   throw (CORBA::SystemException)
 {
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+        	              "DataReaderListenerImpl::on_data_available",
+                              ""));
 }

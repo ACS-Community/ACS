@@ -24,8 +24,9 @@ int DDSPublisher::attachToTransport()
 				status_str = "Unknown Status";
 				break;
 		}
-		::std::cerr << "Failed to attach to the transport. Status == "
-			<< status_str.c_str() << ::std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_ERROR,
+        	                          "DDSPublisher::attachToTransport",
+                	                  "Failed to attach to the transport. Status == '%s'",status_str.c_str()));
 		return 1;
 	}
 	return 0;
@@ -33,10 +34,14 @@ int DDSPublisher::attachToTransport()
 
 void DDSPublisher::initialize()
 {
-	std::cerr<< "DDSPublisher::initialize()"<<std::endl;
+        ACS_STATIC_SHORT_LOG((LM_INFO,
+                                  "DDSPublisher::initialize()",
+                                  ""));
 	createParticipant();
 	if (CORBA::is_nil (participant.in()))
-		std::cerr << "Participant is nil" << std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_ERROR,
+        	                          "DDSPublisher::initialize()",
+                	                  "Participant is nil"));
 	if(partitionName!=NULL){
 		participant->get_default_publisher_qos(pubQos);
 		pubQos.partition.name.length(1);
@@ -52,6 +57,9 @@ void DDSPublisher::initialize()
 	// CDB QoS
 	DDS::QosPolicyCountSeq tmp = CDBProperties::getCDBQoSProps(DDSHelper::getChannelName());
         
+        ACS_STATIC_SHORT_LOG((LM_INFO,
+                                  "DDSPublisher::initialize()",
+                                  "Setting the QoS"));
 	for(int i=0;i<(int)tmp.length();i++)
 	{
 		if( tmp[i].policy_id == 12 )
@@ -105,35 +113,45 @@ void DDSPublisher::initializeDataWriter()
 	dw = pub->create_datawriter(topic.in(),
 			dwQos,  DDS::DataWriterListener::_nil());
 	if(CORBA::is_nil(dw.in())){
-		std::cerr << "create datawriter failed" << std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_ERROR,
+        	                          "DDSPublisher::initializeDataWriter()",
+                	                  "Create datawriter failed"));
 	}
 }
 
 int DDSPublisher::createPublisher()
 {
-	std::cerr << "DDSPublisher::createPublisher" << std::endl;
-
+        ACS_STATIC_SHORT_LOG((LM_INFO,
+       	                          "DDSPublisher::createPublisher",
+               	                  ""));
 	if(partitionName==NULL){
 		pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
 				DDS::PublisherListener::_nil());
-		std::cerr << "Creating Publisher with default Qos" << std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_INFO,
+       	                          "DDSPublisher::createPublisher",
+               	                  "Creating Publisher with default QoS"));
 	}
 
 	else{
 		pub = participant->create_publisher(pubQos,
 				DDS::PublisherListener::_nil());
-		std::cerr << "Creating Publisher with partition " << partitionName 
-			<< std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_INFO,
+       	                          "DDSPublisher::createPublisher",
+               	                  "Creating Publisher with partition %s ",partitionName));
 	}
 
 	if(CORBA::is_nil(pub.in())){
-		std::cerr << "create publisher failed" << std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_ERROR,
+	       	                          "DDSPublisher::createPublisher",
+	               	                  "Create Publisher failed"));
 		return 1;
 	}
 
 	pub_impl= dynamic_cast<OpenDDS::DCPS::PublisherImpl*>(pub.in());
 	if(pub_impl == NULL){
-		std::cerr << "Failed to obtain publisher servant" << std::endl;
+	        ACS_STATIC_SHORT_LOG((LM_ERROR,
+	       	                          "DDSPublisher::createPublisher",
+	               	                  "Failed to obtain publisher servant"));
 		return 1;
 	}
 	return attachToTransport();

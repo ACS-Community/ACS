@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testCDBProps.cpp,v 1.1 2010/02/26 16:44:31 utfsm Exp $"
+* "@(#) $Id: testCDBProps.cpp,v 1.2 2010/02/26 18:13:38 utfsm Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,6 +39,9 @@ CDBPropsCompImpl::CDBPropsCompImpl(const ACE_CString &name,
 CORBA::Long
 CDBPropsCompImpl::runTest()
 {
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+ 				  "CDBPropsCompImpl::runTest",
+                                  "Starting the tests"));
 
 	CORBA::Long result = 0;
 	CORBA::String_var channel = "blar";
@@ -65,7 +68,9 @@ CDBPropsCompImpl::runTest()
 	//first try on one that exists in the CDB
 	DDS::QosPolicyCountSeq tmp;
 	tmp = ddsnc::CDBProperties::getCDBQoSProps(channel);
-	std::cout << "getCDBQoSProps(" << channel <<"):";
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+ 				  "CDBPropsCompImpl::runTest",
+                                  "getCDBQoSProps with an existent channel"));
 	unsigned int j=0;
 	for (unsigned int i=0; i <tmp.length(); i++)
 	    {
@@ -78,7 +83,9 @@ CDBPropsCompImpl::runTest()
 	}
 	//next try on one that is not in the CDB
 	tmp = ddsnc::CDBProperties::getCDBQoSProps(notChannel);
-	std::cout << "getCDBQoSProps(" << notChannel <<"):";
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+ 				  "CDBPropsCompImpl::runTest",
+                                  "getCDBQoSProps with an nonexistent channel"));
 	j=0;
 	for (unsigned int i=0; i <tmp.length(); i++)
 	    {

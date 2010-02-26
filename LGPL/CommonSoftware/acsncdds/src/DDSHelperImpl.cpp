@@ -21,7 +21,9 @@ DDSHelper::DDSHelper(CORBA::String_var channelName)
 	}
 	catch(CORBA::TRANSIENT &ex)
 	{
-	   ACS_STATIC_SHORT_LOG((LM_ERROR, "DDSHelper::DDSHelper", "Manager ref null."));
+	   ACS_STATIC_SHORT_LOG((LM_ERROR,
+				 "DDSHelper::DDSHelper",
+				 "Manager ref null."));
 	   exit(1);
         }
 	ACE_CString tmpRoute = "corbaloc:iiop:";
@@ -54,7 +56,10 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 	argv[5] = strdup("-DCPSTransportDebugLevel");
 	argv[6] = strdup("0");
 
-	std::cerr << "Registering TransportImpl" << std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::init",
+			 "Registering TransportImpl."));
+
 /* Fedora 8 systems have a problem with next line of code. If the component is
  * referenced by a simple client the DDS Notiification Channel works only once
  * time, the second time the maciContainer will exit with a Segmentation Fault
@@ -99,17 +104,23 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 }
 
 int DDSHelper::createParticipant(){
-	std::cerr << "DDSHelper::createParticipant" << std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::createParticipant",
+			 ""));
 	participant = dpf->create_participant(DOMAIN_ID,
 			PARTICIPANT_QOS_DEFAULT,
 			DDS::DomainParticipantListener::_nil());
 
 	if (CORBA::is_nil(participant.in())){
-		std::cerr << "Create Participant Failed." << std::endl;
+		ACS_STATIC_SHORT_LOG((LM_ERROR,
+				 "DDSHelper::createParticipant",
+				 "Create Participant Failed."));
 		return 1;
 	}
 	
-	std::cerr << "Created the participant" << std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::createParticipant",
+			 "Created the participant."));
 	
 	return 0;
 }
@@ -117,22 +128,30 @@ int DDSHelper::createParticipant(){
 
 void DDSHelper::initializeTransport(){
 	try{
-		std::cerr << " DDSHelper::initializeTransport()" << std::endl;
+		ACS_STATIC_SHORT_LOG((LM_INFO,
+				 "DDSHelper::initializeTransport",
+				 ""));
+
 		transport_impl=
 			TheTransportFactory->create_transport_impl(transport_impl_id,
 					"SimpleTcp", ::OpenDDS::DCPS::AUTO_CONFIG);
 		
-		std::cerr << "Transport ID:" << transport_impl_id << std::endl;
+		ACS_STATIC_SHORT_LOG((LM_INFO,
+				 "DDSHelper::initializeTransport",
+				 "Transport ID: %s",transport_impl_id));
 
 		OpenDDS::DCPS::TransportConfiguration_rch config =
 			TheTransportFactory->get_configuration(transport_impl_id);
 		OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
 			dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
-		::std::cerr << "TCP Address: "<< 
-			tcp_config->local_address_str_ << ::std::endl;
+		ACS_STATIC_SHORT_LOG((LM_INFO,
+				 "DDSHelper::initializeTransport",
+				 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
 
-		std::cerr << "Finishing configuration" << std::endl;
 
+		ACS_STATIC_SHORT_LOG((LM_INFO,
+				 "DDSHelper::initializeTransport",
+				 "Finishing configuration"));
 	}
 	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
 		transport_impl_id++;
@@ -140,18 +159,20 @@ void DDSHelper::initializeTransport(){
 //		transport_impl=TheTransportFactory->obtain(transport_impl_id);
 	}
 
-	std::cerr << "Transport ID:" << transport_impl_id << std::endl;
-
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::initializeTransport",
+			 "Transport ID: %s",transport_impl_id));
 	OpenDDS::DCPS::TransportConfiguration_rch config =
 		TheTransportFactory->get_configuration(transport_impl_id);
 	OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
 		dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
 
-	::std::cerr << "TCP Address: "<< 
-		tcp_config->local_address_str_ << ::std::endl;
-
-	std::cerr << "Finishing configuration" << std::endl;
-
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::initializeTransport",
+			 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::initializeTransport",
+			 "Finishing configuration"));
 }
 
 void DDSHelper::setTopicName(const char* topicName)
@@ -161,14 +182,17 @@ void DDSHelper::setTopicName(const char* topicName)
 
 void DDSHelper::initializeTopic(const char* topicName, CORBA::String_var typeName)
 {
-	std::cerr << "Initializing topic: " << this->topicName << std::endl;
-	std::cerr << "with type: " << typeName << std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::initializeTopic",
+			 "Initializing topic: '%s' with type: '%s'",this->topicName,typeName._retn()));
 	participant->get_default_topic_qos(topicQos);
 	topic=participant->create_topic(topicName, typeName.in(),
 			topicQos, DDS::TopicListener::_nil());
 
 	if (CORBA::is_nil(topic.in())){
-         std::cerr << "create_topic failed" << std::endl;
+		ACS_STATIC_SHORT_LOG((LM_INFO,
+				 "DDSHelper::initializeTransport",
+				 "create_topic failed"));
 	}
 	
 }
@@ -188,9 +212,10 @@ void DDSHelper::setPartitionName(const char* partitionName){
 
 void DDSHelper::disconnect()
 {
-	std::cerr<< "DDSHelper::disconnect()"<<std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::disconnect",
+			 ""));
 	if(initialized==true){
-		std::cerr<< "DDSHelper::disconnect()"<<std::endl;
 		participant->delete_contained_entities();
 		dpf->delete_participant(participant.in());
 		TheTransportFactory->release(transport_impl_id);
@@ -201,7 +226,9 @@ void DDSHelper::disconnect()
 
 DDSHelper::~DDSHelper()
 {
-	std::cerr << "DDSHelper::~DDSHelper()" << std::endl;
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::~DDSHelper",
+			 ""));
 	disconnect();
 	free(partitionName);
 	free(topicName);
@@ -209,6 +236,9 @@ DDSHelper::~DDSHelper()
 
 void DDSHelper::cleanUp()
 {
+	ACS_STATIC_SHORT_LOG((LM_INFO,
+			 "DDSHelper::cleanUp",
+			 ""));
 	if (factories_init){
 		TheTransportFactory->release();
 		TheServiceParticipant->shutdown();
