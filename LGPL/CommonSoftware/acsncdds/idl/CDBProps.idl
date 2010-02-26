@@ -1,0 +1,15 @@
+#ifndef _CDB_PROPS_IDL_
+
+#define _CDB_PROPS_IDL_
+
+#include <baci.idl>
+
+#pragma prefix "alma"
+
+module CDB_PROPS{
+	interface cdbProps : ACS::ACSComponent{
+		long runTest();
+	};
+};
+
+#endif
