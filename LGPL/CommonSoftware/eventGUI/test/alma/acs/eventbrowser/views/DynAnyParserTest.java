@@ -72,7 +72,7 @@ public class DynAnyParserTest extends TestCase {
 		eventAny = se.filterable_data[0].value;
 		StopWatch sw = new StopWatch(logger);
 		parser = new DynAnyParser(eventAny, eventName);
-		ParsedAnyData[] pResults = parser.getParsedResults();
+		ParsedAnyData[] pResults = parser.getParsedResults(null);
 		sw.logLapTime("parse this eventAny");
 		return pResults;
 	}

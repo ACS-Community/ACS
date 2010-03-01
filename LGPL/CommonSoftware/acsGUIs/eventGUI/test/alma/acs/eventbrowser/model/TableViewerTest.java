@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 	 *
 	 */
 	public class TableViewerTest {
-		private class MyContentProvider implements IStructuredContentProvider {
+		private static class MyContentProvider implements IStructuredContentProvider {
 
 			/* (non-Javadoc)
 			 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
@@ -55,7 +55,7 @@ import org.eclipse.swt.widgets.Shell;
 			
 		}
 		
-		public class MyModel {
+		private static class MyModel {
 			public int counter;
 			
 			public MyModel(int counter) {

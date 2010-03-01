@@ -3,24 +3,40 @@ package alma.acs.eventbrowser.views;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.eventbrowser.Application.*;
 
 
 /**
@@ -48,10 +64,7 @@ public class ChannelTreeView extends ViewPart {
 	private Action startMonitoringAction;
 	private Action doubleClickAction;
 	private ViewContentProvider vcp;
-	private IViewSite vs;
-	
-	private Thread monitorThread;
-	
+		
 	private EventModel em;
 	private long howOften = 10000l; // Default is every 10 seconds
 	
@@ -183,7 +196,7 @@ public class ChannelTreeView extends ViewPart {
 //			System.out.println("Root has following children: "+root.children);
 		}
 	}
-	class ViewLabelProvider extends LabelProvider {
+	static class ViewLabelProvider extends LabelProvider {
 
 		public String getText(Object obj) {
 			return obj.toString();
@@ -195,7 +208,7 @@ public class ChannelTreeView extends ViewPart {
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		}
 	}
-	class NameSorter extends ViewerSorter {
+	static class NameSorter extends ViewerSorter {
 	}
 
 	/**
@@ -215,7 +228,6 @@ public class ChannelTreeView extends ViewPart {
 		viewer.setContentProvider(vcp);
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
-		vs = getViewSite();
 		viewer.setInput(getViewSite());
 
 		// Create the help context id for the viewer's control

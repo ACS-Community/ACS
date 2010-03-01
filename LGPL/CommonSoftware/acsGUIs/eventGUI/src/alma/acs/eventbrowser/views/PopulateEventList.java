@@ -23,7 +23,6 @@ public class PopulateEventList {
 
 	private Logger logger;
 	private TableViewer viewer;
-	private ArrayList<AdminConsumer> consumers;
 	private final Display display;
 	private EventModel em;
 

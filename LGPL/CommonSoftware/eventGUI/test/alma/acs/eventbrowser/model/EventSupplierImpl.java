@@ -42,7 +42,7 @@ public class EventSupplierImpl implements SupplierCompOperations
 	private Logger m_logger;
 	private ContainerServices m_containerServices;
 	
-	private final String channelName = "blar";
+	private static final String channelName = "blar";
 
 	public EventSupplierImpl(Logger logger, ContainerServices cs, String clientName)
 			throws Exception {

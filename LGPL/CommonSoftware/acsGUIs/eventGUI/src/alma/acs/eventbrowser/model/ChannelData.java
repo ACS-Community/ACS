@@ -1,7 +1,7 @@
 package alma.acs.eventbrowser.model;
 
 public class ChannelData implements Comparable<ChannelData> {
-	private String name;
+	private final String name;
 	private int numberConsumers;
 	private int numberSuppliers;
 	private int deltaConsumers;	// change since last update
@@ -10,9 +10,7 @@ public class ChannelData implements Comparable<ChannelData> {
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public int getNumberConsumers() {
 		return numberConsumers;
 	}
@@ -58,5 +56,18 @@ public class ChannelData implements Comparable<ChannelData> {
 	public int compareTo(ChannelData o) {
 		return getName().compareTo(o.getName());
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || !(o instanceof ChannelData)) {
+			return false;
+		}
+		return getName().equals(((ChannelData)o).getName());
+	}
+	
+	@Override
+	public int hashCode() {
+		return getName().hashCode();
+	}
 }
+

@@ -99,7 +99,7 @@ public class ServiceSummaryView extends ViewPart {
 		}
 	}
 	
-	class ServiceNameLabelProvider extends ColumnLabelProvider {
+	static class ServiceNameLabelProvider extends ColumnLabelProvider {
 
 		@Override
 		public String getText(Object element) {
@@ -115,7 +115,7 @@ public class ServiceSummaryView extends ViewPart {
 		
 	}
 	
-	class NumConsumersLabelProvider extends ColumnLabelProvider {
+	static class NumConsumersLabelProvider extends ColumnLabelProvider {
 		
 		@Override
 		public String getText(Object element) {
@@ -132,7 +132,7 @@ public class ServiceSummaryView extends ViewPart {
 		
 	}
 	
-	class NumSuppliersLabelProvider extends ColumnLabelProvider {
+	static class NumSuppliersLabelProvider extends ColumnLabelProvider {
 		
 		@Override
 		public String getText(Object element) {
@@ -148,7 +148,7 @@ public class ServiceSummaryView extends ViewPart {
 		}
 	}
 	
-	class ServiceViewerComparator extends ViewerComparator {
+	static class ServiceViewerComparator extends ViewerComparator {
 
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {

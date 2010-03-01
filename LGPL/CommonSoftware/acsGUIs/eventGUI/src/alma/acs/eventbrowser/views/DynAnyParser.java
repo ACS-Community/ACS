@@ -144,13 +144,13 @@ public class DynAnyParser {
 																// Actuator
 																// Space at all!
 
-				String members = "Members: ";
+				StringBuilder members = new StringBuilder("Members: ");
 				for (int i = 0; i < ds.component_count(); i++) {
-					members += ds.current_member_name()
-							+ ((i == ds.component_count() - 1) ? " " : ", ");
+					members.append(ds.current_member_name()
+							+ ((i == ds.component_count() - 1) ? " " : ", "));
 					ds.next();
 				}
-				entry.setValue(members);
+				entry.setValue(members.toString());
 				pdlist.add(entry);
 				ds.rewind();
 

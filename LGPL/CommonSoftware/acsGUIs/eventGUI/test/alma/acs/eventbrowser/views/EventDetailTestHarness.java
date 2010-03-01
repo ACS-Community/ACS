@@ -54,7 +54,7 @@ import alma.acs.util.StopWatch;
  * 
  */
 public class EventDetailTestHarness {
-	private class MyContentProvider implements IStructuredContentProvider {
+	private static class MyContentProvider implements IStructuredContentProvider {
 
 		/*
 		 * (non-Javadoc)
@@ -185,9 +185,7 @@ public class EventDetailTestHarness {
 	}
 	
 	private ParsedAnyData[] createModel() {
-		ParsedAnyData[] elements = new ParsedAnyData[10];
-		elements = parsePttDataEvent();
-
+		ParsedAnyData[] elements = parsePttDataEvent();
 		return elements;
 	}
 
@@ -225,18 +223,20 @@ public class EventDetailTestHarness {
 				new actuatorSpace(new double[2952]), new actuatorSpace(
 						new double[2952]), 25, 32L);
 		StructuredEvent se = null;
+		String eventName = null;
+		Any eventAny = null;
 		try {
 			se = seCreator.createEvent(pde);
+			eventName = se.header.fixed_header.event_type.type_name;
+			eventAny = se.filterable_data[0].value;
 		} catch (AcsJException e) {
 			e.printStackTrace();
 			System.err
 					.println("Couldn't create structured event for pttDataEvent");
 		}
-		String eventName = se.header.fixed_header.event_type.type_name;
-		Any eventAny = se.filterable_data[0].value;
 		StopWatch sw = new StopWatch(logger);
 		DynAnyParser parser = new DynAnyParser(eventAny, eventName);
-		ParsedAnyData[] pResults = parser.getParsedResults();
+		ParsedAnyData[] pResults = parser.getParsedResults(null);
 		sw.logLapTime("parse this eventAny");
 		return pResults;
 	}
