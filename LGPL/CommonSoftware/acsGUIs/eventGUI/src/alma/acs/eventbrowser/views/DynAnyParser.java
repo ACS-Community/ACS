@@ -62,22 +62,22 @@ public class DynAnyParser {
 
 			case TCKind._tk_short:
 				entry.setType("short");
-				entry.setValue((new Short(da.get_short())).toString());
+				entry.setValue(String.valueOf(da.get_short()));
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_long:
 				entry.setType("long");
-				entry.setValue("" + da.get_long());
+				entry.setValue(String.valueOf(da.get_long()));
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_longlong:
 				entry.setType("longlong");
-				entry.setValue("" + da.get_longlong());
+				entry.setValue(String.valueOf(da.get_longlong()));
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_ulonglong:
 				entry.setType("ulonglong");
-				entry.setValue("" + da.get_ulonglong());
+				entry.setValue(String.valueOf(da.get_ulonglong()));
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_string:
