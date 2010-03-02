@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: __init__.py,v 1.3 2009/02/05 17:42:13 agrimstrup Exp $"
+# "@(#) $Id: __init__.py,v 1.4 2010/03/02 17:07:07 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@ from acspyTestUnitCDBAccess import CDBHandlerCheck, CDBAccessCheck
 from acspyTestUnitACSHandler import ACSFormatterCheck, ACSLogRecordCheck, ACSHandlerCheck
 from acspyTestUnitLog import LoggerAfterImport, LogLevelsCheck, EnvVariableDefaultCheck, StdoutEnvVariableCheck, CentralEnvVariableCheck, LoggerClassCheck, LoggerFunctionCheck, LoggerHandlerConfigCheck, NoLoggerCheck, OneLoggerCheck, SeveralLoggerCheck, DispatchPacketCheck, PeriodicFlushCheck
 from test_Acspy_Nc_CommonNC import TestCommonNC
-from test_Acspy_Container import TestContainer
+#from test_Acspy_Container import TestContainer
 from test_Acspy_Common_ErrorTrace import TestErrorTraceHelper, TestErrorTrace
 from test_Acspy_Common_Err import TestACSError, TestAddComplHelperMethods, TestPyExceptionToCORBA
 #
