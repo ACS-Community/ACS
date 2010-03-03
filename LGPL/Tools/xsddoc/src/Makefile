@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2006/04/20 15:58:26 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/03/03 10:43:28 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -61,6 +61,7 @@ endif
 #
 # TARGETS
 # -------
+.NOTPARALLEL: all
 all:	unpack patch do_all
 	@echo " . . . 'all' done" 
 
