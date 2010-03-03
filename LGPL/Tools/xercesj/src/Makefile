@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.7 2010/03/03 08:47:10 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/03/03 12:56:34 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -109,7 +109,7 @@ unpack:
 #
 patch: preparePatch last_patched
 
-last_patched: xml-xerces.patch
+last_patched: preparePatch xml-xerces.patch
 	@cd xml-xerces; patch -p1 < ../xml-xerces.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
@@ -119,7 +119,7 @@ last_patched: xml-xerces.patch
 # Then copy the jar file in ../lib/endorsed,
 # from where it can be installed.
 #
-buildXerces:
+buildXerces: patch
 	@cd xml-xerces/java; ./build.sh jar
 	@mkdir -p ../lib/endorsed
 	@cp xml-xerces/java/build/xercesImpl.jar ../lib/endorsed
