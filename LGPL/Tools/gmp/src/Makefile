@@ -50,6 +50,6 @@ unpack:
 	@if [ ! -d gmp-$(GMP_VER) ]; then \
            tar zxf gmp-$(GMP_VER).tar.gz; \
         fi
-config:
+config: unpack
 	@cd gmp-$(GMP_VER) && \
 	./configure $(BUILD_PLATFORM_FLAGS) --prefix=$(INSTALL_ROOT) --enable-cxx
