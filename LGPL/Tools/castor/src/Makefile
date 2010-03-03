@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2005/04/08 12:02:56 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/03/03 10:00:06 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -83,6 +83,7 @@ endif
 #
 # TARGETS
 # -------
+.NOTPARALLEL: all
 all:	preAnt do_all 
 #all:	do_all 
 	@echo " . . . 'all' done" 
