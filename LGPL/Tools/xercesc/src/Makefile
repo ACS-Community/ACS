@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2009/02/19 08:55:10 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/03/03 13:18:09 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -77,14 +77,15 @@ unpack :
 	@echo ". . . unpacking the tar file . . . "
 	@gtar -xzf xerces-c-$(XERCES_VER).tar.gz
 
-configure :
+configure : unpack
 	@echo ". . . running configure . . . "
 	@echo "cwd is: $(CURDIR)"
 	@ cd xerces-c-$(XERCES_VER)/src/xercesc; autoconf
 	@ cd xerces-c-$(XERCES_VER)/src/xercesc; \
 	./runConfigure -P $(INSTALL_ROOT) -plinux -cgcc -xg++ -minmem -nsocket -tnative -rpthread > configure.log 2>&1
 
-build_xerces :
+.NOTPARALLE: build_xerces
+build_xerces : configure
 	@echo ". . . building xerces. . . "
-	@cd xerces-c-$(XERCES_VER)/src/xercesc; make 
+	@cd xerces-c-$(XERCES_VER)/src/xercesc; make -j 1
 #___oOo___
