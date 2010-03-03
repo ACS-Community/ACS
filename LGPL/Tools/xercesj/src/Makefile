@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.6 2005/04/16 17:29:29 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.7 2010/03/03 08:47:10 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -86,7 +86,7 @@ install : install_all
 # 
 # I had to put a 'true' because patch returns -1. No idea why.  
 #
-preparePatch:
+preparePatch: unpack
 	mv xml-xerces.patch xml-xerces.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
 	cd tmp_unpack; gtar -xzf ../xml-xerces-java.tar.gz; mv xml-xerces xml-xerces.orig
@@ -107,7 +107,7 @@ unpack:
 #
 # Apply the patch
 #
-patch: last_patched
+patch: preparePatch last_patched
 
 last_patched: xml-xerces.patch
 	@cd xml-xerces; patch -p1 < ../xml-xerces.patch
