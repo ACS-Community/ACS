@@ -1,6 +1,6 @@
 #ifndef SIMPLE_SUPPLIER_I
 #define SIMPLE_SUPPLIER_I
-/*    @(#) $Id: acsncSimpleSupplier.i,v 1.28 2009/11/18 00:20:44 jkern Exp $
+/*    @(#) $Id: acsncSimpleSupplier.i,v 1.29 2010/03/04 16:46:07 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002
  *    (c) European Southern Observatory, 2002
@@ -50,7 +50,6 @@ SimpleSupplier::publishData(T data, EventProcessingCallback<T> *evProcCallback)
    {
       if(evProcCallback != NULL){
          evProcCallback->eventDropped(data);
-         evProcCallback->eventStoredInQueue(data);
       }
    }
 	catch(ACSErr::ACSbaseExImpl &ex)
