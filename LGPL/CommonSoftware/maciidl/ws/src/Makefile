@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.7 2007/03/22 15:56:51 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/03/08 08:35:35 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -203,7 +203,7 @@ endif
 #
 # TARGETS
 # -------
-all:	prepare_xsdbind do_all clean_xsdbind
+all:	prepare_xsdbind do_all clean_my_xsdbind
 #all:	do_all
 	@echo " . . . 'all' done" 
 
@@ -215,7 +215,7 @@ prepare_xsdbind:
 clean : clean_all
 	@echo " . . . clean done"
 
-clean_xsdbind:
+clean_my_xsdbind:
 	@echo " will remove schema files copied for XSDBIND workaround . . ."
 	@rm -f ../config/CDB/schemas/xml.xsd
 
