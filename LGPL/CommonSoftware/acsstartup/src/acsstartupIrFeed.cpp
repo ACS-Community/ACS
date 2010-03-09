@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsstartupIrFeed.cpp,v 1.7 2008/08/11 02:17:30 cparedes Exp $"
+* "@(#) $Id: acsstartupIrFeed.cpp,v 1.8 2010/03/09 04:58:49 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,11 +59,13 @@
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.7 2008/08/11 02:17:30 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acsstartupIrFeed.cpp,v 1.8 2010/03/09 04:58:49 agrimstrup Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
 #include <list>
+#include <map>
+#include <utility>
 #include <acsutilPorts.h>
 #include <dirent.h>
 #include <fstream>
@@ -71,6 +73,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using std::string;
 using std::list;
+using std::map;
+using std::pair;
 using std::cout;
 
 /**
@@ -78,8 +82,12 @@ using std::cout;
  * to files list.
  */
 void addIdlFiles(std::string dirName,
-		 list<string> & files)
+		 list<string> & files,
+		 map<string, int> & seenFiles)
 {
+    map<string, int>::iterator it;
+    pair<map<string, int>::iterator, bool> ret;
+
     //open the directory
     DIR* dir = opendir(dirName.c_str());
 
@@ -101,8 +109,11 @@ void addIdlFiles(std::string dirName,
 	{
         int endPos = t_file.size() - 4;
 	    if( pos == endPos){
-            if (t_file != "ACSIRSentinel.idl")
+	        if (t_file != "ACSIRSentinel.idl") {
+		    ret = seenFiles.insert(pair<string, int>(t_file, 0));
+	            if (ret.second == true) 
 		        files.push_back(t_file);
+		}
         } 
     }
 	
@@ -115,6 +126,8 @@ void addIdlFiles(std::string dirName,
 int main(int argc, char *argv[])
 {
     list<string> idlFiles;
+
+    map<string, int> seenIdlFiles;
     
     std::string aceRoot     = getenv("ACE_ROOT");
     std::string idlPath     = getenv("IDL_PATH");
@@ -161,7 +174,7 @@ int main(int argc, char *argv[])
         string idlDir = idlPath.substr(0, wsIndex);
         
         //examine the IDL directory adding all IDLs found
-        addIdlFiles(idlDir, idlFiles);
+        addIdlFiles(idlDir, idlFiles, seenIdlFiles);
 
         
         //shrink the idlPath
@@ -169,9 +182,6 @@ int main(int argc, char *argv[])
         }
     }
  
-    //remove duplicates
- //   idlFiles.sort();
-    idlFiles.unique();
     idlFiles.push_back("ACSIRSentinel.idl");
 
     file << "#ifndef acsIrfeedDyn_" << processId <<"_idl" << std::endl;

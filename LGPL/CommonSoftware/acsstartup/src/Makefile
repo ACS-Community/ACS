@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.51 2009/09/17 20:31:03 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.52 2010/03/09 04:58:49 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -33,7 +33,6 @@ SCRIPTS         = acsStartContainer acsStopContainer \
 	          acsStartManager acsStopManager \
 		  acsStart acsStop \
 		  acsstartupAcsPorts acsstartupPids \
-		  acsIrfeed \
 		  acsStartJava \
 		  acsList \
 		  acsKillProc \
@@ -127,7 +126,7 @@ XSDBIND_INCLUDE=
 # man pages to be done
 # --------------------
 MANSECTIONS = 1
-MAN1 = acsIrfeed
+MAN1 = 
 
 
 
