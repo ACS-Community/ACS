@@ -206,6 +206,9 @@ clean_generated:
 	rm -rf $${item}; \
 	done
 
+directory_structure:
+	@mkdir -p ../object ../bin 
+
 all:	directory_structure generated do_all
 	@echo " . . . 'all' done" 
 
