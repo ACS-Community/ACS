@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.2 2006/09/25 08:00:54 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/03/10 06:47:15 mzampare Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsjms/src
@@ -69,12 +69,10 @@ USER_IDL  =
 #
 # INCLUDE STANDARDS
 # -----------------
-ifdef ACSROOT
-    MAKEDIR = $(ACSROOT)/include
-    include $(MAKEDIR)/acsMakefile
-else
-    MAKEDIR = $(VLTROOT)/include
-    include $(MAKEDIR)/vltMakefile
+MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+ifneq ($(MAKEDIRTMP),\#error\#)
+MAKEDIR := $(MAKEDIRTMP)/include
+include $(MAKEDIR)/acsMakefile
 endif
 
 #
