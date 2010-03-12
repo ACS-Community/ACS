@@ -12,6 +12,13 @@
 1 - ----------T--:--:--.--- [GlobalLogger] Test of LM_CRITICAL log
 1 - ----------T--:--:--.--- [GlobalLogger] Test of LM_ALERT log
 1 - ----------T--:--:--.--- [GlobalLogger] Test of LM_EMERGENCY log
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_AUDIENCE_WITH_LOGGER log
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_DEVELOPER log
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_DEVELOPER_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_OPERATOR log
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_OPERATOR_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_SCIENCE log
+1 - ----------T--:--:--.--- [GlobalLogger] Test of LOG_TO_SCILOG log
 1 - Test with ACS_LOG_STDOUT=5
 1 - ----------T--:--:--.--- Local file logger: Cache saved to './log_cache.dat__XXXXXXXX_XXX'.
 1 - ----------T--:--:--.--- [GlobalLogger - ] add data for this log message should be too long (max is 1024 characters) testTooLongValue="12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789LAST"
@@ -35,3 +42,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_CRITICAL log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_ALERT log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_EMERGENCY log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_AUDIENCE_WITH_LOGGER log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_DEVELOPER log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_DEVELOPER_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_OPERATOR log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_OPERATOR_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_SCIENCE log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_SCILOG log

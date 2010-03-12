@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.24 2010/02/12 07:33:09 bjeram Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.25 2010/03/12 21:12:33 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -261,4 +261,94 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
 #define AUTO_STATIC_TRACE(routine) \
 Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logging::LogTrace(Logging::Logger::getStaticLogger(), routine, __FILE__, __LINE__));
 
+/**
+ * Used to send logs to the developer. This macro is primarily useful because
+ * it automatically determines the file name, line number and function name for
+ * the developer.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ */
+#define LOG_TO_DEVELOPER(logPriority, logMessage) \
+    LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::DEVELOPER);
+
+/**
+ * Used to send logs to the operator. This macro is primarily useful because
+ * it automatically determines the file name, line number and function name for
+ * the developer.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ */
+#define LOG_TO_OPERATOR( logPriority, logMessage) \
+    LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::OPERATOR);
+
+/**
+ * Used to send logs to the science logs. This macro is primarily useful because
+ * it automatically determines the file name, line number and function name for
+ * the scientists.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ */
+#define LOG_TO_SCIENCE( logPriority, logMessage) \
+    LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+/**
+ * Used to send logs to the science logs. This macro is primarily useful because
+ * it automatically determines the file name, line number and function name for
+ * the scientists.
+ *
+ * Note: Replaced by LOG_TO_SCIENCE.  This macro will be removed after the ALMA 7.1 release.
+ * 
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ */
+#define LOG_TO_SCILOG( logPriority, logMessage) \
+    LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+/**
+ * Used to send logs. This macro is primarily useful because it automatically
+ * determines the file name and line number for the developer.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logRoutine Name of the routine in which this macro is being used from (std::string)
+ * @param logMessage Log message (std::string)
+ * @param logAudience intended receiver of this log message
+ * @param logger The logger to use (Logging::Logger::LoggerSmartPtr)
+ */
+#define LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, logAudience, logger) \
+if (logger != 0) { \
+    Logging::BaseLog::LogRecord lr; \
+    lr.priority  = Logging::ace2acsPriority(logPriority); \
+    lr.message   = logMessage; \
+    lr.file      = __FILE__; \
+    lr.line      = __LINE__; \
+    lr.method    = __PRETTY_FUNCTION__; \
+    lr.timeStamp = ::getTimeStamp();     \
+    LoggingProxy::audience(logAudience); \
+    LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT); \
+    logger->log(lr); \
+} else { \
+    std::cerr << "SEVERE LOGGING ERROR - getLogger() returned NULL: file="; \
+    std::cerr << __FILE__ << ", line=" << __LINE__ << std::endl; \
+}
+
+/**
+ * Used to send logs to the operator. This macro is primarily useful because
+ * it automatically determines the file name, line number, function name and
+ * set the audience to the operator. This can be used in static functions.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ * @param logger The logger to use (Logging::Logger::LoggerSmartPtr)
+ */
+#define LOG_TO_OPERATOR_WITH_LOGGER( logPriority, logMessage, logger) \
+    LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, log_audience::OPERATOR, logger);
+
+/**
+ * Used to send logs to the developer. This macro is primarily useful because
+ * it automatically determines the file name, line number, function name and
+ * set the audience to the developer. This can be used in static functions.
+ * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logMessage Log message (std::string)
+ * @param logger The logger to use (Logging::Logger::LoggerSmartPtr)
+ */
+#define LOG_TO_DEVELOPER_WITH_LOGGER(logPriority, logMessage, logger) \
+    LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, log_audience::DEVELOPER, logger);
 #endif /*!_H*/

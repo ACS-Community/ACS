@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.11 2010/03/12 08:52:32 bjeram Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.12 2010/03/12 21:12:33 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -185,6 +185,20 @@ int main(int argc, char *argv[])
 	     (LM_ALERT, "Test of LM_ALERT log"));
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_EMERGENCY, "Test of LM_EMERGENCY log"));
-    
+   
+    //Test audience macros
+    LOG_TO_AUDIENCE_WITH_LOGGER(LM_INFO, 
+            "Test of LOG_TO_AUDIENCE_WITH_LOGGER log",
+            log_audience::OPERATOR, myLoggerSmartPtr);
+    LOG_TO_DEVELOPER( LM_INFO, "Test of LOG_TO_DEVELOPER log");
+    LOG_TO_DEVELOPER_WITH_LOGGER(LM_INFO, 
+            "Test of LOG_TO_DEVELOPER_WITH_LOGGER",
+            myLoggerSmartPtr);
+    LOG_TO_OPERATOR( LM_INFO, "Test of LOG_TO_OPERATOR log");
+    LOG_TO_OPERATOR_WITH_LOGGER(LM_INFO, "Test of LOG_TO_OPERATOR_WITH_LOGGER",
+            myLoggerSmartPtr);
+    LOG_TO_SCIENCE( LM_INFO, "Test of LOG_TO_SCIENCE log");
+    LOG_TO_SCILOG( LM_INFO, "Test of LOG_TO_SCILOG log");
+     
     return 0;
 }

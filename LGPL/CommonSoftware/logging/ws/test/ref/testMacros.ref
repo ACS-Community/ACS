@@ -16,4 +16,11 @@
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_CRITICAL log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_ALERT log
 1 - ----------T--:--:--.--- [GlobalLogger - main] Test of LM_EMERGENCY log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_AUDIENCE_WITH_LOGGER log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_DEVELOPER log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_DEVELOPER_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_OPERATOR log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_OPERATOR_WITH_LOGGER
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_SCIENCE log
+1 - ----------T--:--:--.--- [GlobalLogger - int main(int, char**)] Test of LOG_TO_SCILOG log
 1 - ----------T--:--:--.--- [GlobalLogger - someFunc] Exiting...
