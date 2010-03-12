@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciLibraryManager.cpp,v 1.91 2010/01/29 21:39:32 agrimstrup Exp $"
+* "@(#) $Id: maciLibraryManager.cpp,v 1.92 2010/03/12 14:22:41 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -15,7 +15,7 @@
 
 #include <logging.h>
 
-ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.91 2010/01/29 21:39:32 agrimstrup Exp $");
+ACE_RCSID(maci, maciLibraryManager, "$Id: maciLibraryManager.cpp,v 1.92 2010/03/12 14:22:41 bjeram Exp $");
 
 namespace maci {
 
@@ -560,7 +560,7 @@ LibraryManager::load(const char * name, int argc, char *argv[])
     }
   */
 
-  ACE_SHLIB_HANDLE handle = dlopen (path, RTLD_GLOBAL | RTLD_NOW);
+  ACE_SHLIB_HANDLE handle = dlopen (path, RTLD_GLOBAL | RTLD_LAZY);
   if (!handle) 
     {
       errorstr = ACE_OS::dlerror();
