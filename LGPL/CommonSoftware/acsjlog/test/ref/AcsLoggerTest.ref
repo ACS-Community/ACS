@@ -110,6 +110,12 @@
 1 - 
 1 - ------------ testAbuseLevelOff --------------
 1 - 
+1 - ------------ testAudienceLoggers --------------
+1 - <Info TimeStamp="xxx" File="alma.acs.logging.AudienceLogger"  Line="xxx" Routine="info" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="15" Audience="Developer"><![CDATA[Testing DeveloperLogger class]]></Info>
+1 - <Info TimeStamp="xxx" File="alma.acs.logging.AudienceLogger"  Line="xxx" Routine="info" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="16" Audience="Operator"><![CDATA[Testing OperatorLogger class]]></Info>
+1 - <Info TimeStamp="xxx" File="alma.acs.logging.AudienceLogger"  Line="xxx" Routine="info" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="17" Audience="SciLog"><![CDATA[Testing ScienceLogger class]]></Info>
+1 - <Info TimeStamp="xxx" File="alma.acs.logging.VerboseLogger"  Line="xxx" Routine="info" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" LogId="18"><![CDATA[Testing VerboseLogger class]]></Info>
 1 - 
-1 - OK (6 tests)
+1 - 
+1 - OK (7 tests)
 1 - 
