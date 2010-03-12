@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.12 2010/03/12 21:12:33 javarias Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.13 2010/03/12 23:16:36 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -87,6 +87,16 @@ namespace Logging {
 void testAutoTraceFunc()
 {
 	 AUTO_TRACE("testAutoTraceFunc");
+}
+
+static void testStaticLoggingWithAudience()
+{
+    STATIC_LOG(Logging::BaseLog::LM_INFO, __PRETTY_FUNCTION__, 
+            "Testing Static Log");
+    STATIC_LOG_TO_DEVELOPER(LM_INFO, "STATIC_LOG_TO_DEVELOPER");
+    STATIC_LOG_TO_OPERATOR(LM_INFO, "STATIC_LOG_TO_OPERATOR");
+    STATIC_LOG_TO_SCIENCE(LM_INFO, "STATIC_LOG_TO_SCIENCE");
+    STATIC_LOG_TO_SCILOG(LM_INFO, "STATIC_LOG_TO_SCILOG");
 }
 
 int main(int argc, char *argv[])
@@ -199,6 +209,8 @@ int main(int argc, char *argv[])
             myLoggerSmartPtr);
     LOG_TO_SCIENCE( LM_INFO, "Test of LOG_TO_SCIENCE log");
     LOG_TO_SCILOG( LM_INFO, "Test of LOG_TO_SCILOG log");
-     
+
+    testStaticLoggingWithAudience();
+
     return 0;
 }
