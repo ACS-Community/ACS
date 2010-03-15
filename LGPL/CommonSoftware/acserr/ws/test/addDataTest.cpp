@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: addDataTest.cpp,v 1.45 2006/10/18 14:11:11 bjeram Exp $"
+* "@(#) $Id: addDataTest.cpp,v 1.46 2010/03/15 11:19:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 using namespace ACSErrTypeTest;
 
-static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.45 2006/10/18 14:11:11 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.46 2010/03/15 11:19:44 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 CORBA::ORB_var orb;
@@ -68,11 +68,11 @@ int main(int argc, char *argv[]) {
     
     // test maximum length
     char longName[266];
-    char longValue[266];
+    char longValue[1100];
     memset(longName, 'A', 265);
-    memset(longValue, 'B', 265);
+    memset(longValue, 'B', 1100);
     longName[265]=0;
-    longValue[265]=0;
+    longValue[1100]=0;
     e.addData(longName, longValue);
 
     // test NULL string passing
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     e.addData("four", 4);
     ACE_DEBUG ((LM_DEBUG, "getData(\"four\") %s", e.getData("four").c_str()));
 
-    // since longName is truncate in addData getData should return emty string
+    // since longName is truncate in addData getData should return empty string
     ACE_DEBUG ((LM_DEBUG, "getData(longName) %s", e.getData(longName).c_str()));
 
     longName[255]=0;
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
     ACE_DEBUG ((LM_DEBUG, "getData(NULL) %s", e.getData(NULL).c_str()));
 
     e.log();
-    // here we test also logging with priorty differnet than default (LM_ERROR)
+    // here we test also logging with priorty different than default (LM_ERROR)
     // the detail of this can be seen in log file in tmp/
     e.log(LM_DEBUG);
     e.log(LM_INFO);
