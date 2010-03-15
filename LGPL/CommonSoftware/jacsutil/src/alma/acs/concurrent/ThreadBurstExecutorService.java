@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Note that the simple creation and starting of threads does not guarantee 
  * that these threads run after {@link Thread#start()} returns.
  * Therefore this class does not support methods such as {@link ExecutorService#execute(Runnable)}
- * which execute one {@code Runnable} in one thread independently of the other threads that it runs.
+ * which execute one <code>Runnable</code> in one thread independently of the other threads that it runs.
  * <p>
  * An instance is good for only one burst of threads, otherwise IllegalStateException will be thrown.
  * 
@@ -74,7 +74,7 @@ public class ThreadBurstExecutorService
 	/**
 	 * Submits a task and waits until the thread for this task has started (without yet executing the task!).
 	 * Then this thread will block until {@link #executeAllAndWait(long, TimeUnit)} is called
-	 * or the {@code awaitExecutionTimeout} occurs.
+	 * or the <code>awaitExecutionTimeout</code> occurs.
 	 * @param task  
 	 *         The task that should be executed when {@link #executeAllAndWait(long, TimeUnit)} is called.
 	 * @param awaitExecutionTimeout 
@@ -121,7 +121,7 @@ public class ThreadBurstExecutorService
 	
 	/**
 	 * Unleashes all submitted (and therefore already started) threads at the same time.
-	 * Then waits until all tasks finish, or until the given {@code timeout} occurs.
+	 * Then waits until all tasks finish, or until the given <code>timeout</code> occurs.
 	 * <p>
 	 * This method must only be called once for a given instance of ThreadBurstExecutor.
 	 * 
@@ -142,7 +142,7 @@ public class ThreadBurstExecutorService
 	}
 	
 	/**
-	 * Attempts to stop all running threads, waiting no longer than the given {@code timeout}.
+	 * Attempts to stop all running threads, waiting no longer than the given <code>timeout</code>.
 	 * This method can be called either before {@link #executeAllAndWait} to stop the threads
 	 * that block on the thread gate to open, or afterwards to stop running tasks.
 	 * <p>

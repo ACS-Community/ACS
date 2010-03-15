@@ -66,8 +66,8 @@ public class ProcessStreamGobbler
 	 * 
 	 * @param timeout maximum time to wait for the process to finish
 	 * @param unit unit for the timeout
-	 * @return  {@code true) if returning because the process ended, 
-	 *          otherwise {@code false} if the timeout applied (in which case the streams will continue to be read though).
+	 * @return  <code>true</code> if returning because the process ended, 
+	 *          otherwise <code>false</code> if the timeout applied (in which case the streams will continue to be read though).
 	 * @throws InterruptedException 
 	 */
 	public void gobbleAsync() throws InterruptedException {
@@ -84,8 +84,8 @@ public class ProcessStreamGobbler
 	 * 
 	 * @param timeout maximum time to wait for the process to finish
 	 * @param unit unit for the timeout
-	 * @return  {@code true) if returning because the process ended, 
-	 *          otherwise {@code false} if the timeout applied (in which case the streams will continue to be read though).
+	 * @return  <code>true</code> if returning because the process ended, 
+	 *          otherwise <code>false</code> if the timeout applied (in which case the streams will continue to be read though).
 	 * @throws InterruptedException 
 	 */
 	public boolean gobble(long timeout, TimeUnit unit) throws InterruptedException {

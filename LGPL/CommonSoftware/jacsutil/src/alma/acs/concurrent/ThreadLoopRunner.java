@@ -41,8 +41,8 @@ import java.util.logging.Logger;
  * The time between executions is given in the constructor and can later be changed through {@link #setDelayTime(long, TimeUnit)}.
  * <p> 
  * If the task takes some time to execute, you should consider implementing a soft cancel option. To do this,
- * extend {@link #CancelableRunnable} instead of simply implementing {@code Runnable}.
- * When the action should be canceled (e.g. due to {@link #shutdown(long, TimeUnit)}), the {@code shouldTerminate}
+ * extend {@link #CancelableRunnable} instead of simply implementing <code>Runnable</code>.
+ * When the action should be canceled (e.g. due to {@link #shutdown(long, TimeUnit)}), the <code>shouldTerminate</code>
  * flag will be set. Your code should check this flag at convenient times, and should return if the flag is set.
  * Alternatively you can override the cancel method and terminate the task thread in different ways.
  * <p>
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
  * and can also be restarted with another call to {@link #runLoop()}.
  * To stop the loop for good, call {@link #shutdown(long, TimeUnit)}.
  * <p>
- * While the underlying classes from the JDK {@code concurrent} package could also be used directly,
+ * While the underlying classes from the JDK <code>concurrent</code> package could also be used directly,
  * this class allows for shorter code that is also more similar to the style used in C++.
  * Especially it imposes the limit of running one task repeatedly, which gives an easier API,
  * at the expense of creating a separate instance of ThreadLoopRunner for some other repeated task.
@@ -74,7 +74,7 @@ public class ThreadLoopRunner
 
 
 	/**
-	 * Creates a {@code ThreadLoopRunner} that can repeatedly execute {@code task}.
+	 * Creates a <code>ThreadLoopRunner</code> that can repeatedly execute <code>task</code>.
 	 * The mode defaults to {@link ScheduleDelayMode#FIXED_RATE} unless being changed 
 	 * via {@link #setDelayMode(ScheduleDelayMode)}.
 	 * 
@@ -107,7 +107,7 @@ public class ThreadLoopRunner
 	 * If this method is called while the thread loop is already running, 
 	 * it will wait for the current task to finish and then reschedule the actions
 	 * at the new rate. If the currently running task fails to finish after 10 seconds,
-	 * a warning is logged and {@code false} is returned.
+	 * a warning is logged and <code>false</code> is returned.
 	 * <p>
 	 * Note that it is a limitation in the underlying {@link ScheduledThreadPoolExecutor}
 	 * that the delay time cannot be changed without stopping and restarting the loop.
@@ -186,7 +186,7 @@ public class ThreadLoopRunner
 	 * Runs the loop, either for the first time, or after a call to {@link #suspendLoop()}.
 	 * @throws IllegalStateException 
 	 *                   if the loop is already running, 
-	 *                   or if the {@code run()} method of a previous loop is still executing, 
+	 *                   or if the <code>run()</code> method of a previous loop is still executing, 
 	 *                   or after shutdown
 	 * @see #isLoopRunning()
 	 */
@@ -211,14 +211,14 @@ public class ThreadLoopRunner
 
 	
 	/**
-	 * @return {@code true} if the loop is running, regardless of whether the task is currently being executed.
+	 * @return <code>true</code> if the loop is running, regardless of whether the task is currently being executed.
 	 */
 	public synchronized boolean isLoopRunning() {
 		return (loop != null);
 	}
 	
 	/**
-	 * @return {@code true} if the task is running, regardless of whether the loop is still running or has been stopped already.
+	 * @return <code>true</code> if the task is running, regardless of whether the loop is still running or has been stopped already.
 	 * @see #suspendLoopAndWait(long, TimeUnit)
 	 */
 	public boolean isTaskRunning() {
@@ -226,7 +226,7 @@ public class ThreadLoopRunner
 	}
 	
 	/**
-	 * Returns {@code true} after {@link #shutdown(long, TimeUnit)} was called.
+	 * Returns <code>true</code> after {@link #shutdown(long, TimeUnit)} was called.
 	 * Then invoking any control method of this class will throw an IllegalStateException.
 	 */
 	public boolean isDisabled() {
@@ -266,7 +266,7 @@ public class ThreadLoopRunner
 	 * @param unit
 	 * @return true if all went fine within the given time, otherwise false.
 	 * @throws InterruptedException 
-	 *            if the calling thread is interrupted while waiting for the {@code run} method to finish.
+	 *            if the calling thread is interrupted while waiting for the <code>run</code> method to finish.
 	 * @throws IllegalStateException if called after shutdown. 
 	 */
 	public synchronized boolean suspendLoopAndWait(long timeout, TimeUnit unit) throws InterruptedException {
@@ -279,11 +279,11 @@ public class ThreadLoopRunner
 	 * attempting to gracefully stop the running task if {@link CancelableRunnable} was provided,
 	 * or otherwise letting the currently running loop action finish.
 	 * <p>
-	 * The {@code ThreadLoopRunner} cannot be used any more after this method has been called.
-	 * (Then {@link #isDisabled() will return {@code true}, other methods will throw IllegalStateException.)
+	 * The <code>ThreadLoopRunner</code> cannot be used any more after this method has been called.
+	 * (Then {@link #isDisabled() will return <code>true</code>, other methods will throw IllegalStateException.)
 	 * <p>
-	 * The {@code timeout} refers to how long this method waits for the task to terminate.
-	 * If it terminates before the given timeout, then {@code true} is returned, otherwise {@code false}
+	 * The <code>timeout</code> refers to how long this method waits for the task to terminate.
+	 * If it terminates before the given timeout, then <code>true</code> is returned, otherwise <code>false</code>
 	 * which means that the Runnable action object is still in use and should not be reused later unless it is 
 	 * re-entrant.
 	 * 
@@ -316,16 +316,16 @@ public class ThreadLoopRunner
 	/**
 	 * Variation of {@link Runnable} that allows other threads to give a hint to the
 	 * {{@link #run()} method that it should terminate.
-	 * This is useful mainly with implementations of {@code run()} that don't finish immediately.
+	 * This is useful mainly with implementations of <code>run()</code> that don't finish immediately.
 	 * Note that in Java {@link Thread#stop()} and similar methods are deprecated, and that 
 	 * the proper way to terminate asynchronously running code is to signal the termination request
 	 * via some variable that the thread is supposed to check at convenient points.
 	 * <p>
-	 * Therefore if your {@code run} method takes non-negligible time, you should 
+	 * Therefore if your <code>run</code> method takes non-negligible time, you should 
 	 * <ol>
-	 * <li> provide a subclass of this {@code CancelableRunnable} as the loop action in 
+	 * <li> provide a subclass of this <code>CancelableRunnable</code> as the loop action in 
 	 *      {@link ThreadLoopRunner#ThreadLoopRunner(ThreadFactory, Runnable, Logger)}
-	 * <li> implement {@code run()} to check at some points whether the flag {@link #shouldTerminate}
+	 * <li> implement <code>run()</code> to check at some points whether the flag {@link #shouldTerminate}
 	 *      has been set (e.g. by {@link ThreadLoopRunner#shutdown} calling {@link CancelableRunnable#cancel()}),
 	 *      and if so, to return from the run method as quickly as possible, but yet cleaning up.
 	 * </ol>
@@ -372,7 +372,7 @@ public class ThreadLoopRunner
 		}
 		
 		/**
-		 * Tests if {@code delegate#run} is currently executing.
+		 * Tests if <code>delegate#run</code> is currently executing.
 		 * @return
 		 */
 		boolean isRunning() {
@@ -381,7 +381,7 @@ public class ThreadLoopRunner
 		
 		/**
 		 * Checks if the delegate Runnable is of subtype {@link CancelableRunnable},
-		 * and if so, calls the {@code cancel()} method.
+		 * and if so, calls the <code>cancel()</code> method.
 		 */
 		void attemptCancelTask() {
 			if (delegate instanceof CancelableRunnable) {
@@ -390,8 +390,8 @@ public class ThreadLoopRunner
 		}
 		
 		/**
-		 * Blocks the calling thread if and as long as the {@code delegate#run} method executes,
-		 * but at most for the given {@code timeout}.
+		 * Blocks the calling thread if and as long as the <code>delegate#run</code> method executes,
+		 * but at most for the given <code>timeout</code>.
 		 * @throws InterruptedException 
 		 */
 		boolean awaitTaskFinish(long timeout, TimeUnit unit) throws InterruptedException {
