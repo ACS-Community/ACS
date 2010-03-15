@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.89 2008/10/21 17:25:03 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.90 2010/03/15 10:49:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.89 2008/10/21 17:25:03 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.90 2010/03/15 10:49:05 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -363,17 +363,17 @@ void ErrorTraceHelper::addData (const char* name, const char* value)
     if (name==NULL || value==NULL)
 	return;
 
-    if (strlen(name)<ADD_DATA_VALUE_MAX)
+    if (strlen(name)<ADD_DATA_NAME_MAX)
 	{
 	nv.name = CORBA::string_dup (name);
 	}
     else
 	{
- // it is dirty trick which allows as to copy just ADD_DATA_VALUE_MAX to CORBA string w/o making local copy of the string.
-	char tc=name[ADD_DATA_VALUE_MAX-1]; // store temporary character
-	const_cast<char*>(name)[ADD_DATA_VALUE_MAX-1]=0; // temporary set end at ADD_DATA_VALUE_MAX-1
-	nv.name = CORBA::string_dup (name); //copy just first ADD_DATA_VALUE_MAX
-	const_cast<char*>(name)[ADD_DATA_VALUE_MAX-1]=tc; // set back the character
+ // it is dirty trick which allows as to copy just ADD_DATA_NAME_MAX to CORBA string w/o making local copy of the string.
+	char tc=name[ADD_DATA_NAME_MAX-1]; // store temporary character
+	const_cast<char*>(name)[ADD_DATA_NAME_MAX-1]=0; // temporary set end at ADD_DATA_VALUE_MAX-1
+	nv.name = CORBA::string_dup (name); //copy just first ADD_DATA_NAME_MAX
+	const_cast<char*>(name)[ADD_DATA_NAME_MAX-1]=tc; // set back the character
 	}//if-else
 
 // now we do the same with value!
