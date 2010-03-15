@@ -756,6 +756,24 @@ public class CDBChecker {
 				
 	    		docComp.getDocumentElement().normalize();
 				NodeList compNodeList = docComp.getElementsByTagName( "Component" ); 
+				
+				//modify bhola.panta@naoj 2010-03-15
+				if(compNodeList.getLength() == 1) { //only the variant where a single component is configured in its own file
+					String compName = ((Element) compNodeList.item(0)).getAttribute("Name" );
+					//add bhola.panta@naoj 2010-03-03
+	    			//fileName and "Name" property must match
+					if(!compName.equals("*") && !files[x].getName().equals("Components.xml")){ 
+	    				if(!(compName + ".xml").equals(files[x].getName())){
+	    					System.out.print("\nMismatch between component name and XML file name.");
+	    					System.out.print("\nFile path: " + files[x]);
+	    					System.out.print("\nComponent name: '" + compName +"'");
+	    					System.out.print("\nFile name: '" + files[x].getName()+"'");
+	    					foundErr = true;
+	    					break search;
+	    				}
+	    			}
+				}
+				
 	    	
 	    		if(compNodeList.getLength() == 0) {
 	    			compNodeList = docComp.getElementsByTagName( "_" );
@@ -774,21 +792,8 @@ public class CDBChecker {
 		      
 		      		compName = elm.getAttribute("Name" );
 	    			implLang = elm.getAttribute("ImplLang" );
-	    			
-	    			//add bhola.panta@naoj 2010-03-03
-	    			//fileName and "Name" property must match
-	    			if(!compName.equals("*") && !files[x].getName().equals("Components.xml")){ //only the variant where a single component is configured in its own file
-	    				if(!(compName + ".xml").equals(files[x].getName())){
-	    					System.out.print("\nMismatch between component name and XML file name.");
-	    					System.out.print("\nFile path: " + files[x]);
-	    					System.out.print("\nComponent name: '" + compName +"'");
-	    					System.out.print("\nFile name: '" + files[x].getName()+"'");
-	    					foundErr = true;
-	    					break search;
-	    				}
-	    			}
-	    			
-	    	  		if(compName.equals("*")){ //--> dynamic component
+	    
+	    			if(compName.equals("*")){ //--> dynamic component
 	    	  			if(implLang.equals("") || implLang.equals("*")){
 				  			continue;
 			  			}
