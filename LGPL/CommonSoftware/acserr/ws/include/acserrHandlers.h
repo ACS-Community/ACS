@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.h,v 1.2 2005/06/16 08:50:27 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.h,v 1.3 2010/03/15 11:58:05 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -24,5 +24,7 @@
 void acserrUnspecifiedExHandler();
 
 void acserrUncaughtExHandler();
+
+void acserrSigSegvHandler(int signal, siginfo_t* info, void* data);
 
 #endif /*!_H*/

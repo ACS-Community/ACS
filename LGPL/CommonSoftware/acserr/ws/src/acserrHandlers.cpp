@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.5 2009/02/10 07:29:25 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.6 2010/03/15 11:58:05 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #include "vltPort.h"
 #include "acserrHandlers.h"
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.5 2009/02/10 07:29:25 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.6 2010/03/15 11:58:05 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -106,6 +106,33 @@ void acserrUncaughtExHandler()
   	ex.log();
 	}
 }//acserrTerminate
+
+void acserrSigSegvHandler(int signal, siginfo_t* info, void* data)
+{
+    const std::string myTimeStamp(::getStringifiedTimeStamp().c_str());
+
+    std::cout << "Caught signal "
+        << std::strerror(info->si_errno)
+        << ", code = "
+        << info->si_code
+        << ".  Code interpretation = ";
+    if(info->si_code == SEGV_MAPERR)
+    {
+        std::cout << "address not mapped to object";
+    }
+    else if(info->si_code == SEGV_ACCERR)
+    {
+        std::cout << "invalid permissions for mapped object";
+    }
+    else
+    {
+        std::cout << "unknown code";
+    }
+
+    std::cout << ".  Date/Time = "
+        << myTimeStamp
+        << "\n";
+}
 
 
 /*___oOo___*/
