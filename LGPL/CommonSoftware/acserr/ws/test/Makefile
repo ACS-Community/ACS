@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.68 2009/03/03 17:33:36 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.69 2010/03/15 11:57:26 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,9 @@ USER_LIB = -lACE -lTAO -lacserr  -lTAO_IFR_Client -lTAO_PortableServer -llogging
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = acserrTestServer acserrTestClient acserrOldTestServer acserrOldTestClient acserrTestCheckDepth acserrOldTestCheckDepth acserrTestHandlers addDataTest
+EXECUTABLES_L   = acserrTestServer acserrTestClient acserrOldTestServer acserrOldTestClient \
+	acserrTestCheckDepth acserrOldTestCheckDepth acserrTestHandlers addDataTest \
+	sigSegvTest
 
 #removed: acserrExMgrTest because it depends on baci threads/library
 # test should use ACE threads directly or be moved into baci module
@@ -96,6 +98,9 @@ acserrOldTestClient_LIBS       = acserr acserrOldTestStubs
 
 acserrOldTestServer_OBJECTS    = acserrOldTestServer  ACSErrOldTypeTestC  ACSErrOldTypeTestS acserrOldTestImpl
 acserrOldTestServer_LIBS       = acserr acserrOldTestStubs
+
+sigSegvTest_OBJECTS = sigSegvTest 
+sigSegvTest_LIBS = acserr
 
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
