@@ -1,11 +1,14 @@
 <project name="alma.acs.rcp.alarmDefsGUI" default="build">
 	<property environment="env" />
 	<!--sets the path of the properties file-->
+	<property name="ALMASW_INSTDIR" value="${env.ALMASW_INSTDIR}" />
+	<property name="project_loc" location=".." />
+	<property name="buildDirectory" location="${project_loc}/object/headlessTemp"/>
 	<property file="build.properties" />
 	<property file="project.properties" />
 	<property name="pdeBuildPluginVersion" value="3.5.1.R35x_20090820" />
 	<property name="equinoxLauncherPluginVersion" value="1.0.201.R35x_v20090715" />
-	<property name="eclipseLocation" value="/alma/ACS-8.1/Eclipse/SDKandDeltaPack/eclipse" />
+	<property name="eclipseLocation" value="${ALMASW_INSTDIR}/Eclipse/SDKandDeltaPack/eclipse" />
 
 	<target name="clean">
 		<delete dir="${buildDirectory}" />
@@ -57,6 +60,8 @@
 			<arg value="-buildfile" />
 			<arg value="${eclipseLocation}/plugins/org.eclipse.pde.build_${pdeBuildPluginVersion}/scripts/productBuild/productBuild.xml" />
 			<arg value="-Dtimestamp=${timestamp}" />
+			<arg value="-DbuildDirectory=${buildDirectory}" />
+			<arg value="-DbaseLocation=${eclipseLocation}" />
 			<classpath>
 				<pathelement location="${eclipseLocation}/plugins/org.eclipse.equinox.launcher_${equinoxLauncherPluginVersion}.jar" />
 			</classpath>
