@@ -70,8 +70,8 @@ public interface AdvancedContainerServices {
      * Returns a reference to a new CORBA Any. Int Java the only way to do 
      * this is through the ORB itself (i.e., the create_any method).
      * <p>
-     * The notification channel module provides a convenience class for dealing with CORBA Anys,
-     * see {@link @see alma.acs.nc.AnyAide}.
+     * The notification channel module provides a convenience class for dealing with CORBA Anys, 
+     * see {@link alma.acs.nc.AnyAide}.
      * 
      * @return org.omg.CORBA.Any
      */
