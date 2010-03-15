@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.38 2010/03/12 08:31:55 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.39 2010/03/15 10:31:03 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -60,8 +60,10 @@
 #define DEFAULT_LOG_LEVEL 5
 #define NOT_DEFINED_LOG_LEVEL 6
 
-/// maximum length for addData value. It means 255 characters + \0
+/// maximum length for addData value. It means 1023 characters + \0
 #define ADD_DATA_VALUE_MAX 1024
+/// maximum length for addData name. It means 2055 characters + \0
+#define ADD_DATA_NAME_MAX 256
 
 /// If OR-ed with log entries� flags, the runtime context (host name, process name,
 /// thread name, context, stack ID and stack level) will also be output.
@@ -113,7 +115,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.38 2010/03/12 08:31:55 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.39 2010/03/15 10:31:03 bjeram Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
