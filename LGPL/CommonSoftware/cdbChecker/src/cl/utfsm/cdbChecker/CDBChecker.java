@@ -669,11 +669,6 @@ public class CDBChecker {
 						    break;
 						}
 					}
-					else{
-						System.out.println("\nCannot check implLang match because ");
-						System.out.println("Components and/or Containers folder(s) not found");
-						break;
-					}
 				}
 				//add panta@naoj 2009/10/05 end
 				
