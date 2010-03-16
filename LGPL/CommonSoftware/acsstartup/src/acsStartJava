@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.63 2010/01/25 11:48:54 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.64 2010/03/16 10:42:48 hsommer Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -352,6 +352,11 @@ fi
 # Unless we find problems we keep the XInclude as only configuration.
 # If we find problem we can make this property configurable.
 #
+# Note that since ACS 8.2, the CDB uses XMLGrammarCachingConfiguration and 
+# SAXParserFactory.setFeature("http://apache.org/xml/features/xinclude", true) to still allow xinclude, 
+# instead of using this default XIncludeParserConfiguration. This probably means that we could go back 
+# to XML11Configuration easily.
+#
 if [ "$CL_ENDORSED" ]; 
 then
   #XERCES_CONFIG="-Dorg.apache.xerces.xni.parser.XMLParserConfiguration=org.apache.xerces.parsers.XML11Configuration"
@@ -422,9 +427,18 @@ fi
 JAVA_OPTIONS="$JAVA_OPTIONS -Djava.util.logging.manager=alma.acs.logging.AcsLogManager"
 
 #
+# Since ACS 8.2 we enable by default the java logging libs to send the records to the Log service method "writeRecords(XmlLogRecord[]") 
+# which is defined by the ACS extension to the telecom log service. The advantage is to avoid wrapping log records by Corba Any.
+# See setting of LOG_SERVICE_USE_EXTENSIONS in .bash_profile.acs.
+#
+if [ X"$LOG_SERVICE_USE_EXTENSIONS" != X ]; then
+    JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.logging.useAcsLogServiceExtensions=$LOG_SERVICE_USE_EXTENSIONS"
+fi
+
+#
 # In orb.properties we set jacorb.log.loggerFactory=alma.acs.logging.adapters.JacORBLoggerFactory
 # which sends filtered JacORB logs messages to the central Log service. 
-# Here we can overrule this.
+# Here we can overrule this by uncommenting the following line.
 #
 #JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.log.loggerFactory="
 
