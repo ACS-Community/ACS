@@ -65,9 +65,6 @@
 1 -     /PATH/defaultCDB/CDB/xml/TEST_PS_5/TEST_PS_5.xml[OK]
 1 -     /PATH/defaultCDB/CDB/xml/TEST_PS_17/TEST_PS_17.xml[OK]
 1 - 
-1 - Cannot check implLang match because 
-1 - Components and/or Containers folder(s) not found
-1 - 
 1 - CDBChecker exiting. No errors found
 1 - 
 1 - return code is: 0

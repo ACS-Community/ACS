@@ -161,8 +161,5 @@
 1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/MACI/Components/SCHEDULING_MASTERSCHEDULER/SCHEDULING_MASTERSCHEDULER.xml[OK]
 1 -     /PATH/subsystemCDBs/SCHEDULING/config/CDB/alma/SCHEDULING_MASTER_COMP/SCHEDULING_MASTER_COMP.xml[OK]
 1 - 
-1 - Cannot check implLang match because 
-1 - Components and/or Containers folder(s) not found
-1 - 
 1 - [Error] CDBChecker exiting. Errors were found
 1 - 

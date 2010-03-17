@@ -49,9 +49,6 @@
 1 -     /PATH/acsexmpl/alma/TEST_RPS_1/TEST_RPS_1.xml[OK]
 1 -     /PATH/acsexmpl/alma/AMSSEQ1/AMSSEQ1.xml[OK]
 1 - 
-1 - Cannot check implLang match because 
-1 - Components and/or Containers folder(s) not found
-1 - 
 1 - CDBChecker exiting. No errors found
 1 - 
 1 - return code is: 0
