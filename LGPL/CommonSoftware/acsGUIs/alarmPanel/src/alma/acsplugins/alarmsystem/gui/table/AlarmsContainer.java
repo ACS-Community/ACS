@@ -343,7 +343,7 @@ public class AlarmsContainer {
 		Set<String> keys=entries.keySet();
 		for (String key: keys) {
 			AlarmTableEntry entry=entries.get(key);
-			if (entry.isNew() && entry.getPriority()<ret) {
+			if (entry.getStatus().isActive() && entry.isNew() && entry.getPriority()<ret) {
 				ret=entry.getPriority();
 			}
 			if (ret==0) {

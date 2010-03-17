@@ -274,8 +274,8 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 	/**
 	 * Check if the container has alarm not yet acknowledged.
 	 * <P>
-	 * if there are alarms to be acknowledged by the user, this
-	 * method returns the highest of their priority.
+	 * if there are active alarms to be acknowledged by the user, 
+	 * this method returns the highest of their priorities.
 	 * Note that for alarm system the highest priority is 0.
 	 * 
 	 * @return  -1 if there are not alarm to acknowledge;
@@ -289,7 +289,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 		int ret=Integer.MAX_VALUE;
 		for (String id: indexWithReduction) {
 			AlarmTableEntry entry = get(id);
-			if (entry.isNew() && entry.getPriority()<ret) {
+			if (entry.getStatus().isActive() && entry.isNew() && entry.getPriority()<ret) {
 				ret=entry.getPriority();
 			}
 			if (ret==0) {
