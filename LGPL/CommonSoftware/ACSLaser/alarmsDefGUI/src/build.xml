@@ -2,6 +2,11 @@
 	<property environment="env" />
 	<!--sets the path of the properties file-->
 	<property name="ALMASW_INSTDIR" value="${env.ALMASW_INSTDIR}" />
+	<property name="ACSROOT" value="${env.ACSROOT}" />
+	<condition property="INTROOT" value="${env.INTROOT}">
+		<isset property="env.INTROOT" />
+	</condition>
+	<property name="INTROOT" value="${env.ACSROOT}" />
 	<property name="project_loc" location=".." />
 	<property name="buildDirectory" location="${project_loc}/object/headlessTemp"/>
 	<property file="build.properties" />
@@ -22,12 +27,11 @@
 		<mkdir dir="${buildDirectory}/features/${pluginID}" />
 		<copy todir="${buildDirectory}/plugins">
 			<fileset dir="${basedir}/../..">
-				<include name="alarmDefsGUI/**" />
-				<exclude name="alarmDefsGUI/test/**" />
-				<exclude name="alarmDefsGUI/object/**" />
-				<exclude name="alarmDefsGUI/bin/**" />
-				<exclude name="alarmDefsGUI/rtai/**" />
-				<exclude name="alarmDefsGUI/idl/**" />
+				<include name="alarmsDefGUI/acg.product" />
+				<include name="alarmsDefGUI/build.properties" />
+				<include name="alarmsDefGUI/META-INF/MANIFEST.MF" />
+				<include name="alarmsDefGUI/icons/**" />
+				<include name="alarmsDefGUI/src/cl/**" />
 			</fileset>
 		</copy>
 		<copy todir="${buildDirectory}/features/${pluginID}">
@@ -38,9 +42,13 @@
 	</target>
 
 	<target name="createJarsPlugin">
-		<exec executable="acsPluginBuilder">
+		<exec executable="acsStartJava">
+			<arg value="--noClassLoader" />
+			<arg value="-Dacs.system.classpath.jacorb.jardirs=${env.JACORB_HOME}" />
+			<arg value="-Dacs.system.classpath.jardirs=../lib:${INTROOT}/lib:${ACSROOT}/lib:${ACSROOT}/lib/endorsed" />
+			<arg value="alma.acs.eclipse.utils.pluginbuilder.PluginBuilder" />
 			<arg value="-i" />
-			<arg value="alma.acs.rcp.jars" />
+			<arg value="alma.acs" />
 			<arg value="${buildDirectory}/plugins" />
 			<arg value="${acs.jars.required}" />
 		</exec>
