@@ -310,6 +310,16 @@ public class AlarmSound extends TimerTask {
 			}
 		}
 		final int pri= tableModel.hasNotAckAlarms();
+		
+		// Audibles inhibited for the lowest 2 priorities till
+		// the alarm system is better is better configured
+		//
+		// TODO: remove the following link to re-enable sounds for
+		//		 lowest priorities
+		if (pri>1) {
+			return;
+		}
+		
 		if (pri<0 || pri>soundLevel) {
 			// No unseen alarms in table
 			// or alarm inhibited

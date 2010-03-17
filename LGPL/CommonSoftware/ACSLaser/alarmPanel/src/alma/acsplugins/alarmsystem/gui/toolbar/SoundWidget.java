@@ -67,6 +67,14 @@ implements ActionListener, AlarmSoundListener {
 		this.alarmSound=alarmSound;
 		this.alarmSound.addSoundListener(this);
 		addActionListener(this);
+		// NOTE: the folowing lines disable the 
+		//		 the sound button in order to inhibit
+		//		 the panel to sound for low priority alarms (priorities 2-3)
+		//
+		// TODO: re-enable the sound for lowest priority alarms when
+		//		 the alarm system is better configured and tuned
+		setSelected(true);
+		setEnabled(false);
 	}
 	
 	/**
