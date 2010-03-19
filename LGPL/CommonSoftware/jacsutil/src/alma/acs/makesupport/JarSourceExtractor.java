@@ -180,9 +180,9 @@ public class JarSourceExtractor
 	 */
 	public JarEntry[] getJavaEntries(JarFile jarfile)
 	{
-		List javaEntries = new ArrayList();
+		List<JarEntry> javaEntries = new ArrayList<JarEntry>();
 		
-		Enumeration jarEntries = jarfile.entries();
+		Enumeration<JarEntry> jarEntries = jarfile.entries();
 		
 		while (jarEntries.hasMoreElements())
 		{
