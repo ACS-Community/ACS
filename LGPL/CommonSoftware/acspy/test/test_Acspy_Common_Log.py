@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Common_Log.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Common_Log.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Common_Log.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Common_Log.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -176,60 +176,6 @@ class LogLevelsCheck(unittest.TestCase):
         self.assertEquals(Log.LEVELS[Log.ACSLog.ACS_LOG_CRITICAL], Log.logging.CRITICAL)
         self.assertEquals(Log.LEVELS[Log.ACSLog.ACS_LOG_ALERT], Log.logging.ALERT)
         self.assertEquals(Log.LEVELS[Log.ACSLog.ACS_LOG_EMERGENCY], Log.logging.EMERGENCY)
-
-class EnvVariableDefaultCheck(unittest.TestCase):
-    """Test that environment variables defaults are correct"""
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
-    def testDefaultValues(self):
-        """EnvVariable default values are correctly set when environment variables not defined"""
-        self.assertEquals(False, environ.has_key('ACS_LOG_STDOUT'))
-        self.assertEquals(False, environ.has_key('ACS_LOG_CENTRAL'))
-        self.assertEquals(3, Log.ACS_LOG_STDOUT)
-        self.assertEquals(3, Log.ACS_LOG_CENTRAL)
-
-class StdoutEnvVariableCheck(unittest.TestCase):
-    """Test that environment variables defaults are correct"""
-
-    def setUp(self):
-        environ['ACS_LOG_STDOUT'] = '2'
-        reload(Log)
-
-    def tearDown(self):
-        environ.pop('ACS_LOG_STDOUT')
-        reload(Log)
-
-    def testStdoutSetting(self):
-        """EnvVariable Stdout value is correct when ACS_LOG_STDOUT environment variable is set"""
-        self.assertEquals(False, environ.has_key('ACS_LOG_CENTRAL'))
-        self.assertEquals(True, environ.has_key('ACS_LOG_STDOUT'))
-        self.assertEquals('2', environ['ACS_LOG_STDOUT'])
-        self.assertEquals(2, Log.ACS_LOG_STDOUT)
-        self.assertEquals(3, Log.ACS_LOG_CENTRAL)
-
-class CentralEnvVariableCheck(unittest.TestCase):
-    """Test that environment variables defaults are correct"""
-
-    def setUp(self):
-        environ['ACS_LOG_CENTRAL'] = '2'
-        reload(Log)
-
-    def tearDown(self):
-        environ.pop('ACS_LOG_CENTRAL')
-        reload(Log)
-
-    def testStdoutSetting(self):
-        """EnvVariable Central value is correct when ACS_LOG_CENTRAL environment variable is set"""
-        self.assertEquals(False, environ.has_key('ACS_LOG_STDOUT'))
-        self.assertEquals(True, environ.has_key('ACS_LOG_CENTRAL'))
-        self.assertEquals('2', environ['ACS_LOG_CENTRAL'])
-        self.assertEquals(2, Log.ACS_LOG_CENTRAL)
-        self.assertEquals(3, Log.ACS_LOG_STDOUT)
 
 class LoggerClassCheck(unittest.TestCase):
     """Test the integrity and function of the Logger class and calls that directly access the central logger"""
@@ -590,13 +536,6 @@ class NoLoggerCheck(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testGetLoggerNames(self):
-        """NoLoggerCheck getLoggerNames when no loggers requested"""
-        # When the entire suite is run together, the name from TestContainer is injected.
-        # This shouldn't happen, but I don't know how to fix it yet.
-        namelist = Log.getLoggerNames()
-        self.assertEquals(True, [] == namelist or ['UnitTestContainer'] == namelist)
-
     def testNone(self):
         """NoLoggerCheck logger search with no key"""
         self.assertEqual(False, Log.doesLoggerExist(None))
@@ -711,6 +650,7 @@ class DispatchPacketCheck(unittest.TestCase):
         self.logger = Log.getLogger("dispatchcheck")
         self.logger.stdouthandler = mock.Mock()
         self.logger.handlers[0] = self.logger.stdouthandler
+        Log.CENTRALHANDLER.buffer = []
 
     def tearDown(self):
         pass
@@ -806,34 +746,18 @@ class PeriodicFlushCheck(unittest.TestCase):
         self.assertNotEqual(next, Log.NEXTEVENT)
         self.assertAlmostEqual(now + Log.INTERVAL, Log.NEXTEVENT[0],1)
         Log.stopPeriodicFlush()
+        Log.setFlushInterval(Log.DEFAULT_FLUSH_PERIOD)
 
     def testSetFlushIntervalInvalid(self):
         """PeriodicFlushCheck flush thread stopped when invalid interval is set"""
         Log.startPeriodicFlush()
         Log.setFlushInterval(-5)
         self.assertEqual(False, Log.FLUSHTHREAD.isAlive())
+        Log.stopPeriodicFlush()
         
-        
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(LoggerAfterImport))
-    suite.addTest(unittest.makeSuite(LogLevelsCheck))
-    suite.addTest(unittest.makeSuite(LoggerHandlerConfigCheck))
-    suite.addTest(unittest.makeSuite(LoggerFunctionCheck))
-    suite.addTest(unittest.makeSuite(LoggerClassCheck))
-    suite.addTest(unittest.makeSuite(NoLoggerCheck))
-    suite.addTest(unittest.makeSuite(OneLoggerCheck))
-    suite.addTest(unittest.makeSuite(SeveralLoggerCheck))
-    suite.addTest(unittest.makeSuite(DispatchPacketCheck))
-    suite.addTest(unittest.makeSuite(PeriodicFlushCheck))
-    suite.addTest(unittest.makeSuite(EnvVariableDefaultCheck))
-    suite.addTest(unittest.makeSuite(StdoutEnvVariableCheck))
-    suite.addTest(unittest.makeSuite(CentralEnvVariableCheck))
-    return suite
 
 if __name__ == "__main__":
-    unittest.main(defaultTest='suite')
+    unittest.main()
 
 
 #

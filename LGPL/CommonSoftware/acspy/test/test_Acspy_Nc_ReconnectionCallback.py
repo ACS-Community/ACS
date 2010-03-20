@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Nc_ReconnectionCallback.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Nc_ReconnectionCallback.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Nc_ReconnectionCallback.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Nc_ReconnectionCallback.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -71,7 +71,7 @@ class TestReconnectionCallback(unittest.TestCase):
         self.assertEqual(False, self.callback.id_is_valid)
 
 if __name__ == "__main__":
-    unittest.main(defaultTest='suite')
+    unittest.main()
 
 #
 # ___oOo___

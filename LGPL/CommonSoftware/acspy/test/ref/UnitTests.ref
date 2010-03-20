@@ -1,239 +1,149 @@
-1 - ContainerStatusMsg: Startup begins
-1 - ContainerStatusMsg: ORB initialization begins
-1 - ContainerStatusMsg: ORB initialization ends
-1 - ContainerStatusMsg: Manager access initialization begins
-1 - ContainerStatusMsg: Manager access initialization ends
-1 - ----------T--:--:--.--- child testNestedOutput - Nested Message
-1 - ----------T--:--:--.--- UnitTestContainer getCDBInfo - No container information found in the CDB
-1 - ----------T--:--:--.--- UnitTestContainer __init__ - Container UnitTestContainer waiting for requests
-1 - ACSHandler initialized ... ok
-1 - ok
-1 - ACSHandler initialized with no periodic flush thread ... ok
-1 - SeveralLoggerCheck Search with non-existing key ... ok
-1 - ACSHandler initialized when acsLogSvc not available ... ok
-1 - TimeUtil.duration2py handles long values correctly ... ok
-1 - ACSHandler flushes buffer correctly ... ok
-1 - TimeUtil.duration2py handles negative values correctly ... ok
-1 - ACSHandler handles exceptions correctly when flushing buffer ... ok
-1 - TimeUtil.duration2py handles 0 value correctly ... ok
-1 - ACSHandler flushes buffer when message priority greater than threshold arrives ... ok
-1 - TimeUtil.epoch2py handles ACS epoch correctly ... ok
-1 - ACSHandler writes log messages to a file ... ok
-1 - TimeUtil.epoch2py handles long values correctly ... ok
-1 - ACSHandler creates singleton file handler when necessary ... ok
-1 - TimeUtil.epoch2py handles negative values correctly ... ok
-1 - ACSHandler drops new messages when pending message queue is full ... ok
-1 - TimeUtil.epoch2py handles Python epoch correctly ... ok
-1 - ACSHandler drops low priority messages when message queue is full ... ok
-1 - TimeUtil.py2duration handles negative values correctly ... ok
-1 - ACSHandler returns cached CORBA logging service ... ok
-1 - TimeUtil.py2duration handles 0 value correctly ... ok
-1 - ACSHandler reloads CORBA logging service when cache is empty ... ok
-1 - TimeUtil.py2epoch handles ACS epoch correctly ... ok
-1 - ACSHandler sends Log messages at the appropriate levels ... ok
-1 - TimeUtil.py2epoch handles Python epoch correctly ... ok
-1 - ACSHandler sends errortrace messages at the appropriate levels ... ok
-1 - TimeUtil.py2epoch handles negative values correctly ... ok
-1 - ACSHandler sends logWithAudience messages at the appropriate levels ... ok
-1 - test_configureComponentLogger (test_Acspy_Container.TestContainer) ... ok
-1 - ACSHandler sends logWithPriority messages at the appropriate levels ... ok
-1 - test_configureComponentLogger_centralEnv (test_Acspy_Container.TestContainer) ... ok
-1 - ACSHandler sends logWithPriority messages at the appropriate levels with bad context ... ok
-1 - test_configureComponentLogger_localEnv (test_Acspy_Container.TestContainer) ... ok
-1 - ACSHandler sends logWithPriority messages at the appropriate levels without provided context or source ... ok
-1 - test_configureComponentLogger_partialCentral (test_Acspy_Container.TestContainer) ... ok
-1 - ACSHandler flushes when capacity is reached ... ok
-1 - test_configureComponentLogger_partialLocal (test_Acspy_Container.TestContainer) ... ok
-1 - ACSHandler flushes when high priority message is received ... ok
-1 - test_configureComponentLogger_unknown (test_Acspy_Container.TestContainer) ... ok
-1 - Container's default log levels are correct ... ok
-1 - Handler initialized ... ok
-1 - Handler nested element with attributes ... ok
-1 - test_get_logLevels (test_Acspy_Container.TestContainer) ... ok
-1 - Container log levels are correct when no CDB info present ... ok
-1 - Handler nested element with no attributes ... ok
-1 - Exception is thrown when log levels are requested for undefined logger ... ok
-1 - Handler nested different element with no attributes ... ok
-1 - Handler nested different element with no attributes ... ok
-1 - test_get_logger_names (test_Acspy_Container.TestContainer) ... ok
-1 - Container list of named loggers is correct when no CDB info present ... ok
-1 - Handler element with attributes ... ok
-1 - Handler element with no attributes ... ok
-1 - test_refresh_logging_config (test_Acspy_Container.TestContainer) ... ok
-1 - ACSError getErrorTrace returns trace when defined ... ok
-1 - Container log levels are reset correctly when no CDB info or environment vars are present ... ok
-1 - ACSError getErrorTrace returns expected value when no trace defined ... ok
-1 - Container log levels are reset correctly when no CDB info and ACS_LOG_CENTRAL is present ... ok
-1 - ACSError initialized with defaults ... ok
-1 - Container log levels are reset correctly when no CDB info and ACS_LOG_STDOUT is present ... ok
-1 - ACSError initialized from CORBA Exception ... ok
-1 - Container's default log levels are set correctly ... ok
-1 - ACSError initialized from Completion ... ok
-1 - Log levels for a named logger are set correctly ... ok
-1 - ACSError initialized without create and no trace or previous error ... ok
-1 - Exception is thrown when attempt to set log levels on an undefined logger ... ok
-1 - ErrorTraceHelper Print produces output for a single trace ... ok
-1 - pyExceptionToCORBA creates CORBA exception from Python exception ... ok
-1 - ErrorTraceHelper Print produces no output for empty trace ... ok
-1 - NoLoggerCheck getLoggerNames when no loggers requested ... ok
-1 - ErrorTraceHelper Print produces output for a nested trace ... ok
-1 - NoLoggerCheck logger search with no key ... ok
-1 - ErrorTraceHelper errorTraceToString creates formatted message ... ok
-1 - NoLoggerCheck logger search with non-existing key ... ok
-1 - ErrorTraceHelper getData returns expected value when matched ... ok
-1 - SeveralLoggerCheck search with parent key ... ok
-1 - ErrorTraceHelper getData returns expected value for empty list ... ok
-1 - SeveralLoggerCheck search with the nested child's name as key ... ok
-1 - ErrorTraceHelper getData returns expected value for failed search ... ok
-1 - SeveralLoggerCheck search with part of an exising key ... ok
-1 - ErrorTraceHelper getData returns expected values for multiple match ... ok
-1 - SeveralLoggerCheck Levels changes on all loggers using default level ... ok
-1 - ErrorTraceHelper getErrorTrace returns expected error trace when requested ... ok
-1 - SeveralLoggerCheck getLoggerNames returns all known loggers ... ok
-1 - ErrorTraceHelper getErrorTrace throws exception when no error_trace is defined ... ok
-1 - SeveralLoggerCheck getLoggerNames returns correct logger names when requested with filtering ... ok
-1 - ErrorTraceHelper getNext returns expected value for nested error trace ... ok
-1 - SeveralLoggerCheck Changing a logger's levels does not affect other loggers ... ok
-1 - ErrorTraceHelper getNext returns expected value for single error trace ... ok
-1 - SeveralLoggerCheck messages are logged only once for nested loggers ... ContainerStatusMsg: Startup ends
-1 - ErrorTraceHelper isOK returns correct value for non-error report ... ok
-1 - ErrorTraceHelper isOK returns correct value for non-zero errorCode ... ok
-1 - ErrorTraceHelper isOK returns correct value for non-zero errorType ... ok
-1 - ErrorTraceHelper log records messages on stdout and ACS logger ... ok
-1 - ErrorTraceHelper log does nothing for empty error traces ... ok
-1 - ErrorTraceHelper initializes with default ... ok
-1 - ErrorTraceHelper initializes with provided trace ... ok
-1 - ErrorTraceHelper printET outputs formatted message ... ok
-1 - ErrorTraceHelper setData updates pair in a populated list ... ok
-1 - ErrorTraceHelper setData adds pair to empty list ... ok
-1 - ErrorTraceHelper setData adds pair to a populated list ... ok
-1 - ErrorTraceHelper setError sets error code and type ... ok
-1 - ErrorTraceHelper setError throws exception with default values ... ok
-1 - ErrorTraceHelper setError throws exception with undefined error code ... ok
-1 - ErrorTraceHelper setError throws exception with undefined error type ... ok
-1 - Logger class get log levels when Default ... ok
-1 - Logger class default initialization is correct ... ok
-1 - Logger class creates logging records correctly ... ok
-1 - Logger class creates logging records correctly ... ok
-1 - Logger class creates logging records correctly ... ok
-1 - Logger class set log levels to user-defined levels ... ok
-1 - Logger class set log levels to using Default from user-defined level ... ok
-1 - Logger class set log levels for valid inputs ... ok
-1 - ACSLogRecord initialized with nested name ... ok
-1 - ACSLogRecord initialized with simple name ... ok
-1 - Logger class Alert level logging ... ok
-1 - Logger class User-specified level logging ... ok
-1 - Logger class Critical level logging ... ok
-1 - Logger class Debug level logging ... ok
-1 - Logger class Emergency level logging ... ok
-1 - Logger class Error level logging ... ok
-1 - Logger class ErrorTrace logging with default priority ... ok
-1 - Logger class ErrorTrace logging with an invalid priority ... ok
-1 - Logger class Info level logging ... ok
-1 - Logger class Not So Type-safe logging ... ok
-1 - Logger class Not So Type-safe logging with invalid priority ... ok
-1 - Logger class Notice level logging ... ok
-1 - Logger class Trace level logging ... ok
-1 - Logger class Type-safe logging ... ok
-1 - Logger class Type-safe logging with invalid priority ... ok
-1 - Logger class Type-safe logging with no context or source ... ok
-1 - Logger class Warning level logging ... ok
-1 - Logger class XML logging ... ok
-1 - EnvVariable default values are correctly set when environment variables not defined ... ok
-1 - PeriodicFlushCheck is correct and consistent after import. ... ok
-1 - PeriodicFlushCheck flushing thread start and stops correctly. ... ok
-1 - PeriodicFlushCheck only one thread is created if start is called twice. ... ok
-1 - PeriodicFlushCheck updates flush interval correctly ... ok
-1 - PeriodicFlushCheck flush thread stopped when invalid interval is set ... ok
-1 - ACSFormatter initialized ... ok
-1 - ACSFormatter formats a log record with a data dictionary attribute correctly ... ok
-1 - ACSFormatter formats a log record with a data list attribute correctly ... ok
-1 - ACSFormatter formats a log record with an empty data dictionary attribute correctly ... ok
-1 - ACSFormatter formats a log record with an empty data list attribute correctly ... ok
-1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
-1 - ACSFormatter formats a log record that has no data attribute correctly ... ok
-1 - ErrorTrace initializes with provided data ... ok
-1 - ErrorTrace initializes with default ... ok
-1 - LogLevel ACSLog log levels map to correct logging values ... ok
-1 - LogLevel numeric log levels map to correct logging values ... ok
-1 - LogLevel Logging values map to correct numeric log levels ... ok
-1 - LogLevel EMERGENCY level is correctly defined in logging module ... ok
-1 - LogLevel NOTICE level is correctly defined in logging module ... ok
-1 - LogLevel OFF level is correctly defined in logging module ... ok
-1 - LogLevel TRACE level is correctly defined in logging module ... ok
-1 - LogLevel ALERT level is correctly defined in logging module ... ok
-1 - Log after import is correctly configured ... ok
-1 - OneLoggerCheck unnamed logger request ... ok
-1 - OneLoggerCheck unnamed logger found by search ... ok
-1 - OneLoggerCheck names list has unnamed logger when filtered by unnamed logger ... ok
-1 - Log changes log batch size correctly ... ok
-1 - Log handles batch size greater than capacity correctly ... ok
-1 - Log handles lowest and highest immediate dispatch level correctly ... ok
-1 - Log initializes handlers correctly ... ok
-1 - Log handles invalid batch size correctly ... ok
-1 - Log handles invalid queue capacity correctly ... ok
-1 - Log sets log queue capacity correctly ... ok
-1 - Log sets default handlers levels correctly for valid inputs ... ok
-1 - Log handles invalid log levels correctly ... ok
-1 - Log sets immediate dispatch level correctly ... ok
-1 - Log handles undefined immediate dispatch level correctly ... ok
-1 - addComplHelperMethods addData added and functions ... ok
-1 - addComplHelperMethods getCode added and functions ... ok
-1 - addComplHelperMethods getTimeStamp added and functions ... ok
-1 - addComplHelperMethods getType added and functions ... ok
-1 - addComplHelperMethods isErrorFree added and functions if error defined ... ok
-1 - addComplHelperMethods getTimeStamp added and functions if no error ... ok
-1 - addComplHelperMethods log added and functions ... ok
-1 - addComplHelperMethods log added and functions ... ok
-1 - getTimeStamp reports correct ACS timestamp for a known value ... ok
-1 - test_configAdminProps_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_configAdminProps_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_configQofS_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_configQofS_propsExist (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - CommonNC createNotificationChannel configures event channel correctly ... ok
-1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad Admin) ... ok
-1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad QoS) ... ok
-1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel ... ok
-1 - CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel ... ok
-1 - CommonNC createNotificationChannel throws correct exception when no EventChannelFactory defined ... ok
-1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Cannot Proceed) ... ok
-1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Invalid Name) ... ok
-1 - CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Not Found) ... ok
-1 - CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory ... ok
-1 - CommonNC destroyNotificationChannel returns the expected value when successful ... ok
-1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(CannotProceed) ... ok
-1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(InvalidName) ... ok
-1 - CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(NotFound) ... ok
-1 - CommonNC channel domain is correct ... ok
-1 - CommonNC channel kind is correct ... ok
-1 - test_getNotificationFactoryNameForChannel_channelFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_getNotificationFactoryNameForChannel_channelNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_getNotificationFactoryNameForChannel_default (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_getNotificationFactoryNameForChannel_domainFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_getNotificationFactoryNameForChannel_domainNotFound (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_getNotificationFactoryNameForChannel_noconfig (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - CommonNC getNotificationFactoryName returns default ... ok
-1 - CommonNC getNotificationFactoryName returns non-default ... ok
-1 - test_initCORBA (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_initCORBA_nameTreeEx (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_initCORBA_noChannel (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_initCORBA_noChannelDuplicate (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - test_initCORBA_noNamingService (test_Acspy_Nc_CommonNC.TestCommonNC) ... ok
-1 - CommonNC default initialization ... ok
-1 - CommonNC initialization with domain ... ok
-1 - CommonNC initialization with default domain ... ok
-1 - EnvVariable Stdout value is correct when ACS_LOG_STDOUT environment variable is set ... ok
-1 - DispatchPacketCheck messages buffer correctly ... ok
-1 - DispatchPacketCheck clears sends pending messages before priority message ... ok
-1 - DispatchPacketCheck messages buffer correctly ... ok
-1 - EnvVariable Central value is correct when ACS_LOG_CENTRAL environment variable is set ... ok
-1 - Access initialized ... ok
-1 - Access retrieve CDB String ... ok
-1 - Access retrieve CDB String from cache ... ok
-1 - Access retrieve attributes from lower level element that has no attributes ... ok
-1 - Access retrieve attributes from lower level element that has attributes ... ok
-1 - Access retrieve attributes from top level element ... ok
-1 - 
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 - AttributeError: 'int' object has no attribute 'h'
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
+1 - IndexError: list index out of range
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].__init__()
+1 - AttributeError: MockClass instance has no attribute '__init__'
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].execute()
+1 -   File "test_Acspy_Container.py", line xxx, in execute
+1 -     raise Acspy.Container.ComponentLifecycleException('Boom!')
+1 - ComponentLifecycleException: ('B', 'o', 'o', 'm', '!')
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].execute()
+1 -   File "test_Acspy_Container.py", line xxx, in execute
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].initialize()
+1 -   File "test_Acspy_Container.py", line xxx, in initialize
+1 -     raise Acspy.Container.ComponentLifecycleException('Boom!')
+1 - ComponentLifecycleException: ('B', 'o', 'o', 'm', '!')
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[PYREF].initialize()
+1 -   File "test_Acspy_Container.py", line xxx, in initialize
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POAOFFSHOOT] = temp[POA].create_POA("OffShootPOA", ACSCorba.getPOAManager(), self.offShootPolicies)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 -   File "Container.py", line xxx, in activate_component
+1 -     temp[POA] = self.createPOAForComponent(name)  #POA for this component
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception('Boom!')
+1 - Exception: Boom!
+1 -   File "Container.py", line xxx, in deactivate_components
+1 -     reload(comp_entry[COMPMODULE])
+1 - ImportError: reload(): module MockClass not in sys.modules
+1 -   File "Container.py", line xxx, in deactivate_components
+1 -     comp_entry[PYREF].cleanUp()
+1 - AttributeError: MockClass instance has no attribute 'cleanUp'
+1 -   File "Container.py", line xxx, in deactivate_components
+1 -     comp_entry = self.components[self.compHandles[handle]]
+1 - KeyError: 1
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='/diska/home/almamgr/ACS-HEAD/CommonSoftware/acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1040, routine='getMyCorbaRef', host='alma', process=XXXX, thread='MainThread', timeStamp=XXXXL, sourceObject='TestContainer', errorType=XXXXL, errorCode=XXXXL, severity=Error, shortDescription='CORBA Problem', data=[], previousError=[]))
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     self.corbaRef = self.containerPOA.servant_to_reference(self)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Container.py", line xxx, in raiser
+1 -     raise Exception()
+1 - Exception
+1 -   File "BaseClient.py", line xxx, in __init__
+1 -     self.token = getManager().login(self.getMyCorbaRef())
+1 -   File "Container.py", line xxx, in getMyCorbaRef
+1 -     raise CORBAProblemExImpl()
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='/diska/home/almamgr/ACS-HEAD/CommonSoftware/acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1034, routine='getMyCorbaRef', host='alma', process=XXXX, thread='MainThread', timeStamp=XXXXL, sourceObject='TestContainer', errorType=XXXXL, errorCode=XXXXL, severity=Error, shortDescription='CORBA Problem', data=[], previousError=[]))
+1 -   File "Container.py", line xxx, in getCDBInfo
+1 -     execfile(temp_package)
+1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
+1 -   File "Container.py", line xxx, in activateOffShoot
+1 -     comp[POAOFFSHOOT].activate_object(os_corba_ref)
+1 - KeyError: 'POAOFFSHOOT'
+1 -   File "ContainerServices.py", line xxx, in __importComponentStubs
+1 -     [comp_class]) #import it
+1 - ImportError: No module named MockUnknown
+1 -   File "ContainerServices.py", line xxx, in __narrowComponentReference
+1 -     narrowed_ref = corba_obj._narrow(comp_class)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Servants_ContainerServices.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getClient
+1 -     SINGLETON_CLIENT = _Client()
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getManager
+1 -     MGR_REF = getORB().string_to_object(getManagerCorbaloc())
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getManager
+1 -     if MGR_REF!=None and (not CORBA.is_nil(MGR_REF)):
+1 -   File "./omniORB/CORBA.py", line 1128, in is_nil
+1 - BAD_PARAM: CORBA.BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, CORBA.COMPLETED_NO)
+1 -   File "ACSCorba.py", line xxx, in getORB
+1 -     ORB = CORBA.ORB_init(argv)
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getPOAManager
+1 -     POA_MANAGER = getPOARoot()._get_the_POAManager()
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 -   File "ACSCorba.py", line xxx, in getPOARoot
+1 -     POA_ROOT = getORB().resolve_initial_references("RootPOA")
+1 -   File "mock.py", line xxx, in __call__
+1 -     self.side_effect()
+1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
+1 -     raise Exception("Boom!")
+1 - Exception: Boom!
+1 - ......................
 1 - ----------------------------------------------------------------------
 1 - Ran xx tests in x.xxxs
 1 - 

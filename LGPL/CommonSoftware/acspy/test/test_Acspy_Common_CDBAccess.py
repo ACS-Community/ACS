@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Common_CDBAccess.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Common_CDBAccess.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Common_CDBAccess.py,v 1.1 2010/02/05 23:39:35 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Common_CDBAccess.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -39,7 +39,7 @@ def mockcdb():
     return mockCDB
 
 import Acspy.Util.ACSCorba
-Acspy.Util.ACSCorba.cdb = mockcdb
+#Acspy.Util.ACSCorba.cdb = mockcdb
 
 #--ACS IMPORTS____-------------------------------------------------------------
 import Acspy.Common.CDBAccess
@@ -118,74 +118,64 @@ class CDBHandlerCheck(unittest.TestCase):
 class CDBAccessCheck(unittest.TestCase):
     """Test of the CDBaccess class."""
 
-    def setUp(self):
+    @mock.patch_object(Acspy.Common.CDBAccess, 'cdb')
+    def setUp(self, cdbmock):
+        Acspy.Util.ACSCorba.SINGLETON_CLIENT = mock.Mock(spec=Acspy.Util.ACSCorba._Client)
+        self.dalmock = mock.Mock(spec=CDB._objref_DAL)
+        cdbmock.return_value = self.dalmock
         self.a = Acspy.Common.CDBAccess.CDBaccess()
     
     def tearDown(self):
-        pass
+        Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
 
     def testConstructor(self):
         """Access initialized"""
         self.assertEqual(0, len(self.a.cache))
-        self.assertEqual(mockCDB.__module__, self.a.m_dal.__module__)
+        self.assertEqual(self.dalmock, self.a.m_dal)
 
     def testGetField(self):
         """Access retrieve CDB String"""
-        global mockCDB
-        mockCDB.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
+        self.dalmock.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>'
         str = self.a.getField('MACI/Container')
         self.assertEqual(fakeFunc['get_DAO'], str)
         self.assertEqual(1, len(self.a.cache))
         self.assertEqual(True, 'MACI/Container' in self.a.cache)
         self.assertEqual(fakeFunc['get_DAO'], self.a.cache['MACI/Container'])
-        mockCDB.get_DAO.return_value = mockCDB
         
     def testGetFieldCache(self):
         """Access retrieve CDB String from cache"""
+        self.dalmock.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>'
         str = self.a.getField('MACI/Container')
-        baseline = mockCDB.method_calls
+        self.dalmock.get_DAO.return_value = 'Broken String'
         str2 = self.a.getField('MACI/Container')
         self.assertEqual(str, str2)
-        self.assertEqual(baseline, mockCDB.method_calls)
 
     def testGetTopElement(self):
         """Access retrieve attributes from top level element"""
-        global mockCDB
-        mockCDB.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
+        self.dalmock.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
         attribs = self.a.getElement('MACI/Container', 'Container')
         self.assertEqual(1, len(attribs))
         self.assertEqual(9, len(attribs[0]))
         self.assertEqual(['xmlns','xmlns:baci','ManagerRetry','xmlns:cdb','Timeout','xmlns:log','xmlns:xsi','UseIFR','ImplLang'], attribs[0].keys())
-        mockCDB.get_DAO.return_value = mockCDB
         
     def testGetNestedElement(self):
         """Access retrieve attributes from lower level element that has no attributes"""
-        global mockCDB
-        mockCDB.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
+        self.dalmock.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
         attribs = self.a.getElement('MACI/Container', 'Container/Autoload')
         self.assertEqual(1, len(attribs))
         self.assertEqual(0, len(attribs[0]))
-        mockCDB.get_DAO.return_value = mockCDB
         
     def testGetNestedElementAttr(self):
         """Access retrieve attributes from lower level element that has attributes"""
-        global mockCDB
-        mockCDB.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
+        self.dalmock.get_DAO.return_value = '<Container xmlns="urn:schemas-cosylab-com:Container:1.0" xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" Timeout="20.0" UseIFR="1" ManagerRetry="10" ImplLang="py"> <Autoload> <cdb:_ string="acspyTestAutoload" /> </Autoload> <LoggingConfig centralizedLogger="Log" minLogLevel="2" dispatchPacketSize="0" immediateDispatchLevel="99"> </LoggingConfig> </Container>' 
         attribs = self.a.getElement('MACI/Container', 'Container/LoggingConfig')
         self.assertEqual(1, len(attribs))
         self.assertEqual(4, len(attribs[0]))
         self.assertEqual(['minLogLevel','dispatchPacketSize','centralizedLogger','immediateDispatchLevel'], attribs[0].keys())
-        mockCDB.get_DAO.return_value = mockCDB
         
 
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CDBHandlerCheck))
-    suite.addTest(unittest.makeSuite(CDBAccessCheck))
-    return suite
-
 if __name__ == "__main__":
-    unittest.main(defaultTest='suite')
+    unittest.main()
 
 #
 # ___oOo___

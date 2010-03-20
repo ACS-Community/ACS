@@ -20,3 +20,4 @@ s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/Process=[0-9]*/Process=xxx/g
 s/File "\/.*\/\(.*\)", line [0-9]*/File "\1", line xxx/g
 s/Ran [0-9]* tests in [0-9].[0-9]*s/Ran xx tests in x.xxxs/g
+s/process='[0-9]*'/process=XXXX/g

@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.2 2009/01/15 23:20:56 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.3 2010/03/20 22:46:40 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@ import NotifyMonitoringExt
 import acscommon
 from ACSErr import NameValue
 import Acspy.Common.Log
+import Acspy.Util.ACSCorba
 
 # The ACS Logger requires a connection to the Manager.
 # In order to run the tests offline, the Logger has
@@ -92,12 +93,14 @@ def nameTree_side_effect_onetime():
 class TestCommonNC(unittest.TestCase):
     
     def setUp(self):
+        Acspy.Util.ACSCorba.SINGLETON_CLIENT = mock.Mock(spec=Acspy.Util.ACSCorba._Client)
         self.nc = CommonNC("Channel", mock.Mock())
         self.original = sys.stderr
         sys.stderr = mock.Mock(spec=sys.stderr)
 
     def tearDown(self):
         sys.stderr = self.original
+        Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
         
     @mock.patch_object(Acspy.Nc.CommonNC,'cdb_channel_config_exists', mockNotExists)
     def test_configAdminProps_noconfig(self):

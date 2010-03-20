@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.1 2010/02/12 22:15:19 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.1 2010/02/12 22:15:19 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import unittest
@@ -163,6 +163,7 @@ class TestGetManager(unittest.TestCase):
 
     def setUp(self):
         ACSCorba.MGR_REF = None
+        ACSCorba.MGR_CORBALOC = 'Here'
 
     def tearDown(self):
         ACSCorba.MGR_REF = None
@@ -184,7 +185,7 @@ class TestGetManager(unittest.TestCase):
         
     @mock.patch_object(ACSCorba, 'getORB')
     @mock.patch_object(ACSCorba, 'getManagerCorbaloc')
-    def test_orb_no_object(self, getorbmock, corbalocmock):
+    def test_orb_no_object(self, corbalocmock, getorbmock):
         orbmock = mock.Mock(spec=ACSCorba.CORBA.ORB)
         orbmock.string_to_object.return_value = None
         getorbmock.return_value = orbmock
