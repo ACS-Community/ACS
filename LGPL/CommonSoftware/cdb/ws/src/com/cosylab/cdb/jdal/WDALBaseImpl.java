@@ -32,12 +32,12 @@ import java.util.logging.Logger;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 
-import alma.cdbErrType.CDBRecordDoesNotExistEx;
-import alma.cdbErrType.CDBXMLErrorEx;
-
 import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.WJDALPOA;
+import com.cosylab.CDB.WJDALOperations;
+
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 /**
  * @author dragan
@@ -45,7 +45,7 @@ import com.cosylab.CDB.WJDALPOA;
  *This is base class for WDAL where we delegate all base methods to JDAL
  *
  */
-abstract public class WDALBaseImpl extends WJDALPOA implements Recoverer {
+abstract public class WDALBaseImpl implements WJDALOperations, Recoverer {
 	protected DALImpl dalImpl = null;
 
 	protected final Logger logger;

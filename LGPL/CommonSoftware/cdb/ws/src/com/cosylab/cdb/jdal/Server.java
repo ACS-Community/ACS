@@ -42,9 +42,11 @@ import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
+import org.omg.PortableServer.Servant;
 
 import com.cosylab.CDB.JDAL;
 import com.cosylab.CDB.JDALHelper;
+import com.cosylab.CDB.WJDALPOATie;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
@@ -163,8 +165,14 @@ public class Server {
 			rootpoa.the_POAManager().activate();
 
 			// create servant and register it with the ORB
-			//DALImpl DALImpl = new DALImpl(args, orb, dalpoa);
-			final WDALImpl servant = new WDALImpl(args, orb, dalpoa, sharedLogger);
+
+			// After ACS 8.2 we changed to the Poa-tie approach and no longer have WDALImpl extend WJDALPOA.
+			// This will allow us to install intercepting dynamic proxies here for debugging, performance measurements etc.
+			// Thus if we only want to intercept the functional IDL-defined methods, then servantDelegate should be wrapped.
+			// Otherwise if we want to also intercept the CORBA admin methods, then servant should be wrapped with a dynamic proxy.
+			// This work is done in preparation for changes that Bhola will do.
+			final WDALImpl servantDelegate = new WDALImpl(args, orb, dalpoa, sharedLogger);
+			final Servant servant = new WJDALPOATie(servantDelegate);
 			
 			//create object id
 			byte[] id = { 'C', 'D', 'B' };
@@ -235,7 +243,7 @@ public class Server {
 			// preload cache
 			new Thread(new Runnable() {
 				public void run() {
-					preloadCache(servant.getDALImplDelegate(), sharedLogger);
+					preloadCache(servantDelegate.getDALImplDelegate(), sharedLogger);
 				}
 			}, "preload-cache").start();
 
