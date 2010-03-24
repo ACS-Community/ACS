@@ -69,6 +69,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createSingleFlow()
 	if(streamctrl_p != 0)
 	    {
 	    // delete old stuff
+	    deleteHandler();
+	    ACE_OS::sleep(1);  // seems necessary to give time to remove
+	                       // the handler from the reactor
 	    deleteStreamCtrl();
 	    }
 	streamctrl_p = createStreamCtrl();
@@ -135,6 +138,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::createMultipleFlows(const cha
 	if(streamctrl_p != 0)
 	    {
 	    // delete old stuff
+	    deleteHandler();
+	    ACE_OS::sleep(1);  // seems necessary to give time to remove
+	                       // the handler from the reactor
 	    deleteStreamCtrl();
 	    }
 	streamctrl_p = createStreamCtrl();
@@ -1270,6 +1276,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteHandler()
 		else
 		    {
 		    //ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::deleteHandler - handle not present in the ACE_Reactor"));
+		    handleMap_m.unbind(flowname,handle);	    
 		    continue;
 		    }
 		}

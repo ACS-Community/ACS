@@ -83,6 +83,9 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createSingleFlow()
 	if (!CORBA::is_nil(sepB_p.in()))
 	    {
 	    // delete old stuff
+	    deleteHandler();
+	    ACE_OS::sleep(1);  // seems necessary to give time to remove
+	                       // the handler from the reactor
 	    deleteFepsB();
 	    deleteSepB();
 	    }
@@ -149,6 +152,9 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::createMultipleFlows(const
 	if (!CORBA::is_nil(sepB_p.in()))
 	    {
 	    // delete old stuff
+	    deleteHandler();
+	    ACE_OS::sleep(1);  // seems necessary to give time to remove
+	                       // the handler from the reactor
 	    deleteFepsB();
 	    deleteSepB();
 	    }
@@ -708,6 +714,7 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::deleteHandler()
 		else
 		    {
 		    //ACS_SHORT_LOG((LM_INFO,"BulkDataReceiver<>::deleteHandler - handle not present in the ACE_Reactor"));
+		    handleMap_m.unbind(flowname,handle);
 		    continue;
 		    }
 		}
