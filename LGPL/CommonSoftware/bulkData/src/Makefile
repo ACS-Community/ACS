@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.25 2006/05/10 13:03:55 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.26 2010/03/25 09:49:14 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -38,8 +38,30 @@
 # conflicting names and we would get anyway in trouble.
 # So we set it locally: it works but it is not 100% safe.
 #
-USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV  
-USER_LIB = -lTAO_AV
+USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV
+USER_LIB = 	-lACE \
+		-lTAO_AV \
+		-lTAO \
+		-lTAO_DsLogAdmin \
+		-lTAO_CosNaming \
+		-lTAO_IORTable \
+		-lTAO_PortableServer \
+		-lTAO_Svc_Utils \
+		-lTAO_CosTrading \
+                -lTAO_CosNotification \
+		-lTAO_DynamicAny \
+		-lTAO_IFR_Client \
+                -lTAO_CosProperty \
+		-lacsutil \
+		-lcdb \
+		-llogging \
+	        -lacscomponent \
+		-lbaci \
+		-lmaci \
+		-lmaciClient \
+		-lacserr \
+		-lm
+#		-lmd5
 
 #
 # MODULE CODE DESCRIPTION:
