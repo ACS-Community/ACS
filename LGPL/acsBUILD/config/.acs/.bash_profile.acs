@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.93 2010/03/25 13:11:43 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.94 2010/03/25 14:11:08 hsommer Exp $"
 #
 #
 #
@@ -464,14 +464,20 @@ then
    MATPLOTLIBDATA=$ACSROOT/share/matplotlib
 fi
 
-# set the following variable to the path where you installed your java stuff.
-# If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
-# OTherwise RPM standard installation is assumed.
-# Change as appropriate the jdk version if you did not install 
-# java from our distribution.
+# About JAVA_HOME:
+# - If you have a standard Sun JDK installed, it has created the symlink /usr/java/default,
+#   and you can leave it to .bash_profile.acs to set JAVA_HOME to /usr/java/default.
+# - With a non-standard JDK installation, please edit this script, 
+#   or set JAVA_HOME before sourcing this script (if also $ACS_RETAIN is set).
+# - Please note that starting with ACS 8.2, the default JDK gets referenced by the "default" symlink,
+#   and therefore the exact version name is no longer critical. 
+#   This simplifies installations of slightly different JDK versions, but also bears the risk
+#   that you have a totally wrong JDK installed and don't notice this immediately.
+#   Please check the ACS documentation, or acsConfigReport output, 
+#   to ensure that you have a supported JDK installed.
 if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-  	JAVA_HOME=/usr/java/jdk1.6.0_18
+  	JAVA_HOME=/usr/java/default
 fi
 
 # If not explicitly set by hand,
