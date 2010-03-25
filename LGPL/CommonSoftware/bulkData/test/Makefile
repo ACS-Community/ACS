@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.31 2008/03/18 12:03:24 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.32 2010/03/25 09:49:38 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -207,13 +207,13 @@ bulkDataReceiver1LibNotif_LIBS      = bulkDataReceiverStubs bulkDataStubs \
 				      bulkDataCallback ACSBulkDataError ACSBulkDataStatus
 
 bulkDataSenderLibEx1_OBJECTS   = bulkDataSenderEx1Impl
-bulkDataSenderLibEx1_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx1Stubs
+bulkDataSenderLibEx1_LIBS      = bulkDataSenderEx1Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
 
 bulkDataSenderLibEx2_OBJECTS   = bulkDataSenderEx2Impl
-bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
+bulkDataSenderLibEx2_LIBS      = bulkDataSenderEx2Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
 
 bulkDataSenderLibEx3_OBJECTS   = bulkDataSenderEx3Impl
-bulkDataSenderLibEx3_LIBS      = bulkDataReceiverStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError bulkDataSenderEx3Stubs
+bulkDataSenderLibEx3_LIBS      = bulkDataSenderEx3Stubs bulkDataSenderStubs bulkDataReceiverStubs bulkDataStubs ACSBulkDataError
 
 bulkDataSenderLibPerf_OBJECTS   = bulkDataSenderPerfImpl
 bulkDataSenderLibPerf_LIBS      = bulkDataReceiverStubs bulkDataSenderPerfStubs bulkDataSenderStubs bulkDataStubs ACSBulkDataError
@@ -227,7 +227,7 @@ bulkDataReceiver1LibPerf_LIBS      = bulkDataReceiverStubs bulkDataReceiver1Perf
 
 bulkDataSendRecvLib_OBJECTS   = bulkDataSendRecvCb
 bulkDataSendRecvLib_LIBS      = bulkDataSendRecvStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs \
-				ACSBulkDataError
+				bulkDataCallback ACSBulkDataError
 
 bulkDataSenderDistrLib_OBJECTS   = bulkDataSenderDistr
 bulkDataSenderDistrLib_LIBS      = bulkDataReceiverStubs bulkDataSenderDistrStubs bulkDataSenderStubs \

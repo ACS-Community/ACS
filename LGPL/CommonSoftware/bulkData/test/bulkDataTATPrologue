@@ -3,7 +3,7 @@ OLD_CDB=$ACS_CDB
 ACS_CDB=../test
 
 #Start the ORB services and manager.
-acsutilTATPrologue
+acsutilTATPrologue -noloadifr
 
 ACS_CDB=$OLD_CDB
 
