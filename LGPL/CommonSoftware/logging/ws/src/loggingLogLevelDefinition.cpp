@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.3 2009/11/18 22:25:08 javarias Exp $"
+* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.4 2010/03/25 22:07:23 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -44,6 +44,7 @@ int LogLevelDefinition::fromACEPriority(ACE_Log_Priority p){
 
     if(p == LM_SHUTDOWN) return 1;
     if(p == LM_TRACE) return AcsLogLevels::TRACE_VAL;
+    if(p == 03) return AcsLogLevels::DELOUSE_VAL;
     if(p == LM_DEBUG) return AcsLogLevels::DEBUG_VAL;
     if(p == LM_INFO) return AcsLogLevels::INFO_VAL;
     if(p == LM_NOTICE) return AcsLogLevels::NOTICE_VAL;
@@ -100,7 +101,7 @@ LogLevelDefinition LogLevelDefinition::fromName(std::string name){
     if(name == AcsLogLevels::TRACE_NAME)
         return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
     else if (name == AcsLogLevels::DELOUSE_NAME)
-        return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
+        return LogLevelDefinition(AcsLogLevels::DELOUSE_VAL,AcsLogLevels::DELOUSE_NAME);
     else if (name == AcsLogLevels::DEBUG_NAME)
         return LogLevelDefinition(AcsLogLevels::DEBUG_VAL,AcsLogLevels::DEBUG_NAME);
     else if(name == AcsLogLevels::INFO_NAME)
@@ -124,8 +125,8 @@ LogLevelDefinition LogLevelDefinition::fromName(std::string name){
 ACE_Log_Priority LogLevelDefinition::m_LogEntryCast[] =
 {
     LM_SHUTDOWN,		// not in specs
-    LM_SHUTDOWN, 	// not in specs
-    LM_TRACE,
+    LM_TRACE, 	// not in specs
+    03,
     LM_DEBUG,
     LM_INFO,
     LM_NOTICE,

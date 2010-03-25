@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.30 2008/10/27 13:32:12 bjeram Exp $"
+* "@(#) $Id: loggingLogSvcHandler.cpp,v 1.31 2010/03/25 22:07:23 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include <ace/Log_Record.h>
 
-static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.30 2008/10/27 13:32:12 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogSvcHandler.cpp,v 1.31 2010/03/25 22:07:23 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -51,6 +51,10 @@ namespace Logging {
 		retVal = LM_TRACE;
 		break;
 		
+        case Logging::BaseLog::LM_DELOUSE:
+        retVal = 03;
+        break;
+
 	    case Logging::BaseLog::LM_DEBUG:
 		retVal = LM_DEBUG;
 		break;
@@ -111,6 +115,10 @@ namespace Logging {
 	    case LM_TRACE:
 		retVal = Logging::BaseLog::LM_TRACE;
 		break;
+
+        case 03:
+        retVal = Logging::BaseLog::LM_DELOUSE;
+        break;
 		
 	    case LM_DEBUG:
 		retVal = Logging::BaseLog::LM_DEBUG;

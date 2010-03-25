@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.65 2009/10/16 12:51:28 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.66 2010/03/25 22:07:23 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -65,8 +65,12 @@ PROG =
 EXECUTABLES     = $(PROG) loggingService loggingClient
 EXECUTABLES_L   = 
 
-loggingService_OBJECTS = loggingService loggingACSLogFactory_i loggingACSStructuredPushSupplier loggingACSStructuredPushSupplierBin loggingACSStructuredPushSupplierXml loggingACSLog_i \
-			loggingHelper  loggingAcsLogServiceImpl
+loggingService_OBJECTS = loggingService loggingACSLogFactory_i \
+                         loggingACSStructuredPushSupplier \
+                         loggingACSStructuredPushSupplierBin \
+                         loggingACSStructuredPushSupplierXml loggingACSLog_i \
+                         loggingHelper  loggingAcsLogServiceImpl 
+
 loggingService_LIBS = logging logging_idlStubs
 #loggingService_LDFLAGS= -ggdb
 

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingBaseLog.h,v 1.13 2008/06/03 09:06:41 bjeram Exp $"
+* "@(#) $Id: loggingBaseLog.h,v 1.14 2010/03/25 22:07:23 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,6 +59,8 @@ namespace Logging
 	    LM_SHUTDOWN = 01,
 	    /// Messages indicating function-calling sequence
 	    LM_TRACE = 02,
+
+        LM_DELOUSE = 03,
 	    
 	    /// Messages that contain information normally of use only when
 	    /// debugging a program
