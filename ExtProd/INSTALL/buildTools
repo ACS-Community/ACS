@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.30 2009/10/06 15:42:56 jschwarz Exp $"
+# "@(#) $Id: buildTools,v 1.31 2010/03/26 15:44:29 hsommer Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -187,25 +187,6 @@ echo "buildMico"
 echo "buildEclipse"
 ./buildEclipse
 
-if [ ${OS} = "LINUX" ]
-then
-    # for Linux  only: install Tomcat
-# As of ACS 7.0, the old Tomcat installation here in ExtProd is dropped,
-# since the archive installs its more recent tomcat version.
-#    echo "buildTomcat"
-#    ./buildTomcat
-
-    if [ "$DISTRO" != "RHLX" -o "$REL" != "9" ]
-    then
-       echo "For Linux RH9 only, it is possible to install AIPS++ rpms."
-       echo "The installation requires root privileges"
-       echo "You have to run the script"
-       echo "     ./buildAIPS++"
-       echo "if you want to install AIPS++"
-       echo "In this case you will have to type the root password"
-    fi
-
-fi
 
 # if the user wants RTOS he/she has to build it by hand using buildRTOS
 # from the directory ../RTOS.

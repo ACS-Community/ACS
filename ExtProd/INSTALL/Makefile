@@ -1,27 +1,22 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.17 2009/06/09 17:36:23 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.18 2010/03/26 15:40:23 hsommer Exp $"
 #
 # Makefile of ........
 #
-aips:	
-	@chmod +x *
-	@./buildAIPS++
-	@echo " . . . 'aips++' done" 
-
 #
 # This is used to force building also VxWroks parts on Linux.
 #
 all-vw:	
 	@chmod +x *
 	@./buildTools -vw
-	@echo " . . . 'all including VxWorks(except aips++)' done" 
+	@echo " . . . 'all including VxWorks' done" 
 
 all:	
 	@chmod +x *
 	@./buildTools
-	@echo " . . . 'all (except aips++)' done" 
+	@echo " . . . 'all' done" 
 
 clean : 
 	rm -rf ../PRODUCTS/Python-2.5.2
