@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.22 2008/10/01 04:41:17 cparedes Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.23 2010/03/26 23:28:15 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.22 2008/10/01 04:41:17 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.23 2010/03/26 23:28:15 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
@@ -42,6 +42,10 @@ Logging::BaseLog::Priority acslog2loggingPriority(ACSLog::Priorities acslogPrior
 	{
 	case ACSLog::ACS_LOG_TRACE:
 	    retVal = Logging::BaseLog::LM_TRACE;
+	    break;
+		
+	case ACSLog::ACS_LOG_DELOUSE:
+	    retVal = Logging::BaseLog::LM_DELOUSE;
 	    break;
 		
 	case ACSLog::ACS_LOG_DEBUG:
@@ -100,6 +104,19 @@ void ACSLogImpl::logTrace (acscommon::TimeStamp time,
   LoggingProxy::Flags(flag);
   LOG_RECORD(Logging::BaseLog::LM_TRACE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
 }
+
+void ACSLogImpl::logDelouse (acscommon::TimeStamp time,
+			   const char * msg,
+			   const ACSLog::RTContext & rtCont,
+			   const ACSLog::SourceInfo & srcInfo,
+			   const ACSLog::NVPairSeq & data
+            )			   
+{  
+  PriorityFlag  flag = write (rtCont, srcInfo, data);
+  ACS_CHECK_LOGGER;
+  LoggingProxy::Flags(flag);
+  LOG_RECORD(Logging::BaseLog::LM_DELOUSE, msg, srcInfo.file.in(), srcInfo.line, srcInfo.routine.in(), time, rtCont.sourceObject.in());
+}    
 
 void ACSLogImpl::logDebug (acscommon::TimeStamp time,
 			   const char * msg,
@@ -162,7 +179,11 @@ void ACSLogImpl::logError (const ACSErr::ErrorTrace & et)
 void ACSLogImpl::logErrorWithPriority(const ACSErr::ErrorTrace &et, ACSLog::Priorities p) 
 {
   ErrorTraceHelper err(const_cast<ACSErr::ErrorTrace &>(et));
-  err.log(ACE_Log_Priority(1 << (p+1)));   // here we assume that enums in IDL starts from 0 
+  if(p == ACSLog::ACS_LOG_TRACE)
+      err.log(ACE_Log_Priority(1 << 1));
+  else if (p == ACSLog::ACS_LOG_DELOUSE)
+      err.log(ACE_Log_Priority(010000));
+  err.log(ACE_Log_Priority(1 << (p)));   // here we assume that enums in IDL starts from 0 
 }//logErrorWithPriorty
 
 void ACSLogImpl::logWithPriority (ACSLog::Priorities p,

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testAcsLog.cpp,v 1.19 2009/07/28 16:09:20 gchiozzi Exp $"
+* "@(#) $Id: testAcsLog.cpp,v 1.20 2010/03/26 23:28:15 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 // Uncomment this if you are using the VLT environment
 // #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.19 2009/07/28 16:09:20 gchiozzi Exp $"; 
+static char *rcsId="@(#) $Id: testAcsLog.cpp,v 1.20 2010/03/26 23:28:15 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <stdlib.h>
@@ -161,6 +161,9 @@ int main(int argc, char *argv[])
       si.line = __LINE__+1;
       log->logTrace(ts, "test msg #3 (there should be Context and  Source info and Data)", con, si, data);
       
+      ACE_OS::printf("Test #5 (Delouse)\n");
+      si.line = __LINE__+1;
+      log->logDelouse(ts, "test Delouse msg (there should be Context and  Source info and Data)", con, si, data);
 
       ACE_OS::printf("Test #5 (Debug)\n");
       si.line = __LINE__+1;

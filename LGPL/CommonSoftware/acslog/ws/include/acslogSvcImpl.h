@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.h,v 1.18 2008/10/01 04:41:17 cparedes Exp $"
+* "@(#) $Id: acslogSvcImpl.h,v 1.19 2010/03/26 23:28:15 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,7 @@
 
 #include "acslogS.h"
 #include "logging.h"
+#include <loggingBaseLog.h>
 
 #include <acsutilPorts.h>
 
@@ -52,6 +53,17 @@ public:
 		 const ACSLog::RTContext & rtCont,
 		 const ACSLog::SourceInfo & srcInfo,
 		 const ACSLog::NVPairSeq & data
+		 );
+
+  /*
+  * @throw ACSErr::ACSException
+  */
+  void logDelouse (acscommon::TimeStamp time,
+		 const char * msg,
+		 const ACSLog::RTContext & rtCont,
+		 const ACSLog::SourceInfo & srcInfo,
+		 const ACSLog::NVPairSeq & data
+		 
 		 );
 
   /*

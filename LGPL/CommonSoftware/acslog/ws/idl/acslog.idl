@@ -52,7 +52,8 @@ module ACSLog {
      Log messages priorities
    */
   enum Priorities {
-    ACS_LOG_TRACE,  
+    ACS_LOG_TRACE, 
+    ACS_LOG_DELOUSE, 
     ACS_LOG_DEBUG,  
     ACS_LOG_INFO,  
     ACS_LOG_NOTICE,  
@@ -112,6 +113,13 @@ module ACSLog {
     void logTrace(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
     /* It neeeds just routine info and time stamp. Should we send only this  ? */
     
+    /**
+     * logs DELOUSE  message.
+     * If all rtCont string members are NULL than no run-time context information will be logged.
+     * If all srcInfo string members are NULL than no source information will be logged.
+    */
+    void logDelouse(in acscommon::TimeStamp time, in string msg, in RTContext rtCont, in SourceInfo srcInfo,  in NVPairSeq data) raises (ACSErr::ACSException);
+   
     /**
      * logs DEBUG message.
      * If all rtCont string members are NULL than no run-time context information will be logged.
