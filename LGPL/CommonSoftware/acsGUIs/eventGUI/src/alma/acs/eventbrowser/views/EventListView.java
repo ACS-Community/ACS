@@ -1,6 +1,5 @@
 package alma.acs.eventbrowser.views;
 
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.logging.Logger;
 
