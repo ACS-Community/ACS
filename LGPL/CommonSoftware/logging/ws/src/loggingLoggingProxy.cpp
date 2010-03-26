@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.75 2009/09/01 22:39:55 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.76 2010/03/26 23:24:15 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.75 2009/09/01 22:39:55 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.76 2010/03/26 23:24:15 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -75,6 +75,8 @@ void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
     unsigned long priority = getPriority(log_record);
+    unsigned long ace_prio_type = log_record.type();
+    ace_prio_type++;
 
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
@@ -90,7 +92,14 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     std::string s_entryType;
     if (!entryType)
 	{
-        s_entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName();
+        //DELOUSE Case
+        if(log_record.priority()+1 == 13)
+            s_entryType = LogLevelDefinition::fromInteger(AcsLogLevels::DELOUSE_VAL).getName();
+        //Also TRACE level was moved
+        else if (log_record.priority()+1 == 2)
+            s_entryType = LogLevelDefinition::fromInteger(AcsLogLevels::TRACE_VAL).getName();
+        else
+            s_entryType = LogLevelDefinition::fromInteger(log_record.priority()+1).getName();
 	entryType = s_entryType.c_str();
 	}
     else
@@ -119,8 +128,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
 	 if (localLogLevelPrecedence == DEFAULT_LOG_LEVEL)
 	    {
-	    // log only LM_INFO and higher
-	    if (log_record.priority()>=ACE::log2(LM_INFO))
+	    // log only LM_INFO and higher && less than LM_DELOUSE
+	    if (log_record.priority()>=ACE::log2(LM_INFO) && log_record.priority()<12)
 		{
 		if ((*tss)->sourceObject()==0)
 		    {
@@ -224,14 +233,14 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 
     // this is the case of the proxy created not by maci
     if(remoteLogLevelPrecedence >= CDB_LOG_LEVEL){
-	if(m_envCentralizePriority >= 0) {
-	    remoteLogLevelPrecedence=ENV_LOG_LEVEL;
-	    prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
-    	}else{
-	    prohibitRemote = priority>=m_minCachePriority? false:true;
-    	}
+        if(m_envCentralizePriority >= 0) {
+            remoteLogLevelPrecedence=ENV_LOG_LEVEL;
+            prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
+        }else{
+            prohibitRemote = priority>=m_minCachePriority? false:true;
+        }
     }else if(remoteLogLevelPrecedence == ENV_LOG_LEVEL)
-	prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
+        prohibitRemote = priority>=(unsigned int)m_envCentralizePriority? false:true;
 
     if (prohibitRemote)
 	{
@@ -272,7 +281,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // routine (REQUIRED for LM_TRACE and LM_DEBUG)
     const ACE_TCHAR * r = (*tss)->routine();
     if (r ||
-	(log_record.priority()==ACE::log2(LM_TRACE)) ||		// LM_TRACE
+	(log_record.priority()==1)  ||               		// LM_TRACE
+	(log_record.priority()==12) ||               		// LM_DELOUSE
 	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
 	    if (r){
@@ -459,7 +469,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
     // routine (REQUIRED for LM_TRACE and LM_DEBUG)
     const ACE_TCHAR * r = (*tss)->routine();
     if (r ||
-	(log_record.priority()==ACE::log2(LM_TRACE)) ||		// LM_TRACE
+	(log_record.priority()== 1) ||		                // LM_TRACE
+    (log_record.priority()== 12) ||                      // LM_DELOUSE
 	(log_record.priority()==ACE::log2(LM_DEBUG)))		// LM_DEBUG
 	{
 	if (r)
@@ -1678,6 +1689,10 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
 // here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
     unsigned long priority = log_record.priority()+1;
     unsigned long flag_prio = (*tss)->flags() & 0x0F;
+    if(priority == 13)
+        priority = 2;
+    else if (priority == 2)
+        priority = 1;
     if (flag_prio)
  	priority = flag_prio;
 

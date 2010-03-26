@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.4 2010/03/25 22:07:23 javarias Exp $"
+* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.5 2010/03/26 23:24:15 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -44,7 +44,7 @@ int LogLevelDefinition::fromACEPriority(ACE_Log_Priority p){
 
     if(p == LM_SHUTDOWN) return 1;
     if(p == LM_TRACE) return AcsLogLevels::TRACE_VAL;
-    if(p == 03) return AcsLogLevels::DELOUSE_VAL;
+    if(p == 010000) return AcsLogLevels::DELOUSE_VAL;
     if(p == LM_DEBUG) return AcsLogLevels::DEBUG_VAL;
     if(p == LM_INFO) return AcsLogLevels::INFO_VAL;
     if(p == LM_NOTICE) return AcsLogLevels::NOTICE_VAL;
@@ -64,7 +64,7 @@ LogLevelDefinition LogLevelDefinition::fromInteger(int val){
         return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
         break;
     case AcsLogLevels::DELOUSE_VAL:
-        return LogLevelDefinition(AcsLogLevels::TRACE_VAL,AcsLogLevels::TRACE_NAME);
+        return LogLevelDefinition(AcsLogLevels::DELOUSE_VAL,AcsLogLevels::DELOUSE_NAME);
         break;
     case AcsLogLevels::DEBUG_VAL:
         return LogLevelDefinition(AcsLogLevels::DEBUG_VAL,AcsLogLevels::DEBUG_NAME);
