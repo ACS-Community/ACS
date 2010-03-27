@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: generateXsdPythonBinding.py,v 1.3 2009/12/31 18:06:31 agrimstrup Exp $"
+# "@(#) $Id: generateXsdPythonBinding.py,v 1.4 2010/03/27 21:21:23 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -49,6 +49,7 @@ def find_schema_files(ebs, cfgfilename):
     # The data we want is returned as a list of tuples containing the filename, with path,
     # and the namespace.
     flist = []
+    nslist = []
     for elem in ebs.content():
         
         # The XmlNamespace2JPackage elements are ignored because they contain information that
@@ -60,6 +61,8 @@ def find_schema_files(ebs, cfgfilename):
             # I know that will be unique.
             nsname, ext = os.path.splitext(elem.schemaName)
 
+            nslist.append(elem.xmlNamespace)
+            
             # Some filenames are not legal Python module names, so we have to fix them as well.
             if re.compile('\A([a-zA-Z_])\w*\Z').match(nsname) is None:
                 clist = list(nsname)
@@ -74,9 +77,9 @@ def find_schema_files(ebs, cfgfilename):
                 # It does not make sense to generate an incomplete set of bindings so, should
                 # any specified schema file be missing, we must stop processing.
                 raise IOError('%s not found' % filename)
-    return flist
+    return flist, nslist
 
-def generate_bindings(pkgname, schema_file_list):
+def generate_bindings(pkgname, schema_file_list, schema_namespace_list):
     '''Format and execute the pyxbgen command to build the bindings.'''
 
     # Generated Python bindings will live in the python/site-packages under the
@@ -87,6 +90,13 @@ def generate_bindings(pkgname, schema_file_list):
               '--binding-root=../lib/python/site-packages',
               '--archive-to-file=../lib/python/site-packages/%s.wxs' % pkgname,
               '--archive-path=$PYTHONPATH', ]
+
+    # pyxbgen prints out a warning when it imports elements from other archive
+    # files.  Since we are compiling a bunch of schema files, we want their
+    # information to be used rather than any previously compiled information.
+    # We need to suppress the namespaces associated with these schema.
+    for srec in schema_namespace_list:
+        cmdstr.append('--no-load-namespace %s' % srec)
 
     # All bindings listed are processed by the same command.  This approach eliminates
     # special processing for schema dependencies but has not impact on standalone schemata.
@@ -101,7 +111,7 @@ def generate_bindings(pkgname, schema_file_list):
         print >>sys.stderr, "Child was terminated by signal", -retcode
     return retcode
 
-def main(args):
+def main(args, fopen=open):
     '''Generate Python bindings for the given specification'''
 
     # If the user fails to provide a file name, the script is going to fail anyway.
@@ -116,14 +126,14 @@ def main(args):
         # By convention, XSD binding files are stored in the idl directory of the
         # module being compiled.  They are XML documents that follow the
         # EntitybuilderSettings schema.
-        xml = open('../idl/%s.xml' % args[0])
+        xml = fopen('../idl/%s.xml' % args[0].strip())
         ebs = xmlpybind.EntitybuilderSettings.CreateFromDocument(xml.read())
 
-        flist = find_schema_files(ebs, xml.name)
+        flist,nslist = find_schema_files(ebs, xml.name)
 
         # If no schema were provided in the specification, the list will be empty.
         if flist:
-            return generate_bindings(args[0], flist)
+            return generate_bindings(args[0], flist, nslist)
         else:
             print >>sys.stderr, "Specification %s contains no schema information." % args[0]
             return 0
