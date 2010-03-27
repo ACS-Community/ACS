@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.16 2009/07/16 16:34:19 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.17 2010/03/27 17:05:49 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.16 2009/07/16 16:34:19 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.17 2010/03/27 17:05:49 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -102,7 +102,7 @@ class ACSFormatter(logging.Formatter):
         Constructor.
         '''
         #first parameter to Formatter defines the overall message layout
-        formatString = "%(asctime)s.000 %(name)s %(message)s"
+        formatString = "%(asctime)s.%(msecs)03d %(name)s %(message)s"
         #second parameter to Formatter defines the date format
         dateFormat = "%Y-%m-%dT%H:%M:%S"
         #call super's constructor
