@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2009/12/18 22:47:32 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/03/29 12:19:30 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -33,6 +33,8 @@ PY_PACKAGES_L      =
 
 #>>>>> END OF standard rules
 
+xmlpybind_dpps_prereq=xmlpybind
+
 #
 # INCLUDE STANDARDS
 # -----------------
@@ -47,10 +49,11 @@ endif
 # TARGETS
 # -------
 
-Schemata:
+xmlpybind: 
+	@echo "genearting schemata..."
 	pyxbgen --module-prefix=xmlpybind -u ../../xmljbind/src/alma/tools/entitybuilder/EntitybuilderSettings.xsd -m EntitybuilderSettings
 
-all:	Schemata do_all
+all:	xmlpybind do_all 
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
