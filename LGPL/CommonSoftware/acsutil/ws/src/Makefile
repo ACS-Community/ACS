@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.45 2009/10/16 14:01:23 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.46 2010/03/29 12:20:01 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -184,6 +184,7 @@ IDL_FILES =
 # Default is UNIX, for VxVorks application next line MUST BE UNCOMMENTED
 #MAKE_VXWORKS = on   
 
+acsutilCASAPathInsert_ds_prereq=acsutilCASAPathInsert.py
 #
 # INCLUDE STANDARDS
 # -----------------
