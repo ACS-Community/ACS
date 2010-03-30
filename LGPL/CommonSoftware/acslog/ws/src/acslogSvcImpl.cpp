@@ -18,18 +18,23 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acslogSvcImpl.cpp,v 1.23 2010/03/26 23:28:15 javarias Exp $"
+* "@(#) $Id: acslogSvcImpl.cpp,v 1.24 2010/03/30 21:49:27 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  11/09/01  created 
 */
 
-static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.23 2010/03/26 23:28:15 javarias Exp $"; 
+static char *rcsId="@(#) $Id: acslogSvcImpl.cpp,v 1.24 2010/03/30 21:49:27 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acslogSvcImpl.h"
 #include "acserr.h"
+
+//This is to avoid conflict with the definition on LM_DELOUSE macro
+#ifdef LM_DELOUSE
+#undef LM_DELOUSE
+#endif
 
 // ----------------------------------------------------------
 //helper function used to convert from ACSLog logging priorities
