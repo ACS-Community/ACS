@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.28 2010/03/26 23:24:15 javarias Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.29 2010/03/30 17:21:05 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -60,7 +60,7 @@ else \
 /**
  * Used to send logs. This macro is primarily useful because it automatically
  * determines the file name and line number for the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
  * @param logAudience intended receiver of this log message
@@ -93,7 +93,7 @@ else \
 /**
  * Used to send logs. This macro is primarily useful because it automatically
  * determines the file name and line number for the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
  * @param logArray array where the log was generated
@@ -123,7 +123,7 @@ else \
 /**
  * Used to send logs. This macro is primarily useful because it automatically
  * determines the file name and line number for the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
  * @param logAudience intended receiver of this log message
@@ -153,7 +153,7 @@ else \
  * Used to publish a log record. Useful for doing things like setting
  * a specific time the log was sent (rather than letting ACS figure this
  * out for you).
- * @param logPriority  ACS priority of the log.
+ * @param logPriority Logging::BaseLog::Priority (ACS) priority of the log.
  * @param logMessage  Log message (string).
  * @param logFile  Name of the file the log was published from (__FILE__)
  * @param logLine  Line number from where the log was published (__LINE__)
@@ -184,7 +184,7 @@ else \
  * Used to publish a log record to the global logger. Useful for doing things like setting
  * a specific time the log was sent (rather than letting ACS figure this
  * out for you).
- * @param logPriority  ACS priority of the log.
+ * @param logPriority  Logging::BaseLog::Priority (ACS) priority of the log.
  * @param logMessage  Log message (string).
  * @param logFile  Name of the file the log was published from (__FILE__)
  * @param logLine  Line number from where the log was published (__LINE__)
@@ -225,8 +225,8 @@ Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, rout
  * Used to publish a log record from a static context. Useful for doing things like setting
  * a specific time the log was sent (rather than letting ACS figure this
  * out for you).
- * @param logPriority  ACS priority of the log.
- * @param logMessage  Log message (string).
+ * @param logPriority Logging::BaseLog::Priority (ACS) priority of the log.
+ * @param logMessage Log message (std::string).
  * @param logFile  Name of the file the log was published from (__FILE__)
  * @param logLine  Line number from where the log was published (__LINE__)
  * @param logRoutine  Name of the routine from where the log was published (string)
@@ -248,7 +248,7 @@ Logging::Logger::getStaticLogger()->log(priority, text, __FILE__, __LINE__, rout
  * Used to send logs from a static context (such as from static methods).
  * This macro is primarily useful because it automatically determines the file 
  * name and line
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
  * @param logAudience intended receiver of this log message
@@ -280,7 +280,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the developer. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define LOG_TO_DEVELOPER(logPriority, logMessage) \
@@ -290,7 +290,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the developer. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define STATIC_LOG_TO_DEVELOPER(logPriority, logMessage) \
@@ -300,7 +300,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the operator. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define LOG_TO_OPERATOR( logPriority, logMessage) \
@@ -310,7 +310,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the operator. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define STATIC_LOG_TO_OPERATOR( logPriority, logMessage) \
@@ -320,7 +320,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the science logs. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the scientists.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define LOG_TO_SCIENCE( logPriority, logMessage) \
@@ -330,7 +330,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  * Used to send logs to the science logs. This macro is primarily useful because
  * it automatically determines the file name, line number and function name for
  * the scientists.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define STATIC_LOG_TO_SCIENCE( logPriority, logMessage) \
@@ -343,7 +343,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  *
  * Note: Replaced by LOG_TO_SCIENCE.  This macro will be removed after the ALMA 7.1 release.
  * 
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define LOG_TO_SCILOG( logPriority, logMessage) \
@@ -356,7 +356,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
  *
  * Note: Replaced by LOG_TO_SCIENCE.  This macro will be removed after the ALMA 7.1 release.
  * 
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  */
 #define STATIC_LOG_TO_SCILOG( logPriority, logMessage) \
@@ -365,7 +365,7 @@ Logging::LogTrace::LogTraceSmartPtr __autoTraceLogTraceSmartPtrInstance(new Logg
 /**
  * Used to send logs. This macro is primarily useful because it automatically
  * determines the file name and line number for the developer.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logRoutine Name of the routine in which this macro is being used from (std::string)
  * @param logMessage Log message (std::string)
  * @param logAudience intended receiver of this log message
@@ -392,7 +392,7 @@ if (logger != 0) { \
  * Used to send logs to the operator. This macro is primarily useful because
  * it automatically determines the file name, line number, function name and
  * set the audience to the operator. This can be used in static functions.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  * @param logger The logger to use (Logging::Logger::LoggerSmartPtr)
  */
@@ -403,7 +403,7 @@ if (logger != 0) { \
  * Used to send logs to the developer. This macro is primarily useful because
  * it automatically determines the file name, line number, function name and
  * set the audience to the developer. This can be used in static functions.
- * @param logPriority Logging::BaseLog::Priority of the log message
+ * @param logPriority ACE_Log_Priority of the log message
  * @param logMessage Log message (std::string)
  * @param logger The logger to use (Logging::Logger::LoggerSmartPtr)
  */
