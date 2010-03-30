@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.76 2010/03/26 23:24:15 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.77 2010/03/30 21:47:43 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.76 2010/03/26 23:24:15 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.77 2010/03/30 21:47:43 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -75,9 +75,6 @@ void
 LoggingProxy::log(ACE_Log_Record &log_record)
 {
     unsigned long priority = getPriority(log_record);
-    unsigned long ace_prio_type = log_record.type();
-    ace_prio_type++;
-
     int privateFlags = (*tss)->privateFlags();
     // 1 - default/priority local prohibit
     // 2 - default/dynamic priority Remote prohibit
@@ -591,8 +588,8 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	xml += " Uri=\"" + ACE_CString((*tss)->uri()) + "\"";
 	}
 
-    // priority
-    if (priority != log_record.priority()+1)
+    // priority, discard the cases when TRACE and DELOUSE levels are used
+    if (priority != log_record.priority()+1 && priority != 1 && priority != 2)
 	{
 	ACE_OS::sprintf(line, " Priority=\"%lu\"", priority); //align to ACS priorty
 	xml += line;
@@ -1689,8 +1686,10 @@ LoggingProxy::getPriority(ACE_Log_Record &log_record)
 // here we have to add 1 to align ACE and ACS priorities. In past it was OK due to a bug in ACE
     unsigned long priority = log_record.priority()+1;
     unsigned long flag_prio = (*tss)->flags() & 0x0F;
+    //DELOUSE case
     if(priority == 13)
         priority = 2;
+    //TRACE case
     else if (priority == 2)
         priority = 1;
     if (flag_prio)
