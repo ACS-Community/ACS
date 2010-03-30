@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.29 2010/03/30 17:21:05 javarias Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.30 2010/03/30 20:29:09 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,6 +35,7 @@
 #include <iostream>
 #include <acsutilTimeStamp.h>
 
+#define LM_DELOUSE 010000
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
