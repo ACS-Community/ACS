@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.44 2009/01/16 00:12:54 agrimstrup Exp $
+# @(#) $Id: Log.py,v 1.45 2010/03/30 20:09:00 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.44 2009/01/16 00:12:54 agrimstrup Exp $"
+__revision__ = "$Id: Log.py,v 1.45 2010/03/30 20:09:00 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -80,6 +80,9 @@ _srcfile = os.path.normcase(_srcfile)
 logging.TRACE = logging.NOTSET + 1
 logging.addLevelName(logging.TRACE, "TRACE")
 
+logging.DELOUSE = logging.TRACE + 1
+logging.addLevelName(logging.DELOUSE, "DELOUSE")
+
 logging.NOTICE = logging.INFO + 1
 logging.addLevelName(logging.NOTICE, "NOTICE")
 
@@ -97,7 +100,8 @@ logging.addLevelName(logging.OFF, "OFF")
 # The interpolated values, 1 and 7, are reported as their
 # effective log levels. 
 RLEVELS = { logging.NOTSET    : 0,
-            logging.TRACE     : 2,  
+            logging.TRACE     : 1,
+            logging.DELOUSE   : 2,  
             logging.DEBUG     : 3,  
             logging.INFO      : 4,  
             logging.NOTICE    : 5,  
@@ -116,8 +120,10 @@ RLEVELS = { logging.NOTSET    : 0,
 # 1 and 7 to the next highest level, so that behaviour
 # has been incorporated in the lookup table.
 LEVELS = { 0                        : logging.NOTSET,
-           1                        : logging.TRACE,  
-           2                        : logging.TRACE,  
+           ACSLog.ACS_LOG_TRACE     : logging.TRACE,
+           1                        : logging.TRACE,
+           ACSLog.ACS_LOG_DELOUSE   : logging.DELOUSE,
+           2                        : logging.DELOUSE,  
            ACSLog.ACS_LOG_TRACE     : logging.TRACE,
            3                        : logging.DEBUG,  
            ACSLog.ACS_LOG_DEBUG     : logging.DEBUG,  
@@ -550,6 +556,22 @@ class Logger(logging.Logger):
         '''
         msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_DEBUG], msg)
+        
+    #------------------------------------------------------------------------
+    def logDelouse(self, msg):
+        '''
+        Log a delouse message.
+
+        Parameters:
+        - msg is a string to be sent to the logging system
+        
+
+        Returns: Nothing
+
+        Raises: Nothing
+        '''
+        msg = self.__formatMessage(msg)
+        self.log(LEVELS[ACSLog.ACS_LOG_DELOUSE], msg)
         
     #------------------------------------------------------------------------
     def logEmergency(self, msg):
