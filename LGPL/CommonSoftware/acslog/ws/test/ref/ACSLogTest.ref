@@ -32,15 +32,15 @@
 3 - Test #5 (Debug)
 2 - <Info TimeStamp="----------T--:--:--.---" File="ESTestImpl.cpp" Line="---" Routine="acserrTestImpl::f1 (0)" Host="xxxxxxxxx" Process="acslogErrorServer s1 " Thread=xxxxxxxxx Context="" SourceObject="GlobalLogger"><![CDATA[Test error 1 (type=900902, code=2)]]><Data Name="End of call's chain">N/A</Data></Info>
 3 - Test #6 (Info)
-2 - <Trace TimeStamp="----------T--:--:--.---" File="" Line="---" Routine="" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject="" Priority="1"><![CDATA[test msg #0 (there should not be Context and Source info)]]></Trace>
+2 - <Trace TimeStamp="----------T--:--:--.---" File="" Line="---" Routine="" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject=""><![CDATA[test msg #0 (there should not be Context and Source info)]]></Trace>
 3 - Test #7 (Notice)
-2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject="" Priority="1"><![CDATA[test msg #1 (there should be Source info and not Context info)]]></Trace>
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="" Thread=xxxxxxxxx Context="" SourceObject=""><![CDATA[test msg #1 (there should be Source info and not Context info)]]></Trace>
 3 - Test #8 (Warning)
-2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Priority="1"><![CDATA[test msg #2 (there should be Context and Source info)]]></Trace>
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test msg #2 (there should be Context and Source info)]]></Trace>
 3 - Test #9 (Critical)
-2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Priority="1"><![CDATA[test msg #3 (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Trace>
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test msg #3 (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Trace>
 3 - Test #10 (Alert)
-2 - <Delouse TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0" Priority="2"><![CDATA[test Delouse msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Delouse>
+2 - <Delouse TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Delouse msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Delouse>
 3 - Test #11 (Emergency)
 2 - <Debug TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT"><![CDATA[test Debug msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Debug>
 3 - logWithAudience Test #12 (Trace)
@@ -56,7 +56,7 @@
 3 - logWithAudience Test #17 (Error)
 2 - <Emergency TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" StackId="XXXXXXXX" StackLevel="0"><![CDATA[test Emergency msg (there should be Context and  Source info and Data)]]><Data Name="Name #1"><![CDATA[Value #1]]></Data></Emergency>
 3 - logWithAudience Test #18 (Critical)
-2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna="" Priority="1"><![CDATA[test logWithAudience Trace msg (there should be Context and  Source info)]]></Trace>
+2 - <Trace TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Trace msg (there should be Context and  Source info)]]></Trace>
 3 - logWithAudience Test #19 (Alert)
 2 - <Debug TimeStamp="----------T--:--:--.---" File="testAcsLog.cpp" Line="---" Routine="main" Host="xxxxxxxxx" Process="acslogTest" Thread="THREAD_ID" Context="" SourceObject="SOURCE_OBJECT" Audience="" Array="" Antenna=""><![CDATA[test logWithAudience Debug msg (there should be Context and  Source info)]]></Debug>
 3 - logWithAudience Test #20 (Emergency)
