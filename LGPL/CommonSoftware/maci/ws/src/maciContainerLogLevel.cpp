@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerLogLevel.cpp,v 1.7 2008/07/14 13:41:20 bjeram Exp $"
+* "@(#) $Id: maciContainerLogLevel.cpp,v 1.8 2010/03/30 21:34:55 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@
 void
 printUsageAndExit(int argc, char *argv[])
 {
-	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\nWith log level values {2-6,8-11,99=OFF}\n", argv[0]);
+	ACE_OS::printf("\n\tusage: %s <container name wildcard> {set,get,list,refresh} [<loggerName | \"default\"> <minLogLevel> <minLogLevelLocal>] [<ORB options>]\nWith log level values {1-6,8-11,99=OFF}\n", argv[0]);
 	exit(-1);
 }
 
@@ -46,7 +46,7 @@ printUsageAndExit(int argc, char *argv[])
 int
 isLogLevelValid(int logLevel)
 {
-	return ( (logLevel >= 2 && logLevel <= 11 && logLevel != 7) || logLevel==99 );
+	return ( (logLevel >= 1 && logLevel <= 11 && logLevel != 7) || logLevel==99 );
 }
 
 int
