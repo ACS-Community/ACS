@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testMacros.cpp,v 1.15 2010/03/26 23:24:15 javarias Exp $"
+* "@(#) $Id: testMacros.cpp,v 1.16 2010/03/31 20:15:37 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_ERROR, "Test of LM_ERROR log"));
     ACS_LOG( LM_FULL_INFO, "main",
-         (03, "Test of LM_DELOUSE log"));
+         (LM_DELOUSE, "Test of LM_DELOUSE log"));
     ACS_LOG( LM_FULL_INFO, "main",
 	     (LM_DEBUG, "Test of LM_DEBUG log"));
     ACS_LOG( LM_FULL_INFO, "main",
