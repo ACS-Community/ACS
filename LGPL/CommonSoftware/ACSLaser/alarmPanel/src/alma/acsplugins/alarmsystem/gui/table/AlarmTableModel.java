@@ -19,11 +19,7 @@
 
 /** 
  * @author  acaproni   
-<<<<<<< AlarmTableModel.java
- * @version $Id: AlarmTableModel.java,v 1.28 2010/03/31 15:26:32 acaproni Exp $
-=======
- * @version $Id: AlarmTableModel.java,v 1.28 2010/03/31 15:26:32 acaproni Exp $
->>>>>>> 1.25.2.2
+ * @version $Id: AlarmTableModel.java,v 1.29 2010/03/31 15:27:08 acaproni Exp $
  * @since    
  */
 
