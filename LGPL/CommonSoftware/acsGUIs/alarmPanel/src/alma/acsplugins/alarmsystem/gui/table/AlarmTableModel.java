@@ -19,7 +19,11 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.27 2010/02/15 15:23:49 acaproni Exp $
+<<<<<<< AlarmTableModel.java
+ * @version $Id: AlarmTableModel.java,v 1.28 2010/03/31 15:26:32 acaproni Exp $
+=======
+ * @version $Id: AlarmTableModel.java,v 1.28 2010/03/31 15:26:32 acaproni Exp $
+>>>>>>> 1.25.2.2
  * @since    
  */
 
@@ -652,6 +656,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	public String getColumnName(int col) {
 		return AlarmTableColumn.values()[col].title;
 	}
+	
+	
 	
 	/**
 	 * The model needs to know that class of the PRIORITY
