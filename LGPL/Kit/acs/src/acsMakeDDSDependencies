@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeDDSDependencies,v 1.4 2009/06/23 09:00:58 mzampare Exp $"
+# "@(#) $Id: acsMakeDDSDependencies,v 1.5 2010/04/05 16:05:20 javarias Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -103,7 +103,7 @@ for type in ${typesList}
   echo "include ../object/${type}TypeSupportStubs.da"
   echo ""
   echo ""
-  installList="../object/${type}TypeSupportC.h ../object/${type}TypeSupportS.h ${installList}"
+  installList="../object/${type}TypeSupportC.h ../object/${type}TypeSupportS.h ../object/${type}TypeSupportImpl.h ${installList}"
 
   echo "CSOURCENAMES:= ${type}TypeSupportC ${type}TypeSupportS ${type}TypeSupportImpl \$(CSOURCENAMES)"
   echo ""
