@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Common_Log.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Common_Log.py,v 1.3 2010/04/13 01:57:51 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Common_Log.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Common_Log.py,v 1.3 2010/04/13 01:57:51 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import unittest
 import mock
@@ -139,7 +139,7 @@ class LogLevelsCheck(unittest.TestCase):
         """LogLevel numeric log levels map to correct logging values"""
         self.assertEquals(Log.LEVELS[0], Log.logging.NOTSET)
         self.assertEquals(Log.LEVELS[1], Log.logging.TRACE)
-        self.assertEquals(Log.LEVELS[2], Log.logging.TRACE)
+        self.assertEquals(Log.LEVELS[2], Log.logging.DELOUSE)
         self.assertEquals(Log.LEVELS[3], Log.logging.DEBUG)
         self.assertEquals(Log.LEVELS[4], Log.logging.INFO)
         self.assertEquals(Log.LEVELS[5], Log.logging.NOTICE)
@@ -154,7 +154,8 @@ class LogLevelsCheck(unittest.TestCase):
     def testLogLevelReverseMapping(self):
         """LogLevel Logging values map to correct numeric log levels"""
         self.assertEquals(0, Log.RLEVELS[Log.logging.NOTSET])
-        self.assertEquals(2, Log.RLEVELS[Log.logging.TRACE])
+        self.assertEquals(1, Log.RLEVELS[Log.logging.TRACE])
+        self.assertEquals(2, Log.RLEVELS[Log.logging.DELOUSE])
         self.assertEquals(3, Log.RLEVELS[Log.logging.DEBUG])
         self.assertEquals(4, Log.RLEVELS[Log.logging.INFO])
         self.assertEquals(5, Log.RLEVELS[Log.logging.NOTICE])

@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.17 2010/03/27 17:05:49 agrimstrup Exp $
+# @(#) $Id: ACSHandler.py,v 1.18 2010/04/13 01:57:51 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.17 2010/03/27 17:05:49 agrimstrup Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.18 2010/04/13 01:57:51 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -310,6 +310,12 @@ class ACSHandler(logging.handlers.BufferingHandler):
                                             record.antenna)
         elif record.levelname=='TRACE':
             self.logSvc.logTrace(acs_timestamp,
+                                 record.getMessage(),
+                                 rt_context,
+                                 src_info,
+                                 data)
+        elif record.levelname=='DELOUSE':
+            self.logSvc.logDelouse(acs_timestamp,
                                  record.getMessage(),
                                  rt_context,
                                  src_info,

@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.45 2010/03/30 20:09:00 javarias Exp $
+# @(#) $Id: Log.py,v 1.46 2010/04/13 01:57:51 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.45 2010/03/30 20:09:00 javarias Exp $"
+__revision__ = "$Id: Log.py,v 1.46 2010/04/13 01:57:51 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -652,6 +652,22 @@ class Logger(logging.Logger):
         '''
         msg = self.__formatMessage(msg)
         self.log(LEVELS[ACSLog.ACS_LOG_TRACE], msg)
+        
+    #------------------------------------------------------------------------
+    def logDelouse(self, msg):
+        '''
+        Log a delouse message.
+        
+        Parameters:
+        - msg is a string to be sent to the logging system
+        
+        
+        Returns: Nothing
+        
+        Raises: Nothing
+        '''
+        msg = self.__formatMessage(msg)
+        self.log(LEVELS[ACSLog.ACS_LOG_DELOUSE], msg)
         
     #------------------------------------------------------------------------
     def logWarning(self, msg):
