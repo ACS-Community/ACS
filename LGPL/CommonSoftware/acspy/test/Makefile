@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.42 2008/11/18 00:01:39 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.43 2010/04/13 01:58:43 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -65,7 +65,7 @@ PY_SCRIPTS_L =	test_Acspy_Nc_CommonNC \
 
 PY_PACKAGES = acspytestImpl acspyTestQoSImpl
 
-PY_PACKAGES_L = UnitTests
+PY_PACKAGES_L = 
 
 SCRIPTS_L = acspyTATPrologue
 
