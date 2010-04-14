@@ -14,6 +14,7 @@ s/TimeStamp=[0-9,a-z,A-Z,:, ]*,/TimeStamp=xxxx,/g
 s/Line=[0-9]*,/Line=xxx/g
 s/Host=[0-9]*.[0-9]*.[0-9]*.[0-9]*,/Host=xxxx,/g
 s/Host=.*,/Host=xxxx,/g
+s/host=.*,/host=xxxx,/g
 s/Process=PID: [0-9]*/Process=PID: xxx/g
 s/RTContext: ([0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*,/RTContext: (xxx, xxx, xxx, xxx/g
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
