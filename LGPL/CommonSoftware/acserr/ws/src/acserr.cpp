@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.90 2010/03/15 10:49:05 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.91 2010/04/16 09:45:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.90 2010/03/15 10:49:05 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.91 2010/04/16 09:45:35 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -427,6 +427,7 @@ ACE_CString ErrorTraceHelper::getData (const char* name)
 
     int i=0,
 	length = m_current->data.length();
+
     while (i<length && ACE_OS::strcmp(name, m_current->data[i].name) != 0)
 	i++;
     if (i<length) // have we reached the end ?
@@ -549,12 +550,11 @@ CompletionImpl::operator=(CompletionImpl& c)
 	code = c.getCode();
 	timeStamp = c.getTimeStamp();
 	previousError = c.previousError;
-	if (c.previousError.length()>0)
+	if (previousError.length()>0)
 	    {
-	    m_errorTraceHelper = c.previousError[0];
+	    m_errorTraceHelper = previousError[0];//c.previousError[0];
 	    }//if
-
-	}
+	}//if
   return *this;
 }
 
