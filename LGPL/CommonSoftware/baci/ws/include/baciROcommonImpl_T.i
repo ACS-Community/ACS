@@ -131,9 +131,17 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)
 	}
 	else
 	{
-		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
-		ex.setVariable("alarmSystemMonitor_mp");
-		throw ex;
+		if (this->alarmTimerTrig_m!=0)
+		{
+			//TBD: better exception should be thrown
+			ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily");
+			ex.setVariable("alarmSystemMonitor_mp");
+			throw ex;
+		}
+		else
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily", (LM_WARNING, "Failed to set alarm fault family to: %s. //TBD: better exception should be thrown.", ff));
+		}//if-else
 	}//if-else
 }//setAlarmFaultFamily
 
@@ -150,9 +158,17 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultMember(const char* fm)
 	}
 	else
 	{
-		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember");
-		ex.setVariable("alarmSystemMonitor_mp");
-		throw ex;
+		if (this->alarmTimerTrig_m!=0)
+		{
+			//TBD: better exception should be thrown
+			ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember");
+			ex.setVariable("alarmSystemMonitor_mp");
+			throw ex;
+		}
+		else
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember", (LM_WARNING, "Failed to set alarm fault member to: %s.", fm));
+		}//if-else
 	}//if-else
 
 }//setAlarmFaultMember

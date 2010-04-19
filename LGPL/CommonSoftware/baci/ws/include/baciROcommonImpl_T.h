@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciROcommonImpl_T.h,v 1.28 2009/09/15 08:51:14 bjeram Exp $"
+* "@(#) $Id: baciROcommonImpl_T.h,v 1.29 2010/04/19 13:55:19 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -99,12 +99,16 @@ public:
 
   /**
    * Sets alarm fault family
+   * * @exception ACSErrTypeCommon::NullPointerExImpl
+   * in case if the alarm is disabled (alarm_timer_trig==0) just a warning message is logged
    * @param fault family
    */
   void setAlarmFaultFamily(const char* ff);
 
   /**
-   * Sets alarm fault member
+   * Sets alarm fault member.
+   * @exception ACSErrTypeCommon::NullPointerExImpl
+   * in case if the alarm is disabled (alarm_timer_trig==0) just a warning message is logged
    * @param fault member
    */
   void setAlarmFaultMember(const char* fm);
