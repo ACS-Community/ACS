@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.2 2009/10/09 10:38:17 bjeram Exp $"
+* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.3 2010/04/19 10:12:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.2 2009/10/09 10:38:17 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.3 2010/04/19 10:12:26 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
 	setterThread.resume();
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Going in main loop sleep..."));
-	ACE_Time_Value tv(12);
+	ACE_Time_Value tv(20);
 	BACI_CORBA::getORB()->run(tv);
 
 	ACS_SHORT_LOG((LM_DEBUG, "(main thread) Exit ... "));
@@ -249,6 +249,8 @@ int main(int argc, char* argv[])
         /* Allow time for the done() callback to come back */
 	BACI_CORBA::getORB()->run(tv);
 
+
+	ACS_SHORT_LOG((LM_INFO, "Exiting ...."));
 	BACI_CORBA::DoneCORBA();
 	}
     catch( CORBA::Exception &ex )
