@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.8 2008/09/29 09:51:19 cparedes Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.9 2010/04/20 14:46:51 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -34,6 +34,9 @@
 
 using namespace cdb;
 using namespace std;
+
+namespace cdb
+{
 
 //----------------------------------------------------
 // DALChangeListenerImplementation
@@ -402,6 +405,70 @@ CDB::doubleSeq * DAONode::get_double_seq (const char * propertyName)
 	throw CORBA::NO_RESOURCES();
 }
 
+
+
+// Specialization for double
+template<>
+double DAONode::getValue(const char * propertyName)
+{
+	return this->get_double( propertyName );
+}
+//we have to cast because from DAO we get just get_double
+template<>
+float DAONode::getValue(const char * propertyName)
+{
+	return static_cast<float>(this->get_double( propertyName ));
+}
+
+// Specialization for long
+template<>
+long DAONode::getValue(const char * propertyName)
+{
+	return get_long( propertyName );
+}
+
+//we have to cast because from DAO we get just get_long
+template<>
+long long DAONode::getValue(const char * propertyName)
+{
+	// until get_long is fixed that it can read also xs:long which is 64 bit we have to read string and cast it to long  ong
+	long long var;
+	CORBA::String_var str = this->get_string( propertyName );
+	std::istringstream is(str.in());
+	(istream&) is >> var ;
+		if (!is)
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, "DAONode::getValue<long long>",
+						  (LM_ERROR, "Problem converting string value: %s to long long!", str.in()));
+			 throw cdbErrType::WrongCDBDataTypeEx();
+		}//if
+
+		return var;
+}
+
+
+//we have to cast because from DAO we get just get_long
+template<>
+int DAONode::getValue(const char * propertyName)
+{
+	return static_cast<int>(get_long( propertyName ));
+}
+
+//we have to cast because from DAO we get just get_long
+template<>
+unsigned long long  DAONode::getValue(const char * propertyName)
+{
+	return static_cast<unsigned long long>(get_long( propertyName ));
+}
+
+template<>
+unsigned long DAONode::getValue(const char * propertyName)
+{
+	return static_cast<unsigned long>(get_long( propertyName ));
+}
+
+
+
 void DAONode::destroy ()
 {
     //ACS_TRACE("cdb::DAONode::destroy");
@@ -509,6 +576,7 @@ void DAOChildNode::destroy ()
     // noop (should not destroy parent)
 }
 
+};//namespace cdb
 
 
 
