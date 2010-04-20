@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciROpattern.cpp,v 1.115 2009/09/15 08:52:12 bjeram Exp $"
+ * "@(#) $Id: baciROpattern.cpp,v 1.116 2010/04/20 15:29:12 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -84,21 +84,8 @@ namespace baci {
   
 	try
 	    {
-
-	    // NOTE: var is always a scalar value
-#define READ_VALUE(name, var) \
-      { \
-      CORBA::String_var str = dao->get_string( name ); \
-      std::istringstream is(str.in()); \
-      (istream&) is >> var ; \
-      if (!is) \
-	  throw cdbErrType::WrongCDBDataTypeEx(); \
-      }
-
-	    READ_VALUE("alarm_mask", alarmMask_m);
-	    READ_VALUE("alarm_trigger", alarmTrigger_m);
-
-#undef READ_VALUE
+		alarmMask_m = dao->getValue<ACS::pattern>("alarm_mask");
+	    alarmTrigger_m = dao->getValue<ACS::pattern>("alarm_trigger");
 
 	    return true;
 	    }

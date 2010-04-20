@@ -267,21 +267,8 @@ bool baci::RWcontImpl<ACS_RW_TL>::readCharacteristics()
   
   try
       {
-
-      // NOTE: var is always a scalar value
-#define READ_VALUE(name, var) \
-      { \
-      CORBA::String_var str = dao->get_string( name ); \
-      std::istringstream is(str.in()); \
-      (istream&) is >> var ; \
-      if (!is) \
-	  throw cdbErrType::WrongCDBDataTypeEx(); \
-      }
-
-      READ_VALUE("min_value", min_value_m);
-      READ_VALUE("max_value", max_value_m);
-
-#undef READ_VALUE
+	  min_value_m = dao->getValue<TSM>("min_value");
+	  max_value_m = dao->getValue<TSM>("max_value");
 
       return true;
       }

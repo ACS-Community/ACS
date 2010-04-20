@@ -53,6 +53,10 @@ bool baci::PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *mod
   
   try
       {
+      min_step_m = dao->getValue<TSM>("min_step");
+      min_delta_trig_m = dao->getValue<TSM>("min_delta_trig");
+      graph_min_m = dao->getValue<TSM>("graph_min");
+      graph_max_m = dao->getValue<TSM>("graph_max");
 
       // NOTE: var is always a scalar value
 #define READ_VALUE(name, var) \

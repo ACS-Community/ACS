@@ -95,6 +95,10 @@ bool baci::ROcontImpl<ACS_RO_TL>::readCharacteristics()
   
   try
       {
+	  alarmLowOn_m = dao->getValue<TSM>("alarm_low_on");
+	  alarmLowOff_m = dao->getValue<TSM>("alarm_low_off");
+	  alarmHighOn_m = dao->getValue<TSM>("alarm_high_on");
+	  alarmHighOff_m = dao->getValue<TSM>("alarm_high_off");
 
       // NOTE: var is always a scalar value
 #define READ_VALUE(name, var) \
