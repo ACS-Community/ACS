@@ -22,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: cdbDAONode.h,v 1.6 2008/09/29 09:51:19 cparedes Exp $"
+ * "@(#) $Id: cdbDAONode.h,v 1.7 2010/04/20 14:33:39 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -188,6 +188,15 @@ namespace cdb {
     */
 	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName);
 
+	/**
+	 * template version of getter method, which is used mostly in baci
+	 * It is specialized for baci (scalar) types
+	 * @throw cdbErrType::WrongCDBDataTypeEx
+	 * @throw cdbErrType::CDBFieldDoesNotExistEx
+	 */
+	template<class T>
+	T getValue(const char * propertyName);
+
 	virtual void destroy ();
 
       protected:
@@ -303,6 +312,16 @@ namespace cdb {
     * @throw cdbErrType::CDBFieldDoesNotExistEx
     */
 	virtual ::CDB::doubleSeq * get_double_seq (const char * propertyName);
+
+	/*
+	 * @throw cdbErrType::WrongCDBDataTypeEx
+	 * @throw cdbErrType::CDBFieldDoesNotExistEx
+   */
+	template<class T>
+	T getValue(const char * propertyName)
+	{
+		return m_parent->getValue<T>(propertyName);
+	}
 
 	virtual void destroy ();
 
