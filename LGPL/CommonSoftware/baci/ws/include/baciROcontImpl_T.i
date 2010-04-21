@@ -100,23 +100,6 @@ bool baci::ROcontImpl<ACS_RO_TL>::readCharacteristics()
 	  alarmHighOn_m = dao->getValue<TSM>("alarm_high_on");
 	  alarmHighOff_m = dao->getValue<TSM>("alarm_high_off");
 
-      // NOTE: var is always a scalar value
-#define READ_VALUE(name, var) \
-      { \
-      CORBA::String_var str = dao->get_string( name ); \
-      std::istringstream is(str.in()); \
-      (istream&) is >> var ; \
-      if (!is) \
-	  throw cdbErrType::WrongCDBDataTypeEx(); \
-      }
-
-      READ_VALUE("alarm_low_on", alarmLowOn_m);
-      READ_VALUE("alarm_low_off", alarmLowOff_m);
-      READ_VALUE("alarm_high_on", alarmHighOn_m);
-      READ_VALUE("alarm_high_off", alarmHighOff_m);
-
-#undef READ_VALUE
-
       return true;
       }
   catch (ACSErr::ACSbaseExImpl& ex)
