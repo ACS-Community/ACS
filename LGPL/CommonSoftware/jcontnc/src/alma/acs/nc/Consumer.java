@@ -844,7 +844,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			success = true;
 		}
 		catch (Exception ex2) {
-			m_logger.log(Level.WARNING, "Failed to disconnect from NC '" + m_channelName + "'.", ex2);
+			m_logger.log(Level.WARNING, "Failed to disconnect from NC '" + m_channelName + "'.\n" + ex2.toString());
 		}
 		finally {
 			if (success) {

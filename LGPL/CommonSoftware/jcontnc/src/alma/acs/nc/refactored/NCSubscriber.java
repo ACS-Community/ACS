@@ -599,7 +599,7 @@ public class NCSubscriber <T extends IDLEntity>
 			success = true;
 		}
 		catch (Exception ex2) {
-			logger.log(Level.WARNING, "Failed to disconnect from NC '" + channelName + "'.", ex2);
+			logger.log(Level.WARNING, "Failed to disconnect from NC '" + channelName + "'.\n" + ex2.toString());
 		}
 		finally {
 			if (success) {
