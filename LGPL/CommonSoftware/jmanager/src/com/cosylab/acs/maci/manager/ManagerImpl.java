@@ -3861,6 +3861,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 /// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
 		notifyContainerLogout(containerInfo, System.currentTimeMillis());
+		
+		Container container = containerInfo.getContainer();
+		if (container != null)
+			container.release();
 
 		logger.log(Level.INFO,"Container '" + containerInfo.getName() + "' logged out.");
 
@@ -3943,6 +3947,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 /// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo, System.currentTimeMillis());
+		
+		Client client = clientInfo.getClient();
+		if (client != null)
+			client.release();
 
 		logger.log(Level.INFO,"Client '" + clientInfo.getName() + "' logged out.");
 
@@ -3987,6 +3995,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 /// TODO !!!!!!!!!!!!!! no more handle -> componentInfo data
 		// notify administrators about the logout
 		notifyClientLogout(clientInfo, System.currentTimeMillis());
+
+		Client client = clientInfo.getClient();
+		if (client != null)
+			client.release();
 
 		logger.log(Level.INFO,"Administrator '" + clientInfo.getName() + "' logged out.");
 

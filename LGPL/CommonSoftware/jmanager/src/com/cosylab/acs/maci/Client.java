@@ -93,4 +93,10 @@ public interface Client
 	 * Get location string (host@port).
 	 */
 	public String getRemoteLocation() throws RemoteException;
+	
+	/**
+	 * Release remote resources of this object.
+	 * @throws RemoteException
+	 */
+	public void release();
 }

@@ -321,6 +321,13 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Client#release()
+	 */
+	public void release() {
+		client._release();
+	}
+
 	/**
      * Save the state of the <tt>ClientProxy</tt> instance to a stream (that
      * is, serialize it).

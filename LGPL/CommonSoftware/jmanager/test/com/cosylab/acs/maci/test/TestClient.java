@@ -228,4 +228,11 @@ public class TestClient implements Client
 		return "local";
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Client#release()
+	 */
+	public void release() {
+		// noop
+	}
+
 }

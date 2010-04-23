@@ -143,6 +143,13 @@ public class ClientImpl implements Client
 		return "local";
 	}
 
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Client#release()
+	 */
+	public void release() {
+		// noop
+	}
+
 	/**
 	 * Returns a single-line rendition of this instance into text.
 	 * 
