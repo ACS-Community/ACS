@@ -24,6 +24,7 @@ package cl.utfsm.acs.acg;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import cl.utfsm.acs.acg.core.*;
+import cl.utfsm.acs.acg.dao.*;
 
 public class ACGTestSuite {
 
@@ -39,6 +40,7 @@ public class ACGTestSuite {
 		suite.addTestSuite(AlarmManagerTest.class);
 		suite.addTestSuite(ReductionManagerTest.class);
 		suite.addTestSuite(SourceManagerTest.class);
+		suite.addTestSuite(ACSAlarmDAOImplTest.class);
 		return suite;
 	}
 }

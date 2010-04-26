@@ -43,6 +43,7 @@ public class Activator extends AbstractUIPlugin {
 	// Shared images across the plugin
 	public static final String IMG_ALARM = "image.alarm";
 	public static final String IMG_LINK  = "image.link";
+	public static final String IMG_TICKET  = "image.ticket";
 	public static final String IMG_FAULTMEMBERS  = "image.faultmembers";
 	public static final String IMG_FAULTCODES  = "image.faultcodes";
 	public static final String IMG_REDUCTIONS = "image.reductions";
@@ -98,6 +99,7 @@ public class Activator extends AbstractUIPlugin {
         reg.put(IMG_ALARM, getImageDescriptor("icons/alarm.gif"));
         reg.put(IMG_LINK, getImageDescriptor("icons/link.png"));
         reg.put(IMG_REDUCTIONS, getImageDescriptor("icons/reduction.png"));
+        reg.put(IMG_TICKET, getImageDescriptor("icons/ticket.png"));
         reg.put(IMG_FAULTMEMBERS, ImageDescriptor.createFromURL(
         		FileLocator.find(Platform.getBundle("org.eclipse.ui"),
         				new Path("icons/full/obj16/generic_elements.gif"),

@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Vector;
 
-import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+//import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
 
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.data.Alarm;
@@ -75,6 +76,8 @@ public class AlarmManager implements EntityManager {
 		try {
 			_ffList = ((ACSAlarmDAOImpl)_alarmDAO).loadAlarms();
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 
@@ -485,5 +488,6 @@ public class AlarmManager implements EntityManager {
 		//cern.laser.business.data.AlarmImpl alarm;
 		//_alarmDAO.deleteAlarm(alarm);
 		//_alarmDAO.updateAlarm(alarm);
+		//((ACSAlarmDAOImpl)_alarmDAO).flushAlarm(_ffList);
 	}
 }

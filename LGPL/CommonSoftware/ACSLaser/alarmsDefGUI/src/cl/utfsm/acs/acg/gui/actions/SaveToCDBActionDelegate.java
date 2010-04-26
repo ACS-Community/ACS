@@ -82,7 +82,6 @@ public class SaveToCDBActionDelegate implements IWorkbenchWindowActionDelegate {
 
 				// Save and reload information from the CDB
 				AlarmSystemManager.getInstance().saveToCDB();
-				//AlarmSystemManager.getInstance().loadFromCDB();
 
 				display.asyncExec(new Runnable() {
 					public void run() {

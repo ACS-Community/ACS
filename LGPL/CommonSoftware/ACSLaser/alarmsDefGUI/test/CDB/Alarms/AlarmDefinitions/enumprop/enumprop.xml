@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: enumprop.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/enumprop/enumprop.xml,v $
+-->
+<fault-family name="enumprop"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>0</priority>
+        <cause>local array-time in free-wheeling or soft mode</cause>
+        <action>Verify TE signal</action>
+        <consequence>distributed clock out of sync.</consequence>
+        <problem-description>array-time not in HARD mode</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

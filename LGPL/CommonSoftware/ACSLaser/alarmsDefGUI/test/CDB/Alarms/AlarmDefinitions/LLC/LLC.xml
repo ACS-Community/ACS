@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: LLC.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/LLC/LLC.xml,v $
+-->
+<fault-family name="LLC"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>Alarm code 1</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Alarm code 1</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>Stretcher dynamic range is getting near its limit</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>5 minutes until stretcher reachs an upper or lower limit</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>1</priority>
+        <cause>Stretcher has reached the limit</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>There is no time left because the stretcher is on the upper or lower limit, perform stretcher reset</problem-description>
+    </fault-code>
+    <fault-code value="8">
+        <priority>3</priority>
+        <cause>5 MHz reference signal level is run out of range</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Check 5 Mhz signal must be between 0.3v-1.6v</problem-description>
+    </fault-code>
+    <fault-code value="16">
+        <priority>3</priority>
+        <cause>50 MHz reference signal level is run out of range</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Check 50 Mhz signal must be between 0.17v-1.1v</problem-description>
+    </fault-code>
+    <fault-code value="32">
+        <priority>3</priority>
+        <cause>The input signal level of 50 MHz detector circuit is out range</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>V_DET range must be [0.2-1.2] volts</problem-description>
+    </fault-code>
+    <fault-code value="64">
+        <priority>3</priority>
+        <cause>Input signal level of fast fiber stretcher is out of range</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>VF range must be [0.5-3.8] volts</problem-description>
+    </fault-code>
+    <fault-code value="128">
+        <priority>1</priority>
+        <cause>The fast fiber stretcher has reached the one of upper/lower rail</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Reset needs to be done using the command SET_STRTCH_RST</problem-description>
+    </fault-code>
+    <fault-code value="256">
+        <priority>3</priority>
+        <cause>CAN BUS Communication Error</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Communication Error</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

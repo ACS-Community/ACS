@@ -123,4 +123,10 @@ public class AlarmSystemView extends ViewPart implements IMyViewPart {
 			//getSite().getWorkbenchWindow().getActivePage().hideView(views[i]);
 		}
 	}
+
+	@Override
+	public void fillWidgets() {
+		// TODO Auto-generated method stub
+		
+	}
 }

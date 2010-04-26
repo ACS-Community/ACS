@@ -36,11 +36,17 @@ import cern.laser.business.dao.SourceDAO;
 import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.WDAL;
 import com.cosylab.CDB.WDALHelper;
-import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
-import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
-import com.cosylab.acs.laser.dao.ACSSourceDAOImpl;
-import com.cosylab.acs.laser.dao.ConfigurationAccessor;
-import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
+//import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+//import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
+//import com.cosylab.acs.laser.dao.ACSSourceDAOImpl;
+//import com.cosylab.acs.laser.dao.ConfigurationAccessor;
+//import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
+
+import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSCategoryDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSSourceDAOImpl;
+import cl.utfsm.acs.acg.dao.ConfigurationAccessor;
+import cl.utfsm.acs.acg.dao.ConfigurationAccessorFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -70,8 +76,8 @@ public class DAOManager {
 	}
 
 	public void connect() throws AcsJContainerServicesEx {
-		_conf = ConfigurationAccessorFactory.getInstance(_contServ);
-		//_conf = ConfigurationAccessorFactory.getInstance(WDALHelper.narrow(_contServ.getCDB()));
+		//_conf = ConfigurationAccessorFactory.getInstance(_contServ);
+		_conf = ConfigurationAccessorFactory.getInstance(WDALHelper.narrow(_contServ.getCDB()));
 	}
 
 	public AlarmDAO getAlarmDAO() {

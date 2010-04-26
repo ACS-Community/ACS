@@ -32,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -171,6 +172,15 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		
 		_addRule = new Listener() {
 			public void handleEvent(Event event) {
+				if(event.type == SWT.KeyUp)
+					if(!(event.keyCode == SWT.CR || event.keyCode == ' '))
+						return;
+				
+				if(event.type == SWT.MouseDoubleClick){
+					Point pt = new Point(event.x,event.y);
+					if(_NRParentChAlarmList.getItem(pt) == null)
+						return;
+				}
 				TreeItem[] tmp1 = _tree.getSelection();
 				if(tmp1 == null || tmp1.length == 0)
 					return;
@@ -189,7 +199,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 					if(c == null)
 						return;
 					_reductionManager.addNodeReductionRule(p, c);
-					item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM));
+					item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
 				}
 				else{
 					//Remove child
@@ -1019,7 +1029,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 			for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
 				Alarm alarm2 = iterator2.next();
 				if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
-					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM));
+					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
 					break;
 				}
 			}
@@ -1165,7 +1175,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 			for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
 				Alarm alarm2 = iterator2.next();
 				if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
-					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM));
+					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
 					break;
 				}
 			}
@@ -1189,5 +1199,11 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		str = str.replaceAll(">$","");
 		String[] triplet = str.split(",");
 		return triplet;
+	}
+
+	@Override
+	public void fillWidgets() {
+		// TODO Auto-generated method stub
+		
 	}
 }

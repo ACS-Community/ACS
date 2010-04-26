@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+$Id: PSD.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/PSD/PSD.xml,v $
+-->
+<fault-family name="PSD"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="OSF Support Team"/>
+    <fault-code value="1">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD is about to be shutdown due to overtemperature</cause>
+        <action>Check temperature before restart PSD</action>
+        <consequence>PSD will going to shutdown state</consequence>
+        <problem-description>PSD is about to be shutdown due to overtemperature</problem-description>
+    </fault-code>
+    <fault-code value="2">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 1 Max Voltage seen is out of range</cause>
+        <action>Check PSD MID 1 Max Voltage seen</action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 1 Max Voltage seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="3">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 1 Min Voltage seen is out of range</cause>
+        <action>Check MID 1 Min Voltage seen</action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 1 Min Voltage seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="4">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 1 Max Current seen is out of range</cause>
+        <action>Check MID 1 Max Current </action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 1 Max Current seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="5">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 2 Max Voltage seen is out of range</cause>
+        <action>Check MID 2 Max Voltage</action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 2 Max Voltage seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="6">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 2 Min Voltage seen is out of range</cause>
+        <action>Check MID 2 Min Voltage seen</action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 2 Min Voltage seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="7">
+	<!-- -->
+        <priority>2</priority>
+        <cause>PSD MID 2 Max Current seen is out of range</cause>
+        <action>Check MID 2 Max Current seen</action>
+        <consequence>PSD will not work properly</consequence>
+        <problem-description>PSD MID 2 Max Current seen is out of range</problem-description>
+    </fault-code>
+    <fault-code value="998">
+	<!-- -->
+        <priority>2</priority>
+        <cause>Multiples PSD MID alarms</cause>
+        <action>Check MID ranges</action>
+        <consequence></consequence>
+        <problem-description>Multiples PSD MID seen is out of range</problem-description>
+    </fault-code>
+    <fault-member name="CONTROL/LA02/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/DV01/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/DV02/PSD">
+    </fault-member>
+    <fault-member name="CONTROL/PM03/PSD">
+    </fault-member>
+</fault-family>

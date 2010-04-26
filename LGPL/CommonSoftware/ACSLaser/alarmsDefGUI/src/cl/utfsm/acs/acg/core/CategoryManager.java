@@ -29,7 +29,8 @@ import java.util.List;
 import alma.acs.alarmsystem.generated.Category;
 import alma.acs.alarmsystem.generated.FaultFamily;
 
-import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
+//import com.cosylab.acs.laser.dao.ACSCategoryDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSCategoryDAOImpl;
 
 import cern.laser.business.dao.CategoryDAO;
 
@@ -156,6 +157,41 @@ public class CategoryManager implements EntityManager {
 		
 		_categoryList.add(c);
 		return true;
+	}
+	
+	public void updateCategory(Category c) throws NullPointerException, IllegalOperationException{
+		
+		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
+			Category ctg= (Category) iterator.next();
+			if ( ctg.getPath().compareTo(c.getPath()) == 0 ){
+				deleteCategory(ctg);
+				_categoryList.add(ctg);                     
+			}
+		} 
+		
+	}
+	
+	public void updateDefaultCategory(Category c){
+		
+		if(c.getIsDefault() == false){
+		
+		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
+			Category ctg= (Category) iterator.next();
+			if ( ctg.getIsDefault() == true ){
+				ctg.setIsDefault(false);                    
+			}
+		}
+		
+		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
+			Category ctg= (Category) iterator.next();
+			if ( ctg.getPath().compareTo(c.getPath()) == 0 ){
+				ctg.setIsDefault(true);                    
+			}
+		}
+		
+	}
+		
+		
 	}
 }
 	

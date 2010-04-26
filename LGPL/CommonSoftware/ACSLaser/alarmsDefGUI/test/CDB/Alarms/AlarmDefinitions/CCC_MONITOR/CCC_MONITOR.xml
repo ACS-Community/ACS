@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: CCC_MONITOR.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/ACSLaser/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/CCC_MONITOR/CCC_MONITOR.xml,v $
+-->
+<fault-family name="CCC_MONITOR"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ALMA-B Correlator Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>BL-Correlator QCC has determined that incoming TE has been corrupted.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Incoming TE has been corrupted.</problem-description>
+    </fault-code>
+    <fault-code value="2">
+        <priority>3</priority>
+        <cause>Internal BL-correlator QCC problem.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>TE and other clock distribution to other
+        BL-correlator hardware components will be faulty.</consequence>
+        <problem-description>BL-Correlator QCC DLL out of lock.</problem-description>
+    </fault-code>
+    <fault-code value="3">
+        <priority>3</priority>
+        <cause>Probably bad CAN communications with QCC.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Unable to get TE DLL monitor from
+        BL-Correlator QCC.</problem-description>
+    </fault-code>
+    <fault-code value="4">
+        <priority>3</priority>
+        <cause>Probably 125 mHz signal has been corrupted. </cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>BL-Correlator QCC PLL out of lock.</problem-description>
+    </fault-code>
+    <fault-code value="5">
+        <priority>3</priority>
+        <cause>Probably bad CAN communications with QCC.</cause>
+        <action>NOT DEFINED</action>
+        <consequence>NOT DEFINED</consequence>
+        <problem-description>Unable to get PLL monitor from
+        BL-Correlator QCC.</problem-description>
+    </fault-code>
+    <fault-member-default> </fault-member-default>
+    <fault-member name="TE_DLL_STATUS"> </fault-member>
+    <fault-member name="PLL_STATUS"> </fault-member>
+</fault-family>

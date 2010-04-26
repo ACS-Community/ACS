@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+$Id: TMCDB_Monitor.xml,v 1.1 2010/04/26 16:18:57 utfsm Exp $
+$Source: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/CommonSoftware/acsGUIs/alarmsDefGUI/test/CDB/Alarms/AlarmDefinitions/TMCDB_Monitor/TMCDB_Monitor.xml,v $
+-->
+<fault-family name="MonitorInterface"
+    xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+    <help-url>http://tempuri.org</help-url>
+    <contact name="ATF Support Team"/>
+    <fault-code value="1">
+        <priority>3</priority>
+        <cause>Monitor data rate to the Monitor is higher than what can be archived.</cause>
+        <action>Check if Oracle is running correctly. Check the load on the machine running the Component.</action>
+        <consequence>Monitor points might be dropped.</consequence>
+        <problem-description>Storage time exceeded budget.</problem-description>
+    </fault-code>
+    <fault-member-default>
+    </fault-member-default>
+</fault-family>

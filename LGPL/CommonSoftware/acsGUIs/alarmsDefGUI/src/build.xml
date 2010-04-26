@@ -1,4 +1,4 @@
-<project name="alma.acs.rcp.alarmDefsGUI" default="build">
+<project name="alma.acs.rcp.alarmsDefGUI" default="build">
 	<property environment="env" />
 	<!--sets the path of the properties file-->
 	<property name="ALMASW_INSTDIR" value="${env.ALMASW_INSTDIR}" />
@@ -27,11 +27,12 @@
 		<mkdir dir="${buildDirectory}/features/${pluginID}" />
 		<copy todir="${buildDirectory}/plugins">
 			<fileset dir="${basedir}/../..">
-				<include name="alarmsDefGUI/acg.product" />
-				<include name="alarmsDefGUI/build.properties" />
-				<include name="alarmsDefGUI/META-INF/MANIFEST.MF" />
-				<include name="alarmsDefGUI/icons/**" />
-				<include name="alarmsDefGUI/src/cl/**" />
+				<include name="alarmsDefGUI/**" />
+				<exclude name="alarmsDefGUI/test/**" />
+				<exclude name="alarmsDefGUI/object/**" />
+				<exclude name="alarmsDefGUI/bin/**" />
+				<exclude name="alarmsDefGUI/rtai/**" />
+				<exclude name="alarmsDefGUI/idl/**" />
 			</fileset>
 		</copy>
 		<copy todir="${buildDirectory}/features/${pluginID}">
@@ -48,7 +49,7 @@
 			<arg value="-Dacs.system.classpath.jardirs=../lib:${INTROOT}/lib:${ACSROOT}/lib:${ACSROOT}/lib/endorsed" />
 			<arg value="alma.acs.eclipse.utils.pluginbuilder.PluginBuilder" />
 			<arg value="-i" />
-			<arg value="alma.acs" />
+			<arg value="alma.acs.rcp.jars" />
 			<arg value="${buildDirectory}/plugins" />
 			<arg value="${acs.jars.required}" />
 		</exec>

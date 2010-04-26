@@ -38,4 +38,6 @@ public interface IMyViewPart {
 	 * by external classes when reloading the CDB.
 	 */
 	public void refreshContents();
+	
+	public void fillWidgets();
 }

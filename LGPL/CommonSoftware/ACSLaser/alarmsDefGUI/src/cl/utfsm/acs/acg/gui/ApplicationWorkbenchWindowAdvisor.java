@@ -120,6 +120,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 					});
 					asm.loadFromCDB();
 				} catch (Exception e) {
+					e.printStackTrace();
 					display.asyncExec(new Runnable() {
 						public void run() { status.setErrorMessage("Couldn't successfully connect to AS configuation"); }
 					});

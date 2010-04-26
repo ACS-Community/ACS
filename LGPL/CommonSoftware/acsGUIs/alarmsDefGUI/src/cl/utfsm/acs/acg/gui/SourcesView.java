@@ -74,7 +74,9 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 
 	/* Source information */
 	private Label _sourceNameLabel;
+	private Label _descriptionLabel;
 	private Text _sourceNameText;
+	private Text _descriptionText;
 	private Group _group;
 
 	@Override
@@ -133,8 +135,8 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		
 		
 		/* Please change this in the future when more SOURCES will be available */
-		//_addSourceButton.setEnabled(false);
-		//_deleteSourceButton.setEnabled(false);
+		_addSourceButton.setEnabled(false);
+		_deleteSourceButton.setEnabled(false);
 		
 		
 		_sourcesList.addSelectionListener(new SelectionListener() {
@@ -264,11 +266,18 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		_sourceNameLabel = new Label(_group,SWT.NONE);
 		_sourceNameLabel.setText("Source name");
 		_sourceNameText  = new Text(_group,SWT.BORDER);
+
+		_descriptionLabel = new Label(_group,SWT.NONE);
+		_descriptionLabel.setText("Description");
+		_descriptionText  = new Text(_group,SWT.BORDER);
+				
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
+		
 		_sourceNameText.setLayoutData(gd);
-
+		_descriptionText.setLayoutData(gd);
+		
 		_group.setVisible(false);
 		_sash.setWeights(new int[] {3, 5});
 
@@ -276,11 +285,14 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		 * one source defined in the AS, and it's hardcoded */
 		//setEnabled(false);
 		
-		_sourceNameText.addListener(SWT.Modify , new Listener() {
+		_descriptionText.addListener(SWT.Modify , new Listener() {
 			public void handleEvent(Event e) {
 					updateSource();
 				}
-			}); 
+			});
+		
+		/* Please change this in the future when more SOURCES will be available */
+		_sourceNameText.setEnabled(false);
 	}
 	
     public void updateSource(){
@@ -309,8 +321,15 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	}
 
 	public void setEnabled(boolean v) {
-		_sourceNameText.setEditable(v);
+		/* Left side widgets */
 		_sourcesList.setEnabled(v);
+		_sourcesButtonsComp.setEnabled(v);
+		//Commented widgets should be uncommented when multiple Sources are available.
+		//_addSourceButton.setEnabled(v);
+		//_deleteSourceButton.setEnabled(v);
+
+		/* Source information */
+		//_sourceNameText.setEnabled(v);
 	}
 
 	private void fillSource(String name) {
@@ -321,7 +340,15 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		if (source == null)
 			return;
 
-		_sourceNameText.setText(source.getName());
+		// sourceName is the NC name TODO:
+		_sourceNameText.setText("NULL");
+		// description is the name of the source
+		_descriptionText.setText(source.getName());
+	}
+
+	public void fillWidgets() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

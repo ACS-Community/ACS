@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+//import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
 //import com.ximpleware.NodeRecorder;
 
 import cern.laser.business.dao.AlarmDAO;

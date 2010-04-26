@@ -140,12 +140,11 @@ public class AlarmSystemManager implements EntityManager {
 		_daoManager.backupCDB();
 
 		/* Now let them save their stuff through the DAOs */
-/*		
-		_alarmManager.saveToCDB();
-		_sourceManager.saveToCDB();
-		_categoryManager.saveToCDB();
-		_reductionManager.saveToCDB();
-*/
+		
+		//_alarmManager.saveToCDB();
+		//_sourceManager.saveToCDB();
+		//_categoryManager.saveToCDB();
+		//_reductionManager.saveToCDB();
 	}
 
 	public void disconnectFromManager() {
@@ -209,7 +208,7 @@ public class AlarmSystemManager implements EntityManager {
 	public Object getConfigurationProperty(ConfigurationPropertyType ct){
 		return _configurationProperty.get(ct);
 	}
-
+	
 	/**
 	 * Destroys the singleton instance of this class. This is needed to renew the internal references to
 	 * the DAOs if a new connection to the DAL and the ACS Manager has been performed
