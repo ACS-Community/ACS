@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: addDataTest.cpp,v 1.46 2010/03/15 11:19:44 bjeram Exp $"
+* "@(#) $Id: addDataTest.cpp,v 1.47 2010/04/27 15:30:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 using namespace ACSErrTypeTest;
 
-static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.46 2010/03/15 11:19:44 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: addDataTest.cpp,v 1.47 2010/04/27 15:30:02 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 CORBA::ORB_var orb;
@@ -67,12 +67,14 @@ int main(int argc, char *argv[]) {
     e.setMemberValue("three", "three");
     
     // test maximum length
-    char longName[266];
-    char longValue[1100];
-    memset(longName, 'A', 265);
-    memset(longValue, 'B', 1100);
-    longName[265]=0;
-    longValue[1100]=0;
+    char longName[ADD_DATA_NAME_MAX+10];
+    char longValue[ADD_DATA_VALUE_MAX+10];
+    memset(longName, 'A', ADD_DATA_NAME_MAX+10);
+    memset(longValue, 'B', ADD_DATA_VALUE_MAX+10);
+    longName[ADD_DATA_NAME_MAX-2]='#';
+    longName[ADD_DATA_NAME_MAX+9]=0;
+    longValue[ADD_DATA_VALUE_MAX-2]='#';
+    longValue[ADD_DATA_VALUE_MAX+9]=0;
     e.addData(longName, longValue);
 
     // test NULL string passing
