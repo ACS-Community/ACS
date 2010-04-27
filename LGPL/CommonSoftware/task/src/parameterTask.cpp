@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: parameterTask.cpp,v 1.26 2008/10/09 07:22:33 cparedes Exp $"
+* "@(#) $Id: parameterTask.cpp,v 1.27 2010/04/27 12:24:57 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include "vltPort.h"
 #include "parameterTask.h"
 #include <TaskServices.h>
-#include <StrX.h>
+#include <ParamStrX.h>
 #include <ParamSetDef.h>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
@@ -39,7 +39,7 @@
 #include <xercesc/framework/XMLFormatter.hpp>
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 
-static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.26 2008/10/09 07:22:33 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: parameterTask.cpp,v 1.27 2010/04/27 12:24:57 htischer Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 XERCES_CPP_NAMESPACE_USE
