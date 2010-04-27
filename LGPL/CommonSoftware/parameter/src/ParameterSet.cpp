@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParameterSet.cpp,v 1.29 2008/10/09 05:03:50 cparedes Exp $"
+* "@(#) $Id: ParameterSet.cpp,v 1.30 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@
 
 #include <ParameterSet.h>
 #include <acsDOMErrorHandler.h>
-#include <StrX.h>
+#include <ParamStrX.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>

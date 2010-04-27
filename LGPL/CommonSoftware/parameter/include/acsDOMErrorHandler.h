@@ -1,5 +1,5 @@
-#ifndef _MYDOMERROR_HANDLER_H
-#define _MYDOMERROR_HANDLER_H
+#ifndef _ACSDOMERROR_HANDLER_H
+#define _ACSDOMERROR_HANDLER_H
 
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDOMErrorHandler.h,v 1.2 2006/11/29 23:01:26 sharring Exp $"
+* "@(#) $Id: acsDOMErrorHandler.h,v 1.3 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,15 +40,15 @@
 
 /** @file acsDOMErrorHandler.h */
 
-using XERCES_CPP_NAMESPACE_QUALIFIER DOMErrorHandler;
-using XERCES_CPP_NAMESPACE_QUALIFIER DOMError;
+//using XERCES_CPP_NAMESPACE_QUALIFIER DOMErrorHandler;
+//using XERCES_CPP_NAMESPACE_QUALIFIER DOMError;
 
 namespace Parameters {
 
 	/**
 	 * acsDOMErrorHandler class - class to handle DOM parsing errors
 	 */
-	class acsDOMErrorHandler : public DOMErrorHandler
+	class acsDOMErrorHandler : public XERCES_CPP_NAMESPACE::DOMErrorHandler
 	{ 			
 	   public: 		
 	    /**
@@ -61,9 +61,9 @@ namespace Parameters {
 	     */
 	    virtual ~acsDOMErrorHandler();
 
-	    virtual bool handleError(const DOMError& domError);
+	    virtual bool handleError(const XERCES_CPP_NAMESPACE::DOMError& domError);
 	}; 	
 
 }
-#endif /*!_MYDOMERROR_HANDLER_H*/
+#endif /*!_ACSDOMERROR_HANDLER_H*/
 

@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: BoolParamDef.h,v 1.3 2006/11/29 23:01:26 sharring Exp $"
+* "@(#) $Id: BoolParamDef.h,v 1.4 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ namespace Parameters {
 	    /**
 	     * Constructor
 	     */
-		BoolParamDef::BoolParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
+		BoolParamDef(const string & nameVal, const string & helpVal, const string & promptVal, 
 			bool isRequired, auto_ptr< bool > defaultVal);
 
 	    /**

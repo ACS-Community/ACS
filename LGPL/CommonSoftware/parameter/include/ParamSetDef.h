@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParamSetDef.h,v 1.9 2008/10/09 05:03:50 cparedes Exp $"
+* "@(#) $Id: ParamSetDef.h,v 1.10 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@
 #include <StringParamDef.h>
 #include <StringArrayParamDef.h>
 #include <BoolParamDef.h>
-#include <StrX.h>
+#include <ParamStrX.h>
 #include <parameterConstants.h>
 
 using std::auto_ptr;

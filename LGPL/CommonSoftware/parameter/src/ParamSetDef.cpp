@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: ParamSetDef.cpp,v 1.16 2008/10/09 05:03:50 cparedes Exp $"
+* "@(#) $Id: ParamSetDef.cpp,v 1.17 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@
 
 #include <ParamSetDef.h>
 #include <acsDOMErrorHandler.h>
-#include <StrX.h>
+#include <ParamStrX.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>

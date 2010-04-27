@@ -1,5 +1,5 @@
-#ifndef _STR_X_H
-#define _STR_X_H
+#ifndef _PARAMSTR_X_H
+#define _PARAMSTR_X_H
 /*******************************************************************************
 *    ALMA - Atacama Large Millimiter Array
 *    (c) Associated Universities Inc., 2002 
@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: StrX.h,v 1.4 2006/11/29 23:01:26 sharring Exp $"
+* "@(#) $Id: ParamStrX.h,v 1.1 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@
 
 namespace Parameters {
 
-	using XERCES_CPP_NAMESPACE_QUALIFIER XMLString;
+	//using XERCES_CPP_NAMESPACE_QUALIFIER XMLString;
 
 	// ---------------------------------------------------------------------------
 	//  This is a simple class that lets us do easy (though not terribly efficient)
@@ -59,24 +59,24 @@ namespace Parameters {
 		StrX(const char* const toTranscode)
 		{
 			// Call the private transcoding method
-			fUnicodeForm = XMLString::transcode(toTranscode);
-			fLocalForm =  XMLString::transcode(fUnicodeForm);
+			fUnicodeForm = XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode);
+			fLocalForm =  XERCES_CPP_NAMESPACE::XMLString::transcode(fUnicodeForm);
 		}
 
 		StrX(const XMLCh * const toTranscode)
 		{
 			// Call the private transcoding method
-			fLocalForm =  XMLString::transcode(toTranscode);
-			fUnicodeForm = XMLString::transcode(fLocalForm);
+			fLocalForm =  XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode);
+			fUnicodeForm = XERCES_CPP_NAMESPACE::XMLString::transcode(fLocalForm);
 		}
 
 		~StrX()
 		{
 			if(NULL != fLocalForm) {
-				XMLString::release(&fLocalForm);
+				XERCES_CPP_NAMESPACE::XMLString::release(&fLocalForm);
 			}
 			if(NULL != fUnicodeForm) {
-				XMLString::release(&fUnicodeForm);
+				XERCES_CPP_NAMESPACE::XMLString::release(&fUnicodeForm);
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace Parameters {
 	}
 }
 
-#endif /*!_STR_X_H*/
+#endif /*!_PARAMSTR_X_H*/
 
 
 

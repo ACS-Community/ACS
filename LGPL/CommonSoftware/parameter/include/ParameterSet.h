@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: ParameterSet.h,v 1.11 2008/10/09 05:03:50 cparedes Exp $"
+* "@(#) $Id: ParameterSet.h,v 1.12 2010/04/27 12:20:58 htischer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMNode.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
-#include <StrX.h>
+#include <ParamStrX.h>
 #include <InMemoryXmlData.h>
 #include <ParamSetDef.h>
 #include <BoolParam.h>

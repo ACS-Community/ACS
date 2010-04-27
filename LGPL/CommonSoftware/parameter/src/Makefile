@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2006/09/26 19:23:11 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.9 2010/04/27 12:20:58 htischer Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # --------------------------------- 
-INCLUDES        = ParameterSet.h ParamSetDef.h BoolParam.h IntParam.h IntArrayParam.h DoubleArrayParam.h DoubleParam.h StringParam.h StringArrayParam.h StrX.h IntParamDef.h IntArrayParamDef.h DoubleParamDef.h DoubleArrayParamDef.h StringParamDef.h StringArrayParamDef.h BoolParamDef.h ParamDef.h QuantityParam.h Param.h InMemoryXmlData.h parameterConstants.h acsDOMErrorHandler.h
+INCLUDES        = ParameterSet.h ParamSetDef.h BoolParam.h IntParam.h IntArrayParam.h DoubleArrayParam.h DoubleParam.h StringParam.h StringArrayParam.h ParamStrX.h IntParamDef.h IntArrayParamDef.h DoubleParamDef.h DoubleArrayParamDef.h StringParamDef.h StringArrayParamDef.h BoolParamDef.h ParamDef.h QuantityParam.h Param.h InMemoryXmlData.h parameterConstants.h
 #
 # Libraries (public and local)
 # ----------------------------
