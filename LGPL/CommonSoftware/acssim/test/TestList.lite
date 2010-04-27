@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.18 2007/03/27 23:00:38 agrimstrup Exp $"
+# "@(#) $Id: TestList.lite,v 1.19 2010/04/27 01:41:06 agrimstrup Exp $"
 #
 # TestList
 #
@@ -102,6 +102,6 @@ PROLOGUE acssimTATPrologue
 22 SimulationServerTest "@SLEEP 2" "acsutilTATTestRunner acssimServerRepresentation"
 
 # Tests to ensure in/inout parameters are accessible
-23 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK1"
+23 inParams "@SLEEP 2" "acssimInParamsHelper" "@SLEEP 20" "acsutilTATTestRunner acssimInParamsTest CLOCK2"
 
 EPILOGUE acsutilTATEpilogue

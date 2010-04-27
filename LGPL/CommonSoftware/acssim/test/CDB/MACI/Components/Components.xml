@@ -9,6 +9,7 @@
 
       <!--Standard C++ components-->
       <_ Name="CLOCK1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Clock:1.0" Container="pyContainer" ImplLang="py" />
+      <_ Name="CLOCK2"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Clock:1.0" Container="pyContainer2" ImplLang="py" />
       <_ Name="TIMER1"	Code="Acssim.Servants.Simulator" Type="IDL:alma/acstime/Timer:1.0" Container="pyContainer" ImplLang="py" />
 
       <!--C++ components needed for various tests-->
