@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2009/10/07 16:42:38 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.12 2010/04/27 12:06:51 htischer Exp $"
 #
 # Makefile of ........
 #
@@ -41,10 +41,10 @@ EXECUTABLES_L   = TestAcsAlarmSending unitTestDriver unitTestDriver2 FactoryTest
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
 TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType
 
-unitTestDriver_OBJECTS   = unitTestDriver 
+unitTestDriver_OBJECTS   = unitTestDriver acsalarmDOMErrorHandler
 unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
 
-unitTestDriver2_OBJECTS   = unitTestDriver2 MockManager
+unitTestDriver2_OBJECTS   = unitTestDriver2 MockManager acsalarmDOMErrorHandler
 unitTestDriver2_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
 
 FactoryTestCase_OBJECTS  = FactoryTestCase MockManager
@@ -62,7 +62,7 @@ faultSateTest_LIBS		= cppunit logging alSysSource
 #
 # Includes (.h) files (public only)
 # ---------------------------------
- INCLUDES        = AcsAlarmTestCase.h
+ INCLUDES        =
 
 #
 # Libraries (public and local)

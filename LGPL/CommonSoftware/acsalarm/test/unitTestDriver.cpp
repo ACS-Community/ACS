@@ -3,8 +3,8 @@
 #include <faultStateConstants.h>
 #include <logging.h>
 #include <loggingGenericLogger.h>
-#include <acsDOMErrorHandler.h>
-#include <StrX.h>
+#include <acsalarmDOMErrorHandler.h>
+#include <acsalarmStrX.h>
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
@@ -64,8 +64,8 @@
 #endif
 
 XERCES_CPP_NAMESPACE_USE
-using Parameters::acsDOMErrorHandler;
-using Parameters::StrX;
+using acsalarm::acsDOMErrorHandler;
+using acsalarm::StrX;
 using acsalarm::FaultState;
 using acsalarm::Properties;
 using acsalarm::Timestamp;

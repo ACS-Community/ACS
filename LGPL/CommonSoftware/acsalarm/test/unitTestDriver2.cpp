@@ -13,8 +13,8 @@
 #include <cppunit/TestRunner.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <acsDOMErrorHandler.h>
-#include <StrX.h>
+#include <acsalarmDOMErrorHandler.h>
+#include <acsalarmStrX.h>
 
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
@@ -82,8 +82,8 @@
 #endif 
  
 XERCES_CPP_NAMESPACE_USE
-using Parameters::acsDOMErrorHandler;
-using Parameters::StrX;
+using acsalarm::acsDOMErrorHandler;
+using acsalarm::StrX;
 using acsalarm::FaultState;
 using acsalarm::ASIMessage;
 using acsalarm::Properties;
