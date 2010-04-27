@@ -112,8 +112,8 @@
 2 - ----------T--:--:--.--- [setter thread - ACS::ThreadBase::suspend] 
 2 - ----------T--:--:--.--- [setter thread - ACS::Thread::Thread] 
 2 - ----------T--:--:--.--- [setter thread - ACS::ThreadBase::create] 
-2 - ----------T--:--:--.--- [setter thread - ] setter thread: Created thread
 2 - ----------T--:--:--.--- [setter thread - SetterThread::SetterThread] 
+2 - ----------T--:--:--.--- [setter thread - ] setter thread: Created thread
 2 - ----------T--:--:--.--- [setter thread - ACS::ThreadBase::resume] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Going in main loop sleep...
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
@@ -195,7 +195,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> TERMINATE
 1 - SHUTDOWN
 1 - ENABLED
-2 - ----------T--:--:--.--- (State::AlarmCBStates::cleared) Value: DIAGNOSE (66lu). Completion (type=2, code=0)
+2 - ----------T--:--:--.--- (State::AlarmCBStates::cleared) Value: DIAGNOSE (2). Completion (type=2, code=0)
 2 - ----------T--:--:--.--- [setter thread - ] ==> Going to test changing of FF and FM if we do not have an alarm.
 2 - ----------T--:--:--.--- [setter thread - ] ==> Going to changing value to ENABLE (1) to trigger an alarm.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 1
@@ -287,7 +287,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> TERMINATE
 1 - SHUTDOWN
 1 - ENABLED
-2 - ----------T--:--:--.--- (State::AlarmCBStates::cleared) Value: DIAGNOSE (66lu). Completion (type=2, code=0)
+2 - ----------T--:--:--.--- (State::AlarmCBStates::cleared) Value: DIAGNOSE (2). Completion (type=2, code=0)
 2 - ----------T--:--:--.--- [setter thread - ] ==> Going to test changing of FF and FM if we do not have an alarm.
 2 - ----------T--:--:--.--- [setter thread - ] ==> Going to changing value to ENABLE (1) to trigger an alarm.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 1
@@ -321,17 +321,31 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Property and value: EPTESTDEVICE1:currentStates
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Property and value: EPTESTDEVICE1:currentStates
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Value and value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Value and value: 1
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> ACTIVE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
@@ -342,16 +356,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Property and value: EPTESTDEVICE1:currentStates
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Value and value: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <UserDefinedFF,UserDefinedFM,1> TERMINATE
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.

@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.3 2010/04/19 10:12:26 bjeram Exp $"
+* "@(#) $Id: alarmTestSetFFFM.cpp,v 1.4 2010/04/27 09:44:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * bjeram
 */
 
-static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.3 2010/04/19 10:12:26 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: alarmTestSetFFFM.cpp,v 1.4 2010/04/27 09:44:45 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baciCORBA.h>
@@ -63,7 +63,7 @@ public:
 		const ACS::CBDescOut & desc
 		 ) 
   {
-    ACE_DEBUG ((LM_DEBUG, "(%s::AlarmCBStates::cleared) Value: %s (%llu). Completion (type=%d, code=%d)", prop.c_str(),description[value].in(), value, c.type, c.code));
+    ACE_DEBUG ((LM_DEBUG, "(%s::AlarmCBStates::cleared) Value: %s (%Q). Completion (type=%d, code=%d)", prop.c_str(),description[value].in(), value, c.type, c.code));
   }
     
   CORBA::Boolean negotiate ( ACS::TimeInterval time_to_transmit,
