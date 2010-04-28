@@ -1,4 +1,4 @@
-//$Id: TestCase.java,v 1.1 2009/02/12 09:09:40 msekoran Exp $
+//$Id: TestCase.java,v 1.2 2010/04/28 13:04:14 hsommer Exp $
 package alma.hibernate.test;
 
 import java.io.InputStream;
@@ -36,6 +36,16 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class TestCase extends junit.framework.TestCase {
 
+	/**
+	 * Sets the property <code>ACS.log.minlevel.namedloggers</code> to configure the ACS hibernate loggers.
+	 * <p>
+	 * Note that this gives us the same kind of dependency on module acsjlog as we anyway have through the slf4j binding:
+	 * this module's test will compile fine before acsjlog is built, but can only run after acsjlog has been built.
+	 */
+	static {
+		System.setProperty("ACS.log.minlevel.namedloggers", "hibernateSQL=2,5:hibernate=2,5");
+	}
+	
 	public static final Logger log = LoggerFactory.getLogger(TestCase.class);
 
 	private static SessionFactory sessions;
