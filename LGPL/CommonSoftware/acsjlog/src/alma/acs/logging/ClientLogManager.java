@@ -820,7 +820,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	}
 
 	/**
-	 * Shuts down remote ACS logging. 
+	 * Shuts down remote ACS logging and nulls the singleton instance.
 	 * The loggers can still be used, but will only log locally. 
 	 * @param wait
 	 */
