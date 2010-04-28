@@ -80,7 +80,7 @@ public class ACSLoggerFactory implements ILoggerFactory
 	
 	/**
 	 * Mapped to hibernate loggers "org.hibernate.SQL" (for SQL statements)
-	 * and "org.hibernate.type" (for SQL binding parameters).
+	 * and "org.hibernate.type.xyz" (for SQL binding parameters).
 	 * <p>
 	 * Hibernate announces that version 4 will rename the SQL logger to "org.hibernate.jdbc.util.SQLStatementLogger"
 	 * which is why we already map that currently not existing logger name to the same sql logger.
@@ -96,7 +96,7 @@ public class ACSLoggerFactory implements ILoggerFactory
 		// protect against concurrent access of acsLoggerDelegateXyz
 		synchronized (this) {
 			if (name.equals("org.hibernate.SQL") || 
-				name.equals("org.hibernate.type") || 
+				name.startsWith("org.hibernate.type") || // there is an inconsistency in hibernate's parameter logging, where first "org.hibernate.type" is checked in NullableType#IS_VALUE_TRACING_ENABLED, but later loggers "org.hibernate.type.XYZ" get used.
 				name.equals("org.hibernate.jdbc.util.SQLStatementLogger")) {
 				if (acsLoggerDelegateSql == null) {
 					acsLoggerDelegateSql = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_SQL_LOGGER_NAME_PREFIX, true);
@@ -113,5 +113,15 @@ public class ACSLoggerFactory implements ILoggerFactory
 				//System.out.println("**** Got hibernate logger '" + acsLoggerDelegate.getName() + "' for requested logger '" + name + "' ****");
 			}
 		}
+	}
+	
+	/**
+	 * Should only be called by tests. 
+	 * For example, JUnit test cases that use different logger names for every test
+	 * need to call this in order for hibernate loggers to be re-created.
+	 */
+	public synchronized void clearDelegateLoggers() {
+		acsLoggerDelegateDefault = null;
+		acsLoggerDelegateSql = null;
 	}
 }
