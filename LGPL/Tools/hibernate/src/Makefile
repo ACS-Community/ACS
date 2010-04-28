@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2010/04/28 13:05:46 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/04/28 13:17:57 hsommer Exp $"
 #
 # Makefile of hibernate 
 #
@@ -41,7 +41,7 @@
 #    ../lib/openorb-1.3.0.jar ../lib/openorb_tools-1.3.0.jar
 # are part of the openORB distribution, but shall NOT be installed,
 # because they would collide with JacORB
-INSTALL_FILES = ../lib/hibernate3.jar ../lib/hibernate-annotations.jar ../lib/hibernate-commons-annotations.jar ../lib/hibernate-cglib-repack-2.1_3.jar ../lib/hibernate-tools.jar ../lib/freemarker.jar
+INSTALL_FILES = ../lib/hibernate3.jar ../lib/hibernate-annotations.jar ../lib/hibernate-commons-annotations.jar ../lib/hibernate-tools.jar ../lib/freemarker.jar
 
 #
 #>>>>> END OF standard rules
