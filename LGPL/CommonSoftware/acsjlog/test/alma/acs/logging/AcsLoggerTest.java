@@ -91,7 +91,5 @@ public class AcsLoggerTest extends TestCase {
 		DeveloperLogger.info("Testing DeveloperLogger class", acsLogger);
 		OperatorLogger.info("Testing OperatorLogger class", acsLogger);
 		ScienceLogger.info("Testing ScienceLogger class", acsLogger);
-		VerboseLogger logger = new VerboseLogger(acsLogger, AcsLoggerTest.class.getName());
-		logger.info("Testing VerboseLogger class");
 	}
 }
