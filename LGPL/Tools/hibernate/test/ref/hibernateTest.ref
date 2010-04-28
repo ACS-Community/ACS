@@ -1,8 +1,8 @@
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner alma.hibernate.test.Test
 1 - 
-1 - ----------T--:--:--.--- INFO [alma.acs.logging.config.LogConfig] Set named logger levels from property. Name=hibernateSQL local=2 remote=5
-1 - ----------T--:--:--.--- INFO [alma.acs.logging.config.LogConfig] Set named logger levels from property. Name=hibernate local=2 remote=5
-1 - ----------T--:--:--.--- DEBUG [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- INFO [alma.acs.logging.config.LogConfig] Set named logger levels from property. Name=hibernateSQL local=1 remote=5
+1 - ----------T--:--:--.--- INFO [alma.acs.logging.config.LogConfig] Set named logger levels from property. Name=hibernate local=1 remote=5
+1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
 1 - ----------T--:--:--.--- INFO [hibernate] Hibernate Annotations 3.4.0.GA
 1 - ----------T--:--:--.--- INFO [hibernate] Hibernate 3.3.1.GA
 1 - ----------T--:--:--.--- INFO [hibernate] hibernate.properties not found

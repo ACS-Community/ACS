@@ -1,4 +1,4 @@
-//$Id: TestCase.java,v 1.2 2010/04/28 13:04:14 hsommer Exp $
+//$Id: TestCase.java,v 1.3 2010/04/28 16:21:59 hsommer Exp $
 package alma.hibernate.test;
 
 import java.io.InputStream;
@@ -43,7 +43,7 @@ public abstract class TestCase extends junit.framework.TestCase {
 	 * this module's test will compile fine before acsjlog is built, but can only run after acsjlog has been built.
 	 */
 	static {
-		System.setProperty("ACS.log.minlevel.namedloggers", "hibernateSQL=2,5:hibernate=2,5");
+		System.setProperty("ACS.log.minlevel.namedloggers", "hibernateSQL=1,5:hibernate=1,5");
 	}
 	
 	public static final Logger log = LoggerFactory.getLogger(TestCase.class);
