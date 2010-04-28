@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2009/03/03 13:22:46 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/04/28 16:25:57 hsommer Exp $"
 #
 # Makefile of oAW 
 #
@@ -37,22 +37,37 @@
 #
 # jar files to be installed
 #----------------------------
-INSTALL_FILES = ../lib/org.openarchitectureware.adapter.emf.check_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.base_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.check.editor_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.core.emftools_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.core.expressions_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.core.workflow_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.core.xpand2_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.dependencies_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.emftools_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.uml2.adapter_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.uml2.adapter.plugin_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.util.stdlib_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.util.uml2ecore_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.workflow_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.xpand2.editor_4.3.1.20081222-1600PRD.jar \
-				../lib/org.openarchitectureware.xtend.editor_4.3.1.20081222-1600PRD.jar
+INSTALL_FILES = ../lib/com.google.collect_0.8.0.v200908120607.jar \
+                   ../lib/com.ibm.icu_4.0.1.v20090822.jar \
+                   ../lib/de.itemis.xtext.antlr_0.7.2.200908121408.jar \
+                   ../lib/org.antlr.runtime_3.0.0.v200908120607.jar \
+                   ../lib/org.apache.commons.logging_1.1.1.v200904062255.jar \
+                   ../lib/org.eclipse.emf.codegen_2.5.0.v200906151043.jar \
+                   ../lib/org.eclipse.emf.common_2.5.0.v200906151043.jar \
+                   ../lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar \
+                   ../lib/org.eclipse.emf.mwe.core_0.7.2.v200908120417.jar \
+                   ../lib/org.eclipse.uml2.uml_3.0.1.v200908281330.jar \
+                   ../lib/org.eclipse.xpand_0.7.2.v200908120436.jar \
+                   ../lib/org.eclipse.xtend_0.7.2.v200908120436.jar \
+                   ../lib/org.eclipse.xtend.typesystem.emf_0.7.2.v200908120436.jar \
+                   ../lib/org.eclipse.xtend.typesystem.uml2_0.7.2.v200908120436.jar \
+                   ../lib/org.eclipse.xtend.util.stdlib_0.7.2.v200908120436.jar \
+                   ../lib/org.eclipse.xtext_0.7.2.v200908120607.jar \
+                   ../lib/org.eclipse.xtext.generator_0.7.2.v200908120607.jar \
+                   ../lib/org.eclipse.xtext.util_0.7.2.v200908120607.jar \
+                   ../lib/org.eclipse.xtext.xtend_0.7.2.v200908120607.jar \
+                   ../lib/org.eclipse.text_3.5.0.v20090513-2000.jar \
+                   ../lib/org.eclipse.emf.mwe.utils_0.7.2.v200908120417.jar \
+                   ../lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar \
+                   ../lib/org.eclipse.emf.mapping.ecore2xml_2.5.0.v200906151043.jar \
+                   ../lib/org.eclipse.uml2.uml.resources_3.0.0.v200906011111.jar \
+                   ../lib/org.eclipse.uml2.common_1.5.0.v200905041045.jar \
+                   ../lib/org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar \
+                   ../lib/org.eclipse.jdt.core_3.5.1.v_972_R35x.jar \
+                   ../lib/org.eclipse.emf.codegen.ecore_2.5.0.v200906151043.jar \
+                   ../lib/guice-1.0_patched.jar \
+                   ../lib/antlr-3.0.1.jar \
+                   ../lib/stringtemplate-3.1b1.jar 
 
 #
 #>>>>> END OF standard rules
