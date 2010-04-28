@@ -85,6 +85,17 @@ public class LogConfig {
 	public final static String PROPERTYNAME_MIN_LOG_LEVEL = "ACS.log.minlevel.remote"; // from env var ACS_LOG_CENTRAL
 
 	/**
+	 * Using this property, we can configure named loggers for processes other than containers and manager, 
+	 * for which there is no logging configuration in the CDB.
+	 * It is not expected to be used widely, which excuses the not so intuitive stuffing of data into a single property.
+	 * <p>
+	 * Example: <pre>-DACS.log.minlevel.namedloggers="hibernateSQL@CDB-RDB=2,3:hibernate@CDB-RDB=5,5"</pre>
+	 * configures two loggers: "hibernateSQL@CDB-RDB" will use local log level 2 and remote level 3, 
+	 * while "hibernate@CDB-RDB" will use local and remote level 5.
+	 */
+	public final static String PROPERTYNAME_NAMED_LOGGER_LEVELS = "ACS.log.minlevel.namedloggers";
+
+	/**
 	 * In CDB queries for the <code>LoggingConfig</code> child of a container or manager configuration
 	 * we need the "LoggingConfig" string. 
 	 * <p>
@@ -147,6 +158,7 @@ public class LogConfig {
 	 * <p>
 	 * Actual named logger configurations are stored as the map values, and can come from 
 	 * <ul>
+	 * <li>properties {@link #PROPERTYNAME_NAMED_LOGGER_LEVELS_LOCAL} or {@link #PROPERTYNAME_NAMED_LOGGER_LEVELS_REMOTE},
 	 * <li>optional named logger children in the process configuration ({@link #loggingConfig}),
 	 *     which are of subclass {@link NamedLogger}, or
 	 * <li>optional log config children of CDB component configuration, or
@@ -199,6 +211,40 @@ public class LogConfig {
 		}
 	}
 
+	/**
+	 * Reads the property <code>ACS.log.minlevel.namedloggers</code> (name defined as {@link #PROPERTYNAME_NAMED_LOGGER_LEVELS}) 
+	 * and, if the property is defined, sets the respective named logger levels. Prior values are lost.
+	 */
+	private void configureNamedLoggerLevelsFromProperties() {
+		String propVal = System.getProperty(PROPERTYNAME_NAMED_LOGGER_LEVELS);
+		if (propVal != null) {
+			try {
+				for (String levelDef : propVal.split(":")) {
+					String[] levelDefSplit = levelDef.split("=");
+					try {
+						String loggerName = levelDefSplit[0].trim();
+						String[] levels = levelDefSplit[1].split(",");
+						UnnamedLogger loggerConfig = new UnnamedLogger();
+						loggerConfig.setMinLogLevelLocal(AcsLogLevelDefinition.xsdLevelFromInteger(Integer.parseInt(levels[0])));
+						loggerConfig.setMinLogLevel(AcsLogLevelDefinition.xsdLevelFromInteger(Integer.parseInt(levels[1])));
+						storeNamedLoggerConfig(loggerName, new LockableUnnamedLogger(loggerConfig));
+						log(Level.INFO, "Set named logger levels from property. Name=" + loggerName + 
+								" local=" + loggerConfig.getMinLogLevelLocal() + " remote=" + loggerConfig.getMinLogLevel(), null);
+					} catch (Exception ex) {
+						log(Level.WARNING, "Failed to process named logger level definition '" + levelDef + 
+								"' given in property '" + PROPERTYNAME_NAMED_LOGGER_LEVELS + "'. ", ex);
+					}
+				}
+			} catch (Exception ex) {
+				log(Level.WARNING, "Failed to process named loggers from property " + PROPERTYNAME_NAMED_LOGGER_LEVELS, ex);
+			}
+		}
+		else {
+			log(Level.FINEST, PROPERTYNAME_NAMED_LOGGER_LEVELS + " not defined.", null);
+		}
+	}
+	
+	
 	/**
 	 * Sets the reference to the CDB, which will then be used for configuration.
 	 * Before this method is called, default values are used instead of CDB
@@ -344,6 +390,7 @@ public class LogConfig {
 		// consider the env var based properties only if the CDB was not considered or if the CDB settings should not override the env vars 
 		if (cdb == null || !cdbBeatsProperties) {
 			configureDefaultLevelsFromProperties();
+			configureNamedLoggerLevelsFromProperties();
 		}
 
 		notifySubscribers();
@@ -555,7 +602,9 @@ public class LogConfig {
 	 * @since ACS 7.0.2
 	 */
 	public boolean isKnownLogger(String loggerName) {
-		return namedLoggerConfigs.containsKey(loggerName);
+		synchronized (namedLoggerConfigs) {
+			return namedLoggerConfigs.containsKey(loggerName);
+		}
 	}
 	
 	
@@ -565,7 +614,9 @@ public class LogConfig {
 	 * @return  false if the logger is not known or uses the default configuration
 	 */
 	public boolean hasCustomConfig(String loggerName) {
-		return (namedLoggerConfigs.get(loggerName) != null);
+		synchronized (namedLoggerConfigs) {
+			return (namedLoggerConfigs.get(loggerName) != null);
+		}
 	}
 
 	
