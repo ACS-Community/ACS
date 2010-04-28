@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.22 2007/12/12 13:45:56 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.23 2010/04/28 12:56:34 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -22,20 +22,24 @@
 # user definable C-compilation flags
 #USER_CFLAGS = 
 PLATFORM := $(shell uname)
-DOX_VER = 1.3.8
-GRAPH_VER = 2.6
-
+DOX_VER = 1.6.2
+GRAPH_VER = 2.26.0
+MODULES=graphviz-$(GRAPH_VER) doxygen-$(DOX_VER)
 
 #
 # TARGETS
 # -------
+
 all:    unpack patch all_first
-	@echo " . . . 'all' done" 
 	chmod -fR +x doxygen-$(DOX_VER)/addon/doxywizard
+	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+		$(MAKE) -C $${member} all ;\
+	done;
+	@echo " . . . 'all' done"
 
 all_first:
-	@echo ". . . building/installing code . . . "
-	@./all_install_script $(DOX_VER) $(GRAPH_VER) > all_install_script.log 2>&1 
+	@echo "Configuring . . . "
+	@./config_all $(DOX_VER) $(GRAPH_VER) > config_all.log 2>&1 
 
 clean : clean_dist 
 	@echo " . . . 'clean' done"
@@ -55,7 +59,10 @@ clean_dist :
 man   : 
 	@echo " . . . man page(s) done"
 
-install : 
+install :
+	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
+	$(MAKE) -C $${member} install ;\
+	done;
 	@echo " . . . 'install' done"
 
 
