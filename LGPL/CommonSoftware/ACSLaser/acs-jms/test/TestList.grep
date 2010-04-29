@@ -6,3 +6,4 @@ FINEST
 Time:
 export
 getAdvancedContainerServices
+ACS.log.minlevel.namedloggers not defined
