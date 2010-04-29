@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
@@ -125,6 +126,14 @@ public class AcsContainer extends ContainerPOA
     
     private final ComponentMap m_activeComponentMap;
 
+	/**
+	 * Gate that blocks some (currently: only activate_component) incoming calls while the container is 
+	 * initializing itself and therefore not fully ready.
+	 * In particular, this will be used to hold component activation requests for autostart components,
+	 * which the manager sends right after the container has logged in to the manager.
+	 */
+	private final CountDownLatch containerStartOrbThreadGate;
+
     /**
      * Singleton logging config object shared with ClientLogManager.
      */
@@ -167,6 +176,7 @@ public class AcsContainer extends ContainerPOA
 		if (s_instance == null) {
 			startTimeUTClong = UTCUtility.utcJavaToOmg(System.currentTimeMillis());
 			m_containerName = containerName;
+			containerStartOrbThreadGate = new CountDownLatch(1);
 			m_managerProxy = managerProxy;
 			this.isEmbedded = isEmbedded;
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
@@ -197,8 +207,6 @@ public class AcsContainer extends ContainerPOA
 
 		System.out.println(ContainerOperations.ContainerStatusMgrInitBeginMsg);
 		loginToManager();
-		// @TODO Block calls to activate_component until container has fully initialized (such calls can come in starting from here!)
-		//       Or add a new operation to the manager such as "containerReady", so that manager can withhold component activation.
 		System.out.println(ContainerOperations.ContainerStatusMgrInitEndMsg);
 		
 		// init logging 
@@ -253,6 +261,9 @@ public class AcsContainer extends ContainerPOA
 			ex.setContextInfo("Error initializing the alarm system factory");
 			throw ex;
 		}
+		
+		// unleash any waiting ORB threads that were held until container init has finished
+		containerStartOrbThreadGate.countDown();
 	}
     
     /**
@@ -375,8 +386,9 @@ public class AcsContainer extends ContainerPOA
 	public ComponentInfo activate_component(int componentHandle, long execution_id, String compName, String exe, String type)
 		throws CannotActivateComponentEx
 	{
+		// reject the call if container is shutting down
 		if (shuttingDown.get()) {
-			String msg = "activate_component() blocked because of container shutdown.";
+			String msg = "activate_component() rejected because of container shutdown.";
 			m_logger.fine(msg);
 			AcsJCannotActivateComponentEx ex = new AcsJCannotActivateComponentEx();
 			ex.setCURL(compName);
@@ -390,10 +402,26 @@ public class AcsContainer extends ContainerPOA
 
         // to make component activations stick out in the log list
         m_logger.fine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        m_logger.info("activate_component: handle=" + componentHandle + " name=" + compName +
+        m_logger.fine("activate_component: handle=" + componentHandle + " name=" + compName +
                         " helperClass=" + exe + " type=" + type);
 
-        ComponentAdapter compAdapter = null;
+		// if the container is still starting up, then hold the request until the container is ready
+		boolean contInitWaitSuccess = false; 
+		try {
+			contInitWaitSuccess = containerStartOrbThreadGate.await(30, TimeUnit.SECONDS);
+		} catch (InterruptedException ex1) {
+			// just leave contInitWaitSuccess == false
+		}
+		if (!contInitWaitSuccess) {
+			String msg = "Activation of component " + compName + " timed out after 30 s waiting for the container to finish its initialization.";
+			m_logger.warning(msg);
+			AcsJCannotActivateComponentEx ex = new AcsJCannotActivateComponentEx();
+			ex.setCURL(compName);
+			ex.setDetailedReason(msg);
+			throw ex.toCannotActivateComponentEx();
+		}
+
+		ComponentAdapter compAdapter = null;
         try
         {
             synchronized (m_activeComponentMap) {
