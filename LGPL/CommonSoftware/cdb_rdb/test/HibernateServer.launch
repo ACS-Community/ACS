@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/ACS_cdb_rdb_82/src/com/cosylab/cdb/jdal/HibernateServer.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.hyades.trace.ui.ATTR_AUTO_FILTER_CRITERIA" value="false"/>
+<booleanAttribute key="org.eclipse.hyades.trace.ui.ATTR_AUTO_MONITORING" value="true"/>
+<stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DATA_COLLECTOR" value="org.eclipse.tptp.trace.jvmti.jvmtiMechanism:org.eclipse.tptp.analysisType.jvmti.execution"/>
+<stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DESTINATION_FILE" value=""/>
+<stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DESTINATION_MONITOR" value="DefaultMonitor"/>
+<stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_DESTINATION_PROJECT" value="ProfileProject"/>
+<booleanAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILE_TO_FILE" value="false"/>
+<stringAttribute key="org.eclipse.hyades.trace.ui.ATTR_PROFILING_SET" value="tptp-dummy-profiling-set-HibernateServer"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.cosylab.cdb.jdal.HibernateServer"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-jacorb &#13;&#10;-configName HeikoConfig &#13;&#10;-loadXMLCDB &#13;&#10;-createTables &#13;&#10;-root T:\home\almadev\MODULES_branches\ACS-8_2_0-B\ACS\LGPL\CommonSoftware\cdb_rdb\test"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_cdb_rdb_82"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Duser.timezone=UTC &#13;&#10;-DACS.baseport=0 &#13;&#10;-DACS.tmp=./tmp&#13;&#10;-DACS.data=${ACSDATA}&#13;&#10;-DACS.ddlpath=${ACSDATA}/config/DDL&#13;&#10;-DACS.cdbpath=..\config\CDB\schemas;CDB\Schemas;${ACSROOT}\config\CDB\schemas &#13;&#10;-Djava.util.logging.manager=alma.acs.logging.AcsLogManager &#13;&#10;-Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton&#13;&#10;-DACS.logstdout=3&#13;&#10;-DACS.log.minlevel.namedloggers=&quot;hibernateSQL@CDB-RDB=4,4:hibernate@CDB-RDB=5,5&quot;&#13;&#10;-Dcdb_rdb.plugins.wdal=com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALAlarmPluginImpl,com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPluginImpl&#13;&#10;-Xmx512m -server -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode &#13;&#10;-showversion&#13;&#10;-Dcdb_rdb.url_DISABLED=jdbc:hsqldb:hsql://alma-fbt:8090"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:ACS_cdb_rdb_82/test}"/>
+<stringAttribute key="org.eclipse.tptp.platform.instrumentation.ui.ATTR_INSTRUMENT_FILTER_SET" value="org.eclipse.tptp.platform.instrumentation.ui.filterSet.default"/>
+<booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_AUTO_POLLING" value="true"/>
+<booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_CPU_TIME" value="true"/>
+<booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_FLOW" value="false"/>
+<booleanAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_MANUAL_POLLING" value="false"/>
+<intAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_EXEC_POLLING_TIME" value="60"/>
+<stringAttribute key="org.eclipse.tptp.platform.jvmti.client.ATTR_FILTERSET_ID" value="org.eclipse.hyades.trace.ui.xerces only1267454715194"/>
+</launchConfiguration>

@@ -1,0 +1,1 @@
+rm -rf tmcdb  # to remove the hsqldb database if it exists

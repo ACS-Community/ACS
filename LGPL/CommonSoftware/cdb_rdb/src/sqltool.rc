@@ -1,0 +1,4 @@
+urlid tmcdb
+url jdbc:hsqldb:file:tmcdb/CreateHsqldbTables;shutdown=true
+username sa
+password

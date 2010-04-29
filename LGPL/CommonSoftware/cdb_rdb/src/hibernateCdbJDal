@@ -1,0 +1,164 @@
+#! /bin/bash
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupLogging.sh
+. acsstartupAcsInstance
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+# (c) European Southern Observatory, 2002
+# Copyright by ESO (in the framework of the ALMA collaboration)
+# and Cosylab 2002, All rights reserved
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
+# MA 02111-1307  USA
+#
+# "@(#) $Id: hibernateCdbJDal,v 1.2 2010/04/29 15:39:20 hsommer Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+CDB_PIDFILE=$INSTANCE_DIR/$ACS_CDB_PIDFILE
+
+#First save a copy of our PID
+echo $$ > $CDB_PIDFILE
+
+
+ACS_CDB_PORT=`getCDBPort`
+
+export CDB_PORT="-OAport $ACS_CDB_PORT"
+export CDB_ROOT="-root ./"
+
+if [ "X$ACS_CDB" != "X" ]; then  
+   export CDB_ROOT="-root "$ACS_CDB
+fi
+
+HIBERNATE_CFG_OPTION=
+
+#
+# This makes sure that if the CDB port and/or path are passed on the command line
+# that value is used and not of the "calculated" one
+#
+for arg in $*
+do
+    case $arg in
+    -root )
+	export CDB_ROOT=""
+	;;
+    -acsOnly )
+    TMCDB_ACS_ONLY=true
+	;;
+    -OAport )
+	export CDB_PORT=""
+	;;
+    esac
+done
+
+
+#
+# Build the schema files search path
+#
+SUB=config/CDB/schemas
+
+# Starts with ACSROOT.
+SCHEMA_PATH=$ACSROOT/$SUB
+
+# Separation of dirs
+# from INTLIST.
+item_list=`echo $INTLIST | sed s/:/\ /g`
+intlist_list=""
+for item in $item_list
+do
+   intlist_list=$intlist_list":$item/$SUB"
+done
+
+# If the intlist is empty
+# there is nothing to add!
+if [ "X$intlist_list" != "X" ]; then
+   # INTLIST search path.
+   SCHEMA_PATH=$intlist_list:$ACSROOT/$SUB
+fi
+
+# INTROOT path, if exists.
+if [ "X$INTROOT" != "X" ]; then  
+   SCHEMA_PATH=$INTROOT/$SUB:$SCHEMA_PATH
+fi
+
+# If a CDB is specified (and normally it is)
+# searches also inside it (but normally it is empty)
+if [ "X$ACS_CDB" != "X" ]; then  
+   SCHEMA_PATH=$ACS_CDB/CDB/schemas:$SCHEMA_PATH
+fi
+
+
+# ACS only
+TMCDB_ACS_ONLY=`echo ${TMCDB_ACS_ONLY:-"false"} | tr "[:upper:]" "[:lower:]"`
+if [ $TMCDB_ACS_ONLY = "true" ] || [ $TMCDB_ACS_ONLY = "y" ] || [ $TMCDB_ACS_ONLY = "1" ]
+then
+	ACSONLY="true"
+	HIBERNATE_CFG_OPTION="-Dcdb_rdb.hibernate.cfg.filename=/acsOnly-cdb_rdb-hibernate.cfg.xml"
+	TMCDB_PLUGINS="-Dcdb_rdb.plugins.wdal=com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALAlarmPluginImpl"
+else
+	ACSONLY="false"
+	TMCDB_PLUGINS="-Dcdb_rdb.plugins.configuration=alma.archive.database.helpers.ArchiveHibernateWDALConfigurationPlugin -Dcdb_rdb.plugins.wdal=com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALAlarmPluginImpl,com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPluginImpl"
+	
+	# It's not clear if this xmlparserv2.jar is required to get XML from Oracle. Paola said Holger said that it may not be required...
+	# TODO: We should later try to remove it again because of possible ugly side effects known from COMP-1996.
+	# However, HibernateDAL does not read from the CDB, thus the side effects may be OK here.
+	# See also script ARCHIVE/Archive/acsStartContainerOracleClasspath
+	export CLASSPATH=$CLASSPATH:$ACSROOT/lib/oracle/xmlparserv2.jar
+fi
+
+# additional plugins
+if [ "X$TMCDB_ADDITIONAL_PLUGINS" != "X" ]; then  
+   TMCDB_PLUGINS="$TMCDB_PLUGINS,$TMCDB_ADDITIONAL_PLUGINS"
+fi
+
+# Finally adds the current module.
+SCHEMA_PATH=$PWD/../$SUB:$SCHEMA_PATH
+ACS_LOG_DEBUG "Searching for schema files in: $SCHEMA_PATH"
+
+# Set logger levels to INFO unless the env vars are set already.
+# This is to avoid especially the verbose jacorb logging we would get from the currently low schema default log levels of 2
+if [ "X$ACS_LOG_STDOUT" = "X" ]; then
+    export ACS_LOG_STDOUT=4
+fi
+if [ "X$ACS_LOG_CENTRAL" = "X" ]; then
+    export ACS_LOG_CENTRAL=4
+fi
+
+#
+# Set hibernate log levels. 
+# TODO: Set these levels from new options of this script instead of hard-coded.
+HIBERNATE_LOGGER_PROPERTY="-DACS.log.minlevel.namedloggers='hibernateSQL@CDB-RDB=4,4:hibernate@CDB-RDB=5,5'" 
+
+# Set JVM_GC_LOG_NAME so that acsStartJava will run the JVM printing garbage collector details to file "hibernateCdbjDAL.gclog". 
+export JVM_GC_LOG_NAME=hibernateCdbjDAL
+
+
+acsStartJava \
+  -endorsed \
+  -maxHeapSize 512m \
+  -Djacorb.poa.thread_pool_max=200 \
+  -Djacorb.connection.client.pending_reply_timeout=30000 \
+  -Dcdb.useXsdCache=true \
+  $HIBERNATE_LOGGER_PROPERTY \
+  -DACS.ddlpath=$ACSDATA/config/DDL \
+  -DACS.cdbpath=$SCHEMA_PATH \
+  -Dcdb_rdb.acsOnly=$ACSONLY \
+  $HIBERNATE_CFG_OPTION \
+  $TMCDB_PLUGINS \
+  com.cosylab.cdb.jdal.HibernateServer \
+  -jacorb $CDB_PORT $CDB_ROOT $1 $2 $3 $4 $5 $6 $7 $8
