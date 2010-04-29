@@ -30,3 +30,4 @@ DefaultSubscriberImpl
 ACSJMSTopicConnectionImpl
 HeartbeatHelper
 MomConfig
+ACS.log.minlevel.namedloggers not defined
