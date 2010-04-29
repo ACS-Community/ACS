@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsConfigurationDatabase,v 1.2 2008/10/28 15:42:44 msekoran Exp $"
+# "@(#) $Id: acsConfigurationDatabase,v 1.3 2010/04/29 12:41:11 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -264,9 +264,9 @@ then
   if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
   then
     ACS_LOG_INFO "$COMMAND" "Starting ALMA Telescope and Monitor Configuration Database${LOGPOSTFIX}"
-    if [ `searchFile lib/TMCDB.jar` = "#error#" ] # sanity check
+    if [ `searchFile lib/cdb_rdb.jar` = "#error#" ] # sanity check
     then
-      ACS_LOG_ERROR "$COMMAND" "The TMCDB implementation cannot be found. Did you build ICD/CONTROL/TMCDB?"
+      ACS_LOG_ERROR "$COMMAND" "The TMCDB implementation cannot be found. Did you build ACS/LGPL/CommonSoftware/cdb_rdb?"
       exit $EC_FAILURE;
     fi
     ACS_LOG_INFO "$COMMAND" "Using configuration $TMCDB_CONFIGURATION_NAME"
