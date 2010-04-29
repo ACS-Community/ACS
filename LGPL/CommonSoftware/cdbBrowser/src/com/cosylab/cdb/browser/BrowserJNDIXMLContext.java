@@ -40,6 +40,7 @@ import org.xml.sax.SAXException;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * @author dvitas
@@ -74,12 +75,12 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
       * Selected node becomes a XMLTreeNode. This node contains the attributes (names AND values)
       * of the next CDBTree level. (throught parsing of the xml String)
       */
-     public BrowserJNDIXMLContext(String name, String elements, String xml) {
-	 super(name, elements);
+     public BrowserJNDIXMLContext(String name, String elements, String xml, Logger logger) {
+	 super(name, elements, logger);
 	 initParser();
 	 
 	 // parse XML string
-	 XMLHandler xmlSolver = new XMLHandler(false);
+	 XMLHandler xmlSolver = new XMLHandler(false, logger);
 	 try {
 	     saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 	 } catch (SAXException e) {
@@ -102,7 +103,8 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	 node.getFieldMap().clear();                             
      }
      
-     public BrowserJNDIXMLContext(String name, XMLTreeNode node) {
+    public BrowserJNDIXMLContext(String name, XMLTreeNode node, Logger logger) {
+    	super(logger);
 	 this.name = name;
 	 this.node = node;
 	 
@@ -155,7 +157,7 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	     String nodeName = nameToLookup.substring(0,slashIndex); //path of the parent node
 	     if (node.getNodesMap().containsKey(nodeName)) { //Returns true if map contains a mapping for the specified key.
 		 XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nodeName);
-		 return new BrowserJNDIXMLContext(fullLookupName, nextNode).lookup(nameToLookup.substring(slashIndex+1));
+		 return new BrowserJNDIXMLContext(fullLookupName, nextNode, logger).lookup(nameToLookup.substring(slashIndex+1));
 	     }
 	 }
 	 
@@ -179,7 +181,7 @@ public class BrowserJNDIXMLContext extends BrowserJNDIContext
 	     //System.out.println(nextNode.getAttributeNames());
 	     //System.out.println(nextNode.getAttributeValues());
 
-	     return new BrowserJNDIXMLContext(fullLookupName, nextNode);
+	     return new BrowserJNDIXMLContext(fullLookupName, nextNode, logger);
 	 }
 	 
 	 // ??

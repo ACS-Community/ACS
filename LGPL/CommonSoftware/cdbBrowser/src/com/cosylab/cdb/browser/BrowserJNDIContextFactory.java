@@ -22,12 +22,19 @@
 package com.cosylab.cdb.browser;
 
 import java.util.Hashtable;
+import java.util.logging.Logger;
+import java.util.regex.PatternSyntaxException;
+
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
-import org.omg.CORBA.ORB; // The package containing our CORBA stubs.
-import com.cosylab.CDB.*;
-import java.util.regex.PatternSyntaxException;
+
+import org.omg.CORBA.ORB;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
+import alma.acs.logging.ClientLogManager;
 
 public class BrowserJNDIContextFactory implements InitialContextFactory {
     
@@ -61,6 +68,7 @@ public class BrowserJNDIContextFactory implements InitialContextFactory {
 	catch(PatternSyntaxException e){}
 	catch(NullPointerException e){}
 	
-	return new BrowserJNDIContext("", rootElements);     //JNDI_Context implements Context	    
+	Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication("cdbBrowser", false);
+	return new BrowserJNDIContext("", rootElements, logger);     //JNDI_Context implements Context	    
     }    
 }
