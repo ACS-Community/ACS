@@ -140,7 +140,7 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)
 		}
 		else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily", (LM_WARNING, "Failed to set alarm fault family to: %s. //TBD: better exception should be thrown.", ff));
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily", (LM_WARNING, "Failed to set alarm fault family for property: %s to: %s. alarmTimerTrig=%d", this->property_mp->getName(), ff, alarmTimerTrig_m));
 		}//if-else
 	}//if-else
 }//setAlarmFaultFamily
@@ -167,7 +167,7 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultMember(const char* fm)
 		}
 		else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember", (LM_WARNING, "Failed to set alarm fault member to: %s.", fm));
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember", (LM_WARNING, "Failed to set alarm fault member for property: %s to: %s. alarmTimerTrig=%d", this->property_mp->getName(), fm, alarmTimerTrig_m));
 		}//if-else
 	}//if-else
 

@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.49 2009/10/09 08:19:20 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.50 2010/04/29 14:13:34 hsommer Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.49 2009/10/09 08:19:20 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.50 2010/04/29 14:13:34 hsommer Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -56,13 +56,32 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
 
 
     CORBA::Long actionThreadStackSize, monitoringThreadStackSize;
-	cdb::DAONode* dao = this->getDAONode();
-	if (!dao) return;
-
 	actionThreadStackSize = 1024;
+	monitoringThreadStackSize = 2048;
+// the error handling here is not the nicest because we have to handle two temporary solutions:
+// CDB does not derive from CC XSD
+// CC can exist w/o alma CDB part
+// in general error handling should be improved for CC ctor
+	cdb::DAONode* dao=0;
+
+	try
+	{
+		dao = this->getDAONode();
+		if (!dao) return; //Actually dao should not be 0, but it has to be verified
+	}
+	catch (ACSErr::ACSbaseExImpl& ex)
+	{
+		dao = 0;
+		ex.log(LM_WARNING);
+	}
+	catch (...)
+	{
+			dao = 0;
+	}
+
 	try
 	  {
-		actionThreadStackSize = dao->get_long("actionThreadStackSize");
+		if (dao) actionThreadStackSize = dao->get_long("actionThreadStackSize");
 	}
 	catch (ACSErr::ACSbaseExImpl& ex)
 	{
@@ -71,12 +90,10 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
 	catch (...)
 	{
 	}
-	actionThreadStackSize *= 1024;  // that we have size in bytes
 
-	monitoringThreadStackSize = 2048;
 	try
 	{
-		monitoringThreadStackSize = dao->get_long("monitoringThreadStackSize");
+		if (dao) monitoringThreadStackSize = dao->get_long("monitoringThreadStackSize");
 	}
 	catch (ACSErr::ACSbaseExImpl& ex)
 	{
@@ -85,6 +102,8 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
 	catch (...)
 	{
 	}
+
+	actionThreadStackSize *= 1024;  // that we have size in bytes
 	monitoringThreadStackSize *= 1024;  // that we have size in bytes
 
   // Create Component

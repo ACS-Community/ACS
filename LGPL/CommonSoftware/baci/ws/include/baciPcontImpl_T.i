@@ -58,23 +58,6 @@ bool baci::PcontImpl<ACS_P_TL>::readCharacteristics(CharacteristicModelImpl *mod
       graph_min_m = dao->getValue<TSM>("graph_min");
       graph_max_m = dao->getValue<TSM>("graph_max");
 
-      // NOTE: var is always a scalar value
-#define READ_VALUE(name, var) \
-      { \
-      CORBA::String_var str = dao->get_string( name ); \
-      std::istringstream is(str.in()); \
-      (istream&) is >> var ; \
-      if (!is) \
-	  throw cdbErrType::WrongCDBDataTypeEx(); \
-      }
-
-      READ_VALUE("min_step", min_step_m);
-      READ_VALUE("min_delta_trig", min_delta_trig_m);
-      READ_VALUE("graph_min", graph_min_m);
-      READ_VALUE("graph_max", graph_max_m);
-
-#undef READ_VALUE
-
       return true;
       }
   catch (ACSErr::ACSbaseExImpl& ex)
