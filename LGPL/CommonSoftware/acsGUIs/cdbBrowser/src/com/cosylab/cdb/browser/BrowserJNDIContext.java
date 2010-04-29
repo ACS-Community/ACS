@@ -22,6 +22,7 @@
 package com.cosylab.cdb.browser;
 
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.naming.Name;
 import javax.naming.NamingException;
@@ -56,8 +57,8 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
     /**
      * Constructor for CDBContext.
      */
-    public BrowserJNDIContext() {
-	super();
+    public BrowserJNDIContext(Logger logger) {
+	super(logger);
     }
     
     /**
@@ -65,8 +66,8 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
      *  When clicking on one of the Nodes of this level the method 'lookup(Name name)' is called.
      *  The method will create another level by returning the appropriate constructor
      */
-    public BrowserJNDIContext(String name, String elements) {
-    	super(name, elements);
+    public BrowserJNDIContext(String name, String elements, Logger logger) {
+    	super(name, elements, logger);
     	//System.out.println(elements);
     }
     
@@ -80,7 +81,16 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
     	String daoElements = dal.list_daos(fullLookupName);
     	if (daoElements.length() == 0)
     		daoElements = null;
-    	
+   
+    	// @todo TODO this creates DAO and wastes some of resources... DAL method to get resources would be nice
+    	boolean hasAttributes = false;
+    	try {
+    		// NOTE check only if needed
+    		if (daoElements == null)
+    			hasAttributes = dal.get_DAO_Servant(fullLookupName).get_string("_attributes").trim().length() > 0;
+		} catch (Throwable th) {
+			// noop
+		}
 		CDBLogic.setKey(fullLookupName);
 
     	// is subnode
@@ -89,10 +99,10 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
 			if (token.nextElement().equals(lookupName))
 			{
 				// is DAO?
-				if (daoElements != null)
+				if (daoElements != null || hasAttributes)
 				{
 					try {
-						return new BrowserJNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+						return new BrowserJNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName), logger);
 					} catch (CDBXMLErrorEx th) {
 						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
 						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
@@ -103,7 +113,7 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
 					}
 				}
 				else
-					return new BrowserJNDIContext(fullLookupName, dal.list_nodes(fullLookupName));
+					return new BrowserJNDIContext(fullLookupName, dal.list_nodes(fullLookupName), logger);
 			}
 		
 		if (daoElements != null)
@@ -114,7 +124,7 @@ public class BrowserJNDIContext extends com.cosylab.cdb.jdal.JNDIContext {
 				if (token.nextElement().equals(lookupName))
 				{
 					try {
-						return new BrowserJNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+						return new BrowserJNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName), logger);
 					} catch (CDBXMLErrorEx th) {
 						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
 						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
