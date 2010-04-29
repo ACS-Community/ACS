@@ -20,5 +20,4 @@ retrieved successfully
 about to release component
 has successfully released
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
-Starting Java/abeans application
-ACS abeans configuration directory
+ACS.log.minlevel.namedloggers not defined
