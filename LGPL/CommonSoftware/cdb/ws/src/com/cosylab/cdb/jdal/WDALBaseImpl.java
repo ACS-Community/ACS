@@ -46,8 +46,7 @@ import alma.cdbErrType.CDBXMLErrorEx;
  *
  */
 abstract public class WDALBaseImpl implements WJDALOperations, Recoverer {
-	protected DALImpl dalImpl = null;
-
+	protected final DALImpl dalImpl;
 	protected final Logger logger;
 	
 	/**
@@ -144,4 +143,14 @@ abstract public class WDALBaseImpl implements WJDALOperations, Recoverer {
 		return dalImpl.list_daos(name);
 	}
 	
+	
+	/**
+	 * Shuts down this instance, without destroying global resources.
+	 * Use this when you run a WDAL embedded in other code, and only want to shut down the wdal
+	 * without side effects on your ORB, logging etc.
+	 */
+	public void shutdownEmbeddedWDALImpl() {
+		dalImpl.shutdownEmbeddedDALImpl();
+	}
+
 }
