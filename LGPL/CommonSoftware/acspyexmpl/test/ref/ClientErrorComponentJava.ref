@@ -116,6 +116,7 @@
 2 -                         Severity=Error,
 2 -                         Data: Name=javaex.class, Value=alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx; Name=javaex.msg, Value=This exception is the original cause.; )
 2 - 
+1 - ----------T--:--:--.--- INFO [javaContainer] activate_component: handle=xxx name=ERRORCOMP_JAVA helperClass=alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper type=IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0
 1 - ----------T--:--:--.--- INFO [alma.acs.logging] Locked logger jacorb@javaContainer to remote level 99
 1 - ----------T--:--:--.--- INFO [ERRORCOMP_JAVA] ErrorComponent
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
