@@ -54,6 +54,8 @@ import alma.acs.util.ACSPorts;
 
 public class Server {
 	
+	public static final String CDB_LOGGER_NAME = "CDB";
+	
 	public static void main (String[] args) {
 		new Server().run(args);
 	}
@@ -62,7 +64,7 @@ public class Server {
 	
 	public void run(String args[]) {
 		String iorFileName = null;
-		final Logger sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("CDB", true);
+		final Logger sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication(CDB_LOGGER_NAME, true);
 		try {
 		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
