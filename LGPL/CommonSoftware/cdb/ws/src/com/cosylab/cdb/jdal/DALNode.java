@@ -98,7 +98,7 @@ public class DALNode {
 
 	/**
 	 * Returns the node for the given path or <code>null</code> if the 
-	 * path does not existis under this tree.
+	 * path does not exist under this tree.
 	 * 
 	 * @param path The path to find i.e. MACI/Managers
 	 * @return The child node for path or <code>null</code> if it doesn't exist
@@ -286,4 +286,8 @@ public class DALNode {
 		return true;
 	}
 	
+	public boolean hasXmlChild() {
+		boolean hasXmlChild = ( findNode(this.name + ".xml") != null );
+		return hasXmlChild;
+	}
 }
