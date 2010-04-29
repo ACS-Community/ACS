@@ -21,3 +21,4 @@ GlobalLogger
 Unavailable
 narrowed
 FINER
+ACS.log.minlevel.namedloggers not defined
