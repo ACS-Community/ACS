@@ -1,0 +1,162 @@
+«IMPORT tmcdbTables»
+
+«EXTENSION alma::acs::tmcdb::grammardef::util»
+«EXTENSION alma::acs::tmcdb::generator::templates::javautil»
+«EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
+
+«DEFINE Root FOR TMCDBModel»
+«FILE "alma/acs/tmcdb/translator/Table2Class_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Table2Class_«modelName.name» extends AbstractTable2Class {
+
+	public Table2Class_«modelName.name»() {
+		map = new HashMap<String, String>() {{
+«FOREACH tables AS t-»
+			put("«t.name.toLowerCase()»", PACKAGE + "«t.name»");
+«ENDFOREACH-»
+		}};
+
+		tablesWithGeneratedKeys = new ArrayList<String>() {{
+«FOREACH tables AS t-»
+«IF t.finalKey().isGenerated-»
+			add("«t.name.toLowerCase()»");
+«ENDIF»
+«ENDFOREACH»
+		}};
+	}
+
+}
+«ENDFILE»
+
+«FILE "alma/acs/tmcdb/translator/Column2Attribute_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Column2Attribute_«modelName.name» extends AbstractColumn2Attribute {
+	
+	public Column2Attribute_«modelName.name»() {
+		map = new HashMap<String, Map<String,String>>() {{
+«FOREACH tables AS t-»
+			put("«t.name.toLowerCase()»", new HashMap<String,String>() {{
+«FOREACH t.getColumns() AS c-»
+				put("«c.name.toLowerCase()»", "«c.columnNameAsJavaAttribute()»");
+«ENDFOREACH-»
+«IF t.isChild-»
+«FOREACH t.finalKey().columns AS c-»
+				put("«c.name.toLowerCase()»", "«c.columnNameAsJavaAttribute()»");
+«ENDFOREACH-»
+«ENDIF»
+			}});
+«ENDFOREACH-»
+		}};
+	}
+	
+}
+«ENDFILE»
+
+«FILE "alma/acs/tmcdb/translator/TableInheritance_"+modelName.name+".java"-»
+package alma.acs.tmcdb.translator;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class TableInheritance_«modelName.name» extends AbstractTableInheritance {
+
+	public TableInheritance_«modelName.name»() {
+		map = new HashMap<String, String>() {{
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+			put("«t.name.toLowerCase()»", "«t.superTable.name»");
+«ENDIF-»
+«ENDFOREACH-»
+		}};
+
+		keymap = new HashMap<String, String>() {{
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+«FOREACH t.finalKey().columns AS c-»
+			put("«t.name.toLowerCase()»","«t.shortTableName().toLowerCase()»«c.getTable().shortTableName().toLowerCase()»fkey");
+«ENDFOREACH-»
+«ENDIF-»
+«ENDFOREACH-»
+		}};
+
+		keyColumnsMap = new HashMap<String, List<String>>() {{
+«FOREACH tables AS t-»
+«IF t.superTable != null-»
+			put("«t.name.toLowerCase()»",new ArrayList<String>() {{
+«FOREACH t.finalKey().columns AS c-»
+				add("«c.name.toLowerCase()»");
+«ENDFOREACH-»				
+			}});
+«ENDIF-»
+«ENDFOREACH-»
+		}};
+
+		cascadingTypes = new HashMap<String, CascadeType>() {{
+«FOREACH tables AS t-»
+«FOREACH t.getForeignKeyConstraints() AS const-»
+«IF const.cascading != null && const.cascading.aggregation-»
+«IF const.cascading.isInverse-»
+			put("«const.name.toLowerCase()»", CascadeType.AGGREGATION_INVERSE);
+«ELSE-»
+			put("«const.name.toLowerCase()»", CascadeType.AGGREGATION);
+«ENDIF-»
+«ELSEIF const.cascading != null && const.cascading.composition -»
+«IF const.cascading.isInverse-»
+			put("«const.name.toLowerCase()»", CascadeType.COMPOSITION_INVERSE);
+«ELSE-»
+			put("«const.name.toLowerCase()»", CascadeType.COMPOSITION);
+«ENDIF-»
+«ELSE-»
+			put("«const.name.toLowerCase()»", CascadeType.NONE);
+«ENDIF-»
+«ENDFOREACH-»
+«ENDFOREACH-»
+		}};
+
+		xmlClobTableColumns = new HashMap<String, List<String>>() {{
+«FOREACH tables AS t-»
+«IF t.hasXmlClobTypeColumn()-»
+			put("«t.name.toLowerCase()»", new ArrayList<String>() {{
+«FOREACH t.getXmlClobTypeColumns() AS c-»
+				add("«c.name.toLowerCase()»");
+«ENDFOREACH-»
+			}});
+«ENDIF-»
+«ENDFOREACH-»
+		}};
+
+		sequences = new HashMap<String, String>() {{
+«FOREACH tables AS t-»
+«IF t.finalKey().isGenerated && !t.isChild-»
+			put("«t.name.toLowerCase()»", "«t.shortTableName()»_seq");
+«ENDIF-»
+«ENDFOREACH-»
+		}};
+
+		duplicatedForeignKeys = new HashMap<String, String>() {{
+«FOREACH tables AS t-»
+«FOREACH t.getForeignKeyConstraints() AS c1-»
+	«IF c1.table.isChild -»
+		«FOREACH t.getForeignKeyConstraints() AS c2-»
+			«IF c1.table.superTable.name == c2.table.name -»
+			put("«t.name.toLowerCase()»","«c1.columns.get(0).name.toLowerCase()»");
+			«ENDIF-»
+		«ENDFOREACH-»
+	«ENDIF-»
+«ENDFOREACH-»
+«ENDFOREACH-»
+		}};
+	}
+}
+«ENDFILE»
+
+«ENDDEFINE»

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+	echo "Usage: $0 <modelFile.tmcdb>"
+	exit 1
+fi
+
+MODEL_FILE=$1
+
+if [ ! -f $MODEL_FILE ]
+then
+	echo "ERROR: file $MODEL_FILE doesn't exist, or is not a regular file"
+	exit 2
+fi
+
+MODEL_NAME=$(basename ${MODEL_FILE} | sed 's/\.ddl$//g')
+
+OUTPUT_DIR=$PWD/src-gen/${MODEL_NAME}
+
+if [ ! -z "$2" ]
+then
+	OUTPUT_DIR=$2/${MODEL_NAME}
+else
+	echo "WARNING: Using default output directory: $OUTPUT_DIR"
+fi
+
+acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/tmcdb/generator/workflow/TMCDBGenerator.mwe -pmodelFile=$MODEL_FILE -ptargetDir=$OUTPUT_DIR

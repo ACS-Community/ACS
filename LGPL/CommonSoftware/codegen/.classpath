@@ -8,5 +8,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acslog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/hibernate-tools.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/freemarker.jar"/>
+	<classpathentry kind="var" path="INTROOT/lib/hibernate3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

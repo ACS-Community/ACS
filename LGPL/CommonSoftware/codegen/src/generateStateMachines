@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+	echo "Usage: $0 <umlfile>"
+	exit 1
+fi
+
+FILE=$1
+
+if [ ! -f $FILE ]
+then
+	echo "File $FILE doesn't exist or is not a regular file"
+	exit 2
+fi
+
+acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/sm/workflows/StateMachineCodeGeneration.mwe -pmodelFile=$FILE -pplatformPath=$PWD

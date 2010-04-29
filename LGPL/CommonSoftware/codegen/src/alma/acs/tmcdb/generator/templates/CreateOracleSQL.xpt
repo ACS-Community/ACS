@@ -19,9 +19,11 @@
 «EXPAND TableDefinition FOREACH tables» 
 
 «REM»And we populate the TMCDBVersion table«ENDREM»
+«IF tables.select(e|e.name == "TMCDBVersion").size != 0»
 INSERT INTO TMCDBVersion VALUES ( 'TMCDB', '«header.version»', '«header.versionTS»' );
 
 COMMIT;
+«ENDIF-»
 «ENDFILE»
 «ENDDEFINE»
 
@@ -29,6 +31,7 @@ COMMIT;
 Expansion for each of the tables.
 For each table, we generate the following, in this order:
 
+ 0) If is a child table, the column that will be used as PK and FK
  1) Each of the columns of the table
      1.5) For the boolean types, we generate a constraint check in '0','1'
  2) The FOREIGN KEY constraints (these are not mandatory)
@@ -40,40 +43,46 @@ For each table, we generate the following, in this order:
 «ENDREM»
 «DEFINE TableDefinition FOR Table-»
 CREATE TABLE «this.name» (
+«IF isChild && finalKey().isGeneratedFrom-»
+	«LET finalKey().columns.first() AS c-»
+	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()»,
+	«ENDLET-»
+«ENDIF-»
 «FOREACH this.getColumns() AS c ITERATOR iter-»
 	«c.name» «c.type.getOracleType()»«c.type.getOracleLength()» «c.specifier.getOracleSpecifier()»,
 «ENDFOREACH-»
 «FOREACH getBooleanColumns() AS c-»
 	CONSTRAINT «shortTableName()»«c.shortColName()» CHECK («c.name» IN ('0', '1')),
 «ENDFOREACH-»
-«IF key.pieces.size > 0-»
-	CONSTRAINT «shortTableName()»AltKey UNIQUE («key.pieces.name.toString(", ")»),
+«IF finalKey().pieces.size > 0 && !isChild-»
+	CONSTRAINT «shortTableName()»AltKey UNIQUE («finalKey().pieces.name.toString(", ")»),
 «ENDIF-»
 «FOREACH getForeignKeyConstraints() AS const-»
-	CONSTRAINT «const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.table.name»,
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.finalReferencedTable().name»«IF const.foreignColumn!= null»(«const.foreignColumn.name»)«ENDIF»,
 «ENDFOREACH-»
 «FOREACH getCheckConstraints() AS const-»
-	CONSTRAINT «const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
 «ENDFOREACH-»
-	CONSTRAINT «this.shortTableName()»Key PRIMARY KEY («key.columns.name.toString(", ")»)
-);
-«IF key.isGenerated-»
--- create sequence for auto-generated primary key«REM»-- create sequence and trigger for auto-generated primary key on table «name»«ENDREM»
-CREATE SEQUENCE «shortTableName()»_seq;
--- create trigger
-CREATE OR REPLACE TRIGGER «shortTableName()»_SETID_TBI
-BEFORE INSERT ON «name»
-	FOR EACH ROW
-	DECLARE
-		cannot_generate_id EXCEPTION;
-	BEGIN
-		select «shortTableName()»_seq.nextval INTO :new.«key.columns.name.toString("")» from dual;
-	EXCEPTION
-		WHEN cannot_generate_id THEN
-			raise_application_error(-20000, 'Cannot generate unique ID');
-	END;
-/ «REM»This slash is ignored by the loadAndExecuteScript() method, but needed by PL/SQL.«ENDREM»
+«IF isChild-»
+	CONSTRAINT «shortTableName()»«superTable.shortTableName()»FKey FOREIGN KEY («finalKey().columns.name.toString(",")») REFERENCES «superTable.name»,
 «ENDIF-»
+	CONSTRAINT «this.shortTableName()»Key PRIMARY KEY («finalKey().columns.name.toString(", ")»)
+);
+«EXPAND SequenceDefinition FOR this-»
+
+
 «ENDDEFINE»
 
+
+
+«REM»
+This is the definition of a sequence for generated keys,
+as well as the needed trigger on the database for using this sequence
+for each new row that is added into the DB.
+«ENDREM»
+«DEFINE SequenceDefinition FOR Table»
+«IF finalKey().isGenerated && !isChild-»
+CREATE SEQUENCE «shortTableName()»_seq;
+«ENDIF-»
+«ENDDEFINE»
 «ENDFOREACH-»

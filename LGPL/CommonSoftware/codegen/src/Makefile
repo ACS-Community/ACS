@@ -17,19 +17,34 @@
 #    None
 #------------------------------------------------------------------------
 
+# Name of the jarfile which contains the generators' files
+TMCDB_GRAMMAR=tmcdbGrammar
+SM_GENERATOR=smGenerator
+
+
+# Helper variables for extra content in jarfiles
+SMGENERATOR_EXTRAFILES  = $(wildcard alma/acs/sm/profiles/*.profile.uml)
+SMGENERATOR_EXTRAFILES += $(wildcard alma/acs/sm/templates/*.xpt)
+SMGENERATOR_EXTRAFILES += $(wildcard alma/acs/sm/templates/*.ext)
+SMGENERATOR_EXTRAFILES += $(wildcard alma/acs/sm/templates/Java/*.xpt)
+SMGENERATOR_EXTRAFILES += $(wildcard alma/acs/sm/workflows/*.mwe)
+SMGENERATOR_EXTRAFILES += $(wildcard alma/acs/sm/*.chk)
+
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = generateTmcdbSchemas generateTmcdbHibernateStrategy generateStateMachines
 SCRIPTS_L       =
 
 
 #
 # Jarfiles and their directories
 #
-JARFILES=acscodegen
+JARFILES=acscodegen tmcdbGenerator
 acscodegen_DIRS=alma/acs/genfw/
-acscodegen_EXTRAS= 
+acscodegen_EXTRAS=
+tmcdbGenerator_DIRS=alma/acs/tmcdb/translator
+tmcdbGenerator_EXTRAS=alma/acs/tmcdb/generator
 
 #
 # java sources in Jarfile on/off
@@ -38,7 +53,7 @@ DEBUG=on
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/$(SM_GENERATOR).jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -64,10 +79,22 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+
+CLASSPATH = $(shell echo CLASSPATH):../src-gen
+
+# "all" includes the code generation and the jarfile with the files needed for TMCDB schemas generation
+all:	.done_generating do_all
+	@make -C ../src-merged
+	@make ../lib/$(SM_GENERATOR).jar
 	@echo " . . . 'all' done" 
 
+# Cleaning also cleans our own-created files
 clean : clean_all 
+	@echo "== Deleting generated sources"
+	@rm -f ../lib/$(SM_GENERATOR).jar
+	@rm -rf ../src-gen
+	@make -C ../src-merged clean
+	@rm -f .done_generating
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -77,6 +104,27 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
+	@make -C ../src-merged install
 	@echo " . . . installation done"
+
+# Target for generating code from the grammar definition of the TMCDB and compile it.
+.done_generating : alma/acs/tmcdb/grammardef/GenerateTmcdbTables.mwe alma/acs/tmcdb/grammardef/TmcdbTables.xtext
+	@echo "== Generating classes from TMCDB grammar..."
+	@cd ..; CLASSPATH=$$CLASSPATH:$$PWD/src:$$PWD/src-gen acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/tmcdb/grammardef/GenerateTmcdbTables.mwe
+	@echo "== Merging generated and existing sources"
+	@mkdir -p ../src-merged/alma/acs/
+	@cp -r ../src-gen/alma/acs/tmcdb ../src-merged/alma/acs/
+	@cp -r alma/acs/tmcdb/grammardef ../src-merged/alma/acs/tmcdb/
+	@touch .done_generating
+
+# the javaMakefile of ACS doesn't support the creation of jarfiles without classes.
+# Therefore, we need to create them by hand.
+../lib/$(TMCDB_GRAMMAR).jar :
+	@echo "== Making $(TMCDB_GRAMMAR).jar"
+	@make -C ../src-merged
+
+../lib/$(SM_GENERATOR).jar : $(SMGENERATOR_EXTRAFILES)
+	@echo "== Making $(SM_GENERATOR).jar"
+	@jar cf $@ $(SMGENERATOR_EXTRAFILES)
 
 #___oOo___

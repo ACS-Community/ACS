@@ -22,6 +22,8 @@ String getOracleType(Type this):
 	else if DoubleType.isInstance(this) then "BINARY_DOUBLE"
 	else if FloatType.isInstance(this) then "BINARY_FLOAT"
 
+	else if XmlClobType.isInstance(this) then "XMLTYPE"
+
 	// CHAR, VARCHAR
 	else name;
 
@@ -39,7 +41,7 @@ String getOracleLength(Type this):
 	else if TimeType.isInstance(this) then " (19)"
 	else if BooleanType.isInstance(this) then " (1)"
 
-	// LENGTH, FLOAT, DOUBLE
+	// LENGTH, FLOAT, DOUBLE, XMLCLOBTYPE
 	else "";
 
 String getOracleSpecifier(Specifier this):
@@ -53,3 +55,7 @@ String getOracleSpecifier(Specifier this):
 		then "DEFAULT " + ( ((DefaultIntValue)((DefaultSpecifier)this).defaultValue).isNegative ? "-" : "") + ((DefaultIntValue)((DefaultSpecifier)this).defaultValue).value
 	else if DefaultStringValue.isInstance(((DefaultSpecifier)this).defaultValue)
 		then "DEFAULT '" + ((DefaultStringValue)((DefaultSpecifier)this).defaultValue).value + "'";
+
+
+List[Table] getTablesWithOracleSequences(TMCDBModel this):
+	this.tables.select(e|e.key.isGenerated && !e.isChild);

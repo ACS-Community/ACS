@@ -4,6 +4,7 @@ import tmcdbTables;
 String getHsqldbType(Type this):
 
 	if      ClobType.isInstance(this) then "LONGVARCHAR"
+	else if XmlClobType.isInstance(this)  then "LONGVARCHAR"
 	else if TextType.isInstance(this) then "LONGVARCHAR"
 	else if NameType.isInstance(this) then "VARCHAR"
 	else if LongnameType.isInstance(this) then "VARCHAR"
@@ -24,7 +25,7 @@ String getHsqldbLength(Type this):
 	else if LongnameType.isInstance(this) then " (256)"
 	else if TstampType.isInstance(this) then " (6)"
 
-	// INT, SMALLINT, BIGINT, TINYINT, CLOB, TEXT, TIME, BOOLEAN, LENGTH, FLOAT, DOUBLE
+	// INT, SMALLINT, BIGINT, TINYINT, CLOB, TEXT, TIME, BOOLEAN, LENGTH, FLOAT, DOUBLE, XMLCLOBTYPE
 	else "";
 
 String getHsqldbSpecifier(Specifier this):

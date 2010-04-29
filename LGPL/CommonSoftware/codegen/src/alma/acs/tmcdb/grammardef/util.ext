@@ -9,9 +9,6 @@ List[Table] allTables(TMCDBModel this):
 Table getTable(Key this):
 	(Table)this.eContainer;
 
-List[Column] allColumns(Table this):
-	this.eAllContents.typeSelect(Column);
-
 Table getTable(Column this):
 	(Table)this.eContainer;
 
@@ -27,21 +24,23 @@ String shortColName(Column this):
 
 List[Column] getColumns(Table this) :
 	this.columns;
+	//this.superTable!=null ? this.columns.union(superTable.getColumns()) : this.columns;
 
 List[Column] getKeyColumns(Table this) :
-	this.key.columns;
+	this.superTable!=null ? this.superTable.key.columns : this.key.columns;
 
 List[ForeignConstraint] getForeignKeyConstraints(Table this):
 	this.constraints.typeSelect(ForeignConstraint);
+	//this.superTable!=null ? this.constraints.typeSelect(ForeignConstraint).union(this.superTable.constraints.typeSelect(ForeignConstraint)) :
+	//this.constraints.typeSelect(ForeignConstraint);
 
 List[CheckConstraint] getCheckConstraints(Table this):
 	this.constraints.typeSelect(CheckConstraint);
+	//this.superTable!=null ? this.constraints.typeSelect(CheckConstraint).union(this.superTable.constraints.typeSelect(CheckConstraint)) :
+	//this.constraints.typeSelect(CheckConstraint);
 
 List[Column] getBooleanColumns(Table this):
-	this.columns.select(e|BooleanType.isInstance(e.type));
-
-List[Table] getTablesWithGeneratedKey(TMCDBModel this):
-	this.tables.select(e|e.key.isGenerated);
+	getColumns().select(e|BooleanType.isInstance(e.type));
 
 Column getColumn(Specifier this):
 	(Column)this.eContainer;
@@ -50,4 +49,17 @@ CheckConstraint getCheckConstraint(PossibleValues this):
 	(CheckConstraint)this.eContainer;
 	
 Table getTable(PossibleValues this):
-	(Table)getCheckConstraint().eContainer;
+	(Table)getCheckConstraint().getTable();
+
+Table getTable(Constraint this):
+	(Table)eContainer;
+
+Key finalKey(Table this):
+	this.superTable != null ? superTable.finalKey() : key;
+
+Table finalTableForColumn(Table e, Column c):
+	e.columns.contains(c) ? e : finalTableForColumn(e.superTable, c);
+	
+Table finalReferencedTable(ForeignConstraint this):
+	this.foreignColumn == null ? this.table :
+	finalTableForColumn(this.table, this.foreignColumn);

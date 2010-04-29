@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<workflow>
+
+	<property name="project" value="codegen" />
+	<property name="profileprefix" value="codegen/src/alma/acs/sm/profiles" />
+	<property name="genPath"       value="src-gen/" />
+
+	<property name="profile1"      value="${profileprefix}/UML_Standard_Profile.MagicDraw_Profile.profile.uml" />
+	<property name="profile2"      value="${profileprefix}/UML_Standard_Profile.UML_Standard_Profile.profile.uml" />
+	<property name="profile3"      value="${profileprefix}/UML_Standard_Profile.MagicDraw_Profile.DSL_Customization.profile.uml" />
+	<property name="profile4"      value="${profileprefix}/UML_Standard_Profile.Validation_Profile.profile.uml" />
+	
+
+	<bean class="org.eclipse.xtend.typesystem.uml2.Setup" standardUML2Setup="true"/>
+
+	<bean class="org.eclipse.emf.mwe.utils.StandaloneSetup" >
+		<platformUri value="${platformPath}"/>
+	</bean>
+
+	<bean id="md_profile" class="org.eclipse.xtend.typesystem.uml2.profile.ProfileMetaModel">
+		<profile value="platform:/resource/${profile1}" />
+	</bean>
+	<bean id="uml_std_profile" class="org.eclipse.xtend.typesystem.uml2.profile.ProfileMetaModel">
+		<profile value="platform:/resource/${profile2}" />
+	</bean>
+	<bean id="md_profile_dsl" class="org.eclipse.xtend.typesystem.uml2.profile.ProfileMetaModel">
+		<profile value="platform:/resource/${profile3}" />
+	</bean>
+	<bean id="validation_profile" class="org.eclipse.xtend.typesystem.uml2.profile.ProfileMetaModel">
+		<profile value="platform:/resource/${profile4}" />
+	</bean>
+
+	<component class="org.eclipse.emf.mwe.utils.Reader" uri="${modelFile}">
+		<modelSlot value="model"/>
+	</component>
+
+	<component class="org.eclipse.xtend.check.CheckComponent">
+		<metaModel id="uml" class="org.eclipse.xtend.typesystem.uml2.UML2MetaModel" />
+		<checkFile value="alma::acs::sm::constraints"/>
+		<emfAllChildrenSlot value="model"/>
+	</component>
+
+	<component id="dirCleaner"
+		class="org.eclipse.emf.mwe.utils.DirectoryCleaner"
+		directory="${genPath}/alma/ACS"/>
+
+	<component id="gen" class="org.eclipse.xpand2.Generator" skipOnErrors="true">
+		<metaModel idRef="uml"/>
+		<metaModel idRef="md_profile"/>
+		<metaModel idRef="md_profile_dsl"/>
+		<metaModel idRef="uml_std_profile"/>
+		<metaModel idRef="validation_profile"/>
+		<genPath value="${genPath}"/>
+		<expand value="alma::acs::sm::templates::Root::Root FOR model"/>
+		<beautifier class="org.eclipse.xpand2.output.JavaBeautifier"/>
+	</component>
+
+</workflow>

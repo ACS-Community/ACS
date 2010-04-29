@@ -7,14 +7,14 @@
 
 	<!-- We only clean from grammardef directory, since we share the space with other generators -->	
 	<component class="org.eclipse.emf.mwe.utils.DirectoryCleaner" directory="${runtimeProject}/src-gen/alma/acs/tmcdb/grammardef"/>
-	<component class="org.eclipse.emf.mwe.utils.DirectoryCleaner" directory="${runtimeProject}.ui/src-gen"/>
+	<component class="org.eclipse.emf.mwe.utils.DirectoryCleaner" directory="${runtimeProject}edi/src-gen"/>
 	
 	<component class="org.eclipse.xtext.generator.Generator">
 		<pathRtProject value="${runtimeProject}"/>
-		<pathUiProject value="${runtimeProject}.ui"/>
+		<pathUiProject value="${runtimeProject}edi"/>
 		<projectNameRt value="${projectName}"/>
-		<projectNameUi value="${projectName}.ui"/>
-		
+		<projectNameUi value="${projectName}edi"/>
+
 		<language uri="${grammarURI}" fileExtensions="${file.extensions}">
 			<!-- Java API to access grammar elements (required by several other fragments) -->
 			<fragment class="org.eclipse.xtext.generator.grammarAccess.GrammarAccessFragment"/>
@@ -39,8 +39,8 @@
 			
 			<!-- java-based API for validation -->
 			<fragment class="org.eclipse.xtext.generator.validation.JavaValidatorFragment">
-                <composedCheck value="org.eclipse.xtext.validation.ImportUriValidator"/>
-            </fragment>
+				<composedCheck value="org.eclipse.xtext.validation.ImportUriValidator"/>
+			</fragment>
 			
             
 			<!-- scoping API -->
