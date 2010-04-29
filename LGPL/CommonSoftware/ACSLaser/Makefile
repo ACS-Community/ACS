@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2009/12/23 15:21:27 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.27 2010/04/29 16:11:10 hsommer Exp $"
 #
 #
 
@@ -22,6 +22,7 @@ MODULES_ACSLASER = alarmCommon \
 	gp-openide \
       gp \
       laser-core \
+      alarmHibernate \
       laser-client \
       laser-definition \
       laser-console \
