@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy.py,v 1.5 2008/10/30 14:13:00 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy.py,v 1.6 2010/04/29 11:23:32 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@ import ACSAlarmSystemInterfaceProxy as ACSProxy
 class TestAlarmSystemInterfaceFactory(unittest.TestCase):
     def test_createFaultState(self):
         """AlarmSystemInterfaceFactory creates FaultState correctly"""
-        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
+        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         fs = Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState()
@@ -63,7 +63,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_createSource_ACS(self):
         """AlarmSystemInterfaceFactory creates ACS source correctly"""
-        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">ACS</configuration-property></alarm-system-configuration>'
+        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">ACS</configuration-property></alarm-system-configuration>'
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         asi = Acsalarmpy.AlarmSystemInterfaceFactory.createSource()
@@ -72,7 +72,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_createSource_CERN(self):
         """AlarmSystemInterfaceFactory creates CERN source correctly"""
-        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
+        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         Acsalarmpy.AlarmSystemInterfaceFactory.registry['CERN'] = mock.Mock
@@ -93,7 +93,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_init_cern(self):
         """AlarmSystemInterfaceFactory initialized correctly with CERN configuration"""
-        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
+        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">CERN</configuration-property></alarm-system-configuration>'
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         self.assertEqual(mgr, Acsalarmpy.AlarmSystemInterfaceFactory.manager)
@@ -103,7 +103,7 @@ class TestAlarmSystemInterfaceFactory(unittest.TestCase):
 
     def test_init_acs(self):
         """AlarmSystemInterfaceFactory initialized correctly with ACS configuration"""
-        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">ACS</configuration-property></alarm-system-configuration>'
+        mockCDB.get_DAO.return_value = '<?xml version="1.0" encoding="ISO-8859-1"?><alarm-system-configuration xmlns="urn:schemas-cosylab-com:acsalarm-alarmservice:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><configuration-property name="Implementation">ACS</configuration-property></alarm-system-configuration>'
         mgr = mock.Mock()
         Acsalarmpy.AlarmSystemInterfaceFactory.init(mgr)
         self.assertEqual(mgr, Acsalarmpy.AlarmSystemInterfaceFactory.manager)
