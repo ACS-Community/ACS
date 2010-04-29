@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_H
 #define RT_SUPPLIER_H
-/*    @(#) $Id: acsncRTSupplier.h,v 1.20 2010/02/22 18:31:17 javarias Exp $
+/*    @(#) $Id: acsncRTSupplier.h,v 1.21 2010/04/29 20:00:45 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -55,6 +55,17 @@ namespace nc {
 class RTSupplier : public Supplier
 {
   public:
+    /**
+      * Event procesing callback interface definition
+      */
+      class EventProcessingCallback{
+          public:
+              virtual void queueIsFull(::CORBA::Any_ptr event){}
+              virtual void eventDropped(::CORBA::Any_ptr event){}
+              virtual ~EventProcessingCallback(){}
+      };
+
+
     ///////////////////////////////////////////////////////////////
     /**
      * Constructor
@@ -91,8 +102,17 @@ class RTSupplier : public Supplier
         @endhtmlonly
      */
     template <class T> void
-    publishData(T data);
+    publishData(T data, EventProcessingCallback *evProcCallback=NULL);
     ///////////////////////////////////////////////////////////////
+
+	 /**
+		* Returns the size of the queue with events waiting to be sent by
+		* the worker thread.
+		*
+		*/
+	unsigned int getQueueSize();
+	
+  
   protected:
     /**
      * Destructor is protected.
@@ -120,9 +140,18 @@ class RTSupplier : public Supplier
     baci::BACIThreadManager *threadManager_mp;
 
     /**
+      * Maintains the event and the data related to the event's sending
+      */
+    struct unpublishedEventData{
+        CosNotification::StructuredEvent event;
+        EventProcessingCallback *callback;
+        unsigned int tries;
+    };
+
+    /**
      *  A queque of structured events.
      */
-    std::queue<CosNotification::StructuredEvent>  unpublishedEvents_m;
+    std::queue<unpublishedEventData>  unpublishedEvents_m;
 
     /**
      * A CORBA any which is used to encode/store ICD style events. This has
@@ -136,6 +165,16 @@ class RTSupplier : public Supplier
      * low priority thread trying to publish it. 
      */
     ACE_Thread_Mutex eventQueueMutex_m;
+    
+    /**
+      * Repeat guard for the logger, to be used in static methods
+      */
+    Logging::RepeatGuardLogger<Logging::BaseLog> *rtSupGuardb;
+    
+    /**
+      * Repeat guard for the exceptions, to be used in static methods
+      */
+    Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> *rtSupGuardex;
 
   private:
     /**
@@ -147,10 +186,7 @@ class RTSupplier : public Supplier
      * ALMA C++ coding standards state copy constructors should be disabled.
      */
     RTSupplier(const RTSupplier&);
-
 };
-	Logging::RepeatGuardLogger<Logging::BaseLog> *rtSupGuardb;
-	Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl> *rtSupGuardex;
  }; 
 
 

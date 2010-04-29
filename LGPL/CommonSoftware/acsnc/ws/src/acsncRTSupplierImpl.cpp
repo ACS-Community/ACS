@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.16 2010/02/22 18:31:17 javarias Exp $"
+* "@(#) $Id: acsncRTSupplierImpl.cpp,v 1.17 2010/04/29 20:00:45 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,12 +43,10 @@ RTSupplier::RTSupplier(const char* channelName,
 			      (void*)RTSupplier::worker, 
 			      static_cast<void *>(this));
     threadManager_mp->resume("worker");
-	 if(rtSupGuardb != NULL)
-		 rtSupGuardb = new Logging::RepeatGuardLogger<Logging::BaseLog>
-			 (30000000,50);
-	 if(rtSupGuardex != NULL)
-		 rtSupGuardex = new Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl>
-			 (30000000,50);
+    rtSupGuardb = new Logging::RepeatGuardLogger<Logging::BaseLog>
+        (30000000,50);
+    rtSupGuardex = new Logging::RepeatGuardLogger<ACSErr::ACSbaseExImpl>
+        (30000000,50);
 }
 //-----------------------------------------------------------------------------
 void 
@@ -72,7 +70,7 @@ RTSupplier::disconnect()
 	try
 	    {
 	    //publish the event.
-	    publishEvent(unpublishedEvents_m.front());
+	    publishEvent(unpublishedEvents_m.front().event);
 
 	    //remove the last event
 	    unpublishedEvents_m.pop();
@@ -89,6 +87,12 @@ RTSupplier::disconnect()
 
     //just call superclass disconnect
     Supplier::disconnect();
+}
+
+unsigned int RTSupplier::getQueueSize()
+{
+    ACE_Guard<ACE_Thread_Mutex> guard(eventQueueMutex_m);
+    return unpublishedEvents_m.size();
 }
 //-----------------------------------------------------------------------------
 void 
@@ -116,78 +120,106 @@ RTSupplier::worker(void* param_p)
     while(myself_p->check() == true)
 	{
 	//there are unpublished events
-	if((myself_p->isSuspended() == false) && (supplier_p->unpublishedEvents_m.empty() != true))
-	    {	
-	    //Now we rush through and publish any events in the queue
-	    while(supplier_p->unpublishedEvents_m.empty() != true)
-		{
-		try
-		    {
-		    //no need for the mutex here (reads are thread safe)
-		    supplier_p->publishEvent(supplier_p->unpublishedEvents_m.front());
+        if((myself_p->isSuspended() == false) && (supplier_p->unpublishedEvents_m.empty() != true))
+        {	
+            //Now we rush through and publish any events in the queue
+            while(supplier_p->unpublishedEvents_m.empty() != true)
+            {
+                try
+                {
+                    //no need for the mutex here (reads are thread safe)
+                    supplier_p->publishEvent(supplier_p->unpublishedEvents_m.front().event);
 
-		    //must use a mutex for any STL write operation
-		    ACE_Guard<ACE_Thread_Mutex> guard(supplier_p->eventQueueMutex_m);//.acquire();
-		    supplier_p->unpublishedEvents_m.pop();
-//		    supplier_p->eventQueueMutex_m.release();
-		    }
-		catch(ACSErrTypeCommon::CORBAProblemEx &_ex)
-		    {
-				 char strlog[1024];
-				 Logging::Logger::LoggerSmartPtr logger = getLogger();
-				 sprintf(strlog, " %s channel - problem publishing a saved event!",
-						 supplier_p->channelName_mp);
-				 rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
-						 strlog, __FILE__, __LINE__, "RTSupplier::worker()");
-	//	    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-	//			   supplier_p->channelName_mp));
-		    ACSErrTypeCommon::CORBAProblemExImpl ex(_ex);
-			 rtSupGuardex->log(ex);
-		    }
-      catch(CORBA::SystemException &ex)
-      {
-         //tbd: we have to improve here the erro handling. Now we print out more that is necessary
-         // ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-         //	   supplier_p->channelName_mp));
-         char strlog[1024];
-         Logging::Logger::LoggerSmartPtr logger = getLogger();
-         sprintf(strlog, " %s channel - problem publishing a saved event!",
-               supplier_p->channelName_mp);
-         rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
-               strlog, __FILE__, __LINE__, "RTSupplier::worker()");
-         ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-               "MACIContainerServices::getCORBAComponentNonSticky");
-         corbaProblemEx.setMinor(ex.minor());
-         corbaProblemEx.setCompletionStatus(ex.completed());
-         corbaProblemEx.setInfo(ex._info().c_str());
-         // corbaProblemEx.log();
-         rtSupGuardex->log(corbaProblemEx);
-      }
-      catch(...)
-      {
-         //    ACS_SHORT_LOG((LM_ERROR,"RTSupplier::worker() %s channel - problem publishing a saved event!",
-         //		   supplier_p->channelName_mp));
-         char strlog[1024];
-         Logging::Logger::LoggerSmartPtr logger = getLogger();
-         sprintf(strlog, " %s channel - problem publishing a saved event!",
-               supplier_p->channelName_mp);
-         rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
-               strlog, __FILE__, __LINE__, "RTSupplier::worker()");
-      }
-      }
-	    }
-	myself_p->sleep();
-	}
+                    //must use a mutex for any STL write operation
+                    ACE_Guard<ACE_Thread_Mutex> guard(supplier_p->eventQueueMutex_m);//.acquire();
+                    supplier_p->unpublishedEvents_m.pop();
+                }
+                catch(ACSErrTypeCommon::CORBAProblemEx &_ex)
+                {
+                    char strlog[1024];
+                    Logging::Logger::LoggerSmartPtr logger = getLogger();
+                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                            supplier_p->channelName_mp);
+                    supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                            strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                    ACSErrTypeCommon::CORBAProblemExImpl ex(_ex);
+                    supplier_p->rtSupGuardex->log(ex);
+                    supplier_p->unpublishedEvents_m.front().tries++;
+                    //Use the callback to to notify the user that the message is dropped
+                    if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                        struct unpublishedEventData data = 
+                            supplier_p->unpublishedEvents_m.front();
+                        supplier_p->unpublishedEvents_m.pop();
+                        if(data.callback != NULL){
+                            ::CORBA::Any event = data.event.filterable_data[0].value;
+                            data.callback->eventDropped(&event);
+                        }
+                    }
+                }
+                catch(CORBA::SystemException &ex)
+                {
+                    //tbd: we have to improve here the erro handling. Now we print out more that is necessary
+                    char strlog[1024];
+                    Logging::Logger::LoggerSmartPtr logger = getLogger();
+                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                            supplier_p->channelName_mp);
+                    supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                            strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                    ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
+                            "RTSupplier::worker()");
+                    corbaProblemEx.setMinor(ex.minor());
+                    corbaProblemEx.setCompletionStatus(ex.completed());
+                    corbaProblemEx.setInfo(ex._info().c_str());
+                    supplier_p->rtSupGuardex->log(corbaProblemEx);
+                    supplier_p->unpublishedEvents_m.front().tries++;
+                    //Use the callback to to notify the user that the message is dropped
+                    if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                        struct unpublishedEventData data = 
+                            supplier_p->unpublishedEvents_m.front();
+                        supplier_p->unpublishedEvents_m.pop();
+                        if(data.callback != NULL){
+                            ::CORBA::Any event = data.event.filterable_data[0].value;
+                            data.callback->eventDropped(&event);
+                        }
+                    }
+                }
+                catch(...)
+                {
+                    char strlog[1024];
+                    Logging::Logger::LoggerSmartPtr logger = getLogger();
+                    sprintf(strlog, " %s channel - problem publishing a saved event!",
+                            supplier_p->channelName_mp);
+                    supplier_p->rtSupGuardb->log(logger, Logging::Logger::LM_ERROR,
+                            strlog, __FILE__, __LINE__, "RTSupplier::worker()");
+                    supplier_p->unpublishedEvents_m.front().tries++;
+                    //Use the callback to to notify the user that the message is dropped
+                    if(supplier_p->unpublishedEvents_m.front().tries > 5){
+                        struct unpublishedEventData data = 
+                            supplier_p->unpublishedEvents_m.front();
+                        supplier_p->unpublishedEvents_m.pop();
+                        if(data.callback != NULL){
+                            ::CORBA::Any event = data.event.filterable_data[0].value;
+                            data.callback->eventDropped(&event);
+                        }
+                    }
+                }
+            }
+        }
+        myself_p->sleep();
+    }
     
     if (BACIThread::DoneThread != 0) 
-	{
-	BACIThread::DoneThread();
-	}
+    {
+        BACIThread::DoneThread();
+    }
     delete baciParameter_p;
     myself_p->setStopped();
 }
 //-----------------------------------------------------------------------------
-RTSupplier::~RTSupplier(){;}
+RTSupplier::~RTSupplier(){
+    delete rtSupGuardb;
+    delete rtSupGuardex;
+}
 //----------------------------------------------------------------------
  }; 
 

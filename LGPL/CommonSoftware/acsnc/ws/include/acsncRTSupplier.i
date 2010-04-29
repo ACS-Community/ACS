@@ -1,6 +1,6 @@
 #ifndef RT_SUPPLIER_I
 #define RT_SUPPLIER_I
-/*    @(#) $Id: acsncRTSupplier.i,v 1.23 2008/10/09 07:57:41 cparedes Exp $
+/*    @(#) $Id: acsncRTSupplier.i,v 1.24 2010/04/29 20:00:45 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -29,7 +29,7 @@
 namespace nc {
 //----------------------------------------------------------------------    
 template <class T> void
-RTSupplier::publishData(T data)
+RTSupplier::publishData(T data, EventProcessingCallback *evProcCallback)
 {
     try
 	{
@@ -38,12 +38,21 @@ RTSupplier::publishData(T data)
 	
 	if (unpublishedEvents_m.size()>10000)
 	    {
-	    // here different exception should be thrown
-	    char buf[100];
-	    ACSErrTypeCommon::CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
+	    // here the callback handles the error
+        if(evProcCallback != NULL){
+            any_m <<= data;
+            evProcCallback->queueIsFull(&any_m);
+            return;
+        }
+        //classical approach
+        //this should throw a different exception
+        else{
+	        char buf[100];
+	        ACSErrTypeCommon::CORBAProblemExImpl ex(__FILE__, __LINE__, "RTSupplier<>::publishData");
             sprintf(buf, "RTSupplier sueue size exceed 10000 (%d)", unpublishedEvents_m.size());
-	    ex.setInfo(buf);
-	    throw ex.getCORBAProblemEx();
+	        ex.setInfo(buf);
+	        throw ex.getCORBAProblemEx();
+        }
 	    }
 	//convert user data to an any
 	any_m <<= data;
@@ -51,7 +60,11 @@ RTSupplier::publishData(T data)
 	populateHeader(any_m);
 	
 	//save the event in our list
-	unpublishedEvents_m.push(event_m);
+    struct unpublishedEventData data;
+    data.event = event_m;
+    data.callback = evProcCallback;
+    data.tries = 0;
+	unpublishedEvents_m.push(data);
 	
 	//done...release it
 //	eventQueueMutex_m.release();
