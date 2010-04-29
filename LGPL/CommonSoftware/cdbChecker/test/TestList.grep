@@ -12,3 +12,4 @@ Searching for schema files in
 Will verify XML files in directory:
 MICO_HOME/bin/ird
 Will verify XSD files in directory:
+ACS.log.minlevel.namedloggers not defined
