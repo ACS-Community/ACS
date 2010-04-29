@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: cdbTATPrologue,v 1.6 2006/03/13 15:12:32 cparedes Exp $"
+# "@(#) $Id: cdbTATPrologue,v 1.7 2010/04/29 15:24:40 hsommer Exp $"
 #
 #
 # who       when      what
@@ -86,15 +86,32 @@ if [ "X$WIND_BASE" != X ]; then
   _WRITE_IOR_="-o ENVIRONMENTS/lcuTat/DAL.ior" 
 fi
 
-if [ "X$TAT_VERBOSE" = X ]; then
- _REDIR_=/dev/null
-else
+# now always needed since we wait for completion
+#if [ "X$TAT_VERBOSE" = X ]; then
+# _REDIR_=/dev/null
+#else
  _REDIR_=cdb.log
  echo " ****************** cdbTATPrologue *************** " >  $_REDIR_
+#fi
+
+
+ENABLE_TMCDB=`echo ${ENABLE_TMCDB:-"false"} | tr "[:upper:]" "[:lower:]"`
+if [ $ENABLE_TMCDB = "true" ] || [ $ENABLE_TMCDB = "y" ] || [ $ENABLE_TMCDB = "1" ]
+then
+  hibernateCdbJDal -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ -loadXMLCDB >>$_REDIR_ 2>&1 &
+  # -configName test -acsOnly
+else
+  cdbjDAL -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
 fi
 
-cdbjDAL -root $CDB_ROOT -OAport $_CDB_PORT_ $_WRITE_IOR_ >>$_REDIR_ 2>&1 &
-sleep 10
+# wait until loaded
+MAX_TIMEOUT=120
+if ! acsutilBlock -t $MAX_TIMEOUT -f $_REDIR_ -b "JDAL is ready and waiting"
+then
+  echo "Unable to start the ACS CDB in $MAX_TIMEOUT seconds!"
+  exit 45
+fi
+
 exit 0
 #
 # ___oOo___
