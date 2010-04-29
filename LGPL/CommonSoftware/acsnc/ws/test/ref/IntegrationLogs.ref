@@ -1,15 +1,10 @@
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - 
-1 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
 1 - DAO:'MACI' Unable to return field: 'Containers/bilboContainer/LoggingConfig/dispatchPacketSize'
 1 - Configuration information for container 'bilboContainer' not available.
 1 - Starting as dynamic container.
-1 - 
-1 - 
-1 - 
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
@@ -22,9 +17,16 @@
 1 - ----------T--:--:--.--- [bilboContainer-GL - ] SimpleConsumer::addSubscription unable to subscribe to multiple event types from this class!
 1 - ----------T--:--:--.--- [IL_CON1 - ] An exception on addSubscription...OK.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
+1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
@@ -32,22 +34,15 @@
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
+1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
-1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
-1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
-1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [IL_SUP1 - ] Sent an event via SimpleSupplier.
-1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Publisher:IL_SUP1, Event Type:EventDescription
 1 - ----------T--:--:--.--- [bilboContainer-GL - ] Took too long to handle an 'EventDescription' event: x.yz seconds.
 1 - ----------T--:--:--.--- [bilboContainer-Static - ] myHandlerFunction()...value is:41
 1 - ----------T--:--:--.--- [IntegrationLogger - Helper::integrationLog] Channel:blarIL, Receiver:Unknown, Publisher:, Event Type:EventDescription
