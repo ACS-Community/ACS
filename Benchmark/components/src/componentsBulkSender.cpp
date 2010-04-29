@@ -47,6 +47,11 @@ void BulkDataSenderEx1Impl::paceData()
 {
 }
 
+void BulkDataSenderEx1Impl::setSize(::CORBA::ULongLong newSize)
+{
+	size_m = newSize;
+}
+
 void BulkDataSenderEx1Impl::stopSend()
 {
     ACS_TRACE("BulkDataSenderImpl::stopSend");

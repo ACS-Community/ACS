@@ -29,8 +29,7 @@ class BulkDataSenderEx1Impl : public virtual BulkDataSenderDefaultImpl,
      */
     virtual void stopSend();
     
-    virtual void setSize(unsigned long long newSize)
-	{ size_m = newSize; }
+    virtual void setSize(::CORBA::ULongLong newSize);
     
   private:
     unsigned long long size_m;
