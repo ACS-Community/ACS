@@ -595,19 +595,11 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		}
 	}
 	
-	/**
-	 * Load the reduction rules from the CDB.
-	 * 
-	 * Read the reduction rules from the CDB and set up the alarms accordingly
-	 */
-	private void loadReductionRules()
-	{		
+	public ReductionDefinitions getReductionDefinitions()
+	{
 		if (conf==null) {
 			throw new IllegalStateException("Missing dal");
 		}
-		
-		// The reduction rules (<parent, child>)
-		ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
 		
 		String xml;
 		try {
@@ -615,18 +607,35 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		} catch (CDBRecordDoesNotExistEx cdbEx) {
 			// No reduction rules defined in CDB
 			logger.log(AcsLogLevel.WARNING,"No reduction rules defined in CDB");
-			return;
+			return null;
 			
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't read "+REDUCTION_DEFINITION_PATH, e);
 		}
-		ReductionDefinitions rds;
+		ReductionDefinitions rds = null;
 		try {
 			rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't parse "+REDUCTION_DEFINITION_PATH, e);
 		}
 		
+		return rds;
+	}
+	
+	/**
+	 * Load the reduction rules from the CDB.
+	 * 
+	 * Read the reduction rules from the CDB and set up the alarms accordingly
+	 */
+	private void loadReductionRules()
+	{		
+		ReductionDefinitions rds = getReductionDefinitions();
+		if (rds == null)
+			return;
+		
+		// The reduction rules (<parent, child>)
+		ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
+
 		// Read the links to create from the CDB
 		LinksToCreate ltc=rds.getLinksToCreate();
 		//	Read the thresholds from the CDB
