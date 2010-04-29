@@ -8,5 +8,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jhall-2.0_02.jar"/>
 	<classpathentry kind="var" path="JAVA_HOME/lib/tools.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/hibernate-annotations.jar"/>
 	<classpathentry kind="output" path="object"/>
 </classpath>
