@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParser;
@@ -44,6 +45,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
+import alma.acs.util.StopWatch;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
@@ -79,13 +81,26 @@ import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
  * It only adds the implementation of the {@link WDALOperations} methods.
  */
 public class DALImpl extends JDALPOA implements Recoverer {
-	/** Schema validation feature id (http://apache.org/xml/features/validation/schema). */
+	/** 
+	 * Schema validation feature id (http://apache.org/xml/features/validation/schema).
+	 * See http://xerces.apache.org/xerces2-j/features.html 
+	 * */
 	public static final String SCHEMA_VALIDATION_FEATURE_ID =
 		"http://apache.org/xml/features/validation/schema";
 
-	/** Property for setting the mapping of URIs to XML schemas. */
+	/** 
+	 * Property for setting the mapping of URIs to XML schemas. 
+	 * See http://xerces.apache.org/xerces2-j/properties.html 
+	 */
 	public static final String EXTERNAL_SCHEMA_LOCATION_PROPERTY_ID =
 		"http://apache.org/xml/properties/schema/external-schemaLocation";
+
+	/**
+	 * The XSD cache may have additional bad side effects (one was a failure with xinclude which has been fixed),
+	 * so we only use it if this property is set to true to switch it off easily in case of problems.
+	 */
+	public static final String USE_XSD_CACHE_PROPERTYNAME = "cdb.useXsdCache";
+	public final boolean useXsdCache;
 
 	private ORB orb;
 	private POA poa;
@@ -131,11 +146,16 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @param args
 	 * @param orb_val
 	 * @param poa_val
+	 * @throws IllegalArgumentException if the computed CDB root directory does not exist.
 	 */
 	DALImpl(String args[], ORB orb_val, POA poa_val, Logger logger) {
 		orb = orb_val;
 		poa = poa_val;
 		m_logger = logger;
+		
+		useXsdCache = Boolean.getBoolean(USE_XSD_CACHE_PROPERTYNAME);
+		m_logger.info("DALImpl will use XSD caching for xerces sax parser ? " + useXsdCache);
+		
 		m_root = "CDB";
 
 		// set up self-profiling
@@ -172,8 +192,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		}
 
 		File rootF = new File(m_root);
+		
+		if (!rootF.exists()) {
+			throw new IllegalArgumentException("CDB directory '" + m_root + "' does not exist.");
+		}
+		
 		m_root = rootF.getAbsolutePath() + '/';
 		m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
+		
 		loadFactory();
 		
 		// cache cleanup thread
@@ -195,12 +221,23 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 	
 	public void loadFactory(){
+		
+		if (useXsdCache) {
+			// In case of underlying xerces parser, enable XSD caching to improve performance
+			System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration", "org.apache.xerces.parsers.XMLGrammarCachingConfiguration");
+		}
+		
 		factory = SAXParserFactory.newInstance();
 		try {
 			try {
 				factory.setNamespaceAware(true);
 				factory.setValidating(true);
 				factory.setFeature(SCHEMA_VALIDATION_FEATURE_ID, true);
+				if (useXsdCache) {
+					// We need to enable xinclude here, because the above XMLGrammarCachingConfiguration overrides
+					// the default XIncludeParserConfiguration set by acsStartJava
+					factory.setFeature("http://apache.org/xml/features/xinclude", true);
+				}
 			} catch (IllegalArgumentException x) {
 				// This can happen if the parser does not support JAXP 1.2
 				m_logger.log(AcsLogLevel.NOTICE, "Check to see if parser conforms to JAXP 1.2 spec.", x);
@@ -217,7 +254,16 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			} else {
 				m_logger.log(AcsLogLevel.NOTICE,"Schema files: NO SCHEMAS!");
 			}
-
+			
+			// More performance tuning, see http://www.ibm.com/developerworks/xml/library/x-perfap3.html
+			
+			// xml reader buffer size, said to not improve things much above 8 kB
+			saxParser.setProperty("http://apache.org/xml/properties/input-buffer-size", new Integer(1024 * 10));
+			
+			// this unfortunately gives 
+			// org.xml.sax.SAXNotRecognizedException: Property 'http://apache.org/xml/features/validation/schema/augment-psvi' is not recognized.
+			//saxParser.setProperty("http://apache.org/xml/features/validation/schema/augment-psvi", true);
+			
 		} catch (Throwable t) {
 			t.printStackTrace(); // @TODO is this right? Throw exception..?
 		}
@@ -250,9 +296,10 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * returns string of URIs separated by ' ' for all schema files in root/schemas and
 	 * directories list given by ACS.cdbpath environment variable
 	 * 
-	 * @TODO (HSO): Is there a reason why this method is public and static, e.g. usage by TMCDB etc?
+	 * This method is public static to be used more easily in the HibernateDAL 
+	 * (com.cosylab.cdb.jdal.XSDElementTypeResolver#initializeParser())
 	 */
-	public static String getSchemas(String root, Logger m_logger) {
+	public static String getSchemas(String root, Logger logger) {
 		String fileName, filePath;
 
 		// we will use only first fileName we found in search path
@@ -262,17 +309,20 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		getFiles(root + "schemas", filePathMap);
 
 		int dbg_nRoot = filePathMap.size();
-		m_logger.log(AcsLogLevel.DEBUG, "- found "+dbg_nRoot+" xsd-files in <-root>");//msc:added
+		logger.log(AcsLogLevel.DEBUG, "- found "+dbg_nRoot+" xsd-files in -root=" + root);
 		// then all given path if any
 		String pathList = System.getProperty("ACS.cdbpath");
 		if (pathList != null) {
 			StringTokenizer st = new StringTokenizer(pathList, File.pathSeparator);//msc:fixed
 			while (st.hasMoreTokens()) {
 				filePath = st.nextToken();
-			getFiles(filePath, filePathMap);
+				getFiles(filePath, filePathMap);
 			}
+			logger.log(AcsLogLevel.DEBUG,"- found "+(filePathMap.size()-dbg_nRoot)+" additional xsd-files in ACS.cdbpath=" +pathList);
 		}
-		m_logger.log(AcsLogLevel.DEBUG,"- found "+(filePathMap.size()-dbg_nRoot)+" xsd-files in <ACS.cdbpath>");//msc:added  
+		else {
+			logger.warning("Property 'ACS.cdbpath' not set.");
+		}
 		// from file list build return string
 		Iterator<String> i = filePathMap.keySet().iterator();
 		if (!i.hasNext())
@@ -289,7 +339,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			allURIs.append("urn:schemas-cosylab-com:").append(fileName).append(":1.0 ").
 					append(filePath).append(' ');
 		}
-		return allURIs.toString();
+		String ret = allURIs.toString();
+		logger.log(Level.FINEST, "All XSD URIs (max. 1000 chars): " + ret.substring(0, 1000));
+		return ret;
 	}
 
 	/**
@@ -337,26 +389,33 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		return path;
 	}
 	
-	public void parseNode(DALNode node, XMLHandler xmlSolver) throws SAXException, IOException, AcsJCDBXMLErrorEx {
+	public void parseNode(DALNode node, XMLHandler xmlSolver, String path) throws SAXException, IOException, AcsJCDBXMLErrorEx {
+		m_logger.finest("parseNode called for " + path + "/" + node.name);
 		DALNode[] childs = node.getChilds();
 		DALNode curlNode = node.getCurlNode();
 		if(curlNode != null) {
 			String xmlPath = getRecordPath(node.getCurl());
 			// NOTE: we cannot cache due to setFirstElement.... sadly :(
-			String xml = null; //getFromCache(node.getCurl()); + check if string instance
+			String xml = null; //getFromCache(node.getCurl());
+			File xmlFile = null;
 			if (xml != null)
 			{
 				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 			}
 			else 
 			{
-				File xmlFile = new File(xmlPath);
+				xmlFile = new File(xmlPath);
 				xmlSolver.setFirstElement(node.name);
 				saxParser.parse(xmlFile, xmlSolver);
 			}
 			
 			if (xmlSolver.m_errorString != null) {
-				String info = "XML parser error: " + xmlSolver.m_errorString;
+				String info = "XML parser error: ";
+				if (xmlFile != null) {
+					info += "file=" + xmlFile.getAbsolutePath() + " ";
+				}
+				info += xmlSolver.m_errorString;
+				
 				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
 				cdbxmlErr.setFilename(xmlPath);
 				cdbxmlErr.setNodename(node.name);
@@ -377,7 +436,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		
 		// and childs if exist
 		for (int i = 0; i < childs.length; i++) {
-			parseNode(childs[i], xmlSolver);
+			parseNode(childs[i], xmlSolver, path + "/" + node.name);
 		}
 		xmlSolver.closeElement();
 	}
@@ -393,81 +452,111 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 */
 	public XMLHandler loadRecords(String curl, boolean toString) throws AcsJCDBRecordDoesNotExistEx, AcsJCDBXMLErrorEx {
 
-		// create hierarchy of all nodes if it is not created yet 
-		synchronized (this) {
-			if( rootNode == null) {
-				//no Error thrown
-				rootNode = DALNode.getRoot(m_root);
-			}
-		}
-
-		//no Error thrown
-		String strFileCurl = curl;
-		String strNodeCurl = "";
-		DALNode curlNode = null;
-		while(strFileCurl != null){
-		    curlNode = rootNode.findNode(strFileCurl);
-		    if(curlNode == null) {
-			if(strFileCurl.lastIndexOf('/') >0){
-			    strNodeCurl = strFileCurl.substring(strFileCurl.lastIndexOf('/')+1) + "/"+ strNodeCurl; 
-		    	    strFileCurl = strFileCurl.substring(0,strFileCurl.lastIndexOf('/'));
-		    	}else strFileCurl = null;
-		    }else break;
-		}
+		StopWatch sw = new StopWatch(m_logger);
 		
-		m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl=" + curl + "), strFileCurl=" + strFileCurl + ", strNodeCurl=" + strNodeCurl);
-		if (strFileCurl == null) {
-			AcsJCDBRecordDoesNotExistEx recordDoesNotExist = new AcsJCDBRecordDoesNotExistEx();
-			recordDoesNotExist.setCurl(curl);
-			throw recordDoesNotExist;
-		}
-		// no Error thrown
-		if(curlNode.isSimple()){
-			m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl="+curl+"), curlNode is Simple");
-			if(curl.equals(strFileCurl)){
-			     return loadRecord(strFileCurl, toString);
-			}else{
-			    XMLHandler xmlSolver = loadRecord(strFileCurl, false);
-			    try{
-			    return xmlSolver.getChild(strNodeCurl);
-			    }catch(AcsJCDBRecordDoesNotExistEx e){
-			    	e.setCurl(strFileCurl+e.getCurl());
-			    	throw e;
-			    }
-			}
-		}
-		m_logger.log(AcsLogLevel.DELOUSE, "loadRecords(curl="+curl+"), curlNode is Complex");
-		XMLHandler xmlSolver;
 		try {
-			//xmlSolver.startDocument();
-			//xmlSolver.startElement(null,null,"curl",new org.xml.sax.helpers.AttributesImpl);
- 			if(curl.equals(strFileCurl)){
-			    xmlSolver = new XMLHandler(toString);
-			    xmlSolver.setAutoCloseStartingElement(false);
-			    parseNode(curlNode, xmlSolver);
-			//xmlSolver.closeElement();
-			     return xmlSolver;
-			}else{
-			    //here we must return the node inside the xmlSolver with curl= strNodeCurl		
-			    xmlSolver = new XMLHandler(false);
-		 	    xmlSolver.setMarkArrays(1);
-			    xmlSolver.setAutoCloseStartingElement(false);
-			    parseNode(curlNode, xmlSolver);
-			    return xmlSolver.getChild(strNodeCurl);
+			// create hierarchy of all nodes if it is not created yet 
+			synchronized (this) {
+				if( rootNode == null) {
+					//no Error thrown
+					rootNode = DALNode.getRoot(m_root);
+				}
 			}
-		} catch (AcsJCDBRecordDoesNotExistEx e){
-			e.setCurl(strFileCurl+e.getCurl());
-			throw e;
-		} catch (SAXParseException e) {
-			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
-			cdbxmlErr.setErrorString("SAXParseException: " + e.getMessage());
-			cdbxmlErr.setCurl(curl);
-			cdbxmlErr.setFilename(e.getSystemId() + ", line=" + e.getLineNumber());
-			throw cdbxmlErr;
-		} catch (Throwable thr) {
-			AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(thr);
-			cdbxmlErr.setCurl(curl);
-			throw cdbxmlErr;
+	
+			//no Error thrown
+			String strFileCurl = curl;
+			String strNodeCurl = "";
+			DALNode curlNode = null;
+			boolean isEmbeddedNode = false;
+			while (strFileCurl != null) {
+				curlNode = rootNode.findNode(strFileCurl);
+				if (curlNode == null) {
+					// curlNode == null means our curl refers to a sub-element of an XML file (e.g. baci property node),
+					// or to a non-existing node.
+					// Therefore we must move up toward the root node to find a valid parent xml node.
+					if (strFileCurl.lastIndexOf('/') > 0) {
+						strNodeCurl = strFileCurl.substring(strFileCurl.lastIndexOf('/') + 1) + "/" + strNodeCurl;
+						strFileCurl = strFileCurl.substring(0, strFileCurl.lastIndexOf('/'));
+						isEmbeddedNode = true;
+					} 
+					else {
+						strFileCurl = null;
+					}
+				} 
+				else {
+					// curlNode and strFileCurl point to the node that has the relevant XML file 
+					break;
+				}
+			}
+			
+			m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl=" + curl + "), strFileCurl=" + strFileCurl + ", strNodeCurl=" + strNodeCurl);
+			
+			// Performance optimization (see also COMP-4104): if the requested node does not exist, but there is a valid parent node,
+			// then the xmlSolver below would go through all sibling and "nephew" XML files of the invalid node first, 
+			// and in the end also throw an AcsJCDBRecordDoesNotExistEx. 
+			// We shortcut this based on the isEmbeddedNode flag, and if the valid parent node does not have its own XML file,
+			// because the "embedded" node data will not be found in other XML files.
+			if (strFileCurl == null || (isEmbeddedNode && !curlNode.hasXmlChild())) {
+				AcsJCDBRecordDoesNotExistEx recordDoesNotExist = new AcsJCDBRecordDoesNotExistEx();
+				recordDoesNotExist.setCurl(curl);
+				throw recordDoesNotExist;
+			}
+
+			// no Error thrown
+			
+			if (curlNode.isSimple()) {
+				m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl=" + curl+ "); curlNode '" + curlNode.name + "' is simple.");
+				if (curl.equals(strFileCurl)) {
+					return loadRecord(strFileCurl, toString);
+				} 
+				else {
+					XMLHandler xmlSolver = loadRecord(strFileCurl, false);
+					try {
+						return xmlSolver.getChild(strNodeCurl);
+					} 
+					catch (AcsJCDBRecordDoesNotExistEx e) {
+						e.setCurl(strFileCurl + e.getCurl());
+						throw e;
+					}
+				}
+			}
+			m_logger.log(AcsLogLevel.DEBUG, "loadRecords(curl="+curl+"), curlNode is Complex");
+			XMLHandler xmlSolver;
+			try {
+				//xmlSolver.startDocument();
+				//xmlSolver.startElement(null,null,"curl",new org.xml.sax.helpers.AttributesImpl);
+	 			if(curl.equals(strFileCurl)){
+				    xmlSolver = new XMLHandler(toString, m_logger);
+				    xmlSolver.setAutoCloseStartingElement(false);
+				    parseNode(curlNode, xmlSolver, "");
+				//xmlSolver.closeElement();
+				     return xmlSolver;
+				}else{
+				    //here we must return the node inside the xmlSolver with curl= strNodeCurl		
+				    xmlSolver = new XMLHandler(false, m_logger);
+			 	    xmlSolver.setMarkArrays(1);
+				    xmlSolver.setAutoCloseStartingElement(false);
+				    parseNode(curlNode, xmlSolver, "");
+				    return xmlSolver.getChild(strNodeCurl);
+				}
+			} catch (AcsJCDBRecordDoesNotExistEx e){
+				e.setCurl(strFileCurl+e.getCurl());
+				throw e;
+			} catch (SAXParseException e) {
+				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx();
+				cdbxmlErr.setErrorString("SAXParseException: " + e.getMessage());
+				cdbxmlErr.setCurl(curl);
+				cdbxmlErr.setFilename(e.getSystemId() + ", line=" + e.getLineNumber());
+				throw cdbxmlErr;
+			} catch (Throwable thr) {
+				AcsJCDBXMLErrorEx cdbxmlErr = new AcsJCDBXMLErrorEx(thr);
+				cdbxmlErr.setCurl(curl);
+				throw cdbxmlErr;
+			}
+		}
+		finally {
+			long lt = sw.getLapTimeMillis();
+			m_logger.finest("Time spent in loadRecords(" + curl + "): " + lt);
 		}
 	}
 
@@ -482,7 +571,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			throw recordDoesNotExist; 
 		}
 
-		XMLHandler xmlSolver = new XMLHandler(toString);
+		XMLHandler xmlSolver = new XMLHandler(toString, m_logger);
 		xmlSolver.setMarkArrays(1);
 		try {
 			m_logger.log(AcsLogLevel.DEBUG, "Parsing xmlFile="+xmlFile);
@@ -788,14 +877,18 @@ public class DALImpl extends JDALPOA implements Recoverer {
 //		} catch (InterruptedException ex) {
 //			ex.printStackTrace();
 //		}
-		synchronized (shutdownLock) {
-			shutdown = true;
-			shutdownLock.notifyAll();
-		}
+		shutdownEmbeddedDALImpl();
 		
 		ClientLogManager.getAcsLogManager().shutdown(true);
 		
 		orb.shutdown(false);
+	}
+
+	public void shutdownEmbeddedDALImpl() {
+		synchronized (shutdownLock) {
+			shutdown = true;
+			shutdownLock.notifyAll();
+		}
 	}
 
 	
@@ -813,6 +906,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	/**
+	 * @TODO: For the TMCDB XML import it does not make sense to create a recovery file. Shouldn't we support a mode that skips this? 
 	 * @return File
 	 */
 	protected File getStorageFile() {
