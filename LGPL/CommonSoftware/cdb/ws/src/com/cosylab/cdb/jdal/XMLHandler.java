@@ -30,19 +30,23 @@ package com.cosylab.cdb.jdal;
  */
 
 import java.util.ArrayList;
-import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
-//TODO; remover esto
-import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.*;
+
+import alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx;
 
 public class XMLHandler extends DefaultHandler {
 	private static boolean m_toString;
+	private final Logger logger;
 	//
 	public XMLTreeNode m_rootNode = null;
 	protected XMLTreeNode m_parent;
-	private StringBuffer m_arrayContent = new StringBuffer(64);
+//	private StringBuffer m_arrayContent = new StringBuffer(64);
 	private int elementID = 0;
 	
 	//
@@ -66,8 +70,10 @@ public class XMLHandler extends DefaultHandler {
 	public StringBuffer m_xmlString = new StringBuffer(256);
 	
 	// ctor
-	public XMLHandler(boolean toString) {
+	public XMLHandler(boolean toString, Logger logger) {
+		this.logger = logger;
 		m_toString = toString;
+		
 	}
 
 	public void startDocument() throws SAXException {
@@ -233,10 +239,11 @@ m_xmlString.append(raw); elementNames.add(raw);//}
 
 	public void error(SAXParseException e) {
 		m_errorString = "Line=" + e.getLineNumber() + ", Column="+e.getColumnNumber()+": " + e.getMessage();
+		logger.log(Level.FINE, "XML parser error: ", e);
 	}
 
 	/**
-	 * Should we autoamitally close ending node
+	 * Should we automatically close ending node
 	 * @param b
 	 */
 	public void setAutoCloseStartingElement(boolean b) {
@@ -297,7 +304,7 @@ String s = (String)i.next();
 		}
 		tnFather = tnChild;
 	    }while(!strLast.equals(""));
-	    XMLHandler a = new XMLHandler(false);
+	    XMLHandler a = new XMLHandler(false, logger);
 	    a.m_rootNode = tnChild;
 	    return a;  
 	}
