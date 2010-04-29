@@ -4,6 +4,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.naming.CompositeName;
 import javax.naming.Context;
@@ -54,6 +55,8 @@ public class JNDIContext implements Context {
 	protected static ORB orb;
 	protected static DAL dal;
 
+	protected final Logger logger;
+
 	// members
 	protected String name; // this name like MACI/Managers
 	// all elements in this level i.e. all directories in MACI/Managers
@@ -77,15 +80,15 @@ public class JNDIContext implements Context {
 	/**
 	 * Constructor for CDBContext.
 	 */
-	public JNDIContext() {
-		super();
+	public JNDIContext(Logger logger) {
+		this(null, null, logger);
 	}
 
 	/**
 	 * Constructor for CDBContext.
 	 */
-	public JNDIContext(String name, String elements) {
-		super();
+	public JNDIContext(String name, String elements, Logger logger) {
+		this.logger = logger;
 		this.name = name;
 		this.elements = elements;
 	}
@@ -150,7 +153,7 @@ public class JNDIContext implements Context {
 				if (daoElements != null)
 				{
 					try {
-						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName), logger);
 					} catch (CDBXMLErrorEx th) {
 						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
 						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());
@@ -161,7 +164,7 @@ public class JNDIContext implements Context {
 					}
 				}
 				else
-					return new JNDIContext(fullLookupName, dal.list_nodes(fullLookupName));
+					return new JNDIContext(fullLookupName, dal.list_nodes(fullLookupName), logger);
 			}
 		
 		if (daoElements != null)
@@ -172,7 +175,7 @@ public class JNDIContext implements Context {
 				if (token.nextElement().equals(lookupName))
 				{
 					try {
-						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName));
+						return new JNDIXMLContext(fullLookupName, dal.list_nodes(fullLookupName), dal.get_DAO(fullLookupName), logger);
 					} catch (CDBXMLErrorEx th) {
 						AcsJCDBXMLErrorEx jex = AcsJCDBXMLErrorEx.fromCDBXMLErrorEx(th);
 						NamingException ex2 = new NamingException(jex.getFilename() + ": " + jex.getErrorString());

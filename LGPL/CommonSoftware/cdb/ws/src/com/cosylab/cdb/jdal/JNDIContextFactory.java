@@ -1,13 +1,18 @@
 package com.cosylab.cdb.jdal;
 
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
+
 import org.omg.CORBA.ORB;
-// The package containing our CORBA stubs.
-import com.cosylab.CDB.*;
+
+import alma.acs.logging.ClientLogManager;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 /*******************************************************************************
  *    ALMA - Atacama Large Millimiter Array
@@ -57,7 +62,8 @@ public class JNDIContextFactory implements InitialContextFactory {
 		JNDIContext.setDal(dal);
 
 		//System.out.println( "Returning CDBContext" );
-		return new JNDIContext("", dal.list_nodes(""));
+		Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(Server.CDB_LOGGER_NAME, true);
+		return new JNDIContext("", dal.list_nodes(""), logger);
 
 	}
 

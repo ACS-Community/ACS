@@ -200,9 +200,9 @@ public class WDALImpl extends WDALBaseImpl
 
 		logger.log(AcsLogLevel.INFO, "remove_node " + curl);
 
-		// check if node exisits
+		// check if node exists
 		if(!nodeExists(curl)) {
-			logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
+			logger.log(AcsLogLevel.NOTICE, "Record does not exist: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -253,9 +253,9 @@ public class WDALImpl extends WDALBaseImpl
 
 		logger.log(AcsLogLevel.INFO, "set_DAO " + curl);
 
-		// check if node exisits
+		// check if node exists
 		if(!nodeExists(curl)) {
-			logger.log(AcsLogLevel.NOTICE, "Record does not exists: " + curl);
+			logger.log(AcsLogLevel.NOTICE, "Record does not exist: " + curl);
 			throw new CDBRecordDoesNotExistEx();
 		}
 
@@ -272,14 +272,14 @@ public class WDALImpl extends WDALBaseImpl
 		// get content of the given xml string using parser without any shemas and validation
 		// since given xml string come from a client that have no shemas and it is full expanded version
 		// of existing xml or it is smal composed xml of few properties
-		XMLHandler xmlSolver = new XMLHandler(false);
+		XMLHandler xmlSolver = new XMLHandler(false, logger);
 		// TODO markArrays == 2 impl. is a mess... I think lot of code could be removed!
 		//xmlSolver.setMarkArrays(2);
 		parseXML(xml, xmlSolver);
 
 		// get original xml that we will use to compare
 		xml = dalImpl.get_DAO(curl);
-		daoXMLSolver = new XMLHandler(false);
+		daoXMLSolver = new XMLHandler(false, logger);
 		parseXML(xml, daoXMLSolver);
 		daoImp = new DAOImpl(curl, daoXMLSolver.m_rootNode, poa, logger);
 
@@ -517,7 +517,7 @@ public class WDALImpl extends WDALBaseImpl
 	public void validateXML(String xml) throws AcsJCDBXMLErrorEx
 	{
 		try {
-			XMLHandler dalSolver = new XMLHandler(true);
+			XMLHandler dalSolver = new XMLHandler(true, logger);
 			SAXParser saxParser = dalImpl.getSaxParser();
 			saxParser.parse(new InputSource(new StringReader(xml)), dalSolver);
 
@@ -557,7 +557,7 @@ public class WDALImpl extends WDALBaseImpl
 		 */
 		public WriteXMLHandler(Map propertyMap)
 		{
-			super(false);
+			super(false, logger);
 			this.propertyMap = propertyMap;
 			setMarkArrays(1); // just make a holder
 		}

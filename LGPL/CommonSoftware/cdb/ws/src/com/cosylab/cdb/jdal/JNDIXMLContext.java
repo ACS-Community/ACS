@@ -32,6 +32,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -57,7 +58,7 @@ public class JNDIXMLContext extends JNDIContext {
 	static private boolean parserInited = false;
 	static private SAXParserFactory factory;
 	static private SAXParser saxParser;
-
+	
 	private XMLTreeNode node;
 	// all hierarchical records inside this node
 	private Hashtable nestedElements;
@@ -79,10 +80,10 @@ public class JNDIXMLContext extends JNDIContext {
 	/**
 	 * @param name
 	 */
-	public JNDIXMLContext(String name, String elements, String xml) {
-		super(name, elements);
+	public JNDIXMLContext(String name, String elements, String xml, Logger logger) {
+		super(name, elements, logger);
 		initParser();
-		XMLHandler xmlSolver = new XMLHandler(false);
+		XMLHandler xmlSolver = new XMLHandler(false, logger);
 		try {
 			saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 		} catch (SAXException e) {
@@ -98,7 +99,8 @@ public class JNDIXMLContext extends JNDIContext {
 		node = xmlSolver.m_rootNode;
 	}
 
-	public JNDIXMLContext(XMLTreeNode node) {
+	public JNDIXMLContext(XMLTreeNode node, Logger logger) {
+		super(logger);
 		this.node = node;
 	}
 
@@ -145,7 +147,7 @@ public class JNDIXMLContext extends JNDIContext {
 			String nodeName = nameToLookup.substring(0,slashIndex);
 			if (node.getNodesMap().containsKey(nodeName)) {
 				XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nodeName);
-				return new JNDIXMLContext(nextNode).lookup(nameToLookup.substring(slashIndex+1));
+				return new JNDIXMLContext(nextNode, logger).lookup(nameToLookup.substring(slashIndex+1));
 			}
 		}
 		
@@ -154,7 +156,7 @@ public class JNDIXMLContext extends JNDIContext {
 		}
 		if (node.getNodesMap().containsKey(nameToLookup)) {
 			XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nameToLookup);
-			return new JNDIXMLContext(nextNode);
+			return new JNDIXMLContext(nextNode, logger);
 		}
 		if (node.getFieldMap().containsKey(nameToLookup)) {
 			return (String) node.getFieldMap().get(nameToLookup);

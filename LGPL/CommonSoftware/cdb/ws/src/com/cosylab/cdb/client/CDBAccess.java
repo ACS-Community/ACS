@@ -289,7 +289,7 @@ public class CDBAccess
 	 */
 	private void internalConnect(DAOProxy proxy) 
 	{
-		String curl = null;			
+		String curl = null;
 
 		try
 		{
@@ -320,7 +320,7 @@ public class CDBAccess
 				SAXParser saxParser = factory.newSAXParser();
 				
 				// use CDB XML handler which does not creates strings...
-				XMLHandler xmlSolver = new XMLHandler(false);
+				XMLHandler xmlSolver = new XMLHandler(false, logger);
 				
 				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 				

@@ -101,7 +101,7 @@ public class DALRead {
 
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
-			XMLHandler xmlSolver = new XMLHandler(false);
+			XMLHandler xmlSolver = new XMLHandler(false, m_logger);
 			saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
 			if (xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
