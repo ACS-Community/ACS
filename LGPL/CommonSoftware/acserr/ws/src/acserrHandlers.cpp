@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.6 2010/03/15 11:58:05 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.7 2010/04/30 09:08:22 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,7 +11,7 @@
 #include "vltPort.h"
 #include "acserrHandlers.h"
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.6 2010/03/15 11:58:05 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.7 2010/04/30 09:08:22 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -107,6 +107,9 @@ void acserrUncaughtExHandler()
 	}
 }//acserrTerminate
 
+
+#ifndef MAKE_VXWORKS
+
 void acserrSigSegvHandler(int signal, siginfo_t* info, void* data)
 {
     const std::string myTimeStamp(::getStringifiedTimeStamp().c_str());
@@ -133,6 +136,7 @@ void acserrSigSegvHandler(int signal, siginfo_t* info, void* data)
         << myTimeStamp
         << "\n";
 }
+#endif //!MAKE_VXWORKS
 
 
 /*___oOo___*/
