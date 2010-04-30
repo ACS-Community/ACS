@@ -90,6 +90,12 @@ public class ContainerProxy extends ClientProxy implements Container
 			TimeoutRemoteException re = new TimeoutRemoteException("Timout occured while invoking 'activate_component()' method.", tex);
 			throw re;
 		}
+		catch (org.omg.CORBA.MARSHAL marshalEx) {
+			// see http://jira.alma.cl/browse/COMP-4371. Unclear if a parameter was null, or the returned struct was invalid.
+			RemoteException re = new RemoteException("Failed to transform the paramters or return value of the container's 'activate_component' method " + 
+					"to/from the corba call, using parameters name=" + name + ", exe=" + exe + ", type=" + type, marshalEx);
+			throw re;
+		}
 		catch (Exception ex)
 		{
 			RemoteException re = new RemoteException("Failed to invoke 'activate_component()' method.", ex);
