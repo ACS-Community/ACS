@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.18 2010/04/30 09:01:56 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.19 2010/04/30 09:08:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.18 2010/04/30 09:01:56 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.19 2010/04/30 09:08:00 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -550,7 +550,9 @@ char* ACSError::getDescription (ACSErr::ACSErrType et, ACSErr::ErrorCode ec)
 
 bool ACSError::init ()
 {
+#ifndef MAKE_VXWORKS
 	struct sigaction sigSegVAction;
+#endif
     orb = CORBA::ORB::_nil();
 
     ACE_Utils::UUID_GENERATOR::instance ()->init ();
@@ -558,6 +560,7 @@ bool ACSError::init ()
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
 
+#ifndef MAKE_VXWORKS
     std::memset(&sigSegVAction, 0, sizeof(struct sigaction));
 
     sigSegVAction.sa_sigaction = acserrSigSegvHandler;
@@ -567,7 +570,7 @@ bool ACSError::init ()
     {
     	ACS_SHORT_LOG((LM_WARNING, "Error while installing the new SIGSEGV signal handler: !", std::strerror(errno)));
     }//if
-
+#endif //!MAKE_VXWORKS
     initialized = true;
 
     return true;
@@ -576,12 +579,15 @@ bool ACSError::init ()
 
 bool ACSError::init (CORBA::ORB_ptr _orb)
 {
+#ifndef MAKE_VXWORKS
 	struct sigaction sigSegVAction;
+#endif //!MAKE_VXWORKS
 
     orb = CORBA::ORB::_duplicate(_orb);
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
-    
+
+#ifndef MAKE_VXWORKS
     std::memset(&sigSegVAction, 0, sizeof(struct sigaction));
 
     sigSegVAction.sa_sigaction = acserrSigSegvHandler;
@@ -592,6 +598,7 @@ bool ACSError::init (CORBA::ORB_ptr _orb)
     	ACS_SHORT_LOG((LM_WARNING, "Error while installing the new SIGSEGV signal handler: !", std::strerror(errno)));
     }//if
 
+#endif //!MAKE_VXWORKS
     initialized = true;
 
     return true;
