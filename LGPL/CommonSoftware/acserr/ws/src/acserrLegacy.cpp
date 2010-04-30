@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.17 2010/03/15 11:58:05 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.18 2010/04/30 09:01:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,7 @@
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.17 2010/03/15 11:58:05 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.18 2010/04/30 09:01:56 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -550,13 +550,24 @@ char* ACSError::getDescription (ACSErr::ACSErrType et, ACSErr::ErrorCode ec)
 
 bool ACSError::init ()
 {
+	struct sigaction sigSegVAction;
     orb = CORBA::ORB::_nil();
 
     ACE_Utils::UUID_GENERATOR::instance ()->init ();
     
     m_oldUnexpected = std::set_unexpected(acserrUnspecifiedExHandler);
     m_oldTerminate = std::set_terminate(acserrUncaughtExHandler);
-    
+
+    std::memset(&sigSegVAction, 0, sizeof(struct sigaction));
+
+    sigSegVAction.sa_sigaction = acserrSigSegvHandler;
+    sigSegVAction.sa_flags = SA_SIGINFO | SA_RESETHAND;
+
+    if(sigaction(SIGSEGV, &sigSegVAction, 0) != 0)
+    {
+    	ACS_SHORT_LOG((LM_WARNING, "Error while installing the new SIGSEGV signal handler: !", std::strerror(errno)));
+    }//if
+
     initialized = true;
 
     return true;
