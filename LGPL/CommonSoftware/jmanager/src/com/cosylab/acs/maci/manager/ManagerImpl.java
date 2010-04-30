@@ -3539,9 +3539,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					continue;
 				}
 				
-				// get it's deploy info
+				// get its deploy info
 				String host = readStringCharacteristics(containersDAO, containerName + "/DeployInfo/Host", true);
-				if (host != null)
+				String startOnDemand = readStringCharacteristics(containersDAO, containerName + "/DeployInfo/StartOnDemand", true);
+				if (host != null && startOnDemand != null && startOnDemand.equalsIgnoreCase("TRUE"))
 					startupContainers.add(containerName);
 	
 				// remove (or is it auto-started by starting a container or is it not hosted by auto-start container)
@@ -7053,6 +7054,10 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// read DeployInfo and initiate start-up
 		//
 
+		String startOnDemand = readStringCharacteristics(dao, containerName + "/DeployInfo/StartOnDemand", true);
+		if (startOnDemand == null || !startOnDemand.equalsIgnoreCase("TRUE"))
+			return null;
+		
 		String host = readStringCharacteristics(dao, containerName + "/DeployInfo/Host", true);
 		if (host == null)
 			return null;
