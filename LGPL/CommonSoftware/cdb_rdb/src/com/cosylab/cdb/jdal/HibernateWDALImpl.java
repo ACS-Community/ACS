@@ -72,6 +72,7 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.POA;
+import org.omg.PortableServer.Servant;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
 import org.w3c.dom.DOMException;
@@ -137,6 +138,7 @@ import com.cosylab.CDB.WDAOHelper;
 import com.cosylab.CDB.WDAOPOA;
 import com.cosylab.CDB.WDAOPOATie;
 import com.cosylab.CDB.WJDALPOA;
+import com.cosylab.CDB.WJDALPOATie;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
 import com.cosylab.cdb.jdal.hibernate.DOMJavaClassIntrospector;
@@ -685,7 +687,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			for (int i = 0; i < policies.length; i++)
 				policies[i].destroy();
 
-			WDALImpl wdalImplServant = new WDALImpl(args, orb, xmlCDBPOA, m_logger);
+			final WDALImpl servantDelegate = new WDALImpl(args, orb, xmlCDBPOA, m_logger);
+			final Servant wdalImplServant = new WJDALPOATie(servantDelegate);
+//			WDALImpl wdalImplServant = new WDALImpl(args, orb, xmlCDBPOA, m_logger);
 			xmlCDBPOA.activate_object_with_id(new byte[] { 'x', 'm', 'l', 'C', 'D', 'B' }, wdalImplServant);
 			org.omg.CORBA.Object ref = xmlCDBPOA.servant_to_reference(wdalImplServant);
 			final JDAL xmlCDB_ = JDALHelper.narrow(ref);
@@ -1413,7 +1417,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				cdbAccess.destroy();
 
 				xmlCDB_._release();
-				wdalImplServant.shutdownEmbeddedWDALImpl();
+				servantDelegate.shutdownEmbeddedWDALImpl();
 				// destroy POA
 				xmlCDBPOA.destroy(true, false);
 			}
