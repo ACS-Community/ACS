@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.5 2010/03/26 23:24:15 javarias Exp $"
+* "@(#) $Id: loggingLogLevelDefinition.cpp,v 1.6 2010/04/30 10:26:48 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -126,7 +126,7 @@ ACE_Log_Priority LogLevelDefinition::m_LogEntryCast[] =
 {
     LM_SHUTDOWN,		// not in specs
     LM_TRACE, 	// not in specs
-    03,
+    (ACE_Log_Priority)03,
     LM_DEBUG,
     LM_INFO,
     LM_NOTICE,
