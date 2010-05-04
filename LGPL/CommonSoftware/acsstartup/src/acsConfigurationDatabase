@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsConfigurationDatabase,v 1.3 2010/04/29 12:41:11 hsommer Exp $"
+# "@(#) $Id: acsConfigurationDatabase,v 1.4 2010/05/04 13:30:32 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -278,7 +278,15 @@ then
     else
       loadfrom=""
     fi
-    hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT $loadfrom 2>&1 | tee $CDB_OUT &
+    TMCDB_IN_MEMORY=`echo ${TMCDB_IN_MEMORY:-"false"} | tr "[:upper:]" "[:lower:]"`
+    if [ $TMCDB_IN_MEMORY = "true" ] || [ $TMCDB_IN_MEMORY = "y" ] || [ $TMCDB_IN_MEMORY = "1" ]
+    then
+      inmemory="-memory"
+      ACS_LOG_INFO "$COMMAND" "Will load TMCDB into memory"
+    else
+      inmemory=""
+    fi
+    hibernateCdbJDal -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT $loadfrom $inmemory 2>&1 | tee $CDB_OUT &
   else
     ACS_LOG_INFO "$COMMAND" "Starting ACS Configuration Database${LOGPOSTFIX}"
     ACS_LOG_INFO "$COMMAND" "    CDB data is in:  $ACS_CDB"
