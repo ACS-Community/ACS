@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
 
 import org.omg.CORBA.ORB;
@@ -57,6 +58,8 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
+import alma.acs.alarmsystem.corbaservice.configuration.AlarmSystemConfiguration;
+import alma.acs.alarmsystem.corbaservice.configuration.ConfigurationProperty;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -660,10 +663,19 @@ public class AlarmSystemCorbaServer implements Runnable {
 	private boolean getAlarmSystemType() throws Exception {
 		DAL dal = getCDB();
 		String str=dal.get_DAO("Alarms/Administrative/AlarmSystemConfiguration");
-		String[] rows=str.split("\n");
-		for (String row: rows) {
-			if (row.trim().startsWith("<configuration-property") && row.contains("name") && row.contains("CERN")) {
-				return false;
+		StringReader strReader = new StringReader(str);
+		AlarmSystemConfiguration configuration;
+		try {
+			configuration= AlarmSystemConfiguration.unmarshalAlarmSystemConfiguration(strReader);
+		} catch (Throwable t) {
+			return true;
+		}
+		for (int propNum=0; propNum<configuration.getConfigurationPropertyCount(); propNum++) {
+			ConfigurationProperty property=configuration.getConfigurationProperty(propNum);
+			if (property.getName().equalsIgnoreCase("Implementation")) {
+				if (property.getContent().equalsIgnoreCase("CERN")) {
+					return false;
+				}
 			}
 		}
 		return true;
