@@ -122,6 +122,7 @@
 	  </copy>
 
 		<patch patchfile="${castor.patchfile}" dir="${build.src.patched}" strip="1" quiet="false" />
+        <delete file="${build.src.patched}/org/exolab/castor/util/XercesRegExpEvaluator.java" />
 		
 	</target>
 	
