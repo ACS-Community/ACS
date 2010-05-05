@@ -252,7 +252,7 @@ public abstract class AcsJException extends Exception
 				strProperties+=key+"='"+value+"' ";
 			}
 		}
-		return super.toString() + ((strProperties.length()>0) ? ( " [ " + strProperties) + "]" : "");
+		return super.toString() + ((strProperties.length()>0) ? ( " [ " + strProperties) + "] " : "");
 	}
 	
 	/**
