@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.4 2010/03/04 16:34:39 mzampare Exp $"
+# "@(#) $Id: Makefile.java,v 1.5 2010/05/05 05:49:56 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -19,7 +19,8 @@ DEBUG=on
 # 
 # IDL Files and flags
 # 
-IDL_FILES = NotificationServiceMC NotifyExt NotifyMonitoringExt
+IDL_FILES =  NotifyExt 
+IDL_FILES_L = NotificationServiceMC  NotifyMonitoringExt
 TAO_IDLFLAGS =
 # USER_IDL is defined in top Makefile, so it has to be commented here !!
 #USER_IDL =
@@ -51,7 +52,13 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
+	# line below is superfluous with new acsMakefile
+	# but will be needed as long as the old one is in use
 	@cp ../idl/NotifyExt.idl $(VLTTOP)/idl
+	# 
+	@cp ../lib/NotifyMonitoringExt.jar $(VLTTOP)/lib
+	@cp ../lib/NotificationServiceMC.jar $(VLTTOP)/lib
+
 	@echo " . . . installation done"
 
 #___oOo___
