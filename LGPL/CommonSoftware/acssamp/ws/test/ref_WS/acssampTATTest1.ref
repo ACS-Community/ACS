@@ -1,16 +1,11 @@
 2 - Running acssampFullNCTest
 1 - Starting Container...
 1 - Retrieving CDB reference from Manager using bootstrap ORB
-1 - 
-1 - 
 1 - Resolving reference: 'corbaloc::---:----/Manager'
 1 - Manager reference narrowed.
 1 - Unable to create DAL for record: ':Appl_data:MACI/Containers/Container' (field: 'LoggingConfig/dispatchPacketSize')
 1 - Configuration information for container 'Container' not available.
 1 - Starting as dynamic container.
-1 - 
-1 - 
-1 - 
 1 - ContainerStatusMsg: Startup begins
 1 - cdbErrType::CDBXMLerrorEx 'MACI/Containers/Container' 'MACI/Containers/Container'
 1 - cdbErrType::CDBXMLerrorEx 'MACI/Containers' 'MACI/Containers'
