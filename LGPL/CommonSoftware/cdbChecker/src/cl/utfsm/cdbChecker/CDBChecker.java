@@ -163,13 +163,8 @@ public class CDBChecker {
 				globalErrorFlag=true;
 			}
 			//There shouldn't be any control character but the line feed or tab.
-			if(ch < 32 && ch != 10 && ch!=9) {
-				if(ch == 13) {
-         		System.out.print(filename+": [Error] Carriage Return Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
-         		System.out.print(filename+": This is probably CRLF Windows termination.\n");
-				}
-				else
-         		System.out.print(filename+": [Error] Illegal Control Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
+			if(ch < 32 && ch != 10 && ch != 9 && ch != 13) {
+         	System.out.print(filename+": [Error] Illegal Control Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
 				errorFlag=true;
 				globalErrorFlag=true;
 			}
