@@ -103,6 +103,7 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 	private Label  _isDefaultLabel;
 	private Button _isDefaultCheck;
 	private Label  _ffLabel;
+	private Label  _errorMessageLabel;
 	private List   _ffList;
 
 	@Override
@@ -533,6 +534,15 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		gridData.grabExcessHorizontalSpace = true;
 		_ffList.setLayoutData(gridData);
 		
+		_errorMessageLabel = new Label(_comp,SWT.NONE);
+		_errorMessageLabel.setText("A");
+		_errorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		GridData gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_errorMessageLabel.setLayoutData(gd);
+		
 		
 		/* Adding a click right menu to modify the FF of a given Category */
 		Menu treePopUp1 = new Menu(parent);
@@ -565,15 +575,14 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 			public void handleEvent(Event e) {
 				java.util.List<Category> categories = _categoryManager.getAllCategories();
 				String tmp[] = _categoriesList.getSelection();
-				
 				for (int i = 0; i < categories.size() ;  i++) {
 					if ( categories.get(i).getPath().compareTo(tmp[0].toString()) == 0 ){
 						categories.get(i).setDescription(_descriptionText.getText());
 					}
-					}
+				}
 			
 			}
-			});  
+		});  
 		
 		_pathText.addListener(SWT.Modify , new Listener() {
 			public void handleEvent(Event e) {
@@ -583,24 +592,22 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		
 		_isDefaultCheck.addListener(SWT.Selection, new Listener(){
 			public void handleEvent(Event e) {
-					if( _categoryManager.getCategoryByPath(_categoriesList.getSelection()[0]).getIsDefault() == true){
-						_isDefaultCheck.setSelection(true);
-						 MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
-						 messageBox.setMessage("The Default Category always must exist, you can only change it");
-						 messageBox.open();
-					}
-					else{
+				if( _categoryManager.getCategoryByPath(_categoriesList.getSelection()[0]).getIsDefault() == true){
+					_isDefaultCheck.setSelection(true);
+					 MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
+					 messageBox.setMessage("The Default Category always must exist, you can only change it");
+					 messageBox.open();
+				}
+				else{
 					_categoryManager.updateDefaultCategory(_categoryManager.getCategoryByPath(_categoriesList.getSelection()[0]));
 					refreshContents();
 					IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
 					IViewReference[] views = _window.getActivePage().getViewReferences();
 					IMyViewPart view = ((IMyViewPart)views[3].getView(false));
 					view.refreshContents();
-					}
+				}
 			}
 		});  
-			
-
 	}
 
 	/* (non-Javadoc)
@@ -641,10 +648,8 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 			else {
 				_categoriesList.add(cat.getPath());
 			}
-	}
+		}
 		_categoriesList.deselectAll();
-		
-	
 	}
 	
 	

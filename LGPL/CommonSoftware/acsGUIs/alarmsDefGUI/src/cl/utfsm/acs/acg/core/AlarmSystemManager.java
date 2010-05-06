@@ -141,7 +141,7 @@ public class AlarmSystemManager implements EntityManager {
 
 		/* Now let them save their stuff through the DAOs */
 		
-		//_alarmManager.saveToCDB();
+		_alarmManager.saveToCDB();
 		//_sourceManager.saveToCDB();
 		//_categoryManager.saveToCDB();
 		//_reductionManager.saveToCDB();

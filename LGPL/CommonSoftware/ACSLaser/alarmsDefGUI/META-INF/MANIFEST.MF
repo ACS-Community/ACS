@@ -3,7 +3,7 @@ Bundle-Name: ACG Plug-in
 Bundle-SymbolicName: cl.utfsm.acs.acg; singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: cl.utfsm.acs.acg.gui.Activator
-Require-Bundle: alma.acs.rcp.jars, 
+Require-Bundle: alma.acs.rcp.jars,
  org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.views

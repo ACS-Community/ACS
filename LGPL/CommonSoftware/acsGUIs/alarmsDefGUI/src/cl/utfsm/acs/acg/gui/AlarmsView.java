@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.xerces.util.URI;
+import org.apache.xerces.util.URI.MalformedURIException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -133,6 +135,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Combo _ffSourceCombo;
 	private Label _ffCategoryLabel;
 	private Table _ffCategoryList;
+	private Label _ffErrorMessageLabel;
 	private Group _FFgroup;
 
 	/* FC information */
@@ -148,6 +151,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Label _fcConsequenceLabel;
 	private Text  _fcProblemText;
 	private Label _fcProblemLabel;
+	private Label _fcErrorMessageLabel;
 	private Group _FCgroup;
 
 	/* FM information */
@@ -164,6 +168,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Text  _fmLocPositionText;
 	private Label _fmLocPositionLabel;
 	private Group _fmLocGroup;
+	private Label _fmErrorMessageLabel;
 	private Group _FMgroup;
 	
 	/* Listeners*/
@@ -681,33 +686,54 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private void createFCWidgets() {
 		Listener updateFaultCode = new Listener() {
 			public void handleEvent(Event event) {
+				int val;
 				TreeItem tmp = _tree.getSelection()[0];
 				int tfc = Integer.parseInt(tmp.getText());
 				String tff = tmp.getParentItem().getParentItem().getText();
 				FaultCode fct = new FaultCode();
 				try{
-					fct.setValue(Integer.parseInt(_fcValueText.getText()));
+					val = Integer.parseInt(_fcValueText.getText());
+					if(val <= 0) {
+						_fcErrorMessageLabel.setText("FaultCode is Negative or Zero. A positive number is required.");
+						return;
+					}
+					fct.setValue(val);
 				}catch(NumberFormatException e){
-					//TODO: Error icon or something similar
+					_fcErrorMessageLabel.setText("FaultCode is not a Number. A positive number is required.");
 					return;
 				}
 				try{
-					fct.setPriority(Integer.parseInt(_fcPriorityText.getText()));
+					val = Integer.parseInt(_fcPriorityText.getText());
+					if(val < 0 || val > 3) {
+						_fcErrorMessageLabel.setText("Incorrect Priority. A number in the range [0;3] is required.");
+						return;
+					}
+					fct.setPriority(val);
 				}catch(NumberFormatException e){
-					//TODO: Error icon or something similar
-					fct.deletePriority();
+					_fcErrorMessageLabel.setText("Priority is not a number. A number in the range [0;3] is required.");
+					return;
 				}
-				fct.setCause(_fcCauseText.getText());
-				fct.setAction(_fcActionText.getText());
-				fct.setConsequence(_fcConsequenceText.getText());
+				if(!_fcCauseText.getText().isEmpty())
+					fct.setCause(_fcCauseText.getText());
+				if(!_fcActionText.getText().isEmpty())
+					fct.setAction(_fcActionText.getText());
+				if(!_fcConsequenceText.getText().isEmpty())
+					fct.setConsequence(_fcConsequenceText.getText());
+				if(_fcProblemText.getText().isEmpty()) {
+					_fcErrorMessageLabel.setText("Problem Description is Required.");
+					return;
+				}
 				fct.setProblemDescription(_fcProblemText.getText());
+				_fcErrorMessageLabel.setText("");
 				try{
 					_alarmManager.updateFaultCode(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultCode(tff, tfc),fct);
 					tmp.setText(_fcValueText.getText());
 				}catch(IllegalOperationException e){
 					System.out.println(e.getMessage());
+					_fcErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
 					System.out.println(e.getMessage());
+					_fcErrorMessageLabel.setText(e.getMessage());
 				}
 			}
 		};
@@ -775,6 +801,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		_fcProblemText.setLayoutData(gd);
 		_fcProblemText.addListener(SWT.Modify,updateFaultCode);
+		
+		_fcErrorMessageLabel = new Label(_FCgroup, SWT.NONE);
+		_fcErrorMessageLabel.setText("");
+		_fcErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_fcErrorMessageLabel.setLayoutData(gd);
 	}
 
 	private void createFMWidgets() {
@@ -786,23 +821,37 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				String tff = tmp.getParentItem().getParentItem().getText();
 				FaultMember fmt = new FaultMember();
 				//TODO: Error icon or something similar
-				if(_fmNameText.getText().compareTo("") == 0)
+				if(_fmNameText.getText().isEmpty()) {
+					_fmErrorMessageLabel.setText("FaultMember Name Missing!");
 					return;
+				}
+				if(_fmNameText.getText().contains(" ")) {
+					_fmErrorMessageLabel.setText("Invalid FaultMember Name. No spaces allowed.");
+					return;
+				}
 				fmt.setName(_fmNameText.getText());
 				Location lt = new Location();
-				lt.setBuilding(_fmLocBuildingText.getText());
-				lt.setFloor(_fmLocFloorText.getText());
-				lt.setRoom(_fmLocRoomText.getText());
-				lt.setMnemonic(_fmLocMnemonicText.getText());
-				lt.setPosition(_fmLocPositionText.getText());
+				if(!_fmLocBuildingText.getText().isEmpty()) 
+					lt.setBuilding(_fmLocBuildingText.getText());
+				if(!_fmLocFloorText.getText().isEmpty())
+					lt.setFloor(_fmLocFloorText.getText());
+				if(!_fmLocRoomText.getText().isEmpty())
+					lt.setRoom(_fmLocRoomText.getText());
+				if(!_fmLocMnemonicText.getText().isEmpty())
+					lt.setMnemonic(_fmLocMnemonicText.getText());
+				if(!_fmLocPositionText.getText().isEmpty())
+					lt.setPosition(_fmLocPositionText.getText());
 				fmt.setLocation(lt);
+				_fmErrorMessageLabel.setText("");
 				try{
 					_alarmManager.updateFaultMember(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultMember(tff, tfm),fmt);
 					tmp.setText(_fmNameText.getText());
 				}catch(IllegalOperationException e){
 					System.out.println(e.getMessage());
+					_fmErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
 					System.out.println(e.getMessage());
+					_fmErrorMessageLabel.setText(e.getMessage());
 				}
 			}
 		};
@@ -881,7 +930,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		_fmLocPositionText.setLayoutData(gd);
 		_fmLocPositionText.addListener(SWT.Modify, updateFaultMember);
-
+		
+		_fmErrorMessageLabel = new Label(_FMgroup, SWT.NONE);
+		_fmErrorMessageLabel.setText("");
+		_fmErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_fmErrorMessageLabel.setLayoutData(gd);
 	}
 
 	private void createFFWidgets() {
@@ -890,15 +947,36 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				TreeItem tmp = _tree.getSelection()[0];
 				FaultFamily fft = new FaultFamily();
 				//TODO: Error icon or something similar
-				if(_ffNameText.getText().compareTo("") == 0)
+				if(_ffNameText.getText().isEmpty()) {
+					_ffErrorMessageLabel.setText("FaultFamily Name Missing!");
 					return;
+				}
+				if(_ffNameText.getText().contains(" ")) {
+					_ffErrorMessageLabel.setText("Invalid FaultFamily Name. No spaces allowed.");
+					return;
+				}
 				fft.setName(_ffNameText.getText());
-				fft.setHelpUrl(_ffHelpURLText.getText());
+				if(!_ffHelpURLText.getText().isEmpty()) {
+					URI hurl;
+					try {
+						hurl = new URI(_ffHelpURLText.getText());
+					} catch (MalformedURIException e1) {
+						_ffErrorMessageLabel.setText("Malformed URL!");
+						return;
+					}
+					fft.setHelpUrl(hurl.toString());
+				}
 				fft.setAlarmSource(_ffSourceCombo.getText());
 				Contact ct = new Contact();
+				if(_ffContactNameText.getText().isEmpty()) {
+					_ffErrorMessageLabel.setText("Contact Name Missing!");
+					return;
+				}
 				ct.setName(_ffContactNameText.getText());
-				ct.setEmail(_ffContactMailText.getText());
-				ct.setGsm(_ffContactGSMText.getText());
+				if(!_ffContactMailText.getText().isEmpty())
+					ct.setEmail(_ffContactMailText.getText());
+				if(!_ffContactGSMText.getText().isEmpty())
+					ct.setGsm(_ffContactGSMText.getText());
 				fft.setContact(ct);
 				
 				/*
@@ -914,14 +992,16 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						cat.getAlarms().addFaultFamily(_ffNameText.getText());
 					}
 				}*/
-				
+				_ffErrorMessageLabel.setText("");
 				try{
 					_alarmManager.updateFaultFamily(_alarmManager.getFaultFamily(tmp.getText()), fft);
 					tmp.setText(_ffNameText.getText());
 				}catch(IllegalOperationException e){
 					System.out.println(e.getMessage());
+					_ffErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
 					System.out.println(e.getMessage());
+					_ffErrorMessageLabel.setText(e.getMessage());
 				}
 			}
 		};
@@ -947,21 +1027,21 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					return;
 				TableItem item = tmp2[0];
 				Category c = _categoryManager.getCategoryByPath(item.getText());
-				try{
-				String[] ffs = c.getAlarms().getFaultFamily();
-				for (int i = 0; i < ffs.length; i++) {
-					if(ff.compareTo(ffs[i]) == 0){
-						c.getAlarms().removeFaultFamily(ff);
-						item.setImage((org.eclipse.swt.graphics.Image)null);
-						IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
-						IViewReference[] views = _window.getActivePage().getViewReferences();
-						IMyViewPart view = ((IMyViewPart)views[2].getView(false));
-						view.fillWidgets();
-						return;
+					try{
+					String[] ffs = c.getAlarms().getFaultFamily();
+					for (int i = 0; i < ffs.length; i++) {
+						if(ff.compareTo(ffs[i]) == 0){
+							c.getAlarms().removeFaultFamily(ff);
+							item.setImage((org.eclipse.swt.graphics.Image)null);
+							IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
+							IViewReference[] views = _window.getActivePage().getViewReferences();
+							IMyViewPart view = ((IMyViewPart)views[2].getView(false));
+							view.fillWidgets();
+							return;
+						}
 					}
-				}
-				c.getAlarms().addFaultFamily(ff);
-				item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+					c.getAlarms().addFaultFamily(ff);
+					item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
 				}catch(NullPointerException e){
 					item.setImage((org.eclipse.swt.graphics.Image)null);
 					Alarms alarms = new Alarms();
@@ -969,7 +1049,6 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 			  		alarms.setFaultFamily(0, ff.toString());	
 			  		c.setAlarms(alarms);
 					item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
-					
 				}
 				IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
 				IViewReference[] views = _window.getActivePage().getViewReferences();
@@ -1054,6 +1133,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_ffCategoryList.setLayoutData(gd);
 		_ffCategoryList.addListener(SWT.KeyUp, _addCategory);
 		_ffCategoryList.addListener(SWT.MouseDoubleClick, _addCategory);
+		
+		_ffErrorMessageLabel = new Label(_FFgroup, SWT.NONE);
+		_ffErrorMessageLabel.setText("");
+		_ffErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_ffErrorMessageLabel.setLayoutData(gd);
 	}
 
 	private void fillFFWidgets(String name) {

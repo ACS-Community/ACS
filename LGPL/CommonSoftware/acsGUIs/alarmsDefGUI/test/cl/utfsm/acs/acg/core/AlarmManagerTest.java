@@ -24,6 +24,8 @@ package cl.utfsm.acs.acg.core;
 import java.util.List;
 
 //import alma.acs.alarmsystem.generated.Category;
+import alma.acs.alarmsystem.generated.Contact;
+import alma.acs.alarmsystem.generated.Location;
 import alma.acs.alarmsystem.generated.FaultCode;
 import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
@@ -768,6 +770,72 @@ public class AlarmManagerTest extends TestCase {
 		size2 = ff1.get(0).getFaultCodeCount();
 		assertEquals(size1,size2);
 		assertNotNull(_am.getFaultCode(ff1.get(0).getName(), 10343));
+	}
+	
+	public void testSaveToCDB() {
+		boolean exception;
+		_am = AlarmManager.getInstance(_daoManager.getAlarmDAO());
+		_am.loadFromCDB();
+		
+		List<FaultFamily> ff1 = _am.getAllAlarms();
+		assertNotNull(ff1);
+		int size1 = ff1.size();
+		int size2;
+
+		exception = false;
+		FaultFamily ff = new FaultFamily();
+		size1 = ff1.size();
+		ff.setName("foobar");
+		ff.setHelpUrl("http://www.foobar.cl/");
+		Contact ct = new Contact();
+		ct.setEmail("test@foobar.cl");
+		ct.setGsm("da");
+		ct.setName("Foobar");
+		ff.setContact(ct);
+		FaultCode fc = new FaultCode();
+		fc.setValue(1);
+		fc.setAction("a1");
+		fc.setCause("c1");
+		fc.setConsequence("co1");
+		fc.setPriority(1);
+		fc.setProblemDescription("pd1");
+		ff.addFaultCode(fc);
+		FaultMember fm = new FaultMember();
+		fm.setName("fmFoobar");
+		Location lc = new Location();
+		lc.setBuilding("b1");
+		lc.setFloor("f1");
+		lc.setMnemonic("m1");
+		lc.setPosition("p1");
+		lc.setRoom("r1");
+		fm.setLocation(lc);
+		try{
+			_am.addFaultFamily(ff);
+		}catch(Exception e){
+			exception = true;
+		}
+		assertFalse(exception);
+		size2 = ff1.size();
+		assertEquals(size1,size2-1);
+		
+		_am.saveToCDB();
+		_am.loadFromCDB();
+		FaultFamily fft = _am.getFaultFamily("foobar");
+		assertNotNull(fft);
+		assertEquals(fft.getName(),ff.getName());
+		assertEquals(fft.getHelpUrl(),ff.getHelpUrl());
+		
+		exception = false;
+		try {
+			_am.deleteFaultFamily(fft);
+		} catch (Exception e) {
+			exception = true;
+		}
+		assertFalse(exception);
+		_am.saveToCDB();
+		_am.loadFromCDB();
+		fft = _am.getFaultFamily("foobar");
+		assertNull(fft);
 	}
 	
 	public void tearDown() {

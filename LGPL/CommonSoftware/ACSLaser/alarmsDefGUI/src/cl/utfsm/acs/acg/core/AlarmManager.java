@@ -22,9 +22,11 @@
 package cl.utfsm.acs.acg.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.Vector;
 
 //import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
@@ -55,10 +57,12 @@ public class AlarmManager implements EntityManager {
 	
 	private AlarmDAO _alarmDAO;
 	private List<FaultFamily> _ffList;
+	private HashMap<String, ObjectState> _objState;
 
 	private AlarmManager(AlarmDAO alarmDAO) {
 		_alarmDAO = alarmDAO;
 		_ffList = new ArrayList<FaultFamily>();
+		_objState = new HashMap<String, ObjectState>();
 	}
 
 	/**
@@ -75,6 +79,9 @@ public class AlarmManager implements EntityManager {
 	public void loadFromCDB() {
 		try {
 			_ffList = ((ACSAlarmDAOImpl)_alarmDAO).loadAlarms();
+			_objState.clear();
+			for (FaultFamily ff : _ffList)
+				_objState.put(ff.getName(), new ObjectState(false));
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());
@@ -197,6 +204,10 @@ public class AlarmManager implements EntityManager {
 					FaultMember fmt = (FaultMember) iterator2.next();
 					if(fmt.getName().compareTo(fm.getName()) == 0){
 						fft.removeFaultMember(fm);
+						ObjectState os = _objState.get(fft.getName());
+						if(os == null)
+							throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+						os.update();
 						return true;
 					}
 				}
@@ -234,6 +245,10 @@ public class AlarmManager implements EntityManager {
 					FaultCode fct = (FaultCode) iterator2.next();
 					if(fct.getValue() == fc.getValue()){
 						fft.removeFaultCode(fc);
+						ObjectState os = _objState.get(fft.getName());
+						if(os == null)
+							throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+						os.update();
 						return true;
 					}
 				}
@@ -265,6 +280,10 @@ public class AlarmManager implements EntityManager {
 			FaultFamily fft = (FaultFamily) iterator.next();
 			if( fft.getName().compareTo(ff.getName()) == 0 ) {
 				iterator.remove();
+				ObjectState os = _objState.get(fft.getName());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+				os.delete();
 				return true;
 			}
 		}
@@ -289,6 +308,14 @@ public class AlarmManager implements EntityManager {
 			}
 		}
 		_ffList.add(ff);
+		ObjectState os = _objState.get(ff.getName());
+		if(os == null) {
+			os = new ObjectState(true);
+			os.create();
+			_objState.put(ff.getName(), os);
+		}
+		else
+			os.update();
 	}
 	
 	/**
@@ -316,6 +343,10 @@ public class AlarmManager implements EntityManager {
 					}
 				}
 				fft.addFaultMember(fm);
+				ObjectState os = _objState.get(fft.getName());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+				os.update();
 				return;
 			}
 		}
@@ -347,6 +378,10 @@ public class AlarmManager implements EntityManager {
 					}
 				}
 				fft.addFaultCode(fc);
+				ObjectState os = _objState.get(fft.getName());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+				os.update();
 				return;
 			}
 		}
@@ -380,6 +415,22 @@ public class AlarmManager implements EntityManager {
 		for (Iterator<FaultFamily> iterator = _ffList.iterator(); iterator.hasNext();) {
 			FaultFamily fft = (FaultFamily) iterator.next();
 			if( fft.getName().compareTo(ff.getName()) == 0 ) {
+				ObjectState os = _objState.get(ff.getName());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+				if(ff.getName().compareTo(ffi.getName()) == 0)
+					os.update();
+				else {
+					os.delete();
+					os = _objState.get(ffi.getName());
+					if(os == null){
+						os = new ObjectState(true);
+						os.create();
+						_objState.put(ffi.getName(), os);
+					}
+					else
+						os.update();
+				}
 				fft.setName(ffi.getName());
 				fft.setAlarmSource(ffi.getAlarmSource());
 				fft.setHelpUrl(ffi.getHelpUrl());
@@ -427,6 +478,10 @@ public class AlarmManager implements EntityManager {
 					if(fmt.getName().compareTo(fm.getName()) == 0){
 						fmt.setName(fmi.getName());
 						fmt.setLocation(fmi.getLocation());
+						ObjectState os = _objState.get(fft.getName());
+						if(os == null)
+							throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+						os.update();
 						return;
 					}
 				}
@@ -475,6 +530,10 @@ public class AlarmManager implements EntityManager {
 						fct.setAction(fci.getAction());
 						fct.setConsequence(fci.getConsequence());
 						fct.setProblemDescription(fci.getProblemDescription());
+						ObjectState os = _objState.get(fft.getName());
+						if(os == null)
+							throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
+						os.update();
 						return;
 					}
 				}
@@ -485,6 +544,34 @@ public class AlarmManager implements EntityManager {
 	}
 	
 	public void saveToCDB(){
+		Set<String> keyset = _objState.keySet();
+		String[] objs = new String[keyset.size()];
+		keyset.toArray(objs);
+		for (int i = 0; i < objs.length; i++) {
+			ObjectState os = _objState.get(objs[i]);
+			switch(os.getAction()){
+			case -1: //Error, no state assigned.
+				break;
+			case 0:
+				break;
+			case 1:
+				((ACSAlarmDAOImpl)_alarmDAO).addFaultFamily(getFaultFamily(objs[i]));
+				break;
+			case 2:
+				((ACSAlarmDAOImpl)_alarmDAO).updateFaultFamily(getFaultFamily(objs[i]));
+				break;
+			case 3:
+				FaultFamily ff = new FaultFamily();
+				ff.setName(objs[i]);
+				((ACSAlarmDAOImpl)_alarmDAO).removeFaultFamily(ff);
+				break;
+			default: //Shouldn't happen.
+				break;
+			}
+		}
+		_objState.clear();
+		for (FaultFamily ff : _ffList)
+			_objState.put(ff.getName(), new ObjectState(false));
 		//cern.laser.business.data.AlarmImpl alarm;
 		//_alarmDAO.deleteAlarm(alarm);
 		//_alarmDAO.updateAlarm(alarm);

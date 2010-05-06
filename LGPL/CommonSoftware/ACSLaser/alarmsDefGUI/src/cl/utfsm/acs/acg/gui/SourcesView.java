@@ -21,8 +21,6 @@
  */
 package cl.utfsm.acs.acg.gui;
 
-
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -77,32 +75,29 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	private Label _descriptionLabel;
 	private Text _sourceNameText;
 	private Text _descriptionText;
+	private Label _errorMessageLabel;
 	private Group _group;
 
 	@Override
 	public void createPartControl(Composite parent) {
-
 		setTitleToolTip("Configuration of Sources.\nFault Families are published into Sources");
 		createViewWidgets(parent);
 		refreshContents();
-
 	}
 
 	/* (non-Javadoc)
 	 * @see cl.utfsm.acs.acg.gui.IMyViewPart#refreshContents()
 	 */
 	public void refreshContents() {
-
 		_sourcesList.removeAll();
 		_sourceManager = AlarmSystemManager.getInstance().getSourceManager();
 		Source[] sources = _sourceManager.getAllSources();
 		for (int i = 0; i < sources.length; i++) {
-			_sourcesList.add(sources[i].getName());
+			_sourcesList.add(sources[i].getDescription());
 		}
 	}
 
 	private void createViewWidgets(final Composite parent) {
-
 		_sash = new SashForm(parent, SWT.HORIZONTAL);
 		_sash.setLayout(new FillLayout());
 
@@ -133,36 +128,27 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		_deleteSourceButton.setText("Delete");
 		_deleteSourceButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
 		
-		
 		/* Please change this in the future when more SOURCES will be available */
 		_addSourceButton.setEnabled(false);
 		_deleteSourceButton.setEnabled(false);
-		
-		
 		_sourcesList.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
-
 			public void widgetSelected(SelectionEvent e) {
 				String source = _sourcesList.getSelection()[0];
 				Control c = _compInitial.getChildren()[0];
-
 				if( c instanceof Label ){
 					c.dispose();
 					_group.setVisible(true);
 					_group.layout();
 				}
-
 				fillSource(source);
 				_compInitial.layout();
 			}
-
 		});
 		
 		_addSourceButton.addListener(SWT.Selection, new Listener() {
-
 			public void handleEvent(Event event) {
 				InputDialog dialog = new InputDialog(SourcesView.this.getViewSite().getShell(),
 				                         "New source",
@@ -198,7 +184,7 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 						int lenght = _sourcesList.getItems().length;
 						lenght -= 1;
 						_sourcesList.select(lenght);
-						_sourceNameText.setText(_sourcesList.getItem(lenght).toString());					
+						_descriptionText.setText(_sourcesList.getItem(lenght).toString());					
 					}
 				}
 				else
@@ -207,13 +193,11 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		});
 
 		_deleteSourceButton.addListener(SWT.Selection, new Listener() {
-
 			public void handleEvent(Event event) {
 				boolean choice = MessageDialog.openQuestion( 
 		        		  SourcesView.this.getViewSite().getShell(),
 		            "Confirmation",
 		            "Are you sure you want to delete this Source");
-		        
 		        if ( choice == true ){
 				String tmp[] = _sourcesList.getSelection();
 				if( tmp.length == 0 ) {
@@ -224,7 +208,6 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 					box.open();
 					return;
 				}
-
 				String source = tmp[0];
 				try {
 					_sourceManager.deleteSource(_sourceManager.getSource(source));
@@ -291,8 +274,18 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 				}
 			});
 		
+		_errorMessageLabel = new Label(_group,SWT.NONE);
+		_errorMessageLabel.setText("");
+		_errorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_errorMessageLabel.setLayoutData(gd);
+		
 		/* Please change this in the future when more SOURCES will be available */
 		_sourceNameText.setEnabled(false);
+		_descriptionText.setEnabled(false);
 	}
 	
     public void updateSource(){
@@ -302,7 +295,6 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		for (int i = 0; i < sources.length; i++) {
 			if (sources[i].getName().compareTo(tmp[0].toString()) == 0){
 					sources[i].setSourceId(_sourceNameText.getText());
-					
 			}
 		}
 		
@@ -333,22 +325,22 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	}
 
 	private void fillSource(String name) {
-
-		Source source = _sourceManager.getSource(name);
-
+		Source[] sources =_sourceManager.getAllSources();
+		Source source = null;
+		for (int i = 0; i < sources.length; i++) {
+			if(sources[i].getDescription().compareTo(name) == 0)
+				source = sources[i];
+		}
 		// This shouldn't happen anyways...
 		if (source == null)
 			return;
-
 		// sourceName is the NC name TODO:
-		_sourceNameText.setText("NULL");
+		_sourceNameText.setText(source.getName());
 		// description is the name of the source
-		_descriptionText.setText(source.getName());
+		_descriptionText.setText(source.getDescription());
 	}
 
 	public void fillWidgets() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
-
 }
