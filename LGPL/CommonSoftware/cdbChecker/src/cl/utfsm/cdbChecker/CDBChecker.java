@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
@@ -139,6 +140,45 @@ public class CDBChecker {
 		    }
 		return vector;
 	}
+
+	/**
+	 * This method validates the file encoding of XSD and XML files.
+	 * 
+	 * @param File of an XML or XSD file to validate.
+	 */
+	protected void validateFileEncoding(String filename) throws IOException {
+		File file = new File(filename);
+		FileInputStream fis;
+		fis = new FileInputStream(file);
+		//BufferedReader in = new BufferedReader(new InputStreamReader(fis,"ASCII"));
+		int ch;
+		int line = 1;
+		int i = 0;
+		while((ch = fis.read())!=-1) {
+			i++;
+			//There shouldn't be any character over 126 since 127 is <del> and ASCII only goes to 127.
+			if(ch >= 127) {
+         	System.out.print(filename+": [Error] Non-ASCII Character "+ch+" found in XML or XSD at character: "+line+":"+i+".\n");
+				errorFlag=true;
+				globalErrorFlag=true;
+			}
+			//There shouldn't be any control character but the line feed or tab.
+			if(ch < 32 && ch != 10 && ch!=9) {
+				if(ch == 13) {
+         		System.out.print(filename+": [Error] Carriage Return Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
+         		System.out.print(filename+": This is probably CRLF Windows termination.\n");
+				}
+				else
+         		System.out.print(filename+": [Error] Illegal Control Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
+				errorFlag=true;
+				globalErrorFlag=true;
+			}
+			if(ch == 10){
+				i = 0;
+				line++;
+			}
+		}
+	}
 	
 	/**
 	 * This method validates the XSD files.
@@ -156,6 +196,7 @@ public class CDBChecker {
                                           System.out.print("\t");
                                          */}
                                 try{
+													validateFileEncoding((String)filename.get(i));
                                         SP.reset();
                                         SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
                                         SP.setFeature("http://xml.org/sax/features/validation",true);
@@ -217,6 +258,7 @@ public class CDBChecker {
                                 targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
                                 CDBChecker.errorFlag=false;
                                 try{
+													validateFileEncoding((String)filename.get(i));
                                         SP.reset();
                                         SP.setFeature("http://xml.org/sax/features/validation",true);
                                         SP.setFeature("http://apache.org/xml/features/validation/schema", true);
