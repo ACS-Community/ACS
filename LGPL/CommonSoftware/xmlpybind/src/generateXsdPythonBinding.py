@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: generateXsdPythonBinding.py,v 1.4 2010/03/27 21:21:23 agrimstrup Exp $"
+# "@(#) $Id: generateXsdPythonBinding.py,v 1.5 2010/05/06 03:14:02 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -28,6 +28,7 @@ import sys
 import os
 import re
 from subprocess import call
+from traceback import print_exc
 import pyxb
 import xmlpybind.EntitybuilderSettings
 
@@ -89,14 +90,7 @@ def generate_bindings(pkgname, schema_file_list, schema_namespace_list):
               '--module-prefix=%s' % pkgname,
               '--binding-root=../lib/python/site-packages',
               '--archive-to-file=../lib/python/site-packages/%s.wxs' % pkgname,
-              '--archive-path=$PYTHONPATH', ]
-
-    # pyxbgen prints out a warning when it imports elements from other archive
-    # files.  Since we are compiling a bunch of schema files, we want their
-    # information to be used rather than any previously compiled information.
-    # We need to suppress the namespaces associated with these schema.
-    for srec in schema_namespace_list:
-        cmdstr.append('--no-load-namespace %s' % srec)
+              '--archive-path=bindings', ]
 
     # All bindings listed are processed by the same command.  This approach eliminates
     # special processing for schema dependencies but has not impact on standalone schemata.
@@ -121,6 +115,23 @@ def main(args, fopen=open):
         return 0
 
     try:
+        # Previously compiled bindings are brought into the build by mistake
+        # so we link to any .wxs files we might need excluding any previously
+        # built version of this set.
+        try:
+            os.mkdir('bindings')
+        except:
+            pass
+        oldbinding = '%s.wxs' % args[0].strip()
+        for p in sys.path:
+            try:
+                fl = os.listdir(p)
+            except:
+                continue
+            for b in [bndg for bndg in fl \
+                     if bndg.endswith('.wxs') and bndg != oldbinding]:
+                os.symlink(os.path.join(p,b), os.path.join('bindings', b))
+                
         # Retrieve the settings for this set of bindings.
         #
         # By convention, XSD binding files are stored in the idl directory of the
@@ -133,12 +144,21 @@ def main(args, fopen=open):
 
         # If no schema were provided in the specification, the list will be empty.
         if flist:
-            return generate_bindings(args[0], flist, nslist)
+            rv =  generate_bindings(args[0], flist, nslist)
         else:
             print >>sys.stderr, "Specification %s contains no schema information." % args[0]
-            return 0
+            rv = 0
+
+        # Clean up the binding cache
+        rc = call('rm -rf bindings', shell=True)
+        
+        return rv
     except Exception, e:
         print >>sys.stderr, "%s: %s" % (args[0], e)
+
+        # Clean up the binding cache
+        rc = call('rm -rf bindings', shell=True)
+
         return -1
         
 if __name__ == '__main__': # pragma: no cover

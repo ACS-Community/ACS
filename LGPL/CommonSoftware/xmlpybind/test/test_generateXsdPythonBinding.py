@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.3 2010/03/27 21:21:23 agrimstrup Exp $"
+# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.4 2010/05/06 03:14:02 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ class TestGenerateBindings(unittest.TestCase):
     def test_command_correct(self, call_mock):
         call_mock.return_value = 0
         self.assertEqual(0, generateXsdPythonBinding.generate_bindings('foo', [('../bar/bar.xsd', 'Bar')],['Bar']))
-        self.assertEqual('pyxbgen --module-prefix=foo --binding-root=../lib/python/site-packages --archive-to-file=../lib/python/site-packages/foo.wxs --archive-path=$PYTHONPATH --no-load-namespace Bar -u ../bar/bar.xsd -m Bar', call_mock.call_args[0][0])
+        self.assertEqual('pyxbgen --module-prefix=foo --binding-root=../lib/python/site-packages --archive-to-file=../lib/python/site-packages/foo.wxs --archive-path=bindings -u ../bar/bar.xsd -m Bar', call_mock.call_args[0][0])
 
     @mock.patch('generateXsdPythonBinding.call')
     def test_call_failed(self, call_mock):
