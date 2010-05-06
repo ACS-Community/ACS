@@ -402,7 +402,7 @@ public class AcsContainer extends ContainerPOA
 
         // to make component activations stick out in the log list
         m_logger.fine("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        m_logger.fine("activate_component: handle=" + componentHandle + " name=" + compName +
+        m_logger.info("activate_component: handle=" + componentHandle + " name=" + compName +
                         " helperClass=" + exe + " type=" + type);
 
 		// if the container is still starting up, then hold the request until the container is ready
