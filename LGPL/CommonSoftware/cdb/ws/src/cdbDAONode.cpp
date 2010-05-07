@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.9 2010/04/20 14:46:51 bjeram Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.10 2010/05/07 09:08:05 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -431,7 +431,7 @@ long DAONode::getValue(const char * propertyName)
 template<>
 long long DAONode::getValue(const char * propertyName)
 {
-	// until get_long is fixed that it can read also xs:long which is 64 bit we have to read string and cast it to long  ong
+	// until get_long is fixed that it can read also xs:long which is 64 bit we have to read string and cast it to long long
 	long long var;
 	CORBA::String_var str = this->get_string( propertyName );
 	std::istringstream is(str.in());
@@ -458,7 +458,20 @@ int DAONode::getValue(const char * propertyName)
 template<>
 unsigned long long  DAONode::getValue(const char * propertyName)
 {
-	return static_cast<unsigned long long>(get_long( propertyName ));
+	// we can not use get_long to read xs:unisngedLong which is 64 bit we have to read string and cast it to unsigned long long
+	// see: COMP-4268
+		unsigned long long var;
+		CORBA::String_var str = this->get_string( propertyName );
+		std::istringstream is(str.in());
+		(istream&) is >> var ;
+			if (!is)
+			{
+				ACS_LOG(LM_RUNTIME_CONTEXT, "DAONode::getValue<unsigned long long>",
+							  (LM_ERROR, "Problem converting string value: %s to unsigned long long!", str.in()));
+				 throw cdbErrType::WrongCDBDataTypeEx();
+			}//if
+
+			return var;
 }
 
 template<>
