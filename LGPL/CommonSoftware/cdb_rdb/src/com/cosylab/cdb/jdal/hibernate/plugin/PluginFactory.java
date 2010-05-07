@@ -86,7 +86,7 @@ public class PluginFactory {
 					plugin.initialize(logger);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call initialize() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call initialize() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -100,7 +100,7 @@ public class PluginFactory {
 					plugin.loadPrologue(session, config, rootMap);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call loadPrologue() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call loadPrologue() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -113,7 +113,7 @@ public class PluginFactory {
 					plugin.loadControlDevices(session, config, bindCallback);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call loadControlDevices() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call loadControlDevices() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class PluginFactory {
 					plugin.loadEpilogue(session, config, rootMap);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call loadEpilogue() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call loadEpilogue() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -140,7 +140,7 @@ public class PluginFactory {
 					plugin.importPrologue(session, config, cdbAccess);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call importPrologue() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call importPrologue() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -153,7 +153,7 @@ public class PluginFactory {
 					plugin.controlDeviceImportEpilogue(session, config, cdbAccess, cdbComponentName, component);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call controlDeviceImportEpilogue() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call controlDeviceImportEpilogue() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -166,7 +166,7 @@ public class PluginFactory {
 					plugin.importEpilogue(session, config, cdbAccess);
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call importEpilogue() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call importEpilogue() on " + plugin.getName() + " failed.", th);
 				}
 			}
 		}
@@ -185,7 +185,7 @@ public class PluginFactory {
 					}
 				}
 				catch (Throwable th) {
-					logger.log(Level.WARNING, "Call getCreateTablesScriptList() on " + plugin.getName() + " failed.", th);
+					logger.log(Level.SEVERE, "Call getCreateTablesScriptList() on " + plugin.getName() + " failed.", th);
 				}
 			}
 			return scripts.toArray(new String[scripts.size()]);
