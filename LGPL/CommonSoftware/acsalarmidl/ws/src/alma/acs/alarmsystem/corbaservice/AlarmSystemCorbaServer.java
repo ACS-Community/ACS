@@ -668,6 +668,7 @@ public class AlarmSystemCorbaServer implements Runnable {
 		try {
 			configuration= AlarmSystemConfiguration.unmarshalAlarmSystemConfiguration(strReader);
 		} catch (Throwable t) {
+			m_logger.log(AcsLogLevel.ERROR,"Error parsing alarm configuration: using ACS alarm implementation");
 			return true;
 		}
 		for (int propNum=0; propNum<configuration.getConfigurationPropertyCount(); propNum++) {
