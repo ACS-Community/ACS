@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.64 2010/03/16 10:42:48 hsommer Exp $"
+# "@(#) $Id: acsStartJava,v 1.65 2010/05/07 19:18:15 tstaig Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -571,7 +571,8 @@ then
 
     # Since ACS 8.1 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME. Slashes in the file name are replaced by underscores.
     if [ X"$JVM_GC_LOG_NAME" != X ]; then
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution"
+        JVM_GC_LOG_FILE=$ACS_TMP/`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution"
     fi
 
     # Since ACS 7.0.2 we get dumps for OutOfMemoryError
