@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hibernate.Session;
@@ -41,6 +42,7 @@ import com.cosylab.acs.laser.dao.ACSResponsiblePersonDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.jdal.hibernate.RootMap;
+import com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin.ControlDeviceBindCallback;
 
 /**
  * @author msekoranja
@@ -563,7 +565,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				m_logger.warning("Alarm system configuration could not be read, skipping...");
 			}
 			else
-				th.printStackTrace();
+				m_logger.log(Level.SEVERE, "Failed to import all the alarm data.", th);
 		}
 	}
 
@@ -769,7 +771,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		}
 		catch (Throwable th)
 		{
-			th.printStackTrace();
+			m_logger.log(Level.SEVERE, "Failed to load all the alarm data.", th);
 		}
 		
 	}
