@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+   - CDBChecker List of external Required Schemas
+   -
+   - Author: ACS-UTFSM Development Team
+   -
+   -->
+	      
+<ReqSchemas xmlns="urn:schemas-cosylab-com:ReqSchemas:1.0"
+	     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SchemaLocation Name="XMLSchema.xsd" Url="http://www.w3.org/2001/XMLSchema.xsd" />
+  <SchemaLocation Name="xml.xsd" Url="http://www.w3.org/2001/xml.xsd" />
+  <SchemaLocation Name="datatypes.dtd" Url="http://www.w3.org/2001/datatypes.dtd" />
+  <SchemaLocation Name="XMLSchema.dtd" Url="http://www.w3.org/2001/XMLSchema.dtd" />
+</ReqSchemas>
+							  
+
