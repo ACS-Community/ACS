@@ -33,21 +33,6 @@
 1 -     /PATH/defaultCDB/CDB/schemas/BACI.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/Tower.xsd[OK]
 1 - *** Validating XML files
-1 -     /PATH/acsexmpl/MACI/Managers/Manager/Manager.xml[OK]
-1 -     /PATH/acsexmpl/alma/TEST_PS_1/TEST_PS_1.xml[OK]
-1 -     /PATH/acsexmpl/alma/PBUMP_B_01/PBUMP_B_01.xml[OK]
-1 -     /PATH/acsexmpl/alma/FRIDGE1/FRIDGE1.xml[OK]
-1 -     /PATH/acsexmpl/alma/BUILDING1/BUILDING1.xml[OK]
-1 -     /PATH/acsexmpl/alma/MOUNT2/MOUNT2.xml[OK]
-1 -     /PATH/acsexmpl/alma/CALENDAR1/CALENDAR1.xml[OK]
-1 -     /PATH/acsexmpl/alma/TEST_PS_2/TEST_PS_2.xml[OK]
-1 -     /PATH/acsexmpl/alma/LAMP1/LAMP1.xml[OK]
-1 -     /PATH/acsexmpl/alma/TOWER1/TOWER1.xml[OK]
-1 -     /PATH/acsexmpl/alma/TOWER1/FRONTDOOR/FRONTDOOR.xml[OK]
-1 -     /PATH/acsexmpl/alma/MOUNT1/MOUNT1.xml[OK]
-1 -     /PATH/acsexmpl/alma/DOOR1/DOOR1.xml[OK]
-1 -     /PATH/acsexmpl/alma/TEST_RPS_1/TEST_RPS_1.xml[OK]
-1 -     /PATH/acsexmpl/alma/AMSSEQ1/AMSSEQ1.xml[OK]
 1 - 
 1 - CDBChecker exiting. No errors found
 1 - 
