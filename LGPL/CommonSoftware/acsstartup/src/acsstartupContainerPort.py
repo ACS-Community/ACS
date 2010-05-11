@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.46 2009/11/24 08:47:01 hyatagai Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.47 2010/05/11 01:41:17 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -39,13 +39,15 @@ TODO:
 ###############################################################################
 from os      import environ
 from os      import chdir
+from os      import getcwd
 from os      import system
 from os      import fstat 
 from os      import access, R_OK, W_OK, X_OK, F_OK
+from os      import link
+from os      import rename
+from os      import remove
+from os      import getpid
 from os.path import exists
-from fcntl   import lockf
-from fcntl   import LOCK_EX
-from fcntl   import LOCK_UN
 from sys     import stderr
 from sys     import argv
 from sys     import exit
@@ -75,7 +77,6 @@ def cleanUp():
     while container_file is not None and sleepperiod <= maxsleepperiod:
         try:
             container_file.flush()
-            lockf(container_file.fileno(), LOCK_UN)
         except Exception, e:
             stderr.write("WARNING: acsstartupContainerPort is unable to release lock.  Reason: %s Retrying in %d seconds." % (e, sleepperiod))
             sleep(sleepperiod)
@@ -85,6 +86,13 @@ def cleanUp():
             container_file.close()
         except Exception, e:
             stderr.write("WARNING: acsstartupContainerPort file close operation failed.  Reason: %s." % e)
+
+        try:
+            rename('USED_CONTAINER_PORTS.lock', 'deleteme.%d' % getpid())
+            remove('deleteme.%d' % getpid())
+        except OSError:
+            stderr.write("Warning: USED_CONTAINER_PORTS lock file is missing.")
+
         container_file = None
             
     if container_file is not None:
@@ -128,12 +136,18 @@ def getPortsFile(baseport):
 
     #go to it
     chdir(ACS_INSTANCE_DIR)
+
+    #lock it
+    gotlock = False
+    while not gotlock:
+        try:
+            link('USED_CONTAINER_PORTS', 'USED_CONTAINER_PORTS.lock')
+            gotlock = True
+        except OSError:
+            continue
     
     #open the file
     ret_val = open('USED_CONTAINER_PORTS', 'r+')
-    
-    #lock it
-    lockf(ret_val.fileno(), LOCK_EX)
     
     return ret_val
 
