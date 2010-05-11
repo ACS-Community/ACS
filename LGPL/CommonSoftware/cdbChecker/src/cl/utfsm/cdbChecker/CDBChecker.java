@@ -154,6 +154,7 @@ public class CDBChecker {
 		int ch;
 		int line = 1;
 		int i = 0;
+		boolean crEnding = false;
 		while((ch = fis.read())!=-1) {
 			i++;
 			//There shouldn't be any character over 126 since 127 is <del> and ASCII only goes to 127.
@@ -165,8 +166,11 @@ public class CDBChecker {
 			//There shouldn't be any control character but the line feed or tab.
 			if(ch < 32 && ch != 10 && ch != 9) {
 				if(ch == 13) {
-					System.out.print(filename+": [Error] Carriage Return Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
-					System.out.print(filename+": This is probably CRLF Windows termination.\n");
+					if(!crEnding) {
+						System.out.print(filename+": [Error] Carriage Return Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
+						System.out.print(filename+": This is probably CRLF Windows termination. Further Carriage Return errors are hidden.\n");
+						crEnding = true;
+					}
 				}
 				else
 					System.out.print(filename+": [Error] Illegal Control Character ("+ch+") found in XML or XSD at: "+line+":"+i+".\n");
