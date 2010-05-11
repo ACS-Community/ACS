@@ -258,8 +258,10 @@ public class CDBChecker {
                                 targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
                                 CDBChecker.errorFlag=false;
                                 try{
-													validateFileEncoding((String)filename.get(i));
-                                        SP.reset();
+										validateFileEncoding((String)filename.get(i));
+										
+								        SP.reset();
+                                        SP.setFeature("http://apache.org/xml/features/xinclude", true);
                                         SP.setFeature("http://xml.org/sax/features/validation",true);
                                         SP.setFeature("http://apache.org/xml/features/validation/schema", true);
                                         SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
