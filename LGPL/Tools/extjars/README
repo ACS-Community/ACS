@@ -4,13 +4,7 @@ activation.jar		jaf-1.0.1		      (4)	http://java.sun.com/webapps/download/Displa
                         JavaBeans Activation 
                         Framework 
 
-ahclib-1.2.jar          Arno Haase utilities  (8)    http://www.haase-consulting.de/download.html
-                        (needed by oaw411beta.jar)
-                        
 avalon-framework.jar	Avalon Framework 4.1.5	      (1)        http://jakarta.apache.org/avalon/framework/
-                        To be coordinated with JacORB since 2.2.4                             
-
-backport-util-concurrent.jar  backport of 1.5 conc    (7)        http://dcl.mathcs.emory.edu/util/backport-util-concurrent/
                         To be coordinated with JacORB since 2.2.4                             
 
 cosyframework.jar	cosyframework			(5)	
@@ -25,15 +19,15 @@ jakarta-oro-2.0.5.jar	Jakarta-ORO 2.0.5		(1)	 http://jakarta.apache.org/oro/inde
 
 jakarta-regexp-1.2.jar	Regexp 1.2		        (1)	 http://jakarta.apache.org/regexp/
 
-commons-cli-1.0.jar	Jakarta commons Command Line Interfaces		(1)  http://jakarta.apache.org/commons/cli/
+commons-cli-1.2.jar	Jakarta commons Command Line Interfaces		(1b)  http://jakarta.apache.org/commons/cli/
 
-commons-lang-2.1.jar	Jakarta commons Lang		(1b)  http://jakarta.apache.org/commons/lang/
+commons-lang-2.5.jar	Apache commons Lang		(1b)  http://commons.apache.org/lang
 
-commons-logging.jar	Jakarta commons logging		(1b)  http://jakarta.apache.org/commons/logging/
+commons-logging-1.1.1.jar	Apache commons logging		(1b)  http://commons.apache.org/logging/
 
-commons-logging.jar	Jakarta commons logging		(1b)  http://jakarta.apache.org/commons/collections/
+commons-collections-3.2.1.jar	Apache commons collections		(1b)  http://commons.apache.org/collections/
 
-dom4j-1.6.jar           DOM4J           (9)        http://www.dom4j.org
+dom4j-1.6.1.jar           DOM4J           (9)        http://www.dom4j.org
 
 jnlp-1.0.1		Java Network Launch		(1)  
                         Protocol 
