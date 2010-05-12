@@ -806,14 +806,17 @@ public class CDBChecker {
 					//add bhola.panta@naoj 2010-03-03
 	    			//fileName and "Name" property must match
 					if(!compName.equals("*") && !files[x].getName().equals("Components.xml")){ 
-	    				if(!(compName + ".xml").equals(files[x].getName())){
-	    					System.out.print("\nMismatch between component name and XML file name.");
-	    					System.out.print("\nFile path: " + files[x]);
-	    					System.out.print("\nComponent name: '" + compName +"'");
-	    					System.out.print("\nFile name: '" + files[x].getName()+"'");
-	    					foundErr = true;
-	    					break search;
-	    				}
+						//must support hierarchical component names (separated by "/") 
+						if(!checkHierarchical(files[x], compName)){
+		    				if(!(compName + ".xml").equals(files[x].getName())){
+		    					System.out.print("\nMismatch between component name and XML file name.");
+		    					System.out.print("\nComponent File: " + files[x]);
+		    					System.out.print("\nComponent name: '" + compName +"'");
+		    					System.out.print("\nFile name: '" + files[x].getName()+"'");
+		    					foundErr = true;
+		    					break search;
+		    				}
+						}
 	    			}
 				}
 				
@@ -884,15 +887,16 @@ public class CDBChecker {
 				  				if(implLang.equals(elmCont.getAttribute("ImplLang" ))){
 				  				}
 				  				else{
-				  					System.out.println("\nFile being checked: " + files[x] );
-				  					System.out.print("'ImplLang' does not match for component: " + compName +".");
+				  					System.out.println("\nComponent File being checked: " + files[x] );
+				  					System.out.println("Container File being checked: " + contFile);
+				  					System.out.println("'ImplLang' does not match for component: " + compName +".");
 				  					foundErr = true;
 				  					break search;
 				      			}
 					    	}//Container for loop
 		  				}
 		  				else{
-		  					System.out.print("\nFile being checked: " + files[x] );
+		  					System.out.print("\nComponent File being checked: " + files[x] );
 		  					System.out.print("\nMissing Container " + new File(tempContainersFolder));
 		  					System.out.println("");
 		  					foundErr = true;
@@ -908,6 +912,36 @@ public class CDBChecker {
 	  	}//all files for loop
 		
 		return foundErr;
+	}
+	
+	/**************************************************************************************************************************
+	* Add bhola.panta@naoj 2010/05/12, in order to support hierarchical component names (separated by "/")
+	* I am quoting a comment from Heiko Sommer, ref. #COMP-4247
+	* We must support hierarchical component names (separated by "/"), where the path of the xml 
+	* file should match the component name.
+	* eg. File path: /alma/ACS-9.0/acsdata/config/defaultCDB/CDB/MACI/Components/ARCHIVE/TMCDB/MONITOR_BLOBBER2/MONITOR_BLOBBER2.xml
+	* Component name: 'ARCHIVE/TMCDB/MONITOR_BLOBBER2'
+	* File name: 'MONITOR_BLOBBER2.xml'
+	* Under "CDB/MACI/Components", there is the path "ARCHIVE/TMCDB/MONITOR_BLOBBER2", 
+	* which does match the component name. 
+	* (It's a convention of the CDB that for hierarchical components, but also for other nodes, 
+	* the xml file name and the directory name where the xml file is in, are the same 
+	* except for the .xml ending. For matching the component name we count it only once, 
+	* instead of taking "ARCHIVE/TMCDB/MONITOR_BLOBBER2/MONITOR_BLOBBER2".)
+	* Credit: http://java.sun.com/docs/books/tutorial/java/data/comparestrings.html
+	*****************************************************************************************************************************/
+	private boolean checkHierarchical(File fSearchMe, String findMe){
+		String searchMe = fSearchMe.getPath();
+		int searchMeLength = searchMe.length();
+		int findMeLength = findMe.length();
+		boolean foundIt = false;
+		for (int i = 0; i <= (searchMeLength - findMeLength); i++) {
+		   if (searchMe.regionMatches(i, findMe, 0, findMeLength)) {
+		      foundIt = true;
+		      break;	
+		   }
+		}
+		return foundIt;
 	}
 
 }//class
