@@ -1,4 +1,4 @@
-# @(#) $Id: CDBProperties.py,v 1.14 2010/02/05 23:39:35 agrimstrup Exp $
+# @(#) $Id: CDBProperties.py,v 1.15 2010/05/14 23:47:57 agrimstrup Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -29,7 +29,7 @@ TODO:
 - lots
 '''
 
-__revision__ = "$Id: CDBProperties.py,v 1.14 2010/02/05 23:39:35 agrimstrup Exp $"
+__revision__ = "$Id: CDBProperties.py,v 1.15 2010/05/14 23:47:57 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
@@ -137,18 +137,23 @@ def get_integration_logs(channel_name):
 
     #well if the channel does not exist of course we do not
     #want to log everything!!!
-    if cdb_channel_config_exists(channel_name)==0:
-        INTEGRATION_LOGS[channel_name] = 0
+    try:
+        if cdb_channel_config_exists(channel_name)==0:
+            INTEGRATION_LOGS[channel_name] = 0
 
     #OK, the channel exists. time to do the dirty work.
-    elif get_channel_dict(channel_name)["IntegrationLogs"] == "false":
-        INTEGRATION_LOGS[channel_name] = 0
-    elif get_channel_dict(channel_name)["IntegrationLogs"] == "true":
-        INTEGRATION_LOGS[channel_name] = 1
+        elif get_channel_dict(channel_name)["IntegrationLogs"] == "false":
+            INTEGRATION_LOGS[channel_name] = 0
+        elif get_channel_dict(channel_name)["IntegrationLogs"] == "true":
+            INTEGRATION_LOGS[channel_name] = 1
 
     #should never be the case...
-    else:
+        else:
+            INTEGRATION_LOGS[channel_name] = 0
+
+    except:
         INTEGRATION_LOGS[channel_name] = 0
+        
 
     return INTEGRATION_LOGS[channel_name]
 
