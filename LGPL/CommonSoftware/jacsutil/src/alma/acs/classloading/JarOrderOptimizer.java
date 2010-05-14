@@ -94,7 +94,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"acsErrTypeAlarmSourceFactory.jar",
 		"xalan.jar",
 		"xalan_serializer.jar",
-		"commons-logging.jar",
+		"commons-logging-1.1.1.jar",
 		"acsContainerServices.jar"
 	};
 	
