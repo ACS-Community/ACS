@@ -9,41 +9,7 @@
 1 -     /PATH/good-FE/reqSchemas.xsd[OK]
 1 - *** Validating XML files
 1 -     /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 1:44.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 2:1.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 3:5.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 4:50.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 5:5.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 6:40.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 7:5.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 8:7.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 9:8.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 10:59.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 11:61.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 12:85.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 13:73.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 14:85.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 15:85.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 16:14.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 17:10.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xml: [Error] Carriage Return Character (13) found in XML or XSD at: 18:1.
-1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination.
+1 - /PATH/bad-FE/reqSchemas.xml: This is probably CRLF Windows termination. Further Carriage Return errors are hidden.
 1 - 
 1 - [Error] CDBChecker exiting. Errors were found
 1 - 
@@ -57,55 +23,7 @@
 1 - *** Getting TargetNamespaces from schema files
 1 - *** Validating Schemas
 1 -     /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 1:44.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 2:5.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 3:53.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 4:5.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 5:40.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 6:5.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 7:7.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 8:68.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 9:48.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 10:118.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 11:37.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 12:65.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 13:64.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 14:20.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 15:8.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 16:33.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 17:21.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 18:20.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 19:84.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 20:23.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 21:22.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 22:16.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 23:13.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 24:3.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
-1 - /PATH/bad-FE/reqSchemas.xsd: [Error] Carriage Return Character (13) found in XML or XSD at: 25:1.
-1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination.
+1 - /PATH/bad-FE/reqSchemas.xsd: This is probably CRLF Windows termination. Further Carriage Return errors are hidden.
 1 - *** Validating XML files
 1 - 
 1 - [Error] CDBChecker exiting. Errors were found
