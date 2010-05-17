@@ -84,4 +84,5 @@ export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component
 #--------------------------------------------------------------------------------
 #just delegate to acsStartJava
 export JVM_GC_LOG_NAME=$CONTAINER_NAME
-acsStartJava -endorsed -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
+
+acsStartJava -endorsed -DORBgiopMaxMsgSize=25000000 -DACS.manager=$CL_MANAGERREF $ORIGINAL_COMMAND_LINE -containerName $CONTAINER_NAME 
