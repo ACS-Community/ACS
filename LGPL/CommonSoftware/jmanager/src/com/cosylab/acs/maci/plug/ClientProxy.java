@@ -321,7 +321,11 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		}
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * We explicitly release the client reference, so that the ClientGIOPConnection can be closed,
+	 * where otherwise it will occupy one of the connector threads until it gets garbage collected,
+	 * possibly leading to the manager lock up described in http://jira.alma.cl/browse/COMP-979
+	 * 
 	 * @see com.cosylab.acs.maci.Client#release()
 	 */
 	public void release() {
