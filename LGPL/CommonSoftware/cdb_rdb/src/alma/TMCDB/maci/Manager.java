@@ -193,6 +193,7 @@ public class Manager implements java.io.Serializable {
 	 * @return the serviceComponents
 	 */
 	public String getServiceComponents() {
+		if (ServiceComponents == null) return "";	// Oracle empty/NULL string workaround
 		return ServiceComponents;
 	}
 
@@ -207,6 +208,7 @@ public class Manager implements java.io.Serializable {
 	 * @return the startup
 	 */
 	public String getStartup() {
+		if (Startup == null) return "";	// Oracle empty/NULL string workaround
 		return Startup;
 	}
 
