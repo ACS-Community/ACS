@@ -41,6 +41,8 @@ public class ACGTestSuite {
 		suite.addTestSuite(ReductionManagerTest.class);
 		suite.addTestSuite(SourceManagerTest.class);
 		suite.addTestSuite(ACSAlarmDAOImplTest.class);
+		suite.addTestSuite(ACSCategoryDAOImplTest.class);
+		suite.addTestSuite(ACSAlarmSystemDAOImplTest.class);
 		return suite;
 	}
 }

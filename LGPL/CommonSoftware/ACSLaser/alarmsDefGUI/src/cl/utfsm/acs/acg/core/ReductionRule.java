@@ -52,6 +52,10 @@ public class ReductionRule {
 
 	public void addChild(Alarm alarm) {
 		_children.add(alarm);
+		if(_isNodeReduction)
+			_parent.addNodeChild(alarm);
+		else
+			_parent.addMultiplicityChild(alarm);
 	}
 	
 	public boolean removeChild(Alarm alarm){
@@ -59,6 +63,10 @@ public class ReductionRule {
     		Alarm al = iterator.next();
     		if(al.getAlarmId().compareTo(alarm.getAlarmId()) == 0){
     			iterator.remove();
+    			if(_isNodeReduction)
+    				_parent.removeNodeChild(alarm);
+    			else
+    				_parent.removeMultiplicityChild(alarm);
     			return true;
     		}
     	}

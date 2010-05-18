@@ -108,16 +108,13 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-
 		setTitleToolTip("Configuration of Alarms Categories.\nCategories group Fault Families.");
 		setTitleImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_LINK));
 		createViewWidgets(parent);
 		refreshContents();
-
 	}
 
 	private void createViewWidgets(Composite parent) {
-		
 		SashForm sash = new SashForm(parent, SWT.HORIZONTAL);
 		sash.setLayout(new FillLayout());
 
@@ -129,19 +126,16 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		_categoriesList = new List(categoriesComp,SWT.BORDER | SWT.V_SCROLL);
 		_categoriesList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		_categoriesList.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
-
 			public void widgetSelected(SelectionEvent e) {
 				Control c = _compInitial.getChildren()[0];
-
 				if( c instanceof Label ){
 					c.dispose();
-					_comp.setVisible(true);
-					_comp.layout();
 				}
+				_comp.setVisible(true);
+				_comp.layout();
 
 				/* Fill with the contents of the selected category */
 				/* The default category is stored as the data of the _categoryList */
@@ -151,9 +145,7 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 					fillCategoryInfo((String)_categoriesList.getData());
 				else
 					fillCategoryInfo(categoryName);
-		
 			}
-			
 		});
 
 		/* Add and remove buttons */
@@ -174,17 +166,16 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		Listener addCategory = new Listener(){
 			public void handleEvent(Event event) {
 				InputDialog dialog = new InputDialog(CategoriesView.this.getViewSite().getShell(),
-				                         "New Category",
-				                         "Enter the Category name",
-				                         null,
-				                         new IInputValidator() {
-											public String isValid(String newText) {
-												if( newText.trim().compareTo("") == 0 )
-													return "The name is empty";
-												return null;
-		
-											}
-										 }
+						"New Category",
+						"Enter the Category name",
+						null,
+						new IInputValidator() {
+							public String isValid(String newText) {
+								if( newText.trim().compareTo("") == 0 )
+									return "The name is empty";
+								return null;
+							}
+						}
 				);
 				dialog.setBlockOnOpen(true);
 				dialog.open();
@@ -192,33 +183,25 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 				if (returnCode == InputDialog.OK) {
 					Category newCategory = new Category();
 					newCategory.setPath(dialog.getValue());
-										
 					InputDialog dialog2 = new InputDialog(CategoriesView.this.getViewSite().getShell(),
-	                         "Category Description",
-	                         "Enter the Description for the Category",
-	                         null,
-	                         new IInputValidator() {
+							"Category Description",
+							"Enter the Description for the Category",
+							null,
+							new IInputValidator() {
 								public String isValid(String newText) {
 									if( newText.trim().compareTo("") == 0 )
 										return "The name is empty";
 									return null;
-
 								}
 							 }
-	);
+					);
 					dialog2.setBlockOnOpen(true);
 					dialog2.open();
 					String description = dialog2.getValue();
-					
-					if(description == null){
-						
+					if(description == null)
 						return;
-						
-					}
-					
-					if (returnCode == InputDialog.OK) {
+					if (returnCode == InputDialog.OK)
 						newCategory.setDescription(description);
-					}
 					
 					// sorting a list to show and select the Fault Families to the New Category
 					_alarmManager = AlarmSystemManager.getInstance().getAlarmManager();
@@ -243,97 +226,80 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 					}
 					ffs = sortedFFList;
 					
-					for(int i=0 ; i < ffs.size() ; i++){
+					for(int i=0 ; i < ffs.size() ; i++)
 						ffnames.add(i, ffs.get(i).getName());
-					}
 					
 					ListSelectionDialog dialog3 = new ListSelectionDialog(
-					        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
-					        ffnames,
-					        new ArrayContentProvider(), 
-					        new LabelProvider(), 
-					        "");
+							PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+							ffnames,
+							new ArrayContentProvider(), 
+							new LabelProvider(), 
+							""
+					);
 
 					dialog3.setTitle("Fault Family Selection");
 					dialog3.setMessage("List of Fault Families"); 
 					dialog3.setBlockOnOpen(true);
 					dialog3.open();
-					
+
 					Object ffselected[] = dialog3.getResult();
-					
-					if ( ffselected == null ){
-						
-					return;	
-					}
-					
+					if ( ffselected == null )
+						return;
 					if(ffselected.length ==0){
-				
-						
 						try {
-								_categoryManager.addCategory(newCategory);
-							} catch (IllegalOperationException e) {
-								ErrorDialog error = new ErrorDialog(CategoriesView.this.getViewSite().getShell(),
-													"Category already exist",
-													"The Category "+dialog.getValue()+" already exists in the current configuration",
-													new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
-													IStatus.ERROR);
-								error.setBlockOnOpen(true);
-								error.open();
-							} 
-							refreshContents();
-					}else{
-						
-						Alarms alarms = new Alarms();
-						for(int i = 0 ; i < ffselected.length ; i++){
-						  	try{
-						  		alarms.addFaultFamily(_alarmManager.getFaultFamily(ffselected[i].toString()).toString());
-						  		alarms.setFaultFamily(i, ffselected[i].toString());					  		
-						  	}catch(NullPointerException e){} 
-						  	
-						  	newCategory.setAlarms(alarms); 	
-						}			
-						
-						
-					try {
 							_categoryManager.addCategory(newCategory);
 						} catch (IllegalOperationException e) {
 							ErrorDialog error = new ErrorDialog(CategoriesView.this.getViewSite().getShell(),
-												"Category already exist",
-												"The Category "+dialog.getValue()+" already exists in the current configuration",
-												new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
-												IStatus.ERROR);
+									"Category already exist",
+									"The Category "+dialog.getValue()+" already exists in the current configuration",
+									new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+									IStatus.ERROR);
 							error.setBlockOnOpen(true);
 							error.open();
 						} 
 						refreshContents();
+					}else{
+						Alarms alarms = new Alarms();
+						for(int i = 0 ; i < ffselected.length ; i++){
+							try{
+								alarms.addFaultFamily(_alarmManager.getFaultFamily(ffselected[i].toString()).toString());
+						  		alarms.setFaultFamily(i, ffselected[i].toString());					  		
+						  	}catch(NullPointerException e){} 
+						  	newCategory.setAlarms(alarms); 	
+						}			
+						try {
+							_categoryManager.addCategory(newCategory);
+						} catch (IllegalOperationException e) {
+							ErrorDialog error = new ErrorDialog(CategoriesView.this.getViewSite().getShell(),
+									"Category already exist",
+									"The Category "+dialog.getValue()+" already exists in the current configuration",
+									new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+									IStatus.ERROR);
+							error.setBlockOnOpen(true);
+							error.open();
+						}
+						refreshContents();
 					}
-			
 				}
-				
 				else
 					return; 
-								
 			}
-			
 		};
-		
 		_addCategoryButton.addListener(SWT.Selection, addCategory);
-		
-		Listener deleteCategory = new Listener(){
-			
+		Listener deleteCategory = new Listener() {
 			public void handleEvent(Event event) {
-		        boolean choice = MessageDialog.openQuestion( 
-		        		  CategoriesView.this.getViewSite().getShell(),
-		            "Confirmation",
-		            "Are you sure you want to delete this Category");
-		        
+				boolean choice = MessageDialog.openQuestion(
+						CategoriesView.this.getViewSite().getShell(),
+						"Confirmation",
+						"Are you sure you want to delete this Category"
+				);
 		        if ( choice == true ){
-		        
-				String tmp[] = _categoriesList.getSelection();
+		        	String tmp[] = _categoriesList.getSelection();
 				if( tmp == null ) {
 					ErrorDialog error = new ErrorDialog(CategoriesView.this.getViewSite().getShell(), 
 							"Empty selection", "There are no Categories selected to be deleted", new Status(IStatus.ERROR,"cl.utfsm.acs.acg", "asd"),
-							IStatus.ERROR);
+							IStatus.ERROR
+					);
 					error.setBlockOnOpen(true);
 					error.open();
 					return;
@@ -361,39 +327,33 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 			}
 			
 		};
-		
 		_deleteCategoryButton.addListener(SWT.Selection, deleteCategory);
-			    
 
 		/* To delete a FF from a given Category */ 
 		Listener deleteFaultFamily  = new Listener() {
 			public void handleEvent(Event event) {
-
 				Category c = _categoryManager.getCategoryByPath(_pathText.getText());
-				try{
-				String[] ff = c.getAlarms().getFaultFamily();			
-				Alarms alarms = new Alarms();
-				String[] temp = _ffList.getSelection(); 
-				for (int i = 0 ; i < ff.length ; i++){
-					if( ff[i].toString().compareTo(temp[0]) == 0 ){
-						_ffList.remove(temp[0]);
-						c.getAlarms().removeFaultFamily(ff[i]);
+				try {
+					String[] ff = c.getAlarms().getFaultFamily();			
+					Alarms alarms = new Alarms();
+					String[] temp = _ffList.getSelection(); 
+					for (int i = 0 ; i < ff.length ; i++){
+						if( ff[i].toString().compareTo(temp[0]) == 0 ){
+							_ffList.remove(temp[0]);
+							c.getAlarms().removeFaultFamily(ff[i]);
+						}
+						else{
+							alarms.addFaultFamily(ff[i].toString());
+							alarms.setFaultFamily(i, ff[i].toString());	
+						}
 					}
-					else{
-					alarms.addFaultFamily(ff[i].toString());
-			  		alarms.setFaultFamily(i, ff[i].toString());	
-					}
-				}
-				
-				c.setAlarms(alarms);
-				_categoryManager.updateCategory(c);
-				
-				IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
-				IViewReference[] views = _window.getActivePage().getViewReferences();
-				IMyViewPart view = ((IMyViewPart)views[3].getView(false));
-				view.refreshContents();
-			
-			}catch(Exception e){}
+					c.setAlarms(alarms);
+					_categoryManager.updateCategory(c,c);
+					IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
+					IViewReference[] views = _window.getActivePage().getViewReferences();
+					IMyViewPart view = ((IMyViewPart)views[3].getView(false));
+					view.refreshContents();
+				}catch(Exception e){}
 			}
 	
 		};
@@ -401,90 +361,67 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		/* To add a new FF to a Category */ 
 		Listener addFaultFamily  = new Listener() {
 			public void handleEvent(Event event) {
-				
-				
 				Category c = _categoryManager.getCategoryByPath(_pathText.getText());
 				java.util.List<String> currentffs = new ArrayList<String>();
 				try{
-				String[] ffss = c.getAlarms().getFaultFamily();	
-
-
-				for (int i = 0 ; i < ffss.length ; i++){
-					currentffs.add(ffss[i]);
-						
+					String[] ffss = c.getAlarms().getFaultFamily();
+					for (int i = 0 ; i < ffss.length ; i++){
+						currentffs.add(ffss[i]);
 					}
-				}catch(NullPointerException e){}
-			
-				
+				}catch(NullPointerException e) {
+					
+				}
 				_alarmManager = AlarmSystemManager.getInstance().getAlarmManager();
 				java.util.List<FaultFamily> ffs = _alarmManager.getAllAlarms();
 				java.util.List<String> ffnames = new ArrayList<String>();
 				java.util.List<FaultFamily> sortedFFList = new ArrayList<FaultFamily>();
-				
 				java.util.List<String> tmp = new ArrayList<String>();
-				for (Iterator<FaultFamily> iterator = ffs.iterator(); iterator.hasNext();) {
-					tmp.add(((FaultFamily)iterator.next()).getName().toLowerCase());
-				}
+				for (FaultFamily ff : ffs)
+					tmp.add(ff.getName().toLowerCase());
 				Collections.sort(tmp);
-				for (Iterator<String> iterator = tmp.iterator(); iterator.hasNext();) {
-					String name = (String) iterator.next();
-					for (Iterator<FaultFamily> iterator2 = ffs.iterator(); iterator2.hasNext();) {
-						FaultFamily ff = (FaultFamily) iterator2.next();
-						if( ff.getName().toLowerCase().compareTo(name) == 0 ) {
+				for (String name : tmp)
+					for (FaultFamily ff : ffs)
+						if(ff.getName().toLowerCase().compareTo(name) == 0) {
 							sortedFFList.add(ff);
 							break;
 						}
-					}
-				}
 				ffs = sortedFFList;
-				
-				for(int i=0 ; i < ffs.size() ; i++){
+				for(int i=0 ; i < ffs.size() ; i++)
 					ffnames.add(i, ffs.get(i).getName());
-				}
-				
 				ListSelectionDialog dialog3 = new ListSelectionDialog(
-				        PlatformUI.getWorkbench().getDisplay().getActiveShell(),
+						PlatformUI.getWorkbench().getDisplay().getActiveShell(),
 				        ffnames,
 				        new ArrayContentProvider(), 
 				        new LabelProvider(), 
-				        "");
+				        ""
+				);
 
 				dialog3.setTitle("Fault Family Selection");
 				dialog3.setMessage("List of Fault Families"); 
 				dialog3.setBlockOnOpen(true);
-				if(currentffs != null){
-				dialog3.setInitialElementSelections(currentffs);
-				}
+				if(currentffs != null)
+					dialog3.setInitialElementSelections(currentffs);
 				dialog3.open();
-				
 				Object ffselected[] = dialog3.getResult();
-				
 				try{
-					
 					Alarms alarms = new Alarms();
 					_ffList.removeAll();
 					for(int i = 0 ; i < ffselected.length ; i++){
-					  	
-					  		alarms.addFaultFamily(_alarmManager.getFaultFamily(ffselected[i].toString()).toString());
-					  		alarms.setFaultFamily(i, ffselected[i].toString());		
-					  		c.setAlarms(alarms);
-					  		_ffList.add(ffselected[i].toString());  
-					  		
-					  	}
-				}catch(Exception e){} 
-					 
-		
+						alarms.addFaultFamily(_alarmManager.getFaultFamily(ffselected[i].toString()).getName());
+						//alarms.setFaultFamily(i, ffselected[i].toString());		
+						_ffList.add(ffselected[i].toString());  
+					}
+					c.setAlarms(alarms);
+					_categoryManager.updateCategory(c, c);
+				}catch(Exception e){
+				} 
 				refreshContents();
-				
 				IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
 				IViewReference[] views = _window.getActivePage().getViewReferences();
 				IMyViewPart view = ((IMyViewPart)views[3].getView(false));
 				view.refreshContents();
-
 			}
-	
 		};
-
 
 		/* Initial label when no categories are selected */
 		_compInitial = new Composite(sash,SWT.NONE);
@@ -568,35 +505,22 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 		_comp.setVisible(false);
 
 		/* Set a weight for each side of the view */
-		sash.setWeights(new int[] {3, 5});	
-		
-		
-		_descriptionText.addListener(SWT.Modify , new Listener() {
+		sash.setWeights(new int[] {3, 5});
+		Listener updateCategory = new Listener() {
 			public void handleEvent(Event e) {
-				java.util.List<Category> categories = _categoryManager.getAllCategories();
-				String tmp[] = _categoriesList.getSelection();
-				for (int i = 0; i < categories.size() ;  i++) {
-					if ( categories.get(i).getPath().compareTo(tmp[0].toString()) == 0 ){
-						categories.get(i).setDescription(_descriptionText.getText());
-					}
-				}
-			
+				updateName();
 			}
-		});  
-		
-		_pathText.addListener(SWT.Modify , new Listener() {
-			public void handleEvent(Event e) {
-					updateName();
-				}
-			});  
+		};
+		_descriptionText.addListener(SWT.Modify , updateCategory);  
+		_pathText.addListener(SWT.Modify , updateCategory);  
 		
 		_isDefaultCheck.addListener(SWT.Selection, new Listener(){
 			public void handleEvent(Event e) {
 				if( _categoryManager.getCategoryByPath(_categoriesList.getSelection()[0]).getIsDefault() == true){
 					_isDefaultCheck.setSelection(true);
-					 MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
-					 messageBox.setMessage("The Default Category always must exist, you can only change it");
-					 messageBox.open();
+					MessageBox messageBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
+					messageBox.setMessage("The Default Category always must exist, you can only change it");
+					messageBox.open();
 				}
 				else{
 					_categoryManager.updateDefaultCategory(_categoryManager.getCategoryByPath(_categoriesList.getSelection()[0]));
@@ -650,25 +574,52 @@ public class CategoriesView extends ViewPart implements IMyViewPart {
 			}
 		}
 		_categoriesList.deselectAll();
+		_comp.setVisible(false);
 	}
 	
 	
 	public void updateName(){
-		java.util.List<Category> categories = _categoryManager.getAllCategories();
-		String tmp[] = _categoriesList.getSelection();
-		
-		for (int i = 0; i < categories.size() ;  i++) {
-			if ( categories.get(i).getPath().compareTo(tmp[0].toString()) == 0 ){
-				categories.get(i).setPath(_pathText.getText());
-				categories.get(i).setDescription(_descriptionText.getText());
-			}
-			}
-
-		
-		for(int i = 0 ; i < categories.size() ; i++ ){
-			if( _categoriesList.getItem(i).compareTo(tmp[0]) == 0 ){
-				_categoriesList.setItem(i, _pathText.getText());
-			}
+		String[] lststr = _categoriesList.getSelection();
+		int[] lstsel = _categoriesList.getSelectionIndices();
+		if(lststr == null || lststr.length == 0)
+			return;
+		if(lstsel == null || lstsel.length == 0)
+			return;
+		String tmp = lststr[0];
+		int sel = lstsel[0];
+		if(tmp.startsWith("*"))
+			tmp = tmp.substring(2);
+		Category c = _categoryManager.getCategoryByPath(tmp);
+		if(c == null)
+			return;
+		Category ci = new Category();
+		if(_pathText.getText().isEmpty()) {
+			_errorMessageLabel.setText("Category Path Missing!");
+			return;
+		}
+		if(_pathText.getText().contains(" ")) {
+			_errorMessageLabel.setText("Invalid Category Path. No spaces allowed.");
+			return;
+		}
+		ci.setPath(_pathText.getText());
+		if(_descriptionText.getText().isEmpty()) {
+			_errorMessageLabel.setText("Category Description is Missing!");
+			return;
+		}
+		ci.setDescription(_descriptionText.getText());
+		ci.setIsDefault(c.getIsDefault());
+		ci.setAlarms(c.getAlarms());
+		_errorMessageLabel.setText("");
+		try{
+			_categoryManager.updateCategory(c, ci);
+			if(ci.getIsDefault())
+				_categoriesList.setItem(sel, "* ".concat(_pathText.getText()));
+			else
+				_categoriesList.setItem(sel, _pathText.getText());
+		}catch(IllegalOperationException e){
+			_errorMessageLabel.setText(e.getMessage());
+		}catch(NullPointerException e){
+			_errorMessageLabel.setText(e.getMessage());
 		}
     }
 

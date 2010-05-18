@@ -257,7 +257,12 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 			}
 		}
 		_tree.deselectAll();
-		
+		_FFgroup.setVisible(false);
+		((GridData)_FFgroup.getLayoutData()).exclude = true;
+		_FMgroup.setVisible(false);
+		((GridData)_FMgroup.getLayoutData()).exclude = true;
+		_FCgroup.setVisible(false);
+		((GridData)_FCgroup.getLayoutData()).exclude = true;
 	}
 
 	private void createViewWidgets(Composite parent) {
@@ -687,6 +692,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		Listener updateFaultCode = new Listener() {
 			public void handleEvent(Event event) {
 				int val;
+				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
+					return;
 				TreeItem tmp = _tree.getSelection()[0];
 				int tfc = Integer.parseInt(tmp.getText());
 				String tff = tmp.getParentItem().getParentItem().getText();
@@ -729,10 +736,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					_alarmManager.updateFaultCode(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultCode(tff, tfc),fct);
 					tmp.setText(_fcValueText.getText());
 				}catch(IllegalOperationException e){
-					System.out.println(e.getMessage());
 					_fcErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
-					System.out.println(e.getMessage());
 					_fcErrorMessageLabel.setText(e.getMessage());
 				}
 			}
@@ -847,10 +852,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					_alarmManager.updateFaultMember(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultMember(tff, tfm),fmt);
 					tmp.setText(_fmNameText.getText());
 				}catch(IllegalOperationException e){
-					System.out.println(e.getMessage());
 					_fmErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
-					System.out.println(e.getMessage());
 					_fmErrorMessageLabel.setText(e.getMessage());
 				}
 			}
@@ -997,10 +1000,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					_alarmManager.updateFaultFamily(_alarmManager.getFaultFamily(tmp.getText()), fft);
 					tmp.setText(_ffNameText.getText());
 				}catch(IllegalOperationException e){
-					System.out.println(e.getMessage());
 					_ffErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
-					System.out.println(e.getMessage());
 					_ffErrorMessageLabel.setText(e.getMessage());
 				}
 			}

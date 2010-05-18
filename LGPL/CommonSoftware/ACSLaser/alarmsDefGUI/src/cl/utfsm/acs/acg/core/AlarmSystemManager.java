@@ -22,7 +22,14 @@
 package cl.utfsm.acs.acg.core;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.generated.AlarmSystemConfiguration;
+import alma.acs.alarmsystem.generated.ConfigurationProperty;
+
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Set;
+
+import cl.utfsm.acs.acg.dao.ACSAlarmSystemDAOImpl;
 
 /**
  * Class representing the whole instance of the Alarm System configuration.
@@ -54,8 +61,6 @@ public class AlarmSystemManager implements EntityManager {
 	 * by a <String,String> Hashtable, since in a future there could be more
 	 * configuration-property types for the Alarm System tuning.
 	 */
-	public enum ConfigurationPropertyType {IMPLEMENTATION};
-	public enum AlarmSystemType {ACSAlarm, CERNAlarm};
 	
 	private UserAuthenticator.Role _role;
 	private AcsInformation _acsInfo;
@@ -64,12 +69,14 @@ public class AlarmSystemManager implements EntityManager {
 	private SourceManager _sourceManager;
 	private CategoryManager _categoryManager;
 	private ReductionManager _reductionManager;
-	private Hashtable<ConfigurationPropertyType, Object> _configurationProperty;
+	private ACSAlarmSystemDAOImpl _alarmSystemDAO;
+	private Hashtable<String, String> _configurationProperty;
 
 	private AlarmSystemManager(UserAuthenticator.Role role) {
 		_role = role;
-		_configurationProperty = new Hashtable<ConfigurationPropertyType,Object>();
-		_configurationProperty.put(ConfigurationPropertyType.IMPLEMENTATION, AlarmSystemType.ACSAlarm);
+		_configurationProperty = new Hashtable<String,String>();
+		_alarmSystemDAO = null;
+		//_configurationProperty.put(ConfigurationPropertyType.Implementation, AlarmSystemType.ACS);
 	}
 
 	public static AlarmSystemManager getInstance(UserAuthenticator.Role role) {
@@ -112,7 +119,9 @@ public class AlarmSystemManager implements EntityManager {
 	public void loadFromCDB() {
 		if( _acsInfo == null || _daoManager == null )
 			throw new IllegalStateException("The manager connection has not been initialized yet");
-
+		_configurationProperty.clear();
+		if(_alarmSystemDAO == null)
+			_alarmSystemDAO = _daoManager.getAlarmSystemDAO();
 		/* Make sure that we have all the managers here... */
 		getAlarmManager();
 		getSourceManager();
@@ -120,6 +129,10 @@ public class AlarmSystemManager implements EntityManager {
 		getReductionManager();
 
 		/* Now let them load their stuff from the DAOs */
+		List<ConfigurationProperty> cps = _alarmSystemDAO.loadConfigurations();
+		for (ConfigurationProperty cp : cps) {
+			_configurationProperty.put(cp.getName(), cp.getContent());
+		}
 		_alarmManager.loadFromCDB();
 		_sourceManager.loadFromCDB();
 		_categoryManager.loadFromCDB();
@@ -131,6 +144,8 @@ public class AlarmSystemManager implements EntityManager {
 			throw new IllegalStateException("The manager connection has not been initialized yet");
 
 		/* Make sure that we have all the managers here... */
+		if(_alarmSystemDAO == null)
+			_alarmSystemDAO = _daoManager.getAlarmSystemDAO();
 		getAlarmManager();
 		getSourceManager();
 		getCategoryManager();
@@ -140,11 +155,21 @@ public class AlarmSystemManager implements EntityManager {
 		_daoManager.backupCDB();
 
 		/* Now let them save their stuff through the DAOs */
-		
+		Set<String> keys = _configurationProperty.keySet();
+		String[] cps = new String[keys.size()];
+		keys.toArray(cps);
+		AlarmSystemConfiguration asc = new AlarmSystemConfiguration();
+		for (String sCP : cps) {
+			ConfigurationProperty cp = new ConfigurationProperty();
+			cp.setName(sCP);
+			cp.setContent(_configurationProperty.get(sCP));
+			asc.addConfigurationProperty(cp);
+		}
+		_alarmSystemDAO.flushCategories(asc);
 		_alarmManager.saveToCDB();
 		//_sourceManager.saveToCDB();
-		//_categoryManager.saveToCDB();
-		//_reductionManager.saveToCDB();
+		_categoryManager.saveToCDB();
+		_reductionManager.saveToCDB();
 	}
 
 	public void disconnectFromManager() {
@@ -167,8 +192,8 @@ public class AlarmSystemManager implements EntityManager {
 	}
 	public CategoryManager getCategoryManager() throws IllegalStateException {
 		if( _categoryManager == null ) {
-			getAlarmManager(); // Needs to be done to load the Alarms into the DAO
 			_categoryManager = CategoryManager.getInstance(_daoManager.getCategoryDAO());
+			getAlarmManager(); // Needs to be done to load the Alarms into the DAO
 		}
 		return _categoryManager;
 	}
@@ -193,10 +218,10 @@ public class AlarmSystemManager implements EntityManager {
 	 * @param ct The configuration-property type that will be modified.
 	 * @param at The new value for the given configuration-property type.
 	 */
-	public void setConfigurationProperty(ConfigurationPropertyType ct, AlarmSystemType at){
+	public void setConfigurationProperty(String ct, String val){
 		if(_configurationProperty.get(ct) != null)
 			_configurationProperty.remove(ct);
-		_configurationProperty.put(ct, at);
+		_configurationProperty.put(ct, val);
 	}
 	
 	/**
@@ -205,7 +230,7 @@ public class AlarmSystemManager implements EntityManager {
 	 * @param ct The configuration-property type that will be queried.
 	 * @return
 	 */
-	public Object getConfigurationProperty(ConfigurationPropertyType ct){
+	public String getConfigurationPrperty(String ct) {
 		return _configurationProperty.get(ct);
 	}
 	

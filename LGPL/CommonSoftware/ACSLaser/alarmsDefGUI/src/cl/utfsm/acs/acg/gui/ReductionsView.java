@@ -59,6 +59,7 @@ import alma.acs.alarmsystem.generated.FaultMember;
 
 import cl.utfsm.acs.acg.core.AlarmSystemManager;
 import cl.utfsm.acs.acg.core.AlarmManager;
+import cl.utfsm.acs.acg.core.IllegalOperationException;
 import cl.utfsm.acs.acg.core.ReductionManager;
 import cl.utfsm.acs.acg.core.ReductionRule;
 public class ReductionsView extends ViewPart implements IMyViewPart {
@@ -68,10 +69,8 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	private enum NodeType {
 		NODE_REDUCTION,
 		NODE_REDUCTION_PARENT_DATA,
-		NODE_REDUCTION_CHILDREN_DATA,
 		MULTIPLICITY_REDUCTION,
-		MULTIPLICITY_REDUCTION_PARENT_DATA,
-		MULTIPLICITY_REDUCTION_CHILDREN_DATA
+		MULTIPLICITY_REDUCTION_PARENT_DATA
 	}
 
 	private ReductionManager _reductionManager;
@@ -100,18 +99,10 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	private Combo _NRParentChFMCombo;
 	private Label _NRParentChFCLabel;
 	private Combo _NRParentChFCCombo;
-	private Label  _NRParentChFilterLabel;
+	private Label _NRParentChFilterLabel;
 	private Text  _NRParentChFilterText;
 	private Table _NRParentChAlarmList;
-	
-	/* NR Children Widgets */
-	private Group _NRChildrenGroup;
-	private Label _NRChildrenFFLabel;
-	private Label _NRChildrenFFName;
-	private Label _NRChildrenFMLabel;
-	private Label _NRChildrenFMName;
-	private Label _NRChildrenFCLabel;
-	private Label _NRChildrenFCName;
+	private Label _NRParentErrorMessageLabel;
 
 	/* MR Parent Widgets */
 	private Group _MRParentGroup;
@@ -122,6 +113,8 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	private Combo _MRParentFMCombo;
 	private Label _MRParentFCLabel;
 	private Combo _MRParentFCCombo;
+	private Label _MRParentThresholdLabel;
+	private Text _MRParentThresholdText;
 	//
 	private Group _MRParentChGroup;
 	private Group _MRParentChFilterGroup;
@@ -131,16 +124,10 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	private Combo _MRParentChFMCombo;
 	private Label _MRParentChFCLabel;
 	private Combo _MRParentChFCCombo;
+	private Label _MRParentChFilterLabel;
+	private Text  _MRParentChFilterText;
 	private Table _MRParentChAlarmList;
-
-	/* MR Children Widgets */
-	private Group _MRChildrenGroup;
-	private Label _MRChildrenFFLabel;
-	private Label _MRChildrenFFName;
-	private Label _MRChildrenFMLabel;
-	private Label _MRChildrenFMName;
-	private Label _MRChildrenFCLabel;
-	private Label _MRChildrenFCName;
+	private Label _MRParentErrorMessageLabel;	
 	
 	/* Listeners */
 	private Listener _addElement;
@@ -167,43 +154,129 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	private void createViewWidgets(Composite parent) {
 		_addElement = new Listener() {
 			public void handleEvent(Event event) {
+				TreeItem sel = null;
+				TreeItem item = null;
+				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
+					return;
+				sel = _tree.getSelection()[0];
+				NodeType type = (NodeType)sel.getData();
+				item = sel;
+				if(type == NodeType.NODE_REDUCTION_PARENT_DATA || type == NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA)
+					item = sel.getParentItem();
+				
+				TreeItem pTree = new TreeItem(item,SWT.NONE);
+				pTree.setText("<,,0>");
+				if(type == NodeType.NODE_REDUCTION)
+					pTree.setData(NodeType.NODE_REDUCTION_PARENT_DATA);
+				else if(type == NodeType.MULTIPLICITY_REDUCTION)
+					pTree.setData(NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA);
+				_tree.setSelection(pTree);
+				Event e = new Event();
+				_tree.notifyListeners(SWT.Selection, e);
 			}
 		};
 		
 		_addRule = new Listener() {
 			public void handleEvent(Event event) {
+				//TODO!!
+				Table t = (Table)event.widget;
 				if(event.type == SWT.KeyUp)
 					if(!(event.keyCode == SWT.CR || event.keyCode == ' '))
 						return;
-				
 				if(event.type == SWT.MouseDoubleClick){
 					Point pt = new Point(event.x,event.y);
-					if(_NRParentChAlarmList.getItem(pt) == null)
+					if(t.getItem(pt) == null)
 						return;
 				}
-				TreeItem[] tmp1 = _tree.getSelection();
-				if(tmp1 == null || tmp1.length == 0)
+				boolean isNode;
+				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
 					return;
-				String[] tr = getTriplet(tmp1[0].getText());
-				ReductionRule parent = _reductionManager.getNRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
-				
-				TableItem[] tmp2 = _NRParentChAlarmList.getSelection();
-				if(tmp2 == null || tmp2.length == 0)
+				TreeItem tmp1 = _tree.getSelection()[0];
+				if((NodeType)_tree.getSelection()[0].getData() == NodeType.NODE_REDUCTION_PARENT_DATA)
+					isNode = true;
+				else if((NodeType)_tree.getSelection()[0].getData() == NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA)
+					isNode = false;
+				else
 					return;
-				TableItem item = tmp2[0];
-				Alarm p = parent.getParent();
-				Alarm c = parent.getChild(item.getText());
+				String[] tr = getTriplet(tmp1.getText());
+				ReductionRule parent;
+				if(isNode)
+					parent = _reductionManager.getNRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
+				else
+					parent = _reductionManager.getMRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
+				if(t.getSelection() == null || t.getSelection().length == 0)
+					return;
+				TableItem item = t.getSelection()[0];
+				Alarm p,c;
+				if(parent == null) {
+					if(isNode)
+						p = _alarmManager.getAlarm(_NRParentFFCombo.getText()+":"+_NRParentFMCombo.getText()+":"+_NRParentFCCombo.getText());
+					else
+						p = _alarmManager.getAlarm(_MRParentFFCombo.getText()+":"+_MRParentFMCombo.getText()+":"+_MRParentFCCombo.getText());
+					if(p == null) {
+						if(isNode)
+							_NRParentErrorMessageLabel.setText("Couldn't find parent alarm.");
+						else
+							_MRParentErrorMessageLabel.setText("Couldn't find parent alarm.");
+						return;
+					}
+					c = null;
+				}
+				else {
+					p = parent.getParent();
+					c = parent.getChild(item.getText());
+				}
+					
 				if(c == null){
 					//Add child
 					c = _alarmManager.getAlarm(item.getText());
-					if(c == null)
+					if(c == null) {
+						if(isNode)
+							_NRParentErrorMessageLabel.setText("Couldn't find child alarm.");
+						else
+							_MRParentErrorMessageLabel.setText("Couldn't find child alarm.");
 						return;
-					_reductionManager.addNodeReductionRule(p, c);
-					item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+					}
+					try {
+						if(isNode)
+							_reductionManager.addNodeReductionRule(p, c);
+						else {
+							_reductionManager.addMultiReductionRule(p, c);
+							if(parent == null)
+								_reductionManager.updateMultiThreshold(p, Integer.parseInt(_MRParentThresholdText.getText()));
+						}
+						item.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+						if(parent == null)
+							_tree.getSelection()[0].setText("<" + p.getAlarmId().replace(':', ',') + ">");
+						if(isNode)
+							_NRParentErrorMessageLabel.setText("");
+						else
+							_MRParentErrorMessageLabel.setText("");
+					} catch (IllegalOperationException e) {
+						if(isNode)
+							_NRParentErrorMessageLabel.setText(e.getMessage());
+						else
+							_MRParentErrorMessageLabel.setText(e.getMessage());
+					}
 				}
 				else{
 					//Remove child
-					_reductionManager.deleteNodeReductionRule(p, c);
+					try {
+						ReductionRule rr;
+						if(isNode) {
+							_reductionManager.deleteNodeReductionRule(p, c);
+							rr = _reductionManager.getNRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+						}
+						else {
+							_reductionManager.deleteMultiReductionRule(p, c);
+							rr = _reductionManager.getMRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+						}
+						if(rr == null)
+							_tree.getSelection()[0].setText("<,,0>");
+					} catch (IllegalOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					item.setImage((org.eclipse.swt.graphics.Image)null);
 				}
 			}
@@ -211,83 +284,65 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		
 		_removeElement = new Listener() {
 			public void handleEvent(Event event) {
-			    boolean choice = MessageDialog.openQuestion( 
-		        		  ReductionsView.this.getViewSite().getShell(),
-		            "Confirmation",
-		            "Are you sure you want to delete this element");
-			      if (choice == true ){ 
-				
-				TreeItem sel = null;
-				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
-					return;
-				NodeType type = (NodeType)_tree.getSelection()[0].getData();
-				if(type == NodeType.NODE_REDUCTION || type == NodeType.MULTIPLICITY_REDUCTION)
-					return;
-				TreeItem item = _tree.getSelection()[0];
-				String[] tr = getTriplet(item.getText());
-				try {
-					if(type == NodeType.NODE_REDUCTION_PARENT_DATA){
-						//Remove all the NODE REDUCTION Rules in which this node is a parent.
-						ReductionRule rr = _reductionManager.getNRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
-						Alarm p = rr.getParent();
-						List<Alarm> chL = rr.getChildren();
-						for (Alarm c : chL) {
-							_reductionManager.deleteNodeReductionRule(p, c);
+				boolean choice = MessageDialog.openQuestion( 
+						ReductionsView.this.getViewSite().getShell(),
+						"Confirmation",
+						"Are you sure you want to delete this element"
+				);
+				if (choice == true ){ 
+					TreeItem sel = null;
+					if(_tree.getSelection() == null || _tree.getSelection().length == 0)
+						return;
+					NodeType type = (NodeType)_tree.getSelection()[0].getData();
+					if(type == NodeType.NODE_REDUCTION || type == NodeType.MULTIPLICITY_REDUCTION)
+						return;
+					TreeItem item = _tree.getSelection()[0];
+					String[] tr = getTriplet(item.getText());
+					try {
+						if(type == NodeType.NODE_REDUCTION_PARENT_DATA){
+							//Remove all the NODE REDUCTION Rules in which this node is parent.
+							ReductionRule rr = _reductionManager.getNRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
+							Alarm p = rr.getParent();
+							List<Alarm> chL = rr.getChildren();
+							Alarm[] als = new Alarm[chL.size()];
+							chL.toArray(als);
+							for(int i = 0; i < als.length; i++)
+								_reductionManager.deleteNodeReductionRule(p, als[i]);
 						}
-					}
-					else if(type == NodeType.NODE_REDUCTION_CHILDREN_DATA){
-						//Remove the selected NODE REDUCTION Rule.
-						String[] tr2 = getTriplet(item.getParentItem().getText());
-						ReductionRule rr = _reductionManager.getNRParentByTriplet(tr2[0], tr2[1], Integer.parseInt(tr2[2]));
-						Alarm p = rr.getParent();
-						Alarm c = rr.getChild(tr[0], tr[1], Integer.parseInt(tr[2]));
-						if(c == null)
-							return;
-						_reductionManager.deleteNodeReductionRule(p, c);
-					}
-					else if(type == NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA){
-						//Remove all the MULTIPLICITY REDUCTION Rules in which this node is a parent.
-						ReductionRule rr = _reductionManager.getMRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
-						Alarm p = rr.getParent();
-						List<Alarm> chL = rr.getChildren();
-						for (Alarm c : chL) {
-							_reductionManager.deleteNodeReductionRule(p, c);
+						else if(type == NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA){
+							//Remove all the MULTIPLICITY REDUCTION Rules in which this node is a parent.
+							ReductionRule rr = _reductionManager.getMRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
+							Alarm p = rr.getParent();
+							List<Alarm> chL = rr.getChildren();
+							Alarm[] als = new Alarm[chL.size()];
+							chL.toArray(als);
+							for(int i = 0; i < als.length; i++)
+								_reductionManager.deleteNodeReductionRule(p, als[i]);
 						}
-					}
-					else if(type == NodeType.MULTIPLICITY_REDUCTION_CHILDREN_DATA){
-						//Remove the selected MULTIPLICITY REDUCTION Rule.
-						String[] tr2 = getTriplet(item.getParentItem().getText());
-						ReductionRule rr = _reductionManager.getMRParentByTriplet(tr2[0], tr2[1], Integer.parseInt(tr2[2]));
-						Alarm p = rr.getParent();
-						Alarm c = rr.getChild(tr[0], tr[1], Integer.parseInt(tr[2]));
-						if(c == null)
-							return;
-						_reductionManager.deleteMultiReductionRule(p, c);
-					}
-				} catch (NullPointerException e){
-					ErrorDialog error = new ErrorDialog(ReductionsView.this.getViewSite().getShell(),
-							"Cannot delete the item",
-							e.getMessage(),
-							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
-							IStatus.ERROR);
+					} catch (NullPointerException e){
+						ErrorDialog error = new ErrorDialog(ReductionsView.this.getViewSite().getShell(),
+								"Cannot delete the item",
+								e.getMessage(),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								IStatus.ERROR);
 					error.setBlockOnOpen(true);
 					error.open();
-				}
-				sel = _tree.getSelection()[0].getParentItem();
-				_tree.getSelection()[0].dispose();
-				if(type == NodeType.NODE_REDUCTION_CHILDREN_DATA || type == NodeType.MULTIPLICITY_REDUCTION_CHILDREN_DATA){
-					if(sel.getItemCount() == 0){
-						TreeItem del = sel;
-						sel = sel.getParentItem();
-						del.dispose();
+					} catch (IllegalOperationException e) {
+						ErrorDialog error = new ErrorDialog(ReductionsView.this.getViewSite().getShell(),
+								"Cannot delete the item",
+								e.getMessage(),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								IStatus.ERROR);
+					error.setBlockOnOpen(true);
+					error.open();
 					}
+					sel = _tree.getSelection()[0].getParentItem();
+					_tree.getSelection()[0].dispose();
+					_tree.setSelection(sel);
+					Event e = new Event();
+					_tree.notifyListeners(SWT.Selection, e);
 				}
-				_tree.setSelection(sel);
-				Event e = new Event();
-				_tree.notifyListeners(SWT.Selection, e);
 			}
-		}
-			
 		};
 		_sash = new SashForm(parent,SWT.NONE);
 
@@ -298,17 +353,15 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		treePopUpDelete.addListener(SWT.Selection, _removeElement);
 		MenuItem treePopUpAddRule = new MenuItem(treePopUp,SWT.PUSH);
 		treePopUpAddRule.setText("Add Rule");
-		//treePopUpAddRule.addListener(SWT.Selection, _addRule);
+		treePopUpAddRule.addListener(SWT.Selection, _addElement);
 		MenuItem treePopUpAddChildren = new MenuItem(treePopUp,SWT.PUSH);
 		treePopUpAddChildren.setText("Add Children");
-		treePopUpAddChildren.addListener(SWT.Selection, _addElement);
+		//treePopUpAddChildren.addListener(SWT.Selection, _addElement);
 		_tree.setMenu(treePopUp);
 		_tree.addSelectionListener(new SelectionListener() {
-
 			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
-
 			public void widgetSelected(SelectionEvent e) {
 				TreeItem []tmp = ((Tree)e.widget).getSelection();
 				if( tmp == null || tmp.length == 0 )
@@ -326,61 +379,37 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 
 				if( type == NodeType.NODE_REDUCTION ) {
 					_NRParentGroup.setVisible(false);
-					_NRChildrenGroup.setVisible(false);
+					((GridData)_NRParentGroup.getLayoutData()).exclude = true;
 					_MRParentGroup.setVisible(false);
-					_MRChildrenGroup.setVisible(false);					
+					((GridData)_MRParentGroup.getLayoutData()).exclude = true;
 				}
 				else if( type == NodeType.NODE_REDUCTION_PARENT_DATA ) {
 					_NRParentGroup.setVisible(true);
-					_NRChildrenGroup.setVisible(false);
+					((GridData)_NRParentGroup.getLayoutData()).exclude = false;
 					_MRParentGroup.setVisible(false);
-					_MRChildrenGroup.setVisible(false);
+					((GridData)_MRParentGroup.getLayoutData()).exclude = true;
 					
 					String[] triplet = getTriplet(item.getText());
 					fillNRParentWidgets(triplet[0],triplet[1],Integer.parseInt(triplet[2]));
 					_NRParentGroup.moveAbove(c);
 					_compInitial.layout();
 				}
-				else if( type == NodeType.NODE_REDUCTION_CHILDREN_DATA ) {
-					_NRParentGroup.setVisible(false);
-					_NRChildrenGroup.setVisible(true);
-					_MRParentGroup.setVisible(false);
-					_MRChildrenGroup.setVisible(false);
-					
-					String[] triplet = getTriplet(item.getParentItem().getText());
-					String[] triplet2 = getTriplet(item.getText());
-					fillNRChildrenWidgets(triplet[0],triplet[1],Integer.parseInt(triplet[2]),triplet2[0],triplet2[1],Integer.parseInt(triplet2[2]));
-					_NRChildrenGroup.moveAbove(c);
-					_compInitial.layout();
-				}
 				else if( type == NodeType.MULTIPLICITY_REDUCTION ){
 					_NRParentGroup.setVisible(false);
-					_NRChildrenGroup.setVisible(false);
+					((GridData)_NRParentGroup.getLayoutData()).exclude = true;
 					_MRParentGroup.setVisible(false);
-					_MRChildrenGroup.setVisible(false);
+					((GridData)_MRParentGroup.getLayoutData()).exclude = true;
 				}
 				else if( type == NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA ) {
 					_NRParentGroup.setVisible(false);
-					_NRChildrenGroup.setVisible(false);
+					((GridData)_NRParentGroup.getLayoutData()).exclude = true;
 					_MRParentGroup.setVisible(true);
-					_MRChildrenGroup.setVisible(false);
+					((GridData)_MRParentGroup.getLayoutData()).exclude = false;
 
 					String[] triplet = getTriplet(item.getText());
 					fillMRParentWidgets(triplet[0],triplet[1],Integer.parseInt(triplet[2]));
 
 					_MRParentGroup.moveAbove(c);
-					_compInitial.layout();
-				}
-				else if( type == NodeType.MULTIPLICITY_REDUCTION_CHILDREN_DATA){
-					_NRParentGroup.setVisible(false);
-					_NRChildrenGroup.setVisible(false);
-					_MRParentGroup.setVisible(false);
-					_MRChildrenGroup.setVisible(true);
-
-					String[] triplet = getTriplet(item.getParentItem().getText());
-					String[] triplet2 = getTriplet(item.getText());
-					fillMRChildrenWidgets(triplet[0],triplet[1],Integer.parseInt(triplet[2]),triplet2[0],triplet2[1],Integer.parseInt(triplet2[2]));
-					_MRChildrenGroup.moveAbove(c);
 					_compInitial.layout();
 				}
 			}
@@ -394,14 +423,10 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 
 		/* NR/MR Details */
 		createNRParentWidgets();
-		createNRChildrenWidgets();
 		createMRParentWidgets();
-		createMRChildrenWidgets();
 
 		_NRParentGroup.setVisible(false);
-		_NRChildrenGroup.setVisible(false);
 		_MRParentGroup.setVisible(false);
-		_MRChildrenGroup.setVisible(false);
 		_sash.setWeights(new int[] {3, 5});
 	}
 
@@ -418,7 +443,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 				for (int j = 0; j < fcl.length; j++) {
 					_NRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
 				}
-				System.out.println("Widget: " + event.widget.toString());
+				_NRParentErrorMessageLabel.setText("Please choose a Fault Member and a Fault Code.");
 			}
 		};
 		_updateNRParent = new Listener() {
@@ -428,26 +453,53 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 				NodeType type = (NodeType)_tree.getSelection()[0].getData();
 				if(type != NodeType.NODE_REDUCTION_PARENT_DATA)
 					return;
-				if(_NRParentFMCombo.getText().compareTo("") == 0 || _NRParentFCCombo.getText().compareTo("") == 0)
+				if(_NRParentFMCombo.getText().isEmpty()) {
+					_NRParentErrorMessageLabel.setText("Please choose a Fault Member.");
 					return;
+				}
+				if(_NRParentFCCombo.getText().isEmpty()) {
+					_NRParentErrorMessageLabel.setText("Please choose a Fault Code.");
+					return;
+				}
 				String[] tr = getTriplet(_tree.getSelection()[0].getText());
 				ReductionRule nrr = _reductionManager.getNRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
 				ReductionRule nrr2 = _reductionManager.getNRParentByTriplet(_NRParentFFCombo.getText(), _NRParentFMCombo.getText(), Integer.parseInt(_NRParentFCCombo.getText()));
-				if(nrr == null || nrr2 == null)
-					return;
+				Alarm parent = null;
+				Alarm nParent;
+				if(nrr == null) {
+					if(!tr[0].isEmpty() || !tr[1].isEmpty() || tr[2].compareTo("0") != 0)
+						return;
+					_NRParentErrorMessageLabel.setText("There's no Reduction Rule for the selected Alarm.");
+				}
+				else
+					parent = nrr.getParent();
 				//If nrr2 already exist, ask if it should merge both and dispose this one if affirmative.
 				//TODO
-				Alarm parent = nrr.getParent();
-				Alarm nParent = nrr2.getParent();
-				String[] ch = parent.getNodeChildren();
-				//Remove all Children from nrr and add them to nrr2.
-				for (int i = 0; i < ch.length; i++) {
-					Alarm aCh = _alarmManager.getAlarm(ch[i]);
-					if(aCh != null){
-						parent.removeNodeChild(aCh);
-						nParent.addNodeChild(aCh);
+				if(nrr2 == null)
+					nParent = _alarmManager.getAlarm(new String(_NRParentFFCombo.getText()+":"+_NRParentFMCombo.getText()+":"+_NRParentFCCombo.getText()));
+				else
+					nParent = nrr2.getParent();
+				if(parent != null) {
+					String[] ch = parent.getNodeChildren();
+					//Remove all Children from nrr and add them to nrr2.
+					for (int i = 0; i < ch.length; i++) {
+						Alarm aCh = _alarmManager.getAlarm(ch[i]);
+						if(aCh != null){
+							try {
+								if(!_reductionManager.deleteNodeReductionRule(parent, aCh)) {
+									_NRParentErrorMessageLabel.setText("One or more children alarms didn't exist.");
+									continue;
+								}
+								_reductionManager.addNodeReductionRule(nParent, aCh);
+							} catch (IllegalOperationException e) {
+								_NRParentErrorMessageLabel.setText("The parent alarm didn't exist.");
+							}
+						}
 					}
+					_tree.getSelection()[0].setText("<" + nParent.getAlarmId().replace(':', ',') + ">");
+					_NRParentErrorMessageLabel.setText("");
 				}
+				fillNRParentChAlarmList(_NRParentFFCombo.getText(),_NRParentFMCombo.getText(),Integer.parseInt(_NRParentFCCombo.getText()));
 			}
 		};
 		_updateNRParentChFF = new Listener() {
@@ -605,44 +657,17 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessVerticalSpace = true;
 		gd.grabExcessHorizontalSpace = true;
 		_NRParentChAlarmList.setLayoutData(gd);
-		_NRParentChAlarmList.addListener(SWT.Selection, _addRule);
-	}
-
-	private void createNRChildrenWidgets() {
-
-		_NRChildrenGroup = new Group(_compInitial, SWT.SHADOW_ETCHED_IN);
-		GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
-		GridData gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_NRChildrenGroup.setLayout(gl);
-		_NRChildrenGroup.setLayoutData(gd);
-
-		_NRChildrenFFLabel = new Label(_NRChildrenGroup,SWT.NONE);
-		_NRChildrenFFLabel.setText("Fault Family:");
-		_NRChildrenFFName = new Label(_NRChildrenGroup,SWT.NONE);
+		_NRParentChAlarmList.addListener(SWT.KeyUp, _addRule);
+		_NRParentChAlarmList.addListener(SWT.MouseDoubleClick, _addRule);
+		
+		_NRParentErrorMessageLabel = new Label(_NRParentGroup, SWT.NONE);
+		_NRParentErrorMessageLabel.setText("");
+		_NRParentErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		_NRChildrenFFName.setLayoutData(gd);
-
-		_NRChildrenFMLabel = new Label(_NRChildrenGroup,SWT.NONE);
-		_NRChildrenFMLabel.setText("Fault Member:");
-		_NRChildrenFMName = new Label(_NRChildrenGroup,SWT.NONE);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_NRChildrenFMName.setLayoutData(gd);
-
-		_NRChildrenFCLabel = new Label(_NRChildrenGroup,SWT.NONE);
-		_NRChildrenFCLabel.setText("Fault Code:");
-		_NRChildrenFCName = new Label(_NRChildrenGroup,SWT.NONE);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_NRChildrenFCName.setLayoutData(gd);
-
+		gd.horizontalSpan = 2;
+		_NRParentErrorMessageLabel.setLayoutData(gd);
 	}
 	
 	private void createMRParentWidgets() {
@@ -658,7 +683,8 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 				for (int j = 0; j < fcl.length; j++) {
 					_MRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
 				}
-				System.out.println("Widget: " + event.widget.toString());
+				_MRParentThresholdText.setText("");
+				_MRParentErrorMessageLabel.setText("Please choose a Fault Member and a Fault Code.");
 			}
 		};
 		_updateMRParent = new Listener() {
@@ -666,28 +692,68 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
 					return;
 				NodeType type = (NodeType)_tree.getSelection()[0].getData();
-				if(type != NodeType.NODE_REDUCTION_PARENT_DATA)
+				if(type != NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA)
 					return;
-				if(_MRParentFMCombo.getText().compareTo("") == 0 || _MRParentFCCombo.getText().compareTo("") == 0)
+				if(_MRParentFMCombo.getText().isEmpty()) {
+					_MRParentErrorMessageLabel.setText("Please choose a Fault Member.");
 					return;
+				}
+				if(_MRParentFCCombo.getText().isEmpty()) {
+					_MRParentErrorMessageLabel.setText("Please choose a Fault Code.");
+					return;
+				}
+				if(_MRParentThresholdText.getText().isEmpty()) {
+					_MRParentErrorMessageLabel.setText("Please set a Threshold value.");
+					return;
+				}
+				int thr;
+				try {
+					thr = Integer.parseInt(_MRParentThresholdText.getText());
+				} catch(NumberFormatException e) {
+					_MRParentErrorMessageLabel.setText("Incorrect Threshold. A number is required.");
+					return;
+				}
 				String[] tr = getTriplet(_tree.getSelection()[0].getText());
-				ReductionRule nrr = _reductionManager.getMRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
-				ReductionRule nrr2 = _reductionManager.getMRParentByTriplet(_MRParentFFCombo.getText(), _MRParentFMCombo.getText(), Integer.parseInt(_MRParentFCCombo.getText()));
-				if(nrr == null || nrr2 == null)
-					return;
+				ReductionRule mrr = _reductionManager.getMRParentByTriplet(tr[0], tr[1], Integer.parseInt(tr[2]));
+				ReductionRule mrr2 = _reductionManager.getMRParentByTriplet(_MRParentFFCombo.getText(), _MRParentFMCombo.getText(), Integer.parseInt(_MRParentFCCombo.getText()));
+				Alarm parent = null;
+				Alarm mParent;
+				if(mrr == null) {
+					if(!tr[0].isEmpty() || !tr[1].isEmpty() || tr[2].compareTo("0") != 0)
+						return;
+					_MRParentErrorMessageLabel.setText("There's no Reduction Rule for the selected Alarm.");
+				}
+				else
+					parent = mrr.getParent();
 				//If nrr2 already exist, ask if it should merge both and dispose this one if affirmative.
 				//TODO
-				Alarm parent = nrr.getParent();
-				Alarm nParent = nrr2.getParent();
-				String[] ch = parent.getNodeChildren();
-				//Remove all Children from nrr and add them to nrr2.
-				for (int i = 0; i < ch.length; i++) {
-					Alarm aCh = _alarmManager.getAlarm(ch[i]);
-					if(aCh != null){
-						parent.removeNodeChild(aCh);
-						nParent.addNodeChild(aCh);
+				if(mrr2 == null)
+					mParent = _alarmManager.getAlarm(new String(_MRParentFFCombo.getText()+":"+_MRParentFMCombo.getText()+":"+_MRParentFCCombo.getText()));
+				else
+					mParent = mrr2.getParent();
+				if(parent != null) {
+					String[] ch = parent.getNodeChildren();
+					//Remove all Children from mrr and add them to mrr2.
+					try {
+						for (int i = 0; i < ch.length; i++) {
+							Alarm aCh = _alarmManager.getAlarm(ch[i]);
+							if(aCh != null){
+								if(!_reductionManager.deleteMultiReductionRule(parent, aCh)) {
+									_MRParentErrorMessageLabel.setText("One or more children alarms didn't exist.");
+									continue;
+								}
+								_reductionManager.addMultiReductionRule(mParent, aCh);
+
+							}
+						}
+						_reductionManager.updateMultiThreshold(mParent, thr);
+					} catch (IllegalOperationException e) {
+						_MRParentErrorMessageLabel.setText("The parent alarm didn't exist.");
 					}
+					_tree.getSelection()[0].setText("<" + mParent.getAlarmId().replace(':', ',') + ">");
+					_MRParentErrorMessageLabel.setText("");
 				}
+				fillMRParentChAlarmList(_MRParentFFCombo.getText(),_MRParentFMCombo.getText(),Integer.parseInt(_MRParentFCCombo.getText()));
 			}
 		};
 		_updateMRParentChFF = new Listener() {
@@ -751,7 +817,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		_MRParentFtGroup.setLayout(gl);
 		_MRParentFtGroup.setLayoutData(gd);
-		_MRParentFtGroup.setText("Father");
+		_MRParentFtGroup.setText("Primary Alarm");
 		
 		_MRParentFFLabel = new Label(_MRParentFtGroup,SWT.NONE);
 		_MRParentFFLabel.setText("Fault Family:");
@@ -779,6 +845,15 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		_MRParentFCCombo.setLayoutData(gd);
 		_MRParentFCCombo.addListener(SWT.Selection, _updateMRParent);
+		
+		_MRParentThresholdLabel = new Label(_MRParentFtGroup,SWT.NONE);
+		_MRParentThresholdLabel.setText("Threshold:");
+		_MRParentThresholdText = new Text(_MRParentFtGroup, SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_MRParentThresholdText.setLayoutData(gd);
+		_MRParentThresholdText.addListener(SWT.Modify, _updateMRParent);
 //
 		_MRParentChGroup = new Group(_MRParentGroup, SWT.SHADOW_ETCHED_IN);
 		gl = new GridLayout();
@@ -790,7 +865,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.verticalAlignment = SWT.FILL;
 		_MRParentChGroup.setLayout(gl);
 		_MRParentChGroup.setLayoutData(gd);
-		_MRParentChGroup.setText("Children");
+		_MRParentChGroup.setText("Alarms to Ignore");
 		
 		_MRParentChFilterGroup = new Group(_MRParentChGroup, SWT.SHADOW_ETCHED_IN);
 		gl = new GridLayout();
@@ -800,7 +875,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.horizontalAlignment = SWT.FILL;
 		_MRParentChFilterGroup.setLayout(gl);
 		_MRParentChFilterGroup.setLayoutData(gd);
-		_MRParentChFilterGroup.setText("Filter");
+		_MRParentChFilterGroup.setText("Filter Options");
 		
 		_MRParentChFFLabel = new Label(_MRParentChFilterGroup,SWT.NONE);
 		_MRParentChFFLabel.setText("Fault Family:");
@@ -829,6 +904,15 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		_MRParentChFCCombo.setLayoutData(gd);
 		_MRParentChFCCombo.addListener(SWT.Selection, _updateMRParentCh);
 		
+		_MRParentChFilterLabel = new Label(_MRParentChFilterGroup,SWT.NONE);
+		_MRParentChFilterLabel.setText("Filter RegEx:");
+		_MRParentChFilterText = new Text(_MRParentChFilterGroup, SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_MRParentChFilterText.setLayoutData(gd);
+		_MRParentChFilterText.addListener(SWT.Modify, _updateMRParentCh);
+		
 		_MRParentChAlarmList = new Table(_MRParentChGroup,SWT.BORDER);
 		gd = new GridData();
 		gd.verticalAlignment = SWT.FILL;
@@ -836,44 +920,17 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessVerticalSpace = true;
 		gd.grabExcessHorizontalSpace = true;
 		_MRParentChAlarmList.setLayoutData(gd);
-		_MRParentChAlarmList.addListener(SWT.Selection, _addRule);
-	}
-	
-	private void createMRChildrenWidgets() {
-
-		_MRChildrenGroup = new Group(_compInitial, SWT.SHADOW_ETCHED_IN);
-		GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
-		GridData gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_MRChildrenGroup.setLayout(gl);
-		_MRChildrenGroup.setLayoutData(gd);
-
-		_MRChildrenFFLabel = new Label(_MRChildrenGroup,SWT.NONE);
-		_MRChildrenFFLabel.setText("Fault Family:");
-		_MRChildrenFFName = new Label(_MRChildrenGroup,SWT.NONE);
+		_MRParentChAlarmList.addListener(SWT.KeyUp, _addRule);
+		_MRParentChAlarmList.addListener(SWT.MouseDoubleClick, _addRule);
+		
+		_MRParentErrorMessageLabel = new Label(_MRParentGroup, SWT.NONE);
+		_MRParentErrorMessageLabel.setText("");
+		_MRParentErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
-		_MRChildrenFFName.setLayoutData(gd);
-
-		_MRChildrenFMLabel = new Label(_MRChildrenGroup,SWT.NONE);
-		_MRChildrenFMLabel.setText("Fault Member:");
-		_MRChildrenFMName = new Label(_MRChildrenGroup,SWT.NONE);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_MRChildrenFMName.setLayoutData(gd);
-
-		_MRChildrenFCLabel = new Label(_MRChildrenGroup,SWT.NONE);
-		_MRChildrenFCLabel.setText("Fault Code:");
-		_MRChildrenFCName = new Label(_MRChildrenGroup,SWT.NONE);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		_MRChildrenFCName.setLayoutData(gd);
-
+		gd.horizontalSpan = 2;
+		_MRParentErrorMessageLabel.setLayoutData(gd);
 	}
 
 	/* (non-Javadoc)
@@ -900,13 +957,6 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 					t = rule.getParent().getTriplet();
 					kTree.setText("<" + t.getFaultFamily() + "," + t.getFaultMember() + "," + t.getFaultCode() + ">");
 					kTree.setData(NodeType.NODE_REDUCTION_PARENT_DATA);
-					List<Alarm> chNodeRR = rule.getChildren();
-					for(Alarm chRule : chNodeRR){
-						TreeItem lTree = new TreeItem(kTree,SWT.NONE);
-						t = chRule.getTriplet();
-						lTree.setText("<" + t.getFaultFamily() + "," + t.getFaultMember() + "," + t.getFaultCode() + ">");
-						lTree.setData(NodeType.NODE_REDUCTION_CHILDREN_DATA);
-					}
 				}
 			}
 			/* Show the Multiplicity Reduction Rules */
@@ -917,13 +967,6 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 					t = rule.getParent().getTriplet();
 					kTree.setText("<" + t.getFaultFamily() + "," + t.getFaultMember() + "," + t.getFaultCode() + ">");
 					kTree.setData(NodeType.MULTIPLICITY_REDUCTION_PARENT_DATA);
-					List<Alarm> chNodeRR = rule.getChildren();
-					for(Alarm chRule : chNodeRR){
-						TreeItem lTree = new TreeItem(kTree,SWT.NONE);
-						t = chRule.getTriplet();
-						lTree.setText("<" + t.getFaultFamily() + "," + t.getFaultMember() + "," + t.getFaultCode() + ">");
-						lTree.setData(NodeType.MULTIPLICITY_REDUCTION_CHILDREN_DATA);
-					}
 				}
 			}
 		}
@@ -935,18 +978,16 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		//_updateNRParentFF.setEnabled(false);
 
 		ReductionRule nrr = _reductionManager.getNRParentByTriplet(ff, fm, fc);
-
-		// This should never happen anyways...
+		Alarm parent = null;
+		// This should happen only when creating a new rule...
 		if( nrr == null )
-			return;
-
-		Alarm parent = nrr.getParent();
-
+			_NRParentErrorMessageLabel.setText("No Reduction Rule for this triplet.");
+		else
+			parent = nrr.getParent();
 		_NRParentFFCombo.removeAll();
 		_NRParentChFFCombo.removeAll();
 		_NRParentChFFCombo.add("Any");
 		_NRParentChFFCombo.select(0);
-		
 
 		List<FaultFamily> ffl = _alarmManager.getAllAlarms();
 		FaultFamily ffs = null;
@@ -955,33 +996,36 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 			FaultFamily fft = iterator.next();
 			_NRParentFFCombo.add(fft.getName());
 			_NRParentChFFCombo.add(fft.getName());
-			if(fft.getName().compareTo(parent.getTriplet().getFaultFamily()) == 0){
+			if(parent != null && fft.getName().compareTo(parent.getTriplet().getFaultFamily()) == 0){
 				i = _NRParentFFCombo.getItemCount() - 1;
 				ffs = fft;
 			}
 		}
 		_NRParentFFCombo.select(i);
 		
-		
 		_NRParentFMCombo.removeAll();
-		i = -1;
-		FaultMember[] fml = ffs.getFaultMember();
-		for (int j = 0; j < fml.length; j++) {
-			_NRParentFMCombo.add(fml[j].getName());
-			if(fml[j].getName().compareTo(parent.getTriplet().getFaultMember()) == 0)
-				i = j;
+		if(ffs != null) {
+			i = -1;
+			FaultMember[] fml = ffs.getFaultMember();
+			for (int j = 0; j < fml.length; j++) {
+				_NRParentFMCombo.add(fml[j].getName());
+				if(fml[j].getName().compareTo(parent.getTriplet().getFaultMember()) == 0)
+					i = j;
+			}
+			_NRParentFMCombo.select(i);
 		}
-		_NRParentFMCombo.select(i);
 		
 		_NRParentFCCombo.removeAll();
-		i = -1;
-		FaultCode[] fcl = ffs.getFaultCode();
-		for (int j = 0; j < fcl.length; j++) {
-			_NRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
-			if(fcl[j].getValue() == parent.getTriplet().getFaultCode().intValue())
-				i = j;
+		if(ffs != null) {
+			i = -1;
+			FaultCode[] fcl = ffs.getFaultCode();
+			for (int j = 0; j < fcl.length; j++) {
+				_NRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
+				if(fcl[j].getValue() == parent.getTriplet().getFaultCode().intValue())
+					i = j;
+			}
+			_NRParentFCCombo.select(i);
 		}
-		_NRParentFCCombo.select(i);
 		
 		_NRParentChFMCombo.removeAll();
 		_NRParentChFMCombo.add("Any");
@@ -990,21 +1034,30 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		_NRParentChFCCombo.removeAll();
 		_NRParentChFCCombo.add("Any");
 		_NRParentChFCCombo.select(0);
-		
-		fillNRParentChAlarmList(ff,fm,fc);
-		
+
+		if(ff.isEmpty() && fm.isEmpty() && fc == 0) {
+			if(!_NRParentFFCombo.getText().isEmpty() && !_NRParentFMCombo.getText().isEmpty() && !_NRParentFCCombo.getText().isEmpty())
+				fillNRParentChAlarmList(_NRParentFFCombo.getText(),_NRParentFMCombo.getText(),Integer.parseInt(_NRParentFCCombo.getText()));
+		}
+		else
+			fillNRParentChAlarmList(ff,fm,fc);
 		//_updateNRParentFF.setEnabled(true);
 	}
 	
 	public void fillNRParentChAlarmList(String ff, String fm, int fc){
 		ReductionRule nrr = _reductionManager.getNRParentByTriplet(ff, fm, fc);
-
+		Alarm parent;
 		// This should never happen anyways...
-		if( nrr == null )
+		if( nrr == null ) {
+			parent = _alarmManager.getAlarm(_NRParentFFCombo.getText()+":"+_NRParentFMCombo.getText()+":"+_NRParentFCCombo.getText());
+			_NRParentErrorMessageLabel.setText("No Reduction Rule for this triplet.");
+		}
+		else
+			parent = nrr.getParent();
+		if(parent == null) {
+			_NRParentErrorMessageLabel.setText("Couldn't find the selected Alarm.");
 			return;
-
-		Alarm parent = nrr.getParent();
-		
+		}
 		_NRParentChAlarmList.removeAll();
 		List<Alarm> alarms = _alarmManager.getAlarms();
 		for (Iterator<Alarm> iterator = alarms.iterator(); iterator.hasNext();) {
@@ -1025,51 +1078,27 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 					continue;
 			TableItem  t = new TableItem(_NRParentChAlarmList, SWT.None);
 			t.setText(alarm.getAlarmId());
-			List<Alarm> children = nrr.getChildren();
-			for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
-				Alarm alarm2 = iterator2.next();
-				if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
-					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
-					break;
+			if(nrr != null) {
+				List<Alarm> children = nrr.getChildren();
+				for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
+					Alarm alarm2 = iterator2.next();
+					if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
+						t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+						break;
+					}
 				}
 			}
 		}
 	}
-	
-	private void fillNRChildrenWidgets(String ff, String fm, int fc, String ff2, String fm2, int fc2) {
-		ReductionRule nrr = _reductionManager.getNRParentByTriplet(ff, fm, fc);
-		Alarm child = null;
-
-		// This should never happen anyways...
-		if( nrr == null )
-			return;
-		List<Alarm> children = nrr.getChildren();
-		for(Alarm chnrr : children){
-			if(chnrr.getTriplet().getFaultFamily().compareTo(ff2) == 0 && chnrr.getTriplet().getFaultMember().compareTo(fm2) == 0 && chnrr.getTriplet().getFaultCode() == fc2){
-				child = chnrr;
-				break;
-			}
-		}
-		
-		// This should never happen anyways...
-		if(child == null)
-			return;
-
-		_NRChildrenFFName.setText(child.getTriplet().getFaultFamily());
-		_NRChildrenFMName.setText(child.getTriplet().getFaultMember());
-		_NRChildrenFCName.setText(String.valueOf(child.getTriplet().getFaultCode().intValue()));
-
-	}
 
 	private void fillMRParentWidgets(String ff, String fm, int fc) {
 		ReductionRule mrr = _reductionManager.getMRParentByTriplet(ff, fm, fc);
-
-		// This should never happen anyways...
+		Alarm parent = null;
+		// This should happen only when creating a new rule...
 		if( mrr == null )
-			return;
-
-		Alarm parent = mrr.getParent();
-
+			_MRParentErrorMessageLabel.setText("No Reduction Rule for this triplet.");
+		else
+			parent = mrr.getParent();
 		_MRParentFFCombo.removeAll();
 		_MRParentChFFCombo.removeAll();
 		_MRParentChFFCombo.add("Any");
@@ -1082,33 +1111,40 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 			FaultFamily fft = iterator.next();
 			_MRParentFFCombo.add(fft.getName());
 			_MRParentChFFCombo.add(fft.getName());
-			if(fft.getName().compareTo(parent.getTriplet().getFaultFamily()) == 0){
+			if(parent != null && fft.getName().compareTo(parent.getTriplet().getFaultFamily()) == 0){
 				i = _MRParentFFCombo.getItemCount() - 1;
 				ffs = fft;
 			}
 		}
 		_MRParentFFCombo.select(i);
-		
-		
+
 		_MRParentFMCombo.removeAll();
-		i = -1;
-		FaultMember[] fml = ffs.getFaultMember();
-		for (int j = 0; j < fml.length; j++) {
-			_MRParentFMCombo.add(fml[j].getName());
-			if(fml[j].getName().compareTo(parent.getTriplet().getFaultMember()) == 0)
-				i = j;
+		if(ffs != null) {
+			i = -1;
+			FaultMember[] fml = ffs.getFaultMember();
+			for (int j = 0; j < fml.length; j++) {
+				_MRParentFMCombo.add(fml[j].getName());
+				if(fml[j].getName().compareTo(parent.getTriplet().getFaultMember()) == 0)
+					i = j;
+			}
+			_MRParentFMCombo.select(i);
 		}
-		_MRParentFMCombo.select(i);
 		
 		_MRParentFCCombo.removeAll();
-		i = -1;
-		FaultCode[] fcl = ffs.getFaultCode();
-		for (int j = 0; j < fcl.length; j++) {
-			_MRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
-			if(fcl[j].getValue() == parent.getTriplet().getFaultCode().intValue())
-				i = j;
+		if(ffs != null) {
+			i = -1;
+			FaultCode[] fcl = ffs.getFaultCode();
+			for (int j = 0; j < fcl.length; j++) {
+				_MRParentFCCombo.add(String.valueOf(fcl[j].getValue()));
+				if(fcl[j].getValue() == parent.getTriplet().getFaultCode().intValue())
+					i = j;
+			}
+			_MRParentFCCombo.select(i);
 		}
-		_MRParentFCCombo.select(i);
+		
+		_MRParentThresholdText.setText("");
+		if(mrr != null)
+			_MRParentThresholdText.setText(Integer.toString(mrr.getThreshold()));
 		
 		_MRParentChFMCombo.removeAll();
 		_MRParentChFMCombo.add("Any");
@@ -1117,43 +1153,30 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 		_MRParentChFCCombo.removeAll();
 		_MRParentChFCCombo.add("Any");
 		_MRParentChFCCombo.select(0);
-		
-		fillMRParentChAlarmList(ff,fm,fc);
-	}
-	
-	private void fillMRChildrenWidgets(String ff, String fm, int fc, String ff2, String fm2, int fc2) {
-		ReductionRule mrr = _reductionManager.getMRParentByTriplet(ff, fm, fc);
-		Alarm child = null;
 
-		// This should never happen anyways...
-		if( mrr == null )
-			return;
-		List<Alarm> children = mrr.getChildren();
-		for(Alarm chmrr : children){
-			if(chmrr.getTriplet().getFaultFamily().compareTo(ff2) == 0 && chmrr.getTriplet().getFaultMember().compareTo(fm2) == 0 && chmrr.getTriplet().getFaultCode() == fc2){
-				child = chmrr;
-				break;
-			}
+		if(ff.isEmpty() && fm.isEmpty() && fc == 0) {
+			if(!_MRParentFFCombo.getText().isEmpty() && !_MRParentFMCombo.getText().isEmpty() && !_MRParentFCCombo.getText().isEmpty())
+				fillMRParentChAlarmList(_MRParentFFCombo.getText(),_MRParentFMCombo.getText(),Integer.parseInt(_MRParentFCCombo.getText()));
 		}
-		
-		// This should never happen anyways...
-		if(child == null)
-			return;
-
-		_MRChildrenFFName.setText(child.getTriplet().getFaultFamily());
-		_MRChildrenFMName.setText(child.getTriplet().getFaultMember());
-		_MRChildrenFCName.setText(String.valueOf(child.getTriplet().getFaultCode().intValue()));
+		else
+			fillMRParentChAlarmList(ff,fm,fc);
+		//_updateNRParentFF.setEnabled(true);
 	}
-	
-	public void fillMRParentChAlarmList(String ff, String fm, int fc){
-		ReductionRule mrr = _reductionManager.getNRParentByTriplet(ff, fm, fc);
 
-		// This should never happen anyways...
-		if( mrr == null )
+	public void fillMRParentChAlarmList(String ff, String fm, int fc) {
+		ReductionRule mrr = _reductionManager.getMRParentByTriplet(ff, fm, fc);
+		Alarm parent;
+		// This should only happen when creating a new rule...
+		if( mrr == null ) {
+			parent = _alarmManager.getAlarm(_MRParentFFCombo.getText()+":"+_MRParentFMCombo.getText()+":"+_MRParentFCCombo.getText());
+			_MRParentErrorMessageLabel.setText("No Reduction Rule for this triplet.");
+		}
+		else
+			parent = mrr.getParent();
+		if(parent == null) {
+			_MRParentErrorMessageLabel.setText("Couldn't find the selected Alarm.");
 			return;
-
-		Alarm parent = mrr.getParent();
-		
+		}
 		_MRParentChAlarmList.removeAll();
 		List<Alarm> alarms = _alarmManager.getAlarms();
 		for (Iterator<Alarm> iterator = alarms.iterator(); iterator.hasNext();) {
@@ -1169,14 +1192,19 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 			if(_MRParentChFCCombo.getText().compareTo("Any") != 0)
 				if(alarm.getTriplet().getFaultCode() != Integer.parseInt(_MRParentChFCCombo.getText()))
 					continue;
+			if(_MRParentChFilterText.getText().compareTo("")!=0)
+				if(!alarm.getAlarmId().matches(_MRParentChFilterText.getText()))
+					continue;
 			TableItem  t = new TableItem(_MRParentChAlarmList, SWT.None);
 			t.setText(alarm.getAlarmId());
-			List<Alarm> children = mrr.getChildren();
-			for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
-				Alarm alarm2 = iterator2.next();
-				if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
-					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
-					break;
+			if(mrr != null) {
+				List<Alarm> children = mrr.getChildren();
+				for (Iterator<Alarm> iterator2 = children.iterator(); iterator2.hasNext();) {
+					Alarm alarm2 = iterator2.next();
+					if(alarm.getAlarmId().compareTo(alarm2.getAlarmId()) == 0){
+						t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+						break;
+					}
 				}
 			}
 		}
@@ -1189,9 +1217,7 @@ public class ReductionsView extends ViewPart implements IMyViewPart {
 	public void setEnabled(boolean v) {
 		_tree.setEnabled(v);
 		_NRParentGroup.setEnabled(v);
-		_NRChildrenGroup.setEnabled(v);
 		_MRParentGroup.setEnabled(v);
-		_MRChildrenGroup.setEnabled(v);
 	}
 
 	private String[] getTriplet(String str) {

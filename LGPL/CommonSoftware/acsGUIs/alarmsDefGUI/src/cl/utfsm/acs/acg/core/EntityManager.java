@@ -38,4 +38,10 @@ public interface EntityManager {
 	 */
 	public void loadFromCDB();
 
+	/**
+	 * Performs a full save of the contents of the Manager to the CDB. All the modified contents of
+	 * the CDB are updated, and replaced by the ones that are currently available on the
+	 * EntityManager. Therefore, this call should be done with great care.
+	 */
+	public void saveToCDB();
 }

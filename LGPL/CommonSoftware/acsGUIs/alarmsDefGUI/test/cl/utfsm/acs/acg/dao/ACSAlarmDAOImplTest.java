@@ -6,7 +6,13 @@ import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
 import alma.acs.alarmsystem.generated.FaultMemberDefault;
 import alma.acs.alarmsystem.generated.Location;
+import alma.acs.alarmsystem.generated.ReductionDefinitions;
 import cern.laser.business.data.Alarm;
+
+import alma.acs.alarmsystem.generated.AlarmDefinition;
+import alma.acs.alarmsystem.generated.Child;
+import alma.acs.alarmsystem.generated.Parent;
+import alma.acs.alarmsystem.generated.ReductionLink;
 import cl.utfsm.acs.acg.core.AcsInformation;
 import cl.utfsm.acs.acg.core.AlarmManager;
 import cl.utfsm.acs.acg.core.DAOManager;
@@ -525,6 +531,29 @@ public class ACSAlarmDAOImplTest extends TestCase{
 		al1 = _alarmDAO.getAlarm("ffTest1:fmTest1:1");
 		assertNull(al1);
 	}
+	
+	public void testGetReductionDefinitions() {
+		Parent p = new Parent();
+		Child c = new Child();
+		AlarmDefinition ad_p = new AlarmDefinition();
+		AlarmDefinition ad_c = new AlarmDefinition();
+		ad_p.setFaultFamily("A1");
+		ad_p.setFaultMember("B1");
+		ad_p.setFaultCode(1);
+		ad_c.setFaultFamily("A2");
+		ad_c.setFaultMember("B2");
+		ad_c.setFaultCode(2);
+		p.setAlarmDefinition(ad_p);
+		c.setAlarmDefinition(ad_c);
+		ReductionLink rl = new ReductionLink();
+		rl.setParent(p);
+		rl.setChild(c);
+		rl.setType("NODE");
+		ReductionDefinitions rds = _alarmDAO.getReductionRules();
+		_alarmDAO.addReductionRule(rds, rl);
+		//_alarmDAO.flushReductionRules(rds);
+	}
+	
 	public void tearDown() throws Exception {
 		_acsInfo.disconnect();
 	}

@@ -23,9 +23,12 @@ package cl.utfsm.acs.acg.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import alma.acs.alarmsystem.generated.Categories;
 import alma.acs.alarmsystem.generated.Category;
 import alma.acs.alarmsystem.generated.FaultFamily;
 
@@ -49,10 +52,12 @@ public class CategoryManager implements EntityManager {
 
 	private CategoryDAO _categoryDAO;
 	private List<Category> _categoryList;
+	private HashMap<String, ObjectState> _objState;
 
 	private CategoryManager(CategoryDAO categoryDAO) {
 		_categoryDAO = categoryDAO;
 		_categoryList = new ArrayList<Category>();
+		_objState = new HashMap<String, ObjectState>();
 	}
 
 	public static CategoryManager getInstance(CategoryDAO categoryDAO) {
@@ -79,6 +84,9 @@ public class CategoryManager implements EntityManager {
 
 		try {
 			_categoryList = new ArrayList<Category>(Arrays.asList(((ACSCategoryDAOImpl)_categoryDAO).loadCategories()));
+			_objState.clear();
+			for (Category ctg : _categoryList)
+				_objState.put(ctg.getPath(), new ObjectState(false));
 		} catch(Exception e) {
 			// The category list is empty
 			_categoryList = new ArrayList<Category>();
@@ -105,7 +113,6 @@ public class CategoryManager implements EntityManager {
 	 * @throws IllegalOperationException If the category is part of a existing Fault Family
 	 */
 	public boolean deleteCategory(Category c) throws NullPointerException, IllegalOperationException {
-
 		if( c == null || c.getPath() == null )
 			throw new NullPointerException("The category to be deleted (or its name) is null");
 
@@ -115,24 +122,23 @@ public class CategoryManager implements EntityManager {
 
 		if( c.getAlarms() != null ) {
 			String [] categoryFFs = c.getAlarms().getFaultFamily();
-
-			for (Iterator<FaultFamily> iterator = ffList.iterator(); iterator.hasNext();) {
-				FaultFamily faultFamily = (FaultFamily) iterator.next();
-				for(int i=0; i!=categoryFFs.length; i++) {
-					if( categoryFFs[i].compareTo(faultFamily.getName()) == 0 )
-						throw new IllegalOperationException();
-				}
-			}
+			for (FaultFamily ff : ffList)
+				for(int i=0; i != categoryFFs.length; i++)
+					if(categoryFFs[i].compareTo(ff.getName()) == 0)
+						throw new IllegalOperationException("The Category can't be removed since it has a FaultFamily assigned");
 		}
 
 		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
 			Category ct = (Category) iterator.next();
-			if( ct.getPath().compareTo(c.getPath() ) == 0 ) {
+			if(ct.getPath().compareTo(c.getPath() ) == 0) {
 				iterator.remove();
+				ObjectState os = _objState.get(c.getPath());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Category");
+				os.delete();
 				return true;
 			}
 		}   
-
 		return false;		
 	}
 	    
@@ -144,54 +150,113 @@ public class CategoryManager implements EntityManager {
 	 * @throws NullPointerException If the Category is null 
 	 */
 	public boolean addCategory(Category c) throws IllegalOperationException, NullPointerException {
-		
 		if( c == null || c.getPath() == null )
 			throw new NullPointerException("The category to be added (or its name) is null");
-		
-		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
-			Category ctg= (Category) iterator.next();
-			if ( ctg.getPath().compareTo(c.getPath()) == 0 ){
-				throw new IllegalOperationException();
-			}
-		} 
-		
+
+		for (Category ctg : _categoryList)
+			if (ctg.getPath().compareTo(c.getPath()) == 0)
+				throw new IllegalOperationException("The Category already exists");
 		_categoryList.add(c);
+		ObjectState os = _objState.get(c.getPath());
+		if(os == null) {
+			os = new ObjectState(true);
+			os.create();
+			_objState.put(c.getPath(), os);
+		}
+		else
+			os.update();
 		return true;
 	}
 	
-	public void updateCategory(Category c) throws NullPointerException, IllegalOperationException{
+	public void updateCategory(Category c, Category ci) throws NullPointerException, IllegalOperationException{
+		if( c == null || c.getPath() == null )
+			throw new NullPointerException("The category to be updated (or its name) is null");
+		if( ci == null || ci.getPath() == null )
+			throw new NullPointerException("The category with the new valuess (or its name) is null");
 		
-		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
-			Category ctg= (Category) iterator.next();
-			if ( ctg.getPath().compareTo(c.getPath()) == 0 ){
-				deleteCategory(ctg);
-				_categoryList.add(ctg);                     
+		for (Category ctg : _categoryList)
+			if(ctg.getPath().compareTo(ci.getPath()) == 0) {
+				if(c.getPath().compareTo(ci.getPath()) == 0)
+					continue;
+				throw new IllegalOperationException("The Category " + ci.getPath() + " already exists");
 			}
-		} 
 		
+		for (Category ctg : _categoryList)
+			if (ctg.getPath().compareTo(c.getPath()) == 0){
+				ObjectState os = _objState.get(c.getPath());
+				if(os == null)
+					throw new IllegalOperationException("There is no ObjectState associated with the given Category");
+				if(c.getPath().compareTo(ci.getPath()) == 0)
+					os.update();
+				else {
+					os.delete();
+					os = _objState.get(ci.getPath());
+					if(os == null){
+						os = new ObjectState(true);
+						os.create();
+						_objState.put(ci.getPath(), os);
+					}
+					else
+						os.update();
+				}
+				ctg.setPath(ci.getPath());
+				ctg.setAlarms(ci.getAlarms());
+				ctg.setDescription(ci.getDescription());
+				//ctg.setIsDefault(ci.getIsDefault());
+				//if(!deleteCategory(ctg))
+				//	throw new IllegalOperationException("The category doesn't exist");
+				//_categoryList.add(ctg);
+				return;
+			}
+		throw new IllegalOperationException("The Category " + c.getPath() + " doesn't exists");
+	}
+
+	public void updateDefaultCategory(Category c){
+		if(c.getIsDefault() == false){
+			for (Category ctg : _categoryList)
+				if (ctg.getIsDefault() == true)
+					ctg.setIsDefault(false);
+			for (Category ctg : _categoryList)
+				if (ctg.getPath().compareTo(c.getPath()) == 0)
+					ctg.setIsDefault(true);                    
+		}
 	}
 	
-	public void updateDefaultCategory(Category c){
-		
-		if(c.getIsDefault() == false){
-		
-		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
-			Category ctg= (Category) iterator.next();
-			if ( ctg.getIsDefault() == true ){
-				ctg.setIsDefault(false);                    
+	public void saveToCDB(){
+		Set<String> keyset = _objState.keySet();
+		String[] objs = new String[keyset.size()];
+		keyset.toArray(objs);
+		Categories cats = ((ACSCategoryDAOImpl)_categoryDAO).getCategories();
+		boolean flush = false;
+		for (int i = 0; i < objs.length; i++) {
+			ObjectState os = _objState.get(objs[i]);
+			switch(os.getAction()){
+			case -1: //Error, no state assigned.
+				break;
+			case 0:
+				break;
+			case 1:
+				((ACSCategoryDAOImpl)_categoryDAO).addCategory(cats, getCategoryByPath(objs[i]));
+				flush = true;
+				break;
+			case 2:
+				((ACSCategoryDAOImpl)_categoryDAO).updateCategory(cats, getCategoryByPath(objs[i]));
+				flush = true;
+				break;
+			case 3:
+				Category c = new Category();
+				c.setPath(objs[i]);
+				((ACSCategoryDAOImpl)_categoryDAO).deleteCategory(cats, c);
+				flush = true;
+				break;
+			default: //Shouldn't happen.
+				break;
 			}
 		}
-		
-		for (Iterator<Category> iterator = _categoryList.iterator(); iterator.hasNext();) {
-			Category ctg= (Category) iterator.next();
-			if ( ctg.getPath().compareTo(c.getPath()) == 0 ){
-				ctg.setIsDefault(true);                    
-			}
-		}
-		
-	}
-		
-		
+		if(flush)
+			((ACSCategoryDAOImpl)_categoryDAO).flushCategories(cats);
+		_objState.clear();
+		for (Category c : _categoryList)
+			_objState.put(c.getPath(), new ObjectState(false));
 	}
 }
-	

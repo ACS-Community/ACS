@@ -29,13 +29,13 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.Vector;
 
-//import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
 
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.data.Alarm;
 
-//import alma.acs.alarmsystem.generated.Category;
+import alma.acs.alarmsystem.generated.Alarms;
+import alma.acs.alarmsystem.generated.Category;
 import alma.acs.alarmsystem.generated.FaultCode;
 import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
@@ -58,11 +58,16 @@ public class AlarmManager implements EntityManager {
 	private AlarmDAO _alarmDAO;
 	private List<FaultFamily> _ffList;
 	private HashMap<String, ObjectState> _objState;
+	
+	private ReductionManager _reductionManager;
+	private CategoryManager _categoryManager;
 
 	private AlarmManager(AlarmDAO alarmDAO) {
 		_alarmDAO = alarmDAO;
 		_ffList = new ArrayList<FaultFamily>();
 		_objState = new HashMap<String, ObjectState>();
+		_reductionManager = AlarmSystemManager.getInstance().getReductionManager();
+		_categoryManager = AlarmSystemManager.getInstance().getCategoryManager();
 	}
 
 	/**
@@ -84,7 +89,6 @@ public class AlarmManager implements EntityManager {
 				_objState.put(ff.getName(), new ObjectState(false));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e.getMessage());
 		}
 	}
 
@@ -193,9 +197,13 @@ public class AlarmManager implements EntityManager {
 			throw new NullPointerException("The Fault Family (or its name) owner of the Fault Member to be deleted is null");
 		if( fm == null || fm.getName() == null )
 			throw new NullPointerException("The Fault Member to be deleted (or its name) is null");
-
-		// Check the Fault Member against the existing Reduction Rules
-		//TODO
+		
+		List<ReductionRule> rrL = _reductionManager.getNodeReductionRules();
+		for (ReductionRule rr : rrL) {
+			String[] tr = rr.getParent().getAlarmId().split(":");
+			if(tr[0].compareTo(ff.getName()) == 0 && tr[1].compareTo(fm.getName()) == 0)
+				throw new IllegalStateException("The Fault Member is currently associated to a Reduction Rule");
+		}
 
 		for (Iterator<FaultFamily> iterator = _ffList.iterator(); iterator.hasNext();) {
 			FaultFamily fft = (FaultFamily) iterator.next();
@@ -235,8 +243,12 @@ public class AlarmManager implements EntityManager {
 		if( fc == null )
 			throw new NullPointerException("The Fault Code to be deleted is null");
 
-		// Check the Fault Code against the existing Reduction Rules
-		//TODO
+		List<ReductionRule> rrL = _reductionManager.getNodeReductionRules();
+		for (ReductionRule rr : rrL) {
+			String[] tr = rr.getParent().getAlarmId().split(":");
+			if(tr[0].compareTo(ff.getName()) == 0 && Integer.parseInt(tr[2]) == fc.getValue())
+				throw new IllegalStateException("The Fault Code is currently associated to a Reduction Rule");
+		}
 
 		for (Iterator<FaultFamily> iterator = _ffList.iterator(); iterator.hasNext();) {
 			FaultFamily fft = (FaultFamily) iterator.next();
@@ -273,8 +285,25 @@ public class AlarmManager implements EntityManager {
 		if( ff == null || ff.getName() == null)
 			throw new NullPointerException("The Fault Family (or its name) to be deleted is null");
 
-		// Check the Fault Family against the existing Reduction Rules
-		//TODO
+		//Check Reduction Rules
+		List<ReductionRule> rrL = _reductionManager.getNodeReductionRules();
+		for (ReductionRule rr : rrL) {
+			String[] tr = rr.getParent().getAlarmId().split(":");
+			if(tr[0].compareTo(ff.getName()) == 0)
+				throw new IllegalStateException("The Fault Family is currently associated to a Reduction Rule");
+		}
+		
+		//Check Categories
+		List<Category> catL = _categoryManager.getAllCategories();
+		for (Category c : catL) {
+			String[] sFFL = c.getAlarms().getFaultFamily();
+			if(sFFL.length > 1)
+				continue;
+			for (String sFF : sFFL) {
+				if(sFF.compareTo(ff.getName()) == 0)
+					throw new IllegalStateException("There is a category that only has this FaultFamily");
+			}
+		}
 
 		for (Iterator<FaultFamily> iterator = _ffList.iterator(); iterator.hasNext();) {
 			FaultFamily fft = (FaultFamily) iterator.next();
@@ -284,6 +313,13 @@ public class AlarmManager implements EntityManager {
 				if(os == null)
 					throw new IllegalOperationException("There is no ObjectState associated with the given Fault Family");
 				os.delete();
+				for (Category c : catL) {
+					Alarms als = c.getAlarms();
+					if(als.removeFaultFamily(ff.getName())) {
+						c.setAlarms(als);
+						_categoryManager.updateCategory(c, c);
+					}
+				}
 				return true;
 			}
 		}
@@ -430,6 +466,14 @@ public class AlarmManager implements EntityManager {
 					}
 					else
 						os.update();
+					List<Category> catL = _categoryManager.getAllCategories();
+					for (Category c : catL) {
+						Alarms als = c.getAlarms();
+						if(als.removeFaultFamily(ff.getName())) {
+							c.setAlarms(als);
+							_categoryManager.updateCategory(c, c);
+						}
+					}
 				}
 				fft.setName(ffi.getName());
 				fft.setAlarmSource(ffi.getAlarmSource());

@@ -32,8 +32,6 @@ import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.part.ViewPart;
 
 import cl.utfsm.acs.acg.core.AlarmSystemManager;
-import cl.utfsm.acs.acg.core.AlarmSystemManager.AlarmSystemType;
-import cl.utfsm.acs.acg.core.AlarmSystemManager.ConfigurationPropertyType;
 
 public class AlarmSystemView extends ViewPart implements IMyViewPart {
 
@@ -52,11 +50,11 @@ public class AlarmSystemView extends ViewPart implements IMyViewPart {
 			public void handleEvent(Event event) {
 				if(((Button)event.widget).getSelection()){
 					if(_acsAS_radio.getSelection()){
-						_alarmSystemManager.setConfigurationProperty(ConfigurationPropertyType.IMPLEMENTATION, AlarmSystemType.ACSAlarm);
+						_alarmSystemManager.setConfigurationProperty("Implementation", "ACS");
 						enableViews(false);
 					}
 					if(_cernAS_radio.getSelection()){
-						_alarmSystemManager.setConfigurationProperty(ConfigurationPropertyType.IMPLEMENTATION, AlarmSystemType.CERNAlarm);
+						_alarmSystemManager.setConfigurationProperty("Implementation", "CERN");
 						enableViews(true);
 					}
 				}
@@ -101,13 +99,13 @@ public class AlarmSystemView extends ViewPart implements IMyViewPart {
 	public void refreshContents() {
 		try{
 			_alarmSystemManager = AlarmSystemManager.getInstance();
-			AlarmSystemType at = (AlarmSystemType)_alarmSystemManager.getConfigurationProperty(ConfigurationPropertyType.IMPLEMENTATION);
+			String at = _alarmSystemManager.getConfigurationPrperty("Implementation");
 			if(at != null){
-				if(at == AlarmSystemType.ACSAlarm){
+				if(at.compareTo("ACS") == 0){
 					_acsAS_radio.setSelection(true);
 					enableViews(false);
 				}
-				else if(at == AlarmSystemType.CERNAlarm){
+				else if(at.compareTo("CERN") == 0){
 					_cernAS_radio.setSelection(true);
 					enableViews(true);
 				}

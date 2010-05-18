@@ -104,7 +104,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 			@Override
 			public void run() {
-
 		    	AlarmSystemManager asm = AlarmSystemManager.getInstance(finalRole);
 				try {
 					display.asyncExec(new Runnable() {

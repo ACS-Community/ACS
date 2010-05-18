@@ -22,12 +22,19 @@
 package cl.utfsm.acs.acg.core;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
-//import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
+import alma.acs.alarmsystem.generated.AlarmDefinition;
+import alma.acs.alarmsystem.generated.Child;
+import alma.acs.alarmsystem.generated.Parent;
+import alma.acs.alarmsystem.generated.ReductionDefinitions;
+import alma.acs.alarmsystem.generated.ReductionLink;
+import alma.acs.alarmsystem.generated.Threshold;
+
 import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
-//import com.ximpleware.NodeRecorder;
 
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.data.Alarm;
@@ -46,14 +53,16 @@ public class ReductionManager implements EntityManager {
 
 	private List<ReductionRule> _nodeReductionRules;
 	private List<ReductionRule> _multiReductionRules;
+	private HashMap<String, ObjectState> _objState;
+	private HashMap<String, ObjectState> _thrState;
 
 	private AlarmDAO _alarmDAO;
 	private ReductionManager(AlarmDAO alarmDAO) {
-		
 		_alarmDAO = alarmDAO;
 		_nodeReductionRules = new ArrayList<ReductionRule>();
 		_multiReductionRules = new ArrayList<ReductionRule>();
-
+		_objState = new HashMap<String, ObjectState>();
+		_thrState = new HashMap<String, ObjectState>();
 	}
 
 	public static ReductionManager getInstance(AlarmDAO alarmDAO) {
@@ -75,7 +84,6 @@ public class ReductionManager implements EntityManager {
 	 * @see cl.utfsm.acs.acg.core.EntityManager#loadFromCDB()
 	 */
 	public void loadFromCDB() {
-
 		String[] ids = ((ACSAlarmDAOImpl)_alarmDAO).getAllAlarmIDs();
 		String[] children = null;
 		Alarm alarm = null;
@@ -83,19 +91,23 @@ public class ReductionManager implements EntityManager {
 
 		_nodeReductionRules.clear();
 		_multiReductionRules.clear();
+		_objState.clear();
+		_thrState.clear();
 
 		/* Add the reduction rules defined in the CDB */
 		for (int i = 0; i < ids.length; i++) {
 			alarm = ((ACSAlarmDAOImpl)_alarmDAO).getAlarm(ids[i]);
-			
+
 			/* First the Node Reduction rules */
 			children = alarm.getNodeChildren();
 			if( children.length > 0 ) {
 				rr = new ReductionRule(alarm);
 				rr.setIsNodeReduction(true);
 			}
-			for (int j = 0; j < children.length; j++)
+			for (int j = 0; j < children.length; j++) {
 				rr.addChild(((ACSAlarmDAOImpl)_alarmDAO).getAlarm(children[j]));
+				_objState.put(new String(ids[i] + "," + children[j]+",n"), new ObjectState(false));
+			}
 			if( children.length > 0 )
 				_nodeReductionRules.add(rr);
 
@@ -104,14 +116,20 @@ public class ReductionManager implements EntityManager {
 			if( children.length > 0 ) {
 				rr = new ReductionRule(((ACSAlarmDAOImpl)_alarmDAO).getAlarm(ids[i]));
 				rr.setIsNodeReduction(false);
+				if(alarm.getMultiplicityThreshold() == null) {
+					System.out.println("Skipping Multi Reduction Rule: No Threshold set.");
+					continue;
+				}
 				rr.setThreshold(alarm.getMultiplicityThreshold().intValue());
 			}
-			for (int j = 0; j < children.length; j++)
+			for (int j = 0; j < children.length; j++) {
 				rr.addChild(((ACSAlarmDAOImpl)_alarmDAO).getAlarm(children[j]));
+				_objState.put(new String(ids[i] + "," + children[j]+",m"), new ObjectState(false));
+				_thrState.put(ids[i], new ObjectState(false));
+			}
 			if( children.length > 0 )
 				_multiReductionRules.add(rr);
 		}
-
 	}
 
 	/**
@@ -174,20 +192,32 @@ public class ReductionManager implements EntityManager {
      * @param c Child of the Rule to be deleted
      */
 	private boolean deleteReductionRule(List<ReductionRule> rrL, ReductionRule rr, Alarm p, Alarm c){
-    	if(rr == null)
-    		return false;
-    	if(!rr.removeChild(c))
-    		return false;
-    	if(rr.getChildrenCount() > 0)
-    		return true;
-    	for (Iterator<ReductionRule> iterator = rrL.iterator(); iterator.hasNext();) {
-    		ReductionRule trr = iterator.next();
-    		if(p.getAlarmId().compareTo(trr.getParent().getAlarmId()) == 0){
-    			iterator.remove();
-    			break;
-    		}
-    	}
-    	return true;
+		if(rr == null)
+			throw new NullPointerException("The Reduction Rule to be deleted is null");
+		if(!rr.removeChild(c))
+			return false;
+		ObjectState os;
+		if(rr.getIsNodeReduction())
+			os = _objState.get(new String(p.getAlarmId()+","+c.getAlarmId()+",n"));
+		else
+			os = _objState.get(new String(p.getAlarmId()+","+c.getAlarmId()+",m"));
+		if(os != null)
+			os.delete();
+		if(rr.getChildrenCount() > 0)
+			return true;
+		for (Iterator<ReductionRule> iterator = rrL.iterator(); iterator.hasNext();) {
+			ReductionRule trr = iterator.next();
+			if(p.getAlarmId().compareTo(trr.getParent().getAlarmId()) == 0){
+				iterator.remove();
+				if(!rr.getIsNodeReduction()) {
+					ObjectState ts = _thrState.get(p.getAlarmId());
+					if(ts != null)
+						ts.delete();
+				}
+				break;
+			}
+		}
+		return true;
 	}
 	
 	 /**
@@ -195,8 +225,10 @@ public class ReductionManager implements EntityManager {
      * @param p Parent of the Rule to be deleted
      * @param c Child of the Rule to be deleted
      */
-    public boolean deleteNodeReductionRule(Alarm p, Alarm c){
+    public boolean deleteNodeReductionRule(Alarm p, Alarm c) throws IllegalOperationException {
     	ReductionRule rr = getNRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+    	if(rr == null)
+    		throw new IllegalOperationException("The Reduction Rule to be deleted doesn't exist");
     	return deleteReductionRule(_nodeReductionRules, rr, p, c);
     }
     
@@ -205,8 +237,10 @@ public class ReductionManager implements EntityManager {
      * @param p Parent of the Rule to be deleted
      * @param c Child of the Rule to be deleted
      */
-    public boolean deleteMultiReductionRule(Alarm p, Alarm c){
+    public boolean deleteMultiReductionRule(Alarm p, Alarm c) throws IllegalOperationException {
     	ReductionRule rr = getMRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+    	if(rr == null)
+    		throw new IllegalOperationException("The Reduction Rule to be deleted doesn't exist");
     	return deleteReductionRule(_multiReductionRules, rr, p, c);
     }
     
@@ -217,18 +251,34 @@ public class ReductionManager implements EntityManager {
      * @param p Parent of the Rule to be added
      * @param c Child of the Rule to be added
      */
-    private void addReductionRule(List<ReductionRule> rrL, ReductionRule rr, Alarm p, Alarm c){
+    private void addReductionRule(List<ReductionRule> rrL, ReductionRule rr, Alarm p, Alarm c, boolean isNodeReductionRule) throws IllegalOperationException, NullPointerException{
     	if(rr == null){
     		rr = new ReductionRule(p);
+    		rr.setIsNodeReduction(isNodeReductionRule);
         	rrL.add(rr);
     	}
     	List<Alarm> chL = rr.getChildren();
     	for (Alarm alarm : chL) {
 			if(alarm.getAlarmId().compareTo(c.getAlarmId()) == 0){
-				return;
+				throw new IllegalOperationException("The reduction rule already exists");
 			}
 		}
-    	rr.addChild(c);    	
+    	rr.addChild(c);
+    	ObjectState os;
+    	if(rr.getIsNodeReduction())
+			os = _objState.get(new String(p.getAlarmId()+","+c.getAlarmId()+",n"));
+		else
+			os = _objState.get(new String(p.getAlarmId()+","+c.getAlarmId()+",m"));
+		if(os == null) {
+			os = new ObjectState(true);
+			os.create();
+			if(rr.getIsNodeReduction())
+				_objState.put(new String(p.getAlarmId()+","+c.getAlarmId()+",n"),os);
+			else
+				_objState.put(new String(p.getAlarmId()+","+c.getAlarmId()+",m"),os);
+		}
+		else
+			os.update();
     }
     
     /**
@@ -237,9 +287,11 @@ public class ReductionManager implements EntityManager {
      * @param a Alarm child of this Node Reduction Rule
      * @throws IllegalOperationException if is not a Node Reduction Rule 
      */
-    public void addNodeReductionRule(Alarm p, Alarm c) {
+    public void addNodeReductionRule(Alarm p, Alarm c) throws IllegalOperationException, NullPointerException {
     	ReductionRule rr = getNRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
-    	addReductionRule(_nodeReductionRules, rr, p, c);
+    	addReductionRule(_nodeReductionRules, rr, p, c,true);
+    	if(rr == null)
+    		rr = getNRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
 		rr.setIsNodeReduction(true);
     }
     
@@ -249,14 +301,139 @@ public class ReductionManager implements EntityManager {
      * @param a Alarm child of this Multi Reduction Rule
      * @throws IllegalOperationException if is not a Multi Reduction Rule 
      */
-    public void addMultiReductionRule(Alarm p, Alarm c) {
+    public void addMultiReductionRule(Alarm p, Alarm c) throws IllegalOperationException, NullPointerException {
     	ReductionRule rr = getMRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
-    	addReductionRule(_multiReductionRules, rr, p, c);
+    	addReductionRule(_multiReductionRules, rr, p, c,false);
+    	if(rr == null) {
+    		rr = getMRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+    		rr.setThreshold(0);
+    		ObjectState ts = _thrState.get(p.getAlarmId());
+			if(ts == null) {
+				ts = new ObjectState(true);
+				ts.create();
+				_thrState.put(p.getAlarmId(), ts);
+			} 
+			else
+				ts.update();
+    	}
 		rr.setIsNodeReduction(false);
     }
     
-    public void updateMultiThreshold(Alarm p, int v){
+    public void updateMultiThreshold(Alarm p, int v) throws IllegalOperationException, NullPointerException {
+    	if(p == null)
+    		throw new NullPointerException("Null Alarm argument");
     	ReductionRule rr = getMRParentByTriplet(p.getTriplet().getFaultFamily(), p.getTriplet().getFaultMember(), p.getTriplet().getFaultCode());
+    	if(rr == null)
+    		throw new IllegalOperationException("The Reduction Rule doesn't exist");
     	rr.setThreshold(v);
+    	ObjectState ts = _thrState.get(p.getAlarmId());
+		if(ts == null)
+			throw new IllegalOperationException("There is no threshold ObjectState for this Alarm");
+		ts.update();
     }
+    
+	public void saveToCDB(){
+		Set<String> keyset = _objState.keySet();
+		String[] objs = new String[keyset.size()];
+		keyset.toArray(objs);
+		ReductionDefinitions rds = ((ACSAlarmDAOImpl)_alarmDAO).getReductionRules();
+		boolean flush = false;
+		for (int i = 0; i < objs.length; i++) {
+			ObjectState os = _objState.get(objs[i]);
+			String[] spl = objs[i].split(",");
+			String[] p = spl[0].split(":");
+			String[] c = spl[1].split(":");
+			ReductionLink rl = new ReductionLink();
+			AlarmDefinition ad;
+			Parent gp = new Parent();
+			ad = new AlarmDefinition();
+			ad.setFaultFamily(p[0]);
+			ad.setFaultMember(p[1]);
+			ad.setFaultCode(Integer.parseInt(p[2]));
+			gp.setAlarmDefinition(ad);
+			Child gc = new Child();
+			ad = new AlarmDefinition();
+			ad.setFaultFamily(c[0]);
+			ad.setFaultMember(c[1]);
+			ad.setFaultCode(Integer.parseInt(c[2]));
+			gc.setAlarmDefinition(ad);
+			rl.setParent(gp);
+			rl.setChild(gc);
+			if(spl[2].compareTo("n") == 0)
+				rl.setType("NODE");
+			else
+				rl.setType("MULTIPLICITY");
+			switch(os.getAction()){
+			case -1: //Error, no state assigned.
+				break;
+			case 0:
+				break;
+			case 1:
+				((ACSAlarmDAOImpl)_alarmDAO).addReductionRule(rds, rl);
+				flush = true;
+				break;
+			case 2:
+				((ACSAlarmDAOImpl)_alarmDAO).updateReductionRule(rds, rl);
+				flush = true;
+				break;
+			case 3:
+				((ACSAlarmDAOImpl)_alarmDAO).deleteReductionRule(rds, rl);
+				flush = true;
+				break;
+			default: //Shouldn't happen.
+				break;
+			}
+		}
+		
+		keyset = _thrState.keySet();
+		objs = new String[keyset.size()];
+		keyset.toArray(objs);
+		for (int i = 0; i < objs.length; i++) {
+			alma.acs.alarmsystem.generated.AlarmDefinition al;
+			String[] p = objs[i].split(":");
+			al = new alma.acs.alarmsystem.generated.AlarmDefinition();
+			al.setFaultFamily(p[0]);
+			al.setFaultMember(p[1]);
+			al.setFaultCode(Integer.parseInt(p[2]));
+			ReductionRule rr = getMRParentByTriplet(p[0], p[1], Integer.parseInt(p[2]));
+			Threshold th = new Threshold();
+			th.setAlarmDefinition(al);
+			th.setValue(rr.getThreshold());
+			ObjectState ts = _thrState.get(objs[i]);
+			switch(ts.getAction()){
+			case -1: //Error, no state assigned.
+				break;
+			case 0:
+				break;
+			case 1:
+				((ACSAlarmDAOImpl)_alarmDAO).addThreshold(rds, th);
+				flush = true;
+				break;
+			case 2:
+				((ACSAlarmDAOImpl)_alarmDAO).updateThreshold(rds, th);
+				flush = true;
+				break;
+			case 3:
+				((ACSAlarmDAOImpl)_alarmDAO).deleteThreshold(rds, th);
+				flush = true;
+				break;
+			default: //Shouldn't happen.
+				break;
+			}
+		}
+		_objState.clear();
+		_thrState.clear();
+		if(flush)
+			((ACSAlarmDAOImpl)_alarmDAO).flushReductionRules(rds);
+		for (ReductionRule rr : _nodeReductionRules)
+			for(Alarm al : rr.getChildren())
+				if(rr.getIsNodeReduction())
+					_objState.put(new String(rr.getParent().getAlarmId()+","+al.getAlarmId()+",n"), new ObjectState(false));
+		for (ReductionRule rr : _multiReductionRules) {
+			for(Alarm al : rr.getChildren())
+				if(!rr.getIsNodeReduction())
+					_objState.put(new String(rr.getParent().getAlarmId()+","+al.getAlarmId()+",m"), new ObjectState(false));
+			_thrState.put(rr.getParent().getAlarmId(), new ObjectState(false));
+		}
+	}
 }

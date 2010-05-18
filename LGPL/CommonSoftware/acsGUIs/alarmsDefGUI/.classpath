@@ -3,7 +3,7 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="test"/>
+	<classpathentry excluding="CDB/" kind="src" path="test"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/alma.acs.rcp.jars"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/acsASsources.jar"/>

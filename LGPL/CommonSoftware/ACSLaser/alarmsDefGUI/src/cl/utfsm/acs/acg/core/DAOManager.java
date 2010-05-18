@@ -43,17 +43,11 @@ import com.cosylab.CDB.WDALHelper;
 //import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
 
 import cl.utfsm.acs.acg.dao.ACSAlarmDAOImpl;
+import cl.utfsm.acs.acg.dao.ACSAlarmSystemDAOImpl;
 import cl.utfsm.acs.acg.dao.ACSCategoryDAOImpl;
 import cl.utfsm.acs.acg.dao.ACSSourceDAOImpl;
 import cl.utfsm.acs.acg.dao.ConfigurationAccessor;
 import cl.utfsm.acs.acg.dao.ConfigurationAccessorFactory;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * This class deals with the complexity of the usage of the DAOs
@@ -64,11 +58,11 @@ import java.io.IOException;
  * @author rtobar
  */
 public class DAOManager {
-
-	private AlarmDAO    _alarmDAOImpl;
-	private SourceDAO   _sourceDAOImpl;
+	private ACSAlarmSystemDAOImpl _alarmSystemDAOImpl;
+	private AlarmDAO _alarmDAOImpl;
+	private SourceDAO _sourceDAOImpl;
 	private CategoryDAO _categoryDAOImpl;
-	private ContainerServices     _contServ;
+	private ContainerServices _contServ;
 	private ConfigurationAccessor _conf;
 
 	public DAOManager(ContainerServices contServ) {
@@ -78,6 +72,17 @@ public class DAOManager {
 	public void connect() throws AcsJContainerServicesEx {
 		//_conf = ConfigurationAccessorFactory.getInstance(_contServ);
 		_conf = ConfigurationAccessorFactory.getInstance(WDALHelper.narrow(_contServ.getCDB()));
+	}
+	
+	public ACSAlarmSystemDAOImpl getAlarmSystemDAO() {
+		if( _conf == null ) {
+			throw new IllegalStateException("DAOManager not connected to DAL");
+		}
+		if( _alarmSystemDAOImpl == null ) {
+			_alarmSystemDAOImpl = new ACSAlarmSystemDAOImpl(_contServ.getLogger());
+			((ACSAlarmSystemDAOImpl)_alarmSystemDAOImpl).setConfAccessor(_conf);
+		}
+		return _alarmSystemDAOImpl;
 	}
 
 	public AlarmDAO getAlarmDAO() {
@@ -148,7 +153,6 @@ public class DAOManager {
 	}
 	
 	private void copyNode(WDAL wdal, String src, String dst){
-		
 		String[] nodes = wdal.list_nodes(src).split(" ");
 		String[] daos = wdal.list_daos(src).split(" ");
 		String xml = null;
@@ -168,51 +172,6 @@ public class DAOManager {
 		}
 		for (int i = 0; i < nodes.length; i++) {
 			copyNode(wdal, src+"/"+nodes[i],dst+"/"+nodes[i]);
-		}
-	}
-	
-	public void backupCDB2(){
-		String acsCDB = System.getenv("ACS_CDB");
-		String src = acsCDB + "/CDB";
-		String dst = null;
-		File srcFile = new File(src);
-		File dstFile = null;
-		if(!srcFile.exists())
-			return; //Exception?
-		int i = 1;
-		do{
-			dst = acsCDB + "/CDB.bkp." + i;
-			dstFile = new File(dst);
-			i++;
-		} while (dstFile.exists());
-		try{
-			copyDirectory(srcFile, dstFile);
-		}catch(IOException e){
-			
-		}
-	}
-	
-	public void copyDirectory(File srcPath, File dstPath) throws IOException {
-		if (srcPath.isDirectory()){
-			if (!dstPath.exists()){
-				dstPath.mkdir();
-			}
-			String files[] = srcPath.list();
-			for(int i = 0; i < files.length; i++){
-				copyDirectory(new File(srcPath, files[i]), new File(dstPath, files[i]));
-			}
-		}
-		else{
-			InputStream in = new FileInputStream(srcPath);
-			OutputStream out = new FileOutputStream(dstPath); 
-			//Transfer bytes from in to out
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
-			}
-			in.close();
-			out.close();
 		}
 	}
 }
