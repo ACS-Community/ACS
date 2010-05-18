@@ -1102,7 +1102,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 							typeId = componentType.getComponentTypeId();
 						}
 
-						boolean isControlDevice = !nonControlDeviceSet.contains(type);
+						boolean isControlDevice = !nonControlDeviceSet.contains(type) && !almaBranchDoesNotExist;
 						boolean isCharateristicsDevice = characteristicsDeviceSet.contains(type);
 						if (!isControlDevice && !isCharateristicsDevice && xml == null && !almaBranchDoesNotExist)
 						{
