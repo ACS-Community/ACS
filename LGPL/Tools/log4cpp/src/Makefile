@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2010/05/05 22:18:29 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/05/19 15:51:56 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -32,16 +32,16 @@ SCRIPTS_L       = configure_script
 # INCLUDE STANDARDS
 # -----------------
 
-MAKEDIRTMP := $(shell searchFile include/acsMakefile)
-ifneq ($(MAKEDIRTMP),\#error\#)
-   MAKEDIR := $(MAKEDIRTMP)/include
-   include $(MAKEDIR)/acsMakefile
-endif
+#MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+#ifneq ($(MAKEDIRTMP),\#error\#)
+#   MAKEDIR := $(MAKEDIRTMP)/include
+#   include $(MAKEDIR)/acsMakefile
+#endif
 
 #
 # TARGETS
 # -------
-all:	do_all patch unpack configure build
+all: unpack patch configure build
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
@@ -56,7 +56,7 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_all
+install : 
 	@echo ". . . installing cppunit . . . "
 	@cd log4cpp-$(LOG4CPP_VER); make install
 	@echo " . . . installation done"
@@ -78,6 +78,8 @@ last_patched: log4cpp.patch
 
 configure :
 	@echo ". . . running configure . . . "
+	@cp configure_script ../bin/configure_script
+	@chmod +x ../bin/configure_script	
 	@../bin/configure_script log4cpp-$(LOG4CPP_TAR).tar.gz $(LOG4CPP_VER) > configure_script.log 2>&1
 
 build :

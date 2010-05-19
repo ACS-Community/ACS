@@ -1,7 +1,7 @@
 #! /bin/bash
 #*******************************************************************************
 #
-# "@(#) $Id: configure_script,v 1.1 2010/05/05 22:18:29 javarias Exp $"
+# "@(#) $Id: configure_script,v 1.2 2010/05/19 15:51:56 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -51,11 +51,11 @@ then
    CONFIGPARMS=""
 else
    RANLIB=`which ranlib`
-   CONFIGPARMS="CC=gcc CXX=g++ LD=g++ RANLIB=$RANLIB"
+   CONFIGPARMS=""
 fi
 
 cd log4cpp-$LOG4CPP_VER
-./configure $CONFIGPARMS --prefix=$INSTALL_DIR
+./configure --enable-shared --prefix=$INSTALL_DIR
 
 echo "configuration file created"
 
