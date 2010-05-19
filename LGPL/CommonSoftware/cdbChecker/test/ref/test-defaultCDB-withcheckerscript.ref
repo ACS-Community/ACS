@@ -32,7 +32,8 @@
 1 -     /PATH/defaultCDB/CDB/schemas/CDB.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/BACI.xsd[OK]
 1 -     /PATH/defaultCDB/CDB/schemas/Tower.xsd[OK]
+1 - *** Validating XML files
 1 - 
-1 - [Error] CDBChecker exiting. Errors were found
+1 - CDBChecker exiting. No errors found
 1 - 
-1 - return code is: 1
+1 - return code is: 0
