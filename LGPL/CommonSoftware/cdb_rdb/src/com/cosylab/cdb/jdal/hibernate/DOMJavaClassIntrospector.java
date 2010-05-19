@@ -578,8 +578,20 @@ public class DOMJavaClassIntrospector {
 		}
 		else
 			return name;
-			
 	}
+
+	public static String getRootNodeXMLName(final String name, final Object node)
+	{
+		if (node instanceof RootNameOverrideFeature)
+		{
+			final String overrideName = ((RootNameOverrideFeature)node).getRootNameOverride();
+			if (overrideName != null)
+				return overrideName;
+		}
+		
+		return getNodeXMLName(name, node);
+	}
+
 	public static String toXML(String name, Object node)
 	{
 		// to confirm w/ XML naming

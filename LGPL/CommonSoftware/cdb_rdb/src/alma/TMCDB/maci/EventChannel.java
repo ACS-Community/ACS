@@ -27,8 +27,10 @@ package alma.TMCDB.maci;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.cosylab.cdb.jdal.hibernate.RootNameOverrideFeature;
+
 @SuppressWarnings("serial")
-public class EventChannel extends EventChannelNode {
+public class EventChannel extends EventChannelNode implements RootNameOverrideFeature {
 
     @SuppressWarnings("unused")
 	private int EventChannelId;
@@ -58,7 +60,14 @@ public class EventChannel extends EventChannelNode {
     // must be public to be accessible, but should not have getter to be come visible as node
     public String Path;
 
-    /**
+    /* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.RootNameOverrideFeature#getRootNameOverride()
+	 */
+	public String getRootNameOverride() {
+		return "EventChannel";
+	}
+
+	/**
      * Default Constructor for Component.  Setter methods must be used to insert data.
      */
     public EventChannel () {
