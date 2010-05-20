@@ -46,15 +46,19 @@ import org.omg.PortableServer.Servant;
 
 import com.cosylab.CDB.JDAL;
 import com.cosylab.CDB.JDALHelper;
+import com.cosylab.CDB.WJDALOperations;
 import com.cosylab.CDB.WJDALPOATie;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.monitoring.SimpleCallInterceptor;
 import alma.acs.util.ACSPorts;
 
 public class Server {
 	
 	public static final String CDB_LOGGER_NAME = "CDB";
+	
+	public static final String LOG_CDB_CALLS_PROPERTYNAME = "alma.acs.cdb.log_corba_calls";
 	
 	public static void main (String[] args) {
 		new Server().run(args);
@@ -168,13 +172,16 @@ public class Server {
 
 			// create servant and register it with the ORB
 
-			// After ACS 8.2 we changed to the Poa-tie approach and no longer have WDALImpl extend WJDALPOA.
-			// This will allow us to install intercepting dynamic proxies here for debugging, performance measurements etc.
-			// Thus if we only want to intercept the functional IDL-defined methods, then servantDelegate should be wrapped.
-			// Otherwise if we want to also intercept the CORBA admin methods, then servant should be wrapped with a dynamic proxy.
-			// This work is done in preparation for changes that Bhola will do.
 			final WDALImpl servantDelegate = new WDALImpl(args, orb, dalpoa, sharedLogger);
-			final Servant servant = new WJDALPOATie(servantDelegate);
+			WJDALOperations topLevelServantDelegate = servantDelegate;
+			
+			if (Boolean.getBoolean(LOG_CDB_CALLS_PROPERTYNAME)) {
+				// Currently we only intercept the functional IDL-defined methods, by wrapping servantDelegate.
+				// If we want to also intercept the CORBA admin methods, then servant should be wrapped with a dynamic proxy.
+				WJDALOperations interceptingServantDelegate = SimpleCallInterceptor.createSimpleInterceptor(WJDALOperations.class, servantDelegate, sharedLogger);
+				topLevelServantDelegate = interceptingServantDelegate;
+			}
+			final Servant servant = new WJDALPOATie(topLevelServantDelegate);
 			
 			//create object id
 			byte[] id = { 'C', 'D', 'B' };
@@ -327,6 +334,8 @@ public class Server {
 		else
 			sharedLogger.log(AcsLogLevel.DEBUG, "Cache filling partly completed, terminated since cache memory limit was reached.");
 	}
+
+	
 	
 }
 
