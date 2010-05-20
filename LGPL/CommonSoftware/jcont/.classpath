@@ -25,9 +25,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/avalon-framework.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ArchiveIdentifierError.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
