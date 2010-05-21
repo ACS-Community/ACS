@@ -6174,7 +6174,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			//
 
 			// log info
-			logger.log(Level.INFO,"Activating component '"+name+"' on container '" + containerInfo.getName() + "'.");
+			logger.log(Level.INFO,"Activating component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") on container '" + containerInfo.getName() + "'.");
 
 			try
 			{
@@ -6203,7 +6203,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// failed to activate
 		if (componentInfo == null || componentInfo.getHandle() == 0 || componentInfo.getComponent() == null)
 		{
-			logger.log(Level.SEVERE,"Failed to activate component '"+name+"'.");
+			logger.log(Level.SEVERE,"Failed to activate component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ").");
 
 			synchronized (components)
 			{
@@ -6222,7 +6222,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		logger.log(Level.INFO,"Component '"+name+"' activated successfully.");
+		logger.log(Level.INFO,"Component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") activated successfully.");
 
 		//
 		// check type consistency
@@ -6496,9 +6496,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		notifyComponentRequested(new int[] { requestor }, new int[] { componentInfo.getHandle() }, activationTime);
 
 		if (reactivate)
-			logger.log(Level.FINE,"Component '"+name+"' reactivated.");
+			logger.log(Level.FINE,"Component '"+name+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") reactivated.");
 		else
-			logger.log(Level.FINE,"Component '"+name+"' activated.");
+			logger.log(Level.FINE,"Component '"+name+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") activated.");
 
 		// notify about the change (only this-domain container which activated the component)...
 		if (containerInfo != null)
@@ -6796,7 +6796,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		// notify administrators about the release request
 		notifyComponentReleased(new int[] { owner }, new int[] { h }, System.currentTimeMillis());
 
-		logger.log(Level.FINE,"Component '"+componentInfo.getName()+"' released.");
+		logger.log(Level.FINE,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") released.");
 
 		// component deactivated
 		if (owners == 0 || force)
@@ -6917,7 +6917,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 
 					// log info
-					logger.log(Level.INFO,"Deactivating component '"+componentInfo.getName()+"' on container '" + containerInfo.getName() + "'.");
+					logger.log(Level.INFO,"Deactivating component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") on container '" + containerInfo.getName() + "'.");
 
 					// destruct
 					try
@@ -6940,7 +6940,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					}
 					catch (Exception ex)
 					{
-						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' on container '"+containerInfo.getName()+"'.", ex);
+						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") on container '"+containerInfo.getName()+"'.", ex);
 						logger.log(Level.SEVERE, re.getMessage(), re);
 					}
 
@@ -6968,7 +6968,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// log info
-		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' deactivated.");
+		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") deactivated.");
 		
 		// release all subcomponents (just like client logoff)
 		// component should have already done this by itself, but take care of clean cleanup
