@@ -292,7 +292,7 @@
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
 1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
 1 - 	at java.lang.reflect.Method.invoke(Method.java:597)
-1 - 	at alma.acs.container.ContainerSealant.invoke(ContainerSealant.java:156)
+1 - 	at alma.acs.monitoring.DynamicInterceptor.invoke(DynamicInterceptor.java:111)
 1 - 	at $Proxy0.corbaSystemException(Unknown Source)
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:99)
 1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:138)
