@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2010/05/19 15:51:56 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/05/21 16:03:25 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,8 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : 
-	@echo ". . . installing cppunit . . . "
+	@echo ". . . installing cppunit . . ."
+	@mkdir -p ../bin
 	@cd log4cpp-$(LOG4CPP_VER); make install
 	@echo " . . . installation done"
 
