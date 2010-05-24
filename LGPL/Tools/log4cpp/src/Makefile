@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2010/05/21 16:03:25 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/05/24 17:29:44 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -58,7 +58,6 @@ man   : do_man
 
 install : 
 	@echo ". . . installing cppunit . . ."
-	@mkdir -p ../bin
 	@cd log4cpp-$(LOG4CPP_VER); make install
 	@echo " . . . installation done"
 
@@ -78,6 +77,7 @@ last_patched: log4cpp.patch
 	@echo " . . . patch applied";\
 
 configure :
+	@mkdir -p ../bin
 	@echo ". . . running configure . . . "
 	@cp configure_script ../bin/configure_script
 	@chmod +x ../bin/configure_script	
