@@ -17,6 +17,7 @@ public abstract class AbstractTableInheritance {
 	protected Map<String, String> map;
 	protected Map<String, String> keymap;
 	protected Map<String, List<String>> keyColumnsMap;
+	protected Map<String, List<String>> keyPiecesMap;
 	protected Map<String, CascadeType> cascadingTypes;
 	protected Map<String, List<String>> xmlClobTableColumns;
 	protected Map<String, String> sequences;
@@ -35,6 +36,23 @@ public abstract class AbstractTableInheritance {
 	 * @return The name (in lowercase) of the key column of the supertable, otherwise null
 	 */
 	public String getKeynameLowercase(String table) { return keymap.get(table); }
+
+	/**
+	 * Checks whether the indicated column of the given table is part of the pieces
+	 * that are supposed to generate the primary key. In the grammar, these are written
+	 * after the GENERATED FROM statement of the key declaration, if any
+	 * 
+	 * @param table The table
+	 * @param column The columns
+	 * @return Whether the given column participates in the creation of the PK of the mentioned table
+	 */
+	public boolean isKeyPiece(String table, String column) {
+
+		if( keyPiecesMap.containsKey( table.toLowerCase()) &&
+		    keyPiecesMap.get(table.toLowerCase()).contains(column.toLowerCase()) )
+			return true;
+		return false;
+	}
 
 	/**
 	 * Returns a Map containing all the columns that are part of the PK/FK combination
@@ -112,4 +130,5 @@ public abstract class AbstractTableInheritance {
 				return false;
 		return true;
 	}
+
 }

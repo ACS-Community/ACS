@@ -4,7 +4,7 @@
 «EXTENSION alma::acs::tmcdb::generator::templates::oracleutil»
 
 «DEFINE Root FOR TMCDBModel»
-«FILE "SQL/DropAllOracleSequences.sql"-»
+«FILE "oracle/DropAllOracleSequences.sql"-»
 -- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
 --
 -- /////////////////////////////////////////////////////////////////

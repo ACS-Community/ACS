@@ -42,6 +42,9 @@ List[CheckConstraint] getCheckConstraints(Table this):
 List[Column] getBooleanColumns(Table this):
 	getColumns().select(e|BooleanType.isInstance(e.type));
 
+List[Column] getKeyPieces(Table this):
+	this.key.pieces;
+
 Column getColumn(Specifier this):
 	(Column)this.eContainer;
 

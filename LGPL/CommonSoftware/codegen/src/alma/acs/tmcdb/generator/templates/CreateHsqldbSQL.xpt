@@ -5,7 +5,7 @@
 «EXTENSION alma::acs::tmcdb::generator::templates::hsqldbutil»
 
 «DEFINE Root FOR TMCDBModel»
-«FILE "SQL/CreateHsqldbTables.sql"-»
+«FILE "hsqldb/CreateHsqldbTables.sql"-»
 -- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
 --
 -- /////////////////////////////////////////////////////////////////

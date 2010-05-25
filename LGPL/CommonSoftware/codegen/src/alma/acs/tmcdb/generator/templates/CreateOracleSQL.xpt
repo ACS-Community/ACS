@@ -5,7 +5,7 @@
 «EXTENSION alma::acs::tmcdb::generator::templates::oracleutil»
 
 «DEFINE Root FOR TMCDBModel»
-«FILE "SQL/CreateOracleTables.sql"-»
+«FILE "oracle/CreateOracleTables.sql"-»
 -- TMCDB SQL TABLE DEFINITIONS Version «header.version» «header.versionTS»
 --
 -- /////////////////////////////////////////////////////////////////
@@ -67,12 +67,17 @@ CREATE TABLE «this.name» (
 	CONSTRAINT «shortTableName()»«superTable.shortTableName()»FKey FOREIGN KEY («finalKey().columns.name.toString(",")») REFERENCES «superTable.name»,
 «ENDIF-»
 	CONSTRAINT «this.shortTableName()»Key PRIMARY KEY («finalKey().columns.name.toString(", ")»)
-);
+)«EXPAND XmlStorage FOR this»;
 «EXPAND SequenceDefinition FOR this-»
-
 
 «ENDDEFINE»
 
+
+«DEFINE XmlStorage FOR Table-»
+«IF this.hasXmlClobTypeColumn()-»
+«FOREACH this.getXmlClobTypeColumns() AS c-» XMLTYPE COLUMN «c.name» STORE AS CLOB«ENDFOREACH-»
+«ENDIF-»
+«ENDDEFINE»
 
 
 «REM»

@@ -163,11 +163,20 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 		for (int i = 0; i < inheritanceTranslators.length; i++) {
 			if( inheritanceTranslators[i].hasXmlClobType(tableName) ) {
 				if( inheritanceTranslators[i].isXmlClobType(tableName, column) ) {
-				MetaAttribute mattr2 = new MetaAttribute(IS_XML_CLOB_TYPE);
-				mattr2.addValue("true");
-				map.put(IS_XML_CLOB_TYPE, mattr2);
-				break;
+					MetaAttribute mattr2 = new MetaAttribute(IS_XML_CLOB_TYPE);
+					mattr2.addValue("true");
+					map.put(IS_XML_CLOB_TYPE, mattr2);
+					break;
+				}
 			}
+		}
+
+		for (int i = 0; i < inheritanceTranslators.length; i++) {
+			if( inheritanceTranslators[i].isKeyPiece(tableName, column) ) {
+				MetaAttribute mattr2 = new MetaAttribute("use-in-equals");
+				mattr2.addValue("true");
+				map.put("use-in-equals", mattr2);
+				break;
 			}
 		}
 
@@ -186,6 +195,7 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 				referencedTable, referencedColumns);
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean excludeForeignKey(String keyname,
 			TableIdentifier fromTable, List fromColumns,
 			TableIdentifier referencedTable, List referencedColumns,
