@@ -23,6 +23,7 @@ package alma.acs.eclipse.utils.pluginbuilder;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -132,6 +133,10 @@ public class ManifestWriter {
 	 * folder, the list of the java packages
 	 */
 	private final Attributes.Name exportPackageName= new Attributes.Name("Export-Package");
+
+	/** Used when doing bundling by reference */
+	private boolean bundlingByReference;
+	private String[] finalJarsLocations;
 	
 	/**
 	 * The vendor i.e ESO
@@ -143,9 +148,11 @@ public class ManifestWriter {
 	 * 
 	 * @param folder The folder to write the manifest into
 	 * @param pluginFolder The root folder of the plugin
+	 * @param finalJarsLocations 
+	 * @param bundleByReference 
 	 * @param Logger The logger
 	 */
-	public ManifestWriter(File folder, File pluginFolder, Logger logger) {
+	public ManifestWriter(File folder, File pluginFolder, boolean bundleByReference, String[] finalJarsLocations, Logger logger) {
 		if (folder==null || !folder.canWrite()) {
 			throw new IllegalArgumentException("Invalid folder for the manifest");
 		}
@@ -155,6 +162,8 @@ public class ManifestWriter {
 		if (logger==null) {
 			throw new IllegalArgumentException("The logger can't be null");
 		}
+		this.bundlingByReference = bundleByReference;
+		this.finalJarsLocations = finalJarsLocations;
 		this.logger=logger;
 		manifestFolder=folder;
 		this.pluginFolder=pluginFolder;
@@ -182,29 +191,65 @@ public class ManifestWriter {
 		
 		// Add the classpath i.e. the jar files in the root plugin folder
 		JarFolder pluginJarFolder = new JarFolder(pluginFolder);
-		String[] jars=pluginJarFolder.getJars();
+
+//		String acsroot = System.getenv("ACSROOT");
+//		String introot = System.getenv("INTROOT");
+
+		String[] jars = null;
+		if( bundlingByReference )
+			jars = finalJarsLocations;
+		else
+			jars = pluginJarFolder.getJars();
+		System.out.println(Arrays.toString(jars));
 		StringBuilder classpath = new StringBuilder();
+
 		if (jars!=null && jars.length>0) {
 			for (int t=0; t<jars.length; t++) {
-				classpath.append(jars[t]);
-				if (t<jars.length-1) {
-					classpath.append(',');
-					classpath.append(' ');
+
+				// If we are bundling by reference, then write the reference, no the actual jarfile
+				if( bundlingByReference ) {
+
+//					String tmp = "";
+					String prefix = "external:";
+//					if( jars[t].contains( acsroot ) ) {
+//						tmp = jars[t].replaceAll(acsroot, "");
+//						prefix = "external:$ACSROOT$/";
+//					}
+//					else if( jars[t].contains( introot ) ) {
+//						tmp = jars[t].replaceAll(introot, "");
+//						prefix = "external:$INTROOT$/";
+//					}
+
+					classpath.append(prefix);
+//					classpath.append(tmp);
+					classpath.append(jars[t]);
 				}
+				else
+					classpath.append(jars[t]);
+
+				if (t<jars.length-1)
+					classpath.append(", ");
 				logger.finer("Adding "+jars[t]+" to "+bundleClasspathName+" attribute of "+manifestName);
 			}
 			attrs.put(bundleClasspathName, classpath.toString());
 		}
 		// Add the exported java packages
 		Vector<String> javaPkgs = new Vector<String>();
-		for (String jar: jars) {
-			File jarFile = new File(pluginFolder.getAbsolutePath()+File.separator+jar);
+		for (int i=0; i!= jars.length; i++) {
+
+			File jarFile = null;
+			if( bundlingByReference ) {
+				jarFile = new File(jars[i]);
+			}
+			else
+				jarFile = new File(pluginFolder.getAbsolutePath()+File.separator+jars[i]);
+
 			JarFileHelper jarFileHelper = new JarFileHelper(jarFile);
 			int n=jarFileHelper.getPackages(javaPkgs);
 			if (n>0) {
-				logger.finer("Found "+n+" java packages in "+jar);
+				logger.finer("Found "+n+" java packages in "+jars[i]);
 			} else {
-				logger.warning("Found "+n+" java packages in "+jar);
+				logger.warning("Found "+n+" java packages in "+jars[i]);
 			}
 		}
 		StringBuilder pkgs = new StringBuilder();

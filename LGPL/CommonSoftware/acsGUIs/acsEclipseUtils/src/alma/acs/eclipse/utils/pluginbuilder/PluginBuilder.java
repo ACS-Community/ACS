@@ -135,7 +135,13 @@ public class PluginBuilder {
 	 * 
 	 */
 	private final String[] jars;
-	
+
+	/**
+	 * The jars to include in the created plugin.
+	 * 
+	 */
+	private String[] finalJarsLocations;
+
 	/**
 	 * Constructor
 	 * 
@@ -173,8 +179,11 @@ public class PluginBuilder {
 		if (wrap==null) {
 			throw new IllegalArgumentException("Wrap mode not set");
 		}
+
 		this.wrapJars=wrap;
 		this.jars=jars;
+		this.finalJarsLocations = new String[jars.length];
+
 		if (this.jars==null || this.jars.length==0) {
 			throw new IllegalArgumentException("There must be at least one jar to wrap in the plugin");
 		}
@@ -259,7 +268,7 @@ public class PluginBuilder {
 	 * @throws Exception In case of error writing the manifest.
 	 */
 	private void addManifest() throws Exception {
-		ManifestWriter manifestWriter = new ManifestWriter(metaFolder,pluginRootFolder,logger);
+		ManifestWriter manifestWriter = new ManifestWriter(metaFolder, pluginRootFolder, !wrapJars, finalJarsLocations, logger);
 		manifestWriter.write();
 	}
 	
@@ -275,9 +284,11 @@ public class PluginBuilder {
 			throw new IllegalStateException("Directory struct not initialized");
 		}
 		AcsFolders jarFolders = new AcsFolders(jarDirs);
+		int i = 0;
 		for (String jar: jars) {
 			logger.fine("Adding "+jar);
 			File jarFile = jarFolders.getJar(jar);
+			finalJarsLocations[i++] = jarFile.getAbsolutePath();
 			if (jarFile==null) {
 				throw new FileNotFoundException(jar+" not found");
 			}
@@ -285,7 +296,7 @@ public class PluginBuilder {
 			if (wrapJars) {
 				FileHelper.copy(jarFile, dest);
 			} else {
-				FileHelper.link(jarFile, dest);
+				//FileHelper.link(jarFile, dest);
 			}
 		}
 	}
@@ -360,6 +371,9 @@ public class PluginBuilder {
 		logger.fine("Plugin name: "+name);
 		logger.fine("Plugin folder: "+target);
 		logger.fine("bundle by wrapping: "+wrap);
+		logger.fine("bundle by reference: " + !wrap);
+		logger.fine("ACSROOT: " + System.getenv("ACSROOT"));
+		logger.fine("INTROOT: " + System.getenv("INTROOT"));
 		logger.fine("Tot. num. of plugins to wrap: "+jars.length);
 		for (String jar: jars) {
 			logger.fine("Plugin to wrap: "+jar);
