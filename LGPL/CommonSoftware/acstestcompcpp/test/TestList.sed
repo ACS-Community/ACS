@@ -16,3 +16,5 @@ s/RTContext: ([0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*, [0-9,a-z,A-Z,-,_]*,/RTCont
 s/Thread=ID: [0-9]*/Thread=ID: xxx/g
 s/instance at 0x[0-9,a-z,A-Z]*/instance at 0xXXXX/g
 s/Process=[0-9]*/Process=xxx/g
+s/Handle (0x[0-9]*)/Handle (0x-------)/g
+s/id = (0x[0-9]*)/id = (0x--)/g
