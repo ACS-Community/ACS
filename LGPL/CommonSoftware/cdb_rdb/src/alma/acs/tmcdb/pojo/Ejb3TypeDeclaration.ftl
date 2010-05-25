@@ -1,3 +1,4 @@
+@SuppressWarnings("serial")
 <#if ejb3?if_exists>
 <#if pojo.isComponent()>
 @${pojo.importType("javax.persistence.Embeddable")}

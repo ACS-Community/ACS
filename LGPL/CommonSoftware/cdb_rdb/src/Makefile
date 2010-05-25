@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2010/04/29 15:39:20 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/05/25 12:45:11 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -112,26 +112,20 @@ man   : do_man
 
 DDLDATA=$(ACSDATA)/config/DDL
 install : install_all
-	@echo "== Copying generic .ddl files to $(DDLDATA)/generic"
 	@mkdir -p $(DDLDATA)/generic
+	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigcore
+	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigext
+	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigcore
+	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@echo "== Copying generic .ddl files to $(DDLDATA)/generic"
 	@cp generic/TMCDB_swconfigcore.ddl $(DDLDATA)/generic
 	@cp generic/TMCDB_swconfigext.ddl $(DDLDATA)/generic
 	@echo "== Copying generated Oracle .sql files to $(DDLDATA)/oracle"
-	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigcore
-	@cp ../config/TMCDB_swconfigcore/SQL/CreateOracleTables.sql $(DDLDATA)/oracle/TMCDB_swconfigcore
-	@cp ../config/TMCDB_swconfigcore/SQL/DropAllOracleSequences.sql $(DDLDATA)/oracle/TMCDB_swconfigcore
-	@cp ../config/TMCDB_swconfigcore/SQL/DropAllTables.sql $(DDLDATA)/oracle/TMCDB_swconfigcore
-	@mkdir -p $(DDLDATA)/oracle/TMCDB_swconfigext
-	@cp ../config/TMCDB_swconfigext/SQL/CreateOracleTables.sql $(DDLDATA)/oracle/TMCDB_swconfigext
-	@cp ../config/TMCDB_swconfigext/SQL/DropAllOracleSequences.sql $(DDLDATA)/oracle/TMCDB_swconfigext
-	@cp ../config/TMCDB_swconfigext/SQL/DropAllTables.sql $(DDLDATA)/oracle/TMCDB_swconfigext
+	@cp ../config/TMCDB_swconfigcore/oracle/* $(DDLDATA)/oracle/TMCDB_swconfigcore
+	@cp ../config/TMCDB_swconfigext/oracle/* $(DDLDATA)/oracle/TMCDB_swconfigext
 	@echo "== Copying generated HSQLDB .sql files to $(DDLDATA)/hsqldb"
-	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigcore
-	@cp ../config/TMCDB_swconfigcore/SQL/CreateHsqldbTables.sql $(DDLDATA)/hsqldb/TMCDB_swconfigcore
-	@cp ../config/TMCDB_swconfigcore/SQL/DropAllTables.sql $(DDLDATA)/hsqldb/TMCDB_swconfigcore
-	@mkdir -p $(DDLDATA)/hsqldb/TMCDB_swconfigext
-	@cp ../config/TMCDB_swconfigext/SQL/CreateHsqldbTables.sql $(DDLDATA)/hsqldb/TMCDB_swconfigext
-	@cp ../config/TMCDB_swconfigext/SQL/DropAllTables.sql $(DDLDATA)/hsqldb/TMCDB_swconfigext
+	@cp ../config/TMCDB_swconfigcore/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigcore
+	@cp ../config/TMCDB_swconfigext/hsqldb/* $(DDLDATA)/hsqldb/TMCDB_swconfigext
 	@echo " . . . installation done"
 
 .done_generating_sql : generic/TMCDB_swconfigcore.ddl generic/TMCDB_swconfigext.ddl
@@ -151,9 +145,10 @@ install : install_all
 	@echo "=="
 	@echo "== Generating Java domain classes"
 	@echo "=="
+	@-rm -rf tmcdb
 	@-mkdir tmcdb
 	@rm -f CreateHsqldbTables.sql
-	@cat ../config/TMCDB_swconfigcore/SQL/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/SQL/CreateHsqldbTables.sql > CreateHsqldbTables.sql
+	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
 	@acsStartJava org.hsqldb.util.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
 	@ant generate
 	@touch .done_generating_classes

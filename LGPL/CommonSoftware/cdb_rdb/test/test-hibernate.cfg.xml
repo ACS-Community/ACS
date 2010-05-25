@@ -15,8 +15,8 @@
 		<!-- Used to test against Oracle DB
 		<property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
 		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
-		<property name="connection.url">jdbc:oracle:thin:@arch01:1521/ALMA.ESO.ORG</property>
-		<property name="connection.username">TMC</property>
+		<property name="connection.url">jdbc:oracle:thin:@localhost:1521/XE</property>
+		<property name="connection.username">tmc</property>
 		<property name="connection.password">tmc$dba</property>
 		-->
 
