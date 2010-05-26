@@ -166,9 +166,10 @@ public class RemoteThreadsUtil {
 		public int getCount() {
 			return count;
 		}
-		public void setCount(int count) {
-			this.count = count;
-		}
+
+//		public void setCount(int count) {
+//			this.count = count;
+//		}
 		
 		public void bumpCount() {
 			this.count++;
