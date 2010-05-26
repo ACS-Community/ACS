@@ -14,6 +14,6 @@
 <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit3"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="alma.acs.makesupport.AcsFileFinderTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="ACS_jacsutil"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.introot=/diska/data/jschwarz/introot -DACS.acsroot=/alma/ACS-8.2/ACSSW"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.introot=/home/jschwarz/introot -DACS.acsroot=/alma/ACS-8.2/ACSSW -DACS.jacorbhome=/alma/ACS-8.2/JacORB -DJAVA_HOME=/usr/java/latest/"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:ACS_jacsutil}"/>
 </launchConfiguration>

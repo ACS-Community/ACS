@@ -44,13 +44,13 @@ public class AcsJarFileFinder extends AcsFileFinder
 
 	public String getClasspath()
 	{
-		String cp = "";
+		StringBuffer cp = new StringBuffer();
 		for (Iterator iter = m_fileMap.values().iterator(); iter.hasNext();)
 		{
 			File jarfile = (File) iter.next();
-			cp += jarfile.getAbsolutePath() + File.pathSeparator;
+			cp.append(jarfile.getAbsolutePath() + File.pathSeparator);
 		}
-		return cp;
+		return cp.toString();
 	}
 
 

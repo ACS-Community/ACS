@@ -143,7 +143,7 @@ public class JarSourceExtractorRunner
 		
 			Manifest mani = jarFile.getManifest();
 			if (mani != null) {
-				Map entries = mani.getEntries();
+				Map<String, Attributes> entries = mani.getEntries();
 	//			System.out.println("\n\nManifest for file " + jarFile.getName());
 				
 				Attributes mainAttrs = mani.getMainAttributes();
@@ -172,7 +172,7 @@ public class JarSourceExtractorRunner
 	 */
 	static File[] getDirectories(String[] mainArgs) 
 	{
-		List dirList = new ArrayList();
+		List<File> dirList = new ArrayList<File>();
 
 		for (int i = 1; i < mainArgs.length; i++)
 		{

@@ -21,9 +21,16 @@
  */
 package alma.acs.makesupport;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.logging.Logger;
@@ -31,6 +38,7 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import alma.acs.testsupport.tat.TATJUnitRunner;
+import alma.acs.util.StopWatch;
 
 /**
  * @author hsommer
@@ -50,6 +58,8 @@ public class AcsFileFinderTest extends TestCase
 
 		String introot = System.getProperty("ACS.introot");
 		String acsroot = System.getProperty("ACS.acsroot");
+		String jacorbhome = System.getProperty("ACS.jacorbhome");
+		String jdkhome = System.getProperty("JAVA_HOME");
 
 		File introotLibDir = null;
 		if (introot != null)
@@ -70,8 +80,30 @@ public class AcsFileFinderTest extends TestCase
 		{
 			throw new NullPointerException("Property 'ACS.acsroot' must be defined!"); 
 		}
+		
+		File jacorbLibDir = null;
+		if (jacorbhome != null)
+		{
+			jacorbLibDir = new File(jacorbhome + File.separator + "lib");
+		}
+		else
+		{
+			throw new NullPointerException("Property 'ACS.jacorbhome' must be defined!");
+		}
+		
+		File jdkLibDir = null;
+		File jreLibDir = null;
+		if (jdkhome != null)
+		{
+			jdkLibDir = new File(jdkhome + File.separator + "lib");
+			jreLibDir = new File(jdkhome + File.separator + "jre" + File.separator + "lib");
+		}
+		else
+		{
+			throw new NullPointerException("Property 'JAVA_HOME' must be defined!");
+		}
 
-		m_dirs = new File[]{introotLibDir, acsrootLibDir};
+		m_dirs = new File[]{introotLibDir, acsrootLibDir, jacorbLibDir, jdkLibDir, jreLibDir};
 
 	}
 
@@ -102,7 +134,8 @@ public class AcsFileFinderTest extends TestCase
 		
 		// test writing separate .java files
 		File tempDir = new File("jsrc"); // System.getProperty("java.io.tmpdir"
-		tempDir.mkdir();
+		if (tempDir.mkdir() == false) 
+			m_logger.finest("Directory "+tempDir.toString()+" might already exist.");
 		for (int i = 0; i < jarFiles.length; i++)
 		{
 			JarFile jarFile = new JarFile(jarFiles[i]);
@@ -124,6 +157,83 @@ public class AcsFileFinderTest extends TestCase
 		jarOut.finish();
 		jarOut.close();
 	}
+	
+	public void testClassExtractor() throws Exception
+	{
+		AcsJarFileFinder jarFinder = new AcsJarFileFinder(m_dirs, m_logger);
+
+		File[] jarFiles = jarFinder.getAllFiles();
+		assertNotNull(jarFiles);
+		assertTrue(jarFiles.length > 0);
+		
+		JarClassExtractor extractor = new JarClassExtractor();
+		
+		File tempDir = new File("jclass");
+		if (tempDir.mkdir() == false) 
+			m_logger.finest("Directory "+tempDir.toString()+" might already exist.");
+		long numClasses = 0;
+		StopWatch sw = new StopWatch(m_logger);
+		HashMap<String,String> classToJarMap = new HashMap<String,String>();
+		for (int i= 0; i < jarFiles.length; i++)
+		{
+			JarFile jarFile = new JarFile(jarFiles[i]);
+			JarEntry[] entries = extractor.getJavaEntries(jarFile);
+			String jarName = jarFile.getName();
+			numClasses+=entries.length;
+
+			for (JarEntry jarEntry : entries) {
+			    String className = jarEntry.getName();
+			    className = className.substring(0,className.length()-6); // Remove ".class" extension
+				String earlierJar = classToJarMap.put(className,jarName);
+				if (earlierJar != null)
+					{
+					//m_logger.info(className+" "+jarName);	
+					//m_logger.severe("Class "+className+" was also in "+earlierJar);
+					}
+				//m_logger.info(className+" "+jarName);
+			}
+		}
+
+		m_logger.info("Number of classes found: "+numClasses+ " in "+sw.getLapTimeMillis()+" ms.");
+		
+		File jcontClasses = new File("jcontClasses.txt");
+		List<String> jarsFound = new ArrayList<String>();
+		try {
+		      //use buffering, reading one line at a time
+		      //FileReader always assumes default encoding is OK!
+		      BufferedReader input =  new BufferedReader(new FileReader(jcontClasses));
+		      try {
+		        String className = null; //not declared within while loop
+		        /*
+		        * readLine is a bit quirky :
+		        * it returns the content of a line MINUS the newline.
+		        * it returns null only for the END of the stream.
+		        * it returns an empty String if two newlines appear in a row.
+		        */
+		        while (( className = input.readLine()) != null){
+		          className.trim();
+		          String jarFound = classToJarMap.get(className);
+		          if (jarFound == null && !className.startsWith("java")) System.out.println("Can't find jar for "+className);
+		          if (jarFound != null && !jarsFound.contains(jarFound)) 
+		          {
+		        	  jarsFound.add(jarFound);
+		          }
+		        }
+		      }
+		      finally {
+		        input.close();
+		      }
+		    }
+		    catch (IOException ex){
+		      ex.printStackTrace();
+		    }
+		    for (String string : jarsFound) {
+				System.out.println(string);
+			}
+
+	}
+	
+	
 	
 
 	public static void main(String[] args)
