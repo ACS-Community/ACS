@@ -265,7 +265,6 @@ public class CDBChecker {
 										validateFileEncoding((String)filename.get(i));
 										
 								        SP.reset();
-                                        SP.setFeature("http://apache.org/xml/features/xinclude", true);
                                         SP.setFeature("http://xml.org/sax/features/validation",true);
                                         SP.setFeature("http://apache.org/xml/features/validation/schema", true);
                                         SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
@@ -275,7 +274,7 @@ public class CDBChecker {
                                         SP.parse((String)filename.get(i));
                                         if(verbose && !errorFlag)
                                                 System.out.println("[OK]");
-                                }catch(SAXException e){e.getMessage();}
+                                }catch(SAXException e){System.out.println("[SAXException] " + e.getMessage());}
                                 catch(IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
                         }else{
                                 System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
@@ -643,6 +642,7 @@ public class CDBChecker {
        		//add panta@naoj 2009/10/05 end
        	
 			//Creating the parser
+//			System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration", "org.apache.xerces.parsers.XIncludeAwareParserConfiguration");
 			cdbchecker.SP=new SAXParser();
 			cdbchecker.xsd_targetns=new Hashtable();
 			
