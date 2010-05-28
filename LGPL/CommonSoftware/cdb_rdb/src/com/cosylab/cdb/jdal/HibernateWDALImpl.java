@@ -2452,7 +2452,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		}
 		else if (node instanceof DAOImpl) {
 			String ret = ((DAOImpl)node).getRootNode().toString(false);
-			m_logger.finer("get_DAO(" + curl + ") returning " + ret);
+			m_logger.finest("get_DAO(" + curl + ") returning " + ret);
 			return ret;
 		}
 
@@ -2475,7 +2475,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		try
 		{
 			String ret = "<?xml version='1.0' encoding='ISO-8859-1'?>" + DOMJavaClassIntrospector.toXML(DOMJavaClassIntrospector.getRootNodeXMLName(name, node), node);
-			m_logger.finer("get_DAO(" + curl + ") returning " + ret);
+			m_logger.finest("get_DAO(" + curl + ") returning " + ret);
 			return ret;
 		}
 		catch (Throwable t)
@@ -2552,7 +2552,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	public String list_nodes(String curl) {
 		checkAccess();
 		String ret = listNodes(curl, false);
-		m_logger.finer("list_nodes(=" + curl + ") returning " + ret);
+		m_logger.finest("list_nodes(=" + curl + ") returning " + ret);
 		return ret;
 	}
 
@@ -2563,7 +2563,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	public String list_daos(String name) {
 		checkAccess();
 		String ret = listNodes(name, true);
-		m_logger.finer("list_daos(=" + name + ") returning " + ret);
+		m_logger.finest("list_daos(=" + name + ") returning " + ret);
 		return ret;
 	}
 
