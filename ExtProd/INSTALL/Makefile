@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.18 2010/03/26 15:40:23 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.19 2010/05/30 14:07:26 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -19,38 +19,32 @@ all:
 	@echo " . . . 'all' done" 
 
 clean : 
-	rm -rf ../PRODUCTS/Python-2.5.2
-	rm -rf ../PRODUCTS/pysnmp-2.0.9
-	rm -rf ../PRODUCTS/python-ldap-2.3.5
-	rm -rf ../PRODUCTS/Numeric-24.2
-#	rm -rf ../PRODUCTS/numarray-1.5.2
-	rm -rf ../PRODUCTS/numpy-1.1.1
-	rm -rf ../PRODUCTS/scipy-0.6.0
+	rm -rf ../PRODUCTS/Python-2.6.5
+	rm -rf ../PRODUCTS/pysnmp-4.1.13a
+	rm -rf ../PRODUCTS/python-ldap-2.3.11
+	rm -rf ../PRODUCTS/numpy-1.4.1
+	rm -rf ../PRODUCTS/scipy-0.7.2
 	rm -rf ../PRODUCTS/gnuplot-py-1.8
-	rm -rf ../PRODUCTS/matplotlib-0.91.4
+	rm -rf ../PRODUCTS/matplotlib-0.99.1.1
 	rm -rf ../PRODUCTS/pexpect-2.3
 	rm -rf ../PRODUCTS/pychecker-0.8.17
-	rm -rf ../PRODUCTS/setuptools-0.6c8
-	rm -rf ../PRODUCTS/lxml-2.1.5
-	rm -rf ../PRODUCTS/generateDS-1.15d
-	rm -rf ../PRODUCTS/pythoscope-0.3.2
-	rm -rf ../PRODUCTS/snakefood-1.3.1
-	rm -rf ../PRODUCTS/nose-0.10.4
-	rm -rf ../PRODUCTS/figleaf-latest
-	rm -rf ../PRODUCTS/logilab-common-0.39.0
-	rm -rf ../PRODUCTS/logilab-astng-0.19.0
-	rm -rf ../PRODUCTS/pylint-0.18.0
-#	rm -rf ../PRODUCTS/ipython1-saw
-	rm -rf ../PRODUCTS/Pygments-1.0
-	rm -rf ../PRODUCTS/Jinja2-2.1.1
-	rm -rf ../PRODUCTS/docutils
-	rm -rf ../PRODUCTS/Sphinx-0.6.1
-	rm -rf ../PRODUCTS/zope.interface-3.5.1
-	rm -rf ../PRODUCTS/Twisted-8.2.0
-	rm -rf ../PRODUCTS/pyOpenSSL-0.9
-	rm -rf ../PRODUCTS/foolscap-0.4.1
-	rm -rf ../PRODUCTS/ipython-0.9.1
-	rm -rf ../PRODUCTS/coverage-2.80
+	rm -rf ../PRODUCTS/distribute-0.6.10
+	rm -rf ../PRODUCTS/lxml-2.2.6
+	rm -rf ../PRODUCTS/pythoscope-0.4.3
+	rm -rf ../PRODUCTS/nose-0.11.3
+	rm -rf ../PRODUCTS/logilab-common-0.50.1
+	rm -rf ../PRODUCTS/logilab-astng-0.20.0
+	rm -rf ../PRODUCTS/pylint-0.20.0
+	rm -rf ../PRODUCTS/Pygments-1.3.1
+	rm -rf ../PRODUCTS/Jinja2-2.4.1
+	rm -rf ../PRODUCTS/docutils-0.6
+	rm -rf ../PRODUCTS/Sphinx-0.6.5
+	rm -rf ../PRODUCTS/zope.interface-3.6.0
+	rm -rf ../PRODUCTS/Twisted-10.0.0
+	rm -rf ../PRODUCTS/pyOpenSSL-0.10
+	rm -rf ../PRODUCTS/foolscap-0.5.1
+	rm -rf ../PRODUCTS/ipython-0.10
+	rm -rf ../PRODUCTS/coverage-3.3.1
 	rm -rf ../PRODUCTS/gcc-SUN
 	rm -rf ../PRODUCTS/gnu
 	rm -rf ../PRODUCTS/java

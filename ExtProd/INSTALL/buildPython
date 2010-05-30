@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.19 2009/02/11 17:16:47 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.20 2010/05/30 14:07:26 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -81,15 +81,15 @@ then
 fi
 
 #
-# Python - Python-2.5.2
+# Python - Python-2.6.5
 #
 # Notes: See README for help
 #
 cd ../PRODUCTS
 rm -rf Python-2.5.2
-tar jxf Python-2.5.2.tar.bz2
+tar jxf Python-2.6.5.tar.bz2
 
-cd Python-2.5.2
+cd Python-2.6.5
 
 
 echo $SEPARATOR

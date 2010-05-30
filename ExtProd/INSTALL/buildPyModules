@@ -77,6 +77,7 @@ if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
      -a  ${DISTRO}-${REL} != "RHLX-9"           \
      -a  ${DISTRO}-${REL} != "RHEL-4"           \
      -a  ${DISTRO}-${REL} != "RHEL-5"           \
+     -a  ${DISTRO}-${REL} != "RHEL-5.3"           \
      -a  ${DISTRO}-${REL} != "SL-4.1"           \
      -a  ${DISTRO}-${REL} != "SL-5.3"           \
    ]
@@ -86,70 +87,60 @@ then
 fi
 
 #
-# Python - Python-2.5.2
+# Python - Python-2.6.5
 #
 # Notes: See README for help
 #
 cd ../PRODUCTS
 
-if [ ! -e ../PRODUCTS/setuptools-0.6c9.tar.gz ]
+if [ ! -e ../PRODUCTS/distribute-0.6.10.tar.gz ]
 then
-  echo Error: setuptools sources are missing
+  echo Error: distribute sources are missing
 else
-  echo "== Building setuptools"
-  tar -zxvf setuptools-0.6c9.tar.gz
-  pushd setuptools-0.6c9
+  echo "== Building distribute"
+  tar -zxf distribute-0.6.10.tar.gz
+  pushd distribute-0.6.10
   $PYTHON_INTR setup.py install
   popd
 fi
 
 
-if [ ! -e ../PRODUCTS/pysnmp-2.0.9.tar.gz ]
+if [ ! -e ../PRODUCTS/pysnmp-4.1.13a.tar.gz ]
 then
   echo Error: PySNMP sources are missing
 else
   echo "== Building PySNMP"
-  tar -zxvf pysnmp-2.0.9.tar.gz
-  pushd pysnmp-2.0.9
+  tar -zxf pysnmp-4.1.13a.tar.gz
+  pushd pysnmp-4.1.13a
   $PYTHON_INTR setup.py install
   popd
 fi
 
 
-if [ ! -e ../PRODUCTS/python-ldap-2.3.5.tar.gz ]
+if [ ! -e ../PRODUCTS/python-ldap-2.3.11.tar.gz ]
 then
   echo Error: Python LDAP sources are missing
 else
   echo "== Building Python LDAP"
-  tar -zxvf python-ldap-2.3.5.tar.gz
-  pushd python-ldap-2.3.5
+  tar -zxf python-ldap-2.3.11.tar.gz
+  pushd python-ldap-2.3.11
   cat setup.cfg | sed 's/local\/openldap-REL_ENG_2_1\///' >> setup.cfg.tmp
   mv setup.cfg.tmp setup.cfg 
   $PYTHON_INTR setup.py install
   popd
 fi
 
-if [ ! -e ../PRODUCTS/Numeric-24.2.tar.gz ]
-then
-  echo Error: Numeric sources are missing
-else
-  echo "== Building Numeric"
-  tar -zxvf Numeric-24.2.tar.gz
-  pushd Numeric-24.2
-  $PYTHON_INTR setup.py install 
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/numpy-1.1.1.tar.gz ]
+if [ ! -e ../PRODUCTS/numpy-1.4.1.tar.gz ]
 then
   echo Error: numpy sources are missing
 else
   echo "== Building numpy"
   export BLAS=/usr/lib/libblas.so
   export LAPACK=/usr/lib/liblapack.so
-  tar -zxvf numpy-1.1.1.tar.gz
-  pushd numpy-1.1.1
-  $PYTHON_INTR setup.py install 
+  tar -zxf numpy-1.4.1.tar.gz
+  pushd numpy-1.4.1
+  $PYTHON_INTR setup.py build --fcompiler=gnu95
+  $PYTHON_INTR setup.py install
   popd
 fi
 
@@ -158,19 +149,19 @@ then
   echo Error: GnuPlot Py sources are missing
 else
   echo "== Building GnuPlot Py"
-  tar -zxvf gnuplot-py-1.8.tar.gz
+  tar -zxf gnuplot-py-1.8.tar.gz
   pushd gnuplot-py-1.8
   $PYTHON_INTR setup.py install
   popd
 fi
 
-if [ ! -e ../PRODUCTS/matplotlib-0.91.4.tar.gz ]
+if [ ! -e ../PRODUCTS/matplotlib-0.99.1.2.tar.gz ]
 then
   echo Error: matplotlib sources are missing
 else
   echo "== Building matplotlib"
-  tar -zxvf matplotlib-0.91.4.tar.gz;
-  pushd matplotlib-0.91.4
+  tar -zxf matplotlib-0.99.1.2.tar.gz;
+  pushd matplotlib-0.99.1.1
 
   cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
   mv setupext.py.tmp setupext.py
@@ -198,7 +189,7 @@ else
   then
     mkdir ${PYTHON_ROOT}/share/matplotlib
   fi
-  cp ${PYTHON_ROOT}/lib/python2.5/site-packages/matplotlib/mpl-data/matplotlibrc ${PYTHON_ROOT}/share/matplotlib/.matplotlibrc
+  cp ${PYTHON_ROOT}/lib/python2.6/site-packages/matplotlib/mpl-data/matplotlibrc ${PYTHON_ROOT}/share/matplotlib/.matplotlibrc
   pushd ${PYTHON_ROOT}/share/matplotlib/ 
   cat .matplotlibrc | sed s/numerix\ \ \ \ \ \ :\ Numeric/numerix\ \ \ \ \ \ :\ numarray/g >> .matplotlibrc.tmp
   mv .matplotlibrc.tmp .matplotlibrc
@@ -210,14 +201,14 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/scipy-0.6.0.tar.gz ]
+if [ ! -e ../PRODUCTS/scipy-0.7.2.tar.gz ]
 then
   echo Error: numpy sources are missing
 else
   echo "== Building scipy"
-  tar -zxvf scipy-0.6.0.tar.gz
-  pushd scipy-0.6.0
-  $PYTHON_INTR setup.py install 
+  tar -zxf scipy-0.7.2.tar.gz
+  pushd scipy-0.7.2
+  $PYTHON_INTR setup.py config_fc --fcompiler=gnu95 install
   popd
 fi
 
@@ -226,7 +217,7 @@ then
   echo Error: pexpect sources are missing
 else
   echo "== Building pexpect"
-  tar -zxvf pexpect-2.3.tar.gz
+  tar -zxf pexpect-2.3.tar.gz
   pushd pexpect-2.3
   $PYTHON_INTR setup.py install 
   popd
@@ -237,156 +228,134 @@ then
   echo Error: pychecker sources are missing
 else
   echo "== Building pychecker"
-  tar -zxvf pychecker-0.8.17.tar.gz
+  tar -zxf pychecker-0.8.17.tar.gz
   pushd pychecker-0.8.17
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/coverage-2.80.tar.gz ]
+if [ ! -e ../PRODUCTS/coverage-3.3.1.tar.gz ]
 then
   echo Error: coverage sources are missing
 else
   echo "== Building coverage"
-  tar -zxvf coverage-2.80.tar.gz
-  pushd coverage-2.80
+  tar -zxf coverage-3.3.1.tar.gz
+  pushd coverage-3.3.1
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/mock-0.4.0.zip ]
+if [ ! -e ../PRODUCTS/mock-0.6.0.zip ]
 then
   echo Error: Python Mock sources are missing
 else
   echo "== Installing Python Mock Objects"
-  unzip -oj mock-0.4.0.zip mock-0.4.0/mock.py mock-0.4.0/testcase.py mock-0.4.0/testutils.py -d $PYTHON_ROOT/lib/python2.5/site-packages/
+  unzip -oj mock-0.6.0.zip mock-0.6.0/mock.py mock-0.6.0/testcase.py mock-0.6.0/testutils.py -d $PYTHON_ROOT/lib/python2.6/site-packages/
 fi
 
-if [ ! -e ../PRODUCTS/snakefood-1.3.1.tar.bz2 ]
-then
-  echo Error: snakefood sources are missing
-else
-  echo "== Installing snakefood"
-  tar -jxvf snakefood-1.3.1.tar.bz2
-  pushd snakefood-1.3.1
-  $PYTHON_INTR setup.py install 
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/figleaf-latest.tar.gz ]
-then
-  echo Error: figleaf sources are missing
-else
-  echo "== Installing figleaf"
-  tar -zxvf figleaf-latest.tar.gz
-  pushd figleaf-latest
-  $PYTHON_INTR setup.py install 
-  popd
-fi
-
-if [ ! -e ../PRODUCTS/pythoscope-0.3.2.tar.gz ]
+if [ ! -e ../PRODUCTS/pythoscope-0.4.3.tar.gz ]
 then
   echo Error: Pythoscope sources are missing
 else
   echo "== Installing Pythoscope"
-  tar -zxvf pythoscope-0.3.2.tar.gz
-  pushd pythoscope-0.3.2
+  tar -zxf pythoscope-0.4.3.tar.gz
+  pushd pythoscope-0.4.3
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/lxml-2.1.5.tar.gz ]
+if [ ! -e ../PRODUCTS/lxml-2.2.6.tar.gz ]
 then
   echo Error: lxml sources are missing
 else
   echo "== Installing lxml"
-  tar -zxvf lxml-2.1.5.tar.gz
-  pushd lxml-2.1.5
+  tar -zxf lxml-2.2.6.tar.gz
+  pushd lxml-2.2.6
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/nose-0.10.4.tar.gz ]
+if [ ! -e ../PRODUCTS/nose-0.11.3.tar.gz ]
 then
   echo Error: nose sources are missing
 else
   echo "== Installing nose"
-  tar -zxvf nose-0.10.4.tar.gz
-  pushd nose-0.10.4
+  tar -zxf nose-0.11.3.tar.gz
+  pushd nose-0.11.3
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/pylint-0.18.0.tar.gz \
-     -o ! -e ../PRODUCTS/logilab-astng-0.19.0.tar.gz \
-     -o ! -e ../PRODUCTS/logilab-common-0.39.0.tar.gz
+if [ ! -e ../PRODUCTS/pylint-0.20.0.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-astng-0.20.0.tar.gz \
+     -o ! -e ../PRODUCTS/logilab-common-0.50.1.tar.gz
    ]
 then
   echo Error: pylint sources are missing
 else
   echo "== Building pylint"
-  tar -xvzf logilab-common-0.39.0.tar.gz
-  pushd logilab-common-0.39.0
+  tar -xzf logilab-common-0.50.1.tar.gz
+  pushd logilab-common-0.50.1
   $PYTHON_INTR setup.py install
   popd
-  tar -xvzf logilab-astng-0.19.0.tar.gz
-  pushd logilab-astng-0.19.0
+  tar -xzf logilab-astng-0.20.0.tar.gz
+  pushd logilab-astng-0.20.0
   $PYTHON_INTR setup.py install
   popd
-  tar -zxvf pylint-0.18.0.tar.gz
-  pushd pylint-0.18.0
+  tar -zxf pylint-0.20.0.tar.gz
+  pushd pylint-0.20.0
   $PYTHON_INTR setup.py install 
   popd
 fi
 
-if [ ! -e ../PRODUCTS/ipython-0.9.1.tar.gz \
-     -o ! -e ../PRODUCTS/Twisted-8.2.0.tar.bz2 \
-     -o ! -e ../PRODUCTS/zope.interface-3.5.1.tar.gz \
-     -o ! -e ../PRODUCTS/Sphinx-0.6.1.tar.gz \
-     -o ! -e ../PRODUCTS/pyOpenSSL-0.9.tar.gz \
-     -o ! -e ../PRODUCTS/Pygments-1.0.tar.gz \
-     -o ! -e ../PRODUCTS/foolscap-0.4.1.tar.gz \
-     -o ! -e ../PRODUCTS/Jinja2-2.1.1.tar.gz \
-     -o ! -e ../PRODUCTS/docutils-snapshot.tgz \
+if [ ! -e ../PRODUCTS/ipython-0.10.tar.gz \
+     -o ! -e ../PRODUCTS/Twisted-10.0.0.tar.bz2 \
+     -o ! -e ../PRODUCTS/zope.interface-3.6.0.tar.gz \
+     -o ! -e ../PRODUCTS/Sphinx-0.6.5.tar.gz \
+     -o ! -e ../PRODUCTS/pyOpenSSL-0.10.tar.gz \
+     -o ! -e ../PRODUCTS/Pygments-1.3.1.tar.gz \
+     -o ! -e ../PRODUCTS/foolscap-0.5.1.tar.gz \
+     -o ! -e ../PRODUCTS/Jinja2-2.4.1.tar.gz \
+     -o ! -e ../PRODUCTS/docutils-0.6.tar.gz \
 ]
 then
   echo Error: ipython sources are missing
 else
   echo "== Building IPython"
-  tar -zxvf Pygments-1.0.tar.gz
-  pushd Pygments-1.0
+  tar -zxf Pygments-1.3.1.tar.gz
+  pushd Pygments-1.3.1
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf Jinja2-2.1.1.tar.gz
-  pushd Jinja2-2.1.1
+  tar -zxf Jinja2-2.4.1.tar.gz
+  pushd Jinja2-2.4.1
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf docutils-snapshot.tgz
-  pushd docutils
+  tar -zxf docutils-0.6.tar.gz
+  pushd docutils-0.6
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf Sphinx-0.6.1.tar.gz
-  pushd Sphinx-0.6.1
+  tar -zxf Sphinx-0.6.5.tar.gz
+  pushd Sphinx-0.6.5
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf zope.interface-3.5.1.tar.gz
-  pushd zope.interface-3.5.1
+  tar -zxf zope.interface-3.6.0.tar.gz
+  pushd zope.interface-3.6.0
   $PYTHON_INTR setup.py install 
   popd
-  tar -jxvf Twisted-8.2.0.tar.bz2
-  pushd Twisted-8.2.0
+  tar -jxf Twisted-10.0.0.tar.bz2
+  pushd Twisted-10.0.0
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf pyOpenSSL-0.9.tar.gz
-  pushd pyOpenSSL-0.9
+  tar -zxf pyOpenSSL-0.10.tar.gz
+  pushd pyOpenSSL-0.10
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf foolscap-0.4.1.tar.gz
-  pushd foolscap-0.4.1
+  tar -zxf foolscap-0.5.1.tar.gz
+  pushd foolscap-0.5.1
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxvf ipython-0.9.1.tar.gz
-  pushd ipython-0.9.1
+  tar -zxf ipython-0.10.tar.gz
+  pushd ipython-0.10
   $PYTHON_INTR setup.py install 
   popd
 fi
