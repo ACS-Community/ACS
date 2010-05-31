@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.14 2009/01/15 11:51:59 hsommer Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.15 2010/05/31 09:24:07 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -59,6 +59,7 @@ main (int argc, char *argv[])
     ACE_CString additional;
     ACE_CString modstring;
     ACS::stringSeq tmp_type_modifiers(100);
+    tmp_type_modifiers.length(100);
     int modcount = 0;
 
     //The modstring is used to collect all the provided modifiers so they can be logged.
