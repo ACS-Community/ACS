@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestErrSys.cpp,v 1.104 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciTestErrSys.cpp,v 1.105 2010/05/31 09:38:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 * msekoran 2002-05-19 created
 */
  
-static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.104 2008/10/01 02:26:45 cparedes Exp $";
+static char *rcsId="@(#) $Id: baciTestErrSys.cpp,v 1.105 2010/05/31 09:38:56 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <tao/corba.h>
@@ -222,9 +222,12 @@ static void* worker(void *arg)
        }
 
   // clean up here ...
+     baciTest->shutdown();
+
      BACI_CORBA::getORB()->shutdown(); 
 
   ACS_SHORT_LOG((LM_INFO,"Leaving working thread"));
+
   return 0;
 }
 
@@ -315,15 +318,12 @@ int main (int argc, char **argv)
 	//---------------------------------------------------------------
 
 	ACS_SHORT_LOG((LM_INFO,"(baciTestErrSys main thread) Going to sleep..."));
-
 	BACI_CORBA::getORB()->run(); 
 
- 
+
 	ACS_SHORT_LOG((LM_INFO,"(baciTestErrSys main thread) Shutting down..."));
 
-	baciTest->shutdown();
-	
-	sleep(10);
+	sleep(2);
 
 	BACI_CORBA::DoneCORBA();
 
