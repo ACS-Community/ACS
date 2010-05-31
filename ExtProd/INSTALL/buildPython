@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.20 2010/05/30 14:07:26 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.21 2010/05/31 14:43:59 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -74,7 +74,7 @@ fi
 
 echo installing the Python distribution
 
-if [ ! -e ../PRODUCTS/Python-2.5.2.tar.bz2 ]
+if [ ! -e ../PRODUCTS/Python-2.6.5.tar.bz2 ]
 then
   echo Error: Python sources are missing
   exit 2
@@ -86,7 +86,7 @@ fi
 # Notes: See README for help
 #
 cd ../PRODUCTS
-rm -rf Python-2.5.2
+rm -rf Python-2.6.5
 tar jxf Python-2.6.5.tar.bz2
 
 cd Python-2.6.5
