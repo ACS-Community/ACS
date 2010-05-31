@@ -20,7 +20,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.h,v 1.80 2008/06/03 09:08:12 bjeram Exp $"
+* "@(#) $Id: acserr.h,v 1.81 2010/05/31 09:36:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,11 +69,13 @@ class ErrorTraceHelper
 
     ErrorTraceHelper(ACSErr::ErrorTrace &et);
 
-// for OK cases and wrapping completion
-    ErrorTraceHelper(ACSErr::ErrorTrace &et, int depth);
+// for OK cases and wrapping error completion
+     void setErrorTrace(ACSErr::ErrorTrace &et, int depth);
 
-// default constructor
-    ErrorTraceHelper();
+// default constructor (OK completion)
+    ErrorTraceHelper()
+	: m_errorTracePtr(0), m_current(0), m_depth(0)
+	{}
 
 // create new error trace
     ErrorTraceHelper (ACSErr::ACSErrType et, ACSErr::ErrorCode ec,
@@ -479,8 +481,9 @@ class CompletionImpl : public CompletionInit
     CompletionImpl();
 
     CompletionImpl (ACSErr::ACSErrType t, ACSErr::ErrorCode c) :
-	CompletionInit(t, c, false),
+	CompletionInit(t, c, false)/*,
 	m_errorTraceHelper(previousError[0], previousError.length())
+*/
 	{
 	}
 

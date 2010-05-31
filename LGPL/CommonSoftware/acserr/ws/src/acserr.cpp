@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserr.cpp,v 1.91 2010/04/16 09:45:35 bjeram Exp $"
+* "@(#) $Id: acserr.cpp,v 1.92 2010/05/31 09:36:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <iomanip>
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserr.cpp,v 1.91 2010/04/16 09:45:35 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserr.cpp,v 1.92 2010/05/31 09:36:51 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
@@ -53,9 +53,11 @@ ACS::Time ErrorTraceHelper::getTime()
     return ::getTimeStamp();
 }
 
-ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et, int depth) :
-    m_errorTracePtr(&et) , m_depth(depth)
+void ErrorTraceHelper::setErrorTrace(ACSErr::ErrorTrace &et, int depth)
 {
+    m_errorTracePtr= &et;
+    m_depth = depth;
+
     const ACSErr::ErrorTrace *c = m_errorTracePtr;
     if (m_depth)
 	{
@@ -69,9 +71,10 @@ ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et, int depth) :
 	}
     else
 	{
-    	m_current = 0/*NULL*/;
+    	m_current = 0;//NULL
 	}
 }
+
 
 ErrorTraceHelper::ErrorTraceHelper(ACSErr::ErrorTrace &et) :
     m_errorTracePtr(&et)
@@ -508,12 +511,18 @@ CompletionImpl::CompletionImpl() :
 {}
 
 CompletionImpl::CompletionImpl (const ACSErr::Completion &c) :
-    CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length())
-{}
+    CompletionInit(c)//, m_errorTraceHelper(previousError[0], previousError.length())
+{
+    if (previousError.length() > 0 )
+	m_errorTraceHelper.setErrorTrace(previousError[0], previousError.length());
+}
 
 CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
-    CompletionInit(*c), m_errorTraceHelper(previousError[0], previousError.length())
+    CompletionInit(*c)//, m_errorTraceHelper(previousError[0], previousError.length())
 {
+    if (previousError.length() > 0 )
+	m_errorTraceHelper.setErrorTrace(previousError[0], previousError.length());
+
     if (del)
 	{
 	delete c;
@@ -523,8 +532,10 @@ CompletionImpl::CompletionImpl(ACSErr::Completion* c, bool del) :
 
 CompletionImpl::CompletionImpl(ACSErr::Completion_var& c) :
     CompletionInit(*c.ptr()),
-    m_errorTraceHelper(previousError[0], previousError.length())
+    m_errorTraceHelper()//previousError[0], previousError.length())
 {
+ if (previousError.length() > 0)
+	m_errorTraceHelper.setErrorTrace(previousError[0], previousError.length());
 }
 
 void CompletionImpl::log(ACE_Log_Priority priorty)
@@ -559,8 +570,10 @@ CompletionImpl::operator=(CompletionImpl& c)
 }
 
 CompletionImpl::CompletionImpl (const CompletionImpl &c)
-    : CompletionInit(c), m_errorTraceHelper(previousError[0], previousError.length())
+    : CompletionInit(c), m_errorTraceHelper()
 {
+    if (previousError.length() > 0)
+	m_errorTraceHelper.setErrorTrace(previousError[0], previousError.length());
 }
 
 CompletionImpl&
