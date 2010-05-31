@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.116 2010/01/07 09:00:14 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.117 2010/05/31 09:47:30 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -210,7 +210,9 @@ clean_idl:
 
 
 ifeq ($(call mustBuild,C++),true)
+ifndef MAKE_VXWORKS
 TO_BE_INSTALLED = $(foreach member, $(IDL_FILES), $(VLTTOP)/idl/$(shell (cd ../idl; find . -name $(member).idl | grep -v /CVS/ | tail -1 )) $(VLTTOP)/include/$(member)C.h $(VLTTOP)/include/$(member)C.inl $(VLTTOP)/include/$(member)S.h $(VLTTOP)/include/$(member)S.inl $(VLTTOP)/include/$(member)S_T.h $(VLTTOP)/include/$(member)S_T.inl $(VLTTOP)/include/$(member)S_T.cpp)
+endif
 
 ifndef MAKE_VXWORKS
 TO_BE_INSTALLED += $(foreach member, $(IDL_FILES), $(VLTTOP)/lib/lib$(member)Stubs.a $(VLTTOP)/lib/lib$(member)Stubs.so )
