@@ -39,7 +39,7 @@
 
 	<target name="createJarsPlugin">
 		<exec executable="acsPluginBuilder">
-			<arg value="-i" />
+			<arg value="-l" />
 			<arg value="alma.acs.rcp.jars" />
 			<arg value="${buildDirectory}/plugins" />
 			<arg value="${acs.jars.required}" />
