@@ -288,7 +288,7 @@ fi
 
 if [ ! -e ../PRODUCTS/pylint-0.20.0.tar.gz \
      -o ! -e ../PRODUCTS/logilab-astng-0.20.0.tar.gz \
-     -o ! -e ../PRODUCTS/logilab-common-0.50.1.tar.gz
+     -o ! -e ../PRODUCTS/logilab-common-0.50.1.tar.gz \
    ]
 then
   echo Error: pylint sources are missing
@@ -310,7 +310,7 @@ fi
 
 if [ ! -e ../PRODUCTS/ipython-0.10.tar.gz \
      -o ! -e ../PRODUCTS/Twisted-10.0.0.tar.bz2 \
-     -o ! -e ../PRODUCTS/zope.interface-3.6.0.tar.gz \
+     -o ! -e ../PRODUCTS/zope.interface-3.6.1.tar.gz \
      -o ! -e ../PRODUCTS/Sphinx-0.6.5.tar.gz \
      -o ! -e ../PRODUCTS/pyOpenSSL-0.10.tar.gz \
      -o ! -e ../PRODUCTS/Pygments-1.3.1.tar.gz \
@@ -338,8 +338,8 @@ else
   pushd Sphinx-0.6.5
   $PYTHON_INTR setup.py install 
   popd
-  tar -zxf zope.interface-3.6.0.tar.gz
-  pushd zope.interface-3.6.0
+  tar -zxf zope.interface-3.6.1.tar.gz
+  pushd zope.interface-3.6.1
   $PYTHON_INTR setup.py install 
   popd
   tar -jxf Twisted-10.0.0.tar.bz2

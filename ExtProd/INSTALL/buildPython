@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.21 2010/05/31 14:43:59 agrimstrup Exp $"
+# "@(#) $Id: buildPython,v 1.22 2010/06/01 01:21:51 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -86,6 +86,7 @@ fi
 # Notes: See README for help
 #
 cd ../PRODUCTS
+
 rm -rf Python-2.6.5
 tar jxf Python-2.6.5.tar.bz2
 
@@ -105,7 +106,9 @@ if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
      -a  ${DISTRO}-${REL} != "RHLX-7.3"           \
      -a  ${DISTRO}-${REL} != "RHLX-9"           \
      -a  ${DISTRO}-${REL} != "RHEL-4"           \
+     -a  ${DISTRO}-${REL} != "RHEL-5"           \
      -a  ${DISTRO}-${REL} != "SL-4.1"           \
+     -a  ${DISTRO}-${REL} != "SL-5.3"           \
    ]
 then
     echo "OS not supported. Proceeding as for Linux RH 9"
@@ -162,7 +165,7 @@ then
    cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
-   if [ "$DISTRO" = "RHLX" -a \( "$REL" ="7.2" -o  "$REL" = "7.3" \) ]
+   if [ "$DISTRO" = "RHLX" -a \( "$REL" = "7.2" -o  "$REL" = "7.3" \) ]
    then
      cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.3 -ltcl8.3,g" >> Modules/Setup.dist.tmp
    else
@@ -180,12 +183,6 @@ fi
 ./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared
 make
 make install
-
-# to be discussed!
-# rm -rf $PYTHON_ROOT/lib/python
-# rm -rf $PYTHON_ROOT/include/python
-# cp -r $PYTHON_ROOT/lib/python2.2 $PYTHON_ROOT/lib/python
-# cp -r $PYTHON_ROOT/include/python2.2 $PYTHON_ROOT/include/python
 
 cd $CWD
 echo Python installation done!

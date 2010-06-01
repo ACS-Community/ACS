@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.19 2010/05/30 14:07:26 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.20 2010/06/01 01:21:51 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@ clean :
 	rm -rf ../PRODUCTS/Jinja2-2.4.1
 	rm -rf ../PRODUCTS/docutils-0.6
 	rm -rf ../PRODUCTS/Sphinx-0.6.5
-	rm -rf ../PRODUCTS/zope.interface-3.6.0
+	rm -rf ../PRODUCTS/zope.interface-3.6.1
 	rm -rf ../PRODUCTS/Twisted-10.0.0
 	rm -rf ../PRODUCTS/pyOpenSSL-0.10
 	rm -rf ../PRODUCTS/foolscap-0.5.1
