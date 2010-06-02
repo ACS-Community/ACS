@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.58 2010/05/28 12:22:29 hsommer Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.59 2010/06/02 12:49:03 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -143,6 +143,16 @@ fi
 # @TODO: When using several federated manager instances, we'll have to ensure that the jmanager.gclog files don't interfere with each other!
 #
 export JVM_GC_LOG_NAME=jmanager
+
+
+if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+    # Enable JVM debugging along with debug level stdout logging.
+    # Unlike with Java containers, we let the manager JVM pick a debug port, since ACS developers should be able to find that port in the JVM output.
+    export JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n"
+    echo "Manager will accept remote debuggers. See JVM output about the debugger port ('Listening for transport dt_socket at address: ...')."
+fi
+
 
 #
 # With ACS 8.1, more demanding testing at the OSF exposed connection problems to the manager, 
