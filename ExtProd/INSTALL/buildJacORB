@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.20 2009/09/18 10:29:58 msekoran Exp $"
+# "@(#) $Id: buildJacORB,v 1.21 2010/06/02 15:38:38 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -251,6 +251,8 @@ rm $JACORB_HOME/lib/backport-util-concurrent.jar
 ant convert.jdk5 
 
 # the main jacorb compilation
+# To include debug information, exchange the following two lines:
+#ant -Ddebug=true -Ddebuglevel=lines,vars,source all 
 ant all
 if [ $? -ne 0 ]
 then
