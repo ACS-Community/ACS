@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.51 2007/07/10 07:18:55 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.52 2010/06/03 18:06:42 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,7 @@
 #
 # additional include and library search paths
 #USER_INC = 
-USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lacsutil
+USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny -lTAO_CosNotification -lacsutil -llog4cpp
 
 #
 # MODULE CODE DESCRIPTION:
@@ -58,7 +58,7 @@ USER_LIB = -lACE -lTAO -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_Por
 EXECUTABLES     = 	
 EXECUTABLES_L   = 	testLogger testNoLogging testMacros \
 			loggingXMLParserTest testGenericLogger testLoggable testLoggingProxy \
-            testAnyLog testAUD_ARR
+            testAnyLog testAUD_ARR testLog4cpp
 
 loggingXMLParserTest_OBJECTS = loggingXMLParserTest
 loggingXMLParserTest_LIBS = logging
@@ -87,6 +87,9 @@ testAnyLog_LIBS   = logging
 testAUD_ARR_OBJECTS = testAUD_ARR
 testAUD_ARR_LIBS = logging
 testAUD_ARR_LDFLAGS = -lmaciClient
+
+testLog4cpp_OBJECTS = testLog4cpp
+testLog4cpp_LIBS   = logging
 
 #
 # <brief description of xxxxx program>

@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.66 2010/03/25 22:07:23 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.67 2010/06/03 18:06:42 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -101,13 +101,14 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingLogSvcHandler.h  loggingLogLevelDefinition.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h \
-			loggingAcsLogServiceImpl.h
+			loggingAcsLogServiceImpl.h loggingStdoutlayout.h \
+            loggingACSCategory.h loggingACSLoggingEvent.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
           loggingACSStructuredPushSupplierBin.h \
           loggingACSLogFactory_i.h loggingACSLog_i.h \
-		  loggingHelper.h
+		  loggingHelper.h logging ACSHierarchyMaintainer.h
 
 #
 # Libraries (public and local)
@@ -130,9 +131,11 @@ baselogging_LDFLAGS = -lACE -lTAO -lTAO_PortableServer -lloki -ggdb
 logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
                         loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
-			loggingACSLogger loggingLogSvcHandler 
-logging_LIBS    =	baselogging 
-logging_LDFLAGS =	-lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
+			loggingACSLogger loggingLogSvcHandler loggingStdoutlayout \
+           loggingACSCategory loggingACSHierarchyMaintainer \
+           loggingACSLoggingEvent 
+logging_LIBS    =	log4cpp baselogging
+logging_LDFLAGS = -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
 			            -lTAO_CosTrading -lTAO_DynamicAny \
                         -lTAO_CosNotification -lTAO_CosNotification_Serv \
