@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.4 2010/05/06 03:14:02 agrimstrup Exp $"
+# "@(#) $Id: test_generateXsdPythonBinding.py,v 1.5 2010/06/03 02:54:47 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -106,7 +106,7 @@ class TestMain(unittest.TestCase):
     @mock.patch('generateXsdPythonBinding.xmlpybind.EntitybuilderSettings')
     @mock.patch('generateXsdPythonBinding.find_schema_files')
     @mock.patch('generateXsdPythonBinding.generate_bindings')
-    def test_generation_fault(self, ebs_mock, fsf_mock, gen_mock):
+    def test_generation_fault(self, gen_mock, fsf_mock, ebs_mock):
         fsf_mock.return_value = ([1],[1])
         gen_mock.return_value = 1
         self.assertEqual(1, generateXsdPythonBinding.main(['foo'],
@@ -115,7 +115,7 @@ class TestMain(unittest.TestCase):
     @mock.patch('generateXsdPythonBinding.xmlpybind.EntitybuilderSettings')
     @mock.patch('generateXsdPythonBinding.find_schema_files')
     @mock.patch('generateXsdPythonBinding.generate_bindings')
-    def test_main_ok(self, ebs_mock, fsf_mock, gen_mock):
+    def test_main_ok(self, gen_mock, fsf_mock, ebs_mock):
         fsf_mock.return_value = ([('b', 'a')], ['a'])
         gen_mock.return_value = 0
         self.assertEqual(0, generateXsdPythonBinding.main(['foo'],
