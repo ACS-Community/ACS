@@ -222,7 +222,7 @@ MessageWidgetListener
     /** 
      * The progress bar for long time operations
      */
-    private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
+    private JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL,0,100);
     
     /**
      * The <code>ZoomManager</code> to perform zooming
@@ -1486,32 +1486,40 @@ MessageWidgetListener
      * @param min The starting position
      * @param max The final position
      */
-    public void animateProgressBar(String text, int min, int max) {
-    	if (min>=max) {
-    		throw new IllegalArgumentException("Invalid range: ["+min+","+max+"]");
-    	}
-    	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
-    	setCursor(hourglassCursor);
-    	if (text!=null && text.length()>0) {
-    			progressBar.setString(text);
-    			progressBar.setStringPainted(true);
-    			progressBar.setToolTipText(text);
-    	} else {
-    		progressBar.setStringPainted(false);
-    		progressBar.setToolTipText("Wait please");
-    	}
-    	progressBar.setMinimum(min);
-    	progressBar.setMaximum(max);
-    	progressBar.setIndeterminate(false);
-    	progressBar.setVisible(true);
+    public void animateProgressBar(final String text, final int min, final int max) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			if (min>=max) {
+    	    		throw new IllegalArgumentException("Invalid range: ["+min+","+max+"]");
+    	    	}
+    	    	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+    	    	setCursor(hourglassCursor);
+    	    	if (text!=null && text.length()>0) {
+    	    			progressBar.setString(text);
+    	    			progressBar.setStringPainted(true);
+    	    			progressBar.setToolTipText(text);
+    	    	} else {
+    	    		progressBar.setStringPainted(false);
+    	    		progressBar.setToolTipText("Wait please");
+    	    	}
+    	    	progressBar.setMinimum(min);
+    	    	progressBar.setMaximum(max);
+    	    	progressBar.setIndeterminate(false);
+    	    	progressBar.setVisible(true);
+    		}
+    	});
     }
     
     /**
      * Move the progressbar when in determinate mode
      * @param newPos
      */
-    public void moveProgressBar(int newPos) {
-    	progressBar.setValue(newPos);
+    public void moveProgressBar(final int newPos) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			progressBar.setValue(newPos);
+    		}
+    	});
     }
     
     /**
@@ -1520,18 +1528,22 @@ MessageWidgetListener
      *@param text The text to show in the toolbar
      *            If it is null or empty then no text will be displayed
      */
-    public void animateProgressBar(String text) {
-    	Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
-    	setCursor(hourglassCursor);
-    	if (text!=null && text.length()>0) {
-    			progressBar.setString(text);
-    			progressBar.setStringPainted(true);
-    			progressBar.setToolTipText(text);
-    	} else {
-    		progressBar.setStringPainted(false);
-    		progressBar.setToolTipText("Wait please");
-    	}
-    	progressBar.setIndeterminate(true);
+    public void animateProgressBar(final String text) {
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			Cursor hourglassCursor = new Cursor(Cursor.WAIT_CURSOR);
+    	    	setCursor(hourglassCursor);
+    	    	if (text!=null && text.length()>0) {
+    	    			progressBar.setString(text);
+    	    			progressBar.setStringPainted(true);
+    	    			progressBar.setToolTipText(text);
+    	    	} else {
+    	    		progressBar.setStringPainted(false);
+    	    		progressBar.setToolTipText("Wait please");
+    	    	}
+    	    	progressBar.setIndeterminate(true);
+    		}
+    	});
     }
     
     /**
@@ -1539,14 +1551,18 @@ MessageWidgetListener
      * has terminated)
      */
     public void freezeProgressBar() {
-    	progressBar.setIndeterminate(false);
-    	progressBar.setMinimum(0);
-    	progressBar.setMaximum(100);
-    	progressBar.setValue(0);
-    	progressBar.setStringPainted(false);
-    	progressBar.setToolTipText(null);
-    	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-    	setCursor(normalCursor);
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			progressBar.setIndeterminate(false);
+    	    	progressBar.setMinimum(0);
+    	    	progressBar.setMaximum(100);
+    	    	progressBar.setValue(0);
+    	    	progressBar.setStringPainted(false);
+    	    	progressBar.setToolTipText(null);
+    	    	Cursor normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+    	    	setCursor(normalCursor);
+    		}
+    	});
     }
     
     /**
@@ -1966,13 +1982,20 @@ MessageWidgetListener
 	 * 		abnormal situations then a different strategy must be used to avoid the error 
 	 * 		widget to disappear at the wrong time (i.e. without the user acknowledge the problem).
 	 * </OL>  	
-	 * 
+	 * <P>
+	 * <code>showErrorMessage</code> prints a message in the stderr too in case the glass pane
+	 * can't be made visible (for example if an error occurs while building the 
+	 * <code>LoggingClient</code> object).
 	 * 
 	 * @param shortDescription The description of the error
 	 * @param t The throwable that caused the error (can be <code>null</code>).
 	 * @return
 	 */
 	public void showErrorMessage(String shortDescription, Throwable t) {
+		System.err.println("JLOG ERROR: "+shortDescription);
+		if (t!=null) {
+			t.printStackTrace(System.err);
+		}
 		if (t==null) {
 			errorWidget.showMessage(MessageType.Error, shortDescription, null);
 		} else {
