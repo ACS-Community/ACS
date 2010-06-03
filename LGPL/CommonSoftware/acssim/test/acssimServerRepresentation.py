@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acssimServerRepresentation.py,v 1.1 2007/03/22 22:37:40 agrimstrup Exp $"
+# "@(#) $Id: acssimServerRepresentation.py,v 1.2 2010/06/03 03:34:40 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -68,7 +68,7 @@ class ServerRepresentationTest(unittest.TestCase):
         self.simulator.setMethod('LAMP_ACCESS', 'getLampBrightness', code, 0.0)
 
         brightness = self.lamp.getLampBrightness()
-        assert(6.8, brightness, 0.01)
+        assert abs(brightness - 6.8) <= 0.01
 
     #---------------------------------------------------------------------------
     def testPersistentData(self):
@@ -90,7 +90,7 @@ getGlobalData('brightness')"""
 
         self.lamp.setLampBrightness(3.14)
         brightness = self.lamp.getLampBrightness()
-        assert(3.14, brightness, 0.01)
+        assert abs(brightness - 3.14) <= 0.01
 
 
     #---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ None"""
         self.simulator.setMethod('LAMP_ACCESS', 'setLampBrightness', code, 0.0)
         self.lamp.setLampBrightness(3.14)
         brightness = self.simulator.getGlobalData('brightness')
-        assert('3.14', brightness)
+        assert brightness == '3.14'
 
     #---------------------------------------------------------------------------
     def testRaiseException(self):
