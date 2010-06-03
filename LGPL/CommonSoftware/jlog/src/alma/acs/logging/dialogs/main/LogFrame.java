@@ -383,7 +383,10 @@ public class LogFrame extends JFrame implements WindowListener, ACSLogConnection
 		setVisible(false);
 		closing=true;
 		try {
-			loggingClient.stop();
+			if (loggingClient!=null) {
+				// loggingClient can be null if an exception happens in the constructor
+				loggingClient.stop();
+			}
 		} catch (Throwable t) {
 			System.err.println("Exception caught while closing the logging client: "+t.getMessage());
 			t.printStackTrace(System.err);
