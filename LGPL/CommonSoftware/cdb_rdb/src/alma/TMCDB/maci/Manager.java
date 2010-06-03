@@ -36,6 +36,7 @@ public class Manager implements java.io.Serializable {
     // comma separated array
     private String Startup = "";
     private String ServiceComponents = "Log,LogFactory,NotifyEventChannelFactory,ArchivingChannel,LoggingChannel,InterfaceRepository,CDB,ACSLogSvc,PDB";
+    private String ServiceDaemons = "";
     
     private LoggingConfig LoggingConfig;
 
@@ -202,6 +203,21 @@ public class Manager implements java.io.Serializable {
 	 */
 	public void setServiceComponents(String serviceComponents) {
 		ServiceComponents = serviceComponents;
+	}
+
+	/**
+	 * @return the serviceDaemons
+	 */
+	public String getServiceDaemons() {
+		if (ServiceDaemons == null) return "";	// Oracle empty/NULL string workaround
+		return ServiceDaemons;
+	}
+
+	/**
+	 * @param serviceDaemons the serviceDaemons to set
+	 */
+	public void setServiceDaemons(String serviceDaemons) {
+		ServiceDaemons = serviceDaemons;
 	}
 
 	/**

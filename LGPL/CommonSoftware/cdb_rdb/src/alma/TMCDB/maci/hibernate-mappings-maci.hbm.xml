@@ -43,6 +43,7 @@
     
     <property name="Startup" column="Startup" />
     <property name="ServiceComponents" column="ServiceComponents" />
+    <property name="ServiceDaemons" column="ServiceDaemons" />
     <property name="Timeout" column="Timeout" />
     <property name="ClientPingInterval" column="ClientPingInterval" />
     <property name="AdministratorPingInterval" column="AdministratorPingInterval" />

@@ -769,6 +769,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					manager.setLoggingConfig(managerLoggingConfig);
 					manager.setStartup(managerDAO.get_string("Startup"));
 					manager.setServiceComponents(managerDAO.get_string("ServiceComponents"));
+					manager.setServiceDaemons(managerDAO.get_string("ServiceDaemons"));
 					manager.setTimeout((int)managerDAO.get_double("Timeout"));
 					manager.setClientPingInterval((int)managerDAO.get_double("ClientPingInterval"));
 					manager.setAdministratorPingInterval((int)managerDAO.get_double("AdministratorPingInterval"));

@@ -181,6 +181,7 @@ TABLE Manager
     LoggingConfigId           INTEGER                     NOT NULL
     Startup                   LONGVARCHAR (256)           NULL
     ServiceComponents         LONGVARCHAR (256)           NULL
+    ServiceDaemons            LONGVARCHAR (256)           NULL
     Timeout                   INTEGER                     DEFAULT 50
     ClientPingInterval        INTEGER                     DEFAULT 60
     AdministratorPingInterval INTEGER                     DEFAULT 45
