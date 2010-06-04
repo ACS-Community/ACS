@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.169 2010/05/21 09:45:12 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.170 2010/06/04 15:58:36 javarias Exp $"
 #
 #
 
@@ -18,7 +18,7 @@ MODULES_KIT = vlt doc acs acstempl
 # I skip doxygen, that should be after compat and before tat,
 # because it is already built in the prepare phase.
 #
-MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor gmp jfree xsddoc extidl vtd-xml oAW shunit2
+MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor gmp jfree xsddoc extidl vtd-xml oAW shunit2 log4cpp
 MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl acsjlog repeatGuard loggingts loggingtsTypes cdb cdbChecker codegen cdb_rdb acsContainerServices acscomponent cdbBrowser errorBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci acssamp acscallbacks mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI acssim bulkData containerTests acscourse acsalarmpy ACSLaser
 ######## end Modules ###########################
 
