@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.8 2010/03/03 12:56:34 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.9 2010/06/04 14:02:31 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -51,6 +51,7 @@ endif
 #
 # TARGETS
 # -------
+.NOTPARALLE: all
 all:	do_all unpack patch buildXerces  
 	@echo " . . . 'all' done" 
 
@@ -86,7 +87,8 @@ install : install_all
 # 
 # I had to put a 'true' because patch returns -1. No idea why.  
 #
-preparePatch: unpack
+.NOTPARALLEL: preparePatch
+preparePatch:
 	mv xml-xerces.patch xml-xerces.patch.old
 	rm -rf tmp_unpack; mkdir -p tmp_unpack
 	cd tmp_unpack; gtar -xzf ../xml-xerces-java.tar.gz; mv xml-xerces xml-xerces.orig
@@ -98,6 +100,7 @@ preparePatch: unpack
 #
 # Unpack the tar file with the original distribution
 #
+.NOTPARALLE: unpack
 unpack:
 	@if [ ! -d xml-xerces ]; then \
 	      echo " . . . unpack original distribution";\
@@ -107,9 +110,9 @@ unpack:
 #
 # Apply the patch
 #
-patch: preparePatch last_patched
+patch: last_patched
 
-last_patched: preparePatch xml-xerces.patch
+last_patched: xml-xerces.patch
 	@cd xml-xerces; patch -p1 < ../xml-xerces.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
@@ -119,7 +122,7 @@ last_patched: preparePatch xml-xerces.patch
 # Then copy the jar file in ../lib/endorsed,
 # from where it can be installed.
 #
-buildXerces: patch
+buildXerces:
 	@cd xml-xerces/java; ./build.sh jar
 	@mkdir -p ../lib/endorsed
 	@cp xml-xerces/java/build/xercesImpl.jar ../lib/endorsed
