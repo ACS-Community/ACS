@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2010/05/25 12:45:11 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/06/04 11:53:08 jschwarz Exp $"
 #
 # Makefile of ........
 #
@@ -149,7 +149,7 @@ install : install_all
 	@-mkdir tmcdb
 	@rm -f CreateHsqldbTables.sql
 	@cat ../config/TMCDB_swconfigcore/hsqldb/CreateHsqldbTables.sql ../config/TMCDB_swconfigext/hsqldb/CreateHsqldbTables.sql > CreateHsqldbTables.sql
-	@acsStartJava org.hsqldb.util.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
+	@acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb CreateHsqldbTables.sql
 	@ant generate
 	@touch .done_generating_classes
 

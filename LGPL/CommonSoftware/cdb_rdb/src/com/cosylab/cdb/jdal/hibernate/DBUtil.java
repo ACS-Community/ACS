@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Logger;
 
-import org.hsqldb.jdbc.jdbcDataSource;
+import org.hsqldb.jdbc.JDBCDataSource;
 
 import com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALConfigurationPlugin;
 import com.cosylab.cdb.jdal.hibernate.plugin.PluginFactory;
@@ -101,9 +101,9 @@ public class DBUtil {
 		// Load the HSQL Database Engine JDBC driver
         // hsqldb.jar should be in the class path or made part of the current jar
 		if (logger != null) logger.info("Connecting to TMCDB in HsqlDB as " + dbUser + " with: " + dbUrl);
-	    Class.forName("org.hsqldb.jdbcDriver");
+	    Class.forName("org.hsqldb.jdbc.JDBCDriver");
 	    // ... from hsqldb.jar
-	    jdbcDataSource hds = new jdbcDataSource();
+	    JDBCDataSource hds = new JDBCDataSource();
 	    hds.setDatabase(dbUrl);
 	    Connection conn = hds.getConnection(dbUser, dbPassword);
         // Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
