@@ -822,6 +822,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 							hostComputer.setConfiguration(config);
 							hostComputer.setNetworkName(computerHostName);
 							hostComputer.setRealTime(false);
+							hostComputer.setDiskless(false);
 							hostComputer.setProcessorType("uni");
 							hostComputer.setPhysicalLocation(null);
 							session.persist(hostComputer);
