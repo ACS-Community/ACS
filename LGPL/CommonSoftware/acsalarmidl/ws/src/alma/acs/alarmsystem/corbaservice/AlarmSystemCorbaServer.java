@@ -21,34 +21,35 @@
  */
 package alma.acs.alarmsystem.corbaservice;
 
-import java.util.Enumeration;
+import java.io.StringReader;
+import java.lang.reflect.Constructor;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import java.io.StringReader;
-import java.lang.reflect.Constructor;
-
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
+import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.CosNaming.NamingContextPackage.CannotProceed;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
-import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.PortableServer.IdAssignmentPolicyValue;
+import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import org.omg.PortableServer.POAManager;
+import org.omg.PortableServer.RequestProcessingPolicyValue;
 import org.omg.PortableServer.Servant;
+import org.omg.PortableServer.ServantRetentionPolicyValue;
 import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
 import org.omg.PortableServer.POAPackage.AdapterNonExistent;
 import org.omg.PortableServer.POAPackage.InvalidPolicy;
-import org.omg.PortableServer.IdAssignmentPolicyValue;
-import org.omg.PortableServer.LifespanPolicyValue;
-import org.omg.PortableServer.ServantRetentionPolicyValue;
-import org.omg.PortableServer.RequestProcessingPolicyValue;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
@@ -58,17 +59,13 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
-import alma.acs.alarmsystem.corbaservice.configuration.AlarmSystemConfiguration;
-import alma.acs.alarmsystem.corbaservice.configuration.ConfigurationProperty;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
-import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.AlarmServiceOperations;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
+import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
+import alma.alarmsystem.alarmmessage.generated.ConfigurationProperty;
 
 /**
  * Class that provides default ACS CORBA service implementation.

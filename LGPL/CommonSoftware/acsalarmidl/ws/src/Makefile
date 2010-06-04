@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2010/05/04 16:37:38 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/06/04 08:28:13 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -122,12 +122,6 @@ CDB_SCHEMAS = 	AcsAlarmSystem \
 IDL_FILES = AcsAlarmSystem
 IDL_TAO_FLAGS =
 USER_IDL =
-
-#Generated code
-CASTOR_GENERATED= ../config/CDB/schemas/acsalarm-alarmservice
-../config/CDB/schemas/acsalarm-alarmservice_PACKAGE = alma.acs.alarmsystem.corbaservice.configuration
-
-
 #
 # Jarfiles and their directories
 #
@@ -201,24 +195,10 @@ endif
 #
 # TARGETS
 # -------
-generated:
-	@echo "\n\nCode generation in progress...."
-	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ; \
-	do \
-		acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};  \
-	done
-	@echo "Code generation done!\n\n"
-	
-clean_generated:
-	@for item in $(foreach name, $(CASTOR_GENERATED), "$(subst .,/,$($(name)_PACKAGE))") ; \
-	do \
-	rm -rf $${item}; \
-	done
-	
-all:	generated do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_generated clean_all 
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
