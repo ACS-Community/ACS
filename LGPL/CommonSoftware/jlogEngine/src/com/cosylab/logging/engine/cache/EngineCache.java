@@ -58,23 +58,7 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class EngineCache extends Thread {
-	/**
-	 * The default max size for each file of the cache.
-	 * The default value is used when the java property is not found and the 
-	 * size is not given explicitly.
-	 * 
-	 * NFS could be limited to 2GB depending on the installed version
-	 */
-	public static long DEFAULT_SIZE = 1073741824; // 1Gb
-	
-	// The name of the property with the size of the file
-	public static String MAXSIZE_PROPERTY_NAME = "jlog.enine.cache.maxFilesSize";
-	
-	/**
-	 * The max length of each file of the cache
-	 */
-	private long maxSize;
-	
+
 	/**
 	 * Each file of the cache is identified by a key.
 	 * <P>
@@ -131,6 +115,11 @@ public class EngineCache extends Thread {
 	private volatile boolean closed=false;
 	
 	/**
+	 * The handler to create and delete the file of the this cache.
+	 */
+	private final ILogQueueFileHandler fileHandler;
+	
+	/**
 	 * Build a cache.
 	 * 
 	 * The max size of each file of the cache is calculated in the following way:
@@ -138,7 +127,11 @@ public class EngineCache extends Thread {
 	 * 2. the default size is used
 	 */
 	public EngineCache() {
-		this(getDefaultMaxFileSize());
+		super("EngineCache");
+		fileHandler=new LogQueueFileHandlerImpl();
+		setDaemon(true);
+		setPriority(MIN_PRIORITY);
+		start();
 	}
 	
 	/**
@@ -151,7 +144,24 @@ public class EngineCache extends Thread {
 		if (size<=1024) {
 			throw new IllegalArgumentException("The size can't be less then 1024");
 		}
-		maxSize=size;
+		fileHandler=new LogQueueFileHandlerImpl(size);
+		setDaemon(true);
+		setPriority(MIN_PRIORITY);
+		start();
+	}
+	
+	/**
+	 * Build the cache by setting the size of the files and the handler to 
+	 * create and delete the files.
+	 * 
+	 * @param handler The handler to create and delete the files
+	 */
+	public EngineCache(ILogQueueFileHandler handler) {
+		super("EngineCache");
+		if (handler==null) {
+			throw new IllegalArgumentException("The ILogQueueFileHandler can't be null");
+		}
+		fileHandler=handler;
 		setDaemon(true);
 		setPriority(MIN_PRIORITY);
 		start();
@@ -166,39 +176,7 @@ public class EngineCache extends Thread {
 	 * @throws If it was not possible to create a temporary file
 	 */
 	private File getNewFile() throws IOException {
-		String name=null;
-		File f=null;
-		try {
-			// Try to create the file in $ACS_TMP
-			String acstmp = System.getProperty("ACS.tmp");
-			if (!acstmp.endsWith(File.separator)) {
-				acstmp=acstmp+File.separator;
-			}
-			File dir = new File(acstmp);
-			f = File.createTempFile("jlogEngineCache",".tmp",dir);
-			name=f.getAbsolutePath();
-		} catch (IOException ioe) {
-			// An error :-O
-			String homeDir = System.getProperty("user.dir");
-			// Check if the home dir is writable
-			File homeDirFile = new File(homeDir);
-			if (homeDirFile.isDirectory() && homeDirFile.canWrite()) {
-				do {
-					// Try to create the file in the home directory
-					int random = new Random().nextInt();
-					name = homeDir + File.separator+"jlogEngineCache"+random+".jlog";
-					f = new File(name);
-				} while (f.exists());
-			} else {
-				// The home folder is not writable: try to get a system temp file
-				f=File.createTempFile("jlogEngineCache",".tmp");
-				name=f.getAbsolutePath();
-			}
-		}
-		if (f!=null) {
-			f.deleteOnExit();
-		}
-		return f;
+		return fileHandler.getNewFile();
 	}
 	
 	/**
@@ -207,7 +185,7 @@ public class EngineCache extends Thread {
 	 * @param itemToDel The item to delete
 	 * @return true if the file is deleted
 	 */
-	private boolean releaseFile(CacheFile itemToDel) {
+	private void releaseFile(CacheFile itemToDel) {
 		if (itemToDel==null) {
 			throw new IllegalArgumentException("The item to delete can't be null");
 		}
@@ -218,9 +196,9 @@ public class EngineCache extends Thread {
 		} catch (FileNotFoundException fnfe) {
 			System.err.println("Error deleting "+itemToDel.fileName+" (key "+itemToDel.key+")");
 			fnfe.printStackTrace(System.err);
-			return false;
+			return ;
 		}
-		return f.delete();
+		fileHandler.fileProcessed(f,null,null);
 	}
 	
 	/**
@@ -302,7 +280,7 @@ public class EngineCache extends Thread {
 			return;
 		}
 		// Check if a new file must be created
-		if (outCacheFile==null || outCacheFile.getFileLength()>=maxSize) {
+		if (outCacheFile==null || outCacheFile.getFileLength()>=fileHandler.getMaxFileSize()) {
 			File f = getNewFile();
 			if (f==null) {
 				throw new IOException("Error creating a cache file");
@@ -387,17 +365,5 @@ public class EngineCache extends Thread {
 				Thread.sleep(250);
 			} catch (InterruptedException ie) {}
 		}
-	}
-
-	/**
-	 * Get the max size of the files out of the system properties or
-	 * uses the default value if the property does not exist
-	 */
-	private static long getDefaultMaxFileSize() {
-		Integer fileSizeFromProperty = Integer.getInteger(MAXSIZE_PROPERTY_NAME);
-		if (fileSizeFromProperty != null) {
-			return fileSizeFromProperty.longValue();
-		}
-		return DEFAULT_SIZE;
 	}
 }
