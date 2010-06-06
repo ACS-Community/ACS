@@ -54,7 +54,7 @@ public class EngineCacheTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		// Build the cache
-		cache = new EngineCache(CACHE_SIZE);
+		cache = new EngineCache(CACHE_SIZE,false);
 		assertNotNull(cache);
 		assertEquals(0, cache.getActiveFilesSize());
 		assertEquals(0, cache.size());
@@ -87,7 +87,7 @@ public class EngineCacheTest extends TestCase {
 		int currentSz=0;
 		long t=0;
 		while (currentSz<size) {
-			String str = ""+(t++);
+			String str = "TimeStamp=\"2005-12-02T13:45:02.761\" "+(t++);
 			currentSz+=str.length();
 			strings.add(str);
 		}
