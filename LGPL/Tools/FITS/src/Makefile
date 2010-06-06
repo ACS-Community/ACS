@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.10 2008/06/03 18:06:08 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.11 2010/06/06 07:17:51 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -190,17 +190,19 @@ else
 	INSTALLPATH := $(ACSROOT)
 endif
 
-Prepare:
+org:
 	@gtar xvzf jfits-0.93.tgz >/dev/null
 	@chmod u+w org/eso/fits/*.java
-	@gtar xvzf pyfits-1.3.tar.gz
+	@gtar xvzf pyfits-1.3.tar.gz >/dev/null
 	@cd pyfits-1.3; python setup.py install --home="$(INSTALLPATH)" --install-purelib="$(INSTALLPATH)/lib/python/site-packages"
 
+
+jfits_djar_prereq = org
 #	@cp -pR pyfits ../lib/python/site-packages
 #
 # TARGETS
 # -------
-all:	Prepare do_all
+all:	org do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
