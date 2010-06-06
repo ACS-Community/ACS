@@ -71,7 +71,9 @@ public interface ILogQueueFileHandler {
 	 * 
 	 * @param filePointer The file to be released
 	 * @param minTime The min timestamp of the logs in cache
+	 * 				  (<code>null</code> if the file is empty)
 	 * @param maxTime The max timestamp of the logs in cache
+	 * 				  (<code>null</code> if the file is empty)
 	 */
 	void fileProcessed(File filePointer, String minTime, String maxTime);
 	

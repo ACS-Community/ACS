@@ -38,6 +38,10 @@ public class LogQueueFileHandlerImpl implements ILogQueueFileHandler {
 	
 	/**
 	 * Build the handler with the default size for the files.
+	 * 
+	 * The max size of each file of the cache is calculated in the following way:
+	 * 1. if the java property is present, the size is taken from suc a property
+	 * 2. the default size is used
 	 */
 	public LogQueueFileHandlerImpl() {
 		Integer fileSizeFromProperty = Integer.getInteger(MAXSIZE_PROPERTY_NAME);
