@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2010/03/03 10:00:06 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.9 2010/06/06 06:54:42 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -80,6 +80,9 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+
+castor_djar_prereq=org
+
 #
 # TARGETS
 # -------
@@ -105,6 +108,11 @@ RUN_ANT_PRE = resurrectPatchedSource
 
 cleanAnt:
 	ant clean
+
+org:
+	$(AT)export CLASSPATH=""; ant -DDEBUG=$(DEBUG) \
+	-DINTROOT=$(INTROOT) -DACSROOT=$(ACSROOT) \
+	resurrectPatchedSource
 
 preAnt:
 	$(AT)for member in $(foreach name, $(RUN_ANT_PRE), $(name) ); \
