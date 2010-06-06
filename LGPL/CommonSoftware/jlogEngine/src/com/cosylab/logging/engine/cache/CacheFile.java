@@ -22,6 +22,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import com.cosylab.logging.engine.LogEngineException;
+import com.cosylab.logging.engine.ACS.CacheUtils;
+
+import alma.acs.util.IsoDateFormat;
 
 /**
  * Each file used by the cache.
@@ -32,12 +39,18 @@ import java.io.RandomAccessFile;
  *  <LI>a {@link RandomAccessFile} for reading and writing
  * </UL>
  * There are two booleans signaling if  the file is used for reading and writing.
- * In this way we know when the reads and writes are terminated close the file.
+ * In this way we know when the reads and writes are terminated and the file
+ * can be safely closed.
  *  
  * @author acaproni
  *
  */
 public class CacheFile {
+	
+	/**
+	 * The simple date format used to write and read dates from a string
+	 */
+	public static final SimpleDateFormat dateFormat = new IsoDateFormat();
 	
 	/**
 	 * The name of the file
@@ -76,16 +89,49 @@ public class CacheFile {
 	private boolean writing=false;
 	
 	/**
+	 * <code>true</code> if the string in the cache are in binary format
+	 * and <code>false</code> if XML.
+	 */
+	private final boolean binary;
+	
+	/**
+	 * The date of the oldest log in this file in ISO format
+	 */
+	private String dateOfOldestLog=null;
+	
+	/**
+	 * The date of the oldest log in this file in milliseconds
+	 */
+	private long oldestLogDateMillis=0;
+	
+	/**
+	 * The date of the youngest log in this file in ISO format
+	 */
+	private String dateOfYoungestLog=null;
+	
+	/**
+	 * The date of the youngest log in this file in milliseconds
+	 */
+	private long youngestLogDateMillis=0;
+	
+	/**
+	 * The string to look for in the XML log while getting the date
+	 */
+	private static final String timestampStrTag="TIMESTAMP=\"";
+	
+	/**
 	 * Constructor 
 	 * 
 	 * @param fName The name of the file
 	 * @param key The key of this entry
 	 * @param rf The <code>RandomAccessFile</code> used for I/O
 	 * @param f The <code>File</code> used to get the length
+	 * @param binary if the string of logs are in binary format
+	 *               and false if XML strings
 	 * 
 	 * @see {@link CacheFile(String fName, Integer key)}
 	 */
-	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f) {
+	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f, boolean binary) {
 		if (fName==null || fName.isEmpty()) {
 			throw new IllegalArgumentException("The file name can't be null not empty");
 		}
@@ -99,6 +145,7 @@ public class CacheFile {
 		this.key=key;
 		raFile=rf;
 		file=f;
+		this.binary=binary;
 	}
 	
 	/**
@@ -193,8 +240,12 @@ public class CacheFile {
 	 * 
 	 * @param str The string to write in the file
 	 * @return The ending position of the string in the file
+	 * 
+	 * @throws IOException In case of error while performing I/O
+	 * @throws LogEngineException In case of error reading the date of the 
+	 *                            log from str
 	 */
-	public synchronized CacheEntry writeOnFile(String str, Integer key) throws IOException {
+	public synchronized CacheEntry writeOnFile(String str, Integer key) throws IOException, LogEngineException {
 		if (str==null || str.isEmpty()) {
 			throw new IllegalArgumentException("Invalid string to write on file");
 		}
@@ -213,6 +264,7 @@ public class CacheFile {
 			raFile.writeBytes(str);
 			endPos = file.length();	
 		}
+		updateLogDates(str);
 		return new CacheEntry(key,startPos,endPos);
 	}
 	
@@ -258,5 +310,81 @@ public class CacheFile {
 	public synchronized void setWritingMode(boolean writing) {
 		this.writing=writing;
 		checkRaFileUsage();
+	}
+	
+	/**
+	 * Update the times of the youngest and oldest log
+	 * in this file.
+	 * 
+	 * @param str The string representing the log
+	 */
+	private void updateLogDates(String str) throws LogEngineException{
+		long millis=0; // Date of current log read from str
+		String timestamp; // Date of current log ISO format
+		if (binary) {
+			// The string format is defined in CacheUtils
+			String[] strs = str.split(CacheUtils.SEPARATOR);
+			try {
+				synchronized (dateFormat) {
+					millis=dateFormat.parse(strs[0]).getTime();
+				}
+			} catch (ParseException e) {
+				System.err.println("Error parsing the date from: ["+strs[0]+"]");
+				throw new LogEngineException(e);
+			}
+			timestamp=strs[0];
+		} else {
+			// XML
+			//
+			// To improve performances I don't want to parse the log
+			// in this method so I parse the string knowing that the
+			// timestamp has always the same format
+			str=str.toUpperCase();
+			int pos=str.indexOf(timestampStrTag);
+			if (pos==-1) {
+				String msg=timestampStrTag+" not found in XML: ["+str+"]";
+				System.err.println(msg);
+				throw new LogEngineException(msg);
+			}
+			// switch to the end of the TIMESTAMP string
+			int startPosOfTimestamp=pos+timestampStrTag.length();
+			int endPos=str.indexOf('"', startPosOfTimestamp);
+			timestamp=str.substring(startPosOfTimestamp, endPos);
+			try {
+				synchronized (dateFormat) {
+					millis=dateFormat.parse(timestamp).getTime();
+				}
+			} catch (ParseException e) {
+				System.err.println("Error parsing the date from: ["+timestamp+"]");
+				throw new LogEngineException(e);
+			}
+			
+			// check and store the date
+			if (millis<youngestLogDateMillis ||youngestLogDateMillis==0) {
+				youngestLogDateMillis=millis;
+				dateOfYoungestLog=timestamp;
+			}
+			if (millis>oldestLogDateMillis || oldestLogDateMillis==0) {
+				oldestLogDateMillis=millis;
+				dateOfOldestLog=timestamp;
+			}
+			
+		}
+	}
+	
+	/**
+	 * @return the date of the youngest log in this file
+	 * in ISO format
+	 */
+	public String minDate() {
+		return dateOfYoungestLog;
+	}
+	
+	/**
+	 * @return the date of the oldest log in this file
+	 * in ISO format
+	 */
+	public String maxDate() {
+		return dateOfOldestLog;
 	}
 }
