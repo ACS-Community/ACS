@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2010/03/03 10:43:28 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/06/06 06:51:22 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -21,6 +21,7 @@ SHELL=/bin/bash
 PLATFORM := $(shell uname)
 XSDDOC_VER = 1.0
 
+xsddoc_djar_prereq=last_unpacked last_patched
 #
 # Jarfiles and their directories
 #
@@ -90,6 +91,9 @@ install : install_all
 unpack : last_unpacked
 .PHONY : unpack
 
+# the net outcome of this is a net directory in the CWD
+# and an up to date last_unpacked file
+#
 last_unpacked: xsddoc-$(XSDDOC_VER).tar.gz
 	@echo "== Extracting sources from the tar file"
 	@gtar -xzf xsddoc-$(XSDDOC_VER).tar.gz xsddoc-$(XSDDOC_VER)/src/net xsddoc-$(XSDDOC_VER)/LICENSE.txt
