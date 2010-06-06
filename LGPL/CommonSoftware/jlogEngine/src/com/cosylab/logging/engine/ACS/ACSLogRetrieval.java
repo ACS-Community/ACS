@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.38 2009/07/07 09:35:52 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.39 2010/06/06 19:34:19 acaproni Exp $
  * @since    
  */
 
@@ -36,6 +36,7 @@ import alma.acs.logging.engine.utils.ResourceChecker;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.LogMatcher;
 import com.cosylab.logging.engine.cache.EngineCache;
+import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
@@ -118,10 +119,14 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	// true if the binary format is in use, false otherwise
 	private boolean binaryFormat;
 
-	// The cache
-	private EngineCache cache = new EngineCache();
+	/**
+	 * The cache
+	 */
+	private static EngineCache cache;
 	
-	// The thread sending logs to the listeners
+	/**
+	 * The thread sending logs to the listeners
+	 */
 	private Thread thread;
 	
 	/**
@@ -237,6 +242,26 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
+		cache=new EngineCache();
+		this.listenersDispatcher=listenersDispatcher;
+		this.binaryFormat=binFormat;
+		initialize();
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param listenersDispatcher The object to send messages to the listeners
+	 *                            Can't be null
+	 * @param binFormat true if the lags are binary, 
+	 *                  false if XML format is used
+	 * @param The handler for the files of the cache 
+	 */
+	public ACSLogRetrieval(
+			ACSListenersDispatcher listenersDispatcher,
+			boolean binFormat,
+			ILogQueueFileHandler fileHandler) {
+		cache=new EngineCache(fileHandler);
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();

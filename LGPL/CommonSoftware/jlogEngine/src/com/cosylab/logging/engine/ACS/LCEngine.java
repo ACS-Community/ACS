@@ -32,6 +32,7 @@ import com.cosylab.logging.engine.Filterable;
 import com.cosylab.logging.engine.FiltersVector;
 import com.cosylab.logging.engine.RemoteAccess;
 import com.cosylab.logging.engine.audience.Audience;
+import com.cosylab.logging.engine.cache.ILogQueueFileHandler;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 
 /**
@@ -271,6 +272,57 @@ public class LCEngine implements Filterable {
 		this(autoReconn);
 		setFilters(filters,false);
 		
+	}
+	
+	/**
+	 * Build the <code>LCEngine</code> by setting an handler for
+	 * the files of the cache.
+	 *  
+	 * @param cacheFileHandler The handler of the files of the cache
+	 * 
+	 * @see ILogQueueFileHandler
+	 */
+	public LCEngine(ILogQueueFileHandler cacheFileHandler) {
+		logRetrieval=new ACSLogRetrieval(
+				listenersDispatcher, 
+				Boolean.parseBoolean(ACSRemoteAccess.LOGGING_BINARY_FORMAT),
+				cacheFileHandler);
+	}
+	
+	/**
+	 * <code>LCEngine</code> constructor.
+	 * 
+	 * @param autoReconn If <code>true</code> the engine automatically reconnects
+	 * @param cacheFileHandler The handler of the files of the cache
+	 * 
+	 * @see ILogQueueFileHandler
+	 */
+	public LCEngine(boolean autoReconn, ILogQueueFileHandler cacheFileHandler) {
+		this(cacheFileHandler);
+		autoReconnect = autoReconn;
+	}
+
+	/**
+	 * <code>LCEngine</code> constructor.
+	 * <P>
+	 * This constructor allows to define a set of filters to apply to incoming
+	 * logs: only the logs passing the filters are sent to the listeners.
+	 * <P>
+	 * 
+	 * @param autoReconn If <code>true</code> the engine automatically reconnects
+	 * @param filters
+	 *            The filters to apply to the incoming logs.
+	 *            <code>filters</code> can also be <code>null</code> or empty.
+	 * @param cacheFileHandler The handler of the files of the cache
+	 * 
+	 * @see ILogQueueFileHandler
+	 */
+	public LCEngine(
+			boolean autoReconn,
+			FiltersVector filters,
+			ILogQueueFileHandler cacheFileHandler) {
+		this(autoReconn,cacheFileHandler);
+		setFilters(filters,false);
 	}
 
 	/**
