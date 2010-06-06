@@ -23,19 +23,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.LinkedHashMap;
-import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+import com.cosylab.logging.engine.LogEngineException;
 
 /**
  * Objects from this class implement a FIFO cache of String objects. 
  * The strings are written on disk by using several files: a new file is created whenever
  * the dimension of the current file becomes greater then a fixed size.
  * For each entry in cache, a record is created and kept in a in-memory list. 
- * 
- * The cache is used by <code>{@link com.cosylab.logging.engine.ACS.ACSLogRetrieval}</code>,
- * but can be used wherever a set of strings needs to be stored because there is no assumption
- * about the content of the strings.
  * <P>
  * The logs are stored in a set of files and their ending position saved.
  * When all the logs in a file have been red, the file is deleted optimizing 
@@ -120,14 +117,20 @@ public class EngineCache extends Thread {
 	private final ILogQueueFileHandler fileHandler;
 	
 	/**
+	 * <code>true</code> if the string in the cache are in binary format
+	 * and <code>false</code> if XML.
+	 */
+	private final boolean binary;
+	
+	/**
 	 * Build a cache.
 	 * 
-	 * The max size of each file of the cache is calculated in the following way:
-	 * 1. if the java property is present, the size is taken from suc a property
-	 * 2. the default size is used
+	 * @param binary <code>true</code> if the string of logs are in binary format
+	 *               and <code>false</code> if XML strings
 	 */
-	public EngineCache() {
+	public EngineCache(boolean binary) {
 		super("EngineCache");
+		this.binary=binary;
 		fileHandler=new LogQueueFileHandlerImpl();
 		setDaemon(true);
 		setPriority(MIN_PRIORITY);
@@ -138,12 +141,15 @@ public class EngineCache extends Thread {
 	 * Build the cache with the passed maximum size for each file of the cache
 	 * 
 	 * @param size The max size of each file of the cache
+	 * @param binary <code>true</code> if the string of logs are in binary format
+	 *               and <code>false</code> if XML strings
 	 */
-	public EngineCache(long size) {
+	public EngineCache(long size, boolean binary) {
 		super("EngineCache");
 		if (size<=1024) {
 			throw new IllegalArgumentException("The size can't be less then 1024");
 		}
+		this.binary=binary;
 		fileHandler=new LogQueueFileHandlerImpl(size);
 		setDaemon(true);
 		setPriority(MIN_PRIORITY);
@@ -155,12 +161,15 @@ public class EngineCache extends Thread {
 	 * create and delete the files.
 	 * 
 	 * @param handler The handler to create and delete the files
+	 * @param binary <code>true</code> if the string of logs are in binary format
+	 *               and <code>false</code> if XML strings
 	 */
-	public EngineCache(ILogQueueFileHandler handler) {
+	public EngineCache(ILogQueueFileHandler handler, boolean binary) {
 		super("EngineCache");
 		if (handler==null) {
 			throw new IllegalArgumentException("The ILogQueueFileHandler can't be null");
 		}
+		this.binary=binary;
 		fileHandler=handler;
 		setDaemon(true);
 		setPriority(MIN_PRIORITY);
@@ -198,7 +207,7 @@ public class EngineCache extends Thread {
 			fnfe.printStackTrace(System.err);
 			return ;
 		}
-		fileHandler.fileProcessed(f,null,null);
+		fileHandler.fileProcessed(f,itemToDel.minDate(), itemToDel.maxDate());
 	}
 	
 	/**
@@ -272,7 +281,7 @@ public class EngineCache extends Thread {
 	 * @param string The string to write in the cache
 	 * @throws IOException In case of error writing the string on disk
 	 */
-	public void push(String string) throws IOException {
+	public void push(String string) throws IOException, LogEngineException {
 		if (string==null || string.length()==0) {
 			throw new IllegalArgumentException("The string can't be null nor empty");
 		}
@@ -290,7 +299,7 @@ public class EngineCache extends Thread {
 			}
 			String name = f.getAbsolutePath();
 			RandomAccessFile raF = new RandomAccessFile(f,"rw");
-			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f);
+			outCacheFile = new CacheFile(name,getNextFileKey(), raF,f,binary);
 			outCacheFile.setWritingMode(true);
 			synchronized (files) {
 				files.put(outCacheFile.key,outCacheFile);
