@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.40 2010/06/06 20:54:23 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.41 2010/06/06 22:42:57 acaproni Exp $
  * @since    
  */
 
@@ -246,9 +246,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
+		this.binaryFormat=binFormat;
 		cache=new EngineCache(binaryFormat);
 		this.listenersDispatcher=listenersDispatcher;
-		this.binaryFormat=binFormat;
 		initialize();
 	}
 	
@@ -265,9 +265,9 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat,
 			ILogQueueFileHandler fileHandler) {
+		this.binaryFormat=binFormat;
 		cache=new EngineCache(fileHandler, binaryFormat);
 		this.listenersDispatcher=listenersDispatcher;
-		this.binaryFormat=binFormat;
 		initialize();
 	}
 	
