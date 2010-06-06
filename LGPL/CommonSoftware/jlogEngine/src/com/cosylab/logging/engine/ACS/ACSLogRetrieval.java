@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.39 2010/06/06 19:34:19 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.40 2010/06/06 20:54:23 acaproni Exp $
  * @since    
  */
 
@@ -113,10 +113,14 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	// Remember if the object is closed to avoid adding new logs
 	private volatile boolean closed=false;
 	
-	// The parser
+	/**
+	 * The parser
+	 */
 	private ACSLogParser parser=null;
 	
-	// true if the binary format is in use, false otherwise
+	/**
+	 * <code>true</code> if the binary format is in use, <code>false</code> otherwise
+	 */
 	private boolean binaryFormat;
 
 	/**
@@ -242,7 +246,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 		if (listenersDispatcher==null) {
 			throw new IllegalArgumentException("The ACSListenersDispatcher can't be null");
 		}
-		cache=new EngineCache();
+		cache=new EngineCache(binaryFormat);
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();
@@ -261,7 +265,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			ACSListenersDispatcher listenersDispatcher,
 			boolean binFormat,
 			ILogQueueFileHandler fileHandler) {
-		cache=new EngineCache(fileHandler);
+		cache=new EngineCache(fileHandler, binaryFormat);
 		this.listenersDispatcher=listenersDispatcher;
 		this.binaryFormat=binFormat;
 		initialize();
