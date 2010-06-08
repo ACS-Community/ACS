@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.5 2010/05/05 05:49:56 mzampare Exp $"
+# "@(#) $Id: Makefile.java,v 1.6 2010/06/08 10:06:03 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -19,12 +19,15 @@ DEBUG=on
 # 
 # IDL Files and flags
 # 
-IDL_FILES =  NotifyExt 
-IDL_FILES_L = NotificationServiceMC  NotifyMonitoringExt
+
+IDL_FILES = Monitor_Types Monitor NotificationServiceMC NotifyExt NotifyMonitoringExt
+#IDL_FILES =  NotifyExt 
+#IDL_FILES_L = NotificationServiceMC  NotifyMonitoringExt
+
 TAO_IDLFLAGS =
 # USER_IDL is defined in top Makefile, so it has to be commented here !!
 #USER_IDL =
-#>>>>> END OF standard rules
+
 
 #
 # INCLUDE STANDARDS
