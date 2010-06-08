@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2010/06/08 08:17:59 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/06/08 10:09:16 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -69,9 +69,9 @@ do_copy :
 	@cp -f $(ACE_ROOT)/TAO/tao/TimeBase.pidl ../idl
 	@cp -f $(ACE_ROOT)/TAO/tao/StringSeq.pidl ../idl
 	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor.pidl ../idl
-	@ln -s ../idl/Monitor.pidl ../idl/Monitor.idl
+	@ln -fs ../idl/Monitor.pidl ../idl/Monitor.idl
 	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor_Types.pidl ../idl
-	@ln -s ../idl/Monitor_Types.pidl ../idl/Monitor_Types.idl
+	@ln -fs ../idl/Monitor_Types.pidl ../idl/Monitor_Types.idl
 
 do_remove :
 	@rm -rf ../idl
