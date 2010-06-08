@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2009/06/04 21:56:43 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/06/08 08:17:59 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -11,7 +11,7 @@
 #
 
 
-export USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs
+export USER_IDL = -I$(ACE_ROOT)/TAO/orbsvcs -I$(ACE_ROOT)/TAO/
 
 #
 # INCLUDE STANDARDS
@@ -59,6 +59,7 @@ install :
 	@$(MAKE) -f Makefile.c++  install
 	@echo " . . . installation done"
 
+# to be able to compile pidl files for Java we have to create links!
 do_copy :
 	@mkdir -p ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/NotifyExt.idl ../idl
@@ -66,11 +67,13 @@ do_copy :
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/orbsvcs/orbsvcs/DsLogAdmin.idl ../idl
 	@cp -f $(ACE_ROOT)/TAO/tao/TimeBase.pidl ../idl
+	@cp -f $(ACE_ROOT)/TAO/tao/StringSeq.pidl ../idl
+	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor.pidl ../idl
+	@ln -s ../idl/Monitor.pidl ../idl/Monitor.idl
+	@cp -f $(ACE_ROOT)/TAO/tao/Monitor/Monitor_Types.pidl ../idl
+	@ln -s ../idl/Monitor_Types.pidl ../idl/Monitor_Types.idl
 
 do_remove :
-	@rm -f ../idl/NotifyExt.idl
-	@rm -f ../idl/NotificationServiceMC.idl
-	@rm -f ../idl/NotifyMonitoringExt.idl
 	@rm -rf ../idl
 
 #___oOo___
