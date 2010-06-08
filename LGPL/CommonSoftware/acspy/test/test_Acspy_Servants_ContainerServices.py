@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Servants_ContainerServices.py,v 1.1 2010/02/12 22:15:19 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Servants_ContainerServices.py,v 1.2 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Servants_ContainerServices.py,v 1.1 2010/02/12 22:15:19 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Servants_ContainerServices.py,v 1.2 2010/06/08 01:55:25 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import unittest
@@ -41,8 +41,8 @@ from maciErrTypeImpl          import CannotGetComponentExImpl
 
 class TestGetLogger(unittest.TestCase):
 
-    @mock.patch_object(CS, 'CDBaccess')
     @mock.patch_object(CS, 'getLogger')
+    @mock.patch_object(CS, 'CDBaccess')
     def test_undefined(self, cdbaccessmock, getloggermock):
         loggermock = mock.Mock(spec=Acspy.Common.Log.Logger)
         getloggermock.return_value = loggermock
@@ -63,12 +63,12 @@ class TestGetLogger(unittest.TestCase):
 
 class TestGetComponent(unittest.TestCase):
 
-    @mock.patch_object(CS.ContainerServices,
-                       '_ContainerServices__importComponentStubs')
+    @mock.patch_object(CS, 'getManager')
+    @mock.patch_object(CS, 'CDBaccess')
     @mock.patch_object(CS.ContainerServices,
                        '_ContainerServices__narrowComponentReference')
-    @mock.patch_object(CS, 'CDBaccess')
-    @mock.patch_object(CS, 'getManager')
+    @mock.patch_object(CS.ContainerServices,
+                       '_ContainerServices__importComponentStubs')
     def test_by_name(self, stubsmock, refmock, cdbaccessmock, getmanagermock):
         managermock = mock.Mock(spec=CS.maci._objref_Manager)
         getmanagermock.return_value = managermock
@@ -111,8 +111,8 @@ class TestImportComponentStubs(unittest.TestCase):
                           containerservices._ContainerServices__importComponentStubs)
         self.assertEqual(True, loggermock.logWarning.called)
 
-    @mock.patch_object(CS, 'CDBaccess')
     @mock.patch_object(CS.ContainerServices, 'availableComponents')
+    @mock.patch_object(CS, 'CDBaccess')
     def test_name_not_found_no_type(self, cdbaccessmock, availablemock):
         availablemock.return_value = []
         loggermock = mock.Mock(spec=Acspy.Common.Log.Logger)
@@ -123,8 +123,8 @@ class TestImportComponentStubs(unittest.TestCase):
         self.assertEqual(True, loggermock.logWarning.called)
         
 
-    @mock.patch_object(CS, 'CDBaccess')
     @mock.patch_object(CS.ContainerServices, 'availableComponents')
+    @mock.patch_object(CS, 'CDBaccess')
     def test_name_found_no_type(self, cdbaccessmock, availablemock):
         availablemock.return_value = [CS.maci.ComponentInfo(None, None, None,
                                                             'TestComponent',
@@ -138,8 +138,8 @@ class TestImportComponentStubs(unittest.TestCase):
                   'TestComponent')
         self.assertEqual(True, loggermock.logWarning.called)
         
-    @mock.patch_object(CS, 'CDBaccess')
     @mock.patch_object(CS.ContainerServices, 'availableComponents')
+    @mock.patch_object(CS, 'CDBaccess')
     def test_name_found_with_unknown_type(self, cdbaccessmock, availablemock):
         availablemock.return_value = [CS.maci.ComponentInfo( \
             'IDL:alma/MockUnknown/MockClass:1.0', None, None,

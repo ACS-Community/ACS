@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Clients_BaseClient.py,v 1.1 2010/02/04 21:45:16 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Clients_BaseClient.py,v 1.2 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -43,7 +43,7 @@ def manager_login_none_builder():
     return mockmanager
 
 def manager_exception_builder():
-    def raiser():
+    def raiser(*args):
         raise Exception()
     
     mockmanager = mock.Mock(spec=maci._objref_Manager)
@@ -52,7 +52,7 @@ def manager_exception_builder():
     return mockmanager
 
 def manager_logout_exception_builder():
-    def raiser():
+    def raiser(*args):
         raise Exception()
     
     mockmanager = mock.Mock(spec=maci._objref_Manager)
@@ -68,7 +68,7 @@ def timestamp_builder():
     return mockts
     
 def corba_builder():
-    def raiser():
+    def raiser(*args):
         raise Exception()
     
     mockservant = mock.Mock()

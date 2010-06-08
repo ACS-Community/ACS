@@ -1,7 +1,7 @@
 1 -   File "BaseClient.py", line xxx, in disconnect
 1 -     getManager().logout(self.token.h)
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
 1 -     raise Exception()
 1 - Exception
@@ -11,7 +11,7 @@
 1 -   File "BaseClient.py", line xxx, in __init__
 1 -     self.token = getManager().login(self.getMyCorbaRef())
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Clients_BaseClient.py", line xxx, in raiser
 1 -     raise Exception()
 1 - Exception
@@ -24,7 +24,7 @@
 1 -   File "Container.py", line xxx, in activate_component
 1 -     temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
@@ -51,14 +51,14 @@
 1 -   File "Container.py", line xxx, in activate_component
 1 -     temp[POAOFFSHOOT] = temp[POA].create_POA("OffShootPOA", ACSCorba.getPOAManager(), self.offShootPolicies)
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Exception('Boom!')
 1 - Exception: Boom!
 1 -   File "Container.py", line xxx, in activate_component
 1 -     temp[POA] = self.createPOAForComponent(name)  #POA for this component
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Exception('Boom!')
 1 - Exception: Boom!
@@ -75,11 +75,11 @@
 1 -     self.token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
-1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file=acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1040, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1040, routine='getMyCorbaRef', host=xxxx, previousError=[]))
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     self.corbaRef = self.containerPOA.servant_to_reference(self)
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Exception()
 1 - Exception
@@ -87,7 +87,7 @@
 1 -     self.token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
-1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file=acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1034, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1034, routine='getMyCorbaRef', host=xxxx, previousError=[]))
 1 -   File "Container.py", line xxx, in getCDBInfo
 1 -     execfile(temp_package)
 1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
@@ -100,46 +100,38 @@
 1 -   File "ContainerServices.py", line xxx, in __narrowComponentReference
 1 -     narrowed_ref = corba_obj._narrow(comp_class)
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Servants_ContainerServices.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
+1 -     ret_val = self.side_effect(*args, **kwargs)
+1 - TypeError: raiser() takes no arguments (1 given)
 1 -   File "ACSCorba.py", line xxx, in getClient
 1 -     SINGLETON_CLIENT = _Client()
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
-1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
-1 -     raise Exception("Boom!")
-1 - Exception: Boom!
-1 -   File "ACSCorba.py", line xxx, in getManager
-1 -     MGR_REF = getORB().string_to_object(getManagerCorbaloc())
-1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
 1 -   File "ACSCorba.py", line xxx, in getManager
 1 -     if MGR_REF!=None and (not CORBA.is_nil(MGR_REF)):
-1 -   File "./omniORB/CORBA.py", line 1128, in is_nil
+1 -   File "CORBA.py", line xxx, in is_nil
+1 -     raise BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, COMPLETED_NO)
 1 - BAD_PARAM: CORBA.BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, CORBA.COMPLETED_NO)
 1 -   File "ACSCorba.py", line xxx, in getORB
 1 -     ORB = CORBA.ORB_init(argv)
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
 1 -   File "ACSCorba.py", line xxx, in getPOAManager
 1 -     POA_MANAGER = getPOARoot()._get_the_POAManager()
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
 1 -   File "ACSCorba.py", line xxx, in getPOARoot
 1 -     POA_ROOT = getORB().resolve_initial_references("RootPOA")
 1 -   File "mock.py", line xxx, in __call__
-1 -     self.side_effect()
+1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!

@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.3 2010/03/20 22:46:40 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Nc_CommonNC.py,v 1.4 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -74,7 +74,7 @@ mockNameTree = mock.Mock()
 mockNameTree.nameTree.return_value = mocknameTree
 
 # Simulated exception thrown by the Naming Service
-def nameTree_side_effect(arg):
+def nameTree_side_effect(*args):
     raise RuntimeError("NameTree Fault")
 
 # Simulated EventChannel CORBA object
@@ -82,7 +82,7 @@ gco = mock.Mock(spec=CORBA.Object)
 gco._narrow.return_value = mock.Mock(spec=NotifyMonitoringExt.EventChannel)
 
 # Simulation of failed Naming Service operation that subsequently succeeds
-def nameTree_side_effect_onetime():
+def nameTree_side_effect_onetime(*args):
     global mocknameTree
 
     mocknameTree.getObject.return_value = gco
@@ -131,7 +131,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_missingFactory(self):
         """CommonNC createNotificationChannel throws correct exception when no EventChannelFactory defined"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.NotFound(None, None)
         self.nc.nt.getObject.side_effect = side_effect
         self.nc.getNotificationFactoryNameForChannel = mock.Mock()
@@ -146,7 +146,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_registerFailedNF(self):
         """CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Not Found)"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.NotFound(None, None)
         mchan = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannel)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
@@ -169,7 +169,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_registerFailedCP(self):
         """CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Cannot Proceed)"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.CannotProceed(None, None)
         mchan = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannel)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
@@ -192,7 +192,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_registerFailedIN(self):
         """CommonNC createNotificationChannel throws correct exception when registering channel with name service fails (Invalid Name)"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.InvalidName()
         mchan = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannel)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
@@ -215,7 +215,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_wrongFactoryType(self):
         """CommonNC createNotificationChannel throws correct exception when wrong type returned for EventChannelFactory"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise NotifyMonitoringExt.NameAlreadyUsed(None)
         mfact = mock.Mock(spec=CORBA.Object)
         mfact._narrow.return_value = None
@@ -232,7 +232,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_createFailedBadQoS(self):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad QoS)"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNotification.UnsupportedQoS(None)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
@@ -253,7 +253,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_createFailedBadAdmin(self):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create channel (Bad Admin)"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise CosNotification.UnsupportedAdmin(None)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
@@ -274,7 +274,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_createFailedDuplicate(self):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create duplicate channel"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise NotifyMonitoringExt.NameAlreadyUsed(None)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
@@ -295,7 +295,7 @@ class TestCommonNC(unittest.TestCase):
     def test_createNotificationChannel_createFailedMappingProblem(self):
         """CommonNC createNotificationChannel throws correct exception when EventChannelFactory cannot create mapping for channel"""
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
-        def side_effect():
+        def side_effect(*args):
             raise NotifyMonitoringExt.NameMapError(None)
         mchanfac = mock.Mock(spec=NotifyMonitoringExt._objref_EventChannelFactory)
         mchanfac.create_named_channel.side_effect = side_effect
@@ -340,7 +340,7 @@ class TestCommonNC(unittest.TestCase):
 
     def test_destroyNotificationChannel_deregisterFailedCP(self):
         """CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(CannotProceed)"""
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.CannotProceed(None, None)
         self.nc.logger = mock.Mock(spec=Acspy.Common.Log.Logger)
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
@@ -351,7 +351,7 @@ class TestCommonNC(unittest.TestCase):
 
     def test_destroyNotificationChannel_deregisterFailedNF(self):
         """CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(NotFound)"""
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.NotFound(None, None)
         self.nc.logger = mock.Mock(spec=Acspy.Common.Log.Logger)
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)
@@ -362,7 +362,7 @@ class TestCommonNC(unittest.TestCase):
 
     def test_destroyNotificationChannel_deregisterFailedIN(self):
         """CommonNC destroyNotificationChannel throws exception when deregister from Naming Service fails(InvalidName)"""
-        def side_effect():
+        def side_effect(*args):
             raise CosNaming.NamingContext.InvalidName()
         self.nc.logger = mock.Mock(spec=Acspy.Common.Log.Logger)
         self.nc.nt = mock.Mock(spec=NameTree.nameTree)

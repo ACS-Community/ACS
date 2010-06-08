@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Common_ErrorTrace.py,v 1.1 2009/02/05 17:43:56 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Common_ErrorTrace.py,v 1.2 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -246,14 +246,13 @@ class TestErrorTraceHelper(unittest.TestCase):
         self.eth.setError('0','0')
         self.assertEqual(0, self.eth.error_trace.errorCode)
         self.assertEqual(0, self.eth.error_trace.errorType)
-#        assert False # TODO: implement your test here
 
 class TestErrorTrace(unittest.TestCase):
     def test_object_initialization_default(self):
         """ErrorTrace initializes with default"""
         et = ET.ErrorTrace(0,0)
         self.assertEqual('unittest.py', os.path.split(et.file)[1])
-        self.assertEqual(281, et.lineNum)
+        self.assertEqual(300, et.lineNum)
         self.assertEqual('__call__', et.routine)
         self.assertEqual(gethostname(), et.host)
         self.assertEqual(str(os.getpid()), et.process)
@@ -280,7 +279,7 @@ class TestErrorTrace(unittest.TestCase):
                                sourceobject='Me')
         self.assertEqual('test_Acspy_Common_ErrorTrace.py',
                          os.path.split(et.file)[1])
-        self.assertEqual(280, et.lineNum)
+        self.assertEqual(279, et.lineNum)
         self.assertEqual('test_object_initialization', et.routine)
         self.assertEqual(gethostname(), et.host)
         self.assertEqual(str(os.getpid()), et.process)

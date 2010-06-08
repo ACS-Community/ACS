@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Container.py,v 1.3 2010/03/20 22:46:40 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Container.py,v 1.4 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -52,7 +52,7 @@ class TestInitialization(unittest.TestCase):
 
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     def test_container_poa_object_fault(self, confcorbamock):
-        def raiser():
+        def raiser(*args):
             raise Acspy.Container.CouldntCreateObjectExImpl()
 
         confcorbamock.side_effect = raiser
@@ -62,7 +62,7 @@ class TestInitialization(unittest.TestCase):
 
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     def test_corba_ref_fault(self, confcorbamock):
-        def raiser():
+        def raiser(*args):
             raise Acspy.Container.CORBAProblemExImpl()
 
         confcorbamock.side_effect = raiser
@@ -72,8 +72,8 @@ class TestInitialization(unittest.TestCase):
 
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     @mock.patch_object(Acspy.Container, 'BaseClient')
-    def test_client_init_fault(self, baseclientmock, confcofbamock):
-        def raiser():
+    def test_client_init_fault(self, confcofbamock, baseclientmock):
+        def raiser(*args):
             raise Acspy.Container.CORBAProblemExImpl()
 
         baseclientmock.side_effect = raiser
@@ -84,8 +84,8 @@ class TestInitialization(unittest.TestCase):
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     @mock.patch_object(Acspy.Container, 'BaseClient')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
-    def test_cdbaccess_fault(self, confcorbamock, baseclientmock, cdbmock):
-        def raiser():
+    def test_cdbaccess_fault(self, cdbmock, baseclientmock, confcorbamock):
+        def raiser(*args):
             raise Acspy.Container.CORBAProblemExImpl()
 
         cdbmock.side_effect = raiser
@@ -98,9 +98,9 @@ class TestInitialization(unittest.TestCase):
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     @mock.patch_object(Acspy.Container, 'BaseClient')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
-    def test_getCDBInfo_no_container_info(self, confcorbamock, baseclientmock,
-                                          cdbmock):
-        def raiser():
+    def test_getCDBInfo_no_container_info(self, cdbmock, baseclientmock,
+                                          confcorbamock):
+        def raiser(*args):
             raise Acspy.Container.CORBAProblemExImpl()
 
         cdbifmock = mock.Mock(spec=Acspy.Common.CDBAccess.CDBaccess)
@@ -112,9 +112,8 @@ class TestInitialization(unittest.TestCase):
     @mock.patch_object(Acspy.Container.Container, 'configCORBA')
     @mock.patch_object(Acspy.Container, 'BaseClient')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
-    def test_getCDBInfo_no_package_info(self, confcorbamock, baseclientmock,
-                                          cdbmock):
-
+    def test_getCDBInfo_no_package_info(self, cdbmock, baseclientmock,
+                                          confcorbamock):
         cdbifmock = mock.Mock(spec=Acspy.Common.CDBAccess.CDBaccess)
         cdbifmock.getElement.return_value = []
         cdbmock.return_value = cdbifmock
@@ -125,8 +124,8 @@ class TestInitialization(unittest.TestCase):
     @mock.patch_object(Acspy.Container, 'BaseClient')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
     @mock.patch_object(Acspy.Container, 'findFile')
-    def test_getCDBInfo_no_package_found(self, confcorbamock, baseclientmock,
-                                          cdbmock, findfilemock):
+    def test_getCDBInfo_no_package_found(self, findfilemock, cdbmock,
+                                          baseclientmock, confcorbamock):
 
         findfilemock.return_value = ("","")
         cdbifmock = mock.Mock(spec=Acspy.Common.CDBAccess.CDBaccess)
@@ -140,8 +139,8 @@ class TestInitialization(unittest.TestCase):
     @mock.patch_object(Acspy.Container, 'BaseClient')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
     @mock.patch_object(Acspy.Container, 'findFile')
-    def test_getCDBInfo_package_found(self, confcorbamock, baseclientmock,
-                                          cdbmock, findfilemock):
+    def test_getCDBInfo_package_found(self, findfilemock, cdbmock,
+                                      baseclientmock, confcorbamock):
 
         findfilemock.return_value = ("bin/package1","")
         cdbifmock = mock.Mock(spec=Acspy.Common.CDBAccess.CDBaccess)
@@ -149,6 +148,7 @@ class TestInitialization(unittest.TestCase):
         cdbmock.return_value = cdbifmock
         c = Acspy.Container.Container('TestContainer')
         self.assertEqual(["bin/package1"], c.autoLoadPackages)
+        Acspy.Container.Log.stopPeriodicFlush()
 
 
 class TestGetMyCorbaRef(unittest.TestCase):
@@ -158,12 +158,13 @@ class TestGetMyCorbaRef(unittest.TestCase):
 
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
 
     @mock.patch_object(Acspy.Container.ACSCorba, 'getPOARoot')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
-    def test_getMyCorbaRef_no_ref(self, poarootmock, cdbmock):
-        def raiser():
+    def test_getMyCorbaRef_no_ref(self, cdbmock, poarootmock):
+        def raiser(*args):
             raise Exception()
 
         contpoamock = mock.Mock(spec=omniORB.PortableServer.POA)
@@ -190,8 +191,8 @@ class TestGetMyCorbaRef(unittest.TestCase):
 
     @mock.patch_object(Acspy.Container.ACSCorba, 'getPOARoot')
     @mock.patch_object(Acspy.Container, 'CDBaccess')
-    def test_getMyCorbaRef_bad_ref(self, poarootmock, cdbmock):
-        def raiser():
+    def test_getMyCorbaRef_bad_ref(self, cdbmock, poarootmock):
+        def raiser(*args):
             raise Exception()
 
         contpoamock = mock.Mock(spec=omniORB.PortableServer.POA)
@@ -231,6 +232,7 @@ class TestActivateComponent(unittest.TestCase):
         self.tc.createPOAForComponent = mock.Mock()
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
 
 
@@ -243,7 +245,7 @@ class TestActivateComponent(unittest.TestCase):
                                                       'testcomponent.idl'))
 
     def test_poa_create_fault(self):
-        def raiser():
+        def raiser(*args):
             raise Exception('Boom!')
         self.tc.createPOAForComponent.side_effect = raiser
         self.assertEqual(True, self.tc.activate_component(12345,
@@ -252,7 +254,7 @@ class TestActivateComponent(unittest.TestCase):
                                                      'test.idl') is None)
 
     def test_offshoot_poa_create_fault(self):
-        def raiser():
+        def raiser(*args):
             raise Exception('Boom!')
         offshootpoamock = mock.Mock(spec=omniORB.PortableServer.POA)
         offshootpoamock.create_POA.side_effect = raiser
@@ -300,7 +302,7 @@ class TestActivateComponent(unittest.TestCase):
 
     @mock.patch_object(Acspy.Container, 'instance')
     def test_bad_class_type_fault(self, instancemock):
-        def raiser():
+        def raiser(*args):
             raise TypeError("boom!")
             
         mockmodule = new.module('MockClass')
@@ -473,7 +475,7 @@ class TestActivateComponent(unittest.TestCase):
         del sys.modules['MockClass']
 
     def test_corba_exception(self):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
         
         mockmodule = new.module('MockClass')
@@ -525,6 +527,7 @@ class TestDeactivation(unittest.TestCase):
         self.testcontainer.__init__ = mock.Mock()
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
         
 
@@ -593,6 +596,7 @@ class TestGetComponentInfo(unittest.TestCase):
         self.testcontainer.__init__ = mock.Mock()
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
 
     def test_no_components(self):
@@ -646,6 +650,7 @@ class TestOffShootActivation(unittest.TestCase):
         self.testcontainer.__init__ = mock.Mock()
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
         
 
@@ -682,6 +687,7 @@ class TestDestruction(unittest.TestCase):
         self.testcontainer.__init__ = mock.Mock()
 
     def tearDown(self):
+        Acspy.Container.Log.stopPeriodicFlush()
         Acspy.Util.ACSCorba.SINGLETON_CLIENT = None
         
 

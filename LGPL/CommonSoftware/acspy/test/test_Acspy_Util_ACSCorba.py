@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.3 2010/06/08 01:55:25 agrimstrup Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.2 2010/03/20 22:46:40 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.3 2010/06/08 01:55:25 agrimstrup Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import unittest
@@ -53,7 +53,7 @@ class TestGetManagerCorbaLoc(unittest.TestCase):
 
     @mock.patch_object(ACSCorba, 'getIP')
     @mock.patch_object(ACSCorba, 'getManagerPort')
-    def test_no_args_or_env(self, ipmock, managerportmock):
+    def test_no_args_or_env(self, managerportmock, ipmock):
         ipmock.return_value = '127.0.0.1'
         managerportmock.return_value = '3000'
         self.assertEqual('corbaloc::127.0.0.1:3000/Manager',
@@ -90,7 +90,7 @@ class TestGetORB(unittest.TestCase):
 
     @mock.patch_object(ACSCorba.CORBA, 'ORB_init')
     def test_init_fault(self, initmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         initmock.side_effect = raiser
@@ -116,7 +116,7 @@ class TestGetPOARoot(unittest.TestCase):
 
     @mock.patch_object(ACSCorba, 'getORB')
     def test_init_fault(self, getorbmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         orbmock = mock.Mock(spec=ACSCorba.CORBA.ORB)
@@ -145,7 +145,7 @@ class TestGetPOAManager(unittest.TestCase):
 
     @mock.patch_object(ACSCorba, 'getPOARoot')
     def test_init_fault(self, getrootmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         rootmock = mock.Mock(spec=omniORB.PortableServer.POA)
@@ -175,7 +175,7 @@ class TestGetManager(unittest.TestCase):
     @mock.patch_object(ACSCorba, 'getORB')
     @mock.patch_object(ACSCorba, 'getManagerCorbaloc')
     def test_orb_fault(self, getorbmock, corbalocmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         orbmock = mock.Mock(spec=ACSCorba.CORBA.ORB)
@@ -191,11 +191,11 @@ class TestGetManager(unittest.TestCase):
         getorbmock.return_value = orbmock
         self.assertEqual(True, ACSCorba.getManager() is None)
         
-    @mock.patch_object(ACSCorba, 'getORB')
-    @mock.patch_object(ACSCorba.CORBA, 'is_nil')
     @mock.patch_object(ACSCorba, 'getManagerCorbaloc')
+    @mock.patch_object(ACSCorba.CORBA, 'is_nil')
+    @mock.patch_object(ACSCorba, 'getORB')
     def test_obj_fault(self, getorbmock, nilmock, corbalocmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         nilmock.return_value = False
@@ -232,7 +232,7 @@ class TestGetClient(unittest.TestCase):
 
     @mock.patch_object(ACSCorba, '_Client')
     def test_create_fault(self, clientmock):
-        def raiser():
+        def raiser(*args):
             raise Exception("Boom!")
 
         clientmock.side_effect = raiser
