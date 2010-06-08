@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.125 2007/09/03 06:07:12 cparedes Exp $" 
+# "@(#) $Id: Makefile,v 1.126 2010/06/08 08:14:26 bjeram Exp $" 
 #
 # Makefile of ........
 #
@@ -25,8 +25,8 @@
 #    None
 #------------------------------------------------------------------------
 
-USER_CFLAGS = 
-USER_LIB = -lACE -lTAO -lTAO_Messaging -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny  -lTAO_CosProperty -lTAO_DynamicInterface -lTAO_IFR_Client -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsQoS -lexpat -lbaselogging -larchiveevents
+USER_CFLAGS =
+USER_LIB = -lACE -lTAO -lTAO_Messaging -lTAO_DsLogAdmin -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils -lTAO_CosTrading -lTAO_DynamicAny  -lTAO_CosProperty -lTAO_DynamicInterface -lTAO_IFR_Client -lTAO_Monitor -lacsutil -lcdb -llogging -lacscomponent -lrecovery -lacserr -lacsQoS -lexpat -lbaselogging -larchiveevents
 
 
 # Program to build
