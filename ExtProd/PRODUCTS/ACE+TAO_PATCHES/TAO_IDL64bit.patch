@@ -1,0 +1,162 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/ast/ast_expression.cpp TAO/ACE_wrappers/TAO/TAO_IDL/ast/ast_expression.cpp
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/ast/ast_expression.cpp	2010-01-14 10:42:20.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/ast/ast_expression.cpp	2010-05-27 09:02:41.000000000 +0000
+@@ -255,6 +255,25 @@
+   this->pd_ev->u.lval = lv;
+ }
+ 
++// An AST_Expression denoting a long long integer.
++AST_Expression::AST_Expression (ACE_CDR::LongLong lv)
++  : pd_ec (EC_none),
++    pd_ev (0),
++    pd_v1 (0),
++    pd_v2 (0),
++    pd_n (0),
++    tdef (0),
++    param_holder_ (0)
++{
++  this->fill_definition_details ();
++
++  ACE_NEW (this->pd_ev,
++           AST_ExprValue);
++
++  this->pd_ev->et = EV_longlong;
++  this->pd_ev->u.llval = lv;
++}
++
+ // An AST_Expression denoting a boolean.
+ AST_Expression::AST_Expression (ACE_CDR::Boolean b)
+   : pd_ec (EC_none),
+@@ -294,7 +313,7 @@
+ }
+ 
+ // An AST_Expression denoting an unsigned long integer.
+-AST_Expression::AST_Expression (ACE_CDR::ULong ulv,
++AST_Expression::AST_Expression (ACE_CDR::ULongLong ulv,
+                                 ExprType t)
+   : pd_ec (EC_none),
+     pd_ev (0),
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/ast/ast_generator.cpp TAO/ACE_wrappers/TAO/TAO_IDL/ast/ast_generator.cpp
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/ast/ast_generator.cpp	2010-02-04 08:42:41.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/ast/ast_generator.cpp	2010-05-27 09:00:18.000000000 +0000
+@@ -703,7 +703,7 @@
+ }
+ 
+ AST_Expression *
+-AST_Generator::create_expr (ACE_CDR::Long v)
++AST_Generator::create_expr (ACE_CDR::LongLong v)
+ {
+   AST_Expression *retval = 0;
+   ACE_NEW_RETURN (retval,
+@@ -725,7 +725,7 @@
+ }
+ 
+ AST_Expression *
+-AST_Generator::create_expr (ACE_CDR::ULong v,
++AST_Generator::create_expr (ACE_CDR::ULongLong v,
+                             AST_Expression::ExprType t)
+ {
+   AST_Expression *retval = 0;
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/lex.yy.cpp TAO/ACE_wrappers/TAO/TAO_IDL/fe/lex.yy.cpp
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/lex.yy.cpp	2010-03-30 17:45:52.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/fe/lex.yy.cpp	2010-05-27 08:54:32.000000000 +0000
+@@ -1013,8 +1013,8 @@
+ static ACE_CDR::WChar   idl_wchar_escape_reader (char *);
+ static ACE_CDR::Char    idl_escape_reader (char *);
+ static ACE_CDR::Double  idl_atof (char *);
+-static ACE_CDR::Long    idl_atoi (char *, long);
+-static ACE_CDR::ULong   idl_atoui (char *, long);
++static ACE_CDR::LongLong    idl_atoi (char *, long);
++static ACE_CDR::ULongLong   idl_atoui (char *, long);
+ static void             idl_parse_line_and_file (char *);
+ static void             idl_store_pragma (char *);
+ static char *           idl_get_pragma_string (char *);
+@@ -3335,10 +3335,10 @@
+ /*
+  * idl_atoi - Convert a string of digits into a negative integer according to base b
+  */
+-static ACE_CDR::Long
++static ACE_CDR::LongLong
+ idl_atoi(char *s, long b)
+ {
+-  long    r = 0;
++  long long    r = 0;
+ 
+   // Skip over the dash and possibly spaces after the dash
+   while (*s == '-' || *s == ' ' || *s == '\t')
+@@ -3381,10 +3381,10 @@
+ /*
+  * idl_atoui - Convert a string of digits into an unsigned integer according to base b
+  */
+-static ACE_CDR::ULong
++static ACE_CDR::ULongLong
+ idl_atoui(char *s, long b)
+ {
+-  ACE_CDR::ULong  r = 0;
++  ACE_CDR::ULongLong  r = 0;
+ 
+   if (b == 8 && *s == '0')
+     {
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.cpp TAO/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.cpp
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.cpp	2010-02-19 15:20:19.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.cpp	2010-05-27 08:56:10.000000000 +0000
+@@ -357,8 +357,8 @@
+   AST_Operation::Flags          ofval;          /* Operation flags      */
+   FE_Declarator                 *deval;         /* Declarator value     */
+   ACE_CDR::Boolean              bval;           /* Boolean value        */
+-  ACE_CDR::Long                 ival;           /* Long value           */
+-  ACE_CDR::ULong                uival;          /* Unsigned long value  */
++  ACE_CDR::LongLong             ival;           /* Long long value           */
++  ACE_CDR::ULongLong            uival;          /* Unsigned long long value  */
+   ACE_CDR::Double               dval;           /* Double value         */
+   ACE_CDR::Float                fval;           /* Float value          */
+   ACE_CDR::Char                 cval;           /* Char value           */
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.h TAO/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.h
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.h	2010-01-27 14:24:52.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/fe/y.tab.h	2010-05-27 08:56:25.000000000 +0000
+@@ -234,8 +234,8 @@
+   AST_Operation::Flags          ofval;          /* Operation flags      */
+   FE_Declarator                 *deval;         /* Declarator value     */
+   ACE_CDR::Boolean              bval;           /* Boolean value        */
+-  ACE_CDR::Long                 ival;           /* Long value           */
+-  ACE_CDR::ULong                uival;          /* Unsigned long value  */
++  ACE_CDR::LongLong             ival;           /* Long long value           */
++  ACE_CDR::ULongLong            uival;          /* Unsigned long long value  */
+   ACE_CDR::Double               dval;           /* Double value         */
+   ACE_CDR::Float                fval;           /* Float value          */
+   ACE_CDR::Char                 cval;           /* Char value           */
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/include/ast_expression.h TAO/ACE_wrappers/TAO/TAO_IDL/include/ast_expression.h
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/include/ast_expression.h	2009-12-18 19:03:19.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/include/ast_expression.h	2010-05-27 09:07:15.000000000 +0000
+@@ -205,11 +205,13 @@
+ 
+   AST_Expression (ACE_CDR::Long l);
+ 
++  AST_Expression (ACE_CDR::LongLong l);
++
+   AST_Expression (ACE_CDR::Boolean b);
+ 
+   AST_Expression (ACE_CDR::ULong ul);
+ 
+-  AST_Expression (ACE_CDR::ULong,
++  AST_Expression (ACE_CDR::ULongLong,
+                   ExprType t);
+ 
+   AST_Expression (ACE_CDR::Float f);
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/include/ast_generator.h TAO/ACE_wrappers/TAO/TAO_IDL/include/ast_generator.h
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/include/ast_generator.h	2010-02-04 08:42:41.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/include/ast_generator.h	2010-05-27 09:00:32.000000000 +0000
+@@ -297,11 +297,11 @@
+                                        AST_Expression *v1,
+                                        AST_Expression *v2);
+ 
+-  virtual AST_Expression *create_expr (ACE_CDR::Long v);
++  virtual AST_Expression *create_expr (ACE_CDR::LongLong v);
+ 
+   virtual AST_Expression *create_expr (ACE_CDR::Boolean b);
+ 
+-  virtual AST_Expression *create_expr (ACE_CDR::ULong v,
++  virtual AST_Expression *create_expr (ACE_CDR::ULongLong v,
+                                        AST_Expression::ExprType t);
+ 
+   virtual AST_Expression *create_expr (UTL_String *s);

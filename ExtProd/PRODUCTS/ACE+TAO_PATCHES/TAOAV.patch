@@ -1,6 +1,6 @@
 diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2007-07-07 20:06:46.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2008-12-29 10:14:55.242014000 +0000
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2009-04-23 08:32:53.000000000 +0000
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp	2010-05-31 06:46:57.000000000 +0000
 @@ -108,10 +108,18 @@
              }
          }
@@ -85,7 +85,15 @@ diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp TAO/ACE_w
      }
  }
  
-@@ -3367,10 +3399,18 @@
+@@ -2273,6 +2305,7 @@
+         throw AVStreams::streamOpFailed ();
+       // redefine the "Flows" property
+       AVStreams::flowSpec new_flows (this->flows_.length ());
++      new_flows.length(this->flows_.length ());
+       for (u_int i=0, j=0 ; i <this->flows_.length (); i++)
+         if (ACE_OS::strcmp (flow_name, this->flows_[i]) != 0)
+           new_flows[j++] = this->flows_[i];
+@@ -3367,10 +3400,18 @@
            (*consumer_begin)->stop ();
          }
      }
@@ -106,7 +114,7 @@ diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp TAO/ACE_w
      }
  }
  
-@@ -3397,10 +3437,18 @@
+@@ -3397,10 +3438,18 @@
            (*producer_begin)->start ();
          }
      }
@@ -128,8 +136,8 @@ diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/AVStreams_i.cpp TAO/ACE_w
  }
  
 diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2006-05-16 14:09:14.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2008-12-29 10:25:18.643514000 +0000
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2008-10-06 18:20:19.000000000 +0000
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp	2010-05-31 11:14:54.000000000 +0000
 @@ -210,7 +210,7 @@
    if (n == -1)
      ACE_ERROR_RETURN ((LM_ERROR,"TAO_AV_TCP_Flow_Handler::handle_input recv failed\n"),-1);
@@ -153,21 +161,21 @@ diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.cpp TAO/ACE_wrappers/
 +       bufSize=BUFSIZ;
 +
 +    
-+    ((TAO_AV_TCP_Object*)(this->protocol_object_))->frame_.size (bufSize);
++  ((TAO_AV_TCP_Object*)(this->protocol_object_))->get_message_block().size (bufSize);
 +//end: BJE
 +
    // Called by the <Strategy_Acceptor> when the handler is completely
    // connected.
    ACE_INET_Addr addr;
 diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h
---- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2006-03-14 06:14:35.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2008-12-29 10:14:55.246018000 +0000
-@@ -248,7 +248,7 @@
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2008-09-29 08:02:27.000000000 +0000
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/AV/TCP.h	2010-05-31 11:19:12.000000000 +0000
+@@ -248,6 +248,8 @@
    /// end the stream.
    virtual int destroy (void);
  
--private:
-+public:
++  ACE_Message_Block& get_message_block() { return frame_; }
++
+ private:
    /// Pre-allocated memory to receive the data...
    ACE_Message_Block frame_;
- };

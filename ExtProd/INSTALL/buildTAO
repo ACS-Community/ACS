@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.34 2010/01/18 12:55:07 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.35 2010/06/08 08:02:58 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -76,7 +76,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=ACE+TAO-5.6.5
+FILE=ACE+TAO-5.7.8
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "unpacking the archive"
@@ -90,12 +90,14 @@ echo ""
 echo "patching the code"
 echo "- ACErelpath.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
+echo "- TAO_IDL64bit.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDL64bit.patch
 echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
-echo "- IFR.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/IFR.patch
+#echo "- IFR.patch"
+#patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/IFR.patch
 
 if [ ! "X$WIND_BASE" = X ]
 then
@@ -213,7 +215,7 @@ then
 
     echo "making links..."
      cd $ACE_ROOT_VW/bin
-     ln -s $HOST_ROOT/bin/gperf
+     ln -s $HOST_ROOT/bin/ace_gperf
      ln -s $HOST_ROOT/bin/tao_idl
 #    cd $ACE_ROOT_VW/bin
 #    ln -s ../../$LINK_DEST/bin/gperf gperf
