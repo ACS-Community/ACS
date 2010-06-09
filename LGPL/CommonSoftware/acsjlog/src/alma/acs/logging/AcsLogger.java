@@ -124,8 +124,8 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 		addLoggerClass(AcsLogger.class);
 		addLoggerClass(Logger.class);
 		if (logConfig != null) {
-			logConfig.addSubscriber(this);
 			configureLogging(logConfig);
+			logConfig.addSubscriber(this); // passing "this" should only be done when this object is fully constructed.
 		} else if (!allowNullLogConfig) {
 			throw new NullPointerException("LogConfig must not be null");
 		}
