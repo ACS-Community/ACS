@@ -8,4 +8,5 @@ Running the following command:
 java -classpath 
 1 - Time:
 Will abort ClientLogManager#initRemoteLogging because remote logging seems no longer needed.
+failed to flush logging queue because remote logging service has not been made available
 ACS.log.minlevel.namedloggers not defined
