@@ -1,4 +1,4 @@
-//$Id: TestCase.java,v 1.3 2010/04/28 16:21:59 hsommer Exp $
+//$Id: TestCase.java,v 1.4 2010/06/09 10:53:08 msekoran Exp $
 package alma.hibernate.test;
 
 import java.io.InputStream;
@@ -254,7 +254,7 @@ public abstract class TestCase extends junit.framework.TestCase {
 
 	protected void configure( Configuration cfg ) {
 		cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-		cfg.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
+		cfg.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbc.JDBCDriver");
 		cfg.setProperty("hibernate.connection.url", "jdbc:hsqldb:mem:test");
 		cfg.setProperty("hibernate.connection.username", "sa");
 		cfg.setProperty("hibernate.connection.password", "");

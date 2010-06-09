@@ -2,4 +2,4 @@ s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9][ T][0-9][0-9]:[0-9][0-9]:[0-9][0-9]
 s/Time: [0-9,.]*/Time: xxx/g
 s/timestamp: [0-9]*/timestamp: xxxxxxxxxxxx/g
 s/registered: [0-9,a-f]*/registered: xxxxxxxxxxxxx/g
-s/jdbcResultSet@[0-9,a-f]*/jdbcResultSet@xxxxxxx/g
+s/JDBCResultSet@[0-9,a-f]*/JDBCResultSet@xxxxxxx/g
