@@ -147,6 +147,9 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * If true then the Corba (ORB) logger will not send logs to the Log service.
 	 */
 	private volatile boolean suppressCorbaRemoteLogging = false;
+
+
+	private final LogThrottle logThrottle;
 	
 	
 	/**
@@ -166,7 +169,6 @@ public class ClientLogManager implements LogConfigSubscriber
 	protected ClientLogManager()
 	{
         sharedLogConfig = new LogConfig();
-        sharedLogConfig.addSubscriber(this);
         try {
             sharedLogConfig.initialize(false); // will determine the default values and call #configureLogging
         } catch (LogConfigException ex) {
@@ -182,9 +184,21 @@ public class ClientLogManager implements LogConfigSubscriber
 
         m_internalLogger = getAcsLogger("alma.acs.logging", LoggerOwnerType.OtherLogger);
         sharedLogConfig.setInternalLogger(m_internalLogger);
+        
+		LogThrottle.ThrottleCallback throttleCallback = new LogThrottle.ThrottleCallback() {
+			public void clearedLogSuppression() {
+				// @TODO: clear the alarm, somehow saying (alarm property, log?) how many logs were suppressed by the throttle.
+			}
+			public void suppressedLog(boolean remoteLog) {
+				// @TODO: get alarm interface injected, and raise an alarm. Count invocations.
+			}
+		};
+		logThrottle = new LogThrottle(sharedLogConfig, throttleCallback);
+
         if (DEBUG) {
             m_internalLogger.fine("ClientLogManager instance is created.");
         }
+        sharedLogConfig.addSubscriber(this); // passing "this" should only be done when this object is fully constructed.
 	}
 
 	/**
@@ -219,8 +233,8 @@ public class ClientLogManager implements LogConfigSubscriber
 		}
 	}
 
-    
-    /**
+
+	/**
 	 * Gets the <code>LogConfig</code> object that is shared between the ClientLogManager singleton and any other
 	 * objects in the process (e.g. Java container or manager classes, Loggers, Handlers).
 	 */
@@ -228,21 +242,19 @@ public class ClientLogManager implements LogConfigSubscriber
         return sharedLogConfig;
     }
     
-    
-    /**
+
+	/**
 	 * If not done already, sets up remote handlers for all loggers using a shared queue.
 	 */
 	protected void prepareRemoteLogging() {
 		logQueueLock.lock();
-//System.out.println("ClientLogManager#prepareRemoteLogging got the logQueue lock");
 		try {
 			if (logQueue == null) {
-				logQueue = new DispatchingLogQueue();
+				logQueue = createDispatchingLogQueue();
 				logQueue.setMaxQueueSize(getLogConfig().getMaxLogQueueSize());
 			}
 		} finally {
 			logQueueLock.unlock();
-//System.out.println("ClientLogManager#prepareRemoteLogging released the logQueue lock.");			
 		}
 		synchronized (loggers) {
 			// attach remote handlers to all loggers
@@ -262,8 +274,15 @@ public class ClientLogManager implements LogConfigSubscriber
 		}
 	}
 
-    
-    /**
+	/**
+	 * Factory method broken out from {@link #prepareRemoteLogging()} to support tests.
+	 */
+	protected DispatchingLogQueue createDispatchingLogQueue() {
+		return new DispatchingLogQueue();
+	}
+
+
+	/**
 	 * Removes, closes, and nulls all remote handlers, so that no more records are put into the queue, and queue and
 	 * remote handlers can be garbage collected.
 	 * <p>
@@ -318,10 +337,10 @@ public class ClientLogManager implements LogConfigSubscriber
 						break;
 					}
 				}
-		    	
+
 				if (remoteHandler == null) {
-					remoteHandler = new AcsLoggingHandler(logQueue, sharedLogConfig, loggerName); // subscribes to sharedLogConfig
-					logger.addHandler(remoteHandler);		
+					remoteHandler = new AcsLoggingHandler(logQueue, sharedLogConfig, loggerName, logThrottle); // subscribes to sharedLogConfig
+					logger.addHandler(remoteHandler);
 					if (loggerInfo != null && loggerInfo.remoteHandler != null) {
 						logger.info("Logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
 					}
@@ -333,28 +352,27 @@ public class ClientLogManager implements LogConfigSubscriber
         }
         return remoteHandler;
     }
-    
-    
-    /**
-     * Adds a local logging handler to the provided logger.
-     * Unlike with remote handlers in {@link #prepareRemoteLogging()}, for local handlers
-     * we don't allow removing and re-adding the handlers later.
-     * <p>
-     * Note that this method does not require <code>logger</code> to be 
-     * already registered in {@linkplain #loggers}, but if it is, 
-     * then the new StdOutConsoleHandler is set in the map's AcsLoggerInfo as well.
-     * 
-     * @param logger  logger to be set up for local logging
-     * @return the local handler that was added to the logger.
-     */
-    private StdOutConsoleHandler addLocalHandler(AcsLogger logger) {
-    	StdOutConsoleHandler localHandler = null;
-        synchronized (loggers) {
-	    	String loggerName = logger.getLoggerName();
-	    	AcsLoggerInfo loggerInfo = loggers.get(loggerName);	    	
-	    	
-	    	// try to find an existing handler (should not happen)
-	    	for (Handler handler : logger.getHandlers()) {
+
+
+	/**
+	 * Adds a local logging handler to the provided logger. Unlike with remote handlers in
+	 * {@link #prepareRemoteLogging()}, for local handlers we don't allow removing and re-adding the handlers later.
+	 * <p>
+	 * Note that this method does not require <code>logger</code> to be already registered in {@linkplain #loggers}, but
+	 * if it is, then the new StdOutConsoleHandler is set in the map's AcsLoggerInfo as well.
+	 * 
+	 * @param logger
+	 *            logger to be set up for local logging
+	 * @return the local handler that was added to the logger.
+	 */
+	private StdOutConsoleHandler addLocalHandler(AcsLogger logger) {
+		StdOutConsoleHandler localHandler = null;
+		synchronized (loggers) {
+			String loggerName = logger.getLoggerName();
+			AcsLoggerInfo loggerInfo = loggers.get(loggerName);
+
+			// try to find an existing handler (should not happen)
+			for (Handler handler : logger.getHandlers()) {
 				if (handler instanceof StdOutConsoleHandler) {
 					localHandler = (StdOutConsoleHandler) handler;
 					if (loggerInfo != null && !localHandler.equals(loggerInfo.localHandler)) {
@@ -363,11 +381,10 @@ public class ClientLogManager implements LogConfigSubscriber
 					break;
 				}
 			}
-	    	
+		
 			if (localHandler == null) {
-				localHandler = new StdOutConsoleHandler(sharedLogConfig, loggerName); // subscribes to sharedLogConfig
-				localHandler.setFormatter(new ConsoleLogFormatter());
-				logger.addHandler(localHandler);		
+				localHandler = createStdOutConsoleHandlerWithFormatter(sharedLogConfig, loggerName, logThrottle);
+				logger.addHandler(localHandler);
 				if (loggerInfo != null && loggerInfo.localHandler != null) {
 					logger.info("Logging handler mismatch resolved for '" + loggerName + "'. Should be reported to ACS developers");
 				}
@@ -378,6 +395,15 @@ public class ClientLogManager implements LogConfigSubscriber
         }
         return localHandler;
     }
+
+	/**
+	 * Factory method broken out to allow tests to easily use an instrumented variant.
+	 */
+	protected StdOutConsoleHandler createStdOutConsoleHandlerWithFormatter(LogConfig logConfig, String loggerName, LogThrottle throttle) {
+		StdOutConsoleHandler localHandler = new StdOutConsoleHandler(logConfig, loggerName, throttle); // subscribes to sharedLogConfig
+		localHandler.setFormatter(new ConsoleLogFormatter());
+		return localHandler;
+	}
 
     
     /**
