@@ -514,6 +514,23 @@ public class LogConfig {
 		return loggingConfig.getMaxLogQueueSize();
 	}
 	
+	public int getMaxLogsPerSecond() {
+		return loggingConfig.getMaxLogsPerSecond();
+	}
+	
+	/**
+	 * Limits the total number of logs emitted by the whole process,
+	 * separately for local and remote logging.
+	 * <p>
+	 * Introduced with ACS 9.0 for only reading the log throttle configuration data,
+	 * we add this setter method in preparation for future exposure in the LoggingConfigurable interface,
+	 * and also for test setups.
+	 */
+	public void setMaxLogsPerSecond(int maxLogsPerSecond) {
+		loggingConfig.setMaxLogsPerSecond(maxLogsPerSecond);
+		notifySubscribers();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////
 	// Getter and setter methods for default logger and named logger levels, local and remote logging.
 	///////////////////////////////////////////////////////////////////////////////////////////////////
