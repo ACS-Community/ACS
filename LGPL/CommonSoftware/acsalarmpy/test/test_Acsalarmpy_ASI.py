@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_ASI.py,v 1.2 2008/10/30 13:01:21 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_ASI.py,v 1.3 2010/06/09 00:34:44 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,14 +25,8 @@
 #
 
 import unittest
+import mock
 import Acsalarmpy.ASI as ASI
-import time
-
-def mocktime():
-    return 1222887968.813309
-
-time.time = mocktime
-
 import Acsalarmpy.Timestamp as Timestamp
 import Acsalarmpy.FaultState as FaultState
 
@@ -51,8 +45,11 @@ class TestASIConfiguration(unittest.TestCase):
 
 
 class TestASIMessage(unittest.TestCase):
-    def test_object_initialization(self):
+
+    @mock.patch_object(Timestamp, 'time')
+    def test_object_initialization(self, mocktime):
         """ASIMessage default initializer"""
+        mocktime.time.return_value = 1222887968.813309
         msg = ASI.ASIMessage()
         self.assertEquals(True, msg.faultStates is None)
         self.assertEquals(False, msg.backup)
@@ -61,8 +58,10 @@ class TestASIMessage(unittest.TestCase):
         self.assertEquals(True, msg.sourceHostname is None)
         self.assertEquals(True, msg.sourceTimestamp is None)
 
-    def test_toXML(self):
+    @mock.patch_object(Timestamp, 'time')
+    def test_toXML(self, mocktime):
         """ASIMessage XML output for defaults"""
+        mocktime.time.return_value = 1222887968.813309
         msg = ASI.ASIMessage()
         msg.faultStates = [FaultState.FaultState("Family","Member",1)]
         msg.sourceHostname = 'foo'

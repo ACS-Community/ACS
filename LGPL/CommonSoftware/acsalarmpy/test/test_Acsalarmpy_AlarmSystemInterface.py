@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_AlarmSystemInterface.py,v 1.2 2008/10/30 13:01:21 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_AlarmSystemInterface.py,v 1.3 2010/06/09 00:34:44 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -62,7 +62,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
     @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_push_single(self):
         """Push a single fault"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         fault = FaultState.FaultState("Family","Member",1)
         self.asi.push(fault)
         mesg = ASInterface.AlarmSystemInterface.publishMessage.call_args[0]
@@ -75,7 +75,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
     @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_push_multi(self):
         """Push multiple faults"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         faults = [FaultState.FaultState("Family","Member",1),FaultState.FaultState("Family","Member",2)]
         self.asi.push(faults)
         mesg = ASInterface.AlarmSystemInterface.publishMessage.call_args[0]
@@ -88,7 +88,7 @@ class TestAlarmSystemInterface(unittest.TestCase):
     @mock.patch('Acsalarmpy.AlarmSystemInterface.AlarmSystemInterface.publishMessage', new=mock.Mock())
     def test_pushActiveList(self):
         """Push a list of active faults"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         faultList = [FaultState.FaultState("Family","Member",1),FaultState.FaultState("Family","Member",2)] 
         self.asi.pushActiveList(faultList)
         mesg = ASInterface.AlarmSystemInterface.publishMessage.call_args[0]

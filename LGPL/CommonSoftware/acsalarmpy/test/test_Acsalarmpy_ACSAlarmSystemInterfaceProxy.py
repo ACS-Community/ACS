@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acsalarmpy_ACSAlarmSystemInterfaceProxy.py,v 1.2 2008/10/29 08:38:05 agrimstrup Exp $"
+# "@(#) $Id: test_Acsalarmpy_ACSAlarmSystemInterfaceProxy.py,v 1.3 2010/06/09 00:34:44 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -27,18 +27,15 @@
 import unittest
 import mock
 import Acspy.Common.Log
-
-mockLogger = mock.Mock(spec=Acspy.Common.Log.Logger)
-def mockGetLogger(name=None):
-    return mockLogger
-
-Acspy.Common.Log.getLogger = mockGetLogger
-
 import ACSAlarmSystemInterfaceProxy as ACSInterface
 import Acsalarmpy.FaultState as FaultState
 
 class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
-    def setUp(self):
+    
+    @mock.patch_object(Acspy.Common.Log, 'getLogger')
+    def setUp(self, mocklog):
+        mockLogger = mock.Mock(spec=Acspy.Common.Log.Logger)
+        mocklog.return_value = mockLogger
         self.asi = ACSInterface.ACSAlarmSystemInterfaceProxy()
 
     def test_object_initialization(self):
@@ -57,7 +54,7 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
 
     def test_push_single(self):
         """ACSAlarmSystemInterfaceProxy push a single fault"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         fault = FaultState.FaultState("Family","Member",1)
         base = 'Alarm sent: <%s, %s, %d> %s' % (fault.family, fault.member, fault.code, fault.descriptor)
         self.asi.push(fault)
@@ -69,7 +66,7 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
 
     def test_push_multi(self):
         """ACSAlarmSystemInterfaceProxy push multiple faults"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         faults = [FaultState.FaultState("Family","Member",2),FaultState.FaultState("Family","Member",3)]
         self.asi.push(faults)
         mesg = self.asi.logger.method_calls[1:-1]
@@ -79,7 +76,7 @@ class TestACSAlarmSystemInterfaceProxy(unittest.TestCase):
 
     def test_pushActiveList(self):
         """ACSAlarmSystemInterfaceProxy push a list of active faults"""
-        self.asi.logger.reset()
+        self.asi.logger.reset_mock()
         faultList = [FaultState.FaultState("Family","Member",4),FaultState.FaultState("Family","Member",5)]
         self.asi.pushActiveList(faultList)
         mesg = self.asi.logger.method_calls[1:-1]
