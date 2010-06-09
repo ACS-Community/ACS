@@ -21,16 +21,13 @@
  */
 package alma.acs.logging;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import junit.framework.TestCase;
+
 import alma.acs.logging.config.LogConfig;
 import alma.acs.testsupport.LogRecordCollectingLogger;
-
-import junit.framework.TestCase;
 
 /**
  */
@@ -42,7 +39,7 @@ public class AcsLoggingHandlerTest extends TestCase
 	protected void setUp() {
 		logQueue = new TestLogQueue();
 		LogConfig logConfig = new LogConfig();
-		loggingHandler = new AcsLoggingHandler(logQueue, logConfig, "dummyLoggerNameForHandlerLevelConfig");
+		loggingHandler = new AcsLoggingHandler(logQueue, logConfig, "dummyLoggerNameForHandlerLevelConfig", null);
 	}
 	
 	/**
@@ -71,41 +68,6 @@ public class AcsLoggingHandlerTest extends TestCase
 		// but our publish method is supposed to catch this...
 		loggingHandler.publish(testRecord);
 		assertEquals(0, logQueue.logRecords.size());
-	}
-	
-	
-	
-	/**
-	 * Test log queue that allows verification of calls to <code>log</code> and <code>flush</code>.
-	 * <p> 
-	 * Actually this class does not support any of the special features of DispatchingLogQueue.
-	 * It will not even forward the log record to it.
-	 * It only extends DispatchingLogQueue because AcsLoggingHandler requires a DispatchingLogQueue in the ctor
-	 * and I see no big advantage in refactoring this.
-	 */
-	private static class TestLogQueue extends DispatchingLogQueue {
-		public int nFlush;
-		public List<LogRecord> logRecords;
-		
-		TestLogQueue() {
-			logRecords = new ArrayList<LogRecord>();
-			reset();
-		}
-		
-		void reset() {
-			nFlush = 0;
-			logRecords.clear();
-		}
-		
-		Future<Boolean> flush() {
-			nFlush++;
-			return super.flush();
-		}
-
-		synchronized boolean log(LogRecord logRecord) {
-			logRecords.add(logRecord);
-			return true;
-		}
 	}
 	
 }
