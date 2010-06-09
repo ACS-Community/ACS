@@ -43,6 +43,12 @@ This value sets the time period in seconds after which the log record queue shou
                         <xs:documentation>Log records are stored in a queue not only to send them in a packet over the wire (see dispatchPacketSize), but also to not lose any records in times when the log service is not available (e.g. during container start, or any kind of network and service failure). Thus they get stored in a queue, which gets drained once the log service becomes available. However, logging should not compete for memory with the functional parts of the software, so we limit this queue. Values below "dispatchPacketSize" will be ignored, as we first must queue the records that should be sent together.</xs:documentation>
                     </xs:annotation>
                 </xs:attribute>
+                <xs:attribute name="maxLogsPerSecond" type="xs:int" use="optional" default="-1">
+                    <xs:annotation>
+                        <xs:documentation>Optional log throttle to be applied on the process (container) level, giving the max number of logs per second that the process can output.
+The throttle applies not only to remote logs, but also local/stdout logs, since the latter may be sent over the network as well (diskless+NFS). 
+Negative values mean that no log rate throttle is applied. Since ACS 9.0, see COMP-4541.</xs:documentation>
+                    </xs:annotation></xs:attribute>
             </xs:extension>
             <!-- The following two attributes are not included in ACS yet.
      As discussed at http://almasw.hq.eso.org/almasw/bin/view/ACS/LoggingArchitectureEnhancementsACS60,
