@@ -47,18 +47,26 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 	private static boolean DEBUG = Boolean.getBoolean("alma.acs.logging.verbose");
 
 	private LogConfig logConfig;
-	private String loggerName;
+	private final String loggerName;
+	private final LogThrottle logThrottle;
 	private AcsLogLevelDefinition immediateDispatchLevel; 
     private boolean isClosed;
 
     
     
-	public AcsLoggingHandler(DispatchingLogQueue logQueue, LogConfig logConfig, String loggerName)	{
+	/**
+	 * @param logQueue
+	 * @param logConfig
+	 * @param loggerName
+	 * @param logThrottle  may be null (then no throttling will happen)
+	 */
+	public AcsLoggingHandler(DispatchingLogQueue logQueue, LogConfig logConfig, String loggerName, LogThrottle logThrottle) {
         this.logQueue = logQueue;
         this.logConfig = logConfig;
         this.loggerName = loggerName;
-        logConfig.addSubscriber(this);
+        this.logThrottle = logThrottle;
         configureLogging(logConfig);
+        logConfig.addSubscriber(this); // passing "this" should only be done when this object is fully constructed.
 	}
 
     
@@ -110,17 +118,22 @@ public class AcsLoggingHandler extends Handler implements LogConfigSubscriber
 			return;
         }
 
-        // must trigger a call to LogRecord#inferCaller before the log record gets processed by a different thread        
-        logRecord.getSourceClassName();
+        if (logThrottle == null || logThrottle.checkPublishLogRecordRemote()) {
+        	// must trigger a call to LogRecord#inferCaller before the log record gets processed by a different thread
+        	logRecord.getSourceClassName();
 
-        logQueue.log(logRecord);
+        	logQueue.log(logRecord);
         
-        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel().compareTo(immediateDispatchLevel) >= 0) {
-            if (DEBUG) {
-                System.out.println("flushing log queue because of log record with level " + logRecord.getLevel().getName());
-            }
-            logQueue.flush();
-        }   
+	        if (AcsLogLevel.getNativeLevel(logRecord.getLevel()).getAcsLevel().compareTo(immediateDispatchLevel) >= 0) {
+	            if (DEBUG) {
+	                System.out.println("flushing log queue because of log record with level " + logRecord.getLevel().getName());
+	            }
+	            logQueue.flush();
+	        }
+        }
+        else {
+//        	System.out.println("Suppressed remote log!");
+        }
 	}
 
     

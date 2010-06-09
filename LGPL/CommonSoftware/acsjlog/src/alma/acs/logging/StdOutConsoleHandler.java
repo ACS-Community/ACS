@@ -41,31 +41,42 @@ import alma.acs.logging.level.AcsLogLevelDefinition;
 public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubscriber {
 	
 	private LogConfig logConfig;
-	private String loggerName;
+	private final String loggerName;
 	
-    public StdOutConsoleHandler(LogConfig logConfig, String loggerName) {
-    	this.logConfig = logConfig;
-    	this.loggerName = loggerName;
-        setOutputStream(System.out);
-        logConfig.addSubscriber(this);
-        configureLogging(logConfig);
-    }
+	/**
+	 * Optional log throttle, may be null if not used.
+	 */
+	private final LogThrottle logThrottle;
+	
+	/**
+	 * @param logConfig  to get configuration data from, and subscribe for future updates
+	 * @param loggerName
+	 * @param logThrottle  optional log throttle, may be null if not used.
+	 */
+	public StdOutConsoleHandler(LogConfig logConfig, String loggerName, LogThrottle logThrottle) {
+		this.logConfig = logConfig;
+		this.loggerName = loggerName;
+		this.logThrottle = logThrottle;
+		setOutputStream(System.out);
+		configureLogging(logConfig);
+		logConfig.addSubscriber(this); // passing "this" should only be done when this object is fully constructed.
+	}
 
-    /**
-     * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
-     */
-    public void configureLogging(LogConfig newLogConfig) {
-    	// just in case some day LogConfig is no longer used as a singleton
-    	this.logConfig = newLogConfig;
-    	
-        try {
-        	AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(logConfig.getNamedLoggerConfig(loggerName).getMinLogLevelLocal());
+	/**
+	 * @see alma.acs.logging.config.LogConfigSubscriber#configureLogging(alma.acs.logging.config.LogConfig)
+	 */
+	public void configureLogging(LogConfig newLogConfig) {
+		// just in case some day LogConfig is no longer used as a singleton
+		this.logConfig = newLogConfig;
+
+		try {
+			AcsLogLevelDefinition minLogLevelACS = AcsLogLevelDefinition.fromXsdLogLevel(
+					logConfig.getNamedLoggerConfig(loggerName).getMinLogLevelLocal());
 			setLevel(AcsLogLevel.getLowestMatchingJdkLevel(minLogLevelACS));
-        } catch (Exception ex) {
-        	publish(new LogRecord(Level.WARNING, "Failed to configure stdout log handler: " + ex.toString()));
-        }
-    }        
-    
+		} catch (Exception ex) {
+			publish(new LogRecord(Level.WARNING, "Failed to configure stdout log handler: " + ex.toString()));
+		}
+	}
     
     /**
      * Publish a <tt>LogRecord</tt>.
@@ -78,10 +89,12 @@ public class StdOutConsoleHandler extends StreamHandler implements LogConfigSubs
      *            description of the log event. A null record is silently
      *            ignored and is not published
      */
-    public void publish(LogRecord record) {
-        super.publish(record);
-        flush();
-    }
+	public synchronized void publish(LogRecord record) {
+		if (logThrottle == null || logThrottle.checkPublishLogRecordLocal()) {
+			super.publish(record);
+			flush();
+		}
+	}
 
     /**
      * Override <tt>StreamHandler.close</tt> to do a flush but not to close
