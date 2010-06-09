@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestAcsAlarmSending.py,v 1.1 2008/10/09 19:13:20 agrimstrup Exp $"
+# "@(#) $Id: CERNAlarmTestSender.py,v 1.1 2010/06/09 02:25:17 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -25,31 +25,40 @@
 #
 
 import sys
-from time import sleep
-from string import find
-import ACSJMSMessageEntity_idl
-from Acspy.Nc.Consumer import Consumer
-
-msgCount = 0
-
-def alarmDataHandler(some_param):
-    global msgCount
-    #print msgCount, some_param.text
-    if some_param.text.find("<fault-state family=\"Mount\" member=\"ALARM_SOURCE_MOUNT\" code=\"1\">")!=-1:
-        msgCount += 1
-    return
-
+import Acsalarmpy
+import Acsalarmpy.FaultState as FaultState
+import Acsalarmpy.Timestamp as Timestamp
 
 if len(sys.argv) < 2:
     print "\n\nUsage: \n\nTestAcsAlarmSending <NUM_ALARMS_TO_SEND>\n\nwhere NUM_ALARMS_TO_SEND is how many alarms you wish to send.\n\n"
 else:
-    numAlarmsToReceive = int(sys.argv[1])
+    numAlarmsToSend = int(sys.argv[1])
 
-c = Consumer("CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES")
-c.addSubscription(ACSJMSMessageEntity_idl._0_com.cosylab.acs.jms.ACSJMSMessageEntity, alarmDataHandler)
-c.consumerReady()
-while msgCount < numAlarmsToReceive:
-    sleep(1)
+    # Test data for our fault
+    family = 'Mount'
+    member = 'ALARM_SOURCE_MOUNT'
+    code = 1
 
-print "Consumer received %d messages\n" % msgCount
-c.disconnect()
+    print "Testing long-hand style of sending alarms"
+
+    Acsalarmpy.AlarmSystemInterfaceFactory.init()
+    
+    alarmSource = Acsalarmpy.AlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES")
+
+    # Create a test fault
+    fltstate = Acsalarmpy.AlarmSystemInterfaceFactory.createFaultState(family,member, code)
+    fltstate.descriptor = FaultState.ACTIVE_STRING
+    fltstate.userTimestamp = Timestamp.Timestamp()
+    fltstate.userProperties[FaultState.ASI_PREFIX_PROPERTY_STRING] = "prefix"
+    fltstate.userProperties[FaultState.ASI_SUFFIX_PROPERTY_STRING] = "suffix"
+    fltstate.userProperties["TEST_PROPERTY"] = "TEST_VALUE"
+
+    # The heart of the test
+    for i in range(1,numAlarmsToSend+1):
+        alarmSource.push(fltstate)
+
+    Acsalarmpy.AlarmSystemInterfaceFactory.done()
+    
+
+#
+# ___oOo___

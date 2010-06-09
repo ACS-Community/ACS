@@ -63,7 +63,7 @@ class TestAlarmPublisher(unittest.TestCase):
         import Acsalarmpy.ASI as ASI
         import Acsalarmpy.Timestamp as TS
 
-        mockSupplier.reset()
+        mockSupplier.reset_mock()
         fs = FS.FaultState("Family", "Member", 1)
         fs.descriptor = ""
         fs.userTimestamp = TS.Timestamp()

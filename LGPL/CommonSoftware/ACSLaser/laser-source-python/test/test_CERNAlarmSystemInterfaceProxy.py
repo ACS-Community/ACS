@@ -77,7 +77,7 @@ class TestCERNAlarmSystemInterfaceProxy(unittest.TestCase):
     @mock.patch('CERNAlarmSystemInterfaceProxy.AlarmPublisher.AlarmPublisher',new=getMockAlarmPublisher)
     def test_publishMessage_with_source(self):
         """CERNAlarmSystemInterfaceProxy publishes alarm after initialization with source"""
-        mockAlarmPublisher.reset()
+        mockAlarmPublisher.reset_mock()
         p = CERNAlarmSystemInterfaceProxy(sourceName='Bonzo')
         msg = ASIMessage([FaultState('Family','Member',1)])
         msg.sourceName = 'msgSource'
