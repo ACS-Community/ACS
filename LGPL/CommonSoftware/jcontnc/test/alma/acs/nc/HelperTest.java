@@ -24,8 +24,8 @@ import org.omg.CosNotifyChannelAdmin.EventChannel;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.Data;
-import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.DataType;
+import Monitor.Data;
+import Monitor.DataType;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 import gov.sandia.NotifyMonitoringExt.ActiveEventChannelCount;
 import gov.sandia.NotifyMonitoringExt.ActiveEventChannelNames;
@@ -331,20 +331,20 @@ public class HelperTest extends ComponentClientTestCase
 
 	private String getStatistic(String statName) throws InvalidName {
 		Data data = nsmc.get_statistic(statName);
-		if (data.discriminator() == DataType.DATA_TEXT) {
-			String[] list = data.list();
+		if (data.data_union.discriminator() == DataType.DATA_TEXT) {
+			String[] list = data.data_union.list();
 			return Arrays.toString(list);
 		}
-		else if (data.discriminator() == DataType.DATA_NUMERIC) {
-			return Double.toString(data.num().last);
+		else if (data.data_union.discriminator() == DataType.DATA_NUMERIC) {
+			return Double.toString(data.data_union.num().last);
 		}
 		return null;
 	}
 	
 	private Date getStatisticTime(String statName) throws InvalidName {
 		Data data = nsmc.get_statistic(statName);
-		if (data.discriminator() == DataType.DATA_NUMERIC) {
-			long t = (long) data.num().last;
+		if (data.data_union.discriminator() == DataType.DATA_NUMERIC) {
+			long t = (long) data.data_union.num().last;
 			return new Date(t*1000);
 		}
 		throw new org.omg.CORBA.BAD_OPERATION();
