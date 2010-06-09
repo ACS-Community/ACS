@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: CERNAlarmTestSender.py,v 1.1 2010/06/09 02:25:17 agrimstrup Exp $"
+# "@(#) $Id: CERNAlarmTestSender.py,v 1.2 2010/06/09 02:42:45 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -58,6 +58,7 @@ else:
         alarmSource.push(fltstate)
 
     Acsalarmpy.AlarmSystemInterfaceFactory.done()
+    sys.stdout.flush()
     
 
 #
