@@ -104,8 +104,8 @@ ENDTABLE
 // Included are the full host name, whether the computer is real-time or not, and whether it is a uni-processor or an SMP.
 TABLE Computer EXTENDS NetworkDevice
     ProcessorType           CHAR (3)                NOT NULL
-    RealTime                BOOLEAN                 NULL
-    Diskless                BOOLEAN                 NULL
+    RealTime                BOOLEAN                 NOT NULL
+    Diskless                BOOLEAN                 NOT NULL
     CONSTRAINT ComputerProcessorType CHECK (ProcessorType IN ('uni', 'smp'))
 ENDTABLE
 
