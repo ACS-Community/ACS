@@ -474,12 +474,13 @@ TABLE AlarmDefinition
 ENDTABLE
 
 TABLE ReductionLink
+	ReductionLinkId		INTEGER				NOT NULL
 	ParentAlarmDefId	INTEGER				NOT NULL
 	ChildAlarmDefId		INTEGER				NOT NULL
 	Type				LONGVARCHAR (12)	NOT NULL
 	Action				LONGVARCHAR (6)		NOT NULL
 	ConfigurationId		INTEGER				NOT NULL
-	KEY ParentAlarmDefId ChildAlarmDefId
+	KEY ReductionLinkId	GENERATED FROM ParentAlarmDefId ChildAlarmDefId
 	CONSTRAINT RLParentRef FOREIGN KEY (ParentAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
 	CONSTRAINT RLChildRef FOREIGN KEY (ChildAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
 	CONSTRAINT ReductionLinkType CHECK (Type IN ('MULTIPLICITY', 'NODE'))
