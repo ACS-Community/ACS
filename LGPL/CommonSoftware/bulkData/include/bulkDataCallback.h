@@ -73,6 +73,7 @@ class BulkDataCallback : public TAO_AV_Callback
     template<class TCallback>
     void setReceiver(AcsBulkdata::BulkDataReceiver<TCallback> *recv)
 	{
+	    ACE_UNUSED_ARG(recv);
 	    //to be defined by the user
 	}
 

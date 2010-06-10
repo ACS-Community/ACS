@@ -102,6 +102,8 @@ void AcsBulkdata::BulkDataFlowConsumer<TReceiverCallback>::set_flow_handler(cons
 {
   ACS_TRACE("BulkDataFlowConsumer<>::set_flow_handler");
 
+  ACE_UNUSED_ARG(flowname);
+
   handler_p = handler;
 }
 
