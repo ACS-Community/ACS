@@ -33,7 +33,6 @@ import alma.acs.tmcdb.FaultCode;
 import alma.acs.tmcdb.FaultFamily;
 import alma.acs.tmcdb.FaultMember;
 import alma.acs.tmcdb.Location;
-import alma.acs.tmcdb.ReductionLinkId;
 import alma.acs.tmcdb.ReductionThreshold;
 
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
@@ -383,12 +382,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				add(Restrictions.eq("alarmDefinitionByChildalarmdefid", child)).uniqueResult();
 			if (remoteLink == null) {
 
-				ReductionLinkId rlinkId = new ReductionLinkId();
-				rlinkId.setChildAlarmDefId(child.getAlarmDefinitionId());
-				rlinkId.setParentAlarmDefId(parent.getAlarmDefinitionId());
-				
 				remoteLink = new alma.acs.tmcdb.ReductionLink();
-				remoteLink.setId(rlinkId);
 				remoteLink.setAlarmDefinitionByChildalarmdefid(child);
 				remoteLink.setAlarmDefinitionByParentalarmdefid(parent);
 				remoteLink.setConfiguration(config);
