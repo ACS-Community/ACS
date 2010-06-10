@@ -987,6 +987,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 								loggingConfig.setImmediateDispatchLevel((byte)10);
 								loggingConfig.setFlushPeriodSeconds((byte)10);
 								loggingConfig.setMaxLogQueueSize(1000);
+								loggingConfig.setMaxLogsPerSecond(-1);
 								session.persist(loggingConfig);
 
 								container = new Container();
@@ -1528,6 +1529,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			loggingConfig.setImmediateDispatchLevel((byte)dao.get_long("LoggingConfig/immediateDispatchLevel"));
 			loggingConfig.setFlushPeriodSeconds((byte)dao.get_long("LoggingConfig/flushPeriodSeconds"));
 			loggingConfig.setMaxLogQueueSize(dao.get_long("LoggingConfig/maxLogQueueSize"));
+			loggingConfig.setMaxLogsPerSecond(dao.get_long("LoggingConfig/maxLogsPerSecond"));
 		}
 		else
 		{
@@ -1539,6 +1541,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			loggingConfig.setImmediateDispatchLevel((byte)readLong(dao, "LoggingConfig/immediateDispatchLevel", 10));
 			loggingConfig.setFlushPeriodSeconds((byte)readLong(dao, "LoggingConfig/flushPeriodSeconds", 10));
 			loggingConfig.setMaxLogQueueSize(readLong(dao, "LoggingConfig/maxLogQueueSize", 1000));
+			loggingConfig.setMaxLogsPerSecond(readLong(dao, "LoggingConfig/maxLogsPerSecond", -1));
 		}
 		session.persist(loggingConfig);
 
@@ -1549,7 +1552,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			"dispatchPacketSize",
 			"immediateDispatchLevel",
 			"flushPeriodSeconds",
-			"maxLogQueueSize"
+			"maxLogQueueSize",
+			"maxLogsPerSecond"
 		};
 		
 		String[] children;

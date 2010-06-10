@@ -150,6 +150,7 @@ TABLE LoggingConfig
     ImmediateDispatchLevel  TINYINT                     DEFAULT 10
     FlushPeriodSeconds      TINYINT                     DEFAULT 10
     MaxLogQueueSize         INTEGER                     DEFAULT 1000
+    MaxLogsPerSecond		INTEGER						DEFAULT -1
     KEY LoggingConfigId GENERATED
 ENDTABLE
 

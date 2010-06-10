@@ -40,8 +40,9 @@ public class LoggingConfig implements java.io.Serializable {
     private Integer immediateDispatchLevel;
     private Integer flushPeriodSeconds;
     private Integer maxLogQueueSize;
+    private Integer maxLogsPerSecond;
     
-    // must be public to be accessible, but should not have getter to be come visible as node
+	// must be public to be accessible, but should not have getter to be come visible as node
 	public Map<String, NamedLoggerConfig> _;
     
     /**
@@ -50,25 +51,19 @@ public class LoggingConfig implements java.io.Serializable {
     public LoggingConfig () {
     }
 
-    public String toString() {
-    	String s =  "LoggingConfig:" + newline;
-
-        s += "\tName: " + minLogLevel + newline;
-
-        s += "\tType: " + minLogLevelLocal + newline;
-
-        s += "\tCode: " + centralizedLogger + newline;
-
-        s += "\tContainer: " + dispatchPacketSize + newline;
-
-        s += "\tAutostart: " + immediateDispatchLevel + newline;
-
-        s += "\tDefault: " + flushPeriodSeconds + newline;
-
-        s += "\tKeepAliveTime: " + maxLogQueueSize + newline;
-
-    	return s;
-    }
+	@Override
+	public String toString() {
+		return "LoggingConfig:" + newline 
+				+ "LoggingConfigId: " + LoggingConfigId + newline
+				+ "minLogLevel: " + minLogLevel 
+				+ "minLogLevelLocal: " + minLogLevelLocal  + newline 
+				+ "centralizedLogger: " + centralizedLogger + newline
+				+ "dispatchPacketSize: " + dispatchPacketSize + newline
+				+ "immediateDispatchLevel: " + immediateDispatchLevel + newline
+				+ "flushPeriodSeconds: " + flushPeriodSeconds + newline
+				+ "maxLogQueueSize: " + maxLogQueueSize + newline
+				+ "maxLogsPerSecond: " + maxLogsPerSecond + newline;
+	}
 
 	/**
 	 * @return the centralizedLogger
@@ -139,7 +134,20 @@ public class LoggingConfig implements java.io.Serializable {
 	public void setMaxLogQueueSize(Integer maxLogQueueSize) {
 		this.maxLogQueueSize = maxLogQueueSize;
 	}
+	
+	/**
+	 * @return the maxLogsPerSecond to allow
+	 */
+	public Integer getMaxLogsPerSecond() {
+		return maxLogsPerSecond;
+	}
 
+	/**
+	 * @param the maxLogsPerSecond to allow
+	 */
+	public void setMaxLogsPerSecond(Integer maxLogsPerSecond) {
+		this.maxLogsPerSecond = maxLogsPerSecond;
+	}
 
 	/**
 	 * @return the minLogLevelLocal
@@ -168,6 +176,7 @@ public class LoggingConfig implements java.io.Serializable {
 	public void setMinLogLevel(Integer minLogLevel) {
 		this.minLogLevel = minLogLevel;
 	}
+
 
     
 }

@@ -16,6 +16,7 @@
     <property name="immediateDispatchLevel" column="ImmediateDispatchLevel" />
     <property name="flushPeriodSeconds" column="FlushPeriodSeconds" />
     <property name="maxLogQueueSize" column="MaxLogQueueSize" />
+    <property name="maxLogsPerSecond" column="MaxLogsPerSecond" />
 
     <map name="_" access="field" lazy="false">
       <key column="LoggingConfigId" />
