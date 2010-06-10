@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeDDSDependencies,v 1.5 2010/04/05 16:05:20 javarias Exp $"
+# "@(#) $Id: acsMakeDDSDependencies,v 1.6 2010/06/10 06:33:24 mzampare Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -95,6 +95,7 @@ for type in ${typesList}
   echo "# ${type}"
   echo ""
   echo "vpath ${type}TypeSupport%.h ../object"
+  echo "vpath ${type}TypeSupport%.inl ../object"
   echo ""
   echo "../object/${type}TypeSupportStubs.da:"
   echo "	\$(AT)echo \"== (Dependencies) == \$@ \" "
