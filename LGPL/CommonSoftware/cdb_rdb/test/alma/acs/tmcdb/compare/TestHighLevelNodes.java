@@ -185,6 +185,7 @@ public class TestHighLevelNodes extends XMLTestCase {
 		assertEquals(xmlDao.get_long("LoggingConfig/immediateDispatchLevel"),rdbDao.get_long("LoggingConfig/immediateDispatchLevel"));
 		assertEquals(xmlDao.get_long("LoggingConfig/flushPeriodSeconds"),rdbDao.get_long("LoggingConfig/flushPeriodSeconds"));
 		assertEquals(xmlDao.get_long("LoggingConfig/maxLogQueueSize"),rdbDao.get_long("LoggingConfig/maxLogQueueSize"));
+		assertEquals(xmlDao.get_long("LoggingConfig/maxLogsPerSecond"),rdbDao.get_long("LoggingConfig/maxLogsPerSecond"));
 		//TODO: Handle NamedLogger, UnnamedLogger
 
 	}
