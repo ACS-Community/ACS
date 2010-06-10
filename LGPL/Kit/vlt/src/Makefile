@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.2 2004/09/15 13:39:24 mpasquat Exp $" 
+# "@(#) $Id: Makefile,v 1.3 2010/06/10 07:50:24 gchiozzi Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -178,7 +178,7 @@ include $(MAKEDIR)/vltMakefile
 #
 # TARGETS
 # -------
-all: do_all move_vltMakeSetPanelShell do_vltPort
+all: directory_structure do_all move_vltMakeSetPanelShell do_vltPort
 	@echo " . . . 'all' done" 
 
 #
@@ -220,6 +220,21 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 
+# GCH 2010.06.10
+# Create needed directories.
+# The ACS Makefile is capable of doing the complete job, but this
+# VLT module comes first.
+# In principle, the function should be moved from there to here!
+# Now I put here only the directories needed for this vlt module, not
+# the whole list.
+CREATE_DIRS = include object doc bin lib config 
+
+directory_structure:
+	@echo "== Creating Missing directories"
+	$(AT)for dir in $(foreach dir, $(CREATE_DIRS), $(dir)); \
+	do \
+		if [ ! -d ../$${dir} ]; then mkdir -p ../$${dir} ; fi; \
+	done
 #
 #___oOo___
 
