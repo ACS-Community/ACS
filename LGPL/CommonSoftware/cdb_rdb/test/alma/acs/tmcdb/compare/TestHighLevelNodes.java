@@ -71,11 +71,28 @@ public class TestHighLevelNodes extends XMLTestCase {
 		rdbXml = rdbDAL.get_DAO("MACI/");
 	}
 	
-	public void testMACI() throws Exception {
+	public void testMACI_Managers() throws Exception {
+		HashSet<String> xmlNodes = new HashSet<String>(Arrays.asList(xmlDAL.list_nodes("MACI/Managers").split(" ")));
+		HashSet<String> rdbNodes = new HashSet<String>(Arrays.asList(rdbDAL.list_nodes("MACI/Managers").split(" ")));
+		logger.info("XML: "+xmlNodes.toString()+"; TMCDB: "+rdbNodes.toString());
+		assertEquals(xmlNodes,rdbNodes);
+		for (Iterator<String> iterator = xmlNodes.iterator(); iterator.hasNext();) {
+			String xmlstring = "MACI/Managers/"+(String) iterator.next();
+			DAO xmlDao = xmlDAL.get_DAO_Servant(xmlstring);
+			DAO rdbDao = rdbDAL.get_DAO_Servant(xmlstring);
+			assertEquals(xmlDao.get_string("Startup"),rdbDao.get_string("Startup"));
+			assertEquals(xmlDao.get_string("ServiceComponents"),rdbDao.get_string("ServiceComponents"));
+//			assertEquals(xmlDao.get_string("ServiceDaemons"),rdbDao.get_string("ServiceDaemons"));
+			examineLoggingConfig(xmlDao,rdbDao);
+		}
+	}
+	
+	public void testMACI_Containers() throws Exception {
 		HashSet<String> xmlNodes = new HashSet<String>(Arrays.asList(xmlDAL.list_nodes("MACI/Containers").split(" ")));
 		HashSet<String> rdbNodes = new HashSet<String>(Arrays.asList(rdbDAL.list_nodes("MACI/Containers").split(" ")));
 		logger.info("XML: "+xmlNodes.toString()+"; TMCDB: "+rdbNodes.toString());
 		assertEquals(xmlNodes,rdbNodes);
+		System.out.println("There are "+xmlNodes.size()+" nodes in MACI/Container");
 		
 		for (Iterator<String> iterator = xmlNodes.iterator(); iterator.hasNext();) {
 			String xmlstring = "MACI/Containers/"+(String) iterator.next();

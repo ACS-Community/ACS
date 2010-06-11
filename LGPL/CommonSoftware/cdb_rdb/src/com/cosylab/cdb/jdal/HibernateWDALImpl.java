@@ -769,18 +769,22 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					manager.setLoggingConfig(managerLoggingConfig);
 					manager.setStartup(managerDAO.get_string("Startup"));
 					manager.setServiceComponents(managerDAO.get_string("ServiceComponents"));
-					manager.setServiceDaemons(managerDAO.get_string("ServiceDaemons"));
+					try {
+						manager.setServiceDaemons(managerDAO.get_string("ServiceDaemons"));
+					} catch (CDBFieldDoesNotExistEx e) {
+						manager.setServiceDaemons(""); // Optional, but has no default!
+					}
 					manager.setTimeout((int)managerDAO.get_double("Timeout"));
 					manager.setClientPingInterval((int)managerDAO.get_double("ClientPingInterval"));
 					manager.setAdministratorPingInterval((int)managerDAO.get_double("AdministratorPingInterval"));
 					manager.setContainerPingInterval((int)managerDAO.get_double("ContainerPingInterval"));
 					manager.setServerThreads((byte)managerDAO.get_long("ServerThreads"));
-					manager.setDeadlockTimeout((int)managerDAO.get_double("DeadlockTimeout"));
 					session.persist(manager);
 					m_logger.info("Imported Manager from XML.");
 				}
 				catch (Throwable e)
 				{
+					e.printStackTrace();
 					m_logger.warning("MACI/Managers/Manager record does not exist or misconfigured, using defaults.");
 				}
 

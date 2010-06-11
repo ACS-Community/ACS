@@ -44,7 +44,6 @@ public class Manager implements java.io.Serializable {
     private double ClientPingInterval = 60;
     private double AdministratorPingInterval = 45;
     private double ContainerPingInterval = 30;
-    private double DeadlockTimeout = 180.0;
 
     private int ServerThreads = 10;
     
@@ -118,20 +117,6 @@ public class Manager implements java.io.Serializable {
 	 */
 	public void setContainerPingInterval(double containerPingInterval) {
 		ContainerPingInterval = containerPingInterval;
-	}
-
-	/**
-	 * @return the deadlockTimeout
-	 */
-	public double getDeadlockTimeout() {
-		return DeadlockTimeout;
-	}
-
-	/**
-	 * @param deadlockTimeout the deadlockTimeout to set
-	 */
-	public void setDeadlockTimeout(double deadlockTimeout) {
-		DeadlockTimeout = deadlockTimeout;
 	}
 
 	/**

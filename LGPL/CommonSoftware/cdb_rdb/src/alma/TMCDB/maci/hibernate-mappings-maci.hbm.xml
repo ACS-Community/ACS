@@ -50,7 +50,6 @@
     <property name="AdministratorPingInterval" column="AdministratorPingInterval" />
     <property name="ContainerPingInterval" column="ContainerPingInterval" />
     <property name="ServerThreads" column="ServerThreads" />
-    <property name="DeadlockTimeout" column="DeadlockTimeout" />
  
     <many-to-one name="LoggingConfig" column="LoggingConfigId" class="LoggingConfig" lazy="false"/>
     
