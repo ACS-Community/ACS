@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeDDSDependencies,v 1.6 2010/06/10 06:33:24 mzampare Exp $"
+# "@(#) $Id: acsMakeDDSDependencies,v 1.7 2010/06/11 07:36:15 mzampare Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -90,7 +90,7 @@ for type in ${typesList}
   do
   targetList="../object/${type}TypeSupport.idl ../object/${type}TypeSupportImpl.cpp ../object/${type}TypeSupportImpl.h ${targetList} "
   # to be used for top-level target do_fake_${ddsIdl}
-  libList="../lib/lib${type}TypeSupportStubs.a ${libList}"
+  libList="../lib/lib${type}TypeSupportStubs.a ../lib/lib${type}TypeSupportStubs.so ${libList}"
 
   echo "# ${type}"
   echo ""
