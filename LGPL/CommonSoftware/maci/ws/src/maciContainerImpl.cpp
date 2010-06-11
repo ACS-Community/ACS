@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.116 2009/12/07 14:14:52 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.117 2010/06/11 11:08:23 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.116 2009/12/07 14:14:52 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.117 2010/06/11 11:08:23 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2802,7 +2802,8 @@ void ContainerImpl::refresh_logging_config()
 					*iter == "immediateDispatchLevel" ||
 					*iter == "maxLogQueueSize" ||
 					*iter == "minLogLevel" ||
-					*iter == "minLogLevelLocal")
+					*iter == "minLogLevelLocal"||
+					*iter == "maxLogsPerSecond" )
 					continue;
 
 				// load
