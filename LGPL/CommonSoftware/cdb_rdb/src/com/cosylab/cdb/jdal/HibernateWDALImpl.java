@@ -784,8 +784,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				}
 				catch (Throwable e)
 				{
-					e.printStackTrace();
-					m_logger.warning("MACI/Managers/Manager record does not exist or misconfigured, using defaults.");
+					m_logger.log(Level.WARNING,"MACI/Managers/Manager record does not exist or misconfigured, using defaults.",e);
 				}
 
 				/*

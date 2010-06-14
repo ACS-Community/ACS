@@ -188,8 +188,7 @@ TABLE Manager
     AdministratorPingInterval INTEGER                     DEFAULT 45
     ContainerPingInterval     INTEGER                     DEFAULT 30
     ServerThreads             TINYINT                 DEFAULT 10
-    DeadlockTimeout           INTEGER                     DEFAULT 180
-    KEY ManagerId GENERATED FROM ConfigurationId LoggingConfigId Startup ServiceComponents Timeout ClientPingInterval AdministratorPingInterval ContainerPingInterval ServerThreads DeadlockTimeout
+    KEY ManagerId GENERATED FROM ConfigurationId LoggingConfigId Startup ServiceComponents Timeout ClientPingInterval AdministratorPingInterval ContainerPingInterval ServerThreads 
     CONSTRAINT ManagerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig CASCADING AGGREGATION
     CONSTRAINT ManagerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
 ENDTABLE
