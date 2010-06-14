@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.82 2007/05/23 08:55:56 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.83 2010/06/14 11:15:40 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -149,6 +149,12 @@ ERRCODE_GEN = acserrHandlersErr ErrorSystemErrType
 #
 # INCLUDE STANDARDS
 # -----------------
+
+acserrHandlersErr_didl_prereq =../idl/acserrHandlersErr.idl
+ErrorSystemErrType_didl_prereq=../idl/ErrorSystemErrType.idl
+acserr_da_prereq=$(ERRCODE_GEN_CPP)
+
+
 
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
