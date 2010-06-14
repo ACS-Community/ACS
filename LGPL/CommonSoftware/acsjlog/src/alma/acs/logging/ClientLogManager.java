@@ -170,7 +170,8 @@ public class ClientLogManager implements LogConfigSubscriber
 	{
         sharedLogConfig = new LogConfig();
         try {
-            sharedLogConfig.initialize(false); // will determine the default values and call #configureLogging
+            sharedLogConfig.initialize(false); // will determine the default values
+            configureLogging(sharedLogConfig);
         } catch (LogConfigException ex) {
             System.err.println("Failed to configure logging: " + ex.toString());
         }
