@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.31 2010/03/26 15:44:29 hsommer Exp $"
+# "@(#) $Id: buildTools,v 1.32 2010/06/15 16:19:18 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -172,6 +172,8 @@ fi
 echo "buildTAO (ignore the following login messages and wait for buildTAO to complete)"
 bash --login ./buildTAO
 
+echo "buildDDS"
+./buildDDS
 echo "buildAnt"
 ./buildAnt
 echo "buildJacORB"
