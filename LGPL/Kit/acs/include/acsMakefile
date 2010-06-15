@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.185 2010/06/15 21:16:32 javarias Exp $" 
+# "@(#) $Id: acsMakefile,v 1.186 2010/06/15 22:00:59 javarias Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -1128,7 +1128,7 @@ ifdef ACE_ROOT
               -I$(ACE_ROOT) $(VLTINC)
     VLTLIB := -L$(ACE_ROOT)/lib $(VLTLIB)
     TAO_MK_IDL_PATH := -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/tao -I$(ACE_ROOT)/TAO 
-ifdef DDS_FILES
+ifdef USE_OPENDDS
     TAO_MK_IDL_PATH := $(TAO_MK_IDL_PATH) -I$(DDS_ROOT)
     TAO_IDLFLAGS += -Gdcps
     USER_INC += -I$(DDS_ROOT)
