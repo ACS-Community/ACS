@@ -14,11 +14,7 @@ for number in 1 10 20; do
 		ddsSubscriber >& $number/$FILE &
 	done
 	sleep 35
-	if [[ $(echo $PWD | grep "test$") != "" ]];then
-		./testDDSNCBenchmarkClient.py
-	else
-		python "../test/testDDSNCBenchmarkClient.py";
-	fi
+	testDDSNCBenchmarkClient.py
 	sleep 35
 	# test	
 	for I in $number; do
