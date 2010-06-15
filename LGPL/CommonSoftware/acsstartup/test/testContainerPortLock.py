@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testContainerPortLock.py,v 1.5 2010/05/11 01:41:17 agrimstrup Exp $"
+# "@(#) $Id: testContainerPortLock.py,v 1.6 2010/06/15 00:55:35 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -48,8 +48,8 @@ class ContainerPortLockCleanupTest(unittest.TestCase):
         acsstartupContainerPort.BASESLEEPTIME = 1
             
     def tearDown(self):
-        mockfile.reset()
-        mockstderr.reset()
+        mockfile.reset_mock()
+        mockstderr.reset_mock()
 
     def excthrower(self):
         raise Exception('Test Exception')
