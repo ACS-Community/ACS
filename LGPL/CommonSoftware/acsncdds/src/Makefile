@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.15 2010/02/08 22:33:35 utfsm Exp $"
+# "@(#) $Id: Makefile,v 1.16 2010/06/15 19:44:38 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -45,7 +45,6 @@ USER_LIB = -lACE \
 			  -lm \
 			  -lloki \
 			  -lACSErrTypeCommon \
-			  -lacsnc \
 			  -lOpenDDS_Dcps \
 			  -lSimpleTcp
 
