@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsutilCASAPathInsert.py.tmpl,v 1.1 2009/10/07 15:11:56 agrimstrup Exp $"
+# "@(#) $Id: acsutilCASAPathInsert.py.tmpl,v 1.2 2010/06/15 01:25:49 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -32,7 +32,7 @@ import os
 import sys
 
 # Normal locations of Python modules and shared libraries
-SUFFIX = {'PYTHONPATH':'/lib/python2.5/site-packages',
+SUFFIX = {'PYTHONPATH':'/lib/python2.6/site-packages',
           'LD_LIBRARY_PATH' : '/lib' }
 
 pypath = os.environ[sys.argv[1]].split(':')
