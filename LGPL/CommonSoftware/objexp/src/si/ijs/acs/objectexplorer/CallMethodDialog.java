@@ -17,6 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
+import java.text.ParseException;
 
 public class CallMethodDialog extends JDialog {
 	private JLabel ivjJLabel1 = null;
@@ -78,15 +79,23 @@ public CallMethodDialog(Operation op, JFrame frame,boolean modal,NotificationBea
 /**
  * Insert the method's description here.
  * Creation date: (11/14/00 8:29:22 PM)
+ * @throws ParseException 
  */
-private Object arrayConvert(String str, Class type) {
+private Object arrayConvert(String str, Class type) throws ParseException {
   if (type.isArray()) {
 	String[] values=readRows(str);
 	int length=values.length;
 
 	Object retVal=Array.newInstance(type.getComponentType(),length);
 	for(int i=0;i<length;i++) {
- 	    Array.set(retVal,i,stringConvert(values[i],type.getComponentType()));
+		try
+		{
+			Array.set(retVal,i,stringConvert(values[i],type.getComponentType()));
+		}
+		catch(ParseException parseExc)
+		{
+			throw parseExc;
+		}
 	}
 	return retVal;
   }
@@ -741,13 +750,20 @@ public static void main(java.lang.String[] args) {
  * Insert the method's description here.
  * Creation date: (11/14/00 7:28:44 PM)
  * @return java.lang.Object[]
+ * @throws ParseException 
  */
-private Object[] readParameters(Class[] types, boolean[] mask, Object[] pFields) {
+private Object[] readParameters(Class[] types, boolean[] mask, Object[] pFields) throws ParseException {
 		if ((types != null) && (mask != null)) {
 			Object[] params = new Object[types.length];
 			for (int j = 0; j < types.length; j++) {
 				if (mask[j]) {
-				  params[j]=readSingleParameter(types[j]);	
+					try
+					{
+						params[j]=readSingleParameter(types[j]);
+					}
+					catch(ParseException parseExc){
+						throw parseExc;
+					}
 				}
 			}
 			return params;
@@ -780,6 +796,9 @@ private Object readReadableType(Class type) {
 				try{
 				  Object myObj = myConst.newInstance(readParameters(constTypes, mask, parameterFields));
  				  return myObj;
+				}
+				catch(ParseException parseExc){
+					return null;					
 				}
 				catch (InstantiationException t){
 				  return null;
@@ -829,8 +848,9 @@ private String[] readRows(String str) {
 /**
  * Insert the method's description here.
  * Creation date: (11/22/00 1:42:28 PM)
+ * @throws ParseException 
  */
-private Object readSingleParameter(Class type) {
+private Object readSingleParameter(Class type) throws ParseException {
 
     //System.out.println("Reading param of type at index ("+index+"): " + type.getName());
 
@@ -844,7 +864,13 @@ private Object readSingleParameter(Class type) {
 			index = index + 1;
 		} else
 			if (type.isPrimitive()) {
-				param = stringConvert(((JTextField) parameterFields[index]).getText(), type);
+				try
+				{
+					param = stringConvert(((JTextField) parameterFields[index]).getText(), type);
+				}
+				catch(ParseException parseExc){
+					throw parseExc;
+				}
 				index = index + 1;
 			} else
 				if (type.isArray()) {
@@ -865,23 +891,44 @@ private Object readSingleParameter(Class type) {
 /**
  * Insert the method's description here.
  * Creation date: (11/14/00 8:29:22 PM)
+ * @throws ParseException 
  */
-public static  Object stringConvert(String str,Class type) {
+public static  Object stringConvert(String str,Class type) throws ParseException {
 	Object myParam=new Object();
 	if (type.toString().equals("int")) {
-	  myParam=new Integer(str);
+		try {
+            // If the input is valid then it will decode properly
+            myParam = new Integer(Integer.decode(str));
+        } catch (NumberFormatException nfExc) {
+        	throw new ParseException("Not a valid hex, dec, or octal input", 0);
+        }
 	}
 	else if (type.toString().equals("double")) {
 	  myParam=new Double(str);
 	}
 	else if (type.toString().equals("long")) {
-	  myParam=new Long(str);
+		try {
+            // If the input is valid then it will decode properly
+            myParam = new Long(Long.decode(str));
+        } catch (NumberFormatException nfExc) {
+        	throw new ParseException("Not a valid hex, dec, or octal input", 0);
+        }
 	}
 	else if (type.toString().equals("short")) {
-	  myParam=new Short(str);
+		try {
+            // If the input is valid then it will decode properly
+            myParam = new Short(Short.decode(str));
+        } catch (NumberFormatException nfExc) {
+        	throw new ParseException("Not a valid hex, dec, or octal input", 0);
+        }
 	}
 	else if (type.toString().equals("byte")) {
-	  myParam=new Byte(str);
+		try {
+            // If the input is valid then it will decode properly
+            myParam = new Byte(Byte.decode(str));
+        } catch (NumberFormatException nfExc) {
+        	throw new ParseException("Not a valid hex, dec, or octal input", 0);
+        }
 	}
 	else if (type.toString().equals("char")) {
 	  myParam=new Character(str.charAt(0));
