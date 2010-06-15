@@ -24,8 +24,7 @@ int DDSPublisher::attachToTransport()
 				status_str = "Unknown Status";
 				break;
 		}
-	        ACS_STATIC_SHORT_LOG((LM_ERROR,
-        	                          "DDSPublisher::attachToTransport",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::attachToTransport", (LM_ERROR,
                 	                  "Failed to attach to the transport. Status == '%s'",status_str.c_str()));
 		return 1;
 	}
@@ -34,13 +33,11 @@ int DDSPublisher::attachToTransport()
 
 void DDSPublisher::initialize()
 {
-        ACS_STATIC_SHORT_LOG((LM_INFO,
-                                  "DDSPublisher::initialize()",
+        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initialize", (LM_INFO,
                                   ""));
 	createParticipant();
 	if (CORBA::is_nil (participant.in()))
-	        ACS_STATIC_SHORT_LOG((LM_ERROR,
-        	                          "DDSPublisher::initialize()",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initialize", (LM_ERROR,
                 	                  "Participant is nil"));
 	if(partitionName!=NULL){
 		participant->get_default_publisher_qos(pubQos);
@@ -50,6 +47,7 @@ void DDSPublisher::initialize()
 	initializeTransport();
 	createPublisher();
 
+
 	pub->get_default_datawriter_qos (dwQos);
 	dwQos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
 	dwQos.reliability.max_blocking_time.sec = 1;
@@ -57,9 +55,8 @@ void DDSPublisher::initialize()
 	// CDB QoS
 	DDS::QosPolicyCountSeq tmp = CDBProperties::getCDBQoSProps(DDSHelper::getChannelName());
         
-        ACS_STATIC_SHORT_LOG((LM_INFO,
-                                  "DDSPublisher::initialize()",
-                                  "Setting the QoS"));
+        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initialize", (LM_INFO,
+                                  "setting the QoS"));
 	for(int i=0;i<(int)tmp.length();i++)
 	{
 		if( tmp[i].policy_id == 12 )
@@ -113,44 +110,38 @@ void DDSPublisher::initializeDataWriter()
 	dw = pub->create_datawriter(topic.in(),
 			dwQos,  DDS::DataWriterListener::_nil());
 	if(CORBA::is_nil(dw.in())){
-	        ACS_STATIC_SHORT_LOG((LM_ERROR,
-        	                          "DDSPublisher::initializeDataWriter()",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initializeDataWriter", (LM_ERROR,
                 	                  "Create datawriter failed"));
 	}
 }
 
 int DDSPublisher::createPublisher()
 {
-        ACS_STATIC_SHORT_LOG((LM_INFO,
-       	                          "DDSPublisher::createPublisher",
+        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
                	                  ""));
 	if(partitionName==NULL){
 		pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
 				DDS::PublisherListener::_nil());
-	        ACS_STATIC_SHORT_LOG((LM_INFO,
-       	                          "DDSPublisher::createPublisher",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
                	                  "Creating Publisher with default QoS"));
 	}
 
 	else{
 		pub = participant->create_publisher(pubQos,
 				DDS::PublisherListener::_nil());
-	        ACS_STATIC_SHORT_LOG((LM_INFO,
-       	                          "DDSPublisher::createPublisher",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
                	                  "Creating Publisher with partition %s ",partitionName));
 	}
 
 	if(CORBA::is_nil(pub.in())){
-	        ACS_STATIC_SHORT_LOG((LM_ERROR,
-	       	                          "DDSPublisher::createPublisher",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_ERROR,
 	               	                  "Create Publisher failed"));
 		return 1;
 	}
 
 	pub_impl= dynamic_cast<OpenDDS::DCPS::PublisherImpl*>(pub.in());
 	if(pub_impl == NULL){
-	        ACS_STATIC_SHORT_LOG((LM_ERROR,
-	       	                          "DDSPublisher::createPublisher",
+	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_ERROR,
 	               	                  "Failed to obtain publisher servant"));
 		return 1;
 	}

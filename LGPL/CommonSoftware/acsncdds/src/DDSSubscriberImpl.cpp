@@ -10,36 +10,31 @@ DDSSubscriber::DDSSubscriber(CORBA::String_var channel_name):
 
 int DDSSubscriber::createSubscriber()
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSSubscriber::createSubscriber",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
 			 ""));
 	if(partitionName==NULL){
 		sub=participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT,
 				DDS::SubscriberListener::_nil());
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSSubscriber::createSubscriber",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
 				 "Creating Subscriber with default Qos"));
 	}
 
 	else{
 		 sub = participant->create_subscriber(subQos,
 				 DDS::SubscriberListener::_nil());
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSSubscriber::createSubscriber",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
 				 "Creating Subscriber with partition: '%s'",partitionName));
 	}
 
 	if ((CORBA::is_nil (sub.in ()))) {
-		ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "DDSSubscriber::createSubscriber",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_ERROR,
 				 "create_subscriber failed"));
 		return 1;
 	}
 	
 	sub_impl=dynamic_cast<OpenDDS::DCPS::SubscriberImpl*>(sub.in());
 	if (0 == sub_impl) {
-		ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "DDSSubscriber::createSubscriber",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_ERROR,
 				 "Failed to obtain publisher servant"));
 		return 1;
 	}
@@ -67,8 +62,7 @@ int DDSSubscriber::attachToTransport()
           status_str = "Unknown Status";
           break;
         }
-	ACS_STATIC_SHORT_LOG((LM_ERROR,
-			 "DDSSubscriber::createSubscriber",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::attachToTransport", (LM_ERROR,
 			 "Failed to attach to the transport. Status == '%s'",status_str.c_str()));
         return 1;
       }
@@ -77,15 +71,13 @@ int DDSSubscriber::attachToTransport()
 
 void DDSSubscriber::consumerReady()
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSSubscriber::consumerReady",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::consumerReady", (LM_INFO,
 			 ""));
 
 	DDS::DataReader_var dr = sub->create_datareader(topic.in(),
 			drQos, listener->in());
 	if(CORBA::is_nil(dr.in())){
-		ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "DDSSubscriber::consumerReady",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::consumerReady", (LM_ERROR,
 				 "create_datareader failed"));
 	}
 	initialized=true;

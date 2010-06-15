@@ -21,8 +21,7 @@ DDSHelper::DDSHelper(CORBA::String_var channelName)
 	}
 	catch(CORBA::TRANSIENT &ex)
 	{
-	   ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "DDSHelper::DDSHelper",
+	   ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::DDSHelper", (LM_ERROR,
 				 "Manager ref null."));
 	   exit(1);
         }
@@ -56,8 +55,7 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 	argv[5] = strdup("-DCPSTransportDebugLevel");
 	argv[6] = strdup("0");
 
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::init",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::init", (LM_INFO,
 			 "Registering TransportImpl."));
 
 /* Fedora 8 systems have a problem with next line of code. If the component is
@@ -83,7 +81,10 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 	/*
 	 * if the transport generator is already registered we do nothing
 	 */
-	catch(...){}
+	catch(...){
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::init", (LM_INFO,
+							 "ERROR: BAD ERROR HANDLING. FIX ME"));
+	}
 	
 	dpf=TheParticipantFactoryWithArgs(argc, (ACE_TCHAR**)argv);
 	
@@ -104,22 +105,19 @@ void DDSHelper::init(const char* channelName, const char* DCPSInfoRepoLoc)
 }
 
 int DDSHelper::createParticipant(){
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::createParticipant",
+    ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::createParticipant", (LM_INFO,
 			 ""));
 	participant = dpf->create_participant(DOMAIN_ID,
 			PARTICIPANT_QOS_DEFAULT,
 			DDS::DomainParticipantListener::_nil());
 
 	if (CORBA::is_nil(participant.in())){
-		ACS_STATIC_SHORT_LOG((LM_ERROR,
-				 "DDSHelper::createParticipant",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::createParticipant", (LM_ERROR,
 				 "Create Participant Failed."));
 		return 1;
 	}
 	
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::createParticipant",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::createParticipant", (LM_INFO,
 			 "Created the participant."));
 	
 	return 0;
@@ -128,50 +126,46 @@ int DDSHelper::createParticipant(){
 
 void DDSHelper::initializeTransport(){
 	try{
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSHelper::initializeTransport",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
 				 ""));
 
 		transport_impl=
 			TheTransportFactory->create_transport_impl(transport_impl_id,
 					"SimpleTcp", ::OpenDDS::DCPS::AUTO_CONFIG);
 		
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSHelper::initializeTransport",
-				 "Transport ID: %s",transport_impl_id));
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
+				 "Transport ID: %d",transport_impl_id));
 
 		OpenDDS::DCPS::TransportConfiguration_rch config =
 			TheTransportFactory->get_configuration(transport_impl_id);
 		OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
 			dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSHelper::initializeTransport",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
 				 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
 
 
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSHelper::initializeTransport",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
 				 "Finishing configuration"));
 	}
 	catch(OpenDDS::DCPS::Transport::Duplicate &ex){
 		transport_impl_id++;
 		initializeTransport();	
 //		transport_impl=TheTransportFactory->obtain(transport_impl_id);
+// TODO
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
+				"ERROR: Something bad happened. FIX me"));
 	}
 
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::initializeTransport",
-			 "Transport ID: %s",transport_impl_id));
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
+			 "Transport ID: %d",transport_impl_id));
 	OpenDDS::DCPS::TransportConfiguration_rch config =
 		TheTransportFactory->get_configuration(transport_impl_id);
 	OpenDDS::DCPS::SimpleTcpConfiguration * tcp_config = 
 		dynamic_cast<OpenDDS::DCPS::SimpleTcpConfiguration *>(config.in());
 
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::initializeTransport",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
 			 "TCP Address: '%s'",tcp_config->local_address_str_.c_str()));
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::initializeTransport",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTransport", (LM_INFO,
 			 "Finishing configuration"));
 }
 
@@ -182,16 +176,15 @@ void DDSHelper::setTopicName(const char* topicName)
 
 void DDSHelper::initializeTopic(const char* topicName, CORBA::String_var typeName)
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::initializeTopic",
-			 "Initializing topic: '%s' with type: '%s'",this->topicName,typeName._retn()));
+    const char *typeNameChar = typeName;
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTopic", (LM_INFO,
+			 "Initializing topic: '%s' with type: '%s'",this->topicName,typeNameChar));
 	participant->get_default_topic_qos(topicQos);
 	topic=participant->create_topic(topicName, typeName.in(),
 			topicQos, DDS::TopicListener::_nil());
 
 	if (CORBA::is_nil(topic.in())){
-		ACS_STATIC_SHORT_LOG((LM_INFO,
-				 "DDSHelper::initializeTransport",
+		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTopic", (LM_INFO,
 				 "create_topic failed"));
 	}
 	
@@ -212,8 +205,7 @@ void DDSHelper::setPartitionName(const char* partitionName){
 
 void DDSHelper::disconnect()
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::disconnect",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::disconnect", (LM_INFO,
 			 ""));
 	if(initialized==true){
 		participant->delete_contained_entities();
@@ -226,8 +218,7 @@ void DDSHelper::disconnect()
 
 DDSHelper::~DDSHelper()
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::~DDSHelper",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::~DDSHelper", (LM_INFO,
 			 ""));
 	disconnect();
 	free(partitionName);
@@ -236,8 +227,7 @@ DDSHelper::~DDSHelper()
 
 void DDSHelper::cleanUp()
 {
-	ACS_STATIC_SHORT_LOG((LM_INFO,
-			 "DDSHelper::cleanUp",
+	ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::cleanUp", (LM_INFO,
 			 ""));
 	if (factories_init){
 		TheTransportFactory->release();

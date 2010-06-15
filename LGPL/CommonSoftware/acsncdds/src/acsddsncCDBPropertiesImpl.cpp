@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.4 2010/02/26 18:13:38 utfsm Exp $"
+* "@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.5 2010/06/15 09:23:02 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 #include <acsutilPorts.h>
 #include <acsutil.h> 
 
-static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.4 2010/02/26 18:13:38 utfsm Exp $"; 
+static char *rcsId="@(#) $Id: acsddsncCDBPropertiesImpl.cpp,v 1.5 2010/06/15 09:23:02 hsommer Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace ddsnc {
@@ -75,9 +75,8 @@ namespace ddsnc {
 		dalObj = CDB::DAL::_narrow(obj.in());
 		if (CORBA::is_nil(dalObj.in())) 
 		    {
-		    ACS_STATIC_SHORT_LOG((LM_ERROR,
-				  "CDBProperties::getCDB",
-				  "Failed to narrow CDB."));
+		    ACS_STATIC_LOG(LM_FULL_INFO, " CDBProperties::getCDB", (LM_ERROR,
+				         "Failed to narrow CDB."));
 		    }
 	   }
 
@@ -99,8 +98,7 @@ namespace ddsnc {
 	//sanity check
 	if(cdbRef.in()==0)
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_ERROR,
-				  "CDBProperties::cdbChannelConfigExists",
+	    ACS_STATIC_LOG(LM_FULL_INFO, "CDBProperties::cdbChannelConfigExists", (LM_ERROR,
 				  "CDB ref null."));
 	    return false;
 	    }
@@ -127,8 +125,7 @@ namespace ddsnc {
 	//exist
 	catch(...)
 	    {
-	    ACS_STATIC_SHORT_LOG((LM_INFO,
-				  "CDBProperties::cdbChannelConfigExists",
+	    ACS_STATIC_LOG(LM_FULL_INFO, "CDBProperties::cdbChannelConfigExists", (LM_INFO,
 				  "No CDB entry found for '%s' channel. OK.",
 				  cdbChannelName.c_str()));
 	    return false;
