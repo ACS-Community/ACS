@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -31,6 +33,7 @@ import com.cosylab.CDB.DAOOperations;
 import com.cosylab.CDB.JDAL;
 import com.cosylab.CDB.JDALHelper;
 import com.cosylab.cdb.client.CDBAccess;
+import com.cosylab.cdb.client.DAOProxy;
 
 /**
  * @author jschwarz
@@ -139,10 +142,14 @@ public class TestHighLevelNodes extends XMLTestCase {
 		}
 	}
 	public void testMACI_Components() throws Exception {
-		HashSet<String> xmlNodes = new HashSet<String>(Arrays.asList(xmlDAL.list_daos("MACI/Components").split(" ")));
-		HashSet<String> rdbNodes = new HashSet<String>(Arrays.asList(rdbDAL.list_daos("MACI/Components").split(" ")));
-		logger.info("XML: "+xmlNodes.toString()+"; TMCDB: "+rdbNodes.toString());
-		logger.info("XML: "+xmlNodes.size()+"; TMCDB: "+rdbNodes.size());
+		String[] xmlAllNodes = retrieveComponentsList(xmlAccess);
+		String[] rdbAllNodes = retrieveComponentsList(rdbAccess);
+		logger.info("XML: "+xmlAllNodes.length+"; TMCDB: "+rdbAllNodes.length);
+		HashSet<String> xmlNodes = new HashSet<String>(Arrays.asList(xmlAllNodes));
+		HashSet<String> rdbNodes = new HashSet<String>(Arrays.asList(rdbAllNodes));
+		logger.info("XML: "+xmlNodes.size()+"; TMCDB: "+rdbNodes.size());		
+		logger.info("XML: "+xmlNodes.toString()+";\n TMCDB: "+rdbNodes.toString());
+
 		assertTrue(xmlNodes.equals(rdbNodes));
 		assertTrue(CollectionUtils.isEqualCollection(xmlNodes, rdbNodes));
 		
@@ -309,7 +316,93 @@ public class TestHighLevelNodes extends XMLTestCase {
 			return defaultValue;
 		}
 	}
+	
+	/**
+	 * Searches dao for all potential (nodes containing Name attribute) ComponentInfo nodes.
+	 * @param dc	dao to be searched.
+	 * @returns list of all potential ComponentInfo nodes.
+	 */
+	private String[] retrieveComponentsList(CDBAccess cdbAccess)
+    {
+        ArrayList<String> componentList = new ArrayList<String>();
 
+        try
+        {
+        	DAOProxy dc = cdbAccess.createDAO("MACI/Components");
+            LinkedHashSet<String> nodes = new LinkedHashSet<String>();
+            // current
+            nodes.add("");
+            String[] subnodes = cdbAccess.getSubNodes(dc);
+            if (subnodes != null)
+                for (int i = 0; i < subnodes.length; i++)
+                    nodes.add(subnodes[i]);
+
+            Iterator<String> iter = nodes.iterator();
+            while (iter.hasNext())
+            {
+                String prefix = iter.next().toString();
+                if (prefix.length() > 0)
+                    prefix += "/";
+                String attributes = dc.get_field_data(prefix + "_characteristics");
+
+                // convert into array
+                StringTokenizer tokenizer = new StringTokenizer(attributes, ",");
+                while (tokenizer.hasMoreTokens())
+                {
+                    String subname = tokenizer.nextToken().toString();
+                    String componentName = prefix + subname;
+
+                    // check if potentially valid ComponentInfo entry - read name
+                    /// @todo this could be done better (to check if all attributes exist)
+                    if (readStringCharacteristics(dc, componentName + "/Name", true) != null)
+                        componentList.add(componentName);
+                }
+            }
+
+        } catch (Throwable th)
+        {
+            Exception ce = new Exception("Failed to obtain list of all components.", th);
+			logger.log(Level.WARNING, ce.getMessage(), ce);
+        }
+
+        String[] retVal = new String[componentList.size()];
+        componentList.toArray(retVal);
+
+        //logger.log(Level.INFO,"Found " + retVal.length + " component entries in the configuration database.");
+
+        return retVal;
+    }
+
+	/**
+	 * Reads DAO (CDB access) of string type.
+	 *
+	 * @param	path		path to be read non-<code>null</code>.
+	 * @param	dao			DAO on which to perform read request.
+	 * @param	silent		do not complain, if characteristics not found
+	 * @return	String		value read, <code>null</code> on failure
+	 * @throws Exception 
+	 */
+	private String readStringCharacteristics(DAOProxy dao, String path, boolean silent) throws Exception
+	{
+		assert (path != null);
+
+		String retVal = null;
+
+		try
+		{
+			retVal = dao.get_string(path);
+		}
+		catch (Throwable th)
+		{
+			Exception ce = new Exception("Failed to read '"+path+"' field on DAO dao '"+dao+"'.", th);
+			if (!silent)
+				throw ce;
+		}
+
+		return retVal;
+
+	}
+	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
