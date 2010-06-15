@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.94 2010/03/25 14:11:08 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.95 2010/06/15 16:17:07 javarias Exp $"
 #
 #
 #
@@ -428,6 +428,12 @@ then
    ACE_ROOT_DIR=$ALMASW_INSTDIR/TAO/ACE_wrappers/build
 fi
 
+#Set the variables for OpenDDS
+if [ X"$DDS_ROOT_DIR" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+   DDS_ROOT_DIR=$ALMASW_INSTDIR/DDS/build
+fi
+
 # set the following variable to the path where you installed your TAO 
 # stuff:
 OSYSTEM=`uname -s`
@@ -441,6 +447,7 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
     ACE_ROOT=$ACE_ROOT_DIR/linux
+    DDS_ROOT=$DDS_ROOT_DIR/linux
     if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
     then
        ACS_STARTUP_TIMEOUT_MULTIPLIER=2
@@ -456,6 +463,7 @@ if [ -d $ACE_ROOT_DIR/vxworks ]
 then
     ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
 fi
+
 
 # set the following variable to the path where you installed matplotlib Python
 # package.
