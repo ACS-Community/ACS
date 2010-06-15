@@ -23,7 +23,10 @@ public class CorbalocDialog extends JDialog {
 class IvjEventHandler implements java.awt.event.ActionListener {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			if (e.getSource() == CorbalocDialog.this.getOKButton()) 
+			{
+				oKButton_ActionPerformed(e);
 				connEtoM1(e);
+			}
 			if (e.getSource() == CorbalocDialog.this.getManagerField()) 
 				connEtoM2(e);
 			if (e.getSource() == CorbalocDialog.this.getRepositoryField()) 
