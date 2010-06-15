@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.3 2010/02/26 16:44:31 utfsm Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/06/15 14:01:34 gchiozzi Exp $"
 #
 # Makefile of ........
 #
@@ -58,8 +58,7 @@ USER_LIB = -lACE \
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber ncSlowConsumer ddsSlowSubscriber
-EXECUTABLES_L   = 
+EXECUTABLES_L     = simpleExampleNCClient simpleExampleDDSClient ncConsumer ddsSubscriber ncSlowConsumer ddsSlowSubscriber
 
 simpleExampleDDSClient_OBJECTS   = simpleExampleDDSClient
 simpleExampleDDSClient_LDFLAGS   =  
@@ -124,6 +123,14 @@ testCDBProps_LIBS    =  acsddsnc acscomponent CDBPropsStubs
 acsddsncTypeSupport_OBJECTS = $(DDS_TYPE_FILES)
 acsddsncTypeSupport_LIBS    = NCBenchmarkStubs SimpleExampleStubs 
 
+#
+# Python scripts
+# --------------
+
+PY_SCRIPTS_L = testDDSNCBenchmarkClient.py \
+               testDDSSimpleExample.py \
+               processOutput.py \
+               testNCBenchmarkClient.py
 #
 # Scripts (public and local)
 # ----------------------------
