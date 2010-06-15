@@ -31,7 +31,7 @@
 1 -     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 1 -     minLogLevel="2" minLogLevelLocal="1" centralizedLogger="Log"
 1 -     dispatchPacketSize="100" immediateDispatchLevel="10"
-1 -     flushPeriodSeconds="10" maxLogQueueSize="1000" xsi:type="LoggingConfig">
+1 -     flushPeriodSeconds="10" maxLogQueueSize="1000" maxLogsPerSecond="-1" xsi:type="LoggingConfig">
 1 -     <_ minLogLevel="6" minLogLevelLocal="6" Name="jacorb@testContainer"/>
 1 - </LoggingConfig> with env vars having precedence over CDB
 1 - ----------T--:--:--.--- FINE [testContainer] Set ORB level roundtrip timeout to 30.0 seconds.
