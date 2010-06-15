@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.4 2010/06/15 14:01:34 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/06/15 22:02:16 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -146,6 +146,7 @@ CDB_SCHEMAS =
 # 
 # DDS and IDL Files and flags
 # 
+USE_OPENDDS=1
 DDS_FILES = NCBenchmark SimpleExample #CDBProps 
 IDL_FILES = NCBenchmark SimpleExample CDBProps
 

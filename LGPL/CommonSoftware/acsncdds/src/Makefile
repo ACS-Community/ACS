@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.16 2010/06/15 19:44:38 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.17 2010/06/15 22:02:16 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -92,7 +92,8 @@ CDB_SCHEMAS =
 
 # 
 # DDS and IDL Files and flags
-# 
+#
+USE_OPENDDS = 1
 DDS_FILES = 
 IDL_FILES = 
 
