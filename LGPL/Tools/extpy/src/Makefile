@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.32 2010/02/05 22:26:20 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.33 2010/06/16 02:55:03 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -41,10 +41,10 @@ PYXML: PyXML-0.8.4.tar.gz
 	@gtar -zxvf PyXML-0.8.4.tar.gz; 
 	@cd PyXML-0.8.4; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
-PYXB: PyXB-1.1.1-DEV.tar.gz
+PYXB: PyXB-full-1.1.2.tar.gz
 	@echo "== Building PyXB"
-	@gtar -zxvf PyXB-full-1.1.1.tar.gz; 
-	@cd PyXB-1.1.1; $(PYTHON_ROOT)/bin/python setup.py build; $(PYTHON_ROOT)/bin/python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+	@gtar -zxvf PyXB-full-1.1.2.tar.gz; 
+	@cd PyXB-1.1.2; $(PYTHON_ROOT)/bin/python setup.py build; $(PYTHON_ROOT)/bin/python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
 PMW: Pmw.1.2.tar.gz
 	@echo "== Building Python Mega Widgets"
@@ -160,7 +160,7 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.1
+	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
