@@ -41,7 +41,7 @@
 1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
-1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
+1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" maxLogsPerSecond="-1" minLogLevelLocal="2"></LoggingConfig>
 1 - 
 1 - </Manager>
 1 - getCDBElement is:  {}
@@ -81,7 +81,7 @@
 1 - 	<cdb:_ string="PDB"></cdb:_>
 1 -   </ServiceComponents>
 1 - 
-1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" minLogLevelLocal="2"></LoggingConfig>
+1 -   <LoggingConfig minLogLevel="2" immediateDispatchLevel="99" dispatchPacketSize="0" centralizedLogger="Log" flushPeriodSeconds="10" maxLogQueueSize="1000" maxLogsPerSecond="-1" minLogLevelLocal="2"></LoggingConfig>
 1 - 
 1 - </Manager>
 1 - getCDBElement is:  {}
