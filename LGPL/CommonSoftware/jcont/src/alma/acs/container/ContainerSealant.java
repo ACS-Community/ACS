@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,7 @@ import org.omg.CORBA.UserException;
 import alma.ACS.ACSComponentOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.component.dynwrapper.DynWrapperException;
+import alma.acs.container.corba.CorbaNullFinder;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.monitoring.DynamicInterceptor;
 import alma.acs.monitoring.DynamicInterceptor.InterceptionHandler;
@@ -49,7 +51,7 @@ import alma.acs.util.StopWatch;
  * to the component.
  * <p>
  * This sealant class is not only used for components, but also for offshoots from that component,
- * if they follow the tie-approach. Since ACS 9.0 is uses {@link DynamicInterceptor}.
+ * if they follow the tie-approach. Since ACS 9.0 it uses {@link DynamicInterceptor}.
  * 
  * @author hsommer
  */
@@ -57,15 +59,24 @@ public class ContainerSealant
 {
 
 	/**
+	 * If this property is enabled, the container will check the return value and out/inout parameters 
+	 * for illegal null values that will cause exceptions during subsequent corba marshalling.
+	 */
+	public static final String CHECK_NULLS_CORBA_OUT_PROPERTYNAME = "alma.acs.container.check_nulls_corba_out";
+	
+	
+	/**
 	 * Creates a ContainerSealant and uses it as the invocation handler for the returned dynamic proxy
 	 * which implements <code>corbaInterface</code>.
 	 * 
 	 * @param corbaInterface  the interface that the created sealant will implement;
-	 *                         this should be the component's xxxOperations interface.
-	 * @param component  the component implementation class, or any translator class
+	 *                         this should be the component's or offshoot's xxxOperations interface.
+	 * @param component  the component/offshoot implementation class, or any translator class
 	 *                    in front of the component implementation.
 	 *                    <code>componentImpl</code> must implement <code>corbaInterface</code>
-	 *                    so that the sealant can forward calls to the component.
+	 *                    so that the sealant can forward calls to the component. <br>
+	 *                    Note about usage of java generics: Ideally this would be declared "T" instead of "Object", 
+	 *                    but did not get it to work with that...
 	 * @param name  the component instance name (used for logging) 
 	 * @param isOffShoot true if the <code>component</code> object is actually an offshoot of a component
 	 * @param logger  logger to be used by this class 
@@ -76,7 +87,7 @@ public class ContainerSealant
 	 *           <code>componentImpl</code> and forwards them if restrictions allow this.
 	 * @throws ContainerException if the given <code>component</code> Object does not implement the given <code>corbaInterface</code>. 
 	 */
-	static Object createContainerSealant(Class<?> corbaInterface, Object component, String name, boolean isOffShoot,
+	public static <T> T createContainerSealant(Class<T> corbaInterface, Object component, String name, boolean isOffShoot,
 			Logger logger, ClassLoader componentContextCL, String[] methodNamesExcludedFromInvocationLogging )
 			throws AcsJContainerEx
 	{
@@ -147,7 +158,7 @@ public class ContainerSealant
 		}
 
 		@Override
-		public Object callFinished(Object retVal, Throwable realThr) throws Throwable {
+		public Object callFinished(Object retVal, Object[] args, Throwable realThr) throws Throwable {
 			
 			// log invocation time
 			String qualMethodName = name + "#" + method.getName();
@@ -186,6 +197,47 @@ public class ContainerSealant
 					logger.log(Level.WARNING, "unexpected exception was thrown in functional method '" + qualMethodName
 							+ "': ", realThr);
 					throw realThr;
+				}
+			}
+			
+			if (Boolean.getBoolean(CHECK_NULLS_CORBA_OUT_PROPERTYNAME)) {
+				try {
+					Class<?> clzzRet = method.getReturnType();
+					if (!CorbaNullFinder.isIDLInterfaceClass(clzzRet)) {
+						CorbaNullFinder finder = new CorbaNullFinder(retVal);
+						if (finder.hasErrors()) {
+							List<String> errors = finder.getErrors();
+							StringBuilder sb = new StringBuilder();
+							for (String errorline : errors) {
+								sb.append(errorline).append("\n");
+							}
+							logger.warning("Illegal null value returned by method " + method.getName() + ":\n" + sb.toString());
+						}
+					}
+					
+					// check out or inout parameters
+					Class<?>[] argsClasses = method.getParameterTypes();
+					StringBuilder sb = new StringBuilder();
+					for (int argIndex = 0; argIndex < argsClasses.length; argIndex++) {
+						Class<?> clzzOutParam = argsClasses[argIndex];
+						if (clzzOutParam.getSimpleName().endsWith("Holder") &&
+							!CorbaNullFinder.isIDLInterfaceClass(clzzOutParam) ) {
+							CorbaNullFinder finder = new CorbaNullFinder(args[argIndex]);
+							if (finder.hasErrors()) {
+								List<String> errors = finder.getErrors();
+								sb.append("  Paramter " + clzzOutParam.getSimpleName() + ": \n");
+								for (String errorline : errors) {
+									sb.append("    ").append(errorline).append("\n");
+								}
+							}
+						}
+					}
+					String paramErrors = sb.toString();
+					if (!paramErrors.isEmpty()) {
+						logger.warning("Illegal null value in out parameter(s) of method " + method.getName() + ":\n" + paramErrors);
+					}
+				} catch (Exception ex) {
+					logger.log(Level.FINE, "Failed to check returned data for illegal nulls.", ex);
 				}
 			}
 			
