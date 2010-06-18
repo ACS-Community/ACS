@@ -107,6 +107,31 @@ module jconttest
 		double stop();
 	};
 
+
+	/**
+	 * A component used to define and test IDL data with illegal null values.
+	 */
+	interface ComponentWithBadNulls : ACS::ACSComponent
+	{
+		enum Enum1 { MY_ONLY_VALUE }; 
+
+		struct Struct1 
+		{
+			string mystring;
+			Enum1 myenum1;
+		};
+		
+		struct Struct2
+		{
+			Struct1 mystruct1;
+			sequence < Struct1 > seqOfStruct1;
+		};
+		
+		Struct1 methodWithReturnData(in string instring, in Struct1 instruct1,
+						inout string inoutstring, inout Struct1 inoutstruct1, 
+						out string outstring, out Struct1 outstruct1);
+	};
+	
 };
 
 #endif 
