@@ -76,6 +76,15 @@ then
     export JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=$RDB_PORT"
     echo "Container will accept remote debuggers on port $RDB_PORT"
 fi
+
+#--------------------------------------------------------------------------------
+# Special container checks
+if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
+then
+    #set the remote debuggable port
+    export JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.container.check_nulls_corba_out=true"
+fi
+
 #--------------------------------------------------------------------------------
 ## set the classpath for component-impl jars (to support separate classloaders)
 component_classpath=`vltMakeJavaClasspath -components`
