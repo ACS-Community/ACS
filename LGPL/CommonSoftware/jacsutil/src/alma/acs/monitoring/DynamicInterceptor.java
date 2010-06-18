@@ -67,7 +67,10 @@ public class DynamicInterceptor implements InvocationHandler
 	 * is fed to the second handler as the <code>retVal</code> argument.
 	 * 
 	 * @param dynInterface
-	 * @param delegate
+	 * @param delegate      The delegation object.
+	 *                      <br>
+	 *                      Note about usage of java generics: Ideally this would be declared "T" instead of "Object", 
+	 *                      but did not get it to work with that...
 	 * @param logger        The Logger to be used by this class.
 	 * @param contextCL     The class loader to be associated with the current thread during the forwarding of the call to the delegate object,
 	 *                      or <code>null</code> if the interceptor should not swap the classloader.
@@ -120,7 +123,7 @@ public class DynamicInterceptor implements InvocationHandler
 			logger.fine("Rejected call to method '" + method.getName() + "' as advised by handler " + handler.getClass().getName());
 		}
 		
-		Object retObj2 = handler.callFinished(retObj, realThr);
+		Object retObj2 = handler.callFinished(retObj, args, realThr);
 		return retObj2;
 	}
 
@@ -165,6 +168,8 @@ public class DynamicInterceptor implements InvocationHandler
 		
 		/**
 		 * @param retVal  The return value received from the delegate object.
+		 * @param args    The call arguments (same as in <code>callReceived</code>,
+		 *                but possibly with values modified during the call, e.g. for Corba out or inout parameters). 
 		 * @param thr     The Throwable that was thrown by the delegate's method implementation, if any.
 		 *                Note that wrapper exceptions {@link InvocationTargetException} and {@link UndeclaredThrowableException} 
 		 *                get removed automatically, so that <code>thr</code> is the original exception thrown, 
@@ -176,7 +181,7 @@ public class DynamicInterceptor implements InvocationHandler
 		 *                    but the handler is free to throw an exception even if the  
 		 *                    delegate object did not throw any, or to throw a different exception, or to suppress the exception.
 		 */
-		public Object callFinished(Object retVal, Throwable thr) throws Throwable;
+		public Object callFinished(Object retVal, Object[] args, Throwable thr) throws Throwable;
 	}
 	
 	/**

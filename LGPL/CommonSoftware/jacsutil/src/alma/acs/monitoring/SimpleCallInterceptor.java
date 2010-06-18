@@ -42,7 +42,7 @@ public class SimpleCallInterceptor
 	 * Calls {@link DynamicInterceptor#createDynamicInterceptor(Class, Object, Logger, ClassLoader, InterceptionHandlerFactory)},
 	 * using {@link SimpleInterceptionHandler} objects to handle (log) the intercepted calls.
 	 */
-	public static <T> T createSimpleInterceptor(Class<T> corbaInterface, Object delegate, Logger logger)
+	public static <T> T createSimpleInterceptor(Class<T> corbaInterface, T delegate, Logger logger)
 	{
 		InterceptionHandlerFactory interceptionHandlerFactory = 
 			new SimpleInterceptionHandlerFactory(logger);
@@ -92,7 +92,7 @@ public class SimpleCallInterceptor
 		}
 
 		@Override
-		public Object callFinished(Object retVal, Throwable realThr) throws Throwable {
+		public Object callFinished(Object retVal, Object[] args, Throwable realThr) throws Throwable {
 			
 			// log invocation time
 			if (isLoggable) {
