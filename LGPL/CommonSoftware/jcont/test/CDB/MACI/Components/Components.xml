@@ -78,5 +78,13 @@
 		Container="*"
 		ImplLang="java" />
 	
+	
+	<_ Name="DefaultComponentWithBadNulls" 
+		Code="alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsHelper"
+		Type="IDL:alma/jconttest/ComponentWithBadNulls:1.0" 
+		Container="frodoContainer" 
+		Default="true"
+		ImplLang="java" />
+		
 </Components>
 
