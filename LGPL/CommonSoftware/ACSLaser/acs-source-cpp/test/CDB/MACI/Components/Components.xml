@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!--
+  - Configuration for alarm system test.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<Components xmlns="urn:schemas-cosylab-com:Components:1.0"
+            xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+            xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <_ Name="ALARM_SOURCE_MOUNTCPP"
+	   Type="IDL:alma/testalarmsystem/AlarmTestMount:1.0"
+	   Code="AlarmTestMountImpl" 
+	   Container="bilboContainer"  ImplLang="cpp" />
+  <_ Name="ALARM_SOURCE_MOUNT_MULTITHREAD_CPP"
+	   Type="IDL:alma/testalarmsystem/AlarmTestMountMultiThreaded:1.0"
+	   Code="AlarmTestMountMultiThreadedImpl" 
+	   Container="bilboContainer"  ImplLang="cpp" />
+  <_ Name="ALARM_SOURCE_MOUNT_MULTITHREAD_CPP2"
+	   Type="IDL:alma/testalarmsystem/AlarmTestMountMultiThreaded:1.0"
+	   Code="AlarmTestMountMultiThreadedImpl" 
+	   Container="bilboContainer2"  ImplLang="cpp" />
+</Components>
+
