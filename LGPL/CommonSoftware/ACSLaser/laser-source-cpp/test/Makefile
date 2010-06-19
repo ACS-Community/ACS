@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.13 2009/10/11 08:16:57 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.14 2010/06/19 14:39:24 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,7 @@ USER_LIB = -lstdc++ -lxerces-c -lacscomponent
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = alarmSystemClient
-EXECUTABLES_L   = testDriver testDriverAcs testDriverMultiThreaded FactoryTestCase
+EXECUTABLES_L   = testDriver testDriverMultiThreaded FactoryTestCase
 
 alarmSystemClient_OBJECTS	= alarmSystemClient
 alarmSystemClient_LIBS		= maciClient
@@ -52,10 +52,6 @@ testDriverMultiThreaded_LIBS      = AlarmTestMountMultiThreadedImpl testCppAlarm
 # <brief description of xxxxx program>
 testDriver_OBJECTS   = testDriver
 testDriver_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs ACSJMSMessageEntityStubs acsnc laserSourceAcsSpecific
-
-# <brief description of xxxxx program>
-testDriverAcs_OBJECTS   = testDriverAcs
-testDriverAcs_LIBS      = AlarmTestMountImpl testCppAlarmSourceComponentsStubs maciClient AcsAlarmSystemStubs AlarmSystemStubs acsnc  laserSourceAcsSpecific
 
 #
 # special compilation flags for single c sources
@@ -84,7 +80,7 @@ AlarmTestMountMultiThreadedImpl_LIBS		= testCppAlarmSourceComponentsStubs acsAlS
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = alarmTestPrologue alarmTATEnv alarmTestEpilogue runAcsTest.sh
+SCRIPTS_L       = alarmTestPrologue alarmTATEnv alarmTestEpilogue
 
 #
 # TCL scripts (public and local)
