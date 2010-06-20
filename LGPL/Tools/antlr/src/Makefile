@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.1 2006/03/08 09:16:32 mcaillat Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/06/20 06:27:12 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -73,18 +73,20 @@ install :
 	@cd antlr-${ANTLR_VER}; make SUBDIRS="antlr lib" install
 	@echo " . . . 'install' done . . . "
 
+.PHONY:unpack
 unpack :
 	@echo " . . . unpacking antlr . . . "
 	@gtar -xzf antlr-${ANTLR_VER}.tar.gz
 
-
-configure :
+.PHONY: configure
+configure : unpack
 	@echo " . . . configure . . . "
 	@echo "cwd is : ${CURDIR}"
 	cd antlr-${ANTLR_VER}; ./configure --prefix=${INSTALL_ROOT} --disable-csharp --disable-python
 
-build_antlr :
+.PHONY: build_antlr
+build_antlr: configure
 	@echo " . . . building antlr . . . "
-	@cd antlr-${ANTLR_VER}; make SUBDIRS="antlr lib"
+	@cd antlr-${ANTLR_VER}; $(MAKE) SUBDIRS="antlr lib"
 
 #___oOo___
