@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.12 2008/10/31 15:17:26 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.13 2010/06/20 06:39:21 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -96,7 +96,7 @@ configure :
 	@echo ". . . running configure . . . "
 	@../bin/configure_script cppunit-$(CPPUNIT_TAR).tar.gz $(CPPUNIT_VER) > configure_script.log 2>&1
 
-build :
+build : configure
 	@echo ". . . building . . . "
-	@cd cppunit-$(CPPUNIT_VER); make all
+	@cd cppunit-$(CPPUNIT_VER); $(MAKE) all
 #___oOo___
