@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.33 2010/06/16 02:55:03 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.34 2010/06/22 22:51:18 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -127,7 +127,7 @@ PY_DOC :
 
 
 #PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP PYXML
-PY_DISUTIL_BUILD : PYXML PYXB
+PY_DISUTIL_BUILD : PYXB
 	echo "== Building/Installing external Python modules now..."
 
 #
