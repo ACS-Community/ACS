@@ -1,4 +1,4 @@
-# @(#) $Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $
+# @(#) $Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $"
+# "@(#) $Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -39,10 +39,11 @@ TODO:
 - integrate with the ACS Error System
 '''
 
-__revision__ = "$Id: SimpleClient.py,v 1.12 2010/02/04 21:45:16 agrimstrup Exp $"
+__revision__ = "$Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from traceback import print_exc
+from atexit import register
 #--CORBA STUBS-----------------------------------------------------------------
 import ACS
 #--ACS Imports-----------------------------------------------------------------
@@ -96,6 +97,7 @@ class PySimpleClient(BaseClient, ContainerServices):
                     self.__activateOffShoot)
         if _DEBUG: # pragma: NO COVER
             print "Got past Constructor in SimpleClient"
+        register(self.disconnect)
     #--------------------------------------------------------------------------
     #The following objects and functions all deal with a singleton instance of
     #PySimpleClient    

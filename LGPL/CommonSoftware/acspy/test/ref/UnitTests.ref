@@ -140,3 +140,8 @@
 1 - Ran xx tests in x.xxxs
 1 - 
 1 - OK
+1 -   File "BaseClient.py", line xxx, in disconnect
+1 -     getManager().logout(self.token.h)
+1 -   File "maci_idl.py", line xxx, in logout
+1 -     return _omnipy.invoke(self, "logout", _0_maci.Manager._d_logout, args)
+1 - NoPermissionEx: maciErrType.NoPermissionEx(errorTrace=ACSErr.ErrorTrace(file='ManagerProxyImpl.java', lineNum=784, routine='logout', host=xxxx, previousError=[])]))
