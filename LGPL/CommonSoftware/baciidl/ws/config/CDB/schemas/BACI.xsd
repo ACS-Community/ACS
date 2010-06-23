@@ -107,6 +107,19 @@ This attribute is useful for example for returning the resolution of analog-digi
 The specific usage must be documented case by case.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_mechanism" type="xs:string" use="optional" default="monitor_collector">
+				   <xs:annotation>
+						<xs:documentation>
+						The attribute archive_mechanism can be used to specify which mechanism should be taken for 
+						archiving the property. In this way a system that uses ACS can define its own archiving mechanism. 
+						ACS provides support for archiving properties through notification channel (notification_channel). ALMA SW provides in ARCHIVE subsytem additional
+						 mechanism: monitor collector (monitor_collector). From ACS 9.0 monitor collector is also default mechanism for archiving properties.
+						 Depend on the implementation of the archiving mechanism all or just some of archive_XYZ attributes can be used for its configuration.
+						 Notification channel uses all (three), meanwhile the monitor collector uses only archive_max_int.
+					    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+					
 				<xs:attribute name="archive_priority" type="xs:int" use="optional" default="3">
 					<xs:annotation>
 						<xs:documentation>
