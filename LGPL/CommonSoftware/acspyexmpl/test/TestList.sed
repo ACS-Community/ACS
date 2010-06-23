@@ -33,3 +33,4 @@ s/1 - \/.*\/\([^\/]*\.so\)/1 - \/somepath\/\1/g
 s/2 -   File "\/.*\/\([^\/]*\)"/2 -   File "\/somepath\/\1/g
 s/\(2 -[ ]*Thread=RequestProcessor-\)[0-9]*,/\1xxx,/g
 s/Using DLL path: .*/Using DLL path: xxxx/
+s/\.java:[0-9]*/.java:xxx/g

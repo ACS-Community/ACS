@@ -287,18 +287,18 @@
 2 - 
 1 - ----------T--:--:--.--- WARNING [javaContainer] unexpected exception was thrown in functional method 'ERRORCOMP_JAVA#corbaSystemException': 
 1 - org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No
-1 - 	at alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentImpl.corbaSystemException(ErrorComponentImpl.java:83)
+1 - 	at alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentImpl.corbaSystemException(ErrorComponentImpl.java:xxx)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
-1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
-1 - 	at java.lang.reflect.Method.invoke(Method.java:597)
-1 - 	at alma.acs.monitoring.DynamicInterceptor.invoke(DynamicInterceptor.java:111)
+1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:xxx)
+1 - 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:xxx)
+1 - 	at java.lang.reflect.Method.invoke(Method.java:xxx)
+1 - 	at alma.acs.monitoring.DynamicInterceptor.invoke(DynamicInterceptor.java:xxx)
 1 - 	at $Proxy0.corbaSystemException(Unknown Source)
-1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:99)
-1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:138)
-1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:310)
-1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:604)
-1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:759)
+1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOATie.corbaSystemException(ErrorComponentPOATie.java:xxx)
+1 - 	at alma.acsexmplErrorComponent.ErrorComponentPOA._invoke(ErrorComponentPOA.java:xxx)
+1 - 	at org.jacorb.poa.RequestProcessor.invokeOperation(RequestProcessor.java:xxx)
+1 - 	at org.jacorb.poa.RequestProcessor.process(RequestProcessor.java:xxx)
+1 - 	at org.jacorb.poa.RequestProcessor.run(RequestProcessor.java:xxx)
 1 - ----------T--:--:--.--- INFO [jacorb@javaContainer] rid: 20 opname: corbaSystemException invocation: system exception was thrown (org.omg.CORBA.BAD_PARAM: Test throwing a CORBA Exception  vmcid: 0x0  minor code: 0  completed: No)
 1 - ----------T--:--:--.--- INFO [javaContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- INFO [javaContainer] about to exit the JVM...thanks for using our container, come back soon...
