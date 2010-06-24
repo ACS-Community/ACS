@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.119 2010/06/08 08:22:11 bjeram Exp $"
+# "@(#) $Id: idlMakefile,v 1.120 2010/06/24 08:25:05 bjeram Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -338,7 +338,7 @@ endif # MAKE_VXWORKS
 # - generating idl file depending files
 ifeq ($(call mustBuild,C++),true)
 	- @echo "== IDL Compiling for TAO (C++): $(<F)"
-	$(AT) $(TAO_IDL) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object $(TAO_IDLFLAGS) $<
+	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object $(TAO_IDLFLAGS) $<
 endif
 
 #
