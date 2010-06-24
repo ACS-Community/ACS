@@ -16,6 +16,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.type.StringClobType;
 import org.hibernate.usertype.UserType;
 
+import com.mchange.v2.c3p0.impl.C3P0ResultSetPeeker;
+
 
 /**
  * A hibernate UserType that supports the Oracle XMLTYPE.
@@ -31,18 +33,18 @@ import org.hibernate.usertype.UserType;
  * Then add this to the Java Strings that map Oracle XMLTYPEs in the DB: <br>
  * &#064;Type(type = "xmltype")
  * <p>
- * When we integrated Robert's class into ACS, we modified it to use reflection so that 
- * we get no errors if the Oracle jars are not on the classpath. 
- * Then simply the old CLOB behavior will be used.
+ * NOTE(rtobar): When we integrated Robert's class into ACS, we modified it to use reflection so that 
+ * we get no errors if the Oracle jars are not on the classpath. Reflection is also used for inspecting
+ * for C3P0 classes. If classes are not found, then simply the old CLOB behavior will be used.
  * 
  * @author rkurowsk, Jan 22, 2010
  */
 public class HibernateXmlType extends StringClobType implements UserType, Serializable {
 
+	private static final String COM_MCHANGE_V2_C3P0 = "com.mchange.v2.c3p0";
 	private static final String ORACLE_JDBC = "oracle.jdbc";
 	private static final String GET_STRING_VAL = "getStringVal";
 	private static final String XML_TYPE = "oracle.xdb.XMLType";
-	private static final String ORACLE_RESULT_SET = "oracle.jdbc.OracleResultSet";
 	private static final long serialVersionUID = 2838406736360323902L;
 
 	/* (non-Javadoc)
@@ -50,8 +52,12 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 	 */
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, Object owner) throws HibernateException, SQLException {
-		
+
+		if( rs.getClass().getName().startsWith(COM_MCHANGE_V2_C3P0) )
+			rs = C3P0ResultSetPeeker.getInnerFrom(rs);
+
 		if ( rs.getClass().getName().startsWith(ORACLE_JDBC) ) {
+
 			// result set comes from oracle thin jdbc driver, and thanks to the hibernate annotations
 			// we know that the column type is XMLTYPE, so we can simply cast...
 			try {
@@ -64,7 +70,7 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 				throw new SQLException("Failed to convert XMLTYPE String to Document for retrieval", e);
 			}
 
-		}else{
+		} else {
 			// If not Oracle (i.e. HSQLDB) use the hibernate StringClobType impl of nullSafeGet()
 			return super.nullSafeGet(rs, names, owner);
 		}
@@ -77,27 +83,28 @@ public class HibernateXmlType extends StringClobType implements UserType, Serial
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
 		
-		if ( st.getClass().getName().startsWith(ORACLE_JDBC)  ) {
+		JdbcNativeExtractor extractor = new JdbcNativeExtractor();
+    	Connection connection = extractor.getNativeConnection(st.getConnection());
+
+    	if ( connection.getClass().getName().startsWith(ORACLE_JDBC) ) {
 	        try {
 	        	Object xmlType = null;
+
 	            if (value != null) {
 	            	Class<?> clazz = Class.forName(XML_TYPE); 
 	            	Constructor<?> con = clazz.getConstructor(Connection.class, String.class);
-	            	xmlType = con.newInstance(st.getConnection(), (String)value);
+	            	xmlType = con.newInstance(connection, (String)value);
 	            	st.setObject(index, xmlType);
-	            }else{
+	            } else {
 	            	/* TODO: 2007 is oracle.jdbc.OracleTypes.OPAQUE, use reflection */
-	                st.setNull(
-	                        index,
-	                        2007,
-	                        "SYS.XMLTYPE");
+	                st.setNull( index, 2007, "SYS.XMLTYPE");
 	            }
 	        }
 	        catch (Exception e) {
 	            throw new SQLException("Failed to convert Document to XMLTYPE String for storage", e);
 	        }
 
-        }else{
+        } else {
 			// If not Oracle (i.e. HSQLDB) use the hibernate StringClobType impl of nullSafeSet()
         	super.nullSafeSet(st, value, index);
         }
