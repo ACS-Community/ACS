@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.35 2010/06/08 08:02:58 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.36 2010/06/24 08:03:07 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -92,6 +92,8 @@ echo "- ACErelpath.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/ACErelpath.patch
 echo "- TAO_IDL64bit.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDL64bit.patch
+echo "- TAO_IDLsuppress_unique_guards_opt.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
 echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "- TAOLog.patch"
