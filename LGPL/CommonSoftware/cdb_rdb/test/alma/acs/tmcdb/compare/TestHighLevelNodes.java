@@ -92,23 +92,56 @@ public class TestHighLevelNodes extends XMLTestCase {
 			examineLoggingConfig(xmlDao,rdbDao);
 			assertEquals(xmlDao.get_string("Startup"),rdbDao.get_string("Startup"));
 			assertEquals(xmlDao.get_string("ServiceComponents"),rdbDao.get_string("ServiceComponents"));
-//			String sx = null;
-//			boolean xbool = true;
-//			try {
-//				sx = xmlDao.get_string("ServiceDaemons");
-//			} catch (CDBFieldDoesNotExistEx e) {
-//				xbool = false;
-//			}
-//			String sr = null;
-//			try {
-//				sr = rdbDao.get_string("ServiceDaemons");
-//			} catch (CDBFieldDoesNotExistEx e) {
-//				if (xbool) fail("Service Daemons: XML CDB has value: "+sx+" but TMCDB can't find the field.");
-//				continue; // Neither CDB can find it; move to next property
-//			}
-//			if (!xbool) fail("Service Daemons: TMCDB has value: "+sr+" but XML CDB can't find the field.");
-//			assertEquals(sx,sr); // TODO: Redo this once Matej's implementation is complete
+			String sx = null;
+			boolean xbool = true;
+			try {
+				sx = xmlDao.get_string("ServiceDaemons");
+			} catch (CDBFieldDoesNotExistEx e) {
+				xbool = false;
+			}
+			String sr = null;
+			try {
+				sr = rdbDao.get_string("ServiceDaemons");
+			} catch (CDBFieldDoesNotExistEx e) {
+				if (xbool) fail("Service Daemons: XML CDB has value: "+sx+" but TMCDB can't find the field.");
+				continue; // Neither CDB can find it; move to next property
+			}
+			if (!xbool) fail("Service Daemons: TMCDB has value: "+sr+" but XML CDB can't find the field.");
+			assertEquals(sx,sr); // TODO: Redo this once Matej's implementation is complete
 		}
+	}
+	
+	public void testMACI_Channels() throws Exception {
+		String[] xmlNodes = xmlDAL.list_nodes("MACI/Channels").split(" ");
+		String[] rdbNodes = rdbDAL.list_nodes("MACI/Channels").split(" ");
+		System.out.println("list_nodes gives for XML: "+xmlNodes.length+"; and for RDB: "+rdbNodes.length);
+		// TODO: Fix this
+		//assertEquals(xmlNodes.length,rdbNodes.length);
+		String[] xmlDaos = xmlDAL.list_daos("MACI/Channels").split(" ");
+		String[] rdbDaos = rdbDAL.list_daos("MACI/Channels").split(" ");
+		System.out.println("list_daos gives for XML: "+xmlDaos.length+"; and for RDB: "+rdbDaos.length);
+		System.out.println("\n******** list_daos output ********");
+		System.out.println("**** XML CDB ****");
+		for (int i = 0; i < xmlDaos.length; i++) {
+			System.out.println(xmlDaos[i]);
+		}
+		System.out.println("\n**** RDB CDB ****");
+
+		for (int i = 0; i < rdbDaos.length; i++) {
+			System.out.println(rdbDaos[i]);
+		}
+
+		System.out.println("\n\n******** list_nodes output ********");
+		System.out.println("**** XML CDB ****");
+		for (int i = 0; i < xmlNodes.length; i++) {
+			System.out.println(xmlNodes[i]);
+		}
+		System.out.println("\n**** RDB CDB ****");
+		for (int i = 0; i < rdbNodes.length; i++) {
+			System.out.println(rdbNodes[i]);
+		}
+
+		//assertEquals(xmlDaos.length,rdbDaos.length);
 	}
 	
 	public void testMACI_Containers() throws Exception {
@@ -144,10 +177,9 @@ public class TestHighLevelNodes extends XMLTestCase {
 	public void testMACI_Components() throws Exception {
 		String[] xmlAllNodes = retrieveComponentsList(xmlAccess);
 		String[] rdbAllNodes = retrieveComponentsList(rdbAccess);
-		logger.info("XML: "+xmlAllNodes.length+"; TMCDB: "+rdbAllNodes.length);
+		assertEquals(xmlAllNodes.length,rdbAllNodes.length);
 		HashSet<String> xmlNodes = new HashSet<String>(Arrays.asList(xmlAllNodes));
 		HashSet<String> rdbNodes = new HashSet<String>(Arrays.asList(rdbAllNodes));
-		logger.info("XML: "+xmlNodes.size()+"; TMCDB: "+rdbNodes.size());		
 		logger.info("XML: "+xmlNodes.toString()+";\n TMCDB: "+rdbNodes.toString());
 
 		assertTrue(xmlNodes.equals(rdbNodes));
