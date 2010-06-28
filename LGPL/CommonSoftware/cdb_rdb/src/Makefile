@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2010/06/04 11:53:08 jschwarz Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/06/28 12:21:21 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -156,11 +156,11 @@ install : install_all
 ../lib/$(POJOS_JAR):
 	@echo "=="
 	@echo "== Compiling generated domain classes"
-	@cd gen; CLASSPATH=$(shell vltMakeJavaClasspath) javac alma/acs/tmcdb/*.java; jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/
+	@cd gen; CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/
 
 ../lib/TMCDBswconfigStrategy.jar :
 	@echo "== Compiling TMCDBswconfigStrategy.jar "
-	@CLASSPATH=$(shell vltMakeJavaClasspath) javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
+	@CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
 	@rm -f alma/acs/tmcdb/translator/*.class
 
 
