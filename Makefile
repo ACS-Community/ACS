@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.171 2010/06/15 16:26:10 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.172 2010/06/28 12:42:55 rtobar Exp $"
 #
 #
 
@@ -521,7 +521,7 @@ cvs-get-no-lgpl-extract:
 # This includes the RTOS branch and the Kit with the Makefile 
 # The update is done only in the case we really are on RH-9
 #
-REDHAT_RELEASE := $(shell cat /etc/redhat-release)
+REDHAT_RELEASE := $(shell if [ -f /etc/redhat-release ]; then cat /etc/redhat-release; else echo "NOREDHAT"; fi )
 
 RH9-BRANCH=ACS-6_0-RTOS-3_1-B
 
