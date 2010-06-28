@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.96 2010/06/15 20:00:25 javarias Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.97 2010/06/28 09:26:54 rtobar Exp $"
 #
 #
 #
@@ -437,6 +437,7 @@ fi
 # set the following variable to the path where you installed your TAO 
 # stuff:
 OSYSTEM=`uname -s`
+CYGWIN_VER="CYGWIN_NT-5.1"
 if [ "$OSYSTEM" = "SunOS" ]
 then
     ACE_ROOT=$ACE_ROOT_DIR/sun
@@ -448,6 +449,13 @@ elif [ "$OSYSTEM" = "Linux" ]
 then
     ACE_ROOT=$ACE_ROOT_DIR/linux
     DDS_ROOT=$DDS_ROOT_DIR/linux
+    if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
+    then
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=2
+    fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    ACE_ROOT=$ALMASW_INSTDIR/TAO/ACE_wrappers
     if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
     then
        ACS_STARTUP_TIMEOUT_MULTIPLIER=2
@@ -485,7 +493,12 @@ fi
 #   to ensure that you have a supported JDK installed.
 if [ X"$JAVA_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-  	JAVA_HOME=/usr/java/default
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+    then
+      	JAVA_HOME=/Java
+    else
+      	JAVA_HOME=/usr/java/default
+    fi
 fi
 
 # If not explicitly set by hand,
@@ -525,7 +538,12 @@ fi
 
 if [ X"$ACS_TMP" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ACS_TMP=$ACSDATA/tmp/`hostname -s`
+	if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+	then
+       ACS_TMP=$ACSDATA/tmp/`hostname`
+	else
+       ACS_TMP=$ACSDATA/tmp/`hostname -s`
+	fi
 fi
 
 # set the following variable to your default environment
@@ -545,6 +563,9 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
     USER=`/usr/bin/whoami`
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    USER=$USERNAME
 else
     USER=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
@@ -758,6 +779,25 @@ then
    then
       PATH=$PATH:$CASA_ROOT/bin
    fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   # So, we're under Cygwin
+   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$ORIG_PATH
+   
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+      PATH=$VLTROOT/bin:$PATH
+   fi
+
+   if [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      PATH=$ACSROOT/bin:$PATH
+   fi
+
+   if [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+      PATH=$CASA_ROOT/bin:$PATH
+   fi
 else
     PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
@@ -842,6 +882,37 @@ then
        LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
    fi
 
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   if  [ X"$RTAI_HOME" != X ]
+   then
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:$ORIG_LD_LIBRARY_PATH
+   else
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH	
+   fi
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$DDS_ROOT" != X ]
+   then
+	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+   if  [ X"$CASA_ROOT" != X ] && [ X"$CASA_ROOT" != X"$ACSROOT" ]
+   then
+       LD_LIBRARY_PATH=$CASA_ROOT/lib:$LD_LIBRARY_PATH 
+   fi
+
+   PATH=$PATH:$LD_LIBRARY_PATH
+
 else
     LD_LIBRARY_PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
@@ -901,13 +972,26 @@ then
    then
       MANPATH=$ACSROOT/man:$MANPATH
    fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$ORIG_MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
 else
     MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
 
 
 # Only for Linux or SunOS
-if [[ "$OSYSTEM" = "Linux"  || "$OSYSTEM" = "SunOS" ]]
+if [[ "$OSYSTEM" = "Linux"  || "$OSYSTEM" = "SunOS" || "$OSYSTEM" = "$CYGWIN_VER" ]]
 then
    if  [ X"$INTLIST" != X ]
    then
@@ -960,7 +1044,14 @@ MANPATH=$MANPATH:
 # JabORB 1.1.4 to prepare for the upgrade, since the two entries 
 # are simply ignored.
 #
-CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.2.jar:$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar:
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    PATH_SEP=";"
+else
+    PATH_SEP=":"
+fi
+
+CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar$PATH_SEP$JACORB_HOME/lib/logkit-1.2.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
 
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
@@ -971,14 +1062,21 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.
 # the minor version number seem not used.
 # If I do it before, I get the system python and not the one we want to use.
 #
-export PYTHON_ROOT PATH LD_LIBRARY_PATH
 PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
+else
+    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
+fi
+export PATH LD_LIBRARY_PATH
+export PYTHONPATH
 PYTHONINC=`$PYTHON_ROOT/bin/python -c "from distutils.sysconfig import get_python_inc ; print get_python_inc()"`
-PYTHONPATH=$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python$PYTHONVER/site-packages:$OMNI_ROOT/lib/python/site-packages
+
 
 if [ X"$ACSROOT" != X ] || [ X"$INTLIST" = X ]
 then
-   PYTHONPATH=$ACSROOT/lib/python/site-packages:$PYTHONPATH
+   PYTHONPATH="$ACSROOT/lib/python/site-packages${PATH_SEP}$PYTHONPATH"
 fi
 
 
@@ -1008,7 +1106,7 @@ fi
 if [ "$MODPATH" = "1" ]
 then
         IDL_PATH="-I../idl "$IDL_PATH
-	PYTHONPATH=../lib/python/site-packages:$PYTHONPATH
+	PYTHONPATH=../lib/python/site-packages$PATH_SEP$PYTHONPATH
 	LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
         # this could introduce security problems!
 	PATH=../bin:$PATH
@@ -1024,6 +1122,12 @@ export GNU_ROOT TCLTK_ROOT JAVA_HOME VLTROOT ACSDATA VLTDATA ACS_CDB RTAPENV CMM
 export ANT_HOME JACORB_HOME PYTHON_ROOT OMNI_ROOT OMNIORB_CONFIG PYTHONPATH MICO_HOME PYTHONINC
 export ACS_STARTUP_TIMEOUT_MULTIPLIER
 export ACS_INSTANCE
+export OSYSTEM
+
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    export CYGWIN_VER
+fi
 
 unset MODPATH
 
@@ -1039,6 +1143,3 @@ PS1='\h \u:\w \! > '
 export PS1
 
 alias lr="ls -ltra"
-
-
-
