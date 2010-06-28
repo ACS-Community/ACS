@@ -87,8 +87,8 @@ fi
 
 #--------------------------------------------------------------------------------
 ## set the classpath for component-impl jars (to support separate classloaders)
-component_classpath=`vltMakeJavaClasspath -components`
-export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=$component_classpath"
+component_classpath="`vltMakeJavaClasspath -components`"
+export JAVA_OPTIONS="$JAVA_OPTIONS -Dacs.components.classpath.jardirs=\"$component_classpath\""
 
 #--------------------------------------------------------------------------------
 #just delegate to acsStartJava
