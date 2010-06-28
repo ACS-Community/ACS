@@ -20,7 +20,12 @@ ACS_INFO_PRIORITY=16
 ACS_ERROR_PRIORITY=258
 
 ### Instance directories
-DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname -s`
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+    DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname`
+else
+    DEFAULT_ACS_TMP=$ACSDATA/tmp/`hostname -s`
+fi
 ACS_TMP=${ACS_TMP:-$DEFAULT_ACS_TMP}
 ## Identical to ACS_TMP, in absolute path
 ACS_INSTANCES_DIR=$(cd $ACS_TMP 2> /dev/null && pwd)

@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.65 2010/05/07 19:18:15 tstaig Exp $"
+# "@(#) $Id: acsStartJava,v 1.66 2010/06/28 11:58:40 rtobar Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -49,15 +49,7 @@
 #
 #------------------------------------------------------------------------
 #
-#
-# CLASSPATH separator -- set to ":" for UNIX, ";" for Windows
 
-if [ "$OSYSTEM" = "cygwin" ]
-then
-    CPSEP=";"
-else
-    CPSEP=":"
-fi
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -242,11 +234,11 @@ fi
 if [ ! $CL_JARPATH ] ; then
 
     if [ -d ../lib ] ; then
-	CL_JARPATH="../lib:"
+	CL_JARPATH="../lib${PATH_SEP}"
     fi
 
     if [ -d $INTROOT ] && [ $INTROOT ] ; then
-	CL_JARPATH="$CL_JARPATH$INTROOT/lib:"
+	CL_JARPATH="$CL_JARPATH$INTROOT/lib${PATH_SEP}"
     fi
 
     # Separation of dirs
@@ -254,7 +246,7 @@ if [ ! $CL_JARPATH ] ; then
     for item in $item_list
     do
       if [ -d $item ] && [ $item ] ; then
-	  CL_JARPATH="$CL_JARPATH$item/lib:"
+	  CL_JARPATH="$CL_JARPATH$item/lib${PATH_SEP}"
       fi
     done
 
@@ -314,7 +306,7 @@ if [ "$CL_ENDORSED" ]; then
   #
   if [ -d $ACSROOT/lib/endorsed ]
   then
-     JAVA_ENDORSED=$ACSROOT/lib/endorsed$CPSEP$JAVA_ENDORSED
+     JAVA_ENDORSED="$ACSROOT/lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
   fi
 
   # Separation of dirs
@@ -324,18 +316,18 @@ if [ "$CL_ENDORSED" ]; then
   do
      if [ -d $item/lib/endorsed ]
      then
-        JAVA_ENDORSED_TMP=$JAVA_ENDORSED_TMP$item/lib/endorsed$CPSEP
+        JAVA_ENDORSED_TMP="$JAVA_ENDORSED_TMP$item/lib/endorsed${PATH_SEP}"
      fi
   done
   JAVA_ENDORSED=$JAVA_ENDORSED_TMP$JAVA_ENDORSED
 
   if [ -d $INTROOT/lib/endorsed ]
   then
-     JAVA_ENDORSED=$INTROOT/lib/endorsed$CPSEP$JAVA_ENDORSED
+     JAVA_ENDORSED="$INTROOT/lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
   fi
   if [ -d ../lib/endorsed ]
   then
-     JAVA_ENDORSED=../lib/endorsed$CPSEP$JAVA_ENDORSED
+     JAVA_ENDORSED="../lib/endorsed${PATH_SEP}$JAVA_ENDORSED"
   fi
   if [ X"$JAVA_ENDORSED" != X ]; then
      JAVA_ENDORSED="-Djava.endorsed.dirs=$JAVA_ENDORSED"
@@ -386,7 +378,7 @@ fi
 #
 if [ X"$CL_JARS" != X ]
 then
-    CLASSPATH=`acsGetSpecificJars $CPSEP $CL_JARS`$CLASSPATH
+    CLASSPATH=`acsGetSpecificJars ${PATH_SEP} $CL_JARS`$CLASSPATH
 fi
 
 #
@@ -399,7 +391,7 @@ then
     #
     # Retrieves all jar files for the CLASSPATH
     #
-    CLASSPATH=`acsGetAllJars $CPSEP $CL_JARPATH`$CLASSPATH
+    CLASSPATH=`acsGetAllJars ${PATH_SEP} $CL_JARPATH`$CLASSPATH
 #
 # By default the custom Java class loader is used.
 # In this case we need to have jACSUtil.jar in the CLASSPATH
@@ -409,16 +401,16 @@ then
    # 
    # Sets the class loader and adds ACSUtil.jar to the CLASSPATH
    # 
-   JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=$CL_JARPATH"
+   JAVA_OPTIONS="$JAVA_OPTIONS -Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=\"$CL_JARPATH\""
 
-   JACSUTIL_JAR=`acsGetSpecificJars $CPSEP jACSUtil.jar`
+   JACSUTIL_JAR=`acsGetSpecificJars ${PATH_SEP} jACSUtil.jar`
    if [ X"$JACSUTIL_JAR" = X ]
    then    
        ACS_LOG_ERROR "acsStartJava" "Expected to find jACSUtil.jar in the ALMA Software directory structure but did not!"
        exit $EC_FAILURE
    fi
    
-   CLASSPATH=$JACSUTIL_JAR$CLASSPATH
+   CLASSPATH="$JACSUTIL_JAR${PATH_SEP}$CLASSPATH"
 fi
 
 #
@@ -446,7 +438,7 @@ fi
 #
 # Add jacorb.properties to the CLASSPATH
 #
-CLASSPATH=$CLASSPATH$CPSEP$CPSEP$ACSDATA/config
+CLASSPATH="$CLASSPATH${PATH_SEP}$ACSDATA/config"
 export CLASSPATH
 ### ------------- End of CLASSPATH handling --------------
 
@@ -607,7 +599,12 @@ fi
 # -D option above while parsing this script's options/arguments). To get rid of these
 # eventual quote characters, we need an "eval" of this JAVA_COMMAND_LINE instead of
 # a mere execution.
-JAVA_COMMAND_LINE="java -classpath $CLASSPATH $JAVA_ENDORSED $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
+JAVA_COMMAND_LINE="java -classpath \"$CLASSPATH\""
+if [ X"$JAVA_ENDORSED" != X ]
+then
+    JAVA_COMMAND_LINE=$JAVA_COMMAND_LINE" \"$JAVA_ENDORSED\""
+fi
+JAVA_COMMAND_LINE=$JAVA_COMMAND_LINE" $XERCES_CONFIG $JAVA_ORB -Duser.timezone=UTC -DACS.manager=$MANAGER_REFERENCE -DORBInitRef.NameService=$ACS_NAME_SERVICE  -DACS.repository=$ACS_INTERFACE_REPOSITORY -DACS.tmp=$ACS_TMP -DACS.baseport=$ACS_INSTANCE -DACS.data=$ACSDATA -DACS.logstdout=$ACS_LOG_STDOUT -DACS.log.minlevel.remote=$ACS_LOG_CENTRAL -DACS.loggingBin=$ACS_LOG_BIN $JAVA_OPTIONS $LAUNCHER $@"
 
 ACS_LOG_DEBUG "acsStartJava" "Running the following command:"
 ACS_LOG_DEBUG "acsStartJava" "$JAVA_COMMAND_LINE"

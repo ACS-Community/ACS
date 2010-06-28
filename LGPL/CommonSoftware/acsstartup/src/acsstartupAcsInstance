@@ -61,7 +61,12 @@ local t_item
 TCP_PORT=$1
 
 #compressed AI contains a list where each element contains some TCP info
-compressedAI=`netstat -l -t -n | grep ":$TCP_PORT " | awk '{print $4}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+  compressedAI=`netstat -p TCP -a -n | grep "LISTENING" | grep ":$TCP_PORT " | awk '{print $2}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+else
+  compressedAI=`netstat -l -t -n | grep ":$TCP_PORT " | awk '{print $4}'| sed 's/:/ /g' | awk '{print $2}' 2> /dev/null`
+fi
 
 if [ "$compressedAI" = "" ] 
 then

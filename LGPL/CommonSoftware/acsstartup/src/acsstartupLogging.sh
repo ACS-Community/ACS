@@ -22,7 +22,13 @@ then
 elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w $ACSDATA/tmp ]
 then
     #give it an OK default value
-    OUTPUT_FILE=$ACSDATA/tmp/`hostname -s`
+
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+    then
+        OUTPUT_FILE=$ACSDATA/tmp/`hostname`
+    else
+        OUTPUT_FILE=$ACSDATA/tmp/`hostname -s`
+    fi
 
     if [ ! -e $OUTPUT_FILE ]
     then
