@@ -4,7 +4,7 @@
 #
 # standardPrologue
 #
-# "@(#) $Id: standardPrologue,v 1.123 2004/09/09 14:11:32 gchiozzi Exp $"
+# "@(#) $Id: standardPrologue,v 1.124 2010/06/28 09:25:41 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -59,6 +59,11 @@ case $THIS_OS in
            }
            ;;
     Linux) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    $CYGWIN_VER) echo()
            {
                /bin/echo "$@"
            }

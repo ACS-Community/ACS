@@ -4,7 +4,7 @@
 #
 # buildTestCCS
 #
-# "@(#) $Id: acsBUILDTest,v 1.122 2003/01/28 16:37:06 vltsccm Exp $"
+# "@(#) $Id: acsBUILDTest,v 1.123 2010/06/28 09:25:33 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -46,6 +46,11 @@ case $THIS_OS in
            }
            ;;
     Linux) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
+    $CYGWIN_VER) echo()
            {
                /bin/echo "$@"
            }
