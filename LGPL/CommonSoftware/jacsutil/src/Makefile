@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.18 2009/09/25 21:31:07 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.19 2010/06/28 09:59:12 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -28,8 +28,6 @@
 # gchiozzi 2003-05-17 created
 # rtobar   2008-02-19 added tools.jar file to classpath
 #
-
-CLASSPATH := $(JAVA_HOME)/lib/tools.jar:$(CLASSPATH):.
 
 #
 # 3rd party Install files
@@ -63,6 +61,16 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+# New CLASSPATH must use tools.jar file to compile MBeans-related classes
+#os  = $(shell uname)
+#ifeq ($(os),Linux)
+#   SEPARATOR=:
+#else ifeq ($(os),$(CYGWIN_VER))
+#   SEPARATOR=;
+#else
+#   SEPARATOR=:
+#endif
+CLASSPATH := $(JAVA_HOME)/lib/tools.jar$(PATH_SEP)$(CLASSPATH)$(PATH_SEP).
 
 #
 # TARGETS
