@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsstartupContainerPort.py,v 1.48 2010/06/28 11:58:40 rtobar Exp $
+# @(#) $Id: acsstartupContainerPort.py,v 1.49 2010/06/29 12:31:44 rtobar Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -37,13 +37,15 @@ TODO:
 - 
 '''  
 ###############################################################################
+import os
+if os.name != 'nt':
+    from os      import link
 from os      import environ
 from os      import chdir
 from os      import getcwd
 from os      import system
-from os      import fstat 
+from os      import fstat
 from os      import access, R_OK, W_OK, X_OK, F_OK
-#from os      import link
 from os      import rename
 from os      import remove
 from os      import getpid
@@ -141,7 +143,12 @@ def getPortsFile(baseport):
     gotlock = False
     while not gotlock:
         try:
-            #link('USED_CONTAINER_PORTS', 'USED_CONTAINER_PORTS.lock')
+            if os.name != 'nt':
+                link('USED_CONTAINER_PORTS', 'USED_CONTAINER_PORTS.lock')
+            else:
+                if exists('USED_CONTAINER_PORTS.lock'):
+                    raise OSError;
+                system('touch USED_CONTAINER_PORTS.lock')
             gotlock = True
         except OSError:
             continue
