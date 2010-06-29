@@ -1,0 +1,20 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/MonitorProxySupplier_T.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/MonitorProxySupplier_T.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/MonitorProxySupplier_T.cpp	2009-11-10 18:18:06.000000000 +0000
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/MonitorProxySupplier_T.cpp	2010-06-28 08:42:38.000000000 +0000
+@@ -48,11 +48,14 @@
+   if (this->queue_item_count_ != 0)
+     {
+       // get a count of events that are being held at the consumer level.
+-      size_t pending =
+-        this->
++    size_t pending =0;
++    if (TAO_Notify_ProxySupplier::consumer()!=0)
++	{
++        pending = this->
+         //typename ProxyPushSupplier::
+         TAO_Notify_ProxySupplier::consumer()->
+           pending_count();
++	}
+       this->queue_item_count_->receive (count + pending);
+     }
+   if (this->child_ != 0)
