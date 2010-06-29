@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.36 2010/06/24 08:03:07 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.37 2010/06/29 10:47:20 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -98,6 +98,8 @@ echo "- TAOAV.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
+echo "MonitorControlExt.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/MonitorControlExt.patch
 #echo "- IFR.patch"
 #patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/IFR.patch
 
