@@ -70,7 +70,7 @@ public class EngineFilteringTest
 	private int xmlInfos=0;
 	
 	// The timeout (in secs) to decide when all the logs has been received
-	private static final int TIMEOUT=120;
+	private static final int TIMEOUT=60;
 	
 	// The number of logs generated for testing
 	private static final int NUMBER_OF_LOGS =100;
