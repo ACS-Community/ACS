@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.10 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.11 2010/06/30 09:24:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.10 2008/07/25 07:29:52 cparedes Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.11 2010/06/30 09:24:53 bjeram Exp $");
 
 namespace baci {
 
@@ -79,12 +79,23 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   /* setup archiver - read from DB */
   CORBA::ULong archive_priority = 3UL, archiveMinInt=0UL, archiveMaxInt=0UL;
   BACIValue archiveDelta;
+  ACE_CString archiveMechanism;
 
 
   cdb::DAONode* dao = characteristicModel_mp->getDAONode();
   if (!dao)
       return;
   
+
+  try
+     {
+	  archiveMechanism = dao->get_string("archive_mechanism");
+     }
+  catch (...)
+     {
+	  // noop
+     }
+
   try
       {
       archive_priority = dao->get_long("archive_priority");
@@ -129,7 +140,8 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
       // noop
       }
 
-  if (archiveMinInt!=0 || 
+  if (archiveMechanism=="notification_channel" ||
+      archiveMinInt!=0 ||
       archiveMaxInt!=0 || 
       (archiveDelta.isNull()==false && archiveDelta.noDelta()==false))
     { 
@@ -157,7 +169,9 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
     }
   else
     {
-      ACS_DEBUG("baci::BACIProperty::BACIProperty", "Archiver disabled!");
+      ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIProperty::BACIProperty",
+    		  (LM_DEBUG, "Archiver disabled! (archive_mechanism=%s, archive_min_int=%d, archive_max_int=%d)",
+    		  archiveMechanism.c_str(), archiveMinInt, archiveMaxInt));
       archiver_mp = 0;
     }
     
