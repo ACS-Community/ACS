@@ -234,7 +234,7 @@ public class LCEngine implements Filterable {
 	
 	// The log retrieval i,e. the object receiving logs and dispatching
 	// to the listeners
-	private ACSLogRetrieval logRetrieval=null;
+	private final ACSLogRetrieval logRetrieval;
 
 	/**
 	 * LCEngine constructor
