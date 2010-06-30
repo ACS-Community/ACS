@@ -6,8 +6,8 @@
 1 - ----------T--:--:--.--- [Test thread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Starting thread 'xxxx' [xxxx].
 1 - ----------T--:--:--.--- [Test thread - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [GlobalLogger - ] .
 1 - ----------T--:--:--.--- [GlobalLogger - ] Spawned.
+1 - ----------T--:--:--.--- [GlobalLogger - ] .
 1 - ----------T--:--:--.--- [GlobalLogger - ] .
 1 - ----------T--:--:--.--- [GlobalLogger - ] .
 1 - ----------T--:--:--.--- [GlobalLogger - ] .
