@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2010/05/24 17:29:44 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/06/30 21:12:01 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,7 +44,7 @@ SCRIPTS_L       = configure_script
 all: unpack patch configure build
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : 
 ifneq ($(PLATFORM),Linux)
 	-$(AT) if [ -d log4cpp-$(LOG4CPP_VER) ]; then cd log4cpp-$(LOG4CPP_VER) ; make clean > /dev/null ; fi
 endif
@@ -53,7 +53,8 @@ endif
 clean_dist : clean_all clean_dist_all 
 	@echo " . . . clean_dist done"
 
-man   : do_man 
+man   :
+	make -C log4cpp-$(LOG4CPP_VER)/doc all install
 	@echo " . . . man page(s) done"
 
 install : 
