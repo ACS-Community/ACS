@@ -1,4 +1,4 @@
-# @(#) $Id: Log.py,v 1.47 2010/06/25 16:51:22 javarias Exp $
+# @(#) $Id: Log.py,v 1.48 2010/06/30 04:18:47 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -39,7 +39,7 @@ of creating new instances of the Logger class which can take a very long
 time depending on managers load.
 '''
 
-__revision__ = "$Id: Log.py,v 1.47 2010/06/25 16:51:22 javarias Exp $"
+__revision__ = "$Id: Log.py,v 1.48 2010/06/30 04:18:47 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from os        import environ
@@ -846,8 +846,7 @@ class Logger(logging.Logger):
 
     
     
-    def configureLogging(self, maxLogsPerSec):
-        CENTRALHANDLER.configureLogging(maxLogsPerSec)
+
 #----------------------------------------------------------------------------
 # The Python logging module contains code to manage a hierarchy of loggers.
 # The root logger has a default level setting of WARNING and would return

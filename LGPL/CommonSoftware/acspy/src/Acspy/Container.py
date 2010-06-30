@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.45 2010/06/25 16:51:22 javarias Exp $
+# @(#) $Id: Container.py,v 1.46 2010/06/30 04:18:47 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.45 2010/06/25 16:51:22 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.46 2010/06/30 04:18:47 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.45 2010/06/25 16:51:22 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.46 2010/06/30 04:18:47 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -540,16 +540,8 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         # Default levels are used for missing values
         defaultlevels = Log.getDefaultLevels()
-        
         try:
-            #Get the global unnamed logging config to retrieve the maxLogsPerSecond attribute
-            logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
-            maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
-        except KeyError:
-            # No value was supplied so default is used
-            maxLogsPerSec = -1
-        
-        try:
+
             # Process all the named logger configurations
             logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
             for cfg in logconfig:
@@ -564,15 +556,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                     except KeyError:
                         # No value was supplied so default is used
                         locallevel = defaultlevels.minLogLevelLocal
-                    
+
                     clogger.setLevels(maci.LoggingConfigurable.LogLevels(False, centrallevel, locallevel))
-                    clogger.configureLogging(maxLogsPerSec)
                     # There should only be one entry per logger so we are done
                     break
             else:
                 # No matching named logger was found so the default values are used
                 clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
-        except Exception as ex:
+        except:
             # No named loggers were defined so the default values are used
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
