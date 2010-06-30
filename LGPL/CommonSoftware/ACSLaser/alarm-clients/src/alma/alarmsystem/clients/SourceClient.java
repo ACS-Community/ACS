@@ -188,7 +188,9 @@ public class SourceClient {
 			return;
 		}
 		closed=true;
-		m_consumer.disconnect();
+		if (m_consumer!=null) {
+			m_consumer.disconnect();
+		}
 	}
 	
 	/**
