@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2009/10/12 09:12:38 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/06/30 15:19:08 jschwarz Exp $"
 #
 # Makefile of ........
 #
@@ -81,7 +81,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = eventGUI
 SCRIPTS_L       =
 
 #
@@ -218,6 +218,14 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
+	@INSTALL_DIR=$$(searchFile bin/eventGUI); \
+	 cd $$INSTALL_DIR/lib; \
+	 rm -rf ACS_eventGUI; \
+	 unzip -o $(PWD)/../object/headlessTemp/I.eventGUIBuild/eventGUIBuild-linux.gtk.x86.zip; \
+	 cd ACS_eventGUI; \
+	 acsdata=$$(echo $$ACSDATA | sed s/\\//\\\\\\\//g); \
+	 sed s/ACSDATA-DIR/$$acsdata/g eventGUI.ini > eventGUI.ini.new; \
+	 mv eventGUI.ini.new eventGUI.ini
 	@echo " . . . installation done"
 
 

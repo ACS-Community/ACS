@@ -66,17 +66,21 @@ public class EventModel {
 		String connectionString;
 		String managerHost;
 		
-		int acsInstance;
-		if ((connectionString = System.getProperty("ACS.Manager")) == null) { // Joe's Linux box in Garching is the default!
-			acsInstance = 0;
-			managerHost = "alma";
-			connectionString = getConnectionString(managerHost, acsInstance);
-		}
-		else {
+		int acsInstance = 0;
+		managerHost = "localhost";
+		try {
+			connectionString = System.getenv("MANAGER_REFERENCE");
+			System.setProperty("ORBInitRef.NameService", System.getenv("ACS_NAME_SERVICE"));
 			String temp = connectionString.substring("corbaloc::".length());
 			int endIndex = temp.indexOf(":");
 			managerHost = temp.substring(0, endIndex);
 			acsInstance = (Integer.parseInt(temp.substring(endIndex+1, temp.indexOf("/"))) - 3000)/100;
+		} catch (Exception e) {
+			if ((connectionString = System.getProperty("ACS.Manager")) == null) { // Joe's Linux box in Garching is the default!
+				acsInstance = 0;
+				managerHost = "alma";
+				connectionString = getConnectionString(managerHost, acsInstance);
+			}
 		}
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
