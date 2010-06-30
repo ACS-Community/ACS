@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: ACSLogRetrieval.java,v 1.41 2010/06/06 22:42:57 acaproni Exp $
+ * @version $Id: ACSLogRetrieval.java,v 1.42 2010/06/30 15:12:06 acaproni Exp $
  * @since    
  */
 
@@ -121,12 +121,12 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 	/**
 	 * <code>true</code> if the binary format is in use, <code>false</code> otherwise
 	 */
-	private boolean binaryFormat;
+	private final boolean binaryFormat;
 
 	/**
 	 * The cache
 	 */
-	private static EngineCache cache;
+	private final EngineCache cache;
 	
 	/**
 	 * The thread sending logs to the listeners
@@ -308,14 +308,11 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 			boolean binFormat,
 			FiltersVector filters,
 			IResourceChecker resCecker) {
+		this(listenersDispatcher,binFormat,filters);
 		if (resCecker==null) {
 			throw new IllegalArgumentException("resChecker can't be null");
 		}
-		this.listenersDispatcher=listenersDispatcher;
-		this.binaryFormat=binFormat;
-		setFilters(filters);
 		resourceChecker=resCecker;
-		initialize();
 	}
 	
 	/**
@@ -482,7 +479,7 @@ public class ACSLogRetrieval extends LogMatcher implements Runnable {
 					listenersDispatcher.publishReport(log.toString());
 				} catch (Throwable t2) {}
 			}
-		} 
+		}
 	}
 	
 	
