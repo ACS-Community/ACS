@@ -34,8 +34,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStates'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.
@@ -60,7 +60,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::RWEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStatesRW'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled!
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.
@@ -83,8 +83,8 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
@@ -116,8 +116,8 @@
 2 - ----------T--:--:--.--- [setter thread - ] setter thread: Created thread
 2 - ----------T--:--:--.--- [setter thread - ACS::ThreadBase::resume] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (main thread) Going in main loop sleep...
-2 - ----------T--:--:--.--- [setter thread - ACS::Thread::commonStart] 
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
+2 - ----------T--:--:--.--- [setter thread - ACS::Thread::commonStart] 
 2 - ----------T--:--:--.--- [setter thread - ACS::Thread::run] 
 2 - ----------T--:--:--.--- [setter thread - ] ==> Going to changing value to ENABLE (1) to trigger an alarm.
 2 - ----------T--:--:--.--- [GlobalLogger - ] (State::AlarmCBStates::raised) Value: ENABLED (1). Completion (type=2, code=3)
