@@ -20,4 +20,4 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-acsStartJava -Dacs.system.classpath.jacorb.jardirs=$JACORB_HOME alma.acs.eclipse.utils.pluginbuilder.PluginBuilder $*
+acsStartJava -endorsed -Dacs.system.classpath.jacorb.jardirs=$JACORB_HOME alma.acs.eclipse.utils.pluginbuilder.PluginBuilder $*
