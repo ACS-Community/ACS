@@ -72,6 +72,11 @@ public class PluginBuilder {
 	public final String jacorbFolderPropertyName="acs.system.classpath.jacorb.jardirs";
 	
 	/**
+	 * The endorsed folders of jars
+	 */
+	public final String endorsedFoldersPropertyName="java.endorsed.dirs";
+	
+	/**
 	 * The folder where JacORB stores the jar files
 	 */
 	private String jacorbFileOfJars;
@@ -197,15 +202,26 @@ public class PluginBuilder {
 	 * @throws Exception If at least one of the folder is not valid
 	 */
 	private void initdFolders() throws Exception {
+		// Get the endorse folders
+		String endorsed = System.getProperty(endorsedFoldersPropertyName);
+		String[] endorsedFolders;
+		if (endorsed==null) {
+			endorsedFolders=new String[0];
+		} else {
+			endorsedFolders=endorsed.split(":");
+		}
 		// Get jacorb folder
 		jacorbFileOfJars=System.getProperty(jacorbFolderPropertyName);
 		// Get the folder of jars
 		String jarFolders = System.getProperty(AcsSystemClassLoader.PROPERTY_JARDIRS);
 		String[] temp=jarFolders.split(":");
-		jarDirs=new String[temp.length+1];
+		jarDirs=new String[endorsedFolders.length+temp.length+1];
 		jarDirs[0]=jacorbFileOfJars+"/lib";
 		for (int t=0; t<temp.length; t++) {
 			jarDirs[t+1]=temp[t];
+		}
+		for (int j=0; j<endorsedFolders.length; j++) {
+			jarDirs[temp.length+j+1]=endorsedFolders[j];
 		}
 		// Check if the folders are readable
 		for (String folder: jarDirs) {
