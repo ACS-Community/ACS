@@ -16,6 +16,9 @@ import alma.acs.eventbrowser.views.EventData;
 
 /**
  * This class controls all aspects of the application's execution
+ * 
+ * $Id: Application.java,v 1.6 2010/07/01 15:52:02 jschwarz Exp $
+ * 
  */
 public class Application implements IApplication, IStartup {
 	
