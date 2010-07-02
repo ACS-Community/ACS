@@ -41,8 +41,8 @@ TABLE AcsService
     ServiceInstanceName     LONGNAME                NULL
     ComputerId              INTEGER                 NOT NULL
     KEY AcsServiceId GENERATED
-    CONSTRAINT AcsServiceConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration
-    CONSTRAINT AcsServiceComputer FOREIGN KEY (ComputerId) REFERENCES Computer
+    CONSTRAINT AcsServiceConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
+    CONSTRAINT AcsServiceComputer FOREIGN KEY (ComputerId) REFERENCES Computer CASCADING AGGREGATION
     CONSTRAINT AcsServiceServiceType CHECK (ServiceType IN ('NAMING', 'IFR', 'CDB', 'NOTIFICATION', 'LOGGING', 'MANAGER', 'ALARM', 'LOGPROXY'))
 ENDTABLE
 
