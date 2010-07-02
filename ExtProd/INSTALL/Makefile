@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.20 2010/06/01 01:21:51 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.21 2010/07/02 17:06:04 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -49,6 +49,7 @@ clean :
 	rm -rf ../PRODUCTS/gnu
 	rm -rf ../PRODUCTS/java
 	rm -rf ../PRODUCTS/tcltk
+	rm -rf ../PRODUCTS/mico
 	rm -rf ../PROPRIETARY/CCSLite
 	rm -rf ../PROPRIETARY/vw
 	rm -rf *.log *~

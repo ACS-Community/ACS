@@ -1,17 +1,18 @@
-#! /bin/sh
+#! /bin/bash
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.10 2008/07/17 11:52:23 hsommer Exp $"
+# "@(#) $Id: buildMico,v 1.11 2010/07/02 17:06:04 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # almamgr 2004-03-24 created
-#
+# lopatin 2010-06-30 ported to mico 2.3.13 and gcc version 4.4.1 
+# lopatin 2010-06-30 now putting only "make install" files into MICO home, to cut down the distribution size
 
 #************************************************************************
 #   NAME
-#   buildJacORB
+#   buildMico
 # 
 #   SYNOPSIS
 # 
@@ -78,19 +79,19 @@ then
    fi
 fi
 
-echo ==== Extracting package
-cd $ALMASW_INSTDIR
-tar xfzp $MICO_SOURCES/mico-2.3.12.tar.gz
-cd $MICO_HOME
-
-
-#echo ==== Patching mico
-#patch -p2 < $CUR_DIR/../PRODUCTS/mico-gcc341fix.patch
-echo "done"
+echo ==== Extracting mico package
+cd $MICO_SOURCES
+tar xfzp mico-2.3.13.tar.gz
+echo "done Extracting package ===="
 echo ""
 
-echo ==== Building mico
+echo ==== Patching mico (needed for gcc >= 4.3)
+patch -p0 < mico-2.3.13-limits.patch
+echo "done Patching mico ===="
+echo ""
 
+echo ==== Configuring mico
+cd mico
 # Use this command line if you want to build also CORBA CCM support
 #./configure --prefix=$MICO_HOME --enable-ccm
 ./configure --prefix=$MICO_HOME
@@ -100,24 +101,41 @@ then
      echo "========= FAILED configure =========="
 	exit 1
 fi
+echo "done Configuring mico ===="
+echo ""
 
+echo ==== Building mico
 make
 if [ $? -ne 0 ]
 then
      echo "========= FAILED make all =========="
 	exit 1
 fi
+echo "done Building mico ===="
+echo ""
 
-make install
+echo "==== Installing mico as non-root user, without running ldconfig" 2>&1
+make install-cd
 if [ $? -ne 0 ]
 then
      echo "========= FAILED make install =========="
-	exit 1
+     exit 1
 fi
 
-echo "==== MICO fully built   =========="
+echo "done Installing mico ===="
 echo ""
-echo "Please, ignore failures related to ldconfig, if any"
+
+echo ==== Stripping mico
+for alib in $MICO_HOME/lib/libmico*
+do
+  chmod u+w $alib
+  strip $alib
+  chmod u-w $alib
+done
+echo "done Stripping mico ===="
+echo ""
+
+echo "==== MICO fully built   =========="
 echo ""
 echo "Make sure that the following environment variables"
 echo "are set before using MICO:"
