@@ -37,6 +37,11 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.Helper;
 import alma.acs.util.StopWatch;
 
+/**
+ * @author jschwarz
+ *
+ * $Id: EventModel.java,v 1.22 2010/07/02 13:20:01 jschwarz Exp $
+ */
 public class EventModel {
 	private final ORB orb;
 	private final Logger m_logger;
@@ -69,7 +74,7 @@ public class EventModel {
 		int acsInstance = 0;
 		managerHost = "localhost";
 		try {
-			connectionString = System.getenv("MANAGER_REFERENCE");
+			connectionString = System.getProperty("ACS.Manager",System.getenv("MANAGER_REFERENCE"));
 			System.setProperty("ORBInitRef.NameService", System.getenv("ACS_NAME_SERVICE"));
 			String temp = connectionString.substring("corbaloc::".length());
 			int endIndex = temp.indexOf(":");
