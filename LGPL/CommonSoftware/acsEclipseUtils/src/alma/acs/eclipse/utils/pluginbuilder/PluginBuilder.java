@@ -362,6 +362,9 @@ public class PluginBuilder {
 		for (String jar: jars) {
 			logger.fine("Adding "+jar);
 			File jarFile = jarFolders.getJar(jar);
+			if (jarFile==null) {
+				throw new Exception(jar+" NOT found");
+			}
 			finalJarsLocations[i++] = jarFile.getAbsolutePath();
 			File dest = new File(pluginRootFolder+File.separator+jar);
 			if (wrapJars) {
