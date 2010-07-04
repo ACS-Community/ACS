@@ -22,6 +22,7 @@
 package alma.acs.eclipse.utils.jar;
 
 import java.io.File;
+import java.util.Vector;
 
 
 /**
@@ -48,13 +49,13 @@ public class AcsFolders {
 	 * 
 	 * @throws Exception If the passed path are not valid or the folders do not exist
 	 */
-	public AcsFolders(final String[] folders) throws Exception {
-		if (folders==null || folders.length==0) {
+	public AcsFolders(final Vector<String> folders) throws Exception {
+		if (folders==null || folders.size()==0) {
 			throw new IllegalArgumentException("Empty/null folders of jars");
 		}
-		this.folders = new JarFolder[folders.length];
-		for (int t=0; t<folders.length; t++) {
-			File directory = new File(folders[t]);
+		this.folders = new JarFolder[folders.size()];
+		for (int t=0; t<this.folders.length; t++) {
+			File directory = new File(folders.get(t));
 			if (!checkFolder(directory)) {
 				throw new Exception(directory.getAbsolutePath()+" invalid");
 			}
@@ -87,7 +88,6 @@ public class AcsFolders {
 		}
 		File ret=null;
 		for (int t=0; t<folders.length && ret==null; t++) {
-			System.out.println("Looking for "+name+" into "+folders[t].getAbsolutePath());
 			ret = folders[t].getJar(name);
 		}
 		return ret;
