@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import alma.acs.classloading.AcsSystemClassLoader;
 import alma.acs.eclipse.utils.jar.AcsFolders;
 import alma.acs.eclipse.utils.jar.FileHelper;
+import alma.acs.util.CmdLineArgs;
+import alma.acs.util.CmdLineRegisteredOption;
 
 /**
  * Build an eclipse plugin from one or more jar files.
@@ -89,17 +91,24 @@ public class PluginBuilder {
 	 * target platform like <code>~/eclipse_target/eclipse/plugins/</code>.
 	 * 
 	 */
-	private final String target;
+	private String target;
 	
 	/**
 	 * The name of the plugin
 	 */
-	private final String name;
+	private String name;
 	
 	/**
 	 * The folders to look for jars
 	 */
-	private String[] jarDirs;
+	private final Vector<String> jarDirs= new Vector<String>();
+	
+	/**
+	 * A set of folder to look for jars provided by the user 
+	 * <P>
+	 * This folders are not standard ACS folders.
+	 */
+	private String[] userDirs=new String[0];
 	
 	/**
 	 * The logger to print info and debug messages
@@ -114,13 +123,23 @@ public class PluginBuilder {
 	
 	/**
 	 * If <code>true</code> the jars are included in the plugin folder (i.e. they 
-	 * are copied fomr the ACS INTROOT, or ACSROOT into the plugin folder).
+	 * are copied from the ACS INTROOT, or ACSROOT into the plugin folder).
 	 * If <code>wrapJars</code> is <code>true</code> the process bundles by wrapping.
 	 * 
 	 * If it is <code>false</code>, a link to the jars is created into the plugin folder.
 	 * If <code>wrapJars</code> is <code>false</code> the process bundles by reference.
 	 */
-	private final boolean wrapJars;
+	private boolean wrapJars;
+	
+	/**
+	 * The level of log
+	 */
+	private boolean verbose;
+	
+	/**
+	 * If <code>true</code> look for jars in endorsed dirs (passed as java properties)
+	 */
+	private boolean endorsed;
 	
 	/**
 	 * The folder of the plugin where the jars are copied
@@ -139,7 +158,7 @@ public class PluginBuilder {
 	 * The jars to include in the created plugin.
 	 * 
 	 */
-	private final String[] jars;
+	private String[] jars;
 
 	/**
 	 * The jars to include in the created plugin.
@@ -150,21 +169,42 @@ public class PluginBuilder {
 	/**
 	 * Constructor
 	 * 
-	 * @param pluginName the name of the generated plugin
-	 * @param target the folder to install the created plugin into
-	 * @param wrap <code>true</code> if the jars must be copied in the destination plugin;
-	 * 				<code>false</code> if the jars are linked into the plugin folder
-	 * @param jars The jars to wrap in the plugin (For example <code>lc.jar</code>)
+	 * @param args Command line arguments
 	 */
-	public PluginBuilder(String pluginName, String target, Boolean wrap, String[] jars) throws Exception {
-		if (target==null || target.isEmpty()) {
-			throw new IllegalArgumentException("Invalid destination");
+	public PluginBuilder(String[] args) throws Exception {
+		if (parseCmdLineArgs(args)) {
+			PluginBuilder.printUsage(System.err);
+			System.exit(-1);
 		}
-		this.target=target;
-		if (pluginName==null || pluginName.isEmpty()) {
-			throw new IllegalArgumentException("Invalid plugin name");
+		if (verbose) {
+			logger.setLevel(Level.FINEST);
 		}
-		this.name=pluginName;
+		logger.addHandler(logHandler);
+		if (verbose) {
+			logHandler.setLevel(Level.FINE);
+		} else {
+			logHandler.setLevel(Level.WARNING);
+		}
+		
+		logger.fine("Plugin name: "+name);
+		logger.fine("Plugin folder: "+target);
+		logger.fine("bundle by wrapping: "+wrapJars);
+		logger.fine("bundle by reference: " + !wrapJars);
+		logger.fine("ACSROOT: " + System.getenv("ACSROOT"));
+		logger.fine("INTROOT: " + System.getenv("INTROOT"));
+		if (endorsed) {
+			logger.fine("Use endorsed folders");
+		} else {
+			logger.fine("Do NOT use endorsed folders");
+		}
+		for (String tmp: userDirs) {
+			logger.fine("UserDir: "+tmp);
+		}
+		logger.fine("Tot. num. of plugins to wrap: "+jars.length);
+		for (String jar: jars) {
+			logger.fine("Plugin to wrap: "+jar);
+		}
+		
 		// Check if the target is a readable folder containing build.properties
 		File targetF = new File(target);
 		if (!targetF.isDirectory() || !targetF.canRead() || !targetF.canWrite()) {
@@ -181,12 +221,7 @@ public class PluginBuilder {
 		if (name.indexOf('.')<0 || name.indexOf('_')<0) {
 			logger.warning("Plugin name does not follow eclipse rules (it should be something like eso.alma.ecs_3.0.0)");
 		}
-		if (wrap==null) {
-			throw new IllegalArgumentException("Wrap mode not set");
-		}
 
-		this.wrapJars=wrap;
-		this.jars=jars;
 		this.finalJarsLocations = new String[jars.length];
 
 		if (this.jars==null || this.jars.length==0) {
@@ -202,27 +237,36 @@ public class PluginBuilder {
 	 * @throws Exception If at least one of the folder is not valid
 	 */
 	private void initdFolders() throws Exception {
+		
 		// Get the endorse folders
-		String endorsed = System.getProperty(endorsedFoldersPropertyName);
+		String endorsedProperty = System.getProperty(endorsedFoldersPropertyName);
 		String[] endorsedFolders;
-		if (endorsed==null) {
-			endorsedFolders=new String[0];
+		if (endorsed) {
+			if (endorsedProperty==null) {
+				endorsedFolders=new String[0];
+			} else {
+				endorsedFolders=endorsedProperty.split(":");
+			}
 		} else {
-			endorsedFolders=endorsed.split(":");
+			endorsedFolders=new String[0];
 		}
 		// Get jacorb folder
 		jacorbFileOfJars=System.getProperty(jacorbFolderPropertyName);
 		// Get the folder of jars
 		String jarFolders = System.getProperty(AcsSystemClassLoader.PROPERTY_JARDIRS);
 		String[] temp=jarFolders.split(":");
-		jarDirs=new String[endorsedFolders.length+temp.length+1];
-		jarDirs[0]=jacorbFileOfJars+"/lib";
-		for (int t=0; t<temp.length; t++) {
-			jarDirs[t+1]=temp[t];
+		
+		jarDirs.add(jacorbFileOfJars+"/lib");
+		for (String str: temp) {
+			jarDirs.add(str);
 		}
-		for (int j=0; j<endorsedFolders.length; j++) {
-			jarDirs[temp.length+j+1]=endorsedFolders[j];
+		for (String str: endorsedFolders) {
+			jarDirs.add(str);
 		}
+		for (String str: userDirs) {
+			jarDirs.add(str);
+		}
+		
 		// Check if the folders are readable
 		for (String folder: jarDirs) {
 			File f = new File(folder);
@@ -305,9 +349,6 @@ public class PluginBuilder {
 			logger.fine("Adding "+jar);
 			File jarFile = jarFolders.getJar(jar);
 			finalJarsLocations[i++] = jarFile.getAbsolutePath();
-			if (jarFile==null) {
-				throw new FileNotFoundException(jar+" not found");
-			}
 			File dest = new File(pluginRootFolder+File.separator+jar);
 			if (wrapJars) {
 				FileHelper.copy(jarFile, dest);
@@ -316,6 +357,81 @@ public class PluginBuilder {
 			}
 		}
 	}
+	
+	/**
+	 * Parse the command line
+	 * 
+	 * @param args The command line params
+	 * @return <code>true</code> if the user asked for help
+	 */
+	public boolean parseCmdLineArgs(String[] args) {
+		CmdLineArgs cmdLineArgs = new CmdLineArgs();
+		CmdLineRegisteredOption helpOpt = new CmdLineRegisteredOption("-h","--help",0);
+		cmdLineArgs.registerOption(helpOpt);
+		CmdLineRegisteredOption verboseOpt = new CmdLineRegisteredOption("-v","--verbose",0);
+		cmdLineArgs.registerOption(verboseOpt);
+		CmdLineRegisteredOption includeOpt = new CmdLineRegisteredOption("-i","--include",0);
+		cmdLineArgs.registerOption(includeOpt);
+		CmdLineRegisteredOption linkOpt = new CmdLineRegisteredOption("-l","--link",0);
+		cmdLineArgs.registerOption(linkOpt);
+		CmdLineRegisteredOption dirsOpt = new CmdLineRegisteredOption("-d","--userDirs",0);
+		cmdLineArgs.registerOption(dirsOpt);
+		CmdLineRegisteredOption endorsedOpt = new CmdLineRegisteredOption("-e","--endorsedDirs",0);
+		cmdLineArgs.registerOption(endorsedOpt);
+		CmdLineRegisteredOption requiredOpt = new CmdLineRegisteredOption("-r","--requiredPlugins",0);
+		cmdLineArgs.registerOption(requiredOpt);
+		cmdLineArgs.parseArgs(args);
+		
+		// Help
+		if (cmdLineArgs.isSpecified(helpOpt)) {
+			return true;
+		}
+		
+		// Verbose mode
+		verbose=cmdLineArgs.isSpecified(verboseOpt);
+		
+		// Endorsed
+		endorsed=cmdLineArgs.isSpecified(endorsedOpt);
+
+		// Set the wrap mode
+		String[] mainArgs; // what follows -i|-l
+		if (cmdLineArgs.isSpecified(includeOpt) && cmdLineArgs.isSpecified(linkOpt)) {
+			System.out.println("Set only one between -i and -l");
+			return true;
+		}
+		if (!cmdLineArgs.isSpecified(includeOpt) && !cmdLineArgs.isSpecified(linkOpt)) {
+			System.out.println("Set one between -i and -l");
+			return true;
+		}
+		if (cmdLineArgs.isSpecified(includeOpt)) {
+			wrapJars=true;
+			mainArgs=cmdLineArgs.getValues(includeOpt);
+		} else {
+			wrapJars=false;
+			mainArgs=cmdLineArgs.getValues(linkOpt);
+		}
+		if (mainArgs.length<3) {
+			System.err.println("Wrong command line args!");
+			return true;
+		}
+		name=mainArgs[0];
+		target=mainArgs[1];
+		jars=new String[mainArgs.length-2];
+		for (int t=2; t<mainArgs.length; t++) {
+			jars[t-2]=mainArgs[t];
+		}
+		
+		// User defined folders
+		if (cmdLineArgs.isSpecified(dirsOpt)) {
+			String udirs=cmdLineArgs.getValues(dirsOpt)[0];
+			userDirs=udirs.split(":");
+		} else {
+			userDirs=new String[0];
+		}
+		
+		
+		return false;
+	}
 
 	/**
 	 * The main 
@@ -323,82 +439,13 @@ public class PluginBuilder {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length<4) {
-			printUsage(System.err);
-			System.exit(-1);
-		}
-		String name=null;
-		String target=null;
-		Boolean wrap=null;
-		Vector<String> theJars = new Vector<String>();
-		boolean verbose=false;
-		for (String str: args) {
-			if (str.toLowerCase().equals("-h") || str.toLowerCase().equals("--help")) {
-				printUsage(System.err);
-				System.exit(0);
-			}
-			if (str.toLowerCase().equals("-v") || str.toLowerCase().equals("--verbose")) {
-				verbose=true;
-				continue;
-			}
-			if (str.toLowerCase().equals("-i")) {
-				if (wrap!=null) {
-					// -i or -l already set in the command line
-					printUsage(System.err);
-					System.exit(-1);
-				}
-				wrap=Boolean.TRUE;
-				continue;
-			}
-			if (str.toLowerCase().equals("-l")) {
-				if (wrap!=null) {
-					// -i or -l already set in the command line
-					printUsage(System.err);
-					System.exit(-1);
-				}
-				wrap=Boolean.FALSE;
-				continue;
-			}
-			if (name==null) {
-				name=str;
-				continue;
-			}
-			if (target==null) {
-				target=str;
-				continue;
-			}
-			theJars.add(str);
-		}
-		if (theJars.size()==0) {
-			System.err.println("No jars found in command line!");
-			printUsage(System.err);
-			System.exit(-1);
-		}
-		String[] jars=new String[theJars.size()];
-		theJars.toArray(jars);
-		// Set the log level
-		logger.setLevel(Level.FINEST);
-		logger.addHandler(logHandler);
-		if (verbose) {
-			logHandler.setLevel(Level.FINE);
-		} else {
-			logHandler.setLevel(Level.WARNING);
-		}
-		logger.fine("Plugin name: "+name);
-		logger.fine("Plugin folder: "+target);
-		logger.fine("bundle by wrapping: "+wrap);
-		logger.fine("bundle by reference: " + !wrap);
-		logger.fine("ACSROOT: " + System.getenv("ACSROOT"));
-		logger.fine("INTROOT: " + System.getenv("INTROOT"));
-		logger.fine("Tot. num. of plugins to wrap: "+jars.length);
-		for (String jar: jars) {
-			logger.fine("Plugin to wrap: "+jar);
-		}
+		System.out.println();
 		PluginBuilder pluginBuilder=null;
 		try {
-			pluginBuilder= new PluginBuilder(name,target,wrap,jars);
+			pluginBuilder= new PluginBuilder(args);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"Error detected: "+e.getMessage(),e);
+			logger.log(Level.SEVERE,"Error: "+e.getMessage(),e);
+			System.exit(-1);
 		}
 		logger.fine("Creating plugin");
 		try {
@@ -406,6 +453,7 @@ public class PluginBuilder {
 			logger.fine("Done");
 		} catch (Throwable t) {
 			logger.log(Level.SEVERE,"Error building plugin: "+t.getMessage(),t);
+			System.exit(-1);
 		}
 	}
 	
@@ -415,20 +463,20 @@ public class PluginBuilder {
 	 * @param stream The stream to print the string
 	 */
 	public static void printUsage(OutputStream stream) {
-		String[] classNames=PluginBuilder.class.getName().split("\\.");
-		StringBuilder ret = new StringBuilder(classNames[classNames.length-1]);
-		ret. append(" build an eclipse plugin (a folder not a jar) from a list ACS jars.\n");
-		ret.append("USAGE: ");
-		ret.append(PluginBuilder.class.getName());
-		ret.append(" [-h||--help] [-v|--verbose] -l|-i pluginName destFolder jar...\n");
-		ret.append("\t-h, --help: print this help and exit\n");
-		ret.append("\t-v, --verbose: verbose output\n");
+		StringBuilder ret = new StringBuilder("\nacsPluginBuilder build an eclipse plugin from a list ACS jars.\n");
+		ret.append("USAGE: \n");
+		ret.append("acsPluginBuilder [OPTION] -l|-i pluginName destFolder jar...\n");
 		ret.append("\t-i: the jars files are included in the plugin\n");
 		ret.append("\t-l: the jars files are linked in the plugin\n");
 		ret.append("\tpluginName: the name of the plugin\n");
 		ret.append("\tdestFolder: the destination folder of the created plugin of jars\n");
 		ret.append("\tjars...: the list of jars to include in the plugin\n");
-		ret.append("The jars must be in the ACS folders (../lib, $INTROOT....).\n\n");
+		ret.append("Options:\n");
+		ret.append("\t-h, --help: print this help and exit\n");
+		ret.append("\t-v, --verbose: verbose output\n");
+		ret.append("\t-d, --userDirs <dirs>: supply a comma separated list of folder for searching jars\n");
+		ret.append("\t-e, --endorsedDirs: looks for jars in endosed folders\n");
+		ret.append("\t-r, --requiredPlugins: a comma separated list of plugin names required by this plugin\n");
 		try {
 			stream.write(ret.toString().getBytes());
 		} catch (IOException e) {
