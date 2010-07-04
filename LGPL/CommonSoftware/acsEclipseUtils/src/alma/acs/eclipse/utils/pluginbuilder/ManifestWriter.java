@@ -83,6 +83,8 @@ public class ManifestWriter {
 	
 	/**
 	 * The attribute name for Bundle-ActivationPolicy
+	 * <P>
+	 * This is also used to add dependencies
 	 */
 	private final Attributes.Name bundleActivationPolicyName= new Attributes.Name("Bundle-ActivationPolicy");
 	
@@ -139,6 +141,11 @@ public class ManifestWriter {
 	private String[] finalJarsLocations;
 	
 	/**
+	 * The dependencies of this plugin
+	 */
+	private final String[] dependencies;
+	
+	/**
 	 * The vendor i.e ESO
 	 */
 	private static final String vendor = "European Southern Observatory";
@@ -150,9 +157,16 @@ public class ManifestWriter {
 	 * @param pluginFolder The root folder of the plugin
 	 * @param finalJarsLocations 
 	 * @param bundleByReference 
+	 * @param dependencies The plugins this plugin depends on
 	 * @param Logger The logger
 	 */
-	public ManifestWriter(File folder, File pluginFolder, boolean bundleByReference, String[] finalJarsLocations, Logger logger) {
+	public ManifestWriter(
+			File folder, 
+			File pluginFolder, 
+			boolean bundleByReference, 
+			String[] finalJarsLocations, 
+			String[] dependencies,
+			Logger logger) {
 		if (folder==null || !folder.canWrite()) {
 			throw new IllegalArgumentException("Invalid folder for the manifest");
 		}
@@ -164,6 +178,7 @@ public class ManifestWriter {
 		}
 		this.bundlingByReference = bundleByReference;
 		this.finalJarsLocations = finalJarsLocations;
+		this.dependencies=dependencies;
 		this.logger=logger;
 		manifestFolder=folder;
 		this.pluginFolder=pluginFolder;
@@ -182,7 +197,6 @@ public class ManifestWriter {
 		attrs.clear();
 		attrs.put(Attributes.Name.MANIFEST_VERSION, "1.0");
 		attrs.put(bundleManifestVersionName, "2");
-		attrs.put(requireBundleName, "system.bundle");
 		attrs.put(bundleName, pluginFolder.getName()+pluginBundleName);
 		attrs.put(bundleSymbolicName, pluginFolder.getName()+"; singleton=true");
 		attrs.put(bundleVersionName, version);
@@ -200,7 +214,6 @@ public class ManifestWriter {
 			jars = finalJarsLocations;
 		else
 			jars = pluginJarFolder.getJars();
-		System.out.println(Arrays.toString(jars));
 		StringBuilder classpath = new StringBuilder();
 
 		if (jars!=null && jars.length>0) {
@@ -264,6 +277,24 @@ public class ManifestWriter {
 			}
 			attrs.put(exportPackageName,pkgs.toString());
 		}
+		
+		// Add the dependencies if any
+		StringBuilder deps = new StringBuilder("system.bundle");
+		for (String dep: dependencies) {
+			deps.append(',');
+			deps.append(' ');
+			if (dep.contains("_")) {
+				// a version is present
+				String[] tmp=dep.split("_");
+				deps.append(tmp[0]);
+				deps.append(";bundle-version=\"");
+				deps.append(tmp[1]);
+				deps.append('\"');
+			} else {
+				deps.append(dep);				
+			}
+		}
+		attrs.put(requireBundleName, deps.toString());
 	}
 	
 	

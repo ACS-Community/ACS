@@ -111,6 +111,11 @@ public class PluginBuilder {
 	private String[] userDirs=new String[0];
 	
 	/**
+	 * The plugins this plugin depends on (i.e. the dependencies)
+	 */
+	private String[] requiredPlugins;
+	
+	/**
 	 * The logger to print info and debug messages
 	 */
 	private static final Logger logger=Logger.getLogger(PluginBuilder.class.getName());
@@ -190,6 +195,9 @@ public class PluginBuilder {
 		logger.fine("Plugin folder: "+target);
 		logger.fine("bundle by wrapping: "+wrapJars);
 		logger.fine("bundle by reference: " + !wrapJars);
+		for (String dep: requiredPlugins) {
+			logger.fine("Dependency: "+dep);
+		}
 		logger.fine("ACSROOT: " + System.getenv("ACSROOT"));
 		logger.fine("INTROOT: " + System.getenv("INTROOT"));
 		if (endorsed) {
@@ -328,7 +336,13 @@ public class PluginBuilder {
 	 * @throws Exception In case of error writing the manifest.
 	 */
 	private void addManifest() throws Exception {
-		ManifestWriter manifestWriter = new ManifestWriter(metaFolder, pluginRootFolder, !wrapJars, finalJarsLocations, logger);
+		ManifestWriter manifestWriter = new ManifestWriter(
+				metaFolder, 
+				pluginRootFolder, 
+				!wrapJars, 
+				finalJarsLocations, 
+				requiredPlugins, 
+				logger);
 		manifestWriter.write();
 	}
 	
@@ -392,6 +406,13 @@ public class PluginBuilder {
 		
 		// Endorsed
 		endorsed=cmdLineArgs.isSpecified(endorsedOpt);
+		
+		if (cmdLineArgs.isSpecified(requiredOpt)) {
+			String temp=cmdLineArgs.getValues(requiredOpt)[0];
+			requiredPlugins=temp.split(":");
+		} else {
+			requiredPlugins=new String[0];
+		}
 
 		// Set the wrap mode
 		String[] mainArgs; // what follows -i|-l
@@ -477,6 +498,8 @@ public class PluginBuilder {
 		ret.append("\t-d, --userDirs <dirs>: supply a comma separated list of folder for searching jars\n");
 		ret.append("\t-e, --endorsedDirs: looks for jars in endosed folders\n");
 		ret.append("\t-r, --requiredPlugins: a comma separated list of plugin names required by this plugin\n");
+		ret.append("Required plugin must be insreted in the following way: org.eclipse.swt_3.6.0:org.aparche.xerces\n");
+		ret.append("  means to add version 3.6.0 of org.eclipse.swt and org.aparche.xerces");
 		try {
 			stream.write(ret.toString().getBytes());
 		} catch (IOException e) {
