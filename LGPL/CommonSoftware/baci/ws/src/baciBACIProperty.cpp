@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.11 2010/06/30 09:24:53 bjeram Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.12 2010/07/05 10:54:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.11 2010/06/30 09:24:53 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.12 2010/07/05 10:54:19 bjeram Exp $");
 
 namespace baci {
 
@@ -79,7 +79,7 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   /* setup archiver - read from DB */
   CORBA::ULong archive_priority = 3UL, archiveMinInt=0UL, archiveMaxInt=0UL;
   BACIValue archiveDelta;
-  ACE_CString archiveMechanism;
+  ACE_CString archiveMechanism, archiveSuppress;
 
 
   cdb::DAONode* dao = characteristicModel_mp->getDAONode();
@@ -90,13 +90,14 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   try
      {
 	  archiveMechanism = dao->get_string("archive_mechanism");
+	  archiveSuppress = dao->get_string("archive_suppress");
      }
   catch (...)
      {
 	  // noop
      }
 
-  try
+   try
       {
       archive_priority = dao->get_long("archive_priority");
       }
@@ -140,10 +141,12 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
       // noop
       }
 
-  if (archiveMechanism=="notification_channel" ||
-      archiveMinInt!=0 ||
-      archiveMaxInt!=0 || 
-      (archiveDelta.isNull()==false && archiveDelta.noDelta()==false))
+    if (
+      archiveSuppress == "false" &&
+      archiveMechanism == "notification_channel" &&
+      (archiveMinInt!=0 ||
+      archiveMaxInt!=0 ||
+      (archiveDelta.isNull()==false && archiveDelta.noDelta()==false)))
     { 
       CBDescIn inDesc; 
       inDesc.id_tag = 0;
@@ -170,8 +173,9 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   else
     {
       ACS_LOG(LM_RUNTIME_CONTEXT, "baci::BACIProperty::BACIProperty",
-    		  (LM_DEBUG, "Archiver disabled! (archive_mechanism=%s, archive_min_int=%d, archive_max_int=%d)",
-    		  archiveMechanism.c_str(), archiveMinInt, archiveMaxInt));
+    		  (LM_DEBUG, "Archiver disabled! (archive_suppress=%s, archive_mechanism=%s, archive_min_int=%d, archive_max_int=%d)",
+    		  archiveSuppress.c_str(), archiveMechanism.c_str(),
+    		  archiveMinInt, archiveMaxInt));
       archiver_mp = 0;
     }
     
