@@ -48,11 +48,15 @@ import com.cosylab.cdb.jdal.hibernate.DOMJavaClassIntrospector.NodeAndMutator;
 public class HibernateWDAOImpl implements WDAOOperations {
 	private final Session m_session;
 	private final String m_name;
-	private final Object m_rootNode;
+	private volatile Object m_rootNode;
 	private final POA m_poa;
 	private final boolean m_silent;
 	private final Logger m_logger;
 	private final boolean m_autoCommit;
+
+	public void setRootNode(Object mRootNode) {
+		m_rootNode = mRootNode;
+	}
 
 	public HibernateWDAOImpl(Session session, String name, Object rootNode, POA poa, Logger logger) {
 		this(session, name, rootNode, poa, logger, false, true);
