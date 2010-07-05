@@ -188,6 +188,9 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	private HashMap daoMap = new HashMap();
 	private HashMap wdaoMap = new HashMap();
 
+	private HashMap daoObjMap = new HashMap();
+	private HashMap wdaoObjMap = new HashMap();
+
 	// clean cache implementation
 	private HashMap<String, ArrayList<Integer>> listenedCurls = new HashMap<String, ArrayList<Integer>>();
 	private File listenersStorageFile = null;
@@ -197,7 +200,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	
 	protected final Logger m_logger;
 
-	protected Object rootNode;
+	protected volatile Object rootNode;
 	
 	protected SAXParser saxParser;	
 	
@@ -2402,15 +2405,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				// create object id
 				byte[] id = curl.getBytes();
 
+				Object objImpl = null;
 				DAOPOA daoImpl = null;
 				if (node instanceof DAOPOA)
-					daoImpl = (DAOPOA)node;
+					objImpl = daoImpl = (DAOPOA)node;
 				else if (node instanceof XMLTreeNode)
-		        	daoImpl = new DAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
+					objImpl = daoImpl = new DAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
 				else
 				{
 					//daoImpl = new HibernateDAOImpl(curl, node, poa, m_logger);
 					HibernateWDAOImpl impl = new HibernateWDAOImpl(mainSession, curl, node, poa, m_logger);
+					objImpl = impl;
 					daoImpl = new DAOPOATie(impl);
 					impl.setSetvant(daoImpl);
 				}
@@ -2421,7 +2426,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 
 				// map DAO reference
 				daoMap.put(curl, href);
-
+				daoObjMap.put(curl, objImpl);
+				
 				m_logger.log(AcsLogLevel.INFO, "Returning DAO servant for: " + curl);
 				return href;
 			}
@@ -2627,17 +2633,19 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			
 			try
 			{
+				Object objImpl = null;
 				WDAOPOA wdaoImpl = null;
 				if (node instanceof WDAOPOA)
-					wdaoImpl = (WDAOPOA)node;
+					objImpl = wdaoImpl = (WDAOPOA)node;
 				//else if (node instanceof XMLTreeNode)
 				//{
 		        //	DAOImpl daoImpl = new DAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
-				//	wdaoImpl = new WDAOImpl(this, curl, daoImpl, poa, m_logger);
+				//	objImpl = wdaoImpl = new WDAOImpl(this, curl, daoImpl, poa, m_logger);
 				//}
 				else
 				{
 					HibernateWDAOImpl impl = new HibernateWDAOImpl(mainSession, curl, node, poa, m_logger);
+					objImpl = impl;
 					wdaoImpl = new WDAOPOATie(impl);
 					impl.setSetvant(wdaoImpl);
 				}
@@ -2650,6 +2658,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 
 				// map DAO reference
 				wdaoMap.put(curl, href);
+				wdaoObjMap.put(curl, objImpl);
 
 				m_logger.log(AcsLogLevel.INFO, "Returning WDAO servant for: " + curl);
 				return href;
@@ -2915,17 +2924,61 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		orb.shutdown(false);
 	}
 
+	private void objectChangedForMap(String curl, Map map, Map objMap)
+	{
+		synchronized (map) {
+			if (map.containsKey(curl)) {
+				DAO dao = (DAO) map.get(curl);
+				Object objDAO = objMap.get(curl);
+				
+				Object node = curl.length() == 0 ? rootNode : DOMJavaClassIntrospector.getNode(curl, rootNode);
+				if (node == null || DOMJavaClassIntrospector.isPrimitive(node.getClass()))
+				{
+					// no longer exists
+					dao.destroy();
+					objMap.remove(curl);
+					map.remove(curl);
+				}
+				
+				if (objDAO instanceof DAOImpl)
+				{
+					if (node instanceof XMLTreeNode)
+						((DAOImpl)objDAO).setRootNode((XMLTreeNode)node);
+					else
+					{
+						// type changed, destroy this one and reactivate new
+						dao.destroy();
+						objMap.remove(curl);
+						map.remove(curl);
+						try {
+							get_DAO(curl);
+						} catch (Throwable th) { th.printStackTrace(); }
+					}
+				}
+				else if (objDAO instanceof HibernateWDAOImpl)
+				{
+					if (node instanceof XMLTreeNode)
+					{
+						// type changed, destroy this one and reactivate new
+						dao.destroy();
+						map.remove(curl);
+						try {
+							get_DAO(curl);
+						} catch (Throwable th) { th.printStackTrace(); }
+					}
+					else
+						((HibernateWDAOImpl)objDAO).setRootNode(node);
+				}
+				
+			}
+		}
+	}
 	/**
 	 * @param curl
 	 */
 	protected void object_changed(String curl) {
-		synchronized (daoMap) {
-			if (daoMap.containsKey(curl)) {
-				DAO dao = (DAO) daoMap.get(curl);
-				dao.destroy();
-				daoMap.remove(curl);
-			}
-		}
+		objectChangedForMap(curl, daoMap, daoObjMap);
+		objectChangedForMap(curl, wdaoMap, wdaoObjMap);
 	}
 
 	/**
@@ -3180,6 +3233,18 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			reloadData();
 		}
 
+		Set<String> curls = new HashSet<String>();
+		synchronized (daoMap) {
+			curls.addAll(daoMap.keySet());
+		}
+		synchronized (wdaoMap) {
+			curls.addAll(wdaoMap.keySet());
+		}
+		
+		for (String curl : curls)
+			clear_cache(curl);
+		
+		/*
 		synchronized (listenedCurls) {
 			Iterator iter = listenedCurls.keySet().iterator();
 			while (iter.hasNext()) {
@@ -3187,6 +3252,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				clear_cache(curl);
 			}
 		}
+		*/
 	}
 
 }
