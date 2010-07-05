@@ -81,8 +81,13 @@ public class HibernateWDAOImpl implements WDAOOperations {
 	public void destroy() {
 		try {
 			if (m_poa != null && servant != null) {
+				// TODO now destroy is disabled, why:
+				// destroy should also remove this instance from cache (daoMap, wdaoMap, etc.)
+				// reference counting is needed, since we have multiple clients
+				/*
 				byte[] thisId = m_poa.servant_to_id(servant);
 				m_poa.deactivate_object(thisId);
+				 */
 			}
 		} catch (Exception e) {
 			if (!m_silent) {
