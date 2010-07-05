@@ -33,7 +33,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWdoubleWithErrorDevIOProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
@@ -51,7 +51,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWdoubleWithDevIOProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
@@ -68,7 +68,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROdoubleProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -87,7 +87,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWdoubleProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -106,7 +106,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROfloatProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -125,7 +125,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWfloatProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -144,7 +144,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROlongProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -163,7 +163,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWlongProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -182,7 +182,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROpatternProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -201,7 +201,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWpatternProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -221,7 +221,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROstringProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -237,7 +237,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWstringProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -254,7 +254,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROdoubleSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -289,7 +289,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWdoubleSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -310,7 +310,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROfloatSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -345,7 +345,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWfloatSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -366,7 +366,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:ROlongSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -396,7 +396,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI1:RWlongSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -450,7 +450,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWdoubleWithErrorDevIOProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
@@ -467,7 +467,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWdoubleWithDevIOProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] Successfully created.
@@ -484,7 +484,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROdoubleProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -503,7 +503,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWdoubleProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -522,7 +522,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROfloatProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -541,7 +541,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWfloatProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -560,7 +560,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROlongProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -579,7 +579,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWlongProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -598,7 +598,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROpatternProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -617,7 +617,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWpatternProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -637,7 +637,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROstringProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -653,7 +653,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWstringProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -670,7 +670,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROdoubleSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -705,7 +705,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWdoubleSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -726,7 +726,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROfloatSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -761,7 +761,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWfloatSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -782,7 +782,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:ROlongSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -812,7 +812,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACI2:RWlongSeqProp'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -884,6 +884,7 @@
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] BACI1
+2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
@@ -892,7 +893,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::stopMonitoringThread] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1::xxxxxxThread - ACS::ThreadBase::suspend] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 2 - ----------T--:--:--.--- [GlobalLogger - ] (ROdoubleProp1s::CBdouble::working) desc.id_tag: 1 Value: 1.000000 TimeStamp: ----------T--:--:--.---
 1 - ----------T--:--:--.--- [BACI1 - ] Retrieved monitoring active status: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Monitoring is active: 0

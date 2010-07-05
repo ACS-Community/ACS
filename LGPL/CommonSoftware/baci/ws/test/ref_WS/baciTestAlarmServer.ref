@@ -32,7 +32,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACIALARM:roPatternProperty'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
@@ -67,7 +67,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'BACIALARM:rwPatternProperty'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::PcommonImpl&lt;&gt;::PcommonImpl] No DevIO provided - created DevIOMem.
@@ -116,8 +116,8 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::AlarmEventStrategy&lt;&gt;] 
 1 - ----------T--:--:--.--- [GlobalLogger - AlarmEventStrategy&lt;&gt;::AlarmEventStrategy&lt;&gt;] Name is: 'BACIALARM:roPatternProperty_event'
 2 - ----------T--:--:--.--- [GlobalLogger - ] Alarmpattern subscription created
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::ThreadBase] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::suspend] 
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::ThreadBase] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::Thread] 
 2 - ----------T--:--:--.--- [actionThreadPattern - ACS::ThreadBase::create] 
 2 - ----------T--:--:--.--- [actionThreadPattern - WorkerThreadPattern::WorkerThreadPattern] 
@@ -248,8 +248,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_cleared) Value: 1
 2 - ----------T--:--:--.--- [actionThreadPattern - ] actionThreadPattern: Setting rwPattern to 2
 2 - rwPatternProperty: 2
-1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: BACIALARM:roPatternProperty, bit 0 (first bit) cleared. Value change to: 2
+1 - ----------T--:--:--.--- [GlobalLogger - ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: first bit
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
@@ -705,7 +705,6 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitDescription and value: second bit
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
-2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_BitPosition and value: 1
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
@@ -723,6 +722,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <AnotherUserDefinedFF,AnotherUserDefinedFM,1> ACTIVE
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 1
 2 - ----------T--:--:--.--- [GlobalLogger - ] (roPatternProperty::Alarmpattern::alarm_raised) Value: 0
+2 - ----------T--:--:--.--- [actionThreadPattern - ACS::Thread::commonStop] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Alarm subscriptions deleted
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::destroy] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::AlarmEventStrategy&lt;&gt;::~AlarmEventStrategy&lt;&gt;] 
