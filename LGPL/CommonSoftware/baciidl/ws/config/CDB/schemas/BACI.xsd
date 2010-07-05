@@ -99,6 +99,16 @@ This attribute is useful for example for returning the resolution of analog-digi
 The specific usage must be documented case by case.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				
+				<xs:attribute name="archive_suppress" type="xs:boolean" use="optional" default="false">
+				   <xs:annotation>
+						<xs:documentation>
+						The attribute archive_suppress can be used to enable, disable archiving of the property w/o changing the 
+						other values of archiving like archive_max_int, and archive_min_int.
+					    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				
 				<xs:attribute name="archive_mechanism" type="xs:string" use="optional" default="monitor_collector">
 				   <xs:annotation>
 						<xs:documentation>
