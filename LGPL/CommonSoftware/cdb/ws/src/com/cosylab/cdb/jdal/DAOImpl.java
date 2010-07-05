@@ -295,6 +295,10 @@ public class DAOImpl extends DAOPOA {
 		return m_rootNode;
 	}
 
+	public void setRootNode(XMLTreeNode mRootNode) {
+		m_rootNode = mRootNode;
+	}
+
 	/**
 	 * @return
 	 */
