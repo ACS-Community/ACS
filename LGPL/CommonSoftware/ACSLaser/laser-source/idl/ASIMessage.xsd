@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="ACS/AlarmSource" xmlns:asimsg="ACS/AlarmSource">
 
     <xsd:annotation>
         <xsd:documentation>
@@ -12,17 +12,17 @@
             <xsd:sequence>
                 <xsd:element name="source-name" type="xsd:string" maxOccurs="1" minOccurs="1"/>
         	<xsd:element name="source-hostname" type="xsd:string" maxOccurs="1" minOccurs="1"/>
-        	<xsd:element name="source-timestamp" type="timestamp" maxOccurs="1" minOccurs="1"/>
-        	<xsd:element ref="fault-states" maxOccurs="1" minOccurs="1"/>
+        	<xsd:element name="source-timestamp" type="asimsg:timestamp" maxOccurs="1" minOccurs="1"/>
+        	<xsd:element ref="asimsg:fault-states" maxOccurs="1" minOccurs="1"/>
             </xsd:sequence>
-            <xsd:attributeGroup ref="ASI-message-attributes"/>
+            <xsd:attributeGroup ref="asimsg:ASI-message-attributes"/>
    	</xsd:complexType>
     </xsd:element>   	
 
     <xsd:element name="fault-states">
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="fault-state" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element ref="asimsg:fault-state" maxOccurs="unbounded" minOccurs="0"/>
             </xsd:sequence>
    	</xsd:complexType>
     </xsd:element>   	
@@ -30,13 +30,13 @@
     <xsd:element name="fault-state">
    	<xsd:complexType>
             <xsd:all>
-				<xsd:element name="descriptor" type="descriptor-type"/>
-				<xsd:element name="user-properties" type="properties"/>
-				<xsd:element name="user-timestamp" type="timestamp"/>
+				<xsd:element name="descriptor" type="asimsg:descriptor-type"/>
+				<xsd:element name="user-properties" type="asimsg:properties"/>
+				<xsd:element name="user-timestamp" type="asimsg:timestamp"/>
 				<xsd:element name="activatedByBackup" type="xsd:boolean"/>
 				<xsd:element name="terminatedByBackup" type="xsd:boolean"/>
             </xsd:all>
-            <xsd:attributeGroup ref="fault-state-attributes"/>
+            <xsd:attributeGroup ref="asimsg:fault-state-attributes"/>
    	</xsd:complexType>
     </xsd:element>   	
 
@@ -48,13 +48,13 @@
 
     <xsd:complexType name="properties">
             <xsd:sequence>
-                <xsd:element ref="property" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element ref="asimsg:property" maxOccurs="unbounded" minOccurs="0"/>
             </xsd:sequence>
     </xsd:complexType>   	
 
     <xsd:element name="property">
    	<xsd:complexType>
-            <xsd:attributeGroup ref="property-attributes"/>
+            <xsd:attributeGroup ref="asimsg:property-attributes"/>
    	</xsd:complexType>
     </xsd:element>   	
 
@@ -75,7 +75,7 @@
     </xsd:attributeGroup>   	
 
     <xsd:complexType name="timestamp">
-            <xsd:attributeGroup ref="timestamp-attributes"/>
+            <xsd:attributeGroup ref="asimsg:timestamp-attributes"/>
     </xsd:complexType>   	
    
     <xsd:attributeGroup name="timestamp-attributes">
