@@ -20,7 +20,7 @@
 *
 *
 *
-* "@(#) $Id: testDriverAcs.cpp,v 1.1.1.1 2010/06/19 15:03:16 acaproni Exp $"
+* "@(#) $Id: testDriverAcs.cpp,v 1.2 2010/07/06 08:51:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -196,7 +196,9 @@ int main(int argc, char *argv[])
 	{
 		alarmTestMount->faultMount();
 		sentEvtCount++;
+		tv1.sec(1);
 		client.run(tv1);
+
 	}
 
 	int timeWaited = 0;
@@ -204,6 +206,7 @@ int main(int argc, char *argv[])
 	while ((m_simpConsumer_p->getEventsReceived() < numAlarmsToSend) && (timeWaited < MAX_TIME_TO_WAIT))
 	{
 		timeWaited++;
+		tv1.sec(1);
 		client.run(tv1);
 	}
 
