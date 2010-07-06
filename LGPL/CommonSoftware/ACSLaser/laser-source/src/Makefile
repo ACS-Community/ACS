@@ -106,7 +106,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = ASIMessage
+CDB_SCHEMAS = 
 
 # 
 # IDL Files and flags
@@ -114,11 +114,6 @@ CDB_SCHEMAS = ASIMessage
 IDL_FILES =
 IDL_TAO_FLAGS =
 USER_IDL =
-
-#Generated code
-CASTOR_GENERATED= ASIConfiguration ../config/CDB/schemas/ASIMessage
-ASIConfiguration_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.configuration
-../config/CDB/schemas/ASIMessage_PACKAGE=  cern.laser.source.alarmsysteminterface.impl.message
 
 #
 # Jarfiles and their directories
@@ -137,10 +132,12 @@ XML_IDL=
 # Java Component Helper Classes generation on/off
 #
 COMPONENT_HELPERS=
+
 #
 # Java Entity Classes generation on/off
 #
-XSDBIND=
+XSDBIND = AlarmSourceSchemaBindings
+
 #
 # Schema Config files for the above
 #
@@ -192,27 +189,10 @@ endif
 #
 # TARGETS
 # -------
-generated:
-	@echo "\n\nCode generation in progress...."
-	@for item in $(foreach name, $(CASTOR_GENERATED), "-i $(name).xsd -package $($(name)_PACKAGE)") ; \
-	do \
-		acsStartJava -noDirectory -endorsed org.exolab.castor.builder.SourceGenerator -line-separator unix -f  $${item};  \
-	done
-	@echo "Code generation done!\n\n"
-
-clean_generated:
-	@for item in $(foreach name, $(CASTOR_GENERATED), "$(subst .,/,$($(name)_PACKAGE))") ; \
-	do \
-	rm -rf $${item}; \
-	done
-
-directory_structure:
-	@mkdir -p ../object ../bin 
-
-all:	directory_structure generated do_all
+all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_generated clean_all 
+clean : clean_all 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
