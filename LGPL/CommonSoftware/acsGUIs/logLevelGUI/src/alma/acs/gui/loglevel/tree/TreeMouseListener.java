@@ -24,12 +24,12 @@ package alma.acs.gui.loglevel.tree;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -39,7 +39,6 @@ import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.LoggingConfigurableHelper;
 import si.ijs.maci.LoggingConfigurableOperations;
 import si.ijs.maci.Manager;
-import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.gui.loglevel.LogPaneNotFoundException;
 import alma.acs.gui.loglevel.leveldlg.LogLevelSelectorPanel;
 import alma.acs.gui.loglevel.tree.node.TreeContainerInfo;
@@ -98,7 +97,7 @@ public class TreeMouseListener extends MouseAdapter {
 		
 		if (e.getClickCount()==2) {
 			tree.setSelectionPath(selPath);
-			class TabShower implements Runnable {
+			/*class TabShower implements Runnable {
 				TreePath selectedPath;
 				public TabShower(TreePath path) {
 					selectedPath=path;
@@ -109,11 +108,12 @@ public class TreeMouseListener extends MouseAdapter {
 			};
 			TabShower shower = new TabShower(selPath);
 			Thread t = new Thread(shower);
-			t.run();
+			t.run();*/
+			showLoggingConfigTab(selPath);
 			return;
 		}
 		if (e.isPopupTrigger()) {
-			Toolkit tk = Toolkit.getDefaultToolkit();
+			//Toolkit tk = Toolkit.getDefaultToolkit();
 			PointerInfo pi = MouseInfo.getPointerInfo();
 			Point mouseLocation = pi.getLocation();
 			SwingUtilities.convertPointFromScreen(mouseLocation, tree);
@@ -226,19 +226,30 @@ public class TreeMouseListener extends MouseAdapter {
 	 * @return The LoggingConfigurable for the manager
 	 */
 	private LoggingConfigurableOperations getLogConfFromManager() throws Exception {
+
 		System.out.println("Getting LoggingConfigurable out of Manager");
+
 		// Manager
 		Manager mgr = model.getManagerRef();
 		if (mgr==null) {
 			throw new Exception("Invalid manager reference");
 		}
-		LoggingConfigurableOperations logConf;
-		try {
-			logConf = LoggingConfigurableHelper.narrow(mgr);
-		} catch (Throwable t) {
-			throw new Exception("Error getting the LoggingConfigurable out of Manager:\n"+t.getMessage(),t);
-		}
-		return logConf;
+
+		SwingWorker<LoggingConfigurableOperations, Void> worker = new SwingWorker<LoggingConfigurableOperations, Void>() {
+			protected LoggingConfigurableOperations doInBackground()
+					throws Exception {
+				LoggingConfigurableOperations logConf;
+				try {
+					logConf = LoggingConfigurableHelper.narrow(model.getManagerRef());
+				} catch (Throwable t) {
+					throw new Exception("Error getting the LoggingConfigurable out of Manager:\n"+t.getMessage(),t);
+				}
+				return logConf;
+			}
+		};
+		worker.execute();
+
+		return worker.get();
 	}
 	
 	/**
@@ -247,20 +258,31 @@ public class TreeMouseListener extends MouseAdapter {
 	 * @return The LoggingConfigurable for the container
 	 */
 	private LoggingConfigurableOperations getLogConfFromContainer(ContainerInfo info) throws Exception {
+		
 		if (info==null) {
 			throw new IllegalArgumentException("Invalid null ContainerInfo");
 		}
-		LoggingConfigurableOperations logConf;
-		Container cnt = info.reference;
+
+		final Container cnt = info.reference;
 		if (cnt==null) {
 			throw new Exception("The reference to the container is null in ContainerInfo");
 		}
-		try {
-			logConf = LoggingConfigurableHelper.narrow(cnt);
-		} catch (Throwable t) {
-			throw new Exception("Error getting the LoggingConfigurable out of Container:\n"+t.getMessage(),t);
-		}
-		return logConf;
+
+		SwingWorker<LoggingConfigurableOperations, Void> worker = new SwingWorker<LoggingConfigurableOperations, Void>() {
+			protected LoggingConfigurableOperations doInBackground()
+					throws Exception {
+				LoggingConfigurableOperations logConf;
+				try {
+					logConf = LoggingConfigurableHelper.narrow(cnt);
+				} catch (Throwable t) {
+					throw new Exception("Error getting the LoggingConfigurable out of Manager:\n"+t.getMessage(),t);
+				}
+				return logConf;
+			}
+		};
+		worker.execute();
+
+		return worker.get();
 	}
 	
 	/**

@@ -35,7 +35,9 @@ import com.cosylab.logging.engine.log.LogTypeHelper;
  *
  */
 public class LogLevelModel extends DefaultTableModel {
-	
+
+	private static final long serialVersionUID = 6512293636952955954L;
+
 	public enum Column {
 		NAME("<HTML><B>Logger name</B></HTML>",String.class),
 		DEFAULT("<HTML><B>Use default</B></HTML>",Boolean.class),
@@ -50,7 +52,7 @@ public class LogLevelModel extends DefaultTableModel {
 		/**
 		 * The class of the items in the column
 		 */
-		public final Class colClass;
+		public final Class<?> colClass;
 		
 		/**
 		 * Constructor
@@ -58,7 +60,7 @@ public class LogLevelModel extends DefaultTableModel {
 		 * @param name The string to show in the  table header
 		 * @param cl The class of the items in the column
 		 */
-		private Column(String name, Class cl) {
+		private Column(String name, Class<?> cl) {
 			this.name=name;
 			this.colClass=cl;
 		}

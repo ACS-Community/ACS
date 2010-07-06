@@ -50,15 +50,19 @@ import alma.acs.gui.loglevel.LogPaneNotFoundException;
  * Component to be used as tabComponent;
  * Contains a JLabel to show the text and 
  * a JButton to close the tab it belongs to 
- */ 
+ */
+@SuppressWarnings("serial")
 public class ButtonTabComponent extends JPanel {
+
+	private static final long serialVersionUID = -7111655172215857672L;
+
 	// The tabbed pane
     private final LogLevelPanel pane;
     
     // The name of this tab
     private final LogLevelSelectorPanel selectorPane; 
 
-    public ButtonTabComponent(final LogLevelPanel pane, LogLevelSelectorPanel selPane) {
+	public ButtonTabComponent(final LogLevelPanel pane, LogLevelSelectorPanel selPane) {
         //unset default FlowLayout' gaps
         super(new FlowLayout(FlowLayout.LEFT, 0, 0));
         if (pane == null) {

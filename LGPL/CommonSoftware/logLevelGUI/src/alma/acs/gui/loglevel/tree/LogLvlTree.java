@@ -38,7 +38,9 @@ import alma.acs.gui.loglevel.LogLevelPanel;
  *
  */
 public class LogLvlTree extends JTree {
-	
+
+	private static final long serialVersionUID = -9182797794666037745L;
+
 	// The min width and heigh of the tree
 	// See the overridden getPreferredSize
 	private static final int MIN_WIDTH=150;

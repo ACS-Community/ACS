@@ -359,6 +359,7 @@ public class AdministratorClient extends AdministratorPOA {
 	 * @return The info for the component with the given name
 	 *         null if the component with the given name does not exist
 	 */
+	@SuppressWarnings("unused")
 	private ComponentInfo getComponentInfo(String name) throws Exception{
 		ComponentInfo[] infos = retrieveComponentInfo("*");
 		for (int t=0; t<infos.length; t++) {

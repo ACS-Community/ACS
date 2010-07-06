@@ -23,6 +23,7 @@ package alma.acs.gui.loglevel.tree;
 
 import java.util.logging.Logger;
 
+import javax.swing.SwingWorker;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -44,7 +45,9 @@ import alma.acs.gui.loglevel.tree.node.TreeContentInfo;
  *
  */
 public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListener {
-	
+
+	private static final long serialVersionUID = 4164177256689824546L;
+
 	/**
 	 * A class to force a node to appear as non-leaf
 	 * 
@@ -52,6 +55,9 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	 *
 	 */
 	public class NoLeafNode extends DefaultMutableTreeNode {
+
+		private static final long serialVersionUID = 5681551972997000126L;
+
 		/**
 		 * Constructor
 		 * 
@@ -115,15 +121,25 @@ public class LogLvlTreeModel extends DefaultTreeModel implements LogLevelListene
 	 * @throws Exception if an error happens while connecting
 	 */
 	public void start() throws Exception {
+
 		if (admin!=null) {
 			throw new IllegalArgumentException("Invalid op: call stop before (admin!=null)");
 		}
-		admin=new AdministratorClient(orb,log);
-		try {
-			admin.connectToManager();
-		} catch (Exception e) {
-			throw new Exception("Exception while connecting to manager",e);
-		}
+
+		SwingWorker<AdministratorClient, Void> worker = new SwingWorker<AdministratorClient, Void>() {
+			protected AdministratorClient doInBackground() throws Exception {
+				AdministratorClient tmp = new AdministratorClient(orb,log);
+				try {
+					tmp.connectToManager();
+				} catch (Exception e) {
+					throw new Exception("Exception while connecting to manager",e);
+				}
+				return tmp;
+			}
+		};
+		worker.execute();
+
+		admin = worker.get();		
 		refreshTree();
 		admin.addLogListener(this);
 	}

@@ -61,7 +61,7 @@ public class LogLevelHelper {
 		if (levels==null) {
 			throw new IllegalArgumentException("Invalid null LogLevels in constructor");
 		}
-		System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+">");
+		//System.out.println("Building s LogLevelHelper for "+name+": <"+levels.useDefault+", "+levels.minLogLevel+", "+levels.minLogLevelLocal+">");
 		this.levels=levels;
 		resetChanges();
 		this.name=name;

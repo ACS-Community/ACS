@@ -25,5 +25,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

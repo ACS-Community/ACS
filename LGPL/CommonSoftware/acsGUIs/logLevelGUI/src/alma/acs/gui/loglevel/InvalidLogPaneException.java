@@ -28,6 +28,9 @@ package alma.acs.gui.loglevel;
  *
  */
 public class InvalidLogPaneException extends Exception {
+
+	private static final long serialVersionUID = 7840163129564166994L;
+
 	/**
 	 * Constructor
 	 * 

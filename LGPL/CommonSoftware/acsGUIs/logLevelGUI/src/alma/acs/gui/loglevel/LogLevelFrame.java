@@ -22,15 +22,15 @@
 package alma.acs.gui.loglevel;
 
 import java.awt.BorderLayout;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 
-import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
-
-import java.util.logging.Logger;
 
 /**
  * The frame of the application
@@ -39,12 +39,14 @@ import java.util.logging.Logger;
  *
  */
 public class LogLevelFrame extends JFrame {
-	
+
+	private static final long serialVersionUID = -3602101707686435260L;
+
 	// The content of the frame
 	private LogLevelPanel panel=null;
 	
 	// The ACS component client
-    private AdvancedComponentClient client=null;
+    private ComponentClient client=null;
     
     
     
@@ -116,32 +118,39 @@ public class LogLevelFrame extends JFrame {
      * @throws Exception In case of failure connecting to ACS
      */
     private void connectACSComponentClient() throws Exception {
-        String clientName="LogLevel GUI";
-	    String managerLoc = System.getProperty("ACS.manager");
-	    if (managerLoc!=null) {
-	    	managerLoc=managerLoc.trim();
-	    } else {
+        final String clientName = "LogLevel GUI";
+	    final String managerLoc = (System.getProperty("ACS.manager") == null ? "" : System.getProperty("ACS.manager").trim() );
+
+	    if( managerLoc.equals("") )
 	    	throw new IllegalStateException("ACS.magager property not set!");
-	    }
-	
-	    try {
-            client = new AdvancedComponentClient(null, managerLoc, clientName);
-            contSvc=client.getContainerServices();
-            logger = contSvc.getLogger();
-            logger.log(AcsLogLevel.INFO,"Connected to ACS");
-	    } catch (Exception e) {
-            if (logger!=null) {
-                logger.log(AcsLogLevel.ERROR,"Error connecting the simple client: "+e.getMessage());
-            } else {
-                System.err.println("Error connecting the simple client: "+e.getMessage());
-            }
-            client=null;
-            logger=null;
-            contSvc=null;
-            throw e;
-	    }
-	    
-	    
+
+	    SwingWorker<ComponentClient, Void> worker = new SwingWorker<ComponentClient, Void>() {
+
+			protected ComponentClient doInBackground() throws Exception {
+				ComponentClient tmp;
+			    try {
+		            tmp = new ComponentClient(null, managerLoc, clientName);
+			    } catch (Exception e) {
+		            if (logger!=null) {
+		                logger.log(AcsLogLevel.ERROR,"Error connecting the simple client: "+e.getMessage());
+		            } else {
+		                System.err.println("Error connecting the simple client: "+e.getMessage());
+		            }
+		            client=null;
+		            logger=null;
+		            contSvc=null;
+		            throw e;
+			    }
+				return tmp;
+			}
+	    	
+	    };
+	    worker.execute();
+
+	    client = worker.get();
+        contSvc=client.getContainerServices();
+        logger = contSvc.getLogger();
+        logger.log(AcsLogLevel.INFO,"Connected to ACS");
     }
     
     /**
@@ -164,17 +173,30 @@ public class LogLevelFrame extends JFrame {
 	    if (logger!=null) {
             logger.log(AcsLogLevel.INFO,"Exiting from ACS");
 	    }
+
+	    SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+			protected Void doInBackground() throws Exception {
+				try {
+		            if (client!=null)
+		            	client.tearDown();
+		        } catch (Exception e) {
+		            throw e;
+			    } finally {
+			    	logger=null;
+			    	client=null;
+			    	contSvc=null;
+			    }
+			    return null;
+			}
+	    };
+	    worker.execute();
+
 	    try {
-            if (client!=null) {
-            	client.tearDown();
-            }
-        } catch (Throwable e) {
+	    	worker.get(); 
+	    } catch(Exception e) {
             System.err.println("Exception caught while releasing ACS: "+e.getMessage());
             e.printStackTrace(System.err);
-	    } finally {
-	    	logger=null;
-	    	client=null;
-	    	contSvc=null;
 	    }
+	    
     }
 }

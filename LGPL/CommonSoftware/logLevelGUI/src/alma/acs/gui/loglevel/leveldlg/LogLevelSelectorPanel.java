@@ -37,13 +37,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import si.ijs.maci.LoggingConfigurableOperations;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
 import alma.acs.logging.level.AcsLogLevelDefinition;
@@ -60,7 +60,9 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  *
  */
 public class LogLevelSelectorPanel extends JPanel implements ActionListener {
-	
+
+	private static final long serialVersionUID = 5291375242590375664L;
+
 	// The Button to apply the changes
 	private JButton applyBtn = new JButton("Apply");
 	
@@ -182,10 +184,10 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		
 		} catch (LoggerDoesNotExistEx lde) {
 			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel LoggerDoesNotExistEx "+lde.toString());
-			throw new LoggerDoesNotExistEx(lde.getMessage(), lde.errorTrace);
+			throw lde;
 		} catch (Exception e) {
 			System.err.println("LogLevelSelectorPanel:initLogLevelsPanel exception "+e.toString());
-			throw new Exception(e.toString());
+			throw e;
 		}
 		
 		model = new LogLevelModel(levels);
@@ -206,14 +208,37 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * @return
 	 */
 	private LogLevelHelper[] loggersLbl() throws Exception {
-		String[] logNames = logConf.get_logger_names();
+
+		// get the logger names
+		SwingWorker<String[], Void> worker = new SwingWorker<String[], Void>() {
+			protected String[] doInBackground() throws Exception {
+				return logConf.get_logger_names();
+			}
+		};
+		worker.execute();
+
+		final String[] logNames = worker.get();
 		if (logNames==null) {
 			return new LogLevelHelper[0];
 		}
+
+		// get the log levels for each logger
+		SwingWorker<LogLevels[], Void> worker2 = new SwingWorker<LogLevels[], Void>() {
+			protected LogLevels[] doInBackground() throws Exception {
+				LogLevels[] levels = new LogLevels[logNames.length];
+				for (int i=0; i<logNames.length; i++) {
+					levels[i] = logConf.get_logLevels(logNames[i]);
+				}
+				return levels;
+			}
+		};
+		worker2.execute();
+		
+		LogLevels[] levels = worker2.get();
 		LogLevelHelper[] ret = new LogLevelHelper[logNames.length];
-		for (int t=0; t<logNames.length; t++) {
-			ret[t]= new LogLevelHelper(logNames[t],logConf.get_logLevels(logNames[t]));
-		}
+		for (int t=0; t<logNames.length; t++)
+			ret[t]= new LogLevelHelper(logNames[t],levels[t]);
+
 		return ret;
 	}
 	
@@ -223,32 +248,56 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 *
 	 */
 	private void applyChanges() {
-		LogLevelHelper[] newLevels = model.getLevels();
-		for (LogLevelHelper logLvl: newLevels) {
-			if (logLvl.modified()) {
-				System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
-				try {
-					logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
-				} catch (Throwable t) {
-					System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+t.getMessage());
-					t.printStackTrace(System.err);
+		final LogLevelHelper[] newLevels = model.getLevels();
+
+		SwingWorker<Void,Void> worker = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+
+				for (LogLevelHelper logLvl: newLevels) {
+					if (logLvl.modified()) {
+						try {
+							System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
+							logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
+						} catch (Throwable t) {
+							System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+t.getMessage());
+							t.printStackTrace(System.err);
+						}
+					}
 				}
+				return null;
 			}
+		};
+		worker.execute();
+
+		try {
+			worker.get();
+		} catch(Exception e) {
+			// TODO: proper error handling
+			e.printStackTrace(System.err);
 		}
 
 		try {
 			int localIndex = allLocalCB.getSelectedIndex();
 			LogTypeHelper local = LogTypeHelper.values()[localIndex];
-			int localAcs = local.getAcsCoreLevel().value;
+			final int localAcs = local.getAcsCoreLevel().value;
 
 			int globalIndex = allGlobalCB.getSelectedIndex();
 			LogTypeHelper global = LogTypeHelper.values()[globalIndex];
-			int globalAcs = global.getAcsCoreLevel().value;
+			final int globalAcs = global.getAcsCoreLevel().value;
 
-			boolean useDefault = logConf.get_default_logLevels().useDefault;
-			LogLevels toset = new LogLevels(useDefault, (short)globalAcs, (short)localAcs);
-			logConf.set_default_logLevels(toset);
-		} catch (IllegalArgumentEx e) {
+			SwingWorker<Void,Void> worker2 = new SwingWorker<Void, Void>() {
+				protected Void doInBackground() throws Exception {
+					boolean useDefault = logConf.get_default_logLevels().useDefault;
+					LogLevels toset = new LogLevels(useDefault, (short)globalAcs, (short)localAcs);
+					logConf.set_default_logLevels(toset);
+					return null;
+				}
+			};
+			worker2.execute();
+			worker2.get();
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		model.changesApplied();
@@ -437,8 +486,22 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	}
 	
 	private void refreshAllLoggersPanel() {
-		LogLevels defaultLevels;
-		defaultLevels = logConf.get_default_logLevels();
+
+		LogLevels defaultLevels = null;
+
+		SwingWorker<LogLevels,Void> worker = new SwingWorker<LogLevels, Void>() {
+			protected LogLevels doInBackground() throws Exception {
+				return logConf.get_default_logLevels();
+			}
+		};
+		worker.execute();
+
+		try {
+			defaultLevels = worker.get();
+		} catch (Exception e1) {
+			// TODO: proper error handling?
+			e1.printStackTrace();
+		}
 		
 		int acsLevel = defaultLevels.minLogLevelLocal;
 		try {

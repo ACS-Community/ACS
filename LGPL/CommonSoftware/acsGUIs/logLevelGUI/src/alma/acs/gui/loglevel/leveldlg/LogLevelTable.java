@@ -49,6 +49,7 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  * @author acaproni
  *
  */
+@SuppressWarnings("serial")
 public class LogLevelTable extends JTable {
 	
 	// The renderer for the global and local log types

@@ -28,6 +28,9 @@ package alma.acs.gui.loglevel;
  *
  */
 public class LogPaneAlreadyExistException extends Exception {
+
+	private static final long serialVersionUID = -6499305689705495269L;
+
 	/**
 	 * Constructor
 	 * 

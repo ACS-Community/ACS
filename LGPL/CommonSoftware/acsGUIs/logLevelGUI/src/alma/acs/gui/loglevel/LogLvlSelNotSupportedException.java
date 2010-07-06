@@ -29,6 +29,9 @@ package alma.acs.gui.loglevel;
  *
  */
 public class LogLvlSelNotSupportedException extends Exception {
+
+	private static final long serialVersionUID = -5262248034684925612L;
+
 	/**
 	 * Constructor
 	 * 

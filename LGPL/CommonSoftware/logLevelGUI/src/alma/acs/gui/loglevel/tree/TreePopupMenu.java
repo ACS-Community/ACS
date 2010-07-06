@@ -35,7 +35,9 @@ import javax.swing.JPopupMenu;
  *
  */
 public class TreePopupMenu extends JPopupMenu implements ActionListener {
-	
+
+	private static final long serialVersionUID = -8975189067722437194L;
+
 	// The items in the popup menu
 	private JMenuItem refreshTreeMI = new JMenuItem("Refresh");
 

@@ -44,7 +44,9 @@ import alma.acs.gui.util.panel.IPanel;
  *
  */
 public class LogLevelPanel extends JTabbedPane implements IPanel {
-	
+
+	private static final long serialVersionUID = 4841746787234184889L;
+
 	// The container services
     private ContainerServices contSvc=null;
     

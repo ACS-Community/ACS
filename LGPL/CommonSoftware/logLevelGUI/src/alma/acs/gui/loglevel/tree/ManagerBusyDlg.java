@@ -41,7 +41,9 @@ import javax.swing.JProgressBar;
  *
  */
 public class ManagerBusyDlg extends JDialog implements ActionListener {
-	
+
+	private static final long serialVersionUID = 234195167449794360L;
+
 	// The AdministratorClient
 	private AdministratorClient adminClient;
 	

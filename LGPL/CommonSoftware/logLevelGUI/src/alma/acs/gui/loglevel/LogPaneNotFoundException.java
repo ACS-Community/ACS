@@ -28,6 +28,9 @@ package alma.acs.gui.loglevel;
  *
  */
 public class LogPaneNotFoundException extends Exception {
+
+	private static final long serialVersionUID = -8210051307699540464L;
+
 	/**
 	 * Constructor
 	 * 
