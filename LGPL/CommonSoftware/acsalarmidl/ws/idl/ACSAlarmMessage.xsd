@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
+
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-          xmlns="Alma/AlarmSystem" targetNamespace="Alma/AlarmSystem">
+            xmlns:aas="Alma/AlarmSystem" targetNamespace="Alma/AlarmSystem">
 
     <xsd:annotation>
         <xsd:documentation>
@@ -26,16 +27,16 @@
 				<xsd:element name="helpURLString" type="xsd:string"/>
 				<xsd:element name="instant" type="xsd:boolean"/>
 				<xsd:element name="multiplicityThreshold" type="xsd:int"/>
-				<xsd:element type="ACS-Triplet" name="triplet"/>
-				<xsd:element type="ACS-Source" name="source"/>
-				<xsd:element type="ACS-ResponsiblePerson" name="responsiblePerson"/>
-				<xsd:element type="ACS-Location" name="location"/>
+				<xsd:element type="aas:ACS-Triplet" name="triplet"/>
+				<xsd:element type="aas:ACS-Source" name="source"/>
+				<xsd:element type="aas:ACS-ResponsiblePerson" name="responsiblePerson"/>
+				<xsd:element type="aas:ACS-Location" name="location"/>
 				<xsd:element name="nodeParentIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
 				<xsd:element name="nodeChildrenIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
 				<xsd:element name="multiplicityParentIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
 				<xsd:element name="multiplicityChildrenIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
-				<xsd:element type="ACS-Category" name="categories" maxOccurs="unbounded" minOccurs="0"/>
-				<xsd:element type="ACS-Status" name="status"/>
+				<xsd:element type="aas:ACS-Category" name="categories" maxOccurs="unbounded" minOccurs="0"/>
+				<xsd:element type="aas:ACS-Status" name="status"/>
 				<xsd:element name="nodeParent" type="xsd:boolean"/>
     			<xsd:element name="multiplicityParent" type="xsd:boolean"/>
     			<xsd:element name="nodeChild" type="xsd:boolean"/>
@@ -65,9 +66,9 @@
 			<xsd:element name="description" type="xsd:string"/>
 			<xsd:element name="connectionTimeout" type="xsd:int"/>
 			<xsd:element name="surveillanceAlarmId" type="xsd:string"/>
-			<xsd:element type="ACS-ResponsiblePerson" name="responsiblePerson"/>
+			<xsd:element type="aas:ACS-ResponsiblePerson" name="responsiblePerson"/>
 			<xsd:element name="alarmIds" type="xsd:string" maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element type="ACS-Source-Status" name="sourceStatus"/>
+			<xsd:element type="aas:ACS-Source-Status" name="sourceStatus"/>
 			<xsd:element name="hostName" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -100,7 +101,7 @@
 			<xsd:element name="room" type="xsd:string"/>
 			<xsd:element name="mnemonic" type="xsd:string"/>
 			<xsd:element name="position" type="xsd:string"/>
-			<xsd:element type ="ACS-Building"  name="building"/>
+			<xsd:element type ="aas:ACS-Building"  name="building"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -133,11 +134,11 @@
 			<xsd:element name="globalAcknowledged" type="xsd:boolean"/>
 			<xsd:element name="terminatedByBackup" type="xsd:boolean"/>
 			<xsd:element name="activatedByBackup" type="xsd:boolean"/>
-			<xsd:element type="ACS-Timestamp" name="sourceTimestamp"/>
+			<xsd:element type="aas:ACS-Timestamp" name="sourceTimestamp"/>
 			<xsd:element name="sourceHostname" type="xsd:string"/>
-			<xsd:element type="ACS-Timestamp" name="userTimestamp"/>
-			<xsd:element type="ACS-Timestamp" name="systemTimestamp"/>
-			<xsd:element type="ACS-Property" name="persistentUserProperties" maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element type="aas:ACS-Timestamp" name="userTimestamp"/>
+			<xsd:element type="aas:ACS-Timestamp" name="systemTimestamp"/>
+			<xsd:element type="aas:ACS-Property" name="persistentUserProperties" maxOccurs="unbounded" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -145,7 +146,7 @@
 		<xsd:sequence>
 			<xsd:element name="statusId" type="xsd:string"/>
 			<xsd:element name="connected" type="xsd:boolean"/>
-			<xsd:element type="ACS-Timestamp" name="lastContact"/>
+			<xsd:element type="aas:ACS-Timestamp" name="lastContact"/>
 			<xsd:element name="enabled" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
