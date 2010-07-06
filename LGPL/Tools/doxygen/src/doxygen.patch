@@ -1,33 +1,11 @@
-diff -Naur tmp_unpack/doxygen-1.6.1.orig/src/classdef.cpp doxygen-1.6.1/src/classdef.cpp
---- tmp_unpack/doxygen-1.6.1.orig/src/classdef.cpp	2009-08-16 13:58:15.000000000 +0000
-+++ doxygen-1.6.1/src/classdef.cpp	2010-01-28 09:15:51.000000000 +0000
-@@ -1227,6 +1227,7 @@
-       ol.startTypewriter();
-       bool isIDLorJava = nm.right(4)==".idl" || 
-                          nm.right(5)==".pidl" || 
-+                         nm.right(5)==".midl" ||
-                          nm.right(5)==".java";
-       if (isIDLorJava)
-       {
-diff -Naur tmp_unpack/doxygen-1.6.1.orig/src/filedef.cpp doxygen-1.6.1/src/filedef.cpp
---- tmp_unpack/doxygen-1.6.1.orig/src/filedef.cpp	2009-06-20 14:22:48.000000000 +0000
-+++ doxygen-1.6.1/src/filedef.cpp	2010-01-28 09:15:51.000000000 +0000
-@@ -263,6 +263,7 @@
-       if (fd)
-       {
-         isIDLorJava = fd->name().right(4)==".idl" ||   // M$ or Corba IDL
-+                      fd->name().right(5)==".midl" ||
-                       fd->name().right(5)==".pidl" ||
-                       fd->name().right(5)==".java" ||  // Sun's Java
-                       fd->name().right(4)==".jsl";     // M$ J#
-diff -Naur tmp_unpack/doxygen-1.6.1.orig/src/util.cpp doxygen-1.6.1/src/util.cpp
---- tmp_unpack/doxygen-1.6.1.orig/src/util.cpp	2009-08-23 18:46:08.000000000 +0000
-+++ doxygen-1.6.1/src/util.cpp	2010-01-28 09:15:51.000000000 +0000
-@@ -314,6 +314,7 @@
-       n.right(4)==".hpp" ||
-       n.right(4)==".h++" ||
-       n.right(4)==".idl" ||
-+      n.right(5)==".midl" ||
-       n.right(4)==".ddl" ||
-       n.right(5)==".pidl"
-      ) return Entry::HEADER_SEC;
+diff -Naur tmp_unpack/doxygen-1.7.0.orig/src/util.cpp doxygen-1.7.0/src/util.cpp
+--- tmp_unpack/doxygen-1.7.0.orig/src/util.cpp	2010-06-14 09:15:31.000000000 +0000
++++ doxygen-1.7.0/src/util.cpp	2010-07-06 15:28:12.000000000 +0000
+@@ -6434,6 +6434,7 @@
+ {
+   g_extLookup.setAutoDelete(TRUE);
+   updateLanguageMapping(".idl",   "idl"); 
++  updateLanguageMapping(".midl",  "idl"); 
+   updateLanguageMapping(".ddl",   "idl"); 
+   updateLanguageMapping(".odl",   "idl"); 
+   updateLanguageMapping(".java",  "java");

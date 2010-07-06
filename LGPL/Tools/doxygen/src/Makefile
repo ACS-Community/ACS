@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.23 2010/04/28 12:56:34 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.24 2010/07/06 16:07:18 alopatin Exp $"
 #
 # Makefile of ........
 #
@@ -22,7 +22,7 @@
 # user definable C-compilation flags
 #USER_CFLAGS = 
 PLATFORM := $(shell uname)
-DOX_VER = 1.6.2
+DOX_VER = 1.7.0
 GRAPH_VER = 2.26.0
 MODULES=graphviz-$(GRAPH_VER) doxygen-$(DOX_VER)
 
@@ -53,7 +53,7 @@ clean : clean_dist
 #
 clean_dist :  
 	@echo " . . . removing the doxygen/graphviz directories and log file . . ."
-	rm -rf doxygen-$(DOX_VER) graphviz-$(GRAPH_VER) all_install_script.log last_patched
+	rm -rf doxygen-$(DOX_VER) graphviz-$(GRAPH_VER) config_all.log last_patched
 
 
 man   : 
