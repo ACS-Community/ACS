@@ -34,7 +34,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStates'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
@@ -60,7 +60,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::RWEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStatesRW'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.

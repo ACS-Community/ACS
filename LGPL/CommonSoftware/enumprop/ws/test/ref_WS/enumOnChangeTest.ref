@@ -33,7 +33,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStates'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '----'
@@ -59,7 +59,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - RWEnumImpl::RWEnumImpl] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Creating property 'EPTESTDEVICE1:currentStatesRW'
-1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
+1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::BACIProperty] Archiver disabled! (archive_suppress=false, archive_mechanism=monitor_collector, archive_min_int=0, archive_max_int=0)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::addProperty done] 
 1 - ----------T--:--:--.--- [GlobalLogger - ROEnumImpl::ROEnumImpl] No DevIO provided - created DevIOMem.
@@ -82,19 +82,19 @@
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1::monitorThread - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::monitorThreadWorker] EPTESTDEVICE1
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - acscomponent::ACSComponentImpl::execute] 
-1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 created
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Writing IOR for EPTESTDEVICE1 into file...
-1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
 1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestDevice: EPTESTDEVICE1 exported
+1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm for property: EPTESTDEVICE1:currentStates raised. Value change to: 0
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
+1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Description and value: State
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
-1 - ----------T--:--:--.--- [GlobalLogger - ] enumpropTestServer: Waiting for requests ... 
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Level and value: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
@@ -187,7 +187,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::updateMonitorStates] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIProperty::GCD] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIComponent::removeCallback] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
 1 - ----------T--:--:--.--- [GlobalLogger - baci::BACIMonitor::~BACIMonitor] Monitor 'EPTESTDEVICE1:currentStates_monitor' destroyed.
+2 - ----------T--:--:--.--- [GlobalLogger - ] (State::CBStates::done) Value: ENABLED (1)
 1 - ----------T--:--:--.--- [GlobalLogger - BACI::Monitor&lt;&gt;::~Monitor] 
 1 - ----------T--:--:--.--- [EPTESTDEVICE1 - ] enumpropTestDeviceImpl::serverShutdown
