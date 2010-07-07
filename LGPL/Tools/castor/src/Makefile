@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2010/06/06 06:54:42 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/07/07 13:39:11 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -74,6 +74,8 @@ INSTALL_FILES =
 # INCLUDE STANDARDS
 # -----------------
 
+castor_djar_prereq=org
+
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
@@ -81,7 +83,6 @@ ifneq ($(MAKEDIRTMP),\#error\#)
 endif
 
 
-castor_djar_prereq=org
 
 #
 # TARGETS

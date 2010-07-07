@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.11 2010/06/06 07:17:51 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.12 2010/07/07 13:38:41 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -118,8 +118,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= jfits
-jfits_DIRS= org
+JARFILES=jfits
+jfits_DIRS=org
 #jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
@@ -173,6 +173,7 @@ CSOURCENAMES = \
 
 #
 #>>>>> END OF standard rules
+jfits_djar_prereq=org
 
 #
 # INCLUDE STANDARDS
@@ -197,7 +198,6 @@ org:
 	@cd pyfits-1.3; python setup.py install --home="$(INSTALLPATH)" --install-purelib="$(INSTALLPATH)/lib/python/site-packages"
 
 
-jfits_djar_prereq = org
 #	@cp -pR pyfits ../lib/python/site-packages
 #
 # TARGETS
