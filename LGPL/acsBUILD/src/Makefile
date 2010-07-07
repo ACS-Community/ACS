@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.159 2008/11/12 16:13:38 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.160 2010/07/07 10:25:21 alopatin Exp $"
 #
 # Makefile of ........
 #
@@ -235,10 +235,8 @@ man_cpp:
 	@cd ../..; doxygen acsBUILD/config/Doxyfile.cpp
 man_java:
 	@echo "Generating Java API documentation"
-	@cd ../..; rm -rf genjava; mkdir -p genjava; cd genjava; \
-         acsExtractJavaSources -g acs.jar $(VLTTOP)/lib; \
-         jar -xf acs.jar
 	@cd ../..; doxygen acsBUILD/config/Doxyfile.java
+	@cp ../../man/java/annotated.html ../../man/java/index.html
 man_schema:
 	@echo "Generating schema documentation "
 	@mkdir -p $(VLTTOP)/man/schemas/src
