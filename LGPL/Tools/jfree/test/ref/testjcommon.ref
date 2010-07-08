@@ -8,7 +8,7 @@
 1 - .........................................
 1 - .F.....
 1 - There was 1 failure:
-1 - 1) testEqualShapes(org.jfree.util.junit.ShapeUtilitiesTests)junit.framework.AssertionFailedError
+1 - 1) testEqualShapes(org.jfree.util.junit.ShapeUtilitiesTests)junit.framework.AssertionFailedError: null
 1 - 	at org.jfree.util.junit.ShapeUtilitiesTests.testEqualShapes(ShapeUtilitiesTests.java:134)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 1 - 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
