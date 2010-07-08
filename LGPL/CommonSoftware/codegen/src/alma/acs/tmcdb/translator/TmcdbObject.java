@@ -48,13 +48,12 @@ public class TmcdbObject {
 
 	protected boolean useContentEqualsAndHashCode = false;
 	
-	public void addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		propertyChangeSupport.removePropertyChangeListener(listener);
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
 	public boolean getUseContentEqualsAndHashCode() {
