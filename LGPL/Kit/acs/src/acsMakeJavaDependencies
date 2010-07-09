@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeJavaDependencies,v 1.84 2009/05/14 07:13:04 mzampare Exp $"
+# "@(#) $Id: acsMakeJavaDependencies,v 1.85 2010/07/09 15:16:06 rtobar Exp $"
 #
 # who       when       what
 # --------  --------   ----------------------------------------------
@@ -149,7 +149,7 @@ then
     echo "	\$(AT)mkdir -p ${tmpDestDir}"
     echo "	\$(AT)mkdir -p ../${tgtDir}"
     echo "	\$(AT)\$(foreach element,\$?,\$(shell echo -n \"\$(element) \" | grep -v .${depExt}  >> ${fileListFile}))"
-    echo "	\$(AT)CLASSPATH=\`${CLASSMAKER}\`:.; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir} @${fileListFile}"
+    echo "	\$(AT)CLASSPATH=\"\`${CLASSMAKER}\`${PATH_SEP}.\"; export CLASSPATH ; ${JAVAC} ${CompilerFlags} -d ${tmpDestDir}  @${fileListFile}"
     echo "	\$(AT)(cd ${tmpDestDir}; jar cf ../../${tgtDir}/${jarName}.jar ${cList} )"
     echo "	\$(AT)\$(RM) ${fileListFile}"
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.121 2010/07/09 12:48:42 alopatin Exp $"
+# "@(#) $Id: idlMakefile,v 1.122 2010/07/09 15:16:06 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -362,9 +362,9 @@ ifeq ($(call mustBuild,Java),true)
 ifneq ($(strip $(XML_IDL)),)
 	- @echo "== IDL Compiling for XmlIdl  (Java): $(<F)"
 ifdef ACSROOT 
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(ACSROOT)/lib/endorsed/xercesImpl.jar ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`$(PATH_SEP)$(ACSROOT)/lib/endorsed/xercesImpl.jar" ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
 else 
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`$(PATH_SEP)$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar" ;  export CLASSPATH; $(XMLIDL) $(MK_IDL_PATH) $(JACORB_MK_IDL_PATH) $< 
 endif #end ACSROOT
 
 endif #end $(strip $(XML_IDL))
@@ -373,7 +373,7 @@ endif #end $(strip $(XML_IDL))
 # the assumption made here is that there are no other java files under
 # ../object besides those which result from processing IDL files
 # 
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find $(TMPSRC) ! -path '*/CVS/*' -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d $(TMPSRC) $$FILES; fi;
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) ! -path '*/CVS/*' -name \*.java`; if [ "$$FILES" != "" ] ;then echo $$FILES > /tmp/javaFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javaFiles; rm /tmp/javaFiles; fi;
 #
 #
 # putting it into the jarfile

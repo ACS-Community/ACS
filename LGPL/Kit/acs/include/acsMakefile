@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.187 2010/07/09 12:48:42 alopatin Exp $" 
+# "@(#) $Id: acsMakefile,v 1.188 2010/07/09 15:16:06 rtobar Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -376,6 +376,10 @@ endif
 ifeq ($(os),Linux)
    platform = Linux
    export ECHO = echo -e
+else ifeq ($(os),$(CYGWIN_VER))
+   platform = Cygwin
+   osrev = 1.5
+   export ECHO = echo
 else
    export ECHO = echo 
 endif
@@ -883,7 +887,12 @@ endif
 RM = rm -rf
 
 # shell command to do xargs
+ifeq ($(os),$(CYGWIN_VER))
+XARGS = xargs
+else
 XARGS = env -i xargs
+endif
+
 #
 # default tcl/tk shell
 WISH = wish -f
@@ -1153,7 +1162,7 @@ MODIDL = -I../idl
 ####
 PATH := ../bin:$(PATH)
 LD_LIBRARY_PATH := ../lib:$(LD_LIBRARY_PATH)
-PYTHONPATH := ../lib/python/site-packages:$(PYTHONPATH)
+PYTHONPATH := ../lib/python/site-packages$(PATH_SEP)$(PYTHONPATH)
 
 #
 # REMARK: for VW module there is the possibility that a mod/ws-lcu structure
@@ -1606,7 +1615,7 @@ doxygen:
 do_A2MIF:
 	-@$(ECHO) " ASCII to MIF:"
 ifneq ($(strip $(ASCII_TO_MIF)),)
-	-$(AT) for member in $(ASCII_TO_MIF) ; do $(ECHO) "\t$${member}"; docA2MIF $${member} ../doc/`basename $${member}`.mif $(OUTPUT); done
+	-$(AT) for member in $(ASCII_TO_MIF) ; do $(ECHO) "\t$${member}"; docA2MIF $${member} ../doc/`basename "$${member}"`.mif $(OUTPUT); done
 	-@$(ECHO) ""
 endif
 
@@ -1691,7 +1700,7 @@ endif
 ifndef MAKE_FROMTAT
 	-@$(ECHO) " .\c"
 	-$(AT)  currentdir=`pwd`;\
-	  	current=`basename $$currentdir`;\
+	  	current=`basename "$$currentdir"`;\
 		if [ -d ../test/tatlogs -a $$current = "test" ] ;\
 		then \
 	            $(RM) ../test/tatlogs;\

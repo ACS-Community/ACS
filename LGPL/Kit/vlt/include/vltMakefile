@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile,v 1.6 2010/07/09 12:48:42 alopatin Exp $" 
+# "@(#) $Id: vltMakefile,v 1.7 2010/07/09 15:15:24 rtobar Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -530,6 +530,10 @@ endif
 ifeq ($(os),Linux)
    platform = Linux
    ECHO = echo -e
+else ifeq ($(os),$(CYGWIN_VER))
+   platform = Cygwin
+   osrev = 1.5
+   ECHO = echo
 else
    ECHO = echo
 endif

@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: vltMakeJavaClasspath,v 1.10 2005/10/06 10:37:31 mzampare Exp $"
+# "@(#) $Id: vltMakeJavaClasspath,v 1.11 2010/07/09 15:15:24 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -79,7 +79,7 @@ sub enrich {
 	    }
 	}
 	if ( $two !~ /\/$file_name/) { 
-	    $two .= ":$file";
+	    $two .= $SEPARATOR.$file;
 	} 
     }
     return $two;
@@ -88,37 +88,39 @@ sub enrich {
 # the following variable must have the same setting as in the javaMakefile
 $ACS_CO = "ACScomponents";
 
+$SEPARATOR=$ENV{PATH_SEP};
+
 if ($ARGV[0] eq "-endorsed") { 
     $ENDORSED = 1;
 }
 
 if ($ARGV[0] eq "-components") { 
-    local($myRoots) = "../lib/$ACS_CO:";
+    local($myRoots) = "../lib/$ACS_CO".$SEPARATOR;
     local($tmpDir);
 
     if ( $ENV{INTLIST} ne "") { 
 	local($dir);
 	foreach $dir (split(/:/,$ENV{INTLIST})) { 
 	    $tmpDir = "$dir/lib/$ACS_CO";
-	    $myRoots .= $tmpDir.":" if( -d $tmpDir);
+	    $myRoots .= $tmpDir.$SEPARATOR if( -d $tmpDir);
 	}
     }
     if ( $ENV{INTROOT} ne "") { 
 	$tmpDir = "$ENV{INTROOT}/lib/$ACS_CO";
 	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
-	    $myRoots .= $tmpDir.":";
+	    $myRoots .= $tmpDir.$SEPARATOR;
 	}
     }
     if ( $ENV{ACSROOT} ne "") { 
 	$tmpDir = "$ENV{ACSROOT}/lib/$ACS_CO";
 	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
-	    $myRoots .= $tmpDir.":";
+	    $myRoots .= $tmpDir.$SEPARATOR;
 	}
     }
     if ( $ENV{VLTROOT} ne "") { 
 	$tmpDir = "$ENV{VLTROOT}/lib/$ACS_CO";
 	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
-	    $myRoots .= $tmpDir.":";
+	    $myRoots .= $tmpDir.$SEPARATOR;
 	}
     }
     print $myRoots."\n";
@@ -155,7 +157,7 @@ foreach $item (split(/:/,$ENV{INTLIST}))  {
     }
 }
 
-$completeList = join(":",@modList);
+$completeList = join($SEPARATOR,@modList);
 $completeList = enrich(join(" ",@intList), $completeList);
 $completeList = enrich($intlistList, $completeList);
 $completeList = enrich(join(" ",@acsList), $completeList);
@@ -179,4 +181,4 @@ if ($ENDORSED) {
 }
 
 
-print "$completeList:$ENV{CLASSPATH}\n";
+print $completeList.$SEPARATOR.$ENV{CLASSPATH}."\n";

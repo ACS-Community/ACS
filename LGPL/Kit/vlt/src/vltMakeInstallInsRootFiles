@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeInstallInsRootFiles,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $"
+# "@(#) $Id: vltMakeInstallInsRootFiles,v 1.2 2010/07/09 15:15:24 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -85,6 +85,9 @@
 if [ "`uname`" = "Linux" ]
 then
     enable -n echo
+elif [ "`uname`" = "$CYGWIN_VER" ]
+then
+    alias echo="echo -e"
 fi
 
 #

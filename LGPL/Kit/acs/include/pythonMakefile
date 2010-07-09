@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.83 2010/07/09 12:48:42 alopatin Exp $"
+# "@(#) $Id: pythonMakefile,v 1.84 2010/07/09 15:16:06 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -53,7 +53,7 @@
 SHELL=/bin/bash
 PYTHON_VERS = $(shell python -V 2>&1 | awk '{print $$2}' | awk -F. '{print $$1 "." $$2}')
 PYTHON_DOCS=../doc/api/html/python
-PYTHONPATHDOC=${PYTHONPATH}:../../../../src
+PYTHONPATHDOC=${PYTHONPATH}$(PATH_SEP)../../../../src
 ######################################
 # phony section
 ######################################
@@ -279,15 +279,15 @@ do_pythondoc:
 ifneq ($(strip $(PY_ALL_LIST)),)
 	-$(AT) echo "Pydoc..."
 	-$(AT) mkdir -p $(PYTHON_DOCS)
-	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_SCRIPTS), $(name) ); \
+	-$(AT) PYTHONPATH="${PYTHONPATHDOC}"; for member in $(foreach name, $(PY_SCRIPTS), $(name) ); \
 	       do \
 		(cd $(PYTHON_DOCS) ;  pydoc -w $${member} ); \
 	       done
-	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_MODULES), $(name) ); \
+	-$(AT) PYTHONPATH="${PYTHONPATHDOC}"; for member in $(foreach name, $(PY_MODULES), $(name) ); \
 	       do \
 		(cd $(PYTHON_DOCS) ;  pydoc -w $${member} ); \
 	       done
-	-$(AT) PYTHONPATH=${PYTHONPATHDOC}; for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
+	-$(AT) PYTHONPATH="${PYTHONPATHDOC}"; for member in $(foreach name, $(PY_PACKAGES), $(name) ); \
 	       do \
 		PYFILES=`find $${member} | tr '\/' '.' |  sed 's/\.py//;' | grep -v '\.CVS'`; export PYFILES;  if [ "$$PYFILES" != "" ] ; then \
 		      for pyfile in  $$PYFILES ; \

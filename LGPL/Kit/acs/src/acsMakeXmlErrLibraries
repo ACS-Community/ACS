@@ -3,7 +3,7 @@ if [ "`uname`" = "Linux" ]; then enable -n echo; fi
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakeXmlErrLibraries,v 1.25 2007/06/14 06:56:38 mzampare Exp $"
+# "@(#) $Id: acsMakeXmlErrLibraries,v 1.26 2010/07/09 15:16:06 rtobar Exp $"
 #
 
 # the ugly solution taken here is really ugly: it requires one to maintain the list
@@ -96,7 +96,12 @@ then
 	if [[ "$MAKE_ONLY" = "" || `echo $MAKE_ONLY | grep Java` != "" ]] 
 	    then 
 	    echo "== Compiling generated Java classes into Stub jarfile"
-	    (cd ${tDir}; ln -s ../../lib lib; cd src;  export CLASSPATH=`vltMakeJavaClasspath`:.; javac -d .. `find . -name \*.java | tr '\n' ' '` ) || exit -13
+	    if [ "`uname`" = "$CYGWIN_VER" ]
+	    then
+	        (cd ${tDir}; mkdir lib; cp ../../lib/*.jar lib; cd src;  export CLASSPATH="`vltMakeJavaClasspath`${PATH_SEP}."; javac -d .. `find . -name \*.java | tr '\n' ' '` ) || exit -13
+	    else
+	        (cd ${tDir}; ln -s ../../lib lib; cd src;  export CLASSPATH="`vltMakeJavaClasspath`${PATH_SEP}."; javac -d .. `find . -name \*.java | tr '\n' ' '` ) || exit -13
+	    fi
 	    if [ xx$DEBUG = xxon ]
 		then
 		(cd ${tDir}; find . \( -name \*.class -o -name \*.java \) -exec jar uf ../../lib/${xmlName}.jar  \{\} \; )

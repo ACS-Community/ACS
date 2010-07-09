@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: xsdMakefile,v 1.75 2010/07/09 12:48:42 alopatin Exp $"
+# "@(#) $Id: xsdMakefile,v 1.76 2010/07/09 15:16:06 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -92,9 +92,12 @@ endif
 
 ifneq ($(strip $(XSDBIND)),)
 #    ALL_TARGET := do_xsd $(ALL_TARGET) 
-XSDDEPLIST = java -cp $(ACSROOT)/lib/xalan.jar:$(ACSROOT)/lib/xalan_serializer.jar org.apache.xalan.xslt.Process -XSL $(MAKEDIR)/../config/XSDIncludeDependencies.xml  -IN ../idl/$(XSDBIND).xml  |  egrep -v '^\ *\$$' | tr '\n' ' '
+ifeq ($(os),$(CYGWIN_VER))
+XSDDEPLIST = java -cp "$(ACSROOT)/lib/xalan.jar$(PATH_SEP)$(ACSROOT)/lib/xalan_serializer.jar" org.apache.xalan.xslt.Process -XSL $(MAKEDIR)/../config/XSDIncludeDependencies.xml  -IN ../idl/$(XSDBIND).xml  |  egrep -v '^\ *\$$' | tr '\r\n' ' '
+else
+XSDDEPLIST = java -cp "$(ACSROOT)/lib/xalan.jar$(PATH_SEP)$(ACSROOT)/lib/xalan_serializer.jar" org.apache.xalan.xslt.Process -XSL $(MAKEDIR)/../config/XSDIncludeDependencies.xml  -IN ../idl/$(XSDBIND).xml  |  egrep -v '^\ *\$$' | tr '\n' ' '
+endif
 XSDBIND_FILES = $(shell $(XSDDEPLIST))
-
 endif
 endif
 
@@ -145,22 +148,22 @@ install_xsd:
 	$(AT) mkdir -p $(TMPSRC)
 
 ifdef ACSROOT
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(ACSROOT)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml $(TMPSRC) $(MK_IDL_PATH)
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`$(PATH_SEP)$(ACSROOT)/lib/endorsed/xercesImpl.jar";  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml $(TMPSRC) $(MK_IDL_PATH)
 else
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`:$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar;  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml $(TMPSRC) $(MK_IDL_PATH)	
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`$(PATH_SEP)$(INSTALL_ROOT_LAST)/lib/endorsed/xercesImpl.jar";  export CLASSPATH; java -DACS.schemaconfigfiles="$(XSDBIND_INCLUDE)" $(CASTOR)  ../idl/$(XSDBIND).xml $(TMPSRC) $(MK_IDL_PATH)	
 endif #ACSROOT
 
 # compiling the generated classes
-	$(AT) CLASSPATH=`vltMakeJavaClasspath`; export CLASSPATH; FILES=`find $(TMPSRC) -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then javac $(javaCompilerOptions) -d $(TMPSRC) $$FILES; fi;
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) -name \*.java`;  if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/javacFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javacFiles; rm /tmp/javacFiles; fi;
 # putting them into a jarfile
 
 ifeq ($(strip $(DEBUG)),on)
 # first put the class files
-	$(AT) cd $(TMPSRC); FILES=`find . -name \*.class `; export FILES;  if [ "$$FILES" != "" ] ; then jar cf ../../../lib/$(basename $(<F)).jar $$FILES ; fi
+	$(AT) cd $(TMPSRC); FILES=`find . -name \*.class `; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi
 # then, carefully, the java files prefixed with 'src'.
-	$(AT) cd ../object/$(XSDBIND);  FILES=`find src -name \*.java`; export FILES;  if [ "$$FILES" != "" ] ; then jar uf ../../lib/$(basename $(<F)).jar $$FILES ; fi; 
+	$(AT) cd ../object/$(XSDBIND);  FILES=`find src -name \*.java`; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar uf ../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi; 
 else
-	$(AT) cd $(TMPSRC); CLASSES=`find . -name \*.class`; export CLASSES;  if [ "$$CLASSES" != "" ] ; then jar cf ../../../lib/$(basename $(<F)).jar $$CLASSES ; fi
+	$(AT) cd $(TMPSRC); CLASSES=`find . -name \*.class`; if [ "$$CLASSES" != "" ] ; then echo $$CLASSES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi
 endif # DEBUG
 	$(AT) $(RM) $(TMPSRC)
 ###################  CASTOR END  ####################################
