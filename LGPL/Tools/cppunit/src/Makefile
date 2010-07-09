@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.13 2010/06/20 06:39:21 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.14 2010/07/09 06:00:43 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -62,7 +62,7 @@ man   : do_man
 
 install : install_all
 	@echo ". . . installing cppunit . . . "
-	@cd cppunit-$(CPPUNIT_VER); make install
+	@cd cppunit-$(CPPUNIT_VER); $(MAKE) install
 	@echo " . . . installation done"
 
 unpack :
@@ -73,7 +73,7 @@ unpack :
             gtar -xzf cppunit-$(CPPUNIT_TAR).tar.gz; \
           fi
 
-doxyfile :
+doxyfile : unpack
 	@echo ". . . updating Doxyfile (ingnore error messages here) . . . "
 	@cd cppunit-$(CPPUNIT_VER)/doc; doxygen -u Doxyfile.in
 
@@ -92,7 +92,7 @@ preparePatch:
 	rm -rf tmp_unpack
 	@echo " . . . patch file prepared"
 
-configure :
+configure : unpack
 	@echo ". . . running configure . . . "
 	@../bin/configure_script cppunit-$(CPPUNIT_TAR).tar.gz $(CPPUNIT_VER) > configure_script.log 2>&1
 
