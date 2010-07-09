@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2010/06/30 21:12:01 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/07/09 10:28:31 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -46,7 +46,7 @@ all: unpack patch configure build
 
 clean : 
 ifneq ($(PLATFORM),Linux)
-	-$(AT) if [ -d log4cpp-$(LOG4CPP_VER) ]; then cd log4cpp-$(LOG4CPP_VER) ; make clean > /dev/null ; fi
+	-$(AT) if [ -d log4cpp-$(LOG4CPP_VER) ]; then cd log4cpp-$(LOG4CPP_VER) ; $(MAKE) clean > /dev/null ; fi
 endif
 	@echo " . . . clean done"
 
@@ -54,12 +54,12 @@ clean_dist : clean_all clean_dist_all
 	@echo " . . . clean_dist done"
 
 man   :
-	make -C log4cpp-$(LOG4CPP_VER)/doc all install
+	$(MAKE) -C log4cpp-$(LOG4CPP_VER)/doc all install
 	@echo " . . . man page(s) done"
 
 install : 
 	@echo ". . . installing cppunit . . ."
-	@cd log4cpp-$(LOG4CPP_VER); make install
+	@cd log4cpp-$(LOG4CPP_VER); $(MAKE) install
 	@echo " . . . installation done"
 
 unpack :
@@ -86,6 +86,6 @@ configure :
 
 build :
 	@echo ". . . building . . . "
-	@cd log4cpp-$(LOG4CPP_VER); make all
+	@cd log4cpp-$(LOG4CPP_VER); $(MAKE) all
 
 #___oOo___
