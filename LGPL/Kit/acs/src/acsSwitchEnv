@@ -1,12 +1,13 @@
-#!/bin/ksh
+#!/bin/bash
 #************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsSwitchEnv,v 1.1 2004/01/15 10:45:37 intusr Exp $"
+# "@(#) $Id: acsSwitchEnv,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------
 # mpasquat  2003-NOV-26 created
+# alopatin  2010-JUL-07 switched from ksh to bash
 
 #************************************************************************
 #   NAME 
@@ -47,7 +48,7 @@ then
    echo " "
    echo " *** DISPLAY variable is not set!"
    echo " "
-   return 1
+   exit 1
 fi
 
 # Checking arguments

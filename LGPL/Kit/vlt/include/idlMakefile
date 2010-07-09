@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: idlMakefile,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $"
+# "@(#) $Id: idlMakefile,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -55,7 +55,7 @@ ORBACUS_IDL = $(ALMASW_ROOTDIR)/$(ALMASW_RELEASE)/Orbacus/local/bin/jidl
 vpath %.idl $(IDL_PATH_LIST)
 vpath %.fake ../object
 
-SHELL=/bin/ksh
+SHELL=/bin/bash
 
 ######################################
 # incrementing tasks

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile,v 1.5 2010/03/31 20:16:38 javarias Exp $" 
+# "@(#) $Id: vltMakefile,v 1.6 2010/07/09 12:48:42 alopatin Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -488,7 +488,7 @@ endif
 
 #
 # force Bourne shell as the shell used to interpret the commands
-SHELL = /bin/ksh 
+SHELL = /bin/bash 
 
 ##################################################################
 # machine-specific stuff, special options and syntax differences #
@@ -527,10 +527,9 @@ ifeq ($(os),SunOS)
 endif
 
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
-# echo -e does not work under ksh after moved to RHEL 5
 ifeq ($(os),Linux)
    platform = Linux
-   ECHO = echo
+   ECHO = echo -e
 else
    ECHO = echo
 endif

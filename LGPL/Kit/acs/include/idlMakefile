@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.120 2010/06/24 08:25:05 bjeram Exp $"
+# "@(#) $Id: idlMakefile,v 1.121 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -95,7 +95,7 @@
 #  MK_IDL_PATH_LIST
 #  VLTIDL, MODIDL, MK_IDL_PATH
 
-SHELL=/bin/ksh
+SHELL=/bin/bash
 
 IDL_LIST  = $(IDL_FILES) $(IDL_FILES_L)
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.186 2010/06/15 22:00:59 javarias Exp $" 
+# "@(#) $Id: acsMakefile,v 1.187 2010/07/09 12:48:42 alopatin Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -319,7 +319,7 @@ endif
 
 #
 # force Korn shell as the shell used to interpret the commands
-SHELL = /bin/ksh 
+SHELL = /bin/bash 
 
 
 
@@ -373,10 +373,9 @@ ifeq ($(os),SunOS)
 endif
 
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
-# modified by mzampare, since using ksh
 ifeq ($(os),Linux)
    platform = Linux
-   export ECHO = echo
+   export ECHO = echo -e
 else
    export ECHO = echo 
 endif

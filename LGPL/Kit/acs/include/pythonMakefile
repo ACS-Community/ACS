@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: pythonMakefile,v 1.82 2009/02/05 19:15:40 agrimstrup Exp $"
+# "@(#) $Id: pythonMakefile,v 1.83 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -50,7 +50,7 @@
 #
 #------------------------------------------------------------------------
 #
-SHELL=/bin/ksh
+SHELL=/bin/bash
 PYTHON_VERS = $(shell python -V 2>&1 | awk '{print $$2}' | awk -F. '{print $$1 "." $$2}')
 PYTHON_DOCS=../doc/api/html/python
 PYTHONPATHDOC=${PYTHONPATH}:../../../../src

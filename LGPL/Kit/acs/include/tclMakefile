@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tclMakefile,v 1.61 2003/01/27 17:22:20 vltsccm Exp $"
+# "@(#) $Id: tclMakefile,v 1.62 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 .PHONY : install_TCLlibraries
 .PHONY : do_tcl
 
-SHELL=/bin/ksh
+SHELL=/bin/bash
 
 ######################################
 # incrementing tasks

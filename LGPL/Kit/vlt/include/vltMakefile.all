@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile.all,v 1.1.1.1 2003/02/20 10:44:07 mzampare Exp $" 
+# "@(#) $Id: vltMakefile.all,v 1.2 2010/07/09 12:48:42 alopatin Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -87,7 +87,7 @@
 # global stuffs are received from vltMakefile   #
 #################################################
 
-SHELL = /bin/ksh
+SHELL = /bin/bash
 
 #################################################
 # set search paths for target and dependencies  #

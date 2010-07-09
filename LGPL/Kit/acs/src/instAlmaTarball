@@ -1,12 +1,13 @@
-#! /bin/ksh
+#! /bin/bash
 #************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: instAlmaTarball,v 1.1 2004/01/23 09:15:00 mpasquat Exp $"
+# "@(#) $Id: instAlmaTarball,v 1.2 2010/07/09 12:48:42 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------
 # mpasquat  2003-NOV-24 created
+# alopatin  2010-JUL-07 switched from ksh to bash
 #
 #************************************************************************
 #   NAME 
@@ -57,7 +58,7 @@ then
    echo "                              of the tarball "
    echo " almaTarball_Path...........: path of the almaTarball with tarball file name included"
    echo " "
-   return 1
+   exit 1
 fi
 
 # Arguments processing
@@ -85,7 +86,7 @@ then
   if [[ "$?" != "0" ]]
   then
      echo " *** Could not create directory"
-     return 1
+     exit 1
   fi
   echo " Created Installation Directory."
 fi
@@ -117,7 +118,7 @@ else
    echo " "
    echo "*** gtar Error."
    echo " "
-   return 1
+   exit 1
 fi
 
 # Removal of $fileName
@@ -128,10 +129,3 @@ fi
 
 echo " "
 echo " done."
-
-
-
-
-
-
-
