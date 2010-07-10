@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2007/10/04 00:22:16 maraya Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/07/10 13:57:10 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -135,7 +135,7 @@ USER_IDL =
 #
 JARFILES= ebe
 ebe_DIRS= cl
-ebe_ENDORSED="on"
+ebe_ENDORSED=on
 ebe_EXTRAS= cl/utfsm/acs/ebe/util/images/*.gif
 #
 # java sources in Jarfile on/off
