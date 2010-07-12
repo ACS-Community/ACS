@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.5 2010/06/15 22:02:16 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/07/12 22:22:02 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -199,9 +199,11 @@ endif
 # TARGETS
 # -------
 all: do_all
+	mkdir -p tmp
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all
+	$(RM) tmp 1 10 20
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
