@@ -84,8 +84,8 @@ CLASSPATH = $(shell echo $CLASSPATH)$(PATH_SEP)../src-gen
 
 # "all" includes the code generation and the jarfile with the files needed for TMCDB schemas generation
 all:	.done_generating do_all
-	@make -C ../src-merged
-	@make ../lib/$(SM_GENERATOR).jar
+	@$(MAKE) -C ../src-merged
+	@$(MAKE) ../lib/$(SM_GENERATOR).jar
 	@echo " . . . 'all' done" 
 
 # Cleaning also cleans our own-created files
@@ -93,7 +93,7 @@ clean : clean_all
 	@echo "== Deleting generated sources"
 	@rm -f ../lib/$(SM_GENERATOR).jar
 	@rm -rf ../src-gen
-	@make -C ../src-merged clean
+	@$(MAKE) -C ../src-merged clean
 	@rm -f .done_generating
 	@echo " . . . clean done"
 
@@ -104,7 +104,7 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
-	@make -C ../src-merged install
+	@$(MAKE) -C ../src-merged install
 	@echo " . . . installation done"
 
 # Target for generating code from the grammar definition of the TMCDB and compile it.
@@ -121,7 +121,7 @@ install : install_all
 # Therefore, we need to create them by hand.
 ../lib/$(TMCDB_GRAMMAR).jar :
 	@echo "== Making $(TMCDB_GRAMMAR).jar"
-	@make -C ../src-merged
+	@$(MAKE) -C ../src-merged
 
 ../lib/$(SM_GENERATOR).jar : $(SMGENERATOR_EXTRAFILES)
 	@echo "== Making $(SM_GENERATOR).jar"
