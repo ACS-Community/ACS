@@ -1,4 +1,4 @@
-# @(#) $Id: ACSHandler.py,v 1.20 2010/06/30 04:18:47 javarias Exp $
+# @(#) $Id: ACSHandler.py,v 1.21 2010/07/15 20:01:34 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -29,7 +29,7 @@ TODO:
 - Everything
 '''
 
-__revision__ = "$Id: ACSHandler.py,v 1.20 2010/06/30 04:18:47 javarias Exp $"
+__revision__ = "$Id: ACSHandler.py,v 1.21 2010/07/15 20:01:34 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from socket    import gethostname
@@ -187,10 +187,16 @@ class ACSHandler(logging.handlers.BufferingHandler):
         
         #mutex for controlling access to the buffer
         self.bufferlock = threading.RLock()
+        
+        #log throttle, see http://jira.alma.cl/browse/COMP-4541
+        self.logThrottle = LogThrottle(-1);
 
         #we want to make sure the buffer is flushed
         #before exiting the Python interpreter
         register(self.flush)
+    #--------------------------------------------------------------------------
+    def configureLogging(self, maxLogPerTimeInterval):
+        self.logThrottle.configureLogging(maxLogPerTimeInterval)
     #--------------------------------------------------------------------------
     def initFileHandler(self):
         '''
@@ -252,10 +258,11 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         with self.bufferlock:
             for record in self.buffer:
-                try:
-                    self.sendLog(record)
-                except:
-                    self.flushToFile(record)
+                
+                    try:
+                        self.sendLog(record)
+                    except:
+                        self.flushToFile(record)
                     
             self.buffer = []
     #--------------------------------------------------------------------------
@@ -263,7 +270,8 @@ class ACSHandler(logging.handlers.BufferingHandler):
         '''
         Method which sends logs to the real ACS logging service.
         '''
-
+        if(not self.logThrottle.checkPublishLogRecord()):
+            return
         # Create an RTContext object
         rt_context = ACSLog.RTContext(str(record.threadName).replace("<", "").replace(">", ""),
                                       str(record.source).replace("<", "").replace(">", ""),
@@ -403,3 +411,40 @@ class ACSHandler(logging.handlers.BufferingHandler):
 #------------------------------------------------------------------------------
 
     
+class LogThrottle():
+    '''
+    Process level throttle for logs.
+    '''
+    
+    def __init__(self, maxLogPerInterval):
+        '''
+        Initializes the Throttle
+        
+        Parameters:
+            The max number of logs/s
+        '''
+        self.maxLogPerTimeInterval = maxLogPerInterval
+        self.timeIntervalMillis = 1000
+        self.intervalTimeStartMillis = time() * 1000;
+        self.logCounter = 0;
+        
+    def configureLogging(self, maxLogPerInterval):
+        self.maxLogPerTimeInterval = maxLogPerInterval
+        
+    def checkPublishLogRecord(self):
+        '''
+        Checks whether the log throttle allows logging a record. 
+        No exception or other action beyond the returned boolean.
+        
+        Returns: True if a record can be logged, False otherwise.
+        '''
+        if(self.maxLogPerTimeInterval < 0):
+            return True
+        ctime = time() * 1000;
+        
+        if (ctime > self.intervalTimeStartMillis + self.timeIntervalMillis):
+            self.intervalTimeStartMillis = time() * 1000
+            self.logCounter = 0
+        self.logCounter += 1
+        return self.maxLogPerTimeInterval > self.logCounter
+        
