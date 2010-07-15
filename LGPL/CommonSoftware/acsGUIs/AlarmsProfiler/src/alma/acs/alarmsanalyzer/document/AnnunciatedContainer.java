@@ -19,8 +19,26 @@
 package alma.acs.alarmsanalyzer.document;
 
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class AnnunciatedContainer extends SupAnnCommonContainer {
+import cern.laser.client.data.Alarm;
+
+import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
+import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
+
+/**
+ * The container for the ACTIVE annunciated (not reduced) alarms.
+ * 
+ * @author acaproni
+ *
+ */
+public class AnnunciatedContainer extends DocumentBase implements AlarmCategoryListener{
+	
+	/**
+	 * Annunciated alarms
+	 */
+	private final ConcurrentHashMap<String, ReductionValue> annunciated = new ConcurrentHashMap<String, ReductionValue>();
+	
 	/**
 	 * The singleton
 	 */
@@ -41,5 +59,19 @@ public class AnnunciatedContainer extends SupAnnCommonContainer {
 	@Override
 	public Collection<?> getNumbers() {
 		return annunciated.values();
+	}
+
+	@Override
+	public void onAlarm(Alarm alarm) {
+		if (alarm.getStatus().isActive() && !alarm.getStatus().isReduced()) {
+			ReductionValue val = annunciated.get(alarm.getAlarmId());
+			if (val==null) {
+				val=new ReductionValue(alarm.getAlarmId());
+				annunciated.put(alarm.getAlarmId(), val);
+			} else {
+				val.inc();
+			}
+			refresh();
+		}
 	}
 }

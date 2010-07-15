@@ -19,20 +19,74 @@
 package alma.acs.alarmsanalyzer.document;
 
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class SuppressedContainer extends SupAnnCommonContainer {
-	
+import cern.laser.client.data.Alarm;
+
+import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
+
+/**
+ * The container for the ACTIVE suppressed (reduced) alarms.
+ * 
+ * @author acaproni
+ *
+ */
+public class SuppressedContainer extends DocumentBase implements AlarmCategoryListener{
+	/**
+	 * The item to send to the table.
+	 * <P>
+	 * The same type is used by the {@link AnnunciatedContainer}
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	public static class ReductionValue {
+		/**
+		 * The ID of the alarm
+		 */
+		public final String ID;
+		
+		private int value=1;
+		
+		/**
+		 * Canstructor 
+		 * 
+		 * @param id The ID of the alarm
+		 */
+		public ReductionValue(String id) {
+			ID=id;
+		}
+		
+		/**
+		 * Increment the counter
+		 */
+		public void inc() {
+			value++;
+		}
+
+		/**
+		 * Getter
+		 */
+		public int getValue() {
+			return value;
+		}
+	}
 	/**
 	 * The singleton
 	 */
 	private static SuppressedContainer singleton=null;
 	
-	public static SupAnnCommonContainer getInstance() {
+	public static SuppressedContainer getInstance() {
 		if (singleton==null) {
 			singleton = new SuppressedContainer();
 		}
 		return singleton;
 	}
+	
+	/**
+	 * Suppressed alarms
+	 */
+	private final ConcurrentHashMap<String, ReductionValue> suppressed = new ConcurrentHashMap<String, ReductionValue>();
 	
 	/**
 	 * Constructor
@@ -42,6 +96,20 @@ public class SuppressedContainer extends SupAnnCommonContainer {
 	@Override
 	public Collection<?> getNumbers() {
 		return suppressed.values();
+	}
+
+	@Override
+	public void onAlarm(Alarm alarm) {
+		if (alarm.getStatus().isActive() && alarm.getStatus().isReduced()) {
+			ReductionValue val = suppressed.get(alarm.getAlarmId());
+			if (val==null) {
+				val=new ReductionValue(alarm.getAlarmId());
+				suppressed.put(alarm.getAlarmId(), val);
+			} else {
+				val.inc();
+			}
+			refresh();
+		}
 	}
 
 }
