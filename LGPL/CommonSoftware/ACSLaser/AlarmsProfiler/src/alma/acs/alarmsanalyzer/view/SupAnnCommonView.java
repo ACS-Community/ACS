@@ -26,9 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import alma.acs.alarmsanalyzer.document.StatisticsContainer.AlarmStat;
-import alma.acs.alarmsanalyzer.document.SupAnnCommonContainer;
-import alma.acs.alarmsanalyzer.document.SupAnnCommonContainer.ReductionValue;
+import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 
 /**
  * The Suppressed and the annunciated view are almost identical: this class groups

@@ -20,8 +20,6 @@ package alma.acs.alarmsanalyzer.document.flood;
 
 import java.util.Vector;
 
-import org.eclipse.jface.viewers.TableViewer;
-
 import cern.laser.client.data.Alarm;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
 

@@ -20,7 +20,6 @@ package alma.acs.alarmsanalyzer.document;
 
 import java.util.Collection;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 
