@@ -18,7 +18,10 @@
  */
 package alma.acs.alarmsanalyzer.document.flood;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -36,12 +39,13 @@ import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
 public class FloodContainer extends DocumentBase implements AlarmCategoryListener {
 	
 	public enum FloodItem {
-		NUM_OF_FLOODS("Num. of floods"),
-		TOT_ALARMS("Tot. alarms in floods"),
-		HIGHEST_ALARMS("Highest num. of alarms in flood"),
-		AVG_ALARMS("Avg. alarms per flood"),
-		MEASURED_TIME("Alarm service time"),
-		FLOOD_TIME("Time of Alarm service in flood");
+		NUM_OF_FLOODS("Num. of floods",false,false),
+		ACTUALLY_IN_FLOOD("Actually in flood", false,true),
+		TOT_ALARMS("Tot. alarms in floods",false,false),
+		HIGHEST_ALARMS("Highest num. of alarms in flood",false,false),
+		AVG_ALARMS("Avg. alarms per flood",false,false),
+		MEASURED_TIME("Monitoring time",true,false),
+		FLOOD_TIME("Time of Alarm service in flood",true,false);
 		
 		/**
 		 *  The name show in the first column
@@ -49,17 +53,35 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 		public String description;
 		
 		/**
+		 * <code>true</code> if number represents a time value
+		 */
+		private final boolean isTime;
+		
+		/**
+		 * <code>true</code> if number represents a boolean value (0 means <code>false</code>,
+		 * all other values mean <code>true</code>)
+		 */
+		private final boolean isBoolean;
+		
+		/**
 		 * The value
 		 */
 		private Number value;
+		
+		/**
+		 * The formatter of the times
+		 */
+		private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss.S");
 		
 		/**
 		 * Constructor
 		 * 
 		 * @param name The description of the value
 		 */
-		private FloodItem(String name) {
+		private FloodItem(String name, boolean isTm, boolean isBool) {
 			this.description=name;
+			this.isTime=isTm;
+			this.isBoolean=isBool;
 			value=Integer.valueOf(0);
 		}
 		
@@ -72,6 +94,36 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 		 */
 		public Number getValue() {
 			return value;
+		}
+		
+		@Override
+		public String toString() {
+			if (isBoolean) {
+				int val = value.intValue();
+				if (val==0) {
+					return "No";
+				} else {
+					return "Yes";
+				}
+			}
+			if (isTime) {
+				Date date = new Date(value.longValue());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(date);
+				int day = cal.get(Calendar.DAY_OF_MONTH)-1;
+				synchronized (timeFormat) {
+					if (day>0) {
+						return ""+day+" days, "+timeFormat.format(date);
+					} else {
+						return timeFormat.format(date);
+					}
+				}
+			}
+			if ((value instanceof Float) || (value instanceof Double)) {
+				double d = value.doubleValue();
+				return String.format("%.2f", d);
+			}
+			return value.toString();
 		}
 	};
 	
@@ -118,6 +170,7 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 		for (AlarmFlood af: floods) {
 			ret+=af.getAlarmsInFlood();
 		}
+		ret+=actualFlood.getAlarmsInFlood();
 		return ret;
 	}
 	
@@ -130,6 +183,9 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 		for (AlarmFlood af: floods) {
 			ret+=af.lengthOfFlood();
 		}
+		if (actualFlood.getStartTimeOfFlood()>0) {
+			ret+=actualFlood.lengthOfFlood();
+		}
 		return ret;
 	}
 	
@@ -138,6 +194,9 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 	 * @return The average number of alarms registered in all the floods
 	 */
 	public synchronized float getAvgAlarmsInFloods() {
+		if (floods.size()==0) {
+			return 0;
+		}
 		float ret=0;
 		for (AlarmFlood af: floods) {
 			ret+=af.getAlarmsInFlood();
@@ -177,8 +236,11 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 		FloodItem.MEASURED_TIME.setNumber(Long.valueOf(System.currentTimeMillis()-startTime));
 		FloodItem.NUM_OF_FLOODS.setNumber(Integer.valueOf(getNumOfFloods()));
 		FloodItem.TOT_ALARMS.setNumber(Integer.valueOf(getTotAlarmsInFloods()));
-		Vector<FloodContainer.FloodItem> ret= new Vector<FloodContainer.FloodItem>();
-		ret.copyInto(FloodItem.values());
+		FloodItem.ACTUALLY_IN_FLOOD.setNumber(Integer.valueOf(actualFlood.isFloodStarted()?1:0));
+		Vector<FloodContainer.FloodItem> ret= new Vector<FloodContainer.FloodItem>(FloodItem.values().length);
+		for (FloodItem fi: FloodItem.values()) {
+			ret.add(fi);
+		}
 		return ret;
 	}
 
@@ -196,7 +258,8 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 	public synchronized void doneFlood() {
 		floods.add(actualFlood);
 		actualFlood=new AlarmFlood(this);
-		refresh();
+		System.out.println("Refreshing table");
+		System.out.println("doneFlood done");
 	}
 
 	@Override
