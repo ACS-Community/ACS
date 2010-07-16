@@ -263,7 +263,6 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 				flush();
 				tempAlarms.clear();
 			}
-			refresh();
 		}
 	}
 

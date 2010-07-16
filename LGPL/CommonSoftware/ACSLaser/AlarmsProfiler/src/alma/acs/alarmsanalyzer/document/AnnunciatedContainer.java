@@ -71,7 +71,6 @@ public class AnnunciatedContainer extends DocumentBase implements AlarmCategoryL
 			} else {
 				val.inc();
 			}
-			refresh();
 		}
 	}
 }

@@ -38,7 +38,7 @@ import cern.laser.source.alarmsysteminterface.FaultState;
  * @author acaproni
  *
  */
-public class StaleAlarmsContainer extends DocumentBase implements SourceListener, Runnable {
+public class StaleAlarmsContainer extends DocumentBase implements SourceListener {
 	
 	/**
 	 * A stale alarm
@@ -137,20 +137,6 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		Thread t = new Thread(this,this.getClass().getName());
 		t.setDaemon(true);
 		t.start();
-	}
-	
-	/**
-	 * The thread refreshing the content of the table
-	 */
-	public void run() {
-		while(true && !shutdown) {
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException ie) {
-				continue;
-			}
-			refresh();
-		}
 	}
 	
 }

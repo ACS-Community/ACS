@@ -108,7 +108,6 @@ public class SuppressedContainer extends DocumentBase implements AlarmCategoryLi
 			} else {
 				val.inc();
 			}
-			refresh();
 		}
 	}
 

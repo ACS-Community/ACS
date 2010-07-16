@@ -182,7 +182,6 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 			numbers=new AlarmActNumber(ID,active, timestamp);
 			mostFrequentAlarms.put(ID, numbers);
 		}
-		refresh();
 	}
 
 	/**
