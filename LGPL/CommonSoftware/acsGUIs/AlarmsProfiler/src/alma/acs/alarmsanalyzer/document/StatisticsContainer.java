@@ -91,7 +91,7 @@ public class StatisticsContainer extends DocumentBase implements SourceListener,
 	private final String totActiveSrcAlarms="ACTIVE source events";
 	
 	/**
-	 * ID for the total number of ACTIVE source alarms 
+	 * ID for the total number of TERMINATE source alarms 
 	 */
 	private final String totTerminateSrcAlarms="TERMINATE source events";
 	
@@ -103,32 +103,32 @@ public class StatisticsContainer extends DocumentBase implements SourceListener,
 	/**
 	 * ID for the total number of ACTIVE category alarms 
 	 */
-	private final String totActiveCatAlas="ACTIVE annunciated alarms";
+	private final String totActiveCatAlas="ACTIVE alarms";
 	
 	/**
 	 * ID for the total number of TERMINATE category alarms 
 	 */
-	private final String totTerminateCatAlas="TERMINATE annunciated alarms";
+	private final String totTerminateCatAlas="TERMINATE alarms";
 	
 	/**
 	 * ID for the percentage of priority 0 events
 	 */
-	private final String pri0="VERY HIGH alarms";
+	private final String pri0="Priority 0 (VERY HIGH)";
 	
 	/**
 	 * ID for the percentage of priority 1 events
 	 */
-	private final String pri1="HIGH alarms";
+	private final String pri1="Priority 1 (HIGH)";
 	
 	/**
 	 * ID for the percentage of priority 2 events
 	 */
-	private final String pri2="Medium alarms";
+	private final String pri2="Priority 2 (Medium)";
 	
 	/**
 	 * ID for the percentage of priority 3 events
 	 */
-	private final String pri3="Low alarms";
+	private final String pri3="Priority 3 (Low)";
 	
 	/**
 	 * The number of suppressed (i.e. reduced) alarms
