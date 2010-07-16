@@ -29,7 +29,12 @@ import org.eclipse.swt.widgets.Display;
  * @author acaproni
  *
  */
-public abstract class DocumentBase {
+public abstract class DocumentBase implements Runnable {
+	
+	/**
+	 * The refresh time in msec
+	 */
+	private static final int REFRSH_TIME_INTERVAL = 1500;
 	/**
 	 * 
 	 * @return All the alarms in the container
@@ -47,6 +52,20 @@ public abstract class DocumentBase {
 	protected boolean shutdown=false;
 	
 	/**
+	 * The thread
+	 */
+	private final Thread thread;
+	
+	/**
+	 * Canstructor. It starts the thread
+	 */
+	public DocumentBase() {
+		thread = new Thread(this);
+		thread.setDaemon(true);
+		thread.start();
+	}
+	
+	/**
 	 * Set the table viewer showing these alarms
 	 * 
 	 * @param table the table viewer showing these alarms
@@ -61,7 +80,7 @@ public abstract class DocumentBase {
 	/**
 	 * Refresh the content of the table
 	 */
-	public void refresh() {
+	private void refresh() {
 		if (!shutdown && tableViewer!=null) {
 			Display display=Display.getDefault();
 			display.syncExec(
@@ -80,5 +99,21 @@ public abstract class DocumentBase {
 	 */
 	public void shutdownContainer() {
 		shutdown=true;
+		thread.interrupt();
+	}
+
+	/**
+	 * Automatically refresh the view
+	 */
+	@Override
+	public void run() {
+		while (!shutdown) {
+			try {
+				Thread.sleep(REFRSH_TIME_INTERVAL);
+			} catch (InterruptedException ie) {
+				continue;
+			}
+			refresh();
+		}
 	}
 }
