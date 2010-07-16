@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.83 2010/06/14 11:15:40 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.84 2010/07/16 08:23:34 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -150,6 +150,11 @@ ERRCODE_GEN = acserrHandlersErr ErrorSystemErrType
 # INCLUDE STANDARDS
 # -----------------
 
+ERRCODE_GEN_XML = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).xml)
+ERRCODE_GEN_IDL = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).idl)
+ERRCODE_GEN_H = $(foreach xml, $(ERRCODE_GEN), ../include/$(xml).h)
+ERRCODE_GEN_CPP = $(foreach xml, $(ERRCODE_GEN), ../src/$(xml).cpp) $(ERRCODE_GEN_H)
+
 acserrHandlersErr_didl_prereq =../idl/acserrHandlersErr.idl
 ErrorSystemErrType_didl_prereq=../idl/ErrorSystemErrType.idl
 acserr_da_prereq=$(ERRCODE_GEN_CPP)
@@ -181,20 +186,15 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 
-ERRCODE_GEN_XML = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).xml)
-ERRCODE_GEN_IDL = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).idl)
-ERRCODE_GEN_H = $(foreach xml, $(ERRCODE_GEN), ../include/$(xml).h)
-ERRCODE_GEN_CPP = $(foreach xml, $(ERRCODE_GEN), ../src/$(xml).cpp) $(ERRCODE_GEN_H)
-
 
 $(ERRCODE_GEN_IDL) : $(ERRCODE_GEN_XML)
-	- $(AT) for member in $(ERRCODE_GEN); do \
+	$(AT) for member in $(ERRCODE_GEN); do \
 	echo "== Generating:" $${member}".idl out of:" $${member}".xml"; \
 		sh ./acserrGenIDL  ../idl/$${member}.xml ../idl/$${member}.idl ; \
 		done
 
 $(ERRCODE_GEN_CPP) : $(ERRCODE_GEN_XML)
-	- $(AT) for member in $(ERRCODE_GEN); do \
+	$(AT) for member in $(ERRCODE_GEN); do \
 		echo "== Generating:" $${member}".cpp and:" $${member}".h out of:" $${member}".xml"; \
 		sh ./acserrGenCpp ../idl/$${member}.xml ../src/$${member}.cpp ../include/$${member}.h ; \
 		done
