@@ -20,12 +20,15 @@ package alma.acs.alarmsanalyzer.view;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+
 import alma.acs.alarmsanalyzer.document.flood.FloodContainer;
 import alma.acs.alarmsanalyzer.document.flood.FloodContainer.FloodItem;
+import alma.acs.alarmsanalyzer.view.MFAView.TableSorter;
 
 public class AlarmFloodView extends TableViewBase {
 	/**
@@ -60,7 +63,7 @@ public class AlarmFloodView extends TableViewBase {
 			
 			switch (columnIndex) {
 			case 0: return item.description;
-			case 1: return ""+item.getValue();
+			case 1: return ""+item.toString();
 			default: return "Unknown!";
 			}
 		}
@@ -71,6 +74,49 @@ public class AlarmFloodView extends TableViewBase {
 		}
 		
 	};
+	
+	/**
+	 * A class to sort the table by ascending/descending order of a column
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class FloodTableSorter extends TableSorterBase {
+
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param colIndex The index of the column to sort
+		 * @param order The order ascending/descending
+		 */
+		public FloodTableSorter(int colIndex, int order) {
+			super(colIndex,order);
+		}
+
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			FloodItem a1 = (FloodItem) e1;
+			FloodItem a2 = (FloodItem) e2;
+			int ret = 0;
+			switch (colIndex) {
+			case 0:
+				ret = a1.description.compareTo(a2.description);
+				break;
+			case 1:
+				ret = a1.toString().compareTo(a2.toString());
+				break;
+			default:
+				ret = 0;
+			}
+			// If descending order, flip the direction
+			if (order == DESCENDING) {
+				ret = -ret;
+			}
+			return ret;
+		}
+
+	}
 
 	/**
 	 * Constructor
@@ -84,6 +130,7 @@ public class AlarmFloodView extends TableViewBase {
 				300,
 				80
 		};
+		sorter=new FloodTableSorter(0, TableSorter.ASCENDING);
 	}
 
 	@Override
