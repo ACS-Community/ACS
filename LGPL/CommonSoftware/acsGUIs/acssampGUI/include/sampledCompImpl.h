@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.8 2009/06/10 22:49:04 utfsm Exp $"
+* "@(#) $Id: sampledCompImpl.h,v 1.9 2010/07/16 15:51:35 ntroncos Exp $"
 *
 */
 
@@ -61,18 +61,18 @@ class sampledCompImpl: public virtual CharacteristicComponentImpl,
 		 * Destructor
 		 */
 		virtual ~sampledCompImpl();
-		void initialize();
+		void initialize() throw (acsErrTypeLifeCycle::LifeCycleExImpl);
 
-		virtual ACS::RWdouble_ptr   my_RWdouble();
-		virtual ACS::ROdouble_ptr   my_ROdouble();
-		virtual ACS::RWfloat_ptr    my_RWfloat();
-		virtual ACS::ROfloat_ptr    my_ROfloat();
-		virtual ACS::RWstring_ptr   my_RWstring();
-		virtual ACS::ROstring_ptr   my_ROstring();
-		virtual ACS::RWlong_ptr     my_RWlong();
-		virtual ACS::ROlong_ptr     my_ROlong();
-		virtual ACS::RWlongLong_ptr my_RWlongLong();
-		virtual ACS::ROlongLong_ptr my_ROlongLong();
+		virtual ACS::RWdouble_ptr   my_RWdouble() throw (CORBA::SystemException);
+		virtual ACS::ROdouble_ptr   my_ROdouble() throw (CORBA::SystemException);
+		virtual ACS::RWfloat_ptr    my_RWfloat() throw (CORBA::SystemException);
+		virtual ACS::ROfloat_ptr    my_ROfloat() throw (CORBA::SystemException);
+		virtual ACS::RWstring_ptr   my_RWstring() throw (CORBA::SystemException);
+		virtual ACS::ROstring_ptr   my_ROstring() throw (CORBA::SystemException);
+		virtual ACS::RWlong_ptr     my_RWlong() throw (CORBA::SystemException);
+		virtual ACS::ROlong_ptr     my_ROlong() throw (CORBA::SystemException);
+		virtual ACS::RWlongLong_ptr my_RWlongLong() throw (CORBA::SystemException);
+		virtual ACS::ROlongLong_ptr my_ROlongLong() throw (CORBA::SystemException);
 
 	private:
 		SmartPropertyPointer<RWdouble>   m_RWdouble_sp;

@@ -25,6 +25,10 @@ module SAMP {
 
 	};
 
+	interface ChildSampleComponent : SampledComponent {
+		readonly attribute ACS::ROlong     my_childLong;
+	};
+
 };
 
 #endif

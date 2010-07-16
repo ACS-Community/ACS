@@ -110,7 +110,7 @@ public class SamplingDataCorrelator {
 	public void dumpToFile( double prec ){
 		boolean done = false;
 		int flag = 0;
-		frequency = 10000000L / frequency;
+		frequency = 1000000L / frequency;
 		long w = (long) (frequency*prec);
 		
 		

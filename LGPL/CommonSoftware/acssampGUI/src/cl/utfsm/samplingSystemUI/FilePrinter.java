@@ -124,7 +124,7 @@ public class FilePrinter extends DataPrinter {
 	
 	private boolean openFile(){
 		IsoDateFormat fo = new IsoDateFormat();
-		filename = component + "_" + property + "_" + getFrecuency() + "_" + fo.format(new Date()) +".csv";
+		filename = component + "_" + property + "_" + getFrequency() + "_" + fo.format(new Date()) +".csv";
 		try{
 			file = new FileWriter( filename );
 		}catch( IOException e ){

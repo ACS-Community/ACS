@@ -85,7 +85,8 @@ public class BeanMemoryWidget extends SamplingWidget {
 	}
 
 
-	public void setTimeWindow(double frecuency, int time) {
+	public void setTimeWindow(double frequency, int time) {
+		System.out.println("NOT IMPLEMENTED");
 		// TODO Auto-generated method stub
 		
 	}

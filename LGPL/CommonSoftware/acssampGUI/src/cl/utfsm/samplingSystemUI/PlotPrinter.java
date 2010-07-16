@@ -143,7 +143,7 @@ public class PlotPrinter extends DataPrinter {
 	
 	private boolean openFile(){
 		IsoDateFormat fo = new IsoDateFormat();
-		filename = component.replace('/', '-') + "_" + property.replace('/', '-') + "_" + getFrecuency() + "_" + fo.format(new Date()) +".csv";
+		filename = component.replace('/', '-') + "_" + property.replace('/', '-') + "_" + getFrequency() + "_" + fo.format(new Date()) +".csv";
 		try{
 			file = new FileWriter( filename );
 		}catch( IOException e ){
@@ -154,12 +154,12 @@ public class PlotPrinter extends DataPrinter {
 		return true;
 	}
 	
-	public void setTimeWindow(float freq, int time) {
-		widget.setTimeWindow((long)frecuency, time);
+	public void setTimeWindow(double freq, int time) {
+		widget.setTimeWindow((long)frequency, time);
 	}
 	
 	public void setDumpToFile( boolean value){
 		dumpToFile = value;
 	}
-	
+
 }

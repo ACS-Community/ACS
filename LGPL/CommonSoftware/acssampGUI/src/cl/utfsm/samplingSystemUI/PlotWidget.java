@@ -25,13 +25,13 @@ public class PlotWidget extends SamplingWidget {
 	private long samples=0;
 	private int position;
 	private ArrayList<Trace2DLtd> traces;
-	private int frequency = 1;  // Hertz
+	private float frequency = (float) 1.0;  // Hertz
 	private int timewindow = 1; // seconds
 	
 	// UI Attributes
 	private static final long serialVersionUID = 4823621192367385664L;
 	private Chart2D chart;
-	private Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.GRAY, Color.ORANGE, Color.BLACK};
+	private Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.GRAY, Color.ORANGE, Color.BLACK, Color.CYAN, Color.DARK_GRAY, Color.PINK};
 	private int currentColor = 0;
 
 	public PlotWidget() {
@@ -65,7 +65,7 @@ public class PlotWidget extends SamplingWidget {
 			yAxis.getAxisTitle().setTitle("Property Value");
 			chart.setAxisXBottom((AAxis)xAxis);
 			chart.setAxisYLeft((AAxis)yAxis);
-            chart.setGridColor(Color.BLACK);
+            		chart.setGridColor(Color.BLACK);
            
             
 			traces = new ArrayList<Trace2DLtd>();
@@ -80,12 +80,12 @@ public class PlotWidget extends SamplingWidget {
 			gbc.weightx = 1;
 			gbc.weighty = 1;
 			
-            ChartPanel cp = new ChartPanel(chart);
+        		ChartPanel cp = new ChartPanel(chart);
 			this.add(cp,gbc);
 			
 			
 			// create new trace for the data.
-			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*frequency); //now are seconds no minutes
+			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*(int)frequency); //now are seconds no minutes
 			tempTrace.setColor(colors[currentColor]);
 			currentColor++;
 			if( currentColor >= colors.length ){
@@ -100,7 +100,7 @@ public class PlotWidget extends SamplingWidget {
 	
 	public void initializeNewPosition(int position){
 		if( position != 0 ){
-			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*frequency);//now are seconds no minutes
+			Trace2DLtd tempTrace = new Trace2DLtd(timewindow*(int)frequency);//now are seconds no minutes
 			tempTrace.setColor(colors[currentColor]);
 			currentColor++;
 			if( currentColor >= colors.length ){
@@ -131,17 +131,30 @@ public class PlotWidget extends SamplingWidget {
 		}
 	}
 	
+	public void removeTrace(String component, String property) {
+		int index=0;
+		for (Trace2DLtd trace:traces) {
+			if(trace.getName().equals(component + "->" + property)) {
+				chart.removeTrace(trace);
+				//chart.setPaintLabels(false);
+				traces.remove(index);
+				break;
+			}
+			index++;
+		}
+	}
+	
 	//public void setTimeWindow(long frecuency, int time) {
+
 	//	for (Trace2DLtd trace : traces){
-	//		trace.setMaxSize((int) (frecuency*time));//now are seconds no minutes
+	//		trace.setMaxSize((int) (frequency*time));//now are seconds no minutes
 	//	}
 	//}
 
-	@Override
-	public void setTimeWindow(double frecuency, int time) {
+	public void setTimeWindow(double frequency, int time) {
 		// TODO Auto-generated method stub
 		for (Trace2DLtd trace : traces){
-			trace.setMaxSize((int)(frequency*time)+1);//now are seconds no minutes
+			trace.setMaxSize((int)(frequency*time) + 1);//now are seconds no minutes
 		}
 	}
 

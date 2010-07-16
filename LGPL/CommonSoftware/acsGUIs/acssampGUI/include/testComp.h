@@ -21,7 +21,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: sampledCompImpl.h,v 1.9 2010/07/16 15:51:35 ntroncos Exp $"
+* "@(#) $Id: testComp.h,v 1.2 2010/07/16 15:51:35 ntroncos Exp $"
 *
 */
 
@@ -50,17 +50,17 @@
 
 using namespace baci;
 
-class sampledCompImpl: public virtual CharacteristicComponentImpl,
-		     public virtual POA_SAMP::SampledComponent
+class testComp: public virtual CharacteristicComponentImpl,
+		     public virtual POA_SAMP::ChildSampleComponent
 {
 
 	public:
-		sampledCompImpl(const ACE_CString &name, maci::ContainerServices *containerServices);
+		testComp(const ACE_CString &name, maci::ContainerServices *containerServices);
 
 		/**
 		 * Destructor
 		 */
-		virtual ~sampledCompImpl();
+		virtual ~testComp();
 		void initialize() throw (acsErrTypeLifeCycle::LifeCycleExImpl);
 
 		virtual ACS::RWdouble_ptr   my_RWdouble() throw (CORBA::SystemException);
@@ -73,7 +73,7 @@ class sampledCompImpl: public virtual CharacteristicComponentImpl,
 		virtual ACS::ROlong_ptr     my_ROlong() throw (CORBA::SystemException);
 		virtual ACS::RWlongLong_ptr my_RWlongLong() throw (CORBA::SystemException);
 		virtual ACS::ROlongLong_ptr my_ROlongLong() throw (CORBA::SystemException);
-
+		virtual ACS::ROlong_ptr     my_childLong() throw (CORBA::SystemException);
 	private:
 		SmartPropertyPointer<RWdouble>   m_RWdouble_sp;
 		SmartPropertyPointer<ROdouble>   m_ROdouble_sp;
@@ -85,11 +85,12 @@ class sampledCompImpl: public virtual CharacteristicComponentImpl,
 		SmartPropertyPointer<ROlong>     m_ROlong_sp;
 		SmartPropertyPointer<RWlongLong> m_RWlongLong_sp;
 		SmartPropertyPointer<ROlongLong> m_ROlongLong_sp;
+		SmartPropertyPointer<ROlong>     m_childLong_sp;
 		ACE_CString component_name;
 	/**
 	 * ALMA C++ coding standards state copy operators should be disabled.
 	 */
-	void operator=(const sampledCompImpl&);
+	void operator=(const testComp&);
 
 };
 

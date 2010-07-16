@@ -1,11 +1,15 @@
 package cl.utfsm.samplingSystemUI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -67,6 +71,7 @@ public class SampTool extends SamplingManagerUITool {
 				}
 			} catch(AcsJContainerServicesEx e){
 				e.getMessage();
+				System.out.println("IN");
 			}
 		}
 
@@ -75,7 +80,7 @@ public class SampTool extends SamplingManagerUITool {
 		Arrays.sort(compList);
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException{
 		window = new SamplingSystemGUI();
 		try {
 			initializeComponents();

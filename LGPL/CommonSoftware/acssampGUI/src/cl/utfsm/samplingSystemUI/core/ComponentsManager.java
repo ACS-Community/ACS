@@ -17,6 +17,7 @@ import org.omg.CORBA.RepositoryHelper;
 import org.omg.CORBA.TCKind;
 import org.omg.CORBA.TypeCode;
 import org.omg.CORBA.InterfaceDefPackage.FullInterfaceDescription;
+import org.omg.CORBA.TypeCodePackage.BadKind;
 
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.container.ContainerServices;
@@ -84,27 +85,68 @@ public class ComponentsManager{
 	 * FIXME: Must handle the exception.
 	 **/
 	public List<String> getComponentProperties(String componentName){
-		ArrayList<String> tmp = new ArrayList<String>();
+
+		List<String> tmp = new ArrayList<String>();
 		if(componentExists(componentName)){
 			try{	
 				ComponentDescriptor desc = cServices.getComponentDescriptor(componentName);
 				InterfaceDef ifdef = InterfaceDefHelper.narrow(rep.lookup_id(desc.getType()));
 				if( ifdef == null )
 					return null;
+				// begin
+				/*
 				FullInterfaceDescription ifdes = ifdef.describe_interface();
-				for(int i = 0 ; i < ifdes.attributes.length ; i++){
-					TypeCode tc = ifdes.attributes[i].type;
-					InterfaceDef tcdef = InterfaceDefHelper.narrow(rep.lookup_id(tc.id()));
-					if(tc.kind() == TCKind.tk_objref && tcdef.is_a(IDL_PROPERTY))
-						tmp.add(ifdes.attributes[i].name);
+                for(int i = 0 ; i < ifdes.attributes.length ; i++){
+                        TypeCode tc = ifdes.attributes[i].type;
+                        if(tc.kind() != TCKind.tk_objref)
+                        	continue;
+                        InterfaceDef tcdef = InterfaceDefHelper.narrow(rep.lookup_id(tc.id()));
+                        if(tc.kind() == TCKind.tk_objref && tcdef.is_a(IDL_PROPERTY))
+                                tmp.add(ifdes.attributes[i].name);
+                }
+                //end
+                */
+				tmp = getComponentProperties(ifdef);
+			}catch(Exception e){
+				e.printStackTrace();
 				}
-				
-			}catch(Exception e){}
 		}
-		//String[] retval = new String[tmp.size()];
-		//tmp.toArray(retval);
+
 		return tmp;
 	}
+
+	/**
+	 * Recursive function to get the list of all the ACS properties
+	 * for a given IDL type. It scans the current interface, and then
+	 * it sub-scans the inherited types
+	 * 
+	 * @param ifdef The IDL interface defintion
+	 * @return The list of properties for the given IDL definition, including the parents' properties
+	 * @throws BadKind
+	 */
+	private List<String> getComponentProperties(InterfaceDef ifdef) throws BadKind {
+
+		List<String> tmp = new ArrayList<String>();
+		FullInterfaceDescription ifdes = ifdef.describe_interface();
+
+		// Look-up the properties of the current interface
+		
+        for(int i = 0 ; i < ifdes.attributes.length ; i++){
+        	TypeCode tc = ifdes.attributes[i].type;
+            if(tc.kind() != TCKind.tk_objref) // ojo
+            	continue;
+            InterfaceDef tcdef = InterfaceDefHelper.narrow(rep.lookup_id(tc.id()));
+            if(tc.kind() == TCKind.tk_objref && tcdef.is_a(IDL_PROPERTY))
+                    tmp.add(ifdes.attributes[i].name);
+        }
+		// Lookup the children properties
+		// TODO: Loop only over CharacteristicComponent interfaces
+		InterfaceDef [] ifaces = ifdef.base_interfaces();
+		for(int i = 0; i!= ifaces.length; i++){
+			tmp.addAll(getComponentProperties(ifaces[i]));
+		}
+		return tmp;
+	}	
 
 	/**
 	 * Verify if a property exists by name for a given component name.

@@ -39,9 +39,9 @@ public class StatusIcon extends JLabel {
 		mapping.put(CONNECTED_TO_MANAGER, new StatusDisplay("<html>Connected to ACS Manager<br>Disconnected from Sampling Manager</html>",
 				new ImageIcon(getClass().getClassLoader().getResource("console-suspended.png"))));
 		mapping.put(CONNECTED_TO_SAMPMANAGER, new StatusDisplay("<html>Connected to ACS Manager<br>Connected to Sampling Manager</html>",
-				new ImageIcon(getClass().getClassLoader().getResource("console-delay.png"))));
-		mapping.put(SAMPLING, new StatusDisplay("Sampling process is running",
 				new ImageIcon(getClass().getClassLoader().getResource("console-connected.png"))));
+		mapping.put(SAMPLING, new StatusDisplay("Sampling process is running",
+				new ImageIcon(getClass().getClassLoader().getResource("console-delay.png"))));
 		mapping.put(SAMPLING_WARNING, new StatusDisplay("<html>Sampling process is running<br>but error were found</html>",
 				new ImageIcon(getClass().getClassLoader().getResource("cl/utfsm/samplingSystemUI/img/console-warning.png"))));
 

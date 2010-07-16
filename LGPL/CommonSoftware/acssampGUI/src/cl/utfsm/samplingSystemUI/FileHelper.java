@@ -111,7 +111,7 @@ public class FileHelper {
 		IsoDateFormat formater = new IsoDateFormat();
 		long timestamp=data.get(0).get(0).getTime();
 		boolean done = false;
-		frequency=10000000L/frequency;
+		frequency=1000000L/frequency;
 		long w = (long) (frequency*prec);
 		int [] c= new int[data.size()];
 		openFile();

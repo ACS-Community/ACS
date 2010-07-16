@@ -1,8 +1,10 @@
 package cl.utfsm.samplingSystemUI;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,6 +33,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.JComboBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 
 
 /**
@@ -49,16 +54,17 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * Generated serialVersionUID by Eclipse
 	 */
 	private static final long serialVersionUID = 6190720245608994272L;
-
 	private SamplingSystemGUI ssg = null;
 	
 	//GUI Widgets
+	private JComboBox jcombo = null;
+	private JFrame frame = null;
 	private JButton startButton = null;
 	private JToggleButton pauseButton = null;
 	private JButton stopButton = null;
 	private JButton resetFrequencyButton = null;
 	private JButton cleanButton = null;
-	private JLabel frecuencyLabel = null;
+	private JLabel frequencyLabel = null;
 	private JSpinner freqSpinner = null;
 	private JLabel timeSampLabel = null;
 	private JSpinner timeSampSpinner = null;
@@ -72,6 +78,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	private JMenuItem addScriptMenuItem;
 	private JMenuItem delScriptMenuItem;
 	private JMenu scriptMenu;
+	private JMenu editMenu;
+	private JMenuItem delEditMenuItem;
 	private JMenuBar beanGrouperMenuBar;
 	
 	//For program control
@@ -105,7 +113,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * This method initializes the GUI, setting up the layout.
 	 */
 	private void initialize() {
-		this.setMinimumSize(new Dimension(1000,550));
+		this.setMinimumSize(new Dimension(990,550));
 		this.setLayout(new GridBagLayout());
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -161,19 +169,18 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridwidth = 5;
+		c.gridwidth = 5;//5
 		c.weightx = 1;
 		this.add(getFileNameLabel(), c);
 
-		c.gridx = 6;
-		c.gridwidth = 4;
+		c.gridx = 6;//6
+		c.gridwidth = 5;//5
 		c.weightx = 0;
 		c.anchor = GridBagConstraints.EAST;
 		this.add(getStatusComboBox(),c);
 		c.gridx = 10;
 		c.gridwidth = 1;
 		this.add(getStatusIcon(), c);
-
 		this.getStopButton().setEnabled(false);
 		this.getPauseButton().setEnabled(false);
 		
@@ -182,7 +189,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		//addWindowListener(this);
 		
 		//add menu
-		setJMenuBar(getBeanGrouperMenuBar());	
+		this.setJMenuBar(getBeanGrouperMenuBar());
 		samplers = new ArrayList<DataPrinter>();
 		
 		//question about close the graph window
@@ -198,6 +205,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * This Method ask to the user, if really want to close a Samling Group Window
 	 */
 	private void askClose(){
+
 	  Object[] options = {"Yes","No"};
   	  int n = JOptionPane.showOptionDialog(this,
 			  	"Would you really want to close this Sampling Group?"+"\n\n"+
@@ -219,12 +227,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		   }
 		   stopSample();
       }
-	  
-    else {
-  	  //do nothing
-      }
 	}
-
 	/**
 	 * This method clean the graphic<br>
 	 * This JButton when you click it remove all points in the trace<br>
@@ -250,6 +253,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		return cleanButton;
 	}
 	
+
 	private StatusIcon getStatusIcon() {
 		if( statusIcon == null ) {
 			statusIcon = new StatusIcon(StatusIcon.CONNECTED_TO_SAMPMANAGER);
@@ -423,11 +427,11 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * @return javax.swing.JLabel Reference to the Label says "Frequency".
 	 */
 	private JLabel getFrequencyLabel() {
-		if(frecuencyLabel==null){
-			frecuencyLabel=new JLabel();
-			frecuencyLabel.setText("Frequency (Hz): ");
+		if(frequencyLabel==null){
+			frequencyLabel=new JLabel();
+			frequencyLabel.setText("Frequency (Hz): ");
 		}
-		return frecuencyLabel;
+		return frequencyLabel;
 	}
 	
 	/**
@@ -444,7 +448,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			freqSpinner.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
 					for( DataPrinter dp: samplers){
-						dp.setFrecuency(((SpinnerNumberModel)freqSpinner.getModel()).getNumber().floatValue());
+						double freq = ((SpinnerNumberModel)freqSpinner.getModel()).getNumber().doubleValue();
+						dp.setFrequency(freq);
 					}
 				}
 
@@ -499,7 +504,6 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			
 				@Override
 				public void stateChanged(ChangeEvent e) {
-					// TODO Auto-generated method stub
 					if( saveButton.isSelected() == true ){
 						saveButton.setToolTipText("Press to stop saving sampled data to file");
 						for( DataPrinter dp: samplers){
@@ -551,6 +555,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		if (beanGrouperMenuBar == null) {
 			beanGrouperMenuBar = new JMenuBar();
 			beanGrouperMenuBar.add(getScriptMenu());
+			beanGrouperMenuBar.add(getEditMenu());
 		}
 		return beanGrouperMenuBar;
 	}
@@ -572,6 +577,90 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			});
 		}
 		return scriptMenu;
+	}
+	
+	private JMenu getEditMenu(){
+		if (editMenu == null) {
+			editMenu = new JMenu();
+			editMenu.setText("Edit");
+			editMenu.add(getDelEditMenuItem());
+		}
+		return editMenu;
+	}
+	
+	private JMenuItem getDelEditMenuItem() {
+		if(delEditMenuItem == null) {
+			delEditMenuItem = new JMenuItem();
+			delEditMenuItem.setText("Delete Property");
+			delEditMenuItem.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					createDelPropWindow();
+				}
+			} );
+		}
+		return delEditMenuItem;
+	}
+	
+	private void createDelPropWindow() {
+		if(frame != null) {
+			return;
+		}
+		JLabel delLabel = new JLabel("Select the Component:Property to delete:");
+		jcombo      = new JComboBox();
+		frame     = new JFrame("Delete");
+		JPanel    panel     = new JPanel(new BorderLayout( 5, 5 ));
+
+		JButton   delButton = new JButton("Delete");
+		for(DataPrinter wp : samplers){
+			jcombo.addItem(wp.component+":"+wp.property);
+		}
+		
+		delButton.addActionListener( new java.awt.event.ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String comProp[] = new String[2];
+				comProp          = jcombo.getSelectedItem().toString().split(":");
+				removeSamp(comProp[0],comProp[1]);
+				jcombo.removeItemAt(jcombo.getSelectedIndex());
+				addToStatusComboBox(comProp[0] + "->" + comProp[1] + "removed");
+				
+			}
+		});
+		delLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		panel.add(delLabel, BorderLayout.NORTH);
+		jcombo.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		panel.add(jcombo, BorderLayout.CENTER);
+		delButton.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		panel.add(delButton, BorderLayout.EAST);
+		//frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		frame.add(panel);
+		frame.pack();
+		frame.setVisible(true);
+		frame.addWindowListener(new java.awt.event.WindowListener(){
+
+			@Override
+			public void windowActivated(WindowEvent e) {}
+
+			@Override
+			public void windowClosed(WindowEvent e) {}
+
+			@Override
+			public void windowClosing(WindowEvent e) {}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				frame = null;
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {}
+
+			@Override
+			public void windowIconified(WindowEvent e) {}
+
+			@Override
+			public void windowOpened(WindowEvent e) {}
+			
+		});
 	}
 
 	private JMenuItem getDelScriptMenuItem() {
@@ -636,15 +725,30 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			c.fill = GridBagConstraints.BOTH;
 			c.weighty = 1;
 			c.weightx = 1;
-			c.gridwidth = 11;
+			c.gridwidth = 12;
 			this.add( (JPanel)w.getWidget(), c);
 		}
 		updateLabel();
+		//w.getSamplingWidget().repaint();
 		samplers.add(w);
+	}
+
+	/** This method removes a sample from the chart */
+	
+	private void removeSamp(String component, String property) {
+		for(int i = 0; i < samplers.size() ; i++) {
+			if(samplers.get(i).getComponent().equals(component) && samplers.get(i).getProperty().equals(property)){
+				((PlotWidget)samplers.get(i).getSamplingWidget() ).removeTrace(component, property);//remove from GUI
+				samplers.get(i).getSamplingWidget().repaint();
+				samplers.remove(i);//remove from DataPrinter Arraylist
+				ssg.delFromSampled(component + ":" + property);//remove from sampled vector
+				break;	
+			}
+		}
 	}
 	
 	/**
-	 * This method ads to the Sampling Group, a new sample. This method is used by <br>
+	 * This method adds to the Sampling Group, a new sample. This method is used by <br>
 	 * {@link SamplingSystemGUI} to add Sampling to the Sampling Group, represented by {@link BeanGrouper}.<br>
 	 * - Creates a {@link PlotPrinter}, which extends from {@link DataPrinter}.
 	 * - Set the Components and Properties to the PlotPrinter
@@ -675,7 +779,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		w.setDumpToFile(getSaveButton().isSelected());			
 		addSamp(w);
 		ssg.addToSampled(component + ":" + property);
-		
+		if(frame != null)
+			jcombo.addItem(component+":"+property);
 	}
 
 	public void updateLabel(){
@@ -706,13 +811,12 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			getFileNameLabel().setText("Sampling to file: " + _sdc.getFilename());
 			getFileNameLabel().setToolTipText("Saving data to: " + _sdc.getFilename() );
 		}else{
-			getFileNameLabel().setText("Currently not saving data.");
 		}
 		
 		prev_status = getStatusIcon().getStatus();
 		
 		for(DataPrinter wp : samplers){
-			wp.setFrecuency(freq);
+			wp.setFrequency(freq);
 			try {
 				wp.startSample();
 				isStopped = false;
@@ -867,7 +971,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		return spa;
 	}
 
-	public void loadConfiguration(long frequency, int timeWindow, int samplingTime){
+	public void loadConfiguration(double frequency, int timeWindow, int samplingTime){
 		this.getFreqSpinner().setValue(frequency);
 		this.getTimeWindowSpinner().setValue(timeWindow);
 		this.getTimeSampSpinner().setValue(samplingTime);		
@@ -896,7 +1000,6 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		public Watchdog(int mins){
 			this.setPriority(Thread.MAX_PRIORITY);
 			sleepTime=mins*60*1000;
-			//System.out.println("Creating thread");
 		}
 		
 		/**
@@ -921,7 +1024,6 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		 */
 		public ScriptRunner(ScriptExecutor script){
 			this.setPriority(Thread.MAX_PRIORITY);
-			//System.out.println("Creating thread");
 		}
 		
 		/**
@@ -961,7 +1063,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	private void setTimeWindow() { //double frequency, int timeWindow){
 		double frequency = ((SpinnerNumberModel)this.getFreqSpinner().getModel()).getNumber().doubleValue();
 		int timeWindow = ((SpinnerNumberModel)this.getTimeWindowSpinner().getModel()).getNumber().intValue();
-		
-		samplers.get(0).getWidget().setTimeWindow(frequency, timeWindow);			
+		for(int i=0;i<samplers.size();i++){
+			samplers.get(i).getWidget().setTimeWindow(frequency, timeWindow);
+		}
 	}
 }

@@ -91,8 +91,8 @@ public class BeanLister extends SamplingWidget{
 	}
 
 	@Override
-	public void setTimeWindow(double frecuency, int time) {
-		// TODO Auto-generated method stub
+	public void setTimeWindow(double frequency, int time) {
+		System.out.println("NOT IMPLEMENTED");
 		
 	}
 }

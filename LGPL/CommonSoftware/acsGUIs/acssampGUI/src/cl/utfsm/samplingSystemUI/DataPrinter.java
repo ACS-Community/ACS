@@ -16,14 +16,36 @@ import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerUITool;
 import cl.utfsm.samplingSystemUI.core.ThreadCommunicator;
 
+
+
+/**
+ * Class that handles the comunication with the acs sampling system.
+ * This class extends the core funtionality given by SamplingManagerUITool
+ * @see SamplingManagerUITool
+ *
+ */ 
 public abstract class DataPrinter extends SamplingManagerUITool{
 	
-	protected long frecuency=1000000; //set frequency default to 10Hz
+    /*Information required by the acs sampling system.
+     * @param name          component to be sampled (e.g. LAMP1)
+     * @param property      property to be sampled (e.g brightness)
+     * @param frequency     sampling frequency: period between two consecutive
+     *                      sampling
+     *                      (units are 100ns; e.g. 1000000 means 0.1 sec i.e.
+     *                       10 sample per second)
+     * @param reportRate    number of second the process should buffer 
+     *                      before actually sending (notifying) data
+     *                      (units are 100ns; e.g. 10000000 means collect data
+     *                       for 1 second)
+     */
+    private static long FREQ_CONV=10000000L;//1E7
+	protected long frequency=FREQ_CONV; //set frequency default to 1 Hz.
 	protected long reportRate=1;
 	protected String component;
 	protected String property;
+
 	protected SamplingWidget widget;
-	private Sampler samp;
+	public Sampler samp = null;
 	private static int initializations=0;
 	private boolean componentAvailable = true;
 	private SamplingSystemGUI ssg = null;
@@ -32,8 +54,14 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		this.ssg = ssg;
 	}
 	
-	public double getFrecuency() {
-		return (double)(10000000L/frecuency);
+	/**
+	* Returns the frequency in Hz.
+	*
+	* @return double. frequency in Hz.
+	*/
+	public double getFrequency() {
+		double freq = (double)(frequency/FREQ_CONV);
+		return freq;
 	}
 
 	public long getReportRate() {
@@ -48,6 +76,9 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		return property;
 	}
 	
+	public SamplingWidget getSamplingWidget(){
+		return widget;
+	}
 	public void setComponent(String component) {
 		this.component = component;
 	}
@@ -56,15 +87,22 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		this.property = property;
 	}
 
-	public void setFrecuency(double f) {
-		this.frecuency=(long)(10000000/f);
+	/**
+	* Sets the frequency in the sampObj.
+	*
+	* @param double frequency in Hz. Internally its converted into
+    *        the value that sampObj requires.
+    * @see SampObj
+	*/
+	public void setFrequency(double f) {
+		long freq = (long)(FREQ_CONV/f);
+		this.frequency = freq;
 	}
 
 	public void setReportRate(long reportRate) {
 		this.reportRate = reportRate;
 	}
 	
-
 	public IGraphicalUpdater getWidget() {
 		return widget;
 	}
@@ -112,7 +150,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 
 		try {
 			SamplingManagerUITool.startSample(new SampDetail(component,property,
-					(long)this.frecuency,reportRate));
+					(long)this.frequency,reportRate));
 		} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx e) {
 			setComponentAvailable(false,"Cannot access component implementation");
 			throw e;
@@ -134,7 +172,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		initializations--;
 			if( componentAvailable == true ) {
 				samp.halt();
-				SamplingManagerUITool.stopSample(new SampDetail(component, property, (long)frecuency, reportRate));
+				SamplingManagerUITool.stopSample(new SampDetail(component, property, (long)frequency, reportRate));
 				postProcessing();
 			}
 		}
@@ -162,6 +200,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		}
 	}
 	
+	
 	/**
 	 * Allows to handle whether a component is or isn't available to be sampled.
 	 * @param available True if the component is currently available.
@@ -175,10 +214,18 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		return componentAvailable;
 	}
 	
+	public boolean isStopped() {
+		if(samp == null){
+			return true;
+		}
+		return samp.isStopped();
+	}
+	
+	
 	public SerializableProperty getSerializableProperty(){
 		SerializableProperty sp = new SerializableProperty();
 		sp.setComponent(getComponent());
-		sp.setFrequency(getFrecuency());
+		sp.setFrequency(getFrequency());
 		sp.setProperty(getProperty());
 		return sp;
 	}
@@ -202,6 +249,13 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		 */
 		private boolean pause = false;
 
+		public boolean isStopped() {
+			return stop;
+		}
+		
+		public boolean isPaused() {
+			return pause;
+		}
 		public void setPause(boolean p) {
 			pause = p;
 		}
@@ -211,7 +265,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 		}
 
 		public void run(){
-			//int timeout_ms = (int)(1000/getFrecuency())*10; //maximum of 10 times of delay
+			//int timeout_ms = (int)(1000/getFrequency())*10; //maximum of 10 times of delay
 			//Timer timer = new Timer( timeout_ms );
 			boolean runningTimer = false;
 			LinkedBlockingQueue<DataItem> cChannel;
@@ -226,7 +280,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 					Thread.sleep(100);
 					//"NC_LAMP1_brightness_10000000_1"
 					cChannel = ThreadCommunicator.getInstance().getChannel("NC_"+component+"_"+
-							property+"_"+frecuency+"_"+reportRate);
+							property+"_"+frequency+"_"+reportRate);
 					
 					if(cChannel==null)
 						continue;

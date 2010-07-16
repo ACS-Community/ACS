@@ -10,15 +10,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashSet;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -34,6 +32,24 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 
 import cl.utfsm.samplingSystemUI.core.SamplingManager;
 import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
@@ -50,17 +66,18 @@ import cl.utfsm.samplingSystemUI.core.SamplingManagerException;
  * @author Rodrigo Tobar <rtobar@inf.utfsm.cl>
  * @author Alejandro Baltra <abaltra@alumnos.inf.utfsm.cl>
  * @author Arturo Hoffstadt <ahoffsta@inf.utfsm.cl>
+ * @author Cristián Maureria <cmaureir@inf.utfsm.cl>
  */
 public class SamplingSystemGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	
 	public String MAN_NAME = "";
-	private final static String DEFAULT_STATUS_FILENAME = "default.ssgst";
 	
 	private LinkedList<List<String>> propList;
 	private String[] compList = null;
 	private ArrayList<SerializableProperty> status;
+	private HashSet<String> samplingGroups;
 	private ArrayList<BeanGrouper> BeanGrouperList;
 	
 	// Menu Widgets
@@ -217,7 +234,15 @@ public class SamplingSystemGUI extends JFrame {
 				    chooser.setFileFilter(filter);
 				    int returnVal = chooser.showOpenDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
 				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	readStatusFile(chooser.getSelectedFile().getAbsolutePath(),false);
+				    	try {
+							readStatusFile(chooser.getSelectedFile().getAbsolutePath(),false);
+						} catch (ParserConfigurationException e1) {
+							e1.printStackTrace();
+						} catch (SAXException e1) {
+							e1.printStackTrace();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 				    }
 				}
 			});
@@ -238,7 +263,21 @@ public class SamplingSystemGUI extends JFrame {
 				    JFileChooser chooser = new JFileChooser();
 				    int returnVal = chooser.showSaveDialog(cl.utfsm.samplingSystemUI.SamplingSystemGUI.this);
 				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				    	writeStatusFile(chooser.getSelectedFile().getAbsolutePath() + ".ssgst");
+				    	try {
+				    		String file = chooser.getSelectedFile().getAbsolutePath();
+				    		if(file.endsWith(".ssgst")){
+				    			writeStatusFile(file);
+				    		}
+				    		else{
+				    			writeStatusFile(file + ".ssgst");
+				    		}
+						} catch (ParserConfigurationException e1) {
+							e1.printStackTrace();
+						} catch (TransformerException e1) {
+							e1.printStackTrace();
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
 				    }
 				}
 			});
@@ -422,7 +461,7 @@ public class SamplingSystemGUI extends JFrame {
 	private JComboBox getComponentComboBox() {
 		if (ComponentComboBox == null) {
 			ComponentComboBox = new JComboBox();
-			ComponentComboBox.setPreferredSize(new Dimension(270, 24));
+			ComponentComboBox.setPreferredSize(new Dimension(320, 24));
 			ComponentComboBox.setSize(ComponentComboBox.getPreferredSize());
 			ComponentComboBox.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
@@ -487,7 +526,7 @@ public class SamplingSystemGUI extends JFrame {
 	private JComboBox getPropertyComboBox() {
 		if (PropertyComboBox == null) {
 			PropertyComboBox = new JComboBox();
-			PropertyComboBox.setPreferredSize(new Dimension(270, 24));
+			PropertyComboBox.setPreferredSize(new Dimension(320, 24));
 			PropertyComboBox.setSize(PropertyComboBox.getPreferredSize());
 		}
 		return PropertyComboBox;
@@ -644,7 +683,7 @@ public class SamplingSystemGUI extends JFrame {
 		return null;
 	}
 
-	public void loadWindow(){
+	public void loadWindow() throws ParserConfigurationException, SAXException, IOException{
 		/* Select the sampling manager */
 		String s = (String)JOptionPane.showInputDialog(this,
 				"Please Select a Sampling Manager",
@@ -663,14 +702,24 @@ public class SamplingSystemGUI extends JFrame {
 		/* Show the main window */
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		/*
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				if(status!=null){
-					writeStatusFile();
+					try {
+						writeStatusFile();
+					} catch (ParserConfigurationException e1) {
+						
+						e1.printStackTrace();
+					} catch (TransformerException e1) {
+						
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
-		readStatusFile(true);
+		*/
+		//readStatusFile(true);
 	}
 	
 	private void checkSamplingManager() {
@@ -685,6 +734,7 @@ public class SamplingSystemGUI extends JFrame {
 					for (BeanGrouper bg: BeanGrouperList) {
 						bg.setStatus(StatusIcon.CONNECTED_TO_MANAGER);
 					}
+					JOptionPane.showMessageDialog(null, "Can't connect to Sampling Manager. Isn't posible start some sampling");
 					return;
 				}
 				statusIcon.setStatus(StatusIcon.CONNECTED_TO_SAMPMANAGER);
@@ -717,13 +767,36 @@ public class SamplingSystemGUI extends JFrame {
 			PropertyComboBox.addItem(s);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void readStatusFile(String filename,boolean startup){
-		FileInputStream fis = null;
-		ObjectInputStream in = null;
+	private boolean validateStatusFile(String filename){
+		final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+        final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
+        final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+        final String SCHEMA_FILE = "status.xsd";
+        final String XML_FILE= filename;
+        boolean valid = false;
+        	  
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        documentBuilderFactory.setValidating(true);
+        try {
+        	documentBuilderFactory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
+            documentBuilderFactory.setAttribute(JAXP_SCHEMA_SOURCE, new File(SCHEMA_FILE));
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+//              documentBuilder.setErrorHandler(new ParserErrorHandler());  
+            Document parse = documentBuilder.parse(new File(XML_FILE));
+            if (parse != null)
+            	valid = true;
+        } catch (SAXException saxEx){
+                System.out.println("SAXException: XML bad syntax");
+        } catch (Exception ex) {
+                System.out.println("Exception: undiscovered exception");
+        }
+		return valid;
+	}
+	
+	private void readStatusFile(String filename,boolean startup) throws ParserConfigurationException, SAXException, IOException{
+		
 		try {
-			fis = new FileInputStream(filename);
-			in = new ObjectInputStream(fis);
 			if(startup){
 				int n = JOptionPane.showConfirmDialog(this,
 						"An old status file has been found\nWould you like to load it?", 
@@ -731,53 +804,205 @@ public class SamplingSystemGUI extends JFrame {
 						JOptionPane.YES_NO_OPTION, 
 						JOptionPane.INFORMATION_MESSAGE
 						);
-				if(n!=0){
-					in.close();
+				if(n == JOptionPane.NO_OPTION){
 					return;
 				}
 			}
-			status = (ArrayList<SerializableProperty>)in.readObject();
-			in.close();
-			for(SerializableProperty p: status){
-				addToSampling(p.getComponent(), p.getProperty(), p.getSamplingGroup());
-				for( BeanGrouper bg: BeanGrouperList){
-					if( bg.getGroupName().equals(p.getSamplingGroup() ) ){
-						bg.loadConfiguration(p.getFrequency(), p.getTimeWindow(), p.getSamplingTime());
-						break;
-					}
-				}
+			if(validateStatusFile(filename)){
+					
+				 DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		         Document doc = docBuilder.parse (new File(filename));
+		         doc.getDocumentElement ().normalize ();	
+		         NodeList listOfSamplingGroup = doc.getElementsByTagName("SamplingGroup");
+
+		         for(int s=0; s<listOfSamplingGroup.getLength() ; s++){
+	
+		        	 Node firstSamplingGroup = listOfSamplingGroup.item(s);
+		             if(firstSamplingGroup.getNodeType() == Node.ELEMENT_NODE){
+		            	 Element firstSamplingGroupElement = (Element)firstSamplingGroup;
+		                 //-------
+		                 NodeList nameList = firstSamplingGroupElement.getElementsByTagName("SamplingGroupName");
+		                 Element nameElement = (Element)nameList.item(0);
+	
+		                 NodeList nameText = nameElement.getChildNodes();
+		                 String samplingGroupName = ((Node)nameText.item(0)).getNodeValue().trim();
+	                     //-------
+	                     NodeList freqList = firstSamplingGroupElement.getElementsByTagName("Frequency");
+	                     Element freqElement = (Element)freqList.item(0);
+	                     NodeList freqText = freqElement.getChildNodes();
+	                     double frequency = Double.parseDouble(((Node)freqText.item(0)).getNodeValue().trim());
+	                     //-------
+	                     NodeList stList = firstSamplingGroupElement.getElementsByTagName("SamplingTime");
+	                     Element stElement = (Element)stList.item(0);
+	                     NodeList stText = stElement.getChildNodes();
+	                     int samplingtime = Integer.parseInt(((Node)stText.item(0)).getNodeValue().trim());
+	                     //-------
+	                     NodeList twList = firstSamplingGroupElement.getElementsByTagName("TimeWindow");
+	                     Element twElement = (Element)twList.item(0);
+	                     NodeList twText = twElement.getChildNodes();
+	                     int timewindow = Integer.parseInt(((Node)twText.item(0)).getNodeValue().trim());
+	                     //----- Properties
+	                     NodeList listProperties = firstSamplingGroupElement.getElementsByTagName("Sample");
+	 
+	                     for(int o=0; o<listProperties.getLength() ; o++){
+	                    	 Node firstProperty  = listProperties.item(o);
+	                    	 	if(firstProperty.getNodeType() == Node.ELEMENT_NODE){
+	                    	 		Element firstPropertyElement = (Element)firstProperty;
+	                                //-------                                                                   
+	                                NodeList compList = firstPropertyElement.getElementsByTagName("component");
+	                                Element compElement = (Element)compList.item(0);
+	                                NodeList compText = compElement.getChildNodes();
+	                                String component = ((Node)compText.item(0)).getNodeValue().trim();
+	                                //-------                                                                   
+	                                NodeList propList = firstPropertyElement.getElementsByTagName("property");
+	                                Element propElement = (Element)propList.item(0);
+	                                NodeList propText = propElement.getChildNodes();
+	                                String property = ((Node)propText.item(0)).getNodeValue().trim();
+	                                addToSampling(component, property, samplingGroupName);
+	                                //System.out.println("addToSampling"+component+","+property+","+samplingGroupName);
+		                        }
+		                    }
+		                    for( BeanGrouper bg: BeanGrouperList){
+		    					if( bg.getGroupName().equals(samplingGroupName) ){
+		    						bg.loadConfiguration(frequency, timewindow, samplingtime);
+		    						System.out.println("loadConfiguration"+bg.getGroupName()+ " ="+frequency+","+timewindow+","+samplingtime);
+		    						break;
+		    					}
+		    				}
+		                }
+		            }
+			  }
+			else{
+				JOptionPane.showMessageDialog(this, "Your XML file have a bad format, please check it");
 			}
-		} catch (FileNotFoundException e) {
-			System.out.println("FILE NOT FOUND");
-		} catch (IOException e) {
-			System.out.println("IO EXCEPTION");
-		} catch (ClassNotFoundException e) {
-			System.out.println("CLASS NOT FOUND EXCEPTION");
-		}
+
+	        }
+			catch (SAXParseException err) {
+	        System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
+	        System.out.println(" " + err.getMessage ());
+	        }
+			
+			catch (SAXException e) {
+	        Exception x = e.getException ();
+	        ((x == null) ? e : x).printStackTrace ();
+	        }
+			
+			catch (Throwable t) {
+	        t.printStackTrace ();
+	        }
+			
 	}
 	
-	private void readStatusFile(boolean startup){
-		readStatusFile(DEFAULT_STATUS_FILENAME,startup);
-	}
-	
-	private void writeStatusFile(String filename){
+	private void writeStatusFile(String filename) throws ParserConfigurationException, TransformerException, FileNotFoundException{
 		
 		status = new ArrayList<SerializableProperty>();
+		samplingGroups = new HashSet<String>();
+		// Nuevo XML
+	    //BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
+	    String root = "SamplingStatus";
+
+	    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+	    Document document = documentBuilder.newDocument();
+
+	    Element rootElement = document.createElement(root);
+	    rootElement.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance");
+	    rootElement.setAttribute("xsi:noNamespaceSchemaLocation","status.xsd");
+	    document.appendChild(rootElement);
 		
+		
+		
+		int i = 0;
 		for( BeanGrouper bg: BeanGrouperList){
 			for( SerializableProperty sp: bg.getSerializableProperty()){
-				status.add(sp);
+				status.add(i,sp);
+				samplingGroups.add(sp.getSamplingGroup());
+				i++;
 			}
 		}
-		if( status.size() == 0 )
+		int index = 0;
+		for(int l=0; l<samplingGroups.size();l++){
+		
+			for(i=0;i<status.size();i++){
+				if(samplingGroups.toArray(new String[0])[l] == status.get(i).getSamplingGroup()){
+					index = i;
+					break;
+				}
+			}
+			String groupName = "SamplingGroup";
+			Element groupElement = document.createElement(groupName);
+			rootElement.appendChild(groupElement);
+	 
+		    String name = "SamplingGroupName";
+		    String name_data = status.get(index).getSamplingGroup();
+		    Element name_element = document.createElement(name);
+		    name_element.appendChild(document.createTextNode(name_data));
+		    groupElement.appendChild(name_element);
+
+		    String freq = "Frequency";
+		    String freq_data = Double.toString(status.get(i).getFrequency())	;
+		    Element freq_element = document.createElement(freq);
+		    freq_element.appendChild(document.createTextNode(freq_data));
+		    groupElement.appendChild(freq_element);
+
+		    String st = "SamplingTime";
+		    String st_data = Integer.toString(status.get(index).getSamplingTime());
+		    Element st_element = document.createElement(st);
+		    st_element.appendChild(document.createTextNode(st_data));
+		    groupElement.appendChild(st_element);
+
+		    String tw = "TimeWindow";
+		    String tw_data = Integer.toString(status.get(index).getTimeWindow());
+		    Element tw_element = document.createElement(tw);
+		    tw_element.appendChild(document.createTextNode(tw_data));
+		    groupElement.appendChild(tw_element);
+		    
+		   			
+			for(i=0;i<status.size();i++){
+				if(samplingGroups.toArray(new String[0])[l] == status.get(i).getSamplingGroup()){
+					/*Properties*/
+					String propertiesName = "Sample";
+				    Element propertiesElement = document.createElement(propertiesName);
+				    groupElement.appendChild(propertiesElement);
+				    
+					String comp = "component";
+					String comp_data = status.get(i).getComponent();
+					Element comp_element = document.createElement(comp);
+					comp_element.appendChild(document.createTextNode(comp_data));
+					propertiesElement.appendChild(comp_element);
+
+					String prop = "property";
+					String prop_data = status.get(i).getProperty();
+					Element prop_element = document.createElement(prop);
+					prop_element.appendChild(document.createTextNode(prop_data));
+					propertiesElement.appendChild(prop_element);
+				}
+			}
+		}
+		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	    Transformer transformer = transformerFactory.newTransformer();
+	    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+
+	    if( status.size() == 0 )
 			return;
 		
 		File file = new File(filename);
 		if( file.exists() ) file.delete();
+	    
+	    DOMSource source = new DOMSource(document);
+	    //StreamResult result =  new StreamResult(System.out);
+	    Result result = new StreamResult(new FileOutputStream(filename));
+	    transformer.transform(source, result);
 		
-		FileOutputStream fos = null;
-		ObjectOutputStream out = null;
+		//FileOutputStream fos = null;
+		//ObjectOutputStream out = null;
 		
+		/*
 		try {
 			fos = new FileOutputStream(filename);
 			out = new ObjectOutputStream(fos);
@@ -786,11 +1011,9 @@ public class SamplingSystemGUI extends JFrame {
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
 		}
+		*/
 	}
 	
-	private void writeStatusFile(){
-		writeStatusFile(DEFAULT_STATUS_FILENAME);
-	}
 	
 	/**
 	 * Removes from the local list of Component/Properties that are being

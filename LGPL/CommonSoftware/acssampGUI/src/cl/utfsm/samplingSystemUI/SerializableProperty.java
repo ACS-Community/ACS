@@ -13,8 +13,8 @@ public class SerializableProperty implements Serializable {
 	private String samplingTime;
 	private String timeWindow;
 	
-	public long getFrequency() {
-		return Long.parseLong(frequency);
+	public double getFrequency() {
+		return Double.parseDouble(frequency);
 	}
 	public void setFrequency(double d) {
 		this.frequency = String.valueOf(d);
@@ -31,7 +31,6 @@ public class SerializableProperty implements Serializable {
 	public void setTimeWindow(int timeWindow) {
 		this.timeWindow = String.valueOf(timeWindow);
 	}
-	
 	public String getComponent() {
 		return component;
 	}
