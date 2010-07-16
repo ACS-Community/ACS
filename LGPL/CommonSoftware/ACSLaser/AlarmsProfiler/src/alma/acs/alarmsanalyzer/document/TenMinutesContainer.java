@@ -75,9 +75,9 @@ public class TenMinutesContainer implements Runnable, SourceListener {
 	}
 	
 	/**
-	 * The time interval for recording alarms
+	 * The time interval (in minutes) for recording alarms
 	 */
-	public static final int MINUTESTIMEINTERVAL=2;
+	public static final int MINUTESTIMEINTERVAL=10;
 	
 	/**
 	 * <code>true</code> if the container has been shut down
