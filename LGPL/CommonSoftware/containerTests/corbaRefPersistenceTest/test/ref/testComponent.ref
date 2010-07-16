@@ -1,4 +1,3 @@
-1 - Max timeout exceeded!
 1 - Starting Clients...
 1 - pyClient: Ready
 1 - cppClient: Ready
@@ -28,7 +27,7 @@
 1 - Invoking Component methods after kill...
 1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
 1 - pyClient: Call Success:   Failed with Exception: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
-1 - cppClient: Call Success:  Failed with Exceptions: HELLOWORLD_CPP HELLOWORLD_JAVA HELLOWORLD_PY
+1 - cppClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_PY  Failed with Exceptions: HELLOWORLD_CPP
 1 - 
 1 - Retry invoking Component methods...
 1 - javaClient: Call Success: HELLOWORLD_JAVA HELLOWORLD_CPP HELLOWORLD_PY  Failed with Exception:
@@ -53,7 +52,6 @@
 1 - cppClient: Bye
 1 - 
 1 - Stopping javaContainer...
-1 - Command '['acsStopContainer', 'javaContainer']' returned non-zero exit status 6
 1 - Stopping cppContainer...
 1 - Stopping pyContainer...
 1 - End of Processing
