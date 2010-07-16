@@ -144,6 +144,9 @@ public class AlarmFlood implements Runnable,  AlarmCategoryListener {
 	 * 			It is a negative number, if a flood started but it is not yet finished
 	 */
 	public long lengthOfFlood() {
+		if (endTimeOfFlood==0) {
+			return System.currentTimeMillis()-startTimeOfFlood;
+		} 
 		return endTimeOfFlood-startTimeOfFlood;
 	}
 	
@@ -161,7 +164,7 @@ public class AlarmFlood implements Runnable,  AlarmCategoryListener {
 	 */
 	@Override
 	public void run() {
-		while (true && !stopped) {
+		while (!stopped) {
 			synchronized (this) {
 				actualCounter=new AlarmPerMinute(System.currentTimeMillis());
 				while (counter.size()>10) {
@@ -179,9 +182,9 @@ public class AlarmFlood implements Runnable,  AlarmCategoryListener {
 				// The flood has finished: exit
 				break;
 			}
-			container.refresh();
 		}
 		container.doneFlood();
+		System.out.println("Thread terminated");
 	}
 	
 	/**
@@ -224,7 +227,7 @@ public class AlarmFlood implements Runnable,  AlarmCategoryListener {
 			startTimeOfFlood=counter.get(idx).startTime;
 			endTimeOfFlood=0;
 			alarmsInFlood=alarms;
-			System.out.println("No flood started NOW");
+			System.out.println("Flood started NOW");
 			return false;
 		}
 		// Check if the current flood just finished
@@ -258,15 +261,11 @@ public class AlarmFlood implements Runnable,  AlarmCategoryListener {
 	 */
 	@Override
 	public synchronized void onAlarm(Alarm alarm) {
-		System.out.print("Received "+alarm.getAlarmId()+", reduced="+alarm.getStatus().isReduced()+", acrtive="+alarm.getStatus().isActive()+" ==>> ");
 		if (!alarm.getStatus().isActive()) {
 			return;
 		} 
 		if (alarm.getStatus().isReduced()) {
-			System.out.println("Alarm discarded\n");
 			return;
-		} else {
-			System.out.println("Alarm accepted\n");
 		}
 		if (!alarm.getStatus().isReduced()) {
 			actualCounter.numOfAlarms++;
