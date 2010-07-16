@@ -86,7 +86,7 @@ public abstract class DocumentBase implements Runnable {
 			display.syncExec(
 				  new Runnable() {
 				    public void run(){
-				    	if (!shutdown) {
+				    	if (!shutdown && !tableViewer.getControl().isDisposed()) {
 				    		tableViewer.refresh();
 				    	}
 				    }
