@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsComponentSmartPtr.h,v 1.13 2009/11/04 20:44:29 agrimstrup Exp $"
+* "@(#) $Id: acsComponentSmartPtr.h,v 1.14 2010/07/17 20:43:02 agrimstrup Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -153,14 +153,14 @@ class ComponentStorage
      * isValid
      * Return true if handle is a valid pointer
      */
-    bool inline isValid(const ComponentStorage& sp)
+    bool inline isValid(const ComponentStorage& sp) const
 	{ return sp.isNil() || sp.handle != (H *)0; }
 
     /**
      * isNil
      * Return true if pointer is a CORBA nil value
      */
-    bool inline isNil()
+    bool inline isNil() const
     { return CORBA::is_nil(pointee_);}
 
 
@@ -398,15 +398,6 @@ class SmartPtr
 	    this->setValues((H *)0, false, SP::Default());
 	    OP::Swap(temp);
 	}
-
-        friend inline void Release(SmartPtr& sp, typename SP::StoredType& p)
-        {
-            p = GetImplRef(sp);
-            GetImplRef(sp) = SP::Default();
-        }
-
-        friend inline void Reset(SmartPtr& sp, typename SP::StoredType p)
-        { SmartPtr(p).Swap(sp); }
 
         template
         <
