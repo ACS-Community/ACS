@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.98 2010/06/28 09:53:41 rtobar Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.99 2010/07/18 15:39:25 agrimstrup Exp $"
 #
 #
 #
@@ -1062,7 +1062,7 @@ CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar$PATH_SEP$JACORB_HOME/lib/l
 # the minor version number seem not used.
 # If I do it before, I get the system python and not the one we want to use.
 #
-PYTHONVER=`$PYTHON_ROOT/bin/python -V 2>&1 | awk '{print $2}' | awk -F. '{print $1 "." $2}'`
+PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
     PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
