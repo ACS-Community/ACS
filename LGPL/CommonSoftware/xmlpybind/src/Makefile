@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2010/03/29 12:19:30 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/07/20 10:03:52 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -17,12 +17,12 @@
 #    None
 #------------------------------------------------------------------------
 
-SCRIPTS		= generateXsdPythonBinding
+#SCRIPTS		= generateXsdPythonBinding
 
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         = 
+PY_SCRIPTS         = generateXsdPythonBinding
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
