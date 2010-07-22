@@ -1,11 +1,14 @@
 #*******************************************************************************
 # ACS project Makefile
 #
-# "@(#) $Id: Makefile,v 1.4 2007/01/09 08:38:37 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/07/22 14:28:41 jagonzal Exp $"
 #
 # Makefile of acstestcomp
 #
 # $Log: Makefile,v $
+# Revision 1.5  2010/07/22 14:28:41  jagonzal
+# Python scripts must be under PY_SCRIPTS rather than SCRIPTS
+#
 # Revision 1.4  2007/01/09 08:38:37  cparedes
 # Moving that use a xml with a special character from cdb to here.
 #
@@ -95,7 +98,7 @@ INCLUDES        = acstestcompcppTestCDBCompImpl.h
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = 
+LIBRARIES       =  
 LIBRARIES_L     = acstestcompcppTestCDBCompImpl 
 
 #
@@ -106,7 +109,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = TATPrologue TATEpilogue cdbXmlSpecialCharTest cdbInitMount
+SCRIPTS_L       = TATPrologue TATEpilogue cdbXmlSpecialCharTest
 
 #
 # TCL scripts (public and local)
@@ -117,7 +120,7 @@ TCL_SCRIPTS_L   =
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS         =
+PY_SCRIPTS         = cdbInitMount
 PY_SCRIPTS_L       =
 
 PY_MODULES         =
