@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2008/10/09 16:11:10 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/07/22 13:33:15 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -35,8 +35,7 @@
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS_L       = test_all \
-                     test_Acsalarmpy \
+PY_SCRIPTS_L       = test_Acsalarmpy \
                      test_Acsalarmpy_Timestamp.py \
                      test_Acsalarmpy_ASI.py \
                      test_Acsalarmpy_FaultState.py \
