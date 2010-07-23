@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.39 2010/06/29 11:12:06 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.40 2010/07/23 08:38:17 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -172,13 +172,29 @@ echo ""
 
 #
 # strip for saving space
+# WARNING, this also removes the makefiles & sources from the distribution
+TAO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+echo "going to strip files in $TAO_HOME"
+
+for dir in "*tests" "*examples" "*.obj" "*.shobj" "*MPC" "*m4"
+do
+  echo "removing TAO directories like $dir"
+  find $TAO_HOME -path "$dir" -exec rm -rf {} \; > /dev/null 2>&1
+done
+
+for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj" "*.cpp" "*.c"
+do
+  echo "removing TAO files like $pattern"
+  find $TAO_HOME -name "$pattern" -exec rm -rf {} \;
+done
+
 # WARNING: on Solaris, do this for the sun directory only
 #          not for vxworks for not to corrupt the files
 #
 echo "stripping the code under $OSTAG"
 
-cd $ACE_ROOT
-find . -exec strip {} \; > /dev/null 2>&1
+echo "stripping TAO executables & libraries"
+find $ACE_ROOT -executable -or -name "lib*" -exec strip {} \; > /dev/null 2>&1
 echo "stripping done"
 
 echo "build of ACE/TAO for $OSTAG finished"
