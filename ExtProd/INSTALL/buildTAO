@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.40 2010/07/23 08:38:17 alopatin Exp $"
+# "@(#) $Id: buildTAO,v 1.41 2010/07/23 09:09:43 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -172,7 +172,7 @@ echo ""
 
 #
 # strip for saving space
-# WARNING, this also removes the makefiles & sources from the distribution
+# WARNING, this also removes the makefiles from the distribution
 TAO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "going to strip files in $TAO_HOME"
 
@@ -182,7 +182,7 @@ do
   find $TAO_HOME -path "$dir" -exec rm -rf {} \; > /dev/null 2>&1
 done
 
-for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj" "*.cpp" "*.c"
+for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj"
 do
   echo "removing TAO files like $pattern"
   find $TAO_HOME -name "$pattern" -exec rm -rf {} \;
