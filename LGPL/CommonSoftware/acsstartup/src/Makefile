@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.52 2010/03/09 04:58:49 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.53 2010/07/26 16:59:37 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -77,6 +77,8 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 EXECUTABLES = acsstartupIrFeed
+MAKE_NOIFR_CHECK = on # jagonzal: there is a cyclic dependency between acsstartupIrFeed and acsstartupLoadIFR (checker)
+
 
 acsstartupIrFeed_OBJECTS = acsstartupIrFeed
 acsstartupIrFeed_LIBS    = 
