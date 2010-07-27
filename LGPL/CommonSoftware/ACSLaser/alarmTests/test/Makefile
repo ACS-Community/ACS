@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2009/11/22 20:38:39 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/07/27 22:00:29 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -81,7 +81,8 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+# jagonzal: This is a shell script not a python script
+SCRIPTS         = testCDBCoreAlarm
 SCRIPTS_L       =
 
 #
@@ -94,7 +95,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = testCDBCoreAlarm
+PY_SCRIPTS_L       = 
 
 PY_MODULES         =
 PY_MODULES_L       =
