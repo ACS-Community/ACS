@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.c++,v 1.1 2008/04/17 12:45:58 bjeram Exp $"
+# "@(#) $Id: Makefile.c++,v 1.2 2010/07/27 23:05:50 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -14,6 +14,8 @@
 # REMARKS
 #     Here we generate stubs and skelts for C++ only
 #------------------------------------------------------------------------
+
+MAKE_NOIFR_CHECK = on # jagonzal: there is a cyclic dependency between acsstartupIrFeed and acsstartupLoadIFR (checker)
 
 MAKE_ONLY=C++
 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.6 2010/06/08 10:06:03 bjeram Exp $"
+# "@(#) $Id: Makefile.java,v 1.7 2010/07/27 23:05:55 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -13,6 +13,8 @@
 # REMARKS
 #    Here we generate stubs and skelts for Java only 
 #------------------------------------------------------------------------
+
+MAKE_NOIFR_CHECK = on # jagonzal: there is a cyclic dependency between acsstartupIrFeed and acsstartupLoadIFR (checker)
 
 MAKE_ONLY=Java
 DEBUG=on
