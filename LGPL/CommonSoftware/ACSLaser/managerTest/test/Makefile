@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2007/11/05 14:12:40 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/07/27 21:52:47 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,8 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+# These scripts are shell scripts not Python scripts
+SCRIPTS         = managerTATPrologue managerTest
 SCRIPTS_L       =
 
 #
@@ -79,7 +80,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = managerTATPrologue managerTest
+PY_SCRIPTS_L       = 
 
 PY_MODULES         =
 PY_MODULES_L       =
