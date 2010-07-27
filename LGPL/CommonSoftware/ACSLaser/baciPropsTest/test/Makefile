@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2009/10/13 10:28:25 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/07/27 21:57:29 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -89,8 +89,15 @@ baciTest_LIBS =  testComponentStubs
 #
 # Scripts (public and local)
 # ----------------------------
+# jagonzal: These are python scripts not shell scripts
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = \
+                                        baciPropsTATPrologue \
+                                        baciDoublePropTest \
+                                        baciEnumPropTest \
+                                        baciPatternPropTest \
+                                        baciDoublePropCompleteTest
+
 
 #
 # TCL scripts (public and local)
@@ -102,12 +109,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = \
-					baciPropsTATPrologue \
-					baciDoublePropTest \
-					baciEnumPropTest \
-					baciPatternPropTest \
-					baciDoublePropCompleteTest 
+PY_SCRIPTS_L       =
 
 PY_MODULES         =
 PY_MODULES_L       =
