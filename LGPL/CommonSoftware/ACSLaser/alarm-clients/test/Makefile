@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2008/10/21 08:15:10 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/07/27 21:48:22 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -81,7 +81,15 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+# jagonzal: These are not Python scripts but shell scripts
+SCRIPTS         = clientTATPrologue \
+                testCategoryClient \
+                testCategoryClientThreshold \
+                testCategoryClientParents \
+                testCategoryClientChildren \
+                testCategoryClientActiveChildren \
+                testUserProps
+
 SCRIPTS_L       =
 
 #
@@ -94,13 +102,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = clientTATPrologue \
-		testCategoryClient \
-		testCategoryClientThreshold \
-		testCategoryClientParents \
-		testCategoryClientChildren \
-		testCategoryClientActiveChildren \
-		testUserProps
+PY_SCRIPTS_L       = 
 
 PY_MODULES         =
 PY_MODULES_L       =
