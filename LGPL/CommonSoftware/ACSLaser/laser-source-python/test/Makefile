@@ -28,8 +28,9 @@
 #
 # Python stuff (public and local)
 # ----------------------------
-PY_SCRIPTS_L       = test_all \
-                     test_CERNAlarmSystemInterfaceProxy \
+
+# jagonzal: Remove non-existing test_all target
+PY_SCRIPTS_L       = test_CERNAlarmSystemInterfaceProxy \
                      test_CERNAlarmSystemInterfaceProxy_AlarmPublisher.py \
 
 PY_PACKAGES_L      = UnitTests
