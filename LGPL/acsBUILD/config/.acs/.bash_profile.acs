@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.100 2010/07/22 01:21:13 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.101 2010/07/27 23:53:43 jagonzal Exp $"
 #
 #
 #
@@ -587,7 +587,7 @@ OMNIORB_CONFIG=$OMNI_ROOT/config
 # Path where IDL files are searched at run time, for
 # example by the Interface Repository.
 
-IDL_PATH="-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao"
+IDL_PATH="-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao"
 
 if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
 then
