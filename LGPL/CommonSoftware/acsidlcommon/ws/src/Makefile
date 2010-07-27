@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2007/07/13 08:24:33 nbarriga Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/07/27 23:07:24 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -16,6 +16,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
+
+MAKE_NOIFR_CHECK = on # jagonzal: there is a cyclic dependency between acsstartupIrFeed and acsstartupLoadIFR (checker)
 
 #
 # user definable C-compilation flags
