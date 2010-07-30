@@ -70,7 +70,7 @@ public class HibernateDBUtil {
 			
 			final Properties connectionProperties = new Properties();
 			connectionProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-			connectionProperties.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
+			connectionProperties.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbc.JDBCDriver");
 			connectionProperties.setProperty("hibernate.connection.url", url);
 			connectionProperties.setProperty("hibernate.connection.username", user);
 			connectionProperties.setProperty("hibernate.connection.password", pwd);
@@ -84,7 +84,7 @@ public class HibernateDBUtil {
 			else if (backend.equals(DBUtil.HSQLDB_BACKEND_NAME))
 			{
 				connectionProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
-				connectionProperties.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
+				connectionProperties.setProperty("hibernate.connection.driver_class", "org.hsqldb.jdbc.JDBCDriver");
 				
 				// set inMemory flag
 				if (url.indexOf(":mem:") != -1)
