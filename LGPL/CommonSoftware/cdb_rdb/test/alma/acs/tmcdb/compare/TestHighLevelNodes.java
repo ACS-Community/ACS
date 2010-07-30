@@ -43,6 +43,7 @@ import com.cosylab.cdb.client.DAOProxy;
  * 
  * hibernateCdbJDal -configName TEST0 -loadXMLCDB -memory  # This should also be done with Oracle every now and then
  * cdbjDAL -OAport 3013
+ * For remote debugging: export JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8080<or some other port>" 
  */
 public class TestHighLevelNodes extends XMLTestCase {
 	
