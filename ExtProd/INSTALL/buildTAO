@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.41 2010/07/23 09:09:43 alopatin Exp $"
+# "@(#) $Id: buildTAO,v 1.42 2010/08/02 11:37:26 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -40,6 +40,25 @@
 # Fetch operating system and release version
 #
 os_discovery
+
+# Parse options
+for i in $*
+do
+	case $i in
+    	--debug)
+		DONTSTRIP="yes"
+		;;
+    	*)
+                # unknown option
+		;;
+  	esac
+done
+
+if [ "$DONTSTRIP" = "yes" ]; then
+  echo "Building TAO in debug mode, tests, examples will be preserved. Binaries will not be stripped"
+fi
+
+exit
 
 LOG=buildTAO.log
 exec > $LOG 2>&1
@@ -173,33 +192,34 @@ echo ""
 #
 # strip for saving space
 # WARNING, this also removes the makefiles from the distribution
-TAO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
-echo "going to strip files in $TAO_HOME"
+if [ "$DONTSTRIP" = "yes" ]; then
+  TAO_HOME=$ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
+  echo "going to strip files in $TAO_HOME"
 
-for dir in "*tests" "*examples" "*.obj" "*.shobj" "*MPC" "*m4"
-do
-  echo "removing TAO directories like $dir"
-  find $TAO_HOME -path "$dir" -exec rm -rf {} \; > /dev/null 2>&1
-done
+  for dir in "*tests" "*examples" "*.obj" "*.shobj" "*MPC" "*m4"
+  do
+    echo "removing TAO directories like $dir"
+    find $TAO_HOME -path "$dir" -exec rm -rf {} \; > /dev/null 2>&1
+  done
 
-for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj"
-do
-  echo "removing TAO files like $pattern"
-  find $TAO_HOME -name "$pattern" -exec rm -rf {} \;
-done
+  for pattern in "*makefile*" "*Makefile*" "*.sln" "*.vcproj"
+  do
+    echo "removing TAO files like $pattern"
+    find $TAO_HOME -name "$pattern" -exec rm -rf {} \;
+  done
 
 # WARNING: on Solaris, do this for the sun directory only
 #          not for vxworks for not to corrupt the files
 #
-echo "stripping the code under $OSTAG"
+  echo "stripping the code under $OSTAG"
 
-echo "stripping TAO executables & libraries"
-find $ACE_ROOT -executable -or -name "lib*" -exec strip {} \; > /dev/null 2>&1
-echo "stripping done"
+  echo "stripping TAO executables & libraries"
+  find $ACE_ROOT -executable -or -name "lib*" -exec strip {} \; > /dev/null 2>&1
+  echo "stripping done"
 
-echo "build of ACE/TAO for $OSTAG finished"
+  echo "build of ACE/TAO for $OSTAG finished"
+fi
 
-#
 # Compilation for VxWorks: 
 #
 
