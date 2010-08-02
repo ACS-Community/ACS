@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.42 2010/08/02 11:37:26 alopatin Exp $"
+# "@(#) $Id: buildTAO,v 1.43 2010/08/02 11:38:42 alopatin Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -57,8 +57,6 @@ done
 if [ "$DONTSTRIP" = "yes" ]; then
   echo "Building TAO in debug mode, tests, examples will be preserved. Binaries will not be stripped"
 fi
-
-exit
 
 LOG=buildTAO.log
 exec > $LOG 2>&1
