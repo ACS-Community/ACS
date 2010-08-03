@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.117 2010/06/11 11:08:23 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.118 2010/08/03 08:47:23 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.117 2010/06/11 11:08:23 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.118 2010/08/03 08:47:23 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1315,8 +1315,6 @@ ContainerImpl::done()
 
   acsQoS::done();
 
-  ACSError::done();
-
   if(m_dllmgr)
       {
       m_dllmgr->unload("baci");  // baci has to be unloaded earlier because of DLLClose
@@ -1327,6 +1325,8 @@ ContainerImpl::done()
       destroyDatabase(m_database);
       m_database = 0;
       }
+
+  ACSError::done();
 
   return true;
 }
