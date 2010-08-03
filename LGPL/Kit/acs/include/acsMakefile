@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.188 2010/07/09 15:16:06 rtobar Exp $" 
+# "@(#) $Id: acsMakefile,v 1.189 2010/08/03 19:39:19 javarias Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -593,7 +593,7 @@ ifndef MAKE_VXWORKS
         CCDEP         = gcc -MM -MG
         CC            = gcc
         CXX           = c++
-        LD            = gcc
+        LD            = gcc -Wl,--as-needed
         NOSHARED_ON   = -Xlinker -Bstatic 
         NOSHARED_OFF  = -Xlinker -Bdynamic
         SHLIB_EXT     = so
