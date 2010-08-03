@@ -145,7 +145,7 @@ MAX_TIMEOUT=$(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER ))
 
 #try maciContainerShutdown command. 15 seconds should be more than
 #sufficient for this oneway command to run
-acsutilBlock -t 15 -k maciContainerShutdown $@
+acsutilBlock -t $(( 6 * $ACS_STARTUP_TIMEOUT_MULTIPLIER )) -k maciContainerShutdown $@
 
 #------------------------------------------------------------------
 #finally we check to see if the container itself has really gone
