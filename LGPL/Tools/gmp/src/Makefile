@@ -35,16 +35,16 @@ LD=
 GMP_VER = 4.1.3
 
 all: unpack config
-	make -C gmp-$(GMP_VER) all
+	$(MAKE) -C gmp-$(GMP_VER) all
 
 install:
-	make -C gmp-$(GMP_VER) install
+	$(MAKE) -C gmp-$(GMP_VER) install
 
 clean:
 	rm -rf gmp-$(GMP_VER)
 
 check:  unpack config
-	make -C gmp-$(GMP_VER) check
+	$(MAKE) -C gmp-$(GMP_VER) check
 
 unpack:
 	@if [ ! -d gmp-$(GMP_VER) ]; then \
