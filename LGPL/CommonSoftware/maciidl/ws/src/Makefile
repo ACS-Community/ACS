@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2010/03/08 08:35:35 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.9 2010/08/04 13:25:46 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -203,7 +203,7 @@ endif
 #
 # TARGETS
 # -------
-all:	prepare_xsdbind do_all clean_my_xsdbind
+all:	prepare_xsdbind do_all 
 #all:	do_all
 	@echo " . . . 'all' done" 
 
@@ -212,7 +212,7 @@ prepare_xsdbind:
 	@cp -a $(ACSROOT)/config/CDB/schemas/xml.xsd ../config/CDB/schemas/
 
 #clean : clean_xsdbind clean_all
-clean : clean_all
+clean : clean_all clean_my_xsdbind
 	@echo " . . . clean done"
 
 clean_my_xsdbind:
