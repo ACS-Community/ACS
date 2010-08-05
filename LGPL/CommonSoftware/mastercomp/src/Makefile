@@ -123,6 +123,7 @@ USER_IDL =
 #
 JARFILES= mastercomp
 mastercomp_DIRS=alma
+mastercomp_JLIBS=mastercomp_if
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

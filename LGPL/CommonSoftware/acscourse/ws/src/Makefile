@@ -2,7 +2,7 @@
 
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.20 2009/03/11 17:08:51 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.21 2010/08/05 05:56:44 mzampare Exp $" 
 #
 # Makefile of ........
 #
@@ -34,6 +34,8 @@ ACSERRDEF = ACSErrTypeACSCourse
 JARFILES =              acscourseImpl
 acscourseImpl_DIRS   =  alma
 acscourseImpl_EXTRAS =
+acscourseImpl_JLIBS = acscourseMount
+
 
 XSDBIND = acscourseEntities
 XSDBIND_INCLUDE = systementities   

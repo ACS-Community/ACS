@@ -71,6 +71,7 @@ acscommandcenter_EXTRAS= alma/acs/commandcenter/resources/*.gif \
                          AcsCommandCenterTools.xml \
                          AcsCommandCenterBuiltinTools.xml \
                          VERSION
+acscommandcenter_JLIBS=AcsCommandCenterEntities
                          
 #
 # java sources in Jarfile on/off

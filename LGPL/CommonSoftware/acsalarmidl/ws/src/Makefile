@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.10 2010/06/04 08:28:13 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.11 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -127,6 +127,7 @@ USER_IDL =
 #
 JARFILES= acsAlarmService
 acsAlarmService_DIRS=alma
+acsAlarmService_JLIBS=AcsAlarmSystem acsalarmSchemaBindings
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

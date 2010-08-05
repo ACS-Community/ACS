@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.84 2010/07/16 08:23:34 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.85 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -129,7 +129,7 @@ XSDBIND_INCLUDE = commontypes
 # Jarfiles and their directories
 #
 JARFILES = acserrj
-
+acserrj_JLIBS=acserr
 acserrj_DIRS = alma/acs
 
 # Here we have to generate the code for errors by hand because the acserr library is not available yet
@@ -154,11 +154,6 @@ ERRCODE_GEN_XML = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).xml)
 ERRCODE_GEN_IDL = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).idl)
 ERRCODE_GEN_H = $(foreach xml, $(ERRCODE_GEN), ../include/$(xml).h)
 ERRCODE_GEN_CPP = $(foreach xml, $(ERRCODE_GEN), ../src/$(xml).cpp) $(ERRCODE_GEN_H)
-
-acserrHandlersErr_didl_prereq =../idl/acserrHandlersErr.idl
-ErrorSystemErrType_didl_prereq=../idl/ErrorSystemErrType.idl
-acserr_da_prereq=$(ERRCODE_GEN_CPP)
-
 
 
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)

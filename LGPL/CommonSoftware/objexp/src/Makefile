@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.18 2009/05/06 12:03:22 hyatagai Exp $"
+# "@(#) $Id: Makefile,v 1.19 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of Object Explorer
 #
@@ -29,6 +29,7 @@ JARFILES = oe
 # following line to be used in the future
 oe_DIRS = si
 oe_EXTRAS = device.gif domain.gif invocation.gif property.gif type.gif
+oe_JLIBS=objexpErrType
 
 ACSERRDEF = objexpErrType
 

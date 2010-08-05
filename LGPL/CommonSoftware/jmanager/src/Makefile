@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.9 2009/05/15 07:53:05 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of jManager
 #
@@ -53,6 +53,7 @@ SCRIPTS_L       =
 JARFILES = jManager
 jManager_DIRS = com
 jManager_EXTRAS =
+jManager_JLIBS=jmanagerErrType
 USER_JFLAGS=
 
 DEBUG=on

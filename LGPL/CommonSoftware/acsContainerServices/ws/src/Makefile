@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.8 2007/11/05 20:08:25 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.9 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -126,6 +126,7 @@ USER_IDL =
 #
 JARFILES=acsContainerServices 
 acsContainerServices_DIRS=alma
+acsContainerServices_JLIBS=JavaContainerError
 
 #
 # java sources in Jarfile on/off

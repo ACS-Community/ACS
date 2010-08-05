@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2009/03/11 16:56:42 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.27 2010/08/05 05:56:44 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -159,6 +159,7 @@ ACSERRDEF = ACSTimeError
 # Jarfiles and their directories
 #
 JARFILES = jacstime
+jacstime_JLIBS=acstime
 jjj_DIRS = 
 
 jacstime_DIRS = alma
