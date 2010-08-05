@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2010/07/09 10:28:31 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.7 2010/08/05 11:02:52 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -62,6 +62,7 @@ install :
 	@cd log4cpp-$(LOG4CPP_VER); $(MAKE) install
 	@echo " . . . installation done"
 
+.PHONY:unpack
 unpack :
 	@ if [ ! -d log4cpp-$(LOG4CPP_VER) ]; \
 		then \
@@ -70,21 +71,22 @@ unpack :
 		gtar -xzf log4cpp-$(LOG4CPP_TAR).tar.gz; \
 		fi
 
-patch: last_patched
+patch: unpack last_patched
 
-last_patched: log4cpp.patch
+last_patched: unpack log4cpp.patch
 	@cd log4cpp-$(LOG4CPP_VER); patch -p1 < ../log4cpp.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
 
-configure :
+.PHONY: configure
+configure : patch unpack
 	@mkdir -p ../bin
 	@echo ". . . running configure . . . "
 	@cp configure_script ../bin/configure_script
 	@chmod +x ../bin/configure_script	
 	@../bin/configure_script log4cpp-$(LOG4CPP_TAR).tar.gz $(LOG4CPP_VER) > configure_script.log 2>&1
 
-build :
+build : configure
 	@echo ". . . building . . . "
 	@cd log4cpp-$(LOG4CPP_VER); $(MAKE) all
 
