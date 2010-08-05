@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.7 2010/07/27 23:05:55 jagonzal Exp $"
+# "@(#) $Id: Makefile.java,v 1.8 2010/08/05 05:53:20 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,7 @@ endif
 #
 # TARGETS
 # -------
+.NOTPARALLEL: all
 all:	do_all
 	@echo " . . . 'all' done" 
 
