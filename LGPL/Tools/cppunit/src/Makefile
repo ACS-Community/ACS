@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.14 2010/07/09 06:00:43 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.15 2010/08/05 11:16:05 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -65,6 +65,7 @@ install : install_all
 	@cd cppunit-$(CPPUNIT_VER); $(MAKE) install
 	@echo " . . . installation done"
 
+.PHONY: unpack
 unpack :
 	@ if [ ! -d cppunit-$(CPPUNIT_VER) ]; \
           then \
@@ -77,9 +78,9 @@ doxyfile : unpack
 	@echo ". . . updating Doxyfile (ingnore error messages here) . . . "
 	@cd cppunit-$(CPPUNIT_VER)/doc; doxygen -u Doxyfile.in
 
-patch: last_patched
+patch: unpack last_patched
 
-last_patched: cppunit-gcc-3_4_3.patch
+last_patched: unpack cppunit-gcc-3_4_3.patch
 	@cd cppunit-$(CPPUNIT_VER); patch -p1 < ../cppunit-gcc-3_4_3.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
