@@ -169,7 +169,7 @@ TABLE NamedLoggerConfig
     MinLogLevel             TINYINT                 DEFAULT 2
     MinLogLevelLocal        TINYINT                 DEFAULT 2
     KEY NamedLoggerConfigId GENERATED FROM LoggingConfigId Name  
-    CONSTRAINT NamedLoggerConfigLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig  CASCADING AGGREGATION
+    CONSTRAINT NamedLoggerConfigLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig  CASCADING INVERSE COMPOSITION
 ENDTABLE
 
 // The entries in this table are the managers that belong to the configuration.
