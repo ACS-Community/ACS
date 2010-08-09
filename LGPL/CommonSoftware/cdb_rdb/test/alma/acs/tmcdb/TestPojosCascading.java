@@ -109,17 +109,23 @@ public class TestPojosCascading extends TestCase {
 	public void testCascadingAggregation() throws Exception {
 
 		createDB();
-		
+
 		try {
 
+			LoggingConfig lconf = new LoggingConfig();
+
 			NamedLoggerConfig nlconf = new NamedLoggerConfig();
-			nlconf.setName("rtobarLoggingConfig");
+			nlconf.setName("rtobarNamedLoggingConfig");
 			nlconf.setMinLogLevel((byte)0x01);
 			nlconf.setMinLogLevelLocal((byte)0x01);
-			nlconf.setLoggingConfig(new LoggingConfig());
-			
+			nlconf.setLoggingConfig(lconf);
+
+			Set<NamedLoggerConfig> nlconfs = new HashSet<NamedLoggerConfig>();
+			nlconfs.add(nlconf);
+			lconf.setNamedLoggerConfigs(nlconfs);
+
 			hibernateUtil.beginTransaction();
-			hibernateUtil.getSession().save(nlconf); // Should cascade the LoggingConfig
+			hibernateUtil.getSession().save(lconf); // Should cascade the NamedLoggerConfig
 			hibernateUtil.commitTransaction();
 
 		} finally {
