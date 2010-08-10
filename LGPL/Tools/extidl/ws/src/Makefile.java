@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.9 2010/08/10 05:39:35 mzampare Exp $"
+# "@(#) $Id: Makefile.java,v 1.10 2010/08/10 06:42:52 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -21,9 +21,9 @@ DEBUG=on
 # 
 # IDL Files and flags
 # 
+IDL_TO_INSTALL=NotificationServiceMC NotifyExt NotifyMonitoringExt
+IDL_FILES_L = Monitor_Types Monitor $(IDL_TO_INSTALL)
 
-IDL_FILES = NotificationServiceMC NotifyExt NotifyMonitoringExt
-IDL_FILES_L = Monitor_Types Monitor
 #IDL_FILES =  NotifyExt 
 #IDL_FILES_L = NotificationServiceMC  NotifyMonitoringExt
 
@@ -61,14 +61,17 @@ man   : do_man
 install : install_all
 	# line below is superfluous with new acsMakefile
 	# but will be needed as long as the old one is in use
-	@cp ../idl/NotifyExt.idl $(VLTTOP)/idl
-	# 
-	@cp ../lib/NotifyMonitoringExt.jar $(VLTTOP)/lib
-	@cp ../lib/NotificationServiceMC.jar $(VLTTOP)/lib
-	# following lines needed due to the fact that Monitor.idl and Monitor_Types.idl
-	# are local
-	@cp ../lib/Monitor.jar $(VLTTOP)/lib
-	@cp ../lib/Monitor_Types.jar $(VLTTOP)/lib
+	@cp $(foreach idl,$(IDL_TO_INSTALL),../idl/$(idl).idl) $(VLTTOP)/idl
+	@cp $(foreach jar,$(IDL_FILES_L),../lib/$(jar).jar) $(VLTTOP)/lib
+
+#	@cp ../idl/NotifyExt.idl $(VLTTOP)/idl
+# 
+#	@cp ../lib/NotifyMonitoringExt.jar $(VLTTOP)/lib
+#	@cp ../lib/NotificationServiceMC.jar $(VLTTOP)/lib
+#	# following lines needed due to the fact that Monitor.idl and Monitor_Types.idl
+#	# are local
+#	@cp ../lib/Monitor.jar $(VLTTOP)/lib
+#	@cp ../lib/Monitor_Types.jar $(VLTTOP)/lib
 
 	@echo " . . . installation done"
 
