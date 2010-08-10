@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile.java,v 1.8 2010/08/05 05:53:20 mzampare Exp $"
+# "@(#) $Id: Makefile.java,v 1.9 2010/08/10 05:39:35 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -22,7 +22,8 @@ DEBUG=on
 # IDL Files and flags
 # 
 
-IDL_FILES = Monitor_Types Monitor NotificationServiceMC NotifyExt NotifyMonitoringExt
+IDL_FILES = NotificationServiceMC NotifyExt NotifyMonitoringExt
+IDL_FILES_L = Monitor_Types Monitor
 #IDL_FILES =  NotifyExt 
 #IDL_FILES_L = NotificationServiceMC  NotifyMonitoringExt
 
@@ -64,6 +65,10 @@ install : install_all
 	# 
 	@cp ../lib/NotifyMonitoringExt.jar $(VLTTOP)/lib
 	@cp ../lib/NotificationServiceMC.jar $(VLTTOP)/lib
+	# following lines needed due to the fact that Monitor.idl and Monitor_Types.idl
+	# are local
+	@cp ../lib/Monitor.jar $(VLTTOP)/lib
+	@cp ../lib/Monitor_Types.jar $(VLTTOP)/lib
 
 	@echo " . . . installation done"
 
