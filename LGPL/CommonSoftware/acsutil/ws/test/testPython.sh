@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testPython.sh,v 1.1 2009/10/02 19:10:02 agrimstrup Exp $"
+# "@(#) $Id: testPython.sh,v 1.2 2010/08/11 04:15:04 agrimstrup Exp $"
 #
 # who         when      what
 # --------    --------  ----------------------------------------------
@@ -165,7 +165,7 @@ testSelectIntrNoCASA()
   SAVPYPATH=$PYTHONPATH
   SAVLIBPATH=$LD_LIBRARY_PATH
   select_intr
-  assertEquals "Wrong Interpreter" "$PYTHON_ROOT/bin/python" "$PYTHONSHELL"
+  assertEquals "Wrong Interpreter" "exec $PYTHON_ROOT/bin/python" "$PYTHONSHELL"
   assertEquals "TCL_LIBRARY set" "" "$TCL_LIBRARY"
   assertEquals "PYTHONPATH modified" "$SAVPYPATH" "$PYTHONPATH"
   assertEquals "LD_LIBRARY_PATH modified" "$SAVLIBPATH" "$LD_LIBRARY_PATH"
@@ -183,7 +183,7 @@ testSelectIntrACS()
   SAVPYPATH=$PYTHONPATH
   SAVLIBPATH=$LD_LIBRARY_PATH
   select_intr
-  assertEquals "Wrong Interpreter" "$PYTHON_ROOT/bin/python" "$PYTHONSHELL"
+  assertEquals "Wrong Interpreter" "exec $PYTHON_ROOT/bin/python" "$PYTHONSHELL"
   assertEquals "TCL_LIBRARY set" "" "$TCL_LIBRARY"
   assertEquals "PYTHONPATH modified" "$SAVPYPATH" "$PYTHONPATH"
   assertEquals "LD_LIBRARY_PATH modified" "$SAVLIBPATH" "$LD_LIBRARY_PATH"
@@ -201,7 +201,7 @@ testSelectIntrCASA()
   SAVPYPATH=$PYTHONPATH
   SAVLIBPATH=$LD_LIBRARY_PATH
   select_intr
-  assertEquals "Wrong Interpreter" "$CASA_ROOT/lib/casapy/bin/python" "$PYTHONSHELL"
+  assertEquals "Wrong Interpreter" "exec $CASA_ROOT/lib/casapy/bin/python" "$PYTHONSHELL"
   assertEquals "TCL_LIBRARY not set" "$CASA_ROOT/share/tcl8.4" "$TCL_LIBRARY"
   assertNotEquals "PYTHONPATH modified" "$SAVPYPATH" "$PYTHONPATH"
   assertNotEquals "LD_LIBRARY_PATH modified" "$SAVLIBPATH" "$LD_LIBRARY_PATH"
