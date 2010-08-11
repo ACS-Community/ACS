@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: python,v 1.5 2009/11/04 12:23:58 agrimstrup Exp $"
+# "@(#) $Id: python,v 1.6 2010/08/11 03:33:52 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -110,10 +110,10 @@ function select_intr {
    # Setting USE_ACS_PYTHON will force the use of ACS Python.
    if [ X"$CASA_ROOT" = X -o X"$USE_ACS_PYTHON" != X ]
    then
-      PYTHONSHELL="$PYTHON_ROOT/bin/python"
+      PYTHONSHELL="exec $PYTHON_ROOT/bin/python"
    else
 
-      PYTHONSHELL="$CASA_ROOT/lib/casapy/bin/python"
+      PYTHONSHELL="exec $CASA_ROOT/lib/casapy/bin/python"
 
       # CASA requires the tk.tcl file from the TCL libraries it
       # provides
