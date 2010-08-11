@@ -1,7 +1,7 @@
 diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp TAO/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp
---- TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp	2010-03-24 18:49:36.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp	2010-06-24 07:12:02.000000000 +0000
-@@ -2284,10 +2284,14 @@
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp	2010-07-15 13:38:43.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp	2010-08-04 07:47:42.000000000 +0000
+@@ -2464,10 +2464,14 @@
          }
      }
  
@@ -21,9 +21,9 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_codegen.cpp TAO/ACE_wrappers/T
    ACE_OS::strcat (macro_name, suffix);
  
 diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp TAO/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp
---- TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp	2010-03-25 21:28:08.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp	2010-06-24 07:15:53.000000000 +0000
-@@ -121,6 +121,7 @@
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp	2010-07-15 09:46:03.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp	2010-08-04 07:47:42.000000000 +0000
+@@ -129,6 +129,7 @@
      gen_template_export_ (false),
      gen_ostream_operators_ (false),
      gen_custom_ending_ (true),
@@ -31,7 +31,7 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp TAO/ACE_wrappers/TA
      gen_ciao_svnt_ (false),
      gen_ciao_exec_idl_ (false),
      gen_ciao_exec_impl_ (false),
-@@ -2172,6 +2173,18 @@
+@@ -2265,6 +2266,18 @@
  }
  
  bool
@@ -50,7 +50,7 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp TAO/ACE_wrappers/TA
  BE_GlobalData::gen_ciao_svnt (void) const
  {
    return this->gen_ciao_svnt_;
-@@ -3177,6 +3190,11 @@
+@@ -3278,6 +3291,11 @@
              // files from TAO specific include paths.
              be_global->gen_custom_ending (false);
            }
@@ -62,7 +62,10 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp TAO/ACE_wrappers/TA
          else
            {
              ACE_ERROR ((
-@@ -3907,6 +3925,11 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_util.cpp TAO/ACE_wrappers/TAO/TAO_IDL/be/be_util.cpp
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_util.cpp	2010-07-12 08:21:28.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/be/be_util.cpp	2010-08-04 08:00:02.000000000 +0000
+@@ -814,6 +814,11 @@
      ));
    ACE_DEBUG ((
        LM_DEBUG,
@@ -75,9 +78,9 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be/be_global.cpp TAO/ACE_wrappers/TA
        ACE_TEXT (" (default is 2 spaces)\n")
      ));
 diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h TAO/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h
---- TAO.org/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h	2010-03-25 21:28:08.000000000 +0000
-+++ TAO/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h	2010-06-24 07:05:23.000000000 +0000
-@@ -759,6 +759,10 @@
+--- TAO.org/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h	2010-07-15 09:46:03.000000000 +0000
++++ TAO/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h	2010-08-04 07:47:42.000000000 +0000
+@@ -786,6 +786,10 @@
    bool gen_custom_ending (void) const;
    void gen_custom_ending (bool val);
  
@@ -86,9 +89,9 @@ diff -Naur TAO.org/ACE_wrappers/TAO/TAO_IDL/be_include/be_global.h TAO/ACE_wrapp
 +  void gen_unique_guards (bool val);
 +
    /// Accessors for the corresponding members.
+   
    bool gen_ciao_svnt (void) const;
-   void gen_ciao_svnt (bool val);
-@@ -1103,6 +1107,12 @@
+@@ -1129,6 +1133,12 @@
     */
    bool gen_custom_ending_;
  
