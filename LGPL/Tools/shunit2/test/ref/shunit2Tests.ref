@@ -129,7 +129,7 @@
 1 - # Running the test suite with /bin/ksh
 1 - #
 1 - shell name: ksh
-1 - shell version: M-93s+-2008-01-31-$
+1 - shell version: AJM-93t+-2010-02-02-$
 1 - 
 1 - --- Executing the 'asserts' test suite ---
 1 - testAssertEquals
@@ -139,11 +139,13 @@
 1 - testAssertNull
 1 - testAssertNotNull
 1 - testAssertTrue
+1 - ASSERT:too few arguments; expected no output to STDOUT
+1 - ASSERT:too few arguments; expected output to STDERR
 1 - testAssertFalse
 1 - 
 1 - Ran 8 tests.
 1 - 
-1 - OK
+1 - FAILED (failures=2)
 1 - 
 1 - --- Executing the 'failures' test suite ---
 1 - testFail
