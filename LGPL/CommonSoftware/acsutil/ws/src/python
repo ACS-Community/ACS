@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: python,v 1.6 2010/08/11 03:33:52 agrimstrup Exp $"
+# "@(#) $Id: python,v 1.7 2010/08/11 03:56:12 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -168,11 +168,6 @@ function start_intr {
       fi
    fi
 
-   # Clean up the CASA-specific setting
-   if [ ! X"$TCL_LIBRARY" = X ]
-   then
-     unset TCL_LIBRARY
-   fi
 }
 
 if [ -z "$TEST_MODE" ]
