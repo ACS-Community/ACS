@@ -1,10 +1,8 @@
 #include <vltPort.h>
-static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.7 2009/06/10 22:49:04 utfsm Exp $";
+static char *rcsId=(char *)"@(#) $Id: sampledCompImpl.cpp,v 1.8 2010/08/11 15:03:10 ntroncos Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "sampledCompImpl.h"
-#include "SinDevIO.h"
-#include "CosDevIO.h"
 
 using namespace baci;
 
@@ -33,8 +31,8 @@ void sampledCompImpl::initialize() {
 	m_RWstring_sp   = new RWstring  ( (component_name + ":my_RWstring").c_str(), getComponent());
 	m_RWlong_sp     = new RWlong    ( (component_name + ":my_RWlong").c_str(), getComponent());
 	m_RWlongLong_sp = new RWlongLong( (component_name + ":my_RWlongLong").c_str(), getComponent());
-	m_ROdouble_sp   = new ROdouble  ( (component_name + ":my_ROdouble").c_str(), getComponent(),new CosDevIO());
-	m_ROfloat_sp    = new ROfloat   ( (component_name + ":my_ROfloat").c_str(), getComponent(),new SinDevIO());
+	m_ROdouble_sp   = new ROdouble  ( (component_name + ":my_ROdouble").c_str(), getComponent());
+	m_ROfloat_sp    = new ROfloat   ( (component_name + ":my_ROfloat").c_str(), getComponent());
 	m_ROstring_sp   = new ROstring  ( (component_name + ":my_ROstring").c_str(), getComponent());
 	m_ROlong_sp     = new ROlong    ( (component_name + ":my_ROlong").c_str(), getComponent());
 	m_ROlongLong_sp = new ROlongLong( (component_name + ":my_ROlongLong").c_str(), getComponent());
