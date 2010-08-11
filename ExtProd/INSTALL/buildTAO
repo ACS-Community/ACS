@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.43 2010/08/02 11:38:42 alopatin Exp $"
+# "@(#) $Id: buildTAO,v 1.44 2010/08/11 09:18:19 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -93,7 +93,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=ACE+TAO-5.7.8
+FILE=ACE+TAO-5.8.1
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 echo "unpacking the archive"
@@ -105,18 +105,10 @@ echo ""
 # Apply patches
 #
 echo "patching the code"
-echo "- TAO_IDL64bit.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDL64bit.patch
 echo "- TAO_IDLsuppress_unique_guards_opt.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
-echo "- TAOAV.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOAV.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
-echo "MonitorControlExt.patch"
-patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/MonitorControlExt.patch
-#echo "- IFR.patch"
-#patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/IFR.patch
 
 echo "done"
 echo ""
