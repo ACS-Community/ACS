@@ -8,7 +8,6 @@
 1 - Manager hostname obtained via command line: '---'
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
@@ -20,14 +19,14 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibNotif.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderLibNotif.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataDistributerLib.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibNotif.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibNotif.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiver1LibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiver1LibNotif.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiver1LibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiver1LibNotif.so'.
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Container 'ContainerNotifTest' initialized successfuly
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
@@ -35,8 +34,8 @@
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Connecting to the Centralized Logger...
-1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [ContainerNotifTest - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Logged into the Manager.
 1 - ContainerStatusMsg: Automatic component loading begins
@@ -47,38 +46,30 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibNotif.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibNotif'.
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifSender: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifSender: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifSender: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [BulkDataNotifSender::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifSender::actionThread'
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::activate_component] Component 'BulkDataNotifSender' activated.
-1 - ----------T--:--:--.--- [BulkDataNotifSender::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifSender::monitorThread'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::activate_component] Component 'BulkDataNotifDistributer' activated.
-1 - ----------T--:--:--.--- [BulkDataNotifDistributer::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifDistributer::actionThread'
-1 - ----------T--:--:--.--- [BulkDataNotifDistributer::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifDistributer::monitorThread'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibNotif.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibNotif'.
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [BulkDataNotifReceiver::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifReceiver::actionThread'
-1 - ----------T--:--:--.--- [BulkDataNotifReceiver::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifReceiver::monitorThread'
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::activate_component] Component 'BulkDataNotifReceiver' activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiver1LibNotif'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiver1LibNotif.so'
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifReceiver1: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [BulkDataNotifReceiver1::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifReceiver1::actionThread'
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::activate_component] Component 'BulkDataNotifReceiver1' activated.
-1 - ----------T--:--:--.--- [BulkDataNotifReceiver1::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataNotifReceiver1::monitorThread'
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow1
@@ -120,8 +111,8 @@
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::deactivate_component] Component 'BulkDataNotifSender' deactivated.
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataNotifSender' etherealized.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 3 sec to allow everything to cleanup and stabilize
-2 - Shutting down ContainerNotifTest
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: OPERATIONAL -> DESTROYING
+2 - Shutting down ContainerNotifTest
 2 - All done!
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] Switched state of component BulkDataNotifDistributer: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::deactivate_component] Component 'BulkDataNotifDistributer' deactivated.

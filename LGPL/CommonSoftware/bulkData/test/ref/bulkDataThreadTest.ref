@@ -8,23 +8,22 @@
 1 - Manager hostname obtained via command line: '---'
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Container 'ContainerThreadTest' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibThread.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibThread'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibThread.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderLibThread.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataDistributerLib.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibThread'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibThread.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibThread'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibThread.so'.
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Container 'ContainerThreadTest' initialized successfuly
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
@@ -34,34 +33,30 @@
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Set Naming Context to Logger.
-1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [ContainerThreadTest - ContainerImpl::run] Container running...
-1 - ContainerStatusMsg: Manager access initialization ends
+1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::init] Logged into the Manager.
 1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Manager access initialization ends
 1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibThread.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibThread'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibThread.so'
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadReceiver: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadReceiver: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadReceiver: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [BulkDataThreadReceiver::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadReceiver::actionThread'
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::activate_component] Component 'BulkDataThreadReceiver' activated.
-1 - ----------T--:--:--.--- [BulkDataThreadReceiver::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadReceiver::monitorThread'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadDistributer: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadDistributer: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadDistributer: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [BulkDataThreadDistributer::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadDistributer::actionThread'
-1 - ----------T--:--:--.--- [BulkDataThreadDistributer::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadDistributer::monitorThread'
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::activate_component] Component 'BulkDataThreadDistributer' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibThread.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibThread'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibThread.so'
 1 - ----------T--:--:--.--- [Flow1 - ] Flow1: Created thread
 1 - ----------T--:--:--.--- [Flow2 - ] Flow2: Created thread
 1 - ----------T--:--:--.--- [Flow3 - ] Flow3: Created thread
@@ -69,8 +64,6 @@
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadSender: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadSender: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Flow4 - ] Flow4: Created thread
-1 - ----------T--:--:--.--- [BulkDataThreadSender::actionThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadSender::actionThread'
-1 - ----------T--:--:--.--- [BulkDataThreadSender::monitorThread - maci::ContainerImpl::initThread] Thread name: 'BulkDataThreadSender::monitorThread'
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::activate_component] Component 'BulkDataThreadSender' activated.
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
@@ -126,6 +119,6 @@
 1 - ----------T--:--:--.--- [ContainerThreadTest - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
-1 - /----/libbaci.so
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
+1 - /----/libbaci.so
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Container stopped.
