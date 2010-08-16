@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2010/07/20 10:03:52 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/08/16 07:05:02 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -33,8 +33,6 @@ PY_PACKAGES_L      =
 
 #>>>>> END OF standard rules
 
-xmlpybind_dpps_prereq=xmlpybind
-
 #
 # INCLUDE STANDARDS
 # -----------------
@@ -48,6 +46,8 @@ endif
 #
 # TARGETS
 # -------
+
+do_all: xmlpybind
 
 xmlpybind: 
 	@echo "genearting schemata..."
