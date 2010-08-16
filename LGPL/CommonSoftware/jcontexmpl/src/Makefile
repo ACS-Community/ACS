@@ -67,6 +67,8 @@ jcontexmplClient_DIRS = \
 	alma/demo/EventConsumerImpl \
 	alma/acsexmpl/clients
 
+jcontexmplClient_JLIBS= XmlComponent
+
 DEBUG = on
 #COMPONENT_HELPERS=on
 XML_IDL="ObsProposal=alma.xmljbind.test.obsproposal.ObsProposal; \
