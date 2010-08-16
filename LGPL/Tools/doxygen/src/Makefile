@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.24 2010/07/06 16:07:18 alopatin Exp $"
+# "@(#) $Id: Makefile,v 1.25 2010/08/16 06:20:01 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -37,7 +37,7 @@ all:    unpack patch all_first
 	done;
 	@echo " . . . 'all' done"
 
-all_first:
+all_first: patch
 	@echo "Configuring . . . "
 	@./config_all $(DOX_VER) $(GRAPH_VER) > config_all.log 2>&1 
 
@@ -104,9 +104,9 @@ unpack:
 #
 # Apply the patch
 #
-patch: last_patched
+patch: unpack last_patched
 
-last_patched: doxygen.patch
+last_patched: unpack doxygen.patch
 	@cd doxygen-$(DOX_VER); patch -p1 < ../doxygen.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
