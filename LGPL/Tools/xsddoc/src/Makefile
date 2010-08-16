@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2010/06/06 06:51:22 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/08/16 12:34:16 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -21,7 +21,6 @@ SHELL=/bin/bash
 PLATFORM := $(shell uname)
 XSDDOC_VER = 1.0
 
-xsddoc_djar_prereq=last_unpacked last_patched
 #
 # Jarfiles and their directories
 #
