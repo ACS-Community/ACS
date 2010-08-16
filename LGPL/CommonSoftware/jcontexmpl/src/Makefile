@@ -57,7 +57,7 @@ jcontexmplComp_DIRS = \
 	alma/demo/LampCallbackImpl \
 	alma/demo/XmlComponentImpl \
 	alma/acsexmplErrorComponent
-jcontexmplComp_JLIBS = LampAccess
+jcontexmplComp_JLIBS = LampAccess EventComponent
 
 
 JARFILES = jcontexmplClient
