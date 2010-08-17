@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.101 2010/07/27 23:53:43 jagonzal Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.102 2010/08/17 16:20:30 htischer Exp $"
 #
 #
 #
@@ -60,7 +60,7 @@
 # ALMASW_RELEASE # Parent directory for a specific
 #             # ACS version, appended to ALMASW_ROOTDIR
 #             # to build the absolute path of the installation.
-#             # Normally ACS-x.y is tipically changed outside this
+#             # Normally ACS-x.y is typically changed outside this
 #             # profile only when building test installations
 #             # including new tools
 #             # ACS external products (ACS/ExtProd) are built 
@@ -91,6 +91,22 @@
 #             # for a timeout during the execution of a script
 #             # (external value always overwrite script default)
 #
+# ACS_WIND_HOME  # e.g. ACS_WIND_HOME=WindRiver-3.7
+#             # Path to a Wind River installation ($WIND_HOME)
+#             # Give only the path portion relative to $ALMASW_INSTDIR
+# ACS_WIND_PLATFORM # e.g. ACS_WIND_PLATFORM=vxworks-6.7
+#             # typically a vxworks version in WIND_HOME ($WIND_PLATFORM).
+#             # This is not always the folder name, see wrenv -o print_packages.
+# WRSD_LICENSE_FILE # e.g. WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+#             # FlexLM license management.
+#             # A server mentioned in this list must be reachable and alive.
+#             # For node locked license a path to the local license file.
+#             # Alternatively the setting can be superseded with like
+#             # lmutil lmpath -override wrsd 27000@te13.hq.eso.org
+#             # The override is stored in ~/.flexlmrc
+# If the Wind River installation is found, set the environment
+# for this also to allow APEX builds.
+
 #####
 # GCC and GNU tools installation directory
 #
@@ -116,7 +132,7 @@
 ######
 # 
 # VxWorks:
-# If the scripts finds a VxWroks installation
+# If the scripts finds a VxWorks installation
 # available, all corresponding environment variables
 # will be set.
 # This implies that later on TAT and ACS Makefile
@@ -149,6 +165,7 @@ if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
    ALMASW_RELEASE=ACS-9.0
 fi
+
 # Combined absolute path where ACS software and tools are installed.
 ALMASW_INSTDIR=$ALMASW_ROOTDIR/$ALMASW_RELEASE
 
@@ -410,6 +427,44 @@ then
 	LOG_SERVICE_USE_EXTENSIONS=1
 fi
 
+# ACS_WIND_HOME
+# e.g. ACS_WIND_HOME=WindRiver-3.7
+# Path to a Wind River installation ($WIND_HOME)
+# Give only the path portion relative to $ALMASW_INSTDIR
+#
+# ACS_WIND_PLATFORM
+# e.g. ACS_WIND_PLATFORM=vxworks-6.7
+# typically a vxworks version in WIND_HOME ($WIND_PLATFORM).
+# This is not always the folder name, see wrenv -o print_packages.
+#
+# WRSD_LICENSE_FILE
+# e.g. WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+# FlexLM license management.
+# A server mentioned in this list must be reachable and alive.
+# For node locked license a path to the local license file.
+# Alternatively the setting can be superseded with like
+# lmutil lmpath -override wrsd 27000@te13.hq.eso.org
+# The override is stored in ~/.flexlmrc
+
+#
+# The Wind River installation is optional.
+# Only if it is found, set the environment for this to allow APEX builds.
+
+if [ X"$ACS_WIND_HOME" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	ACS_WIND_HOME=WindRiver-3.7
+fi
+
+if [ X"$ACS_WIND_PLATFORM" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	ACS_WIND_PLATFORM=vxworks-6.7
+fi
+
+if [ X"$WRSD_LICENSE_FILE" = X ] || [ X"$ACS_RETAIN" = X ]
+then
+	WRSD_LICENSE_FILE=27000@te13.hq.eso.org
+fi
+
 # ------ End variables to be edited by hand ------------------
 # ------------------------------------------------------------
 
@@ -471,7 +526,6 @@ if [ -d $ACE_ROOT_DIR/vxworks ]
 then
     ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
 fi
-
 
 # set the following variable to the path where you installed matplotlib Python
 # package.
@@ -663,87 +717,60 @@ then
    fi
 fi
 
-if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/WindRiver-3.7 ]
-then
-    export WIND_HOME=$ALMASW_INSTDIR/WindRiver-3.7
-    export WIND_TOOLS=$WIND_HOME/workbench-3.1
-     WIND_BASE=$WIND_HOME/vxworks-6.7
-    export WIND_DOCS=$WIND_HOME/docs
-    export WIND_DFW_PATH=$WIND_TOOLS/dfw/0199_1
-    export WIND_SCOPETOOLS_BASE=$WIND_HOME/scopetools-6.0
-    export WIND_JRE_HOME=$WIND_HOME/jre/1.6.0_06/x86-linux2
-    export WIND_WRWB_PATH=$WIND_TOOLS/wrwb/platform/eclipse
-    export WIND_WRLINUX_LAYERS=$WIND_HOME/scopetools-6.0/wrlinux
-    export WIND_USERMODE_AGENT_PATH=$WIND_HOME/linux-2.x/usermode-agent
-    export WIND_OCD_PATH=$WIND_TOOLS/ocd/0127
-    export WIND_PREFERRED_PACKAGES=workbench-3.1:vxworks-6.7
-    export WIND_SAMPLES=$WIND_HOME/scopetools-6.0/target/src/linux:$WIND_HOME/scopetools-6.0/target/src/vxworks:$WIND_TOOLS/samples:$WIND_HOME/components/ip_net2-6.7/samples:$WIND_HOME/vxworks-6.7/target/usr/apps/samples:$WIND_HOME/vxworks-6.7/target/src/demo:/alma
-#    export WIND_FOUNDATION_PATH=$WIND_TOOLS/foundation/4.1.1
-    export WRSD_LICENSE_FILE=$WIND_HOME/license:$WIND_HOME/license/WRSLicense.lic
-    export WIND_WRSV_PATH=$WIND_TOOLS/wrsv/4.10
-    export WIND_SCOPETOOLS_RPMS_BASE=$WIND_HOME/scopetools-6.0/target/RPMS
-    export DFW_PLUGIN_PATH=$WIND_TOOLS/ocd/0127
-    export WIND_HOST_TYPE=x86-linux2
-    export WIND_USERMODE_AGENT=$WIND_HOME/linux-2.x/usermode-agent/bin/usermode-agent.sh
-
-    export ACC_HOST=$HOSTNAME
-    CPU=${CPU:-PPC604}
-#    WIND_REGISTRY=$HOSTNAME
-#    WIND_VERSION=`basename $WIND_BASE | cut -c3-5`
-    case $CPU in
-            MC68040) VX_CPU_FAMILY=68k ;;
-            PPC604)  VX_CPU_FAMILY=ppc ;;
-            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
-    esac
-#    if [ "$OSYSTEM" = "SunOS" ]
-#    then
-#        WIND_HOST_TYPE=sun4-solaris2
-#        VX_HOST_TYPE=solaris
-#    elif [ "$OSYSTEM" = "Linux" ]
-#    then
-
-#     WIND_HOST_TYPE=x86-linux
-     VX_HOST_TYPE=x86-linux
-#    else
-#        WIND_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
-#        VX_HOST_TYPE=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
-#    fi
-     VXROOT=$WIND_BASE/target
-     VX_VW_BASE=$WIND_BASE/target
-     VX_HSP_BASE=$VXROOT
-     VX_BSP_BASE=$VXROOT
-    export ACC_HOST WIND_BASE CPU VX_CPU_FAMILY WIND_HOST_TYPE 
-    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
-# WIND_REGISTRY 
-fi
- 
 # set the PATH, LD_LIBRARY_PATH and MANPATH and CLASSPATH accordingly to what 
 # you set above
 
-# In order to prevent a recursive definition of PATH an intermediate variable
-# has been defined.
+# In order to prevent a recursive definition of PATH, LD_LIBRARY_PATH, MANPATH,
+# intermediate variables have been defined.
+#
+# Also first reset the recursive additions.
+# This allows further path manipulations to appear in any suitable order,
+# because no one refers to $_ORIG_XXX which would have to come first.
+#
+# Note:
+# $PS1 presence is commonly used to distinguish a login shell from an
+# interactive shell.
+# Therefore $PS1 should not be exported and only modified if it already exists
+# (in .bashrc)
+# Improper export of $PS1 therefore might cause multiple run of
+# .bash_profile and such the recursion.
+# Or the profile runs is executed by .bashrc instead of by .bash_profile
+
 if [[ -z $ORIG_PATH ]]
 then
    ORIG_PATH=$PATH
+else
+   PATH=$ORIG_PATH
 fi
 
-# In order to prevent a ricorsive definition of LD_LIBRARY_PATH an intermediate variable
-# has been defined.
 if [[ -z $ORIG_LD_LIBRARY_PATH ]]
 then
    ORIG_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+else
+   LD_LIBRARY_PATH=$ORIG_LD_LIBRARY_PATH
 fi
 
-# In order to prevent a recursive definition of MANPATH an intermediate variable
-# has been defined.
 if [[ -z $ORIG_MANPATH ]]
 then
    ORIG_MANPATH=$MANPATH
+else
+   MANPATH=$ORIG_MANPATH
 fi
+
+# PATH common settings
+
+# the PATH which comes with the operating system is preserved.
+# Very often it contains /usr/local/bin:/usr/bin
+# If you have problem with this order and you want to have /usr/bin
+# before /usr/local/bin just uncomment one of the following lines:
+# on SUN:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$VLTROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:/usr/bin:$PATH
+# on Linux:
+#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/bin:$PATH
 
 if [ "$OSYSTEM" = "SunOS" ]
 then
-   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$ORIG_PATH
+   PATH=$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$JAVA_HOME/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:$PATH
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -763,7 +790,7 @@ then
 elif [ "$OSYSTEM" = "Linux" ]
 then
    # So it is linux
-   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$ORIG_PATH
+   PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
    
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -782,7 +809,7 @@ then
 elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
    # So, we're under Cygwin
-   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$ORIG_PATH
+   PATH=$ACE_ROOT/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:$PATH
    
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
@@ -802,46 +829,12 @@ else
     PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
 
-if [ X"$WIND_BASE" != X ]
-then
-	PATH=$PATH:$WIND_HOME/components/ip_net2-6.7/host/x86-linux2/bin:$WIND_BASE/host/x86-linux2/bin:$WIND_BASE/vxtest/src/scripts:$WIND_HOME/scopetools-6.0/host/bin/x86-linux2:$WIND_HOME:$WIND_TOOLS/x86-linux2/bin:$WIND_TOOLS/foundation/4.1.1/x86-linux2/bin:$WIND_HOME/gnu/4.1.2-vxworks-6.7/x86-linux2/bin:$WIND_HOME/diab/5.7.0.0/LINUX386/bin:$WIND_HOME/utilities-1.0/x86-linux2/bin
-fi
-
-# the PATH which comes with the operating system is preserved.
-# Very often it contains /usr/local/bin:/usr/bin
-# If you have problem with this order and you want to have /usr/bin
-# before /usr/local/bin just uncomment one of the following lines:
-# on SUN:
-#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$VLTROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/ccs/bin:/usr/5bin:/usr/ucb:/usr/dt/bin:/usr/openwin/bin:/usr/bin:$PATH
-# on Linux:
-#PATH=$JAVA_HOME/bin:$ANT_HOME/bin:$JACORB_HOME/bin:$PYTHON_ROOT/bin:$OMNI_ROOT/bin:$ACSROOT/bin:$TCLTK_ROOT/bin:$GNU_ROOT/bin:/usr/bin:$PATH
-
-if  [ X"$INTLIST" != X ]
-then
-
-   tmp_list=""
-   for item_list in $INTLIST_DIRS
-   do
-      tmp_list=$tmp_list$item_list/bin:
-   done
-
-   if [ X"$INTROOT" != X ]
-   then
-      PATH=$INTROOT/bin:$tmp_list$PATH
-   else
-      PATH=$tmp_list$PATH
-   fi
-else
-   if [ X"$INTROOT" != X ]
-   then
-      PATH=$INTROOT/bin:$PATH
-   fi
-fi
+# LD_LIBRARY_PATH common settings
 
 if [ "$OSYSTEM" = "SunOS" ]
 then
 
-   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$ORIG_LD_LIBRARY_PATH
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$LD_LIBRARY_PATH
    if  [ X"$DDS_ROOT" != X ]
    then
 	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
@@ -862,9 +855,9 @@ elif [ "$OSYSTEM" = "Linux" ]
 then
    if  [ X"$RTAI_HOME" != X ]
    then
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:$ORIG_LD_LIBRARY_PATH
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:$LD_LIBRARY_PATH
    else
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH	
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$LD_LIBRARY_PATH	
    fi
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
@@ -886,9 +879,9 @@ elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
    if  [ X"$RTAI_HOME" != X ]
    then
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:$ORIG_LD_LIBRARY_PATH
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:LD_LIBRARY_PATH
    else
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH	
+	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$LD_LIBRARY_PATH	
    fi
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
@@ -917,10 +910,305 @@ else
     LD_LIBRARY_PATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
 
-if [ X"$WIND_BASE" != X ]
+# MANPATH common settings
+
+if [ "$OSYSTEM" = "SunOS" ]
 then
-	LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$WIND_HOME/scopetools-6.0/host/bin/x86-linux2:$WIND_TOOLS/wrwb/platform/eclipse/x86-linux2/bin:$WIND_TOOLS/x86-linux2/lib:$WIND_TOOLS/foundation/x86-linux2/lib:
+
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:/usr/dt/man:/usr/openwin/man:/usr/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+
+elif [ "$OSYSTEM" = "Linux" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$MANPATH
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then 
+      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
+   fi
+      
+   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
+   then
+      MANPATH=$ACSROOT/man:$MANPATH
+   fi
+else
+    MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
+
+# Note Helmut Tischer 2010-05-05:
+#
+# Wind River VxWorks settings
+#
+# The Wind River installation is optional.
+# Only if it is found, set the environment for this to allow APEX builds.
+#
+# Values are based on the install location. This above is specified with
+# $ACS_WIND_HOME and $ACS_WIND_PLATFORM
+#
+# The Wind River script wrenv.sh knows the complete list of consistent values.
+# Inside shell scripts e.g.: eval `wrenv.sh -p vxworks-6.7 -o print_env -f sh`
+# In interactive shell simply, by a sub shell, e.g.: wrenv.sh -p vxworks-6.7
+#
+# Note: This adds prefixes to the variables PATH, LD_LIBRARY_PATH, MANPATH.
+#   Therefore do these settings after resetting the recursion above
+#   to prevent loosing these settings, or adding them multiple times.
+#
+# Since the path variables are extended by an an invoced application, make sure
+# that the variables are exported to it. Even though an earlier export picks up
+# later value changes, not sure whether all are already exported.
+# Because of the tcl hack (see below), TCLTK_ROOT is also used by wrenv.sh
+# and thus needs to be exported.
+# Also export GNU_ROOT for the make/tcl version hack in wrenv.sh
+# WRSD_LICENSE_FILE is not needed in wrenv.sh but during runtime. export also.
+#
+# About tcl package search path:
+#
+# Packages are automatically only found, if they are installed nearby libtcl*.so
+# Other locations must be specified with TCLLIBPATH.
+# Some tcl versions need TCLLIBPATH whitespace delimited, others optionally ':'
+# Attention! Packages installed in tcl must not be specified in TCLLIBPATH!
+#
+# The found libtcl*.so location determines the automatically found packages,
+# so LD_LIBRARY_PATH must be consistent with TCLLIBPATH.
+# PATH must match to use a consistent tcl executable and libraries.
+#
+# Wind River Workbench provides its own tcl installation with special packets
+# in $WIND_FOUNDATION_PATH/$WIND_HOST_TYPE/lib/tcl8.5
+# Additional VxWorks specific packages in $WIND_BASE/host/resource/tcl
+# If both are mentioned in TCLLIBPATH (Wind River tcl installation not used),
+# then $WIND_BASE ... must come first!
+# Order is important, because some Workbench versions are containing two
+# different implementations of package osconfig with same name and version nr.
+# tcl files and 'package provide' in other folders are not relevant, because
+# they get loaded explicitely when needed. See eg. shell script windsh
+# loading its own tcl environment for windsh.tcl
+#
+# An ACS specific tcl installation with packages is in $TCLTK_ROOT/lib/tcl8.4
+# More packages are in $TCLTK_ROOT/lib. Only on running this installation,
+# both folders are searched automatically/ 
+#
+# For the core tcl installation, Workbench a superset of ACS, but
+# ACS has additional libraries and executables and tcl packages in the search path.
+# So keep the $TCLTK_ROOT portion in PATH and LD_LIBRARY_PATH.
+#
+# Wind River Workbench 3.6 and newer is containing tcl 8.5, ACS tcl 8.4
+# Additional libraries are not always compatible to tcl 8.5, in particular
+# blt is incompatible (3rd party unmaintained library which is hardcoded to
+# the tcl version specific native C interface).
+# "Normal" tcl scripts are considered non critical for tcl upgrades.
+# ACS and most likely APEX are no longer using tcl GUI related code.
+# (Note: But CCS/VLT did require very many additional packages!)
+#
+# Nevertheless so far set up search pathes for tcl 8.4 to keep ACS untouched,
+# and test Workbench and VxWorks kernel build/configuration management scripts.
+# For this $TCLTK_ROOT based path must come first, and TCLLIBPATH mentioning
+# both Wind River packet locations.
+# Unfortunately on setting the Wind River packages of tcl8.5 in TCLLIBPATH,
+# the tcl8.5 builtin packages of the same folder are also found before the
+# corresponding builtin packages of the actually running tcl8.4
+# This can be seen e.g. on 'package require tcltest'.
+# Therefore create a new folder far from the search path, and put in
+# links to the Wind River packages in the Workbench tcl installation, but not to the
+# tcl8.5 builtin packages, and refer to this new folder in TCLLIBPATH.
+# clock.tcl, msgs/, tzdata/ are not needed because this is a 8.5 specific expanded
+# version of the 8.4 builtin clock command.
+#
+# If TCLLIBPATH for 8.4 is whitespace delimited, packages are found from commandline
+# But Workbench loads tcl scripts explicitely and for this evaluates TCLLIBPATH
+# also, and expects a ":" as path delimiter.
+# Then on creating a VxWorks Image Project, no BSPs are shown and the Error Log
+# Window shows a missing PrjUtils.tcl
+# On colon delimited TCLLIBPATH, Workbench can load PrjUtils.tcl, but then later on
+# there is a error from within the tcl script, because dere a whitespace delimited
+# TCLLIBPATH is needed to call each other.
+# So effectively, the TCLLIBPATH must consist of only one entry.
+# Therefore to the new tcl package folder, add also links to packages and tcl files
+# from the VxWorks tcl package folder.
+# Note: There are some more tcl fiels and duplicated packages in other folders
+# outside the search path, but they are called explicitely when needed and need
+# not being covered here.
+#
+# Do not add the links to the workbench tcl packages directly into the VxWorks
+# tcl packages folder, because this would make it impossible to run an
+# instance with the original behaviour at the same time.
+# Disadvantage: hardcoded package version numbers in the links.
+#
+# mkdir $(WIND_HOME)/tcl_merged
+# cd $(WIND_HOME)/tcl_merged
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/dde
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/platform
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/reg
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tclxml3.0
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wind
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/wrreader
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/Wtx
+# ln -s ../workbench-3.1/foundation/x86-linux2/lib/tcl8.5/tm.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/OsConfig
+# ln -s ../vxworks-6.7/host/resource/tcl/cmpScriptHttp.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/gdb.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/init.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/shelbrws.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/VxWorksErrnoTbl.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/wtxcore.tcl
+# ln -s ../vxworks-6.7/host/resource/tcl/wtxinit.tcl
+#
+# Note that wrenv.sh does not append to TCLLIBPATH, but replaces it completely.
+#
+# For the shell only, it would be sufficient to insert $TCLTK_ROOT before
+# wrenv and overwrite TCLLIBPATH after wrenv.
+# But then still, workbench would load its own environment with different
+# setting and dependent behaviour. This could result e.g. in some ACS scripts
+# being unusable from within Workbench.
+# Therefore tcl environment fix is directly done in Workbench configuration.
+# This also has the advantage, that .bash_profile.acs can left unchanged,
+# e.g. on moving ACS from tcl 8.4 to 8.5
+# Also duplicate path entries are removed by wrenv "addpath" command,see below.
+# Attention! The tcl fix might get lost after Workbench/VxWorks update.
+# Therefore reapply after update!
+# Please note the steps down in Wind River setup.log to make it obvious.
+# Also the fix is based on TCLTK_ROOT, so export before running wrenv!
+#
+# Steps to adjust wrenv created environment for ACS tcl:
+# - $(WIND_HOME)/vxworks-6.7/package.properties
+# -- remove line TCLLIBPATH (moved to workbench-3.1/package.properties)
+#   This makes sure that PATH/LD_LIBRARY_PATH/TCLLIBPATH stay consistent,
+#   even if e.g. for Host native development only the Workbench environment
+#   is loaded, but not the VxWorks environment.
+# -- change TCLLIBPATH line to
+# - $(WIND_HOME)/workbench-3.1/package.properties:
+# -- append lines
+# workbench31.eval.44=addpath PATH $(TCLTK_ROOT)$/bin
+# workbench31.eval.45=addpath LD_LIBRARY_PATH $(TCLTK_ROOT)$/lib
+# workbench31.eval.46=export TCLLIBPATH=$(WIND_HOME)$/tcl_merged
+# Note:
+#   eval.xx numbers must be bigger as the numbers at original
+#     addpath...$(WIND_FOUNDATION_PATH) use for these PATH variables.
+#   Every eval.xx number must be unique.
+#   If needed on other Wind River installations, adjust numbers and order.
+#   No quoting of values even when whitespace delimiter are embedded
+#   Don't use variables set by other packages, because they might not be loaded.
+#   Try to avoid hardcoded version numbers to other packets.
+# - run:
+# cd $(WIND_HOME); setup/postinstall.sh
+# Attention! Required to propagate changes to install.properties and wrenv
+# - in $(WIND_HOME)/setup.log make a note about the changes to not
+#   forgetting about reapplying in case of an update.
+#
+# Verification:
+# - New values are propagated to $(WIND_HOME)/install.properties
+# - Run '$(WIND_HOME)/wrenv.sh -p vxworks-6.7' to start a sub shell
+# - Check the following environment variable value with path order:
+# TCLLIBPATH=.../vxworks-6.7/host/resource/tcl .../tcl_added
+# LD_LIBRARY_PATH=.../ACS-x.y/tcltk/lib:...:.../workbench-3.1/foundation/x86-linux2/lib:...
+# PATH=.../ACS-x.y/tcltk/bin:...:.../workbench-3.1/foundation/x86-linux2/bin:...
+# - Start Workbench, create a project of type "user defined" based on VxWorks
+# - in the makefile insert the rule
+# printenv:
+#	env | sort
+# - In Project navigator on the new project RightClick->NewTarget-> "printenv"
+# - In Project navigator a new "printenv" appears. RightClick->build target
+# - In the Build log window, verify in particular the above
+#   environment variables to be identical
+# - Create a VxWorks Image project, based on some BSP
+# - in the project navigator, open the kernel configurator of this project, modify,
+#   e.g. add entire C++ support
+# - rebuild the VxWorks image project
+# - On the shell, to prove that all packages in the right version are present:
+# (Sybtcl and pkginBuild are present only in CCS/vlt,
+#  in ACS/alma these two may fail)
+# > tclsh
+# % package require tcltest
+# 2.2.9
+# % package require Wind
+# 1.2
+# % package require OsConfig
+# 1.0
+# % cmpProfileAdd
+# wrong # args: should be "cmpProfileAdd hProj profile"
+# % package require Sybtcl
+# 2.5
+# % exit
+# > pkginBuild
+# pkginBuild ... help screen
+#
+# Note:
+# PATH then contains two versions of 'make'.
+# 'make -v', Wind River is 3.8, ACS is 3.8.1
+# Added features seem not to be relevant for ACS or Wind River according to
+# http://www.cmcrossroads.com/ask-mr-make/6789-whats-new-in-gnu-make-381
+# So don't care about the order for now (use ACS version also for Wind River)
+
+if [ -d $ALMASW_INSTDIR/$ACS_WIND_HOME ]
+then
+
+    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT GNU_ROOT WRSD_LICENSE_FILE
+    eval `$ALMASW_INSTDIR/$ACS_WIND_HOME/wrenv.sh -p $ACS_WIND_PLATFORM -o print_env -f sh`
+
+    # ACS specific settings based on Wind River tools.
+    export ACC_HOST=$HOSTNAME
+    CPU=${CPU:-PPC604}
+    case $CPU in
+            MC68040) VX_CPU_FAMILY=68k ;;
+            PPC604)  VX_CPU_FAMILY=ppc ;;
+            *)       VX_CPU_FAMILY="unknown_CPU_type_$CPU" ;;
+    esac
+     VX_HOST_TYPE=x86-linux
+     VXROOT=$WIND_BASE/target
+     VX_VW_BASE=$WIND_BASE/target
+     VX_HSP_BASE=$VXROOT
+     VX_BSP_BASE=$VXROOT
+    export ACC_HOST WIND_BASE CPU VX_CPU_FAMILY WIND_HOST_TYPE 
+    export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
+
+fi
+
+# PATH depending on INTROOT settings
+
+if  [ X"$INTLIST" != X ]
+then
+
+   tmp_list=""
+   for item_list in $INTLIST_DIRS
+   do
+      tmp_list=$tmp_list$item_list/bin:
+   done
+
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$tmp_list$PATH
+   else
+      PATH=$tmp_list$PATH
+   fi
+else
+   if [ X"$INTROOT" != X ]
+   then
+      PATH=$INTROOT/bin:$PATH
+   fi
+fi
+
+# LD_LIBRARY_PATH depending on INTLIST settings
 
 if  [ X"$INTLIST" != X ]
 then
@@ -944,51 +1232,7 @@ else
    fi
 fi
 
-if [ "$OSYSTEM" = "SunOS" ]
-then
-
-   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:/usr/dt/man:/usr/openwin/man:/usr/man:$ORIG_MANPATH
-
-   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
-   then 
-      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
-   fi
-      
-   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
-   then
-      MANPATH=$ACSROOT/man:$MANPATH
-   fi
-
-elif [ "$OSYSTEM" = "Linux" ]
-then
-   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$ORIG_MANPATH
-
-   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
-   then 
-      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
-   fi
-      
-   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
-   then
-      MANPATH=$ACSROOT/man:$MANPATH
-   fi
-elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
-then
-   MANPATH=$TCLTK_ROOT/man:$GNU_ROOT/man:$ORIG_MANPATH
-
-   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
-   then 
-      MANPATH=$VLTROOT/man:$VLTROOT/vw/man:$MANPATH
-   fi
-      
-   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
-   then
-      MANPATH=$ACSROOT/man:$MANPATH
-   fi
-else
-    MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
-fi
-
+# MANPATH setting
 
 # Only for Linux or SunOS
 if [[ "$OSYSTEM" = "Linux"  || "$OSYSTEM" = "SunOS" || "$OSYSTEM" = "$CYGWIN_VER" ]]
@@ -1131,6 +1375,25 @@ then
 fi
 
 unset MODPATH
+
+# - Functions and aliases are not exported to sub-shells, therefore pointless
+#   in the profile.
+# - PS1 presence commonly used for distinguishing between login and interactive
+#   shell. Therefore exporting it to Sub-Shell breaks this, and can e.g. lead
+#   to recursive execution of .profile (see workaround ORIG_xxx above)
+#   Don't set it, if it is not set at all. Don't export!
+#   This is important to distinguish login shells from sub shells.
+#   if [ ! -z "$PS1" ]; then
+#     PS1='\h \u:\w \! > '
+#   fi
+#   PS1 will not be shown by external program 'env', because not exported.
+#   Use 'set' to see local variables and functions also.
+#
+# functions, aliases, PS1 should be moved to ~/.bashrc!
+# If the settings are needed in the login shell also, ~/.bashrc should be
+# called from the personal .bash_profile, after calling .bash_profile.acs
+#
+# For compatibility reasons so far leave it as it is.
 
 #
 # Some useful definitions of general usage.
