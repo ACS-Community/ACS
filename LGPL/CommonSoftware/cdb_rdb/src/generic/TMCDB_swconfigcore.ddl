@@ -247,7 +247,7 @@ TABLE Container
     CallTimeout             INTEGER                 DEFAULT 30
     PingInterval            INTEGER                 NULL
     Recovery                BOOLEAN                 DEFAULT TRUE
-    AutoloadSharedLibs      LONGVARCHAR (128)       NULL
+    AutoloadSharedLibs      LONGVARCHAR (1024)      NULL
     KEY ContainerId GENERATED FROM ContainerName Path ConfigurationId
     CONSTRAINT ContainerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
     CONSTRAINT ContainerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig CASCADING AGGREGATION
