@@ -468,7 +468,7 @@ public class AcsManagerProxy
 				// ignore and leave loggedIn false
 				
 				// todo remove debug message
-				System.err.println("isLoggedIn - m_manager.get_client_info problem " + thr);
+//				System.err.println("isLoggedIn - m_manager.get_client_info problem " + thr);
 			}
 		}
 		
