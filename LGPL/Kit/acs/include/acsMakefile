@@ -1,10 +1,12 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.191 2010/08/05 17:52:05 javarias Exp $" 
+# "@(#) $Id: acsMakefile,v 1.192 2010/08/17 11:37:39 htischer Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# htischer 2010-08-17 JIRA_COMP-800 removed -fpermissive from C_PLUS_PLUS_FLAGS
+#                     fixed syntax at ifdef CYGWIN_VER/platform
 # bjeram 2004-03-11 added -I$(ACE_ROOT)/TAO/tao/Valuetype  in include search path
 # bjeram 2003-10-29 added 2>/dev/null in case if ../idl does not exist
 # almamgr 2003-09-01 Added few extra directories to TAOinclude path
@@ -373,17 +375,17 @@ ifeq ($(os),SunOS)
 endif
 
 # Added by E. Allaert: Linux case; remark Linux uses Gnu-echo
+# htischer: fixed syntax 
+export ECHO = echo
 ifeq ($(os),Linux)
    platform = Linux
    export ECHO = echo -e
-else ifeq ($(os),$(CYGWIN_VER))
+endif
+ifeq ($(os),$(CYGWIN_VER))
    platform = Cygwin
    osrev = 1.5
    export ECHO = echo
-else
-   export ECHO = echo 
 endif
-
 
 ifndef platform
     #
@@ -475,7 +477,10 @@ ifndef MAKE_VXWORKS
     endif
 
     CC_FLAGS   := $(CC_FLAGS) -fPIC
-    C_PLUS_PLUS_FLAGS = -fno-operator-names -fpermissive
+
+    # JIRA_COMP-800 removed -fpermissive from C_PLUS_PLUS_FLAGS
+ 
+    C_PLUS_PLUS_FLAGS = -fno-operator-names
 
     ifeq ($(platform),HP-10)
         #
