@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2010/06/28 12:21:21 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/08/17 07:24:29 mzampare Exp $"
 #
 # Makefile of ........
 #
@@ -56,6 +56,7 @@ cdb_rdb_EXTRAS=alma/TMCDB/maci/hibernate-mappings-maci.hbm.xml \
                alma/TMCDB/baci/hibernate-mappings-baci.hbm.xml \
                acsOnly-cdb_rdb-hibernate.cfg.xml
 
+cdb_rdb_JLIBS=TMCDBswconfigStrategy cdbrdb-pojos
 #
 # java sources in Jarfile on/off
 DEBUG=on
@@ -141,7 +142,7 @@ install : install_all
 	@generateTmcdbHibernateStrategy generic/TMCDB_swconfigext.ddl .
 	@touch .done_generating_sql
 
-.done_generating_classes :
+.done_generating_classes :../lib/TMCDBswconfigStrategy.jar
 	@echo "=="
 	@echo "== Generating Java domain classes"
 	@echo "=="
@@ -153,12 +154,12 @@ install : install_all
 	@ant generate
 	@touch .done_generating_classes
 
-../lib/$(POJOS_JAR):
+../lib/$(POJOS_JAR): .done_generating_classes
 	@echo "=="
 	@echo "== Compiling generated domain classes"
 	@cd gen; CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/*.java; jar cf ../../lib/$(POJOS_JAR) alma/acs/tmcdb/*.class; cd ..; mv gen src; jar uf ../lib/$(POJOS_JAR) src/alma/acs/tmcdb/*.java; mv src gen/
 
-../lib/TMCDBswconfigStrategy.jar :
+../lib/TMCDBswconfigStrategy.jar :.done_generating_sql 
 	@echo "== Compiling TMCDBswconfigStrategy.jar "
 	@CLASSPATH="$(shell vltMakeJavaClasspath)" javac alma/acs/tmcdb/translator/*.java; jar cf ../lib/TMCDBswconfigStrategy.jar alma/acs/tmcdb/translator/*.class; cd ..; jar uf lib/TMCDBswconfigStrategy.jar src/alma/acs/tmcdb/translator/*.java;
 	@rm -f alma/acs/tmcdb/translator/*.class
