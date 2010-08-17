@@ -24,7 +24,7 @@ public BACIAttribute(BACIAttribute template, SimpleIntrospectable parent) {
 /**
  * BACIAttribute constructor comment.
  */
-public BACIAttribute(BACIRemoteAccess ra, BACIRemote introspectable, AttributeDescription desc, Class type) {
+public BACIAttribute(BACIRemoteAccess ra, BACIRemote introspectable, AttributeDescription desc, DataType type) {
 	super(desc.name, introspectable, type, (desc.mode == AttributeMode.ATTR_READONLY));
 	
 	if (desc == null) throw new NullPointerException("desc");

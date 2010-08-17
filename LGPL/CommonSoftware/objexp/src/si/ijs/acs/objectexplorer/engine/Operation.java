@@ -22,11 +22,11 @@ public abstract class Operation {
 	private String name = null;
 	private SimpleIntrospectable introspectable = null;
 	private String[] parameterNames = null;
-	private Class[] parameterTypes = null;
+	private DataType[] parameterTypes = null;
 	private boolean[] mask = null;
 	private boolean special = false;
 	private boolean invocation = false;
-	private Class returnClass=null;
+	private DataType returnType=null;
 /**
  * Constructs a new instance of an operation.
  *
@@ -34,7 +34,7 @@ public abstract class Operation {
  * @param introspectable the remote object that declares this operation
  * @param parameterNames an array of string names of all parameters
  *		  that the operation declares
- * @param parameterTypes an array of <code>Class</code> objects identifying
+ * @param parameterTypes an array of <code>DataType</code> objects identifying
  * 		  the parameter types in the same sequence as in the names
  *	 	  array
  * @param mask an array of booleans that indicates which parameters should
@@ -48,7 +48,7 @@ public abstract class Operation {
  * @param special <code>true</code> iff the operation should be treated as
  *		  special in the GUI (ie. displayable only if certain checkbox is checked)
  */
-public Operation(String name, SimpleIntrospectable introspectable, Class returnClass, String[] parameterNames, Class[] parameterTypes, boolean[] mask, boolean invocation, boolean special) {
+public Operation(String name, SimpleIntrospectable introspectable, DataType returnType, String[] parameterNames, DataType[] parameterTypes, boolean[] mask, boolean invocation, boolean special) {
 	super();
 	if (name == null) throw new NullPointerException("name");
 	if (introspectable == null) throw new NullPointerException("introspectable");
@@ -64,7 +64,7 @@ public Operation(String name, SimpleIntrospectable introspectable, Class returnC
 	this.parameterTypes = parameterTypes;
 	this.special = special;
 	this.invocation = invocation;
-	this.returnClass=returnClass;
+	this.returnType=returnType;
 }
 /**
  * Returns the introspectable instance that declares this method.
@@ -115,7 +115,7 @@ public String[] getParameterNames() {
  * 
  * @return an array of parameter types
  */
-public Class[] getParameterTypes() {
+public DataType[] getParameterTypes() {
 	return parameterTypes;
 }
 /**
@@ -127,18 +127,18 @@ public Class[] getParameterTypes() {
  * that takes all parameters that have to be supplied to
  * instantiate a type.
  * 
- * @return a return value Class 
+ * @return a return value DataType
  */
-public Class getReturnType() {
-	return returnClass;
+public DataType getReturnType() {
+	return returnType;
 }
 /**
- * Returns short name of the given Class object
+ * Returns short name of the given DataType object
  * Creation date: (13.5.2001 12:09:49)
  * @return java.lang.String
  * @param param java.lang.Class 
  */
-private String getShortParamName(Class param) {
+private String getShortParamName(DataType param) {
   return param.getName().substring(param.getName().lastIndexOf(".")+1);
 }
 /**

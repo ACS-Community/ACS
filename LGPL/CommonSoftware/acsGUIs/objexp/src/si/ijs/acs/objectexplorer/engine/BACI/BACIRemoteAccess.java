@@ -55,6 +55,7 @@ import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
 import si.ijs.acs.objectexplorer.engine.RemoteResponseCallback;
+import si.ijs.acs.objectexplorer.engine.DataStruct;
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
@@ -1789,7 +1790,10 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		notifier.reportDebug(
 			"BACIRemoteAccess::internalInvokeInvocation",
 			"Activated callback object for '" + op + "'.");
-		alma.ACS.CBDescIn desc = new alma.ACS.CBDescIn(1000000, 5000000, 0);
+		DataStruct desc = new DataStruct("IDL:alma/ACS/CBDescIn:1.0");
+		desc.add("normal_timeout", new Long(1000000));
+		desc.add("negotiable_timeout", new Long(5000000));
+		desc.add("id_tag",new Integer(0));
 		params[callbackIndex] = cbIF;
 		if (callbackIndex == params.length - 1) {
 			if (!isStrict())
@@ -1911,7 +1915,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			if (exceptionsDesc[i].type.kind().value() != TCKind._tk_except)
 			{
 			        // System.out.println("--> Invalid user exception kind, fixing...");
-
 				Class c = null;
 				String className = null;
 				try
@@ -1948,103 +1951,14 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 
 
 		for (int i = 0; i < allArguments.length; i++) {
-			Any argument = null;
-			if (desc.parameters[i].mode == ParameterMode.PARAM_IN)
-				argument = req.add_named_in_arg(desc.parameters[i].name);
-			else if (desc.parameters[i].mode == ParameterMode.PARAM_OUT) {
-				argument = req.add_named_out_arg(desc.parameters[i].name);
-				argument.type(desc.parameters[i].type);
-			} else {
-				argument = req.add_named_inout_arg(desc.parameters[i].name);
-				argument.type(desc.parameters[i].type);
-			}
-
+			Any argument = orb.create_any();
+			argument.type(desc.parameters[i].type);
 			if (desc.parameters[i].mode != ParameterMode.PARAM_OUT) {
-				TypeCode tc = desc.parameters[i].type;
-				while (tc.kind() == TCKind.tk_alias) {
-					try {
-						tc = tc.content_type();
-					} catch (org.omg.CORBA.TypeCodePackage.BadKind bk) {
-						throw new IntrospectionInconsistentException(
-							"BadKind thrown wile analysing alias typecode. Should be allowed by CORBA. Exception: "
-								+ bk);
-					}
-				}
-				int value = tc.kind().value();
-				switch (value) {
-					case TCKind._tk_objref :
-						argument.insert_Object(
-							(org.omg.CORBA.Object) allArguments[i]);
-						break;
-					case TCKind._tk_alias :
-					case TCKind._tk_struct :
-					case TCKind._tk_enum :
-						baciIntrospector.insertTypedef(
-							desc.parameters[i],
-							allArguments[i],
-							argument);
-						break;
-					case TCKind._tk_double :
-						argument.insert_double(
-							((Double) allArguments[i]).doubleValue());
-						break;
-					case TCKind._tk_float :
-						argument.insert_float(
-							((Float) allArguments[i]).floatValue());
-						break;
-					case TCKind._tk_octet :
-						argument.insert_octet(
-							((Byte) allArguments[i]).byteValue());
-						break;
-					case TCKind._tk_longlong :
-						argument.insert_longlong(
-							((Long) allArguments[i]).longValue());
-						break;
-					case TCKind._tk_ulonglong :
-						argument.insert_ulonglong(
-							((Long) allArguments[i]).longValue());
-						break;
-					case TCKind._tk_long :
-						argument.insert_long(
-							((Integer) allArguments[i]).intValue());
-						break;
-					case TCKind._tk_ulong :
-						argument.insert_ulong(
-							((Integer) allArguments[i]).intValue());
-						break;
-					case TCKind._tk_short :
-						argument.insert_short(
-							((Short) allArguments[i]).shortValue());
-						break;
-					case TCKind._tk_ushort :
-						argument.insert_ushort(
-							((Short) allArguments[i]).shortValue());
-						break;
-					case TCKind._tk_string :
-						argument.insert_string((String) allArguments[i]);
-						break;
-					case TCKind._tk_char :
-						argument.insert_char(
-							((Character) allArguments[i]).charValue());
-						break;
-					case TCKind._tk_boolean :
-						argument.insert_boolean(
-							((Boolean) allArguments[i]).booleanValue());
-						break;
-					case TCKind._tk_sequence :
-					case TCKind._tk_array :
-						baciIntrospector.insertTypedef(
-							desc.parameters[i],
-							allArguments[i],
-							argument);
-						break;
-					default :
-						throw new IllegalArgumentException(
-							"Argument typecode '"
-								+ desc.parameters[i].type.kind().value()
-								+ "' is not supported.");
-				}
+				argument = baciIntrospector.insertAny(desc.parameters[i].type,argument,allArguments[i]);
+				//baciIntrospector.displayAny(argument);
 			}
+			//org.omg.CORBA.ParameterMode.PARAM_xxx is defined in [0-2] and in org.jacorb.orb.ARG_xxx is defined in [1-3].
+			req.arguments().add_value(desc.parameters[i].name, argument, desc.parameters[i].mode.value()+1);
 		}
 
 		// invoke request
@@ -2804,4 +2718,12 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 		this.connectNonSticky = connectNonSticky;
 	}
 	
+	public org.omg.DynamicAny.DynAnyFactory getDynFact() {
+		try {
+			return org.omg.DynamicAny.DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
+		}catch (org.omg.CORBA.ORBPackage.InvalidName e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -175,7 +175,7 @@ public class ObjectExplorer extends JFrame {
 					try
 					{
 						Class converterClass = Class.forName(line);
-						Converter converter = (Converter)converterClass.getConstructor(null).newInstance(null);
+						Converter converter = (Converter)converterClass.getConstructor(new Class[0]).newInstance(new Object[0]);
 						getNotificationBean1().reportDebug(
 								"ObjectExplorer::loadConverters",
 								"Loaded converter '" + line + "' (" + converter.getDescription() + ").");

@@ -1,6 +1,8 @@
 package si.ijs.acs.objectexplorer.engine.BACI.converters;
 
 import si.ijs.acs.objectexplorer.engine.BACI.BACIConverterSupport;
+import si.ijs.acs.objectexplorer.engine.DataType;
+import si.ijs.acs.objectexplorer.engine.BACI.BACIDataType;
 
 /**
  * BACI property degree (double type) -> dd:mm:ss converter. 
@@ -39,8 +41,8 @@ public class BACIDegreesToDDMMSSConverter extends BACIConverterSupport {
 	/**
 	 * @see si.ijs.acs.objectexplorer.engine.BACI.BACIConverterSupport#getInverseConvertPropertyParameterType()
 	 */
-	public Class getInverseConvertPropertyParameterType() {
-		return DDMMSS.class;
+	public DataType getInverseConvertPropertyParameterType() {
+		return new BACIDataType(DDMMSS.class);
 	}
 	
 	/**

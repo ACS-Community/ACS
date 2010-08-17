@@ -13,7 +13,7 @@ package si.ijs.acs.objectexplorer.engine;
  * reasons and thus they have a special status for the final user.
  */
 public abstract class Attribute {
-	private Class type = null;
+	private DataType type = null;
 	private String name = null;
 	private boolean readOnly = false;
 	private SimpleIntrospectable introspectable = null;
@@ -24,7 +24,7 @@ public abstract class Attribute {
  * @param name the name of the attribute
  * @param introspectable the remote instance that contains this
  		  attribute
- * @param type a <code>Class</code> instance that represents
+ * @param type a <code>DataType</code> instance that represents
  * 		  the type of this attribute. Note that the class should
  *	   	  declare public constructors with all parameters neccessary
  *		  for the construction of the value, if applicable. GUI
@@ -33,7 +33,7 @@ public abstract class Attribute {
  * @param readOnly <code>true</code> if this attribute only supports
  *		  accessor method.
  */
-public Attribute(String name, SimpleIntrospectable introspectable, Class type, boolean readOnly) {
+public Attribute(String name, SimpleIntrospectable introspectable, DataType type, boolean readOnly) {
 	super();
 	if (name == null) throw new NullPointerException("name");
 	if (introspectable == null) throw new NullPointerException("introspectable");
@@ -44,13 +44,13 @@ public Attribute(String name, SimpleIntrospectable introspectable, Class type, b
 	this.readOnly = readOnly;
 }
 /**
- * Returns the <code>Class</code> object that represents
+ * Returns the <code>DataType</code> object that represents
  * the type of this attribute. The value is the same
  * as that passed into the constructor.
  *
  * @return type of <code>this</code>
  */
-public Class getAttributeType() {
+public DataType getAttributeType() {
 	return type;
 }
 /**

@@ -22,8 +22,8 @@ public BACIOperation(BACIOperation template, SimpleIntrospectable parent) {
 /**
  * BACIOperation constructor comment.
  */
-public BACIOperation(BACIRemoteAccess ra, OperationDescription desc, SimpleIntrospectable introspectable, String[] parameterNames, Class[] parameterTypes, boolean[] mask, boolean invocation, boolean special) {
-	super(desc.name, introspectable,Object.class,parameterNames, parameterTypes, mask, invocation, special);
+public BACIOperation(BACIRemoteAccess ra, OperationDescription desc, SimpleIntrospectable introspectable, String[] parameterNames, DataType[] parameterTypes, boolean[] mask, boolean invocation, boolean special) {
+	super(desc.name, introspectable,new BACIDataType(Object.class),parameterNames, parameterTypes, mask, invocation, special);
 	
 	if (desc == null) throw new NullPointerException("desc");
 	if (ra == null) throw new NullPointerException("ra");
@@ -36,7 +36,7 @@ public BACIOperation(BACIRemoteAccess ra, OperationDescription desc, SimpleIntro
  * Creation date: (2.11.2000 21:24:28)
  * @return org.omg.CORBA.OperationDescription
  */
-OperationDescription getOperationDesc() {
+public OperationDescription getOperationDesc() {
 	return desc;
 }
 /**

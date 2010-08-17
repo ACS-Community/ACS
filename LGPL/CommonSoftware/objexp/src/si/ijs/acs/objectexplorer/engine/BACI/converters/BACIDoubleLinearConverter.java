@@ -2,6 +2,8 @@
 package si.ijs.acs.objectexplorer.engine.BACI.converters;
 
 import si.ijs.acs.objectexplorer.engine.BACI.BACIConverterSupport;
+import si.ijs.acs.objectexplorer.engine.DataType;
+import si.ijs.acs.objectexplorer.engine.BACI.BACIDataType;
 
 /**
  * Implementation of BACI double property linear converter, <pre>cx + n</pre>.
@@ -73,7 +75,7 @@ public class BACIDoubleLinearConverter extends BACIConverterSupport {
 	/**
 	 * @see si.ijs.acs.objectexplorer.engine.BACI.BACIConverterSupport#getInverseConvertPropertyParameterType()
 	 */
-	public Class getInverseConvertPropertyParameterType() {
-		return double.class;
+	public DataType getInverseConvertPropertyParameterType() {
+		return new BACIDataType(double.class);
 	}
 }

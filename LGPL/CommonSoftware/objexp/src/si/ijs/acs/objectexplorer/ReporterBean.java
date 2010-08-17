@@ -14,6 +14,8 @@ import si.ijs.acs.objectexplorer.engine.Converter;
 import si.ijs.acs.objectexplorer.engine.Invocation;
 import si.ijs.acs.objectexplorer.engine.RemoteCall;
 import si.ijs.acs.objectexplorer.engine.RemoteResponse;
+import si.ijs.acs.objectexplorer.engine.DataElement;
+import si.ijs.acs.objectexplorer.engine.DataElementFormatter;
 
 import alma.acs.util.IsoDateFormat;
 
@@ -259,21 +261,37 @@ public static String toString(RemoteCall call, boolean expand) {
   result.append(name);
   result.append('\n');
   result.append(" --> Return value: ");
-  if ((call.getOperation() != null) && (call.getOperation().getReturnType()==Void.TYPE))
+  if ((call.getOperation() != null) && (call.getOperation().getReturnType().getType() == Void.TYPE))
 	result.append("void");
   else {
-  	result.append(DataFormatter.unpackReturnValue(returnValue,"      ",0,expand));
+	if(returnValue.getClass().isArray())
+		result.append(DataElementFormatter.unpackArray(returnValue,"      ",0, expand));
+	else if(returnValue instanceof DataElement)
+  		result.append(((DataElement)returnValue).toString("      ",0,expand));
+	else
+  		result.append(DataFormatter.unpackReturnValue(returnValue,"      ",0,expand));
   }
   result.append('\n');
   if (auxs!=null) {  
 		for (int i = 0; i < auxs.length; i++)
-			if (auxs[i] != null) result.append(" --> Auxiliary return value '" + call.getOperation().getParameterNames()[i] + "' = " + DataFormatter.unpackReturnValue(auxs[i],"      ",0,expand) + "\n");
+			if (auxs[i] != null) {
+				if(auxs[i].getClass().isArray())
+					result.append(" --> Auxiliary return value '" + call.getOperation().getParameterNames()[i] + "' = " + DataElementFormatter.unpackArray(auxs[i],"      ",0, expand));
+				else if(auxs[i] instanceof DataElement)
+					result.append(" --> Auxiliary return value '" + call.getOperation().getParameterNames()[i] + "' = " + ((DataElement)auxs[i]).toString("      ",0,expand) + "\n");
+				else
+					result.append(" --> Auxiliary return value '" + call.getOperation().getParameterNames()[i] + "' = " + DataFormatter.unpackReturnValue(auxs[i],"      ",0,expand) + "\n");
+			}
+		result.append('\n');
   }
 
 
   if (call.getThrowable()!=null) {
 	 result.append(" --> Exception: " + call.getThrowable() + "\n");
-	 result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,expand));
+	 if(call.getThrowable() instanceof DataElement)
+	 	result.append(((DataElement)call.getThrowable()).toString("/      ",0,expand));
+	 else
+	 	result.append(DataFormatter.unpackReturnValue(call.getThrowable(),"/      ",0,expand));
 	 
   }
 
@@ -313,7 +331,12 @@ public static String toString(RemoteResponse response, boolean expand) {
 		result.append("\n    ");
 		result.append(response.getDataNames()[i]);
 		result.append(": ");
-		result.append(DataFormatter.unpackReturnValue(data[i], "      ", 0,expand));
+		if(data[i].getClass().isArray())
+			result.append(DataElementFormatter.unpackArray(data[i],"      ",0, expand));
+		else if(data[i] instanceof DataElement)
+			result.append(((DataElement)data[i]).toString("      ", 0,expand));
+		else
+			result.append(DataFormatter.unpackReturnValue(data[i], "      ", 0,expand));
 	}
 	return result.toString();
 }

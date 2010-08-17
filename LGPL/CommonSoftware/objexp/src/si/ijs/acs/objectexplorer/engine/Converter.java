@@ -53,6 +53,6 @@ public interface Converter {
 	 * @param parameterTypes	operation decalred parameter types.
 	 * @return	classes of parameters of given operation.
 	 */
-	public Class[] getInverseConvertParameterTypes(String operation, Class[] parameterTypes);
+	public DataType[] getInverseConvertParameterTypes(String operation, DataType[] parameterTypes);
 	
 }

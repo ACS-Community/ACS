@@ -3,10 +3,21 @@ package si.ijs.acs.objectexplorer.engine.BACI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.Stack;
 
 import si.ijs.acs.objectexplorer.engine.*;
 import org.omg.CORBA.*;
 
+import org.omg.CORBA.TypeCode;
+import org.omg.DynamicAny.DynAny;
+import org.omg.DynamicAny.DynAnyFactory;
+import org.omg.DynamicAny.DynStruct;
+import org.omg.DynamicAny.DynEnum;
+import org.omg.DynamicAny.DynSequence;
+import org.omg.DynamicAny.DynArray;
+import org.omg.DynamicAny.NameDynAnyPair;
+
+import alma.ACSErr.ErrorTrace;
 
 /**
  * Insert the type's description here.
@@ -29,6 +40,8 @@ public class BACIIntrospector {
 	}
 	private BACIRemoteAccess ra = null;
 	private HashMap IDLtoJavaMapping = new HashMap();
+	private Stack structs;
+	private String cStruct = "";
 	public static final String ID_CORBA_OBJECT ="IDL:omg.org/CORBA/Object:1.0";
 	public static final String ID_PROPERTY = "IDL:alma/ACS/Property:1.0";
 	public static final String ID_CALLBACK = "IDL:alma/ACS/Callback:1.0";
@@ -46,6 +59,7 @@ public BACIIntrospector(BACIRemoteAccess ra) {
 	super();
 	if (ra == null) throw new NullPointerException("ra");
 	this.ra = ra;
+	structs = new Stack();
 }
 /**
  * Insert the method's description here.
@@ -106,6 +120,173 @@ public static void destroyInvocation(BACIInvocation invoc) {
 	invoc.ra.invoke(invoc, (BACIOperation)dest, new java.lang.Object[0], null);
 }
 
+	public Any insertAny(Any argument, java.lang.Object obj) {
+		if (argument == null) throw new NullPointerException("argument");
+		if (obj == null) throw new NullPointerException("obj");
+		return insertAny(argument.type(),argument,obj);
+	}
+
+	public Any insertAny(TypeCode tc, Any argument, java.lang.Object obj) {
+		if (tc == null) throw new NullPointerException("tc");
+		if (argument == null) throw new NullPointerException("argument");
+		if (obj == null) throw new NullPointerException("obj");
+		int value = tc.kind().value();
+		
+		switch (value) {
+			case TCKind._tk_objref :
+				argument.insert_Object((org.omg.CORBA.Object) obj);
+				break;
+			case TCKind._tk_struct :
+				return insertTypedef(tc, obj);
+			case TCKind._tk_enum :
+				DynEnum en;
+				try {
+					en = (DynEnum) ra.getDynFact().create_dyn_any_from_type_code(tc);
+				} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+					e.printStackTrace();
+					return null;
+				}
+				//return en.get_as_string();
+				try {
+					en.set_as_ulong(((DataEnum)obj).get());
+				} catch(org.omg.DynamicAny.DynAnyPackage.InvalidValue e) {
+					e.printStackTrace();
+					return null;
+				}
+				return en.to_any();
+			case TCKind._tk_double :
+				argument.insert_double(((Double) obj).doubleValue());
+				break;
+			case TCKind._tk_float :
+				argument.insert_float(((Float) obj).floatValue());
+				break;
+			case TCKind._tk_octet :
+				argument.insert_octet(((Byte) obj).byteValue());
+				break;
+			case TCKind._tk_longlong :
+				argument.insert_longlong(((Long) obj).longValue());
+				break;
+			case TCKind._tk_ulonglong :
+				argument.insert_ulonglong(((Long) obj).longValue());
+				break;
+			case TCKind._tk_long :
+				argument.insert_long(((Integer) obj).intValue());
+				break;
+			case TCKind._tk_ulong :
+				argument.insert_ulong(((Integer) obj).intValue());
+				break;
+			case TCKind._tk_short :
+				argument.insert_short(((Short) obj).shortValue());
+				break;
+			case TCKind._tk_ushort :
+				argument.insert_ushort(((Short) obj).shortValue());
+				break;
+			case TCKind._tk_string :
+				argument.insert_string((String) obj);
+				break;
+			case TCKind._tk_char :
+				argument.insert_char(((Character) obj).charValue());
+				break;
+			case TCKind._tk_boolean :
+				argument.insert_boolean(((Boolean) obj).booleanValue());
+				break;
+			case TCKind._tk_sequence :
+			case TCKind._tk_array :
+				return insertSequence(tc, argument, obj);
+			case TCKind._tk_alias :
+				try {
+					return insertAny(tc.content_type(), argument, obj);
+				} catch (org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
+			default :
+				throw new IllegalArgumentException("Argument typecode '"+value+"' is not supported.");
+		}
+		return argument;
+	}
+
+	public Any insertTypedef(TypeCode tc, java.lang.Object obj) {
+		DynAny dany;
+		try {
+			dany = ra.getDynFact().create_dyn_any_from_type_code(tc);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+			return null;
+		}
+		Class cl = getClassType(tc);
+		DynStruct str = (DynStruct) dany;
+		NameDynAnyPair[] mems = str.get_members_as_dyn_any();
+		try {
+			if(tc.kind() == TCKind.tk_struct) {
+				DataStruct ds = (DataStruct) obj;
+				for(int i = 0; i < mems.length; i++) {
+					mems[i].value.from_any(insertAny(mems[i].value.to_any(), ds.get(mems[i].id)));
+				}
+			} else {
+				DataException de = (DataException) obj;
+				for(int i = 0; i < mems.length; i++) {
+					mems[i].value.from_any(insertAny(mems[i].value.to_any(), de.get(mems[i].id)));
+				}
+			}
+			str.set_members_as_dyn_any(mems);
+		} catch (org.omg.DynamicAny.DynAnyPackage.TypeMismatch e) {
+			e.printStackTrace();
+			return null;
+		} catch (org.omg.DynamicAny.DynAnyPackage.InvalidValue e) {
+			e.printStackTrace();
+			return null;
+		}
+		displayAny(dany.to_any());
+		return dany.to_any();
+	}
+
+	public Any insertSequence(TypeCode tc, Any argument, java.lang.Object obj) {
+		if (argument == null) throw new NullPointerException("argument");
+		if (obj == null) throw new NullPointerException("obj");
+		if (!obj.getClass().isArray()) throw new IllegalArgumentException("The parameter obj has to be a sequence");
+
+		java.lang.Object[] objs;
+		if (obj.getClass().getComponentType().isPrimitive())
+			objs = com.cosylab.gui.components.r2.DataFormatter.convertPrimitiveArray(obj);
+		else
+			objs = (java.lang.Object[]) obj;
+		DynAny dany;
+		try {
+			dany = ra.getDynFact().create_dyn_any_from_type_code(tc);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+			return null;
+		}
+		Any[] els = new Any[objs.length];
+		try {
+			for(int i = 0; i < els.length; i++) {
+				DynAny dany2;
+				try {
+					dany2 = ra.getDynFact().create_dyn_any_from_type_code(tc.content_type());
+				} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+					e.printStackTrace();
+					return null;
+				}
+				els[i] = dany2.to_any();
+				els[i] = insertAny(tc.content_type(),els[i],objs[i]);
+			}
+			if(tc.kind() == TCKind.tk_sequence) {
+				((DynSequence) dany).set_elements(els);
+				((DynSequence) dany).set_length(els.length);
+			}
+			else if(tc.kind() == TCKind.tk_array)
+				((DynArray) dany).set_elements(els);
+		} catch(org.omg.DynamicAny.DynAnyPackage.TypeMismatch e) {
+			e.printStackTrace();
+		} catch(org.omg.DynamicAny.DynAnyPackage.InvalidValue e) {
+			e.printStackTrace();
+		} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+			e.printStackTrace();
+		}
+		return dany.to_any();
+	}
+
 /**
  * Insert the method's description here.
  * Creation date: (3.11.2000 0:38:21)
@@ -116,92 +297,153 @@ public java.lang.Object extractAny(Any argument) {
 	return extractAny(argument.type(), argument);
 }
 
+
 /**
  * Insert the method's description here.
  * Creation date: (3.11.2000 0:38:21)
  */
-public java.lang.Object extractAny(TypeCode argumentType, Any argument) {
-	if (argumentType == null) throw new NullPointerException("argumentType");
-	if (argument == null) throw new NullPointerException("argument");
-
-	switch(argumentType.kind().value())
-	{
-		case TCKind._tk_any:
-			return extractAny(argument.extract_any());
-		case TCKind._tk_void:
-		case TCKind._tk_null:
-			return null;
-		case TCKind._tk_objref:
-			return argument.extract_Object();
-		case TCKind._tk_struct:
-		case TCKind._tk_except:
-		//case TCKind._tk_enum:
-		case TCKind._tk_alias:
-			return extractTypedef(argument);
-/*
-		case TCKind._tk_alias:
-		        try
-			{
-			    return extractAny(argument.type().content_type(), argument);
-			} catch(org.omg.CORBA.TypeCodePackage.BadKind bk)
-			{
-			        throw new RemoteException("Exception while analyzing alias typecode (getting typecode name raises exception). Exception: " + bk);
-			}
-*/
-		case TCKind._tk_enum:
-			java.lang.Object enumObj = extractTypedef(argument);
-			java.lang.Class type = enumObj.getClass();
-
-			try
-			{
-				java.lang.reflect.Field[] fields = type.getDeclaredFields();
-				for (int j = 0; j < fields.length; j++) {
-					if (fields[j].getType() == type)
-					{
-						try {
-							if (fields[j].get(enumObj).equals(enumObj))
-								return fields[j].getName();
-						} catch (Throwable th) { /* noop */ }
-					}
+	public java.lang.Object extractAny(TypeCode tc, Any argument) {
+		if (argument == null) throw new NullPointerException("argument");
+		if (tc == null) throw new NullPointerException("tc");
+		switch(tc.kind().value())
+		{
+			case TCKind._tk_any:
+				return extractAny(argument.extract_any());
+			case TCKind._tk_void:
+			case TCKind._tk_null:
+				return null;
+			case TCKind._tk_objref:
+				return argument.extract_Object();
+			case TCKind._tk_struct:
+			case TCKind._tk_except:
+				return extractTypedef(argument);
+			case TCKind._tk_alias:
+				try {
+					return extractAny(tc.content_type(),argument);
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
 				}
-				return enumObj;
-			}
-			catch (Throwable th)
-			{
-				// failed to extract the enum name, return object
-				return enumObj;
-			}
-		
-		case TCKind._tk_double:
-			return new Double(argument.extract_double());
-		case TCKind._tk_float:
-			return new Float(argument.extract_float());
-		case TCKind._tk_octet:
-			//return new Byte(argument.extract_octet());
-			// use short to get unsigned value 
-			return new Short((short)(argument.extract_octet() & 0xFF));
-		case TCKind._tk_longlong:
-			return new Long(argument.extract_longlong());
-		case TCKind._tk_ulonglong:
-			return new Long(argument.extract_ulonglong());
-		case TCKind._tk_long:
-			return new Integer(argument.extract_long());
-		case TCKind._tk_ulong:
-			return new Integer(argument.extract_ulong());
-		case TCKind._tk_short:
-			return new Short(argument.extract_short());
-		case TCKind._tk_ushort:
-			return new Short(argument.extract_ushort());
-		case TCKind._tk_string:
-			return argument.extract_string();
-		case TCKind._tk_char:
-			return new Character(argument.extract_char());
-		case TCKind._tk_boolean:
-			return new Boolean(argument.extract_boolean());
-		default:
-			throw new IllegalArgumentException("Argument typecode '" + argumentType.kind().value() + "' is not supported.");
+			case TCKind._tk_enum:
+				DynEnum en;
+				try {
+					en = (DynEnum) ra.getDynFact().create_dyn_any(argument);
+				} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+					e.printStackTrace();
+					return null;
+				}
+				//return en.get_as_string();
+				DataEnum de = (DataEnum) getDef(tc);
+				de.set(en.get_as_ulong());
+				return de;
+			case TCKind._tk_sequence:
+			case TCKind._tk_array:
+				return extractSequence(tc, argument);
+			case TCKind._tk_double:
+				return new Double(argument.extract_double());
+			case TCKind._tk_float:
+				return new Float(argument.extract_float());
+			case TCKind._tk_octet:
+				//return new Byte(argument.extract_octet());
+				// use short to get unsigned value 
+				return new Short((short)(argument.extract_octet() & 0xFF));
+			case TCKind._tk_longlong:
+				return new Long(argument.extract_longlong());
+			case TCKind._tk_ulonglong:
+				return new Long(argument.extract_ulonglong());
+			case TCKind._tk_long:
+				return new Integer(argument.extract_long());
+			case TCKind._tk_ulong:
+				return new Integer(argument.extract_ulong());
+			case TCKind._tk_short:
+				return new Short(argument.extract_short());
+			case TCKind._tk_ushort:
+				return new Short(argument.extract_ushort());
+			case TCKind._tk_string:
+				return argument.extract_string();
+			case TCKind._tk_char:
+				return new Character(argument.extract_char());
+			case TCKind._tk_boolean:
+				return new Boolean(argument.extract_boolean());
+			default:
+				throw new IllegalArgumentException("Argument typecode '" + argument.type().kind().value() + "' is not supported.");
+		}
 	}
-}
+/**
+ * Insert the method's description here.
+ * Creation date: (7.11.2000 1:00:12)
+ * @return java.lang.Object
+ * @param argument org.omg.CORBA.Any
+ */
+	public java.lang.Object extractTypedef(TypeCode tc, Any argument) {
+		if (argument == null) throw new NullPointerException("argument");
+		DynAny dany;
+		try {
+			dany = ra.getDynFact().create_dyn_any(argument);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+			return null;
+		}
+		DynStruct str = (DynStruct) dany;
+		try {
+			if(tc.kind() == TCKind.tk_struct) {
+				DataStruct ds = new DataStruct(dany.type().id());
+				for(int i = 0; i < str.component_count(); i++) {
+					ds.add(str.current_member_name(), extractAny(str.current_component().to_any()));
+					str.next();
+				}
+				return ds;
+			} else {
+				DataException de = new DataException(dany.type().id());
+				for(int i = 0; i < str.component_count(); i++) {
+					de.add(str.current_member_name(), extractAny(str.current_component().to_any()));
+					str.next();
+				}
+				return de;
+			}
+		} catch (org.omg.DynamicAny.DynAnyPackage.TypeMismatch e) {
+			e.printStackTrace();
+			return null;
+		} catch (org.omg.DynamicAny.DynAnyPackage.InvalidValue e) {
+			e.printStackTrace();
+			return null;
+		} catch (org.omg.CORBA.TypeCodePackage.BadKind e) {
+			e.printStackTrace();
+			return null;
+		}		
+	}
+
+	public java.lang.Object extractSequence(TypeCode tc, Any argument) {
+		if (tc == null) throw new NullPointerException("tc");
+		if (argument == null) throw new NullPointerException("argument");
+		DynAny dany;
+		try {
+			dany = ra.getDynFact().create_dyn_any(argument);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+			return null;
+		}
+		Class cl = getClassType(argument.type());
+		Any[] els;
+		if(tc.kind() == TCKind.tk_sequence)
+			els = ((DynSequence) dany).get_elements();
+		else if(tc.kind() == TCKind.tk_array)
+			els = ((DynArray) dany).get_elements();
+		else {
+			return null;
+		}
+		java.lang.Object array = java.lang.reflect.Array.newInstance(cl.getComponentType(), els.length);
+		java.lang.Object[] objs;
+		if (cl.getComponentType().isPrimitive())
+			objs = com.cosylab.gui.components.r2.DataFormatter.convertPrimitiveArray(array);
+		else
+			objs = (java.lang.Object[]) array;
+		for(int i = 0; i < els.length; i++) {
+			objs[i] = extractAny(els[i]);
+		}
+		return objs;
+	}
+
 /**
  * Insert the method's description here.
  * Creation date: (10.11.2000 0:07:59)
@@ -268,124 +510,6 @@ public java.lang.Object extractTypedef(Any argument) {
 
 /**
  * Insert the method's description here.
- * Creation date: (7.11.2000 1:00:12)
- * @return java.lang.Object
- * @param argument org.omg.CORBA.Any
- */
-public java.lang.Object extractTypedef(TypeCode argumentType, Any argument) {
-	if (argumentType == null) throw new NullPointerException("argumentType");
-	if (argument == null) throw new NullPointerException("argument");
-	
-	Class c = null;
-	String className = null;
-	try
-	{
-		className = IDtoClassName(argumentType.id()) + "Helper";
-		c = Class.forName(className);
-	} catch (Exception e)
-	{
-		throw new JavaIDLIntrospectionException("Failed to load class '" + className + "'. Introspection failed on typedef argument: " + e);
-	}
-	Class[] paramTypes = { org.omg.CORBA.Any.class };
-	java.lang.Object[] params = { argument };
-	try
-	{
-		return c.getMethod("extract", paramTypes).invoke(null, params);
-	} catch (Exception e1)
-	{
-		throw new JavaIDLIntrospectionException("Dynamic invocation of 'extractAny()' failed on a typedef argument. Class instance: " + c.getName() + ". Exception:" + e1, e1);
-	}	
-}
-/**
- * Insert the method's description here.
- * Creation date: (13.11.2000 18:22:59)
- * @return java.lang.Class
- * @param tc org.omg.CORBA.TypeCode
- */
-private Class extractTypeFromTC(TypeCode tc) {
-	if (tc == null) throw new NullPointerException("tc");
-	
-	switch(tc.kind().value())
-	{
-		case TCKind._tk_objref:
-		case TCKind._tk_struct:
-		case TCKind._tk_enum:
-			try
-			{
-				try
-				{
-					return Class.forName(IDtoClassName(tc.id()));
-				} catch (Exception e)
-				{
-					throw new JavaIDLIntrospectionException("Java introspection (Class.forName()) failed for type '" + IDtoClassName(tc.id()) + "'. Exception: " + e);
-				}
-			} catch (org.omg.CORBA.TypeCodePackage.BadKind bk)
-			{
-				throw new RemoteException("Exception while analyzing enum, objref or struct typecode (getting typecode name raises exception). Exception: " + bk);
-			}
-		case TCKind._tk_alias:
-			try
-			{
-				return extractTypeFromTC(tc.content_type());
-//				else throw new IllegalArgumentException("Do not know how to handle alias typecodes other than those that represent sequences and have names ending with 'Seq'. Typecode being processed was '" + tc.id());
-			} catch(org.omg.CORBA.TypeCodePackage.BadKind bk)
-			{
-				throw new RemoteException("Exception while analyzing alias typecode (getting typecode name raises exception). Exception: " + bk);
-			}
-		case TCKind._tk_sequence:
-		{
-			try
-			{
-				Class content = extractTypeFromTC(tc.content_type());
-				return java.lang.reflect.Array.newInstance(content, 0).getClass();
-			}  catch(org.omg.CORBA.TypeCodePackage.BadKind bk)
-			{
-				throw new RemoteException("Exception while analyzing sequence typecode (getting typecode name raises exception). Exception: " + bk);
-			}
-		}
-		case TCKind._tk_array:
-		{
-			try
-			{
-				Class content = extractTypeFromTC(tc.content_type());
-				return java.lang.reflect.Array.newInstance(content, 0).getClass();
-			}  catch(org.omg.CORBA.TypeCodePackage.BadKind bk)
-			{
-				throw new RemoteException("Exception while analyzing array typecode (getting typecode name raises exception). Exception: " + bk);
-			}
-		}
-		case TCKind._tk_double:
-			return Double.TYPE;
-		case TCKind._tk_float:
-			return Float.TYPE;
-		case TCKind._tk_octet:
-			return Byte.TYPE;
-		case TCKind._tk_longlong:
-			return Long.TYPE;
-		case TCKind._tk_ulonglong:
-			return Long.TYPE;
-		case TCKind._tk_long:
-			return Integer.TYPE;
-		case TCKind._tk_ulong:
-			return Integer.TYPE;
-		case TCKind._tk_short:
-			return Short.TYPE;
-		case TCKind._tk_ushort:
-			return Short.TYPE;
-		case TCKind._tk_string:
-			return String.class;
-		case TCKind._tk_char:
-			return Character.TYPE;
-		case TCKind._tk_boolean:
-			return Boolean.TYPE;
-		case TCKind._tk_void:
-			return Void.TYPE;
-		default:
-		    throw new IllegalArgumentException("Argument typecode '" + tc.kind().value() + "' is not supported.");
-	}
-}
-/**
- * Insert the method's description here.
  * Creation date: (17.3.2001 19:36:18)
  * @return java.lang.String
  * @param fullType java.lang.String
@@ -411,8 +535,8 @@ public BACIAttribute[] getAttributes(BACIRemote target) {
 	for (int i = 0; i < desc.length; i++)
 	{
 		if (isProperty(desc[i])) continue;
-		Class type = extractTypeFromTC(desc[i].type);
-		temp.add(new BACIAttribute(ra, target, desc[i], type));
+		Class type = getClassType(desc[i].type);
+		temp.add(new BACIAttribute(ra, target, desc[i], new BACIDataType(type)));
 	}
 	BACIAttribute[] retVal = new BACIAttribute[temp.size()];
 	temp.toArray(retVal);
@@ -428,11 +552,11 @@ public BACIAttribute[] getAttributes(BACIRemote target) {
 public int getCallbackLocation(Operation op) {
 	if (op == null) throw new NullPointerException("op");
 	
-	Class[] args = op.getParameterTypes();
+	DataType[] args = op.getParameterTypes();
 	int count = -1;
 	for (int i = 0; i < args.length; i++)
 	{
-		if (alma.ACS.Callback.class.isAssignableFrom(args[i]))
+		if (alma.ACS.Callback.class.isAssignableFrom(args[i].getType()))
 		{
 			if (count != -1) throw new IntrospectionInconsistentException("Operation '" + op + "' declares more than one parameter that extends 'Callback'");
 			count = i;
@@ -456,16 +580,18 @@ public BACIOperation[] getOperations(BACIRemote target) {
 		ra.getNotifier().reportDebug("BACIIntrospector::getOperations", "Analysing operation '" + operations[i].name + "'.");
 		ParameterDescription[] ps = operations[i].parameters;
 		String[] names = new String[ps.length];
-		Class[] types = new Class[ps.length];
+		//Class[] types = new Class[ps.length];
+		DataType[] types = new DataType[ps.length];
 		boolean[] mask = new boolean[ps.length];
 		int cb = -1;
 		boolean unsupportedOperation = false;
 		for (int j = 0; j < ps.length; j++)
 		{
-		    try
-		    {
+			try
+			{
 			names[j] = ps[j].name;
-			types[j] = extractTypeFromTC(ps[j].type);
+			types[j] = new BACIDataType(getClassType(ps[j].type));
+			types[j].setElement(getDef(ps[j].type));
 			if (isOfType(ps[j].type, ID_CALLBACK)) 
 			{
 				if (cb != -1) throw new IntrospectionInconsistentException("Operation '" + operations[i].name + "' declares more than one callback parameter.");
@@ -579,37 +705,17 @@ public String IDtoClassName(String ID) {
 		return retVal;
 	}
 }
-/**
- * Insert the method's description here.
- * Creation date: (3.11.2000 0:28:16)
- * @param desc org.omg.CORBA.ParameterDescription
- */
-public void insertTypedef(ParameterDescription desc, java.lang.Object o, Any any) {
-	if (any == null) throw new NullPointerException("any");
-	if (o == null) throw new NullPointerException("o");
 
-
-	String className = null;
-	try
-	{
-		if (!o.getClass().isArray())
-			className = o.getClass().getName() + "Helper";
-		else
-		{
-			className = IDtoClassName(desc.type.id()) + "Helper";
-		}
-		if (className.startsWith("java.lang.")) className = "org.omg.CORBA." + className.substring("java.lang.".length());
-		Class c = Class.forName(className);
-		Class[] paramTypes = { org.omg.CORBA.Any.class, o.getClass() };
-		java.lang.Object[] params = { any, o };
-		//System.out.println("Invoking 'insert' on class '"+c.getName()+"' with (org.omg.CORBA.Any, "+o.getClass().getName()+").");
-		c.getMethod("insert", paramTypes).invoke(null, params);
-	} catch (Exception e)
-	{
-		throw new JavaIDLIntrospectionException("Error while dynamically inserting a typedef value into 'Any' by loading helper class '" + className + "' (inserting class '"+o.getClass().getName()+"'). Exception: " + e, e);
-	}
-	
+public String classNameToId(String name) {
+	String prefix = "IDL:alma/";
+	String suffix = ":1.0";
+	String cName = name.substring(name.lastIndexOf(".")+1).replace("AcsJ","");
+	String module = name.substring(name.indexOf(".")+1);
+	module = module.substring(0,module.indexOf("."));
+	String id = prefix + module + "/" + cName + suffix;
+	return id;
 }
+
 /**
  * Insert the method's description here.
  * Creation date: (1.11.2000 21:26:59)
@@ -724,4 +830,302 @@ private boolean isProperty(AttributeDescription desc) {
 public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.lang.Object[] params) {
 	return params;
 }
+
+	public Class getClassType(TypeCode tc) {
+		switch(tc.kind().value()) {
+			case TCKind._tk_objref:
+				try {
+					return Class.forName(IDtoClassName(tc.id()));
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				} catch(java.lang.ClassNotFoundException e) {
+					return org.omg.CORBA.Object.class;
+				}
+			case TCKind._tk_enum:
+				//return String.class;
+				return DataEnum.class;
+			case TCKind._tk_struct:
+			case TCKind._tk_except:
+				//Special
+				try {
+					//return Class.forName(IDtoClassName(tc.id()));
+					return Class.forName("holi"+IDtoClassName(tc.id()));
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				} catch(java.lang.ClassNotFoundException e) { //Class doesn't exist, try to create it.
+					if(tc.kind().value() == TCKind._tk_struct)
+						return DataStruct.class;
+					else
+						return DataException.class;
+				}
+			case TCKind._tk_sequence:
+			case TCKind._tk_array:
+				Class content;
+				try {
+					if(tc.content_type().kind() == TCKind.tk_struct)
+						if(cStruct.equals(IDtoClassName(tc.content_type().id()))) {
+							return java.lang.Object[].class;
+						}
+					content = getClassType(tc.content_type());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					return null;
+				}
+				return java.lang.reflect.Array.newInstance(content, 0).getClass();
+			case TCKind._tk_alias:
+				try {
+					if(tc.content_type().kind() == TCKind.tk_struct)
+						if(cStruct.equals(IDtoClassName(tc.content_type().id()))) {
+							return java.lang.Object.class;
+						}
+					return getClassType(tc.content_type());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					return null;
+				}
+			case TCKind._tk_void:
+				return Void.TYPE;
+			case TCKind._tk_short:
+				return Short.TYPE;
+			case TCKind._tk_long:
+				return Integer.TYPE;
+			case TCKind._tk_ushort:
+				return Short.TYPE;
+			case TCKind._tk_ulong:
+				return Integer.TYPE;
+			case TCKind._tk_float:
+				return Float.TYPE;
+			case TCKind._tk_double:
+				return Double.TYPE;
+			case TCKind._tk_boolean:
+				return Boolean.TYPE;
+			case TCKind._tk_char:
+				return Character.TYPE;
+			case TCKind._tk_octet:
+				return Byte.TYPE;
+			case TCKind._tk_string:
+				return String.class;
+			case TCKind._tk_longlong:
+				return Long.TYPE;
+			case TCKind._tk_ulonglong:
+				return Long.TYPE;
+
+			case TCKind._tk_union:
+			case TCKind._tk_longdouble:
+			case TCKind._tk_wchar:
+			case TCKind._tk_wstring:
+			case TCKind._tk_fixed:
+			case TCKind._tk_value:
+			case TCKind._tk_value_box:
+			case TCKind._tk_native:
+			case TCKind._tk_TypeCode:
+			case TCKind._tk_Principal:
+			case TCKind._tk_abstract_interface:
+			case TCKind._tk_any:
+			case TCKind._tk_null:
+			default:
+				throw new IllegalArgumentException("Argument typecode '" + tc.kind().value() + "' is not supported.");
+		}
+	}
+	private void pop() {
+		if(structs.empty())
+			return;
+		structs.pop();
+		if(structs.empty())
+			cStruct = "";
+		else
+			cStruct = (String)structs.peek();
+	}
+
+	private DataElement getDef(TypeCode tc) {
+		int value = tc.kind().value();
+		switch(value) {
+			case TCKind._tk_struct:
+				return getStructDef(tc);
+			case TCKind._tk_enum:
+				return getEnumDef(tc);
+			case TCKind._tk_alias:
+			case TCKind._tk_sequence:
+			case TCKind._tk_array:
+				try {
+					return getDef(tc.content_type());
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
+			default:
+				System.out.println("Definition not supported: "+value);
+				return null;
+		}
+	}
+	private DataStruct getStructDef(TypeCode tc) {
+		if(tc.kind() != TCKind.tk_struct)
+			return null;
+		try {
+			DataStruct ds = new DataStruct(tc.id());
+			Contained ctd = ra.lookupId(tc.id());
+			StructDef sd = StructDefHelper.narrow(ctd);
+			StructMember[] mems = sd.members();
+			for(int i = 0; i < mems.length; i++) {
+				DataType dt = new BACIDataType(getClassType(mems[i].type));
+				dt.setElement(getDef(mems[i].type));
+				ds.add(mems[i].name,dt);
+			}
+			return ds;
+		} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	private DataEnum getEnumDef(TypeCode tc) {
+		if(tc.kind() != TCKind.tk_enum)
+			return null;
+		try {
+			DataEnum de = new DataEnum(tc.id());
+			Contained ctd = ra.lookupId(tc.id());
+			EnumDef ed = EnumDefHelper.narrow(ctd);
+			String[] mems = ed.members();
+			for(int i = 0; i < mems.length; i++)
+				de.add(i,mems[i]);
+			return de;
+		} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void displayAny(Any argument) {
+		if (argument == null) throw new NullPointerException("argument");
+		displayAny(argument.type(), argument);
+	}
+
+	public void displayAny(TypeCode tc, Any argument) {
+		if (argument == null) throw new NullPointerException("argument");
+		switch(tc.kind().value())
+		{
+			case TCKind._tk_any:
+				displayAny(argument.extract_any());
+				break;
+			case TCKind._tk_void:
+			case TCKind._tk_null:
+				System.out.println("NULL!!!");
+				break;
+			case TCKind._tk_objref:
+				System.out.println(argument.extract_Object());
+				break;
+			case TCKind._tk_struct:
+			case TCKind._tk_except:
+				System.out.println("Struct!!!");
+				displayTypedef(tc,argument);
+				break;
+			case TCKind._tk_alias:
+				try {
+					displayAny(tc.content_type(),argument);
+				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+				}
+				break;
+			case TCKind._tk_enum:
+				DynEnum en;
+				try {
+					en = (DynEnum) ra.getDynFact().create_dyn_any(argument);
+					System.out.println(en.get_as_string());
+				} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+					e.printStackTrace();
+				}
+				break;
+			case TCKind._tk_sequence:
+			case TCKind._tk_array:
+				System.out.println("Sequence!!!");
+				displaySequence(tc,argument);
+				break;
+			case TCKind._tk_double:
+				System.out.println(new Double(argument.extract_double()));
+				break;
+			case TCKind._tk_float:
+				System.out.println(new Float(argument.extract_float()));
+				break;
+			case TCKind._tk_octet:
+				//return new Byte(argument.extract_octet());
+				// use short to get unsigned value 
+				System.out.println(new Short((short)(argument.extract_octet() & 0xFF)));
+				break;
+			case TCKind._tk_longlong:
+				System.out.println(new Long(argument.extract_longlong()));
+				break;
+			case TCKind._tk_ulonglong:
+				System.out.println(new Long(argument.extract_ulonglong()));
+				break;
+			case TCKind._tk_long:
+				System.out.println(new Integer(argument.extract_long()));
+				break;
+			case TCKind._tk_ulong:
+				System.out.println(new Integer(argument.extract_ulong()));
+				break;
+			case TCKind._tk_short:
+				System.out.println(new Short(argument.extract_short()));
+				break;
+			case TCKind._tk_ushort:
+				System.out.println(new Short(argument.extract_ushort()));
+				break;
+			case TCKind._tk_string:
+				System.out.println(argument.extract_string());
+				break;
+			case TCKind._tk_char:
+				System.out.println(new Character(argument.extract_char()));
+				break;
+			case TCKind._tk_boolean:
+				System.out.println(new Boolean(argument.extract_boolean()));
+				break;
+			default:
+				throw new IllegalArgumentException("Argument typecode '" + argument.type().kind().value() + "' is not supported.");
+		}
+	}
+	public void displayTypedef(TypeCode tc, Any argument) {
+		if (argument == null) throw new NullPointerException("argument");
+		if (tc == null) throw new NullPointerException("tc");
+		DynAny dany = null;
+		try {
+			dany = ra.getDynFact().create_dyn_any(argument);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+		}
+		DynStruct str = (DynStruct) dany;
+		try {
+			if(tc.kind() == TCKind.tk_struct) {
+				for(int i = 0; i < str.component_count(); i++) {
+					displayAny(str.current_component().to_any());
+					str.next();
+				}
+			} else {
+				for(int i = 0; i < str.component_count(); i++) {
+					displayAny(str.current_component().to_any());
+					str.next();
+				}
+			}
+		} catch (org.omg.DynamicAny.DynAnyPackage.TypeMismatch e) {
+			e.printStackTrace();
+		}		
+	}
+	public void displaySequence(TypeCode tc, Any argument) {
+		if (tc == null) throw new NullPointerException("tc");
+		if (argument == null) throw new NullPointerException("argument");
+		DynAny dany = null;
+		try {
+			dany = ra.getDynFact().create_dyn_any(argument);
+		} catch(org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode e) {
+			e.printStackTrace();
+		}
+		Class cl = getClassType(argument.type());
+		Any[] els;
+		if(tc.kind() == TCKind.tk_sequence)
+			els = ((DynSequence) dany).get_elements();
+		else if(tc.kind() == TCKind.tk_array)
+			els = ((DynArray) dany).get_elements();
+		else
+			els = new Any[0];
+		for(int i = 0; i < els.length; i++) {
+			displayAny(els[i]);
+		}
+	}
 }

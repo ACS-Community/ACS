@@ -140,7 +140,7 @@ private void connEtoM1(java.awt.event.ActionEvent arg1) {
  * Insert the method's description here.
  * Creation date: (11/14/00 4:50:59 PM)
  */
-private void generateParameterFields(Class[] types, String[] names, boolean[] mask) {
+private void generateParameterFields(DataType[] types, String[] names, boolean[] mask) {
 	if ((types != null) && (names != null) && (mask != null)) {
 		for (int j = 0; j < types.length; j++) {
 			if (mask[j]) {
@@ -153,7 +153,7 @@ private void generateParameterFields(Class[] types, String[] names, boolean[] ma
  * Insert the method's description here.
  * Creation date: (11/20/00 5:08:19 PM)
  */
-private void generateSingleField(Class type, String name) {
+private void generateSingleField(DataType type, String name) {
 	gridy++;
 	java.awt.GridBagConstraints con =
 		new java.awt.GridBagConstraints(
@@ -232,7 +232,9 @@ private void generateSingleField(Class type, String name) {
 				} else {
 					height = height + 30;
 					for (int i = 0; i < 2; i++) {
-						generateSingleField(type.getComponentType(), "value " + (i + 1));
+						DataType comp = type.getComponentType();
+						comp.setElement(type.getElement());
+						generateSingleField(comp, "value " + (i + 1));
 					}
 					return;
 				}
@@ -469,7 +471,7 @@ private javax.swing.JPanel getJPanel2() {
 			// user code begin {1}
 
 			// do the conversion
-			Class[] types = op.getParameterTypes();
+			DataType[] types = op.getParameterTypes();
 			
 			// yatagai : as a confirmation dialog
 			boolean hasParams = (types.length > 0);
@@ -643,13 +645,23 @@ private JLabel getTypeLabel(int n,String inType) {
  * @param exception java.lang.Throwable
  */
 private void handleException(java.lang.Throwable exception) {
+  notifier.reportMessage("Entering!");
   notifier.reportError("Error in parameters ",exception, true, false);
+  exception.printStackTrace();
 
   //if (exception instanceof Throwable)
   //    ((Throwable)exception).printStackTrace();
 
-  getErrorLabel().setText("Error: "+exception);
-  getErrorLabel().setVisible(true);
+  if(exception instanceof DataException) {
+    notifier.reportMessage("DataException!");
+    getErrorLabel().setText("Error: "+((DataException)exception).id()+":"+exception.getMessage());
+    getErrorLabel().setVisible(true);
+  } else {
+    notifier.reportMessage("No DataException!");
+    getErrorLabel().setText("Error: "+exception);
+    getErrorLabel().setVisible(true);
+  }
+  notifier.reportMessage("Going Out :S!");
 }
 /**
  * Initializes connections
@@ -708,7 +720,7 @@ private void invokeClicked() {
 	*/
 
 		// do the conversion
-		Class[] types = op.getParameterTypes();
+		DataType[] types = op.getParameterTypes();
 		if (converter != null)
 			types = converter.getInverseConvertParameterTypes(op.getName(), types);
 
@@ -752,7 +764,7 @@ public static void main(java.lang.String[] args) {
  * @return java.lang.Object[]
  * @throws ParseException 
  */
-private Object[] readParameters(Class[] types, boolean[] mask, Object[] pFields) throws ParseException {
+private Object[] readParameters(DataType[] types, boolean[] mask, Object[] pFields) throws ParseException {
 		if ((types != null) && (mask != null)) {
 			Object[] params = new Object[types.length];
 			for (int j = 0; j < types.length; j++) {
@@ -774,58 +786,52 @@ private Object[] readParameters(Class[] types, boolean[] mask, Object[] pFields)
  * Insert the method's description here.
  * Creation date: (11/14/00 8:29:22 PM)
  */
-private Object readReadableType(Class type) {
-   try{
-	   if (!type.isInterface()) {
-			java.lang.reflect.Constructor[] constructors = type.getConstructors();
-			if (constructors.length > 0) {
-				Class[] constTypes = constructors[0].getParameterTypes();
-				Class[] tempConstTypes = null;
-				java.lang.reflect.Constructor myConst = constructors[0];
-				for (int k = 1; k < constructors.length; k++) {
-					tempConstTypes = constructors[k].getParameterTypes();
-					if (tempConstTypes.length > constTypes.length) {
-						constTypes = tempConstTypes;
-						myConst = constructors[k];
-					}
-				}
-				boolean[] mask = new boolean[constTypes.length];
-				for (int j = 0; j < constTypes.length; j++) {
-					mask[j] = true;
-				}
-				try{
-				  Object myObj = myConst.newInstance(readParameters(constTypes, mask, parameterFields));
- 				  return myObj;
-				}
-				catch(ParseException parseExc){
-					return null;					
-				}
-				catch (InstantiationException t){
-				  return null;
-				}
-				catch (java.lang.reflect.InvocationTargetException e) {
-				  return null;
-				}
-			} else
-				
-				if (constructors.length == 0) {
-					java.lang.reflect.Field f = null;
-					try
-					{
-						f = type.getField((String)((JComboBox)parameterFields[index]).getSelectedItem());
-						index++;
-					} catch (Exception e)
-					{
-					}
-					if (f == null || f.getType() != type || !java.lang.reflect.Modifier.isStatic(f.getModifiers())) return null;
-					return f.get(null);
-				} else return null;
+private Object readReadableType(DataType type) {
+	if (!type.isInterface()) {
+		if(type.getType() == DataStruct.class) {
+			DataStruct ds = (DataStruct) type.getElement();
+			java.util.Set<String> keys = ds.keySet();
+			boolean[] mask = new boolean[ds.size()];
+			DataType[] types = new DataType[ds.size()];
+			int i = 0;
+			for(String key : keys) {
+				mask[i] = true;
+				types[i] = (DataType) ds.get(key);
+				i++;
+			}
+			Object[] o;
+			try{
+				o = readParameters(types, mask, parameterFields);
+			} catch(ParseException parseExc) {
+				return null;
+			}
+			
+			DataStruct ds2 = new DataStruct(ds.id());
+			i = 0;
+			for(String key : keys) {
+				ds2.add(key,o[i]);
+				i++;
+			}
+			return ds2;
+		} else if (type.getType() == DataEnum.class) {
+			DataEnum de = (DataEnum) type.getElement();
+			java.util.Set<String> keys = de.keySet();
+			String[] types = new String[de.size()];
+			keys.toArray(types);
+			DataEnum de2 = new DataEnum(de.id());
+			for(int i = 0; i < de.size(); i++) {
+				de2.add(i,types[i]);
+			}
+			de2.set(((JComboBox)parameterFields[index]).getSelectedIndex());
+			index++;
+			return de2;
 		}
-		else return null;
-   }
-   catch (IllegalAccessException e) {
-	  return null;
-   }	
+		else {
+			System.out.println(type.getType().getName());
+			return null;
+		}
+	}
+	else return null;
 }
 /**
  * Insert the method's description here.
@@ -850,7 +856,7 @@ private String[] readRows(String str) {
  * Creation date: (11/22/00 1:42:28 PM)
  * @throws ParseException 
  */
-private Object readSingleParameter(Class type) throws ParseException {
+private Object readSingleParameter(DataType type) throws ParseException {
 
     //System.out.println("Reading param of type at index ("+index+"): " + type.getName());
 
@@ -866,7 +872,7 @@ private Object readSingleParameter(Class type) throws ParseException {
 			if (type.isPrimitive()) {
 				try
 				{
-					param = stringConvert(((JTextField) parameterFields[index]).getText(), type);
+					param = stringConvert(((JTextField) parameterFields[index]).getText(), type.getType());
 				}
 				catch(ParseException parseExc){
 					throw parseExc;
@@ -875,12 +881,14 @@ private Object readSingleParameter(Class type) throws ParseException {
 			} else
 				if (type.isArray()) {
 					if ((type.getComponentType().isPrimitive()) || ((type.getName().indexOf("java.lang.") > -1) && (type.getName().indexOf("java.lang.Object") == -1))) {
-						param = arrayConvert(((JTextPane)parameterFields[index]).getText(), type);
+						param = arrayConvert(((JTextPane)parameterFields[index]).getText(), type.getType());
 						index = index + 1;
 					} else {
-						param = java.lang.reflect.Array.newInstance(type.getComponentType(),3);
+						param = java.lang.reflect.Array.newInstance(type.getComponentType().getType(),2);
 						for (int i=0;i<2;i++){
-						  java.lang.reflect.Array.set(param,i,readSingleParameter(type.getComponentType()));
+							DataType comp = type.getComponentType();
+							comp.setElement(type.getElement());
+							java.lang.reflect.Array.set(param,i,readSingleParameter(comp));
 						}
 					}
 				} else {
@@ -947,7 +955,7 @@ public static  Object stringConvert(String str,Class type) throws ParseException
  * Insert the method's description here.
  * Creation date: (11/14/00 8:29:22 PM)
  */
-private void unpackReadableType(Class type) {
+private void unpackReadableType(DataType type) {
 	if (!type.isInterface()) {
 		java.awt.GridBagConstraints con =
 			new java.awt.GridBagConstraints(
@@ -962,68 +970,33 @@ private void unpackReadableType(Class type) {
 				new java.awt.Insets(2, 6, 2, 8),
 				0,
 				0);
-		java.lang.reflect.Constructor[] constructors = type.getConstructors();
-
-		if ((constructors != null) && (constructors.length > 0)) {
-			Class[] constTypes = constructors[0].getParameterTypes();
-			Class[] tempConstTypes = null;
-			for (int k = 1; k < constructors.length; k++) {
-				tempConstTypes = constructors[k].getParameterTypes();
-				if (tempConstTypes.length > constTypes.length)
-					constTypes = tempConstTypes;
-			}
-			boolean[] mask = null;
-			String[] names = null;
-
-			if (constTypes.length > 0) {
-				mask = new boolean[constTypes.length];
-				names = new String[constTypes.length];
-				notifier.reportDebug(
-					"CallMethodDialog::unpackReadableType",
-					"Constructor: " + constTypes.length + " params");
-				for (int j = 0; j < constTypes.length; j++) {
-					names[j] = "Constructor parameter " + (j + 1);
-					mask[j] = true;
-				}
-			} else {
-				java.lang.reflect.Method[] methods = type.getMethods();
-				java.util.ArrayList list = new java.util.ArrayList();
-				java.util.ArrayList listNames = new java.util.ArrayList();
-				for (int i = 0; i < methods.length; i++) {
-					if ((methods[i].getName().indexOf("get") == 0)
-						&& (methods[i].getParameterTypes().length == 1)) {
-						list.add(methods[i].getParameterTypes()[0]);
-						listNames.add(methods[i].getName());
-					}
-				}
-				mask = new boolean[list.size()];
-				for (int k = 0; k < list.size(); k++) {
-					mask[k] = true;
-				}
-				names = new String[list.size()];
-				constTypes = new Class[list.size()];
-				list.toArray(constTypes);
-				listNames.toArray(names);
+		if(type.getType() == DataStruct.class) {
+			DataStruct ds = (DataStruct) type.getElement();
+			java.util.Set<String> keys = ds.keySet();
+			int i = 0;
+			boolean[] mask = new boolean[ds.size()];
+			String[] names = new String[ds.size()];
+			DataType[] constTypes = new DataType[ds.size()];
+			for(String key : keys) {
+				mask[i] = true;
+				names[i] = key;
+				constTypes[i] = (DataType) ds.get(key);
+				i++;
 			}
 			height = height + 40;
 			generateParameterFields(constTypes, names, mask);
-		} else
-			if (constructors.length == 0) {
-				java.lang.reflect.Field[] fields = type.getDeclaredFields();
-				java.util.ArrayList fieldNames = new java.util.ArrayList();
-				for (int j = 0; j < fields.length; j++) {
-					if (fields[j].getType() == type)
-						fieldNames.add(fields[j].getName());
-				}
-				if (fieldNames.size() > 0) {
-					String[] names = new String[fieldNames.size()];
-					fieldNames.toArray(names);
-					javax.swing.JComboBox tempCombo = getParameterCombo(index, names);
-					getJPanel1().add(tempCombo, con);
-					index++;
-				}
+		} else if(type.getType() == DataEnum.class) {
+			DataEnum de = (DataEnum) type.getElement();
+			if (de.size() > 0) {
+				String[] types = new String[de.size()];
+				de.keySet().toArray(types);
+				javax.swing.JComboBox tempCombo = getParameterCombo(index, types);
+				getJPanel1().add(tempCombo, con);
+				index++;
 			}
-
+		} else {
+			System.out.println(type.getType().getName());
+		}
 	}
 	height = height + 40;
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import si.ijs.acs.objectexplorer.engine.Converter;
+import si.ijs.acs.objectexplorer.engine.DataType;
 
 /**
  * Support class for BACI (property) converter.
@@ -134,14 +135,14 @@ public abstract class BACIConverterSupport implements Converter {
 					int length = Array.getLength(params[1]);
 
 					// same classes (converted and inverse converted)
-					if (params[1].getClass().getComponentType() == getInverseConvertPropertyParameterType())
+					if (params[1].getClass().getComponentType() == getInverseConvertPropertyParameterType().getType())
 					{
 						for (int i = 0; i < length; i++)
 							Array.set(params[1], i, convertPropertyValue(Array.get(params[1], i)));
 					}
 					else
 					{
-						Object newArray = Array.newInstance(getInverseConvertPropertyParameterType(), length);
+						Object newArray = Array.newInstance(getInverseConvertPropertyParameterType().getType(), length);
 						for (int i = 0; i < length; i++)
 							Array.set(newArray, i, convertPropertyValue(Array.get(params[1], i)));
 						params[1] = newArray;
@@ -181,8 +182,8 @@ public abstract class BACIConverterSupport implements Converter {
 	/**
 	 * @see si.ijs.acs.objectexplorer.engine.Converter#getInverseConvertParameterTypes(java.lang.String)
 	 */
-	public Class[] getInverseConvertParameterTypes(String operation, Class[] parameterTypes) {
-		Class[] types = new Class[parameterTypes.length];
+	public DataType[] getInverseConvertParameterTypes(String operation, DataType[] parameterTypes) {
+		DataType[] types = new DataType[parameterTypes.length];
 		System.arraycopy(parameterTypes, 0, types, 0, parameterTypes.length);
 		types[0] = getInverseConvertPropertyParameterType();
 		return types;
@@ -207,7 +208,7 @@ public abstract class BACIConverterSupport implements Converter {
 	 * This is returned class by convertPropertyValue method and expected class type of inverseConvertPropertyValue.
 	 * @return	class type of converted property value
 	 */
-	public abstract Class getInverseConvertPropertyParameterType();
+	public abstract DataType getInverseConvertPropertyParameterType();
 
 	/**
 	 * Get converted property value units.
