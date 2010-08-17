@@ -27,15 +27,15 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import junit.framework.TestCase;
+
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.UserException;
 
-import junit.framework.TestCase;
-
 import alma.Logging.XmlLogRecord;
-import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.logging.formatters.AcsLogFormatter;
+import alma.acs.logging.formatters.AcsXMLLogFormatter;
 import alma.acs.testsupport.LogRecordCollectingLogger;
 
 
@@ -319,7 +319,7 @@ public class RemoteLogDispatcherTest extends TestCase {
         int filterThreshold = numRecords * 7 / 10;
         int numLoggedExpected = 0;
         for (int i = 0; i < numRecords; i++) {
-            boolean wasAddedToQueue = queue.log(fakeLogRecords[i]);
+            /*boolean wasAddedToQueue = */queue.log(fakeLogRecords[i]);
             // first 70% of queue accepts any of these log records, later only INFO and above
             if ( (i+1 <= filterThreshold) ||
                  fakeLogRecords[i].getLevel().intValue() >= Level.INFO.intValue() ) {
@@ -347,7 +347,46 @@ public class RemoteLogDispatcherTest extends TestCase {
         assertEquals(numRecords % dispatcher.getBufferSize(), queue.recordQueueSize());        
     }
     
-    
+    /**
+     * This test was created to get some number about the performance of the log queue under pressure.
+     * This was used to check whether the new implementation of the log submission was
+     * better or worse than the previous one (see CVS logs for details)
+     */
+    public void notestStressQueue() {
+
+    	long begin, end, average = 0;
+    	final int maxTimes = 50;
+
+        for(int times=0; times != maxTimes; times++) {
+
+    		dispatcher = new TestLogDispatcher(orb, formatter);
+        	dispatcher.setVerbose(false);
+            queue.setRemoteLogDispatcher(dispatcher);
+
+            collectingLogger.clearLogRecords();
+        	collectingLogger.produceLogs1(3000*dispatcher.getBufferSize());
+        	LogRecord[] fakeLogRecords = collectingLogger.getCollectedLogRecords();
+        	sleep(1000);
+
+        	begin = System.currentTimeMillis();
+        	int i = 0;
+        	for(LogRecord e: fakeLogRecords) {
+        		queue.log(e);
+        		i++;
+        		if( i%dispatcher.getBufferSize() == 0 )
+        			queue.flushAllAndWait();
+        	}
+        	end = System.currentTimeMillis();
+
+        	//System.out.println("Logging took " + (end-begin) + " - 300*10 = " + ((end-begin) - 3000));
+        	System.out.println("Logging took " + (end-begin));
+
+        	average += (end-begin);
+        }
+
+        System.out.println("Average time was: " + (double)average/maxTimes);
+    }
+
     private void sleep(long millis) {
         try {
             Thread.sleep(millis);

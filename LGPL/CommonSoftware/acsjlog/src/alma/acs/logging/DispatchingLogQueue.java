@@ -22,7 +22,6 @@
 package alma.acs.logging;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -328,11 +327,31 @@ public class DispatchingLogQueue {
         else {
             flushLock.lock();
             try {
-                List<LogRecord> logRecordList = new ArrayList<LogRecord>();
-                queue.drainTo(logRecordList, remoteLogDispatcher.getBufferSize());
-                
-                if (!logRecordList.isEmpty()) {
-                    final LogRecord[] logRecords = logRecordList.toArray(new LogRecord[logRecordList.size()]);
+
+                //List<LogRecord> logRecordList = new ArrayList<LogRecord>();
+                // queue.drainTo(logRecordList, remoteLogDispatcher.getBufferSize());
+
+                // queue.drainTo is removing the log records from the queue, which is bad
+                // Instead, we should only pick them (but not remove them), and then, if they
+                // are well sent, we remove them from the queue
+
+                // Solution: toArray(), and then take the getBufferSize()'th/queue.size()'th first ones
+                int bufferSize = remoteLogDispatcher.getBufferSize();
+                int queueSize  = queue.size();
+                LogRecord[] allRecords = queue.toArray(new LogRecord[queueSize]);
+
+                final LogRecord[] logRecords;
+                if( queueSize > bufferSize ) {
+                	logRecords = new LogRecord[bufferSize];
+                	System.arraycopy(allRecords, 0, logRecords, 0, bufferSize);
+                }
+                else {
+                	logRecords = new LogRecord[queueSize];
+                	System.arraycopy(allRecords, 0, logRecords, 0, queueSize);
+                }
+
+                if (logRecords.length != 0 ) {
+//                    final LogRecord[] logRecords = logRecordList.toArray(new LogRecord[logRecordList.size()]);
                     
                     flushedSomeRecords = flushLogRecords(logRecords);
                     // if successful, try to schedule another flush to drain the queue further (if it's large enough)
@@ -372,10 +391,17 @@ public class DispatchingLogQueue {
 		boolean flushedSomeRecords = true;
 
 		RemoteLogDispatcher.FailedLogRecords failures = remoteLogDispatcher.sendLogRecords(logRecords);
+
+		List<LogRecord> allFailures = new ArrayList<LogRecord>();
 		if (failures.hasSendFailures()) {
 			List<LogRecord> sendFailures = failures.getSendFailures();
+
+			allFailures.addAll(sendFailures);
+			// Since now they are not removed anymore from the queue before trying to send them,
+			// we should instead NOT remove these from the queue
 			// we'll try to send them some other time
-			queue.addAll(sendFailures);
+//			queue.addAll(sendFailures);
+
 			flushedSomeRecords = (sendFailures.size() < logRecords.length);
 			if (DEBUG) {
 				System.err.println("flushLogRecords: had to add back " + sendFailures.size()
@@ -389,6 +415,13 @@ public class DispatchingLogQueue {
 			// these records are not quite satisfactorily flushed, but gone from the queue, which matters here
 			flushedSomeRecords = true;
 		}
+
+		// Remove successfully sent records from the queue
+		for(LogRecord e: logRecords) {
+			if( !allFailures.contains(e) )
+				queue.remove(e);
+		}
+
 		lastFlushFinished = System.currentTimeMillis();
 		return flushedSomeRecords;
 	}
