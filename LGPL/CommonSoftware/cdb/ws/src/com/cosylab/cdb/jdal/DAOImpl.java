@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
-import com.cosylab.CDB.DAOPOA;
+import com.cosylab.CDB.DAOOperations;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
@@ -42,10 +42,10 @@ import alma.cdbErrType.wrappers.AcsJWrongCDBDataTypeEx;
  * Window>Preferences>Java>Code Generation.
  */
 
-public class DAOImpl extends DAOPOA {
-	private String m_name;
-	private XMLTreeNode m_rootNode = null;
-	private POA m_poa;
+public class DAOImpl implements DAOOperations {
+	private final String m_name;
+	private XMLTreeNode m_rootNode;
+	private final POA m_poa;
 	private boolean m_silent;
 	private final Logger m_logger;
 
@@ -64,7 +64,8 @@ public class DAOImpl extends DAOPOA {
 	public void destroy() {
 		try {
 			if (m_poa != null) {
-				byte[] thisId = m_poa.servant_to_id(this);
+				// we trust that m_name (the curl) was used to activate this DAO
+				byte[] thisId = m_name.getBytes();
 				m_poa.deactivate_object(thisId);
 			}
 		} catch (Exception e) {
