@@ -29,6 +29,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
+import org.omg.PortableServer.Servant;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -37,6 +38,8 @@ import com.cosylab.CDB.DALChangeListener;
 import com.cosylab.CDB.DALChangeListenerHelper;
 import com.cosylab.CDB.DAO;
 import com.cosylab.CDB.DAOHelper;
+import com.cosylab.CDB.DAOOperations;
+import com.cosylab.CDB.DAOPOATie;
 import com.cosylab.CDB.JDALPOA;
 import com.cosylab.CDB.WDALOperations;
 import com.cosylab.util.FileHelper;
@@ -45,6 +48,7 @@ import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
+import alma.acs.monitoring.SimpleCallInterceptor;
 import alma.acs.util.StopWatch;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import alma.cdbErrType.CDBXMLErrorEx;
@@ -842,15 +846,25 @@ public class DALImpl extends JDALPOA implements Recoverer {
 				// execution when different DAO are created
 				if (daoMap.containsKey(curl))
 					return daoMap.get(curl);
-
-				DAOImpl daoImp = new DAOImpl(curl, xmlSolver.m_rootNode, poa, m_logger);
-
-				// create object id
+				
+				final DAOImpl servantDelegate = new DAOImpl(curl, xmlSolver.m_rootNode, poa, m_logger);
+				DAOOperations topLevelServantDelegate = servantDelegate;
+				
+				if (Boolean.getBoolean(Server.LOG_CDB_CALLS_PROPERTYNAME)) {
+					// Currently we only intercept the functional IDL-defined methods, by wrapping servantDelegate.
+					// If we want to also intercept the CORBA admin methods, then *servant* below should be wrapped with a dynamic proxy instead.
+					DAOOperations interceptingServantDelegate = SimpleCallInterceptor.createSimpleInterceptor(DAOOperations.class, servantDelegate, m_logger);
+					topLevelServantDelegate = interceptingServantDelegate;
+				}
+				final Servant servant = new DAOPOATie(topLevelServantDelegate);
+				
+				// create object id. 
+				// Note that the ID *must* be derived from the curl, because DAOImpl#destroy will do the same in POA#deactivate_object.
 				byte[] id = curl.getBytes();
 
 				// activate object
-				poa.activate_object_with_id(id, daoImp);
-				href = DAOHelper.narrow(poa.servant_to_reference(daoImp));
+				poa.activate_object_with_id(id, servant);
+				href = DAOHelper.narrow(poa.servant_to_reference(servant));
 
 				// map DAO reference
 				daoMap.put(curl, href);
@@ -1240,7 +1254,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	        if (xmlSolver != null)
 	        {
 	            internalNodes = new StringBuffer();
-	            Iterator iter = xmlSolver.m_rootNode.getNodesMap().keySet().iterator();
+	            Iterator<String> iter = xmlSolver.m_rootNode.getNodesMap().keySet().iterator();
 	            while (iter.hasNext()) {
 	                internalNodes.append(iter.next().toString());
 	                internalNodes.append(' ');
