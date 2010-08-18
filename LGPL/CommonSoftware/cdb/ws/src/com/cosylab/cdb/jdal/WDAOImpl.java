@@ -29,18 +29,17 @@ package com.cosylab.cdb.jdal;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
-import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
+import com.cosylab.CDB.WDAOPOA;
+
+import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.CDBFieldIsReadOnlyEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
-import com.cosylab.CDB.WDAOPOA;
-
-import java.util.logging.Logger;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.AcsLogLevel;
+import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 
 /**
  * @author dvitas
@@ -49,14 +48,20 @@ import alma.acs.logging.AcsLogLevel;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class WDAOImpl extends WDAOPOA {
-	private DAOImpl daoImpl = null;
-	private WDALImpl wdal = null; // used for saving - nicer if it is an interface
+	private final DAOImpl daoImpl;
+	private final WDALImpl wdal; // used for saving - nicer if it is an interface
 	private final Logger m_logger;
 	/**
 	 * 
 	 */
 	public WDAOImpl(WDALImpl wdal, String name, DAOImpl daoImpl, POA poa, Logger logger) {
 		super();
+		if (wdal == null) {
+			throw new NullPointerException("wdal must not be null");
+		}
+		if (daoImpl == null) {
+			throw new NullPointerException("daoImpl must not be null");
+		}
 		this.wdal = wdal;
 		this.daoImpl = daoImpl;
 		m_logger = logger;
