@@ -177,7 +177,7 @@ public class Server {
 			
 			if (Boolean.getBoolean(LOG_CDB_CALLS_PROPERTYNAME)) {
 				// Currently we only intercept the functional IDL-defined methods, by wrapping servantDelegate.
-				// If we want to also intercept the CORBA admin methods, then servant should be wrapped with a dynamic proxy.
+				// If we want to also intercept the CORBA admin methods, then *servant* should be wrapped with a dynamic proxy instead.
 				WJDALOperations interceptingServantDelegate = SimpleCallInterceptor.createSimpleInterceptor(WJDALOperations.class, servantDelegate, sharedLogger);
 				topLevelServantDelegate = interceptingServantDelegate;
 			}
