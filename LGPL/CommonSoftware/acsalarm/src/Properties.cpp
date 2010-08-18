@@ -77,7 +77,7 @@ bool Properties::operator!=(const Properties &rhs) {
  *
  * @key the key to search for in the map.
  */
-string Properties::getProperty(string key)
+string Properties::getProperty(string key) const
 {
 	Logging::Logger::LoggerSmartPtr myLoggerSmartPtr = getLogger();
 	if(myLoggerSmartPtr != NULL) {
@@ -85,7 +85,7 @@ string Properties::getProperty(string key)
 	}
 
 	string retVal;
-	map<string, string >::iterator mapEntry = propertiesMap.find(key);
+	map<string, string >::const_iterator mapEntry = propertiesMap.find(key);
 	if(mapEntry != propertiesMap.end())
 	{
 		string logStr = "Properties::getProperty(): entry for: " + key + " was found"; 

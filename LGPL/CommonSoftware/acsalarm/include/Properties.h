@@ -45,7 +45,7 @@ namespace acsalarm
 			 * 			the returned string is empty if a pair with the given key does not exist
 			 *
 			 */
-			std::string getProperty(std::string key) ;
+			std::string getProperty(std::string key) const;
 
  			// Returns an enumeration of all the keys in this property list, 
 			// including distinct keys in the default property list if a key 

@@ -149,7 +149,8 @@ void error(const char *why, const char* what)
     exit(1);
 }
 
-
+/* local function defined later in file as used. Insert forward declaration instead of rearrange file. */
+bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
 
 template<class ITER>
 bool parseOptions(ASFormatter &formatter,
