@@ -96,7 +96,11 @@ public class SimpleCallInterceptor
 			
 			// log invocation time
 			if (isLoggable) {
-				logger.log(this.logLevel, "returning from " + method.getName() + " after " + methodInvWatch.getLapTimeMillis() + " ms.");
+				String msg = "returning from " + method.getName() + " after " + methodInvWatch.getLapTimeMillis() + " ms. ";
+				if (realThr != null) {
+					msg += realThr.getClass().getSimpleName() + " was thrown."; // TODO log more exception details if needed.
+				}
+				logger.log(logLevel, msg);
 			}
 
 			if (realThr != null) {
