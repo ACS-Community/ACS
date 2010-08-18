@@ -50,6 +50,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
+import com.cosylab.CDB.DAOPOATie;
+import com.cosylab.CDB.WDAO;
+import com.cosylab.CDB.WDAOHelper;
+
 import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBExceptionEx;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
@@ -61,10 +65,6 @@ import alma.cdbErrType.wrappers.AcsJCDBExceptionEx;
 import alma.cdbErrType.wrappers.AcsJCDBFieldDoesNotExistEx;
 import alma.cdbErrType.wrappers.AcsJCDBRecordAlreadyExistsEx;
 import alma.cdbErrType.wrappers.AcsJCDBXMLErrorEx;
-
-import com.cosylab.CDB.DAO;
-import com.cosylab.CDB.WDAO;
-import com.cosylab.CDB.WDAOHelper;
 
 /**
  * Implementation of Writable Data Access Layer (WDAL) interface.   Enables
@@ -79,7 +79,7 @@ import com.cosylab.CDB.WDAOHelper;
 public class WDALImpl extends WDALBaseImpl
 {
 	private POA poa = null;
-	private HashMap wdaoMap = new HashMap();
+	private HashMap<String, WDAO> wdaoMap = new HashMap<String, WDAO>();
 	/**
 	 * Constructor as it is for DAL
 	 *
@@ -101,22 +101,22 @@ public class WDALImpl extends WDALBaseImpl
 	 * @see com.cosylab.CDB.WDALOperations#get_WDAO_servant(java.lang.String)
 	 */
 	public WDAO get_WDAO_Servant(String curl)
-		throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, CDBRecordIsReadOnlyEx
+		throws CDBXMLErrorEx
 	{
 		dalImpl.totalDALInvocationCounter.incrementAndGet();
 
 		// if we already have WDAO
 		synchronized(wdaoMap) {
 			if(wdaoMap.containsKey(curl)) {
-				return (WDAO)wdaoMap.get(curl);
+				return wdaoMap.get(curl);
 			}
 		}
 
 		try {
-			// use dao from base implementation so we can change objects already active i.e. if Manager creates DAO /MACI/Managers/Manager
+			// use dao from delegate (logically: base) implementation so we can change objects already active i.e. if Manager creates DAO /MACI/Managers/Manager
 			// later we instantiate a WDAO of the same curl and change values that Manager looks at 
-			DAO dao = dalImpl.get_DAO_Servant(curl);
-			DAOImpl daoImpl = (DAOImpl)poa.reference_to_servant(dao);
+			org.omg.PortableServer.Servant daoServant = poa.reference_to_servant(dalImpl.get_DAO_Servant(curl));
+			DAOImpl daoImpl = (DAOImpl) ((DAOPOATie)daoServant)._delegate();
 
 			WDAOImpl wdaoImpl = new WDAOImpl(this, curl, daoImpl, poa, logger);
 
