@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsMakefile,v 1.192 2010/08/17 11:37:39 htischer Exp $" 
+# "@(#) $Id: acsMakefile,v 1.193 2010/08/18 16:34:55 htischer Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -478,9 +478,18 @@ ifndef MAKE_VXWORKS
 
     CC_FLAGS   := $(CC_FLAGS) -fPIC
 
-    # JIRA_COMP-800 removed -fpermissive from C_PLUS_PLUS_FLAGS
- 
+    # JIRA_COMP-800 removing -fpermissive from C_PLUS_PLUS_FLAGS
+    # Temporary solution:
+    # Remove the flag only, if environment variable BUILD_WITHOUT_PERMISSIVE
+    # is set
+    # This allows incremental fixing of subsystems, which break without the flag.
+    # Once this is done, we can remove the flag permanently.
+    # State 20100818: ACS is already fixed to build without -fpermissive.
+
     C_PLUS_PLUS_FLAGS = -fno-operator-names
+ifeq ($(BUILD_WITHOUT_PERMISSIVE),)
+    C_PLUS_PLUS_FLAGS := $(C_PLUS_PLUS_FLAGS) -fpermissive 
+endif
 
     ifeq ($(platform),HP-10)
         #
