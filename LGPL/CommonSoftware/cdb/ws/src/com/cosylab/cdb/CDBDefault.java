@@ -136,15 +136,15 @@ public class CDBDefault {
      */
 	public static void setDefault(XMLTreeNode node_root, String in_type, String in_name){
 		try{
-			Iterator nodesIter = node_root.getNodesMap().keySet().iterator();
+			Iterator<String> nodesIter = node_root.getNodesMap().keySet().iterator();
 			WDAL wdal = WDALHelper.narrow(orb.string_to_object(strIOR));
 			while (nodesIter.hasNext()) {
-				String key = (String) nodesIter.next();
-				XMLTreeNode node = (XMLTreeNode) node_root.getNodesMap().get(key);
+				String key = nodesIter.next();
+				XMLTreeNode node = node_root.getNodesMap().get(key);
 		
-				String name = (String)node.getFieldMap().get("Name");
-				String type = (String)node.getFieldMap().get("Type");
-				String isDefault = (String)node.getFieldMap().get("Default");
+				String name = node.getFieldMap().get("Name");
+				String type = node.getFieldMap().get("Type");
+				String isDefault = node.getFieldMap().get("Default");
 
 				String strTrue = "true";
 				if(in_type.equals(type)){
@@ -175,7 +175,7 @@ public class CDBDefault {
 						}
 					}
 				}
-				XMLTreeNode value = (XMLTreeNode) node_root.getNodesMap().get(key);
+				XMLTreeNode value = node_root.getNodesMap().get(key);
 				setDefault(value, in_type,in_name);
 			}
 		}catch(CDBXMLErrorEx e){

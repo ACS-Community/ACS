@@ -146,7 +146,7 @@ public class JNDIXMLContext extends JNDIContext {
 		if( slashIndex != -1 ) { // is it composite name?
 			String nodeName = nameToLookup.substring(0,slashIndex);
 			if (node.getNodesMap().containsKey(nodeName)) {
-				XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nodeName);
+				XMLTreeNode nextNode = node.getNodesMap().get(nodeName);
 				return new JNDIXMLContext(nextNode, logger).lookup(nameToLookup.substring(slashIndex+1));
 			}
 		}
@@ -155,11 +155,11 @@ public class JNDIXMLContext extends JNDIContext {
 			return super.lookup(name);
 		}
 		if (node.getNodesMap().containsKey(nameToLookup)) {
-			XMLTreeNode nextNode = (XMLTreeNode) node.getNodesMap().get(nameToLookup);
+			XMLTreeNode nextNode = node.getNodesMap().get(nameToLookup);
 			return new JNDIXMLContext(nextNode, logger);
 		}
 		if (node.getFieldMap().containsKey(nameToLookup)) {
-			return (String) node.getFieldMap().get(nameToLookup);
+			return node.getFieldMap().get(nameToLookup);
 		}
 		throw new NamingException("No name " + nameToLookup );
 	}
@@ -169,8 +169,8 @@ public class JNDIXMLContext extends JNDIContext {
 		// members
 		protected XMLTreeNode node;
 		protected Enumeration nestedNames = null;
-		protected Iterator nodesIter;
-		protected Iterator fieldsIter;
+		protected Iterator<String> nodesIter;
+		protected Iterator<String> fieldsIter;
 
 		/**
 		 * Constructor for CDBNamesList.
@@ -192,9 +192,9 @@ public class JNDIXMLContext extends JNDIContext {
 					(String) nestedNames.nextElement(),
 					Context.class.getName());
 			if (nodesIter.hasNext())
-				return new NameClassPair((String) nodesIter.next(), Context.class.getName());
+				return new NameClassPair(nodesIter.next(), Context.class.getName());
 			if (fieldsIter.hasNext())
-				return new NameClassPair((String) fieldsIter.next(), String.class.getName());
+				return new NameClassPair(fieldsIter.next(), String.class.getName());
 			return null;
 		}
 

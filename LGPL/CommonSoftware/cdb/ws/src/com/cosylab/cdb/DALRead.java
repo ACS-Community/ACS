@@ -139,15 +139,15 @@ public class DALRead {
 	}
 	public static void walk(XMLTreeNode node) {
 
-		Iterator i = node.getFieldMap().keySet().iterator();
+		Iterator<String> i = node.getFieldMap().keySet().iterator();
 		if( i.hasNext() ) {
 			outputIndentation(indent);
 			System.out.print("Node " + node.getName());
 			System.out.println();
 		}
 		while (i.hasNext()) {
-			String key = (String) i.next();
-			String value = (String) node.getFieldMap().get(key);
+			String key = i.next();
+			String value = node.getFieldMap().get(key);
 			System.out.print("    " + key + "=\"" + value + "\"");
 			System.out.println();
 		}

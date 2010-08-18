@@ -294,7 +294,7 @@ while(i.hasNext()){
 String s = (String)i.next();
 }
 */
-	 	tnChild = (XMLTreeNode) tnFather.getNodesMap().get(strFirst);
+	 	tnChild = tnFather.getNodesMap().get(strFirst);
 		strPast+="/"+strFirst;
 		if(tnChild == null){
 		    AcsJCDBRecordDoesNotExistEx recordDoesNotExist = 

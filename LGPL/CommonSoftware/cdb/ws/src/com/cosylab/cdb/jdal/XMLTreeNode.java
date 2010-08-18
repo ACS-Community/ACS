@@ -38,17 +38,17 @@ public class XMLTreeNode {
 	public static final String NORMAL_TYPE = "_NormalNode_";
 	
 	XMLTreeNode m_parent; // parent in access tree
-	LinkedHashMap m_subNodesMap;	// elements incl. hierarchy elements
-	LinkedHashMap m_elementsMap;	// XML elements only 
-	LinkedHashMap m_fieldMap;
+	LinkedHashMap<String, XMLTreeNode> m_subNodesMap;	// elements incl. hierarchy elements
+	LinkedHashMap<String, XMLTreeNode> m_elementsMap;	// XML elements only 
+	LinkedHashMap<String, String> m_fieldMap;
 	String m_name;
 	String m_nameSpace;
 	String m_type;
 
 	XMLTreeNode(XMLTreeNode pParent) {
 		m_parent = pParent;
-		m_subNodesMap = new LinkedHashMap();
-		m_fieldMap = new LinkedHashMap();
+		m_subNodesMap = new LinkedHashMap<String, XMLTreeNode>();
+		m_fieldMap = new LinkedHashMap<String, String>();
 		m_nameSpace = "";
 		m_type = NORMAL_TYPE;
 	}
@@ -96,15 +96,15 @@ public class XMLTreeNode {
 	{
 		// ignore remarkings, they are wrong
 		if (m_elementsMap == null)
-			m_elementsMap = new LinkedHashMap(m_subNodesMap);
+			m_elementsMap = new LinkedHashMap<String, XMLTreeNode>(m_subNodesMap);
 	}
 
 	public String getAttributeNames() {
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
-		Iterator i = m_fieldMap.keySet().iterator();
+		Iterator<String> i = m_fieldMap.keySet().iterator();
 		while (i.hasNext()) {
-			key = (String) i.next();
+			key = i.next();
 			// remove xml specific attributes
 			if(key.startsWith(" xmlns") || key.startsWith("xmlns") || key.startsWith("xsi:") || key.equals("space"))
 				continue; // dont put unused info in this listing
@@ -123,9 +123,9 @@ public class XMLTreeNode {
 		
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
-		Iterator i = m_elementsMap.keySet().iterator();
+		Iterator<String> i = m_elementsMap.keySet().iterator();
 		while (i.hasNext()) {
-			key = (String) i.next();
+			key = i.next();
 			retVal.append(key);
 			if (i.hasNext())
 				retVal.append(",");
@@ -140,15 +140,15 @@ public class XMLTreeNode {
 			return "";
 
 		// list of subnodes
-		LinkedHashMap diff = new LinkedHashMap(m_subNodesMap);
+		LinkedHashMap<String, XMLTreeNode> diff = new LinkedHashMap<String, XMLTreeNode>(m_subNodesMap);
 		for (Object key : m_elementsMap.keySet())
 			diff.remove(key);
 		
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
-		Iterator i = diff.keySet().iterator();
+		Iterator<String> i = diff.keySet().iterator();
 		while (i.hasNext()) {
-			key = (String) i.next();
+			key = i.next();
 			retVal.append(key);
 			if (i.hasNext())
 				retVal.append(",");
@@ -161,9 +161,9 @@ public class XMLTreeNode {
 	public String getNodeNames() {
 		String key;
 		StringBuffer retVal = new StringBuffer(128);
-		Iterator i = m_subNodesMap.keySet().iterator();
+		Iterator<String> i = m_subNodesMap.keySet().iterator();
 		while (i.hasNext()) {
-			key = (String) i.next();
+			key = i.next();
 			retVal.append(key);
 			if (i.hasNext())
 				retVal.append(",");
@@ -187,14 +187,14 @@ public class XMLTreeNode {
 	/**
 	 * @return LinkedHashMap
 	 */
-	public LinkedHashMap getFieldMap() {
+	public LinkedHashMap<String, String> getFieldMap() {
 		return m_fieldMap;
 	}
 
 	/**
 	 * @return HashMap
 	 */
-	public HashMap getNodesMap() {
+	public HashMap<String, XMLTreeNode> getNodesMap() {
 		return m_subNodesMap;
 	}
 
@@ -221,10 +221,10 @@ public class XMLTreeNode {
 		else s.append(m_name);
 		
 		//attributes
-		Iterator i = m_fieldMap.keySet().iterator(); 
+		Iterator<String> i = m_fieldMap.keySet().iterator(); 
 		while (i.hasNext()) {
-			String key = (String) i.next();
-			String value = (String) m_fieldMap.get(key);
+			String key = i.next();
+			String value = m_fieldMap.get(key);
 			s.append(" "+ key + "=\""+value+"\"");
 		}
 		//subNodes
@@ -234,8 +234,8 @@ public class XMLTreeNode {
 		    s.append(">"); 
 		    while (i.hasNext()) {
 			s.append("\n");
-			String key = (String) i.next();
-			XMLTreeNode node = (XMLTreeNode) m_subNodesMap.get(key);
+			String key = i.next();
+			XMLTreeNode node = m_subNodesMap.get(key);
 			s.append(node.toString(indent+1,withMapNames));
 		    }
 		    s.append("\n");
