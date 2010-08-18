@@ -185,8 +185,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	protected ORB orb;
 	protected POA poa;
 
-	private HashMap daoMap = new HashMap();
-	private HashMap wdaoMap = new HashMap();
+	private final HashMap<String, DAO> daoMap = new HashMap<String, DAO>();
+	private final HashMap wdaoMap = new HashMap();
 
 	private HashMap daoObjMap = new HashMap();
 	private HashMap wdaoObjMap = new HashMap();
@@ -418,7 +418,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 
 	private synchronized void reloadData()
 	{
-		// full XML reaload works only with in-memory DB
+		// full XML reload works only with in-memory DB
 		// for external DBs, existing data should have been removed from the DB...
 		if (forceInMemory)
 		{
@@ -2389,7 +2389,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		{
 			// get cached
 			if (daoMap.containsKey(curl))
-				return (DAO)daoMap.get(curl);
+				return daoMap.get(curl);
 
 			Object node = curl.length() == 0 ? rootNode : DOMJavaClassIntrospector.getNode(curl, rootNode);
 			if (node == null || DOMJavaClassIntrospector.isPrimitive(node.getClass()))
@@ -2411,7 +2411,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					objImpl = daoImpl = (DAOPOA)node;
 				else if (node instanceof XMLTreeNode)
 					//objImpl = daoImpl = new DAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
-					objImpl = daoImpl = new NoDestroyDAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
+					objImpl = daoImpl = new DAOPOATie(new NoDestroyDAOImpl(curl, (XMLTreeNode)node, poa, m_logger));
 				else
 				{
 					//daoImpl = new HibernateDAOImpl(curl, node, poa, m_logger);
@@ -3187,7 +3187,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		// first take care of our own map
 		object_changed(curl);
 
-		// then all registered listeners
+		// then notify all registered listeners
 		synchronized (listenedCurls) {
 			boolean needToSave = false;
 			ArrayList<Integer> listeners = listenedCurls.get(curl);
