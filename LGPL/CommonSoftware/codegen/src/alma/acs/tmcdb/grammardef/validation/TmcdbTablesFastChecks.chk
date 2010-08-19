@@ -38,7 +38,7 @@ context CheckConstraint#possibleValues ERROR "Invalid possible values for column
 &&  (IntegerPossibleValues.isInstance(possibleValues) implies ( IntTypes.isInstance(column.type) ) );
 
 context Constraint#name ERROR "Duplicate constraint name: " + name:
-	getTable().getCheckConstraints().union(getTable().getForeignKeyConstraints()).name.select(e|e==name).size == 1;
+	getTable().getCheckConstraints().union(getTable().getForeignKeyConstraints()).union(getTable().getUniquenessConstraints()).name.select(e|e==name).size == 1;
 
 context Constraint WARNING "Constraint name for '" + name + "' is too long (more than 30 characters). This may lead to problems with generated code for Oracle DB engine":
 	name.length <= 30;

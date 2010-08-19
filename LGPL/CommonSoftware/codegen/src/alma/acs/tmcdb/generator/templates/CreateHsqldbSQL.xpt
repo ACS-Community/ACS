@@ -54,10 +54,13 @@ CREATE TABLE «this.name» (
 «ENDIF-»
 «ENDFOREACH-»
 «FOREACH getForeignKeyConstraints() AS const-»
-	CONSTRAINT «superTable!=null?"Child":""»«const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.finalReferencedTable().name»«IF const.foreignColumn!= null»(«const.foreignColumn.name»)«ENDIF»«IF getCheckConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» FOREIGN KEY («const.columns.name.toString(", ")») REFERENCES «const.finalReferencedTable().name»«IF const.foreignColumn!= null»(«const.foreignColumn.name»)«ENDIF»«IF getCheckConstraints().size > 0 || getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDFOREACH-»
 «FOREACH getCheckConstraints() AS const-»
-	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»))«IF finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»))«IF getUniquenessConstraints().size > 0 || finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
+«ENDFOREACH-»
+«FOREACH getUniquenessConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» UNIQUE («const.columns.name.toString(", ")»)«IF finalKey().isGeneratedFrom || !finalKey().isGenerated»,«ENDIF»
 «ENDFOREACH-»
 «IF finalKey().isGeneratedFrom && !isChild -»
 	CONSTRAINT «shortTableName()»AltKey UNIQUE («finalKey().pieces.name.toString(", ")»)«IF isChild»,«ENDIF»

@@ -39,6 +39,9 @@ List[CheckConstraint] getCheckConstraints(Table this):
 	//this.superTable!=null ? this.constraints.typeSelect(CheckConstraint).union(this.superTable.constraints.typeSelect(CheckConstraint)) :
 	//this.constraints.typeSelect(CheckConstraint);
 
+List[UniquenessConstraint] getUniquenessConstraints(Table this):
+	this.constraints.typeSelect(UniquenessConstraint);
+
 List[Column] getBooleanColumns(Table this):
 	getColumns().select(e|BooleanType.isInstance(e.type));
 

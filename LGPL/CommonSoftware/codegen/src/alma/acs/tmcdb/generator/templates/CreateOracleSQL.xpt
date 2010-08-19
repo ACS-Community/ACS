@@ -63,6 +63,9 @@ CREATE TABLE «this.name» (
 «FOREACH getCheckConstraints() AS const-»
 	CONSTRAINT «superTable!=null?"Child":""»«const.name» CHECK («const.column.name» IN («const.possibleValues.getPossibleValuesAsSQL()»)),
 «ENDFOREACH-»
+«FOREACH getUniquenessConstraints() AS const-»
+	CONSTRAINT «superTable!=null?"Child":""»«const.name» UNIQUE («const.columns.name.toString(", ")»),
+«ENDFOREACH-»
 «IF isChild-»
 	CONSTRAINT «shortTableName()»«superTable.shortTableName()»FKey FOREIGN KEY («finalKey().columns.name.toString(",")») REFERENCES «superTable.name»,
 «ENDIF-»

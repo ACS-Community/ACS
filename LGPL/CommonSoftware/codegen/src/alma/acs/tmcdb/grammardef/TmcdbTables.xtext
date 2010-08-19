@@ -137,13 +137,16 @@ DefaultBooleanValue:
 	isTrue?="TRUE" | isFalse?="FALSE";
 
 Constraint:
-	ForeignConstraint | CheckConstraint;
+	ForeignConstraint | CheckConstraint | UniquenessConstraint;
 
 ForeignConstraint:
 	"CONSTRAINT" name=ID "FOREIGN" "KEY" "(" columns+=[Column] (',' columns+=[Column])* ")" "REFERENCES" table=[Table] ( cascading=CascadeType | (toSpecificColumn?="(" foreignColumn=[Column] ")"))?;
 
 CheckConstraint:
 	"CONSTRAINT" name=ID "CHECK" "(" column=[Column] "IN" possibleValues=PossibleValues ")";
+
+UniquenessConstraint:
+	"CONSTRAINT" name=ID "UNIQUE" "(" columns+=[Column] (',' columns+=[Column])* ")";
 
 CascadeType:
 	"CASCADING" isInverse?="INVERSE"? (aggregation?="AGGREGATION"|composition?="COMPOSITION");
