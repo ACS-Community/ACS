@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.102 2010/08/17 16:20:30 htischer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.103 2010/08/19 14:17:39 htischer Exp $"
 #
 #
 #
@@ -957,7 +957,7 @@ else
     MANPATH=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
 fi
 
-# Note Helmut Tischer 2010-05-05:
+# Note Helmut Tischer 2010-05-05, update 2010-08-19:
 #
 # Wind River VxWorks settings
 #
@@ -980,7 +980,7 @@ fi
 # later value changes, not sure whether all are already exported.
 # Because of the tcl hack (see below), TCLTK_ROOT is also used by wrenv.sh
 # and thus needs to be exported.
-# Also export GNU_ROOT for the make/tcl version hack in wrenv.sh
+# GNU_ROOT was needed in wrenv.sh before, but no longer. No need to export.
 # WRSD_LICENSE_FILE is not needed in wrenv.sh but during runtime. export also.
 #
 # About tcl package search path:
@@ -1009,7 +1009,7 @@ fi
 # More packages are in $TCLTK_ROOT/lib. Only on running this installation,
 # both folders are searched automatically/ 
 #
-# For the core tcl installation, Workbench a superset of ACS, but
+# For the core tcl installation, Workbench ia superset of ACS, but
 # ACS has additional libraries and executables and tcl packages in the search path.
 # So keep the $TCLTK_ROOT portion in PATH and LD_LIBRARY_PATH.
 #
@@ -1116,6 +1116,47 @@ fi
 # - in $(WIND_HOME)/setup.log make a note about the changes to not
 #   forgetting about reapplying in case of an update.
 #
+# Steps to adjust search path of: make, expect, coverage
+# cd $(WIND_HOME)
+# ln -s /usr/bin/make make
+# ln -s ../Python/bin/coverage coverage_py
+# ln -s workbench-3.1/analysis/host/bin/x86-linux2/coverage coverage_wr
+# ln -s coverage_py coverage
+# utilities-1.0/package.properties: 
+# - remove line
+# utilities10.eval.04=addpath PATH $(GNU_ROOT)$/bin
+# - run: cd $(WIND_HOME); setup/postinstall.sh
+# - make a note in $(WIND_HOME)/setup.log
+#
+# For Alma, by GNU_ROOT, make is in /usr/bin
+# Pulling /usr/bin before Wind River pathes and other Alma pathes
+# would also invoke in particular /usr/bin/python and /usr/bin/java
+# instead of the dedicated versions in the Alma release.
+# Instead of pulling other Alma folders also to the front,
+# no longer pull $(GNU_ROOT) to the front, but dedicate another
+# folder in the front. For conflicting executables, this should
+# contain a symbolic path to the correct version.
+# The only executable names which are in ALMA as well as Wind River path are:
+# make, expect, coverage
+# expect is already the correct version (in turn of reordering tcl)
+# For make the Alma version is newer
+# The two versions of coverage have completely different meanings:
+# Preprocessor for Python or C/C++
+# Create symbolic links with name postfix for unique identification, make
+# ALMA python version the default
+# correspinding analysis for LD_LIBRARY_PATH
+# Only common libs between ALMA and WIND are libtcl8.4.so, libtk8.4.so
+# TCLLIBPATH fix above takes care about this.
+# ALMA some contains duplicate libraries between ACSSW and CCSLite or
+# ACSSW and /usr. Therefore keep other ALMA relative search path order.
+#
+# Note to two make versions in $PATH::
+# 'make -v', Wind River is 3.8, ACS is 3.81
+# For added features see
+# http://www.cmcrossroads.com/ask-mr-make/6789-whats-new-in-gnu-make-381
+# acsMakefile was using the "else ifeq ()" syntax. This is reverted now.
+# Other than that no make 3.81 requirement known.
+#
 # Verification:
 # - New values are propagated to $(WIND_HOME)/install.properties
 # - Run '$(WIND_HOME)/wrenv.sh -p vxworks-6.7' to start a sub shell
@@ -1152,18 +1193,12 @@ fi
 # % exit
 # > pkginBuild
 # pkginBuild ... help screen
-#
-# Note:
-# PATH then contains two versions of 'make'.
-# 'make -v', Wind River is 3.8, ACS is 3.8.1
-# Added features seem not to be relevant for ACS or Wind River according to
-# http://www.cmcrossroads.com/ask-mr-make/6789-whats-new-in-gnu-make-381
-# So don't care about the order for now (use ACS version also for Wind River)
 
 if [ -d $ALMASW_INSTDIR/$ACS_WIND_HOME ]
 then
 
-    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT GNU_ROOT WRSD_LICENSE_FILE
+    export WRSD_LICENSE_FILE
+    export PATH LD_LIBRARY_PATH MANPATH TCLTK_ROOT
     eval `$ALMASW_INSTDIR/$ACS_WIND_HOME/wrenv.sh -p $ACS_WIND_PLATFORM -o print_env -f sh`
 
     # ACS specific settings based on Wind River tools.
@@ -1179,7 +1214,7 @@ then
      VX_VW_BASE=$WIND_BASE/target
      VX_HSP_BASE=$VXROOT
      VX_BSP_BASE=$VXROOT
-    export ACC_HOST WIND_BASE CPU VX_CPU_FAMILY WIND_HOST_TYPE 
+    export ACC_HOST CPU VX_CPU_FAMILY
     export VX_HOST_TYPE VXROOT VX_VW_BASE VX_HSP_BASE VX_BSP_BASE
 
 fi
