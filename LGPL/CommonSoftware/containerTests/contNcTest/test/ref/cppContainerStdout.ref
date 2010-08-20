@@ -8,7 +8,6 @@
 1 - Manager hostname obtained via command line: '<IP address>'
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - <timestamp> [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ContainerStatusMsg: ORB initialization ends
 1 - <timestamp> [cppContainer - maci::ContainerImpl::getManager] Resolving manager...
 1 - <timestamp> [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::<IP address>:<port>/Manager'
