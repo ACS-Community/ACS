@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: generateXsdPythonBinding.py,v 1.5 2010/05/06 03:14:02 agrimstrup Exp $"
+# "@(#) $Id: generateXsdPythonBinding.py,v 1.6 2010/08/21 15:45:35 agrimstrup Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -27,6 +27,7 @@
 import sys
 import os
 import re
+import errno
 from subprocess import call
 from traceback import print_exc
 import pyxb
@@ -130,7 +131,13 @@ def main(args, fopen=open):
                 continue
             for b in [bndg for bndg in fl \
                      if bndg.endswith('.wxs') and bndg != oldbinding]:
-                os.symlink(os.path.join(p,b), os.path.join('bindings', b))
+                try:
+                    os.symlink(os.path.join(p,b), os.path.join('bindings', b))
+                except OSError, e:
+                    if e.errno == errno.EEXIST:
+                        continue
+                    else:
+                        raise 
                 
         # Retrieve the settings for this set of bindings.
         #
