@@ -187,7 +187,7 @@ TABLE Manager
     ClientPingInterval        INTEGER                     DEFAULT 60
     AdministratorPingInterval INTEGER                     DEFAULT 45
     ContainerPingInterval     INTEGER                     DEFAULT 30
-    ServerThreads             TINYINT                 DEFAULT 10
+    ServerThreads             TINYINT                     DEFAULT 10
     KEY ManagerId GENERATED FROM ConfigurationId LoggingConfigId Startup ServiceComponents Timeout ClientPingInterval AdministratorPingInterval ContainerPingInterval ServerThreads 
     CONSTRAINT ManagerLoggingConfig FOREIGN KEY (LoggingConfigId) REFERENCES LoggingConfig CASCADING AGGREGATION
     CONSTRAINT ManagerConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
@@ -463,6 +463,13 @@ TABLE FaultCode
 	CONSTRAINT PriorityValue CHECK (Priority IN (0,1,2,3))
 ENDTABLE
 
+// The entries in this table represent the alarm triplets, joining FaultMember and FaultCode, 
+// which must belong to the same FaultFamily.
+//
+// AlarmDefinitionId    UID.
+// FaultMemberId        The FM of the alarm triplet
+// FaultCodeId          The FC of the alarm triplet
+//
 TABLE AlarmDefinition
 	AlarmDefinitionId	INTEGER		NOT NULL
 	FaultMemberId		INTEGER		NOT NULL
