@@ -8,6 +8,9 @@ import junit.framework.TestCase;
 
 import alma.acs.logging.domainspecific.AntennaContextLogger;
 import alma.acs.logging.domainspecific.ArrayContextLogger;
+import alma.acs.logging.domainspecific.DeveloperLogger;
+import alma.acs.logging.domainspecific.OperatorLogger;
+import alma.acs.logging.domainspecific.ScienceLogger;
 import alma.acs.logging.formatters.ConsoleLogFormatter;
 import alma.acs.testsupport.TestLogger;
 import alma.log_audience.OPERATOR;
@@ -89,7 +92,11 @@ public class AcsLoggerTest extends TestCase {
 	/*Added by request of COMP-3130*/
 	public void testAudienceLoggers(){
 		DeveloperLogger.info("Testing DeveloperLogger class", acsLogger);
+		(new DeveloperLogger(acsLogger)).fine("Testing DeveloperLogger object");
+		
+		(new OperatorLogger(acsLogger)).warning("Testing OperatorLogger object");
 		OperatorLogger.info("Testing OperatorLogger class", acsLogger);
+		
 		ScienceLogger.info("Testing ScienceLogger class", acsLogger);
 	}
 }
