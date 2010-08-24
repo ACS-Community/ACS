@@ -264,12 +264,14 @@ public static String toString(RemoteCall call, boolean expand) {
   if ((call.getOperation() != null) && (call.getOperation().getReturnType().getType() == Void.TYPE))
 	result.append("void");
   else {
-	if(returnValue.getClass().isArray())
+	if(returnValue == null)
+		result.append(DataFormatter.unpackReturnValue(returnValue,"      ",0,expand));
+	else if(returnValue.getClass().isArray())
 		result.append(DataElementFormatter.unpackArray(returnValue,"      ",0, expand));
 	else if(returnValue instanceof DataElement)
-  		result.append(((DataElement)returnValue).toString("      ",0,expand));
+		result.append(((DataElement)returnValue).toString("      ",0,expand));
 	else
-  		result.append(DataFormatter.unpackReturnValue(returnValue,"      ",0,expand));
+		result.append(DataFormatter.unpackReturnValue(returnValue,"      ",0,expand));
   }
   result.append('\n');
   if (auxs!=null) {  
@@ -331,7 +333,9 @@ public static String toString(RemoteResponse response, boolean expand) {
 		result.append("\n    ");
 		result.append(response.getDataNames()[i]);
 		result.append(": ");
-		if(data[i].getClass().isArray())
+		if(data[i] == null)
+			result.append(DataFormatter.unpackReturnValue(data[i], "      ", 0,expand));
+		else if(data[i].getClass().isArray())
 			result.append(DataElementFormatter.unpackArray(data[i],"      ",0, expand));
 		else if(data[i] instanceof DataElement)
 			result.append(((DataElement)data[i]).toString("      ", 0,expand));

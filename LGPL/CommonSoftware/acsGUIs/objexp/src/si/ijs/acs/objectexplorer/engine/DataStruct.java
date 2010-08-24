@@ -19,7 +19,6 @@ public class DataStruct implements DataElement {
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
 	public DataStruct(String id) {
 		this.id = id;
-		System.out.println(id);
 		name = id.substring(id.lastIndexOf("/")+1,id.lastIndexOf(":"));
 		members = new HashMap<String, Object>();
 		keys = new LinkedHashSet<String>();

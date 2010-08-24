@@ -645,23 +645,13 @@ private JLabel getTypeLabel(int n,String inType) {
  * @param exception java.lang.Throwable
  */
 private void handleException(java.lang.Throwable exception) {
-  notifier.reportMessage("Entering!");
   notifier.reportError("Error in parameters ",exception, true, false);
-  exception.printStackTrace();
 
   //if (exception instanceof Throwable)
   //    ((Throwable)exception).printStackTrace();
 
-  if(exception instanceof DataException) {
-    notifier.reportMessage("DataException!");
-    getErrorLabel().setText("Error: "+((DataException)exception).id()+":"+exception.getMessage());
-    getErrorLabel().setVisible(true);
-  } else {
-    notifier.reportMessage("No DataException!");
-    getErrorLabel().setText("Error: "+exception);
-    getErrorLabel().setVisible(true);
-  }
-  notifier.reportMessage("Going Out :S!");
+  getErrorLabel().setText("Error: "+exception);
+  getErrorLabel().setVisible(true);
 }
 /**
  * Initializes connections

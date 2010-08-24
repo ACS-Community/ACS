@@ -56,6 +56,7 @@ import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
 import si.ijs.acs.objectexplorer.engine.RemoteResponseCallback;
 import si.ijs.acs.objectexplorer.engine.DataStruct;
+import si.ijs.acs.objectexplorer.engine.DataException;
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
@@ -2087,59 +2088,28 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	 * @param exceptionThrown
 	 */
 	private void logACSException(Exception exceptionThrown) {
-
 		/* all user exception is expected to be using ACS Error System */
-		if (exceptionThrown instanceof org.omg.CORBA.UserException)
-		{
-			// generate wrapper class name
-			String wrapperName = exceptionThrown.getClass().getName();
-			int lastDotPos = wrapperName.lastIndexOf(".");
-			String onlyClassName;
-			if (lastDotPos < 0)
-			{
-				onlyClassName = wrapperName;
-				wrapperName = "wrappers." + wrapperName;
-			}
-			else
-			{
-				onlyClassName = wrapperName.substring(lastDotPos + 1);
-				wrapperName = wrapperName.substring(0, lastDotPos + 1) + "wrappers.AcsJ" + onlyClassName;
-			}
-
-			// get Java exception wrapper and call log
-			// call <exceptionWrapperClass>.from<exceptionClassName>(caughException)
-			// and on given instance log
-			Class wrapperClass = null;
-			try
-			{
-				/*
-				 * This is just to probe if we have an ACS Exception.
-				 * All applications should deal with ACS Exception and we want 
-				 * to issue a warning if this is not the case.
-				 * In this case we get an exception and the trap will log the warning.
-				 */
-				wrapperClass = Class.forName(wrapperName);
-				Method fromMethod = wrapperClass.getMethod("from" + onlyClassName, new Class[] { exceptionThrown.getClass() });
-				java.lang.Object newInstance = fromMethod.invoke(null, new java.lang.Object[] { exceptionThrown });
-
+		if (exceptionThrown instanceof DataException) {
+			DataException de = (DataException) exceptionThrown;
+			/*
+			 * This is just to probe if we have an ACS Exception.
+			 * All applications should deal with ACS Exception and we want 
+			 * to issue a warning if this is not the case.
+			 * In this case we get an exception and the trap will log the warning.
+			 */
+			if(de.get("errorTraces") != null) {
 				AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(exceptionThrown);
 				objexpEx.log(BACILogger.getLogger());
-
-			} catch (Throwable th)
-			{
+			} else {
 				AcsJObjectExplorerReportEx notAnAcsEx = new AcsJObjectExplorerReportEx(exceptionThrown);
 				notAnAcsEx.setContext("Logging a User Exception that is NOT an ACS Exception");
 				notAnAcsEx.log(BACILogger.getLogger());
-
+				
 				notifier.reportDebug(
-						"BACIRemoteAccess::logACSExcpetion",
-						"Failed to wrap user exception into native ACS Error System exception: "
-							+ th.getMessage()
-							+ " for '"
-							+ exceptionThrown.getClass().getName()
-							+ "'.");
+					"BACIRemoteAccess::logACSExcpetion",
+					"Failed to wrap user exception into native ACS Error System exception"
+						+ " for '" + de.id() + "'.");
 			}
-
 		} /* End if org.omg.CORBA.UserException */
 		else if (exceptionThrown instanceof alma.acs.exceptions.AcsJException)
 		{
@@ -2589,12 +2559,11 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			}
 			else if (exceptionThrown instanceof org.omg.CORBA.UnknownUserException)
 			{
-
 				// without ID int the CDROutputStream (value field)
 				Any exceptionValue = ((org.omg.CORBA.UnknownUserException)exceptionThrown).except;
 				java.lang.Object userException = baciIntrospector.extractAny(exceptionValue);
 
-				exceptionThrown = (org.omg.CORBA.UserException) userException;
+				exceptionThrown = (Exception) userException;
 			}
 
 			// log ACS exception

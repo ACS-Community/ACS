@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.LinkedHashSet;
 
-public class DataException extends org.omg.CORBA.UserException implements DataElement {
+public class DataException extends Exception implements DataElement {
 	private String name;
 	private String id;
 	private HashMap<String, Object> members;
@@ -46,9 +46,11 @@ public class DataException extends org.omg.CORBA.UserException implements DataEl
 	public String id() {
 		return id;
 	}
+	public String toString() {
+		return name+": "+id;
+	}
 	public String toString(String start, int level, boolean expand) {
 		StringBuffer result = new StringBuffer(500);
-		//result.append(toString());
 		result.append(id());
 		if (expand) {
 			result.append('\n');
@@ -59,13 +61,6 @@ public class DataException extends org.omg.CORBA.UserException implements DataEl
 				result.append(start);
 				result.append(key);
 				result.append(": ");
-				// msekoran - ACS timestamp support (this is really not clean solution)
-				//if (curField.getName().equals("timeStamp") && curField.getDeclaringClass().getName().equals("alma.ACSErr.Completion"))
-				//{
-				//	long javaTime = UTCUtility.utcOmgToJava(curField.getLong(value)); 
-				//	result.append(df.format(new Date(javaTime)));
-				//}
-				//else
 				Object value = get(key);
 				if(value instanceof DataElement)
 					result.append(((DataElement)value).toString(start + " ", level + 1, expand));

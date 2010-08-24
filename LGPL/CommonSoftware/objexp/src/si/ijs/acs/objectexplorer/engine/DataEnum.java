@@ -12,7 +12,6 @@ public class DataEnum implements DataElement {
 	private LinkedHashSet<String> keys;
 	public DataEnum(String id) {
 		this.id = id;
-		System.out.println(id);
 		name = id.substring(id.lastIndexOf("/")+1,id.lastIndexOf(":"));
 		types = new HashMap<Integer, String>();
 		keys = new LinkedHashSet<String>();
@@ -42,7 +41,6 @@ public class DataEnum implements DataElement {
 		return get(value);
 	}
 	public void set(int value) {
-		System.out.println("Setting DataEnum "+id+" to "+value);
 		this.value = value;
 	}
 	public int get() {

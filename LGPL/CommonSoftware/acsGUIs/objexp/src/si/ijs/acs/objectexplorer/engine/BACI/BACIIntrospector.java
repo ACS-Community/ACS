@@ -954,7 +954,8 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 					return null;
 				}
 			default:
-				System.out.println("Definition not supported: "+value);
+				//Other types should have no Definition DataElement.
+				//System.out.println("Definition not supported: "+value);
 				return null;
 		}
 	}
