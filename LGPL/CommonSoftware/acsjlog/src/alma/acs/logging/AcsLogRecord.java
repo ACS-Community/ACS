@@ -18,7 +18,7 @@
  */
 /** 
  * @author  nbarriga
- * @version $Id: AcsLogRecord.java,v 1.5 2007/07/17 13:03:56 hsommer Exp $
+ * @version $Id: AcsLogRecord.java,v 1.6 2010/08/24 16:11:49 hsommer Exp $
  * @since    
  */
 
@@ -28,14 +28,16 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
- * As of ACS 6.0.2, this special LogRecord is only produced by the generated type-safe logs
- * (module loggingts) which automatically set the target audience.
+ * As of ACS 6.0.2, this special LogRecord is produced by the generated type-safe logs
+ * (module loggingts) which automatically set the target audience,
+ * and by the audience-aware helper classes in this module.
  * <p>
- * Note that in the above scenario of type-safe logs, non-JDK logging data is attached to special fields in a custom log record,
- * which is then logged to a normal JDK logger. 
+ * Note that using AcsLogRecord, non-JDK logging data is attached to special fields in a custom log record,
+ * which is then logged to a normal JDK logger, but later recovered in {@link alma.acs.logging.formatters.AcsXMLLogFormatter#format(LogRecord)}.
  * In the standard logging scenario it is the other way around: we use a custom logger, which creates standard LogRecords, and
  * special non-JDK data is attached in the form of special property-style log parameters.
- * @TODO- It may be better to unify the two approaches of storing non-JDK log data.   
+ * @TODO- It may be better to unify the two approaches of storing non-JDK log data, e.g. by overriding the various AcsLogger#log, logp methods, 
+ *        to create an AcsLogRecord instead of LogRecord
  */
 public class AcsLogRecord extends LogRecord
 {
@@ -62,32 +64,44 @@ public class AcsLogRecord extends LogRecord
 	}
 
 	public String getAudience() {
-                if(this.audience!=null)
-    		    return this.audience;
-                else
-                    return "";
+		if (audience != null)
+		{
+			return audience;
+		}
+		else
+		{
+			return "";
+		}
 	}
-        
+
 	public void setArray(String array) {
 		this.array = array;
 	}
 
 	public String getArray() {
-                if(this.array!=null)
-		    return this.array;
-                else
-                    return "";            
+		if (array != null)
+		{
+			return array;
+		}
+		else
+		{
+			return "";
+		}
 	}
-        
+
 	public void setAntenna(String antenna) {
 		this.antenna = antenna;
 	}
 
 	public String getAntenna() {
-                if(this.antenna!=null)
-		    return this.antenna;
-                else
-                    return "";
+		if (this.antenna != null)
+		{
+			return this.antenna;
+		}
+		else
+		{
+			return "";
+		}
 	}
-        
+
 }

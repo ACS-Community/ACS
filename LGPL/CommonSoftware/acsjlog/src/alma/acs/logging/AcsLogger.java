@@ -244,12 +244,22 @@ public class AcsLogger extends Logger implements LogConfigSubscriber {
 		return this.sourceObject;
 	}
 
+    /**
+     * The audience strings allowed in alma are defined in IDL, 
+     * but are available as type-safe enums in {@link alma.acs.logging.domainspecific.AudienceLogger},
+     * which thus should be preferred over this generic method.
+     */
     public void logToAudience(Level level, String msg, String audience) {
     	AcsLogRecord lr = createAcsLogRecord(level, msg);
     	lr.setAudience(audience);
     	log(lr);
     }
     
+    /**
+     * The audience strings allowed in alma are defined in IDL, 
+     * but are available as type-safe enums in {@link alma.acs.logging.domainspecific.AudienceLogger},
+     * which thus should be preferred over this generic method.
+     */
     public void logToAudience(Level level, String msg, Throwable thr, String audience) {
     	AcsLogRecord lr = createAcsLogRecord(level, msg);
     	lr.setAudience(audience);
