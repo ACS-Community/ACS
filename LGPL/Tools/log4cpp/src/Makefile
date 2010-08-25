@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2010/08/05 11:02:52 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/08/25 21:33:52 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -48,6 +48,7 @@ clean :
 ifneq ($(PLATFORM),Linux)
 	-$(AT) if [ -d log4cpp-$(LOG4CPP_VER) ]; then cd log4cpp-$(LOG4CPP_VER) ; $(MAKE) clean > /dev/null ; fi
 endif
+	@rm -rf log4cpp-$(LOG4CPP_VER)
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
