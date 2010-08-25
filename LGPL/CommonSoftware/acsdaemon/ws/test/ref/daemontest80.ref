@@ -157,7 +157,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Manager (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -165,7 +165,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Alarm Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -173,7 +173,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Configuration Database (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -181,7 +181,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping ACS Log Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -189,7 +189,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Logging Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -197,7 +197,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -205,7 +205,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -213,7 +213,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -221,7 +221,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping 'something' Notification Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -229,7 +229,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Interface Repository (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] DESTROYING 'something' ACSServiceRequest!
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
@@ -237,7 +237,7 @@
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Stopping Naming Service (instance 1).
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Using Corba reference: 'something'
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Requesting to remotely stop 'something'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stoped service 'something' on host 'something' (instance: 1).
+2 - ----------T--:--:--.--- [GlobalLogger - ] Successfully stopped service 'something' on host 'something' (instance: 1).
 2 - ----------T--:--:--.--- [GlobalLogger - ] DONE SHUTTING DOWN SERVICES.
 2 - ----------T--:--:--.--- [GlobalLogger - ] TEST COMPLETE.
 1 - ----------T--:--:--.--- [ACS Services Daemon - ] Ended processing command requests!

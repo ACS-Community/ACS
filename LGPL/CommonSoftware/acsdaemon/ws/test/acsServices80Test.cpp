@@ -1,7 +1,7 @@
 /*******************************************************************************
  * E.S.O. - ACS project
  *
- * "@(#) $Id: acsServices80Test.cpp,v 1.9 2009/09/28 19:46:49 msekoran Exp $"
+ * "@(#) $Id: acsServices80Test.cpp,v 1.10 2010/08/25 09:04:16 hsommer Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -88,7 +88,7 @@ class TestDaemonSequenceCallback : public POA_acsdaemon::DaemonSequenceCallback
     void working (const char * service, const char * host, ::CORBA::Short instance_number, const ::ACSErr::Completion & comp) {
       ACSErr::CompletionImpl compi = comp;
       if (compi.isErrorFree()) {
-        ACS_SHORT_LOG((LM_INFO, "Successfully %s service '%s' on host '%s' (instance: %d).", startup ? "started" : "stoped", service, host, instance_number));
+        ACS_SHORT_LOG((LM_INFO, "Successfully %s service '%s' on host '%s' (instance: %d).", startup ? "started" : "stopped", service, host, instance_number));
       } else {
         compi.log();
         ACS_SHORT_LOG((LM_INFO, "Failed to %s service '%s' on host '%s' (instance: %d).", startup ? "start" : "stop", service, host, instance_number));
