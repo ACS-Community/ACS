@@ -11,4 +11,6 @@
 # Now the default is non-sticky mode. 
 export HOST=`getIP`
 
-acsStartJava $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 
+acsStartJava \
+    -noClassLoader -noAutoClasspath -addToClasspath abeansR2Components.jar:acscommon.jar:acscomponent.jar:acserr.jar:acserrj.jar:ACSErrTypeCommon.jar:acsjlog.jar:acstime.jar:baci.jar:castor.jar:cdbErrType.jar:jACSUtil.jar:logging_idl.jar:maci.jar:maciErrType.jar:maciSchemaBindings.jar:objexpErrType.jar:oe.jar: \
+    $* -DOAIAddr=$HOST si.ijs.acs.objectexplorer.ObjectExplorer BACI 
