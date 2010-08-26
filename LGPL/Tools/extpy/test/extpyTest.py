@@ -11,5 +11,6 @@ import numpy
 import pysnmp
 import Gnuplot
 import ldap
+import lxml
 
 print "Got past the imports...test passed!"
