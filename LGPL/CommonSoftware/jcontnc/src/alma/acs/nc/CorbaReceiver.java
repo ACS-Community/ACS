@@ -252,7 +252,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 		*/
 				
 		// Make sure the receiver object has the proper method.
-		String err = AbstractNotificationChannel.checkReceiver(eventTypeName,receiver);
+		String err = CorbaNotificationChannel.checkReceiver(eventTypeName,receiver);
 		if (err != null)
 			throw new IllegalArgumentException(err);
 

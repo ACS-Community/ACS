@@ -26,6 +26,8 @@
  
 package alma.acs.nc;
 
+import java.lang.reflect.Method;
+
 import org.omg.CORBA.portable.IDLEntity;
 
 import alma.acs.container.ContainerServicesBase;
@@ -36,12 +38,18 @@ import alma.acs.exceptions.AcsJException;
  * channel concepts using a CORBA-based approach that employs the CORBA
  * notification services.
  * <p>
- * @TODO: Remove inheritance from AbstractNotificationChannel, see COMP-1786
+ * No longer inherits from AbstractNotificationChannel since ACS 9.0, see COMP-1786
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
  */
-public class CorbaNotificationChannel extends AbstractNotificationChannel {
+public class CorbaNotificationChannel {
+
+	/**
+	 * The name of this channel.
+	 */
+	protected final String channelName;
+
 
 	/**
 	 * Get the Receiver interface to a currently created CORBA channel.
@@ -63,6 +71,7 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	/**
 	 * The ALMA domain name, which is not explicitly used and is hidden
 	 * from the application.
+	 * TODO: remove, it does not even seem to be implicitly used.
 	 */
 	static public final String ALMA_DOMAIN = "ALMA";
 
@@ -85,10 +94,14 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @param cs container services
 	 * @throws AcsJException 
 	 */
-	public CorbaNotificationChannel (String inChannelName, ContainerServicesBase cs) throws AcsJException {
-		super(inChannelName, cs);
-   		corbaPublisher = new SimpleSupplier(inChannelName, cs);
-    	corbaReceiver = new CorbaReceiver(inChannelName, cs);
+	public CorbaNotificationChannel(String inChannelName, ContainerServicesBase cs) throws AcsJException {
+		// Make sure the argument is legal.
+		if (inChannelName == null || inChannelName.length() == 0)
+			throw new IllegalArgumentException("channelName cannot be null");
+		// Save the argument.
+		this.channelName = inChannelName;
+		corbaPublisher = new SimpleSupplier(inChannelName, cs);
+		corbaReceiver = new CorbaReceiver(inChannelName, cs);
 	}
 	
 	/**
@@ -97,19 +110,23 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 	 * @param inCorbaPublisher	The CORBA publisher object.
 	 * @param cs Container services reference
 	 */
-	public CorbaNotificationChannel (SimpleSupplier inCorbaPublisher, ContainerServicesBase cs) throws AcsJException {
-    		super(inCorbaPublisher.getChannelName(), cs);
-	    	this.corbaPublisher = inCorbaPublisher;
-	    this.corbaReceiver = new CorbaReceiver(channelName, cs);
+	public CorbaNotificationChannel(SimpleSupplier inCorbaPublisher, ContainerServicesBase cs) throws AcsJException {
+		String inChannelName = inCorbaPublisher.getChannelName();
+		// Make sure the argument is legal.
+		if (inChannelName == null || inChannelName.length() == 0)
+			throw new IllegalArgumentException("channelName cannot be null");
+		// Save the argument.
+		this.channelName = inChannelName;
+		this.corbaPublisher = inCorbaPublisher;
+		this.corbaReceiver = new CorbaReceiver(channelName, cs);
 	}
 	
 	/**
-	 * Get the Publisher interface to a currently created CORBA channel.
-	 * Only the creator of the channel can provide a Publisher interface.
-	 * @return A Publisher interface to thisd channel.
+	 * Get the channelName.
+	 * @return String
 	 */
-	public Publisher getPublisher() {
-		return this;
+	public String getChannelName() {
+		return channelName;
 	}
 
 	/**
@@ -179,6 +196,46 @@ public class CorbaNotificationChannel extends AbstractNotificationChannel {
 		corbaReceiver.disconnect();
         corbaPublisher.destroyNotificationChannel();
 	}
+	
+	/**
+	 * Return an error message if the receiver object does not contain
+	 * a method of the type "receive(EventType)"; otherwise return null.
+	 * <p>
+	 * This method has been moved from here from the obsolete base class
+	 * AbstractNotificationChannel.
+	 * 
+	 * @param eventTypeName 	The name of the event type that this receiver 
+	 * 							wishes to receive.
+	 * @param receiver			An object that receives and processes this event.
+	 * 							It must have a public method of the form 
+	 * 							"receive(EventType)", where the EventType 
+	 * 							parameter in the method signature is the name 
+	 * 							of an IDL structure that defines the event.
+	 * @return Error message string if there's a problem.
+	 */
+	static String checkReceiver(String eventTypeName, Object receiver) {
+		// Make sure the receiver object has the proper method.
+		Class receiverClass = receiver.getClass();
+		Method receiveMethod = null;
+		Class[] parm = new Class [1];
+		try {
+			parm[0] = Class.forName(eventTypeName);
+			receiveMethod = receiverClass.getMethod("receive",parm);
+		} catch (ClassNotFoundException err) { 
+			return
+			"Invalid event type!  There is no class defining " + eventTypeName;
+		} catch (NoSuchMethodException err) { 
+			return
+			"Invalid receiver!  Class " + receiverClass.getName() + 
+			" has no such public method as receive(" + eventTypeName + ")";
+		} catch (SecurityException err) { 
+			return
+			"Invalid receiver!  Method receive(" + eventTypeName + ")" + 
+			" in Class " + receiverClass.getName() + " is not accessible.";
+		}
+		return null;
+	}
+
 	
 }
 
