@@ -42,5 +42,6 @@
 	<classpathentry kind="lib" path="lib/adminTest1.jar"/>
 	<classpathentry kind="lib" path="lib/adminTest2.jar"/>
 	<classpathentry kind="lib" path="lib/adminTest3.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/Monitor_Types.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
