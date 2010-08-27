@@ -35,6 +35,10 @@
 #include <log4cpp/Category.hh>
 
 namespace logging {
+/**
+ * Class used as part of the ACS logging log4cpp port. It is used by ACSCategory
+ * class to maintain the Categories (loggers) already created.
+ */
 class ACSHierarchyMaintainer: public virtual log4cpp::HierarchyMaintainer {
 
 public:

@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.67 2010/06/03 18:06:42 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.68 2010/08/27 21:15:10 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -101,8 +101,8 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingLogSvcHandler.h  loggingLogLevelDefinition.h \
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h \
-			loggingAcsLogServiceImpl.h loggingStdoutlayout.h \
-            loggingACSCategory.h loggingACSLoggingEvent.h
+			loggingAcsLogServiceImpl.h loggingStdoutlayout.h loggingXmlLayout.h\
+            loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
@@ -133,7 +133,7 @@ logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
 			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
 			loggingACSLogger loggingLogSvcHandler loggingStdoutlayout \
            loggingACSCategory loggingACSHierarchyMaintainer \
-           loggingACSLoggingEvent 
+           loggingACSLoggingEvent loggingLogThrottle loggingXmlLayout
 logging_LIBS    =	log4cpp baselogging
 logging_LDFLAGS = -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
                         -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \

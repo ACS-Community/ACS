@@ -28,18 +28,23 @@
 
 #include "loggingStdoutlayout.h"
 #include "loggingACSCategory.h"
+#include "loggingXmlLayout.h"
 #include <log4cpp/OstreamAppender.hh>
 #include <log4cpp/Appender.hh>
 #include <log4cpp/BasicLayout.hh>
 
 int main (int argc, char * argv[])
 {
-	::log4cpp::Appender *app = new ::log4cpp::OstreamAppender("default", &::std::cout);
-	app->setLayout(new ::logging::ACSstdoutLayout());
+	::log4cpp::Appender *app1 = new ::log4cpp::OstreamAppender("STDOUT Appender", &::std::cout);
+	::log4cpp::Appender *app2 = new ::log4cpp::OstreamAppender("XML Appender", &::std::cout);
+	app1->setLayout(new ::logging::ACSstdoutLayout());
+	app2->setLayout(new ::logging::ACSXmlLayout());
 	logging::ACSCategory& cat = ::logging::ACSCategory::getInstance("Logger Instance");
-	cat.addAppender(app);
+	cat.addAppender(app1);
+	cat.addAppender(app2);
 	cat.setPriority(::log4cpp::Priority::TRACE);
-	cat.log("Message",::log4cpp::Priority::DELOUSE, __PRETTY_FUNCTION__, __FILE__, __LINE__, "localhost", "", "Me");
+	for(int i=0; i < 100; i++)
+		cat.log("Message",::log4cpp::Priority::CRITICAL, __PRETTY_FUNCTION__, __FILE__, __LINE__, "localhost", "", "Me");
 	//cat.alert("lala");
 
 	return 0;

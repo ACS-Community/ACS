@@ -32,9 +32,9 @@ using namespace logging;
 
 ACSLoggingEvent::ACSLoggingEvent(const std::string& logger,
 		const std::string& message, ::log4cpp::Priority::Value priority,
-		const std::string& routine, const std::string& file, unsigned int line,
-		const std::string& host, const std::string& context,
-		const std::string& audience) :
+		const std::string& routine = "", const std::string& file = "", unsigned int line = 0,
+		const std::string& host = "", const std::string& context="",
+		const std::string& audience = "") :
 	::log4cpp::LoggingEvent(logger, message, "", priority),
 			routineName(routine), fileName(file), line(line), hostName(host),
 			contextName(context), audienceName(audience) {

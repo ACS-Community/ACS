@@ -23,44 +23,29 @@
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
- * javarias  May 6, 2010  	 created
+ * javarias  Jul 21, 2010  	 created
  */
 
-#ifndef ACSLOGGINGEVENT_H_
-#define ACSLOGGINGEVENT_H_
-
-#define LOG4CPP_FIX_ERROR_COLLISION 1
-#include <iostream>
-#include <log4cpp/LoggingEvent.hh>
+#ifndef LOGGINGLOGTHROTTLE_H_
+#define LOGGINGLOGTHROTTLE_H_
 
 namespace logging{
-struct ACSLoggingEvent: public ::log4cpp::LoggingEvent{
 
-	/**
-	 * Name of the routine which generate the log.
-	 */
-	::std::string routineName;
-	/**
-	 *  Name of the file which generate the routine (__FILE__)
-	 */
-	::std::string fileName;
-	unsigned int line;
-	/**
-	 * Name of the host, it should be used ACE_OS::hostname() to retrieve the name
-	 */
-	::std::string hostName;
-	::std::string contextName;
-	::std::string audienceName;
-	::std::string sourceObject;
-	::std::string array;
-	::std::string antenna;
+class LogThrottle{
+private:
+	int maxLogPerTimeInterval;
+	unsigned int timeIntervalInMillis;
+	unsigned long intervalTimeStartMillis;
+	unsigned int logCounter;
+	unsigned int curr_time;
 
-	ACSLoggingEvent(const std::string& logger, const std::string& message,
-			::log4cpp::Priority::Value priority, const std::string& routine,
-			const std::string& file, unsigned int line,
-			const std::string& host, const std::string& context,
-			const std::string& audience);
+public:
+	LogThrottle(int maxLogPerInterval = -1);
+	void configureLogging(int maxLogPerTimeInterval);
+	unsigned int checkPublishLogRecord();
+	void updateLogCounter(unsigned int logsSent);
 };
-}
 
-#endif /* ACSLOGGINGEVENT_H_ */
+};
+
+#endif /* LOGGINGLOGTHROTTLE_H_ */

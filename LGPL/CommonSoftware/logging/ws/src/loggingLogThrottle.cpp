@@ -23,44 +23,36 @@
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
- * javarias  May 6, 2010  	 created
+ * javarias  Jul 21, 2010  	 created
  */
+#include "loggingLogThrottle.h"
+#include <ace/ACE.h>
+#include <limits.h>
 
-#ifndef ACSLOGGINGEVENT_H_
-#define ACSLOGGINGEVENT_H_
+using namespace logging;
 
-#define LOG4CPP_FIX_ERROR_COLLISION 1
-#include <iostream>
-#include <log4cpp/LoggingEvent.hh>
-
-namespace logging{
-struct ACSLoggingEvent: public ::log4cpp::LoggingEvent{
-
-	/**
-	 * Name of the routine which generate the log.
-	 */
-	::std::string routineName;
-	/**
-	 *  Name of the file which generate the routine (__FILE__)
-	 */
-	::std::string fileName;
-	unsigned int line;
-	/**
-	 * Name of the host, it should be used ACE_OS::hostname() to retrieve the name
-	 */
-	::std::string hostName;
-	::std::string contextName;
-	::std::string audienceName;
-	::std::string sourceObject;
-	::std::string array;
-	::std::string antenna;
-
-	ACSLoggingEvent(const std::string& logger, const std::string& message,
-			::log4cpp::Priority::Value priority, const std::string& routine,
-			const std::string& file, unsigned int line,
-			const std::string& host, const std::string& context,
-			const std::string& audience);
-};
+LogThrottle::LogThrottle(int maxLogPerInterval):
+	maxLogPerTimeInterval(maxLogPerInterval), timeIntervalInMillis(1000),
+	intervalTimeStartMillis(ACE_OS::gettimeofday().msec()),logCounter(0){
 }
 
-#endif /* ACSLOGGINGEVENT_H_ */
+void LogThrottle::configureLogging(int maxLogPerTimeInterval){
+	this->maxLogPerTimeInterval = maxLogPerTimeInterval;
+}
+
+unsigned int LogThrottle::checkPublishLogRecord(){
+	if(maxLogPerTimeInterval < 0)
+		return UINT_MAX;
+	curr_time =  ACE_OS::gettimeofday().msec();
+	if(curr_time > intervalTimeStartMillis + timeIntervalInMillis){
+		intervalTimeStartMillis = ACE_OS::gettimeofday().msec();
+		logCounter = 0;
+	}
+	return maxLogPerTimeInterval - logCounter;
+}
+
+void LogThrottle::updateLogCounter(unsigned int logsSent){
+	if(logsSent > maxLogPerTimeInterval - logCounter)
+		logsSent = maxLogPerTimeInterval - logCounter;
+	logCounter += logsSent;
+}

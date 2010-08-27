@@ -29,13 +29,22 @@
 #ifndef LOGGINGXMLLAYOUT_H_
 #define LOGGINGXMLLAYOUT_H_
 
+#include <ace/ACE.h>
+#include <ace/OS.h>
+#define LOG4CPP_FIX_ERROR_COLLISION 1
+#include <log4cpp/Layout.hh>
+
 namespace logging {
 class ACSXmlLayout: public ::log4cpp::Layout {
 public:
+	ACSXmlLayout();
 	~ACSXmlLayout();
 	std::string format(const ::log4cpp::LoggingEvent& event);
 	static void formatISO8601inUTC(const ACE_Time_Value &timestamp,
 			ACE_TCHAR str[]);
+
+private:
+	std::string m_xml;
 };
 }
 

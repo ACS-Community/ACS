@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.39 2010/03/15 10:31:03 bjeram Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.40 2010/08/27 21:15:10 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -45,13 +45,14 @@
 #include <deque>
 
 #include <orbsvcs/orbsvcs/DsLogAdminC.h>
-#include <orbsvcs/CosNamingC.h>
+#include <orbsvcs/orbsvcs/CosNamingC.h>
 
 #include <ace/Synch.h>
 #include "logging_idlC.h"
 
 #include "loggingExport.h"
 #include "loggingLoggingTSSStorage.h"
+#include "loggingLogThrottle.h"
 
 #define DYNAMIC_LOG_LEVEL 1
 #define CDB_REFRESH_LOG_LEVEL 2
@@ -115,7 +116,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.39 2010/03/15 10:31:03 bjeram Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.40 2010/08/27 21:15:10 javarias Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -259,6 +260,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     /// The maximum lenghth for AddData value is ADD_DATA_VALUE_MAX (255+\0). If it is too long it will be truncated.
     static void AddData(const ACE_TCHAR *szName, const ACE_TCHAR *szFormat, ...);
 
+    static ACE_TSS<LoggingTSSStorage> *getTSS();
+
   public:
 
     /// Constructor
@@ -268,7 +271,8 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 		 const unsigned long maxCachePriority,
 		 Logging::AcsLogService_ptr centralizedLogger = Logging::AcsLogService::_nil(),
 		 CosNaming::NamingContext_ptr namingContext = CosNaming::NamingContext::_nil(),
-		 const unsigned int autoFlushTimeoutSec = 5);
+		 const unsigned int autoFlushTimeoutSec = 5,
+		 const int maxLogsPerSecond = -1);
 
     /// Destructor
     ~LoggingProxy();
@@ -382,6 +386,12 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
     ///
     unsigned int m_autoFlushTimeoutSec;
 
+    ///
+    /// Throttling, max Log/second allowed to be sent to the logging system.
+    /// -1 turn off the throttling
+    ///
+    int m_maxLogsPerSecond;
+    logging::LogThrottle *logThrottle;
     ///
     /// Reference to the persistent object which implements the Telecom Log
     /// Service�s Log interface, in particular the write_records method.
