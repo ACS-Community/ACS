@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.66 2009/08/28 23:18:16 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.67 2010/08/27 19:58:21 javarias Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -72,8 +72,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
 acsnc_LIBS     = ACSErrTypeCommon acsncStubs acsncErrType
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
-acsncServiceChecker_LIBS = acsnc
-acsncServiceChecker_LDFLAGS = -lmaciClient
+acsncServiceChecker_LIBS = acsnc maciClient
 
 
 # list of all possible C-sources (used to create automatic dependencies)
