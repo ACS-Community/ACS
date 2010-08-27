@@ -37,6 +37,7 @@ package alma.acs.nc;
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
+ * @deprecated since ACS 9.0 Use CorbaReceiver instead, or better even {@link Consumer}.
 
  */
 public interface Receiver {
