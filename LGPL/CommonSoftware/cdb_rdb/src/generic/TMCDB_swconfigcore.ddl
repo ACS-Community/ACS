@@ -311,11 +311,11 @@ ENDTABLE
 // MinLogLevel Optional log level for this component. Value -1 denotes NULL, since 0 is a valid setting.
 // MinLogLevelLocal Optional stdout log level for for this component. Value -1 denotes NULL, since 0 is a valid setting.
 TABLE Component
-     ComponentId             INTEGER                     NOT NULL
-     ComponentTypeId         INTEGER                     NOT NULL
+     ComponentId             INTEGER                 NOT NULL
+     ComponentTypeId         INTEGER                 NOT NULL
      ComponentName           LONGNAME                NOT NULL
-     ConfigurationId         INTEGER                     NOT NULL
-     ContainerId             INTEGER                     NULL
+     ConfigurationId         INTEGER                 NOT NULL
+     ContainerId             INTEGER                 NULL
      ImplLang                LONGVARCHAR (6)         NOT NULL
      RealTime                BOOLEAN                 NOT NULL
      Code                    LONGNAME                NOT NULL
@@ -324,9 +324,9 @@ TABLE Component
      IsDefault               BOOLEAN                 NOT NULL
      IsStandaloneDefined     BOOLEAN                 NULL
      IsControl               BOOLEAN                 NOT NULL
-     KeepAliveTime           INTEGER                     NOT NULL
-     MinLogLevel             TINYINT                 DEFAULT -1
-     MinLogLevelLocal        TINYINT                 DEFAULT -1
+     KeepAliveTime           INTEGER                 NOT NULL
+     MinLogLevel             TINYINT                 NOT NULL
+     MinLogLevelLocal        TINYINT                 NOT NULL
      XMLDoc                  XMLCLOB                 NULL
      KEY ComponentId GENERATED FROM Path ComponentName ConfigurationId
      CONSTRAINT ComponentIDL FOREIGN KEY (ComponentTypeId) REFERENCES ComponentType 
