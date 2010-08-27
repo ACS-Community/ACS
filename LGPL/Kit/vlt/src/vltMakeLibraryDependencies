@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeLibraryDependencies,v 1.5 2007/03/06 10:20:33 mzampare Exp $" 
+# "@(#) $Id: vltMakeLibraryDependencies,v 1.6 2010/08/27 11:03:01 mzampare Exp $" 
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -316,7 +316,7 @@ then
         echo "${sharedLib}: \$(xyz_${libName}_OBJ) ${lList}"
         echo "	@echo \"== Making library: ${sharedLib}\" "
         echo "	-\$(AT)\$(RM) ${sharedLib} "
-        echo "	\$(AT)\$(CC) -shared -fPIC ${sharedLibName} \$(L_PATH) $gccDir ${libraryList} ${ldFlags} -o ${sharedLib} \$(xyz_${libName}_OBJ)"
+        echo "	\$(AT)\$(CXX) -shared -fPIC ${sharedLibName} \$(L_PATH) $gccDir ${libraryList} ${ldFlags} -o ${sharedLib} \$(xyz_${libName}_OBJ)"
         # PPM 2007.01.30 - check for unresolved symbols.  
         # The -w flag means just complain, don't cause an error
         # Without -w, it should cause a fatal error
