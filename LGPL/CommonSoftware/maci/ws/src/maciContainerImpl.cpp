@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.119 2010/08/12 09:18:31 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.120 2010/08/27 21:16:36 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.119 2010/08/12 09:18:31 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.120 2010/08/27 21:16:36 javarias Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -667,7 +667,15 @@ ContainerImpl::init(int argc, char *argv[])
 	      flushPeriodSeconds = static_cast<unsigned int>(ul);
 	}
 
-      m_loggerProxy = new LoggingProxy(cacheSize, minCachePriority, maxCachePriority, 0, 0, flushPeriodSeconds);
+      int maxLogsPerSecond = -1;
+      if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/maxLogsPerSecond", fld))
+      {
+    	  ::CORBA::Long l;
+    	  if (fld.GetLong(l))
+    		  maxLogsPerSecond = static_cast<int>(l);
+      }
+
+      m_loggerProxy = new LoggingProxy(cacheSize, minCachePriority, maxCachePriority, 0, 0, flushPeriodSeconds, maxLogsPerSecond);
       if (!m_loggerProxy)
 	ACS_SHORT_LOG((LM_WARNING, "Unable to create logging system. Using 'stdout'..."));
 
