@@ -75,27 +75,7 @@ public class AnyAide {
 	}
 
 	/**
-	 * Converts an array of simple type instances to a CORBA any.
-	 * 
-	 * @param objs
-	 *           An array of CORBA simple types supported by BACI. For example,
-	 *           double[], string[], etc.
-	 * @return A CORBA any with the array of simple types.
-	 * 
-	 * @throws AcsJException
-	 *            Thrown when the array type is not supported.
-	 * @deprecated use one of the type-safe methods such as {@link #doubleArrayToCorbaAny(double[])}. This method will be removed.
-	 * 		HSO-20061221: It actually seems that this method is never used outside of this package. 
-	 *           Probably it was more useful before we got the restriction that only IDL-defined structs can be sent as event data
-	 *           Thus we could also have the replacement methods like doubleArrayToCorbaAny with less than public visibility. 
-	 * (an inferred rule which I have not seen stated clearly).  
-	 */
-	public Any arrayToCorbaAny(Object objs) throws AcsJException {
-		return internalArrayToCorbaAny(objs);
-	}
-
-	/**
-	 * Moved here from the now-deprecated method arrayToCorbaAny.
+	 * Moved here from method arrayToCorbaAny (deleted in ACS 9.0).
 	 */
 	protected Any internalArrayToCorbaAny(Object objs) throws AcsJException {
 		// class object for the array
