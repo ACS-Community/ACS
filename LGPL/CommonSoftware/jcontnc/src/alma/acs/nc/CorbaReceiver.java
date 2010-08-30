@@ -49,6 +49,7 @@ import alma.acs.exceptions.AcsJException;
  * 
  * @version 1.00 Apr 10, 2003
  * @author Allen Farris
+ * @deprecated since ACS 9.0, see http://jira.alma.cl/browse/COMP-4716
  */
 public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 
