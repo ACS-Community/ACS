@@ -342,6 +342,8 @@ public class TestPojosPersistence extends TestCase {
 		comp.setKeepAliveTime(0);
 		comp.setComponentName("rtobarComponent");
 		comp.setComponentType(componentType);
+		comp.setMinLogLevel((byte)-1);
+		comp.setMinLogLevelLocal((byte)-1);
 		return comp;
 	}
 	
