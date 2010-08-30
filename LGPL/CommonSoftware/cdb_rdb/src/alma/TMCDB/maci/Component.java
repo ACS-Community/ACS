@@ -75,6 +75,9 @@ public class Component extends ComponentNode implements ExtraDataFeature {
     // must be public to be accessible, but should not have getter to be come visible as node
     public String XMLDoc;
     
+    // must be public to be accessible, but should not have getter to be come visible as node
+    public String URN;
+
     /* (non-Javadoc)
 	 * @see com.cosylab.cdb.jdal.hibernate.ExtraDataFeature#getExtraData()
 	 */

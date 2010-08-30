@@ -1027,6 +1027,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						int typeId;
 						String type = componentDAO.get_string(componentName+"/Type");
 						DAOProxy componentConfigurationDAO = null; // pulled out for performance optimization, to avoid reading it twice in many cases
+						Schemas schema = null;
 						
 						{
 							String schemaURN = null;
@@ -1084,11 +1085,11 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 							}
 							
                             // get the Schema identifier for the schemaURN
-                            Schemas schema = (Schemas)session.createCriteria(Schemas.class)
+                            schema = (Schemas)session.createCriteria(Schemas.class)
                             	.add(Restrictions.eq("URN", schemaURN))
                             	.add(Restrictions.eq("configuration", config)).uniqueResult();
                             if (schema == null && !almaBranchDoesNotExist)
-                            	m_logger.severe("Component " + componentName + " of XSD type " + schemaURN + " as no XSD file.");
+                            	m_logger.severe("Component " + componentName + " of XSD type " + schemaURN + " has no XSD file.");
                             
                             ComponentType componentType = (ComponentType)session.createCriteria(ComponentType.class)
                             	.add(Restrictions.eq("IDL", type)).uniqueResult();
@@ -1096,17 +1097,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
                             {
                             	componentType = new ComponentType();
                             	componentType.setIDL(type);
+                                session.saveOrUpdate(componentType);
                             }
-                            // try to update
-                            if (componentType.getURN() == null)
-                            	componentType.setURN(schema == null ? null : schema.getURN());
-                            else if (schema != null)
-                            {
-                            	if (!componentType.getURN().equals(schema.getURN()))
-                                	m_logger.severe("Component type " + type +
-                                			" has different XSD types: '" + componentType.getURN() + "' and '" + schema.getURN() + "'!");
-                            }
-                            session.saveOrUpdate(componentType);
 
 							typeId = componentType.getComponentTypeId();
 						}
@@ -1137,6 +1129,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 						component.setMinLogLevel((byte)readLong(componentDAO, componentName+"/ComponentLogger/minLogLevel", -1));
 						component.setMinLogLevelLocal((byte)readLong(componentDAO, componentName+"/ComponentLogger/minLogLevelLocal", -1));
 						component.setXMLDoc(xml);
+                    	component.setURN(schema == null ? null : schema.getURN());
 						session.persist(component);
 						session.flush();
 					
@@ -1733,9 +1726,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	public void bindNonExpandedComponentXMLToAlmaBranch(Session session, Map<String, Object> parentMap, alma.TMCDB.maci.Component component)
 	{
 		// from XMLDOC
-		alma.TMCDB.maci.ComponentType componentType = (alma.TMCDB.maci.ComponentType)session.createCriteria(alma.TMCDB.maci.ComponentType.class).
-			add(Restrictions.eq("Type", component.getType())).uniqueResult();
-		if (componentType.getURN() != null)
+		if (component.URN != null)
 		{
 			// now with XML create DAO object
 			

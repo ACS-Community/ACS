@@ -47,7 +47,6 @@ MODELNAME SwCore
 TABLE ComponentType
      ComponentTypeId         INTEGER                     NOT NULL
      IDL                     LONGNAME                    NOT NULL
-     URN                     LONGVARCHAR (512)           NULL
      KEY ComponentTypeId     GENERATED FROM IDL
 ENDTABLE
 
@@ -328,6 +327,7 @@ TABLE Component
      MinLogLevel             TINYINT                 NOT NULL
      MinLogLevelLocal        TINYINT                 NOT NULL
      XMLDoc                  XMLCLOB                 NULL
+     URN                     LONGVARCHAR (512)       NULL
      KEY ComponentId GENERATED FROM Path ComponentName ConfigurationId
      CONSTRAINT ComponentIDL FOREIGN KEY (ComponentTypeId) REFERENCES ComponentType 
      CONSTRAINT ComponentContainer FOREIGN KEY (ContainerId) REFERENCES Container 

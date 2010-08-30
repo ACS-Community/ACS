@@ -99,7 +99,6 @@
   <class name="ComponentType" table="ComponentType" dynamic-update="true">
     <id name="ComponentTypeId" access="field"><generator class="native"/></id>
     <property name="Type" column="IDL" />
-    <property name="URN" column="URN" />
   </class>
 
 
@@ -130,6 +129,7 @@
     <property name="Path" column="Path" access="field" />
 
     <property name="XMLDoc" column="XMLDoc" access="field" type="alma.hibernate.util.HibernateXmlType"/>
+    <property name="URN" column="URN" access="field" />
   </class>
 
   <!-- NetworkDevice table is being actually used... -->

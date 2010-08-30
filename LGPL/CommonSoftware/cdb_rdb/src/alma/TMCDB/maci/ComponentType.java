@@ -34,8 +34,6 @@ public class ComponentType extends ComponentNode {
     
     private String Type;
   
-    private String URN;
-
     /**
      * Default Constructor for ComponentType.  Setter methods must be used to insert data.
      */
@@ -63,20 +61,5 @@ public class ComponentType extends ComponentNode {
 	public void setType(String type) {
 		Type = type;
 	}
-
-	/**
-	 * @return the schema
-	 */
-	public String getURN() {
-		return URN;
-	}
-
-	/**
-	 * @param schema the schema to set
-	 */
-	public void setURN(String urn) {
-		URN = urn;
-	}
-
 
 }
