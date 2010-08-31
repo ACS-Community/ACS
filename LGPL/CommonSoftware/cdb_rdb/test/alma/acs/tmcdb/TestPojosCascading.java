@@ -249,7 +249,6 @@ public class TestPojosCascading extends TestCase {
 
 		ComponentType compType = new ComponentType();
 		compType.setIDL("IDL:alma/Some/IF.idl:1.0");
-		compType.setURN("MyURN");
 
 		Configuration conf = new Configuration();
 		conf.setConfigurationName("rtobarConfig");

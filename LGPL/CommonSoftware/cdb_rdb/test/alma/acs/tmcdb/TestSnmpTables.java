@@ -1,4 +1,4 @@
-/* @(#)TestTmcdb.java $Revision: 1.2 $ $Date: 2010/04/29 15:39:21 $
+/* @(#)TestTmcdb.java $Revision: 1.3 $ $Date: 2010/08/31 08:40:16 $
  *
  * ALMA - Atacama Large Millimiter Array (c) European Southern Observatory,
  * 2007
@@ -49,7 +49,7 @@ import com.cosylab.cdb.jdal.logging.AcsLoggerHelper;
 /** TestTmcdb class tests TMCDB for SNMP.  It creates a NodeTree, fills the
  *  TMCDB, and finally creates a new NodeTree based on the TMCDB content.
  *
- * @version $Id: TestSnmpTables.java,v 1.2 2010/04/29 15:39:21 hsommer Exp $
+ * @version $Id: TestSnmpTables.java,v 1.3 2010/08/31 08:40:16 rtobar Exp $
  * @author P.Grosbol, ESO, <pgrosbol@eso.org>
  */
 
@@ -79,9 +79,8 @@ public class TestSnmpTables extends TestCase {
     	
     	
     	hibernateUtil = HibernateUtil.getInstance(logger);
-    	File cf = new File("test-hibernate.cfg.xml");
     	AnnotationConfiguration ac = new AnnotationConfiguration();
-    	ac.configure(cf);
+    	ac.configure("test-hibernate.cfg.xml");
     	hibernateUtil.setConfiguration(ac);
     	hibernateUtil.getSessionFactory().openSession();                
     }

@@ -89,7 +89,6 @@ public class TestPojosPersistence extends TestCase {
 		try {
 			ComponentType componentType = new ComponentType();
 			componentType.setIDL("IDL:alma/samp/Samp.idl:1.0");
-			componentType.setURN("urn::someUrn");
 
 			// The fact that this first simple save works
 			// implies that ID generation for HSQLDB and Oracle
@@ -175,7 +174,6 @@ public class TestPojosPersistence extends TestCase {
 		try {
 			ComponentType componentType = new ComponentType();
 			componentType.setIDL("IDL:alma/xmltype/XML.idl:1.0");
-			componentType.setURN("urn::someUrnForXML");
 			
 			hibernateUtil.beginTransaction();
 			hibernateUtil.getSession().save(componentType);
