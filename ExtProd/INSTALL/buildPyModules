@@ -264,17 +264,6 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/lxml-2.2.6.tar.gz ]
-then
-  echo Error: lxml sources are missing
-else
-  echo "== Installing lxml"
-  tar -zxf lxml-2.2.6.tar.gz
-  pushd lxml-2.2.6
-  $PYTHON_INTR setup.py install 
-  popd
-fi
-
 if [ ! -e ../PRODUCTS/nose-0.11.3.tar.gz ]
 then
   echo Error: nose sources are missing
