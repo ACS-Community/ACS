@@ -15,7 +15,10 @@
     <#if pojo.isComponent() || c2h.isCollection(property) >
     	this.${property.name} = ${property.name};
     <#else>
-        propertyChangeSupport.firePropertyChange("${property.name}", this.${property.name}, this.${property.name} = ${property.name});
+        if( propertyChangeSupport != null )
+            propertyChangeSupport.firePropertyChange("${property.name}", this.${property.name}, this.${property.name} = ${property.name});
+        else
+            this.${property.name} = ${property.name};
     </#if>
     }
 
