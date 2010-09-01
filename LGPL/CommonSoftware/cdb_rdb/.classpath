@@ -3,9 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry excluding=".cvsignore|.done_generating_classes|.done_generating_sql|Makefile|gen/" kind="src" path="src"/>
 	<classpathentry excluding=".cvsignore|Makefile|tmcdb/" kind="src" path="test"/>
-	<classpathentry kind="lib" path="/alma/ACS-8.2/ACSSW/lib/hibernate3.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar" sourcepath="/ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbjDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
@@ -21,7 +18,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
@@ -48,5 +44,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/xmlunit-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/cdbrdb-pojos.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jdom.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

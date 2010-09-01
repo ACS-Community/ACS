@@ -1,10 +1,19 @@
 package alma.acs.tmcdb.compare;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import junit.framework.TestCase;
+import static org.junit.Assert.*;
+//import static org.hamcrest.MatcherAssert.assertThat;
+//import static org.hamcrest.Matchers.*;
 
+
+import org.junit.Ignore;
+import org.junit.Test;
 import org.omg.CORBA.ORB;
 
 import alma.acs.util.ACSPorts;
@@ -18,7 +27,20 @@ import com.cosylab.CDB.WDALHelper;
 import com.cosylab.CDB.WDAO;
 import com.cosylab.cdb.client.CDBAccess;
 
+/**
+ * @author jschwarz
+ * Compares the output from two different DAL implementations when a write, followed by a clear_cache and a read are done.
+ * Assuming that ACS is not running on instance 0, the following two commands should be issued before
+ * running this test:
+ * 
+ * hibernateCdbJDal -configName TEST0 -loadXMLCDB -memory  # This should also be done with Oracle every now and then
+ * cdbjDAL -OAport 3013
+ * For remote debugging: export JAVA_OPTIONS="$JAVA_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8080<or some other port>" 
+ */
+
 public class ClearCacheTest extends TestCase {
+
+	private static final int BLKSIZ = 8192;
 
 	private ORB orb;
 	
@@ -46,6 +68,39 @@ public class ClearCacheTest extends TestCase {
 	private String[] xbefore;
 
 	private String[] after;
+
+	private static final String[] afterStartup = {"CLOCK1", "TIMER1", "MOUNT1"};
+
+	private static final String MANAGER_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>"+
+	"<Manager   xmlns:cdb=\"urn:schemas-cosylab-com:CDB:1.0\" "
+			+ "xmlns=\"urn:schemas-cosylab-com:Manager:1.0\" "
+			+ "xmlns:log=\"urn:schemas-cosylab-com:LoggingConfig:1.0\" "
+			+ "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+			+ "Timeout=\"50.0\" "
+			+ "ClientPingInterval=\"10.0\" "
+			+ "ContainerPingInterval=\"10.0\" "
+			+ "AdministratorPingInterval=\"10.0\">"
+			+ "<Startup>"
+			+ "      <cdb:_ string=\"CLOCK1\"/>"
+			+ "      <cdb:_ string=\"TIMER1\"/>"
+			+ "      <cdb:_ string=\"MOUNT2\"/>"
+			+ "</Startup>"
+			+ "<ServiceComponents>"
+			+ 	"<cdb:_ string=\"Log\"/>"
+			+ 	"<cdb:_ string=\"LogFactory\"/>"
+			+ 	"<cdb:_ string=\"NotifyEventChannelFactory\"/>"
+			+ 	"<cdb:_ string=\"ArchivingChannel\"/>"
+			+ 	"<cdb:_ string=\"LoggingChannel\"/>"
+			+ 	"<cdb:_ string=\"InterfaceRepository\"/>"
+			+ 	"<cdb:_ string=\"CDB\"/>"
+			+ 	"<cdb:_ string=\"ACSLogSvc\"/>"
+			+ 	"<cdb:_ string=\"PDB\"/>"
+			+ 	"<cdb:_ string=\"AcsAlarmService\"/>"
+			+ 	"</ServiceComponents>"
+			+ 	"<LoggingConfig>"
+			+ 	"<log:_ Name=\"jacorb@Manager\" minLogLevel=\"5\" minLogLevelLocal=\"4\"/>"
+			+ "</LoggingConfig>" + 
+	"</Manager>";
 
 
 	public ClearCacheTest(String name) {
@@ -104,20 +159,45 @@ public class ClearCacheTest extends TestCase {
 		rdbDAL.clear_cache(firstNode);
 //		rdbDao = rdbDAL.get_DAO_Servant(firstNode); // This makes the test succeed
 		System.out.println(sw.getLapTimeMillis()+" ms after clearing the cache");
-		assertEquals(after,rdbDao.get_string_seq("Startup"));
+		assertArrayEquals(after,rdbDao.get_string_seq("Startup"));
 	}
 	
-	public void testXmlWdalChange() throws Exception {
-		System.out.println("xbefore: "+xbefore[0]+" "+xbefore[1]);
-		xmlWdao.set_string_seq("Startup", after);
-		System.out.println(sw.getLapTimeMillis()+" ms after writing new record");
+	public void testXmlWdalChange1() throws Exception {
+		System.out.println("firstNode: "+firstNode);
+		Reader is = new FileReader("Manager.xml");
+		String managerXmlFromFile = readerToString(is);
+		System.out.println(managerXmlFromFile);
+		xmlWdal.set_DAO(firstNode, managerXmlFromFile);
+//		xmlWdao.set_string_seq("Startup", after);
 //		assertFalse(xbefore.equals(xmlDao.get_string("Startup")));
 //		assertEquals(after,xmlDao.get_string_seq("Startup")); // WDAL changes recognized on next read
 //		assertEquals(after,xmlDao.get_string_seq("Startup")); // See whether second read causes the failure
 		xmlDAL.clear_cache(firstNode);
 		xmlDao = xmlDAL.get_DAO_Servant(firstNode); // This makes the test succeed
-		System.out.println(sw.getLapTimeMillis()+" ms after clearing the cache");
-//		assertEquals(after,xmlDao.get_string_seq("Startup"));		
+		assertArrayEquals(afterStartup ,xmlDao.get_string_seq("Startup"));		
+	}
+	
+	public void testXmlWdalChange2() throws Exception {
+		System.out.println("firstNode: "+firstNode);
+		xmlWdal.set_DAO(firstNode, MANAGER_XML);
+		//		xmlWdao.set_string_seq("Startup", after);
+		//		assertFalse(xbefore.equals(xmlDao.get_string("Startup")));
+		//		assertEquals(after,xmlDao.get_string_seq("Startup")); // WDAL changes recognized on next read
+		//		assertEquals(after,xmlDao.get_string_seq("Startup")); // See whether second read causes the failure
+		xmlDAL.clear_cache(firstNode);
+		xmlDao = xmlDAL.get_DAO_Servant(firstNode); // This makes the test succeed
+		assertArrayEquals(afterStartup,xmlDao.get_string_seq("Startup"));		
+	}
+
+
+	private String readerToString(Reader is) throws IOException {
+		StringBuffer sb = new StringBuffer();
+		char[] b = new char[BLKSIZ];
+		int n;
+		while ((n = is.read(b)) > 0) {
+			sb.append(b, 0, n);
+		}
+		return sb.toString();
 	}
 
 }
