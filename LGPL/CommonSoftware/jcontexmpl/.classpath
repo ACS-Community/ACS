@@ -32,8 +32,8 @@
 	<classpathentry kind="lib" path="lib/ErrorSystemExample.jar"/>
 	<classpathentry kind="lib" path="lib/JContExmplErrTypeTest.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplErrorComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
@@ -49,5 +49,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/CDB.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
