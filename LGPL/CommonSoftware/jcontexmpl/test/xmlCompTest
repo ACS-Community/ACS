@@ -23,4 +23,5 @@
 echo "=== Starting XmlComponent"
     acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.demo.client.XmlComponentClient
     sleep 10
+    acsStartJava -endorsed alma.acs.testsupport.tat.TATJUnitRunner alma.acsexmpl.clients.XmlComponentClientTest
 echo "=== XmlComponent test completed"

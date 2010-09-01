@@ -35,6 +35,14 @@
 #    None
 #------------------------------------------------------------------------
 
+XERCES_JARTMP := $(shell searchFile lib/endorsed/xercesImpl.jar)
+ifneq ($(XERCES_JARTMP),\#error\#)
+   XERCES_JAR := $(XERCES_JARTMP)/lib/endorsed/xercesImpl.jar
+endif
+
+CLASSPATH := $(CLASSPATH):$(XERCES_JAR)
+
+
 # 
 # IDL Files and flags
 # 
@@ -56,6 +64,7 @@ jcontexmplComp_DIRS = \
 	alma/demo/LampAccessImpl \
 	alma/demo/LampCallbackImpl \
 	alma/demo/XmlComponentImpl \
+	alma/demo/XmlOffShootImpl \
 	alma/acsexmplErrorComponent
 jcontexmplComp_JLIBS = LampAccess EventComponent ErrorSystemComponent
 

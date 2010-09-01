@@ -40,6 +40,7 @@ import alma.demo.ObsProjectTreeJ;
 import alma.demo.SchedBlockHolder;
 import alma.demo.XmlComponentJ;
 import alma.demo.XmlComponentOperations;
+import alma.demo.XmlOffshootJ;
 import alma.xmlentity.XmlEntityStruct;
 import alma.xmlentity.XmlEntityStructHolder;
 import alma.xmljbind.test.obsproposal.ObsProposal;
@@ -389,6 +390,11 @@ public class DynamicProxyFactoryTest extends TestCase
 		public void exceptionMethod() throws XmlComponentErrorEx
 		{
 			throw new XmlComponentErrorEx();
+		}
+
+		@Override
+		public XmlOffshootJ getOffshoot() {
+			return null;
 		}
 
 	

@@ -29,10 +29,10 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JContExmplErrTypeTest.XmlComponentErrorEx;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.JavaContainerError.wrappers.AcsJJavaComponentHelperEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
+import alma.acs.container.ExternalInterfaceTranslator;
 import alma.acs.entityutil.EntityDeserializer;
 import alma.acs.entityutil.EntityException;
 import alma.acs.entityutil.EntitySerializer;
@@ -42,6 +42,7 @@ import alma.demo.SchedBlockHolder;
 import alma.demo.XmlComponentJ;
 import alma.demo.XmlComponentOperations;
 import alma.demo.XmlComponentPOATie;
+import alma.demo.XmlOffshoot;
 import alma.maciErrType.wrappers.AcsJComponentCreationEx;
 import alma.xmlentity.XmlEntityStruct;
 import alma.xmlentity.XmlEntityStructHolder;
@@ -154,7 +155,7 @@ public class XmlComponentHelper extends ComponentHelper
      * and likely implement either automatic or manual parameter translation,
      * but not both to choose from. This is done here only for demo purposes.
      */
-    private static class IFTranslator implements XmlComponentOperations
+    private static class IFTranslator implements XmlComponentOperations, ExternalInterfaceTranslator
     {
         private boolean m_useDefaultTranslator = true;  // toggle for dev testing
 
@@ -390,6 +391,22 @@ public class XmlComponentHelper extends ComponentHelper
         {
             m_defaultTranslator.exceptionMethod();
         }
+
+		@Override
+		public XmlOffshoot getOffshoot() {
+			return m_defaultTranslator.getOffshoot();
+		}
+
+		@Override
+		public Object getDefaultInterfaceTranslator() {
+			return m_defaultTranslator;
+		}
+
+		@Override
+		public void setDefaultInterfaceTranslator(
+				Object defaultInterfaceTranslator) {
+			// no-op
+		}
 
     }
 }

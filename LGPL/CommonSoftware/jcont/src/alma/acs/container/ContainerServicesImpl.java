@@ -21,7 +21,10 @@
  */
 package alma.acs.container;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,12 +38,8 @@ import java.util.logging.Level;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
-
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
-
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
@@ -50,10 +49,12 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
+import alma.acs.component.dynwrapper.ComponentInvocationHandler;
 import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.entities.commonentity.EntityT;
@@ -63,6 +64,9 @@ import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -127,6 +131,7 @@ public class ContainerServicesImpl implements ContainerServices
 	
 	
 	private final POA m_clientPOA;
+	private Object m_componentXmlTranslatorProxy;
 
 	private final ComponentStateManager m_componentStateManager;
     private final ThreadFactory m_threadFactory;
@@ -185,7 +190,9 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 	}
 
-
+	void setComponentXmlTranslatorProxy(Object xmlTranslatorProxy) {
+		m_componentXmlTranslatorProxy = xmlTranslatorProxy;
+	}
 
 	/////////////////////////////////////////////////////////////
 	// Implementation of ContainerServices
@@ -792,7 +799,7 @@ public class ContainerServicesImpl implements ContainerServices
 	public OffShoot activateOffShoot(Servant servant)
 		throws AcsJContainerServicesEx
 	{
-		checkOffShootServant(servant);
+		checkOffShoot(servant);
 		String servantName = servant.getClass().getName();
 		// check if the servant is the Tie variant, which allows proxy-based call interception by the container
 		boolean isTie = false;
@@ -847,12 +854,140 @@ public class ContainerServicesImpl implements ContainerServices
 		return shoot;
 	}
 
+	/**
+	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
+	 */
+	@SuppressWarnings("unchecked")
+	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+		throws AcsJContainerServicesEx
+	{
+
+		Servant servant = null;
+		boolean isTie = false;
+		boolean haveToInject = false;
+
+		// Checks
+		checkOffShoot(offshootImpl);
+		if( !idlOpInterface.isAssignableFrom(offshootImpl.getClass()) ) {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo("Received OffShoot of type '" + offshootImpl.getClass().getName() +
+			    "' does not inherits from '" + idlOpInterface.getName() +  "'");
+			throw ex;
+		}
+
+		// If we receive an object that is not a servant it means that it requires XML automatic bindings.
+		// We create the corresponding POATie object, the dynamic proxy binder,
+		// and set the offshoot implementation as the final delegate
+		if( !(offshootImpl instanceof Servant) ) {
+
+			// Guess the name of the xyzPOATie class, build it, and delegate
+			String poaTieClassName = null;
+			try {
+
+				m_logger.fine("Creating POATie servant for offshoot '" + offshootImpl.getClass().getName() + "'");
+				// Get the POATie class and the expected xyzOperations interface
+				String baseClassName = idlOpInterface.getName().substring(0, idlOpInterface.getName().length()-1);
+				poaTieClassName =  baseClassName + "POATie";
+				Class poaTieClazz = Class.forName( poaTieClassName );
+				Method implGetter = poaTieClazz.getMethod("_delegate", (Class[]) null);
+				Class operationsIF = implGetter.getReturnType();
+
+				// Create the dynamic XML entities wrapper
+				Object proxy = DynamicProxyFactory.getDynamicProxyFactory(m_logger)
+				                 .createServerProxy(operationsIF, offshootImpl, idlOpInterface);
+
+				// Create the POATie object, give it the proxy, and set it as our servant
+				Constructor<?> c = poaTieClazz.getConstructor(new Class[]{operationsIF});
+				servant = (Servant)c.newInstance(proxy);
+
+				//m_logger.fine("Trying to get proxy from '" + m_componentXmlTranslatorProxy + "', type " + m_componentXmlTranslatorProxy.getClass().getName());
+				if( m_componentXmlTranslatorProxy != null )
+					haveToInject = true;
+
+			} catch (ClassNotFoundException e) {
+				String msg = "Failed to create servant for offshoot " + offshootImpl.getClass().getName() + ": class '" + poaTieClassName + "' cannot be found";
+				m_logger.log(AcsLogLevel.ERROR, msg, e);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+				ex.setContextInfo(msg);
+				throw ex;
+			} catch(Exception e) {
+				throw new AcsJContainerServicesEx(e);
+			}
+			
+		}
+		else {
+			m_logger.fine("Don't need to create servant for offshoot '" + offshootImpl.getClass().getName() + "'");
+			servant = (Servant)offshootImpl;
+		}
+
+
+		// check if the servant is the Tie variant, which allows proxy-based call interception by the container
+		String servantName = servant.getClass().getName();
+		if (servantName.endsWith("POATie")) {
+			try {
+				// the _delegate getter method is mandated by the IDL-to-Java mapping spec
+				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
+				isTie = true;
+				Class operationsIF = implGetter.getReturnType();
+				java.lang.Object offshootTiedImpl = implGetter.invoke(servant, (java.lang.Object[]) null);
+				// now we insert the interceptor between the tie skeleton and the impl.
+				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
+				// 
+				String qualOffshootName = getName() + "/" + operationsIF.getName().substring(0, operationsIF.getName().length() - "Operations".length());
+				java.lang.Object interceptingOffshootImpl = ContainerSealant.createContainerSealant(
+						operationsIF, offshootTiedImpl, qualOffshootName, true, m_logger, 
+						Thread.currentThread().getContextClassLoader(), methodsExcludedFromInvocationLogging);
+				Method implSetter = servant.getClass().getMethod("_delegate", new Class[]{operationsIF});
+				implSetter.invoke(servant, new java.lang.Object[]{interceptingOffshootImpl});
+				m_logger.fine("created sealant for offshoot " + qualOffshootName);
+			} catch (NoSuchMethodException e) {
+				// so this was not a Tie skeleton, even though its name ends misleadingly with "POATie"
+			} catch (Exception e) {
+				m_logger.log(Level.WARNING, "Failed to create interceptor for offshoot " + servantName, e);
+			} 
+		}		
+
+		if (!isTie) {
+// TODO: perhaps require tie offshoots with ACS 5.0, and enable this warning log			
+//			m_logger.warning("Offshoot servant '" + servantName + "' from component '" + getName() + 
+//					"' does not follow the tie approach. Calls can thus not be intercepted by the container.");
+		}
+				
+		OffShoot shoot = null;
+		try  {
+			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, m_clientPOA);
+			shoot = OffShootHelper.narrow(obj);
+		}
+		catch (Throwable thr) {
+			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
+							"' for client '" + m_clientName + "'. ";
+			// flatten the exception chain by one level if possible
+			if (thr instanceof AcsJContainerServicesEx && thr.getCause() != null) {
+				msg += "(" + thr.getMessage() + ")"; 
+				thr = thr.getCause();
+			}
+			m_logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			throw ex;
+		}
+
+		// finally, put the CORBA-object/implementation into the component's proxy invocation handler,
+		// so when requesting an offshoot into the component, we return the corresponding CORBA object
+		if( haveToInject ) {
+			m_logger.fine("Injecting offshoot '" + offshootImpl.getClass().getName() + "' to '" + m_clientName + "' component XML binder");
+			ComponentInvocationHandler handler = (ComponentInvocationHandler)Proxy.getInvocationHandler(m_componentXmlTranslatorProxy);
+			handler.addOffshoot(offshootImpl, shoot);
+		}
+
+//		m_logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
+		return shoot;
+	}
 
 
 	public void deactivateOffShoot(Servant cbServant)
 	throws AcsJContainerServicesEx
 	{
-		checkOffShootServant(cbServant);
+		checkOffShoot(cbServant);
 		try {
 			acsCorba.deactivateOffShoot(cbServant, m_clientPOA);
 		} catch (AcsJContainerEx e) {
@@ -864,7 +999,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @param cbServant
 	 * @throws ContainerException
 	 */
-	private void checkOffShootServant(Servant servant) throws AcsJContainerServicesEx {
+	private void checkOffShoot(Object servant) throws AcsJContainerServicesEx {
 		if (servant == null) {
 			AcsJBadParameterEx cause = new AcsJBadParameterEx();
 			cause.setParameter("servant");

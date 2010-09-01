@@ -21,14 +21,22 @@
  */
 package alma.acs.component.dynwrapper;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+
+import alma.ACS.OffShoot;
 
 
 /**
  * @author heiko
  */
+@SuppressWarnings("unchecked")
 public class ComponentInvocationHandler implements InvocationHandler
 {
 	private final Logger m_logger;
@@ -40,7 +48,6 @@ public class ComponentInvocationHandler implements InvocationHandler
 	
 	// key=String(fromClassNameToClassName), value=Mapper that can do it
 	private final Map<String, TypeMapper> m_mapperMap;
-
 
 	/**
 	 * Constructor for ComponentInvocationHandler.
@@ -86,8 +93,9 @@ public class ComponentInvocationHandler implements InvocationHandler
 		{
 			m_delegateMethodMap.put(delegateMethods[i].getName(), delegateMethods[i]);
 		}
-		
+
 		// add more type mappers here as they become available
+		addTypeMapper(new OffShootMapper(delegate, m_logger));
 		addTypeMapper(new IdentityMapper(delegate, m_logger));
 		addTypeMapper(new CastorMarshalMapper(delegate, m_logger));
 		addTypeMapper(new CastorUnmarshalMapper(delegate, m_logger));		
@@ -101,6 +109,14 @@ public class ComponentInvocationHandler implements InvocationHandler
 		m_typeMappers.add(typeMapper);
 	}	
 
+	public void addOffshoot(Object offshootImpl, OffShoot shoot) {
+		for(TypeMapper mapper: m_typeMappers) {
+			if( mapper instanceof OffShootMapper ) {
+				((OffShootMapper)mapper).addOffshoot(offshootImpl, shoot);
+				break;
+			}
+		}
+	}
 
     /**
      * Processes a method invocation on a proxy instance and returns

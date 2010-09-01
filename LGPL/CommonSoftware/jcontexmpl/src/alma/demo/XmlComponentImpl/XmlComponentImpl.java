@@ -35,6 +35,8 @@ import alma.acs.container.ContainerServices;
 import alma.demo.ObsProjectTreeJ;
 import alma.demo.SchedBlockHolder;
 import alma.demo.XmlComponentJ;
+import alma.demo.XmlOffshootJ;
+import alma.demo.XmlOffShootImpl.XmlOffShootImpl;
 import alma.xmljbind.test.obsproposal.ObsProposal;
 import alma.xmljbind.test.obsproposal.ObsProposalEntityT;
 import alma.xmljbind.test.schedblock.SchedBlock;
@@ -56,9 +58,9 @@ import alma.xmljbind.test.schedblock.SchedBlockEntityT;
  */
 public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 {
-	private ArrayList<SchedBlock> m_schedBlockList;
-//	private float m_radius; 
-	
+
+	private ArrayList<SchedBlock> m_schedBlockList;	
+	private XmlOffshootJ m_offshoot;
 
 	/////////////////////////////////////////////////////////////
 	// Implementation of ComponentLifecycle 
@@ -99,6 +101,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 			m_schedBlockList.clear();
 //			throw new ComponentLifecycleException(e); // not required
 		}
+
 	}
 
 
@@ -266,31 +269,18 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 			throw new AcsJXmlComponentErrorEx("use me for container tests", npe);
 		}
 	}
-	
-	
-	
-//	/**
-//	 * @see alma.demo.XmlComponentJ#circumference()
-//	 */
-//	public float circumference()
-//	{
-//		return (float) (2 * Math.PI * m_radius);
-//	}
-//
-//	/**
-//	 * @see alma.demo.XmlComponentJ#radius()
-//	 */
-//	public float radius()
-//	{
-//		return m_radius;
-//	}
-//
-//	/**
-//	 * @see alma.demo.XmlComponentJ#radius(float)
-//	 */
-//	public void radius(float value)
-//	{
-//		m_radius = value;
-//	}
+
+	public XmlOffshootJ getOffshoot() {
+		if( m_offshoot == null ) {
+			m_offshoot = new XmlOffShootImpl(m_containerServices);
+			try {
+				m_containerServices.activateOffShoot(m_offshoot, XmlOffshootJ.class);
+			} catch (AcsJContainerServicesEx e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return m_offshoot;
+	}
 
 }

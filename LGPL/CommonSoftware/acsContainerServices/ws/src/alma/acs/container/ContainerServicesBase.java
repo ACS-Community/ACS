@@ -25,11 +25,11 @@ import java.util.concurrent.ThreadFactory;
 
 import org.omg.PortableServer.Servant;
 
-import com.cosylab.CDB.DAL;
-
 import alma.ACS.OffShoot;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.logging.AcsLogger;
+
+import com.cosylab.CDB.DAL;
 
 /**
  * Through this interface, the container offers services to its hosted components.
@@ -355,10 +355,46 @@ public interface ContainerServicesBase
 	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>.  
 	 * @throws ContainerException  if anything goes wrong, 
 	 * 								especially if <code>cbServant</code> is not an OffShoot.
+	 * @deprecated Since ACS 9.0, {@link #activateOffShoot(Object, Class)} method should be used instead
 	 */
 	public OffShoot activateOffShoot(Servant cbServant) 
 			throws AcsJContainerServicesEx;
-	
+
+	/**
+	 * Activates an Object as an OffShoot.
+	 * 
+	 * As opposite to the {@link #activateOffShoot(Servant)} method, which expects a
+	 * Servant (either subclass of xyzPOA skeleton or a xyzPOATie instance), this method
+	 * receives: a) the object implementing {@link alma.ACS.OffShootOperations}, but without
+	 * restricting it to be a Servant, and b) the operations interface
+	 * that this object directly implements. This way, we support activation of normal OffShoots
+	 * (which should pass their xyzOperations class as an argument), and OffShoots featuring
+	 * automatic XML (de)serialization (which should pass the xyzJ class),
+	 * similar to that of ACS Components.
+	 * In the case that a normal OffShoot is given, the servant can be either a subclass of the
+	 * xyzPOA skeleton, or a xyzPOATie instance (delegation model).
+	 * 
+	 * Since ACS 9.0, when giving an OffShoot with XML entities (de)serialization, automatic
+	 * interception code is created to wrap the given object, and a xyzPOATie instance is
+	 * created and used as the servant.
+	 * 
+	 * Since ACS 4.1.2, a tie servant is detected, and interception code gets inserted between the 
+	 * POATie skeleton and the offshoot implementation class. This way, the container
+	 * can intercept (and log) calls to offshoots in the same way as it does for calls to components.
+	 * <b>It is therefore recommended to use the tie approach for all offshoot servants, 
+	 * unless there is a reason to avoid container interception.</b>
+	 * 
+	 * @param offshootImpl   the object that implements the OffShoot logic
+	 * @param idlOpInterface the IDL operations interface implemented by <code>offshootImpl</code>;
+	 *          currently, must be one of <code>xyzOperations</code> or <code>xyzJ</code>
+	 * @return  needs a narrow-cast to the subtype, like
+	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>.  
+	 * @throws ContainerException  if anything goes wrong, 
+	 *            especially if <code>offshootImpl</code> is does not implement {@link alma.ACS.OffShootOperations}.
+	 */
+	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface) 
+			throws AcsJContainerServicesEx;
+
 	/**
 	 * Deactivates the offshoot corba object.
 	 * Caution: this method returns immediately, while the underlying 

@@ -28,6 +28,7 @@ import org.omg.PortableServer.Servant;
 
 import si.ijs.maci.ComponentInfo;
 
+import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -63,7 +64,7 @@ public class ComponentAdapter
 	
 	private AcsLogger m_containerLogger;
 
-	// the component itself
+	// the component itself and its XML translator proxy, if any
 	private ComponentLifecycle m_component;
 		
 	// the tie skeleton that receives ORB calls
@@ -139,7 +140,11 @@ public class ComponentAdapter
 			new ContainerServicesImpl(managerProxy, m_componentPOA, acsCorba, m_containerLogger, 
 					m_compHandle, m_compInstanceName, m_componentStateManager, m_threadFactory);
 	}
-	
+
+	void setComponentXmlTranslatorProxy(Object xmlTranslatorProxy) {
+		m_containerServices.setComponentXmlTranslatorProxy(xmlTranslatorProxy);
+	}
+
 	ContainerServicesImpl getContainerServices() {
 		return m_containerServices;
 	}

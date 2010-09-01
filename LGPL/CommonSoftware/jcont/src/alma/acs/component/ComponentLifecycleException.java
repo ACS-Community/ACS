@@ -27,6 +27,8 @@ package alma.acs.component;
 public class ComponentLifecycleException extends Exception
 {
 
+	private static final long serialVersionUID = -8872632299416257614L;
+
 	/**
 	 * 
 	 */

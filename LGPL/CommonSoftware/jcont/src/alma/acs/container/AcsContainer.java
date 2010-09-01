@@ -22,6 +22,7 @@
 package alma.acs.container;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,9 +41,6 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
-
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ClientType;
@@ -53,7 +51,6 @@ import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
@@ -64,6 +61,7 @@ import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
@@ -81,6 +79,9 @@ import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -243,7 +244,7 @@ public class AcsContainer extends ContainerPOA
 			String name = m_containerName; 
 			ThreadFactory threadFactory = containerThreadFactory; 
 
-			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"), 
+			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"),
 	        		m_acsCorba, m_logger, 0, name, null, threadFactory) {
 	        	private AcsLogger alarmLogger;
 	        	public AcsLogger getLogger() {
@@ -482,6 +483,11 @@ public class AcsContainer extends ContainerPOA
             {
                 m_logger.finer("creating dynamic proxy to map corba interface calls to component " + compName + ".");
                 operationsIFImpl = compHelper.getInterfaceTranslator();
+
+                if( !Proxy.isProxyClass(operationsIFImpl.getClass()) && !(operationsIFImpl instanceof ExternalInterfaceTranslator) )
+                	m_logger.log(AcsLogLevel.NOTICE,"interface translator proxy for component " + compName + " isn't " +
+                			"the default one, and doesn't expose the default as one either. This may cause problem when invoking " +
+                			"xml-aware offshoot getters");
             }
 
             // make it a tight container (one that intercepts functional method calls)
@@ -507,6 +513,14 @@ public class AcsContainer extends ContainerPOA
 
             compAdapter = new ComponentAdapter(compName, type, exe, componentHandle,
                     m_containerName, compImpl, m_managerProxy, compCL, m_logger, m_acsCorba);
+
+            // to support automatic offshoot translation for xml-binded offshoots, we need to pass the dynamic adaptor
+            if( !operationsIFClass.isInstance(compImpl) ) {
+            	// if an external interface translator was given by the user, get the default interface translator
+            	if( operationsIFImpl instanceof ExternalInterfaceTranslator )
+            		operationsIFImpl = ((ExternalInterfaceTranslator)operationsIFImpl).getDefaultInterfaceTranslator();
+            	compAdapter.setComponentXmlTranslatorProxy(operationsIFImpl);
+            }
 
             // for future offshoots created by this component we must pass on the no-auto-logging info
             compAdapter.setMethodsExcludedFromInvocationLogging(methodsExcludedFromInvocationLogging);
