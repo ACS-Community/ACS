@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: idlMakefile,v 1.122 2010/07/09 15:16:06 rtobar Exp $"
+# "@(#) $Id: idlMakefile,v 1.123 2010/09/01 21:37:26 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -373,7 +373,7 @@ endif #end $(strip $(XML_IDL))
 # the assumption made here is that there are no other java files under
 # ../object besides those which result from processing IDL files
 # 
-	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) ! -path '*/CVS/*' -name \*.java`; if [ "$$FILES" != "" ] ;then echo $$FILES > /tmp/javaFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javaFiles; rm /tmp/javaFiles; fi;
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) ! -path '*/CVS/*' -name \*.java`; if [ "$$FILES" != "" ] ;then echo $$FILES > /tmp/javaFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javaFiles; rm -f /tmp/javaFiles; fi;
 #
 #
 # putting it into the jarfile
