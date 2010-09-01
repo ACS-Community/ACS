@@ -25,11 +25,9 @@ import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 
-/*
-//TODO!
- * Maps between CORBA <code>Holder</code> classes that are used for 
- * <code>out</code>/<code>inout</code> parameters.
- * Delegates the mapping of the contained <code>value</code> field to some other mapper. 
+/**
+ * Maps between composite objects, delegating the translation of values
+ * recursively if necessary. 
  * 
  * @author heiko
  */
@@ -47,6 +45,7 @@ public class CompositionMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#canTranslate(java.lang.Class, 
 	 * java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean canTranslate(
 		Class oldObjClass,
 		Class newObjClass,

@@ -32,6 +32,8 @@ package alma.acs.component.dynwrapper;
 public class DynWrapperException extends Exception
 {
 
+	private static final long serialVersionUID = -9024977466121170718L;
+
 	/**
 	 * Constructor for DynWrapperException.
 	 */

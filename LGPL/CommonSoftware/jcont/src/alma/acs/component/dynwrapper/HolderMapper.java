@@ -89,6 +89,7 @@ public class HolderMapper extends TypeMapper
 	 * @see alma.acs.component.dynwrapper.TypeMapper#translate(java.lang.Object, 
 	 * java.lang.Object, java.lang.Class, alma.acs.component.dynwrapper.ComponentInvocationHandler)
 	 */
+	@SuppressWarnings("unchecked")
 	public Object translate(
 		Object oldHolder,
 		Object newHolderTemplate,
