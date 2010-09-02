@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.11 2009/04/27 13:46:05 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.12 2010/09/02 08:43:39 hsommer Exp $
  * @since
  */
 
@@ -127,22 +127,15 @@ public class ChannelProperties {
 	 * @since ACS 6.0.1 (formerly called "getIntegrationLogs")
 	 */
 	public boolean isTraceEventsEnabled(String channelName) throws AcsJException {
-		// sanity check
-		// @todo avoid this unnecessary CDB call; instead base this check on getCDB().get_DAO_Servant below
-		if (this.cdbChannelConfigExists(channelName) == false) {
-			return false;
-		}
-
 		// use this object to get at channel information from the CDB
 		DAO tempDAO = null;
 		try {
 			tempDAO = m_services.getCDB().get_DAO_Servant("MACI/Channels/" + channelName);
+		} catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
+			return false;
 		} catch (alma.cdbErrType.CDBXMLErrorEx e) {
 			m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName + "' channel", e);
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
-		} catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
-			m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName + "' channel", e);
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
 		} catch (AcsJContainerServicesEx e) {
 			m_logger.log(Level.SEVERE, "CDB unavailable", e);
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
