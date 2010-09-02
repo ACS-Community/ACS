@@ -21,44 +21,35 @@ package alma.acs.nc.refactored;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import org.omg.CORBA.portable.IDLEntity;
 
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.container.ContainerServices;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.Consumer;
 import alma.acsnc.EventDescription;
 
 /**
- * This test class aims to <b>investigate</b> how reuse the Admin Object. Also
- * the filtering capabilities are checked.
+ * This test class aims to <b>investigate</b> how to reuse the NC Admin Object. 
+ * Also the filtering capabilities are checked.
  * 
  * @author jslopez
- * 
  */
 public class NCSubscriberTest extends ComponentClientTestCase {
-	private NCSubscriberDirect subscriber = null;
-	private NCSubscriberDirect otherSubscriber = null;
 
-	private ContainerServices services = null;
+	private static final String TEST_CHANNEL_NAME = "refactoredLibsTestChannel";
 
-	private Logger logger = null;
-
-	public NCSubscriberTest(String name) throws Exception {
-		super(name);
+	public NCSubscriberTest() throws Exception {
+		super(NCSubscriberTest.class.getSimpleName());
 	}
 	
 	/**
-	 * This test creates a Suscriber and add all event types giving a proper
+	 * This test creates a Subscriber for all event types, giving a proper
 	 * generic receiver callback.
 	 */
 	public void testGenericCallback() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -73,13 +64,12 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	}
 
 	/**
-	 * This test creates Suscriber and add all event types giving a proper
+	 * This test creates Subscriber and add all event types giving a proper
 	 * generic receiver callback and then add a particular subscription. The
 	 * goal of this test is to check the priority on the receiver handler.
 	 */
 	public void testGenericCallbackWithPriority() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -88,8 +78,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		E1Receiver e1Receiver = new E1Receiver(counterE1);
 		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
 
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
+		subscriber.addSubscription(e1Receiver);
 		subscriber.addGenericSubscription(genericReceiver);
+		
 		subscriber.startReceivingEvents();
 		
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
@@ -102,8 +93,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test aims to test the add/remove of the generic handler.
 	 */
 	public void testWithGenericSubscription() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -125,8 +115,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * subscriptions and a generic one combined.
 	 */
 	public void testCombinedSubscriptions() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -137,8 +126,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		E2Receiver e2Receiver = new E2Receiver(counterE2);
 		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
 		
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
-		subscriber.addSubscription(statusBlockEvent2.class, e2Receiver);
+		subscriber.addSubscription(e1Receiver);
+		subscriber.addSubscription(e2Receiver);
 		subscriber.addGenericSubscription(genericReceiver);
 		subscriber.startReceivingEvents();
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
@@ -149,7 +138,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
 		subscriber.removeGenericSubscription();
 		subscriber.removeSubscription(statusBlockEvent1.class);
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
+		subscriber.addSubscription(e1Receiver);
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
 				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
 	}
@@ -160,8 +149,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 */
 
 	public void testRemoveAllSubscription() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
 		
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -170,15 +158,15 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		E1Receiver e1Receiver = new E1Receiver(counterE1);
 		E2Receiver e2Receiver = new E2Receiver(counterE2);
 
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
-		subscriber.addSubscription(statusBlockEvent2.class, e2Receiver);
+		subscriber.addSubscription(e1Receiver);
+		subscriber.addSubscription(e2Receiver);
 		subscriber.startReceivingEvents();
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
 				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
 				+ " events.", counterE2.await(10, TimeUnit.SECONDS));
 		subscriber.removeSubscription(null);
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
+		subscriber.addSubscription(e1Receiver);
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
 				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
 
@@ -188,8 +176,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the removeGenericSubscription method.
 	 */
 	public void testDisconnect() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
 		
 		int numExpectedEvents = 5;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -215,10 +202,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the behavior of concurrent subscriber clients.
 	 */
 	public void testMultipleSubscribers() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
-		otherSubscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", otherSubscriber);
+		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber otherSubscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -227,8 +212,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		E1Receiver e1Receiver = new E1Receiver(counterE1);
 		E2Receiver e2Receiver = new E2Receiver(counterE2);
 		
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
-		otherSubscriber.addSubscription(statusBlockEvent2.class, e2Receiver);
+		subscriber.addSubscription(e1Receiver);
+		otherSubscriber.addSubscription(e2Receiver);
 		subscriber.startReceivingEvents();
 		otherSubscriber.startReceivingEvents();
 		assertTrue("Got a timeout while waiting for " + numExpectedEvents
@@ -244,54 +229,41 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * concurrently with the old API.
 	 */
 	public void testOldSubscriber() throws Exception {
-		subscriber = new NCSubscriberDirect("testingChannel", services);
-		assertNotNull("Construction of NCSubscriber failed.", subscriber);
+		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
 		
 		Consumer oldConsumer = null;
-		oldConsumer = new Consumer("testingChannel", services);
+		oldConsumer = new Consumer(TEST_CHANNEL_NAME, getContainerServices());
 		assertNotNull("Construction of Consumer failed.", oldConsumer);
 		
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
 		E1Receiver e1Receiver = new E1Receiver(counterE1);
 		
-		subscriber.addSubscription(statusBlockEvent1.class, e1Receiver);
+		subscriber.addSubscription(e1Receiver);
 		subscriber.startReceivingEvents();
 		
 		oldConsumer.addSubscription(statusBlockEvent1.class);
 		oldConsumer.consumerReady();
 	}
 	
-	/**
-	 * Getting common references.
-	 * 
-	 * @see alma.acs.component.client.ComponentClientTestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		services = getContainerServices();
-		logger = services.getLogger();
-		logger.info("Creating subscriber");
-	}
 }
 
-/**
- * This class overload some methods for testing purposes.
- * 
- * @author jslopez
- */
-final class NCSubscriberDirect extends NCSubscriber {
-	NCSubscriberDirect(String channelName, ContainerServices services)
-			throws AcsJException {
-		super(channelName, services);
-	}
 
-	/**
-	 * Overloaded version that doesn't require the callback. Commented, since is
-	 * no longer used. (Can be used again for testing purposes).
-	 * 
-	 * @see alma.acs.nc.refactored.NCSubscriber#push_structured_event(org.omg.CosNotification.StructuredEvent)
-	 */
+///**
+// * This class overload some methods for testing purposes.
+// */
+//final class NCSubscriberDirect<T extends IDLEntity> extends NCSubscriber<T> {
+//	NCSubscriberDirect(String channelName, ContainerServices services)
+//			throws AcsJException {
+//		super(channelName, services);
+//	}
+//
+//	/**
+//	 * Overloaded version that doesn't require the callback. Commented, since is
+//	 * no longer used. (Can be used again for testing purposes).
+//	 * 
+//	 * @see alma.acs.nc.refactored.NCSubscriber#push_structured_event(org.omg.CosNotification.StructuredEvent)
+//	 */
 //	public void push_structured_event(StructuredEvent structuredEvent)
 //	throws Disconnected {
 //		EventDescription eDescrip = EventDescriptionHelper
@@ -301,77 +273,77 @@ final class NCSubscriberDirect extends NCSubscriber {
 //				+ eDescrip.name + ", Event Type:"
 //				+ structuredEvent.header.fixed_header.event_type.type_name);
 //	}
+//}
+
+/**
+ * Base class of the various custom receivers, to limit code duplication.
+ */
+abstract class ReceiverBase {
+	protected final CountDownLatch counter;
+	
+	ReceiverBase(CountDownLatch counter) {
+		this.counter = counter;
+	}
+	
+	protected void handleMyEvent(String eventData, EventDescription eDescrip) {
+		System.out.println("Got a call to " + getClass().getSimpleName()+ "#receive: " + eventData + " : " + eDescrip.name);
+		counter.countDown();
+		// Little hack to force the maxProcessTime warning
+		try {
+			Thread.sleep(1000 * 0);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }
 
 /**
  * This class implements the receiver handler for statusBlockEvent1.
  */
-class E1Receiver implements AcsEventSubscriber.Callback<statusBlockEvent1> {	
-	private final CountDownLatch counter;
+class E1Receiver extends ReceiverBase implements AcsEventSubscriber.Callback<statusBlockEvent1> {
 	
 	E1Receiver(CountDownLatch counter) {
-		this.counter = counter;
+		super(counter);
 	}
+	
 	public void receive(statusBlockEvent1 event, EventDescription eDescrip) {
-		System.out.println("Inside receive method 1: " + event.myString
-				+ " : " + eDescrip.name);
-		
-		counter.countDown();
-		
-		// Little hack to force the maxProcessTime warning
-		try {
-			Thread.sleep(1000 * 0);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		handleMyEvent(event.myString, eDescrip);
 	}
-};
+	
+	@Override
+	public Class<statusBlockEvent1> getEventType() {
+		return statusBlockEvent1.class;
+	}
+}
 
 /**
  * This class implements the receiver handler for statusBlockEvent2.
  */
-class E2Receiver implements AcsEventSubscriber.Callback<statusBlockEvent2> {	
-	private final CountDownLatch counter;
+class E2Receiver extends ReceiverBase implements AcsEventSubscriber.Callback<statusBlockEvent2> {
 	
 	E2Receiver(CountDownLatch counter) {
-		this.counter = counter;
+		super(counter);
 	}
 	public void receive(statusBlockEvent2 event, EventDescription eDescrip) {
-		System.out.println("Inside receive method 2: " + event.myString
-				+ " : " + eDescrip.name);
-		
-		counter.countDown();
-		
-		// Little hack to force the maxProcessTime warning
-		try {
-			Thread.sleep(1000 * 0);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		handleMyEvent(event.myString, eDescrip);
 	}
-};
+	
+	@Override
+	public Class<statusBlockEvent2> getEventType() {
+		return statusBlockEvent2.class;
+	}
+}
 
 /**
  * This class implements the generic receiver handler.
  */
-class GenericReceiver implements AcsEventSubscriber.GenericCallback {
-	private final CountDownLatch counter;
+class GenericReceiver extends ReceiverBase implements AcsEventSubscriber.GenericCallback {
 	
 	GenericReceiver(CountDownLatch counter) {
-		this.counter = counter;
+		super(counter);
 	}
 
-	public void receive(IDLEntity event, EventDescription eventDescrip) {
-		System.out.println("Inside GENERIC receive method: " + " : "
-				+ eventDescrip.name);
-		
-		counter.countDown();
-		
-		// Little hack to force the maxProcessTime warning
-		try {
-			Thread.sleep(1000 * 0);
-		} catch (InterruptedException e) {
-			e.printStackTrace();		
-		}
+	public void receive(IDLEntity event, EventDescription eDescrip) {
+		handleMyEvent("<generic>", eDescrip);
 	}
 }
