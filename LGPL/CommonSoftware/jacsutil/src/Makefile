@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.19 2010/06/28 09:59:12 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.20 2010/09/02 17:00:12 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -32,7 +32,7 @@
 #
 # 3rd party Install files
 #
-INSTALL_FILES = ../lib/jhall-2.0_02.jar
+INSTALL_FILES = ../lib/jhall-2.0_05.jar
 
 #
 # Jarfiles and their directories
