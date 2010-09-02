@@ -12,7 +12,11 @@ import alma.acs.component.client.ComponentClientTestCase;
 import alma.demo.XmlComponent;
 import alma.demo.XmlComponentHelper;
 import alma.demo.XmlOffshoot;
+import alma.demo.XmlOffshootJ;
+import alma.demo.XmlOffshootOperations;
 import alma.xmlentity.XmlEntityStruct;
+import alma.xmljbind.test.obsproposal.ObsProposal;
+import alma.xmljbind.test.schedblock.SchedBlock;
 
 
 public class XmlComponentClientTest extends ComponentClientTestCase {
@@ -64,6 +68,35 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		try {
 			shoot.getObsProposal();
 			fail("offshoot should be deactivated, I shouldn't be able to use it");
-		} catch(org.omg.CORBA.UNKNOWN e) {}
+		} catch(org.omg.CORBA.OBJECT_NOT_EXIST e) {}
 	}
+
+	public void testOffshootJ() throws Exception {
+
+		XmlOffshoot shoot = xmlComponent.getOffshoot();
+		assertNotNull(shoot);
+		XmlOffshootJ shootJ = getContainerServices().getTransparentXmlComponent(XmlOffshootJ.class, shoot, XmlOffshootOperations.class);
+		assertNotNull(shootJ);
+		assertNotNull(shootJ.getObsProposal());
+		assertNotNull(shootJ.getSchedBlock());
+
+		// these values are hardcoded in the offshoot implementation
+		ObsProposal obsProposal = shootJ.getObsProposal();
+		assertEquals("rtobar", obsProposal.getPI());
+		assertEquals("2010.0045.34S", obsProposal.getCode());
+		assertEquals("just for fun", obsProposal.getScientificJustification());
+
+		SchedBlock sb = shootJ.getSchedBlock();
+		assertEquals("holography", sb.getName());
+		assertEquals("DONE", sb.getStatus());
+		assertEquals(true, sb.getStandardMode());
+
+		// deactivate the offshoot on the server-side
+		xmlComponent.deactivateOffshoot();
+		try {
+			shootJ.getObsProposal();
+			fail("offshoot should be deactivated, I shouldn't be able to use it");
+		} catch(org.omg.CORBA.OBJECT_NOT_EXIST e) {}
+	}
+
 }

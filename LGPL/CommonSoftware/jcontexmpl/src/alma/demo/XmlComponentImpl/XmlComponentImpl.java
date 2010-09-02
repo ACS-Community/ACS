@@ -266,7 +266,9 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 			throw new NullPointerException("dirty NPE for testing...");
 		} catch (NullPointerException npe) {
 			// this shows how native Java exceptions can be daisy-chained
-			throw new AcsJXmlComponentErrorEx("use me for container tests", npe);
+			AcsJXmlComponentErrorEx ex = new AcsJXmlComponentErrorEx(npe);
+			ex.setProperty("myProperty","use me for container tests");
+			throw ex;
 		}
 	}
 
@@ -286,7 +288,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 	public void deactivateOffshoot() {
 		if( m_offshoot != null )
 			try {
-				m_containerServices.activateOffShoot(m_offshoot, XmlOffshootJ.class);
+				m_containerServices.deactivateOffShoot(m_offshoot);
 			} catch (AcsJContainerServicesEx e) {
 				e.printStackTrace();
 			}
