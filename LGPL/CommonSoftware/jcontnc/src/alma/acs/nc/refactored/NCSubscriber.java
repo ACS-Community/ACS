@@ -20,7 +20,6 @@
 package alma.acs.nc.refactored;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +67,7 @@ import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
+import alma.acs.ncconfig.EventDescriptor;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -79,23 +79,20 @@ import alma.acsnc.OSPushConsumerPOA;
  * NCSubscriber is the Java implementation of the Notification Channel 
  * subscriber.
  * 
- * This class is used to receive events asynchronously from notification
- * channel suppliers. 
- * Replacement of {@link alma.acs.nc.Consumer}, no longer supports inheritance mode.
+ * This class is used to receive events asynchronously from notification channel suppliers. 
+ * Replacement of {@link alma.acs.nc.Consumer}, no longer supports inheritance mode, 
+ * but delegates incoming calls to user-supplied handler.
  * 
- * @author jslopez
+ * @author jslopez, hsommer
  */
-public class NCSubscriber <T extends IDLEntity> 
-		extends OSPushConsumerPOA 
-		implements AcsEventSubscriber<T>, ReconnectableSubscriber {
+public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscriber, ReconnectableSubscriber {
+	
 	/**
 	 * The default maximum amount of time an event handler is given to process
-	 * event before a warning message is logged. This is used when an end-user
-	 * does *not* define the appropriate XML elements within the ACS CDB. See
-	 * the inline doc on EventChannel.xsd for more info. The time unit is
-	 * floating point seconds.
+	 * event before a warning message is logged. The time unit is floating point seconds.
+	 * Here we cache the default value defined in EventChannel.xsd, using an XSD binding class.
 	 */
-	private static final double DEFAULT_MAX_PROCESS_TIME_SECONDS = 2.0;
+	private static final double DEFAULT_MAX_PROCESS_TIME_SECONDS = (new EventDescriptor()).getMaxProcessTime();
 
 	/** Used to time the execution of receive methods */
 	private final StopWatch profiler;
@@ -151,20 +148,24 @@ public class NCSubscriber <T extends IDLEntity>
 	/**
 	 * Contains a list of receiver functions to be invoked when an event of a
 	 * particular type is received.
+	 * <p>
+	 * key = the event's {@link IDLEntity} class.
+	 * value = the matching event handler.
 	 */
-	protected Map<String, AcsEventSubscriber.Callback<T>> receivers = new HashMap<String, AcsEventSubscriber.Callback<T>>();
+	protected final Map<Class<? extends IDLEntity>, AcsEventSubscriber.Callback<? extends IDLEntity>> receivers = 
+							new HashMap<Class<? extends IDLEntity>, AcsEventSubscriber.Callback<? extends IDLEntity>>();
 
 	/**
 	 * Contains a list of the added and removed subscriptions filters applied.
 	 * Events on this list will be processed to check if the event should be
 	 * accepted or discarded.
 	 */
-	protected Map<String, Integer> subscriptionsFilters = new HashMap<String, Integer>();
+	protected final Map<String, Integer> subscriptionsFilters = new HashMap<String, Integer>();
 
 	/**
 	 * Contains a list of repeat guards for each different type of event.
 	 */
-	protected MultipleRepeatGuard multiRepeatGuard;
+	protected final MultipleRepeatGuard processTimeLogRepeatGuard;
 
 	private AcsNcReconnectionCallback m_callback;
 
@@ -236,8 +237,7 @@ public class NCSubscriber <T extends IDLEntity>
 			throw new AcsJCORBAReferenceNilEx(cause);
 		}
 
-		// populate the map with the maxProcessTime an event receiver processing
-		// should take
+		// populate the map with the maxProcessTime an event receiver processing should take
 		handlerTimeoutMap = helper.getEventHandlerTimeoutMap(this.channelName);
 
 		// get the admin object
@@ -246,16 +246,11 @@ public class NCSubscriber <T extends IDLEntity>
 		// get the proxy Supplier
 		createProxySupplier();
 
-		// Little hack for testing purposes
-		// TODO: Clean this hack
-		isTraceNCEventsEnabled = true;
-		// isTraceEventsEnabled =
-		// helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
+		isTraceNCEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
-		// Repeat guard for maxProcessTime warning logging
-		multiRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 2,
-				Logic.COUNTER, 100);
-		
+		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
+		processTimeLogRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 1, Logic.COUNTER, 100);
+
 		// if the factory is null, the reconnection callback is not registered
 		m_callback = new AcsNcReconnectionCallback(this);
 		m_callback.init(services, helper.getNotifyFactory());
@@ -276,8 +271,9 @@ public class NCSubscriber <T extends IDLEntity>
 				consumerAdmin = channel.new_for_consumers(
 						InterFilterGroupOperator.AND_OP, consumerAdminID);
 			}
-			else
+			else {
 				consumerAdmin = channel.get_consumeradmin(consumerAdmins[0]);
+			}
 		} catch (AdminNotFound e) {
 			Throwable cause = new Throwable(
 					"The attempt to reuse the admin object failed. "
@@ -328,23 +324,19 @@ public class NCSubscriber <T extends IDLEntity>
 	public void startReceivingEvents() throws AcsJException {
 
 		try {
-			corbaRef = OSPushConsumerHelper.narrow(helper
-					.getContainerServices().activateOffShoot(this));
-			proxySupplier
-					.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper
-							.narrow(corbaRef));
+			// todo: use the new activate method
+			corbaRef = OSPushConsumerHelper.narrow(helper.getContainerServices().activateOffShoot(this));
+			proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
 		} catch (AcsJContainerServicesEx e) {
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName,
 					getNotificationFactoryName());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
 		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
-			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName,
-					getNotificationFactoryName());
+			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			Throwable cause = new Throwable(e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		} catch (org.omg.CosEventChannelAdmin.TypeError e) {
-			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName,
-					getNotificationFactoryName());
+			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			Throwable cause = new Throwable(e.getMessage());
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		}
@@ -354,37 +346,45 @@ public class NCSubscriber <T extends IDLEntity>
 	}
 
 	/**
-	 * Called from Corba (via push_structured_event)
-	 * 
+	 * Called from Corba (via push_structured_event).
 	 * The implementation cannot assume any particular event type.
 	 */
-	protected void processEvent(T corbaData, EventDescription eventDescrip) {
-		String eventName = corbaData.getClass().getName();
+	protected void processEvent(IDLEntity corbaData, EventDescription eventDescrip) {
+		
+		Class<? extends IDLEntity> eventType = corbaData.getClass();
+		String eventName = eventType.getName();
 
 		// figure out how much time this event has to be processed
 		if (!handlerTimeoutMap.containsKey(eventName)) {
 			// setup a timeout if it's undefined
 			handlerTimeoutMap.put(eventName, DEFAULT_MAX_PROCESS_TIME_SECONDS);
 		}
+//System.out.println("Using handlerTimeout=" + handlerTimeoutMap.get(eventName) + " for event " + eventName);
 		double maxProcessTimeSeconds = handlerTimeoutMap.get(eventName);
 
-		// Here we search the hash of registered receiver objects.
-		if (receivers.containsKey(eventName)) {
-			AcsEventSubscriber.Callback<T> receiver = receivers.get(eventName);
+		// we give preference to a registered receiver for the concrete subtype of IDLEntity
+		if (receivers.containsKey(eventType)) {
+			AcsEventSubscriber.Callback<? extends IDLEntity> receiver = receivers.get(eventType);
 
-			// start timing
 			profiler.reset();
-			receiver.receive(corbaData, eventDescrip);
+			try {
+				_process(receiver, corbaData, eventDescrip);
+			} 
+			catch (Throwable thr) {
+				// @TODO log exceptions from user code, see COMP-4716
+			}
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
 
-			// warn the end-user if the receiver is taking too long using a
-			// repeat guard
-			if (usedSecondsToProcess > maxProcessTimeSeconds
-					&& multiRepeatGuard.checkAndIncrement(eventName))
+			// warn the end-user if the receiver is taking too long, using a repeat guard
+			if (usedSecondsToProcess > maxProcessTimeSeconds && processTimeLogRepeatGuard.checkAndIncrement(eventName)) {
 				LOG_NC_ProcessingTimeExceeded.log(logger, channelName,
 						getNotificationFactoryName(), eventName,
-						multiRepeatGuard.counterAtLastExecution(eventName));
-		} else if (genericReceiver != null) {
+						processTimeLogRepeatGuard.counterAtLastExecution(eventName));
+			}
+		} 
+		// fallback to generic receive method
+		else if (genericReceiver != null) {
+			
 			// start timing
 			profiler.reset();
 			genericReceiver.receive(corbaData, eventDescrip);
@@ -392,17 +392,41 @@ public class NCSubscriber <T extends IDLEntity>
 
 			// warn the end-user if the receiver is taking too long using a
 			// repeat guard.
-			if (usedSecondsToProcess > maxProcessTimeSeconds
-					&& multiRepeatGuard.checkAndIncrement(eventName))
+			if (usedSecondsToProcess > maxProcessTimeSeconds && processTimeLogRepeatGuard.checkAndIncrement(eventName)) {
 				LOG_NC_ProcessingTimeExceeded.log(logger, channelName,
 						getNotificationFactoryName(), eventName,
-						multiRepeatGuard.counterAtLastExecution(eventName));
-		} else {
-			if (isTraceNCEventsEnabled)
-				LOG_NC_ProcessingWithoutHandler.log(logger, channelName,
-						getNotificationFactoryName(), eventName);
+						processTimeLogRepeatGuard.counterAtLastExecution(eventName));
+			}
+		} 
+		// no receiver found 
+		// TODO: Check if the filtering for the subscribed events happens now really on the server side. 
+		// If so, then we should never get an event for which there is no receiver, and should thus
+		// log an error regardless of isTraceNCEventsEnabled
+		else {
+			if (isTraceNCEventsEnabled) {
+				LOG_NC_ProcessingWithoutHandler.log(logger, channelName, getNotificationFactoryName(), eventName);
+			}
 		}
 	}
+
+	/**
+	 * "Generic helper method" to enforce type argument inference by the compiler,
+	 * see http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ207
+	 */
+	private <T extends IDLEntity> void _process(AcsEventSubscriber.Callback<T> receiver, IDLEntity corbaData, EventDescription eventDescrip) {
+		T castCorbaData = null;
+		try {
+			castCorbaData = receiver.getEventType().cast(corbaData);
+		}
+		catch (ClassCastException ex) {
+			// This should never happen and would be an ACS error
+			logger.warning("Failed to deliver incompatible data '" + corbaData.getClass().getName() + 
+					"' to subscriber '" + receiver.getEventType().getName() + "'. Fix data subscription handling in " + getClass().getName() + "!");
+		} 
+		// user code errors (runtime ex etc) we let fly up
+		receiver.receive(castCorbaData, eventDescrip);
+	}
+
 
 	/**
 	 * Subscribes to all events. If in addition to this we also have
@@ -432,11 +456,9 @@ public class NCSubscriber <T extends IDLEntity>
 		if (receivers.isEmpty())
 			discardAllEvents();
 		else {
-			// Since we have specific subscriptions, we have to apply the
-			// corresponding filters
-			Iterator it = receivers.keySet().iterator();
-			while (it.hasNext()) {
-				String keyName = (String) it.next();
+			// Since we have specific subscriptions, we have to apply the corresponding filters
+			for (Class eventType : receivers.keySet()) {
+				String keyName = eventType.getName();
 				String filter = keyName.substring(keyName.lastIndexOf('.') + 1);
 				subscriptionsFilters.put(keyName, addFilter(filter));
 			}
@@ -444,31 +466,30 @@ public class NCSubscriber <T extends IDLEntity>
 	}
 
 	/**
-	 * Add a subscription to a given type of event through filters.The main
-	 * advantage of using java generics here: Compiler ensure that receiver is
-	 * consistent with event type.
-	 * 
-	 * @param structClass
-	 *            Type of event to subscribe.
-	 * @param receiver
-	 *            An object which implements a method called "receive". The
-	 *            "receive" method must accept an instance of a structClass
-	 *            object as its sole parameter.
+	 * Add a subscription to a given type of event through filters. 
+	 * <p>
+	 * The main advantage of using java generics here: Compiler ensures that receiver method 
+	 * is consistent with event type.
 	 * 
 	 * @throws AcsJException
 	 *             Thrown if there is some CORBA problem.
 	 */
-	public void addSubscription(Class<T> structClass,
-			AcsEventSubscriber.Callback<T> receiver) throws AcsJException {
+	public void addSubscription(AcsEventSubscriber.Callback<? extends IDLEntity> receiver) 
+			throws AcsJException {
+
+		// TODO Runtime type checks, to avoid NPE and raw type issues
+		
+		Class<? extends IDLEntity> structClass = receiver.getEventType();
 
 		// Adding the subscription to the receivers list
-		receivers.put(structClass.getName(), receiver);
+		receivers.put(structClass, receiver);
 
 		// Adding the filter to the proxy only if there is not generic handler
-		if (genericReceiver == null)
+		if (genericReceiver == null) {
 			subscriptionsFilters.put(structClass.getName(),
 					addFilter(structClass.getSimpleName()));
-	};
+		}
+	}
 
 	/**
 	 * Remove a subscription by removing the corresponding gilter. After
@@ -486,7 +507,7 @@ public class NCSubscriber <T extends IDLEntity>
 	 * @throws InvalidEventType
 	 *             Thrown if the given type is invalid.
 	 */
-	public void removeSubscription(Class<T> structClass)
+	public void removeSubscription(Class<? extends IDLEntity> structClass)
 			throws AcsJException, FilterNotFound, InvalidEventType {
 
 		// Removing subscription from receivers list
@@ -569,7 +590,7 @@ public class NCSubscriber <T extends IDLEntity>
 		disconnectLock.lock();
 		boolean success = false;
 		try {
-			if (consumerAdmin == null) {
+			if (isDisconnected()) {
 				throw new IllegalStateException("Consumer already disconnected");
 			}
 			
@@ -611,6 +632,13 @@ public class NCSubscriber <T extends IDLEntity>
 			}
 			disconnectLock.unlock();
 		}
+	}
+
+	public boolean isDisconnected() {
+		disconnectLock.lock();
+		boolean ret = (consumerAdmin == null);
+		disconnectLock.unlock();
+		return ret;
 	}
 
 	/** 
@@ -767,42 +795,49 @@ public class NCSubscriber <T extends IDLEntity>
 	 */
 	public final void push_structured_event(StructuredEvent structuredEvent)
 			throws Disconnected {
+//System.out.println("********** got a call to push_structured_event **********");
+
+		if (isDisconnected()) {
+			throw new Disconnected();
+		}
+
 		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
 		IDLEntity struct = null;
 		try {
+			// @TODO: check that we do not allow sequences of structs as event data in ACS!!!
 			struct = (IDLEntity) convertedAny;
 
-			if (isTraceNCEventsEnabled)
+			if (isTraceNCEventsEnabled) {
 				LOG_NC_EventReceive_OK.log(
 								logger,
 								channelName,
 								getNotificationFactoryName(),
 								structuredEvent.header.fixed_header.event_type.type_name);
+			}
 		} 
 		catch (ClassCastException e) {
-			if (isTraceNCEventsEnabled && convertedAny != null)
+			if (isTraceNCEventsEnabled && convertedAny != null) {
 				LOG_NC_EventReceive_FAIL.log(
 								logger,
 								channelName,
 								getNotificationFactoryName(),
 								structuredEvent.header.fixed_header.event_type.type_name);
+			}
 		}
 
 		if (struct != null) {
 			// process the extracted data
-			processEvent((T)struct, eDescrip);
+			processEvent(struct, eDescrip);
 		} else {
-			// @todo (HSO) unclear why we ignore events w/o data attached. At
-			// least now we log it so people can complain.
-			// Should compare this with specs and C++ impl
+			// @todo (HSO) unclear why we ignore events w/o data attached. At least now we log it so people can complain.
+			// Should compare this with specs and C++ impl, and perhaps call generic receiver with null data.
 			if (isTraceNCEventsEnabled) {
-				logger
-						.info("Will ignore event of type "
-								+ structuredEvent.header.fixed_header.event_type.type_name
-								+ " which has no data attached.");
+				logger.info("Will ignore event of type "
+							+ structuredEvent.header.fixed_header.event_type.type_name
+							+ " which has no data attached.");
 			}
 		}
 
