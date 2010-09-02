@@ -22,7 +22,6 @@
 package alma.acs.container;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
@@ -133,6 +132,11 @@ public class ContainerServicesImpl implements ContainerServices
 	private final POA m_clientPOA;
 	private Object m_componentXmlTranslatorProxy;
 
+	// sync'd map, key=offshot implementation object, value=servant
+	// (they can be the same, but help to keep track of the servants
+	// when activating offshoots of xyzJ type)
+	private Map<Object, Servant> m_activatedOffshootsMap;
+
 	private final ComponentStateManager m_componentStateManager;
     private final ThreadFactory m_threadFactory;
 
@@ -180,6 +184,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_usedNonStickyComponentsMap = Collections.synchronizedMap(new HashMap<String, org.omg.CORBA.Object>());
 		
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
+		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
 
 		m_threadFactory = threadFactory;
 		
@@ -836,6 +841,7 @@ public class ContainerServicesImpl implements ContainerServices
 		OffShoot shoot = null;
 		try  {
 			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, m_clientPOA);
+			m_activatedOffshootsMap.put(servant, servant);
 			shoot = OffShootHelper.narrow(obj);
 		}
 		catch (Throwable thr) {
@@ -849,7 +855,7 @@ public class ContainerServicesImpl implements ContainerServices
 			m_logger.log(Level.FINE, msg, thr);
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
 			throw ex;
-		}	
+		}
 //		m_logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
 		return shoot;
 	}
@@ -858,7 +864,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
 	@SuppressWarnings("unchecked")
-	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 		throws AcsJContainerServicesEx
 	{
 
@@ -900,7 +906,6 @@ public class ContainerServicesImpl implements ContainerServices
 				Constructor<?> c = poaTieClazz.getConstructor(new Class[]{operationsIF});
 				servant = (Servant)c.newInstance(proxy);
 
-				//m_logger.fine("Trying to get proxy from '" + m_componentXmlTranslatorProxy + "', type " + m_componentXmlTranslatorProxy.getClass().getName());
 				if( m_componentXmlTranslatorProxy != null )
 					haveToInject = true;
 
@@ -956,6 +961,7 @@ public class ContainerServicesImpl implements ContainerServices
 		OffShoot shoot = null;
 		try  {
 			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, m_clientPOA);
+			m_activatedOffshootsMap.put(offshootImpl, servant);
 			shoot = OffShootHelper.narrow(obj);
 		}
 		catch (Throwable thr) {
@@ -979,17 +985,17 @@ public class ContainerServicesImpl implements ContainerServices
 			handler.addOffshoot(offshootImpl, shoot);
 		}
 
-//		m_logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
+		m_logger.fine("successfully activated offshoot of type " + offshootImpl.getClass().getName());
 		return shoot;
 	}
 
-
-	public void deactivateOffShoot(Servant cbServant)
+	public void deactivateOffShoot(Object offshootImpl)
 	throws AcsJContainerServicesEx
 	{
-		checkOffShoot(cbServant);
+		checkOffShoot(offshootImpl);
 		try {
-			acsCorba.deactivateOffShoot(cbServant, m_clientPOA);
+			acsCorba.deactivateOffShoot(m_activatedOffshootsMap.get(offshootImpl), m_clientPOA);
+			m_activatedOffshootsMap.remove(offshootImpl);
 		} catch (AcsJContainerEx e) {
 			throw new AcsJContainerServicesEx(e);
 		}

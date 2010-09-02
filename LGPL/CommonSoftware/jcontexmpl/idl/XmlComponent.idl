@@ -82,6 +82,10 @@ module demo
 
 		XmlOffshoot getOffshoot();
 
+		void deactivateOffshoot();
+
+		void activateOffshoot();
+
 		// will throw an XmlComponentErrorEx (declared in JContExmplErrTypeTest.xml/.idl)
 		void exceptionMethod() raises (JContExmplErrTypeTest::XmlComponentErrorEx);
 	};

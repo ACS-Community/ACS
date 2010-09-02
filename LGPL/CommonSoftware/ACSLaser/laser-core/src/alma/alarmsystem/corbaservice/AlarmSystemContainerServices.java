@@ -11,6 +11,7 @@ import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
 
 import alma.ACS.OffShoot;
+import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -64,15 +65,6 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		this.orb=alSysCorbaServer.getORB();
 		logger=theLogger;
 		advancedContainerServices= new AlarmSystemAdvancedContainerServices(this);
-	}
-	
-	public void deactivateOffShoot(Servant cbServant)
-	throws AcsJContainerServicesEx 	{
-		try {
-			alSysCorbaServer.deactivateOffShoot(cbServant);
-		} catch (AcsJContainerEx ex) {
-			throw new AcsJContainerServicesEx(ex);
-		}
 	}
 
 	@Override
@@ -132,11 +124,29 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	}
 
 	@Override
-	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 			throws AcsJContainerServicesEx {
 		AcsJContainerServicesEx e = new AcsJContainerServicesEx();
 		e.setContextInfo("Not yet implemented");
 		throw e;
+	}
+
+	public void deactivateOffShoot(Object offshootImpl)
+	throws AcsJContainerServicesEx
+	{
+		if( offshootImpl instanceof Servant ) {
+			Servant cbServant = (Servant)offshootImpl;
+			try {
+				alSysCorbaServer.deactivateOffShoot(cbServant);
+			} catch (AcsJContainerEx ex) {
+				throw new AcsJContainerServicesEx(ex);
+			}
+		}
+		else {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo("Not yet implemented");
+			throw ex;
+		}
 	}
 
 }

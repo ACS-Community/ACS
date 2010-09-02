@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBdouble;
 import alma.ACS.CBdoubleHelper;
+import alma.ACS.CBdoubleOperations;
 import alma.ACSErr.CompletionHolder;
 import alma.ACS.Monitordouble;
 import alma.ACS.RWdouble;
@@ -92,7 +93,7 @@ public class LampCallbackImpl extends ComponentImplBase implements LampCallbackO
 //			m_containerServices.deactivateOffShoot(m_cb);
 			
 			// note that m_cb may go through a cycle of activation/deactivation, see stopMonitor()
-			cbdouble = CBdoubleHelper.narrow(m_containerServices.activateOffShoot(m_cb));
+			cbdouble = CBdoubleHelper.narrow(m_containerServices.activateOffShoot(m_cb, CBdoubleOperations.class));
 		}
 		catch (Exception e)
 		{

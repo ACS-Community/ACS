@@ -283,4 +283,21 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 		return m_offshoot;
 	}
 
+	public void deactivateOffshoot() {
+		if( m_offshoot != null )
+			try {
+				m_containerServices.activateOffShoot(m_offshoot, XmlOffshootJ.class);
+			} catch (AcsJContainerServicesEx e) {
+				e.printStackTrace();
+			}
+	}
+
+	public void activateOffshoot() {
+		if( m_offshoot == null )
+			try {
+				m_containerServices.activateOffShoot(m_offshoot, XmlOffshootJ.class);
+			} catch (AcsJContainerServicesEx e) {
+				e.printStackTrace();
+			}
+	}
 }

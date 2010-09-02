@@ -408,6 +408,16 @@ public class XmlComponentHelper extends ComponentHelper
 			// no-op
 		}
 
+		@Override
+		public void activateOffshoot() {
+			m_componentImpl.activateOffshoot();
+		}
+
+		@Override
+		public void deactivateOffshoot() {
+			m_componentImpl.deactivateOffshoot();
+		}
+
     }
 }
 

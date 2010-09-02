@@ -50,7 +50,6 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		assertEquals("just for fun", d.getElementsByTagName("ScientificJustification").item(0).getTextContent());
 
 		struct = shoot.getSchedBlock();
-		System.out.println(struct.xmlString);
 		d = db.parse(new InputSource(new CharArrayReader(struct.xmlString.toCharArray())));
 		assertEquals("holography", d.getElementsByTagName("ns2:name").item(0).getTextContent());
 		assertEquals("DONE", d.getElementsByTagName("ns1:status").item(0).getTextContent());
@@ -59,5 +58,12 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		// just to check the setters
 		shoot.setObsProposal(new XmlEntityStruct());
 		shoot.setSchedBlock(new XmlEntityStruct());
+
+		// deactivate the offshoot on the server-side
+		xmlComponent.deactivateOffshoot();
+		try {
+			shoot.getObsProposal();
+			fail("offshoot should be deactivated, I shouldn't be able to use it");
+		} catch(org.omg.CORBA.UNKNOWN e) {}
 	}
 }

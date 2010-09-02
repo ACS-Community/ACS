@@ -102,68 +102,45 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	}
 
 	/**
-	 * @see alma.acs.container.ContainerServicesImpl#activateOffShoot(Object, Class)
+	 * @see alma.acs.container.ContainerServicesImpl#activateOffShoot(T, Class<T>)
 	 */
-	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 		throws AcsJContainerServicesEx
 	{
 		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
 		ex.setContextInfo("Not yet implemented");
 		throw ex;
-
-		/*
-		checkOffShootServant(servant);
-		
-		OffShoot shoot = null;
-		try  {
-
-			checkOffShootPOA();
-
-			org.omg.CORBA.Object actObj = null;
-			offshootPoa.activate_object(servant);
-			actObj = offshootPoa.servant_to_reference(servant);
-			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if something is wrong with our new object
-			logger.finer("offshoot of type '" + servant.getClass().getName() + "' activated as a CORBA object.");
-			
-			shoot = OffShootHelper.narrow(actObj);
-		}
-		catch (Throwable thr) {
-			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
-							"' for client '" + getName() + "'. ";
-			// flatten the exception chain by one level if possible
-			if (thr instanceof AcsJContainerServicesEx && thr.getCause() != null) {
-				msg += "(" + thr.getMessage() + ")"; 
-				thr = thr.getCause();
-			}
-			logger.log(Level.FINE, msg, thr);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			throw ex;
-		}	
-		return shoot;
-		*/
 	}
 
-	
-	public void deactivateOffShoot(Servant servant)
-		throws AcsJContainerServicesEx
+	public void deactivateOffShoot(Object offshootImpl)
+	throws AcsJContainerServicesEx
 	{
-		checkOffShootServant(servant);
-		
-		byte[] id = null;
-		try {
-			id = offshootPoa.servant_to_id(servant);
-			offshootPoa.deactivate_object(id);
+
+		if( offshootImpl instanceof Servant ) {
+			Servant servant = (Servant)offshootImpl;
+			checkOffShootServant(servant);
+			
+			byte[] id = null;
+			try {
+				id = offshootPoa.servant_to_id(servant);
+				offshootPoa.deactivate_object(id);
+			}
+			catch (Throwable thr) {
+				String msg = "failed to deactivate offshoot of type '" + servant.getClass().getName() +
+								"' (ID=" + String.valueOf(id) + ")";
+				logger.log(Level.WARNING, msg, thr);
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+				ex.setContextInfo(msg);
+				throw ex;
+			}
 		}
-		catch (Throwable thr) {
-			String msg = "failed to deactivate offshoot of type '" + servant.getClass().getName() +
-							"' (ID=" + String.valueOf(id) + ")";
-			logger.log(Level.WARNING, msg, thr);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			ex.setContextInfo(msg);
+		else {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo("Not yet implemented");
 			throw ex;
 		}
 	}
-
+	
 	/**
 	 * Creates the shared offshoot poa on demand 
 	 */

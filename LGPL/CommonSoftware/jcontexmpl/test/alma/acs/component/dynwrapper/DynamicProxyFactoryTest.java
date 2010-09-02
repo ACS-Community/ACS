@@ -397,7 +397,14 @@ public class DynamicProxyFactoryTest extends TestCase
 			return null;
 		}
 
-	
+		@Override
+		public void activateOffshoot() {
+		}
+
+		@Override
+		public void deactivateOffshoot() {
+		}
+
 	}
 
 }

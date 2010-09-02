@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadFactory;
 import org.omg.PortableServer.Servant;
 
 import alma.ACS.OffShoot;
+import alma.ACS.OffShootOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.logging.AcsLogger;
 
@@ -383,31 +384,32 @@ public interface ContainerServicesBase
 	 * can intercept (and log) calls to offshoots in the same way as it does for calls to components.
 	 * <b>It is therefore recommended to use the tie approach for all offshoot servants, 
 	 * unless there is a reason to avoid container interception.</b>
-	 * 
+	 *
+	 * @param <T> The type of <code>offshootImpl</code>, one of the <code>xyzJ</code> or
+	 *        <code>xyzOperations</code> interfaces
 	 * @param offshootImpl   the object that implements the OffShoot logic
 	 * @param idlOpInterface the IDL operations interface implemented by <code>offshootImpl</code>;
 	 *          currently, must be one of <code>xyzOperations</code> or <code>xyzJ</code>
 	 * @return  needs a narrow-cast to the subtype, like
 	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>.  
-	 * @throws ContainerException  if anything goes wrong, 
+	 * @throws AcsJContainerServicesEx  if anything goes wrong, 
 	 *            especially if <code>offshootImpl</code> is does not implement {@link alma.ACS.OffShootOperations}.
 	 */
-	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface) 
+	<T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface) 
 			throws AcsJContainerServicesEx;
 
 	/**
-	 * Deactivates the offshoot corba object.
+	 * Deactivates the offshoot object previously activated through the {@link #activateOffShoot(Object, Class)} method.
 	 * Caution: this method returns immediately, while the underlying 
 	 * {@link org.omg.PortableServer.POAOperations#deactivate_object(byte[])} still
 	 * works on the deactivation. If {@link #activateOffShoot(Servant)} is called too shortly
 	 * after deactivation, an exception will be thrown. TODO: find a remedy
 	 * 
-	 * @param cbServant  must implement {@link alma.ACS.OffShootOperations}.
-	 * @throws AcsJContainerServicesEx if something goes wrong, e.g., if the offshoot servant was not active.
+	 * @param offshootImpl  the offshoot object implementation
+	 * @throws AcsJContainerServicesEx if something goes wrong, e.g., if the corresponding offshoot servant was not active.
 	 */
-	public void deactivateOffShoot(Servant cbServant) 
+	public void deactivateOffShoot(Object offshootImpl) 
 			throws AcsJContainerServicesEx; 
-	
 
     /**
      * More specialized methods are available from the <code>AdvancedContainerServices</code>. 
