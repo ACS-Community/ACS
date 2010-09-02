@@ -1,7 +1,6 @@
 package alma.acs.nc;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
+import java.util.logging.Logger;
 
 import org.omg.CORBA.Object;
 
@@ -9,12 +8,20 @@ import NotifyExt.ReconnectionCallback;
 import NotifyExt.ReconnectionCallbackHelper;
 import NotifyExt.ReconnectionRegistry;
 import NotifyExt.ReconnectionRegistryHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
+
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acsnc.OSReconnectionCallbackPOA;
 
+/**
+ * @TODO comment about design by TAO, and how we use it in ACS
+ * @author javarias
+ */
 public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 	
+	private Logger logger;
 	private EventChannelFactory ecf_;
 	private ReconnectableSubscriber sub_;
 	private int callback_id_;
@@ -26,6 +33,10 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 		sub_=sub;
 	}
 	
+	/**
+	 * 
+	 * @see NotifyExt.ReconnectionCallbackOperations#is_alive()
+	 */
 	@Override
 	public boolean is_alive() {
 		return true;
@@ -39,28 +50,30 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 		}
 	}
 	
-	public void init(ContainerServicesBase services, EventChannelFactory ecf ){
-		if (ecf == null || services == null)
-			return;
+	public void init(ContainerServicesBase services, EventChannelFactory ecf ) {
+		if (ecf == null || services == null) {
+			return; // HSO: why not IllegalArgumentException ??
+		}
+		this.services = services;
+		this.logger = services.getLogger();
 		
 		ecf_=(EventChannelFactory) ecf._duplicate();
 		try {
-				this.services = services;
-				ReconnectionCallback callback = ReconnectionCallbackHelper.narrow(services.activateOffShoot(this));
-				ReconnectionRegistry registry = ReconnectionRegistryHelper.narrow(ecf);
-				callback_id_ = registry.register_callback(callback);
-				id_is_valid_ = true;
-			} catch (AcsJContainerServicesEx e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			ReconnectionCallback callback = ReconnectionCallbackHelper.narrow(services.activateOffShoot(this));
+			ReconnectionRegistry registry = ReconnectionRegistryHelper.narrow(ecf);
+			callback_id_ = registry.register_callback(callback);
+			id_is_valid_ = true;
+		} 
+		catch (AcsJContainerServicesEx e) {
+			e.printStackTrace(); // HSO: logging with repeatguard? Throw ex?
+		}
 	}
 	
 	public void disconnect(){
 		if (id_is_valid_){
 			ReconnectionRegistry registry = ReconnectionRegistryHelper.narrow(ecf_);
 			registry.unregister_callback(callback_id_);
-			/* This should never occurs, but in any case*/
+			/* This should never occur, but in any case*/
 			try {
 				services.deactivateOffShoot(this);
 			} catch (AcsJContainerServicesEx e) {
