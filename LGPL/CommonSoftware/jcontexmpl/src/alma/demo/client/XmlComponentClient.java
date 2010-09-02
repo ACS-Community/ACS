@@ -71,7 +71,6 @@ public class XmlComponentClient extends ComponentClientTestCase
 		assertNotNull(m_xmlCompJ);
 	}
 
-
 	/**
 	 * Makes sure the method sayHello() on the xmlcomponent returns a reply.
 	 */
@@ -184,6 +183,11 @@ public class XmlComponentClient extends ComponentClientTestCase
 		}
 
 		assertTrue("must receive " + XmlComponentErrorEx.class.getName(), gotException);
+	}
+
+	// Just to release the component at the end
+	public void testReleaseComponent() throws Exception  {
+		getContainerServices().releaseComponent("XMLCOMP1");
 	}
 }
 

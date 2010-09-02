@@ -289,6 +289,7 @@ public class XmlComponentImpl extends ComponentImplBase implements XmlComponentJ
 		if( m_offshoot != null )
 			try {
 				m_containerServices.deactivateOffShoot(m_offshoot);
+				m_offshoot = null;
 			} catch (AcsJContainerServicesEx e) {
 				e.printStackTrace();
 			}
