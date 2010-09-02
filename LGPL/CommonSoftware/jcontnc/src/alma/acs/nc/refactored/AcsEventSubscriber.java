@@ -27,35 +27,51 @@ import alma.acs.exceptions.AcsJException;
 import alma.acsnc.EventDescription;
 
 /**
- * This interface provides an Event Subscriber.
- * @TODO Discuss this interface
- * 
+ * This interface provides an event subscriber, 
+ * that can be implemented over Corba NC or over DDS, or even other technologies.
+ * <p>
+ * Discussion:
+ * <ul>
+ *   <li>One AcsEventSubscriber object may subscribe to different types of events,
+ *       which for a Corba NC is normal, but for DDS requires tricks with topics and partitions.
+ *   <li>Alternatively, we could make this class generic and fix a single event type for the entire object (interface),
+ *       so that the java compiler would not allow to add a subscription for a different type.
+ *   <li>TODO: The declared exceptions must be cleaned up. Rather no generic AcsJException, and no Corba-NC-specific exceptions.
+ *   <li>TODO: We need to check if this API actually works for DDS.
+ *   <li>An in-memory shortcutting (simulated channel/topic) could be useful, for testing without external processes running.
+ * </ul>
  * @author jslopez
  */
-public interface AcsEventSubscriber <T extends IDLEntity> {
-	public void addSubscription(Class<T> structClass, Callback<T> receiver) throws AcsJException;
+public interface AcsEventSubscriber {
+	
+	public void addSubscription(Callback<? extends IDLEntity> receiver) 
+		throws AcsJException;
 
-	public void removeSubscription(Class<T> structClass) 
+	public void removeSubscription(Class<? extends IDLEntity> structClass) 
 		throws AcsJException, FilterNotFound, InvalidEventType;
 
-	public void startReceivingEvents() throws AcsJException;
-	
 	public void addGenericSubscription(GenericCallback receiver);
 	
 	public void removeGenericSubscription() throws AcsJException;
 
+	public void startReceivingEvents() throws AcsJException;
+	
 	public void disconnect();
 
 	public void suspend();
 
 	public void resume();
 
+	
 	/**
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
 	 */
-	public static interface Callback<T> {
+	public static interface Callback<T extends IDLEntity> {
+		
 		public void receive(T event, EventDescription eventDescrip);
+		
+		public Class<T> getEventType();
 	}
 	
 	/**
