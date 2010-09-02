@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.6 2009/11/18 10:08:55 hsommer Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.7 2010/09/02 06:20:46 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -85,7 +85,7 @@ module CDB {
 		/*
 		 * Inform that the object is changed and reconnect/reload it
 		 */
-		void object_changed( in string curl );
+		oneway void object_changed( in string curl );
 	};
 
 	/**
