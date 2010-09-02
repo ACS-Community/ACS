@@ -101,6 +101,47 @@ public class ManagerContainerServices implements ContainerServicesBase,
 		return shoot;
 	}
 
+	/**
+	 * @see alma.acs.container.ContainerServicesImpl#activateOffShoot(Object, Class)
+	 */
+	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+		throws AcsJContainerServicesEx
+	{
+		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+		ex.setContextInfo("Not yet implemented");
+		throw ex;
+
+		/*
+		checkOffShootServant(servant);
+		
+		OffShoot shoot = null;
+		try  {
+
+			checkOffShootPOA();
+
+			org.omg.CORBA.Object actObj = null;
+			offshootPoa.activate_object(servant);
+			actObj = offshootPoa.servant_to_reference(servant);
+			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if something is wrong with our new object
+			logger.finer("offshoot of type '" + servant.getClass().getName() + "' activated as a CORBA object.");
+			
+			shoot = OffShootHelper.narrow(actObj);
+		}
+		catch (Throwable thr) {
+			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
+							"' for client '" + getName() + "'. ";
+			// flatten the exception chain by one level if possible
+			if (thr instanceof AcsJContainerServicesEx && thr.getCause() != null) {
+				msg += "(" + thr.getMessage() + ")"; 
+				thr = thr.getCause();
+			}
+			logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			throw ex;
+		}	
+		return shoot;
+		*/
+	}
 
 	
 	public void deactivateOffShoot(Servant servant)
