@@ -367,6 +367,9 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @param flatXmlIF  component interface where entity objects are represented as 
 	 * 					serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
+	 * @deprecated Since ACS 9.0, the {@link #getTransparentXmlWrapper(Class, org.omg.CORBA.Object, Class)}
+	 *  method should be used; still, internally, this method will call
+	 *  {@link #getTransparentXmlWrapper(Class, org.omg.CORBA.Object, Class)}
 	 */
 	public <T> T getTransparentXmlComponent(
 		Class<T> transparentXmlIF,
@@ -374,7 +377,50 @@ public interface ContainerServices extends ContainerServicesBase
 		Class flatXmlIF) 
 		throws AcsJContainerServicesEx;
 
-    
+	/**
+	 * Converts a "flat-XML" remote object (RO) interface 
+	 * (as obtained from the various <code>getComponent</code> methods, in the
+	 * case of components, or by retrieving offshoots from components,
+	 * in the case of offshoots) to a "transparent-XML" RO interface.
+	 * This is only applicable to ROs that contain XML entities
+	 * in their IDL interface methods, and for which the build process
+	 * has been set up to generate XML binding classes and the "transparent-XML"
+	 * interface in addition to the standard Java-IDL compiler output.
+	 * <p>
+	 * In the case that the remote object is a component, the container can
+	 * fulfill this request in two different ways:
+	 * <ol>
+	 * <li><b>Remote component</b>:
+	 * 		if the specified component runs in a different container, 
+	 * 		a dynamic wrapper object will be created around the provided CORBA stub.
+	 * 		The wrapper object will translate between entity object parameters 
+	 * 		in the form of serialized XML (as found in <code>flatXmlIF</code>) 
+	 * 		and the corresponding Java binding classes (in <code>transparentXmlIF</code>).
+	 * <li><b>Collocated component</b>:
+	 * 		if the specified component runs in the same container, the container
+	 * 		may choose to shortcut the (de-) serialization of XML binding classes.
+	 * 		In this case, Java binding classes are transported in memory,
+	 * 		and all communication with the other component is done without CORBA. 
+	 * </ol>
+	 * In either case, the returned <code>Object</code> implements the 
+	 * <code>transparentXmlIF</code> interface. 
+	 * The client component that calls this method should only cast to that interface,
+	 * and does not need to know which of the two transport mechanisms are being used.   
+	 * 
+	 * @param transparentXmlIF remote object interface with XML binding classes.
+	 * @param objectReference  reference to the remote object to be wrapped, which
+	 *                    implements <code>flatXmlIF</code>. Current supported
+	 *                    remote objects are ACS Components and OffShoots 
+	 * @param flatXmlIF  remote object interface where entity objects are represented as 
+	 * 					serialized XML inside a CORBA struct.
+	 * @return the object that implements <code>transparentXmlIF</code>.
+	 */
+	public <T> T getTransparentXmlWrapper(
+		Class<T> transparentXmlIF,
+		org.omg.CORBA.Object objectReference,
+		Class flatXmlIF)
+		throws AcsJContainerServicesEx;
+
     /////////////////////////////////////////////////////////////
     // other
     /////////////////////////////////////////////////////////////

@@ -1036,11 +1036,19 @@ public class ContainerServicesImpl implements ContainerServices
     }
     
 
+    /*
+     * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
+     */
+    public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+    throws AcsJContainerServicesEx
+    {
+    	return getTransparentXmlWrapper(transparentXmlIF, componentReference, flatXmlIF);
+    }
 
 	/**
 	 * {@inheritDoc}.
 	 * <p>
-	 * todo: implement:
+	 * TODO: implement:
 	 * ask AcsContainer if it knows componentReference, and if it has transpXml-IF;
 	 * if so, get component impl directly;
 	 * check if respective component helper allows direct calls to transpXmlIF
@@ -1049,14 +1057,14 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-    public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+    public <T> T getTransparentXmlWrapper(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
     	throws AcsJContainerServicesEx
     {
     	if (m_logger.isLoggable(Level.FINEST)) {
-	        m_logger.finest("creating xml binding class aware wrapper around component " + 
+	        m_logger.finest("creating xml binding class aware wrapper around remote object " + 
 	                "implementing " + flatXmlIF.getName() + "...");
     	}
-    	
+
         T wrapper = null;
         try
         {
@@ -1067,7 +1075,7 @@ public class ContainerServicesImpl implements ContainerServices
         }
         catch (Throwable thr)
         {
-        	String msg = "failed to create XML binding class wrapper for component implementing " + flatXmlIF.getName();
+        	String msg = "failed to create XML binding class wrapper for remote object implementing " + flatXmlIF.getName();
         	m_logger.log(Level.FINE, msg, thr);
         	AcsJContainerServicesEx ex2 = new AcsJContainerServicesEx(thr);
         	ex2.setContextInfo(msg);
@@ -1075,7 +1083,7 @@ public class ContainerServicesImpl implements ContainerServices
         }
         return wrapper;
     }
-    
+
 
 	/////////////////////////////////////////////////////////////
 	// other
@@ -1169,5 +1177,6 @@ public class ContainerServicesImpl implements ContainerServices
 	public void registerCleanUpCallback(ContainerServicesImpl.CleanUpCallback cb) {
 		cleanUpCallbacks.add(cb);
 	}
+
 }
 

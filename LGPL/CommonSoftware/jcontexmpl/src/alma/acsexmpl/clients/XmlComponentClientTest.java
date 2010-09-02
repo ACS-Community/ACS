@@ -11,6 +11,8 @@ import org.xml.sax.InputSource;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.demo.XmlComponent;
 import alma.demo.XmlComponentHelper;
+import alma.demo.XmlComponentJ;
+import alma.demo.XmlComponentOperations;
 import alma.demo.XmlOffshoot;
 import alma.demo.XmlOffshootJ;
 import alma.demo.XmlOffshootOperations;
@@ -75,7 +77,7 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 
 		XmlOffshoot shoot = xmlComponent.getOffshoot();
 		assertNotNull(shoot);
-		XmlOffshootJ shootJ = getContainerServices().getTransparentXmlComponent(XmlOffshootJ.class, shoot, XmlOffshootOperations.class);
+		XmlOffshootJ shootJ = getContainerServices().getTransparentXmlWrapper(XmlOffshootJ.class, shoot, XmlOffshootOperations.class);
 		assertNotNull(shootJ);
 		assertNotNull(shootJ.getObsProposal());
 		assertNotNull(shootJ.getSchedBlock());
@@ -99,4 +101,37 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		} catch(org.omg.CORBA.OBJECT_NOT_EXIST e) {}
 	}
 
+	public void testOffshootJFromXmlComponentJ() throws Exception {
+
+		XmlComponentJ xmlComponentJ = getContainerServices().getTransparentXmlWrapper(XmlComponentJ.class, xmlComponent, XmlComponentOperations.class);
+		assertNotNull(xmlComponentJ);
+
+		// The code below is commented since getting the offshootJ from the
+		// componentJ is not yet supported.
+		// Once supported, this code should work fine, and the test should pass
+		/*
+		XmlOffshootJ shootJ = xmlComponentJ.getOffshoot();
+		assertNotNull(shootJ);
+		assertNotNull(shootJ.getObsProposal());
+		assertNotNull(shootJ.getSchedBlock());
+
+		// these values are hardcoded in the offshoot implementation
+		ObsProposal obsProposal = shootJ.getObsProposal();
+		assertEquals("rtobar", obsProposal.getPI());
+		assertEquals("2010.0045.34S", obsProposal.getCode());
+		assertEquals("just for fun", obsProposal.getScientificJustification());
+
+		SchedBlock sb = shootJ.getSchedBlock();
+		assertEquals("holography", sb.getName());
+		assertEquals("DONE", sb.getStatus());
+		assertEquals(true, sb.getStandardMode());
+
+		// deactivate the offshoot on the server-side
+		xmlComponentJ.deactivateOffshoot();
+		try {
+			shootJ.getObsProposal();
+			fail("offshoot should be deactivated, I shouldn't be able to use it");
+		} catch(org.omg.CORBA.OBJECT_NOT_EXIST e) {}
+		*/
+	}
 }
