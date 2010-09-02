@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA  project
 #
-# "@(#) $Id: xsdMakefile,v 1.76 2010/07/09 15:16:06 rtobar Exp $"
+# "@(#) $Id: xsdMakefile,v 1.77 2010/09/02 15:23:34 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -154,16 +154,16 @@ else
 endif #ACSROOT
 
 # compiling the generated classes
-	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) -name \*.java`;  if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/javacFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javacFiles; rm /tmp/javacFiles; fi;
+	$(AT) CLASSPATH="`vltMakeJavaClasspath`"; export CLASSPATH; FILES=`find $(TMPSRC) -name \*.java`;  if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/javacFiles; javac $(javaCompilerOptions) -d $(TMPSRC) @/tmp/javacFiles; rm -f /tmp/javacFiles; fi;
 # putting them into a jarfile
 
 ifeq ($(strip $(DEBUG)),on)
 # first put the class files
-	$(AT) cd $(TMPSRC); FILES=`find . -name \*.class `; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi
+	$(AT) cd $(TMPSRC); FILES=`find . -name \*.class `; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm -f /tmp/jarFiles ; fi
 # then, carefully, the java files prefixed with 'src'.
-	$(AT) cd ../object/$(XSDBIND);  FILES=`find src -name \*.java`; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar uf ../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi; 
+	$(AT) cd ../object/$(XSDBIND);  FILES=`find src -name \*.java`; if [ "$$FILES" != "" ] ; then echo $$FILES > /tmp/jarFiles; jar uf ../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm -f /tmp/jarFiles ; fi; 
 else
-	$(AT) cd $(TMPSRC); CLASSES=`find . -name \*.class`; if [ "$$CLASSES" != "" ] ; then echo $$CLASSES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm /tmp/jarFiles ; fi
+	$(AT) cd $(TMPSRC); CLASSES=`find . -name \*.class`; if [ "$$CLASSES" != "" ] ; then echo $$CLASSES > /tmp/jarFiles; jar cf ../../../lib/$(basename $(<F)).jar @/tmp/jarFiles; rm -f /tmp/jarFiles ; fi
 endif # DEBUG
 	$(AT) $(RM) $(TMPSRC)
 ###################  CASTOR END  ####################################
