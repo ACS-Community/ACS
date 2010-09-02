@@ -131,4 +131,12 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		return orb;
 	}
 
+	@Override
+	public OffShoot activateOffShoot(Object offshootImpl, Class idlOpInterface)
+			throws AcsJContainerServicesEx {
+		AcsJContainerServicesEx e = new AcsJContainerServicesEx();
+		e.setContextInfo("Not yet implemented");
+		throw e;
+	}
+
 }
