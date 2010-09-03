@@ -801,69 +801,18 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
-	public OffShoot activateOffShoot(Servant servant)
+	@Override
+	public <T extends Servant & OffShootOperations> OffShoot activateOffShoot(T servant)
 		throws AcsJContainerServicesEx
 	{
-		checkOffShoot(servant);
-		String servantName = servant.getClass().getName();
-		// check if the servant is the Tie variant, which allows proxy-based call interception by the container
-		boolean isTie = false;
-		if (servantName.endsWith("POATie")) {
-			try {
-				// the _delegate getter method is mandated by the IDL-to-Java mapping spec
-				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
-				isTie = true;
-				Class operationsIF = implGetter.getReturnType();
-				java.lang.Object offshootImpl = implGetter.invoke(servant, (java.lang.Object[]) null);
-				// now we insert the interceptor between the tie skeleton and the impl.
-				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
-				// 
-				String qualOffshootName = getName() + "/" + operationsIF.getName().substring(0, operationsIF.getName().length() - "Operations".length());
-				java.lang.Object interceptingOffshootImpl = ContainerSealant.createContainerSealant(
-						operationsIF, offshootImpl, qualOffshootName, true, m_logger, 
-						Thread.currentThread().getContextClassLoader(), methodsExcludedFromInvocationLogging);
-				Method implSetter = servant.getClass().getMethod("_delegate", new Class[]{operationsIF});
-				implSetter.invoke(servant, new java.lang.Object[]{interceptingOffshootImpl});
-				m_logger.fine("created sealant for offshoot " + qualOffshootName);
-			} catch (NoSuchMethodException e) {
-				// so this was not a Tie skeleton, even though its name ends misleadingly with "POATie"
-			} catch (Exception e) {
-				m_logger.log(Level.WARNING, "Failed to create interceptor for offshoot " + servantName, e);
-			} 
-		}		
-
-		if (!isTie) {
-// TODO: perhaps require tie offshoots with ACS 5.0, and enable this warning log			
-//			m_logger.warning("Offshoot servant '" + servantName + "' from component '" + getName() + 
-//					"' does not follow the tie approach. Calls can thus not be intercepted by the container.");
-		}
-				
-		OffShoot shoot = null;
-		try  {
-			org.omg.CORBA.Object obj = acsCorba.activateOffShoot(servant, m_clientPOA);
-			m_activatedOffshootsMap.put(servant, servant);
-			shoot = OffShootHelper.narrow(obj);
-		}
-		catch (Throwable thr) {
-			String msg = "failed to activate offshoot object of type '" + servant.getClass().getName() +
-							"' for client '" + m_clientName + "'. ";
-			// flatten the exception chain by one level if possible
-			if (thr instanceof AcsJContainerServicesEx && thr.getCause() != null) {
-				msg += "(" + thr.getMessage() + ")"; 
-				thr = thr.getCause();
-			}
-			m_logger.log(Level.FINE, msg, thr);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
-			throw ex;
-		}
-//		m_logger.fine("successfully activated offshoot of type " + cbServant.getClass().getName());
-		return shoot;
+		return activateOffShoot(servant, null);
 	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 		throws AcsJContainerServicesEx
 	{
@@ -874,17 +823,21 @@ public class ContainerServicesImpl implements ContainerServices
 
 		// Checks
 		checkOffShoot(offshootImpl);
-		if( !idlOpInterface.isAssignableFrom(offshootImpl.getClass()) ) {
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-			ex.setContextInfo("Received OffShoot of type '" + offshootImpl.getClass().getName() +
-			    "' does not inherits from '" + idlOpInterface.getName() +  "'");
-			throw ex;
-		}
 
 		// If we receive an object that is not a servant it means that it requires XML automatic bindings.
 		// We create the corresponding POATie object, the dynamic proxy binder,
 		// and set the offshoot implementation as the final delegate
 		if( !(offshootImpl instanceof Servant) ) {
+
+			if( idlOpInterface == null )
+				throw new AcsJContainerServicesEx(new NullPointerException("Received null idlOpInterface when asking to activate XML offshoot"));
+
+			if( !idlOpInterface.isAssignableFrom(offshootImpl.getClass()) ) {
+				AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+				ex.setContextInfo("Received OffShoot of type '" + offshootImpl.getClass().getName() +
+				    "' does not inherits from '" + idlOpInterface.getName() +  "'");
+				throw ex;
+			}
 
 			// Guess the name of the xyzPOATie class, build it, and delegate
 			String poaTieClassName = null;
@@ -989,6 +942,7 @@ public class ContainerServicesImpl implements ContainerServices
 		return shoot;
 	}
 
+	@Override
 	public void deactivateOffShoot(Object offshootImpl)
 	throws AcsJContainerServicesEx
 	{
@@ -1034,12 +988,12 @@ public class ContainerServicesImpl implements ContainerServices
         }
         return advancedContainerServices;
     }
-    
 
     /*
      * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
      */
-    public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+    @SuppressWarnings("unchecked")
+	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
     throws AcsJContainerServicesEx
     {
     	return getTransparentXmlWrapper(transparentXmlIF, componentReference, flatXmlIF);
@@ -1057,7 +1011,8 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-    public <T> T getTransparentXmlWrapper(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+    @SuppressWarnings("unchecked")
+	public <T> T getTransparentXmlWrapper(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
     	throws AcsJContainerServicesEx
     {
     	if (m_logger.isLoggable(Level.FINEST)) {

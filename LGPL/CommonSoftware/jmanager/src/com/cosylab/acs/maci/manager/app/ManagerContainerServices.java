@@ -68,7 +68,7 @@ public class ManagerContainerServices implements ContainerServicesBase,
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
-	public OffShoot activateOffShoot(Servant servant)
+	public <T extends Servant & OffShootOperations > OffShoot activateOffShoot(T servant)
 		throws AcsJContainerServicesEx
 	{
 		checkOffShootServant(servant);
@@ -99,17 +99,6 @@ public class ManagerContainerServices implements ContainerServicesBase,
 			throw ex;
 		}	
 		return shoot;
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServicesImpl#activateOffShoot(T, Class<T>)
-	 */
-	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
-		throws AcsJContainerServicesEx
-	{
-		AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-		ex.setContextInfo("Not yet implemented");
-		throw ex;
 	}
 
 	public void deactivateOffShoot(Object offshootImpl)

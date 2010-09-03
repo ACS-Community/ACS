@@ -2,13 +2,9 @@ package alma.alarmsystem.corbaservice;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.Servant;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootOperations;
@@ -19,6 +15,9 @@ import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogger;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 public class AlarmSystemContainerServices implements ContainerServicesBase {
 	
@@ -68,7 +67,7 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	}
 
 	@Override
-	public OffShoot activateOffShoot(Servant cbServant)
+	public <T extends Servant & OffShootOperations> OffShoot activateOffShoot(T cbServant)
 			throws AcsJContainerServicesEx {
 		try {
 			return alSysCorbaServer.activateOffShoot(cbServant);
@@ -124,13 +123,6 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	}
 
 	@Override
-	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
-			throws AcsJContainerServicesEx {
-		AcsJContainerServicesEx e = new AcsJContainerServicesEx();
-		e.setContextInfo("Not yet implemented");
-		throw e;
-	}
-
 	public void deactivateOffShoot(Object offshootImpl)
 	throws AcsJContainerServicesEx
 	{
