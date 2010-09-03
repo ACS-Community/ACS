@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.176 2010/07/01 10:56:04 jschwarz Exp $"
+# "@(#) $Id: Makefile,v 1.177 2010/09/03 11:55:55 hsommer Exp $"
 #
 #
 
@@ -19,7 +19,7 @@ MODULES_KIT = vlt doc acs acstempl
 # because it is already built in the prepare phase.
 #
 MODULES_TOOLS = emacs tat expat loki extjars antlr hibernate freetype extpy cppunit getopt FITS astyle swig xercesc xercesj castor gmp jfree xsddoc extidl vtd-xml oAW shunit2 log4cpp
-MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl acsjlog repeatGuard loggingts loggingtsTypes cdb cdbChecker codegen cdb_rdb acsContainerServices acscomponent cdbBrowser errorBrowser recovery baciidl acsncidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci acssamp acscallbacks mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI eventGUI acssim bulkData containerTests acscourse acsalarmpy ACSLaser 
+MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acsidlcommon acsutil acsutilpy acsstartup loggingidl logging acserr acserrTypes acsQoS acsthread acscomponentidl cdbidl maciidl acsncidl acsjlog repeatGuard loggingts loggingtsTypes cdb cdbChecker codegen cdb_rdb acsContainerServices acscomponent cdbBrowser errorBrowser recovery baciidl basenc archiveevents parameter acsalarmidl acsalarm baci enumprop acsdaemonidl jacsalarm jmanager maci task abeans acstime acsnc acsncdds acsdaemon acslog acstestcompcpp acsexmpl jlogEngine jlog logTools acspy comphelpgen XmlIdl define acstestentities objexp jacsalarmtest jcont jcontnc jcontexmpl jbaci acssamp acscallbacks mastercomp acspyexmpl nctest acscommandcenter acssampGUI acsGUIutil logLevelGUI eventGUI acssim bulkData containerTests acscourse acsalarmpy ACSLaser 
 ######## end Modules ###########################
 
 #
