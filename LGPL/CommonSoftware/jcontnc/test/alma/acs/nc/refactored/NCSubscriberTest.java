@@ -27,6 +27,7 @@ import org.omg.CORBA.portable.IDLEntity;
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Consumer;
 import alma.acsnc.EventDescription;
 
