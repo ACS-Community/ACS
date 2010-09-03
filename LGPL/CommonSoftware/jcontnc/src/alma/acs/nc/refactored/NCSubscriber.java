@@ -63,6 +63,7 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
@@ -431,7 +432,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	/**
 	 * Subscribes to all events. If in addition to this we also have
 	 * subscriptions via
-	 * {@link #addSubscription(Class, alma.acs.nc.refactored.AcsEventSubscriber.Callback)}
+	 * {@link #addSubscription(Class, alma.acs.nc.AcsEventSubscriber.Callback)}
 	 * then those more specific subscriptions will take precedence.
 	 */
 	public void addGenericSubscription(GenericCallback receiver) {

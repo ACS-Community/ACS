@@ -19,8 +19,6 @@
 
 package alma.acs.nc.refactored;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,17 +33,17 @@ import org.omg.CosNotification.Property;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
-import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
-import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumer;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushConsumerHelper;
 import org.omg.CosNotifyChannelAdmin.SupplierAdmin;
 import org.omg.CosNotifyComm.InvalidEventType;
 import org.omg.CosNotifyComm.StructuredPushSupplier;
 import org.omg.CosNotifyComm.StructuredPushSupplierHelper;
+
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
@@ -54,6 +52,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.Helper;
