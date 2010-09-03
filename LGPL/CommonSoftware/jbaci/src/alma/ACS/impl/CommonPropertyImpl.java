@@ -43,6 +43,7 @@ import alma.ACS.Monitor;
 import alma.ACS.MonitorHelper;
 import alma.ACS.MonitorOperations;
 import alma.ACS.NoSuchCharacteristic;
+import alma.ACS.OffShootOperations;
 import alma.ACS.TimeSeqHolder;
 import alma.ACS.jbaci.BACIAction;
 import alma.ACS.jbaci.BACIPriority;
@@ -228,7 +229,7 @@ public abstract class CommonPropertyImpl
 		monitors = new HashMap();
 		
 		// create history monitor
-		registerMonitor(new HistoryMonitorImpl(this), null);
+		registerNonCorbaMonitor(new HistoryMonitorImpl(this));
 		
 	}
 
@@ -514,10 +515,12 @@ public abstract class CommonPropertyImpl
 	 * Registration is needed for monitor destruction on property destruction.
 	 * @param monitorImpl		monitor implementation (e.g. class implementing <code>MonitorOperations</code> interface).
 	 * @param monitorServant	monitor CORBA servant (e.g. Monitor<type>POATie class). If <code>null</code> monitor will
-	 * 						be threated as non-CORBA monitor and no CORBA activation will be done.
+	 * 						be treated as non-CORBA monitor and no CORBA activation will be done.
+	 * 						(Not sure how to correctly pass a null, now that the method uses generics. See {@link #registerNonCorbaMonitor(MonitorOperations)}
+	 * 						for an alternative call.)
 	 * @return CORBA activated monitor reference, <code>null</code> if <code>monitorServant == null</code>.
 	 */
-	public Monitor registerMonitor(MonitorOperations monitorImpl, Servant monitorServant) {
+	public <T extends Servant & OffShootOperations> Monitor registerMonitor(MonitorOperations monitorImpl, T monitorServant) {
 
 		// allow activation if already in monitor list...
 		Monitor monitor = null;
@@ -543,6 +546,33 @@ public abstract class CommonPropertyImpl
 		{
 			if (!monitors.containsKey(monitorImpl))
 				monitors.put(monitorImpl, monitorServant);
+		}
+		
+		return monitor;
+		
+	}
+
+	/**
+	 * Register monitor on this property, without corba activation.
+	 * Registration is needed for monitor destruction on property destruction.
+	 * <p>
+	 * Note that this method was broken out from {@link #registerMonitor(MonitorOperations, Servant)}
+	 * to avoid passing null as the second argument of that method, which was in conflict with the generics
+	 * definition, which in turn was added there to match the one of ContainerServices.activateOffshoot.
+	 * 
+	 * @param monitorImpl		monitor implementation (e.g. class implementing <code>MonitorOperations</code> interface).
+	 * @return CORBA activated monitor reference, <code>null</code> if <code>monitorServant == null</code>.
+	 */
+	public Monitor registerNonCorbaMonitor(MonitorOperations monitorImpl) {
+
+		// allow activation if already in monitor list...
+		Monitor monitor = null;
+
+		// add to list
+		synchronized (monitors)
+		{
+			if (!monitors.containsKey(monitorImpl))
+				monitors.put(monitorImpl, null);
 		}
 		
 		return monitor;
