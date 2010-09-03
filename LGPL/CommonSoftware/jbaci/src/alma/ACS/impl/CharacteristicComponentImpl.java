@@ -37,6 +37,7 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.CharacteristicComponentDesc;
 import alma.ACS.CharacteristicComponentOperations;
 import alma.ACS.NoSuchCharacteristic;
+import alma.ACS.OffShootOperations;
 import alma.ACS.Property;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyHelper;
@@ -214,7 +215,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * 							be threated as non-CORBA property and no CORBA activation will be done.
 	 * @return CORBA activated property reference, <code>null</code> if <code>propertyServant == null</code>.
 	 */
-	public Property registerProperty(PropertyOperations propertyImpl, Servant propertyServant) {
+	public <T extends Servant & OffShootOperations> Property registerProperty(PropertyOperations propertyImpl, T propertyServant) {
 
 		// allow activation if already in property list...
 		Property property = null;
