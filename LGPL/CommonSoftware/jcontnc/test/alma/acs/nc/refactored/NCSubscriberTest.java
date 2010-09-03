@@ -150,7 +150,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 */
 
 	public void testRemoveAllSubscription() throws Exception {
-		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 		
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -177,7 +177,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the removeGenericSubscription method.
 	 */
 	public void testDisconnect() throws Exception {
-		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 		
 		int numExpectedEvents = 5;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -203,8 +203,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the behavior of concurrent subscriber clients.
 	 */
 	public void testMultipleSubscribers() throws Exception {
-		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
-		NCSubscriber otherSubscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber otherSubscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -230,7 +230,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * concurrently with the old API.
 	 */
 	public void testOldSubscriber() throws Exception {
-		NCSubscriber subscriber = new NCSubscriberDirect(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
 		
 		Consumer oldConsumer = null;
 		oldConsumer = new Consumer(TEST_CHANNEL_NAME, getContainerServices());
