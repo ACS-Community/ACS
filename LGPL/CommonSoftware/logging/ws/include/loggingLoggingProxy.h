@@ -21,7 +21,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: loggingLoggingProxy.h,v 1.40 2010/08/27 21:15:10 javarias Exp $"
+ * "@(#) $Id: loggingLoggingProxy.h,v 1.41 2010/09/05 20:42:28 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -116,7 +116,7 @@
  * </OL>
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: loggingLoggingProxy.h,v 1.40 2010/08/27 21:15:10 javarias Exp $"
+ * @version "@(#) $Id: loggingLoggingProxy.h,v 1.41 2010/09/05 20:42:28 javarias Exp $"
  */
 class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 {
@@ -328,7 +328,6 @@ class logging_EXPORT LoggingProxy : public ACE_Log_Msg_Callback
 	 char *oldLog;
 
   private:
-
     /// Get time in ISO8601 format in UTC (eg. 2000-12-31T08:12:21.322) - 24 chars (incl. \0)
     static void formatISO8601inUTC(const ACE_Time_Value &timestamp, ACE_TCHAR str[]);
 

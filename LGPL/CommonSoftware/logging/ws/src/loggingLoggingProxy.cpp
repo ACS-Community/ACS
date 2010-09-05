@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.78 2010/08/27 21:15:10 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.79 2010/09/05 20:42:28 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.78 2010/08/27 21:15:10 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.79 2010/09/05 20:42:28 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1049,6 +1049,8 @@ LoggingProxy::LoggingProxy(const unsigned long cacheSize,
   m_threadShutdown(2),
   m_shutdown(false)
 {
+  logThrottle = new ::logging::LogThrottle(maxLogsPerSecond);
+  
   if (CORBA::is_nil(m_logger.ptr()))
 	  m_noLogger = true;
 
@@ -1579,8 +1581,18 @@ bool LoggingProxy::sendRecord(const Logging::XmlLogRecordSeq &reclist)
 		return false;
 	try
 	{
+		bool canSend = false;
+		unsigned int logsAvail = logThrottle->checkPublishLogRecord();
+		if(logsAvail > 0){
+			canSend=true;
+			if(reclist.length() > logsAvail)
+				const_cast<Logging::XmlLogRecordSeq*>(&reclist)->length(logsAvail);
+			logThrottle->updateLogCounter(reclist.length());
+		}
+
 		ace_mon.release();
-		m_logger->writeRecords(reclist);
+		if(canSend)
+			m_logger->writeRecords(reclist);
 
 		// here we have to acquire the mutex again. Should be done in better way.
 		ace_mon.acquire();

@@ -29,6 +29,8 @@
 #include <ace/ACE.h>
 #include <limits.h>
 
+#include <iostream>
+
 using namespace logging;
 
 LogThrottle::LogThrottle(int maxLogPerInterval):
@@ -52,6 +54,8 @@ unsigned int LogThrottle::checkPublishLogRecord(){
 }
 
 void LogThrottle::updateLogCounter(unsigned int logsSent){
+	if(maxLogPerTimeInterval < 0)
+		return;
 	if(logsSent > maxLogPerTimeInterval - logCounter)
 		logsSent = maxLogPerTimeInterval - logCounter;
 	logCounter += logsSent;
