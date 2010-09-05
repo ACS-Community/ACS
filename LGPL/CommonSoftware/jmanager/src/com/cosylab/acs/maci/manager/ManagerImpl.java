@@ -6418,7 +6418,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// deactivate
 					try
 					{
-						container.deactivate_components(new int[] { componentInfo.getHandle() });
+						container.deactivate_component(componentInfo.getHandle());
 					}
 					catch (Exception ex)
 					{
@@ -6935,7 +6935,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					// deactivate component in anycase
 					try
 					{
-						container.deactivate_components(new int[] { componentInfo.getHandle() });
+						container.deactivate_component(componentInfo.getHandle());
 					    deactivationTime = System.currentTimeMillis();
 					}
 					catch (Exception ex)

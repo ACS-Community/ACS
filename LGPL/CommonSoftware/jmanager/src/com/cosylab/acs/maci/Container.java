@@ -60,16 +60,16 @@ public interface Container extends Client
 	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type) throws RemoteException;
 	
 	/**
-	 * Deactivate all components whose handles are given.
+	 * Deactivate a component whose handles is given.
 	 *
 	 * Deactivation is the inverse process of activation:
 	 * Component is detached from the POA, and thus made unavailable through CORBA,
 	 * and its resources are freed. If it's code-base is no longer used,
 	 * it is unloaded from memory.
 	 * 
-	 * @param	handles	A sequence of handles identifying components that are to be released.
+	 * @param	handle	A handle identifying a component to be released.
 	 */
-	public void deactivate_components(int[] handles) throws RemoteException;
+	public void deactivate_component(int handle) throws RemoteException;
 	
 	/**
 	 * Returns information about a subset of components that are currently hosted by the Container. 

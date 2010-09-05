@@ -104,17 +104,17 @@ public class ContainerProxy extends ClientProxy implements Container
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Container#deactivate_components(int[])
+	 * @see com.cosylab.acs.maci.Container#deactivate_component(int)
 	 */
-	public void deactivate_components(int[] handles) throws RemoteException
+	public void deactivate_component(int handle) throws RemoteException
 	{
 		try
 		{
-			container.deactivate_components(handles);
+			container.deactivate_component(handle);
 		}
 		catch (Exception ex)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'deactivate_components()' method.", ex);
+			RemoteException re = new RemoteException("Failed to invoke 'deactivate_component()' method.", ex);
 			throw re;
 		}
 	}

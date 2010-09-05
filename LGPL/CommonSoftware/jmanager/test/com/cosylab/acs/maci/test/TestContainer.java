@@ -99,38 +99,35 @@ public class TestContainer extends TestClient implements Container {
 	}
 
 	/**
-	 * @see com.cosylab.acs.maci.Container#deactivate_components(int[])
+	 * @see com.cosylab.acs.maci.Container#deactivate_component(int)
 	 */
-	public void deactivate_components(int[] handles) throws RemoteException {
+	public void deactivate_component(int handle) throws RemoteException {
 		
-		for (int i = 0; i < handles.length; i++)
+		synchronized (activatedComponents)
 		{
-			synchronized (activatedComponents)
+			Integer key = new Integer(handle);
+			if (activatedComponents.containsKey(key))
 			{
-				Integer key = new Integer(handles[i]);
-				if (activatedComponents.containsKey(key))
+
+				ComponentInfo cobInfo = (ComponentInfo)activatedComponents.get(key);
+
+				//System.out.println("Container '"+getName()+"': deactivating '"+cobInfo.getName()+"'.");
+
+				// simulate deactivation
+				try
 				{
-
-					ComponentInfo cobInfo = (ComponentInfo)activatedComponents.get(key);
-
-					//System.out.println("Container '"+getName()+"': deactivating '"+cobInfo.getName()+"'.");
-
-					// simulate deactivation
-					try
-					{
-						Thread.sleep(deactivationTime);
-					}
-					catch (InterruptedException ie) {}
-					
-					if (cobInfo.getComponent() instanceof TestComponent)
-					{
-						TestComponent tc = (TestComponent)cobInfo.getComponent(); 
-						tc.deactivate();
-						tc.setHandle(0);
-					}
-
-					activatedComponents.remove(key);
+					Thread.sleep(deactivationTime);
 				}
+				catch (InterruptedException ie) {}
+				
+				if (cobInfo.getComponent() instanceof TestComponent)
+				{
+					TestComponent tc = (TestComponent)cobInfo.getComponent(); 
+					tc.deactivate();
+					tc.setHandle(0);
+				}
+
+				activatedComponents.remove(key);
 			}
 		}
 

@@ -39,9 +39,9 @@ public class ContainerProxyImpl extends ContainerPOA {
 	}
 
 	/* (non-Javadoc)
-	 * @see si.ijs.maci.ContainerOperations#deactivate_components(int[])
+	 * @see si.ijs.maci.ContainerOperations#deactivate_component(int)
 	 */
-	public void deactivate_components(int[] arg0) {
+	public void deactivate_component(int arg0) {
 	}
 
 	/* (non-Javadoc)

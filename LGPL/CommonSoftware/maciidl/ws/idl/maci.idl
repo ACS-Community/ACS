@@ -621,14 +621,14 @@ module maci {
 
 
 	    /** 
-		Deactivate all components whose handles are given. Deactivation is the
+		Deactivate a components whose handle is given. Deactivation is the
 		inverse process of activation: component is detached from the POA, and
 		thus made unavailable through CORBA, and its resources are freed. If
 		it's code-base is no longer used, it is unloaded from memory.
 	    */
-	    void deactivate_components (
-		in HandleSeq h	///< A sequence of handles identifying
-				///components that are to be released.
+	    void deactivate_component (
+		in Handle h	///< A handle identifying
+				///a component to be released.
 
 		)
 		raises (maciErrType::CannotDeactivateComponentEx);
