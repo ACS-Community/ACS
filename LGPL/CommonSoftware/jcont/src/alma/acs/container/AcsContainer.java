@@ -628,7 +628,7 @@ public class AcsContainer extends ContainerPOA
                 m_logger.warning(msgMismatch);
 
                 try {
-					deactivate_components(new int[]{componentHandle});
+					deactivate_component(componentHandle);
 				} catch (CannotDeactivateComponentEx e) {
 					m_logger.log(Level.FINE, "Failed to deactivate existing component with handle " + componentHandle);
 				}
@@ -732,7 +732,7 @@ public class AcsContainer extends ContainerPOA
      * Called by the manager to update the container's knowledge about optimum shutdown order
      * of its components.
      * This information will only be needed for a locally initiated container shutdown,
-     * since the manager will call {@link #deactivate_components(int[])} in a regular shutdown.
+     * since the manager will call {@link #deactivate_component(int)} in a regular shutdown.
      */
     public void set_component_shutdown_order(int[] handleSeq) {
         String handleSeqString = null;
@@ -767,18 +767,19 @@ public class AcsContainer extends ContainerPOA
      * @param handles  a sequence of handles identifying components that are to be released.
      *                  If null, then all active components will be deactivated!
      *
-     * @see si.ijs.maci.ContainerOperations#deactivate_components(int[])
+     * @see si.ijs.maci.ContainerOperations#deactivate_component(int)
      * @see ComponentAdapter#deactivateComponent()
      *
      */
-    public void deactivate_components(int[] handles) 
+    public void deactivate_component(int handle) 
     	throws CannotDeactivateComponentEx
     {
-        logManagerRequest("received call to deactivate_components", handles);
+        final int[] handles = new int[] { handle };
+        logManagerRequest("received call to deactivate_component", handles);
 
         // get the component adapters which are all != null, but might be in the wrong state
         ComponentAdapter[] compAdapters = null;
-        if (handles == null || handles.length == 0) {
+        if (handle == 0) {
             compAdapters = m_activeComponentMap.getAllComponentAdapters();
         }
         else {
@@ -966,7 +967,7 @@ public class AcsContainer extends ContainerPOA
 		// shut down all active components
 		if (gracefully) {
 			try {
-				deactivate_components(null);
+				deactivate_component(0);
 			} catch (CannotDeactivateComponentEx e) {
 				m_logger.log(Level.WARNING, "Failed to deactivate components for graceful shutdown");
 			}

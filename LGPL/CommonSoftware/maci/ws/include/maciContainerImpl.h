@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.57 2008/10/09 07:05:37 cparedes Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.58 2010/09/05 21:22:19 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.57 2008/10/09 07:05:37 cparedes Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.58 2010/09/05 21:22:19 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -248,15 +248,15 @@ public:
 					);
 
   /**
-   * Deactivate all components whose handles are given.
+   * Deactivate a component whose handle is given.
    *
    * Deactivation is the inverse process of activation:
    * component is detached from the POA, and thus made unavailable through CORBA,
    * and its resources are freed. If it's code-base is no longer used,
    * it is unloaded from memory.
-   * @param h A sequence of handles identifying components that are to be released.
+   * @param h A handle identifying a component to be released.
    */
-  virtual void deactivate_components (const maci::HandleSeq & h
+  virtual void deactivate_component (maci::Handle h
 				      );
 
   /**

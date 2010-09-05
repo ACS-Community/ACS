@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.120 2010/08/27 21:16:36 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.121 2010/09/05 21:22:19 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.120 2010/08/27 21:16:36 javarias Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.121 2010/09/05 21:22:19 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1663,11 +1663,7 @@ ContainerImpl::activate_component (
 	      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::activate_component",
 		      (LM_WARNING, "Activated component with handle %u (%s) has different name or type that existant! Releasing that component and replacing it with the new one...", h, name));
 
-	      maci::HandleSeq_var handles = new maci::HandleSeq(1);
-	      handles->length(1);
-	      handles[0] = h;
-
-	      deactivate_components(handles.in());
+	      deactivate_component(h);
 	    }
 	}
     }
@@ -2001,8 +1997,8 @@ ContainerImpl::activate_component (
 // ************************************************************************
 
 void
-ContainerImpl::deactivate_components (
-				const maci::HandleSeq & h
+ContainerImpl::deactivate_component (
+				maci::Handle h
 
 				)
 {
@@ -2017,20 +2013,19 @@ ContainerImpl::deactivate_components (
    // int idxCompNames = 0;
 
   ContainerComponentInfo info;
-  for (CORBA::ULong i = 0; i<h.length(); i++)
-    if (m_activeComponents.find(h[i], info)!=-1 &&
+    if (m_activeComponents.find(h, info)!=-1 &&
 	!CORBA::is_nil(info.info.reference.in()))
       {
 
 	ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
 		(LM_DEBUG,
 		 "Deactivating component with handle %d (%s of type %s)",
-		 h[i], info.info.name.in(), info.info.type.in()));
+		 h, info.info.name.in(), info.info.type.in()));
 
 	CORBA::Object_ptr ref = CORBA::Object::_duplicate(info.info.reference.in());
 
 	info.info.reference = CORBA::Object::_nil();
-	m_activeComponents.rebind(h[i], info);				// update
+	m_activeComponents.rebind(h, info);				// update
 
 	// Before really deactivating the component,
 	// we call the cleanUp() ComponentLifecycle termination method
@@ -2088,7 +2083,7 @@ ContainerImpl::deactivate_components (
 	  {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::deactivate_component",
 		    (LM_ERROR, "Failed to deactivate component with handle %d (%s of type %s)",
-		     h[i], info.info.name.in(), info.info.type.in()));
+		     h, info.info.name.in(), info.info.type.in()));
 	  }
 
 	CORBA::release(ref);
@@ -2212,7 +2207,8 @@ ContainerImpl::shutdown (
   if (m_componentShutdownOrder.length())
     {
       // NOTE: m_componentShutdownOrder is in sync since cannot be changed if container is in shutdown state
-        deactivate_components(m_componentShutdownOrder);
+        for (CORBA::ULong i = 0; i < m_componentShutdownOrder.length(); i++)
+          deactivate_component(m_componentShutdownOrder[i]);
     }
 
 
@@ -2246,7 +2242,8 @@ ContainerImpl::shutdown (
   //       we should catch exceptions.
   if (handles->length())
     {
-        deactivate_components(handles.in());
+        for (CORBA::ULong i = 0; i < m_componentShutdownOrder.length(); i++)
+          deactivate_component(handles[i]);
     }
 
 
