@@ -51,7 +51,7 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     // logger used by this class
 	protected Logger logger;
     
-	protected Map<AdministratorOperations, AcsManagerProxy> adminClientsToManagerProxy =
+	protected final Map<AdministratorOperations, AcsManagerProxy> adminClientsToManagerProxy =
 		new HashMap<AdministratorOperations, AcsManagerProxy>();
 	
 	AdvancedContainerServicesImpl(ContainerServicesImpl containerServicesImpl, Logger logger) {
@@ -112,58 +112,67 @@ public class AdvancedContainerServicesImpl implements AdvancedContainerServices
     	return any;
 	}
 
-    /**
-     * Allows to connect a manager admin object to the manager, to receive notifications etc.
-     * <p>
-     * This method accepts and distinguishes <code>AdministratorOperations</code> objects
-     * and the subtyped {@link SynchronousAdministratorOperations} objects.
-     * <p>
-     * TODO: (1) container could implement a single proxy/interceptor admin client so that we only have at most one such login 
-     *       on the manager, even if many components register their admin clients.
-     *       (2) Discuss if the <code>retryConnectOnFailure</code> flag makes sense,
-     *       or if such a specialized component that uses this method should implement its own retry strategy
-     *       and should rather be notified quickly if there are problems.
-     * @param adminOp  admin object for manager callbacks.  
-     * @param retryConnectOnFailure  retry if the manager is not available or the connection failed.
-     * @throws AcsJContainerEx
-     * @throws IllegalArgumentException  if adminOp == <code>null</code>. 
-     */
-    public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure) throws AcsJContainerEx {
-    	
-    	if (adminOp == null) {
-    		throw new IllegalArgumentException("adminOp == null not allowed.");
-    	}
-    	if (adminClientsToManagerProxy.containsKey(adminOp)) {
-    		logger.info("Attempt to connect manager admin of type " + adminOp.getClass().getName() + " again will be ignored.");
-    		return;
-    	}
-    	
-    	// need to create our own manager proxy
-    	AcsManagerProxy acsManagerProxy = this.containerServicesImpl.m_acsManagerProxy.createInstance();
+	/**
+	 * Allows to connect a manager admin object to the manager, to receive notifications etc.
+	 * <p>
+	 * This method accepts and distinguishes <code>AdministratorOperations</code> objects and the subtyped
+	 * {@link SynchronousAdministratorOperations} objects.
+	 * <p>
+	 * TODO: (1) container could implement a single proxy/interceptor admin client so that we only have at most one such
+	 *          login on the manager, even if many components register their admin clients. 
+	 *       (2) Discuss if the <code>retryConnectOnFailure</code> flag makes sense, or if such a specialized component that uses this method
+	 *          should implement its own retry strategy and should rather be notified quickly if there are problems.
+	 * 
+	 * @param adminOp
+	 *            admin object for manager callbacks.
+	 * @param retryConnectOnFailure
+	 *            retry if the manager is not available or the connection failed.
+	 * @throws AcsJContainerEx
+	 * @throws IllegalArgumentException
+	 *             if adminOp == <code>null</code>.
+	 */
+	public void connectManagerAdmin(AdministratorOperations adminOp, boolean retryConnectOnFailure)
+			throws AcsJContainerEx {
 
-    	// for CORBA activation we cannot use polymorphism, but have to choose the correct poa skeleton class.
-    	// The use of "instanceof" is certainly unsatisfying, but saves us from exposing a specialized second method in the 
-    	// AdvancedContainerServices interface.
-    	Administrator admin = null;
-    	if (adminOp instanceof SynchronousAdministratorOperations) {
-        	SynchronousAdministratorPOATie adminpoa = new SynchronousAdministratorPOATie((SynchronousAdministratorOperations)adminOp); 
-    		admin = adminpoa._this(getORB());
-    	}
-    	else {
-        	AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp); 
-    		admin = adminpoa._this(getORB());    		
-    	}
-        acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
+		if (adminOp == null) {
+			throw new IllegalArgumentException("adminOp == null not allowed.");
+		}
+		synchronized (adminClientsToManagerProxy) {
+			if (adminClientsToManagerProxy.containsKey(adminOp)) {
+				logger.info("Attempt to connect manager admin of type " + adminOp.getClass().getName()
+						+ " again will be ignored.");
+				return;
+			}
 
-        adminClientsToManagerProxy.put(adminOp, acsManagerProxy);
-    }
-    
-    
-    public void disconnectManagerAdmin(AdministratorOperations adminOp) {
-    	AcsManagerProxy prox = adminClientsToManagerProxy.get(adminOp);
-    	if (prox != null) {
-    		prox.logoutFromManager();
-    	}
-    }
+			// need to create our own manager proxy
+			AcsManagerProxy acsManagerProxy = this.containerServicesImpl.m_acsManagerProxy.createInstance();
+
+			// for CORBA activation we cannot use polymorphism, but have to choose the correct poa skeleton class.
+			// The use of "instanceof" is certainly unsatisfying, but saves us from exposing a specialized second method
+			// in the
+			// AdvancedContainerServices interface.
+			Administrator admin = null;
+			if (adminOp instanceof SynchronousAdministratorOperations) {
+				SynchronousAdministratorPOATie adminpoa = new SynchronousAdministratorPOATie(
+						(SynchronousAdministratorOperations) adminOp);
+				admin = adminpoa._this(getORB());
+			} 
+			else {
+				AdministratorPOATie adminpoa = new AdministratorPOATie(adminOp);
+				admin = adminpoa._this(getORB());
+			}
+			acsManagerProxy.loginToManager(admin, retryConnectOnFailure);
+
+			adminClientsToManagerProxy.put(adminOp, acsManagerProxy);
+		}
+	}
+
+	public void disconnectManagerAdmin(AdministratorOperations adminOp) {
+		synchronized (adminClientsToManagerProxy) {
+			AcsManagerProxy prox = adminClientsToManagerProxy.get(adminOp);
+			if (prox != null) {
+				prox.logoutFromManager();
+			}
+		}
+	}
 }
-
