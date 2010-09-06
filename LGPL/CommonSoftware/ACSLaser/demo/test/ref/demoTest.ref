@@ -8,6 +8,10 @@
 1 - ----------T--:--:----- INFO [DemoTest] component 'TestSendLaserSources' requested AdvancedContainerServices
 1 - ----------T--:--:----- CONFIG [TestSendLaserSources] Connected to DAO 'MACI/Channels'
 1 - ----------T--:--:----- DEBUG [TestSendLaserSources] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='CMWALARM_SYSTEMALARMSSOURCESALARM_SYSTEM_SOURCES' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:----- FINE [DemoTest] Don't need to create servant for offshoot 'almaacsncAcsNcReconnectionCallback'
+1 - ----------T--:--:----- FINE [DemoTest] successfully activated offshoot of type almaacsncAcsNcReconnectionCallback
+1 - ----------T--:--:----- FINE [DemoTest] Don't need to create servant for offshoot 'almaacsncConsumer'
+1 - ----------T--:--:----- FINE [DemoTest] successfully activated offshoot of type almaacsncConsumer
 1 - Connected to source channel
 1 - Invoking methods on java components (NODE REDUCTION)
 1 - Alarm message received from source: <PS,ALARM_SOURCE_PS,1> Status: ACTIVE
