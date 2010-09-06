@@ -48,7 +48,7 @@
 1 - ----------T--:--:--.--- TESTCOMPONENT testServices - the logger works
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT1
 1 - HelloWorld
@@ -80,7 +80,7 @@
 1 - getCDBElement is:  {}
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ['TESTCOMPONENT', 'TESTCOMPONENT1', 'TESTCOMPONENT2', 'TESTCOMPONENT3', 'TESTCOMPONENT4', 'TESTCOMPONENT5', 'TEST_PS_1', 'TEST_QOS_COMPONENT']
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: TESTCOMPONENT2
 1 - HelloWorld
@@ -90,10 +90,10 @@
 1 - HelloWorld
 1 - HelloWorld
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT2
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT1
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT3
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT5
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT4
-1 - ----------T--:--:--.--- pyContainer deactivate_components - Deactivating component: TESTCOMPONENT
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT1
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT5
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT4
+1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT
 1 - Goodbye

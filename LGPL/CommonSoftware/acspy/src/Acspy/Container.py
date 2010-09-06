@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.47 2010/07/15 20:01:34 javarias Exp $
+# @(#) $Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.47 2010/07/15 20:01:34 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.47 2010/07/15 20:01:34 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -460,7 +460,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         del self.components[comp_entry[NAME]]
 
     #--ACTIVATOR IDL-----------------------------------------------------------
-    def deactivate_components(self, handle_list):
+    def deactivate_component(self, handle):
         '''
         Deactivate all components whose handles are given.
 
@@ -468,63 +468,62 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         the POA, and thus made unavailable through CORBA, and its resources are
         freed. If its code-base is no longer used, it is unloaded from memory.
 
-        Parameters: handle_list is a list of integers specifies component handles
+        Parameters: handle, specifies a component handle
 
-        void deactivate_components (in HandleSeq h)
+        void deactivate_component (in Handle h)
         '''
 
-        for handle in handle_list:
+        try:
+            comp_entry = self.components[self.compHandles[handle]]
+        except:
+            self.logger.logWarning("No entry for handle: " + str(handle))
+            print_exc()
+            return
+        self.logger.logInfo("Deactivating component: " + comp_entry[NAME])
+
+        #release the corba reference
+        comp_entry[CORBAREF]._release()
+
+        #destroy the Offshoot POA
+        comp_entry[POAOFFSHOOT].destroy(FALSE, FALSE)
+
+        #deactivate the component's underlying CORBA object
+        comp_entry[POA].deactivate_object(comp_entry[NAME])
+
+        #Have to mess with the state model
+        if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
+            comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DESTROYING)
+
+        try:  #Invoke the cleanUp method if implemented...
+            comp_entry[PYREF].cleanUp()
+        except Exception, e:
+            self.logger.logAlert("Failed to invoke 'cleanUp' LifeCycle method of: " + comp_entry[NAME])
+            print_exc()
+
+        #destroy the component's "personal" POA
+        comp_entry[POA].destroy(FALSE, FALSE)
+
+        #Have to mess with the state model
+        if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
+            comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DEFUNCT)
+
+        #remove one from the container's list of modules
+        self.compModuleCount[comp_entry[COMPMODULE]] = self.compModuleCount[comp_entry[COMPMODULE]] - 1
+
+        #if the number of references to this module falls to zero, it should be reloaded
+        if self.compModuleCount[comp_entry[COMPMODULE]] == 0:
             try:
-                comp_entry = self.components[self.compHandles[handle]]
+                reload(comp_entry[COMPMODULE])
             except:
-                self.logger.logWarning("No entry for handle: " + str(handle))
-                print_exc()
-                continue
-            self.logger.logInfo("Deactivating component: " + comp_entry[NAME])
-
-            #release the corba reference
-            comp_entry[CORBAREF]._release()
-
-            #destroy the Offshoot POA
-            comp_entry[POAOFFSHOOT].destroy(FALSE, FALSE)
-
-            #deactivate the component's underlying CORBA object
-            comp_entry[POA].deactivate_object(comp_entry[NAME])
-
-            #Have to mess with the state model
-            if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
-                comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DESTROYING)
-
-            try:  #Invoke the cleanUp method if implemented...
-                comp_entry[PYREF].cleanUp()
-            except Exception, e:
-                self.logger.logAlert("Failed to invoke 'cleanUp' LifeCycle method of: " + comp_entry[NAME])
+                self.logger.logWarning("Unable to reload:" + str(comp_entry[COMPMODULE]))
                 print_exc()
 
-            #destroy the component's "personal" POA
-            comp_entry[POA].destroy(FALSE, FALSE)
+            #remove it from the container's list
+            del self.compModuleCount[comp_entry[COMPMODULE]]
 
-            #Have to mess with the state model
-            if isinstance(comp_entry[PYREF], ACSComponent) or isinstance(comp_entry[PYREF], CharacteristicComponent):
-                comp_entry[PYREF].setComponentState(ACS.COMPSTATE_DEFUNCT)
-
-            #remove one from the container's list of modules
-            self.compModuleCount[comp_entry[COMPMODULE]] = self.compModuleCount[comp_entry[COMPMODULE]] - 1
-
-            #if the number of references to this module falls to zero, it should be reloaded
-            if self.compModuleCount[comp_entry[COMPMODULE]] == 0:
-                try:
-                    reload(comp_entry[COMPMODULE])
-                except:
-                    self.logger.logWarning("Unable to reload:" + str(comp_entry[COMPMODULE]))
-                    print_exc()
-
-                #remove it from the container's list
-                del self.compModuleCount[comp_entry[COMPMODULE]]
-
-            #Finally delete our references so the garbage collector can be used
-            del self.components[self.compHandles[handle]]
-            del self.compHandles[handle]
+        #Finally delete our references so the garbage collector can be used
+        del self.components[self.compHandles[handle]]
+        del self.compHandles[handle]
 
         return
     #--LOGGINGCONFIGURABLE IDL-----------------------------------------------------------
@@ -573,7 +572,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             else:
                 # No matching named logger was found so the default values are used
                 clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
-        except Exception as ex:
+        except Exception:
             # No named loggers were defined so the default values are used
             clogger.setLevels(maci.LoggingConfigurable.LogLevels(True, 0, 0))
 
@@ -938,11 +937,13 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         print "-->Signal Interrupt caught...shutting everything down cleanly"
 
         #Destroy what manager has told us about first
-        self.deactivate_components(self.shutdownHandles)
+        for h in self.shutdownHandles:
+            self.deactivate_component(h)
         self.shutdownHandles = []
         #Double-check to see if there's any extra components manager did not
         #let us know about!
-        self.deactivate_components(self.compHandles.keys())
+        for h in self.compHandles.keys():
+            self.deactivate_component(h)
 
         self.shutdown(ACTIVATOR_EXIT<<8)
     #--------------------------------------------------------------------------
