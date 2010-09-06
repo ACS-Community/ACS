@@ -37,7 +37,7 @@
             name="Service Summary">
       </view>
       <view
-            allowMultiple="true"
+            allowMultiple="false"
             class="alma.acs.eventbrowser.views.EventListView"
             icon="icons/sample.gif"
             id="alma.acs.eventbrowser.views.eventlist"
@@ -50,6 +50,14 @@
             icon="icons/sample.gif"
             id="alma.acs.eventbrowser.views.eventdetail"
             name="Event Details"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            class="alma.acs.eventbrowser.views.ArchivingListView"
+            icon="icons/sample.gif"
+            id="alma.acs.eventbrowser.views.archivingList"
+            name="Archiving List"
             restorable="true">
       </view>
    </extension>
@@ -100,6 +108,17 @@
                relative="org.eclipse.ui.editorss"
                showTitle="true"
                standalone="true"
+               visible="true">
+         </view>
+         <view
+               closeable="false"
+               id="alma.acs.eventbrowser.views.archivingList"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="alma.acs.eventbrowser.views.eventlist"
+               showTitle="true"
+               standalone="false"
                visible="true">
          </view>
          <view

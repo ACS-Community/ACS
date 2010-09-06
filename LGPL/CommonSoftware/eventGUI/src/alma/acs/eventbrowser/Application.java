@@ -12,12 +12,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
 import alma.acs.eventbrowser.preferences.MonitoringPreferencePage;
+import alma.acs.eventbrowser.views.ArchiveEventData;
 import alma.acs.eventbrowser.views.EventData;
 
 /**
  * This class controls all aspects of the application's execution
  * 
- * $Id: Application.java,v 1.6 2010/07/01 15:52:02 jschwarz Exp $
+ * $Id: Application.java,v 1.7 2010/09/06 11:02:18 jschwarz Exp $
  * 
  */
 public class Application implements IApplication, IStartup {
@@ -25,6 +26,7 @@ public class Application implements IApplication, IStartup {
 	public static final String PLUGIN_ID = "alma.acs.eventbrowser";
 	
 	public static ArrayBlockingQueue<EventData> equeue = new ArrayBlockingQueue<EventData>(50000);
+	public static ArrayBlockingQueue<ArchiveEventData> archQueue = new ArrayBlockingQueue<ArchiveEventData>(100000);
 	
 	private static boolean monitoring = false;
 

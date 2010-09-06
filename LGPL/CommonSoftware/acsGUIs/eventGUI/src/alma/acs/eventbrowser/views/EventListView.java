@@ -1,6 +1,7 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.Locale;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.action.Action;
@@ -28,6 +29,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
 
@@ -47,6 +49,8 @@ public class EventListView extends ViewPart {
 	public static final String ID = "alma.acs.eventbrowser.views.eventlist";
 	private Thread eventListThread;
 	private Thread channelRefreshThread;
+
+	private final ArrayBlockingQueue<EventData> equeue = Application.equeue;
 
 
 	public EventListView() {
@@ -129,7 +133,7 @@ public class EventListView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 
-		pel = new PopulateEventList(logger, viewer, em);
+		pel = new PopulateEventList(logger, viewer, em, equeue, "NC Events");
 		
 		channelRefreshThread = pel.getChannelRefreshThread();
 		channelRefreshThread.start();
@@ -237,6 +241,7 @@ public class EventListView extends ViewPart {
 		channelRefreshThread.interrupt();
 		eventListThread.interrupt();
 		em.closeAllConsumers();
+		logger.info("Average event rate: "+EventData.getAverageRate()+" events/s");
 		super.dispose();
 	}
 

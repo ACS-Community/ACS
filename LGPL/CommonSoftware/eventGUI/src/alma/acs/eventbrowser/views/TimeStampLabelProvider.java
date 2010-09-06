@@ -7,8 +7,8 @@ public class TimeStampLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof EventData)
-			return UTCUtility.getUTCDate(UTCUtility.utcOmgToJava(((EventData) element).getTimestamp()));
+		if (element instanceof AbstractEventData)
+			return UTCUtility.getUTCDate(UTCUtility.utcOmgToJava(((AbstractEventData) element).getTimestamp()));
 		return super.getText(element);
 	}
 

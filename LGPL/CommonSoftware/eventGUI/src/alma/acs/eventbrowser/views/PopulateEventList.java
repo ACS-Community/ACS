@@ -1,16 +1,14 @@
 package alma.acs.eventbrowser.views;
 
 import java.util.ArrayList;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.logging.Logger;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
-import alma.acs.eventbrowser.Application;
-import alma.acs.eventbrowser.model.AdminConsumer;
 import alma.acs.eventbrowser.model.EventModel;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.util.StopWatch;
 
 public class PopulateEventList {
@@ -25,13 +23,17 @@ public class PopulateEventList {
 	private TableViewer viewer;
 	private final Display display;
 	private EventModel em;
+	private ArrayBlockingQueue<?> queue;
+	private final String threadName;
 
-	public PopulateEventList(Logger logger, TableViewer viewer, EventModel em) {
+	public PopulateEventList(Logger logger, TableViewer viewer, EventModel em, ArrayBlockingQueue<?> queue, String threadName) {
 		super();
 		this.logger = logger;
 		this.viewer = viewer;
 		this.em = em;
+		this.queue = queue;
 		display = viewer.getControl().getDisplay();
+		this.threadName = threadName;
 	}
 
 	private long cycles = 0;
@@ -47,8 +49,8 @@ public class PopulateEventList {
 				public void run() {
 					//final Display display = viewer.getControl().getDisplay();
 					if (!display.isDisposed()) {
-						ArrayList<EventData> c = new ArrayList<EventData>(QUEUE_DRAIN_LIMIT);
-						int numberDrained = Application.equeue.drainTo(c, QUEUE_DRAIN_LIMIT);
+						ArrayList c = new ArrayList(QUEUE_DRAIN_LIMIT);
+						int numberDrained = queue.drainTo(c, QUEUE_DRAIN_LIMIT);
 						if (numberDrained == 0)
 							return;
 						totalNumberDrained += numberDrained;
@@ -61,6 +63,10 @@ public class PopulateEventList {
 							freeMemoryIfNecessary();
 							sw.logLapTime("Check free memory");
 							logger.fine("Total rows processed so far: "+totalNumberDrained);
+							if (threadName.equals("NC Events"))
+								logger.info("Average event rate: "+EventData.getAverageRate()+" events/s");
+							else
+								logger.info("Average archiving rate: "+ArchiveEventData.getAverageRate()+" monitor points/s");
 						}
 					}
 				}
@@ -95,7 +101,8 @@ public class PopulateEventList {
 				// startMonitoringAction.setEnabled(true);
 			}
 		};
-		final Thread th = new Thread(t, "Event monitoring");
+		
+		final Thread th = new Thread(t, threadName);
 
 		return th;
 	}

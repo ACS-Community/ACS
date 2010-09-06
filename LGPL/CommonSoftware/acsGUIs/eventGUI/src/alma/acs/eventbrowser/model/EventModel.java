@@ -34,13 +34,14 @@ import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
 import alma.acs.util.StopWatch;
 
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.22 2010/07/02 13:20:01 jschwarz Exp $
+ * $Id: EventModel.java,v 1.23 2010/09/06 11:02:18 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -66,6 +67,7 @@ public class EventModel {
 	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
 	private NotificationServiceMonitorControl nsmc;
+	private ArchiveConsumer archiveConsumer;
 
 	private EventModel() throws Exception {
 		String connectionString;
@@ -350,7 +352,21 @@ public class EventModel {
 			}
 		}
 		sw.logLapTime(" to create "+channelsProcessed+" channels ");
+		getArchiveConsumer();
 		return consumers;
+	}
+
+	public void getArchiveConsumer() {
+		synchronized (this ){
+			if (archiveConsumer == null)
+				try {
+					archiveConsumer = new ArchiveConsumer(cs,new ArchiveReceiver());
+					archiveConsumer.consumerReady();
+				} catch (AcsJException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 	}
 	
 	public static DynAnyFactory getDynAnyFactory() {
@@ -377,7 +393,10 @@ public class EventModel {
 				consumer.disconnect();
 			}
 		}
-		
+	}
+	
+	public void closeArchiveConsumer() {
+		archiveConsumer.disconnect();
 	}
 
 	
