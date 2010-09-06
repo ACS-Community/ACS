@@ -816,7 +816,7 @@ module maci {
 
 		/** 
 		    Notification that some components have just been 
-		    released (through release_component or release_components).
+		    released (through release_component).
 	     
 		    Notice that this is a oneway method and therefore 
 		    there cannot be return values or user exceptions.
@@ -846,7 +846,7 @@ module maci {
 		
 		/** 
 		    Notification that some component has just been 
-		    deactivated (through Container::activate_decomponent).
+		    deactivated (through Container::deactivate_component).
 	     
 		    Notice that this is a oneway method and therefore 
 		    there cannot be return values or user exceptions.
