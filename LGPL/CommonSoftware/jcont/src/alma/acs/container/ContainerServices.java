@@ -289,8 +289,10 @@ public interface ContainerServices extends ContainerServicesBase
 	 * dies or comes back to life (with <code>ComponentListener#includeForeignComponents()==false</code>). 
 	 * <p>
 	 * If the client wants to get notified even for components that it does not hold a reference to,
-	 * then <code>ComponentListener#includeForeignComponents()</code> should return <code>true</code>.
-	 * {@link ContainerServices}
+	 * then <code>ComponentListener#includeForeignComponents()</code> should return <code>true</code>;
+	 * notification about components that this client does not use may be limited though, e.g. 
+	 * to components collocated in the same container. 
+	 * 
 	 * @param listener
 	 * @see si.ijs.maci.ClientOperations#components_available(si.ijs.maci.ComponentInfo[])
 	 * @since ACS 6.0
@@ -429,7 +431,7 @@ public interface ContainerServices extends ContainerServicesBase
 	/**
 	 * Activates an Object as an OffShoot.
 	 * <p>
-	 * In constrast to the old {@link #activateOffShoot(Servant)} method, which always expects a
+	 * In contrast to the old {@link #activateOffShoot(Servant)} method, which always expects a
 	 * Servant (either subclass of xyzPOA skeleton or a xyzPOATie instance), this method is more flexible and 
 	 * receives two arguments: 
 	 * <ul>
@@ -469,6 +471,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>. 
 	 * @throws AcsJContainerServicesEx  if anything goes wrong, 
 	 *            especially if <code>offshootImpl</code> is does not implement {@link alma.ACS.OffShootOperations}.
+	 * @since ACS 9.0
 	 */
 	<T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface) 
 			throws AcsJContainerServicesEx;
