@@ -73,10 +73,9 @@ public class DynamicProxyFactory
 	 * @return Object
 	 * @throws DynWrapperException
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> T createClientProxy(Class<T> componentInterface, 
-											org.omg.CORBA.Object corbaStub, 
-											Class<?> corbaOperationsIF)
+	public <T, F> T createClientProxy(Class<T> componentInterface, 
+											F corbaStub, 
+											Class<F> corbaOperationsIF)
 			throws DynWrapperException
 	{
 		T proxy = null;
@@ -88,9 +87,9 @@ public class DynamicProxyFactory
 			// TODO: use the result
 			checkMethodMatching(componentInterface, handler);
 
-			proxy = (T) Proxy.newProxyInstance(componentInterface.getClassLoader(),
+			proxy = componentInterface.cast(Proxy.newProxyInstance(componentInterface.getClassLoader(),
 																new Class[] { componentInterface },
-																handler);
+																handler));
 		}
 		catch (DynWrapperException e) {
 			throw e;

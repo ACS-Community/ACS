@@ -107,7 +107,7 @@ public abstract class ComponentHelper
 	{
 		if (m_componentImpl== null)
 		{
-			Class internalIF = null;
+			Class<?> internalIF = null;
 			try {
 				m_componentImpl = _createComponentImpl();
 				internalIF = getInternalInterface();

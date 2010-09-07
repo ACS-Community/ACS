@@ -109,8 +109,7 @@ class ComponentMap
 			}
 			if (!m_map.isEmpty()) {
 				String missingHandles = "";
-				for (Iterator iter = m_map.keySet().iterator(); iter.hasNext();) {
-					int handle = ((Integer) iter.next()).intValue();
+				for (int handle : m_map.keySet()) {
 					missingHandles += handle + " ";
 				}
 				logger.info("Not enough component handles provided for sorting. Missing handles: " + missingHandles);
@@ -226,8 +225,7 @@ class ComponentMap
 	synchronized ComponentAdapter[] getAllComponentAdapters()
 	{
 		List<ComponentAdapter> nonNullAdapters = new ArrayList<ComponentAdapter>();
-		for (Iterator iter = m_map.values().iterator(); iter.hasNext();) {
-			ComponentAdapter compAdapter = (ComponentAdapter) iter.next();
+		for (ComponentAdapter compAdapter : m_map.values()) {
 			if (compAdapter != null) {
 				nonNullAdapters.add(compAdapter);
 			}
@@ -243,23 +241,21 @@ class ComponentMap
 	 * rather than a view backed by the map. 
 	 * 
 	 * <p>
-	 * TODO: check if it's ok to to include handles for reserved component adapters (value still null)
+	 * TODO: check if it's ok to include handles for reserved component adapters (value still null)
 	 *  
 	 * @return  keys for all component (adapters) in the map 
 	 * @see Map#keySet()
 	 */
 	synchronized int[] getAllHandles()
-	{		
-		Collection keys = m_map.keySet();
+	{
+		Collection<Integer> keys = m_map.keySet();
 		int[] ret = new int[keys.size()];
 		
 		int index=0;
-		for (Iterator iter = keys.iterator(); iter.hasNext();)
-		{
-			Integer key = (Integer) iter.next();
+		for (Integer key : keys) {
 			ret[index] = key.intValue();
 			index++;
-		}		
+		}
 
 		return ret;
 	}

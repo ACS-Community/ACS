@@ -996,13 +996,13 @@ public class ContainerServicesImpl implements ContainerServices
 	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
     throws AcsJContainerServicesEx
     {
-    	return getTransparentXmlWrapper(transparentXmlIF, componentReference, flatXmlIF);
+    	return (T) getTransparentXmlWrapper(transparentXmlIF, componentReference, flatXmlIF);
     }
 
 	/**
 	 * {@inheritDoc}.
 	 * <p>
-	 * TODO: implement:
+	 * TODO: implement shortcutting of xml (de-)serialization for collocated component or offshoot:
 	 * ask AcsContainer if it knows componentReference, and if it has transpXml-IF;
 	 * if so, get component impl directly;
 	 * check if respective component helper allows direct calls to transpXmlIF
@@ -1011,8 +1011,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-    @SuppressWarnings("unchecked")
-	public <T> T getTransparentXmlWrapper(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
+	public <T, F> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F componentReference, Class<F> flatXmlIF)
     	throws AcsJContainerServicesEx
     {
     	if (m_logger.isLoggable(Level.FINEST)) {

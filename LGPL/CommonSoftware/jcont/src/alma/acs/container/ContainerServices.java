@@ -373,7 +373,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @param flatXmlIF  component interface where entity objects are represented as 
 	 * 					serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
-	 * @deprecated Since ACS 9.0, the {@link #getTransparentXmlWrapper(Class, org.omg.CORBA.Object, Class)}
+	 * @deprecated Since ACS 9.0, the {@link #getTransparentXmlWrapper(Class, Object, Class)}
 	 *  method should be used; still, internally, this method will call
 	 *  {@link #getTransparentXmlWrapper(Class, org.omg.CORBA.Object, Class)}
 	 */
@@ -411,7 +411,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * In either case, the returned <code>Object</code> implements the 
 	 * <code>transparentXmlIF</code> interface. 
 	 * The client component that calls this method should only cast to that interface,
-	 * and does not need to know which of the two transport mechanisms are being used.   
+	 * and does not need to know which of the two transport mechanisms are being used.
 	 * 
 	 * @param transparentXmlIF remote object interface with XML binding classes.
 	 * @param objectReference  reference to the remote object to be wrapped, which
@@ -421,11 +421,9 @@ public interface ContainerServices extends ContainerServicesBase
 	 * 					serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
 	 */
-	public <T> T getTransparentXmlWrapper(
-		Class<T> transparentXmlIF,
-		org.omg.CORBA.Object objectReference,
-		Class flatXmlIF)
-		throws AcsJContainerServicesEx;
+	public <T, F> T getTransparentXmlWrapper(
+					Class<T> transparentXmlIF, F objectReference, Class<F> flatXmlIF)
+			throws AcsJContainerServicesEx;
 
 
 	/**
