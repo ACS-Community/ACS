@@ -683,23 +683,21 @@ public class AcsContainer extends ContainerPOA
     {
         m_logger.finer("creating component helper instance of type '" + exe + "' using classloader " + compCL.getClass().getName());
 
-        Class compHelperClass = null;
+        Class<? extends ComponentHelper> compHelperClass = null;
         try  {
-            compHelperClass = Class.forName(exe, true, compCL);
+            compHelperClass = (Class.forName(exe, true, compCL).asSubclass(ComponentHelper.class));
         } catch (ClassNotFoundException ex) {
         	AcsJContainerEx ex2 = new AcsJContainerEx(ex);
         	ex2.setContextInfo("component helper class '" + exe + "' not found.");
         	throw ex2;
-        }
-
-        if (!ComponentHelper.class.isAssignableFrom(compHelperClass)) {
-        	AcsJContainerEx ex = new AcsJContainerEx();
-        	ex.setContextInfo("component helper class '" + exe + "' does not inherit from required base class "
+        } catch (ClassCastException ex) {
+        	AcsJContainerEx ex2 = new AcsJContainerEx();
+        	ex2.setContextInfo("component helper class '" + exe + "' does not inherit from required base class "
                                             + ComponentHelper.class.getName());
-        	throw ex;
+        	throw ex2;
         }
 
-        Constructor helperCtor = null;
+        Constructor<? extends ComponentHelper> helperCtor = null;
         ComponentHelper compHelper = null;
         try {
             helperCtor = compHelperClass.getConstructor(new Class[]{Logger.class});
@@ -712,7 +710,7 @@ public class AcsContainer extends ContainerPOA
         }
 
         try {
-            compHelper = (ComponentHelper) helperCtor.newInstance(new Object[]{m_logger});
+            compHelper = helperCtor.newInstance(new Object[]{m_logger});
         } catch (Throwable thr) {
         	AcsJContainerEx ex = new AcsJContainerEx(thr);
         	ex.setContextInfo("component helper class '" + exe + "' could not be instantiated");
@@ -774,8 +772,7 @@ public class AcsContainer extends ContainerPOA
     public void deactivate_component(int handle) 
     	throws CannotDeactivateComponentEx
     {
-        final int[] handles = new int[] { handle };
-        logManagerRequest("received call to deactivate_component", handles);
+        m_logger.fine("received call to deactivate_component, handle=" + handle);
 
         // get the component adapters which are all != null, but might be in the wrong state
         ComponentAdapter[] compAdapters = null;
@@ -783,7 +780,7 @@ public class AcsContainer extends ContainerPOA
             compAdapters = m_activeComponentMap.getAllComponentAdapters();
         }
         else {
-            compAdapters = m_activeComponentMap.getComponentAdapters(handles);
+            compAdapters = m_activeComponentMap.getComponentAdapters(new int[] {handle});
         }
 
         // synchronization issue: mark the components for deactivation first
