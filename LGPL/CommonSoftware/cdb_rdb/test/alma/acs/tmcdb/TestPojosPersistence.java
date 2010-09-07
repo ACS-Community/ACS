@@ -17,7 +17,11 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.QueryException;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.jdbc.Work;
 
 import alma.acs.logging.ClientLogManager;
@@ -251,41 +255,12 @@ public class TestPojosPersistence extends TestCase {
 		createDB();
 
 		try {
-			Configuration config = new Configuration();
-			config.setActive(true);
-			config.setConfigurationName("rtobarConfig");
-			config.setCreationTime(new Date());
-			config.setFullName("Testing configuration");
-			config.setDescription("Configuration used for testing purposes");
 
-			Computer computer = new Computer();
-			computer.setName(COMPUTER_NAME);
-			computer.setRealTime(COMPUTER_RT);
-			computer.setNetworkName(COMPUTER_NETNAME);
-			computer.setProcessorType(COMPUTER_PROCTYPE);
-			computer.setPhysicalLocation(COMPUTER_LOCATION);
-			computer.setDiskless(COMPUTER_DISKLESS);
-			computer.setConfiguration(config);
-
-			hibernateUtil.beginTransaction();
-			hibernateUtil.getSession().save(config);
-			hibernateUtil.getSession().save(computer);
-			hibernateUtil.commitTransaction();
-
-			NetworkDevice networkDevice = new NetworkDevice();
-			networkDevice.setName("wall-e");
-			networkDevice.setNetworkName("wall-e.eso.org");
-			networkDevice.setPhysicalLocation("A033-2");
-			networkDevice.setConfiguration(config);
-
-			hibernateUtil.beginTransaction();
-			hibernateUtil.getSession().save(networkDevice);
-			hibernateUtil.commitTransaction();
-
+			createConfigurationComputerAndTwoNetworkDevices();
 			// Now we get all NetworkDevice's from DB (we should get two)
 			List<NetworkDevice> nDevices = hibernateUtil.getList(NetworkDevice.class);
 
-			assertEquals(2, nDevices.size()); // Found the 2 objects :)
+			assertEquals(3, nDevices.size()); // Found the 2 objects :)
 
 			boolean found = false;
 			for (Iterator<NetworkDevice> iterator = nDevices.iterator(); iterator.hasNext();) {
@@ -308,6 +283,136 @@ public class TestPojosPersistence extends TestCase {
 			dropDB();
 		}
 	
+	}
+
+	private void createConfigurationComputerAndTwoNetworkDevices() throws Exception  {
+		
+		Configuration config = new Configuration();
+		config.setActive(true);
+		config.setConfigurationName("rtobarConfig");
+		config.setCreationTime(new Date());
+		config.setFullName("Testing configuration");
+		config.setDescription("Configuration used for testing purposes");
+
+		Computer computer = new Computer();
+		computer.setName(COMPUTER_NAME);
+		computer.setRealTime(COMPUTER_RT);
+		computer.setNetworkName(COMPUTER_NETNAME);
+		computer.setProcessorType(COMPUTER_PROCTYPE);
+		computer.setPhysicalLocation(COMPUTER_LOCATION);
+		computer.setDiskless(COMPUTER_DISKLESS);
+		computer.setConfiguration(config);
+
+		hibernateUtil.beginTransaction();
+		hibernateUtil.getSession().save(config);
+		hibernateUtil.getSession().save(computer);
+		hibernateUtil.commitTransaction();
+
+		NetworkDevice networkDevice = new NetworkDevice();
+		networkDevice.setName("wall-e");
+		networkDevice.setNetworkName("wall-e.eso.org");
+		networkDevice.setPhysicalLocation("A033-2");
+		networkDevice.setConfiguration(config);
+
+		hibernateUtil.beginTransaction();
+		hibernateUtil.getSession().save(networkDevice);
+		hibernateUtil.commitTransaction();
+
+		networkDevice = new NetworkDevice();
+		networkDevice.setName("wall-e");
+		networkDevice.setNetworkName("wall-e.alma.cl");
+		networkDevice.setPhysicalLocation("A033-2");
+		networkDevice.setConfiguration(config);
+
+		hibernateUtil.beginTransaction();
+		hibernateUtil.getSession().save(networkDevice);
+		hibernateUtil.commitTransaction();
+	}
+
+	public void testCriteriaAPI() throws Exception {
+
+		createDB();
+
+		try {
+			createConfigurationComputerAndTwoNetworkDevices();
+
+			Configuration config = (Configuration)hibernateUtil.getList(Configuration.class).iterator().next();
+			assertNotNull(config);
+
+			// Now we test that using the criteria API we can find our objects
+			Criteria c = hibernateUtil.getSession().createCriteria(NetworkDevice.class);
+			c.add( Restrictions.eq("name", "wall-e") );
+			assertEquals(2, c.list().size());
+
+			c = hibernateUtil.getSession().createCriteria(NetworkDevice.class);
+			c.add( Restrictions.eq("name", "wall-e") );
+			c.add( Restrictions.eq("networkName", "wall-e.eso.org") );
+			assertEquals(1, c.list().size());
+
+			c = hibernateUtil.getSession().createCriteria(NetworkDevice.class);
+			c.add( Restrictions.eq("configuration", config) );
+			assertEquals(3, c.list().size());
+
+			c = hibernateUtil.getSession().createCriteria(Configuration.class);
+			c.add( Restrictions.eq("configurationName", "rtobarConfig"));
+			c.add( Restrictions.lt("creationTime", new Date()));
+			assertEquals(1, c.list().size());
+
+			try {
+				c = hibernateUtil.getSession().createCriteria(Configuration.class);
+				c.add( Restrictions.eq("configuratioName", "rtobarConfig")); // typo: should be configurationName
+				c.list();
+				fail("Should fail, property 'configuratioName' doesn't exist for Configuration objects");
+			} catch(QueryException e) {
+			}
+
+		} finally {
+			dropDB();
+		}
+	
+	}
+
+	public void testHQL() throws Exception {
+
+		createDB();
+
+		try {
+			createConfigurationComputerAndTwoNetworkDevices();
+
+			Configuration config = (Configuration)hibernateUtil.getList(Configuration.class).iterator().next();
+			assertNotNull(config);
+
+			// Now we test that using HQL queries
+			Query q = hibernateUtil.getSession().createQuery("from NetworkDevice as nd where nd.name = ?");
+			q.setParameter(0, "wall-e");
+			assertEquals(2, q.list().size());
+
+			q = hibernateUtil.getSession().createQuery("from NetworkDevice as nd where nd.name = ? and nd.networkName = ?");
+			q.setParameter( 0, "wall-e");
+			q.setParameter(1, "wall-e.eso.org" );
+			assertEquals(1, q.list().size());
+
+			q = hibernateUtil.getSession().createQuery("from NetworkDevice as nd where nd.configuration = ?");
+			q.setParameter( 0, config );
+			assertEquals(3, q.list().size());
+
+			q = hibernateUtil.getSession().createQuery("from Configuration as conf where conf.configurationName = ? and creationTime < ?");
+			q.setParameter(0, "rtobarConfig");
+			q.setParameter(1, new Date());
+			assertEquals(1, q.list().size());
+
+			try {
+				// typo: should be configurationName
+				q = hibernateUtil.getSession().createQuery("from Configuration as conf where conf.configuratioName = ?");
+				q.setParameter(0, "rtobarConfig");
+				q.list();
+				fail("Should fail, property 'configuratioName' doesn't exist for Configuration objects");
+			} catch(QueryException e) {
+			}
+
+		} finally {
+			dropDB();
+		}
 	}
 
 	public void testShutdown() throws HibernateUtilException {
