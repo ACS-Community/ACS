@@ -51,9 +51,9 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -194,19 +194,19 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -227,7 +227,7 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -248,7 +248,7 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -269,7 +269,7 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -290,7 +290,7 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 13
 1 - <timestamp> CounterSupplier sendBlocks - Counting ongoing with period 0.250s up to 15, now 14
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -331,9 +331,9 @@
 1 - <timestamp> CounterSupplier sendBlocks - Counter stopped, last value 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Python supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> CounterSupplier initialize - Creating an instance of Supplier
 1 - <timestamp> pythonContainer activate_component - Activated component: SUPPLIER_PYTHON
@@ -414,13 +414,13 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: SUPPLIER_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: SUPPLIER_PYTHON
 1 - <timestamp> CounterSupplier cleanUp - Destroying SUPPLIER_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
@@ -442,7 +442,7 @@
 1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
@@ -564,17 +564,17 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
@@ -596,7 +596,7 @@
 1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
@@ -658,11 +658,11 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
@@ -684,7 +684,7 @@
 1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
@@ -806,17 +806,17 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER4_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER4_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER4_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER5_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER5_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER5_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER6_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER6_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER6_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer getBlocks - Creating an instance of Consumer
@@ -838,7 +838,7 @@
 1 - <timestamp> CounterConsumer counterDataHandler - Counter now 14 (max 15), flag  will flip at 15
 1 - <timestamp> CounterConsumer counterDataHandler - Last event from Java supplier received, counter is now 15
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER1_PYTHON
 1 - <timestamp> pythonContainer activate_component - Activated component: CONSUMER2_PYTHON
@@ -900,9 +900,9 @@
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
 1 - <timestamp> CounterConsumer waitTillDone - CounterConsumer received total of 15 blocks
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER1_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER1_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER1_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER2_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER2_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER2_PYTHON...
-1 - <timestamp> pythonContainer deactivate_components - Deactivating component: CONSUMER3_PYTHON
+1 - <timestamp> pythonContainer deactivate_component - Deactivating component: CONSUMER3_PYTHON
 1 - <timestamp> CounterConsumer cleanUp - Destroying CONSUMER3_PYTHON...
