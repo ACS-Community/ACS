@@ -22,8 +22,6 @@
 
 package alma.acs.container.archive;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;

@@ -34,7 +34,6 @@ import alma.ACS.ACSComponentHelper;
 import alma.ACS.stringSeqHolder;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentQueryDescriptor;
