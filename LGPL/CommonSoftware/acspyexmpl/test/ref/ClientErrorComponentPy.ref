@@ -280,6 +280,6 @@
 2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 - 
 2 - 
-1 - ----------T--:--:--.--- pyErrContainer deactivate_components - Deactivating component: ERRORCOMP_PY
+1 - ----------T--:--:--.--- pyErrContainer deactivate_component - Deactivating component: ERRORCOMP_PY
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - Goodbye
