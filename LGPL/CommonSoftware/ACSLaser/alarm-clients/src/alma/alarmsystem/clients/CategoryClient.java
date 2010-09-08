@@ -171,7 +171,7 @@ public class CategoryClient {
 	 * @throws AlarmClientException In case of failure connecting the client
 	 * @throws AcsJCannotGetComponentEx If the alarm service component is not available
 	 * 
-	 * @see {@link CategoryClient.connect(AlarmSelectionListener listener, Category[] categories)}
+	 * @see CategoryClient#connect(AlarmSelectionListener, Category[])
 	 */
 	public void connect(AlarmSelectionListener listener) throws AlarmClientException, AcsJCannotGetComponentEx {
 		connect(listener,null);
