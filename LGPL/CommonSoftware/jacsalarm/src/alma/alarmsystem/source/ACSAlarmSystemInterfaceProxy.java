@@ -1,10 +1,7 @@
 package alma.alarmsystem.source;
 
 import java.util.Collection;
-
 import java.util.logging.Logger;
-
-import java.util.Iterator;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.XmlNormalizer;
@@ -74,21 +71,14 @@ public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 	 * @param states
 	 * @throws ASIException if the fault state collection can not be pushed.
 	 */
-	public void push(Collection states) {
+	public void push(Collection<ACSFaultState> states) {
 		if (states==null || states.size()==0) {
 			return;
 		}
-		Iterator iterator = states.iterator();
-
-	    while (iterator.hasNext()) {
-	      Object next = iterator.next();
-
-	      if (next instanceof ACSFaultState) {
-	        push((ACSFaultState) next);
-	      } else {
-	        throw new IllegalArgumentException("states collection does not contain ACSFaultState instances");
-	      }
-	    }
+		
+		for (ACSFaultState acsFaultState : states) {
+			push(acsFaultState);
+		}
 	}
 	
 	/**
@@ -96,7 +86,7 @@ public class ACSAlarmSystemInterfaceProxy implements ACSAlarmSystemInterface {
 	 * @param active the active fault states.
 	 * @throws ASIException if the fault state active list can not be pushed.
 	 */
-	public void pushActiveList(Collection active) {
+	public void pushActiveList(Collection<ACSFaultState> active) {
 		if (active==null || active.size()==0) {
 			return;
 		}
