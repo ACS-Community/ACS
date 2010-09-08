@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.122 2010/09/08 06:14:04 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.123 2010/09/08 06:19:23 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.122 2010/09/08 06:14:04 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.123 2010/09/08 06:19:23 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2242,7 +2242,7 @@ ContainerImpl::shutdown (
   //       we should catch exceptions.
   if (handles->length())
     {
-        for (CORBA::ULong i = 0; i < handles.length(); i++)
+        for (CORBA::ULong i = 0; i < handles->length(); i++)
           deactivate_component(handles[i]);
     }
 
