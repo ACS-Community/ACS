@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/laserclient.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/lasercore.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSystem.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSJMSMessageEntity.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/laserconsole.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
