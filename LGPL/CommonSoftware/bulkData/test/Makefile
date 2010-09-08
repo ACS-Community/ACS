@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.32 2010/03/25 09:49:38 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.33 2010/09/08 12:59:03 rcirami Exp $"
 #
 # Makefile of ........
 #
@@ -302,10 +302,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = BulkDataReceiverEx2 BulkDataSenderEx2 BulkDataSendRecv \
-	      BulkDataSenderDistr BulkDataReceiverDistr1 BulkDataReceiverDistr2 \
-	      BulkDataSenderEx1 BulkDataSenderPerf BulkDataReceiver1Perf \
-	      BulkDataReceiverEx3 BulkDataSenderEx3
+CDB_SCHEMAS = BulkDataSendRecv
 
 # 
 # IDL Files and flags
