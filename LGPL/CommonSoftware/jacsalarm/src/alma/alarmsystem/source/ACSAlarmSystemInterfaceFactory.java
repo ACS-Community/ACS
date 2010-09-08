@@ -3,7 +3,6 @@ package alma.alarmsystem.source;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
