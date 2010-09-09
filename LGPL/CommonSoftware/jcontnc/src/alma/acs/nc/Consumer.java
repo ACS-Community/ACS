@@ -24,6 +24,7 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -50,11 +51,13 @@ import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
+import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -316,8 +319,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	private void createConsumer() throws AcsJException {
 		consumerAdminID = new IntHolder();
 
-		// get the Consumer admin object
-		// @TODO: investigate reuse of admin objects. Otherwise we may allocate a new thread in the notification service for every subscriber.  
+		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class.
 		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminID);
 		
 		// sanity check
@@ -745,11 +747,17 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 					// everything looks OK...return control.
 					return;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				// if there's an exception in this case, we don't really care!
 			}
-		} else {
+			catch (InvocationTargetException ex) {
+				LOG_NC_EventReceive_HandlerException.log(m_logger, m_channelName, 
+						getNotificationFactoryName(), eventName, 
+						m_handlerFunctions.get(eventName).getClass().getName(), ex.getCause().toString());
+			}
+			catch (Exception e) {
+				m_logger.log(AcsLogLevel.DEBUG, "Unexpected exception during event handling.", e);
+			}
+		} 
+		else {
 			//m_logger.fine("Did not find a handler for event " + eventName);
 		}
 		// If this isn't overriden, just pass it on down the chain.
