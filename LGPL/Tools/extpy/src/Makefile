@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.37 2010/09/08 02:24:49 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.38 2010/09/09 00:33:19 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -40,11 +40,6 @@ PYXML: PyXML-0.8.4.tar.gz
 	@echo "== Building PYXML"
 	@gtar -zxvf PyXML-0.8.4.tar.gz; 
 	@cd PyXML-0.8.4; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
-
-SFOOD: snakefood-1.4-20100716.tgz
-	@echo "== Building SNAKEFOOD"
-	@gtar -zxvf snakefood-1.4-20100716.tgz; 
-	@cd snakefood-1.4; python setup.py build; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
 LXML: lxml-2.2.6.tar.gz
 	@echo "== Building LXML"
@@ -137,7 +132,7 @@ PY_DOC :
 
 
 #PY_DISUTIL_BUILD : PEXPECT PYXML PYCHECKER NUMERIC NUMARRAY NUMPY MATPLOTLIB LDAP GNUPLOT SNMP PYXML
-PY_DISUTIL_BUILD : PYXB PYXML LXML SFOOD
+PY_DISUTIL_BUILD : PYXB PYXML LXML
 	echo "== Building/Installing external Python modules now..."
 
 #
@@ -170,7 +165,7 @@ clean : clean_all
 	$(RM) *~ ../*~
 	$(RM) ../doc/doc ../doc/api ../doc/idl
 	$(foreach file, $(PY_DISUTIL), $(RM) $(file))
-	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2 lxml-2.2.6 snakefood-1.4
+	@rm -rf numarray-1.3.3 pexpect-0.999 Pmw pychecker-0.8.14 PyXML-0.8.4 matplotlib-0.73.1 PyXB-1.1.2 lxml-2.2.6
 	@echo " . . . clean done"
 
 clean_dist : clean clean_dist_all 
