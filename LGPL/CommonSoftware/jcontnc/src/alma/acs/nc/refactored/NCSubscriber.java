@@ -53,9 +53,10 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_FAIL;
+import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
+import alma.AcsNCTraceLog.LOG_NC_EventReceive_NoHandler;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_OK;
 import alma.AcsNCTraceLog.LOG_NC_ProcessingTimeExceeded;
-import alma.AcsNCTraceLog.LOG_NC_ProcessingWithoutHandler;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -119,6 +120,8 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	/**
 	 * The consumer admin object used by consumers to get a reference to the
 	 * structured supplier proxy.
+	 * <p>
+	 * We try to reuse a single admin object, to not allocate a new thread in the notification service for every subscriber.
 	 */
 	protected ConsumerAdmin consumerAdmin;
 
@@ -349,6 +352,8 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	/**
 	 * Called from Corba (via push_structured_event).
 	 * The implementation cannot assume any particular event type.
+	 * <p>
+	 * No exception is allowed to be thrown by this method, even if the receiver implementation throws a RuntimeExecption
 	 */
 	protected void processEvent(IDLEntity corbaData, EventDescription eventDescrip) {
 		
@@ -363,7 +368,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 //System.out.println("Using handlerTimeout=" + handlerTimeoutMap.get(eventName) + " for event " + eventName);
 		double maxProcessTimeSeconds = handlerTimeoutMap.get(eventName);
 
-		// we give preference to a registered receiver for the concrete subtype of IDLEntity
+		// we give preference to a receiver that has registered for this concrete subtype of IDLEntity
 		if (receivers.containsKey(eventType)) {
 			AcsEventSubscriber.Callback<? extends IDLEntity> receiver = receivers.get(eventType);
 
@@ -372,7 +377,9 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 				_process(receiver, corbaData, eventDescrip);
 			} 
 			catch (Throwable thr) {
-				// @TODO log exceptions from user code, see COMP-4716
+				LOG_NC_EventReceive_HandlerException.log(logger, channelName, 
+						getNotificationFactoryName(), eventName, 
+						receiver.getClass().getName(), thr.toString());
 			}
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
 
@@ -391,8 +398,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			genericReceiver.receive(corbaData, eventDescrip);
 			double usedSecondsToProcess = (profiler.getLapTimeMillis() / 1000.0);
 
-			// warn the end-user if the receiver is taking too long using a
-			// repeat guard.
+			// warn the end-user if the receiver is taking too long 
 			if (usedSecondsToProcess > maxProcessTimeSeconds && processTimeLogRepeatGuard.checkAndIncrement(eventName)) {
 				LOG_NC_ProcessingTimeExceeded.log(logger, channelName,
 						getNotificationFactoryName(), eventName,
@@ -405,7 +411,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		// log an error regardless of isTraceNCEventsEnabled
 		else {
 			if (isTraceNCEventsEnabled) {
-				LOG_NC_ProcessingWithoutHandler.log(logger, channelName, getNotificationFactoryName(), eventName);
+				LOG_NC_EventReceive_NoHandler.log(logger, channelName, getNotificationFactoryName(), eventName);
 			}
 		}
 	}
@@ -769,8 +775,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * @return string
 	 */
 	protected String getNotificationFactoryName() {
-		return helper.getNotificationFactoryNameForChannel(channelName,
-				channelNotifyServiceDomainName);
+		return helper.getNotificationFactoryNameForChannel(channelName, channelNotifyServiceDomainName);
 	}
 
 	/**
@@ -806,42 +811,34 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
-		IDLEntity struct = null;
-		try {
-			// @TODO: check that we do not allow sequences of structs as event data in ACS!!!
-			struct = (IDLEntity) convertedAny;
-
+		if (convertedAny == null || !(convertedAny instanceof IDLEntity)) {
+			// @TODO: compare with ACS-NC specs and C++ impl, and perhaps call generic receiver with null data,
+			//        if the event does not carry any data.
+			// @TODO: check that we do not somewhere in ACS allow also *sequences of IDL structs* as event data,
+			//        because here they will lead to this error.
+			String badDataType = ( convertedAny == null ? "null" : convertedAny.getClass().getName() );
+			LOG_NC_EventReceive_FAIL.log(
+					logger,
+					channelName,
+					getNotificationFactoryName(),
+					structuredEvent.header.fixed_header.event_type.type_name,
+					badDataType);
+		}
+		else {
+			// got good event data, will give it to the registered receiver
+			IDLEntity struct = (IDLEntity) convertedAny;
+			
 			if (isTraceNCEventsEnabled) {
 				LOG_NC_EventReceive_OK.log(
-								logger,
-								channelName,
-								getNotificationFactoryName(),
-								structuredEvent.header.fixed_header.event_type.type_name);
+						logger,
+						channelName,
+						getNotificationFactoryName(),
+						structuredEvent.header.fixed_header.event_type.type_name);
 			}
-		} 
-		catch (ClassCastException e) {
-			if (isTraceNCEventsEnabled && convertedAny != null) {
-				LOG_NC_EventReceive_FAIL.log(
-								logger,
-								channelName,
-								getNotificationFactoryName(),
-								structuredEvent.header.fixed_header.event_type.type_name);
-			}
-		}
 
-		if (struct != null) {
 			// process the extracted data
 			processEvent(struct, eDescrip);
-		} else {
-			// @todo (HSO) unclear why we ignore events w/o data attached. At least now we log it so people can complain.
-			// Should compare this with specs and C++ impl, and perhaps call generic receiver with null data.
-			if (isTraceNCEventsEnabled) {
-				logger.info("Will ignore event of type "
-							+ structuredEvent.header.fixed_header.event_type.type_name
-							+ " which has no data attached.");
-			}
 		}
-
 	}
 
 	/**
