@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: Makefile,v 1.21 2010/07/02 17:06:04 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.22 2010/09/09 00:53:02 agrimstrup Exp $"
 #
 # Makefile of ........
 #
@@ -52,6 +52,7 @@ clean :
 	rm -rf ../PRODUCTS/mico
 	rm -rf ../PROPRIETARY/CCSLite
 	rm -rf ../PROPRIETARY/vw
+	rm -rf ../PRODUCTS/snakefood-1.4
 	rm -rf *.log *~
 	@echo " . . . clean done"
 
