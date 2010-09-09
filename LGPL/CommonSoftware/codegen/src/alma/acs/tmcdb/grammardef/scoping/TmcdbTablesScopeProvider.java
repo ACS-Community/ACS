@@ -15,6 +15,7 @@ import alma.acs.tmcdb.grammardef.tmcdbTables.Column;
 import alma.acs.tmcdb.grammardef.tmcdbTables.ForeignConstraint;
 import alma.acs.tmcdb.grammardef.tmcdbTables.Key;
 import alma.acs.tmcdb.grammardef.tmcdbTables.Table;
+import alma.acs.tmcdb.grammardef.tmcdbTables.UniquenessConstraint;
 
 /**
  * This class contains custom scoping description.
@@ -47,6 +48,11 @@ public class TmcdbTablesScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	IScope scope_ForeignConstraint_foreignColumn(ForeignConstraint ctx, EReference ref) {
 		SimpleScope scope = new SimpleScope(IScope.NULLSCOPE, getColumnsAsIScopedElementsWithInheritance(ctx.getTable()) );
+		return scope;
+	}
+
+	IScope scope_UniquenessConstraint_columns(UniquenessConstraint ctx, EReference ref) {
+		SimpleScope scope = new SimpleScope(IScope.NULLSCOPE, getColumnsAsIScopedElementsWithInheritance((Table)ctx.eContainer()) );
 		return scope;
 	}
 
