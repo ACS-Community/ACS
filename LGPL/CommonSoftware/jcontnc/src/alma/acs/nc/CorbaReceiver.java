@@ -37,6 +37,7 @@ import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 
+import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 
@@ -162,6 +163,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
         String helperName = null;
         Object idlStruct = null;
 		String eventType = event.header.fixed_header.event_type.type_name;
+		String eventName = null;
 		try {
             helperName = event.filterable_data[0].value.type() + "Helper";
             helperName = helperName.replaceAll("::", ".");
@@ -173,6 +175,7 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
        		Object[] arg = new Object [1];
        		arg[0] = any;
  			idlStruct = extract.invoke(null,arg);
+ 			eventName = idlStruct.getClass().getName();
 		} catch (ClassNotFoundException e) {
 			throw new IllegalArgumentException("No such class as " + helper);
 		} catch (NoSuchMethodException e) {
@@ -212,6 +215,12 @@ public class CorbaReceiver extends alma.acs.nc.Consumer implements Receiver {
 						"Internal Error! Cannot find method receive(" + 
 						item.eventTypeName + ") in class " + receiverClass.getName());
 					} catch (InvocationTargetException ex) {
+						// see http://jira.alma.cl/browse/COMP-4716 about error handling
+						LOG_NC_EventReceive_HandlerException.log(m_logger, m_channelName, 
+								getNotificationFactoryName(), eventName, 
+								receiverClass.getName(), ex.getCause().toString());
+						// throwing the ex does not help much, since the ORB will not log it any better than this code,
+						// but we leave this anyway because no big changes will be made to this class that awaits deprecation.
 						throw new IllegalArgumentException (
 						"Internal Error! Cannot invoke method receive(" + 
 						item.eventTypeName + ") in class " + receiverClass.getName());
