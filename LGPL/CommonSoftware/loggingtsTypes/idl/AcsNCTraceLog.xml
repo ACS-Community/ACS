@@ -88,6 +88,53 @@
 	<!-- =========== Event processing =========== -->
 	
 	<LogDefinition
+		logName="LOG_NC_EventReceive_OK"
+		shortDescription="Event successfully received, ready to be processed"
+		description="Event successfully received, ready to be processed. The NC libraries will only log this message if the CDB enables event tracing for the particular channel, see 'IntegrationLogs' defined in EventChannel.xsd"
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_FAIL"
+		shortDescription="Received a corrupted event, which will not be processed."
+		description="Received a corrupted event whose data was null or not a subtype of IDLEntity. Thus this event cannot be processed."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+		<Member name="EventDataType" type="string" description="The offending event data type, or 'null'" />
+	</LogDefinition>	
+
+	<LogDefinition
+		logName="LOG_NC_EventReceive_NoHandler"
+		shortDescription="Event will be ignored because no registered receiver was found."
+		description="An event was properly received, but no registered receiver was found, thus ACS will ignore this event. NC libs must carefully check whether event type filtering should be done in the NotifyService (then this is serious) or in the subscriber libraries (then this is normal), and adjust log level or use repeat guards accordingly."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_EventReceive_HandlerException"
+		shortDescription="The registered event handler illegally threw an exception."
+		description="Event handlers are not allowed to throw exceptions when they fail for whatever reason. If they do nonetheless, you see this log."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="EventName" type="string" description="Name of the processed event." />
+		<Member name="HandlerClass" type="string" description="The receiver class that let the exception fly through." />
+		<Member name="ExceptionData" type="string" description="Data about the caught exception." />
+	</LogDefinition>
+	
+	<LogDefinition
 		logName="LOG_NC_ProcessingTimeExceeded"
 		shortDescription="Took too long to process an event"
 		description="Took too long to process an event, considering the maxProcessTime attribute from the EventChannel schema."
@@ -99,38 +146,6 @@
 		<Member name="LogOcurrencesNumber" type="long" description="Amount of discarded messages since the last call (repeat guard applied)." />
 	</LogDefinition>
 	
-	<LogDefinition
-		logName="LOG_NC_ProcessingWithoutHandler"
-		shortDescription="Event processed without handler"
-		description="Event processed without handler, could not find a registered receiver."
-		priority="DEBUG"
-		audience="Developer">
-		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
-		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
-		<Member name="EventName" type="string" description="Name of the processed event." />
-	</LogDefinition>
-	
-	<LogDefinition
-		logName="LOG_NC_EventReceive_OK"
-		shortDescription="Event successfully received, ready to be processed"
-		description="Event successfully received, ready to be processed."
-		priority="DEBUG"
-		audience="Developer">
-		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
-		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
-		<Member name="EventName" type="string" description="Name of the processed event." />
-	</LogDefinition>
-	
-	<LogDefinition
-		logName="LOG_NC_EventReceive_FAIL"
-		shortDescription="Failed to receive event, it won't be processed"
-		description="Failed to receive event. Failed to convert event data, it won't be processed."
-		priority="DEBUG"
-		audience="Developer">
-		<Member name="ChannelName" type="string" description="Name of the channel subscribed to." />
-		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
-		<Member name="EventName" type="string" description="Name of the processed event." />
-	</LogDefinition>	
 	
 </LogDefinitionType>
 
