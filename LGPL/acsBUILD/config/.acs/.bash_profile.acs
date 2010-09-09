@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.103 2010/08/19 14:17:39 htischer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.104 2010/09/09 00:54:14 agrimstrup Exp $"
 #
 #
 #
@@ -142,8 +142,6 @@
 #     unset WIND_BASE
 # after have executed this script.
 #
-######
-# MATPLOTLIBDATA # matplotlib Python package location
 #######################################################
 
 #
@@ -525,13 +523,6 @@ fi
 if [ -d $ACE_ROOT_DIR/vxworks ]
 then
     ACE_ROOT_VW=$ACE_ROOT_DIR/vxworks
-fi
-
-# set the following variable to the path where you installed matplotlib Python
-# package.
-if [ X"$MATPLOTLIBDATA" = X ] || [ X"$ACS_RETAIN" = X ]
-then
-   MATPLOTLIBDATA=$ACSROOT/share/matplotlib
 fi
 
 # About JAVA_HOME:
