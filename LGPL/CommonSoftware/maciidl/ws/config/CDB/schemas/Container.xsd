@@ -138,9 +138,9 @@ Currently not mapped to the TMCDB.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		
-		<xs:attribute name="Recovery" type="xs:boolean" use="optional" default="true">
+		<xs:attribute name="Recovery" type="xs:boolean" use="optional" default="false">
 			<xs:annotation>
-				<xs:documentation>By default when a Container that crashes is restarted the system tries to reload all the same Components that where active at the time of the crash. This can lead to problems, for example, trying to debug a compont that causes the crash of the container just at activation time. Therefore it is possible to set this options to prevent reloading the components and getting into a deadlock situation.</xs:documentation>
+				<xs:documentation>If true, all components will be automatically reloaded when the container gets restarted after a crash. The default has changed from true to false with ACS 9.0 (see http://jira.alma.cl/browse/COMP-3277) and should switch back as soon as ACS allows components to declare that they are stateless or have their state managed (reinjected); then a value "true" will only cause reloading those components of which the container knows that they are safe to restart. Some components may prefer to not be reloaded automatically after a container restart, but rather let the user go through an explicit restart procedure. Another reason to disable automatic component reloading would be a container crash caused during the activation of a (C++) component.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		
