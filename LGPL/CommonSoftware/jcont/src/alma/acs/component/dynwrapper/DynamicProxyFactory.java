@@ -69,7 +69,7 @@ public class DynamicProxyFactory
 	 * The proxy object will delegate calls to the corba stub, and will translate parameters as necessary.
 	 *   
 	 * @param componentInterface  the component interface
-	 * @param corbaStub
+	 * @param corbaStub (should be a Corba object, but this is currently not enforced)
 	 * @return Object
 	 * @throws DynWrapperException
 	 */

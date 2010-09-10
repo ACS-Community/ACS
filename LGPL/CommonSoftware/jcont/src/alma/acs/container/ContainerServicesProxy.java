@@ -283,7 +283,7 @@ public class ContainerServicesProxy implements ContainerServices
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlWrapper(java.lang.Class, java.lang.Object, java.lang.Class)
 	 */
 	@Override
-	public <T, F extends org.omg.CORBA.Object> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F objectReference, Class<F> flatXmlIF)
+	public <T, F> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F objectReference, Class<F> flatXmlIF)
 			throws AcsJContainerServicesEx {
 		check();
 		return delegate.getTransparentXmlWrapper(transparentXmlIF, objectReference, flatXmlIF);

@@ -1010,7 +1010,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-	public <T, F extends org.omg.CORBA.Object> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F componentReference, Class<F> flatXmlIF)
+	public <T, F> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F flatXmlObject, Class<F> flatXmlIF)
     	throws AcsJContainerServicesEx
     {
     	if (m_logger.isLoggable(Level.FINEST)) {
@@ -1023,7 +1023,7 @@ public class ContainerServicesImpl implements ContainerServices
         {
             wrapper = DynamicProxyFactory.getDynamicProxyFactory(m_logger).createClientProxy(
                     transparentXmlIF,
-                    componentReference,
+                    flatXmlObject,
                     flatXmlIF);
         }
         catch (Throwable thr)

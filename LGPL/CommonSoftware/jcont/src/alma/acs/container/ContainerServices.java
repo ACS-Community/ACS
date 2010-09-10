@@ -414,13 +414,13 @@ public interface ContainerServices extends ContainerServicesBase
 	 * 
 	 * @param transparentXmlIF remote object interface with XML binding classes.
 	 * @param objectReference  reference to the remote object to be wrapped, which
-	 *                    implements <code>flatXmlIF</code>. Current supported
-	 *                    remote objects are ACS Components and OffShoots 
-	 * @param flatXmlIF  remote object interface where entity objects are represented as 
-	 * 					serialized XML inside a CORBA struct.
+	 *                    implements <code>flatXmlIF</code>. 
+	 *                    Currently supported remote objects are ACS Components and OffShoots.
+	 * @param flatXmlIF   remote object interface ("xxxOperations") where entity objects are represented as 
+	 *                    serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
 	 */
-	public <T, F extends org.omg.CORBA.Object> T getTransparentXmlWrapper(
+	public <T, F> T getTransparentXmlWrapper(
 					Class<T> transparentXmlIF, F objectReference, Class<F> flatXmlIF)
 			throws AcsJContainerServicesEx;
 
