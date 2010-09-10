@@ -57,7 +57,6 @@ public interface ContainerServices extends ContainerServicesBase
 	// basic needs (the rest comes from the base class)
 	/////////////////////////////////////////////////////////////
 		
-        
 	/**
 	 * Delivers the <code>ComponentStateManager</code> object
 	 * through which the component and the container administrate the
@@ -421,7 +420,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * 					serialized XML inside a CORBA struct.
 	 * @return the object that implements <code>transparentXmlIF</code>.
 	 */
-	public <T, F> T getTransparentXmlWrapper(
+	public <T, F extends org.omg.CORBA.Object> T getTransparentXmlWrapper(
 					Class<T> transparentXmlIF, F objectReference, Class<F> flatXmlIF)
 			throws AcsJContainerServicesEx;
 
