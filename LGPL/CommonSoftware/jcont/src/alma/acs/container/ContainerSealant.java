@@ -37,6 +37,7 @@ import alma.ACS.ACSComponentOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.component.dynwrapper.DynWrapperException;
 import alma.acs.container.corba.CorbaNullFinder;
+import alma.acs.exceptions.CorbaExceptionConverter;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.monitoring.DynamicInterceptor;
 import alma.acs.monitoring.DynamicInterceptor.InterceptionHandler;
@@ -169,7 +170,7 @@ public class ContainerSealant
 			if (realThr != null) {
 			
 				if (realThr instanceof UserException) {
-					// should have been declared in IDL, but better check!
+					// Any thrown Corba user exception should be declared in the IDL, but we better check!
 					boolean declared = false;
 					Class<?>[] declaredExceptions = method.getExceptionTypes();
 					for (int i = 0; i < declaredExceptions.length; i++) {
@@ -181,11 +182,13 @@ public class ContainerSealant
 					String msg = (declared ? "checked exception " : "unchecked user exception (should have been declared in IDL!) ");
 					msg += "was thrown in functional method '" + qualMethodName + "':";
 					Level exLogLevel = (declared ? AcsLogLevel.DEBUG : Level.WARNING);
-					logger.log(exLogLevel, msg, realThr);
+					
+					// log the exception including an optional embedded ErrorTrace (as chain of AcsJxxx exceptions), see COMP-3654
+					Throwable thrExpanded = CorbaExceptionConverter.convertHiddenErrorTrace(realThr);
+					logger.log(exLogLevel, msg, thrExpanded);
+					
 					throw realThr;
 				}
-				// // TODO perhaps support ACS error handling
-				// else if (realThr instanceof AcsJException) {...}
 				else if (realThr instanceof DynWrapperException) {
 					String msg = "the dynamic xml entity translator failed with the functional method '" + qualMethodName + "': ";
 					logger.log(Level.SEVERE, msg, realThr);
