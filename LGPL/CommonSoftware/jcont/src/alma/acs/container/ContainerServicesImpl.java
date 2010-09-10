@@ -754,7 +754,7 @@ public class ContainerServicesImpl implements ContainerServices
 	public void releaseComponent(String curl) {
 		// we keep the "forceful" release option as a switch in the code. 
 		// It was taken out for ACS 7.0, but may come back in the future. 
-		final boolean forcefully = false;
+		final boolean forcibly = false;
 		
 		if (curl == null) {
 			m_logger.info("Invalid curl 'null', nothing to release.");
@@ -781,9 +781,9 @@ public class ContainerServicesImpl implements ContainerServices
 			m_usedComponentsMap.remove(curl);
 		}
 		
-		m_logger.fine("about to release component " + curl + (forcefully ? " forcefully" : ""));
+		m_logger.fine("about to release component " + curl + (forcibly ? " forcibly" : ""));
 		try {
-			if (forcefully) {
+			if (forcibly) {
 				m_acsManagerProxy.force_release_component(getEffectiveClientHandle(), curl);
 			}
 			else {
@@ -811,7 +811,6 @@ public class ContainerServicesImpl implements ContainerServices
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends OffShootOperations> OffShoot activateOffShoot(T offshootImpl, Class<T> idlOpInterface)
 		throws AcsJContainerServicesEx
@@ -847,9 +846,9 @@ public class ContainerServicesImpl implements ContainerServices
 				// Get the POATie class and the expected xyzOperations interface
 				String baseClassName = idlOpInterface.getName().substring(0, idlOpInterface.getName().length()-1);
 				poaTieClassName =  baseClassName + "POATie";
-				Class poaTieClazz = Class.forName( poaTieClassName );
+				Class<?> poaTieClazz = Class.forName( poaTieClassName );
 				Method implGetter = poaTieClazz.getMethod("_delegate", (Class[]) null);
-				Class operationsIF = implGetter.getReturnType();
+				Class<?> operationsIF = implGetter.getReturnType();
 
 				// Create the dynamic XML entities wrapper
 				Object proxy = DynamicProxyFactory.getDynamicProxyFactory(m_logger)
@@ -886,7 +885,7 @@ public class ContainerServicesImpl implements ContainerServices
 				// the _delegate getter method is mandated by the IDL-to-Java mapping spec
 				Method implGetter = servant.getClass().getMethod("_delegate", (Class[]) null);
 				isTie = true;
-				Class operationsIF = implGetter.getReturnType();
+				Class<?> operationsIF = implGetter.getReturnType();
 				java.lang.Object offshootTiedImpl = implGetter.invoke(servant, (java.lang.Object[]) null);
 				// now we insert the interceptor between the tie skeleton and the impl.
 				// Offshoots have no name, so we construct one from the component name and the offshoot interface name
@@ -1011,7 +1010,7 @@ public class ContainerServicesImpl implements ContainerServices
 	 *   
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
-	public <T, F> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F componentReference, Class<F> flatXmlIF)
+	public <T, F extends org.omg.CORBA.Object> T getTransparentXmlWrapper(Class<T> transparentXmlIF, F componentReference, Class<F> flatXmlIF)
     	throws AcsJContainerServicesEx
     {
     	if (m_logger.isLoggable(Level.FINEST)) {
