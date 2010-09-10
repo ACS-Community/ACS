@@ -2,22 +2,45 @@ package si.ijs.acs.objectexplorer.engine.BACI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
-import si.ijs.acs.objectexplorer.engine.*;
-import org.omg.CORBA.*;
-
+import org.omg.CORBA.Any;
+import org.omg.CORBA.AttributeDescription;
+import org.omg.CORBA.AttributeMode;
+import org.omg.CORBA.Bounds;
+import org.omg.CORBA.Contained;
+import org.omg.CORBA.DefinitionKind;
+import org.omg.CORBA.EnumDef;
+import org.omg.CORBA.EnumDefHelper;
+import org.omg.CORBA.IRObject;
+import org.omg.CORBA.InterfaceDef;
+import org.omg.CORBA.InterfaceDefHelper;
+import org.omg.CORBA.OperationDescription;
+import org.omg.CORBA.ParameterDescription;
+import org.omg.CORBA.ParameterMode;
+import org.omg.CORBA.Request;
+import org.omg.CORBA.StructDef;
+import org.omg.CORBA.StructDefHelper;
+import org.omg.CORBA.StructMember;
+import org.omg.CORBA.TCKind;
 import org.omg.CORBA.TypeCode;
 import org.omg.DynamicAny.DynAny;
-import org.omg.DynamicAny.DynAnyFactory;
-import org.omg.DynamicAny.DynStruct;
+import org.omg.DynamicAny.DynArray;
 import org.omg.DynamicAny.DynEnum;
 import org.omg.DynamicAny.DynSequence;
-import org.omg.DynamicAny.DynArray;
+import org.omg.DynamicAny.DynStruct;
 import org.omg.DynamicAny.NameDynAnyPair;
 
-import alma.ACSErr.ErrorTrace;
+import si.ijs.acs.objectexplorer.engine.DataElement;
+import si.ijs.acs.objectexplorer.engine.DataEnum;
+import si.ijs.acs.objectexplorer.engine.DataException;
+import si.ijs.acs.objectexplorer.engine.DataStruct;
+import si.ijs.acs.objectexplorer.engine.DataType;
+import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
+import si.ijs.acs.objectexplorer.engine.Operation;
+import si.ijs.acs.objectexplorer.engine.RemoteCall;
+import si.ijs.acs.objectexplorer.engine.RemoteException;
 
 /**
  * Insert the type's description here.
@@ -518,7 +541,7 @@ public  static String fullTypeToType(String fullType) {
 	if (fullType == null) throw new NullPointerException("fullType");
 	int index1 = fullType.lastIndexOf('/');
 	int index2 = fullType.lastIndexOf(':');
-	if (index1 == -1 || index2 == -1) throw new IntrospectionInconsistentException("Type returned by the Manager is not a valid IDL ID, beginning with IDL: and ending with :1.0");
+	if (index1 == -1 || index2 == -1 || index1 > index2) throw new IntrospectionInconsistentException("Type '" + fullType + "' is not a valid IDL ID, beginning with IDL: and ending with :1.0");
 	return fullType.substring(index1 + 1, index2);
 }
 /**
