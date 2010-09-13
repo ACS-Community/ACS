@@ -35,6 +35,7 @@ if [ "$ACS_TMP" = "" ]
 then 
     export ACS_TMP=$ACSDATA/tmp/`hostname -s`
 fi
+INSTANCE_DIR=$ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE
 
 #replace /'s with _'s in the container name
 FILE=`echo "${!#}.out" | sed 's/\//_/g'`
@@ -49,4 +50,4 @@ then
 fi
 
 #Just delgate to helper script
-acsutilBlock -f $ACS_TMP/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@
+acsutilBlock -f $INSTANCE_DIR/$FILE -b "ContainerStatusMsg: Ready" $EXTRA_PARAMS $CONTAINERSTARTCMD $@

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testTmp.cpp,v 1.18 2009/11/04 12:43:31 msekoran Exp $"
+* "@(#) $Id: testTmp.cpp,v 1.19 2010/09/13 16:38:21 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -89,15 +89,17 @@ void printFileName(const char * fileName)
     ACE_CString tmpFileName(getenv("ACSDATA"));
     tmpFileName += "/tmp/";
     tmpFileName += getenv("HOST");
+    tmpFileName += "/ACS_INSTANCE.";
+    tmpFileName += getenv("ACS_INSTANCE");
     tmpFileName += "/someFileName";
     fileName = getTempFileName(0, "someFileName");
     if(fileName.compare(tmpFileName) == 0)
 	{
-	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/filename is OK");
+	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/filename is OK");
 	}
     else
 	{
-	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/filename failed");
+	TEST("Comparison of getTmpFileName(someFileName) with $ACSDATA/tmp/$HOST/ACS_INSTANCE.$ACS_INSTANCE/filename failed");
         printFileName(fileName.c_str());
         printFileName(tmpFileName.c_str());
 	}
@@ -108,16 +110,16 @@ void printFileName(const char * fileName)
      * but I just replace it with an empty string
      */
     putenv("ACSDATA=");
-    putenv("HOST=HOST");     
+    putenv("HOST=HOST");
 
-    TEST("'/tmp/HOST/someFileName' should be returned.");
+    TEST("'/tmp/HOST/ACS_INSTANCE.X/someFileName' should be returned.");
     fileName = getTempFileName(0, "someFileName");
     printFileName(fileName.c_str());
     
     putenv("ACSDATA=/ignoredPath");
     putenv("ACS_TMP=/acs/tmp");
 
-    TEST("'/acs/tmp/someFileName' should be returned.");
+    TEST("'/acs/tmp/ACS_INSTANCE.X/someFileName' should be returned.");
     fileName = getTempFileName(0, "someFileName");
     printFileName(fileName.c_str());
 

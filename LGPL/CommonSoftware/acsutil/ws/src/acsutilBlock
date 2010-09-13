@@ -1,10 +1,12 @@
 #!/bin/bash
+. acsstartupConstants
+. acsstartupAcsInstance
 
 ### ----------- Command Line Parsing ---------------------
 # These will contain the parsing results (CL_XXX, CL = command line)
-if [ "$ACS_TMP" = "" ]
-then
-    export ACS_TMP=$ACSDATA/tmp/`hostname -s`
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+if [ ! -d $INSTANCE_DIR ]; then
+   INSTANCE_DIR=$ACS_TMP
 fi
 
 CL_STRING=
@@ -112,7 +114,7 @@ fi
 #set the file to save output to
 if [ "$CL_FILE" = "" ] 
 then
-    CL_FILE=$ACS_TMP/`basename $0`.$$
+    CL_FILE=$INSTANCE_DIR/`basename $0`.$$
 fi
 
 #first we check to see if this is being run under tat and there's 

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsutilTempFile.cpp,v 1.17 2009/11/04 12:43:31 msekoran Exp $"
+* "@(#) $Id: acsutilTempFile.cpp,v 1.18 2010/09/13 16:38:21 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -72,6 +72,14 @@ getTempFileName(const ACE_TCHAR * fileNameEnvVar, const ACE_TCHAR * fileName)
           path += envVal;
       }
   }
+  // add acs instance path (env. var. is being read to be consitent with scripts)
+  envVal = getenv("ACS_INSTANCE");
+  if (envVal && *envVal) 
+  {
+      path += ACE_DIRECTORY_SEPARATOR_CHAR;
+      path += ACE_CString("ACS_INSTANCE.");
+      path += envVal;
+  }
 
   path += ACE_DIRECTORY_SEPARATOR_CHAR;
   path += fileName;
@@ -85,6 +93,10 @@ getTempFileName(const ACE_TCHAR * fileNameEnvVar, const ACE_TCHAR * fileName)
 // REVISION HISTORY:
 //
 // $Log: acsutilTempFile.cpp,v $
+// Revision 1.18  2010/09/13 16:38:21  tstaig
+// Changes in regard to COMP-4482 and COMP-4305.
+// Logs and files should be stored in instance-specific directory.
+//
 // Revision 1.17  2009/11/04 12:43:31  msekoran
 // ACSDATA/tmp/HOST
 //
