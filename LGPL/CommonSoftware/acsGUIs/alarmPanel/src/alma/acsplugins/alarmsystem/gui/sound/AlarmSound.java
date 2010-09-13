@@ -1,4 +1,21 @@
-	
+/*
+ * ALMA - Atacama Large Millimiter Array (c) European Southern Observatory, 2010
+ * 
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * 
+ */
 package alma.acsplugins.alarmsystem.gui.sound;
 
 import java.io.IOException;
@@ -144,7 +161,7 @@ public class AlarmSound extends TimerTask {
 		tableModel=model;
 		// Start the timer
 		timer.schedule(this, TIME_INTERVAL*1000, TIME_INTERVAL*1000);
-		dumpAudioInformation();
+		//dumpAudioInformation();
 	}
 	
 	/**
@@ -157,13 +174,11 @@ public class AlarmSound extends TimerTask {
 		if (priority<0 || priority>3) {
 			throw new IllegalStateException("Invalid alarm priority "+priority);
 		}
-		System.out.println("Emitting sound for priority "+priority);
 		URL url=soundURLs[priority];
 	
 		AudioInputStream audioInputStream=null;
 		try {
 			audioInputStream=AudioSystem.getAudioInputStream(url);
-			System.out.println("Audio stream obtained from AudioSystem");
 		} catch (Throwable t) {
 			// If there is an error then the panel does nothing
 			// It might happen for example if another application
@@ -184,24 +199,20 @@ public class AlarmSound extends TimerTask {
 		// one is available is found
 		for (int i=0; i<mixersInfo.length && line==null; i++) {
 			Mixer.Info mi=mixersInfo[i];
-			System.out.println("Trying mixer "+mi.getDescription());
 			try {
 				Mixer mixer = AudioSystem.getMixer(mi);
 				line=(SourceDataLine)mixer.getLine(info);
-				System.out.println("Line obtained");
 			} catch (LineUnavailableException lue) {
-				System.out.println("Line unavailable "+lue.getMessage());
+				System.err.println("Line unavailable "+lue.getMessage());
 				line=null;
 				continue;
 			} catch (Throwable t) {
-				System.out.println("Exception getting the line "+t.getMessage());
+				System.err.println("Exception getting the line "+t.getMessage());
 				line=null;
 				continue;
 			}
-			System.out.println("Availbale bytes "+line.available());
 			try {
 				line.open(audioFormat, EXTERNAL_BUFFER_SIZE);
-				System.out.println("Line opened");
 			} catch (Throwable t) {
 				System.err.println("Error opeining the line: "+t.getMessage());
 				line=null;
@@ -209,7 +220,6 @@ public class AlarmSound extends TimerTask {
 			}
 			try {
 				line.start();
-				System.out.println("Line started");
 			} catch (Throwable t) {
 				System.err.println("Error starting the line: "+t.getMessage());
 				line=null;
@@ -224,9 +234,7 @@ public class AlarmSound extends TimerTask {
 			}
 			// plays what's left and and closes the audioChannel
 		    line.drain();
-		    System.out.println("Line drain");
 		    line.close();
-		    System.out.println("Line closed");
 		}
 	}
 	
@@ -246,14 +254,10 @@ public class AlarmSound extends TimerTask {
 		try {
 		    while (readBytes != -1) {
 		    	readBytes = audioIStream.read(audioBuffer, 0,audioBuffer.length);
-		    	System.out.println("\t"+readBytes+" bytes read");
 		    	if (readBytes >= 0){
 		    		int ret=line.write(audioBuffer, 0, readBytes);
-		    		System.out.println("\t"+ret+" bytes sent");
 		    	}
 		    }
-		    System.out.println("Bytes sent.");
-		    
 		} catch (IOException e1) {
 		    System.err.println("Exception caught: "+e1.getMessage());
 		}
@@ -299,12 +303,10 @@ public class AlarmSound extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		System.out.println("Timer task");
 		// Should the inhibit level be cleared?
 		if (++inhibitCounter>=INHIBIT_TIME) {
 			inhibitCounter=0;
 			soundLevel=3;
-			System.out.println("Sound reset to "+soundLevel);
 			if (listener!=null) {
 				listener.reset();
 			}
@@ -323,7 +325,6 @@ public class AlarmSound extends TimerTask {
 		if (pri<0 || pri>soundLevel) {
 			// No unseen alarms in table
 			// or alarm inhibited
-			System.out.println("No sound to play (priority="+pri+", soundLevel="+soundLevel+")");
 			return;
 		}
 		if (listener!=null) {
@@ -385,10 +386,10 @@ public class AlarmSound extends TimerTask {
 			try {
 				format=AudioSystem.getAudioFileFormat(url);
 			} catch (IOException ioe) {
-				System.out.println("Error "+ioe.getMessage()+" accessing URL "+url.toString());
+				System.err.println("Error "+ioe.getMessage()+" accessing URL "+url.toString());
 				continue;
 			} catch (UnsupportedAudioFileException ue) {
-				System.out.println("Unsupported audio format for "+url+" ("+ue.getMessage()+")");
+				System.err.println("Unsupported audio format for "+url+" ("+ue.getMessage()+")");
 			}
 			System.out.println("Properties of "+url);
 			System.out.println("\tAudio file type "+format.getType().toString());
