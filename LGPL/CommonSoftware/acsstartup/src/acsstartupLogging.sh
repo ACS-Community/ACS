@@ -7,6 +7,58 @@
 #--ending with an ACS logging priority (e.g., ACS_LOG_DEBUG) will only send the message
 #--to standard out if $ACS_LOG_STDOUT is less than their logging priority.
 #------------------------------------------------------------------------------------
+
+function getLogPath
+{
+local OUTPUT_PATH
+
+#determine where the file whould be stored
+if [ "X$ACS_TMP" != "X" ] && [ -w $ACS_TMP ]
+then
+    OUTPUT_PATH=$ACS_TMP
+    if [ -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    then
+        OUTPUT_PATH=$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE
+    fi
+elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w $ACSDATA/tmp ]
+then
+    #give it an OK default value
+
+    if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+    then
+        OUTPUT_PATH=$ACSDATA/tmp/`hostname`
+    else
+        OUTPUT_PATH=$ACSDATA/tmp/`hostname -s`
+    fi
+
+    if [ ! -e $OUTPUT_PATH ]
+    then
+        if ! mkdir $OUTPUT_PATH 2> /dev/null
+        then
+            if [ ! -d $OUTPUT_PATH ]
+            then
+                echo "Cannot create $OUTPUT_PATH (getLogFile function)"
+                exit $EC_CANNOTCREATE
+            else
+                echo "Diagnostic Message(getLogFile): $OUTPUT_PATH exists (OK)" >&2
+            fi
+        fi
+    fi
+    chmod 777 $OUTPUT_PATH
+
+    if [ -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    then
+        OUTPUT_PATH=$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE
+    fi
+
+else
+    OUTPUT_PATH=/tmp
+fi
+echo $OUTPUT_PATH
+}
+
+export getLogPath
+
 #--Used to access and perhaps create the appropriate log file.
 #--Full file name of the log file is printed to stdout.
 #--Name of the log file will be .NameOfThisScript.ProcessID.log
@@ -14,47 +66,8 @@ function getLogFile
 {
 local OUTPUT_FILE
 
-#determine where the file whould be stored
-if [ "X$ACS_TMP" != "X" ] && [ -w $ACS_TMP ]
-then
-	OUTPUT_FILE=$ACS_TMP
-
-elif [ "$ACSDATA/tmp" != "/tmp" ] && [ -w $ACSDATA/tmp ]
-then
-    #give it an OK default value
-
-    if [ "$OSYSTEM" = "$CYGWIN_VER" ]
-    then
-        OUTPUT_FILE=$ACSDATA/tmp/`hostname`
-    else
-        OUTPUT_FILE=$ACSDATA/tmp/`hostname -s`
-    fi
-
-    if [ ! -e $OUTPUT_FILE ]
-    then
-	if ! mkdir $OUTPUT_FILE 2> /dev/null
-        then
-            if [ ! -d $OUTPUT_FILE ]
-            then
-                echo "Cannot create $OUTPUT_FILE (getLogFile function)"
-                exit $EC_CANNOTCREATE
-			else
-				echo "Diagnostic Message(getLogFile): $OUTPUT_FILE exists (OK)" >&2
-            fi
-        fi
-    fi
-	chmod 777 $OUTPUT_FILE
-
-    if [ -d $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE ]
-    then
-	OUTPUT_FILE=$OUTPUT_FILE/ACS_INSTANCE.$ACS_INSTANCE
-    fi
-
-else
-	OUTPUT_FILE=/tmp
-fi
 #full filename consists of
-OUTPUT_FILE=$OUTPUT_FILE/.`basename $0`.$$.log
+OUTPUT_FILE=`getLogPath`/.`basename $0`.$$.log
 
 #create the file if it does not already exist.
 if [ ! -e $OUTPUT_FILE ]
@@ -97,7 +110,7 @@ local OUTPUT_FILE
 OUTPUT_FILE=`getLogFile`
 
 #write out the message
-echo $@ >> $OUTPUT_FILE
+echo $@ >> "$OUTPUT_FILE"
 
 return $EC_OK
 }
@@ -237,38 +250,22 @@ HOST=$HOSTNAME
 #log the time, user, command, process ID, acs instance, host
 MSG="Time:$TS; User=$USER; Host=$HOST; Command:$CMD $@; Process ID:$PID; ACS_INSTANCE=$ACS_INSTANCE; ACS_TMP=$ACS_TMP"
 
-#sanity check on the history file
-if [ ! -e $ACS_COMMAND_HISTORY_FILE ]
+LOGDIR=`getLogPath`
+if [ ! -e $LOGDIR/$ACS_COMMAND_HISTORY_FILE ]
 then
-    if ! touch $ACS_COMMAND_HISTORY_FILE 2> /dev/null
-    then
-        LOGDIR=`dirname $ACS_COMMAND_HISTORY_FILE`
-        if [ ! -d $LOGDIR ]
-        then
-            # LOGDIR is supposed to be $ACSDATA/tmp/{hostname}
-            TMPDIR=`dirname $LOGDIR`
-            if mkdir $TMPDIR 2> /dev/null
-            then
-                chmod 777 $TMPDIR
-            fi
-            if ! mkdir $LOGDIR 2> /dev/null
-            then
-				if [ ! -d $LOGDIR ]
-				then
-                	echo "Cannot create $LOGDIR (ACS_LOG_COMMAND function)"
-                	exit $EC_CANNOTCREATE
-				else
-					echo "Diagnostic Message(ACS_LOG_COMMAND): $LOGDIR exists (OK)" >&2
-				fi
-            fi
-            chmod 777 $LOGDIR
-        fi
-    fi
-    touch $ACS_COMMAND_HISTORY_FILE
-    chmod 666 $ACS_COMMAND_HISTORY_FILE
+	if ! touch $LOGDIR/$ACS_COMMAND_HISTORY_FILE 2> /dev/null
+	then
+		if [ ! -d $LOGDIR ]
+		then
+			echo "$LOGDIR does not exist (ACS_LOG_COMMAND)"
+		else
+			echo "Cannot create the file $LOGDIR/$ACS_COMMAND_HISTORY_FILE (ACS_LOG_COMMAND)"
+		fi
+		exit $EC_CANNOTUSE
+	fi
+	chmod 666 $LOGDIR/$ACS_COMMAND_HISTORY_FILE
 fi
-
-echo $MSG >> $ACS_COMMAND_HISTORY_FILE
+echo $MSG >> "$LOGDIR/$ACS_COMMAND_HISTORY_FILE"
 }
 
 export ACS_LOG_COMMAND

@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsConfigurationDatabase,v 1.4 2010/05/04 13:30:32 msekoran Exp $"
+# "@(#) $Id: acsConfigurationDatabase,v 1.5 2010/09/13 16:34:36 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -293,7 +293,7 @@ then
     cdbjDAL -OAIAddr $HOST -OAport $CDB_PORT $CDB_RECOVER_OPT 2>&1 | tee $CDB_OUT &
   fi
   #copy tee's PID
-  echo $! >> $INSTANCE_DIR/$ACS_PIDSFILE
+  echo $! >> "$INSTANCE_DIR/$ACS_PIDSFILE"
 fi
 
 if [ "$CL_WAIT" = "true" ]

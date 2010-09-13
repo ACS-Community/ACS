@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.46 2009/06/26 05:55:21 hyatagai Exp $"
+# "@(#) $Id: acsStart,v 1.47 2010/09/13 16:34:36 tstaig Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -59,7 +59,7 @@
 #------------------------------------------------------------------------
 #
 #
-ACS_LOG_COMMAND $@
+#ACS_LOG_COMMAND $@
 
 ###
 ### ----------- Command Line Parsing ---------------------
@@ -178,6 +178,24 @@ then
     export ACS_INSTANCE=$CL_BASEPORT
 fi
 
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+INSTANCES_DIR=`dirname $INSTANCE_DIR`
+
+# Make sure that the directory for temporary ACS_INSTANCE files exists.
+# This is to ensure that logs will go to the ACS_INSTANCE directory
+if [ ! -d $INSTANCES_DIR ] ; then
+    if ! mkdir $INSTANCES_DIR
+    then
+        exit $EC_CANNOTCREATE
+    fi
+fi
+ACS_LOG_COMMAND $@
+if ! createInstanceDirectory $ACS_INSTANCE
+then
+    ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
+    exit $EC_CANNOTCREATE
+fi
+
 ###If there's a corrupted $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE, attempt
 ###to fix it
 if ! checkDeadACS
@@ -258,7 +276,7 @@ fi
 #------------------------------------------------------
 #to ensure manager uses the same ACS_INSTANCE
 export ACS_INSTANCE=`grep "For this ACS session, please do an" $ACSSTARTLOG | cut -d\' -f2 | cut -d= -f2`
-export INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
+INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
 #------------------------------------------------------
 
 MANAGER_RECOVER_OPT=
@@ -305,7 +323,7 @@ then
     export LC_PIDFILE=$INSTANCE_DIR/$ACS_LOGCLIENT_PIDFILE
     export LOGGING_CHANNEL=Logging
     ACS_LOG_INFO "acsStart" "Sending all future CORBA-based logs to $LOGFILE."
-    loggingClient -f $LOGFILE $LOGGING_CHANNEL > $ACS_TMP/logstdfile.out  2>1  &
+    loggingClient -f $LOGFILE $LOGGING_CHANNEL > $INSTANCE_DIR/logstdfile.out  2>1  &
     echo $! > $LC_PIDFILE
 fi
 

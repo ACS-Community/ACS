@@ -6,7 +6,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsStartJava,v 1.66 2010/06/28 11:58:40 rtobar Exp $"
+# "@(#) $Id: acsStartJava,v 1.67 2010/09/13 16:34:36 tstaig Exp $"
 #
 # who      when       what
 # -------- ---------- ----------------------------------------------
@@ -483,24 +483,23 @@ ACS_LOG_DEBUG "acsStartJava" "ACS Interface Repository: $ACS_INTERFACE_REPOSITOR
 # if not already given as environment variables.
 #
 if [ ! $CL_NODIRECTORY ] ; then
-   if [ X"$ACS_TMP" = X ]; then  
-      export ACS_TMP=`getInstanceDirName $ACS_INSTANCE`
-
+      INSTANCE_DIR=`getInstanceDirName $ACS_INSTANCE`
       #
       # Makes sure that the directory for temporary 
       # ACS_INSTANCE files exists.
       # If the directory is created locally, removes it at the end.
       #
-      if [ ! -d `getInstanceDirName $ACS_INSTANCE` ]
+      if [ ! -d $INSTANCE_DIR ]
         then
 	  if ! createInstanceDirectory $ACS_INSTANCE
           then 
-	      ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create `getInstanceDirName $ACS_INSTANCE`!"
+	      ACS_LOG_ERROR "acsStartJava" "For some reason this script could not create $INSTANCE_DIR!"
 	      ACS_LOG_ERROR "acsStartJava" "    Check $ACS_INSTANCES_DIR for free base ports!"
 	      exit $EC_CANNOTCREATE
 	  fi
       fi
-   fi
+else
+      INSTANCE_DIR=$ACS_TMP
 fi
 
 ###
@@ -563,16 +562,16 @@ then
 
     # Since ACS 8.1 we log the garbage collector output if the calling script sets $JVM_GC_LOG_NAME. Slashes in the file name are replaced by underscores.
     if [ X"$JVM_GC_LOG_NAME" != X ]; then
-        JVM_GC_LOG_FILE=$ACS_TMP/`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution"
+        JVM_GC_LOG_FILE=$INSTANCE_DIR/`echo $JVM_GC_LOG_NAME | sed s/"\/"/_/g`.gclog
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -Xloggc:$JVM_GC_LOG_FILE -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationConcurrentTime -XX:+PrintGCApplicationStoppedTime -XX:+PrintTenuringDistribution -XX:+PrintHeapAtGC"
     fi
 
     # Since ACS 7.0.2 we get dumps for OutOfMemoryError
     # see http://jira.alma.cl/browse/COMP-3061 about JVM crash when XX:HeapDumpPath is empty
     # Since ACS 8.1.0 we use the -XX:ErrorFile flag to keep any Fatal Error Log also in $ACS_TMP
     JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:+HeapDumpOnOutOfMemoryError"
-    if [ X"$ACS_TMP" != X ]; then
-        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$ACS_TMP -XX:ErrorFile=$ACS_TMP/jvm_fatal_error%p.log"
+    if [ X"$INSTANCE_DIR" != X ]; then
+        JAVA_OPTIONS_MEMORY="$JAVA_OPTIONS_MEMORY -XX:HeapDumpPath=$INSTANCE_DIR -XX:ErrorFile=$INSTANCE_DIR/jvm_fatal_error%p.log"
     fi
 fi
 

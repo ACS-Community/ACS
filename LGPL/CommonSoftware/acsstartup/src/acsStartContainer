@@ -77,7 +77,7 @@ fi
 CONTAINER_PID=$$
 PID_STRING="_PID"
 CONTAINER_PID_FILE="`echo $CONTAINERNAME | sed s/"\/"/:/g`$PID_STRING"
-echo $CONTAINER_PID >> `getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE
+echo $CONTAINER_PID >> "`getInstanceDirName $ACS_INSTANCE`/$ACS_PID_DIR/$CONTAINER_PID_FILE"
 
 #-----------------------------------------------------------------------
 # Now run the container

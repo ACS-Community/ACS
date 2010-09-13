@@ -5,7 +5,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsStopORBSRVC,v 1.41 2009/06/02 12:57:53 acaproni Exp $"
+# "@(#) $Id: acsStopORBSRVC,v 1.42 2010/09/13 16:34:36 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -173,7 +173,9 @@ then
 fi
 
 ACS_LOG_INFO "$COMMAND" "Freeing $INSTANCE_DIR"
-rm -rf $INSTANCE_DIR &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot remove $INSTANCE_DIR")
+if [ -d $INSTANCE_DIR ]; then
+    mv $INSTANCE_DIR $INSTANCE_DIR.`date +%s` &> /dev/null || (ACS_LOG_ERROR "$COMMAND" "Cannot move $INSTANCE_DIR")
+fi
 
 
 #
