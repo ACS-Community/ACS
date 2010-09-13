@@ -44,7 +44,6 @@ public class ContainerServicesProxy implements ContainerServices
 	 */
 	@Override
 	public String getName() {
-		check();
 		return delegate.getName();
 	}
 
@@ -54,12 +53,10 @@ public class ContainerServicesProxy implements ContainerServices
 	 */
 	@Override
 	public AcsLogger getLogger() {
-		check();
 		return delegate.getLogger();
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServicesBase#getCDB()
 	 */
 	@Override
@@ -69,7 +66,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServicesBase#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
 	@Override
@@ -80,7 +76,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(alma.acs.container.OffShootOperations, java.lang.Class)
 	 */
 	@Override
@@ -92,7 +87,6 @@ public class ContainerServicesProxy implements ContainerServices
 
 	/**
 	 * @throws AcsJContainerServicesEx
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServicesBase#deactivateOffShoot(java.lang.Object)
 	 */
 	@Override
@@ -102,22 +96,18 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServicesBase#getAdvancedContainerServices()
 	 */
 	@Override
 	public AdvancedContainerServices getAdvancedContainerServices() {
-		check();
 		return delegate.getAdvancedContainerServices();
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServicesBase#getThreadFactory()
 	 */
 	@Override
 	public ThreadFactory getThreadFactory() {
-		check();
 		return delegate.getThreadFactory();
 	}
 
@@ -128,12 +118,10 @@ public class ContainerServicesProxy implements ContainerServices
 	 */
 	@Override
 	public ComponentStateManager getComponentStateManager() {
-		check();
 		return delegate.getComponentStateManager();
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getComponent(java.lang.String)
 	 */
 	@Override
@@ -143,7 +131,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getComponentNonSticky(java.lang.String)
 	 */
 	@Override
@@ -153,7 +140,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getDefaultComponent(java.lang.String)
 	 */
 	@Override
@@ -163,7 +149,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getCollocatedComponent(java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -173,7 +158,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getCollocatedComponent(alma.acs.component.ComponentQueryDescriptor, boolean, java.lang.String)
 	 */
 	@Override
@@ -184,7 +168,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(alma.acs.component.ComponentQueryDescriptor, boolean)
 	 */
 	@Override
@@ -196,7 +179,6 @@ public class ContainerServicesProxy implements ContainerServices
 
 	/**
 	 * @deprecated
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getDynamicComponent(alma.acs.container.ComponentSpec, boolean)
 	 */
 	@Override
@@ -226,27 +208,22 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
 	@Override
 	public void releaseComponent(String componentUrl) {
-		check();
 		delegate.releaseComponent(componentUrl);
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
 	 */
 	@Override
 	public void registerComponentListener(ComponentListener listener) {
-		check();
 		delegate.registerComponentListener(listener);
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getReferenceWithCustomClientSideTimeout(org.omg.CORBA.Object, double)
 	 */
 	@Override
@@ -257,7 +234,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#assignUniqueEntityId(alma.acs.container.EntityT)
 	 */
 	@Override
@@ -268,7 +244,6 @@ public class ContainerServicesProxy implements ContainerServices
 
 	/**
 	 * @deprecated 
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
 	 */
 	@Override
@@ -279,7 +254,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @throws RuntimeException, see {@link #check()}
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlWrapper(java.lang.Class, java.lang.Object, java.lang.Class)
 	 */
 	@Override
@@ -295,7 +269,7 @@ public class ContainerServicesProxy implements ContainerServices
 	 * See <code>protected void checkPluginRunning() throws PluginContainerException</code> in the OMC.
 	 * @throws RuntimeException
 	 */
-	protected void check() throws RuntimeException {
+	protected void check() throws AcsJContainerServicesEx {
 		// overload if you need the checks
 	}
 
