@@ -184,7 +184,7 @@ else
   pushd ${PYTHON_ROOT}/lib/python2.6/site-packages/matplotlib/mpl-data
   cp matplotlibrc matplotlibrc.dist
   cat matplotlibrc | sed s/backend\ \ \ \ \ \ :\ GTKAgg/backend\ \ \ \ \ \ :\ TkAgg/g >> matplotlibrc.tmp
-  mv .matplotlibrc.tmp .matplotlibrc
+  mv matplotlibrc.tmp matplotlibrc
   cat matplotlibrc | sed s/#interactive\ \ :\ False/interactive\ \ :\ True/g >> matplotlibrc.tmp
   mv matplotlibrc.tmp matplotlibrc
   popd
