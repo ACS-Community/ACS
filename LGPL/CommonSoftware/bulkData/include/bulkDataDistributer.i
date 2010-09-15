@@ -511,7 +511,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		//senderMap_m.unbind(recvName);
 		//ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
 		getFlowReceiverStatus(recvName, flowNumber);
-		timeout = false;
+		timeout = true;
 		}
 	    catch(CORBA::SystemException &ex)
 		{

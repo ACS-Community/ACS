@@ -34,6 +34,8 @@ BulkDataDistributerCb::BulkDataDistributerCb(TAO_StreamCtrl * stream_p)
 BulkDataDistributerCb::~BulkDataDistributerCb()
 {
     ACS_TRACE("BulkDataDistributerCb::~BulkDataDistributerCb"); 
+
+    timeout_m = false;
 }
 
 
@@ -140,6 +142,12 @@ int BulkDataDistributerCb::receive_frame (ACE_Message_Block *frame, TAO_AV_frame
 
     working_m = true;
 
+    if(timeout_m == true)
+	{
+	state_m = CB_SEND_DATA;
+	substate_m = CB_SUB_UNS;
+	}
+	
     //ACS_SHORT_LOG((LM_INFO,"BulkDataDistributerCb::receive_frame for flow %s", flowname_m.c_str()));
     
     //cout << "BulkDataDistributerCb::receive_frame - state_m: " << state_m << endl;
