@@ -33,7 +33,7 @@
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' initialized successfuly
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Using DLL path: .....
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery disabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] 

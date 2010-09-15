@@ -29,7 +29,7 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
-1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery disabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
