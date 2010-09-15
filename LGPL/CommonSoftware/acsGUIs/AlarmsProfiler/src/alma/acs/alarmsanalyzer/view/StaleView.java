@@ -154,14 +154,10 @@ public class StaleView extends TableViewBase {
 	 * constructor
 	 */
 	public StaleView() {
-		colNames = new String[] {
-				"Alarm ID",
-				"active since"
-		};
-		colWidths = new int[] {
-				500,
-				100
-		};
+		super(StaleAlarmsContainer.getInstance().colNames,new int[] {
+			500,
+			100
+	});
 		sorter=new StaleTableSorter(1, TableSorter.ASCENDING);
 	}
 

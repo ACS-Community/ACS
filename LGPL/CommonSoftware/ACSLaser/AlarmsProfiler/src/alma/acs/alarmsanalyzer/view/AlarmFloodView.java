@@ -122,14 +122,11 @@ public class AlarmFloodView extends TableViewBase {
 	 * Constructor
 	 */
 	public AlarmFloodView() {
-		colNames = new String[] {
-				"Entry",
-				"Value"
-		};
-		colWidths = new int[] {
+		super(FloodContainer.getInstance().colNames,
+				new int[] {
 				300,
 				80
-		};
+		});
 		sorter=new FloodTableSorter(0, TableSorter.ASCENDING);
 	}
 

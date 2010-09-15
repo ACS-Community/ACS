@@ -116,14 +116,10 @@ public class StatisticView extends TableViewBase {
 	}
 
 	public StatisticView() {
-		colNames = new String[] {
-				"Entry",
-				"Value"
-		};
-		colWidths = new int[] {
-				500,
-				100
-		};
+		super(StatisticsContainer.getInstance().colNames,new int[] {
+			500,
+			100
+	});
 		sorter=new StatsTableSorter(0, TableSorter.ASCENDING);
 	}
 

@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import alma.acs.alarmsanalyzer.document.SuppressedContainer;
 import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 
 /**
@@ -123,14 +124,10 @@ public class SupAnnCommonView extends TableViewBase {
 	 * Constructor
 	 */
 	public SupAnnCommonView() {
-		colNames = new String[] {
-				"Entry",
-				"Value"
-		};
-		colWidths = new int[] {
+		super(SuppressedContainer.getInstance().colNames,new int[] {
 				500,
 				100
-		};
+		});
 		sorter=new CommonTableSorter(0, TableSorterBase.ASCENDING);
 	}
 	

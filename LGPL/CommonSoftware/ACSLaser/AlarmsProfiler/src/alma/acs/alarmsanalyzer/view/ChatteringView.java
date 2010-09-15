@@ -139,20 +139,13 @@ public class ChatteringView  extends TableViewBase  {
 	}
 
 	public ChatteringView() {
-		colNames = new String[] {
-				"Alarm ID",
-				"# ACTIVE",
-				"# TERMINATE",
-				"# state changes",
-				"Peak time"
-		};
-		colWidths = new int[] {
-				250,
-				100,
-				150,
-				100,
-				150
-		};
+		super(ChatteringAlarmsContainer.getInstance().colNames,new int[] {
+			250,
+			100,
+			150,
+			100,
+			150
+	});
 		sorter=new ChatteringTableSorter(1, TableSorterBase.ASCENDING);
 	}
 

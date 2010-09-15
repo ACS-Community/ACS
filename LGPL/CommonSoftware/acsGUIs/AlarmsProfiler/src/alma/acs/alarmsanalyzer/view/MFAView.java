@@ -150,20 +150,13 @@ public class MFAView extends TableViewBase {
 	}
 	
 	public MFAView() {
-		colNames = new String[] {
-				"Alarm ID",
-				"# ACTIVE",
-				"Activation time",
-				"# TERMINATE",
-				"Termination time"
-		};
-		colWidths = new int[] {
-				250,
-				100,
-				150,
-				100,
-				150
-		};
+		super(MostFrequantAlarmsContainer.getInstance().colNames,new int[] {
+			250,
+			100,
+			150,
+			100,
+			150
+	});
 		sorter=new TableSorter(0, TableSorter.DESCENDING);
 	}
 

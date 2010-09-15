@@ -122,12 +122,12 @@ public abstract class TableViewBase  extends ViewPart {
 	/**
 	 * The names of the columns
 	 */
-	protected String colNames[];
+	private final String colNames[];
 	
 	/**
 	 * The width of the columns
 	 */
-	protected int colWidths[];
+	private final int colWidths[];
 	
 	/**
 	 * The table viewer
@@ -138,6 +138,11 @@ public abstract class TableViewBase  extends ViewPart {
 	 * The sorter
 	 */
 	protected TableSorterBase sorter;
+	
+	public TableViewBase(String[] colNames, int[] colWidths) {
+		this.colNames=colNames;
+		this.colWidths=colWidths;
+	}
 	
 	@Override
 	public void createPartControl(Composite parent) {
