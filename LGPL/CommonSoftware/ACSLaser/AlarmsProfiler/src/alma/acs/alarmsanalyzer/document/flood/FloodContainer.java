@@ -29,7 +29,9 @@ import org.eclipse.jface.viewers.TableViewer;
 import cern.laser.client.data.Alarm;
 
 import alma.acs.alarmsanalyzer.document.DocumentBase;
+import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
+import alma.acs.alarmsanalyzer.save.TableData;
 
 /**
  * Count the number of floods and generate the statistics
@@ -143,6 +145,11 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 	 * Constructor
 	 */
 	private FloodContainer() {
+		super("Alarm floods statistics",
+				new String[] {
+				"Entry",
+				"Value"
+		});
 		actualFlood=new AlarmFlood(this);
 	}
 
@@ -265,5 +272,16 @@ public class FloodContainer extends DocumentBase implements AlarmCategoryListene
 	@Override
 	public synchronized void onAlarm(Alarm alarm) {
 		actualFlood.onAlarm(alarm);
+	}
+	
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<FloodItem> vals=getNumbers();
+		for (FloodItem val: vals) {
+			String[] row = new String[2];
+			row[0]=val.description;
+			row[1]=val.toString();
+			tData.addRowData(row);
+		}
 	}
 }
