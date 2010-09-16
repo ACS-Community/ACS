@@ -25,6 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jface.viewers.TableViewer;
 
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
+import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
@@ -84,7 +85,13 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 	/**
 	 * Constructor
 	 */
-	private StaleAlarmsContainer() {}
+	private StaleAlarmsContainer() {
+		super("Stale alarms",
+				new String[] {
+				"Alarm ID",
+				"active since"
+		});
+	}
 	
 	/**
 	 * The stale alarms in staleAlarms are active alarms.
@@ -137,6 +144,17 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		Thread t = new Thread(this,this.getClass().getName());
 		t.setDaemon(true);
 		t.start();
+	}
+	
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<StaleAlarm> vals = staleAlarms.values();
+		for (StaleAlarm val: vals) {
+			String[] row = new String[2];
+			row[0]=val.ID;
+			row[1]=val.activationTime.toString();
+			tData.addRowData(row);
+		}
 	}
 	
 }

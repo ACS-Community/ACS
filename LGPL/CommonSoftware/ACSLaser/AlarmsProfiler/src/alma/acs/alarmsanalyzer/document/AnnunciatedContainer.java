@@ -25,6 +25,7 @@ import cern.laser.client.data.Alarm;
 
 import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
+import alma.acs.alarmsanalyzer.save.TableData;
 
 /**
  * The container for the ACTIVE annunciated (not reduced) alarms.
@@ -54,7 +55,13 @@ public class AnnunciatedContainer extends DocumentBase implements AlarmCategoryL
 	/**
 	 * Constructor
 	 */
-	private AnnunciatedContainer() {}
+	private AnnunciatedContainer() {
+		super("Annunciated alarms",
+				new String[] {
+				"Entry",
+				"Value"
+		});
+	}
 	
 	@Override
 	public Collection<?> getNumbers() {
@@ -71,6 +78,17 @@ public class AnnunciatedContainer extends DocumentBase implements AlarmCategoryL
 			} else {
 				val.inc();
 			}
+		}
+	}
+
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<ReductionValue> vals = annunciated.values();
+		for (ReductionValue val: vals) {
+			String[] row = new String[2];
+			row[0]=val.ID;
+			row[1]=Integer.valueOf(val.getValue()).toString();
+			tData.addRowData(row);
 		}
 	}
 }

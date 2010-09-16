@@ -22,6 +22,9 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+
+import alma.acs.alarmsanalyzer.save.TableData;
 
 /**
  * A base class for the views used by the tool.
@@ -57,9 +60,30 @@ public abstract class DocumentBase implements Runnable {
 	private final Thread thread;
 	
 	/**
-	 * Canstructor. It starts the thread
+	 * The title of the container
 	 */
-	public DocumentBase() {
+	public final String containerTitle;
+	
+	/**
+	 * The name of the columns displayed in the view
+	 */
+	public final String[] colNames;
+	
+	/**
+	 * Canstructor. It starts the thread
+	 * 
+	 * @param title The title of the container
+	 * @param The title of the columns displayed
+	 */
+	public DocumentBase(String title, String[] colNames) {
+		if (title==null || title.isEmpty()) {
+			throw new IllegalArgumentException("Invalid document title: "+title);
+		}
+		if (colNames==null || colNames.length==0) {
+			throw new IllegalArgumentException("Invalid names of columns");
+		}
+		containerTitle=title;
+		this.colNames=colNames;
 		thread = new Thread(this);
 		thread.setDaemon(true);
 		thread.start();
@@ -115,5 +139,21 @@ public abstract class DocumentBase implements Runnable {
 			}
 			refresh();
 		}
+	}
+	
+	/**
+	 * Add the text of the cells of the table
+	 * 
+	 * @param tData The table data to set the string of the rows
+	 */
+	protected abstract void setTableContent(TableData tData);
+	
+	/**
+	 * @return The data to be saved
+	 */
+	public TableData getDataToSave() {
+		TableData tData = new TableData(containerTitle, colNames);
+		setTableContent(tData);
+		return tData;
 	}
 }

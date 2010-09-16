@@ -18,6 +18,7 @@
  */
 package alma.acs.alarmsanalyzer.document;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -29,6 +30,7 @@ import cern.laser.client.data.Alarm;
 import cern.laser.source.alarmsysteminterface.FaultState;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
+import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
 
 /**
@@ -158,5 +160,23 @@ public class LostSourcesContainer implements AlarmCategoryListener, SourceListen
 				    }
 			  });
 		}
+	}
+	
+	/**
+	 * @return The data to be saved
+	 */
+	public TableData getDataToSave() {
+		String[] title = {
+				"Source ID"
+		};
+		TableData tData = new TableData("Lost sources", title);
+		Vector<String> ids = new Vector<String>(sourceIDs);
+		Collections.sort(ids);
+		for (String id: ids) {
+			String[] row = new String[1];
+			row[0]=id;
+			tData.addRowData(row);
+		}
+		return tData;
 	}
 }

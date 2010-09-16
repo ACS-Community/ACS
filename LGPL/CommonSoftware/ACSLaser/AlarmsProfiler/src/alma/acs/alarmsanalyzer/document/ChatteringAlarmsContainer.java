@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jface.viewers.TableViewer;
 
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
+import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
@@ -227,7 +228,16 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 	/**
 	 * Constructor
 	 */
-	private ChatteringAlarmsContainer() {}
+	private ChatteringAlarmsContainer() {
+		super("Chattering alarms",
+				new String[] {
+				"Alarm ID",
+				"# ACTIVE",
+				"# TERMINATE",
+				"# state changes",
+				"Peak time"
+		});
+	}
 	
 	/**
 	 * Ovveride to start the thread to refresh the vie
@@ -318,5 +328,18 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 
 	@Override
 	public void sourceXMLMsgReceived(String asiMessage) {}
+	
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<ChatteringAlarm> vals = chatteringAlarms.values();
+		for (ChatteringAlarm val: vals) {
+			String[] row = new String[4];
+			row[0]=val.ID;
+			row[1]=Integer.valueOf(val.getNumActive()).toString();
+			row[2]=Integer.valueOf(val.getNumTerminate()).toString();
+			row[3]=val.getTimestamp().toString();
+			tData.addRowData(row);
+		}
+	}
 	
 }

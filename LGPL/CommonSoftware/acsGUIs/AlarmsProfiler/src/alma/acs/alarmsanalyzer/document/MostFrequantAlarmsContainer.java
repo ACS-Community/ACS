@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
+import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
 
 /**
@@ -159,7 +160,16 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 	/**
 	 * Constructor
 	 */
-	private MostFrequantAlarmsContainer() {}
+	private MostFrequantAlarmsContainer() {
+		super("Most frequent alarms",
+				new String[] {
+				"Alarm ID",
+				"# ACTIVE",
+				"Activation time",
+				"# TERMINATE",
+				"Termination time"
+		});
+	}
 	
 	/**
 	 * An alarm has been received from the source NC.
@@ -197,5 +207,19 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 	 */
 	public Collection<AlarmActNumber> getNumbers() {
 		return mostFrequentAlarms.values();
+	}
+	
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<AlarmActNumber> vals = mostFrequentAlarms.values();
+		for (AlarmActNumber val: vals) {
+			String[] row = new String[5];
+			row[0]=val.getAlarmID();
+			row[1]=Long.valueOf(val.getNumActivation()).toString();
+			row[2]=val.getLastActivationTime().toString();
+			row[3]=Long.valueOf(val.getNumTermination()).toString();
+			row[4]=val.getLastTerminationTime().toString();
+			tData.addRowData(row);
+		}
 	}
 }

@@ -24,7 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import cern.laser.client.data.Alarm;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
+import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
+import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
 
 /**
@@ -157,6 +159,11 @@ public class StatisticsContainer extends DocumentBase implements SourceListener,
 	}
 	
 	private StatisticsContainer() {
+		super("Statistics",
+				new String[] {
+				"Entry",
+				"Value"
+		});
 		// Populate the map
 		values.put(totSrcAlarms, new AlarmStat(totSrcAlarms));
 		values.put(totActiveSrcAlarms, new AlarmStat(totActiveSrcAlarms));
@@ -212,5 +219,16 @@ public class StatisticsContainer extends DocumentBase implements SourceListener,
 
 	@Override
 	public void sourceXMLMsgReceived(String asiMessage) {}
+	
+	@Override
+	public void setTableContent(TableData tData) {
+		Collection<AlarmStat> vals = values.values();
+		for (AlarmStat val: vals) {
+			String[] row = new String[2];
+			row[0]=val.name;
+			row[1]=Integer.valueOf(val.getValue()).toString();
+			tData.addRowData(row);
+		}
+	}
 
 }
