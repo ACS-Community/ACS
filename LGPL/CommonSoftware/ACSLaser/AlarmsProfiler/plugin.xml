@@ -22,9 +22,10 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="MostFrequent"
             class="alma.acs.alarmsanalyzer.view.MFAView"
-            id="alma.acs.alarmsanalyzer.view">
+            id="alma.acs.alarmsanalyzer.view"
+            name="MostFrequent"
+            restorable="true">
       </view>
       <view
             class="alma.acs.alarmsanalyzer.view.StaleView"
@@ -193,13 +194,28 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="alma.acs.alarmsanalyzer.toolbar"
+               label="Alarm profiler toolbar">
+            <command
+                  commandId="alma.acs.alarmsanalyzer.command.save"
+                  icon="icons/save.gif"
+                  label="Save statistics"
+                  style="push"
+                  tooltip="Save the statistics">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
             application="alma.acs.alarmsanalyzer.application"
-            name="RCP Application">
+            name="Alarm profiler RCP">
          <property
                name="windowImages"
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
@@ -222,6 +238,11 @@
             defaultHandler="alma.acs.alarmsanalyzer.command.ExitHandler"
             id="alma.acs.alarmsanalyzer.command.exit"
             name="Exit">
+      </command>
+      <command
+            defaultHandler="alma.acs.alarmsanalyzer.command.SaveHandler"
+            id="alma.acs.alarmsanalyzer.command.save"
+            name="Save">
       </command>
    </extension>
 
