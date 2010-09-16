@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogTrace.cpp,v 1.5 2010/02/12 07:33:09 bjeram Exp $"
+* "@(#) $Id: loggingLogTrace.cpp,v 1.6 2010/09/16 18:09:09 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include <iostream>
 
 
-static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.5 2010/02/12 07:33:09 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.6 2010/09/16 18:09:09 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace Logging {
@@ -85,11 +85,16 @@ namespace Logging {
     //------------------------------------------------------------------------------
     LogTrace::~LogTrace()
     {
-	logger_m->log(Logger::LM_TRACE,
+	    //It appears that the logger_m has been release when the container is shutting down. This causes a very ugly sigsev
+        //I'm putting this protection to avoid this. ntroncos 2010-08-16.
+    	if (logger_m!=0)
+    	{
+	        logger_m->log(Logger::LM_TRACE,
 			       std::string("Exiting..."),
 			       fileName_m,
 			       lineNumber_m,
-			       methodName_m);	
+			       methodName_m);
+        }	
     }
     //------------------------------------------------------------------------------
 };
