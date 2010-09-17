@@ -16,7 +16,14 @@
 		Autostart="true">
 		<ComponentLogger minLogLevel="4" minLogLevelLocal="4"/>
 	</_>
-	
+
+	<_	Name="COMPWITHXMLOFFSHOOT" 
+		Code="alma.demo.ComponentWithXmlOffshootImpl.ComponentWithXmlOffshootHelper" 
+		Type="IDL:alma/demo/ComponentWithXmlOffshoot:1.0" 
+		Container="frodoContainer"
+		ImplLang="java" 
+		Autostart="true"/>
+
 	<_	Name="ERRORCOMP_JAVA" 
 		Code="alma.acsexmplErrorComponent.ErrorComponentImpl.ErrorComponentHelper" 
 		Type="IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0" 

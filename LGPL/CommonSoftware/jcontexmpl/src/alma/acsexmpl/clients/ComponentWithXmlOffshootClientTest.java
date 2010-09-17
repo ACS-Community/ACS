@@ -9,10 +9,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 import alma.acs.component.client.ComponentClientTestCase;
-import alma.demo.XmlComponent;
-import alma.demo.XmlComponentHelper;
-import alma.demo.XmlComponentJ;
-import alma.demo.XmlComponentOperations;
+import alma.demo.ComponentWithXmlOffshoot;
+import alma.demo.ComponentWithXmlOffshootHelper;
+import alma.demo.ComponentWithXmlOffshootJ;
+import alma.demo.ComponentWithXmlOffshootOperations;
 import alma.demo.XmlOffshoot;
 import alma.demo.XmlOffshootJ;
 import alma.demo.XmlOffshootOperations;
@@ -21,19 +21,19 @@ import alma.xmljbind.test.obsproposal.ObsProposal;
 import alma.xmljbind.test.schedblock.SchedBlock;
 
 
-public class XmlComponentClientTest extends ComponentClientTestCase {
+public class ComponentWithXmlOffshootClientTest extends ComponentClientTestCase {
 
-	private static final String xmlCompName = "XMLCOMP1";
-	private XmlComponent xmlComponent;
+	private static final String xmlCompName = "COMPWITHXMLOFFSHOOT";
+	private ComponentWithXmlOffshoot componentWithXmlOffshoot;
 	
-	public XmlComponentClientTest() throws Exception {
+	public ComponentWithXmlOffshootClientTest() throws Exception {
 		super("ErrorComponentTest");
 	}
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		xmlComponent = XmlComponentHelper.narrow(getContainerServices().getComponent(xmlCompName));
-		assertEquals(xmlCompName, xmlComponent.name());
+		componentWithXmlOffshoot = ComponentWithXmlOffshootHelper.narrow(getContainerServices().getComponent(xmlCompName));
+		assertEquals(xmlCompName, componentWithXmlOffshoot.name());
 	}
 
 	protected void tearDown() throws Exception {
@@ -44,7 +44,7 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 	public void testOffshoot() throws Exception {
 
 		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		XmlOffshoot shoot = xmlComponent.getOffshoot();
+		XmlOffshoot shoot = componentWithXmlOffshoot.getOffshoot();
 		assertNotNull(shoot.getObsProposal());
 		assertNotNull(shoot.getSchedBlock());
 
@@ -66,7 +66,7 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		shoot.setSchedBlock(new XmlEntityStruct());
 
 		// deactivate the m_offshoot on the server-side
-		xmlComponent.deactivateOffshoot();
+		componentWithXmlOffshoot.deactivateOffshoot();
 		try {
 			shoot.getObsProposal();
 			fail("m_offshoot should be deactivated, I shouldn't be able to use it");
@@ -75,7 +75,7 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 
 	public void testOffshootJ() throws Exception {
 
-		XmlOffshoot shoot = xmlComponent.getOffshoot();
+		XmlOffshoot shoot = componentWithXmlOffshoot.getOffshoot();
 		assertNotNull(shoot);
 		XmlOffshootJ shootJ = getContainerServices().getTransparentXmlWrapper(XmlOffshootJ.class, shoot, XmlOffshootOperations.class);
 		assertNotNull(shootJ);
@@ -94,17 +94,17 @@ public class XmlComponentClientTest extends ComponentClientTestCase {
 		assertEquals(true, sb.getStandardMode());
 
 		// deactivate the m_offshoot on the server-side
-		xmlComponent.deactivateOffshoot();
+		componentWithXmlOffshoot.deactivateOffshoot();
 		try {
 			shootJ.getObsProposal();
 			fail("m_offshoot should be deactivated, I shouldn't be able to use it");
 		} catch(org.omg.CORBA.OBJECT_NOT_EXIST e) {}
 	}
 
-	public void testOffshootJFromXmlComponentJ() throws Exception {
+	public void testOffshootJFromComponentJ() throws Exception {
 
-		XmlComponentJ xmlComponentJ = getContainerServices().getTransparentXmlWrapper(XmlComponentJ.class, xmlComponent, XmlComponentOperations.class);
-		assertNotNull(xmlComponentJ);
+		ComponentWithXmlOffshootJ componentWithXmlOffshootJ = getContainerServices().getTransparentXmlWrapper(ComponentWithXmlOffshootJ.class, componentWithXmlOffshoot, ComponentWithXmlOffshootOperations.class);
+		assertNotNull(componentWithXmlOffshootJ);
 
 		// The code below is commented since getting the offshootJ from the
 		// componentJ is not yet supported.

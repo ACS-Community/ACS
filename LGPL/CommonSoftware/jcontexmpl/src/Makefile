@@ -60,6 +60,7 @@ jcontexmplComp_DIRS = \
 	alma/demo/ErrorSystemComp \
 	alma/demo/EventConsumerImpl \
 	alma/demo/EventSupplierImpl \
+	alma/demo/ComponentWithXmlOffshootImpl \
 	alma/demo/HelloDemoImpl \
 	alma/demo/LampAccessImpl \
 	alma/demo/LampCallbackImpl \

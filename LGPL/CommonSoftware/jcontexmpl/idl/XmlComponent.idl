@@ -58,6 +58,12 @@ module demo
 
 	};
 
+	// a simple component that uses Xml Offshoots
+	interface ComponentWithXmlOffshoot : ACS::ACSComponent {
+		XmlOffshoot getOffshoot();
+		void deactivateOffshoot();
+	};
+
  	// a more complicated component that accesses another Java component
  	// and needs xml binding class support
 	interface XmlComponent : ACS::ACSComponent

@@ -21,6 +21,7 @@
  */
 package alma.tools.idlgen;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Vector;
 
@@ -45,6 +46,7 @@ public class IdlTreeManipulator
 	public static final String XML_WRAPPER_STRUCT_NAME = "XmlEntityStruct";
 	
 	private NamingConventions m_namingConventions;
+	private Set<IdlObject> translatedObjects = new HashSet<IdlObject>();
 
 	public IdlTreeManipulator(NamingConventions namingConventions)
 	{
@@ -141,6 +143,9 @@ public class IdlTreeManipulator
 				// recursion
 				isXmlAffected = findXmlEntityNodes(typeNode, affectedIdentifiers, nodesToBeGenerated);
 			}
+			else if (internalO.kind() == IdlType.e_interface && IDLComponentTester.isACSOffshoot((IdlInterface)internalO) ) {
+				isXmlAffected = findXmlEntityNodes(internalO, affectedIdentifiers, nodesToBeGenerated);
+			}
 		}
 		else  // not an identifier node
 		{
@@ -210,16 +215,19 @@ public class IdlTreeManipulator
 			//case IdlType.e_param : 
 			case IdlType.e_array : 
 			case IdlType.e_value_box : 
-			case IdlType.e_value : 
+			case IdlType.e_value :
 				String newName = node.name() + m_namingConventions.getSuffix();
-				if (IdlCompiler.verbose)
-				{
-					System.out.println("changing name from " + node.name() + " to " + newName);
+
+				// Offshoots are referenced not only once in the tree, but several times
+				// Therefore, we must know which ones we already translated
+				if( !translatedObjects.contains(node) ) {
+					if (IdlCompiler.verbose)
+						System.out.println("changing name from " + node.name() + " to " + newName);
+					node.name(newName);
+					translatedObjects.add(node);
 				}
-				node.name(newName);
 		}
-	}	
-			
+	}
 
 	/**
 	 * Calls <code>reset()</code> and <code>setId(null)</code> on all nodes below and including <code>node</code>.
