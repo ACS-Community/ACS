@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $
+# @(#) $Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $"
+# "@(#) $Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.48 2010/09/06 13:20:35 hsommer Exp $"
+__revision__ = "$Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -159,6 +159,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         self.logger.logInfo('Container ' + self.name + ' waiting for requests')
         self.isReady.set()
         print maci.Container.ContainerStatusStartupEndMsg
+        sys.stdout.flush()
 
     #--CLIENT IDL--------------------------------------------------------------
     def disconnect(self): # pragma: NO COVER
