@@ -24,3 +24,4 @@ s/Ran [0-9]* tests in [0-9]*.[0-9]*s/Ran xx tests in x.xxxs/g
 s/process='[0-9]*'/process=XXXX/g
 s/file=.*acspy/file='acspy/g
 s/file=.*ACSSW/file='acspy/g
+s/lineNum=[0-9]*/lineNum=XXXX/g

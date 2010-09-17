@@ -19,7 +19,7 @@
 1 -     self.token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
-1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1051, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     self.corbaRef = self.containerPOA.servant_to_reference(self)
 1 -   File "mock.py", line xxx, in __call__
@@ -31,7 +31,7 @@
 1 -     self.token = getManager().login(self.getMyCorbaRef())
 1 -   File "Container.py", line xxx, in getMyCorbaRef
 1 -     raise CORBAProblemExImpl()
-1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=1045, routine='getMyCorbaRef', host=xxxx, previousError=[]))
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/lib/python/site-packages/Acspy/Container.py', lineNum=XXXX, routine='getMyCorbaRef', host=xxxx, previousError=[]))
 1 -   File "Container.py", line xxx, in getCDBInfo
 1 -     execfile(temp_package)
 1 - IOError: [Errno 2] No such file or directory: 'bin/package1'
@@ -1049,7 +1049,7 @@
 1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
 1 -     raise Acspy.Container.CORBAProblemExImpl()
-1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/test/test_Acspy_Container.py', lineNum=104, routine='raiser', host=xxxx, previousError=[]))
+1 - CORBAProblemExImpl: ACSErrTypeCommonImpl.CORBAProblemExImpl(errorTrace=Acspy.Common.ErrorTrace.ErrorTrace(file='acspy/test/test_Acspy_Container.py', lineNum=XXXX, routine='raiser', host=xxxx, previousError=[]))
 1 - -------------------- >> begin captured stdout << ---------------------
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
@@ -1544,4 +1544,4 @@
 1 -     getManager().logout(self.token.h)
 1 -   File "maci_idl.py", line xxx, in logout
 1 -     return _omnipy.invoke(self, "logout", _0_maci.Manager._d_logout, args)
-1 - NoPermissionEx: maciErrType.NoPermissionEx(errorTrace=ACSErr.ErrorTrace(file='ManagerProxyImpl.java', lineNum=784, routine='logout', host=xxxx, previousError=[])]))
+1 - NoPermissionEx: maciErrType.NoPermissionEx(errorTrace=ACSErr.ErrorTrace(file='ManagerProxyImpl.java', lineNum=XXXX, routine='logout', host=xxxx, previousError=[])]))
