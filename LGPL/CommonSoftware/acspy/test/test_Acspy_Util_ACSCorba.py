@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.3 2010/06/08 01:55:25 agrimstrup Exp $"
+# "@(#) $Id: test_Acspy_Util_ACSCorba.py,v 1.4 2010/09/17 17:11:26 javarias Exp $"
 #
 # who         when        what
 # --------    --------    ----------------------------------------------
@@ -25,7 +25,7 @@
 #
 
 #------------------------------------------------------------------------------
-__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.3 2010/06/08 01:55:25 agrimstrup Exp $"
+__revision__ = "$Id: test_Acspy_Util_ACSCorba.py,v 1.4 2010/09/17 17:11:26 javarias Exp $"
 #--REGULAR IMPORTS-------------------------------------------------------------
 import sys
 import unittest
@@ -241,9 +241,78 @@ class TestGetClient(unittest.TestCase):
     @mock.patch_object(ACSCorba, '_Client')
     def test_ok(self, clientmock):
         self.assertEqual(False, ACSCorba.getClient() is None)
-        
+
+mockManager = mock.Mock()
+mockManager.return_value = None
+
+def manager_side_effect(*args):
+    global mockManager
+
+    mockManager.return_value = mock.Mock(spec=ACSCorba.maci._objref_Manager)
+    mockManager.side_effect = None
+
+class Test_Client(unittest.TestCase):
+
+    def setUp(self):
+        self.original = sys.stdout
+        sys.stdout = mock.Mock(spec=sys.stdout) 
+
+    def tearDown(self):
+        sys.stdout = self.original
+
+    @mock.patch_object(ACSCorba, 'getManager', mockManager)
+    @mock.patch_object(ACSCorba, 'getPOAManager')
+    @mock.patch_object(ACSCorba._Client, '_this')
+    def test_client_init_without_manager(self, corbaRef, poaManager):
+        global mockManager
+
+        mockManager.side_effect = manager_side_effect
+        client = ACSCorba._Client()
+        self.assertEqual(mockManager.return_value, client.mgr)
+
+    @mock.patch_object(ACSCorba, 'getManager')
+    @mock.patch_object(ACSCorba, 'getPOAManager')
+    @mock.patch_object(ACSCorba._Client, '_this')
+    def test_client_init_pydoc(self, corbaRef, poaManager, manager):
+        manager.return_value = None
+
+        sys.argv.insert(0, 'pydoc')
+        mockManager.side_effect = manager_side_effect
+        client = ACSCorba._Client()
+        sys.argv.pop()
+        self.assertEqual(True , client.token is None)
 
     
+class Test_ClientMethods(unittest.TestCase):
+
+    @mock.patch_object(ACSCorba, 'getManager')
+    @mock.patch_object(ACSCorba, 'getPOAManager')
+    @mock.patch_object(ACSCorba._Client, '_this')
+    def setUp(self, corbaRef, poaManager, manager):
+        manager.return_value = mock.Mock(spec=ACSCorba.maci._objref_Manager)
+        corbaRef.return_value = mock.Mock(spec=ACSCorba.maci__POA.omniORB.PortableServer.POA)
+        self.client = ACSCorba._Client()
+
+    def tearDown(self):
+        pass
+
+    def test_client_getService(self):
+        comp = self.client.getService('curl://component')
+        self.assertEqual(False ,  comp is None)
+
+    def test_client_getservice_none_component(self):
+        self.client.mgr.get_service.return_value = None
+        
+        comp = self.client.getService('curl://component')
+        self.assertEqual(True ,  comp is None)
+        
+    def test_client_getservice_none_manager(self):
+        self.client.mgr = None
+        
+        comp = self.client.getService('curl://component')
+        self.assertEqual(True ,  comp is None)
+
+
 if __name__ == "__main__":
     unittest.main()
 

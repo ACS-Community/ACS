@@ -1,4 +1,4 @@
-# @(#) $Id: ACSCorba.py,v 1.26 2010/02/12 22:15:19 agrimstrup Exp $
+# @(#) $Id: ACSCorba.py,v 1.27 2010/09/17 17:11:26 javarias Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -27,7 +27,7 @@ Takes care of initializing the ORB and setting initial reference to MACI
 manager. Also provides functions to get service and device references
 from the manager.
 '''
-__revision__ = "$Id: ACSCorba.py,v 1.26 2010/02/12 22:15:19 agrimstrup Exp $"
+__revision__ = "$Id: ACSCorba.py,v 1.27 2010/09/17 17:11:26 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from sys       import argv
@@ -209,7 +209,7 @@ def getManager():
         #If this function has never been called before...
         try:
             MGR_REF = getORB().string_to_object(getManagerCorbaloc())
-            if MGR_REF!=None and (not CORBA.is_nil(MGR_REF)):
+            if MGR_REF != None and (not CORBA.is_nil(MGR_REF)):
                 try:
                     MGR_REF._non_existent()
                     MGR_REF = MGR_REF._narrow(Manager)
@@ -229,7 +229,7 @@ class _Client (maci__POA.Client):
     the MACI manager. Developers should ignore this class entirely.
     '''
     #--------------------------------------------------------------------------
-    def __init__(self): # pragma: NO COVER
+    def __init__(self): 
         '''
         Constructor
         '''
@@ -254,12 +254,14 @@ class _Client (maci__POA.Client):
         
         #Must have a valid reference to the manager
         self.mgr = getManager()
-        
-        #Need a security token given from the manager to do anything
-        self.token = self.mgr.login(self.corbaRef)
-        
-        #make sure this eventually gets shutdown
-        register(self.disconnect)
+        try:
+            #Need a security token given from the manager to do anything
+            self.token = self.mgr.login(self.corbaRef)
+             
+            #make sure this eventually gets shutdown
+            register(self.disconnect)
+        except:
+            self.token = None
     
     #--CLIENT IDL--------------------------------------------------------------
     def _get_name(self): # pragma: NO COVER
@@ -312,7 +314,7 @@ class _Client (maci__POA.Client):
 
         return
     #--CLIENT IDL--------------------------------------------------------------
-    def authenticate(self, execution_id, question): # pragma: NO COVER
+    def authenticate(self, execution_id, question): # pragma: NO COVER 
         '''
         Implementation of IDL method.
         '''
@@ -344,7 +346,7 @@ class _Client (maci__POA.Client):
         '''
         return
     #--------------------------------------------------------------------------
-    def getService(self, curl, activate = 1): # pragma: NO COVER
+    def getService(self, curl, activate = 1): 
         '''
         Return object reference (properly narrowed if Python module for the
         device IDL has been previously imported.) Mainly used to get MACI/CORBA
@@ -359,6 +361,7 @@ class _Client (maci__POA.Client):
         Raises: ???
         '''
         result = None
+        component = None
         if self.mgr is not None:
             component = self.mgr.get_service(self.token.h, curl, activate)
       
