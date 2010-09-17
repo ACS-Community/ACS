@@ -51,7 +51,7 @@
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
 1 -   File "ACSCorba.py", line xxx, in getManager
-1 -     if MGR_REF!=None and (not CORBA.is_nil(MGR_REF)):
+1 -     if MGR_REF != None and (not CORBA.is_nil(MGR_REF)):
 1 -   File "CORBA.py", line xxx, in is_nil
 1 -     raise BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, COMPLETED_NO)
 1 - BAD_PARAM: CORBA.BAD_PARAM(omniORB.BAD_PARAM_WrongPythonType, CORBA.COMPLETED_NO)
@@ -76,7 +76,7 @@
 1 -   File "test_Acspy_Util_ACSCorba.py", line xxx, in raiser
 1 -     raise Exception("Boom!")
 1 - Exception: Boom!
-1 - ......................
+1 - ...........................
 1 - ======================================================================
 1 - ERROR: test_already_exists (test_Acspy_Container.TestActivateComponent)
 1 - ----------------------------------------------------------------------
