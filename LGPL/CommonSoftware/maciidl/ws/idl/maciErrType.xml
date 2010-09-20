@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by Bogdan Jeram (E.S.O.) 
-This has to be just temporary solution. 
-This file has to be moved into the TICS subsystem
--->
+
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="maciErrType" type="25" _prefix="alma">
 
 	<ErrorCode name="ComponentCreation"
@@ -231,5 +228,20 @@ This file has to be moved into the TICS subsystem
 			description="Name of the non-existing logger."
 		/>
 	</ErrorCode>
+	
+	
+	<ErrorCode name="ComponentCleanUp"
+			shortDescription="May be thrown by the component lifecycle method 'cleanUp'."
+			description="May be thrown by the component lifecycle method 'cleanUp', to propagate error information to the client whose releaseComponent call caused the component deactivation that failed to clean up.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
 </Type>
 
