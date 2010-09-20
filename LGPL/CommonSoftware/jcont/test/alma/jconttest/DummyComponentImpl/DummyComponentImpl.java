@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.logging.ClientLogManager;
 import alma.jconttest.DummyComponentOperations;
+import alma.maciErrType.ComponentCleanUpEx;
 
 /**
  * @author hsommer
@@ -40,7 +41,7 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 	/** 
 	 * Logs a message, which should facilitate debugging the logs when the synchronization of deactivation with long-running methods is being tested.
 	 */
-	public void cleanUp() {
+	public void cleanUp() throws ComponentCleanUpEx {
 		getLogger().info("cleanUp called.");
 		super.cleanUp();
 	}
