@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.95 2009/06/04 13:39:51 mzampare Exp $" 
+# "@(#) $Id: Makefile,v 1.96 2010/09/20 14:25:08 mzampare Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -45,24 +45,22 @@ INCLUDES =
 
 #
 # Scripts (public and local)
-SCRIPTS  = 	acsMakeTclScriptDependencies    \
-		acsMakeJavaDependencies    \
-		acsMakeCppStubsLibrary     \
-		acsMakeXmlErrLibraries     \
-                acsMakeTclScript		\
-		acsMakeLogTSDependencies   \
-		acsMakeDDSDependencies   \
-		acsMan				\
+SCRIPTS  = 	\
+                acsMakeTclScript	\
+		acsMakeTclLib           \
+		acsMan			\
 		doxygenize		\
 		acsChangeEnv            \
 		acsSwitchEnv            \
-		instAlmaTarball          \
+		instAlmaTarball         \
                 JacPrep			\
-		acsMakeRTAIDependencies \
 		acsCheckGroupPermissions\
-                cvs2cl \
-                acsUserConfig \
-		acsMakeCheckUnresolvedSymbols
+                cvs2cl 			\
+                acsUserConfig 		\
+		acsMakeCheckUnresolvedSymbols \
+		acsMakeJavaClasspath    \
+		acsMakeCopySources      \
+		searchFile
 
 
 #
@@ -107,22 +105,13 @@ ASCII_TO_MIF =
 # other files to be installed
 # ---------------------------
 INSTALL_FILES = ../include/acsMakefile       \
-                ../include/javaMakefile   \
-                ../include/logtsMakefile   \
-                ../include/pythonMakefile   \
-                ../include/rtaiMakefile   \
-                ../include/tclMakefile   \
-                ../include/idlMakefile   \
-                ../include/xsdMakefile   \
-                ../include/xmlerrMakefile   \
-		../include/ddsMakefile \
-                ../include/acsMakefile.all   \
+		../include/acsMakefileDefinitions.mk \
+		../include/acsMakefileCore.mk \
                 ../include/Makefile_LCU.template \
                 ../include/Makefile_WS.template \
                 ../include/Makefile_PACKAGE.template \
                 $(wildcard ../config/acsPackageInfo*.rpmref) \
 		../config/XSDIncludeDependencies.xml
-
 #
 # list of all possible C-sources (used to create automatic dependencies)
 # ------------------------------
@@ -146,6 +135,7 @@ CSOURCENAMES =\
 # REMARK: the local file (in /src) is used, so it can work also for
 # installation on an empty system.
 #
+PATH:=$(PATH):.
 MAKEDIR = ../include
 include $(MAKEDIR)/acsMakefile
 
@@ -166,11 +156,7 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install : install_all
-	cp ../include/javaMakefile   \
-           ../include/pythonMakefile   \
-           ../include/tclMakefile   \
-           ../include/idlMakefile   \
-           ../include/Makefile_PACKAGE.template \
+	cp ../include/Makefile_PACKAGE.template \
            ../include/Makefile_LCU.template \
            ../include/Makefile_WS.template    $(VLTTOP)/include
 
@@ -178,4 +164,3 @@ install : install_all
 
 #
 #___oOo___
-

@@ -1,0 +1,83 @@
+#!/bin/ksh
+#************************************************************************
+# E.S.O. - ALMA project
+#
+# "@(#) $Id: searchFile,v 1.2 2010/09/20 14:25:08 mzampare Exp $"
+#
+# who       when        what
+# --------  ----------  -------------------------------------------------
+# mpasquat  2004-JUL-19 created
+
+#************************************************************************
+#   NAME 
+#   searchFile - search a file in the sequence INTROOT -> INTLIST -> ACSROOT
+# 
+#   SYNOPSIS
+#   searchFile <fileName with relative path>
+# 
+#   DESCRIPTION
+#   Script that returns the variable value (INTROOT, INTLIST, ACSROOT) where the 
+#   specified file is found or the string "#error#" if not. 
+#   
+#   FILES
+#
+#   ENVIRONMENT
+#
+#   RETURN VALUES
+#   #error# - no argument provided or file not found
+#
+#   CAUTIONS
+#
+#   EXAMPLES
+#  
+#   SEE ALSO
+#
+#   BUGS     
+#
+#------------------------------------------------------------------------
+
+
+file=$1
+if [ "X$1" == "X" ]
+then
+   print "#error#"
+   exit 0
+fi
+
+if [ "X$INTROOT" != "X" ]
+then
+   if  [ -f $INTROOT/$file ]
+   then
+      print $INTROOT
+      exit 0  
+   fi  
+fi
+
+if [ "X$INTLIST" != "X" ]
+then
+   INTLIST_LIST=`echo $INTLIST | sed s/\:/\ /g`
+   for dir in $INTLIST_LIST
+   do
+      if  [ -f $dir/$file ]
+      then
+         print $dir
+         exit 0   
+      fi 
+   done
+fi
+   
+if [ "X$ACSROOT" != "X" ]
+then
+   if  [ -f $ACSROOT/$file ]
+   then
+      print $ACSROOT
+      exit 0
+   else
+      print "#error#"
+   fi
+else
+   print "#error#"
+fi
+
+
+
