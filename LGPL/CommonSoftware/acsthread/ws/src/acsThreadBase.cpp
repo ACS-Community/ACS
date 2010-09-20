@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.38 2009/10/07 14:46:39 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.39 2010/09/20 09:07:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -501,7 +501,7 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
 	else
 	    {
 	    ACS_LOG(LM_SOURCE_INFO,"ThreadBase::sleep",
-		    (LM_ERROR,"Acquire %d (errno: %d) - unexpeced acquire in suspended",
+		    (LM_ERROR,"Acquire %d (errno: %d) - unexpected acquire in suspended",
 		     acquireRet, errno));
 	    return SLEEP_ERROR;
 	    }
