@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.195 2010/09/20 14:25:08 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.196 2010/09/20 14:30:47 mzampare Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -1397,7 +1397,9 @@ ifneq ($(strip $(INCLUDES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_includes
 endif
 
+ifdef VLTSW_ROOTDIR
 INSTALL_TARGET := $(INSTALL_TARGET) install_standardfiles
+endif
 
 ifneq ($(strip $(DBL_CLASSES)),)
     INSTALL_TARGET := $(INSTALL_TARGET) install_DB-Classes
