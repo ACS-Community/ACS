@@ -243,5 +243,40 @@
 		/>
 	</ErrorCode>
 
+	<ErrorCode name="ComponentDeactivationUnclean"
+			shortDescription="Component deactivation was unclean but finished nonetheless."
+			description="Thrown by the container if the component lifecycle method 'cleanUp' threw an exception and yet the component was successfully deactivated from the container's point of view. Usually a 'ComponentCleanUpEx' will be linked.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentDeactivationFailed"
+			shortDescription="Component deactivation failed, but may succeed in the future."
+			description="Thrown if the container failed to deactivate a component in time (e.g. because a long-lasting running call prevented deactivation, or the manager timed out waiting for deactivation), but nonetheless a future deactivation request may succeed, or the component may be deactivated by itself later. ">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
+	<ErrorCode name="ComponentDeactivationFailedPerm"
+			shortDescription="Component deactivation failed, without hope for recovery."
+			description="Thrown if the container failed to deactivate a component (e.g. because POA destruction failed). There is no indication that another deactivation attempt will succeed or that the problem will be resolved by itself. The container may not be able to activate another component instance of the same name, or container resources may still be used for the old component instance.">
+		<Member name="CURL"
+			type="string"
+			description="CURL/Name of the component."
+		/>
+		<Member name="Reason"
+			type="string"
+			description="Detailed explanation of failure (Optional)"
+		/>
+	</ErrorCode>
+
 </Type>
 
