@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: maciTestLogConfig.sh,v 1.6 2010/03/30 20:25:05 javarias Exp $"
+# "@(#) $Id: maciTestLogConfig.sh,v 1.7 2010/09/21 18:12:03 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -45,7 +45,7 @@ maciTestLogConfigClient
 
 sleep 5
 echo "***************Remote***************"
-grep "LogConfigTestClass\:\:test" tmp/all_logs.xml 
+grep "LogConfigTestClass\:\:test" tmp/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml 
 echo "*************************************"
 
 #
