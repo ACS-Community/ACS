@@ -49,6 +49,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.maciErrType.ComponentCleanUpEx;
 
 import com.cosylab.CDB.DAL;
 
@@ -122,7 +123,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#cleanUp()
 	 */
-	public void cleanUp() {
+	public void cleanUp() throws ComponentCleanUpEx {
 		super.cleanUp();
 		
 		// shutdown thread-pool
