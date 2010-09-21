@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.81 2009/09/09 21:18:06 javarias Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.82 2010/09/21 10:35:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -413,9 +413,21 @@ Helper::resolveNotifyChannel()
 	//This is actually expected when creating a new channel, but still return false.
 	return false;
 	}
+    catch(const CORBA::SystemException &ex)
+    	{
+    	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotifyChannel CORBA System exception caught for the '%s' channel!",
+    		       channelName_mp));
+    	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotifyChannel");
+    	err.setMinor(ex.minor());
+    	err.setCompletionStatus(ex.completed());
+    	err.setInfo(ex._info().c_str());
+
+    	throw err.getCORBAProblemEx();
+    	return false;
+    	}
     catch(...)
 	{
-	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotifyChannel CORBA exception caught for the '%s' channel!",
+	ACS_SHORT_LOG((LM_ERROR, "Helper::resolveNotifyChannel Unknown exception caught for the '%s' channel!",
 		       channelName_mp));
 	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::resolveNotifyChannel");
 	throw err.getCORBAProblemEx();
