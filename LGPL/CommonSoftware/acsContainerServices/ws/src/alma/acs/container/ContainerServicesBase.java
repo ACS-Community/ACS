@@ -108,10 +108,13 @@ public interface ContainerServicesBase
 	 * can intercept (and log) calls to offshoots in the same way as it does for calls to components.
 	 * <b>It is therefore recommended to use the tie approach for all offshoot servants, 
 	 * unless there is a reason to avoid container interception.</b>
+	 * <p>
+	 * Note that since ACS 9.0 we are using generics to express that the offshoot impl object must 
+	 * be both a corba servant and implement OffShootOperations. 
 	 * 
 	 * @param cbServant  the CORBA-generated servant, e.g. CBdoublePOA; 
 	 * 						 must implement <code>alma.ACS.OffShootOperations</code>.
-	 * @return  needs a narrow-cast to the subtype, like
+	 * @return  The corba-activated offshoot object, which needs a narrow-cast to the subtype, like
 	 * 			<code>CBdouble myCBdouble = alma.ACS.CBdoubleHelper.narrow(...)</code>.  
 	 * @throws ContainerException  if anything goes wrong, 
 	 * 								especially if <code>cbServant</code> is not an OffShoot.

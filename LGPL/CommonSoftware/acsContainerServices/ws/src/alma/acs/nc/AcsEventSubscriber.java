@@ -44,16 +44,42 @@ import alma.acsnc.EventDescription;
  */
 public interface AcsEventSubscriber {
 	
+	/**
+	 * Adds a handler that will receive events of a specific type.
+	 * <p>
+	 * Note that the same event type can only be subscribed to with one handler,
+	 * which means that another handler added for the same type will replace the previous handler.
+	 */
 	public void addSubscription(Callback<? extends IDLEntity> receiver) 
 		throws AcsJException;
 
+	/**
+	 * Removes the subscription for a specified event type, 
+	 * so that the handler previously registered for that event type 
+	 * will no longer receive events.
+	 */
 	public void removeSubscription(Class<? extends IDLEntity> structClass) 
 		throws AcsJException, FilterNotFound, InvalidEventType;
 
+	/**
+	 * Adds a generic handler for all types of events.
+	 * <p> 
+	 * It is possible to add a generic handler in addition to event type specific handlers
+	 * (where the latter will get precedence). 
+	 * Adding another generic handler will replace the previous generic handler.
+	 */
 	public void addGenericSubscription(GenericCallback receiver);
 	
+	/**
+	 * Removes the generic event handler, so that it will no longer receive events.
+	 * Event specific handlers may still receive events. 
+	 */
 	public void removeGenericSubscription() throws AcsJException;
 
+	/**
+	 * This method must be called to actually receive events.
+	 * Typically it is called after the subscriptions are set up.
+	 */
 	public void startReceivingEvents() throws AcsJException;
 	
 	public void disconnect();
@@ -71,6 +97,16 @@ public interface AcsEventSubscriber {
 		
 		public void receive(T event, EventDescription eventDescrip);
 		
+		/**
+		 * This method is needed for adding event-specific subscriptions 
+		 * and for the type-safety of this API (based on java generics), 
+		 * and should be implemented like
+		 * <pre>
+		 * public Class&lt;MyEvent&gt; getEventType() {
+		 *     return MyEvent.class;
+		 * }
+		 * </pre>
+		 */
 		public Class<T> getEventType();
 	}
 	
