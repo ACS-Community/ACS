@@ -11,7 +11,11 @@
 			<Member name="Variable"
 				type="string"
 				description="Name of varable / reference which value is nil"/>
+			<Member name="Context"
+				type="string"
+				description="Free text context description."/>
 	</ErrorCode>
+	
 	<ErrorCode name="NarrowFailed"
 			shortDescription="Narrow failed"
 			description="Reference narrow failed">
