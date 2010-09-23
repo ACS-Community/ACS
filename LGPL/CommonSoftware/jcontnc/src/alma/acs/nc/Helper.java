@@ -225,7 +225,7 @@ public class Helper {
 	{
 		EventChannel ec = null;
 		try {
-			ecf.get_event_channel(channelId);
+			ecf.get_event_channel(channelId);  // @TODO HSO: Shouldn't this be "ec = ..." ?
 		} catch (ChannelNotFound e) {
 			// I cannot recover the channel using the ID
 		}
@@ -634,8 +634,7 @@ public class Helper {
 			dao = m_services.getCDB().get_DAO_Servant(
 					"MACI/Channels/" + channelName);
 		} catch (Exception e) {
-			m_logger.finer("No CDB entry found for '" + channelName
-					+ "' channel");
+			m_logger.finer("No CDB entry found for '" + channelName + "' channel");
 			return retVal;
 		}
 
