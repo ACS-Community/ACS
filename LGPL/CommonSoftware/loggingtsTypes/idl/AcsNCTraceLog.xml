@@ -7,8 +7,22 @@
 	_prefix="alma" 
 	>
 	
-	<!-- =========== Channel creation =========== -->
-	 
+	<!-- =========== Required TAO extensions are not enabled =========== -->
+	<LogDefinition
+		logName="LOG_NC_TaoExtensionsSubtypeMissing"
+		shortDescription="TAO extensions are not enabled."
+		description="TAO extensions are not enabled. Since ACS 8.0, we require the NotifyService to offer the TAO specific extensions. Without those, we would need to program our own NC manager to prevent race conditions and to keep track of names and clients."
+		priority="ERROR"
+		audience="Developer">
+		<Member name="ObjectName" type="string" description="An optional name of the factory, channel, admin object etc which does not have the expected type." />
+		<Member name="ExpectedType" type="string" description="Expected TAO extension IDL type, e.g. 'IDL:sandia.gov/NotifyMonitoringExt/EventChannelFactory:1.0'" />
+		<Member name="ActualType" type="string" description="Actual IDL type, e.g. 'IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0'" />
+		<!-- Member name="Service" type="string" description="Name or ID of the notification service." / -->
+	</LogDefinition>
+	
+	
+	<!-- =========== Channel lifecycle =========== -->
+
 	<LogDefinition
 		logName="LOG_NC_ChannelCreated_ATTEMPT"
 		shortDescription="About to create a notification channel"
@@ -39,6 +53,21 @@
 		audience="Developer">
 		<Member name="ChannelName" type="string" description="Name of the channel destroyed." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosted the channel." />
+	</LogDefinition>
+	
+	<!-- =========== Channel connection objects =========== -->
+	 
+	<LogDefinition
+		logName="LOG_NC_ConsumerAdminObtained_OK"
+		shortDescription="Successfully obtained a notification channel consumer admin object."
+		description="Successfully obtained a notification channel consumer admin object, through creation or reuse."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="ConsumerAdminId" type="long" description="ID of the admin object created." />
+		<Member name="CreatedOrReused" type="string" description="'created' if admin object was created, 'reused' if an existing admin object was reused." />
+		<Member name="ClientName" type="string" description="Name of the client that created the consumer admin." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that should host the channel." />
 	</LogDefinition>
 	
 
