@@ -6,7 +6,7 @@
 	<path location="${env.ACSROOT}/lib/commons-logging-1.1.1.jar" />
 	<path location="${env.ACSROOT}/lib/dom4j-1.6.1.jar" />
 	<path location="${env.ACSROOT}/lib/slf4j-api-1.5.8.jar" />
-	<path location="${env.ACSROOT}/lib/acsjlogSLF4j.jar" />
+	<path location="${env.ACSROOT}/lib/slf4j-acs.jar" />
 	<path location="${env.ACSROOT}/lib/acsjlog.jar" />
 	<path location="${env.ACSROOT}/lib/logging_idl.jar" />
 	<path location="${env.ACSROOT}/lib/maciSchemaBindings.jar" />
