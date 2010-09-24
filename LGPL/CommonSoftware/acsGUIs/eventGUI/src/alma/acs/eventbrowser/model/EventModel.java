@@ -4,6 +4,11 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -19,6 +24,8 @@ import org.omg.CosNaming.BindingIteratorHolder;
 import org.omg.CosNaming.BindingListHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
 import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
@@ -27,8 +34,11 @@ import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 import org.omg.DynamicAny.DynAnyFactory;
 import org.omg.DynamicAny.DynAnyFactoryHelper;
 
+import Monitor.Data;
+import Monitor.Numeric;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
+import alma.acs.component.client.ComponentClient;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
@@ -41,7 +51,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.23 2010/09/06 11:02:18 jschwarz Exp $
+ * $Id: EventModel.java,v 1.24 2010/09/24 14:29:21 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -66,8 +76,9 @@ public class EventModel {
 	private HashMap<String, AdminConsumer> consumerMap;
 	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
-	private NotificationServiceMonitorControl nsmc;
+	private NotificationServiceMonitorControl[] nsmc;
 	private ArchiveConsumer archiveConsumer;
+	private AdvancedComponentClient acc;
 
 	private EventModel() throws Exception {
 		String connectionString;
@@ -91,7 +102,7 @@ public class EventModel {
 		}
 		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
-		AdvancedComponentClient acc = null;
+		acc = null;
 		try {
 			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId);
 		} catch (Exception e) {
@@ -128,8 +139,49 @@ public class EventModel {
 		
 		h = new Helper(cs);
 		nctx = h.getNamingService();
-		nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(new NameComponent[]{new NameComponent("TAO_MonitorAndControl","")}));
+		nsmc = getMonitorControl();
 //		getServiceTotals(); // temporarily, for testing
+	}
+
+	/**
+	 * This routine returns an array of NotificationServiceMonitorControl objects (provided by the
+	 * ACE/TAO Monitoring extensions) by resolving the IORs for these objects that are stored in
+	 * the $ACS_TMP/ACS_INSTANCE.x/iors/ directory. 
+	 * @throws NotFound
+	 * @throws CannotProceed
+	 * @throws InvalidName
+	 */
+	private NotificationServiceMonitorControl[] getMonitorControl() throws NotFound, CannotProceed,
+			org.omg.CosNaming.NamingContextPackage.InvalidName {
+		final String[] MC_IORS = {"NotifyMCIOR" };
+		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
+		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[MC_IORS.length];
+		String iorbase = System.getenv("ACS_TMP");
+		String instdir = System.getenv("ACS_INSTANCE");
+		if (instdir == null)
+			instdir = "ACS_INSTANCE.0";
+		else
+			instdir = "ACS_INSTANCE."+instdir;
+		iorbase += File.separator+instdir+File.separator+"iors"+File.separator;
+		for (int i = 0; i < MC_IORS.length; i++) {
+			String iorpath = iorbase + MC_IORS[i]; // NS_MC_IOR;
+			System.out.println("IORPATH: " + iorpath);
+			File iorFile = new File(iorpath);
+			try {
+				BufferedReader input = new BufferedReader(new FileReader(
+						iorFile));
+				String iorString = input.readLine();
+				if (iorString != null)
+					nsmc[i] = NotificationServiceMonitorControlHelper.narrow(orb
+							.string_to_object(iorString));
+				input.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return nsmc;
 	}
 	
 	private String getConnectionString(String managerHost, int acsInstance) {
@@ -237,7 +289,12 @@ public class EventModel {
 				}
 
 			}
-			printMonitoringResults(nsmc);
+//			try {
+//				printMonitoringResults(nsmc);
+//			} catch (InvalidName e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		return clist;	
 	}
@@ -373,21 +430,41 @@ public class EventModel {
 		return dynAnyFactory;
 	}
 	
-	private void printMonitoringResults(NotificationServiceMonitorControl mc) { //alma/ACS-8.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
-		// 
-		if (true) return; // TODO -- Fix this method, which throws InvalidName exception
-		try {
-			m_logger.info("EventChannelFactoryNames: "+mc.get_statistic(gov.sandia.NotifyMonitoringExt.EventChannelFactoryNames.value));
-			m_logger.info("ActiveEventChannelCount: "+mc.get_statistic(gov.sandia.NotifyMonitoringExt.ActiveEventChannelCount.value));
-			m_logger.info("ActiveEventChannelNames: "+mc.get_statistic(gov.sandia.NotifyMonitoringExt.ActiveEventChannelNames.value));
-		} catch (InvalidName e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	private void printMonitoringResults(NotificationServiceMonitorControl[] mc) throws InvalidName { // /alma/ACS-9.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
+		for (int i = 0; i < mc.length; i++) {
+			String[] names = mc[i].get_statistic_names();
+			for (int j = 0; j < names.length; j++) {
+				//m_logger.info("NC Statistic name[" + j + "] : " + names[j]);
+				if (!names[j].contains("/"))  // the max index can be zero!!!
+					break;
+				String channel = names[j].split("/")[1];
+				Data stats = mc[i].get_statistic(names[j]);
+
+				if (names[j].endsWith("ConsumerNames")) {
+					String[] consumers = stats.data_union.list();
+					System.out.println("Consumers for "+channel);
+					for (int k = 0; k < consumers.length; k++) {
+						System.out.println("\t"+consumers[k]);
+					}
+				}
+				else if (names[j].endsWith("QueueElementCount")) {
+					System.out.println("QueueElementCount for "+channel);
+					Numeric numbers = stats.data_union.num();
+					System.out.println("\tCount " + numbers.count);
+					System.out.println("\tAverage " + numbers.average);
+					System.out.println("\tSum of squares " + numbers.sum_of_squares);
+					System.out.println("\tMinimum " + numbers.minimum);
+					System.out.println("\tMaximum " + numbers.maximum);
+					System.out.println("\tLast " + numbers.last);
+				}
+
+			}
 		}
+
 	}
 
 	public void closeAllConsumers() {
-		ArrayList<AdminConsumer>consumers = getAllConsumers();
+		//ArrayList<AdminConsumer>consumers = getAllConsumers();
 		for (AdminConsumer consumer : consumers) {
 			if (consumer != null) {
 				consumer.disconnect();
@@ -396,8 +473,19 @@ public class EventModel {
 	}
 	
 	public void closeArchiveConsumer() {
-		archiveConsumer.disconnect();
+		if (archiveConsumer != null)
+			archiveConsumer.disconnect();
 	}
 
+	public void tearDown() {
+		try {
+			closeAllConsumers();
+			closeArchiveConsumer();
+			acc.tearDown();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 }
