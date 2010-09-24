@@ -22,13 +22,18 @@ package alma.acs.nc.refactored;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.omg.CORBA.ORB;
 import org.omg.CORBA.portable.IDLEntity;
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Consumer;
+import alma.acs.nc.SimpleSupplier;
 import alma.acsnc.EventDescription;
 
 /**
@@ -39,6 +44,31 @@ import alma.acsnc.EventDescription;
  */
 public class NCSubscriberTest extends ComponentClientTestCase {
 
+	/**
+	 * Naming service reference must be given to NCPublisher
+	 */
+	private NamingContext nctx;
+	private SimpleSupplier supplier;
+	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		
+		// store the naming service reference
+		ORB orb = getContainerServices().getAdvancedContainerServices().getORB();
+		org.omg.CORBA.Object nameServiceObj = orb.resolve_initial_references("NameService");
+		assertNotNull("NameService must not be null", nameServiceObj);
+		nctx = NamingContextHelper.narrow(nameServiceObj);
+		
+		// set up an event supplier for the test channel
+		supplier = new SimpleSupplier(TEST_CHANNEL_NAME, getContainerServices());
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+	}
+
 	private static final String TEST_CHANNEL_NAME = "refactoredLibsTestChannel";
 
 	public NCSubscriberTest() throws Exception {
@@ -46,22 +76,41 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * This test creates a Subscriber for all event types, giving a proper
-	 * generic receiver callback.
+	 * Tests the generic subscription (all event types) mechanism,
+	 * without any competing type-specific subscriptions present.
 	 */
 	public void testGenericCallback() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
-
-		int numExpectedEvents = 1;
-		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-		
-		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-
-		subscriber.addGenericSubscription(genericReceiver);
-		subscriber.startReceivingEvents();
-		
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
+		NCSubscriber subscriber = null;
+		try {
+			subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
+			
+			int numExpectedEvents = 1;
+			CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
+			
+			// set up receiver callback
+			GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
+			subscriber.addGenericSubscription(genericReceiver);
+			
+			// activate event listening
+			subscriber.startReceivingEvents();
+			
+			// publish event and wait to receive it
+			supplier.publishEvent(new EventDescription("abused idl struct", 32L, 64L));
+			assertTrue("Got a timeout while waiting for " + numExpectedEvents
+					+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
+			
+			// register the same generic receiver again, which should not change anything
+			subscriber.addGenericSubscription(genericReceiver);
+			
+			
+			// register another generic receiver, which should replace the previous one
+			
+		} 
+		finally {
+			if (subscriber != null) {
+				subscriber.disconnect();
+			}
+		}
 	}
 
 	/**
@@ -70,7 +119,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * goal of this test is to check the priority on the receiver handler.
 	 */
 	public void testGenericCallbackWithPriority() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -94,7 +143,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test aims to test the add/remove of the generic handler.
 	 */
 	public void testWithGenericSubscription() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -116,7 +165,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * subscriptions and a generic one combined.
 	 */
 	public void testCombinedSubscriptions() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -150,7 +199,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 */
 
 	public void testRemoveAllSubscription() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 		
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -177,7 +226,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the removeGenericSubscription method.
 	 */
 	public void testDisconnect() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 		
 		int numExpectedEvents = 5;
 		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
@@ -203,8 +252,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * This test checks the behavior of concurrent subscriber clients.
 	 */
 	public void testMultipleSubscribers() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
-		NCSubscriber otherSubscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
+		NCSubscriber otherSubscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 
 		int numExpectedEvents = 1;
 		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
@@ -230,7 +279,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 	 * concurrently with the old API.
 	 */
 	public void testOldSubscriber() throws Exception {
-		NCSubscriber subscriber = new NCSubscriber(TEST_CHANNEL_NAME, getContainerServices());
+		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 		
 		Consumer oldConsumer = null;
 		oldConsumer = new Consumer(TEST_CHANNEL_NAME, getContainerServices());
@@ -247,6 +296,12 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		oldConsumer.consumerReady();
 	}
 	
+	/**
+	 * Factory method for NCSubscriber
+	 */
+	private NCSubscriber createNCSubscriber(String channelName) throws AcsJException {
+		return new NCSubscriber(channelName, null, getContainerServices(), nctx, getName());
+	}
 }
 
 
