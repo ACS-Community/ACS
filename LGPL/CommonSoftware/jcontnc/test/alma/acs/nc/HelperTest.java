@@ -20,21 +20,22 @@ import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
-import org.omg.CosNotifyChannelAdmin.EventChannel;
 
-import gov.sandia.CosNotification.NotificationServiceMonitorControl;
-import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 import Monitor.Data;
 import Monitor.DataType;
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 import gov.sandia.NotifyMonitoringExt.ActiveEventChannelCount;
 import gov.sandia.NotifyMonitoringExt.ActiveEventChannelNames;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
 import gov.sandia.NotifyMonitoringExt.EventChannelCreationTime;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactoryNames;
 import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
 import gov.sandia.NotifyMonitoringExt.NameMapError;
 
+import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -366,7 +367,7 @@ public class HelperTest extends ComponentClientTestCase
 		 */
 		protected EventChannel createNotifyChannel_internal(EventChannelFactory notifyFactory, Property[] initial_qos,
 				Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
-				throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError {
+				throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx {
 			if (synch != null) {
 				// count down and wait for other threads to reach the same state before going on.
 				synch.countDown();
@@ -377,7 +378,7 @@ public class HelperTest extends ComponentClientTestCase
 					ex.printStackTrace();
 				}
 			}
-			return super.createNotifyChannel_internal(notifyFactory, initial_qos, initial_admin, channelName, channelIdHolder);
+			return super.createNotifyChannel_internal(initial_qos, initial_admin, channelName, channelIdHolder);
 		}
 		
 		protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName, CountDownLatch synch) 
