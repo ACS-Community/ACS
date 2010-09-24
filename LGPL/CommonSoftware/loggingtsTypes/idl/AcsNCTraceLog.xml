@@ -67,10 +67,34 @@
 		<Member name="CreatedOrReused" type="string" description="'created' if admin object was created, 'reused' if an existing admin object was reused." />
 		<Member name="ClientName" type="string" description="Name of the client that created the consumer admin." />
 		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
-		<Member name="Service" type="string" description="Name or ID of the notification service that should host the channel." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
 	</LogDefinition>
 	
-
+	<LogDefinition
+		logName="LOG_NC_SupplierProxyCreation_OK"
+		shortDescription="Successfully created a notification channel supplier proxy object."
+		description="Successfully created a notification channel supplier proxy object, on behalf of the NC subscriber identified by 'ClientName'."
+		priority="TRACE"
+		audience="Developer">
+		<Member name="SupplierProxyId" type="long" description="ID of the supplier proxy object that was created." />
+		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
+	
+	<LogDefinition
+		logName="LOG_NC_SupplierProxyCreation_FAIL"
+		shortDescription="Failed to create a notification channel supplier proxy object."
+		description="Failed to create a notification channel supplier proxy object on behalf of the NC subscriber identified by 'ClientName'."
+		priority="NOTICE"
+		audience="Developer">
+		<Member name="ClientName" type="string" description="Name of the subscribing client that created the supplier proxy." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the supplier proxy was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+		<Member name="Reason" type="string" description="Description of the reason for the failure." />
+	</LogDefinition>
+	
+	
 	<!-- =========== Channel subscriptions =========== -->
 	
 	<LogDefinition
