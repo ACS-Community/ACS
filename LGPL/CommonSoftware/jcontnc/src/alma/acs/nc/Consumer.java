@@ -148,8 +148,6 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	/** Whether sending of events should be logged */
 	private final boolean isTraceEventsEnabled;
 	
-	private IntHolder consumerAdminID;
-
 	private IntHolder proxyID;
 	
 	private AcsNcReconnectionCallback m_callback;
@@ -317,10 +315,10 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	 *            AcsJException for developer's ease of use.
 	 */
 	private void createConsumer() throws AcsJException {
-		consumerAdminID = new IntHolder();
+		IntHolder consumerAdminIDHolder = new IntHolder();
 
-		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class.
-		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminID);
+		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class)
+		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
 		
 		// sanity check
 		if (m_consumerAdmin == null) {
