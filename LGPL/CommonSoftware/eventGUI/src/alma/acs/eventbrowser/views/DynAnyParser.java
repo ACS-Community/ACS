@@ -17,6 +17,7 @@ import org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 import org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.util.UTCUtility;
 
 public class DynAnyParser {
 
@@ -72,7 +73,11 @@ public class DynAnyParser {
 				break;
 			case TCKind._tk_longlong:
 				entry.setType("longlong");
-				entry.setValue(String.valueOf(da.get_longlong()));
+				if (path.contains("timestamp")) {
+					entry.setValue(String.valueOf(UTCUtility.getUTCDate(UTCUtility.utcOmgToJava(da.get_longlong()))));
+				}
+				else
+					entry.setValue(String.valueOf(da.get_longlong()));
 				pdlist.add(entry);
 				break;
 			case TCKind._tk_ulonglong:
