@@ -37,22 +37,20 @@ import org.omg.CORBA.IntHolder;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
 import org.omg.CosNaming.NamingContextHelper;
-import org.omg.CosNaming.NamingContextPackage.CannotProceed;
-import org.omg.CosNaming.NamingContextPackage.InvalidName;
 import org.omg.CosNotification.Property;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
 import org.omg.CosNotifyChannelAdmin.ChannelNotFound;
-import org.omg.CosNotifyChannelAdmin.EventChannel;
-import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 
 import com.cosylab.CDB.DAO;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.client.DAOProxy;
 import com.cosylab.util.WildcharMatcher;
 
+import gov.sandia.NotifyMonitoringExt.EventChannel;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannelHelper;
 import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
 import gov.sandia.NotifyMonitoringExt.NameMapError;
 
@@ -64,6 +62,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_ATTEMPT;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelDestroyed_OK;
+import alma.AcsNCTraceLog.LOG_NC_TaoExtensionsSubtypeMissing;
 import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
@@ -117,9 +116,6 @@ public class Helper {
 	 */
 	private final Map<String, Long> channelConfigProblems = new HashMap<String, Long>();
 
-	private String channelName;
-
-
 
 	/**
 	 * Creates a new instance of Helper, which includes resolving the naming service.
@@ -127,6 +123,17 @@ public class Helper {
 	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
 	 */
 	public Helper(ContainerServicesBase services) throws AcsJException {
+		this(services, getNamingServiceInitial(services));
+	}
+
+	/**
+	 * Creates a new instance of Helper.
+	 * This constructor is preferred, because it makes dependencies explicit. 
+	 * @param services A reference to the ContainerServices
+	 * @param namingService Reference to the naming service.
+	 * @throws AcsJException Generic ACS exception will be thrown if anything in this class is broken.
+	 */
+	public Helper(ContainerServicesBase services, NamingContext namingService) throws AcsJException {
 		if (services == null) {
 			AcsJBadParameterEx ex = new AcsJBadParameterEx();
 			ex.setReason("Null reference obtained for the ContainerServices!");
@@ -142,7 +149,7 @@ public class Helper {
 		// create a helper object used to retrieve channel properties
 		m_channelProperties = new ChannelProperties(services);
 
-		m_nContext = getNamingServiceInitial();
+		m_nContext = namingService;
 
 		// create CDB access
 		m_cdbAccess = new CDBAccess(getContainerServices().getAdvancedContainerServices().getORB(), m_logger);
@@ -178,7 +185,7 @@ public class Helper {
 	 *            or the reference cannot be narrowed.
 	 * @see #getNamingService()
 	 */
-	protected NamingContext getNamingServiceInitial() throws AcsJException {
+	protected static NamingContext getNamingServiceInitial(ContainerServicesBase cs) throws AcsJException {
 		
 		// acsStartJava always adds this Java property for us
 		String nameCorbaloc = System.getProperty(m_nameJavaProp);
@@ -191,7 +198,7 @@ public class Helper {
 		}
 
 		// get the unnarrowed reference to the Naming Service
-		org.omg.CORBA.Object tempCorbaObject = getContainerServices().getAdvancedContainerServices().corbaObjectFromString(nameCorbaloc);
+		org.omg.CORBA.Object tempCorbaObject = cs.getAdvancedContainerServices().corbaObjectFromString(nameCorbaloc);
 		if (tempCorbaObject == null) {
 			// very bad situation. without the naming service we cannot do anything.
 			Throwable cause = new Throwable("Null reference obtained for the Naming Service, corbaloc=" + nameCorbaloc);
@@ -351,15 +358,12 @@ public class Helper {
 			try {
 				notifyFactory = EventChannelFactoryHelper.narrow(notifyFactoryObj);
 			} catch (BAD_PARAM ex) {
-				
-				String errMsg = "Notify factory '" + notifyFactoryName + "' is not of the expected type " + specialEventFactoryId;
 				if (notifyFactoryObj._is_a(standardEventFactoryId)) {
-					errMsg += ". Note that ACS no longer uses the base type " + standardEventFactoryId + " since ACS 8.0";
+					LOG_NC_TaoExtensionsSubtypeMissing.log(m_logger, notifyFactoryName, specialEventFactoryId, standardEventFactoryId);
 				}
 				else {
-					errMsg += " and not even of the expected base type " + standardEventFactoryId;
+					LOG_NC_TaoExtensionsSubtypeMissing.log(m_logger, notifyFactoryName, specialEventFactoryId, "???");
 				}
-				m_logger.warning(errMsg);
 				AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
 				ex2.setNarrowType(specialEventFactoryId);
 				throw ex2;
@@ -397,7 +401,6 @@ public class Helper {
 	protected EventChannel createNotificationChannel(String channelName, String channelKind, String notifyFactoryName) 
 		throws AcsJException, NameAlreadyUsed, NameMapError
 	{
-		this.channelName = channelName;
 		LOG_NC_ChannelCreated_ATTEMPT.log(m_logger, channelName, notifyFactoryName);
 		
 		// return value
@@ -413,7 +416,6 @@ public class Helper {
 			// presumably these values come from the ACS configuration database.
 			IntHolder channelIdHolder = new IntHolder();
 			retValue = createNotifyChannel_internal(
-					notifyFactory, 
 					m_channelProperties.configQofS(channelName),
 					m_channelProperties.configAdminProps(channelName), 
 					channelName, 
@@ -471,14 +473,28 @@ public class Helper {
 	 * Broken out from {@link #createNotificationChannel(String, String, String)}
 	 * to give tests better control about the timing when this call to the event factory is made.
 	 */
-	protected EventChannel createNotifyChannel_internal(EventChannelFactory notifyFactory, Property[] initial_qos, Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
-		throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError {
+	protected EventChannel createNotifyChannel_internal(Property[] initial_qos, Property[] initial_admin, String channelName, IntHolder channelIdHolder) 
+		throws UnsupportedAdmin, NameAlreadyUsed, UnsupportedQoS, NameMapError, AcsJNarrowFailedEx {
 		
-		return notifyFactory.create_named_channel(
+		EventChannel ret = null;
+		
+		// The TAO extension of the notify factory that we use declares only the plain EventChannel type, 
+		// even though it creates the TAO-extension subtype.
+		org.omg.CosNotifyChannelAdmin.EventChannel eventChannelBaseType = notifyFactory.create_named_channel(
 				initial_qos,
 				initial_admin, 
 				channelIdHolder, 
 				channelName);
+		try {
+			// re-create the client side corba stub, to get the extension subtype
+			ret = gov.sandia.NotifyMonitoringExt.EventChannelHelper.narrow(eventChannelBaseType);
+		} catch (BAD_PARAM ex) {
+			LOG_NC_TaoExtensionsSubtypeMissing.log(m_logger, channelName, EventChannel.class.getName(), org.omg.CosNotifyChannelAdmin.EventChannelHelper.id());
+			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
+			ex2.setNarrowType(EventChannelHelper.id());
+			throw ex2;
+		}
+		return ret;
 	}
 
 	/**
@@ -493,13 +509,15 @@ public class Helper {
 	 * @param channelKind
 	 *           Kind of the channel as registered with the CORBA naming service.
 	 * @param channelRef
-	 *           reference to the channel being destroyed
+	 *           reference to the channel being destroyed. 
+	 *           Here we use the plain OMG type instead of the TAO extension subtype, because the extensions are 
+	 *           not used for channel destruction.
 	 * @throws AcsJException
 	 *            Thrown when the channel isn't registered with the Naming
 	 *            Service.
 	 * @warning this method assumes
 	 */
-	protected void destroyNotificationChannel(String channelName, String channelKind, EventChannel channelRef)
+	protected void destroyNotificationChannel(String channelName, String channelKind, org.omg.CosNotifyChannelAdmin.EventChannel channelRef)
 			throws AcsJException 
 	{
 		try {
