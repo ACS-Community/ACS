@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildEclipse,v 1.3 2010/07/01 12:33:56 jschwarz Exp $"
+# "@(#) $Id: buildEclipse,v 1.4 2010/09/27 12:02:39 jschwarz Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -47,7 +47,7 @@ mkdir $SDKDIR
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/Eclipse
 #
-VERSION=3.6
+VERSION=3.6.1
 echo "unpacking the archives for Eclipse "$VERSION
 SDKFILE=$CURR_DIR/../PRODUCTS/eclipse-SDK-$VERSION-linux-gtk.tar.gz
 cd $SDKDIR
