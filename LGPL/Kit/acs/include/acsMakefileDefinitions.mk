@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.2 2010/09/20 14:25:08 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.3 2010/09/27 15:23:19 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -765,9 +765,9 @@ $(if $5, \
 	$(eval $2_lib_prereq = $(CURDIR)/../lib/lib$2.a) \
 	$(eval $2_clean_prereq = clean_lib_static_$2) \
 	$(eval $2_install_prereq = install_lib_static_$2), \
-        $(eval $2_lib_prereq =  $(CURDIR)/../lib/lib$2.a $(CURDIR)/../lib/lib$2.so ) \
-	$(eval $2_clean_prereq = clean_lib_static_$2 clean_lib_shared_$2) \
-        $(eval $2_install_prereq = install_lib_static_$2 install_lib_shared_$2 ) \
+        $(eval $2_lib_prereq =  $(if $(MAKE_NOSTATIC),,$(CURDIR)/../lib/lib$2.a) $(CURDIR)/../lib/lib$2.so ) \
+	$(eval $2_clean_prereq = $(if $(MAKE_NOSTATIC),,clean_lib_static_$2) clean_lib_shared_$2) \
+        $(eval $2_install_prereq = $(if $(MAKE_NOSTATIC),,install_lib_static_$2) install_lib_shared_$2 ) \
 ) \
 )
 
