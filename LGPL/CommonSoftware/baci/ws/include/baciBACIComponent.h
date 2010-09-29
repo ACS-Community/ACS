@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.15 2009/10/08 09:05:13 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.16 2010/09/29 10:39:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -208,6 +208,21 @@ public:
      * If the thread is already suspended, or if it has not been created yet, it just returns.
      */
     void stopActionThread();
+
+    /**
+       * Cancels  the Monitoring thread if one has been created.
+       * We need to cancel the thread to avoid waiting unneccessary waiting in sleep of the thread,
+       * because cancel
+    */
+    void cancelMonitoringThread();
+
+    /**
+       * Cancels the Action thread if one has been created.
+       * We need to cancel the thread to avoid waiting unneccessary waiting in sleep of the thread,
+       * because cancel
+    */
+    void cancelActionThread();
+
 
     /**
      * Returns true if monitoring is active, i.e. 

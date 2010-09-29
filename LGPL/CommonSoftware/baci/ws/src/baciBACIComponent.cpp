@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.20 2009/10/08 09:02:01 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.21 2010/09/29 10:39:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.20 2009/10/08 09:02:01 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.21 2010/09/29 10:39:29 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -358,7 +358,7 @@ BACIComponent::~BACIComponent()
 
   if (threadManager_mp!=0)
       {
-      threadManager_mp->terminateAll();
+      threadManager_mp->cancelAll();
       }
 
   // the threads are no more alive, so I can ...
@@ -517,6 +517,26 @@ void BACIComponent::stopActionThread()
 	actionThread_mp->suspend();
 	}
 }//stopActionThread
+
+
+void BACIComponent::cancelMonitoringThread()
+{
+	ACS_TRACE("baci::BACIComponent::cancelMonitoringThread");
+	if (monitorThread_mp!=NULL)
+	{
+		monitorThread_mp->cancel();
+	}
+}//cancelMonitoringThread
+
+void BACIComponent::cancelActionThread()
+{
+	ACS_TRACE("baci::BACIComponent::cancelActionThread");
+	if (actionThread_mp!=NULL)
+	{
+		actionThread_mp->cancel();
+	}
+}//cancelActionThread
+
 
 void BACIComponent::stopAllThreads()
 {
