@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.42 2010/09/24 10:36:18 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.43 2010/09/29 10:46:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -226,7 +226,6 @@ bool ThreadBase::cancel() {
      * We just do loop only twice
      */
 
-    int n = 0;
     TimeInterval rs = responseTime_m;  // Unit: 100ns
     if (rs<1000000)
 	{
@@ -248,8 +247,6 @@ bool ThreadBase::cancel() {
     m_suspendSemaphore.release(1);
     m_sleepSemaphore.release(1);
 
-    ACE_Time_Value tv (0, rs/100);   // tenth of response time, in us
-
     /*
      * We loop for a total of 0.5 response time
      * If in that time the thread is terminated we return TRUE.
@@ -257,7 +254,11 @@ bool ThreadBase::cancel() {
      *  - the thread is terminated according to the ACE_Thread_Manager
      *  - the thread is not even any more under control of the ACE_Thread_Manager
      */
-    while ( ++n < 5 )
+    ACE_Time_Value tv (0, 1000);  // sleep for 1ms
+    /* rs is in 100ns and we have to find out how many loops for waiting 0.5 response time*/
+    int n = static_cast<int>((rs * 0.5) /  10000 /* = 1 ms*/);
+
+    while ( 0 < --n )
 	{
 	if (threadManager->testterminate(threadID) == true ||
 	    threadManager->thread_within(threadID) == false   )
@@ -378,29 +379,16 @@ bool ThreadBase::stop( bool terminating ) {
     /*
      * I check if the thread service function has exited and the thread
      * is terminated.
-     * I do it at a frequency that is 1/10 the response time
+     * I do it at a frequency 1ms
      * for a total time of 1.5*response time.
      * After that I bail out
      */
-    int n = 0;
 
-    /* tv second parameter is in us units.
-     * We have to calculate 1/tenth of response time, in us
-     * where rs is expressed instead in 100ns, therefore:
-     *     rs_us = rs/10 is the response time in us
-     *     1/tenth of this expressed in us is therefore rs/100:
-     *       rs_us/10 = rs/10/10 = rs/100
-     */
-    ACE_Time_Value tv (0, rs/100);
+    ACE_Time_Value tv (0, 1000);  // sleep for 1ms
+    /* rs is in 100ns and we have to find out how many loops for waiting 1.5 response time*/
+    int n = static_cast<int>((rs * 1.5) /  10000 /* = 1 ms*/);
 
-    /*
-     * We loop for a total of 1.5 response time
-     * If in that time the thread is terminated we return TRUE.
-     * To decide if the thread is terminated we perform two tests:
-     *  - the thread is terminated according to the ACE_Thread_Manager
-     *  - the thread is not even any more under control of the ACE_Thread_Manager
-     */
-    while ( ++n < 15 )
+    while ( 0 < --n )
 	{
 	if (threadManager->testterminate(threadID) == true ||
 	    threadManager->thread_within(threadID) == false   )
