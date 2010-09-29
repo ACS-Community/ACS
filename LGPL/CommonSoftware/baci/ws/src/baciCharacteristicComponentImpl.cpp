@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.50 2010/04/29 14:13:34 hsommer Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.51 2010/09/29 10:40:18 bjeram Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.50 2010/04/29 14:13:34 hsommer Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.51 2010/09/29 10:40:18 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -186,10 +186,11 @@ void CharacteristicComponentImpl::__execute()
 void CharacteristicComponentImpl::__aboutToAbort()
 {
   ACS_TRACE("baci::CharacteristicComponentImpl::__aboutToAbort");
-    // Stop the threads
+    // Stop the threads with cancel that we avoid waiting for sleep - it is interrupted
     if (component_mp)
     {
-        component_mp->stopAllThreads();
+    	component_mp->cancelActionThread();
+        component_mp->cancelMonitoringThread();
     }
 
     ACSComponentImpl::__aboutToAbort();
@@ -197,29 +198,30 @@ void CharacteristicComponentImpl::__aboutToAbort()
     
 void CharacteristicComponentImpl::__cleanUp()
 {
-  ACS_TRACE("baci::CharacteristicComponentImpl::__cleanUp");
-  try
-      {
-      // we stop the action thread in all cases because we started it
-      if (component_mp!=NULL)
-	  component_mp->stopActionThread();
+	ACS_TRACE("baci::CharacteristicComponentImpl::__cleanUp");
+	try
+	{
+		// we cancel the action thread in all cases because we started it
+		if (component_mp!=NULL)
+			component_mp->cancelActionThread();
+		//component_mp->stopActionThread();
 
-      //if user started monitoring thread s/he has to stop it as well
-      // if s/he for some reason forget to do this the acs component will try to stop it again at the end of _cleanUp
-      if( monitoringProperties_mp == true )
-	  {
-	  // Stop just threads that are used by properties
-	  stopPropertiesMonitoring();
-	  }
-      }
-  catch(ACSErr::ACSbaseExImpl &ex)
-      {
-//tbd: add CleanUp Error
-      ex.log(LM_WARNING);
-// should we continue or throw an exception
-      }
-  
-  ACSComponentImpl::__cleanUp();
+		// we cancel the monitoring thread in all cases because we started it
+		if( monitoringProperties_mp == true )
+		{
+			// Cancel just threads that are used by properties
+			// stopPropertiesMonitoring();
+			component_mp->cancelMonitoringThread();
+		}
+	}
+	catch(ACSErr::ACSbaseExImpl &ex)
+	{
+		//tbd: add CleanUp Error
+		ex.log(LM_WARNING);
+		// should we continue or throw an exception
+	}
+
+	ACSComponentImpl::__cleanUp();
 }//__cleanUp
 
 void  CharacteristicComponentImpl::startPropertiesMonitoring() 
