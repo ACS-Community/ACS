@@ -193,6 +193,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 			if (args[i].equals("-n")) {
 				recoveryRead = false;
 			}
+			if (args[i].equals("-disableCache")) {
+				cacheDisabled = true;
+			}
 		}
 
 		File rootF = new File(m_root);
@@ -203,6 +206,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 		
 		m_root = rootF.getAbsolutePath() + '/';
 		m_logger.log(AcsLogLevel.INFO, "DAL root is: " + m_root);
+
+		if (cacheDisabled)
+			m_logger.log(AcsLogLevel.INFO, "DAL cache is disabled.");
 		
 		loadFactory();
 		
@@ -603,11 +609,11 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 
 	private LinkedHashMap<String, Object> cache = new LinkedHashMap<String, Object>();
-	
+	private boolean cacheDisabled = false;
 	private volatile boolean cacheLimitReached = false;
 	
 	public boolean wasCacheLimitReached() {
-		return cacheLimitReached;
+		return cacheLimitReached || cacheDisabled;
 	}
 
 	private void checkCache()
@@ -616,6 +622,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	}
 	private boolean checkCache(boolean tryOnly)
 	{
+		if (cacheDisabled)
+			return false;
+		
 		synchronized (cache) {
 			
 			System.gc();
@@ -718,6 +727,9 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	
 	private void putToCache(String curl, Object xml) 
 	{
+		if (cacheDisabled)
+			return;
+		
 		// remove leading "/"
 		if (curl != null && curl.startsWith("/"))
 			curl = curl.substring(1);
