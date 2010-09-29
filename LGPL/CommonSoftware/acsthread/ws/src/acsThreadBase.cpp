@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.43 2010/09/29 10:46:27 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.44 2010/09/29 13:52:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -254,9 +254,9 @@ bool ThreadBase::cancel() {
      *  - the thread is terminated according to the ACE_Thread_Manager
      *  - the thread is not even any more under control of the ACE_Thread_Manager
      */
-    ACE_Time_Value tv (0, 1000);  // sleep for 1ms
+    ACE_Time_Value tv (0, 10000);  // sleep for 10ms
     /* rs is in 100ns and we have to find out how many loops for waiting 0.5 response time*/
-    int n = static_cast<int>((rs * 0.5) /  10000 /* = 1 ms*/);
+    int n = static_cast<int>((rs * 0.5) /  100000 /* = 10 ms*/);
 
     while ( 0 < --n )
 	{
@@ -384,9 +384,9 @@ bool ThreadBase::stop( bool terminating ) {
      * After that I bail out
      */
 
-    ACE_Time_Value tv (0, 1000);  // sleep for 1ms
+    ACE_Time_Value tv (0, 10000);  // sleep for 10ms
     /* rs is in 100ns and we have to find out how many loops for waiting 1.5 response time*/
-    int n = static_cast<int>((rs * 1.5) /  10000 /* = 1 ms*/);
+    int n = static_cast<int>((rs * 1.5) /  100000 /* = 10 ms*/);
 
     while ( 0 < --n )
 	{
@@ -595,7 +595,10 @@ ThreadManagerBase::~ThreadManagerBase() {
     /* Strange behaviour here, if I don't sleep a while,
      * other thread can not acquire this mutex
      */
-    ACE_OS::sleep(1);
+    //ACE_OS::sleep(1);
+    //ACE_Time_Value tv (0, 10000);  // sleep for 1ms
+    //ACE_OS::sleep(tv);
+    ACE_Thread::yield();
 
     /* acquire mutex lock again, since thrNum will change if some
      * threads are in destructor, threads_m will change in such case
