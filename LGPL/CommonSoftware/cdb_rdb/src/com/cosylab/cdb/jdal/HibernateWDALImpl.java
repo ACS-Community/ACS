@@ -690,7 +690,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			for (int i = 0; i < policies.length; i++)
 				policies[i].destroy();
 
-			final WDALImpl servantDelegate = new WDALImpl(args, orb, xmlCDBPOA, m_logger);
+			// disable cache for XML CDB DAL (important)
+			String[] newArgs = new String[args.length+1];
+			System.arraycopy(args, 0, newArgs, 0, args.length);
+			newArgs[args.length] = "-disableCache";
+			
+			final WDALImpl servantDelegate = new WDALImpl(newArgs, orb, xmlCDBPOA, m_logger);
 			final Servant wdalImplServant = new WJDALPOATie(servantDelegate);
 //			WDALImpl wdalImplServant = new WDALImpl(args, orb, xmlCDBPOA, m_logger);
 			xmlCDBPOA.activate_object_with_id(new byte[] { 'x', 'm', 'l', 'C', 'D', 'B' }, wdalImplServant);
