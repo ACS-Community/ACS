@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.44 2010/09/29 13:52:49 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.45 2010/09/29 14:04:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -592,12 +592,8 @@ ThreadManagerBase::~ThreadManagerBase() {
      */
     guard.release();
 
-    /* Strange behaviour here, if I don't sleep a while,
-     * other thread can not acquire this mutex
+    /* Let's give a chance to the other threads to get the mutex.
      */
-    //ACE_OS::sleep(1);
-    //ACE_Time_Value tv (0, 10000);  // sleep for 1ms
-    //ACE_OS::sleep(tv);
     ACE_Thread::yield();
 
     /* acquire mutex lock again, since thrNum will change if some
