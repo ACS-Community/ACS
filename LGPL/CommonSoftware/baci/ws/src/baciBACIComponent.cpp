@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.21 2010/09/29 10:39:29 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.22 2010/09/30 07:01:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.21 2010/09/29 10:39:29 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.22 2010/09/30 07:01:04 bjeram Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -358,7 +358,7 @@ BACIComponent::~BACIComponent()
 
   if (threadManager_mp!=0)
       {
-      threadManager_mp->cancelAll();
+      threadManager_mp->terminateAll();
       }
 
   // the threads are no more alive, so I can ...
