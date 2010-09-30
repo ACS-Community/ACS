@@ -22,8 +22,8 @@
 package cl.utfsm.acs.acg.core;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.alarmsystem.generated.AlarmSystemConfiguration;
-import alma.acs.alarmsystem.generated.ConfigurationProperty;
+import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
+import alma.alarmsystem.alarmmessage.generated.ConfigurationProperty;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -139,6 +139,14 @@ public class AlarmSystemManager implements EntityManager {
 		_reductionManager.loadFromCDB();
 	}
 	
+	public String checkCDB() {
+		String error = "";
+		error += _alarmManager.checkCDB();
+		error += _categoryManager.checkCDB();
+		error += _reductionManager.checkCDB();
+		return error;
+	}
+	
 	public void saveToCDB() {
 		if( _acsInfo == null || _daoManager == null )
 			throw new IllegalStateException("The manager connection has not been initialized yet");
@@ -165,7 +173,7 @@ public class AlarmSystemManager implements EntityManager {
 			cp.setContent(_configurationProperty.get(sCP));
 			asc.addConfigurationProperty(cp);
 		}
-		_alarmSystemDAO.flushCategories(asc);
+		_alarmSystemDAO.flushConfiguration(asc);
 		_alarmManager.saveToCDB();
 		//_sourceManager.saveToCDB();
 		_categoryManager.saveToCDB();

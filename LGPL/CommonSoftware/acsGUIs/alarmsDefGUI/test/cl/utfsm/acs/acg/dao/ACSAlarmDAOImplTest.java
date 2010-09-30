@@ -6,13 +6,13 @@ import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
 import alma.acs.alarmsystem.generated.FaultMemberDefault;
 import alma.acs.alarmsystem.generated.Location;
-import alma.acs.alarmsystem.generated.ReductionDefinitions;
+import alma.alarmsystem.alarmmessage.generated.ReductionDefinitions;
 import cern.laser.business.data.Alarm;
 
-import alma.acs.alarmsystem.generated.AlarmDefinition;
-import alma.acs.alarmsystem.generated.Child;
-import alma.acs.alarmsystem.generated.Parent;
-import alma.acs.alarmsystem.generated.ReductionLink;
+import alma.alarmsystem.alarmmessage.generated.AlarmDefinition;
+import alma.alarmsystem.alarmmessage.generated.Child;
+import alma.alarmsystem.alarmmessage.generated.Parent;
+import alma.alarmsystem.alarmmessage.generated.ReductionLinkType;
 import cl.utfsm.acs.acg.core.AcsInformation;
 import cl.utfsm.acs.acg.core.AlarmManager;
 import cl.utfsm.acs.acg.core.DAOManager;
@@ -545,7 +545,7 @@ public class ACSAlarmDAOImplTest extends TestCase{
 		ad_c.setFaultCode(2);
 		p.setAlarmDefinition(ad_p);
 		c.setAlarmDefinition(ad_c);
-		ReductionLink rl = new ReductionLink();
+		ReductionLinkType rl = new ReductionLinkType();
 		rl.setParent(p);
 		rl.setChild(c);
 		rl.setType("NODE");

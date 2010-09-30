@@ -169,9 +169,9 @@ public class DAOManager {
 			}catch (CDBExceptionEx e){
 				System.out.println("Another CDB Error");
 			}
-		}
-		for (int i = 0; i < nodes.length; i++) {
-			copyNode(wdal, src+"/"+nodes[i],dst+"/"+nodes[i]);
+			for (int i = 0; i < nodes.length; i++) {
+				copyNode(wdal, src+"/"+nodes[i],dst+"/"+nodes[i]);
+			}
 		}
 	}
 }

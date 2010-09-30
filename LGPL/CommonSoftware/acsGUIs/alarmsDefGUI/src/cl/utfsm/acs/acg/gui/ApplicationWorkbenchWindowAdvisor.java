@@ -21,8 +21,11 @@
  */
 package cl.utfsm.acs.acg.gui;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.swt.SWT;
@@ -118,6 +121,20 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 						public void run() { status.setMessage("Loading contents from the CDB"); }
 					});
 					asm.loadFromCDB();
+					final String error = asm.checkCDB();
+					if(error.compareTo("") != 0) {
+						display.asyncExec(new Runnable() {
+							public void run() {
+								ErrorDialog edialog = new ErrorDialog(getWindowConfigurer().getWindow().getShell(),
+									"CDB Error",
+									"Error while checking CDB integrity",
+									new Status(IStatus.ERROR,"cl.utfsm.acs.acg",error),
+									IStatus.ERROR);
+								edialog.setBlockOnOpen(true);
+								edialog.open();
+							}
+						});
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					display.asyncExec(new Runnable() {
@@ -133,13 +150,13 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 					public void run() {
 						IWorkbenchPage page = getWindowConfigurer().getWindow().getActivePage();
 						try {
-							if( finalRole == Role.Administrator ) {
+							if( finalRole == Role.Administrator || finalRole == Role.Operator) {
 								page.showView(SourcesView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
 								page.showView(CategoriesView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
+								page.showView(AlarmsView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
+								page.showView(ReductionsView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
+								page.showView("org.eclipse.pde.runtime.LogView",null,IWorkbenchPage.VIEW_VISIBLE);
 							}
-							page.showView(AlarmsView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
-							page.showView(ReductionsView.ID,null,IWorkbenchPage.VIEW_VISIBLE);
-							page.showView("org.eclipse.pde.runtime.LogView",null,IWorkbenchPage.VIEW_VISIBLE);
 						} catch (PartInitException e) {
 							status.setErrorMessage("Cannot open other views");
 						}
@@ -148,6 +165,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 						for (int i = 0; i < views.length; i++) {
 							if( views[i].getId().compareTo(AlarmSystemView.ID) == 0 )
 								((IMyViewPart)views[i].getView(false)).setEnabled(true);
+							if(finalRole == Role.Operator)
+								if(views[i].getView(false) instanceof IMyViewPart)
+								((IMyViewPart)views[i].getView(false)).setReadOnly(true);
 						}
 						status.setMessage("Application started successfully");
 					}

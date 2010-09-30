@@ -13,8 +13,9 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 
-import alma.acs.alarmsystem.generated.AlarmSystemConfiguration;
-import alma.acs.alarmsystem.generated.ConfigurationProperty;
+import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
+import alma.alarmsystem.alarmmessage.generated.ConfigurationProperty;
+import alma.cdbErrType.CDBRecordDoesNotExistEx;
 
 import cl.utfsm.acs.acg.dao.ConfigurationAccessor;
 
@@ -43,6 +44,13 @@ public class ACSAlarmSystemDAOImpl {
 		String xml;
 		try {
 			xml = conf.getConfiguration(ALARM_SYSTEM_CONFIGURATION_PATH);
+		} catch (CDBRecordDoesNotExistEx e) {
+			asc = new AlarmSystemConfiguration();
+			ConfigurationProperty cp = new ConfigurationProperty();
+			cp.setName("Implementation");
+			cp.setContent("ACS");
+			asc.addConfigurationProperty(cp);
+			return asc;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -79,7 +87,7 @@ public class ACSAlarmSystemDAOImpl {
 		return cf;
 	}
 	
-	public void flushCategories(AlarmSystemConfiguration asc) {
+	public void flushConfiguration(AlarmSystemConfiguration asc) {
 		if (conf==null || !conf.isWriteable())
 			throw new IllegalStateException("no writable configuration accessor");
 		if(asc == null)
@@ -105,9 +113,20 @@ public class ACSAlarmSystemDAOImpl {
 		try {
 			conf.deleteConfiguration(ALARM_SYSTEM_CONFIGURATION_PATH);
 			conf.addConfiguration(ALARM_SYSTEM_CONFIGURATION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+		} catch (CDBRecordDoesNotExistEx e) {
+			try {
+				conf.addConfiguration(ALARM_SYSTEM_CONFIGURATION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} catch (org.omg.CORBA.UNKNOWN e) {
+			try {
+				conf.addConfiguration(ALARM_SYSTEM_CONFIGURATION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new IllegalStateException("Category already exists");
 		}
 	}
 }

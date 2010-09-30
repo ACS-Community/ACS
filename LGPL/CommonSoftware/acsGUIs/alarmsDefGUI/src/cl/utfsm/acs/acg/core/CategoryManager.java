@@ -28,6 +28,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.exolab.castor.xml.ValidationException;
+
+import alma.acs.alarmsystem.generated.Alarms;
 import alma.acs.alarmsystem.generated.Categories;
 import alma.acs.alarmsystem.generated.Category;
 import alma.acs.alarmsystem.generated.FaultFamily;
@@ -53,6 +56,7 @@ public class CategoryManager implements EntityManager {
 	private CategoryDAO _categoryDAO;
 	private List<Category> _categoryList;
 	private HashMap<String, ObjectState> _objState;
+	private AlarmManager _alarmManager;
 
 	private CategoryManager(CategoryDAO categoryDAO) {
 		_categoryDAO = categoryDAO;
@@ -81,7 +85,7 @@ public class CategoryManager implements EntityManager {
 	}
 
 	public void loadFromCDB() {
-
+		_alarmManager = AlarmSystemManager.getInstance().getAlarmManager();
 		try {
 			_categoryList = new ArrayList<Category>(Arrays.asList(((ACSCategoryDAOImpl)_categoryDAO).loadCategories()));
 			_objState.clear();
@@ -91,6 +95,26 @@ public class CategoryManager implements EntityManager {
 			// The category list is empty
 			_categoryList = new ArrayList<Category>();
 		}
+	}
+	
+	public String checkCDB() {
+		String error = "";
+		List<Category> cats = _categoryList;
+		for(Category c: cats) {
+			if(c.getPath() == null || c.getPath().length() == 0)
+				error += "Category "+c.getPath()+" doesn't have a path.\n";
+			if(!c.hasIsDefault())
+				error += "Category "+c.getPath()+" doesn't define isDefault value.\n";
+			Alarms als = c.getAlarms();
+			if(als != null) {
+				String[] ffs = als.getFaultFamily();
+				for(String ff: ffs) {
+					if(_alarmManager.getFaultFamily(ff) == null)
+						error += "FaultFamily "+ff+" defined in category "+c.getPath()+" doesn't exist.\n";
+				}
+			}
+		}
+		return error;
 	}
 
 	/**
@@ -156,6 +180,7 @@ public class CategoryManager implements EntityManager {
 		for (Category ctg : _categoryList)
 			if (ctg.getPath().compareTo(c.getPath()) == 0)
 				throw new IllegalOperationException("The Category already exists");
+		c.setIsDefault(false);
 		_categoryList.add(c);
 		ObjectState os = _objState.get(c.getPath());
 		if(os == null) {
@@ -172,7 +197,7 @@ public class CategoryManager implements EntityManager {
 		if( c == null || c.getPath() == null )
 			throw new NullPointerException("The category to be updated (or its name) is null");
 		if( ci == null || ci.getPath() == null )
-			throw new NullPointerException("The category with the new valuess (or its name) is null");
+			throw new NullPointerException("The category with the new values (or its name) is null");
 		
 		for (Category ctg : _categoryList)
 			if(ctg.getPath().compareTo(ci.getPath()) == 0) {
@@ -228,35 +253,42 @@ public class CategoryManager implements EntityManager {
 		keyset.toArray(objs);
 		Categories cats = ((ACSCategoryDAOImpl)_categoryDAO).getCategories();
 		boolean flush = false;
-		for (int i = 0; i < objs.length; i++) {
-			ObjectState os = _objState.get(objs[i]);
-			switch(os.getAction()){
-			case -1: //Error, no state assigned.
-				break;
-			case 0:
-				break;
-			case 1:
-				((ACSCategoryDAOImpl)_categoryDAO).addCategory(cats, getCategoryByPath(objs[i]));
-				flush = true;
-				break;
-			case 2:
-				((ACSCategoryDAOImpl)_categoryDAO).updateCategory(cats, getCategoryByPath(objs[i]));
-				flush = true;
-				break;
-			case 3:
-				Category c = new Category();
-				c.setPath(objs[i]);
-				((ACSCategoryDAOImpl)_categoryDAO).deleteCategory(cats, c);
-				flush = true;
-				break;
-			default: //Shouldn't happen.
-				break;
+		try {
+			for (int i = 0; i < objs.length; i++) {
+				ObjectState os = _objState.get(objs[i]);
+				Category c = getCategoryByPath(objs[i]);
+				if(c != null)
+					c.validate();
+				switch(os.getAction()){
+				case -1: //Error, no state assigned.
+					break;
+				case 0:
+					break;
+				case 1:
+					((ACSCategoryDAOImpl)_categoryDAO).addCategory(cats, c);
+					flush = true;
+					break;
+				case 2:
+					((ACSCategoryDAOImpl)_categoryDAO).updateCategory(cats, c);
+					flush = true;
+					break;
+				case 3:
+					c = new Category();
+					c.setPath(objs[i]);
+					((ACSCategoryDAOImpl)_categoryDAO).deleteCategory(cats, c);
+					flush = true;
+					break;
+				default: //Shouldn't happen.
+					break;
+				}
 			}
+			_objState.clear();
+			if(flush)
+				((ACSCategoryDAOImpl)_categoryDAO).flushCategories(cats);
+			for (Category c : _categoryList)
+				_objState.put(c.getPath(), new ObjectState(false));
+		} catch (ValidationException e) {
+			e.printStackTrace();
 		}
-		if(flush)
-			((ACSCategoryDAOImpl)_categoryDAO).flushCategories(cats);
-		_objState.clear();
-		for (Category c : _categoryList)
-			_objState.put(c.getPath(), new ObjectState(false));
 	}
 }

@@ -21,6 +21,9 @@
  */
 package cl.utfsm.acs.acg.gui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -69,6 +72,7 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	private Composite _sourcesButtonsComp;
 	private Button _addSourceButton;
 	private Button _deleteSourceButton;
+	private Group _listGroup;
 
 	/* Source information */
 	private Label _sourceNameLabel;
@@ -81,6 +85,7 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		setTitleToolTip("Configuration of Sources.\nFault Families are published into Sources");
+		setTitleImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_SOURCE));
 		createViewWidgets(parent);
 		refreshContents();
 	}
@@ -92,8 +97,13 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		_sourcesList.removeAll();
 		_sourceManager = AlarmSystemManager.getInstance().getSourceManager();
 		Source[] sources = _sourceManager.getAllSources();
-		for (int i = 0; i < sources.length; i++) {
-			_sourcesList.add(sources[i].getDescription());
+		java.util.List<String> sortedSources = new ArrayList<String>();
+		for(Source src: sources) {
+			sortedSources.add(src.getDescription());
+		}
+		Collections.sort(sortedSources);
+		for (String src: sortedSources) {
+			_sourcesList.add(src);
 		}
 	}
 
@@ -107,8 +117,20 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		layout.numColumns = 1;
 		_sourcesComp.setLayout(layout);
 		
-		_sourcesList = new List(_sourcesComp,SWT.BORDER);
+		_listGroup = new Group(_sourcesComp,SWT.SHADOW_ETCHED_IN);
 		GridData gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = true;
+		_listGroup.setLayoutData(gd);
+		GridLayout gl = new GridLayout();
+		gl.numColumns = 1;
+		_listGroup.setLayout(gl);
+		_listGroup.setText("Sources List");
+		
+		_sourcesList = new List(_listGroup,SWT.BORDER);
+		gd = new GridData();
 		gd.verticalAlignment = SWT.FILL;
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessVerticalSpace = true;
@@ -174,10 +196,11 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(SourcesView.this.getViewSite().getShell(),
 											"Source already exist",
 											"The source "+dialog.getValue()+" already exists in the current configuration",
-											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 											IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
+						return;
 					}
 					refreshContents();
 					if ( _sourcesList.getItems().length != 0 ){
@@ -187,9 +210,7 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 						_descriptionText.setText(_sourcesList.getItem(lenght).toString());					
 					}
 				}
-				else
-					return;
-				}
+			}
 		});
 
 		_deleteSourceButton.addListener(SWT.Selection, new Listener() {
@@ -215,7 +236,7 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 					ErrorDialog error = new ErrorDialog(SourcesView.this.getViewSite().getShell(),
 							"Cannot delete source",
 							"The source cannot be deleted",
-							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 							IStatus.ERROR);
 					error.setBlockOnOpen(true);
 					error.open();
@@ -240,7 +261,9 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 		layout.numColumns = 2;
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
+		gd.verticalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = true;
 		_group = new Group(_compInitial, SWT.SHADOW_ETCHED_IN);
 		_group.setText("Source information");
 		_group.setLayout(layout);
@@ -341,6 +364,17 @@ public class SourcesView extends ViewPart implements IMyViewPart {
 	}
 
 	public void fillWidgets() {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
+		String[] tmp = _sourcesList.getSelection();
+		if(tmp == null || tmp.length == 0)
+			return;
+		fillSource(tmp[0]);
+	}
+	
+	
+	public void setReadOnly(boolean v) {
+		_sourcesButtonsComp.setEnabled(!v);
+		_sourceNameText.setEnabled(!v);
+		_descriptionText.setEnabled(!v);
 	}
 }

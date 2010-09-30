@@ -41,6 +41,8 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 
 	// Shared images across the plugin
+	public static final String IMG_ALARM_SYSTEM = "image.alert";
+	public static final String IMG_SOURCE = "image.add";
 	public static final String IMG_ALARM = "image.alarm";
 	public static final String IMG_LINK  = "image.link";
 	public static final String IMG_TICKET  = "image.ticket";
@@ -96,6 +98,8 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
 	 */
 	protected void initializeImageRegistry(ImageRegistry reg) {
+		reg.put(IMG_ALARM_SYSTEM, getImageDescriptor("icons/alert.gif"));
+		reg.put(IMG_SOURCE, getImageDescriptor("icons/add.gif"));
         reg.put(IMG_ALARM, getImageDescriptor("icons/alarm.gif"));
         reg.put(IMG_LINK, getImageDescriptor("icons/link.png"));
         reg.put(IMG_REDUCTIONS, getImageDescriptor("icons/reduction.png"));

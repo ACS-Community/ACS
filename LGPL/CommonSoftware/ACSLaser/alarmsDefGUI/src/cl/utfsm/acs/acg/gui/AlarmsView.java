@@ -23,7 +23,6 @@ package cl.utfsm.acs.acg.gui;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.xerces.util.URI;
@@ -119,6 +118,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Composite _alarmsButtonsComp;
 	private Button _addAlarmButton;
 	private Button _deleteAlarmButton;
+	private Group _treeGroup;
 	
 	/* FF information */
 	private Text  _ffNameText;
@@ -138,6 +138,10 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Label _ffErrorMessageLabel;
 	private Group _FFgroup;
 
+	/* FC and FM List information */
+	private Label _fcfmLabel;
+	private Group _FCFMgroup;
+	
 	/* FC information */
 	private Text  _fcValueText;
 	private Label _fcValueLabel;
@@ -171,8 +175,30 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 	private Label _fmErrorMessageLabel;
 	private Group _FMgroup;
 	
+	/* FMD information */
+	/* FM information */
+	private Text  _fmdLocBuildingText;
+	private Label _fmdLocBuildingLabel;
+	private Text  _fmdLocRoomText;
+	private Label _fmdLocRoomLabel;
+	private Text  _fmdLocFloorText;
+	private Label _fmdLocFloorLabel;
+	private Text  _fmdLocMnemonicText;
+	private Label _fmdLocMnemonicLabel;
+	private Text  _fmdLocPositionText;
+	private Label _fmdLocPositionLabel;
+	private Group _fmdLocGroup;
+	private Label _fmdErrorMessageLabel;
+	private Group _FMDgroup;
+	
 	/* Listeners*/
-	Listener updateFaultFamily;
+	Listener _addFaultFamily;
+	Listener _updateFaultFamily;
+	Listener _deleteElement;
+	Listener _addFaultCode;
+	Listener _addFaultMember;
+	Listener _addFaultMemberDefault;
+	Listener _addCategory;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -192,11 +218,11 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_alarmManager = AlarmSystemManager.getInstance().getAlarmManager();
 		_sourceManager = AlarmSystemManager.getInstance().getSourceManager();
 		_categoryManager = AlarmSystemManager.getInstance().getCategoryManager();
+		
+		/*TODO
 		List<FaultFamily> ffList = _alarmManager.getAllAlarms();
 		List<FaultFamily> sortedFFList = new ArrayList<FaultFamily>();
 
-		/* We get a separate tmp list with the names,
-		 * sort it, and then sort the original ffList */
 		List<String> tmp = new ArrayList<String>();
 		for (Iterator<FaultFamily> iterator = ffList.iterator(); iterator.hasNext();) {
 			tmp.add(((FaultFamily)iterator.next()).getName().toLowerCase());
@@ -228,7 +254,6 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTCODES) :
 						Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTMEMBERS) ));
 				
-				/* Populate with the Fault codes */
 				if( j == 0 ) {
 					FaultCode[] faultCodes = family.getFaultCode();
 					for (int i = 0; i < faultCodes.length; i++) {
@@ -236,15 +261,18 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						kTree.setText(Integer.toString(faultCodes[i].getValue()));
 						kTree.setData(NodeType.FAULT_CODE_DATA);
 					}
+					if(faultCodes.length == 0) {
+						iTree.setForeground(new Color(iTree.getDisplay(), 255, 0, 0));
+						jTree.setForeground(new Color(jTree.getDisplay(), 255, 0, 0));
+					}
 				}
-				/* Populate with the Fault members */
 				else {
 					FaultMember[] faultMembers = family.getFaultMember();
 					FaultMemberDefault fmd = family.getFaultMemberDefault();
 					if( fmd != null ) {
 						TreeItem kTree = new TreeItem(jTree,SWT.NONE);
 						kTree.setText("Default Member");
-						kTree.setForeground(new Color(kTree.getDisplay(), 255, 0, 0));
+						//kTree.setForeground(new Color(kTree.getDisplay(), 255, 0, 0));
 						kTree.setData(NodeType.FAULT_MEMBER_DEFAULT);
 					}
 					for (int i = 0; i < faultMembers.length; i++) {
@@ -253,9 +281,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						kTree.setData(NodeType.FAULT_MEMBER_DATA);
 						
 					}
+					if(faultMembers.length == 0 && fmd == null) {
+						iTree.setForeground(new Color(iTree.getDisplay(), 255, 0, 0));
+						jTree.setForeground(new Color(jTree.getDisplay(), 255, 0, 0));
+					}
 				}
 			}
 		}
+		*/
+		sortFaultFamilyList();
 		_tree.deselectAll();
 		_FFgroup.setVisible(false);
 		((GridData)_FFgroup.getLayoutData()).exclude = true;
@@ -263,6 +297,10 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		((GridData)_FMgroup.getLayoutData()).exclude = true;
 		_FCgroup.setVisible(false);
 		((GridData)_FCgroup.getLayoutData()).exclude = true;
+		_FMDgroup.setVisible(false);
+		((GridData)_FMDgroup.getLayoutData()).exclude = true;
+		_FCFMgroup.setVisible(false);
+		((GridData)_FCFMgroup.getLayoutData()).exclude = true;
 	}
 
 	private void createViewWidgets(Composite parent) {
@@ -293,7 +331,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				_tree.setToolTipText(tooltip);
 			}
 		};
-		Listener deleteElement = new Listener() {
+		_deleteElement = new Listener() {
 			public void handleEvent(Event event) {
 			      boolean choice = MessageDialog.openQuestion( 
 		        		  AlarmsView.this.getViewSite().getShell(),
@@ -305,7 +343,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				if(_tree.getSelection() == null || _tree.getSelection().length == 0)
 					return;
 				NodeType type = (NodeType)_tree.getSelection()[0].getData();
-				if(type == NodeType.FAULT_CODE_LIST || type == NodeType.FAULT_MEMBER_LIST || type == NodeType.FAULT_MEMBER_DEFAULT)
+				if(type == NodeType.FAULT_CODE_LIST || type == NodeType.FAULT_MEMBER_LIST)
 					return;
 				String alarm = _tree.getSelection()[0].getText();
 				try {
@@ -314,30 +352,43 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					else if(type == NodeType.FAULT_CODE_DATA){
 						String ff = _tree.getSelection()[0].getParentItem().getParentItem().getText();
 						_alarmManager.deleteFaultCode(_alarmManager.getFaultFamily(ff),_alarmManager.getFaultCode(ff,new Integer(alarm).intValue()));
-					}
-					else if(type == NodeType.FAULT_MEMBER_DATA){
+					} else if(type == NodeType.FAULT_MEMBER_DATA){
 						String ff = _tree.getSelection()[0].getParentItem().getParentItem().getText();
 						_alarmManager.deleteFaultMember(_alarmManager.getFaultFamily(ff),_alarmManager.getFaultMember(ff,alarm));
+					} else if(type == NodeType.FAULT_MEMBER_DEFAULT) {
+						String ff = _tree.getSelection()[0].getParentItem().getParentItem().getText();
+						_alarmManager.setFaultMemberDefault(_alarmManager.getFaultFamily(ff),null);
 					}
 				} catch (IllegalOperationException e){
 					ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 							"Cannot delete the item",
 							e.getMessage(),
-							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 							IStatus.ERROR);
 					error.setBlockOnOpen(true);
 					error.open();
+					return;
 				} catch (NullPointerException e){
 					ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 							"Cannot delete the item",
 							e.getMessage(),
-							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 							IStatus.ERROR);
 					error.setBlockOnOpen(true);
 					error.open();
+					return;
 				}
 				if(type != NodeType.FAULT_FAMILY){
 					sel = _tree.getSelection()[0].getParentItem();
+					TreeItem tff = sel.getParentItem();
+					FaultFamily fft = _alarmManager.getFaultFamily(tff.getText());
+					if(fft.getFaultCodeCount() == 0 || (fft.getFaultMemberCount() == 0 && fft.getFaultMemberDefault() == null)) {
+						sel.setForeground(new Color(sel.getDisplay(), 255, 0, 0));
+						tff.setForeground(new Color(tff.getDisplay(), 255, 0, 0));
+					} else {
+						sel.setForeground(new Color(sel.getDisplay(), 0, 0, 0));
+						tff.setForeground(new Color(tff.getDisplay(), 0, 0, 0));
+					}
 					_tree.getSelection()[0].dispose();
 					_tree.setSelection(sel);
 					Event e = new Event();
@@ -345,7 +396,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				}
 				else{
 					_tree.getSelection()[0].dispose();
-					//_tree.setSelection(_tree.getItems()[0]);
+					if(_tree.getItemCount() > 0)
+						_tree.setSelection(_tree.getItems()[0]);
 					Event e = new Event();
 					_tree.notifyListeners(SWT.Selection, e);
 				}
@@ -354,7 +406,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 			
 		};
 		
-		Listener addFaultMember = new Listener() {
+		_addFaultMember = new Listener() {
 			public void handleEvent(Event event) {
 				TreeItem tmp = _tree.getSelection()[0];
 				TreeItem tmp2 = null;
@@ -387,7 +439,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 								"Cannot add the new Fault Member",
 								e.getMessage(),
-								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 								IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
@@ -396,23 +448,55 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 								"Cannot add the new Fault Member",
 								e.getMessage(),
-								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 								IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
 						return;
 					}
-					TreeItem mTree = new TreeItem(tmp2.getItems()[1], SWT.NONE);
-					mTree.setText(dialog.getValue());
-					mTree.setData(NodeType.FAULT_MEMBER_DATA);
-					_tree.setSelection(mTree);
-					Event e = new Event();
-					_tree.notifyListeners(SWT.Selection, e);
+					sortFaultFamilyList();
+					selectElementFromTree(ff, dialog.getValue(), null);
 				}
 			}
 		};
 		
-		Listener addFaultCode = new Listener() {
+		_addFaultMemberDefault = new Listener() {
+			public void handleEvent(Event event) {
+				TreeItem tmp = _tree.getSelection()[0];
+				TreeItem tmp2 = null;
+				while(tmp != null){
+					tmp2 = tmp;
+					tmp = tmp.getParentItem();
+				}
+				String ff = tmp2.getText();
+				FaultMemberDefault newFaultMemberDefault = new FaultMemberDefault();
+				try {
+					_alarmManager.setFaultMemberDefault(_alarmManager.getFaultFamily(ff),newFaultMemberDefault);
+				} catch (IllegalOperationException e) {
+					ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
+							"Cannot add the new Default Fault Member",
+							e.getMessage(),
+							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
+							IStatus.ERROR);
+					error.setBlockOnOpen(true);
+					error.open();
+					return;
+				} catch (NullPointerException e) {
+					ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
+							"Cannot add the new Default Fault Member",
+							e.getMessage(),
+							new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
+							IStatus.ERROR);
+					error.setBlockOnOpen(true);
+					error.open();
+					return;
+				}
+				sortFaultFamilyList();
+				selectElementFromTree(ff, "Default Member", null);
+			}
+		};
+		
+		_addFaultCode = new Listener() {
 			public void handleEvent(Event event) {
 				TreeItem tmp = _tree.getSelection()[0];
 				TreeItem tmp2 = null;
@@ -450,7 +534,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 								"Cannot add the new Fault Code",
 								e.getMessage(),
-								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 								IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
@@ -459,157 +543,19 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 								"Cannot add the new Fault Code",
 								e.getMessage(),
-								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+								new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 								IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
 						return;
 					}
-					TreeItem cTree = new TreeItem(tmp2.getItems()[0], SWT.NONE);
-					cTree.setText(dialog.getValue());
-					cTree.setData(NodeType.FAULT_CODE_DATA);
-					_tree.setSelection(cTree);
-					Event e = new Event();
-					_tree.notifyListeners(SWT.Selection, e);
+					sortFaultFamilyList();
+					selectElementFromTree(ff, null, dialog.getValue());
 				}
 			}
 		};
 		
-		_sash = new SashForm(parent,SWT.NONE);
-		_sash.setLayout(new FillLayout());
-
-		_alarmsComp = new Composite(_sash,SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		_alarmsComp.setLayout(layout);
-		
-		/* The tree used to list the FF, FM and FCs */
-		_tree = new Tree(_alarmsComp,SWT.VIRTUAL | SWT.BORDER);
-		GridData gd = new GridData();
-		gd.verticalAlignment = SWT.FILL;
-		gd.horizontalAlignment = SWT.FILL;
-		gd.grabExcessVerticalSpace = true;
-		gd.grabExcessHorizontalSpace = true;
-		_tree.setLayoutData(gd);
-		//Menu treePopUp = new Menu(parent, SWT.POP_UP);
-		Menu treePopUp = new Menu(parent);
-		MenuItem treePopUpDelete = new MenuItem(treePopUp,SWT.PUSH);
-		treePopUpDelete.setText("Delete");
-		treePopUpDelete.addListener(SWT.Selection, deleteElement);
-		MenuItem treePopUpAddFaultMember = new MenuItem(treePopUp,SWT.PUSH);
-		treePopUpAddFaultMember.setText("Add Fault Member");
-		treePopUpAddFaultMember.addListener(SWT.Selection, addFaultMember);
-		MenuItem treePopUpAddFaultCode = new MenuItem(treePopUp,SWT.PUSH);
-		treePopUpAddFaultCode.setText("Add Fault Code");
-		treePopUpAddFaultCode.addListener(SWT.Selection, addFaultCode);
-		_tree.setMenu(treePopUp);
-		_tree.addSelectionListener(new SelectionListener() {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				TreeItem []tmp = ((Tree)e.widget).getSelection();
-				if( tmp == null || tmp.length == 0){
-					//_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					//_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					//_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-					return;
-				}
-
-				TreeItem item = tmp[0];
-				NodeType type = (NodeType)item.getData();
-
-				/* Delete the label the first time we select something */
-				Control c = _compInitial.getChildren()[0];
-				if( c instanceof Label ) {
-					c.dispose();
-					_compInitial.layout();
-					c = _compInitial.getChildren()[0];
-				}
-
-				if( type == NodeType.FAULT_FAMILY ) {
-					_FFgroup.setVisible(true);
-					((GridData)_FFgroup.getLayoutData()).exclude = false;
-					_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-
-					//_FFgroup.moveAbove(c);
-					fillFFWidgets(item.getText());
-				}
-				else if( type == NodeType.FAULT_CODE_LIST ) {
-					_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-				}
-				else if( type == NodeType.FAULT_CODE_DATA ) {
-					_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					_FCgroup.setVisible(true);
-					((GridData)_FCgroup.getLayoutData()).exclude = false;
-
-					//_FCgroup.moveAbove(c);
-					fillFCWidgets(Integer.parseInt(item.getText()), item.getParentItem().getParentItem().getText());
-				}
-				else if( type == NodeType.FAULT_MEMBER_LIST ) {
-					_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-				}
-				else if( type == NodeType.FAULT_MEMBER_DATA ) {
-					_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					_FMgroup.setVisible(true);
-					((GridData)_FMgroup.getLayoutData()).exclude = false;
-					_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-
-					//_FMgroup.moveAbove(c);
-					fillFMWidgets(item.getText(), item.getParentItem().getParentItem().getText());
-				}
-				else if( type == NodeType.FAULT_MEMBER_DEFAULT ) {
-					_FFgroup.setVisible(false);
-					((GridData)_FFgroup.getLayoutData()).exclude = true;
-					_FMgroup.setVisible(false);
-					((GridData)_FMgroup.getLayoutData()).exclude = true;
-					_FCgroup.setVisible(false);
-					((GridData)_FCgroup.getLayoutData()).exclude = true;
-				}
-				_compInitial.layout();
-			}
-		
-		});
-		_tree.addListener(SWT.MouseHover, hoverTree);
-		
-		_alarmsButtonsComp = new Composite(_alarmsComp,SWT.NONE);
-		layout = new GridLayout();
-		layout.numColumns = 2;
-		_alarmsButtonsComp.setLayout(layout);
-		
-		_addAlarmButton = new Button(_alarmsButtonsComp, SWT.None);
-		_addAlarmButton.setText("Add");
-		_addAlarmButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
-		
-		_deleteAlarmButton = new Button(_alarmsButtonsComp, SWT.None);
-		_deleteAlarmButton.setText("Delete");
-		_deleteAlarmButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
-				
-		_addAlarmButton.addListener(SWT.Selection, new Listener() {
-
+		_addFaultFamily = new Listener() {
 			public void handleEvent(Event event) {
 				InputDialog dialog = new InputDialog(AlarmsView.this.getViewSite().getShell(),
 				                         "New Alarm",
@@ -635,7 +581,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 											"Cannot add the new Alarm",
 											e.getMessage(),
-											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 											IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
@@ -643,31 +589,259 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 						ErrorDialog error = new ErrorDialog(AlarmsView.this.getViewSite().getShell(),
 											"Cannot add the new Alarm",
 											e.getMessage(),
-											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.toString()),
+											new Status(IStatus.ERROR,"cl.utfsm.acs.acg",e.getMessage()),
 											IStatus.ERROR);
 						error.setBlockOnOpen(true);
 						error.open();
+						return;
 					}
-					TreeItem iTree = new TreeItem(_tree,SWT.NONE);
-					iTree.setData(NodeType.FAULT_FAMILY);
-					iTree.setText(dialog.getValue());
-					iTree.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM));
-					for(int j=0; j!=2; j++) {
-						TreeItem jTree = new TreeItem(iTree,SWT.NONE);
-						jTree.setText((j==0 ? "Fault Codes" : "Fault Members"));
-						jTree.setData((j==0 ? NodeType.FAULT_CODE_LIST : NodeType.FAULT_MEMBER_LIST));
-						jTree.setImage((j==0?
-								Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTCODES) :
-								Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTMEMBERS) ));
-					}
-					_tree.setSelection(iTree);
-					Event e = new Event();
-					_tree.notifyListeners(SWT.Selection, e);
+					sortFaultFamilyList();
+					selectElementFromTree(dialog.getValue(), null, null);
 				}
 			}
-		});
+		};
+		
+		_sash = new SashForm(parent,SWT.NONE);
+		_sash.setLayout(new FillLayout());
 
-		_deleteAlarmButton.addListener(SWT.Selection, deleteElement);
+		_alarmsComp = new Composite(_sash,SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		_alarmsComp.setLayout(layout);
+		
+		_treeGroup = new Group(_alarmsComp,SWT.SHADOW_ETCHED_IN);
+		GridData gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = true;
+		_treeGroup.setLayoutData(gd);
+		GridLayout gl = new GridLayout();
+		gl.numColumns = 1;
+		_treeGroup.setLayout(gl);
+		_treeGroup.setText("Fault Family List");
+		
+		/* The tree used to list the FF, FM and FCs */
+		_tree = new Tree(_treeGroup,SWT.VIRTUAL | SWT.BORDER);
+		gd = new GridData();
+		gd.verticalAlignment = SWT.FILL;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
+		gd.grabExcessHorizontalSpace = true;
+		_tree.setLayoutData(gd);
+		//Menu treePopUp = new Menu(parent, SWT.POP_UP);
+		Menu treePopUp = new Menu(parent);
+		_tree.setMenu(treePopUp);
+		treePopUp.addListener(SWT.Show, new Listener() {
+			public void handleEvent(Event e) {
+				//Point point = new Point(e.x, e.y);
+				//TreeItem sel = _tree.getItem(point);
+				TreeItem[] sel = _tree.getSelection();
+				Menu treePopUp = _tree.getMenu();
+				MenuItem[] items = treePopUp.getItems();
+				for (int i = 0; i < items.length; i++)
+					items[i].dispose();
+				MenuItem mitem;
+				if(sel == null || sel.length == 0) {
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Family");
+					mitem.addListener(SWT.Selection, _addFaultFamily);
+					return;
+				}
+				NodeType type = (NodeType) sel[0].getData();
+				switch(type) {
+				case FAULT_FAMILY:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Family");
+					mitem.addListener(SWT.Selection, _addFaultFamily);
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Delete Fault Family");
+					mitem.addListener(SWT.Selection, _deleteElement);
+					break;
+				case FAULT_CODE_LIST:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Code");
+					mitem.addListener(SWT.Selection, _addFaultCode);
+					break;
+				case FAULT_CODE_DATA:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Code");
+					mitem.addListener(SWT.Selection, _addFaultCode);
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Delete Fault Code");
+					mitem.addListener(SWT.Selection, _deleteElement);
+					break;
+				case FAULT_MEMBER_LIST:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Member");
+					mitem.addListener(SWT.Selection, _addFaultMember);
+					if(_alarmManager.getFaultFamily(sel[0].getParentItem().getText()).getFaultMemberDefault() == null) {
+						mitem = new MenuItem(treePopUp,SWT.PUSH);
+						mitem.setText("Add Default Fault Member");
+						mitem.addListener(SWT.Selection, _addFaultMemberDefault);
+					}
+					break;
+				case FAULT_MEMBER_DATA:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Add Fault Member");
+					mitem.addListener(SWT.Selection, _addFaultMember);
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Delete Fault Member");
+					mitem.addListener(SWT.Selection, _deleteElement);
+					break;
+				case FAULT_MEMBER_DEFAULT:
+					mitem = new MenuItem(treePopUp,SWT.PUSH);
+					mitem.setText("Delete Default Fault Member");
+					mitem.addListener(SWT.Selection, _deleteElement);
+					break;
+				default:
+					for (int i = 0; i < items.length; i++)
+						items[i].dispose();
+					break;
+				}
+			}
+		}
+		);
+		_tree.addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				TreeItem []tmp = ((Tree)e.widget).getSelection();
+				if( tmp == null || tmp.length == 0){
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(false);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = true;
+					return;
+				}
+
+				TreeItem item = tmp[0];
+				NodeType type = (NodeType)item.getData();
+
+				/* Delete the label the first time we select something */
+				Control c = _compInitial.getChildren()[0];
+				if( c instanceof Label ) {
+					c.dispose();
+					_compInitial.layout();
+					c = _compInitial.getChildren()[0];
+				}
+
+				if( type == NodeType.FAULT_FAMILY ) {
+					_FFgroup.setVisible(true);
+					((GridData)_FFgroup.getLayoutData()).exclude = false;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(false);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = true;
+
+					//_FFgroup.moveAbove(c);
+					fillFFWidgets(item.getText());
+				}
+				else if( type == NodeType.FAULT_CODE_LIST ) {
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(true);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = false;
+					fillFCFMWidgets();
+				}
+				else if( type == NodeType.FAULT_CODE_DATA ) {
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(true);
+					((GridData)_FCgroup.getLayoutData()).exclude = false;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(false);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = true;
+
+					//_FCgroup.moveAbove(c);
+					fillFCWidgets(Integer.parseInt(item.getText()), item.getParentItem().getParentItem().getText());
+				}
+				else if( type == NodeType.FAULT_MEMBER_LIST ) {
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(true);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = false;
+					fillFCFMWidgets();
+				}
+				else if( type == NodeType.FAULT_MEMBER_DATA ) {
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(true);
+					((GridData)_FMgroup.getLayoutData()).exclude = false;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(false);
+					((GridData)_FMDgroup.getLayoutData()).exclude = true;
+					_FCFMgroup.setVisible(false);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = true;
+
+					//_FMgroup.moveAbove(c);
+					fillFMWidgets(item.getText(), item.getParentItem().getParentItem().getText());
+				}
+				else if( type == NodeType.FAULT_MEMBER_DEFAULT ) {
+					_FFgroup.setVisible(false);
+					((GridData)_FFgroup.getLayoutData()).exclude = true;
+					_FMgroup.setVisible(false);
+					((GridData)_FMgroup.getLayoutData()).exclude = true;
+					_FCgroup.setVisible(false);
+					((GridData)_FCgroup.getLayoutData()).exclude = true;
+					_FMDgroup.setVisible(true);
+					((GridData)_FMDgroup.getLayoutData()).exclude = false;
+					_FCFMgroup.setVisible(false);
+					((GridData)_FCFMgroup.getLayoutData()).exclude = true;
+					
+					fillFMDWidgets(item.getParentItem().getParentItem().getText());
+				}
+				_compInitial.layout();
+			}
+		
+		});
+		_tree.addListener(SWT.MouseHover, hoverTree);
+		
+		_alarmsButtonsComp = new Composite(_alarmsComp,SWT.NONE);
+		layout = new GridLayout();
+		layout.numColumns = 2;
+		_alarmsButtonsComp.setLayout(layout);
+		
+		_addAlarmButton = new Button(_alarmsButtonsComp, SWT.None);
+		_addAlarmButton.setText("Add");
+		_addAlarmButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ADD));
+		
+		_deleteAlarmButton = new Button(_alarmsButtonsComp, SWT.None);
+		_deleteAlarmButton.setText("Delete");
+		_deleteAlarmButton.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE));
+				
+		_addAlarmButton.addListener(SWT.Selection, _addFaultFamily);
+
+		_deleteAlarmButton.addListener(SWT.Selection, _deleteElement);
 		
 		/* Top widget of the right side */
 		_compInitial = new Composite(_sash, SWT.SHADOW_ETCHED_IN);
@@ -679,11 +853,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		createFFWidgets();
 		createFCWidgets();
 		createFMWidgets();
+		createFMDWidgets();
+		createFCFMWidgets();
 
 		/* At the beginning we only show a label */
 		_FFgroup.setVisible(false);
 		_FCgroup.setVisible(false);
 		_FMgroup.setVisible(false);
+		_FMDgroup.setVisible(false);
+		_FCFMgroup.setVisible(false);
 
 		_sash.setWeights(new int[] {3, 5});
 	}
@@ -735,6 +913,10 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				try{
 					_alarmManager.updateFaultCode(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultCode(tff, tfc),fct);
 					tmp.setText(_fcValueText.getText());
+					if(fct.getValue() != tfc) {
+						sortFaultFamilyList();
+						selectElementFromTree(tff, null, Integer.toString(fct.getValue()));
+					}
 				}catch(IllegalOperationException e){
 					_fcErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
@@ -748,6 +930,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
 		_FCgroup.setLayoutData(gd);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -851,6 +1035,10 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				try{
 					_alarmManager.updateFaultMember(_alarmManager.getFaultFamily(tff), _alarmManager.getFaultMember(tff, tfm),fmt);
 					tmp.setText(_fmNameText.getText());
+					if(tfm.compareTo(fmt.getName()) != 0) {
+						sortFaultFamilyList();
+						selectElementFromTree(tff, fmt.getName(), null);
+					}
 				}catch(IllegalOperationException e){
 					_fmErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
@@ -864,6 +1052,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
 		_FMgroup.setLayoutData(gd);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -943,11 +1133,145 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.horizontalSpan = 2;
 		_fmErrorMessageLabel.setLayoutData(gd);
 	}
+	
+	private void createFCFMWidgets() {
+		_FCFMgroup = new Group(_compInitial,SWT.SHADOW_ETCHED_IN);
+		GridData gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		_FCFMgroup.setLayoutData(gd);
+		GridLayout gl = new GridLayout();
+		gl.numColumns = 1;
+		_FCFMgroup.setLayout(gl);
 
-	private void createFFWidgets() {
-		updateFaultFamily = new Listener() {
+		_fcfmLabel = new Label(_FCFMgroup,SWT.NONE);
+		_fcfmLabel.setLayoutData(gd);
+		_fcfmLabel.setText("");
+	}
+	
+	private void fillFCFMWidgets() {
+		NodeType type = (NodeType) _tree.getSelection()[0].getData();
+		if(type == NodeType.FAULT_CODE_LIST)
+			_fcfmLabel.setText("List of Fault Codes");
+		else if(type == NodeType.FAULT_MEMBER_LIST)
+			_fcfmLabel.setText("List of Fault Members");
+	}
+	
+	private void createFMDWidgets() {
+		Listener updateFaultMemberDefault = new Listener() {
 			public void handleEvent(Event event) {
 				TreeItem tmp = _tree.getSelection()[0];
+				String tff = tmp.getParentItem().getParentItem().getText();
+				FaultMemberDefault fmdt = new FaultMemberDefault();
+				Location lt = new Location();
+				if(!_fmdLocBuildingText.getText().isEmpty()) 
+					lt.setBuilding(_fmdLocBuildingText.getText());
+				if(!_fmdLocFloorText.getText().isEmpty())
+					lt.setFloor(_fmdLocFloorText.getText());
+				if(!_fmdLocRoomText.getText().isEmpty())
+					lt.setRoom(_fmdLocRoomText.getText());
+				if(!_fmdLocMnemonicText.getText().isEmpty())
+					lt.setMnemonic(_fmdLocMnemonicText.getText());
+				if(!_fmdLocPositionText.getText().isEmpty())
+					lt.setPosition(_fmdLocPositionText.getText());
+				fmdt.setLocation(lt);
+				_fmdErrorMessageLabel.setText("");
+				try{
+					_alarmManager.setFaultMemberDefault(_alarmManager.getFaultFamily(tff), fmdt);
+					tmp.setText("Default Member");
+					//sortFaultFamilyList();
+					//selectElementFromTree(tff, "Default Member", null);
+				}catch(IllegalOperationException e){
+					_fmdErrorMessageLabel.setText(e.getMessage());
+				}catch(NullPointerException e){
+					_fmdErrorMessageLabel.setText(e.getMessage());
+				}
+			}
+		};
+
+		_FMDgroup = new Group(_compInitial,SWT.SHADOW_ETCHED_IN);
+		_FMDgroup.setText("Default Fault Member details");
+		GridData gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
+		_FMDgroup.setLayoutData(gd);
+		GridLayout gl = new GridLayout();
+		gl.numColumns = 2;
+		_FMDgroup.setLayout(gl);
+
+		_fmdLocGroup = new Group(_FMDgroup, SWT.SHADOW_ETCHED_IN);
+		_fmdLocGroup.setText("Location");
+		gl = new GridLayout();
+		gl.numColumns = 2;
+		gd = new GridData();
+		gd.horizontalAlignment = SWT.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalSpan = 2;
+		_fmdLocGroup.setLayout(gl);
+		_fmdLocGroup.setLayoutData(gd);
+
+		_fmdLocBuildingLabel = new Label(_fmdLocGroup,SWT.NONE);
+		_fmdLocBuildingLabel.setText("Building");
+		_fmdLocBuildingText = new Text(_fmdLocGroup,SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_fmdLocBuildingText.setLayoutData(gd);
+		_fmdLocBuildingText.addListener(SWT.Modify, updateFaultMemberDefault);
+
+		_fmdLocFloorLabel = new Label(_fmdLocGroup,SWT.NONE);
+		_fmdLocFloorLabel.setText("Floor");
+		_fmdLocFloorText = new Text(_fmdLocGroup,SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_fmdLocFloorText.setLayoutData(gd);
+		_fmdLocFloorText.addListener(SWT.Modify, updateFaultMemberDefault);
+
+		_fmdLocRoomLabel = new Label(_fmdLocGroup,SWT.NONE);
+		_fmdLocRoomLabel.setText("Room");
+		_fmdLocRoomText = new Text(_fmdLocGroup,SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_fmdLocRoomText.setLayoutData(gd);
+		_fmdLocRoomText.addListener(SWT.Modify, updateFaultMemberDefault);
+
+		_fmdLocMnemonicLabel = new Label(_fmdLocGroup,SWT.NONE);
+		_fmdLocMnemonicLabel.setText("Mnemonic");
+		_fmdLocMnemonicText = new Text(_fmdLocGroup,SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_fmdLocMnemonicText.setLayoutData(gd);
+		_fmdLocMnemonicText.addListener(SWT.Modify, updateFaultMemberDefault);
+
+		_fmdLocPositionLabel = new Label(_fmdLocGroup,SWT.NONE);
+		_fmdLocPositionLabel.setText("Position");
+		_fmdLocPositionText = new Text(_fmdLocGroup,SWT.SINGLE | SWT.BORDER);
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		_fmdLocPositionText.setLayoutData(gd);
+		_fmdLocPositionText.addListener(SWT.Modify, updateFaultMemberDefault);
+		
+		_fmdErrorMessageLabel = new Label(_FMDgroup, SWT.NONE);
+		_fmdErrorMessageLabel.setText("");
+		_fmdErrorMessageLabel.setForeground(getViewSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		gd = new GridData();
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.horizontalSpan = 2;
+		_fmdErrorMessageLabel.setLayoutData(gd);
+	}
+
+	private void createFFWidgets() {
+		_updateFaultFamily = new Listener() {
+			public void handleEvent(Event event) {
+				TreeItem tmp = _tree.getSelection()[0];
+				String ff = tmp.getText();
 				FaultFamily fft = new FaultFamily();
 				//TODO: Error icon or something similar
 				if(_ffNameText.getText().isEmpty()) {
@@ -982,32 +1306,28 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					ct.setGsm(_ffContactGSMText.getText());
 				fft.setContact(ct);
 				
-				/*
-				List<Category> catList = _categoryManager.getAllCategories();
-				for (Iterator<Category> iterator = catList.iterator(); iterator.hasNext();) {
-					Category cat = (Category) iterator.next();
-					String[] ffs = cat.getAlarms().getFaultFamily();
-					for (int i = 0; i < ffs.length; i++) {
-						if(ffs[i].compareTo(tmp.getText()) == 0)
-							cat.getAlarms().removeFaultFamily(tmp.getText());
-					}
-					if(cat.getPath().compareTo(_ffCategoryCombo.getText()) == 0){
-						cat.getAlarms().addFaultFamily(_ffNameText.getText());
-					}
-				}*/
 				_ffErrorMessageLabel.setText("");
 				try{
-					_alarmManager.updateFaultFamily(_alarmManager.getFaultFamily(tmp.getText()), fft);
+					_alarmManager.updateFaultFamily(_alarmManager.getFaultFamily(ff), fft);
 					tmp.setText(_ffNameText.getText());
+					IWorkbenchWindow _window = getViewSite().getWorkbenchWindow();
+					IViewReference[] views = _window.getActivePage().getViewReferences();
+					IMyViewPart view = ((IMyViewPart)views[2].getView(false));
+					view.fillWidgets();
+					if(ff.compareTo(fft.getName()) != 0) {
+						sortFaultFamilyList();
+						selectElementFromTree(fft.getName(), null, null);
+					}
 				}catch(IllegalOperationException e){
 					_ffErrorMessageLabel.setText(e.getMessage());
 				}catch(NullPointerException e){
+					e.printStackTrace();
 					_ffErrorMessageLabel.setText(e.getMessage());
 				}
 			}
 		};
 		
-		Listener _addCategory = new Listener() {
+		_addCategory = new Listener() {
 			public void handleEvent(Event event) {
 				if(event.type == SWT.KeyUp)
 					if(!(event.keyCode == SWT.CR || event.keyCode == ' '))
@@ -1028,7 +1348,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 					return;
 				TableItem item = tmp2[0];
 				Category c = _categoryManager.getCategoryByPath(item.getText());
-					try{
+				try{
 					String[] ffs = c.getAlarms().getFaultFamily();
 					for (int i = 0; i < ffs.length; i++) {
 						if(ff.compareTo(ffs[i]) == 0){
@@ -1063,6 +1383,8 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		GridData gd = new GridData();
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessHorizontalSpace = true;
+		gd.verticalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
 		_FFgroup.setLayoutData(gd);
 		GridLayout gl = new GridLayout();
 		gl.numColumns = 2;
@@ -1075,6 +1397,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffNameText.setLayoutData(gd);
+		_ffNameText.addListener(SWT.Modify, _updateFaultFamily);
 
 		_ffHelpURLLabel = new Label(_FFgroup,SWT.NONE);
 		_ffHelpURLLabel.setText("Help URL");
@@ -1083,6 +1406,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffHelpURLText.setLayoutData(gd);
+		_ffHelpURLText.addListener(SWT.Modify, _updateFaultFamily);
 
 		_ffContactNameLabel = new Label(_FFgroup, SWT.NONE);
 		_ffContactNameLabel.setText("Contact name");
@@ -1091,6 +1415,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffContactNameText.setLayoutData(gd);
+		_ffContactNameText.addListener(SWT.Modify, _updateFaultFamily);
 
 		_ffContactMailLabel = new Label(_FFgroup, SWT.NONE);
 		_ffContactMailLabel.setText("Contact e-mail");
@@ -1099,6 +1424,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffContactMailText.setLayoutData(gd);
+		_ffContactMailText.addListener(SWT.Modify, _updateFaultFamily);
 
 		_ffContactGSMLabel = new Label(_FFgroup, SWT.NONE);
 		_ffContactGSMLabel.setText("Contact GSM");
@@ -1107,6 +1433,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffContactGSMText.setLayoutData(gd);
+		_ffContactGSMText.addListener(SWT.Modify, _updateFaultFamily);
 		
 		_ffSourceLabel = new Label(_FFgroup, SWT.NONE);
 		_ffSourceLabel.setText("Source");
@@ -1115,9 +1442,11 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
 		_ffSourceCombo.setLayoutData(gd);
+		_ffSourceCombo.setEnabled(false);
+		_ffSourceCombo.addListener(SWT.Modify, _updateFaultFamily);
 		
 		_ffCategoryLabel = new Label(_FFgroup, SWT.NONE);
-		_ffCategoryLabel.setText("Category");
+		_ffCategoryLabel.setText("Categories:");
 		gd = new GridData();
 		gd.grabExcessHorizontalSpace = true;
 		gd.horizontalAlignment = SWT.FILL;
@@ -1134,6 +1463,29 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_ffCategoryList.setLayoutData(gd);
 		_ffCategoryList.addListener(SWT.KeyUp, _addCategory);
 		_ffCategoryList.addListener(SWT.MouseDoubleClick, _addCategory);
+		Menu categoryPopUp = new Menu(_ffCategoryList);
+		_ffCategoryList.setMenu(categoryPopUp);
+		categoryPopUp.addListener(SWT.Show, new Listener() {
+			public void handleEvent(Event e) {
+				TableItem[] sel = _ffCategoryList.getSelection();
+				Menu categoryPopUp = _ffCategoryList.getMenu();
+				MenuItem[] items = categoryPopUp.getItems();
+				for (int i = 0; i < items.length; i++)
+					items[i].dispose();
+				if(sel == null || sel.length == 0)
+					return;
+				MenuItem mitem;
+				mitem = new MenuItem(categoryPopUp,SWT.PUSH);
+				if(sel[0].getImage() == null) {
+					mitem.setText("Add to Category");
+					mitem.addListener(SWT.Selection, _addCategory);
+				} else {
+					mitem.setText("Remove from Category");
+					mitem.addListener(SWT.Selection, _addCategory);
+				}
+			}
+		}
+		);
 		
 		_ffErrorMessageLabel = new Label(_FFgroup, SWT.NONE);
 		_ffErrorMessageLabel.setText("");
@@ -1147,12 +1499,12 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 
 	private void fillFFWidgets(String name) {
 
-		_ffNameText.removeListener(SWT.Modify, updateFaultFamily);
-		_ffHelpURLText.removeListener(SWT.Modify, updateFaultFamily);
-		_ffContactNameText.removeListener(SWT.Modify, updateFaultFamily);
-		_ffContactMailText.removeListener(SWT.Modify, updateFaultFamily);
-		_ffContactGSMText.removeListener(SWT.Modify, updateFaultFamily);
-		_ffSourceCombo.removeListener(SWT.Modify, updateFaultFamily);
+		//_ffNameText.removeListener(SWT.Modify, _updateFaultFamily);
+		//_ffHelpURLText.removeListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactNameText.removeListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactMailText.removeListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactGSMText.removeListener(SWT.Modify, _updateFaultFamily);
+		//_ffSourceCombo.removeListener(SWT.Modify, _updateFaultFamily);
 		//_ffCategoryCombo.removeListener(SWT.Modify, updateFaultFamily);
 		
 		FaultFamily ff = _alarmManager.getFaultFamily(name);
@@ -1172,53 +1524,26 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 
 		if( ff.getContact() != null ) {
 			if( ff.getContact().getName() != null )
-				contactName = ff.getContact().getName();
+				contactName = ff.getContact().getName().trim();
 			if( ff.getContact().getEmail() != null )
-				contactEmail = ff.getContact().getEmail();
+				contactEmail = ff.getContact().getEmail().trim();
 			if( ff.getContact().getGsm() != null )
-				contactGsm = ff.getContact().getGsm();
+				contactGsm = ff.getContact().getGsm().trim();
 		}
 		
 		_ffSourceCombo.removeAll();
-		_ffCategoryList.removeAll();
 			
 		if(ff.getAlarmSource() != null)
 			source = ff.getAlarmSource();
 		
-		List<Category> catList = _categoryManager.getAllCategories();
-		for (Iterator<Category> iterator = catList.iterator(); iterator.hasNext();) {
-			Category cat = (Category) iterator.next();
-			try{
-			String[] ffs = cat.getAlarms().getFaultFamily();
-			
-			TableItem  t = new TableItem(_ffCategoryList, SWT.None);
-			t.setText(cat.getPath());
-			if(cat.getIsDefault()){
-				FontData fd = t.getFont().getFontData()[0];
-				fd.setStyle(SWT.BOLD);
-				t.setFont(new Font(_shell.getDisplay(),fd));
-			}
-			
-			for (int i = 0; i < ffs.length; i++) {
-				if(ffs[i].compareTo(name) == 0)
-					t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
-			}
-			}catch(NullPointerException e){
-				TableItem  t = new TableItem(_ffCategoryList, SWT.None);
-				t.setText(cat.getPath());
-				if(cat.getIsDefault()){
-					FontData fd = t.getFont().getFontData()[0];
-					fd.setStyle(SWT.BOLD);
-					t.setFont(new Font(_shell.getDisplay(),fd));
-				}
-			}
-		}
-		
+		sortCategoryList(name);
 		
 		Source[] _sourceList = _sourceManager.getAllSources();
 		for(int i = 0; i < _sourceList.length ; i++){
 			_ffSourceCombo.add(_sourceList[i].getName());
 		}
+		if(_ffSourceCombo.getItemCount() == 0)
+			_ffSourceCombo.add("ALARM_SYSTEM_SOURCES");
 
 		_ffNameText.setText(name);
 		_ffHelpURLText.setText(helpUrl);
@@ -1230,13 +1555,13 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 				_ffSourceCombo.select(i);
 		}
 		
-		_ffNameText.addListener(SWT.Modify, updateFaultFamily);
-		_ffHelpURLText.addListener(SWT.Modify, updateFaultFamily);
-		_ffContactNameText.addListener(SWT.Modify, updateFaultFamily);
-		_ffContactMailText.addListener(SWT.Modify, updateFaultFamily);
-		_ffContactGSMText.addListener(SWT.Modify, updateFaultFamily);
-		_ffSourceCombo.addListener(SWT.Modify, updateFaultFamily);
-		//_ffCategoryCombo.addListener(SWT.Modify, updateFaultFamily);
+		//_ffNameText.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffHelpURLText.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactNameText.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactMailText.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffContactGSMText.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffSourceCombo.addListener(SWT.Modify, _updateFaultFamily);
+		//_ffCategoryCombo.addListener(SWT.Modify, _updateFaultFamily);
 	}
 
 	private void fillFCWidgets(int value, String ffName) {
@@ -1258,13 +1583,13 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		if(fc.hasPriority())
 			priority = Integer.toString(fc.getPriority());
 		if(fc.getCause() != null)
-			cause = fc.getCause();
+			cause = fc.getCause().trim();
 		if(fc.getAction() != null)
-			action = fc.getAction();
+			action = fc.getAction().trim();
 		if(fc.getConsequence() != null)
-			consequence = fc.getConsequence();
+			consequence = fc.getConsequence().trim();
 		if(fc.getProblemDescription() != null)
-			problem = fc.getProblemDescription();
+			problem = fc.getProblemDescription().trim();
 
 		_fcValueText.setText(val);
 		_fcPriorityText.setText(priority);
@@ -1292,15 +1617,15 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		name = fm.getName();
 		if(fm.getLocation() != null){
 			if(fm.getLocation().getBuilding() != null)
-				building = fm.getLocation().getBuilding();
+				building = fm.getLocation().getBuilding().trim();
 			if(fm.getLocation().getFloor() != null)
-				floor = fm.getLocation().getFloor();
+				floor = fm.getLocation().getFloor().trim();
 			if(fm.getLocation().getRoom() != null)
-				room = fm.getLocation().getRoom();
+				room = fm.getLocation().getRoom().trim();
 			if(fm.getLocation().getMnemonic() != null)
-				mnemonic = fm.getLocation().getMnemonic();
+				mnemonic = fm.getLocation().getMnemonic().trim();
 			if(fm.getLocation().getPosition() != null)
-				position = fm.getLocation().getPosition();
+				position = fm.getLocation().getPosition().trim();
 		}
 
 
@@ -1310,6 +1635,39 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_fmLocRoomText.setText(room);
 		_fmLocMnemonicText.setText(mnemonic);
 		_fmLocPositionText.setText(position);
+	}
+	
+	private void fillFMDWidgets(String ffName) {
+		FaultMemberDefault fmd = _alarmManager.getFaultMemberDefault(ffName);
+
+		// This should never happen anyways...
+		if( fmd == null )
+			return;
+
+		String building = "";
+		String floor = "";
+		String room = "";
+		String mnemonic = "";
+		String position = "";
+
+		if(fmd.getLocation() != null){
+			if(fmd.getLocation().getBuilding() != null)
+				building = fmd.getLocation().getBuilding().trim();
+			if(fmd.getLocation().getFloor() != null)
+				floor = fmd.getLocation().getFloor().trim();
+			if(fmd.getLocation().getRoom() != null)
+				room = fmd.getLocation().getRoom().trim();
+			if(fmd.getLocation().getMnemonic() != null)
+				mnemonic = fmd.getLocation().getMnemonic().trim();
+			if(fmd.getLocation().getPosition() != null)
+				position = fmd.getLocation().getPosition().trim();
+		}
+
+		_fmdLocBuildingText.setText(building);
+		_fmdLocFloorText.setText(floor);
+		_fmdLocRoomText.setText(room);
+		_fmdLocMnemonicText.setText(mnemonic);
+		_fmdLocPositionText.setText(position);
 	}
 
 	@Override
@@ -1331,7 +1689,7 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_ffContactNameText.setEnabled(v);
 		_ffContactMailText.setEnabled(v);
 		_ffContactGSMText.setEnabled(v);
-		_ffSourceCombo.setEnabled(v);
+		//_ffSourceCombo.setEnabled(v);
 		_ffCategoryList.setEnabled(v);
 
 		/* FC information */
@@ -1349,12 +1707,258 @@ public class AlarmsView extends ViewPart implements IMyViewPart {
 		_fmLocFloorText.setEnabled(v);
 		_fmLocMnemonicText.setEnabled(v);
 		_fmLocPositionText.setEnabled(v);
+		
+		/* FMD Information */
+		_fmdLocBuildingText.setEnabled(v);
+		_fmdLocRoomText.setEnabled(v);
+		_fmdLocFloorText.setEnabled(v);
+		_fmdLocMnemonicText.setEnabled(v);
+		_fmdLocPositionText.setEnabled(v);
 	}
-
 	@Override
 	public void fillWidgets() {
 		// TODO Auto-generated method stub
-		
+		if(_tree.getSelection() == null || _tree.getSelection().length == 0)
+			return;
+		TreeItem ti = _tree.getSelection()[0];
+		NodeType type = (NodeType) ti.getData();
+		String ffName;
+		switch(type) {
+		case FAULT_FAMILY:
+			fillFFWidgets(ti.getText());
+			break;
+		case FAULT_CODE_LIST:
+			fillFCFMWidgets();
+			break;
+		case FAULT_CODE_DATA:
+			ffName = ti.getParentItem().getParentItem().getText();
+			fillFCWidgets(Integer.parseInt(ti.getText()), ffName);
+			break;
+		case FAULT_MEMBER_LIST:
+			fillFCFMWidgets();
+			break;
+		case FAULT_MEMBER_DATA:
+			ffName = ti.getParentItem().getParentItem().getText();
+			fillFMWidgets(ti.getText(), ffName);
+			break;
+		case FAULT_MEMBER_DEFAULT:
+			ffName = ti.getParentItem().getParentItem().getText();
+			fillFMDWidgets(ffName);
+			break;
+		default:
+			break;
+		}
 	}
+	
+	public void sortCategoryList(String name) {
+		_ffCategoryList.removeAll();
+		List<Category> catList = _categoryManager.getAllCategories();
+		List<String> sortedCatList = new ArrayList<String>();
+		for(Category cat: catList)
+			sortedCatList.add(cat.getPath().toLowerCase());
+		Collections.sort(sortedCatList);
+		
+		for (String sc: sortedCatList) {
+			Category cat = null;
+			for(Category c: catList)
+				if(c.getPath().toLowerCase().compareTo(sc) == 0)
+					cat = c;
+			if(cat == null)
+				return;
+			if(cat.getAlarms() == null) {
+				TableItem  t = new TableItem(_ffCategoryList, SWT.None);
+				t.setText(cat.getPath());
+				if(cat.getIsDefault()){
+					FontData fd = t.getFont().getFontData()[0];
+					fd.setStyle(SWT.BOLD);
+					t.setFont(new Font(_shell.getDisplay(),fd));
+				}
+			} else {
+				String[] ffs = cat.getAlarms().getFaultFamily();
+				TableItem  t = new TableItem(_ffCategoryList, SWT.None);
+				t.setText(cat.getPath());
+				if(cat.getIsDefault()){
+					FontData fd = t.getFont().getFontData()[0];
+					fd.setStyle(SWT.BOLD);
+					t.setFont(new Font(_shell.getDisplay(),fd));
+				}
+				for (int i = 0; i < ffs.length; i++) {
+					if(ffs[i].compareTo(name) == 0)
+						t.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_TICKET));
+				}
+			}
+		}
+	}
+	
+	public void sortFaultFamilyList() {
+		List<FaultFamily> ffList = _alarmManager.getAllAlarms();
+		List<FaultFamily> sortedFFList = new ArrayList<FaultFamily>();
 
+		/* We get a separate tmp list with the names,
+		 * sort it, and then sort the original ffList */
+		List<String> tmp = new ArrayList<String>();
+		for(FaultFamily ff: ffList)
+			tmp.add(ff.getName().toLowerCase());
+		Collections.sort(tmp);
+		for(String sff: tmp)
+			for(FaultFamily ff: ffList)
+				if(ff.getName().toLowerCase().compareTo(sff) == 0)
+					sortedFFList.add(ff);
+		ffList = sortedFFList;
+		
+		_tree.removeAll();
+		for (FaultFamily family : ffList) {
+			TreeItem iTree = new TreeItem(_tree,SWT.NONE);
+			iTree.setData(NodeType.FAULT_FAMILY);
+			iTree.setText(family.getName());
+			iTree.setImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM));
+			for(int j=0; j!=2; j++) {
+				TreeItem jTree = new TreeItem(iTree,SWT.NONE);
+				jTree.setText((j==0 ? "Fault Codes" : "Fault Members"));
+				jTree.setData((j==0 ? NodeType.FAULT_CODE_LIST : NodeType.FAULT_MEMBER_LIST));
+				jTree.setImage((j==0?
+						Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTCODES) :
+						Activator.getDefault().getImageRegistry().get(Activator.IMG_FAULTMEMBERS) ));
+				if( j == 0 )
+					sortFaultCodeList(family, jTree);
+				else
+					sortFaultMemberList(family, jTree);
+			}
+		}
+	}
+	
+	public void sortFaultMemberList(FaultFamily family, TreeItem jTree) {
+		TreeItem iTree = jTree.getParentItem();
+		FaultMember[] faultMembers = family.getFaultMember();
+		List<FaultMember> fmList = new ArrayList<FaultMember>();
+		for(FaultMember fm: faultMembers)
+			fmList.add(fm);
+		List<FaultMember> sortedFMList = new ArrayList<FaultMember>();
+
+		/* We get a separate tmp list with the names,
+		 * sort it, and then sort the original ffList */
+		List<String> tmp = new ArrayList<String>();
+		for(FaultMember fm: fmList)
+			tmp.add(fm.getName().toLowerCase());
+		Collections.sort(tmp);
+		for(String sfm: tmp)
+			for(FaultMember fm: fmList)
+				if(fm.getName().toLowerCase().compareTo(sfm) == 0)
+					sortedFMList.add(fm);
+		fmList = sortedFMList;
+		
+		FaultMemberDefault fmd = family.getFaultMemberDefault();
+		if( fmd != null ) {
+			TreeItem kTree = new TreeItem(jTree,SWT.NONE);
+			kTree.setText("Default Member");
+			//kTree.setForeground(new Color(kTree.getDisplay(), 255, 0, 0));
+			kTree.setData(NodeType.FAULT_MEMBER_DEFAULT);
+		}
+		for (FaultMember fm: fmList) {
+			TreeItem kTree = new TreeItem(jTree,SWT.NONE);
+			kTree.setText(fm.getName());
+			kTree.setData(NodeType.FAULT_MEMBER_DATA);
+		}
+		if(fmList.isEmpty() && fmd == null) {
+			iTree.setForeground(new Color(iTree.getDisplay(), 255, 0, 0));
+			jTree.setForeground(new Color(jTree.getDisplay(), 255, 0, 0));
+		}		
+	}
+	
+	public void sortFaultCodeList(FaultFamily family, TreeItem jTree) {
+		TreeItem iTree = jTree.getParentItem();
+		FaultCode[] faultCodes = family.getFaultCode();
+		List<FaultCode> fcList = new ArrayList<FaultCode>();
+		for(FaultCode fc: faultCodes)
+			fcList.add(fc);
+		List<FaultCode> sortedFCList = new ArrayList<FaultCode>();
+
+		/* We get a separate tmp list with the names,
+		 * sort it, and then sort the original ffList */
+		List<Integer> tmp = new ArrayList<Integer>();
+		for(FaultCode fc: fcList)
+			tmp.add(new Integer(fc.getValue()));
+		Collections.sort(tmp);
+		for(Integer ifc: tmp)
+			for(FaultCode fc: fcList)
+				if(ifc.intValue() == fc.getValue())
+					sortedFCList.add(fc);
+		fcList = sortedFCList;
+		for (FaultCode fc: fcList) {
+			TreeItem kTree = new TreeItem(jTree, SWT.NONE);
+			kTree.setText(Integer.toString(fc.getValue()));
+			kTree.setData(NodeType.FAULT_CODE_DATA);
+		}
+		if(fcList.isEmpty()) {
+			iTree.setForeground(new Color(iTree.getDisplay(), 255, 0, 0));
+			jTree.setForeground(new Color(jTree.getDisplay(), 255, 0, 0));
+		}
+	}
+	
+	public void selectElementFromTree(String ff, String fm, String fc){
+		if(ff == null)
+			return;
+		if(fm != null && fc != null)
+			return;
+		TreeItem[] its = _tree.getItems();
+		TreeItem sel = null;
+		for(TreeItem it: its)
+			if(it.getText().compareTo(ff) == 0)
+				sel = it;
+		if(fm != null || fc != null) {
+			String search = null;
+			if(fm != null) {
+				its = sel.getItems()[1].getItems();
+				search = fm;
+			} else {
+				its = sel.getItems()[0].getItems();
+				search = fc;
+			}
+			for(TreeItem it: its)
+				if(it.getText().compareTo(search) == 0)
+					sel = it;
+		}
+		_tree.setSelection(sel);
+		Event e = new Event();
+		_tree.notifyListeners(SWT.Selection, e);
+	}
+	
+	public void setReadOnly(boolean v){
+		if(v) {
+			_tree.setMenu(null);
+			_ffCategoryList.setMenu(null);
+			_ffCategoryList.removeListener(SWT.KeyUp, _addCategory);
+			_ffCategoryList.removeListener(SWT.MouseDoubleClick, _addCategory);
+		} else {
+			_tree.setMenu(null);
+			_ffCategoryList.setMenu(null);
+			_ffCategoryList.addListener(SWT.KeyUp, _addCategory);
+			_ffCategoryList.addListener(SWT.MouseDoubleClick, _addCategory);
+		}
+		_addAlarmButton.setEnabled(!v);
+		_deleteAlarmButton.setEnabled(!v);
+		_ffNameText.setEnabled(!v);
+		_ffHelpURLText.setEnabled(!v);
+		_ffContactNameText.setEnabled(!v);
+		_ffContactMailText.setEnabled(!v);
+		_ffContactGSMText.setEnabled(!v);
+		_ffSourceCombo.setEnabled(!v);
+		_fcValueText.setEnabled(!v);
+		_fcPriorityText.setEnabled(!v);
+		_fcCauseText.setEnabled(!v);
+		_fcActionText.setEnabled(!v);
+		_fcConsequenceText.setEnabled(!v);
+		_fcProblemText.setEnabled(!v);
+		_fmNameText.setEnabled(!v);
+		_fmLocBuildingText.setEnabled(!v);
+		_fmLocRoomText.setEnabled(!v);
+		_fmLocFloorText.setEnabled(!v);
+		_fmLocMnemonicText.setEnabled(!v);
+		_fmLocPositionText.setEnabled(!v);
+		_fmdLocBuildingText.setEnabled(!v);
+		_fmdLocRoomText.setEnabled(!v);
+		_fmdLocFloorText.setEnabled(!v);
+		_fmdLocMnemonicText.setEnabled(!v);
+		_fmdLocPositionText.setEnabled(!v);
+	}
 }

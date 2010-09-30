@@ -46,6 +46,7 @@ public class AlarmSystemView extends ViewPart implements IMyViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		setTitleImage(Activator.getDefault().getImageRegistry().get(Activator.IMG_ALARM_SYSTEM));
 		Listener selectAlarmSystem = new Listener(){
 			public void handleEvent(Event event) {
 				if(((Button)event.widget).getSelection()){
@@ -126,5 +127,10 @@ public class AlarmSystemView extends ViewPart implements IMyViewPart {
 	public void fillWidgets() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void setReadOnly(boolean v){
+		_acsAS_radio.setEnabled(!v);
+		_cernAS_radio.setEnabled(!v);
 	}
 }

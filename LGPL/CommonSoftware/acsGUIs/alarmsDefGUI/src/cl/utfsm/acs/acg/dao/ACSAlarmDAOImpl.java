@@ -54,7 +54,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import alma.acs.alarmsystem.generated.AlarmSystemConfiguration;
 import alma.acs.alarmsystem.generated.Categories;
 import alma.acs.alarmsystem.generated.Contact;
 import alma.acs.alarmsystem.generated.FaultCode;
@@ -62,6 +61,7 @@ import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
 import alma.acs.alarmsystem.generated.FaultMemberDefault;
 import alma.acs.logging.AcsLogLevel;
+import alma.alarmsystem.alarmmessage.generated.ReductionLinkDefinitionListType;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.ResponsiblePersonDAO;
@@ -354,7 +354,8 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		try {
 			xml=conf.getConfiguration(ALARM_DEFINITION_PATH);
 		} catch (Throwable t) {
-			throw new RuntimeException("Couldn't read alarm XML", t);
+			return new ArrayList<FaultFamily>();
+			//throw new RuntimeException("Couldn't read alarm XML", t);
 		}
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
@@ -389,8 +390,9 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		Vector<FaultFamily> cdbFamilies= new Vector<FaultFamily>();
 		for (int t=0; t<alarmDefsNodes.getLength(); t++) {
 			Node alarmDef = alarmDefsNodes.item(t);
+			FaultFamily family;
 			try {
-				FaultFamily family = (FaultFamily) FF_unmarshaller.unmarshal(alarmDef);
+				family = (FaultFamily) FF_unmarshaller.unmarshal(alarmDef);
 				if (family==null) {
 					throw new Exception("Error unmarshalling a family node");
 				}
@@ -398,13 +400,13 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			} catch (Exception e) {
 				throw new Exception("Error parsing "+alarmDef.getNodeName(),e);
 			}
+			family.validate();
 		}
 		alarmDefs.clear();
+		srcDefs.clear();
 		generateAlarmsMap(cdbFamilies);
-		
 		loadReductionRules();
-
-                return cdbFamilies;
+		return cdbFamilies;
 	}
 	
 	/**
@@ -416,7 +418,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 	 *  
 	 * @param families The FF read from the CDB
 	 */
-	private void generateAlarmsMap(Vector<FaultFamily> families) {
+	public void generateAlarmsMap(Vector<FaultFamily> families) {
 		if (families==null) {
 			throw new IllegalArgumentException("Invalid null vector of FFs");
 		}
@@ -1144,7 +1146,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		removeAlarmsMap(ffs);
 	}
 	
-	private void removeAlarmsMap(Vector<FaultFamily> families) {
+	public void removeAlarmsMap(Vector<FaultFamily> families) {
 		if (families==null) {
 			throw new IllegalArgumentException("Invalid null vector of FFs");
 		}
@@ -1158,22 +1160,31 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		}
 	}
 
-	public alma.acs.alarmsystem.generated.ReductionDefinitions getReductionRules() {
+	public alma.alarmsystem.alarmmessage.generated.ReductionDefinitions getReductionRules() {
 		if (conf==null)
 			throw new IllegalStateException("null configuration accessor");
-		alma.acs.alarmsystem.generated.ReductionDefinitions rds;
+		alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds;
 		String xml;
 		try {
 			xml = conf.getConfiguration(REDUCTION_DEFINITION_PATH);
+		} catch (CDBRecordDoesNotExistEx e) {
+			rds = new alma.alarmsystem.alarmmessage.generated.ReductionDefinitions();
+			ReductionLinkDefinitionListType rld = new ReductionLinkDefinitionListType();
+			rld.setReductionLink(new alma.alarmsystem.alarmmessage.generated.ReductionLinkType[0]);
+			rds.setLinksToCreate(rld);
+			alma.alarmsystem.alarmmessage.generated.Thresholds ths = new alma.alarmsystem.alarmmessage.generated.Thresholds();
+			ths.setThreshold(new alma.alarmsystem.alarmmessage.generated.Threshold[0]);
+			rds.setThresholds(ths);
+			return rds;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 		StringReader FFReader = new StringReader(xml);
-		Unmarshaller FF_unmarshaller = new Unmarshaller(alma.acs.alarmsystem.generated.ReductionDefinitions.class);
+		Unmarshaller FF_unmarshaller = new Unmarshaller(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions.class);
 		FF_unmarshaller.setValidation(false);
 		try {
-			rds = (alma.acs.alarmsystem.generated.ReductionDefinitions)FF_unmarshaller.unmarshal(FFReader);
+			rds = (alma.alarmsystem.alarmmessage.generated.ReductionDefinitions)FF_unmarshaller.unmarshal(FFReader);
 		} catch (MarshalException e) {
 			e.printStackTrace();
 			return null;
@@ -1189,7 +1200,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		return rds;
 	}
 	
-	public void flushReductionRules(alma.acs.alarmsystem.generated.ReductionDefinitions rds) {
+	public void flushReductionRules(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds) {
 		if (conf==null || !conf.isWriteable())
 			throw new IllegalStateException("no writable configuration accessor");
 		if(rds == null)
@@ -1216,23 +1227,29 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			conf.deleteConfiguration(REDUCTION_DEFINITION_PATH);
 			conf.addConfiguration(REDUCTION_DEFINITION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
 			//System.err.println(FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+		} catch (org.omg.CORBA.UNKNOWN e) {
+			try {
+				conf.addConfiguration(REDUCTION_DEFINITION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalStateException("Reduction Rules already exists");
 		}
 	}
 	
-	public void addReductionRule(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.ReductionLink rl){
+	public void addReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl){
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
 		//Store changes in the CDB.
-		alma.acs.alarmsystem.generated.ReductionLink[] tmp = rds.getLinksToCreate().getReductionLink();
+		alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] tmp = rds.getLinksToCreate().getReductionLink();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
@@ -1242,7 +1259,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		}
 		rds.getLinksToCreate().addReductionLink(rl);
 		//Reflect the changes into the AlarmDAO
-		alma.acs.alarmsystem.generated.AlarmDefinition in = rl.getParent().getAlarmDefinition(); 
+		alma.alarmsystem.alarmmessage.generated.AlarmDefinition in = rl.getParent().getAlarmDefinition(); 
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		in = rl.getChild().getAlarmDefinition();
 		Alarm c =  getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
@@ -1254,18 +1271,18 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		//flushReductionRules(rds);
 	}
 	
-	public void updateReductionRule(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.ReductionLink rl) {
+	public void updateReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl) {
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
 		//Store changes in the CDB.
 		boolean removed = false;
-		alma.acs.alarmsystem.generated.ReductionLink[] tmp = rds.getLinksToCreate().getReductionLink();
+		alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] tmp = rds.getLinksToCreate().getReductionLink();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
@@ -1280,17 +1297,17 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		//flushReductionRules(rds);
 	}
 	
-	public void deleteReductionRule(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.ReductionLink rl) {
+	public void deleteReductionRule(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.ReductionLinkType rl) {
 		if(rl == null)
 			throw new IllegalArgumentException("Null Reduction Link argument");
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
 		boolean removed = false;
-		alma.acs.alarmsystem.generated.ReductionLink[] tmp = rds.getLinksToCreate().getReductionLink();
+		alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] tmp = rds.getLinksToCreate().getReductionLink();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = tmp[i].getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c1 = tmp[i].getChild().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = rl.getParent().getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition c2 = rl.getChild().getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(c1.getFaultFamily()+":"+c1.getFaultMember()+":"+c1.getFaultCode());
 			String n3 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
@@ -1301,7 +1318,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		if(!removed)
 			throw new IllegalStateException("Reduction Rule doesn't exist");
 		//Reflect the changes into the AlarmDAO
-		alma.acs.alarmsystem.generated.AlarmDefinition in = rl.getParent().getAlarmDefinition(); 
+		alma.alarmsystem.alarmmessage.generated.AlarmDefinition in = rl.getParent().getAlarmDefinition(); 
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		in = rl.getChild().getAlarmDefinition();
 		Alarm c =  getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
@@ -1313,14 +1330,14 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		//flushReductionRules(rds);
 	}
 	
-	public void addThreshold(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.Threshold th) {
+	public void addThreshold(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.Threshold th) {
 		if(th == null)
 			throw new IllegalArgumentException("Null Threshold argument");
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
-		alma.acs.alarmsystem.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
+		alma.alarmsystem.alarmmessage.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = th.getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = th.getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			if(n1.compareTo(n2) == 0)
@@ -1328,21 +1345,21 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		}
 		rds.getThresholds().addThreshold(th);
 		//Reflect the changes into the AlarmDAO
-		alma.acs.alarmsystem.generated.AlarmDefinition in = th.getAlarmDefinition(); 
+		alma.alarmsystem.alarmmessage.generated.AlarmDefinition in = th.getAlarmDefinition(); 
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		p.setMultiplicityThreshold(th.getValue());
 		//flushReductionRules(rds);
 	}
 	
-	public void updateThreshold(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.Threshold th) {
+	public void updateThreshold(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.Threshold th) {
 		if(th == null)
 			throw new IllegalArgumentException("Null Threshold argument");
 		boolean removed = false;
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
-		alma.acs.alarmsystem.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
+		alma.alarmsystem.alarmmessage.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = th.getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = th.getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			if(n1.compareTo(n2) == 0)
@@ -1352,21 +1369,21 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 			throw new IllegalStateException("Threshold doesn't exist");
 		rds.getThresholds().addThreshold(th);
 		//Reflect the changes into the AlarmDAO
-		alma.acs.alarmsystem.generated.AlarmDefinition in = th.getAlarmDefinition(); 
+		alma.alarmsystem.alarmmessage.generated.AlarmDefinition in = th.getAlarmDefinition(); 
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		p.setMultiplicityThreshold(th.getValue());
 		//flushReductionRules(rds);
 	}
 	
-	public void deleteThreshold(alma.acs.alarmsystem.generated.ReductionDefinitions rds, alma.acs.alarmsystem.generated.Threshold th) {
+	public void deleteThreshold(alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds, alma.alarmsystem.alarmmessage.generated.Threshold th) {
 		if(th == null)
 			throw new IllegalArgumentException("Null Threshold argument");
 		boolean removed = false;
-		//alma.acs.alarmsystem.generated.ReductionDefinitions rds = getReductionRules();
-		alma.acs.alarmsystem.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
+		//alma.alarmsystem.alarmmessage.generated.ReductionDefinitions rds = getReductionRules();
+		alma.alarmsystem.alarmmessage.generated.Threshold[] tmp = rds.getThresholds().getThreshold();
 		for (int i = 0; i < tmp.length; i++) {
-			alma.acs.alarmsystem.generated.AlarmDefinition p1 = th.getAlarmDefinition();
-			alma.acs.alarmsystem.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p1 = th.getAlarmDefinition();
+			alma.alarmsystem.alarmmessage.generated.AlarmDefinition p2 = tmp[i].getAlarmDefinition();
 			String n1 = new String(p1.getFaultFamily()+":"+p1.getFaultMember()+":"+p1.getFaultCode());
 			String n2 = new String(p2.getFaultFamily()+":"+p2.getFaultMember()+":"+p2.getFaultCode());
 			if(n1.compareTo(n2) == 0)
@@ -1375,7 +1392,7 @@ public class ACSAlarmDAOImpl extends com.cosylab.acs.laser.dao.ACSAlarmDAOImpl
 		if(!removed)
 			throw new IllegalStateException("Threshold doesn't exist");
 		//Reflect the changes into the AlarmDAO
-		alma.acs.alarmsystem.generated.AlarmDefinition in = th.getAlarmDefinition(); 
+		alma.alarmsystem.alarmmessage.generated.AlarmDefinition in = th.getAlarmDefinition(); 
 		Alarm p = getAlarm(in.getFaultFamily()+":"+in.getFaultMember()+":"+in.getFaultCode());
 		p.setMultiplicityThreshold(th.getValue());
 		//flushReductionRules(rds);

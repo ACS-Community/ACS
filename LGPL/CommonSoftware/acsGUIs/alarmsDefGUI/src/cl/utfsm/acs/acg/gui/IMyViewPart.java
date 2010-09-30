@@ -39,5 +39,7 @@ public interface IMyViewPart {
 	 */
 	public void refreshContents();
 	
+	public void setReadOnly(boolean v);
+	
 	public void fillWidgets();
 }

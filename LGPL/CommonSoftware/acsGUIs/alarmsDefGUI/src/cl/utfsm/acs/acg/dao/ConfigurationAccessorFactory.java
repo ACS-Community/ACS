@@ -63,6 +63,8 @@ public class ConfigurationAccessorFactory
 		public void addConfiguration(String path, String data) throws Exception
 		{
 			if (isWriteable()) {
+				System.out.println(path);
+				System.out.println(data);
 				((WDAL)dal).add_node(path, data);
 				jdal.clear_cache_all();
 			} else {

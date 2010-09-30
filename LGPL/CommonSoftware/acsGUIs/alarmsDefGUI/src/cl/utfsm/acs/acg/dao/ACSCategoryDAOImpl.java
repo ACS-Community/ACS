@@ -47,6 +47,7 @@ import alma.alarmsystem.core.alarms.LaserCoreAlarms;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState;
 import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
+import alma.cdbErrType.CDBXMLErrorEx;
 
 public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAOImpl {	
 	int nextCatID=1;
@@ -772,6 +773,9 @@ public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAO
 		String xml;
 		try {
 			xml = conf.getConfiguration(CATEGORY_DEFINITION_PATH);
+		} catch (CDBRecordDoesNotExistEx e) {
+			cats = new Categories();
+			return cats;
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			return null;
@@ -822,6 +826,14 @@ public class ACSCategoryDAOImpl extends com.cosylab.acs.laser.dao.ACSCategoryDAO
 		try {
 			conf.deleteConfiguration(CATEGORY_DEFINITION_PATH);
 			conf.addConfiguration(CATEGORY_DEFINITION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+		} catch (org.omg.CORBA.UNKNOWN e) {
+			try {
+				conf.addConfiguration(CATEGORY_DEFINITION_PATH, FFWriter.toString().replaceFirst("xsi:type=\".*\"", ""));
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} catch (CDBXMLErrorEx e) {
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalStateException("Category already exists");

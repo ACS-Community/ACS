@@ -29,7 +29,7 @@
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/jms.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/junit.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/lasercore.jar"/>
-	<classpathentry kind="lib" path="/alma.acs.rcp.jars/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="/alma.acs.rcp.jars/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/logging_idl.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/logkit.jar"/>
 	<classpathentry kind="lib" path="/alma.acs.rcp.jars/maci.jar"/>

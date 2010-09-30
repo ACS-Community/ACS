@@ -2,8 +2,8 @@ package cl.utfsm.acs.acg.dao;
 
 import java.util.List;
 
-import alma.acs.alarmsystem.generated.AlarmSystemConfiguration;
-import alma.acs.alarmsystem.generated.ConfigurationProperty;
+import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
+import alma.alarmsystem.alarmmessage.generated.ConfigurationProperty;
 import cl.utfsm.acs.acg.core.AcsInformation;
 import cl.utfsm.acs.acg.core.DAOManager;
 import junit.framework.TestCase;
