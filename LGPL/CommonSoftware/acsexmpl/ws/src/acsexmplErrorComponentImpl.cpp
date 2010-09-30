@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.12 2008/10/09 08:41:11 cparedes Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.13 2010/09/30 15:14:02 rbourtem Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.12 2008/10/09 08:41:11 cparedes Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.13 2010/09/30 15:14:02 rbourtem Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -59,6 +59,7 @@ ErrorComponent::displayMessage ()
     ACS_LOG(LM_RUNTIME_CONTEXT, "ErrorComponent::displayMessage",
 	    (LM_INFO, "Hello World"));
 }
+
 /* ----------------------------------------------------------------*/
 void 
 ErrorComponent::badMethod(CORBA::Short depth) 
@@ -377,6 +378,56 @@ ErrorComponent::buildErrorTrace(unsigned short depth)
      * I.e. if there is not exception to throw.
      */
     return;
+}
+
+
+void
+ErrorComponent::generateSIGFPE (CORBA::Short way)
+{
+    switch(way)
+    {
+        case 0:
+            {
+                // Send the SIGFPE signal
+                ACS_DEBUG("ErrorComponent::generateSIGFPE","Send SIGFPE signal");
+                pid_t myPid = getpid();
+                kill(myPid,SIGFPE);
+            }
+            break;
+        case 1:
+        default:
+            {
+                // Division by 0
+                ACS_DEBUG("ErrorComponent::generateSIGFPE","Tries to divide by zero");
+                int zero = 0;
+                printf("5/0 = %d\n",5/zero);
+            }
+    } // switch(way)
+}
+
+
+void
+ErrorComponent::generateSIGSEGV (CORBA::Short way)
+{
+    switch(way)
+    {
+        case 0:
+            {
+                // Send the SIGSEGV signal
+                ACS_DEBUG("ErrorComponent::generateSIGSEGV","Send SIGSEGV signal");
+                pid_t myPid = getpid();
+                kill(myPid,SIGSEGV);
+            }
+            break;
+        case 1:
+        default:
+            {
+                // Access to null pointer
+                ACS_DEBUG("ErrorComponent::generateSIGSEGV","Tries to access to null pointer");
+                int * badPointer = 0;
+                *badPointer = 42;
+            }
+    } // switch(way)
 }
 
 
