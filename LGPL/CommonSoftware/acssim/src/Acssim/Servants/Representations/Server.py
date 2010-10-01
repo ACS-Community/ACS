@@ -20,7 +20,7 @@
 #
 # Internet email: alma-sw-admin@nrao.edu
 #
-# "@(#) $Id: Server.py,v 1.2 2007/10/03 20:44:03 agrimstrup Exp $"
+# "@(#) $Id: Server.py,v 1.3 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -44,8 +44,7 @@ from ACSSim import NoSuchMethodEx
 from maciErrType import NoDefaultComponentEx
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__ = "@(#) $Id: Server.py,v 1.2 2007/10/03 20:44:03 agrimstrup Exp $"
-
+__revision__ = "@(#) $Id: Server.py,v 1.3 2010/10/01 17:20:48 javarias Exp $"
 #------------------------------------------------------------------------------
 def initialize(args): pass
 
@@ -58,7 +57,6 @@ class Server(BaseRepresentation):
     #--------------------------------------------------------------------------
     def __init__(self, compname, comp_type):
         BaseRepresentation.__init__(self, compname)
-
         self.comp_type = comp_type
         self.simulator = None
         self.client = PySimpleClient()
@@ -99,8 +97,7 @@ class Server(BaseRepresentation):
             mdict['Timeout'] = method_info.timeout
             mdict['Value'] = method_info.code
             return mdict
-#        except NoSuchMethodEx: pass
-        except: pass
+        except NoSuchMethodEx: pass
 
         try:
             mdict = {}
@@ -108,8 +105,7 @@ class Server(BaseRepresentation):
             mdict['Timeout'] = method_info.timeout
             mdict['Value'] = method_info.code
             return mdict
-#        except NoSuchMethodEx:
-        except:
+        except NoSuchMethodEx:
             return None
 
 #

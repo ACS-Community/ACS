@@ -103,5 +103,6 @@ class BaseRepresentation:
         simulated component behavior long before the simulated component has
         ever been instantiated.
         '''
+        # print "*******", "__checkCompRef: Trying to get component reference for", self.compname
         if self.comp_ref == None:
             self.comp_ref = getComponent(self.compname)

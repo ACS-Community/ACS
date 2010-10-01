@@ -33,6 +33,8 @@ simulated component behavior from interactive Python container sessions.
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 from atexit  import register
+from sys import exc_info
+from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------

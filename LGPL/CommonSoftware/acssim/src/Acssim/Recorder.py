@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Recorder.py,v 1.1 2007/10/03 20:44:03 agrimstrup Exp $"
+# "@(#) $Id: Recorder.py,v 1.2 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -78,7 +78,19 @@ class Recorder:
         if self.rec_file:
             self.rec_file.write('</Simulation-Session>\n')
             self.rec_file.close()
-        
+
+    def replaceXMLEntities(self, s):
+        '''
+        Replaces special characters of its corresponding XML entities.
+
+        & -> &amp;
+        ' -> &apos;
+        < -> &lt;
+        > -> &gt;
+        " -> &quot;
+        '''
+        return s.replace('&', '&amp;').replace('\'', '&apos;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+
     def record(self, meth_name, args):
         '''
         Record a method invokation.
@@ -90,8 +102,8 @@ class Recorder:
         t = time.time() - self.start_time
         s = '  <Call meth-name="' + meth_name + '" time="'+ str(t) + '">\n'
         for arg in args:
-            sarg = pickle.dumps(arg).replace('<', '&lt;').replace('>', '&gt;')
-            s += '    <arg str-rep="' + str(arg).replace('<', '&lt;').replace('>', '&gt;') +\
+            sarg = self.replaceXMLEntities(pickle.dumps(arg))
+            s += '    <arg str-rep="' + self.replaceXMLEntities(str(arg)) +\
                  '">' + sarg + '</arg>\n'
         s += '  </Call>\n'
         if self.rec_file:
@@ -103,7 +115,7 @@ class Call:
     Used by the Player class.
     '''
 
-    def __init__(self, meth_name, args):
+    def __init__(self, meth_name, args, t):
         '''
         Constructor.
         Parameters:
@@ -112,6 +124,7 @@ class Call:
         '''
         self.meth_name = meth_name
         self.args = args
+        self.time = t
         self.return_value = None
 
     def getMethodName(self):
@@ -125,6 +138,9 @@ class Call:
         Gets the method's arguments.
         '''
         return self.args
+
+    def getTime(self):
+        return self.time
 
     def getReturnValue(self):
         '''
@@ -179,17 +195,21 @@ class Player:
 
         self.calls = []
         session_dom = root_dom.firstChild
+        self.startTime = float(session_dom.getAttribute('start-time'))
+        self.compName = session_dom.getAttribute('comp-name')
         for node in session_dom.childNodes:
             if node.nodeName == 'Call':
                 meth_name = node.getAttribute('meth-name')
+                rel_time = float(node.getAttribute('time'))
                 args = []
                 for arg_node in node.childNodes:
                     if arg_node.nodeName == 'arg':
-                        sarg = str(arg_node.firstChild.nodeValue).replace('&lt;', '<').replace('&gt;', '>')
+                        sarg = self.restoreXMLEntities(str(arg_node.firstChild.nodeValue))
                         arg = pickle.loads(sarg)
+                        self.fixCORBAEnums(arg)
                         args.append(arg)
 
-                self.calls.append(Call(str(meth_name), tuple(args)))
+                self.calls.append(Call(str(meth_name), tuple(args), rel_time))
 
     def __getitem__(self, i):
         '''
@@ -197,6 +217,93 @@ class Player:
         '''
         return self.calls[i]
 
+    def __len__(self):
+        return len(self.calls)
+
+    def restoreXMLEntities(self, s):
+        '''
+        Utilitiy function. Replaces XML entities for its respective characters.
+
+        &amp   -> &
+        &apos  -> '
+        &lt;   -> <
+        &gt;   -> >
+        &quot; -> "
+        '''
+        return s.replace('&quot;', '"').replace('&gt;', '>').replace('&lt;', '<').replace('&apos;', '\'').replace('&amp;', '&')
+       
+    def fixCORBAEnums(self, obj):
+        '''
+        Utility function.
+        Fixes a problem with CORBA Enums. For some reason that I don't quite understand yet,
+        CORBA enumerations are not pickled/unpickled correctly. Using them as they are after
+        unpickling will throw a CORBA.BAD_PARAM exception. One way to fix this is simply to
+        recreate them, which is what this function does. It goes through each one of obj
+        members, find the CORBA enums and recreates them. It works recursively for each one of
+        obj members.
+
+        Parameters:
+        obj - An arbitrary CORBA object.
+        '''
+        import omniORB
+
+        # If obj is a list, fix each one of the members recursively.
+        if isinstance(obj, list):
+            for i in range(len(obj)):
+                # self.fixCORBAEnums(o)
+                if isinstance(obj[i], omniORB.EnumItem):
+                    enum = obj[i]
+                    enumName = str(enum)
+                    moduleName = enum._parent_id.split(':').pop(1).split('/')[1]
+                    module = __import__(moduleName)
+                    newEnum = module.__dict__[enumName]
+                    obj[i] = newEnum
+
+        # If obj is not a class instance, then there's nothing to do.
+        # E.g., primitive types: float, str, etc., which doesn't have '__dict__'.
+        try:
+            getattr(obj, '__dict__')
+        except AttributeError:
+            return
+
+        # Fix the case of obj being an enumeration itself.
+        # TODO it won't fix, as argument is passed by value.
+        # Change this function to return the modified value.
+        if isinstance(obj, omniORB.EnumItem):
+            enum = obj
+            enumName = str(enum)
+            moduleName = enum._parent_id.split(':').pop(1).split('/')[1]
+            module = __import__(moduleName)
+            newEnum = module.__dict__[enumName]
+            # print 'Replacing enumeration', enumName
+            obj = newEnum
+
+        # Fix IDL structures with nested enumerations.
+        # Go through each of of obj members ...
+        for k in obj.__dict__.keys():
+            # ...verify if it is an enumeration and in this case fix it
+            if isinstance(obj.__dict__[k], omniORB.EnumItem):
+                enum = obj.__dict__[k]
+                enumName = str(enum)
+                # (For example, if enum._parent_id is 'IDL:alma/Correlator/eDataProducts:1.0'
+                # then in moduleName we get 'Correlator'. Of course, this will work only
+                # if _parent_id follows this format. This should be true for all ALMA enums.)
+                moduleName = enum._parent_id.split(':').pop(1).split('/')[1]
+                module = __import__(moduleName)
+                newEnum = module.__dict__[enumName]
+                # print 'Replacing enumeration', k
+                obj.__dict__[k] = newEnum
+        
+            # ... or if it is a CORBA structure, in this case call recursively, or ... 
+            elif isinstance(obj.__dict__[k], omniORB.StructBase):
+                self.fixCORBAEnums(obj.__dict__[k])
+
+            # ... if it is a nested list, in this case case recursively in each one of the
+            # members.
+            elif isinstance(obj.__dict__[k], list):
+                for o in obj.__dict__[k]:
+                    self.fixCORBAEnums(o)
+ 
     def replaceCall(self, i, call):
         '''
         Replaces a call object.
@@ -206,6 +313,13 @@ class Player:
         '''
         self.calls[i] = call
         
+
+    def getStartTime(self):
+        return self.startTime
+
+    def getComponentName(self):
+        return self.compName
+
 #
 # __oOo__
         

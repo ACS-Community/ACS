@@ -43,6 +43,8 @@ from Acssim.Servants.Representations.API          import API
 from Acssim.Servants.Representations.Server       import Server
 from Acssim.Corba.Utilities            import getCompIfrID
 from Acssim.Corba.Utilities            import getSuperIDs
+import CORBA
+
 #--GLOBALS---------------------------------------------------------------------
 __revision__ = "@(#) $Id$"
 #------------------------------------------------------------------------------
@@ -67,7 +69,9 @@ class BehaviorProxy:
 
         #save the component type
         self.comptype = comptype
-        
+
+        # print "****** BehaviorProxy constructor " + compname + " " + str(comptype)
+
         #our logger
         self.logger = getLogger(compname)
         
@@ -88,7 +92,14 @@ class BehaviorProxy:
         '''
         #get the IFR ID of the component
         if self.comptype is None:
-            comp_type = getCompIfrID(self.compname)
+            # print "***** Getting component type from name " + self.compname
+            try:
+                comp_type = getCompIfrID(self.compname)
+            except CORBA.NO_RESOURCES, ex:
+                # In this case is an Offshoot
+                if self.compname.find("__OFFSHOOT__") == -1:
+                    raise ex
+                comp_type = self.compname.split("__OFFSHOOT__").pop()
         else:
             comp_type = self.comptype
 

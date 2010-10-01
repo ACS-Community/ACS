@@ -40,6 +40,7 @@ from traceback import print_exc
 #--CORBA STUBS-----------------------------------------------------------------
 
 #--ACS Imports-----------------------------------------------------------------
+from Acspy.Util.XmlObjectifier import XmlObject
 from Acspy.Common.Log       import getLogger
 from Acssim.Corba.Utilities import listToCodeObj
 from Acssim.Goodies import getComponentXMLObj
@@ -110,7 +111,25 @@ class CDB(BaseRepresentation):
         
         #create an xml helper object
         xml_obj = getComponentXMLObj(name)
-        
+       
+        # self.__logger.logInfo("xml_obj: " + xml_obj.toxml())
+        # work around for some odd behaviour of the CDB. If the simulated component
+        # node has sub nodes, then the SimulatedComponent element is replaced by the
+        # name of the root component
+        if xml_obj is not None:
+            try:
+                xml_obj.SimulatedComponent
+            except AttributeError:
+                new_el = xml_obj.createElement("SimulatedComponent")
+                for item in xml_obj.firstChild.attributes.items():
+                    new_el.setAttribute(item[0], item[1])
+                for n in xml_obj.firstChild.childNodes:
+                    if n.nodeType == xml_obj.ELEMENT_NODE:
+                        new_el.appendChild(n)
+                xml_obj.removeChild(xml_obj.firstChild)
+                xml_obj.appendChild(new_el)
+                xml_obj = XmlObject(xml_obj.toxml())
+ 
         if xml_obj!=None:
             #at least one entry exists. good!
             self.exists = 1
@@ -126,6 +145,7 @@ class CDB(BaseRepresentation):
             
             #allow inheritance?
             ret_val = xml_obj.SimulatedComponent.getAttribute('AllowInheritance')
+#            self.__logger.logInfo("returning: " + str(ret_val))
             
         return ret_val
     #--------------------------------------------------------------------------

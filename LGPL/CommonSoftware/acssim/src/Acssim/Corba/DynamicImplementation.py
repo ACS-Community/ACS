@@ -1,4 +1,4 @@
-# @(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $
+# @(#) $Id: DynamicImplementation.py,v 1.11 2010/10/01 17:20:48 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $"
+# "@(#) $Id: DynamicImplementation.py,v 1.11 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -37,7 +37,7 @@ from Acspy.Util.ACSCorba import interfaceRepository
 import CORBA
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__ = "@(#) $Id: DynamicImplementation.py,v 1.10 2007/02/08 15:44:16 agrimstrup Exp $"
+__revision__ = "@(#) $Id: DynamicImplementation.py,v 1.11 2010/10/01 17:20:48 javarias Exp $"
 #------------------------------------------------------------------------------
 def _mergeClasses(complete_dict, new_class):
     '''
@@ -165,6 +165,8 @@ class DynamicImplementation:
                                    
         #assume this can be found in a subclass as well.
         self.__interf = ifr.lookup_id(self._NP_RepositoryId)
+        if self.__interf is None:
+            print "Failed to find interface", self._NP_RepositoryId
         self.__interf = self.__interf._narrow(CORBA.InterfaceDef)
         self.__interf = self.__interf.describe_interface()
 

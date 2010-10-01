@@ -29,6 +29,7 @@
 #------------------------------------------------------------------------------
 '''
 TODO LIST:
+o Use better exceptions than the CORBA.NO_IMPLEMENT()
 '''
 #--REGULAR IMPORTS-------------------------------------------------------------
 
@@ -48,6 +49,7 @@ from Acssim.Goodies           import *
 from Acssim.Corba.KnownAcsTypes import getKnownBaciType
 from Acssim.Corba.KnownAcsTypes import tryCallbackParams
 from Acssim.Corba.Utilities import getDefinition
+from ACSSim import DataErrorEx
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Corba.Generator")
 #------------------------------------------------------------------------------
@@ -156,26 +158,42 @@ def getRandomStruct(typeCode, compRef):
     except:
         pass
     
-    #determine which Python package the struct is in...
-    #changes 'IDL:alma/someMod/.../struct:1.0" to [ 'someMod', ...,
-    #'struct' ]
-    packageName = structDef._get_id().split(':')[1].split('/')[1:]
+    #determine which namespace the struct is in...
+    #changes 'IDL:alma/someMod/.../struct:1.0" to 
+    # [ 'someMod', ...,'struct' ]
+    nameHierarchy = structDef._get_id().split(':')[1].split('/')[1:]
     #Just the 'struct' part...
-    structName = packageName.pop()
-        
-    #convert the list to a stringified module/package structure
-    packageName = reduce((lambda x, y : str(x) + '.' + str(y)), 
-                          packageName)
-    LOGGER.logTrace("structName=" + str(structName) +
-                             "; packageName=" + str(packageName))
-        
-    #import the proper module containing the struct defintion
+    structName = nameHierarchy.pop()
+    moduleName = nameHierarchy.pop(0)
+    LOGGER.logTrace("module=" + moduleName
+                        + "; hierarchy=" + str(nameHierarchy)
+                        + "; struct="    + structName)        
+    #import the top module
     tGlobals = {}
     tLocals = {}
     #module object where the struct is contained
-    tModule = __import__(packageName, tGlobals, tLocals, [structName])
+    container = __import__(moduleName, tGlobals, tLocals, [])
+    if container == None:
+        msg =  "import of module \'" + moduleName + "\' failed"
+        LOGGER.logCritical(msg)
+        raise CORBA.NO_IMPLEMENT(msg) 
+                 
+    # Now navigate down the nested hierarchy of objects
+    for h in nameHierarchy:
+        previousContainer = container
+        container = container.__dict__.get(h) 
+        if container == None:
+            msg =  "Name \'" + h + "\' not found in " + str( previousContainer)
+            LOGGER.logCritical(msg)
+            raise CORBA.NO_IMPLEMENT(msg)                   
+   
     #class object for the struct
-    tClass = tModule.__dict__.get(structName)
+    tClass = container.__dict__.get(structName)
+    if tClass == None:
+        msg =  "Could not get structure \'" + structName + "\' from " \
+                    + str(container)
+        LOGGER.logCritical(msg)
+        raise CORBA.NO_IMPLEMENT(msg) 
 
     #create an instance of the struct using a kooky Python mechanism.
     retVal = instance(tClass)
@@ -296,16 +314,22 @@ def getRandomCORBAObject(typeCode, compRef):
     
     LOGGER.logTrace("CORBA object type is:" + str(irLabel))
     LOGGER.logTrace("CORBA object name is:" + str(objName))
+    LOGGER.logTrace("Component Reference: " + str(compRef))
 
     #create a new simulated object
-    retVal = BaseSimulator(irLabel, compRef._get_name() + objName)
+    offshootName = compRef._get_name()
+    offshootName = offshootName + "__OFFSHOOT__" + irLabel
+    if 'activateOffShoot' in dir(compRef):
+        # In this case compRef is a simulated component (Simulator class)
+        parentComp = compRef
+    else:
+        # otherwise compRef is itself an Offshoot
+        parentComp = compRef.parent
+    retVal = BaseSimulator(irLabel, offshootName, parentComp)
+    addComponent(offshootName, retVal)
 
-    #activate it as a CORBA object...        
-    retVal = compRef.activateOffShoot(retVal)
-
-    #this must be done so that the newly created CORBA object can also activate
-    #offshoots on its own
-    retVal.activateOffShoot = compRef.activateOffShoot
+    # activate it as a CORBA object...        
+    retVal = parentComp.activateOffShoot(retVal)
 
     return retVal
 #------------------------------------------------------------------------------
@@ -381,17 +405,13 @@ def getRandomTuple(typeCode, compRef, valType):
     if realValType == CORBA.tk_sequence:
         LOGGER.logTrace("Dealing with a sequence.")
         retVal = []
-        for i in range(0,1+randrange(0, getMaxSeqSize()-1)):
+        for i in range(0,randrange(0, getMaxSeqSize())):
             retVal.append(getRandomValue(realTypeCode, compRef))
         #Sequences of octects and characters must be handled specially in 
         #Python
         if realTypeCode.kind()==CORBA.tk_octet or realTypeCode.kind()==CORBA.tk_char:
             LOGGER.logTrace("Dealing with a sequence of characters/octets.")
-            try:
-                return reduce((lambda x, y : str(x) + str(y)), retVal)
-            except Exception, e:
-                LOGGER.logCritical("Exception: " + str(e))
-                raise e
+            return reduce((lambda x, y : str(x) + str(y)), retVal)
         else:
             return tuple(retVal)
 

@@ -1,4 +1,4 @@
-1# @(#) $Id: Simulator.py,v 1.36 2007/10/03 20:44:03 agrimstrup Exp $
+1# @(#) $Id: Simulator.py,v 1.37 2010/10/01 17:20:48 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Simulator.py,v 1.36 2007/10/03 20:44:03 agrimstrup Exp $"
+# "@(#) $Id: Simulator.py,v 1.37 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -68,7 +68,7 @@ _DEBUG = 0
 class BaseSimulator(DynamicImplementation):
     '''
     '''
-    def __init__(self, ir, name=None):
+    def __init__(self, ir, name=None, parent=None):
         '''
         '''
         self.__ir = ir
@@ -80,8 +80,15 @@ class BaseSimulator(DynamicImplementation):
 
         else:
             self.__name = ir
+
+        self.parent = parent
+
         self.recorder = Recorder(self.__name)
         self.recorder.begin()
+
+    #------------------------------------------------------------------------------
+    def _get_name(self):
+        return self.__name
 
     #------------------------------------------------------------------------------
     def cleanUp(self):
@@ -171,13 +178,16 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
                 
         #possible for developers to configure an initialize method
         #for the simulated component.
+        ns = getCompLocalNS(self._get_name())
+        ns['SELF'] = self
         _execute(self._get_name(),
                  "initialize",
                  [self],
-                 getCompLocalNS(self._get_name()))
+                 ns)
                 
         #create the object used to dispatch events automatically         
         self.event_dispatcher = EventDispatcher(self)
+
         #handle attributes that should NOT be generically simulated
         self.__setupSpecialCases()
 
@@ -259,6 +269,7 @@ class Simulator(CharacteristicComponent,  #Base IDL interface
                     
                 addProperty(self, attribute.name, devio_ref=devio)
                 continue
+
             #float BACI property
             elif (tempType=="ROfloat")or(tempType=="RWfloat"):
                 attrDict = simServer.getMethod(attribute.name)

@@ -1,4 +1,4 @@
-# @(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $
+# @(#) $Id: Executor.py,v 1.19 2010/10/01 17:20:48 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $"
+# "@(#) $Id: Executor.py,v 1.19 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -47,7 +47,7 @@ from Acssim.Corba.Generator            import *
 
 #--GLOBALS---------------------------------------------------------------------
 LOGGER = getLogger("Acssim.Servants.Executor")
-__revision__ = "@(#) $Id: Executor.py,v 1.18 2008/10/28 09:00:49 agrimstrup Exp $"
+__revision__ = "@(#) $Id: Executor.py,v 1.19 2010/10/01 17:20:48 javarias Exp $"
 #------------------------------------------------------------------------------
 def _execute(comp_name, meth_name, args, local_ns):
     '''
@@ -177,6 +177,12 @@ def _executeList(code_list, args, local_ns):
 
     #there was a complaint about not seeing output from commandcenter so we do this:(
     stdout.flush()
+
+    if type(final_val)==str and final_val.count("return ") == 1:
+        return eval(final_val.replace("return ", ""), globals(), _locals)
+
+    if type(final_val)==str and final_val == "return":
+        return None
     
     #the final line is the actual return value which must be evaluated
     try:

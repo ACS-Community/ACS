@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: SimServer.py,v 1.2 2007/10/03 20:44:03 agrimstrup Exp $"
+# "@(#) $Id: SimServer.py,v 1.3 2010/10/01 17:20:48 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -56,8 +56,16 @@ class SimServer(ACSSim__POA.Simulator,
 
         self.logger = self.getLogger()
 
+        # Stores method information for all components
+        # self.methods is indexed by component name
+        # self.methods[comp_name] is a map indexed by method name
+        # self.methods[comp_name][method_name] is an instance of MethodInfo
         self.methods = {}
 
+        # Stores method information for all interfaces
+        # self.methods is indexed by interface ('IDL:bla/bla/bla:1.0') name
+        # self.methods[if_name] is a map indexed by method name
+        # self.methods[if_name][method_name] is an instance of MethodInfo
         self.if_methods = {}
 
     #------------------------------------------------------------------------------
@@ -97,6 +105,28 @@ class SimServer(ACSSim__POA.Simulator,
             self.if_methods[if_name] = {}
         self.if_methods[if_name][method_name] = MethodInfo(method_code.split('\n'),
                                                            timeout)
+
+    #------------------------------------------------------------------------------
+    def removeMethod(self, comp_name, method_name):
+        if not comp_name in self.methods.keys(): pass
+        try:
+            self.methods[comp_name].pop(method_name)
+        except KeyError: pass
+
+    #------------------------------------------------------------------------------
+    def removeMethodIF(self, if_name, method_name):
+        if not if_name in self.if_methods.keys(): pass
+        try:
+            self.if_methods[if_name].pop(method_name)
+        except KeyError: pass
+
+    #------------------------------------------------------------------------------
+    def removeAllMethods(self):
+        self.methods.clear()
+
+    #------------------------------------------------------------------------------
+    def removeAllMethodsIF(self):
+        self.if_methods.clear()
 
     #------------------------------------------------------------------------------
     def getMethod(self, comp_name, method_name):

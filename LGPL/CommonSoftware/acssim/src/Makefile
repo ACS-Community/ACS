@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2007/03/22 22:37:40 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.7 2010/10/01 17:20:48 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,8 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+SimulatorStubs_LIBS = acscomponentStubs
+
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
@@ -66,7 +68,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
+SCRIPTS         = recordEvents
 SCRIPTS_L       = acssimPydoc
 
 #
