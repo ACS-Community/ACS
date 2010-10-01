@@ -64,5 +64,10 @@ Container="pyContainer" ImplLang="py" />
      Code="Acssim.Servants.Simulator"
      Type="IDL:alma/Control/TotalPower:1.0"
      Container="pyContainer" ImplLang="py" />
+
+  <_ Name="ACSSIM_TESTER"
+     Code="Acssim.Servants.Simulator"
+     Type="IDL:alma/test/ACSSimTester:1.0"
+     Container="pyContainer" ImplLang="py"/>
 </Components>
 
