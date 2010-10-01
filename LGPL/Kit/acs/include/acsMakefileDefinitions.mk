@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.4 2010/10/01 20:56:49 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.5 2010/10/01 21:12:23 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -463,12 +463,12 @@ clean_xmlerr_$1: $(clean_xmlerr_$1_prereq)
 
 .PHONY: clean_dist_xmlerr_$1
 clean_dist_xmlerr_$1: $(clean_dist_xmlerr_$1_prereq)
-	$(AT)$(RM) ../object/$1.dxmlerr 
 	$(AT)$(RM) ../idl/$1.idl 
 
 
 .PHONY: install_xmlerr_$1
 install_xmlerr_$1: begin_install_xmlerr_$1 $(install_xmlerr_$1_prereq)
+	$(AT)cp ../idl/$1.xml $(PRJTOP)/idl
 
 .PHONY: begin_install_xmlerr_$1
 begin_install_xmlerr_$1:
