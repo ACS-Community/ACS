@@ -8,15 +8,15 @@
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
-1 - ContainerStatusMsg: Manager access initialization ends
-1 - ----------T--:--:--.--- pyContainer2 getCDBInfo - No container information found in the CDB
-1 - ----------T--:--:--.--- pyContainer2 __init__ - Container pyContainer2 waiting for requests
-1 - ContainerStatusMsg: Startup ends
 1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Manager access initialization ends
 1 - ----------T--:--:--.--- pyContainer2 taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- pyContainer2 taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
+1 - ----------T--:--:--.--- pyContainer2 getCDBInfo - No container information found in the CDB
+1 - ----------T--:--:--.--- pyContainer2 __init__ - Container pyContainer2 waiting for requests
+1 - ContainerStatusMsg: Startup ends
 1 - #*# Inside acspytest.testSubPackage.PyTest #*#
 1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP1
 1 - ----------T--:--:--.--- pyContainer2 deactivate_component - Deactivating component: RELOADCOMP1
@@ -24,6 +24,7 @@
 1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP1
 1 - ----------T--:--:--.--- pyContainer2 activate_component - Activated component: RELOADCOMP2
 1 - ----------T--:--:--.--- pyContainer2 deactivate_component - Deactivating component: RELOADCOMP1
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer2' exited with code: 0.
 1 - ----------T--:--:--.--- pyContainer2 deactivate_component - Deactivating component: RELOADCOMP2
 1 - #*# Inside acspytest.testSubPackage.PyTest #*#
 1 - Goodbye

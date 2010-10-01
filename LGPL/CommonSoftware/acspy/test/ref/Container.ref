@@ -7,8 +7,8 @@
 1 - ContainerStatusMsg: ORB initialization begins
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
-1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading begins
 1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 3 components queued to be activated.
 1 - ----------T--:--:--.--- pyContainer getCDBInfo - No container information found in the CDB
 1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
@@ -93,6 +93,7 @@
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT2
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT1
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT3
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer' exited with code: 0.
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT5
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT4
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: TESTCOMPONENT

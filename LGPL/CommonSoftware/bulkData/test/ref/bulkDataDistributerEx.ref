@@ -22,11 +22,11 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataDistributerLib.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr1Lib.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr1Lib'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr1Lib.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverDistr1Lib.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr2Lib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverDistr2Lib.so'.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Container 'Container1' initialized successfuly
 1 - ----------T--:--:--.--- [Container1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
@@ -52,23 +52,23 @@
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataSenderDistr' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataDistributer' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr1Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr1Lib.so'
-1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr1Lib'.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiverDistr1' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr2Lib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
+1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiverDistr2' activated.
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
@@ -87,9 +87,9 @@
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr2)
+1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length start parameter sent = 10000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 flowname 1: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 length param flowname 1: 10000
-1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length start parameter sent = 10000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 flowname 2: Flow2
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 successfully opened file: bulkDataDistrOutput.txt
 1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length sent data = 140000
@@ -102,16 +102,16 @@
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponent(BulkDataReceiverDistr2)
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataDistributer' etherealized.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataDistributer' deactivated.
+1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataDistributer' etherealized.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataReceiverDistr1' deactivated.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataReceiverDistr1' etherealized.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataReceiverDistr2' etherealized.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataReceiverDistr2' deactivated.
+1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::etherealizeComponent] Component 'BulkDataReceiverDistr2' etherealized.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataSenderDistr' deactivated.
@@ -119,6 +119,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 3 sec to allow everything to cleanup and stabilize
 2 - Shutting down Container1
 2 - All done!
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'Container1' exited with code: 0.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::logout] Logging out from the Manager.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::logout] Logged out from the Manager.
 1 - ----------T--:--:--.--- [Container1 - ContainerImpl::run] Container stopping...
