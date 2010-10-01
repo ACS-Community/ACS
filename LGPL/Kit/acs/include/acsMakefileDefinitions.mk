@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.3 2010/09/27 15:23:19 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.4 2010/10/01 20:56:49 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -1392,7 +1392,7 @@ clean_panel_$1:
 install_panel_$1: $(BIN)/$1
 
 $(BIN)/$1: ../bin/$1
-	-$(AT)echo "\t$1\"
+	-$(AT)echo "\t$1"
 	$(AT)cp ../bin/$1 $(BIN)/$1
 	$(AT)chmod $(P755) $(BIN)/$1
 
@@ -1498,7 +1498,7 @@ install_file_$1: $(toFile_$1)
 	$(AT)if [ ! -f $1 ];  then \
 	    echo "" >&2 ;\
 	    echo " ERROR: vltMakeInstallFiles: " >&2 ;\
-	    echo "  >>${FILE}<< file not found " >&2 ;\
+	    echo "  >>$1<< file not found " >&2 ;\
 	    echo "" >&2 ;\
 	    exit 1 ;\
 	 fi; 
