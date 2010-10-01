@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.2 2010/09/20 14:25:08 mzampare Exp $
+# $Id: acsMakefileCore.mk,v 1.3 2010/10/01 21:05:53 mzampare Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -458,13 +458,13 @@ endif
 ## INSTALL_FILES
 #################################################################
 
-$(foreach ifile,$(INSTALL_FILES), \
+$(foreach ifile,$(wildcard $(INSTALL_FILES)), \
    $(eval $(call fileToInstall,$(ifile))))
 
-$(foreach ifile,$(INSTALL_FILES), \
+$(foreach ifile,$(wildcard $(INSTALL_FILES)), \
    $(eval $(call acsMakeInstallFileDependencies,$(ifile))) )
 
-install_files: files_begin $(foreach ifile,$(INSTALL_FILES),install_file_$(ifile))
+install_files: files_begin $(foreach ifile,$(wildcard $(INSTALL_FILES)),install_file_$(ifile))
 
 .PHONY:
 files_begin:
