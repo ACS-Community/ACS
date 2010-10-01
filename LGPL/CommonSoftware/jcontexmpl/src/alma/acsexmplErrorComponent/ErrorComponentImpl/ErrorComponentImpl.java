@@ -22,6 +22,8 @@
 
 package alma.acsexmplErrorComponent.ErrorComponentImpl; 
 
+import org.omg.CORBA.NO_IMPLEMENT;
+
 import alma.ACSErr.Completion;
 import alma.ACSErrTypeCommon.ACSErrTypeCommonEx;
 import alma.ACSErrTypeCommon.GenericErrorEx;
@@ -33,8 +35,6 @@ import alma.acs.component.ComponentImplBase;
 import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acsexmplErrorComponent.ErrorComponentOperations;
-
-import org.omg.CORBA.SystemException;
 
 /**
  * Implementation of the <code>ErrorComponent</code> interface,
@@ -61,6 +61,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	 * which contains the real data of the exception(s).
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#badMethod(short)
 	 */
+	@Override
 	public void badMethod(short depth) throws GenericErrorEx {
 		try {
 			// our internal method uses the convenient "AcsJ-" JDK-style variant of GenericErrorEx
@@ -79,6 +80,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
          * to show how to handle CORBA System Exceptions
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#corbaSystemException()
 	 */
+	@Override
 	public void corbaSystemException() throws org.omg.CORBA.SystemException {
 			throw new org.omg.CORBA.BAD_PARAM("Test throwing a CORBA Exception");
 	}
@@ -90,6 +92,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	 * This will be the case if the <code>depth</code> parameter is > 0.
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#exceptionFromCompletion(short)
 	 */
+	@Override
 	public void exceptionFromCompletion(short depth) throws GenericErrorEx {
 		try {
 			if (depth == 1) {
@@ -125,6 +128,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	}
 	
 	
+	@Override
 	public void typeException(short depth) throws ACSErrTypeCommonEx { //, GenericErrorEx {
 		try {
 			internalBadMethod(depth);
@@ -142,6 +146,7 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	 * 
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#completionFromException(short)
 	 */
+	@Override
 	public Completion completionFromException(short depth) {
 		// this completion will be built from a chain of exceptions if depth > 0 
 		AcsJCompletion completion = internalCompletionMethod(depth);
@@ -154,37 +159,53 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 	 * 
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#completionFromCompletion(short)
 	 */
-        public Completion completionFromCompletion(short depth) {
-                AcsJCompletion completion=null;                
-                if(depth<=1){
-                        completion = internalCompletionMethod(depth);
-                        return completion.toCorbaCompletion();
-                }else{
-                        completion = internalCompletionMethod(depth-1);
-                        // here we show how to wrap the error from a given completion with a new completion
-                        AcsJCompletion newCompletion = new GenericErrorAcsJCompletion(completion);
-                        return newCompletion.toCorbaCompletion();
-                }
-        }
-	
+	@Override
+	public Completion completionFromCompletion(short depth) {
+		AcsJCompletion completion = null;
+		if (depth <= 1) {
+			completion = internalCompletionMethod(depth);
+			return completion.toCorbaCompletion();
+		} 
+		else {
+			completion = internalCompletionMethod(depth - 1);
+			// here we show how to wrap the error from a given completion with a new completion
+			AcsJCompletion newCompletion = new GenericErrorAcsJCompletion(completion);
+			return newCompletion.toCorbaCompletion();
+		}
+	}
 	
 	/**
-	 * Forwards to {@link #completionFromException(short)} because in Java we can't create objects on the stack,
-	 * so there is no distinction to be made.
+	 * Forwards to {@link #completionFromException(short)} because in Java we can't create objects on the stack, so
+	 * there is no distinction to be made.
+	 * 
 	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#completionOnStack(short)
 	 */
+	@Override
 	public Completion completionOnStack(short depth) {
 		return completionFromException(depth);
 	}
-        
-       /** this method returns a Completion as an out parameter.
-         *
-         * @see alma.acsexmplErrorComponent.ErrorComponentOperations#outCompletion(alma.ACSErr.CompletionHolder)
-         */
-        public void outCompletion(alma.ACSErr.CompletionHolder comp){
 
-            comp.value=(new ACSErrOKAcsJCompletion()).toCorbaCompletion();
-        }	
+	/**
+	 * this method returns a Completion as an out parameter.
+	 * 
+	 * @see alma.acsexmplErrorComponent.ErrorComponentOperations#outCompletion(alma.ACSErr.CompletionHolder)
+	 */
+	public void outCompletion(alma.ACSErr.CompletionHolder comp) {
+		comp.value = (new ACSErrOKAcsJCompletion()).toCorbaCompletion();
+	}
+
+	@Override
+	public void generateSIGFPE(short way) {
+		throw new NO_IMPLEMENT();
+	}
+
+	@Override
+	public void generateSIGSEGV(short way) {
+		throw new NO_IMPLEMENT();
+	}
+
+	
+	
 	///////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -243,4 +264,5 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 		// because at the Java impl / CORBA boundary it is often not good enough to just consider checked exceptions.
 		throw new RuntimeException("Program error: was never supposed to get here!");
 	}
+
 }
