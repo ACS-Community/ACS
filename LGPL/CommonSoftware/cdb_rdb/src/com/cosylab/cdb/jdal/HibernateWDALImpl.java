@@ -2405,6 +2405,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				DAOPOA daoImpl = null;
 				if (node instanceof DAOPOA)
 					objImpl = daoImpl = (DAOPOA)node;
+				else if (node instanceof DAOImpl)
+					objImpl = daoImpl = new DAOPOATie((DAOImpl)node);
 				else if (node instanceof XMLTreeNode)
 					//objImpl = daoImpl = new DAOImpl(curl, (XMLTreeNode)node, poa, m_logger);
 					objImpl = daoImpl = new DAOPOATie(new NoDestroyDAOImpl(curl, (XMLTreeNode)node, poa, m_logger));
