@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsThreadBase.cpp,v 1.45 2010/09/29 14:04:46 bjeram Exp $"
+* "@(#) $Id: acsThreadBase.cpp,v 1.46 2010/10/04 09:40:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -468,7 +468,8 @@ ThreadBase::SleepReturn ThreadBase::sleep(TimeInterval timeIn100ns) const
      */
     if ( isSuspended() )
 	{
-    	acquireRet = m_suspendSemaphore.acquire();
+    	while ( ((acquireRet = m_suspendSemaphore.acquire())) == -1 && errno == EINTR )
+    			continue; // Restart if interrupted by handler
 
     	/*
          * The semaphore acquire returns:
