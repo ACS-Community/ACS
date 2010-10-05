@@ -545,8 +545,6 @@ public class TabPanel extends JPanel {
 
 			if (master.dlgContainerSettings != null) {
 				master.dlgContainerSettings.btnCustom.setEnabled(remote);
-				master.dlgContainerSettings.scriptbaseL.setEnabled(remote);
-				master.dlgContainerSettings.scriptbaseF.setEnabled(remote);
 				master.dlgContainerSettings.hostL.setEnabled(remote);
 				master.dlgContainerSettings.hostF.setEnabled(remote);
 				master.dlgContainerSettings.accountL.setEnabled(remoteBuiltin || remoteNative);

@@ -559,12 +559,10 @@ public class CommandCenterGui {
 		dlgContainerSettings.modifF.setText(modif);
 		dlgContainerSettings.heapF.setText(cont.getHeapSizeMB());
 
-		dlgContainerSettings.defaultScriptBaseF.setText(controller.project.getScriptBase());
 		dlgContainerSettings.defaultHostF.setText(controller.project.getRemoteHost());
 		dlgContainerSettings.defaultAccountF.setText(controller.project.getRemoteAccount());
 		dlgContainerSettings.defaultPasswordF.setText(controller.project.getRemotePassword());
 
-		dlgContainerSettings.scriptbaseF.setText(cont.getScriptBase());
 		dlgContainerSettings.hostF.setText(cont.getRemoteHost());
 		dlgContainerSettings.accountF.setText(cont.getRemoteAccount());
 		dlgContainerSettings.passwordF.setText(cont.getRemotePassword());
@@ -579,7 +577,9 @@ public class CommandCenterGui {
 		cont.setTypeModifier(MiscUtils.split(dlgContainerSettings.modifF.getText().trim()));
 		cont.setHeapSizeMB(dlgContainerSettings.heapF.getText().trim());
 
-		cont.setScriptBase(dlgContainerSettings.scriptbaseF.getText().trim());
+		// msc 2010-10: avoid cross-talk between instances:
+		// acs instance of a container is no longer freely choosable.
+		cont.setScriptBase(controller.project.getScriptBase());
 		cont.setRemoteHost(dlgContainerSettings.hostF.getText().trim());
 		cont.setRemoteAccount(dlgContainerSettings.accountF.getText().trim());
 		cont.setRemotePassword(dlgContainerSettings.passwordF.getText().trim());

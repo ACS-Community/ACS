@@ -30,9 +30,9 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 	JRadioButton btnGlobal, btnCustom;
 	JTextField modifF, heapF;
 	JLabel modifL, heapL;
-	JTextField defaultScriptBaseF, defaultHostF, defaultAccountF, defaultPasswordF;
-	JTextField scriptbaseF, hostF, accountF, passwordF;
-	JLabel scriptbaseL, hostL, accountL, passwordL;
+	JTextField defaultHostF, defaultAccountF, defaultPasswordF;
+	JTextField hostF, accountF, passwordF;
+	JLabel hostL, accountL, passwordL;
 	
 	ButtonGroup buttonGroup;
 	boolean okChosen; // this dialog's "return value"
@@ -63,23 +63,18 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 		pnlLocation.setLayout(new SpringLayout());
 		pnlLocation.add(btnGlobal = new JRadioButton("On same host as manager"));
 		pnlLocation.add(new JLabel("(see Common Settings)"));
-		pnlLocation.add(new JLabel("Acs Instance"));
-		pnlLocation.add(defaultScriptBaseF = new JTextField());
 		pnlLocation.add(new JLabel("Remote Host"));
 		pnlLocation.add(defaultHostF = new JTextField());
 		pnlLocation.add(new JLabel("Remote Username"));
 		pnlLocation.add(defaultAccountF = new JTextField());
 		pnlLocation.add(new JLabel("Remote Password"));
 		pnlLocation.add(defaultPasswordF = new JPasswordField());
-		defaultScriptBaseF.setEditable(false);
 		defaultHostF.setEditable(false);
 		defaultAccountF.setEditable(false);
 		defaultPasswordF.setEditable(false);
 
 		pnlLocation.add(btnCustom = new JRadioButton("On the following host"));
 		pnlLocation.add(new JLabel("")); // "(implies SSH connection)"
-		pnlLocation.add(scriptbaseL = new JLabel("Acs Instance"));
-		pnlLocation.add(scriptbaseF = new JTextField());
 		pnlLocation.add(hostL = new JLabel("Remote Host"));
 		pnlLocation.add(hostF = new JTextField());
 		pnlLocation.add(accountL = new JLabel("Remote Username"));
@@ -112,11 +107,9 @@ class EditContainerSettingsDialog extends JDialog implements ActionListener {
 
 		btnGlobal.setName("rdb_Global");
 		btnCustom.setName("rdb_Custom");
-		defaultScriptBaseF.setName("txt_DefaultInstance");
 		defaultHostF.setName("txt_DefaultHost");
 		defaultAccountF.setName("txt_DefaultUser");
 		defaultPasswordF.setName("txt_DefaultPassword");
-		scriptbaseF.setName("txt_CustomInstance");
 		hostF.setName("txt_CustomHost");
 		accountF.setName("txt_CustomUser");
 		passwordF.setName("txt_CustomPassword");
