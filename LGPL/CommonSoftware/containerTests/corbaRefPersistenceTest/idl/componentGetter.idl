@@ -1,0 +1,16 @@
+#ifndef component_getter_idl_
+#define component_getter_idl_
+
+#include <acscomponent.idl>
+
+#pragma prefix "alma"
+
+module demo {
+
+	interface ComponentGetter : ACS::ACSComponent {
+		void getOtherComponent();
+	};
+
+};
+
+#endif

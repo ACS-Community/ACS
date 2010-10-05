@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2008/06/19 19:15:44 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.7 2010/10/05 10:21:53 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -92,13 +92,16 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = corbaRefTest
+LIBRARIES       = corbaRefTest componentGetterImpl
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 corbaRefTest_OBJECTS   = HelloWorldImpl
 corbaRefTest_LIBS     = HelloWorldStubs
+
+componentGetterImpl_OBJECTS = componentGetterImpl
+componentGetterImpl_LIBS    = componentGetterStubs
 
 #
 # Scripts (public and local)
@@ -121,7 +124,7 @@ PY_SCRIPTS_L       = testComponent pyClient
 PY_MODULES         =
 PY_MODULES_L       =
 
-PY_PACKAGES        = pythonImpl
+PY_PACKAGES        = pythonImpl demoImpl
 PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
@@ -155,8 +158,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= refTest
-refTest_DIRS=alma
+JARFILES= refTest componentGetterImpl
+refTest_DIRS=alma/test
+componentGetterImpl_DIRS=alma/demo
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off

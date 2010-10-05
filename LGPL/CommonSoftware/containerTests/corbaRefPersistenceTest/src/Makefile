@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2008/04/01 09:29:56 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2010/10/05 10:21:53 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -112,7 +112,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = HelloWorld
+IDL_FILES = HelloWorld componentGetter
 IDL_TAO_FLAGS =
 USER_IDL =
 #
