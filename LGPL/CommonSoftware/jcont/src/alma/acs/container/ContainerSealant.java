@@ -205,8 +205,9 @@ public class ContainerSealant
 			
 			if (Boolean.getBoolean(CHECK_NULLS_CORBA_OUT_PROPERTYNAME)) {
 				try {
+					// check return value
 					Class<?> clzzRet = method.getReturnType();
-					if (!CorbaNullFinder.isIDLInterfaceClass(clzzRet)) {
+					if (!Void.TYPE.equals(clzzRet) && !CorbaNullFinder.isIDLInterfaceClass(clzzRet)) {
 						CorbaNullFinder finder = new CorbaNullFinder(retVal);
 						if (finder.hasErrors()) {
 							List<String> errors = finder.getErrors();
