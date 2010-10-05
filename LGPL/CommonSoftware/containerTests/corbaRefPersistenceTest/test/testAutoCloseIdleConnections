@@ -1,0 +1,32 @@
+#!/bin/bash
+
+SECS=15
+
+# Restart the manager with the server timeout
+maciManagerShutdown &> $ACS_TMP/maciManagerShutdown.out
+export JAVA_OPTIONS="-Djacorb.connection.server.timeout=${SECS}000"
+echo "Restarting the Manager with ${JAVA_OPTIONS}"
+maciManagerJ &> $ACS_TMP/maciManagerJ.out &
+
+sleep 1
+
+echo "Starting containers"
+acsutilAwaitContainerStart -java frodoContainer
+acsutilAwaitContainerStart -py   gandalfContainer
+acsutilAwaitContainerStart -cpp  bilboContainer
+
+# We sleep until the connection from the container to the
+# manager is automatically closed by the manager
+echo "Sleeping ${SECS} (+2) seconds"
+sleep ${SECS}
+sleep 2
+
+# Now let's ask for our components, and then
+# let's trigger a getComponent() on them, so the containers
+# re-open their connection to the manager
+echo "Triggering get_component() on Manager from all containers"
+simpleClient
+
+acsStopContainer frodoContainer
+acsStopContainer gandalfContainer
+acsStopContainer bilboContainer

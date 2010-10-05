@@ -1,0 +1,5 @@
+1 - Restarting the Manager with -Djacorb.connection.server.timeout=15000
+1 - Starting containers
+1 - Sleeping 15 (+2) seconds
+1 - Triggering get_component() on Manager from all containers
+1 - Bye bye

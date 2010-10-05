@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.7 2010/10/05 10:21:53 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/10/05 15:46:11 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -107,7 +107,7 @@ componentGetterImpl_LIBS    = componentGetterStubs
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = testComponents javaClient
+SCRIPTS_L       = testComponents javaClient testAutoCloseIdleConnections
 
 #
 # TCL scripts (public and local)
@@ -119,7 +119,7 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       = testComponent pyClient
+PY_SCRIPTS_L       = testComponent pyClient simpleClient
 
 PY_MODULES         =
 PY_MODULES_L       =
