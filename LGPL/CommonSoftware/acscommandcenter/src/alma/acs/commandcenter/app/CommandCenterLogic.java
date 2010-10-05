@@ -99,9 +99,9 @@ public class CommandCenterLogic {
 		this.startupOptions = startupOptions;
 		
 		log = MiscUtils.getPackageLogger(this);
-		
+
 		// Make up the creator string for command center projects.
-		String projectCreatorId = (version().equals(""))? null : "acc-"+version();
+		projectCreatorId = (version().equals(""))? null : "acc-"+version();
 
 		projectMaker = new ProjectMaker(projectCreatorId);
 		project = projectMaker.createProject();
@@ -226,6 +226,13 @@ public class CommandCenterLogic {
 	// ============ Versioning ====================
 	//
 
+	/** assigned in prepare() */
+	protected String projectCreatorId;
+	
+	public String projectCreatorId() {
+		return projectCreatorId;
+	}
+	
 	/** assigned in version() */
 	protected String version = null;
 

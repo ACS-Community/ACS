@@ -189,13 +189,13 @@ public class CommandCenterGui {
 		text.setBorder(new EmptyBorder(5, 30, 5, 30));
 		logoPanel.add(text, BorderLayout.CENTER);
 
-		JLabel version = new JLabel(controller.version());
-		version.setForeground(COLOR_LogoForeground);
-		version.setBorder(new EmptyBorder(0, 0, 0, 4));
-		JPanel pnl2 = new JPanel(new BorderLayout());
-		pnl2.setOpaque(false);
-		pnl2.add(version, BorderLayout.SOUTH);
-		logoPanel.add(pnl2, BorderLayout.EAST);
+//		JLabel version = new JLabel(controller.version());
+//		version.setForeground(COLOR_LogoForeground);
+//		version.setBorder(new EmptyBorder(0, 0, 0, 4));
+//		JPanel pnl2 = new JPanel(new BorderLayout());
+//		pnl2.setOpaque(false);
+//		pnl2.add(version, BorderLayout.SOUTH);
+//		logoPanel.add(pnl2, BorderLayout.EAST);
 
 		menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("Project");
@@ -249,11 +249,12 @@ public class CommandCenterGui {
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		item = helpMenu.add(new ActionShowHelp("Online Help"));
 		item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		item = helpMenu.add(new ActionShowAbout("About"));
 		menuBar.add(Box.createHorizontalGlue());
 		menuBar.add(helpMenu);
-		
+
 		// ---
-		
+
 		JPanel h = new JPanel(new SpringLayout());
 		h.add(logoPanel);
 		h.add(menuBar);
@@ -922,7 +923,20 @@ public class CommandCenterGui {
 		}
 	}
 
-	
+	protected class ActionShowAbout extends SwingAction {
+
+		protected ActionShowAbout(String name) {
+			super(name);
+		}
+
+		@Override
+		protected void actionPerformed () throws Exception {
+			String title = "About: Acs Command Center";
+			String msg = "This Acs Command Center creates projects of version: "+controller.projectCreatorId();
+			JOptionPane.showInternalMessageDialog(desktop, msg, title, JOptionPane.PLAIN_MESSAGE);
+		}
+	}
+
 	protected class ActionShowHelp extends SwingAction {
 
 		public ActionShowHelp(String name) {
