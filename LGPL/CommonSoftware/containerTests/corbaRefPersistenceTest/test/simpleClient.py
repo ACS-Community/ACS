@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: simpleClient.py,v 1.1 2010/10/05 15:46:11 rtobar Exp $"
+# "@(#) $Id: simpleClient.py,v 1.2 2010/10/06 16:56:48 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -38,5 +38,3 @@ try:
 except Exception, e:
 	print "Something went wrong on the server side :("
 	print e
-
-print "Bye bye"
