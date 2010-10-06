@@ -15,10 +15,10 @@
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ContainerStatusMsg: Manager access initialization ends
-1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
-1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 1 components queued to be activated.
-1 - ContainerStatusMsg: Startup ends
 1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 1 components queued to be activated.
+1 - ----------T--:--:--.--- pyContainer __init__ - Container pyContainer waiting for requests
+1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- HELLODEMO1 initialize - called...
 1 - ----------T--:--:--.--- pyContainer activate_component - Activated component: HELLODEMO1
 1 - ----------T--:--:--.--- pyContainer taggedmessage - Info message from the manager: Startup statistics: 1 of 1 components activated.
@@ -35,6 +35,7 @@
 2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: HELLODEMO2
 1 - ----------T--:--:--.--- HELLODEMO2 cleanUp - called...
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyContainer' exited with code: 0.
 1 - ----------T--:--:--.--- pyContainer deactivate_component - Deactivating component: HELLODEMO1
 1 - ----------T--:--:--.--- HELLODEMO1 cleanUp - called...
 1 - Goodbye
