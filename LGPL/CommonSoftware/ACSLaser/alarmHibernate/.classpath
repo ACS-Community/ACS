@@ -19,9 +19,9 @@
 	<classpathentry kind="var" path="ACSROOT/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar" sourcepath="ACSROOT/lib/acserrj.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar" sourcepath="/ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
@@ -30,9 +30,10 @@
 	<classpathentry kind="var" path="ACSROOT/lib/AcsAlarmSystem.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsalarmSchemaBindings.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/acsjlogSLF4j.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/slf4j-acs.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/slf4j-api-1.5.8.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/cdb_rdb"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbrdb-pojos.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_cdb_rdb"/>
+	<classpathentry kind="var" path="ACSROOT/lib/tmcdbGenerator.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
