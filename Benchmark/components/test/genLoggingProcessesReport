@@ -599,7 +599,7 @@ firstBatchOfLogs=0
 while [ $delay -lt $timeout ] ; do
     milliSleep $sleepUnit
     startChrono 3
-    firstBatchOfLogs=`grep "msg: " $ACS_TMP/all_logs.xml | wc -l`
+    firstBatchOfLogs=`grep "msg: " $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
     if [ $firstBatchOfLogs -ne 0 ] ; then
 	break
     else
@@ -658,7 +658,7 @@ lastMsgId=`expr $NUM_LOGS - 1`
 delay=0
 # First look for the last log(s), then check later if no logs are lost
 while [ $delay -le $EXTRA_WAIT_TIME ] ; do
-    nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/all_logs.xml | wc -l`
+    nrLastLogs=`grep "msg: $lastMsgId]" $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
     # Note that a grep|wc on all_logs.xml can take its time if lots of logs are sent,
     # and that duration is anyway proportional to the size of all_logs.xml.
     # So don't assume that loop duration is determined by the "sleep" further on.
@@ -693,7 +693,7 @@ debugPrint " Time to receive remaining logs (after $firstBatchOfLogs logs) = ${c
 
 # verify the proper number of logs were received
 startChrono 4
-totalLogsReceivedByLoggingClient=`grep "msg: " $ACS_TMP/all_logs.xml | wc -l`
+totalLogsReceivedByLoggingClient=`grep "msg: " $ACS_TMP/ACS_INSTANCE.$ACS_INSTANCE/all_logs.xml | wc -l`
 chrono4=`getChrono 4`
 # Calculate the system performance as the number of logs/s processed by the
 # above grep|wc
