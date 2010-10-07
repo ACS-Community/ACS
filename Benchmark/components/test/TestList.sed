@@ -5,6 +5,8 @@ s/[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]T[0-5][0-9]:[0-5][0-9]:[0-5][0-9][.0-
 # Replace absolute directory path by symbolic name.
 s|/.*components/|<components_dir>/|g
 #
+# Replace ACS_INSTANCE number in paths
+s|/ACS_INSTANCE\.[0-9]/|/ACS_INSTANCE.N/|g
 # Replace ACS_INSTANCE enumerated value by symbolic value.
 # (Note that also some port numbers depend on the value assigned to ACS_INSTANCE)
 s/started ACS_INSTANCE [0-9]/started ACS_INSTANCE <N>/g
