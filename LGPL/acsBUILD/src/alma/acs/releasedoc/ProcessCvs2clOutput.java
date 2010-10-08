@@ -160,7 +160,7 @@ public class ProcessCvs2clOutput
 					return getRelevantFileName(entry.getFiles().get(0).getPathName());
 				}
 				private String getRelevantFileName(String pathName) {
-					int relevantLevels = ( pathName.startsWith("LGPL/CommonSoftware/") ? 3 : 1 );
+					int relevantLevels = ( pathName.startsWith("ACS/LGPL/CommonSoftware/") ? 4 : 2 );
 					String[] nameParts = pathName.split("/");
 					String ret = "";
 					for (int i = 0; i < relevantLevels; i++) {
