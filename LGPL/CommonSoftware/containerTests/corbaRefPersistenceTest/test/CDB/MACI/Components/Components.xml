@@ -28,9 +28,9 @@
                              Type="IDL:alma/demo/ComponentGetter:1.0"
                              Container="gandalfContainer" ImplLang="py" />
 
-		<!-- This is the component that all the other request for -->
+		<!-- This is the component that all the other request for, runs in a different cpp container -->
       <_ Name="COMP_TO_GET"  Code="componentGetterImpl"
                              Type="IDL:alma/demo/ComponentGetter:1.0"
-                             Container="bilboContainer" ImplLang="cpp" />
+                             Container="bilboContainer2" ImplLang="cpp" />
 </Components>
 
