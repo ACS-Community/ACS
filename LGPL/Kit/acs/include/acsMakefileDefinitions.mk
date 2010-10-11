@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.5 2010/10/01 21:12:23 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.6 2010/10/11 13:30:24 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -205,7 +205,7 @@ $1_IDL_Java: ../lib/$1.jar;
 
 
 ../lib/$1.jar: TMPSRC=../object/$1/src
-../lib/$1.jar: $1.idl $($1_IDLprereq) $(subst ../idl,../lib,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
+../lib/$1.jar: $1.idl $($1_IDLprereq) $(subst ../idl/,,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
 	- @echo "== (preprocessing) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  /tmp/$(UNIQUE_NUMBER).$1.idl
 	- @echo "== IDL Compiling for JacORB (Java): $1 "

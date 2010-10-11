@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.197 2010/09/23 08:59:41 jagonzal Exp $" 
+# "@(#) $Id: acsMakefile,v 1.198 2010/10/11 13:30:24 mzampare Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -2029,6 +2029,7 @@ vpath  %.h  ../object $(subst -I, ,$(I_PATH))
 #vpath  %.so $(subst -L,:,$(strip $(L_PATH)))
 vpath  %.a  $(LIB_PATH_LIST)
 vpath  %.so  $(LIB_PATH_LIST)
+vpath  %.jar  $(LIB_PATH_LIST)
 
 #
 
