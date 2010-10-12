@@ -36,3 +36,4 @@
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
 1 - ----------T--:--:--.--- [ARCHIVECON1 - ] myHandlerFunction()...device is:TEST_PS_1
 1 - /----/libbaci.so
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'bilboContainer' exited with code: 0.
