@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.18 2009/11/04 08:08:32 hyatagai Exp $"
+# "@(#) $Id: TestList.lite,v 1.19 2010/10/12 12:34:43 rbourtem Exp $"
 #
 # TestList
 #
@@ -42,7 +42,7 @@ PROLOGUE acsstartupTATPrologue
 4  T4  "acsStart -noloadifr -b 9" "@SLEEP 30" \
        "acsStartContainer -java -b 9 jCont" "@SLEEP 2" \
        "acsStartContainer -java -b 9 opCont" "@SLEEP 2" \
-       "acsstartupSetEnv -hide acsStopContainer -b 9 jCont"        "@SLEEP 15" \
+       "acsstartupSetEnv -hide acsStopContainer -b 9 jCont"        "@SLEEP 16" \
        "acsStartContainer -java -b 9 jCont" "@SLEEP 2"  "acsStop -b 9"
 
 5  T5  "acsStart -noloadifr -b 9" "@SLEEP 30" \
