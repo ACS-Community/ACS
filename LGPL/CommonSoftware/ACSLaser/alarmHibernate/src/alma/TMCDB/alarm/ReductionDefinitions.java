@@ -6,9 +6,18 @@ package alma.TMCDB.alarm;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.hibernate.Session;
 
 import alma.acs.tmcdb.Configuration;
+
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.cosylab.cdb.jdal.hibernate.ExtraDataFeature;
 
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.cdb.jdal.hibernate.NameOverrideFeature;
@@ -18,7 +27,7 @@ import com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALAlarmPluginImpl;
 /**
  * @author msekoranja
  */
-public class ReductionDefinitions implements NameOverrideFeature, XMLSaver {
+public class ReductionDefinitions implements ExtraDataFeature, NameOverrideFeature, XMLSaver {
 
 	public static final String REDUCTION_DEFINITIONS_PATH = "/Alarms/Administrative/ReductionDefinitions";
 
@@ -32,12 +41,38 @@ public class ReductionDefinitions implements NameOverrideFeature, XMLSaver {
 	private ReductionLinks linksToRemove = new ReductionLinks("links-to-remove");
 	private ReductionThresholds thresholds = new ReductionThresholds();
 	
+    // extra data support
+    private Element _extraData;
+    
+    /* (non-Javadoc)
+	 * @see com.cosylab.cdb.jdal.hibernate.ExtraDataFeature#getExtraData()
+	 */
+	public Element getExtraData() {
+		return _extraData;
+	}
+
 	public ReductionDefinitions(Session session, Configuration config, ConfigurationAccessor conf, Map<String, Object> rootMap, Logger m_logger) {
 		this.session = session;
 		this.config = config;
 		this.conf = conf;
 		this.rootMap = rootMap;
 		this.m_logger = m_logger;
+
+		// add xmlns attributes
+		try
+		{
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			DOMImplementation impl = builder.getDOMImplementation();
+			Document xmldoc = impl.createDocument(null, "data", null);
+			_extraData = xmldoc.getDocumentElement();
+			_extraData.setAttribute("xmlns", "urn:schemas-cosylab-com:AcsAlarmSystem:1.0");
+			_extraData.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+		}
+		catch (Throwable th)
+		{
+			th.printStackTrace();
+		}
 	}
 
 	/* (non-Javadoc)
