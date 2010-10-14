@@ -52,9 +52,12 @@ public class DataStruct implements DataElement {
 	public String id() {
 		return id;
 	}
+	public String toString() {
+		return name+": "+id;
+	}
 	public String toString(String start, int level, boolean expand) {
 		StringBuffer result = new StringBuffer(500);
-		result.append(toString());
+		result.append(id());
 		if (expand) {
 			result.append('\n');
 			result.append(start);

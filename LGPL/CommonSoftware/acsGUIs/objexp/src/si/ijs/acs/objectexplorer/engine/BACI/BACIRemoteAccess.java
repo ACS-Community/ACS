@@ -2097,7 +2097,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			 * to issue a warning if this is not the case.
 			 * In this case we get an exception and the trap will log the warning.
 			 */
-			if(de.get("errorTraces") != null) {
+			if(de.get("errorTrace") != null) {
 				AcsJObjectExplorerReportEx objexpEx = new AcsJObjectExplorerReportEx(exceptionThrown);
 				objexpEx.log(BACILogger.getLogger());
 			} else {

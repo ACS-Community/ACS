@@ -62,10 +62,14 @@ public class DataException extends Exception implements DataElement {
 				result.append(key);
 				result.append(": ");
 				Object value = get(key);
-				if(value instanceof DataElement)
-					result.append(((DataElement)value).toString(start + " ", level + 1, expand));
-				else
-					result.append(DataFormatter.unpackReturnValue(value, start + " ", level + 1, expand));
+				if (value.getClass().isArray()) {
+					result.append(DataElementFormatter.unpackArray(value,start,level, expand));
+				} else {
+					if(value instanceof DataElement)
+						result.append(((DataElement)value).toString(start + " ", level + 1, expand));
+					else
+						result.append(DataFormatter.unpackReturnValue(value, start + " ", level + 1, expand));
+				}
 			}
 		}
 		return result.toString();
