@@ -64,7 +64,6 @@ public class BACIIntrospector {
 	private BACIRemoteAccess ra = null;
 	private HashMap IDLtoJavaMapping = new HashMap();
 	private Stack structs;
-	private String cStruct = "";
 	public static final String ID_CORBA_OBJECT ="IDL:omg.org/CORBA/Object:1.0";
 	public static final String ID_PROPERTY = "IDL:alma/ACS/Property:1.0";
 	public static final String ID_CALLBACK = "IDL:alma/ACS/Callback:1.0";
@@ -260,7 +259,7 @@ public static void destroyInvocation(BACIInvocation invoc) {
 			e.printStackTrace();
 			return null;
 		}
-		displayAny(dany.to_any());
+		//displayAny(dany.to_any());
 		return dany.to_any();
 	}
 
@@ -887,10 +886,6 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 			case TCKind._tk_array:
 				Class content;
 				try {
-					if(tc.content_type().kind() == TCKind.tk_struct)
-						if(cStruct.equals(IDtoClassName(tc.content_type().id()))) {
-							return java.lang.Object[].class;
-						}
 					content = getClassType(tc.content_type());
 				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
 					return null;
@@ -898,10 +893,6 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 				return java.lang.reflect.Array.newInstance(content, 0).getClass();
 			case TCKind._tk_alias:
 				try {
-					if(tc.content_type().kind() == TCKind.tk_struct)
-						if(cStruct.equals(IDtoClassName(tc.content_type().id()))) {
-							return java.lang.Object.class;
-						}
 					return getClassType(tc.content_type());
 				} catch(org.omg.CORBA.TypeCodePackage.BadKind e) {
 					return null;
@@ -950,21 +941,22 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 				throw new IllegalArgumentException("Argument typecode '" + tc.kind().value() + "' is not supported.");
 		}
 	}
-	private void pop() {
-		if(structs.empty())
-			return;
-		structs.pop();
-		if(structs.empty())
-			cStruct = "";
-		else
-			cStruct = (String)structs.peek();
-	}
 
 	private DataElement getDef(TypeCode tc) {
 		int value = tc.kind().value();
 		switch(value) {
 			case TCKind._tk_struct:
-				return getStructDef(tc);
+				try {
+					if(structs.search(tc.id()) == -1)
+						return null;
+					structs.push(tc.id());
+					DataElement ret = getStructDef(tc);
+					structs.pop();
+					return ret;
+				} catch (org.omg.CORBA.TypeCodePackage.BadKind e) {
+					e.printStackTrace();
+					return null;
+				}
 			case TCKind._tk_enum:
 				return getEnumDef(tc);
 			case TCKind._tk_alias:
