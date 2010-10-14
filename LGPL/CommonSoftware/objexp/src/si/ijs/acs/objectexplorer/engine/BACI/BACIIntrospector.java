@@ -947,7 +947,7 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 		switch(value) {
 			case TCKind._tk_struct:
 				try {
-					if(structs.search(tc.id()) == -1)
+					if(structs.search(tc.id()) != -1)
 						return null;
 					structs.push(tc.id());
 					DataElement ret = getStructDef(tc);
