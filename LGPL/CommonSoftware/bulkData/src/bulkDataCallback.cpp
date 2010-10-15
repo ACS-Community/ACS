@@ -161,7 +161,7 @@ int BulkDataCallback::handle_stop (void)
 		///cleanRecvBuffer();
 		//cout << "BulkDataCallback::handle_stop - handle removed: " << getHandle() << endl;
 		TAO_AV_CORE::instance()->reactor()->remove_handler(getHandle(),ACE_Event_Handler::READ_MASK);
-		ACE_OS::sleep(1);  // seems necessary to give time to remove
+		//ACE_OS::sleep(1);  // seems necessary to give time to remove
 		                   // the handler from the reactor
 		throw CORBA::TIMEOUT();
 		}

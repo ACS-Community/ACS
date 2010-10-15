@@ -416,6 +416,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
     ACE_CString recvName = "";
+    CORBA::ULong currRecvNo, currFlowPos;
 
     try
 	{
@@ -433,7 +434,17 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		    {
 		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame error"));
 
-		    (entry->int_id_).second()->disconnectPeer();
+		    if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+			{
+			ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData - error in getting currRecvNo"));
+			ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::distSendData");
+			throw err;
+			}
+		    
+		    currFlowPos = currRecvNo + flowNumber;
+		    flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+		    /*(entry->int_id_).second()->disconnectPeer();
 		    BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 		    if (locSender_p != 0)
 			delete locSender_p;
@@ -443,7 +454,7 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 		    senderMap_m.unbind(recvName);
 		    iterator--;
 		    recvStatusMap_m.unbind(recvName);
-		    getFlowReceiverStatus(recvName,flowNumber);
+		    getFlowReceiverStatus(recvName,flowNumber);*/
 		    }
 		}	
 	    }
@@ -451,26 +462,48 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     catch(CORBA::Exception &ex)
 	{
 	ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendData");
-	(entry->int_id_).second()->disconnectPeer();
+
+	if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData - error in getting currRecvNo"));
+	    ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::distSendData");
+	    throw err;
+	    }
+
+	currFlowPos = currRecvNo + flowNumber;
+	flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+	/*(entry->int_id_).second()->disconnectPeer();
 	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 	if (locSender_p != 0)
 	    delete locSender_p;
 
 	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));*/
 	}
     catch(...)
 	{
 	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData Unknown exception"));
-	(entry->int_id_).second()->disconnectPeer();
+
+	if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+	    {
+	    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData - error in getting currRecvNo"));
+	    ACSBulkDataError::AVPaceDataErrorExImpl err = ACSBulkDataError::AVPaceDataErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::distSendData");
+	    throw err;
+	    }
+
+	currFlowPos = currRecvNo + flowNumber;
+	flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+	/*(entry->int_id_).second()->disconnectPeer();
 	BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 	if (locSender_p != 0)
 	    delete locSender_p;
 
 	CORBA::release((entry->int_id_).first()); 
 	senderMap_m.unbind(recvName);
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendData - Receiver %s removed from Distributor",recvName.c_str()));*/
 	}	
     
     return res;
@@ -489,6 +522,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 
     Sender_Map_Iterator iterator (senderMap_m);
     Sender_Map_Entry *entry = 0;
+    CORBA::ULong currRecvNo, currFlowPos;
 
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{    
@@ -515,7 +549,17 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		}
 	    catch(CORBA::SystemException &ex)
 		{
-		(entry->int_id_).second()->disconnectPeer();
+		if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+		    {
+		    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendStopTimeout - error in getting currRecvNo"));
+		    ACSBulkDataError::AVStopSendErrorExImpl err = ACSBulkDataError::AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::distSendStopTimeout");
+		    throw err;
+		    }
+
+		currFlowPos = currRecvNo + flowNumber;
+		flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+		/*(entry->int_id_).second()->disconnectPeer();
 		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 		if (locSender_p != 0)
 		    delete locSender_p;
@@ -523,7 +567,8 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
 		iterator--;
-		recvStatusMap_m.unbind(recvName);
+		recvStatusMap_m.unbind(recvName);*/
+
 		ACSErrTypeCommon::CORBAProblemExImpl err = ACSErrTypeCommon::CORBAProblemExImpl(__FILE__,__LINE__,"BulkDataDistributer::distSendStopTimeout");
 		err.setMinor(ex.minor());
 		err.setCompletionStatus(ex.completed());
@@ -533,26 +578,44 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
 	    catch(CORBA::Exception &ex)
 		{
 		ACE_PRINT_EXCEPTION(ex,"BulkDataDistributer::distSendStopTimeout");
-		(entry->int_id_).second()->disconnectPeer();
+
+		if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+		    {
+		    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendStopTimeout - error in getting currRecvNo"));
+		    ACSBulkDataError::AVStopSendErrorExImpl err = ACSBulkDataError::AVStopSendErrorExImpl(__FILE__,__LINE__,"BulkDataDistributer<>::distSendStopTimeout");
+		    throw err;
+		    }
+
+		currFlowPos = currRecvNo + flowNumber;
+		flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+		/*(entry->int_id_).second()->disconnectPeer();
 		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 		if (locSender_p != 0)
 		    delete locSender_p;
 
 		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
-		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
+		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));*/
 		}
 	    catch(...)
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer::distSendStopTimeout Unknown exception"));
-		(entry->int_id_).second()->disconnectPeer();
+
+		if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
+		    ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendStopTimeout - ERROR in getting currRecvNo"));
+
+		currFlowPos = currRecvNo + flowNumber;
+		flowsStatusMap_m.rebind(currFlowPos,FLOW_NOT_AVAILABLE);
+
+		/*(entry->int_id_).second()->disconnectPeer();
 		BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 		if (locSender_p != 0)
 		    delete locSender_p;
 
 		CORBA::release((entry->int_id_).first()); 
 		senderMap_m.unbind(recvName);
-		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));
+		ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributer<>::distSendStopTimeout - Receiver %s removed from Distributor",recvName.c_str()));*/
 		}
 	    }   
 	}

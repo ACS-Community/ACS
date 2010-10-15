@@ -93,7 +93,7 @@ int BulkDataDistributerCb::handle_stop (void)
 	    }
 
 	//TO BE REMOVED (?)
-	locLoop = loop_m;
+	/*locLoop = loop_m;
 	while((count_m != dim_m) && locLoop > 0)
 	    {
 	    ACE_OS::sleep(waitPeriod_m);
@@ -108,7 +108,7 @@ int BulkDataDistributerCb::handle_stop (void)
 	    timeout_m = true;
 
 	    //return -1;
-	    }
+	    }*/
 
 	int res = cbFwdStop();
 
