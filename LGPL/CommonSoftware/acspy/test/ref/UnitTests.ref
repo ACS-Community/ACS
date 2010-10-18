@@ -87,7 +87,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -120,7 +120,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -153,7 +153,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -186,7 +186,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -219,7 +219,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -252,7 +252,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -285,7 +285,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -318,7 +318,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -351,7 +351,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -384,7 +384,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -417,7 +417,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -450,7 +450,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -483,7 +483,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -516,7 +516,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -549,7 +549,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -582,7 +582,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -615,7 +615,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -648,7 +648,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -681,7 +681,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -714,7 +714,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -747,7 +747,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -780,7 +780,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -813,7 +813,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -846,7 +846,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -879,7 +879,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -912,7 +912,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -945,7 +945,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -978,7 +978,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -1011,7 +1011,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -1044,7 +1044,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "mock.py", line xxx, in __call__
 1 -     ret_val = self.side_effect(*args, **kwargs)
 1 -   File "test_Acspy_Container.py", line xxx, in raiser
@@ -1447,7 +1447,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -1480,7 +1480,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString
@@ -1513,7 +1513,7 @@
 1 -   File "Container.py", line xxx, in __init__
 1 -     self.configureComponentLogger(name)
 1 -   File "Container.py", line xxx, in configureComponentLogger
-1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+1 -     logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
 1 -   File "CDBAccess.py", line xxx, in getElement
 1 -     parseString(self.getField(xml_name, caching), handler)
 1 -   File "__init__.py", line xxx, in parseString

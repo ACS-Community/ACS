@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $
+# @(#) $Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.49 2010/09/17 20:29:13 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -544,7 +544,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         
         try:
             #Get the global unnamed logging config to retrieve the maxLogsPerSecond attribute
-            logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+            logconfigG = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
             maxLogsPerSec = int(logconfigG[0]['maxLogsPerSecond'])
         except (CDBRecordDoesNotExistEx):
             # No value was supplied so default is used
@@ -552,7 +552,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         
         try:
             # Process all the named logger configurations
-            logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig/log:_")
+            logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig/log:_")
             for cfg in logconfig:
                 if cfg["Name"] == name:
                     try:
@@ -663,7 +663,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         # Retrieve the CDB information
         try:
-            logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name, "Container/LoggingConfig")
+            logconfig = self.cdbAccess.getElement("MACI/Containers/"  + self.name + "/LoggingConfig", "LoggingConfig")
             try:
                 centrallevel = int(logconfig[0]['minLogLevel'])
             except:
@@ -807,7 +807,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         #get a list of libraries to preload
         # [{'string': 'baci'}]
-        temp_list = self.cdbAccess.getElement("MACI/Containers/" + self.name, "Container/Autoload/cdb:_")
+        temp_list = self.cdbAccess.getElement("MACI/Containers/" + self.name + "/Autoload", "Autoload/cdb:_")
 
         #get rid of libraries that can't be found!
         for temp_dict in temp_list:
