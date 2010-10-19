@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.6 2010/10/11 13:30:24 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.7 2010/10/19 11:25:49 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -58,10 +58,11 @@ define createJar
            fi; \
            cd $3 && \
            FILES=`find . -name \*.class`; \
+	   tmpFile=/tmp/acsMakefileJava$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
            if [[ -n $$$${FILES} ]]; then \
-             echo $$$${FILES} > /tmp/acsMakefileJava$(strip $1) && \
-             $$$${JAR} $$$${jarfile} @/tmp/acsMakefileJava$(strip $1) && \
-             rm /tmp/acsMakefileJava$(strip $1) ; \
+             echo $$$${FILES} > $$$${tmpFile} && \
+             $$$${JAR} $$$${jarfile} @$$$${tmpFile} && \
+             rm $$$${tmpFile} ; \
            else  \
 	     echo "WARNING, no files to add to $1"; \
              touch $$$${jarfile} ; \
@@ -75,13 +76,14 @@ define createJar
              mv $$$${jarfile} $(PWD)/../lib/$(strip $1).jar ; \
            fi;
 	$(AT)jarfile="`pwd`/../lib/$(strip $1).jar"; \
+        tmpFile=/tmp/acsMakefileJava$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
         if [[ "$4" != "" ]]; then \
           cd $3/..; \
           FILES=`find src ! -path '*/CVS/*' ! -path '*/.svn/*' -name *.java`; \
           if [[ -n $$$${FILES} ]]; then \
-            echo $$$${FILES} > /tmp/acsMakefileJava$(strip $1); \
-            jar uf $$$${jarfile} @/tmp/acsMakefileJava$(strip $1); \
-            rm /tmp/acsMakefileJava$(strip $1); \
+            echo $$$${FILES} > $$$${tmpFile}; \
+            jar uf $$$${jarfile} @$$$${tmpFile}; \
+            rm $$$${tmpFile}; \
           fi; \
         fi
 
@@ -227,10 +229,11 @@ endif #end $(strip $(XML_IDL))
 	$(AT) CLASSPATH="`acsMakeJavaClasspath`"; \
         export CLASSPATH; \
         FILES=`find $$(TMPSRC) ! -path '*/CVS/*' ! -path '*/.svn/*' -name \*.java`; \
+        tmpFile=/tmp/acsMakeJavaStubs$(strip $1)_$(UNIQUE_NUMBER)_$(USER_NAME); \
         if [ "$$$${FILES}" != "" ] ; then \
-          echo $$$${FILES} > /tmp/acsMakeJavaStubs_$1; \
-          javac $(javaCompilerOptions) -d $$(TMPSRC) @/tmp/acsMakeJavaStubs_$1 ; \
-          $(RM) /tmp/acsMakeJavaStubs_$1; \
+          echo $$$${FILES} > $$$${tmpFile}; \
+          javac $(javaCompilerOptions) -d $$(TMPSRC) @$$$${tmpFile} ; \
+          $(RM) $$$${tmpFile}; \
         else \
           echo "== WARNING, no Java source files generated for $1"; \
         fi
