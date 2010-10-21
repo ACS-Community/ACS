@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- ksh -*-
-# $Id: eventGUI,v 1.1 2010/06/30 15:19:08 jschwarz Exp $
+# $Id: eventGUI,v 1.2 2010/10/21 00:21:34 rtobar Exp $
 #
 # DESCRIPTION
 #    Starts the ACS Event Browser
@@ -19,6 +19,7 @@
 
 #Set the port numbers...
 ACS_MANAGER_PORT=`getManagerPort`
+ACS_MANAGER_PORT=`getManagerPort`
 ACS_NAMING_SERVICE_PORT=`getNamingServicePort`
 ACS_IR_PORT=`getIRPort`
 export HOST=`getIP`
@@ -28,6 +29,8 @@ if [ X"$MANAGER_REFERENCE" = X ]; then
 fi
 
 ACS_LOG_DEBUG "acsStartJava" "ACS Manager: $MANAGER_REFERENCE"
+
+export MANAGER_COMPUTER_NAME=`echo $MANAGER_REFERENCE | awk -F: '{print $3}'`
 
 # If $ACS_NAME_SERVICE is not set, take the computer
 # where Manager is located
@@ -45,7 +48,12 @@ if [ X"$ACS_INTERFACE_REPOSITORY" = X ]; then
    export ACS_INTERFACE_REPOSITORY=corbaloc::$MANAGER_COMPUTER_NAME:$ACS_IR_PORT/InterfaceRepository
 fi
 
-dir=$(dirname $(readlink -f $0))
-$dir/../lib/ACS_eventGUI/eventGUI
+dir=$(searchFile bin/eventGUI)
+
+$dir/lib/ACS_eventGUI/eventGUI \
+     -vmargs
+     -DACS.repository=$ACS_INTERFACE_REPOSITORY
+     -DACS.manager=$MANAGER_REFERENCE
+     -DORBInitRef.NameService=$ACS_NAME_SERVICE
 
 
