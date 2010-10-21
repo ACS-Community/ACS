@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.104 2010/09/09 00:54:14 agrimstrup Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.105 2010/10/21 10:18:25 hsommer Exp $"
 #
 #
 #
@@ -1306,14 +1306,6 @@ fi
 # In order to make the command "man" working the MANPATH variable must end with ":"
 MANPATH=$MANPATH:
 
-#
-# Note G.Chiozzi 2006-07-02:
-# avalon-framework and logkit jar files are in the JacORB 
-# distribution from version 2.2.4 (in the ACS distribution)
-# They are in this file also in the distribution of ACS using
-# JabORB 1.1.4 to prepare for the upgrade, since the two entries 
-# are simply ignored.
-#
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
     PATH_SEP=";"
@@ -1321,8 +1313,13 @@ else
     PATH_SEP=":"
 fi
 
-CLASSPATH=$JACORB_HOME/lib/avalon-framework-4.1.5.jar$PATH_SEP$JACORB_HOME/lib/logkit-1.2.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
-
+# We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
+#
+# As of ACS 9.1, the version of avalon.jar installed by ACS is copied from the jacorb installation instead of keeping a copy in Tools/extjars,
+# so that we no longer add $JACORB_HOME/lib/avalon-framework-4.1.5.jar to the CLASSPATH here.
+# This avoids adding the same jar file twice on the classpath, with possible version conflicts. Same should be checked for logkit jar. 
+CLASSPATH=$JACORB_HOME/lib/logkit-1.2.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+	
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
 # to export them and then I can call the Python interpreter in order to

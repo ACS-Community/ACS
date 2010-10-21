@@ -60,10 +60,15 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+all:	copy_avalon_from_jacorb do_all
 	@echo " . . . 'all' done"
 
+copy_avalon_from_jacorb :
+	@echo "== Copying avalon 4.1.5 jar file used for building jacorb to this module."
+	cp -a $(JACORB_HOME)/lib/avalon-framework-4.1.5.jar ../lib/avalon-framework.jar
+
 clean : clean_all
+	@rm -f ../lib/avalon-framework.jar
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all
