@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.2 2010/06/20 06:27:12 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/10/22 11:07:25 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -21,12 +21,24 @@
 
 SHELL=/bin/bash
 PLATFORM := $(shell uname)
-ANTLR_VER = 2.7.6
+
+# HSO 2010-10: We currently support antrl versions 2 and 3. 
+# Version 3 is needed for oAW v.5, but only for java, which is all we install. 
+# Since the build from source requires maven, we currently just install the pre-built jar file. 
+# Note that the java packages are unique so that no version conflict can arise. 
+# TODO: Check who all still uses version 2, and especially if C++ support is still needed.
+#       Try to build also ANTLR_VER_3 from source.
+ANTLR_VER_2 = 2.7.7
+ANTLR_VER_3 = 3.2
 
 #
 # Scripts (public and local)
 # ----------------------------
 #SCRIPTS_L         = 
+
+
+INSTALL_FILES = ../lib/antlr-${ANTLR_VER_3}.jar
+
 
 #
 #>>>>> END OF standard rules
@@ -53,40 +65,45 @@ clean : clean_all
 
 clean_dist : clean_all clean_dist_all
 	@echo " . . . removing the antlr distribution directory . . . "
-	@rm -rf antlr-${ANTLR_VER}
+	@rm -rf antlr-${ANTLR_VER_2}
+#	@rm -rf antlr-${ANTLR_VER_3}
 	@echo " . . . 'clean_dist' done . . . "
 
 clean_install : 
 	@echo " . . . removing the antlr installed files . . ."
+	@rm -rf ${INSTALL_ROOT}/bin/antlr-config
+	@rm -rf ${INSTALL_ROOT}/bin/antlr
 	@rm -rf ${INSTALL_ROOT}/lib/libantlr.a
 	@rm -rf ${INSTALL_ROOT}/lib/antlr.jar
+	@rm -rf ${INSTALL_ROOT}/lib/antlr-${ANTLR_VER_3}.jar
 	@rm -rf ${INSTALL_ROOT}/include/antlr
-	@rm -rf ${INSTALL_ROOT}/share/antlr-2.7.6
+	@rm -rf ${INSTALL_ROOT}/share/antlr-${ANTLR_VER_2}
 	@rm -rf ${INSTALL_ROOT}/share/doc
 	@echo " . . . 'clean_install' done . . . "
 
 man :
 	@echo " . . . man page(s) done . . . "
 
-install : 
+install : install_all
 	@echo " . . . installing antlr C++ library and include files . . . "
-	@cd antlr-${ANTLR_VER}; make SUBDIRS="antlr lib" install
+	@cd antlr-${ANTLR_VER_2}; make SUBDIRS="antlr lib" install
 	@echo " . . . 'install' done . . . "
 
 .PHONY:unpack
 unpack :
 	@echo " . . . unpacking antlr . . . "
-	@gtar -xzf antlr-${ANTLR_VER}.tar.gz
+	@gtar -xzf antlr-${ANTLR_VER_2}.tar.gz
+#	@gtar -xzf antlr-${ANTLR_VER_3}.tar.gz
 
 .PHONY: configure
 configure : unpack
 	@echo " . . . configure . . . "
 	@echo "cwd is : ${CURDIR}"
-	cd antlr-${ANTLR_VER}; ./configure --prefix=${INSTALL_ROOT} --disable-csharp --disable-python
+	cd antlr-${ANTLR_VER_2}; ./configure --prefix=${INSTALL_ROOT} --disable-csharp --disable-python
 
 .PHONY: build_antlr
 build_antlr: configure
 	@echo " . . . building antlr . . . "
-	@cd antlr-${ANTLR_VER}; $(MAKE) SUBDIRS="antlr lib"
+	@cd antlr-${ANTLR_VER_2}; $(MAKE) SUBDIRS="antlr lib"
 
 #___oOo___
