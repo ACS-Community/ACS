@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.123 2010/09/08 06:19:23 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.124 2010/10/22 09:12:38 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.123 2010/09/08 06:19:23 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.124 2010/10/22 09:12:38 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1600,6 +1600,11 @@ ContainerImpl::activate_component (
 
   ACS_TRACE("maci::ContainerImpl::activate_component");
   ContainerComponentInfo info;
+  // here we create a dummy exception just because we do not have default ctor for it,
+  // but then latter we may assign a real exception in case of an error and throw it
+  maciErrType::CannotActivateComponentExImpl ex( __FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+  bool throwException = false; // indicate if we have to throw an exception,
+  // because there is a problem to throw an exception in catch statement if you unload a library which contains the caught exception
 
   if (m_shutdown)
       {
@@ -1783,31 +1788,33 @@ ContainerImpl::activate_component (
       }
   catch (ACSErr::ACSbaseExImpl &_ex)
       {
-      maciErrType::CannotActivateComponentExImpl ex(_ex, __FILE__, __LINE__,
+      ex = maciErrType::CannotActivateComponentExImpl(_ex, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
-      ex.setCURL(name);
-      servant = 0;
-      ex.setComponentCode(exe);
-      ex.setComponentType(type);
-      ex.log(LM_DEBUG);
-      m_dllmgr->unlock(libHandle);
-      throw ex.getCannotActivateComponentEx();
+      throwException = true;
+      // if we unload here the library we might got a seg fault
+      // because the caught exception was defined in the same library so we have to throw the exception outside
       }
   catch (...)
       {
       ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 						      "maci::ContainerImpl::activate_component");
-      maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
+      ex = maciErrType::CannotActivateComponentExImpl(uex, __FILE__, __LINE__,
 						    "maci::ContainerImpl::activate_component");
-      ex.setCURL(name);
-      ex.setComponentCode(exe);
-      ex.setComponentType(type);
-      ex.log(LM_DEBUG);
-      servant = 0;
-      m_dllmgr->unlock(libHandle);
-      throw ex.getCannotActivateComponentEx();
+      throwException = true;
+            // if we unload here the library we might got a seg fault
+            // because the caught exception was defined in the same library so we have to throw the exception outside
       }//try-catch
 
+  if (throwException)
+  {
+	  ex.setCURL(name);
+	  ex.setComponentCode(exe);
+	  ex.setComponentType(type);
+	  ex.log(LM_DEBUG);
+	  servant = 0;
+	  m_dllmgr->unlock(libHandle);
+	  throw ex.getCannotActivateComponentEx();
+  }//if
   // @todo this can be removed since there should not happend in case of an error
   if(servant == 0)
     {
@@ -1880,32 +1887,34 @@ ContainerImpl::activate_component (
 	  }
       catch (ACSErr::ACSbaseExImpl &_ex)
 	  {
-	  maciErrType::CannotActivateComponentExImpl ex(_ex, __FILE__, __LINE__,
+	  ex = maciErrType::CannotActivateComponentExImpl(_ex, __FILE__, __LINE__,
 							"maci::ContainerImpl::activate_component");
-	  ex.setCURL(name);
-	  ex.setComponentCode(exe);
-	  ex.setComponentType(type);
-	  ex.log(LM_DEBUG);
-	  deactivateCORBAObject(servant);
-/// @todo should be here called unlock library ?
-	  m_dllmgr->unlock(libHandle);
-	  throw ex.getCannotActivateComponentEx();
+	  throwException = true;
+	  // if we unload here the library we might got a seg fault
+	  // because the caught exception was defined in the same library so we have to throw the exception outside
 	  }
       catch (...)
 	  {
+
 	  ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
 							  "maci::ContainerImpl::activate_component");
-	  maciErrType::CannotActivateComponentExImpl ex(uex, __FILE__, __LINE__,
-							"maci::ContainerImpl::activate_component");
-	  ex.setCURL(name);
-	  ex.setComponentCode(exe);
-	  ex.setComponentType(type);
-	  ex.log(LM_DEBUG);
-	  deactivateCORBAObject(servant);
-/// @todo should be here called unlock library
-	  m_dllmgr->unlock(libHandle);
-	  throw ex.getCannotActivateComponentEx();
+	  ex = maciErrType::CannotActivateComponentExImpl(uex, __FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+	  throwException = true;
+	  	  // if we unload here the library we might got a seg fault
+	  	  // because the caught exception was defined in the same library so we have to throw the exception outside
 	  }//try-catch
+
+      if (throwException)
+      {
+    	  ex.setCURL(name);
+    	  ex.setComponentCode(exe);
+    	  ex.setComponentType(type);
+    	  ex.log(LM_DEBUG);
+    	  deactivateCORBAObject(servant);
+    	  /// @todo should be here called unlock library ?
+    	  m_dllmgr->unlock(libHandle);
+    	  throw ex.getCannotActivateComponentEx();
+      }//if
       }
   // We allow also compoennts not implementing the acscomponent::ACSComponentImpl
   // interface.
