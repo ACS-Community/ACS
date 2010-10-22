@@ -64,6 +64,8 @@ public class JarOrderOptimizer implements Comparator<File>
 		"maciSchemaBindings.jar", 
 		"castor.jar",
 		"jacorb.jar",
+		"avalon-framework.jar",
+		"logkit.jar",
 		"acscomponent.jar",
 		
 		"jManager.jar",
@@ -83,11 +85,12 @@ public class JarOrderOptimizer implements Comparator<File>
 		"baci.jar",
 //		"xercesImpl.jar", currently separate, location defined by -Djava.endorsed.dirs=...
 		"xmljbind.jar",
-		"junit.jar",
+		"junit-4.8.2.jar",
 		"oe.jar",
 		"abeansR2Components.jar",
 		"acscommandcenter.jar",
 		"AcsCommandCenterEntities.jar",
+		"lcEngine.jar",
 		"lc.jar", // cosylab logging client
 		"jdom.jar",
 		"acsASsources.jar",
