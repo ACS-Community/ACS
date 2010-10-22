@@ -1,0 +1,18 @@
+--- release.com.orig	2010-08-09 12:27:23.000000000 +0000
++++ release.com	2010-08-09 12:29:45.000000000 +0000
+@@ -1,7 +1,7 @@
+ echo "<<< OpenSplice HDE Release V5.2.0 For x86.linux2.6, Date 2010-06-15 >>>"
+ if [ "$SPLICE_ORB" = "" ]
+ then
+-    SPLICE_ORB=DDS_OpenFusion_1_6_1
++    SPLICE_ORB=DDS_ACE_TAO_X_Y_Z
+     export SPLICE_ORB
+ fi
+ OSPL_HOME="/vlt/VLT2010/OpenSplice/HDE/x86.linux2.6"
+@@ -14,3 +14,6 @@
+ CLASSPATH=$OSPL_HOME/jar/dcpssaj.jar:$CLASSPATH
+ CLASSPATH=$OSPL_HOME/jar/dcpscj.jar:$CLASSPATH
+ export CLASSPATH OSPL_HOME OSPL_TARGET PATH LD_LIBRARY_PATH CPATH OSPL_TMPL_PATH OSPL_URI
++
++OSPL_ORB_PATH="CCPP/$SPLICE_ORB"
++export OSPL_ORB_PATH
