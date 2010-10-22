@@ -23,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -185,7 +186,8 @@ public class EngineCache extends Thread {
 	 * @throws If it was not possible to create a temporary file
 	 */
 	private File getNewFile() throws IOException {
-		return fileHandler.getNewFile();
+		File ret= fileHandler.getNewFile();
+		return ret;
 	}
 	
 	/**
@@ -226,6 +228,11 @@ public class EngineCache extends Thread {
 				continue;
 			}
 			releaseFile(cacheFile);
+		}
+		// release all the files in cache before exiting
+		CacheFile cf=null;
+		while ((cf=filesToDelete.poll())!=null) {
+			releaseFile(cf);
 		}
 	}
 	
@@ -281,7 +288,7 @@ public class EngineCache extends Thread {
 	 * @param string The string to write in the cache
 	 * @throws IOException In case of error writing the string on disk
 	 */
-	public void push(String string) throws IOException, LogEngineException {
+	public synchronized void push(String string) throws IOException, LogEngineException {
 		if (string==null || string.length()==0) {
 			throw new IllegalArgumentException("The string can't be null nor empty");
 		}
@@ -341,7 +348,7 @@ public class EngineCache extends Thread {
 			if (!filesToDelete.offer(inCacheFile)) {
 				// Most unlikely to happen: the queue is full!
 				releaseFile(inCacheFile);
-			}
+			} 
 			synchronized (files) {
 				inCacheFile=files.get(entry.key);
 				inCacheFile.setReadingMode(true);
@@ -360,9 +367,6 @@ public class EngineCache extends Thread {
 	public void close(boolean sync) {
 		closed=true;
 		interrupt();
-		synchronized (files) {
-			files.clear();
-		}
 		if (inCacheFile!=null) {
 			inCacheFile.close();
 		}
@@ -373,6 +377,14 @@ public class EngineCache extends Thread {
 			try {
 				Thread.sleep(250);
 			} catch (InterruptedException ie) {}
+		}
+		// Release all the files still in the queue
+		if (!files.isEmpty()) {
+			Set<Integer> keys = files.keySet();
+			for (Integer key: keys) {
+				CacheFile cf = files.get(key);
+				releaseFile(cf);
+			}
 		}
 	}
 }
