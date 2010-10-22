@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2010/04/28 16:25:57 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/10/22 11:22:42 hsommer Exp $"
 #
 # Makefile of oAW 
 #
@@ -40,8 +40,6 @@
 INSTALL_FILES = ../lib/com.google.collect_0.8.0.v200908120607.jar \
                    ../lib/com.ibm.icu_4.0.1.v20090822.jar \
                    ../lib/de.itemis.xtext.antlr_0.7.2.200908121408.jar \
-                   ../lib/org.antlr.runtime_3.0.0.v200908120607.jar \
-                   ../lib/org.apache.commons.logging_1.1.1.v200904062255.jar \
                    ../lib/org.eclipse.emf.codegen_2.5.0.v200906151043.jar \
                    ../lib/org.eclipse.emf.common_2.5.0.v200906151043.jar \
                    ../lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar \
@@ -66,7 +64,6 @@ INSTALL_FILES = ../lib/com.google.collect_0.8.0.v200908120607.jar \
                    ../lib/org.eclipse.jdt.core_3.5.1.v_972_R35x.jar \
                    ../lib/org.eclipse.emf.codegen.ecore_2.5.0.v200906151043.jar \
                    ../lib/guice-1.0_patched.jar \
-                   ../lib/antlr-3.0.1.jar \
                    ../lib/stringtemplate-3.1b1.jar 
 
 #

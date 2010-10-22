@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/antlr-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/com.google.collect_0.8.0.v200908120607.jar"/>
 	<classpathentry kind="lib" path="lib/com.ibm.icu_4.0.1.v20090822.jar"/>
 	<classpathentry kind="lib" path="lib/de.itemis.xtext.antlr_0.7.2.200908121408.jar"/>
 	<classpathentry kind="lib" path="lib/guice-1.0_patched.jar"/>
-	<classpathentry kind="lib" path="lib/org.antlr.runtime_3.0.0.v200908120607.jar"/>
-	<classpathentry kind="lib" path="lib/org.apache.commons.logging_1.1.1.v200904062255.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.codegen_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.codegen.ecore_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.5.0.v200906151043.jar"/>
@@ -32,5 +29,7 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.xtext.util_0.7.2.v200908120607.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.xtext.xtend_0.7.2.v200908120607.jar"/>
 	<classpathentry kind="lib" path="lib/stringtemplate-3.1b1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/antlr-3.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
