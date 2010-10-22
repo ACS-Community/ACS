@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.32 2010/06/15 16:19:18 javarias Exp $"
+# "@(#) $Id: buildTools,v 1.33 2010/10/22 07:55:19 rbourtem Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -188,6 +188,9 @@ echo "buildMico"
 ./buildMico
 echo "buildEclipse"
 ./buildEclipse
+
+echo "buildOpenSpliceDDS (ignore the following login messages and wait for buildOpenSpliceDDS to complete)"
+bash --login ./buildOpenSpliceDDS
 
 
 # if the user wants RTOS he/she has to build it by hand using buildRTOS
