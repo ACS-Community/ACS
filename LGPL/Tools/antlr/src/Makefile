@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2010/10/22 11:07:25 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2010/10/22 11:48:09 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -23,13 +23,13 @@ SHELL=/bin/bash
 PLATFORM := $(shell uname)
 
 # HSO 2010-10: We currently support antrl versions 2 and 3. 
-# Version 3 is needed for oAW v.5, but only for java, which is all we install. 
+# Version 3.0.1 is needed for oAW v.5, but only for java, which is all we install. The currently latest version 3.2 does not work. 
 # Since the build from source requires maven, we currently just install the pre-built jar file. 
 # Note that the java packages are unique so that no version conflict can arise. 
 # TODO: Check who all still uses version 2, and especially if C++ support is still needed.
 #       Try to build also ANTLR_VER_3 from source.
 ANTLR_VER_2 = 2.7.7
-ANTLR_VER_3 = 3.2
+ANTLR_VER_3 = 3.0.1
 
 #
 # Scripts (public and local)
