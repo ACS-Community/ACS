@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.138 2009/03/11 16:44:42 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.139 2010/10/22 15:09:18 rbourtem Exp $" 
 #
 # Makefile of ........
 #
@@ -176,7 +176,9 @@ INCLUDES =	acsexmplMountImpl.h \
 		acsexmplAsyncCallbacks.h \
 		acsexmplSlowMountImpl.h \
 		acsexmplFilterWheelImpl.h \
-		acsexmplErrorComponentImpl.h
+		acsexmplErrorComponentImpl.h \
+		acsexmplInitErrorHelloWorld.h \
+		acsexmplConstrErrorHelloWorld.h
 
 INCLUDES_L      = 
 #
@@ -196,7 +198,9 @@ LIBRARIES =	acsexmplCallbacksImpl \
 		acsexmplSlowMountImpl \
 		acsexmplLampWheelImpl \
 		acsexmplFilterWheelImpl \
-		acsexmplErrorComponentImpl
+		acsexmplErrorComponentImpl \
+		acsexmplInitErrorHelloWorld \
+		acsexmplConstrErrorHelloWorld
 
 LIBRARIES_L     =
 
@@ -245,6 +249,12 @@ acsexmplFilterWheelImpl_LIBS = acsexmplFilterWheelStubs
 
 acsexmplErrorComponentImpl_OBJECTS 	= acsexmplErrorComponentImpl
 acsexmplErrorComponentImpl_LIBS	= acsexmplErrorComponentStubs ACSErrTypeCommon
+
+acsexmplInitErrorHelloWorld_OBJECTS 	= acsexmplInitErrorHelloWorld
+acsexmplInitErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest
+
+acsexmplConstrErrorHelloWorld_OBJECTS 	= acsexmplConstrErrorHelloWorld
+acsexmplConstrErrorHelloWorld_LIBS	= acsexmplHelloWorldStubs ACSErrTypeCommon acsexmplErrTest
 
 #
 # Scripts (public and local)
@@ -326,6 +336,8 @@ IDL_FILES = 	acsexmplPowerSupply \
 		acsexmplFilterWheel \
                 acsexmplErrorComponent
 USER_IDL = 
+
+ACSERRDEF = 	acsexmplErrTest
 
 #
 #>>>>> END OF standard rules
