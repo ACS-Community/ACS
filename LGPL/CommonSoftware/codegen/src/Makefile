@@ -110,7 +110,7 @@ install : install_all
 # Target for generating code from the grammar definition of the TMCDB and compile it.
 .done_generating : alma/acs/tmcdb/grammardef/GenerateTmcdbTables.mwe alma/acs/tmcdb/grammardef/TmcdbTables.xtext
 	@echo "== Generating classes from TMCDB grammar..."
-	@cd ..; CLASSPATH="$$CLASSPATH$(PATH_SEP)./src$(PATH_SEP)./src-gen" acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/tmcdb/grammardef/GenerateTmcdbTables.mwe
+	@cd ..; CLASSPATH="$$CLASSPATH$(PATH_SEP)./src$(PATH_SEP)./src-gen" acsStartJava -addToClasspath antlr-3.0.1.jar:commons-logging-1.1.1.jar org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/tmcdb/grammardef/GenerateTmcdbTables.mwe
 	@echo "== Merging generated and existing sources"
 	@mkdir -p ../src-merged/alma/acs/
 	@cp -r ../src-gen/alma/acs/tmcdb ../src-merged/alma/acs/
