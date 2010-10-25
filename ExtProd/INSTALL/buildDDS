@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildDDS,v 1.5 2009/02/20 15:58:59 bjeram Exp $"
+# "@(#) $Id: buildDDS,v 1.6 2010/10/25 20:14:23 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -45,7 +45,7 @@ mkdir $ALMASW_ROOTDIR/$ALMASW_RELEASE/DDS
 # Unpack the tar file
 # put the sources under $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO
 #
-FILE=OpenDDS-1.1
+FILE=OpenDDS-2.2
 ARCHIVE=`pwd`/../PRODUCTS/$FILE.tar.gz
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE
 echo "unpacking the archive"
@@ -53,6 +53,7 @@ gzip -cd $ARCHIVE | tar -xf -
 echo "done"
 echo ""
 
+NUM_CPU=`grep -c processor  /proc/cpuinfo`
 
 cd DDS
 $ACE_ROOT/MPC/clone_build_tree.pl -f linux
@@ -60,7 +61,7 @@ cd build/linux
 export DDS_ROOT=$PWD
 LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
 
-make
+make -j$NUM_CPU
 
 cd $CURR_DIR
 echo DDS installation done
