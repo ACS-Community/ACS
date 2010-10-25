@@ -109,7 +109,8 @@ int DDSHelper::createParticipant(){
 			 ""));
 	participant = dpf->create_participant(DOMAIN_ID,
 			PARTICIPANT_QOS_DEFAULT,
-			DDS::DomainParticipantListener::_nil());
+			DDS::DomainParticipantListener::_nil(),
+			OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
 	if (CORBA::is_nil(participant.in())){
 		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::createParticipant", (LM_ERROR,
@@ -181,7 +182,8 @@ void DDSHelper::initializeTopic(const char* topicName, CORBA::String_var typeNam
 			 "Initializing topic: '%s' with type: '%s'",this->topicName,typeNameChar));
 	participant->get_default_topic_qos(topicQos);
 	topic=participant->create_topic(topicName, typeName.in(),
-			topicQos, DDS::TopicListener::_nil());
+			topicQos, DDS::TopicListener::_nil(),
+			OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 
 	if (CORBA::is_nil(topic.in())){
 		ACS_STATIC_LOG(LM_FULL_INFO, "DDSHelper::initializeTopic", (LM_INFO,

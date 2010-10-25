@@ -44,9 +44,9 @@ public:
     const DDS::LivelinessChangedStatus & status)
   throw (CORBA::SystemException);
 
-  void on_subscription_match (
+  void on_subscription_matched (
     DDS::DataReader_ptr reader,
-    const DDS::SubscriptionMatchStatus & status
+    const DDS::SubscriptionMatchedStatus & status
   )
   throw (CORBA::SystemException);
 

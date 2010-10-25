@@ -43,12 +43,12 @@ void DataReaderListenerImpl::on_liveliness_changed (
                               ""));
 }
 
-void DataReaderListenerImpl::on_subscription_match (
+void DataReaderListenerImpl::on_subscription_matched (
     DDS::DataReader_ptr,
-    const DDS::SubscriptionMatchStatus &)
+    const DDS::SubscriptionMatchedStatus &)
   throw (CORBA::SystemException)
 {
-	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_subscription_match", (LM_INFO,
+	ACS_STATIC_LOG(LM_FULL_INFO, "DataReaderListenerImpl::on_subscription_matched", (LM_INFO,
                               ""));
 }
 

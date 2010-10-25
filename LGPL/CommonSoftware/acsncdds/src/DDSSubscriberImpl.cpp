@@ -14,14 +14,16 @@ int DDSSubscriber::createSubscriber()
 			 ""));
 	if(partitionName==NULL){
 		sub=participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT,
-				DDS::SubscriberListener::_nil());
+				DDS::SubscriberListener::_nil(),
+				OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
 				 "Creating Subscriber with default Qos"));
 	}
 
 	else{
 		 sub = participant->create_subscriber(subQos,
-				 DDS::SubscriberListener::_nil());
+				 DDS::SubscriberListener::_nil(),
+				 OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::createSubscriber", (LM_INFO,
 				 "Creating Subscriber with partition: '%s'",partitionName));
 	}
@@ -75,7 +77,7 @@ void DDSSubscriber::consumerReady()
 			 ""));
 
 	DDS::DataReader_var dr = sub->create_datareader(topic.in(),
-			drQos, listener->in());
+			drQos, listener->in(), OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 	if(CORBA::is_nil(dr.in())){
 		ACS_STATIC_LOG(LM_FULL_INFO, "DDSSubscriber::consumerReady", (LM_ERROR,
 				 "create_datareader failed"));

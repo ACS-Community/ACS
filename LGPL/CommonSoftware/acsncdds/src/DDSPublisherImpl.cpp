@@ -84,7 +84,7 @@ void DDSPublisher::initialize()
 			// 0 is infinity....I think.
 			if(tmp[i].count == 0)
 			{
-				DDS::Duration_t d = { ::DDS::DURATION_INFINITY_SEC, ::DDS::DURATION_INFINITY_NSEC };
+				DDS::Duration_t d = { DDS::DURATION_INFINITE_SEC , DDS::DURATION_INFINITE_NSEC };
 				dwQos.lifespan.duration = d;
 			}
 			else
@@ -102,13 +102,14 @@ void DDSPublisher::initialize()
 
 
 	dwQos.durability.kind = ::DDS::TRANSIENT_LOCAL_DURABILITY_QOS;
-	dwQos.durability.service_cleanup_delay.sec = 10;
+	dwQos.durability_service.service_cleanup_delay.sec = 10;
 }
 
 void DDSPublisher::initializeDataWriter()
 {
 	dw = pub->create_datawriter(topic.in(),
-			dwQos,  DDS::DataWriterListener::_nil());
+			dwQos,  DDS::DataWriterListener::_nil(),
+			OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 	if(CORBA::is_nil(dw.in())){
 	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::initializeDataWriter", (LM_ERROR,
                 	                  "Create datawriter failed"));
@@ -121,14 +122,16 @@ int DDSPublisher::createPublisher()
                	                  ""));
 	if(partitionName==NULL){
 		pub =  participant->create_publisher(PUBLISHER_QOS_DEFAULT,
-				DDS::PublisherListener::_nil());
+				DDS::PublisherListener::_nil(),
+				OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
                	                  "Creating Publisher with default QoS"));
 	}
 
 	else{
 		pub = participant->create_publisher(pubQos,
-				DDS::PublisherListener::_nil());
+				DDS::PublisherListener::_nil(),
+				OpenDDS::DCPS::DEFAULT_STATUS_MASK);
 	        ACS_STATIC_LOG(LM_FULL_INFO, "DDSPublisher::createPublisher", (LM_INFO,
                	                  "Creating Publisher with partition %s ",partitionName));
 	}
