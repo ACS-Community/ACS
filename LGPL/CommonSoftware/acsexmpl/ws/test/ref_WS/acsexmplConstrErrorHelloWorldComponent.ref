@@ -1,0 +1,8 @@
+1 - Running acsexmplClientHelloWorld CONSTR_ERROR
+1 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+1 - ----------T--:--:--.--- [GlobalLogger - maci::ContainerImpl::activate_component] Error activating component (type=25, code=9) CURL="CONSTR_ERROR" javaex.class="alma.maciErrType.wrappers.AcsJCannotActivateComponentEx" ComponentCode="acsexmplConstrErrorHelloWorld" ComponentType="IDL:alma/acsexmplConstrErrorHelloWorld/ConstrError:1.0"
+1 - All done!
+1 - ----------T--:--:--.--- [GlobalLogger - internalNoSyncRequestComponent] Error retrieving component (type=25, code=1) javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+1 - ----------T--:--:--.--- [GlobalLogger - activate_component] com.cosylab.acs.maci.RemoteException (type=9, code=4294967295) javaex.msg="Failed to invoke 'activate_component()' method." javaex.class="com.cosylab.acs.maci.RemoteException"
+1 - ----------T--:--:--.--- [GlobalLogger - getComponent] Error retrieving component (type=25, code=1) CURL="CONSTR_ERROR" javaex.class="alma.maciErrType.wrappers.AcsJCannotGetComponentEx"
+1 - ----------T--:--:--.--- [GlobalLogger - maci::SimpleClient::getComponent&lt;&gt;] Error retrieving component (type=25, code=1) CURL="CONSTR_ERROR"

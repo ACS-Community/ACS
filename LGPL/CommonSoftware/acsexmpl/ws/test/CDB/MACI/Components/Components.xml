@@ -72,6 +72,14 @@
          Code="acsexmplLampImpl"
          Type="IDL:alma/acsexmplLamp/Lamp:1.0"
          Container="Container"  ImplLang="cpp" />
+      <_ Name="INIT_ERROR"
+	 Code="acsexmplInitErrorHelloWorld"
+	 Type="IDL:alma/acsexmplInitErrorHelloWorld/InitError:1.0"
+	 Container="Container" ImplLang="cpp" />
+      <_ Name="CONSTR_ERROR"
+	 Code="acsexmplConstrErrorHelloWorld"
+	 Type="IDL:alma/acsexmplConstrErrorHelloWorld/ConstrError:1.0"
+	 Container="Container" ImplLang="cpp" />
       <xi:include href="IncludeDynamic.xml" xpointer="element(/1)" />
       <xi:include href="CONTROL/IncludeDynamic.xml" xpointer="element(/1)" />
       <xi:include href="IncludeExample.xml" xpointer="element(/1)" />
