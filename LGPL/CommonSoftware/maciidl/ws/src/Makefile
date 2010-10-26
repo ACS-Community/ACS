@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.9 2010/08/04 13:25:46 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/10/26 19:32:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -59,6 +59,8 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+maciErrTypeStubs_LIBS := acserr
+maciStubs_LIBS := maciErrType ACSErrTypeCommon
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
