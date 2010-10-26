@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2006/12/18 12:37:59 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/10/26 18:32:10 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,10 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+
+cdbDALStubs_LIBS := cdbErrType cdbErrTypeStubs acscomponentStubs
+cdbErrTypeStubs_LIBS := acserr
+cdbjDALStubs_LIBS := cdbDALStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
