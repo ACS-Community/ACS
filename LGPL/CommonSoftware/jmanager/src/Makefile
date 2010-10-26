@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.10 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.11 2010/10/26 20:18:23 javarias Exp $"
 #
 # Makefile of jManager
 #
@@ -57,6 +57,8 @@ jManager_JLIBS=jmanagerErrType
 USER_JFLAGS=
 
 DEBUG=on
+
+jmanagerErrTypeStubs_LIBS := acserr
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
