@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.40 2008/01/04 16:49:50 hsommer Exp $" 
+# "@(#) $Id: Makefile,v 1.41 2010/10/26 20:10:33 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -87,6 +87,7 @@ INCLUDES_L      =
 LIBRARIES       = 
 LIBRARIES_L     = 
 
+enumpropStdStubs_LIBS := baciStubs
 
 # Scripts (public and local)
 # ----------------------------
