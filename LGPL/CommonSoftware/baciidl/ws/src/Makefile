@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2005/07/21 11:46:26 gchiozzi Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/10/26 19:38:44 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -59,6 +59,10 @@ INCLUDES        =
 LIBRARIES       =
 LIBRARIES_L     =
 
+
+baciErrTypePropertyStubs_LIBS := acserr
+baciErrTypeDevIOStubs_LIBS := acserr
+baciStubs_LIBS := acscomponentStubs acscommonStubs acserr
 #
 # <brief description of lllll library>
 lllll_OBJECTS   =
