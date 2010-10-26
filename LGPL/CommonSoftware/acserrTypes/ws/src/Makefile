@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.7 2008/02/26 15:26:21 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/10/26 18:20:40 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,15 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+ACSErrTypeMonitorStubs_LIBS := acserr
+ACSErrTypeCommonStubs_LIBS := acserr
+ACSErrTypePythonNativeStubs_LIBS := acserr
+ACSErrTypeCppNativeStubs_LIBS := acserr
+ACSErrTypeJavaNativeStubs_LIBS := acserr
+ACSErrTypeCORBAStubs_LIBS := acserr
+ACSErrTypeDevIOStubs_LIBS := acserr
+ACSErrTICSStubs_LIBS := acserr
+ACSErrTicsTCorrStubs_LIBS := acserr
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 

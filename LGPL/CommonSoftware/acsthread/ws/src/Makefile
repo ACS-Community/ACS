@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.7 2007/05/23 14:51:23 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.8 2010/10/26 18:23:15 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -63,6 +63,8 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 acsThread_OBJECTS   = acsThread acsThreadBase
 acsThread_LIBS  = logging acsthreadErrType ACSErrTypeCommon
+
+acsthreadErrTypeStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------

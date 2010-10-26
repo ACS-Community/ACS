@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.9 2008/07/14 16:15:22 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/10/26 18:22:10 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -63,6 +63,7 @@ LIBRARIES_L     =
 acsQoS_OBJECTS   = acsQoS acsQoStimeout
 acsQoS_LIBS = acsQoSErrType
 
+acsQoSErrTypeStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------
