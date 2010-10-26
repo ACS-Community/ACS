@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.15 2005/07/29 21:42:11 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.16 2010/10/26 20:25:50 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -62,16 +62,19 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 taskComponent_OBJECTS   = taskComponent
-taskComponent_LIBS      = staticContainer taskComponentStubs taskErrType
+taskComponent_LIBS      = staticContainer taskComponentStubs taskErrType acsclock
 
 parameterTask_OBJECTS= parameterTask
-parameterTask_LIBS= taskComponent parameter
+parameterTask_LIBS= taskComponent parameter acsXercesUtilities
 
-characteristicTask_LIBS =  taskComponent characteristicTaskStubs baciStubs baci
+characteristicTask_LIBS =  taskComponent characteristicTaskStubs baciStubs baci acsclock
 
 staticContainer_OBJECTS = taskStaticContainer taskStaticContainerServices
 staticContainer_LIBS = maci
 
+taskErrTypeStubs_LIBS := acserr
+taskComponentStubs_LIBS := acscomponentStubs taskErrTypeStubs
+characteristicTaskStubs_LIBS := baciStubs taskComponentStubs
 #
 # Scripts (public and local)
 # ----------------------------
