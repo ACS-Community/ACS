@@ -1,7 +1,7 @@
 #*******************************************************************************
 # NRAO - ACS project
 #
-# "@(#) $Id: Makefile,v 1.27 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.28 2010/10/26 20:45:07 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -47,6 +47,8 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+ACSTimeErrorStubs_LIBS := acserr
+acstimeStubs_LIBS := baciStubs ACSTimeErrorStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
