@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.19 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.20 2010/10/26 21:01:40 javarias Exp $"
 #
 # Makefile of Object Explorer
 #
@@ -33,6 +33,7 @@ oe_JLIBS=objexpErrType
 
 ACSERRDEF = objexpErrType
 
+objexpErrTypeStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------
