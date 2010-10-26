@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.11 2005/01/31 22:18:34 dfugate Exp $" 
+# "@(#) $Id: Makefile,v 1.12 2010/10/26 19:57:36 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -66,7 +66,7 @@ LIBRARIES       = recovery
 LIBRARIES_L     =
 
 recovery_OBJECTS = recoveryStore
-
+recovery_LIBS = loki logging
 #
 # Scripts (public and local)
 # ----------------------------

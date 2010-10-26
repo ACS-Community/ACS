@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/10/26 19:55:56 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -69,6 +69,11 @@ acsContainerServices_LIBS = acsErrTypeContainerServices acsErrTypeLifeCycle acsT
  
 acsComponentListener_OBJECTS = acsComponentListener
 acsComponentListener_LIBS = logging
+
+acsErrTypeContainerServicesStubs_LIBS := acserr
+acsErrTypeLifeCycleStubs_LIBS := acserr
+JavaContainerErrorStubs_LIBS := acserr
+acsErrTypeComponentStubs_LIBS := acserr
 #
 # Scripts (public and local)
 # ----------------------------
