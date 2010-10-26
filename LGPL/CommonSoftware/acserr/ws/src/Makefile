@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.85 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.86 2010/10/26 18:02:07 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -92,6 +92,8 @@ acserr_OBJECTS = acserr acserrC acserrS acserrExceptionManager \
 		 acserrHandlersErrC acserrHandlersErrS  acserrHandlersErr acserrHandlers ErrorSystemErrType
 acserr_LIBS = logging loki acsutil
 
+ErrorSystemErrTypeStubs_LIBS := acserrStubs
+acserrHandlersErrStubs_LIBS := acserrStubs
 #
 # Scripts (public and local)
 # ----------------------------

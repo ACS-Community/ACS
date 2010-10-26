@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2009/05/28 15:12:47 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.6 2010/10/26 18:02:45 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -62,6 +62,8 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 lllll_OBJECTS   =
+
+logging_idlStubs_LIBS := TAO_DsLogAdmin_Skel
 
 #
 # Scripts (public and local)
