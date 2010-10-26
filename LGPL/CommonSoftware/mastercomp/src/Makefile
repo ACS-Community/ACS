@@ -44,6 +44,7 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+mastercomp_ifStubs_LIBS := baciStubs ACSErrTypeCommonStubs
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
