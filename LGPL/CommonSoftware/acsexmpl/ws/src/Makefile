@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.139 2010/10/22 15:09:18 rbourtem Exp $" 
+# "@(#) $Id: Makefile,v 1.140 2010/10/26 20:50:49 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -152,6 +152,7 @@ acsexmplClientErrorComponent_LIBS      = acsexmplErrorComponentStubs ACSErrTypeC
 acsexmplCDB_OBJECTS = acsexmplCDB
 acsexmplCDB_LIBS = 
 
+acsexmplRampedPowerSupplyStubs_LIBS := acsexmplPowerSupplyStubs 
 
 $(PROG)_OBJECTS            = $(PROG)
 $(PROG)_LDFLAGS            =
