@@ -2,7 +2,7 @@
 
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: Makefile,v 1.21 2010/08/05 05:56:44 mzampare Exp $" 
+# "@(#) $Id: Makefile,v 1.22 2010/10/26 21:27:56 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -103,6 +103,7 @@ acscourseMount4Impl_LIBS	= acscourseMountStubs xmlentityStubs ACSErrTypeACSCours
 acscourseMount5Impl_OBJECTS	= acscourseMount5Impl
 acscourseMount5Impl_LIBS	= acscourseMountStubs xmlentityStubs acsnc ACSErrTypeACSCourse
 
+acscourseMountStubs_LIBS := xmlentityStubs ACSErrTypeACSCourse
 #
 # Configuration database schema Files
 # ------------------------------------

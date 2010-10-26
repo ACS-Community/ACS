@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.26 2010/03/25 09:49:14 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.27 2010/10/26 21:24:19 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -114,6 +114,9 @@ bulkDataCallback_LIBS      = ACSBulkDataError ACSBulkDataStatus
 bulkDataDistributerLib_OBJECTS   = bulkDataDistributerCb	
 bulkDataDistributerLib_LIBS      = ACSBulkDataError ACSBulkDataStatus bulkDataDistributerStubs bulkDataStubs bulkDataSenderStubs bulkDataReceiverStubs
 
+bulkDataReceiverStubs_LIBS := ACSBulkDataErrorStubs bulkDataStubs
+bulkDataSenderStubs_LIBS := ACSBulkDataErrorStubs bulkDataStubs bulkDataReceiverStubs
+bulkDataDistributerStubs_LIBS := bulkDataSenderStubs
 #
 # Scripts (public and local)
 # ----------------------------
