@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2010/08/05 05:56:44 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.12 2010/10/26 20:08:44 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -44,6 +44,8 @@ xxxxx_OBJECTS   =
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
 
+acsErrTypeAlarmSourceFactoryStubs_LIBS := acserr
+AcsAlarmSystemStubs_LIBS := ACSErrTypeCommonStubs acserr
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 

@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.9 2010/04/27 12:20:58 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.10 2010/10/26 20:04:37 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -55,7 +55,7 @@ INCLUDES        = ParameterSet.h ParamSetDef.h BoolParam.h IntParam.h IntArrayPa
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = parameter acsXercesUtilities
+LIBRARIES       = acsXercesUtilities parameter
 LIBRARIES_L     =
 
 #
@@ -64,8 +64,10 @@ parameter_OBJECTS   = ParameterSet ParamSetDef ParamDef IntParamDef StringParamD
                          DoubleParamDef BoolParamDef IntArrayParamDef \
                          DoubleArrayParamDef StringArrayParamDef Param QuantityParam IntParam IntArrayParam \
                          DoubleArrayParam DoubleParam StringParam StringArrayParam BoolParam 
+parameter_LIBS := logging xerces-c acsXercesUtilities
 
-acsXercesUtilities_OBJECTS = acsDOMErrorHandler
+acsXercesUtilities_OBJECTS = acsDOMErrorHandler 
+acsXercesUtilities_LIBS := loki logging xerces-c
 
 #
 # Scripts (public and local)
