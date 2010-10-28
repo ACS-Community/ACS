@@ -41,6 +41,94 @@
 
 namespace AcsBulkdata
 {  
+
+
+/**
+ * we need (temporary) guard class for RW mute, should be at some point improved moved to other place
+ */
+template <class T>
+class ACS_Read_Guard
+{
+public:
+	ACS_Read_Guard(T &l, int &ret) :
+		lock_(&l)
+	{
+		ret_ = this->lock_->tryacquire_read();
+		ret = ret_;
+	}
+
+	~ACS_Read_Guard()
+	{
+		release();
+	}
+
+	void release()
+	{
+		if (ret_==0) this->lock_->release();
+	}
+protected:
+	int ret_;
+	T *lock_;
+};//ACS_Read_Guard
+
+
+template <class T>
+class ACS_Write_Guard
+{
+public:
+	ACS_Write_Guard(T &l, int &ret) :
+		lock_(&l)
+	{
+		ret = 0;
+		ownership_ = false;
+		ret_ = this->lock_->acquire_write();
+		ret = ret_;
+	}
+
+	ACS_Write_Guard(T *l, int &ret) :
+			lock_(l)
+		{
+			ownership_ = true;
+			ret_ = this->lock_->acquire_write();
+			ret = ret_;
+		}
+// ownership means that is deleted at the nd
+	void take_ownership()
+	{
+		ownership_ = true;
+	}
+
+	~ACS_Write_Guard()
+	{
+		release();
+		if (ownership_)
+		{
+			delete lock_;
+		}
+	}
+
+	void release()
+	{
+
+		if (ret_==0)
+		{
+			this->lock_->release();
+		}
+	}
+protected:
+	bool ownership_;
+	int ret_;
+	T *lock_;
+};//ACS_Write_Guard
+
+
+typedef struct RecvDataStruct
+			{
+			bulkdata::BulkDataReceiver_ptr receiver;
+			ACE_RW_Thread_Mutex *mutex;
+			} RecvData;
+
+
     /** @defgroup BULKDATADISTRIBUTERDOC Bulk Data Distributer
      *  @{
      * @htmlonly
@@ -73,7 +161,9 @@ namespace AcsBulkdata
 	    FLOW_NOT_AVAILABLE
 	};
 
-	typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
+    typedef ACE_Pair< RecvData /*bulkdata::BulkDataReceiver_ptr*/, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
+
+//	typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
 
 	/*typedef ACE_Hash_Map_Manager <ACE_CString, BulkDataSender<TSenderCallback> *,ACE_Null_Mutex>  Sender_Map;
 	  typedef ACE_Hash_Map_Entry <ACE_CString, BulkDataSender<TSenderCallback> * > Sender_Map_Entry;

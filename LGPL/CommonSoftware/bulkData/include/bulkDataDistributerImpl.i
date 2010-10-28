@@ -582,14 +582,14 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSen
     Sender_Map_Entry *entry = 0;
     for (;iterator.next (entry) !=  0;iterator.advance ())
 	{
-	if( ((entry->int_id_).first())->_is_equivalent(receiverObj_p) )
+	if( ((entry->int_id_).first().receiver)->_is_equivalent(receiverObj_p) )
 	    {
 	    (entry->int_id_).second()->disconnectPeer();
 	    AcsBulkdata::BulkDataSender<TSenderCallback> *locSender_p = (entry->int_id_).second();
 	    if (locSender_p != 0)
 		delete locSender_p;
 
-	    CORBA::release((entry->int_id_).first()); 
+	    CORBA::release((entry->int_id_).first().receiver);
 	    map->unbind(entry);
 	    }
 	}
@@ -609,7 +609,7 @@ void BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>::rmEntryFromSen
 	{
 	if(strcmp((entry->ext_id_).c_str(),receiverName_p) == 0)
 	    {
-	    CORBA::release((entry->int_id_).first()); 
+	    CORBA::release((entry->int_id_).first().receiver);
 	    map->unbind(entry);
 	    }
 	}

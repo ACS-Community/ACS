@@ -81,7 +81,9 @@ template<class TReceiverCallback, class TSenderCallback = BulkDataSenderDefaultC
 class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
 				public virtual POA_bulkdata::BulkDataDistributer
 {
-    typedef ACE_Pair< bulkdata::BulkDataReceiver_ptr, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
+
+
+    typedef ACE_Pair< AcsBulkdata::RecvData /*bulkdata::BulkDataReceiver_ptr*/, AcsBulkdata::BulkDataSender<TSenderCallback> *> Sender_Map_Pair;
 
     typedef ACE_Hash_Map_Manager <ACE_CString, Sender_Map_Pair, ACE_Null_Mutex>  Sender_Map;
     typedef ACE_Hash_Map_Entry <ACE_CString, Sender_Map_Pair > Sender_Map_Entry;
