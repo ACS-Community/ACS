@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.7 2009/02/19 10:11:55 eallaert Exp $
+# @(#) $Id: acsMakeCheckUnresolvedSymbols,v 1.8 2010/10/28 11:58:11 mzampare Exp $
 #-----------------------------------------------------------------------
 # Copyright (C) 2007 Patrick P. Murphy
 #
@@ -102,13 +102,19 @@ $mylib = $ARGV[0];
 if ( ! -r $mylib ) {
     printf STDERR "$myname: Cannot read $mylib\n";
     exit(2);
+} else {
+    if($mylib =~ /lib(\w+).so/ ) { 
+	$stem = $1;
+    } else {
+	printf STDERR "Failue in identifying the stem of $mylib\n";
+    }
 }
 if ( ! -w "." ) {
     printf STDERR "$myname: Current directory is not writable\n";
     exit(3);
 }
 if (!$opt_o) {
-    $opt_o = "CheckUnresolvedSymbols-DELETEME.out";
+    $opt_o = "CheckUnresolvedSymbols-$stem-$>-DELETEME.out";
 }
 if ($opt_q && $opt_v) {
     printf STDERR "$myname warning: -v overrides -q\n";
