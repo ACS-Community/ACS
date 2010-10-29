@@ -182,12 +182,7 @@ public class ComponentClient
 			
 			clImpl.setContainerServices(m_containerServices);
 			
-			//	init the alarm system
-			try {
-				ACSAlarmSystemInterfaceFactory.init(m_containerServices);
-			} catch (Throwable thr) {
-				throw new Exception("Error initializing the alarm system factory", thr);
-			}
+			initAlarmSystem();
 		}
 		catch (Exception ex)
 		{
@@ -197,6 +192,20 @@ public class ComponentClient
 				acsCorba.getORB().destroy();
 			}
 			throw ex;
+		}
+	}
+
+
+	/**
+	 * Initializes the alarm system, using {@link ACSAlarmSystemInterfaceFactory#init(alma.acs.container.ContainerServicesBase)}.
+	 * Override this method only in special cases such as the eventGUI, when a client does not need to access the alarm system
+	 * and has special classpath problems with the CERN alarm system jar files. 
+	 */
+	protected void initAlarmSystem() throws Exception {
+		try {
+			ACSAlarmSystemInterfaceFactory.init(m_containerServices);
+		} catch (Throwable thr) {
+			throw new Exception("Error initializing the alarm system factory", thr);
 		}
 	}
 
