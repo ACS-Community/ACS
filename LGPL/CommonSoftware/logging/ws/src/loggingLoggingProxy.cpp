@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.80 2010/10/25 22:04:45 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.81 2010/10/29 15:37:06 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.80 2010/10/25 22:04:45 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.81 2010/10/29 15:37:06 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -104,7 +104,7 @@ LoggingProxy::log(ACE_Log_Record &log_record)
 	s_entryType = (const char*)entryType;
 	}
 
-	if (!prohibitLocal){
+	if (!prohibitLocal || m_envStdioPriority >= 0){
 		if(localLogLevelPrecedence >= CDB_LOG_LEVEL){
 			if(m_envStdioPriority >= 0) {
 				localLogLevelPrecedence=ENV_LOG_LEVEL;
