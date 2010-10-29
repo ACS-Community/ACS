@@ -51,7 +51,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.24 2010/09/24 14:29:21 jschwarz Exp $
+ * $Id: EventModel.java,v 1.25 2010/10/29 16:48:18 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -104,7 +104,12 @@ public class EventModel {
 		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 		acc = null;
 		try {
-			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId);
+			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId) {
+              @Override
+               protected void initAlarmSystem() {
+                   m_logger.info("The eventGUI suppresses initialization of the alarm system libraries, to cut the unnecessary dependency on CERN AS jar files.");
+               } 
+};
 		} catch (Exception e) {
 			if (PlatformUI.isWorkbenchRunning()) {
 			MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
