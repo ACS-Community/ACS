@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.9 2009/09/28 19:46:49 msekoran Exp $"
+* "@$Id: acsRequest.cpp,v 1.10 2010/11/02 13:00:35 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -199,6 +199,12 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
     if (cdbxmldir != NULL && service == CDB) commandline = commandline + " -d \"" + cdbxmldir + "\"";
     if (log) {
         ACE_CString logDirectory="~/.acs/commandcenter/";
+        char * acsdata = ACE_OS::getenv("ACSDATA");
+        if(acsdata != NULL)
+            logDirectory = ACE_CString(acsdata) + ACE_CString("/logs/");
+        char * host = ACE_OS::getenv("HOST");
+        if(host != NULL)
+            logDirectory = logDirectory + ACE_CString(host) + ACE_CString("/");
 
         std::string timeStamp(getStringifiedTimeStamp().c_str());
 
