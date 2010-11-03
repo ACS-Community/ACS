@@ -2,7 +2,7 @@
 
 if [ $# -lt 1 ]
 then
-	echo "Usage: $0 <umlfile>"
+	echo "Usage: $0 <umlfile> <output-dir>"
 	exit 1
 fi
 
@@ -14,4 +14,10 @@ then
 	exit 2
 fi
 
-acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/sm/workflows/StateMachineCodeGeneration.mwe -pmodelFile=$FILE -pplatformPath=$PWD
+GEN_PATH=$PWD/src-gen
+if [ ! -z $2 ]
+then
+	GEN_PATH=$2
+fi
+
+acsStartJava org.eclipse.emf.mwe.core.WorkflowRunner alma/acs/sm/workflows/StateMachineCodeGeneration.mwe -pmodelFile=$FILE -pplatformPath=../../ -pgenPath=$GEN_PATH

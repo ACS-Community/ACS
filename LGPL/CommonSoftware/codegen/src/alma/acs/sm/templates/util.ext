@@ -133,9 +133,7 @@ List[string] getSignalsNames( StateMachine this ):
 
 List[SignalEvent] getSignals( State this ):
 	((List[SignalEvent])containingStateMachine().allOwnedElements().typeSelect(Transition).trigger.event).signal;
-	
-List[Transition] getTransitions( State this ):
-	containingStateMachine().allOwnedElements().typeSelect(Transition);
+
 List[Transition] getTransitions( StateMachine this ):
 	this.allOwnedElements().typeSelect(Transition);
 	
@@ -155,11 +153,6 @@ List[SignalEvent] getUniqueSignals( State this ):
 	let l = (List[SignalEvent]){} : let n = (List[string]){} :
 			getSignals().collect(e|if !n.contains(e.name) then (n.add(e.name) -> l.add(e)) ) ->
 			l;
-
-List[string] getUniqueSignalsNames( State this ):
-	let l = (List[string]){} :
-		getSignalsNames().collect(e|if !l.contains(e) then l.add(e)) ->
-		l;
 		
 List[Transition] getUniqueTransitions( State this ):
 	let l = (List[Transition]){} : let n = (List[string]){} :

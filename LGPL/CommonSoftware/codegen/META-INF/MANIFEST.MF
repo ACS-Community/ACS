@@ -4,14 +4,11 @@ Bundle-Name: alma.acs.codegen
 Bundle-Vendor: ESO
 Bundle-Version: 1.0.0
 Bundle-SymbolicName: alma.acs.codegen; singleton:=true
-Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
+Eclipse-RegisterBuddy: org.eclipse.xtext.logging
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtext.generator;resolution:=optional,
- de.itemis.xtext.antlr;resolution:=optional,
- org.apache.commons.logging;resolution:=optional,
  org.eclipse.emf.codegen.ecore;resolution:=optional,
- org.eclipse.xtext.log4j;resolution:=optional,
  org.eclipse.emf.mwe.utils;resolution:=optional,
  org.eclipse.emf.mwe.core;resolution:=optional,
  com.ibm.icu;resolution:=optional,
@@ -33,4 +30,6 @@ Export-Package: alma.acs.tmcdb.grammardef,
  alma.acs.tmcdb.grammardef.tmcdbTables.impl,
  alma.acs.tmcdb.grammardef.tmcdbTables.util,
  alma.acs.tmcdb.grammardef.parseTreeConstruction,
- alma.acs.tmcdb.grammardef.parser.antlr
+ alma.acs.tmcdb.grammardef.parser.antlr,
+ alma.acs.tmcdb.grammardef.parser.antlr.internal
+Import-Package: org.apache.log4j

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EReference;
+import org.eclipse.xtext.resource.EObjectDescription;
+import org.eclipse.xtext.resource.IEObjectDescription;
 import org.eclipse.xtext.scoping.IScope;
-import org.eclipse.xtext.scoping.IScopedElement;
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider;
-import org.eclipse.xtext.scoping.impl.ScopedElement;
 import org.eclipse.xtext.scoping.impl.SimpleScope;
 
 import alma.acs.tmcdb.grammardef.tmcdbTables.CheckConstraint;
@@ -56,26 +56,26 @@ public class TmcdbTablesScopeProvider extends AbstractDeclarativeScopeProvider {
 		return scope;
 	}
 
-	private Iterable<IScopedElement> getColumnsAsIScopedElements(
+	private Iterable<IEObjectDescription> getColumnsAsIScopedElements(
 			Table table) {
 
-		List<IScopedElement> result = new ArrayList<IScopedElement>();
+		List<IEObjectDescription> result = new ArrayList<IEObjectDescription>();
 
 		for(Column c: table.getColumns())
-			result.add(ScopedElement.create(c.getName(), c));
+			result.add(EObjectDescription.create(c.getName(), c));
 
 		return result;
 	}
 
-	private Iterable<IScopedElement> getColumnsAsIScopedElementsWithInheritance(
+	private Iterable<IEObjectDescription> getColumnsAsIScopedElementsWithInheritance(
 			Table table) {
 
-		List<IScopedElement> result = new ArrayList<IScopedElement>();
+		List<IEObjectDescription> result = new ArrayList<IEObjectDescription>();
 
 		Table t = table;
 		do {
 			for(Column c: t.getColumns())
-				result.add(ScopedElement.create(c.getName(), c));
+				result.add(EObjectDescription.create(c.getName(), c));
 		} while( (t = t.getSuperTable()) != null );
 
 		return result;
