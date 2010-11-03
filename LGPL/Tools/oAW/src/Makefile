@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2010/10/22 11:22:42 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2010/11/03 09:27:20 rtobar Exp $"
 #
 # Makefile of oAW 
 #
@@ -37,34 +37,37 @@
 #
 # jar files to be installed
 #----------------------------
-INSTALL_FILES = ../lib/com.google.collect_0.8.0.v200908120607.jar \
-                   ../lib/com.ibm.icu_4.0.1.v20090822.jar \
-                   ../lib/de.itemis.xtext.antlr_0.7.2.200908121408.jar \
-                   ../lib/org.eclipse.emf.codegen_2.5.0.v200906151043.jar \
-                   ../lib/org.eclipse.emf.common_2.5.0.v200906151043.jar \
-                   ../lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar \
-                   ../lib/org.eclipse.emf.mwe.core_0.7.2.v200908120417.jar \
-                   ../lib/org.eclipse.uml2.uml_3.0.1.v200908281330.jar \
-                   ../lib/org.eclipse.xpand_0.7.2.v200908120436.jar \
-                   ../lib/org.eclipse.xtend_0.7.2.v200908120436.jar \
-                   ../lib/org.eclipse.xtend.typesystem.emf_0.7.2.v200908120436.jar \
-                   ../lib/org.eclipse.xtend.typesystem.uml2_0.7.2.v200908120436.jar \
-                   ../lib/org.eclipse.xtend.util.stdlib_0.7.2.v200908120436.jar \
-                   ../lib/org.eclipse.xtext_0.7.2.v200908120607.jar \
-                   ../lib/org.eclipse.xtext.generator_0.7.2.v200908120607.jar \
-                   ../lib/org.eclipse.xtext.util_0.7.2.v200908120607.jar \
-                   ../lib/org.eclipse.xtext.xtend_0.7.2.v200908120607.jar \
-                   ../lib/org.eclipse.text_3.5.0.v20090513-2000.jar \
-                   ../lib/org.eclipse.emf.mwe.utils_0.7.2.v200908120417.jar \
-                   ../lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar \
-                   ../lib/org.eclipse.emf.mapping.ecore2xml_2.5.0.v200906151043.jar \
-                   ../lib/org.eclipse.uml2.uml.resources_3.0.0.v200906011111.jar \
-                   ../lib/org.eclipse.uml2.common_1.5.0.v200905041045.jar \
-                   ../lib/org.eclipse.equinox.common_3.5.1.R35x_v20090807-1100.jar \
-                   ../lib/org.eclipse.jdt.core_3.5.1.v_972_R35x.jar \
-                   ../lib/org.eclipse.emf.codegen.ecore_2.5.0.v200906151043.jar \
-                   ../lib/guice-1.0_patched.jar \
-                   ../lib/stringtemplate-3.1b1.jar 
+INSTALL_FILES = \
+         ../lib/antlr-generator-3.0.1.jar \
+         ../lib/com.google.collect_0.8.0.v201008251220.jar \
+         ../lib/com.google.inject_2.0.0.v201003051000.jar \
+         ../lib/com.ibm.icu_4.2.1.v20100412.jar \
+         ../lib/org.antlr.runtime_3.0.0.v200803061811.jar \
+         ../lib/org.eclipse.emf.codegen_2.6.0.v20100914-1218.jar \
+         ../lib/org.eclipse.emf.codegen.ecore_2.6.1.v20100914-1218.jar \
+         ../lib/org.eclipse.emf.common_2.6.0.v20100914-1218.jar \
+         ../lib/org.eclipse.emf.ecore_2.6.1.v20100914-1218.jar \
+         ../lib/org.eclipse.emf.ecore.xmi_2.5.0.v20100521-1846.jar \
+         ../lib/org.eclipse.emf.mapping.ecore2xml_2.5.0.v20100521-1847.jar \
+         ../lib/org.eclipse.emf.mwe2.runtime_1.0.1.v201008251113.jar \
+         ../lib/org.eclipse.emf.mwe.core_1.0.0.v201008251122.jar \
+         ../lib/org.eclipse.emf.mwe.utils_1.0.0.v201008251122.jar \
+         ../lib/org.eclipse.equinox.common_3.6.0.v20100503.jar \
+         ../lib/org.eclipse.jdt.core_3.6.1.v_A68_R36x.jar \
+         ../lib/org.eclipse.text_3.5.0.v20100601-1300.jar \
+         ../lib/org.eclipse.uml2.common_1.5.0.v201005031530.jar \
+         ../lib/org.eclipse.uml2.uml_3.1.1.v201008191505.jar \
+         ../lib/org.eclipse.uml2.uml.resources_3.1.1.v201008191505.jar \
+         ../lib/org.eclipse.xpand_1.0.1.v201008251147.jar \
+         ../lib/org.eclipse.xtend_1.0.1.v201008251147.jar \
+         ../lib/org.eclipse.xtend.typesystem.emf_1.0.1.v201008251147.jar \
+         ../lib/org.eclipse.xtend.typesystem.uml2_1.0.1.v201008251147.jar \
+         ../lib/org.eclipse.xtend.util.stdlib_1.0.1.v201008251147.jar \
+         ../lib/org.eclipse.xtext_1.0.1.v201008251220.jar \
+         ../lib/org.eclipse.xtext.generator_1.0.1.v201008251220.jar \
+         ../lib/org.eclipse.xtext.util_1.0.1.v201008251220.jar \
+         ../lib/org.eclipse.xtext.xtend_1.0.1.v201008251220.jar
+
 
 #
 #>>>>> END OF standard rules
