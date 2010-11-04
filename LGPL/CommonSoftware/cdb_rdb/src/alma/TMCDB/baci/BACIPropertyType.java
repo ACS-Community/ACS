@@ -69,7 +69,7 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
 	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getExtraData()
 	 */
 	public Element getExtraData() {
-		if (Data == null)
+		if (Data == null || Data.isEmpty())
 			return null;
 		else if (!extraDataParsed)
 		{

@@ -82,7 +82,7 @@ public class Component extends ComponentNode implements ExtraDataFeature {
 	 * @see com.cosylab.cdb.jdal.hibernate.ExtraDataFeature#getExtraData()
 	 */
 	public Element getExtraData() {
-		if (Data == null)
+		if (Data == null || Data.isEmpty())
 			return null;
 		else if (!extraDataParsed)
 		{
