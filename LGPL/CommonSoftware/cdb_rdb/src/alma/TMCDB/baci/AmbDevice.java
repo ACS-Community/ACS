@@ -24,16 +24,9 @@
  */
 package alma.TMCDB.baci;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import com.cosylab.cdb.jdal.hibernate.ExtraDataFeatureUtil;
 
 
 /**
@@ -179,15 +172,10 @@ public class AmbDevice extends ComponentData {
 	}
 	
 	public void setControlCdbExtraData(String xmldoc) {
-		DOMParser parser = new DOMParser();
 		try {
-			parser.parse(new InputSource(new StringReader(xmldoc)));
-			Document document = parser.getDocument();
-			ControlCdbExtraData = document.getDocumentElement();
-		} catch (SAXException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+			ControlCdbExtraData = ExtraDataFeatureUtil.getExtraDataMap(xmldoc);
+		} catch (Throwable th) {
+			th.printStackTrace();
 		}
 	}
 

@@ -53,7 +53,7 @@ public class ExtraDataFeatureUtil {
 	public static Element getExtraDataMap(String xml)
 		throws ParserConfigurationException, SAXException, IOException
 	{
-		if (xml == null)
+		if (xml == null || xml.isEmpty())
 			return null;
 		
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
