@@ -169,8 +169,10 @@ public class QueryDlg extends JDialog implements ActionListener {
 			Thread t = new Thread() {
 				public void run() {
 					submitBtn.setEnabled(false);
+					loggingClient.animateProgressBar("Loading from DB");
 					terminateThread=false;
 					submitQuery();
+					loggingClient.freezeProgressBar();
 					submitBtn.setEnabled(true);
 				}
 			};
