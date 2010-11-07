@@ -407,4 +407,31 @@ public class AlarmTableEntry implements Alarm {
 	public boolean isNodeParent() {
 		return alarm.isNodeParent();
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder ret = new StringBuilder();
+		ret.append("Alarm [");
+		ret.append(getTriplet().getFaultFamily());
+		ret.append(',');
+		ret.append(getTriplet().getFaultMember());
+		ret.append(',');
+		ret.append(getTriplet().getFaultCode());
+		if (getStatus().isActive()) {
+			ret.append("] Active");
+		} else {
+			ret.append("] NOT Active");
+		}
+		ret.append(": priority ");
+		ret.append(alarm.getPriority());
+		ret.append(", sent at ");
+		ret.append(alarm.getStatus().getSourceTimestamp().toString());
+		ret.append(", cause ");
+		ret.append(getCause());
+		ret.append(", action ");
+		ret.append(getAction());
+		ret.append(", description ");
+		ret.append(getProblemDescription());
+		return ret.toString();
+	}
 }
