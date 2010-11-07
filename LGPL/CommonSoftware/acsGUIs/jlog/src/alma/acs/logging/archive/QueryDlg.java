@@ -60,6 +60,7 @@ import com.cosylab.logging.engine.ACS.ACSRemoteLogListener;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogTypeHelper;
 import com.cosylab.logging.settings.LogTypeRenderer;
+import com.cosylab.logging.engine.LogMatcher;
 
 /**
  * A class to setup a query to submit to the DB
@@ -463,9 +464,12 @@ public class QueryDlg extends JDialog implements ActionListener {
 			JOptionPane.showMessageDialog(this,formatErrorMsg("Error executing the query:\n"+t.getMessage()),"Database error!",JOptionPane.ERROR_MESSAGE);
 			loggingClient.reportStatus("Query terminated with error");
 		}
-		if (logs!=null) {
+		if (logs!=null && !logs.isEmpty()) {
 			loggingClient.reportStatus("Num. of logs read from DB: "+logs.size());
-			
+			LogMatcher matcher = new LogMatcher();
+			matcher.setAudience(loggingClient.getEngine().getAudience());
+			matcher.setFilters(loggingClient.getEngine().getFilters());
+			matcher.setDiscardLevel(loggingClient.getEngine().getDiscardLevel());
 			Iterator iter = logs.iterator();
 			int count=0;
 			while (iter.hasNext() && !terminateThread) {
@@ -480,7 +484,9 @@ public class QueryDlg extends JDialog implements ActionListener {
 					errorListener.errorReceived(str);
 					continue;
 				}
-				logListener.logEntryReceived(logEntry);
+				if (matcher.match(logEntry)) {
+					logListener.logEntryReceived(logEntry);
+				}
 			}
 			
 			logs.clear();
