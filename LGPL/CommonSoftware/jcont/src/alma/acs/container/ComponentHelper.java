@@ -125,9 +125,11 @@ public abstract class ComponentHelper
 			}
 			
 			if (m_componentImpl == null) {
-				throw new AcsJComponentCreationEx("_createComponentImpl() returned null.");
+				AcsJComponentCreationEx ex = new AcsJComponentCreationEx();
+				ex.setReason("_createComponentImpl() returned null.");
+				throw ex;
 			}
-			
+
 			if (!internalIF.isInstance(m_componentImpl)) {
 				AcsJJavaComponentHelperEx ex = new AcsJJavaComponentHelperEx();
 				ex.setContextInfo("component impl class '" + m_componentImpl.getClass().getName() + 
