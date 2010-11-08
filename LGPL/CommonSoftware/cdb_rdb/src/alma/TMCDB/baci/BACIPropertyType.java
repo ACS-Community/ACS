@@ -59,8 +59,8 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
 
     // extra data support
     private String Data;
-    private Element extraData_;
-    private boolean extraDataParsed = false;
+    //private Element extraData_;
+    //private boolean extraDataParsed = false;
     
     /* (non-Javadoc)
 	 * @see com.cosylab.cdb.jdal.hibernate.ExtraDataFeature#getExtraData()
@@ -71,18 +71,19 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
 	public Element getExtraData() {
 		if (Data == null || Data.isEmpty())
 			return null;
-		else if (!extraDataParsed)
+		//else if (!extraDataParsed)
 		{
 			try {
-				extraData_ = ExtraDataFeatureUtil.getExtraDataMap(Data);
+				/* extraData_ = */ return ExtraDataFeatureUtil.getExtraDataMap(Data);
 			} catch (Throwable th) {
 				System.err.println("Failed to parse extra data for property: " + PropertyName);
 				th.printStackTrace();
+				return null;
 			}
-			extraDataParsed = true;
+			//extraDataParsed = true;
 		}
 		
-		return extraData_;
+		//return extraData_;
 	}
 
 	private String description;

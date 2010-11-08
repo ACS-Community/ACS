@@ -68,8 +68,8 @@ public class Component extends ComponentNode implements ExtraDataFeature {
 
     // extra data support
     private String Data;
-    private Element extraData;
-    private boolean extraDataParsed = false;
+    //private Element extraData;
+    //private boolean extraDataParsed = false;
  
     // non-control devices support
     // must be public to be accessible, but should not have getter to be come visible as node
@@ -84,18 +84,19 @@ public class Component extends ComponentNode implements ExtraDataFeature {
 	public Element getExtraData() {
 		if (Data == null || Data.isEmpty())
 			return null;
-		else if (!extraDataParsed)
+		//else if (!extraDataParsed)
 		{
 			try {
-				extraData = ExtraDataFeatureUtil.getExtraDataMap(Data);
+				/* extraData = */ return ExtraDataFeatureUtil.getExtraDataMap(Data);
 			} catch (Throwable th) {
 				System.err.println("Failed to parse extra data for component: " + Name);
 				th.printStackTrace();
+				return null;
 			}
-			extraDataParsed = true;
+			//extraDataParsed = true;
 		}
 		
-		return extraData;
+		//return extraData;
 	}
 
 	/**
