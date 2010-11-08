@@ -11,5 +11,5 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
-	<classpathentry kind="output" path="object/eclipseOut"/>
+	<classpathentry kind="output" path="ws/object/eclipseOut"/>
 </classpath>
