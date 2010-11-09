@@ -27,13 +27,17 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
+import org.omg.CosNaming.NamingContext;
+import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
@@ -53,9 +57,11 @@ import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
@@ -149,6 +155,8 @@ public class ContainerServicesImpl implements ContainerServices
 
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
+	private final Set<AcsEventSubscriber> m_subscribers;
+
 	/**
 	 * ctor.
 	 * @param acsManagerProxy 
@@ -185,6 +193,8 @@ public class ContainerServicesImpl implements ContainerServices
 		
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
 		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
+
+		m_subscribers = new HashSet<AcsEventSubscriber>();
 
 		m_threadFactory = threadFactory;
 		
@@ -991,7 +1001,7 @@ public class ContainerServicesImpl implements ContainerServices
     /*
      * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
     throws AcsJContainerServicesEx
     {
@@ -1097,9 +1107,13 @@ public class ContainerServicesImpl implements ContainerServices
 
 
 	/**
+	 * Cleans up all the resources that need to be closed, like closing opened notification channels
+	 *
 	 * @since ACS 8.1.0
 	 */
 	public void cleanUp() {
+
+		/* Cleanup through externally registered callbacks */
 		for (CleanUpCallback cleanUpCallback : cleanUpCallbacks) {
 			try {
 				cleanUpCallback.containerServicesCleanUp();
@@ -1108,6 +1122,11 @@ public class ContainerServicesImpl implements ContainerServices
 				m_logger.log(Level.WARNING, "Failed to clean up registered client object", thr);
 			}
 		}
+
+		/* Cleanup internal stuff */
+		for(AcsEventSubscriber subscriber: m_subscribers)
+			subscriber.disconnect();
+
 	}
 
 	/**
@@ -1131,5 +1150,66 @@ public class ContainerServicesImpl implements ContainerServices
 		cleanUpCallbacks.add(cb);
 	}
 
-}
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+		return createNotificationChannelSubscriber(channelName, null); //TODO (rtobar): Is this fine? I don't know
+	}
 
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+
+		AcsEventSubscriber subscriber = null;
+
+		try {
+			Object[] args = new Object[]{
+					channelName,
+					channelNotifyServiceDomainName,
+					this,
+					getNameService(),
+					m_clientName
+			};
+			Class<?> clazz = Class.forName("alma.acs.nc.refactored.NCSubscriber");
+			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class);
+			subscriber = (AcsEventSubscriber)constructor.newInstance(args);
+		} catch(ClassNotFoundException e) {
+			// TODO: maybe we could prevent future NCSubscriber creation tries, since the class isn't and will not be loaded
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC subscriber because the 'NCSubscriber' class is not present in the classpath", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			ex.setContextInfo("'alma.acs.nc.refactored.NCSubscriber' class not present in the classpath");
+			throw ex;
+		} catch(Throwable e) {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+		m_subscribers.add(subscriber);
+		return subscriber;
+	}
+
+	private NamingContext getNameService() throws AcsJContainerServicesEx {
+
+		NamingContext nameService = null;
+
+		try
+		{
+			org.omg.CORBA.Object nameServiceObj = m_acsManagerProxy.get_service("NameService", true);
+			nameService = NamingContextHelper.narrow(nameServiceObj);
+		} catch (AcsJmaciErrTypeEx ex) {
+			m_logger.log(Level.FINE, "Failed to get the reference to the NameService service", ex);
+			throw new AcsJContainerServicesEx(ex);
+		} catch (Throwable thr) {
+			String msg = "Unexpectedly failed to get the NameService reference!";
+			m_logger.log(Level.FINE, msg, thr);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo(msg);
+			throw ex;
+		}
+
+		return nameService;
+	}
+
+}

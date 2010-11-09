@@ -31,5 +31,17 @@
 		KeepAliveTime="60"
 		ImplLang="java" />
 
+   <_ Name="EVENT_SUPPLIER"
+      Code="alma.demo.EventSupplierImpl.EventSupplierHelper"
+      Type="IDL:alma/demo/SupplierComp:1.0"
+      Container="frodoContainer"
+		ImplLang="java" />
+
+   <_ Name="EVENT_CONSUMER"
+      Code="alma.demo.EventConsumerImpl.NCReceiverHelper"
+      Type="IDL:alma/demo/NCReceiver:1.0"
+      Container="frodoContainer"
+		ImplLang="java" />
+
 </Components>
 

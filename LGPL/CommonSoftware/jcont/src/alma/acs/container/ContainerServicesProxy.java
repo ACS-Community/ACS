@@ -16,6 +16,7 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
 import alma.acs.logging.AcsLogger;
+import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
 
 /**
@@ -263,7 +264,20 @@ public class ContainerServicesProxy implements ContainerServices
 		return delegate.getTransparentXmlWrapper(transparentXmlIF, objectReference, flatXmlIF);
 	}
 
-	
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelSubscriber(channelName);
+	}
+
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelSubscriber(channelName, channelNotifyServiceDomainName);
+	}
+
 	/**
 	 * Here the subclass can implement checks that get executed before any delegation call is made. 
 	 * See <code>protected void checkPluginRunning() throws PluginContainerException</code> in the OMC.
