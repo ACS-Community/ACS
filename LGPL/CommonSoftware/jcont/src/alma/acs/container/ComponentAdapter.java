@@ -27,14 +27,11 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
 import si.ijs.maci.ComponentInfo;
-
-import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
-//import alma.acs.component.StatelessComponentLifecycle;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.AcsLogger;
 

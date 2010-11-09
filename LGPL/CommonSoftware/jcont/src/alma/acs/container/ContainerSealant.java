@@ -117,7 +117,6 @@ public class ContainerSealant
 	 */
 	private static class ComponentInterceptionHandler implements DynamicInterceptor.InterceptionHandler {
 		private final String name;
-		private final boolean isOffShoot;
 		private final Logger logger;
 		private final Set<String> methodNamesExcludedFromInvocationLogging;
 		private StopWatch methodInvWatch;
@@ -140,7 +139,6 @@ public class ContainerSealant
 		
 		ComponentInterceptionHandler(String name, boolean isOffShoot, Logger logger, Set<String> methodNamesExcludedFromInvocationLogging) {
 			this.name = name;
-			this.isOffShoot = isOffShoot;
 			this.logger = logger;
 			this.methodNamesExcludedFromInvocationLogging = methodNamesExcludedFromInvocationLogging;
 			this.logLevel = isOffShoot ? AcsLogLevel.TRACE : AcsLogLevel.DEBUG;

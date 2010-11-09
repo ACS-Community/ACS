@@ -28,8 +28,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jacorb.orb.acs.AcsORBProfiler;
-import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
@@ -53,7 +51,6 @@ import org.omg.PortableServer.POAPackage.AdapterNonExistent;
 import org.omg.PortableServer.POAPackage.InvalidPolicy;
 
 import si.ijs.maci.ContainerHelper;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -1106,7 +1103,6 @@ public class AcsCorba
 			throw new IllegalStateException("Only call when this object has been initialized!");
 		}
 		
-		org.omg.CORBA.Object ret = null;
 		try
 		{
 			Any rrtPolicyAny = m_orb.create_any();
