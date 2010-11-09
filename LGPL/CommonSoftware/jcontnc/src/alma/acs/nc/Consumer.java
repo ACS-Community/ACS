@@ -54,6 +54,7 @@ import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.exceptions.AcsJException;
@@ -75,6 +76,11 @@ import alma.acsncErrType.wrappers.AcsJEventSubscriptionFailureEx;
  * receiving events.
  * 
  * @author dfugate
+ * @deprecated From ACS 9.0.1, NC consumers should be created through the
+ *  {@link ContainerServices#createNotificationChannelSubscriber(String, String)} method,
+ *  which will return an {@link AcsEventSubscriber} object. This ensures that the consumer
+ *  is disconnected from the notification channel when the component/client that created it
+ *  has finished
  */
 public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscriber{
 	
