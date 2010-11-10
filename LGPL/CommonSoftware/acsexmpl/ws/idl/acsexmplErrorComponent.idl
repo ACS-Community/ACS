@@ -22,7 +22,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsexmplErrorComponent.idl,v 1.9 2010/09/30 15:14:02 rbourtem Exp $"
+* "@(#) $Id: acsexmplErrorComponent.idl,v 1.10 2010/11/10 16:58:09 rbourtem Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -146,7 +146,7 @@ module acsexmplErrorComponent
         void outCompletion(out ACSErr::Completion comp);
 
         /**
-         * A method wich will generate the SIGFPE signal
+         * A method which will generate the SIGFPE signal
          * This can be used to test what happens when there is a floating point 
          * exception in a component
          *  @param way parameter used to specify the way to generate the SIGFPE
@@ -159,7 +159,7 @@ module acsexmplErrorComponent
         void generateSIGFPE (in short way);
 
         /**
-         * A method wich will generate the SIGSEGV signal
+         * A method which will generate the SIGSEGV signal
          * This can be used to test what happens when there is a segmentation 
          * fault in a component
          *  @param way parameter used to specify the way to generate the SIGSEGV
@@ -170,6 +170,17 @@ module acsexmplErrorComponent
          *  @endhtmlonly
          */
         void generateSIGSEGV (in short way);
+        
+        /**
+         * A method that will sleep during nb_seconds seconds before to return
+         * This method could be used to test the behavior of components 
+         * taking a long time before to reply.
+         * @param nb_seconds the number of seconds to sleep before to return
+         *  @htmlonly
+         *  <br><hr>
+         *  @endhtmlonly
+         */
+        void sleepingCmd(in short nb_seconds);
         
 	};
 

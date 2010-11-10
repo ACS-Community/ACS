@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.13 2010/09/30 15:14:02 rbourtem Exp $"
+* "@(#) $Id: acsexmplErrorComponentImpl.cpp,v 1.14 2010/11/10 16:58:09 rbourtem Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,7 @@
 #include <ACSErrTypeOK.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.13 2010/09/30 15:14:02 rbourtem Exp $")
+ACE_RCSID(acsexmpl, acsexmplErrorComponentImpl, "$Id: acsexmplErrorComponentImpl.cpp,v 1.14 2010/11/10 16:58:09 rbourtem Exp $")
 
 /* ----------------------------------------------------------------*/
 ErrorComponent::ErrorComponent( 
@@ -428,6 +428,15 @@ ErrorComponent::generateSIGSEGV (CORBA::Short way)
                 *badPointer = 42;
             }
     } // switch(way)
+}
+
+void
+ErrorComponent::sleepingCmd(CORBA::Short nb_seconds)
+{
+	ACS_DEBUG_PARAM("ErrorComponent::sleepingCmd","Sleeping for %d second(s)",nb_seconds);
+	sleep(nb_seconds);
+	ACS_DEBUG("ErrorComponent::sleepingCmd","Exiting...");
+	return;
 }
 
 
