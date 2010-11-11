@@ -208,9 +208,11 @@ public class BACITimer  {
 	if (thread_ == null) {
 	  if (threadFactory_ != null)
 		  thread_ = threadFactory_.newThread(runLoop_);
-	  else
+	  else {
 		  thread_ = new Thread(runLoop_);
-	  thread_.setName(this.getClass().getName());
+		  thread_.setName(this.getClass().getName());
+	  }
+	  thread_.setDaemon(true); // to ensure that this is a daemon thread
 	  thread_.start();
 	}
 	else
