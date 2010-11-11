@@ -15,7 +15,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplPowerSupply.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbDAL.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar" sourcepath="INTROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplBuilding.jar"/>
@@ -27,12 +26,13 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jbaci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/enumpropStd.jar"/>
 	<classpathentry kind="lib" path="lib/testSeqTestingComponent.jar"/>
 	<classpathentry kind="lib" path="lib/testjBaciEnumProp.jar"/>
 	<classpathentry kind="lib" path="lib/testPrimTestingComponent.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="output" path="object"/>
 </classpath>
