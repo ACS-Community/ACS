@@ -262,7 +262,18 @@ public class AcsContainer extends ContainerPOA
 			ex.setContextInfo("Error initializing the alarm system factory");
 			throw ex;
 		}
-		
+
+		// init the BACI framework
+		try {
+			Class<?> clazz = Class.forName("alma.ACS.jbaci.BACIFramework");
+			Object baciFramework = clazz.getField("INSTANCE").get(null);
+			clazz.getMethod("initialize", ThreadFactory.class).invoke(baciFramework, containerThreadFactory);
+		} catch(Exception e) {
+			AcsJContainerEx ex = new AcsJContainerEx(e);
+			ex.setContextInfo("Error initializing the BACI framework");
+			throw ex;
+		}
+
 		// unleash any waiting ORB threads that were held until container init has finished
 		containerStartOrbThreadGate.countDown();
 	}
@@ -972,7 +983,17 @@ public class AcsContainer extends ContainerPOA
 			abortAllComponents(3000);
 		}
 
+		// shutdown alarm subsystem
 		ACSAlarmSystemInterfaceFactory.done();
+
+		// shutdown BACI framework
+		try {
+			Class<?> clazz = Class.forName("alma.ACS.jbaci.BACIFramework");
+			Object baciFramework = clazz.getField("INSTANCE").get(null);
+			clazz.getMethod("shutdown").invoke(baciFramework);
+		} catch(Exception e) {
+			m_logger.log(Level.WARNING, "Failed to graceful shutdown the BACI framework", e);
+		}
 
 		m_managerProxy.logoutFromManager();
 
