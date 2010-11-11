@@ -29,26 +29,30 @@ import java.util.concurrent.ThreadFactory;
  * @version $id$
  */
 public class BACIFramework {
-	
+
+	/* Singleton instance, constructor and getter */
+	public static BACIFramework INSTANCE = new BACIFramework();
+	private BACIFramework() {}
+
 	/**
 	 * ThreadFactory to be used to create threads.
 	 */
-	private static ThreadFactory threadFactory = null;
+	private ThreadFactory threadFactory = null;
 
 	/**
 	 * Timer singleton instance.
 	 */
-	private static BACITimer timer = null;
+	private BACITimer timer = null;
 
 	/**
 	 * Dispatcher Singleton instance.
 	 */
-	private static BACIDispatcher dispatcher = null;
+	private BACIDispatcher dispatcher = null;
 	
 	/**
 	 * Get timer instance (singleton pattern).
 	 */
-	public static synchronized BACITimer getTimer()
+	public synchronized BACITimer getTimer()
 	{
 		if (timer == null)
 			timer = new BACITimer(threadFactory);
@@ -58,7 +62,7 @@ public class BACIFramework {
 	/**
 	 * Get dispather instance.
 	 */
-	public static synchronized BACIDispatcher getDispatcher()
+	public synchronized BACIDispatcher getDispatcher()
 	{
 		if (dispatcher == null)
 			dispatcher = new BACIDispatcher(threadFactory);
@@ -68,7 +72,7 @@ public class BACIFramework {
 	/**
 	 * Initialize BACI framework not using any thread factory.
 	 */
-	public static void initialize()
+	public void initialize()
 	{
 		initialize(null);
 	}
@@ -77,9 +81,9 @@ public class BACIFramework {
 	 * Initialize BACI framework using given thread factory.
 	 * @param threadFactory thread factory to be used, can be <code>null</code>.
 	 */
-	public static void initialize(ThreadFactory threadFactory)
+	public void initialize(ThreadFactory threadFactory)
 	{
-		BACIFramework.threadFactory = threadFactory;
+		this.threadFactory = threadFactory;
 		
 		// allow reinitialization
 		timer = null;
@@ -89,7 +93,7 @@ public class BACIFramework {
 	/**
 	 * Shutdown BACI framework (terminate timer and dispatcher threads).
 	 */
-	public static void shutdown()
+	public void shutdown()
 	{
 		// shutdown timer
 		if (timer != null)

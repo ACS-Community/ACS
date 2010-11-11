@@ -471,13 +471,13 @@ public class BACIDispatchActionTest extends TestCase {
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(name, false);
 		logger.info("START----------------------------" + getName() + "-------------");
 		threadFactory = new CleaningDaemonThreadFactory(name, logger);
-		BACIFramework.initialize(threadFactory);
+		BACIFramework.INSTANCE.initialize(threadFactory);
 	}
 
 	protected void tearDown() throws Exception {
 		// this should clean all the threads
-		BACIFramework.shutdown();
-		
+		BACIFramework.INSTANCE.shutdown();
+
 		threadFactory.cleanUp();
 		logger.info("END------------------------------" + getName() + "-------------\n\n");
 	}

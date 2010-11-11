@@ -194,7 +194,7 @@ public class CommonMonitorImpl implements MonitorOperations,
 			return;
 
 		// schedule
-		monitorTimerTask = BACIFramework.getTimer().executePeriodically(timeTrigger, this, startTime);
+		monitorTimerTask = BACIFramework.INSTANCE.getTimer().executePeriodically(timeTrigger, this, startTime);
 	}
 	
 	/**

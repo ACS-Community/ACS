@@ -191,7 +191,7 @@ public class CommonComparableMonitorImpl
 			// determine start time to align with sync monitors - might improve performance
 			long startTime = (System.currentTimeMillis()/poolTime + 1) * poolTime;
 			// pool
-			poolTimerTask = BACIFramework.getTimer().executePeriodically(poolTime, new PoolTimer(), startTime);
+			poolTimerTask = BACIFramework.INSTANCE.getTimer().executePeriodically(poolTime, new PoolTimer(), startTime);
 		}
 		
 		enabled = true;

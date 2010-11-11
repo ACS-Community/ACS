@@ -431,7 +431,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 				return;
 
 			// non blocking...
-			submitPending = BACIFramework.getDispatcher().execute(this);
+			submitPending = BACIFramework.INSTANCE.getDispatcher().execute(this);
 		}
 	}
 
