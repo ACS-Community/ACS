@@ -32,6 +32,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
 
@@ -486,6 +487,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @param channelName The Notification Channel name to listen to
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
+	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
 	 */
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx;
 
@@ -500,10 +502,92 @@ public interface ContainerServices extends ContainerServicesBase
 	 *   in different domains.
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
+	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
 	 */
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx;
+
+	/**
+	 * Creates a new {@link AcsEventPublisher} object, which is the abstraction of a Notification Channel publisher (supplier),
+	 * for the given channel name.
+	 * The created publisher will be automatically stopped and disconnected when the component or client that created it
+	 * through this method is finished, unless the user doesn't explicitly do it before.
+	 * 
+	 * @param channelName The Notification Channel name where events will be published
+	 * @return a Notification Channel publisher, that will get automatically stopped and disconnected when the component is unloaded,
+	 *   or the client disconnected, depending on the case, if the user doesn't do so.
+	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the publisher
+	 */
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx;
+
+	/**
+	 * Creates a new {@link AcsEventPublisher} object, which is the abstraction of a Notification Channel publisher (supplier),
+	 * for the given channel name.
+	 * The created publisher will be automatically stopped and disconnected when the component or client that created it
+	 * through this method is finished, unless the user doesn't explicitly do it before.
+	 * 
+	 * @param channelName The Notification Channel name where events will be published
+	 * @param channelNotifyServiceDomainName The Notification Channel Service Domain name, used to group notification channels
+	 *   in different domains.
+	 * @return a Notification Channel publisher, that will get automatically stopped and disconnected when the component is unloaded,
+	 *   or the client disconnected, depending on the case, if the user doesn't do so.
+	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the publisher
+	 */
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx;
+
+    /////////////////////////////////////////////////////////////
+    // Alarm Service API
+    /////////////////////////////////////////////////////////////
+
+	/**
+	 * Raises the alarm described by the given triplet.
+	 * 
+	 * Alarms are described with a unique triplet, which is composed by a <code>faultFamily</code>,
+	 * a <code>faultMember</code> and a <code>faultCode</code>, and referred to as <em>FaultState</em>.
+	 * A particular alarm is mapped by exactly one <em>FaultState</em>, and vice-versa.
+	 * <p>
+	 * The <code>faultFamily</code> field identifies a set of elements of the same kind, and that present
+	 * the same failures (e.g., all power supplies, which could be represented by the "PS" string).
+	 * <p>
+	 * The <code>faultMember</code> field identifies the particular instance of the given <code>faultFamily</code>
+	 * that is currently raising the alarm.
+	 * <p>
+	 * The <code>faultCode</code> field identifies the particular error that is being informed. Its value must
+	 * match the corresponding one stored in the Alarm Service configuration that describes the situation being reported
+	 * as faulty.
+	 * 
+	 * @param faultFamily The alarm's fault family  
+	 * @param faultMember The alarm's fault member
+	 * @param faultCode The alarm's fault code
+	 * @throws AcsJContainerServicesEx if anything goes wrong while raising the alarm
+	 */
+	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
+
+	/**
+	 * Clears the alarm described by the given triplet.
+	 * 
+	 * Alarms are described with a unique triplet, which is composed by a <code>faultFamily</code>,
+	 * a <code>faultMember</code> and a <code>faultCode</code>, and referred to as <em>FaultState</em>.
+	 * A particular alarm is mapped by exactly one <em>FaultState</em>, and vice-versa.
+	 * <p>
+	 * The <code>faultFamily</code> field identifies a set of elements of the same kind, and that present
+	 * the same failures (e.g., all power supplies, which could be represented by the "PS" string).
+	 * <p>
+	 * The <code>faultMember</code> field identifies the particular instance of the given <code>faultFamily</code>
+	 * that is currently clearing the alarm.
+	 * <p>
+	 * The <code>faultCode</code> field identifies the particular error that is being informed. Its value must
+	 * match the corresponding one stored in the Alarm Service configuration that describes the situation being reported
+	 * as corrected.
+	 * 
+	 * @param faultFamily The alarm's fault family
+	 * @param faultMember The alarm's fault member
+	 * @param faultCode The alarm's fault code
+	 * @throws AcsJContainerServicesEx if anything goes wrong while clearing the alarm
+	 */
+	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
 
     /////////////////////////////////////////////////////////////
     // other
     /////////////////////////////////////////////////////////////
+
 }

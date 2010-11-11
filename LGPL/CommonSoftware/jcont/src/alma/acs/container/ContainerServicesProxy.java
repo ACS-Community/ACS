@@ -16,6 +16,7 @@ import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
 import alma.acs.logging.AcsLogger;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
 
@@ -279,6 +280,33 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
+	 * @see ContainerServices#createNotificationChannelPublisher(String)
+	 */
+	@Override
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelPublisher(channelName);
+	}
+
+	/**
+	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
+	 */
+	@Override
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+		return delegate.createNotificationChannelPublisher(channelName, channelNotifyServiceDomainName);
+	}
+
+	@Override
+	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
+		delegate.raiseAlarm(faultFamily, faultMember, faultCode);
+	}
+
+	@Override
+	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
+		delegate.clearAlarm(faultFamily, faultMember, faultCode);
+	}
+
+
+	/**
 	 * Here the subclass can implement checks that get executed before any delegation call is made. 
 	 * See <code>protected void checkPluginRunning() throws PluginContainerException</code> in the OMC.
 	 * @throws RuntimeException
@@ -286,7 +314,4 @@ public class ContainerServicesProxy implements ContainerServices
 	protected void check() throws AcsJContainerServicesEx {
 		// overload if you need the checks
 	}
-
-
-
 }

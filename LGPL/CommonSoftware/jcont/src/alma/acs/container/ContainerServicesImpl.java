@@ -24,6 +24,7 @@ package alma.acs.container;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,11 +58,17 @@ import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
-import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
+import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
+import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
+import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
+import alma.alarmsystem.source.ACSAlarmSystemInterface;
+import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
+import alma.alarmsystem.source.ACSFaultState;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
@@ -156,6 +163,9 @@ public class ContainerServicesImpl implements ContainerServices
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
 	private final Set<AcsEventSubscriber> m_subscribers;
+	private final Set<AcsEventPublisher>  m_publishers;
+	final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.refactored.NCSubscriber";
+	final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
 
 	/**
 	 * ctor.
@@ -195,6 +205,7 @@ public class ContainerServicesImpl implements ContainerServices
 		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
 
 		m_subscribers = new HashSet<AcsEventSubscriber>();
+		m_publishers  = new HashSet<AcsEventPublisher>();
 
 		m_threadFactory = threadFactory;
 		
@@ -959,6 +970,7 @@ public class ContainerServicesImpl implements ContainerServices
 		try {
 			acsCorba.deactivateOffShoot(m_activatedOffshootsMap.get(offshootImpl), m_clientPOA);
 			m_activatedOffshootsMap.remove(offshootImpl);
+			m_logger.fine("successfully deactivated offshoot of type " + offshootImpl.getClass().getName());
 		} catch (AcsJContainerEx e) {
 			throw new AcsJContainerServicesEx(e);
 		}
@@ -1126,7 +1138,9 @@ public class ContainerServicesImpl implements ContainerServices
 		/* Cleanup internal stuff */
 		for(AcsEventSubscriber subscriber: m_subscribers)
 			subscriber.disconnect();
-
+		// TODO: disconnect publishers once the API is defined
+//		for(AcsEventPublisher publisher: m_publishers)
+//			publisher.disconnect();
 	}
 
 	/**
@@ -1150,45 +1164,6 @@ public class ContainerServicesImpl implements ContainerServices
 		cleanUpCallbacks.add(cb);
 	}
 
-	/**
-	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
-	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
-		return createNotificationChannelSubscriber(channelName, null); //TODO (rtobar): Is this fine? I don't know
-	}
-
-	/**
-	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
-	 */
-	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
-
-		AcsEventSubscriber subscriber = null;
-
-		try {
-			Object[] args = new Object[]{
-					channelName,
-					channelNotifyServiceDomainName,
-					this,
-					getNameService(),
-					m_clientName
-			};
-			Class<?> clazz = Class.forName("alma.acs.nc.refactored.NCSubscriber");
-			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class);
-			subscriber = (AcsEventSubscriber)constructor.newInstance(args);
-		} catch(ClassNotFoundException e) {
-			// TODO: maybe we could prevent future NCSubscriber creation tries, since the class isn't and will not be loaded
-			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC subscriber because the 'NCSubscriber' class is not present in the classpath", e);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
-			ex.setContextInfo("'alma.acs.nc.refactored.NCSubscriber' class not present in the classpath");
-			throw ex;
-		} catch(Throwable e) {
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
-			throw ex;
-		}
-
-		m_subscribers.add(subscriber);
-		return subscriber;
-	}
 
 	private NamingContext getNameService() throws AcsJContainerServicesEx {
 
@@ -1210,6 +1185,149 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 
 		return nameService;
+	}
+
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx {
+		return createNotificationChannelSubscriber(channelName, null); //TODO (rtobar): Is this fine? I'm only 99% sure
+	}
+
+	/**
+	 * @see alma.acs.container.ContainerServices#createNotificationChannelSubscriber(String, String)
+	 */
+	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+
+		AcsEventSubscriber subscriber = null;
+
+		try {
+			Object[] args = new Object[]{
+					channelName,
+					channelNotifyServiceDomainName,
+					this,
+					getNameService(),
+					m_clientName
+			};
+			Class<?> clazz = Class.forName(CLASSNAME_NC_SUBSCRIBER);
+			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class);
+			subscriber = (AcsEventSubscriber)constructor.newInstance(args);
+		} catch(ClassNotFoundException e) {
+			// TODO: maybe we could prevent future NCSubscriber creation tries, since the class isn't and will not be loaded
+			//       The same applies for the next "catch" block
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC subscriber because the 'NCSubscriber' class is not present in the classpath", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			ex.setContextInfo("'" + CLASSNAME_NC_SUBSCRIBER + "' class not present in the classpath");
+			throw ex;
+		} catch(ClassCastException e) {
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC subscriber because loaded class is not of type 'AcsEventSubscriber", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			ex.setContextInfo("'" + CLASSNAME_NC_SUBSCRIBER + "' class does not extend 'AcsEventSubscriber'");
+			throw ex;
+		} catch(Throwable e) {
+			m_logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventSubscriber object", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+		m_subscribers.add(subscriber);
+		return subscriber;
+	}
+
+	/**
+	 * @see ContainerServices#createNotificationChannelPublisher(String)
+	 */
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx {
+		return createNotificationChannelPublisher(channelName, null); // TODO (rtobar): only 99% sure that this is right
+	}
+
+	/**
+	 * @see ContainerServices#createNotificationChannelPublisher(String, String)
+	 */
+	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx {
+
+		AcsEventPublisher publisher = null;
+
+		try {
+			Object[] args = new Object[]{
+					channelName,
+					channelNotifyServiceDomainName,
+					this,
+					getNameService(),
+					m_clientName
+			};
+			Class<?> clazz = Class.forName(CLASSNAME_NC_PUBLISHER);
+			Constructor<?> constructor = clazz.getConstructor(String.class, String.class, ContainerServicesBase.class, NamingContext.class, String.class);
+			publisher = (AcsEventPublisher)constructor.newInstance(args);
+		} catch(ClassNotFoundException e) {
+			// TODO: maybe we could prevent future NCPublisher creation tries, since the class isn't and will not be loaded
+			//       The same applies for the next "catch" block
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because the 'NCPublisher' class is not present in the classpath", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class not present in the classpath");
+			throw ex;
+		} catch(ClassCastException e) {
+			m_logger.log(AcsLogLevel.ERROR, "Cannot create NC publisher because loaded class is not of type 'AcsEventPublisher", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			ex.setContextInfo("'" + CLASSNAME_NC_PUBLISHER + "' class does not extend 'AcsEventPublisher'");
+			throw ex;
+		} catch(Throwable e) {
+			m_logger.log(AcsLogLevel.ERROR, "Unexpected error while creating new AcsEventPublisher object", e);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+		m_publishers.add(publisher);
+		return publisher;
+
+	}
+
+	private void submitAlarm(String faultFamily, String faultMember, int faultCode, boolean raise) throws AcsJContainerServicesEx {
+
+		try {
+
+			ACSAlarmSystemInterface source = null;
+			ACSFaultState faultState = null;
+
+			try {
+				// TODO: Store a map of the created sources if the AS supports more than one source in the future
+				//       Also, don't have a default hardcoded source name here
+				source = ACSAlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES");
+			} catch (SourceCreationErrorEx e) {
+				throw new AcsJContainerServicesEx(e);
+			}
+
+			try {
+				faultState = ACSAlarmSystemInterfaceFactory.createFaultState(faultFamily, faultMember, faultCode);
+			} catch (FaultStateCreationErrorEx e) {
+				e.printStackTrace();
+			}
+
+			if( raise )
+				faultState.setDescriptor(ACSFaultState.ACTIVE);
+			else
+				faultState.setDescriptor(ACSFaultState.TERMINATE);
+
+			faultState.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
+			source.push(faultState);
+
+		} catch (ACSASFactoryNotInitedEx e) {
+			throw new AcsJContainerServicesEx(e);
+		}
+	}
+
+	/**
+	 * @see ContainerServices#raiseAlarm(String, String, int)
+	 */
+	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
+		submitAlarm(faultFamily, faultMember, faultCode, true);
+	}
+
+	/**
+	 * @see ContainerServices#clearAlarm(String, String, int)
+	 */
+	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
+		submitAlarm(faultFamily, faultMember, faultCode, false);
 	}
 
 }
