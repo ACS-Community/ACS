@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: acsMakeJavaClasspath,v 1.2 2010/09/20 14:25:08 mzampare Exp $"
+# "@(#) $Id: acsMakeJavaClasspath,v 1.3 2010/11/18 11:48:13 mzampare Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -86,17 +86,17 @@ if ($ARGV[0] eq "-components") {
     local($myRoots) = "../lib/$ACS_CO".$SEPARATOR;
     local($tmpDir);
 
+    if ( $ENV{INTROOT} ne "") { 
+	$tmpDir = "$ENV{INTROOT}/lib/$ACS_CO";
+	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
+	    $myRoots .= $tmpDir.$SEPARATOR;
+	}
+    }
     if ( $ENV{INTLIST} ne "") { 
 	local($dir);
 	foreach $dir (split(/:/,$ENV{INTLIST})) { 
 	    $tmpDir = "$dir/lib/$ACS_CO";
 	    $myRoots .= $tmpDir.$SEPARATOR if( -d $tmpDir);
-	}
-    }
-    if ( $ENV{INTROOT} ne "") { 
-	$tmpDir = "$ENV{INTROOT}/lib/$ACS_CO";
-	if( -d $tmpDir && $myRoots !~ /$tmpDir/ ) { 
-	    $myRoots .= $tmpDir.$SEPARATOR;
 	}
     }
     if ( $ENV{ACSROOT} ne "") { 
