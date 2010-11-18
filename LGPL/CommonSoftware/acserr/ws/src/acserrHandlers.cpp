@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.7 2010/04/30 09:08:22 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.8 2010/11/18 16:06:48 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -10,10 +10,12 @@
 
 #include "vltPort.h"
 #include "acserrHandlers.h"
+#include <execinfo.h>
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.7 2010/04/30 09:08:22 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.8 2010/11/18 16:06:48 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
+const unsigned int ACSErrmaxBackTraceDepth=255;
 
 using namespace acserrHandlersErr;
 
@@ -27,19 +29,48 @@ class UnspecException {
 };
 
 /**
+ * helper function that adds back trace info to the exception
+ * and releases the array of strings that contains the back trace
+ */
+
+void addBackTrace2Exception(ACSErr::ACSbaseExImpl &ex, char **backTraceString, size_t backTraceSize)
+{
+	char backTraceLevel[4];
+
+	if (backTraceString!=NULL)
+	{
+		for(size_t i=0; i<backTraceSize; i++)
+		{
+			sprintf(backTraceLevel, "#%d", i);
+			ex.addData(backTraceLevel, backTraceString[i]);
+		}//for
+		free(backTraceString);
+	}//if
+};//addBackTrace2Exception
+
+/**
  ACS Handler functions for exceptions:
 */
 void acserrUnspecifiedExHandler()
 {
+	void *backTrace[ACSErrmaxBackTraceDepth];
+	size_t backTraceSize;
+	char **backTraceString;
+
+	backTraceSize = backtrace (backTrace, 255);
+	backTraceString = backtrace_symbols (backTrace, backTraceSize);
 
     try
 	{
+
 	throw ;
 	}
     catch (ACSErr::ACSbaseExImpl &_ex)
 	{
 	UnspecifiedACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__,
 					      "acserrUnspecifiedExHandler", ACSErr::Emergency);
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be logged
 	}
     catch (CORBA::Exception &ce)
@@ -47,6 +78,8 @@ void acserrUnspecifiedExHandler()
 	UnspecifiedCORBAExceptionExImpl ex(__FILE__, __LINE__,
 					   "acserrUnspecifiedExHandler", ACSErr::Emergency);
 	ex.setCORBAExName(ce._name());
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler
 	}
     catch(std::exception &stdex)
@@ -54,12 +87,16 @@ void acserrUnspecifiedExHandler()
         UnspecifiedSTDExceptionExImpl ex(__FILE__, __LINE__,
             "acserrUnspecifiedExHandler", ACSErr::Emergency);
         ex.setWhat(stdex.what());
+        addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
         throw UnspecException(ex); // pass to the acserrUncaughtExHandler
       }
     catch (...)
 	{
 	UnspecifiedUnknownExceptionExImpl ex(__FILE__, __LINE__,
 					     "acserrUnspecifiedExHandler", ACSErr::Emergency);
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be loged
 	}
 }//acserrUnexpected
@@ -67,6 +104,12 @@ void acserrUnspecifiedExHandler()
 
 void acserrUncaughtExHandler()
 {
+	void *backTrace[ACSErrmaxBackTraceDepth];
+	size_t backTraceSize;
+	char **backTraceString;
+
+	backTraceSize = backtrace (backTrace, 255);
+	backTraceString = backtrace_symbols (backTrace, backTraceSize);
 
     try
 	{
@@ -76,6 +119,8 @@ void acserrUncaughtExHandler()
 	{
 	UncaughtUnspecifiedExceptionExImpl ex(_ex.unspecEx,
 					      __FILE__, __LINE__, "acserrUncaughtExHandler", ACSErr::Emergency);
+	// here we already have back trace from acserrUnspecifiedExHandler, but we have to free backTraceString
+	free(backTraceString);
 	ex.log();
 //	ACS_LOG(LM_RUNTIME_CONTEXT, "acserrUncaughtExHandler", (LM_EMERGENCY, "Program terminated because unspecified exception was thrown"));
 	}
@@ -83,6 +128,8 @@ void acserrUncaughtExHandler()
 	{
 	UncaughtACSBasedExceptionExImpl ex(_ex, __FILE__, __LINE__,
 					   "acserrUncaughtExHandler", ACSErr::Emergency);
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
 	ex.log();
 	}
     catch (CORBA::Exception &ce)
@@ -90,6 +137,8 @@ void acserrUncaughtExHandler()
 	UncaughtCORBAExceptionExImpl ex(__FILE__, __LINE__,
 					"acserrUncaughtExHandler", ACSErr::Emergency);
 	ex.setCORBAExName(ce._name());
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
   	ex.log();
 	}
     catch(std::exception &stdex)
@@ -97,12 +146,16 @@ void acserrUncaughtExHandler()
       UncaughtSTDExceptionExImpl ex(__FILE__, __LINE__,
                                     "acserrUncaughtExHandler", ACSErr::Emergency);
       ex.setWhat(stdex.what());
+      addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
       ex.log();
     }
     catch (...)
 	{
 	UncaughtUnknownExceptionExImpl ex(__FILE__, __LINE__,
 					  "acserrUncaughtExHandler", ACSErr::Emergency);
+	addBackTrace2Exception(ex, backTraceString, backTraceSize);
+
   	ex.log();
 	}
 }//acserrTerminate
