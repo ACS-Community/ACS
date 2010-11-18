@@ -995,7 +995,7 @@ public class AcsContainer extends ContainerPOA
 			Object baciFramework = clazz.getField("INSTANCE").get(null);
 			clazz.getMethod("shutdown").invoke(baciFramework);
 		} catch(Exception e) {
-			m_logger.log(Level.WARNING, "Failed to graceful shutdown the BACI framework", e);
+			m_logger.log(Level.WARNING, "Failed to graceful shutdown the BACI framework");
 		}
 
 		m_managerProxy.logoutFromManager();
