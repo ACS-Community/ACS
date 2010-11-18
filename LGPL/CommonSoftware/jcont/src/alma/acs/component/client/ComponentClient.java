@@ -23,13 +23,13 @@ package alma.acs.component.client;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.POA;
 
 import si.ijs.maci.Client;
-
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.CleaningDaemonThreadFactory;
@@ -38,6 +38,7 @@ import alma.acs.container.ContainerServicesImpl;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.shutdown.ShutdownHookBase;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 
 /**
@@ -71,7 +72,9 @@ public class ComponentClient
     final AcsCorba acsCorba;
     
     final boolean ownAcsCorba;
-    
+
+    private ShutdownHookBase m_shutdownHook;
+    final private AtomicBoolean m_shuttingDown = new AtomicBoolean(false);
 
 
 
@@ -151,10 +154,23 @@ public class ComponentClient
 			initRemoteLogging();
 		}
 
+		m_shutdownHook = new ShutdownHookBase(m_logger, "ClientVM") {
+			protected void interruptDetected() {
+				try {
+					m_logger.severe("*** client process has been interrupted - will shut down ***");
+					tearDown();
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				System.err.println("*** emergency shutdown complete, will exit... ***");
+			}
+			protected void regularTermination() {
+				// Don't do or say anything
+			}
+		};
+		Runtime.getRuntime().addShutdownHook(m_shutdownHook);
 		m_logger.fine("ready to talk with components!");
 	}
-
-
 
 	private void initAcs(String managerLoc, POA rootPOA) throws Exception
 	{
@@ -284,6 +300,12 @@ public class ComponentClient
 	 */
 	public void tearDown() throws Exception
 	{
+
+		if( m_shuttingDown.getAndSet(true) ) {
+			m_logger.fine("duplicate call to tearDown() will be ignored");
+			return;
+		}
+
 		m_logger.fine("will disconnect ACS stuff...");
 		try
 		{
@@ -315,6 +337,8 @@ public class ComponentClient
 			e.printStackTrace(System.err);
 			throw e;
 		}
+
+		m_shutdownHook.setRegularShutdownExpected();
 	}
 
 }
