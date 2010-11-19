@@ -36,6 +36,7 @@
 1 - </LoggingConfig> with env vars having precedence over CDB
 1 - ----------T--:--:--.--- FINE [testContainer] Set ORB level roundtrip timeout to 30.0 seconds.
 1 - ----------T--:--:--.--- DEBUG [testContainer] Alarm system type: ACS
+1 - ----------T--:--:--.--- WARNING [testContainer] Error initializing the BACI framework, container will run withouth the BACI Framework initialized
 1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- FINER [testContainer] asynchronously calling ClientLogManager#initRemoteLogging()...
 1 - ----------T--:--:--.--- FINE [testContainer] entering orb loop
@@ -45,5 +46,6 @@
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
 1 - ----------T--:--:--.--- FINE [testContainer] received call to deactivate_component, handle=0
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
+1 - ----------T--:--:--.--- WARNING [testContainer] Failed to graceful shutdown the BACI framework
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
 1 - ----------T--:--:--.--- FINER [testContainer] RETURN
