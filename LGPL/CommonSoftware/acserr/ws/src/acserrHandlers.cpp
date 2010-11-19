@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.8 2010/11/18 16:06:48 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.9 2010/11/19 14:06:57 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -12,7 +12,7 @@
 #include "acserrHandlers.h"
 #include <execinfo.h>
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.8 2010/11/18 16:06:48 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.9 2010/11/19 14:06:57 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 const unsigned int ACSErrmaxBackTraceDepth=255;
@@ -107,6 +107,9 @@ void acserrUncaughtExHandler()
 	void *backTrace[ACSErrmaxBackTraceDepth];
 	size_t backTraceSize;
 	char **backTraceString;
+
+	//here we set the handler to verbose in case an exception is generated in this function
+	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 
 	backTraceSize = backtrace (backTrace, 255);
 	backTraceString = backtrace_symbols (backTrace, backTraceSize);
