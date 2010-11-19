@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.10 2010/11/19 14:31:29 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.11 2010/11/19 14:54:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -14,7 +14,7 @@
 #include <execinfo.h>
 #endif
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.10 2010/11/19 14:31:29 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.11 2010/11/19 14:54:13 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #ifndef MAKE_VXWORKS
@@ -107,8 +107,9 @@ void acserrUnspecifiedExHandler()
 	{
 	UnspecifiedUnknownExceptionExImpl ex(__FILE__, __LINE__,
 					     "acserrUnspecifiedExHandler", ACSErr::Emergency);
+#ifndef MAKE_VXWORKS
 	addBackTrace2Exception(ex, backTraceString, backTraceSize);
-
+#endif
 	throw UnspecException(ex); // pass to the acserrUncaughtExHandler where it be loged
 	}
 }//acserrUnexpected
