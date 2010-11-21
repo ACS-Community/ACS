@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.106 2010/10/22 08:49:41 rbourtem Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.107 2010/11/21 14:39:21 javarias Exp $"
 #
 #
 #
@@ -1404,6 +1404,7 @@ export ACS_STARTUP_TIMEOUT_MULTIPLIER
 export ACS_INSTANCE
 export OSYSTEM
 export PATH_SEP
+export ACS_TMP
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
