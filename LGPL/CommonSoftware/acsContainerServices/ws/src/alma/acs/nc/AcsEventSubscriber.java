@@ -37,6 +37,8 @@ import alma.acsnc.EventDescription;
  *   <li>Alternatively, we could make this class generic and fix a single event type for the entire object (interface),
  *       so that the java compiler would not allow to add a subscription for a different type.
  *   <li>TODO: The declared exceptions must be cleaned up. Rather no generic AcsJException, and no Corba-NC-specific exceptions.
+ *       Also, determine which methods should expose IllegalStateException and which not
+ *       ({@link #disconnect()}, {@link #resume()} and {@link #suspend()} depend on the current state of the subscriber).
  *   <li>TODO: We need to check if this API actually works for DDS.
  *   <li>An in-memory shortcutting (simulated channel/topic) could be useful, for testing without external processes running.
  * </ul>
@@ -82,13 +84,44 @@ public interface AcsEventSubscriber {
 	 */
 	public void startReceivingEvents() throws AcsJException;
 	
-	public void disconnect();
+	/**
+	 * Disconnects this subscriber from the Notification Channel, and releases all
+	 * the resources associated with it. After this call, all registered handlers
+	 * will stop receiving events.
+	 * 
+	 * Calling this method over a subscriber object that has been already disconnected
+	 * will throw an {@link IllegalStateException}.
+	 *
+	 * @throws IllegalStateException If this method is called over an AcsEventSubscriber object
+	 * that has been already disconnected
+	 */
+	public void disconnect() throws IllegalStateException;
 
+	/** 
+	 * Used to temporarily halt receiving events of all types.
+	 * <p>
+	 * If the Subscriber has been connected already (method {@link #startReceivingEvents()}, 
+	 * then after calling this method, incoming events will be buffered instead of being discarded; 
+	 * unexpired events will be received later, after a call to {@link #resume()}.
+	 * 
+	 * <p>
+	 * This call has no effect if the Subscriber is not connected, or if it is
+	 * connected but already suspended.
+	 *
+	 * @throws IllegalStateException if the subscriber is not connected to an NC.
+	 */
 	public void suspend();
 
+	/**
+	 * Used to reenable the Subscriber after a call to the
+	 * <code>suspend()</code> method. Queued events will be received after
+	 * this call, see {@link #suspend()}.
+	 * 
+	 * This call has no effect if the Subscriber is not connected, or if it is
+	 * connected and already processing events.
+	 */
 	public void resume();
 
-	
 	/**
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
