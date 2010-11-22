@@ -5,6 +5,7 @@
 	xmlns="urn:schemas-cosylab-com:Container:1.0" 
 	xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
 	ImplLang="java"
+	PingInterval="60"
 	>
 
     <Autoload>
