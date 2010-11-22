@@ -1,0 +1,5 @@
+1 - === Running all JUnit tests related to the client
+1 -  -- alma.acs.component.client.ShutdownHookTest
+1 - ----------T--:--:--.--- SEVERE [ShutdownHookTestClient] *** client process has been interrupted - will shut down ***
+1 - *** emergency shutdown complete, will exit... ***
+1 - === Done running jcont JUnit tests related to the client

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  US
 #
-# "@(#) $Id: Makefile,v 1.22 2010/06/18 11:50:13 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.23 2010/11/22 15:00:14 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -67,7 +67,7 @@ jcontTest_DIRS = alma/acs \
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = selfcontainedUnitTestsJCONT componentUnitTestsJCONT classpathTestsJCONT jcontTATPrologue 
+SCRIPTS_L       = selfcontainedUnitTestsJCONT componentUnitTestsJCONT classpathTestsJCONT jcontTATPrologue clientTestsJCONT
 
 #>>>>> END OF standard rules
 
