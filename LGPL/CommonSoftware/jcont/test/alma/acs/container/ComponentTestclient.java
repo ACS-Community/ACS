@@ -240,6 +240,8 @@ public class ComponentTestclient extends ComponentClientTestCase
 					blockLizzy.awaitNotifications(10, TimeUnit.SECONDS));
 		assertEquals(1, blockLizzy.getAllCompsAvailable().size());
 		assertEquals(1, blockLizzy.getAllCompNamesUnavailable().size());
+
+		secondClient.tearDown();
 	}
 }
 
