@@ -19,6 +19,13 @@
 
 package alma.acs.nc.refactored;
 
+import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,13 +54,6 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 import org.omg.CosNotifyFilter.FilterNotFound;
-
-import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
-import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
@@ -570,7 +570,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			discardAllEvents();
 		else {
 			// Since we have specific subscriptions, we have to apply the corresponding filters
-			for (Class eventType : receivers.keySet()) {
+			for (Class<?> eventType : receivers.keySet()) {
 				String keyName = eventType.getName();
 				String filter = keyName.substring(keyName.lastIndexOf('.') + 1);
 				subscriptionsFilters.put(keyName, addFilter(filter));
@@ -690,18 +690,12 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 	}
 
-	/**
-	 * This method <B>must</B> be invoked before a component or client is
-	 * destroyed. Failure to do so can cause remote memory leaks. Make sure it
-	 * is not invoked multiple times. Once it has been called, events will no
-	 * longer be received.
-	 * 
-	 * @todo Notice that the consumer admin object is not being destroyed. For
+	/* TODO Notice that the consumer admin object is not being destroyed. For
 	 * doing this we must check if there's no more clients using it. Check if
 	 * it's possible using TAO extensions.
 	 */
 	@Override
-	public void disconnect() {
+	public void disconnect() throws IllegalStateException {
 		disconnectLock.lock();
 		boolean success = false;
 		try {
@@ -732,9 +726,11 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			logger.fine("No need to release resources for channel " + channelName + " because the NC has been destroyed already.");
 			success = true;
 		}
+		catch (IllegalStateException ex) {
+			throw ex;
+		}
 		catch (Exception ex2) {
-			logger.log(Level.WARNING, "Failed to disconnect from NC '" + channelName + "'.\n" + ex2.toString());
-			// @TODO Should we throw the exception?
+			
 		}
 		finally {
 			if (success) {
@@ -762,16 +758,12 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		}
 	}
 
-	/** 
-	 * Used to temporarily halt receiving events of all types.
+	/**
+	 * {@inheritDoc}
+	 *
 	 * <p>
-	 * If the Subscriber has been connected already (method {@link #startReceivingEvents()}, 
-	 * then after calling this method, incoming events will be buffered instead of being discarded; 
-	 * unexpired events will be received later, after a call to {@link #resume()}.
-	 * <p>
-	 * This design follows CORBA NC standard, as described in 
+	 * The design of this implementation follows CORBA NC standard, as described in 
 	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
-	 * @throws IllegalStateException if the subscriber is not connected to an NC.
 	 */
 	@Override
 	public void suspend() {
@@ -794,13 +786,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		}
 	}
 
-	/**
-	 * Used to reenable the Subscriber after a call to the
-	 * <code>suspend()</code> method. Queued events will be received after
-	 * this call, see {@link #suspend()}.
-	 * 
-	 * This call has no effect if the Subscriber is not connected.
-	 */
 	@Override
 	public void resume() {
 		try {
