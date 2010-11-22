@@ -28,11 +28,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
@@ -162,8 +160,8 @@ public class ContainerServicesImpl implements ContainerServices
 
 	private final List<CleanUpCallback> cleanUpCallbacks;
 
-	private final Set<AcsEventSubscriber> m_subscribers;
-	private final Set<AcsEventPublisher>  m_publishers;
+	private final Map<String, AcsEventSubscriber> m_subscribers;
+	private final Map<String, AcsEventPublisher>  m_publishers;
 	final String CLASSNAME_NC_SUBSCRIBER = "alma.acs.nc.refactored.NCSubscriber";
 	final String CLASSNAME_NC_PUBLISHER  = "alma.acs.nc.refactored.NCPublisher";
 
@@ -204,8 +202,8 @@ public class ContainerServicesImpl implements ContainerServices
 		m_componentDescriptorMap = Collections.synchronizedMap(new HashMap<String, ComponentDescriptor>());
 		m_activatedOffshootsMap = Collections.synchronizedMap(new HashMap<Object, Servant>());
 
-		m_subscribers = new HashSet<AcsEventSubscriber>();
-		m_publishers  = new HashSet<AcsEventPublisher>();
+		m_subscribers = new HashMap<String, AcsEventSubscriber>();
+		m_publishers  = new HashMap<String, AcsEventPublisher>();
 
 		m_threadFactory = threadFactory;
 		
@@ -1135,12 +1133,29 @@ public class ContainerServicesImpl implements ContainerServices
 			}
 		}
 
-		/* Cleanup internal stuff */
-		for(AcsEventSubscriber subscriber: m_subscribers)
-			subscriber.disconnect();
-		// TODO: disconnect publishers once the API is defined
-//		for(AcsEventPublisher publisher: m_publishers)
-//			publisher.disconnect();
+		/* Disconnect NC subscribers */
+		for(String channel: m_subscribers.keySet()) {
+			AcsEventSubscriber subscriber = m_subscribers.get(channel);
+			try {
+				subscriber.disconnect();
+				String tmp[] = channel.split("/");
+				m_logger.log(AcsLogLevel.NOTICE, "Automatically disconnected subscriber for NC '" + tmp[tmp.length - 1] + "'");
+			} catch (IllegalStateException e) {
+				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
+			}
+		}
+
+		/* Disconnect NC publishers */
+		for(String channel: m_publishers.keySet()) {
+			AcsEventPublisher subscriber = m_publishers.get(channel);
+			try {
+				subscriber.disconnect();
+				String tmp[] = channel.split("/");
+				m_logger.log(AcsLogLevel.NOTICE, "Automatically disconnected publisher for NC '" + tmp[tmp.length - 1] + "'");
+			} catch (IllegalStateException e) {
+				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
+			}
+		}
 	}
 
 	/**
@@ -1230,7 +1245,7 @@ public class ContainerServicesImpl implements ContainerServices
 			throw ex;
 		}
 
-		m_subscribers.add(subscriber);
+		m_subscribers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, subscriber);
 		return subscriber;
 	}
 
@@ -1277,7 +1292,7 @@ public class ContainerServicesImpl implements ContainerServices
 			throw ex;
 		}
 
-		m_publishers.add(publisher);
+		m_publishers.put( (channelNotifyServiceDomainName == null ? "" : channelNotifyServiceDomainName) + "/" + channelName, publisher);
 		return publisher;
 
 	}
