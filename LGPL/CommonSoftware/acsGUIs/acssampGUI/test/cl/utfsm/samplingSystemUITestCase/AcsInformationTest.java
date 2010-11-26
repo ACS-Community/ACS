@@ -44,4 +44,8 @@ public class AcsInformationTest extends TestCase {
 		assertTrue(info1.propertyExists("LAMP1","brightness"));
 		assertTrue(!info1.propertyExists("LAMP1","oduck"));
 	}
+
+	public void tearDown() throws Exception {
+		AcsInformation.getInstance("AcsInformationTest").shutDown();
+	}
 }
