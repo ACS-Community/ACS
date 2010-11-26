@@ -22,10 +22,30 @@
 #
 
 echo "=== Running all JUnit tests related to the client"
-    acsStartJava alma.acs.component.client.ShutdownHookTest &
+
+    # Start ComponentClient, sleep 1 second, call tearDown() -- everything should go normally
+    acsStartJava alma.acs.component.client.ShutdownHookTest 0 1 1
+
+    # Start SlowComponentClient, sleep 1 second, call tearDown(), then kill process -- shutdown hook should not trigger tearDown() again
+    acsStartJava alma.acs.component.client.ShutdownHookTest 1 1 1 &
     sleep 5
     pid=$(jobs -l | awk '{print $2}')
     pid=$(ps -o pid --ppid $pid | grep -v PID)
     kill $pid
     wait
+
+    # Start ComponentClient, sleep 1 second, call tearDown() twice -- log message about double tearDown()
+    acsStartJava alma.acs.component.client.ShutdownHookTest 0 1 2
+
+    # Start ComponentClient, sleep 1 second, don't call tearDown() -- shutdown hook should call it
+    acsStartJava alma.acs.component.client.ShutdownHookTest 0 1 0
+
+    # Start ComponentClient, sleep 100 seconds, kill it before it calls the tearDown() -- shutdown hook should call it
+    acsStartJava alma.acs.component.client.ShutdownHookTest 0 100 0 &
+    sleep 5
+    pid=$(jobs -l | awk '{print $2}')
+    pid=$(ps -o pid --ppid $pid | grep -v PID)
+    kill $pid
+    wait
+
 echo "=== Done running jcont JUnit tests related to the client"
