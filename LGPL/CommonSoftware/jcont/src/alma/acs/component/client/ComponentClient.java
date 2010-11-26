@@ -157,7 +157,7 @@ public class ComponentClient
 		m_shutdownHook = new ShutdownHookBase(m_logger, "ClientVM") {
 			protected void interruptDetected() {
 				try {
-					m_logger.severe("*** client process has been interrupted - will shut down ***");
+					m_logger.severe("*** process is exiting without releasing ACS client - will tearDown() it ***");
 					tearDown();
 				} catch(Exception e) {
 					e.printStackTrace();
