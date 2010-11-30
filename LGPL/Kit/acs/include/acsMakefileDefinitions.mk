@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.9 2010/10/28 12:05:20 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.10 2010/11/30 09:13:13 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -203,11 +203,11 @@ $(if $(wildcard ../idl/$1.midl),
 
 .PHONY: $1_IDL_Java
 $1_IDL_Java: TMPSRC:= ../object/$1/src
-$1_IDL_Java: ../lib/$1.jar;
+$1_IDL_Java: $(CURDIR)/../lib/$1.jar;
 
 
-../lib/$1.jar: TMPSRC=../object/$1/src
-../lib/$1.jar: $1.idl $($1_IDLprereq) $(subst ../idl/,,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
+$(CURDIR)/../lib/$1.jar: TMPSRC=../object/$1/src
+$(CURDIR)/../lib/$1.jar: $1.idl $($1_IDLprereq) $(subst ../idl/,,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
 	- @echo "== (preprocessing) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  /tmp/$(UNIQUE_NUMBER).$1.idl
 	- @echo "== IDL Compiling for JacORB (Java): $1 "
@@ -313,7 +313,7 @@ install_IDL_$1_Python: $1.idl
 .PHONY: install_IDL_$1_Java
 install_IDL_$1_Java: $(LIB)/$1.jar;
 
-$(LIB)/$1.jar: ../lib/$1.jar
+$(LIB)/$1.jar: $(CURDIR)/../lib/$1.jar
 	$(AT)cp ../lib/$1.jar $(LIB)/$1.jar
 	$(AT)chmod $(P755) $(LIB)/$1.jar
 
@@ -449,7 +449,7 @@ $(LIB)/python/site-packages/$1Impl.py: ../lib/python/site-packages/$1Impl.py
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1Impl.pyc
 
 .PHONY: do_xmlerr_Java_$1
-do_xmlerr_Java_$1: ../lib/$1.jar
+do_xmlerr_Java_$1: $(CURDIR)/../lib/$1.jar
 
 .PHONY: clean_xmlerr_$1_Java
 clean_xmlerr_$1_Java:
@@ -540,10 +540,10 @@ $(LIB)/python/site-packages/$1.wxs: ../lib/python/site-packages/$1.wxs
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1.wxs
 
 .PHONY: do_xsdbind_Java_$1
-do_xsdbind_Java_$1: ../lib/$1.jar
+do_xsdbind_Java_$1: $(CURDIR)/../lib/$1.jar
 
-../lib/$1.jar: TMPSRC=../object/$1/src
-../lib/$1.jar: ../idl/$1.xml
+$(CURDIR)/../lib/$1.jar: TMPSRC=../object/$1/src
+$(CURDIR)/../lib/$1.jar: ../idl/$1.xml
 	-@echo "== XSD Compiling with Castor (Java): $1"
 	$(AT) mkdir -p $$(TMPSRC)
 ifdef ACSROOT
@@ -566,7 +566,7 @@ clean_xsdbind_$1_Java:
 .PHONY: install_xsdbind_$1_Java
 install_xsdbind_$1_Java: $(LIB)/$1.jar
 
-$(LIB)/$1.jar: ../lib/$1.jar
+$(LIB)/$1.jar: $(CURDIR)/../lib/$1.jar
 	$(AT)cp ../lib/$1.jar $(LIB)/$1.jar
 	$(AT)chmod $(P755) $(LIB)/$1.jar
 
@@ -635,11 +635,11 @@ $(if $1,$(eval $1_sourcePrefixed_file_list=$(foreach jFile,$$($1_source_file_lis
 do_java_$1: $(do_java_$1_prereq)
 
 .PHONY: do_java_Java_$1
-do_java_Java_$1: ../$$(tgtDir$1)/$1.jar
+do_java_Java_$1: $(CURDIR)/../$$(tgtDir$1)/$1.jar
 
 
-../$$(tgtDir$1)/$1.jar: TMPSRC=../object/$1/src 
-../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,../lib/$(jar).jar)
+$(CURDIR)/../$$(tgtDir$1)/$1.jar: TMPSRC=../object/$1/src 
+$(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CURDIR)/../lib/$(jar).jar)
 	@echo "== Making Jarfile $1.jar"
 	$(AT) $(RM) $$($1_FILELISTFILE)
 	$(AT) mkdir -p $$(TMPSRC)
@@ -671,7 +671,7 @@ clean_java_$1_Java:
 .PHONY: install_java_$1_Java
 install_java_$1_Java: $(PRJTOP)/$$(tgtDir$1)/$1.jar
 
-$(PRJTOP)/$$(tgtDir$1)/$1.jar: ../$$(tgtDir$1)/$1.jar
+$(PRJTOP)/$$(tgtDir$1)/$1.jar: $(CURDIR)/../$$(tgtDir$1)/$1.jar
 	$(AT)cp ../$$(tgtDir$1)/$1.jar $(PRJTOP)/$$(tgtDir$1)/$1.jar
 	$(AT)chmod $(P755) $(PRJTOP)/$$(tgtDir$1)/$1.jar
 
