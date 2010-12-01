@@ -154,13 +154,14 @@ int BulkDataCallback::handle_stop (void)
 
 	    if ( locLoop == 0 )
 		{
-		ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout (%d * (%d sec + %d msec)) expired for flow %s - not all data received", loop_m, waitPeriod_m.sec(), waitPeriod_m.msec(), flowname_m.c_str()));
+		ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_stop timeout ( (%ld sec + %ld usec) * %ld ) expired for flow %s - not all data received", waitPeriod_m.sec(), waitPeriod_m.usec(), loop_m, flowname_m.c_str()));
 
 		timeout_m = true;
 		//cleaning the recv buffer
 		///cleanRecvBuffer();
 		//cout << "BulkDataCallback::handle_stop - handle removed: " << getHandle() << endl;
 		TAO_AV_CORE::instance()->reactor()->remove_handler(getHandle(),ACE_Event_Handler::READ_MASK);
+		ACS_SHORT_LOG((LM_DEBUG,"BulkDataCallback::handle_stop - receiver handler removed from the ACE reactor"));
 		//ACE_OS::sleep(1);  // seems necessary to give time to remove
 		                   // the handler from the reactor
 		throw CORBA::TIMEOUT();
