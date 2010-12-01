@@ -56,8 +56,12 @@ class BulkDataDistributerCb : public TAO_AV_Callback
 
     virtual void setFlowname (const char*);
 
+    // The use of setSleepTime is deprecated. It has no effect
+    // on the waiting time of the handle_stop method
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
+    // The use of setSafeTimeout is deprecated. It has no effect
+    // on the waiting time of the handle_stop method
     virtual void setSafeTimeout(CORBA::ULong locLoop);
 
     virtual int cbFwdStart(ACE_Message_Block * userParam_p = 0);
@@ -83,6 +87,8 @@ class BulkDataDistributerCb : public TAO_AV_Callback
 	    return isFepAlive_m;
 	}
 
+    // The use of setCbTimeout is deprecated. It has no effect
+    // on the waiting time of the handle_stop method
     virtual void setCbTimeout(ACE_Time_Value cbTimeout);
 
 
