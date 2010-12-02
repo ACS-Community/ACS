@@ -71,9 +71,10 @@ int BulkDataDistributerCb::handle_stop (void)
 	ACE_OS::sleep(waitPeriod_m);
 	locLoop--; 
 	} // we didn't receive the first frame yet
-    if ( locLoop == 0 ) // TBD error handling has to be done
+    if ( locLoop == 0 )
 	{
 	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerCb::handle_stop timeout expired"));
+	throw CORBA::TIMEOUT();
 	}
 
     //cout << "CCCCCCCCCCCCCCCCC enter stop state " << state_m << " " << substate_m << endl;
