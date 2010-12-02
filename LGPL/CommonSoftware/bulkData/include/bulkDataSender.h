@@ -225,6 +225,9 @@ namespace AcsBulkdata
 	*/
 	std::vector<std::string> getFlowNames();
 
+        // checks if the handler referenced by handle is registered inside the ACE Reactor
+	ACE_HANDLE findHandle(ACE_CString &flowname);
+
 	/* THE FOLLOWING METHODS ARE UNDER TESTING - PLEASE DO NOT USE THEM */
 	/********************************************************************/
 
@@ -235,7 +238,6 @@ namespace AcsBulkdata
 	void stopStream(CORBA::ULong flownumber);
 
 	/********************************************************************/
-
 
       private:
 
@@ -412,7 +414,7 @@ namespace AcsBulkdata
 
 	HandleMap handleMap_m;
 
-	AVStreams::flowSpec_var recvFeps_p;
+ 	AVStreams::flowSpec_var recvFeps_p;
 
 	AVStreams::flowSpec senderFeps_m;
 

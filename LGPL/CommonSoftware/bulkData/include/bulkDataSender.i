@@ -1262,7 +1262,8 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::deleteHandler()
 	    if((handleMap_m.find(flowname,handle)) == -1)
 		{
 		//ACS_SHORT_LOG((LM_INFO,"BulkDataSender<>::deleteHandler - handle not present in HandleMap"));
-		return; // to be better defined what to do here
+		//return; // to be better defined what to do here
+		continue;
 		}
 	    else
 		{
@@ -1399,5 +1400,32 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::mergeFlowSpecs()
 	ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
 	ACSBulkDataError::AVStreamBindErrorExImpl err = ACSBulkDataError::AVStreamBindErrorExImpl(ex,__FILE__,__LINE__,"BulkDataSender::mergeFlowSpecs");
 	throw err;
+	}
+}
+
+
+template<class TSenderCallback>
+ACE_HANDLE AcsBulkdata::BulkDataSender<TSenderCallback>::findHandle(ACE_CString &flowname)
+{
+    ACS_TRACE("BulkDataSender<>::findHandle");
+
+    ACE_HANDLE handle;
+    if((handleMap_m.find(flowname,handle)) == -1)
+	{
+	//ACS_SHORT_LOG((LM_DEBUG,"handle not in the handle map"));
+	return -1;
+	}
+    else
+	{
+	if(TAO_AV_CORE::instance()->reactor()->find_handler(handle))
+	    {
+	    return handle;
+	    }
+	else
+	    {
+	    ACS_SHORT_LOG((LM_DEBUG,"handle in the handle map but not registered in the ACE Reactor"));
+	    handleMap_m.unbind(flowname,handle);
+	    return -1;
+	    }
 	}
 }
