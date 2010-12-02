@@ -13,14 +13,14 @@
 1 - ----------T--:--:--.--- [Container1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container1 - maci::Container::init] Recovery disabled.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Container 'Container1' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderDistrLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderDistrLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderDistrLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderDistrLib.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataDistributerLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataDistributerLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataDistributerLib.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr1Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr1Lib.so'
@@ -29,8 +29,8 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverDistr2Lib.so'.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Container 'Container1' initialized successfuly
-1 - ----------T--:--:--.--- [Container1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [Container1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
@@ -46,8 +46,8 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderDistrLib'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderDistrLib.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderDistrLib'.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataSenderDistr: NEW -> INITIALIZING
@@ -66,16 +66,16 @@
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiverDistr1' activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverDistr2Lib.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverDistr2Lib'.
-1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiverDistr2' activated.
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiverDistr2' activated.
+1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataReceiverDistr2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow2
-1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataDistributerCb::setCbTimeout - distributor timeout set to 0 sec - 10 usec
-1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataDistributerCb::setCbTimeout - distributor timeout set to 0 sec - 10 usec
+1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataDistributerCb::setCbTimeout - distributor timeout set to ( (0 sec - 10 usec) * 1000 )
+1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataDistributerCb::setCbTimeout - distributor timeout set to ( (0 sec - 10 usec) * 1000 )
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
@@ -87,16 +87,16 @@
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr2)
-1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length start parameter sent = 10000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 flowname 1: Flow1
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 length param flowname 1: 10000
+1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length start parameter sent = 10000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 flowname 2: Flow2
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 successfully opened file: bulkDataDistrOutput.txt
 1 - ----------T--:--:--.--- [Container1-GL - ] flow 1 length sent data = 140000
 1 - ----------T--:--:--.--- [Container1-GL - ] flow 2 sending file: bulkDataInput.txt ...
-1 - ----------T--:--:--.--- [Container1-GL - ] flow 2 file bulkDataInput.txt sent
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 flow 1 total length: 140000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 successfully saved file!
+1 - ----------T--:--:--.--- [Container1-GL - ] flow 2 file bulkDataInput.txt sent
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponent(BulkDataReceiverDistr1)
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr2)
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponent(BulkDataReceiverDistr2)
@@ -124,7 +124,7 @@
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::logout] Logged out from the Manager.
 1 - ----------T--:--:--.--- [Container1 - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [Container1-GL - ] Stopping container... 
+1 - ----------T--:--:--.--- [Container1-GL - ] Container stopped.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
 1 - /----/libbaci.so
-1 - ----------T--:--:--.--- [Container1-GL - ] Container stopped.

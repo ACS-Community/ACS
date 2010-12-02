@@ -13,18 +13,18 @@
 1 - ----------T--:--:--.--- [ContainerEx1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::Container::init] Recovery disabled.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Container 'ContainerEx1' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbaci.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataSenderLibEx1.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibEx1.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Container 'ContainerEx1' initialized successfuly
-1 - ----------T--:--:--.--- [ContainerEx1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libbulkDataReceiverLibEx1.so'.
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [ContainerEx1-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
@@ -40,14 +40,14 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataReceiverLibEx1.so'
-1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataReceiverLibEx1'.
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataReceiver: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerEx1 - maci::ContainerImpl::activate_component] Component 'BulkDataReceiver' activated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbulkDataSenderLibEx1.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bulkDataSenderLibEx1'.
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Switched state of component BulkDataSenderEx1: NEW -> INITIALIZING
@@ -80,6 +80,6 @@
 1 - ----------T--:--:--.--- [ContainerEx1 - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
 1 - /----/libbaci.so
 1 - ----------T--:--:--.--- [ContainerEx1-GL - ] Container stopped.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libbaci.so'.
