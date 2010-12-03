@@ -1,0 +1,13 @@
+--- build.xml	2009-04-20 08:23:40.000000000 +0000
++++ build2.xml	2010-12-01 01:47:50.000000000 +0000
+@@ -91,6 +91,10 @@
+             </fileset>
+         </copy>
+ 
++        <copy todir="${basedir}/build/src/">
++            <fileset dir="${basedir}/source" includes="**/*.java" />
++        </copy>
++
+         <!-- make the jar -->
+         <jar jarfile="${basedir}/lib/${jfreechart.name}-${jfreechart.version}.jar"
+              basedir="${basedir}/build" >
