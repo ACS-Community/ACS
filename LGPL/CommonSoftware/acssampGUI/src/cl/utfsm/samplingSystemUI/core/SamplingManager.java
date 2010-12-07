@@ -29,7 +29,6 @@ import java.util.Hashtable;
  */ 
 public class SamplingManager {
 	Hashtable<SampDetail,SampObj> samplingObjects = null;
-	AcsInformation info = null;
 	private static HashMap<String,SamplingManager> _instances = null;
 	private static SamplingManager _last_referenced = null;
 	private String managerName = "";
@@ -46,8 +45,7 @@ public class SamplingManager {
 	 */ 
 	private SamplingManager(String managerName) throws SamplingManagerException{
 		try{
-			info = AcsInformation.getInstance();
-			if(!info.componentExists(managerName)){
+			if(!AcsInformation.getInstance().componentExists(managerName)){
 				throw new SamplingManagerException("No reference to manager by name "+managerName);
 			}
 			samplingObjects = new Hashtable<SampDetail,SampObj>();
@@ -98,7 +96,7 @@ public class SamplingManager {
 		if( _acssamp_instance == null ) {
 			org.omg.CORBA.Object obj;
 			try {
-				obj = (info.getContainerServices()).getComponent(managerName);
+				obj = (AcsInformation.getInstance().getContainerServices()).getComponent(managerName);
 				_acssamp_instance = alma.acssamp.SampHelper.narrow(obj);
 			} catch (AcsJContainerServicesEx e) {
 				
@@ -109,7 +107,7 @@ public class SamplingManager {
 			try {
 				_acssamp_instance.componentState();
 			} catch (Exception e) {
-				info.getContainerServices().releaseComponent(managerName);
+				AcsInformation.getInstance().getContainerServices().releaseComponent(managerName);
 				_acssamp_instance = null;
 				throw new SamplingManagerException("Sampling Manager '"
 						+ managerName + "' reference has been destroyed");
@@ -140,13 +138,13 @@ public class SamplingManager {
                                                                                  MemoryFaultEx, OutOfBoundsEx, SamplingManagerException {
 		SampObj temp=null;
 		if(samplingObjects.get(managerDef)!=null){
-			info.getContainerServices().getLogger().info("Trying to add a duplicate samplingObj");
+			AcsInformation.getInstance().getContainerServices().getLogger().info("Trying to add a duplicate samplingObj");
 			return samplingObjects.get(managerDef);
 		}
 		try{
 			temp = getSampReference().initSampObj(managerDef.getComponent(),managerDef.getProperty(),managerDef.getFrequency(),managerDef.getReportRate());
 		} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx tmp) {
-			info.getContainerServices().getLogger().warning("Sampling Manager could not access component " +  managerDef.getComponent());
+			AcsInformation.getInstance().getContainerServices().getLogger().warning("Sampling Manager could not access component " +  managerDef.getComponent());
 			throw tmp;
 		} catch(alma.ACSErrTypeCommon.TypeNotSupportedEx tmp) {
 			String str = "";
@@ -155,7 +153,7 @@ public class SamplingManager {
 					str = val.value;
 					break;
 				}
-			info.getContainerServices().getLogger().warning("Unsopported type for component/property: " + managerDef.getComponent() + "/" + managerDef.getProperty() + ": " + str);
+			AcsInformation.getInstance().getContainerServices().getLogger().warning("Unsopported type for component/property: " + managerDef.getComponent() + "/" + managerDef.getProperty() + ": " + str);
 			throw tmp;
 		} catch(SamplingManagerException e) {
 			throw e;
@@ -180,6 +178,6 @@ public class SamplingManager {
 	*
 	*/
 	protected void finalize() {
-		 info.getContainerServices().releaseComponent(managerName);
+		AcsInformation.getInstance().getContainerServices().releaseComponent(managerName);
 	}
 }
