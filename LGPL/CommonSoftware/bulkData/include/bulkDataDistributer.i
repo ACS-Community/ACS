@@ -457,6 +457,10 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
     ACE_CString recvName = "";
     CORBA::ULong currRecvNo, currFlowPos;
 
+    TAO_AV_frame_info frame_info;
+    ACE_Time_Value timeout;
+    timeout.set(30L, 0L); // sender timeout set to 30s
+
     try
 	{
 	for (;iterator.next (entry) !=  0;iterator.advance ())
@@ -488,11 +492,16 @@ int AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::distSe
 	    CORBA::Boolean avail = isFlowReceiverAvailable(recvName, flowNumber);
 	    if(avail)
 		{		
-		res = dp_p->send_frame(frame_p);
+		res = dp_p->send_frame(frame_p, &frame_info, &timeout);
 		if(res < 0)
 		    {
 		    ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame error"));
 
+		    if(errno == ETIME)
+			{
+			ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::distSendData send frame timeout expired"));
+			}
+		    
 		    if ( recvStatusMap_m.find(recvName,currRecvNo) != 0 )
 			{
 			ACS_SHORT_LOG((LM_INFO,"BulkDataDistributer<>::distSendData - error in getting currRecvNo"));
