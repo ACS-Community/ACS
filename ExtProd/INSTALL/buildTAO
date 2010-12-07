@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.44 2010/08/11 09:18:19 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.45 2010/12/07 10:01:36 bjeram Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -109,6 +109,8 @@ echo "- TAO_IDLsuppress_unique_guards_opt.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IDLsuppress_unique_guards_opt.patch
 echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
+echo "- AVtimeout.patch"
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/AVtimeout.patch
 
 echo "done"
 echo ""
