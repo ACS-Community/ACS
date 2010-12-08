@@ -73,29 +73,6 @@ unpacked:
 	@gtar -xzf jfreechart-$(JFREECHART_VER).tar.gz
 	@touch unpacked
 
-# build the jfreechart jar file
-jfreechart_jar : jcommon_jar
-	@echo ". . . building jfreechart . . . "
-
-	@rm -rf jfreechart-$(JFREECHART_VER)/lib
-# The servlet.jar file comes with jfreechart (and just got deleted in the lib dir). 
-# Since it is not part of ACS, we better not even compile the jfree classes that need the javax.servlet. packages.
-	@rm -rf jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/servlet
-
-	@#make a lib folder under jfreechart-$(JFREECHART_VER) and copy jfree-jcommon-$(JCOMMON_VER).jar
-	@#jcommonXXX.jar is needed in "${basedir}/lib" for sucessfull compilation 
-
-	mkdir jfreechart-$(JFREECHART_VER)/lib
-	cp ../lib/jfree-jcommon-$(JCOMMON_VER).jar jfreechart-$(JFREECHART_VER)/lib 
-	mv jfreechart-$(JFREECHART_VER)/lib/jfree-jcommon-$(JCOMMON_VER).jar jfreechart-$(JFREECHART_VER)/lib/jcommon-$(JCOMMON_VER).jar
-	
-	@#patch by Bhola Panta@NAOJ 2010/11/30
-	patch jfreechart-$(JFREECHART_VER)/ant/build.xml < java_src.patch
-
-	@cd jfreechart-$(JFREECHART_VER)/ant; ant compile
-	@cp jfreechart-$(JFREECHART_VER)/lib/jfreechart-$(JFREECHART_VER).jar ../lib
-	@echo "done"
-
 # build the jcommon jar jar file.
 #  Must explicitly override the ANT property "build.target" which otherwise gets set to "1.2"
 #  in jcommon-1.0.10/ant/build.properties. It is used for the javac task in the build.xml file
@@ -111,5 +88,39 @@ jcommon_jar : unpack
 
 	cd jcommon-$(JCOMMON_VER)/ant; ant -Dbuild.target=$(JDK_VERSION) compile
 	@cp jcommon-$(JCOMMON_VER)/jcommon-$(JCOMMON_VER).jar ../lib/jfree-jcommon-$(JCOMMON_VER).jar
+
+
+# build the jfreechart jar file
+jfreechart_jar : jcommon_jar
+	@echo ". . . building jfreechart . . . "
+
+	@# Don't use any of the jar files from inside the downloaded tar.gz packages, but instead use the jars
+	@# that come with ACS, or that we have built already here in this module (jfree-jcommon-$(JCOMMON_VER).jar).
+	@# To be sure we don't pick up any of these pre-built jars, we simply delete the whole directory.
+	@rm -rf jfreechart-$(JFREECHART_VER)/lib/*
+
+	@# Bring back the jcommon jar file, but use the one we just built.
+	@# Note that with the previous version jfreechart 1.0.6, the build.xml file took the javac classpath from the ant property "jcommon.jar",
+	@# so that instead of copying and renaming the freshly produced jcommon jar file here, 
+	@# it was sufficient to reference it via "ant -Djcommon.jar=../../../lib/jfree-jcommon-$(JCOMMON_VER).jar compile" in the call below.
+	cp ../lib/jfree-jcommon-$(JCOMMON_VER).jar jfreechart-$(JFREECHART_VER)/lib/jcommon-$(JCOMMON_VER).jar
+
+	# The servlet.jar file comes with jfreechart (and just got deleted in the lib dir). 
+	# Since it is not part of ACS, we better not even compile the jfree classes that need the javax.servlet. packages.
+	@rm -rf jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/servlet
+
+	@#patch by Bhola Panta@NAOJ 2010/11/30
+	patch jfreechart-$(JFREECHART_VER)/ant/build.xml < java_src.patch
+
+	@# TODO: Apply patch for http://jira.alma.cl/browse/CSV-182 , changing
+	@# 'Domain Axis' to 'Abscissa'
+	@# 'Range Axis' to 'Ordinate' 
+	@# It looks like this should be done in one or both of these files:
+	@#   jfreechart-1.0.13/source/org/jfree/chart/editor/LocalizationBundle.properties
+	@#   jfreechart-1.0.13/source/org/jfree/chart/LocalizationBundle.properties
+
+	cd jfreechart-$(JFREECHART_VER)/ant; ant compile
+	@cp jfreechart-$(JFREECHART_VER)/lib/jfreechart-$(JFREECHART_VER).jar ../lib
+	@echo "done"
 
 #___oOo___
