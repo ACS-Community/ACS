@@ -64,7 +64,7 @@ man   : do_man
 	@echo " . . . man page(s) done"
 
 install :
-	@cp ../lib/jfree-JCHART2D-$(JCHART2D_VER).jar $(INSTALL_ROOT)/lib
+	@cp ../lib/jchart2d-$(JCHART2D_VER).jar $(INSTALL_ROOT)/lib
 	@echo " . . . installation done"
 	
 # unpack target:
