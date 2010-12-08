@@ -265,4 +265,15 @@ public class ErrorComponentImpl extends ComponentImplBase implements ErrorCompon
 		throw new RuntimeException("Program error: was never supposed to get here!");
 	}
 
+
+	@Override
+	public void sleepingCmd(short nbSeconds) {
+		try {
+			Thread.sleep(nbSeconds * 1000);
+		}
+		catch (InterruptedException ex) {
+			m_logger.warning("Woke up early from an InterruptedException");
+		}
+	}
+
 }
