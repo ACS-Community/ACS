@@ -84,12 +84,11 @@ jfreechart_jar : jcommon_jar
 # Since it is not part of ACS, we better not even compile the jfree classes that need the javax.servlet. packages.
 	@rm -rf jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/servlet
 
-	@#make a lib folder under jfreechart-$(JFREECHART_VER) and copy all necessary files
+	@#make a lib folder under jfreechart-$(JFREECHART_VER) and copy jfree-jcommon-$(JCOMMON_VER).jar
 	mkdir jfreechart-$(JFREECHART_VER)/lib
 	cp ../lib/jfree-jcommon-$(JCOMMON_VER).jar jfreechart-$(JFREECHART_VER)/lib 
 	mv jfreechart-$(JFREECHART_VER)/lib/jfree-jcommon-$(JCOMMON_VER).jar jfreechart-$(JFREECHART_VER)/lib/jcommon-$(JCOMMON_VER).jar
-
-
+	
 	@#patch by Bhola Panta@NAOJ 2010/11/30
 	patch jfreechart-$(JFREECHART_VER)/ant/build.xml < java_src.patch
 
