@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.179 2010/12/07 10:14:31 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.180 2010/12/09 16:33:23 jagonzal Exp $"
 #
 #
 
@@ -26,11 +26,11 @@ MODULES_ACS = jacsutil acsEclipseUtils xmljbind xmlpybind acsidlcommon acsutil a
 # Macro definitions.                          #
 ###############################################
 define makeIt
-   (( /usr/bin/time -f "$1 COMPILATION TIME %E" make -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   (( /usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
 define makeItAux
-   (( make -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   (( make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 ###############################################
 
