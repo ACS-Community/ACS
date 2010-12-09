@@ -173,7 +173,7 @@
                label="File">
             <command
                   commandId="alma.acs.alarmsanalyzer.command.connectacs"
-                  label="Conenct to ACS"
+                  label="Connect to ACS"
                   style="push"
                   tooltip="Connect to ACS">
             </command>
@@ -219,6 +219,10 @@
          <property
                name="windowImages"
                value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+         </property>
+         <property
+               name="appName"
+               value="Alarm profiler RCP">
          </property>
       </product>
    </extension>

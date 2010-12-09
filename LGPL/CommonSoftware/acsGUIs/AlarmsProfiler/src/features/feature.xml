@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="AlarmsAnalyzer.feature"
+      label="Alarms Analyzer"
+      version="1.0.0"
+      provider-name="European Southern Observatory"
+      plugin="AlarmsAnalyzer">
+
+   <description url="http://www.eso.org">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.eso.org">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.eso.org">
+      [Enter License Description here.]
+   </license>
+
+   <includes
+         id="org.eclipse.rcp"
+         version="0.0.0"
+         os="linux"
+         ws="gtk"
+         arch="x86"/>
+
+   <requires>
+      <import plugin="alma.acs.jars"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import feature="org.eclipse.rcp" version="3.5.1.R35x_v20090811-9SA0FxVFqE70OL1ARMrfcO6e7BA6"/>
+   </requires>
+
+   <plugin
+         id="alma.acs.alarmsanalyzer"
+         os="linux"
+         ws="gtk"
+         nl="en_US"
+         arch="x86"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

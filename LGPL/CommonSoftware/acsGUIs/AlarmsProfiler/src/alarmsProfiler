@@ -1,0 +1,46 @@
+#!/bin/bash
+# -*- ksh -*-
+# $Id: alarmsProfiler,v 1.1 2010/12/09 09:26:54 rtobar Exp $
+#
+# DESCRIPTION
+#    Starts the Tmcdb Explorer
+#
+#
+# OPTIONS
+#    No options
+#
+#
+# AUTHOR
+#    Rodrigo Tobar, Dec 9th, 2010
+
+. acsstartupAcsPorts
+. acsstartupConstants
+. acsstartupAcsInstance
+
+if [ X"$MANAGER_REFERENCE" = X ]; then
+   ACS_MANAGER_PORT=`getManagerPort`
+   export HOST=`getIP`
+   export MANAGER_REFERENCE=corbaloc::$HOST:$ACS_MANAGER_PORT/Manager
+fi
+ACS_LOG_DEBUG "alarmsProfiler" "ACS Manager: $MANAGER_REFERENCE"
+
+dir=$(searchFile bin/alarmsProfiler)
+
+# Find a directory to store the workspace
+candidateDirs="${HOME} ${ACSDATA}/tmp /tmp"
+for i in $candidateDirs;
+do
+	if [ -w $i ]
+	then
+		workspace_dir=${i}/.alarmsprofiler-workspace-$(whoami)
+		break;
+	fi
+done
+
+exec $dir/lib/AlarmsProfiler/alarmsProfiler \
+	-data ${workspace_dir} \
+	-configuration ${workspace_dir} \
+	-vm ${JAVA_HOME}/bin \
+	-vmargs \
+	-DACS.data=${ACSDATA} \
+	-DACS.manager=${MANAGER_REFERENCE}
