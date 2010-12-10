@@ -42,6 +42,7 @@ import alma.acsnc.EventDescription;
  * 
  * @author jslopez
  */
+@SuppressWarnings("deprecation") // We're using Consumer on purpose
 public class NCSubscriberTest extends ComponentClientTestCase {
 
 	/**
