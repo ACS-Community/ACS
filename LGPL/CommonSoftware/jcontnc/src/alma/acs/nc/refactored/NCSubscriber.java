@@ -23,8 +23,6 @@ import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
 import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
 import gov.sandia.NotifyMonitoringExt.EventChannel;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
-import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +57,6 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
-import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdminObtained_OK;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
@@ -74,13 +71,17 @@ import alma.AcsNCTraceLog.LOG_NC_TaoExtensionsSubtypeMissing;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.MultipleRepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
+import alma.acs.nc.CannotAddSubscriptionException;
+import alma.acs.nc.CannotStartReceivingEventsException;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
+import alma.acs.nc.SubscriptionNotFoundException;
 import alma.acs.ncconfig.EventDescriptor;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
@@ -90,11 +91,13 @@ import alma.acsnc.OSPushConsumerHelper;
 import alma.acsnc.OSPushConsumerPOA;
 
 /**
- * NCSubscriber is the Java implementation of the Notification Channel subscriber.
+ * NCSubscriber is the Java implementation of the Notification Channel subscriber,
+ * while following the {@link AcsEventSubscriber} interface.
  * <p>
  * This class is used to receive events asynchronously from notification channel suppliers. 
- * It is the replacement of {@link alma.acs.nc.Consumer}, and to keep things simple no longer supports the inheritance mode, 
- * but instead supports type-safe delegation of incoming calls to a user-supplied handler.
+ * It is the replacement of {@link alma.acs.nc.Consumer}, and to keep things simple it no longer
+ * supports the inheritance mode, but instead supports type-safe delegation of incoming calls to
+ * a user-supplied handler.
  * <p>
  * The lifecycle steps are:
  * <ul>
@@ -109,13 +112,12 @@ import alma.acsnc.OSPushConsumerPOA;
  *       and/or for all events ({@link #addGenericSubscription(alma.acs.nc.AcsEventSubscriber.GenericCallback)}) can be registered.
  *   <li>Once {@link #startReceivingEvents()} is called, Corba NCs push events to this class, which delegates 
  *       the events to the registered handlers.
- *   <li>blabla... suspend...resume... disconnect
- *   >li>
+ *   <li>The connection can then be suspended or resumed
  * </ul> 
  * The NCSubscriber is intended to be created (and cleaned up if needed) through the container services, 
  * for which we still need some refactoring. At the moment it is still under development and not used in operational code.
  * 
- * @author jslopez, hsommer
+ * @author jslopez, hsommer, rtobar
  */
 public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscriber, ReconnectableSubscriber {
 	
@@ -297,6 +299,11 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		// get the proxy Supplier
 		proxySupplier = createProxySupplier();
 
+		// The user might create this object, and startReceivingEvents() without attaching any receiver
+		// If so, it's useless to get all the events, so we start setting the all-exclusive filter
+		// in the server
+		discardAllEvents();
+
 		isTraceNCEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
@@ -380,13 +387,14 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * @throws AcsJCORBAProblemEx If creation of the proxy supplier failed.
 	 */
 	private StructuredProxyPushSupplier createProxySupplier() throws AcsJCORBAProblemEx {
+
 		StructuredProxyPushSupplier ret = null;
 		String errMsg = null;
 		IntHolder proxyIdHolder = new IntHolder(); // will get assigned "a numeric identifier [...] that is unique among all proxy suppliers [the admin object] has created"
 		try {
 			ret = StructuredProxyPushSupplierHelper.narrow(
 						// Providing a name is a TAO extension. Otherwise call "obtain_notification_push_supplier"
-						sharedConsumerAdmin.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder, clientName)
+						sharedConsumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder)
 					);
 		} catch (AdminLimitExceeded ex) {
 			// See NC spec 3.4.15.10
@@ -395,11 +403,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			String limit = ex.admin_property_err.value.extract_string();
 			errMsg = "NC '" + channelName + "' is configured for a maximum of " + limit + 
 					" subscribers, which does not allow this client to subscribe."; 
-		} catch (NameAlreadyUsed ex) {
-			errMsg = "This subscriber client already owns a proxy supplier on that NC.";
-			// @TODO append/increment a number to find a unique clientName, and try again.
-		} catch (NameMapError ex) {
-			errMsg = ex.toString(); // TODO understand when this gets thrown, and refine the message accordingly.
 		}
 
 		if (ret == null) {
@@ -413,36 +416,31 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * <p>
 	 * After invoking this method, the user has no control over when
-	 * push_structured_event is invoked by the notification channel. User may
-	 * still add and remove subscriptions at any given time though. Also, the
-	 * connection can be suspended and resumed.
-	 * 
-	 * <b>If this method is not called, no event will be received</b>
+	 * push_structured_event is invoked by the notification channel. 
 	 * <p>
 	 * @TODO Try to defer contacting the NC and creating server-side objcts until this method gets called.
-	 *  
-	 * @throws AcsJException
-	 *             Thrown if the consumer cannot begin receiving events for some
-	 *             CORBA reason.
 	 */
 	@Override
-	public void startReceivingEvents() throws AcsJException {
+	public void startReceivingEvents() throws CannotStartReceivingEventsException, IllegalStateException {
 
 		try {
-			corbaRef = OSPushConsumerHelper.narrow(helper.getContainerServices().activateOffShoot(this));
+			if( corbaRef == null )
+				corbaRef = OSPushConsumerHelper.narrow(helper.getContainerServices().activateOffShoot(this));
 			proxySupplier.connect_structured_push_consumer(org.omg.CosNotifyComm.StructuredPushConsumerHelper.narrow(corbaRef));
 		} catch (AcsJContainerServicesEx e) {
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
+			throw new CannotStartReceivingEventsException(e);
 		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			Throwable cause = new Throwable(e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			throw new IllegalStateException(cause);
 		} catch (org.omg.CosEventChannelAdmin.TypeError e) {
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			Throwable cause = new Throwable(e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			throw new CannotStartReceivingEventsException(cause);
 		}
 
 		LOG_NC_SubscriptionConnect_OK.log(logger, channelName, getNotificationFactoryName());
@@ -547,10 +545,21 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * @TODO: Couldn't this be fixed by creating the server-side filters on demand (see also javadoc class comment about lifecycle)?
 	 */
 	@Override
-	public void addGenericSubscription(GenericCallback receiver) {
-		genericReceiver = receiver;
-		proxySupplier.remove_all_filters();
-		subscriptionsFilters.clear();
+	public void addGenericSubscription(GenericCallback receiver) throws CannotAddSubscriptionException {
+
+		// First time we create the filter and set the receiver
+		// After the filter is created, we just replace the receiver
+		if( genericReceiver == null ) {
+			try {
+				subscriptionsFilters.put("*", addFilter("*"));
+				genericReceiver = receiver;
+			} catch (AcsJCORBAProblemEx e) {
+				throw new CannotAddSubscriptionException(e);
+			}
+		}
+		else
+			genericReceiver = receiver;
+
 	}
 
 	/**
@@ -559,90 +568,76 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * @throws AcsJCORBAProblemEx
 	 */
 	@Override
-	public void removeGenericSubscription() throws AcsJCORBAProblemEx {
-		if (genericReceiver == null) {
-			throw new IllegalStateException("Failed to remove generic subscription when not actually subscribed.");
+	public void removeGenericSubscription() throws SubscriptionNotFoundException {
+
+		if (genericReceiver == null ) {
+			throw new SubscriptionNotFoundException("Failed to remove generic subscription when not actually subscribed");
 		}
-		genericReceiver = null;
+
+		try {
+			proxySupplier.remove_filter(subscriptionsFilters.get("*"));
+			subscriptionsFilters.remove("*");
+			genericReceiver = null;
+		} catch (FilterNotFound e) {
+			throw new SubscriptionNotFoundException(e);
+		}
 
 		// If receivers is empty we just discard everything
 		if (receivers.isEmpty())
 			discardAllEvents();
-		else {
-			// Since we have specific subscriptions, we have to apply the corresponding filters
-			for (Class<?> eventType : receivers.keySet()) {
-				String keyName = eventType.getName();
-				String filter = keyName.substring(keyName.lastIndexOf('.') + 1);
-				subscriptionsFilters.put(keyName, addFilter(filter));
-			}
-		}
+
 	}
 
-	/**
-	 * Adds a subscription to a given type of event through filters. 
-	 * <p>
-	 * The main advantage of using java generics here: Compiler ensures that receiver method 
-	 * is consistent with event type.
-	 * 
-	 * @throws AcsJException
-	 *             Thrown if there is some CORBA problem.
-	 */
 	@Override
 	public void addSubscription(AcsEventSubscriber.Callback<? extends IDLEntity> receiver) 
-			throws AcsJException {
+			throws CannotAddSubscriptionException {
 
-		// TODO Runtime type checks, to avoid NPE and raw type issues
-		
 		Class<? extends IDLEntity> structClass = receiver.getEventType();
+		if( structClass == null || !(IDLEntity.class.isAssignableFrom(structClass)) )
+			throw new CannotAddSubscriptionException("Receiver is returning a null or invalid event type. " +
+					"Check the getEventType() method implementation and try again");
 
-		// Adding the subscription to the receivers list
-		receivers.put(structClass, receiver);
-
-		// Adding the filter to the proxy only if there is not generic handler
-		if (genericReceiver == null) {
-			subscriptionsFilters.put(structClass.getName(),
-					addFilter(structClass.getSimpleName()));
+		// First time we create the filter and set the receiver
+		// After the filter is created, we just replace the corresponding receivers
+		if( receivers.get(structClass) == null ) {
+			try {
+				int filterId = addFilter(structClass.getSimpleName());
+				subscriptionsFilters.put(structClass.getName(), filterId);
+				receivers.put(structClass, receiver);
+			} catch (AcsJCORBAProblemEx e) {
+				throw new CannotAddSubscriptionException(e);
+			}
 		}
+		else
+			receivers.put(structClass, receiver);
 	}
 
-	/**
-	 * Remove a subscription by removing the corresponding gilter. After
-	 * invoking this, events of the parameter's type will no longer be received.
-	 * 
-	 * @param structClass
-	 *            Unsubscribes from this IDL struct (Java class). <b>By passing
-	 *            in null here, no events of any type will be received, even if
-	 *            there was a generic subscription.</b>
-	 * @throws AcsJException
-	 *             Thrown if there is some CORBA problem (like this subscriber
-	 *             has never subscribed to the given type).
-	 * @throws FilterNotFound
-	 *             Thrown if there is no such filter.
-	 * @throws InvalidEventType
-	 *             Thrown if the given type is invalid.
-	 */
 	@Override
 	public void removeSubscription(Class<? extends IDLEntity> structClass)
-			throws AcsJException, FilterNotFound, InvalidEventType {
+			throws SubscriptionNotFoundException {
 
 		// Removing subscription from receivers list
 		if (structClass != null) {
+
 			String keyName = structClass.getName();
 
-			if (receivers.containsKey(keyName)) {
-				receivers.remove(keyName);
-				proxySupplier.remove_filter(subscriptionsFilters.get(keyName));
-				subscriptionsFilters.remove(keyName);
+			if (receivers.containsKey(structClass)) {
+
+				try {
+					proxySupplier.remove_filter(subscriptionsFilters.get(keyName));
+					subscriptionsFilters.remove(keyName);
+					receivers.remove(structClass);
+				} catch (FilterNotFound e) {
+					throw new SubscriptionNotFoundException("Filter for '"
+							+ keyName + "' not found on the server side: ", e);
+				}
 
 				if (receivers.isEmpty())
 					discardAllEvents();
 
 			} else {
-				Throwable cause = new Throwable(
-						"Unsubscribing from '"
-								+ keyName
-								+ "' type of event when not actually subscribed to this type.");
-				throw new AcsJJavaAnyEx(cause);
+				throw new SubscriptionNotFoundException("Trying to unsubscribing from '"
+						+ keyName + "' type of event when not actually subscribed to this type.");
 			}
 		} else {
 			// Removing every type of event
@@ -657,8 +652,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * @throws AcsJCORBAProblemEx
 	 */
 	private int addFilter(String eventType) throws AcsJCORBAProblemEx {
-		// Construction of the constraint expression attribute
-		String eventName = "($type_name == '" + eventType + "')";
 
 		try {
 			// Create the filter
@@ -667,10 +660,10 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 			// Information needed to construct the constraint expression object
 			// (any domain, any type)
-			EventType[] t_info = { new EventType("*", "*") };
+			EventType[] t_info = { new EventType("*", eventType) };
 
 			// Add constraint expression object to the filter
-			ConstraintExp[] cexp = { new ConstraintExp(t_info, eventName) };
+			ConstraintExp[] cexp = { new ConstraintExp(t_info, "") };
 			filter.add_constraints(cexp);
 
 			// Add the filter to the proxy and return the filter ID
@@ -700,7 +693,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		boolean success = false;
 		try {
 			checkConnection(); // A possible IllegalStateException will be logged below
-			
+
 			// stop receiving events
 			suspend();
 
@@ -803,45 +796,17 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * This method is used to discard all events. Is called when there are no
 	 * subscriptions left or if the {@link #removeSubscription()} method is
 	 * called with null as parameter.
-	 * 
-	 * @throws AcsJCORBAProblemEx
-	 * 
 	 */
-	private void discardAllEvents() throws AcsJCORBAProblemEx {
-		String eventType = null;
+	private void discardAllEvents() {
+
+		// For safety, remove all filters in the server, clear the local references,
+		// and put a dummy filter that filters out everything
 		proxySupplier.remove_all_filters();
 		subscriptionsFilters.clear();
-
 		try {
-			// Create the filter
-			FilterFactory filterFactory = channel.default_filter_factory();
-			Filter filter = filterFactory.create_filter(getFilterLanguage());
-
-			// Constraint expression that mades the trick to discard every type
-			eventType = "($type_name == '')";
-
-			// Information needed to construct the constraint
-			// expression
-			// object (any domain, any type)
-			EventType[] t_info = { new EventType("*", "*") };
-
-			// Add constraint expression object to the filter
-			ConstraintExp[] cexp = { new ConstraintExp(t_info, eventType) };
-			filter.add_constraints(cexp);
-
-			// Add the filter to the proxy
-			proxySupplier.add_filter(filter);
-
-		} catch (org.omg.CosNotifyFilter.InvalidGrammar e) {
-			Throwable cause = new Throwable("'" + eventType
-					+ "' filter is invalid for the '" + channelName
-					+ "' channel: " + e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
-		} catch (org.omg.CosNotifyFilter.InvalidConstraint e) {
-			Throwable cause = new Throwable("'" + eventType
-					+ "' filter is invalid for the '" + channelName
-					+ "' channel: " + e.getMessage());
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
+			addFilter("");
+		} catch (AcsJCORBAProblemEx e) {
+			logger.log(AcsLogLevel.ERROR, "Cannot add all-exclusive filter, we'll keep receiving events, but no handler will receive them");
 		}
 	}
 
