@@ -232,14 +232,13 @@ public class Helper {
 	{
 		EventChannel ec = null;
 		try {
-			ecf.get_event_channel(channelId);  // @TODO HSO: Shouldn't this be "ec = ..." ?
+			ec = EventChannelHelper.narrow( ecf.get_event_channel(channelId) );  // @TODO HSO: Shouldn't this be "ec = ..." ?
 		} catch (ChannelNotFound e) {
 			// I cannot recover the channel using the ID
 		}
 		return ec;
 	}
-	
-	
+
 	/**
 	 * This method gets a reference to the event channel. If it is not already
 	 * registered with the naming service, it is created.
