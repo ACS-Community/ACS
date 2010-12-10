@@ -20,10 +20,7 @@
 package alma.acs.nc;
 
 import org.omg.CORBA.portable.IDLEntity;
-import org.omg.CosNotifyComm.InvalidEventType;
-import org.omg.CosNotifyFilter.FilterNotFound;
 
-import alma.acs.exceptions.AcsJException;
 import alma.acsnc.EventDescription;
 
 /**
@@ -45,23 +42,35 @@ import alma.acsnc.EventDescription;
  * @author jslopez
  */
 public interface AcsEventSubscriber {
-	
+
+	/*===========================================*/
+	/*   Subscription management methods         */
+	/*===========================================*/
 	/**
 	 * Adds a handler that will receive events of a specific type.
 	 * <p>
 	 * Note that the same event type can only be subscribed to with one handler,
 	 * which means that another handler added for the same type will replace the previous handler.
+	 *
+	 * @throws CannotAddSubscriptionException If there is a problem and the receiver cannot
+	 *  be added
 	 */
 	public void addSubscription(Callback<? extends IDLEntity> receiver) 
-		throws AcsJException;
+		throws CannotAddSubscriptionException;
 
 	/**
 	 * Removes the subscription for a specified event type, 
 	 * so that the handler previously registered for that event type 
 	 * will no longer receive events.
+	 * 
+	 * @param structClass the event type to be unsubscribed. If <code>null</code>,
+	 *  then all subscriptions but the generic subscription are removed.
+	 *
+	 * @throws SubscriptionNotFoundException if the specified event type has not been
+	 *  previously subscribed.
 	 */
 	public void removeSubscription(Class<? extends IDLEntity> structClass) 
-		throws AcsJException, FilterNotFound, InvalidEventType;
+		throws SubscriptionNotFoundException;
 
 	/**
 	 * Adds a generic handler for all types of events.
@@ -69,21 +78,46 @@ public interface AcsEventSubscriber {
 	 * It is possible to add a generic handler in addition to event type specific handlers
 	 * (where the latter will get precedence). 
 	 * Adding another generic handler will replace the previous generic handler.
+	 *
+	 * @throws CannotAddSubscriptionException If there is a problem and the generic receiver cannot
+	 *  be added
 	 */
-	public void addGenericSubscription(GenericCallback receiver);
+	public void addGenericSubscription(GenericCallback receiver)
+		throws CannotAddSubscriptionException;
 	
 	/**
 	 * Removes the generic event handler, so that it will no longer receive events.
-	 * Event specific handlers may still receive events. 
+	 * Event specific handlers may still receive events.
+	 *
+	 * @throws SubscriptionNotFoundException If a generic receiver has not been previously subscribed
+	 * @throws CannotRemoveSubscriptionExeption If there is any problem while unsubscribing the generic receiver
 	 */
-	public void removeGenericSubscription() throws AcsJException;
+	public void removeGenericSubscription()
+		throws SubscriptionNotFoundException;
 
+	/*===========================================*/
+	/*   Lifecycle methods                       */
+	/*===========================================*/
 	/**
-	 * This method must be called to actually receive events.
+	 * This method must be called to actually start receiving events.
 	 * Typically it is called after the subscriptions are set up.
+	 * User may still add and remove subscriptions at any given time, though.
+	 * Also, the connection can be suspended and resumed.
+	 * <p>
+	 * No further invocations should be attempted on this method after one
+	 * has been already successful. Otherwise, an {@link IllegalStateException}
+	 * will be thrown. 
+	 * <p>
+	 * <b>If this method is not called, no event will be received</b>
+	 * 
+	 * @throws CannotStartReceivingEventsException If any error happens while trying
+	 *   to start receiving events
+	 * @throws IllegalStateException If the user calls this method on an object that
+	 *   is already receiving events
 	 */
-	public void startReceivingEvents() throws AcsJException;
-	
+	public void startReceivingEvents() throws CannotStartReceivingEventsException, IllegalStateException;
+
+
 	/**
 	 * Disconnects this subscriber from the Notification Channel, and releases all
 	 * the resources associated with it. After this call, all registered handlers
@@ -110,7 +144,7 @@ public interface AcsEventSubscriber {
 	 *
 	 * @throws IllegalStateException if the subscriber is not connected to an NC.
 	 */
-	public void suspend();
+	public void suspend() throws IllegalStateException;
 
 	/**
 	 * Used to reenable the Subscriber after a call to the
@@ -120,7 +154,7 @@ public interface AcsEventSubscriber {
 	 * This call has no effect if the Subscriber is not connected, or if it is
 	 * connected and already processing events.
 	 */
-	public void resume();
+	public void resume() throws IllegalStateException;
 
 	/**
 	 * This ACS-defined interface replaces the runtime search for the
