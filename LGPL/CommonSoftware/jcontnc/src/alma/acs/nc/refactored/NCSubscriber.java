@@ -434,9 +434,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			throw new CannotStartReceivingEventsException(e);
 		} catch (org.omg.CosEventChannelAdmin.AlreadyConnected e) {
-			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
-			Throwable cause = new Throwable(e.getMessage());
-			throw new IllegalStateException(cause);
+			throw new IllegalStateException(e);
 		} catch (org.omg.CosEventChannelAdmin.TypeError e) {
 			LOG_NC_SubscriptionConnect_FAIL.log(logger, channelName, getNotificationFactoryName());
 			Throwable cause = new Throwable(e.getMessage());
@@ -692,7 +690,8 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		disconnectLock.lock();
 		boolean success = false;
 		try {
-			checkConnection(); // A possible IllegalStateException will be logged below
+
+			checkConnection();
 
 			// stop receiving events
 			suspend();
@@ -759,20 +758,20 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * <it>Notification Service Specification, Version 1.1, formal/04-10-11, 3.4.13 The StructuredProxyPushSupplier Interface.</it>
 	 */
 	@Override
-	public void suspend() {
-		disconnectLock.lock();
+	public void suspend() throws IllegalStateException {
+
 		checkConnection();
+
+		disconnectLock.lock();
 		try {
 			if (proxySupplier == null) {
 				throw new IllegalStateException("Consumer already disconnected");
 			}
 			proxySupplier.suspend_connection();
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyInactive e) {
-			// if this fails, it does not matter because the connection
-			// has already been suspended.
+			throw new IllegalStateException(e);
 		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
-			// if this fails, it does not matter because we cannot suspend
-			// a connection that isn't really connected in the first place.
+			throw new IllegalStateException(e);
 		}
 		finally {
 			disconnectLock.unlock();
@@ -780,15 +779,15 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	}
 
 	@Override
-	public void resume() {
+	public void resume() throws IllegalStateException {
+
+		checkConnection();
 		try {
 			proxySupplier.resume_connection();
 		} catch (org.omg.CosNotifyChannelAdmin.ConnectionAlreadyActive e) {
-			// if this fails, it does not matter because the connection
-			// has already been resumed.
+			throw new IllegalStateException(e);
 		} catch (org.omg.CosNotifyChannelAdmin.NotConnected e) {
-			// if this fails, it does not matter because we cannot resume
-			// a connection that isn't connected in the first place.
+			throw new IllegalStateException(e);
 		}
 	}
 
@@ -953,11 +952,17 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
-		if (channel != null)
+
+		logger.log(AcsLogLevel.NOTICE, "Reconnecting subscriber with channel '" + channelName + "' after Notify Service recovery");
+
+		if (channel != null) {
 			channel = helper.getNotificationChannel(ecf);
-			if (channel == null)
-				logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
-						channel);
+			if (channel == null) {
+				logger.log(Level.WARNING, "Cannot reconnect to the channel '" + channelName + "'");
+				return;
+			}
+		}
+
 		try {
 			channel.set_qos(helper.getChannelProperties().
 					getCDBQoSProps(channelName));

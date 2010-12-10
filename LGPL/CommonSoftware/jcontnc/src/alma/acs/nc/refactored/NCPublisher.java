@@ -52,6 +52,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
@@ -459,11 +460,17 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 
 	@Override
 	public void reconnect(EventChannelFactory ecf) {
-		if (channel != null)
+
+		logger.log(AcsLogLevel.NOTICE, "Reconnecting publisher with channel '" + channelName + "' after Notify Service recovery");
+
+		if (channel != null) {
 			channel = helper.getNotificationChannel(ecf);
-			if (channel == null)
-				logger.log(Level.WARNING, "Cannot reconnect to the channel: " + 
-						channel);
+			if (channel == null) {
+				logger.log(Level.WARNING, "Cannot reconnect to the channel: " + channelName + "'");
+				return;
+			}
+		}
+
 		try {
 			channel.set_qos(helper.getChannelProperties().
 					getCDBQoSProps(channelName));

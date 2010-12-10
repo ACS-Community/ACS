@@ -47,10 +47,14 @@ public interface AcsEventSubscriber {
 	/*   Subscription management methods         */
 	/*===========================================*/
 	/**
-	 * Adds a handler that will receive events of a specific type.
+	 * Adds a handler that will receive events of a specific type. The even type
+	 * is determined by the value returned by calling {@link Callback#getEventType()}
+	 * over the <code>receiver</code> parameter.
 	 * <p>
 	 * Note that the same event type can only be subscribed to with one handler,
 	 * which means that another handler added for the same type will replace the previous handler.
+	 *
+	 * @param receiver The callback to use when receiving events for the specified type.
 	 *
 	 * @throws CannotAddSubscriptionException If there is a problem and the receiver cannot
 	 *  be added
@@ -78,6 +82,8 @@ public interface AcsEventSubscriber {
 	 * It is possible to add a generic handler in addition to event type specific handlers
 	 * (where the latter will get precedence). 
 	 * Adding another generic handler will replace the previous generic handler.
+	 *
+	 * @param receiver The callback to use when receiving events
 	 *
 	 * @throws CannotAddSubscriptionException If there is a problem and the generic receiver cannot
 	 *  be added
