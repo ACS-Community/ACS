@@ -1,6 +1,7 @@
 package alma.acs.nc;
 
-import java.util.logging.Logger;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
 
 import org.omg.CORBA.Object;
 
@@ -8,9 +9,6 @@ import NotifyExt.ReconnectionCallback;
 import NotifyExt.ReconnectionCallbackHelper;
 import NotifyExt.ReconnectionRegistry;
 import NotifyExt.ReconnectionRegistryHelper;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactoryHelper;
-
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acsnc.OSReconnectionCallbackPOA;
@@ -21,7 +19,6 @@ import alma.acsnc.OSReconnectionCallbackPOA;
  */
 public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 	
-	private Logger logger;
 	private EventChannelFactory ecf_;
 	private ReconnectableSubscriber sub_;
 	private int callback_id_;
@@ -55,7 +52,6 @@ public class AcsNcReconnectionCallback extends OSReconnectionCallbackPOA {
 			return; // HSO: why not IllegalArgumentException ??
 		}
 		this.services = services;
-		this.logger = services.getLogger();
 		
 		ecf_=(EventChannelFactory) ecf._duplicate();
 		try {
