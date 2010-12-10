@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.12 2010/09/02 08:43:39 hsommer Exp $
+ * @version $Id: ChannelProperties.java,v 1.13 2010/12/10 17:38:58 rtobar Exp $
  * @since
  */
 
@@ -56,13 +56,13 @@ import org.omg.CosNotification.StartTimeSupported;
 import org.omg.CosNotification.StopTimeSupported;
 import org.omg.CosNotification.Timeout;
 
-import com.cosylab.CDB.DAO;
-
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
+
+import com.cosylab.CDB.DAO;
 
 /**
  * ChanncelProperties is a class designed to retrieve the various quality of
@@ -173,13 +173,13 @@ public class ChannelProperties {
 		try {
 			tempDAO = m_services.getCDB().get_DAO_Servant("MACI/Channels/" + channelName);
 		} catch (alma.cdbErrType.CDBXMLErrorEx e) {
-			m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName + "' channel", e);
+			m_logger.log(Level.WARNING, "Bad CDB entry found for '" + channelName + "' channel");
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
 		} catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
-			m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName + "' channel", e);
+			m_logger.log(Level.WARNING, "No CDB entry found for '" + channelName + "' channel");
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
 		} catch (AcsJContainerServicesEx e) {
-			m_logger.log(Level.SEVERE, "CDB unavailable", e);
+			m_logger.log(Level.WARNING, "CDB unavailable");
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
 		}
 
@@ -254,13 +254,13 @@ public class ChannelProperties {
 		try {
 			tempDAO = m_services.getCDB().get_DAO_Servant("MACI/Channels/" + channelName);
 		} catch (alma.cdbErrType.CDBXMLErrorEx e) {
-			m_logger.log(Level.SEVERE, "Bad CDB entry found for '" + channelName + "' channel", e);
+			m_logger.log(Level.WARNING, "Bad CDB entry found for '" + channelName + "' channel");
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx(e);
 		} catch (alma.cdbErrType.CDBRecordDoesNotExistEx e) {
-			m_logger.log(Level.SEVERE, "No CDB entry found for '" + channelName + "' channel", e);
+			m_logger.log(Level.WARNING, "No CDB entry found for '" + channelName + "' channel");
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJFileNotFoundEx(e);
 		} catch (AcsJContainerServicesEx e) {
-			m_logger.log(Level.SEVERE, "CDB unavailable", e);
+			m_logger.log(Level.WARNING, "CDB unavailable", e);
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJNoResourcesEx(e);
 		}
 
