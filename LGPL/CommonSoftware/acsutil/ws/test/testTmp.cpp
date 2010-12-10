@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: testTmp.cpp,v 1.19 2010/09/13 16:38:21 tstaig Exp $"
+* "@(#) $Id: testTmp.cpp,v 1.20 2010/12/10 15:34:00 tstaig Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -61,6 +61,7 @@ void printFileName(const char * fileName)
  int testTmp (char *szCmdLn)
 #endif
 {
+    putenv("ACS_TMP=");
     /*
      * To be sure I should call
      *    unsetenv(TEST_ENV_VAR);
