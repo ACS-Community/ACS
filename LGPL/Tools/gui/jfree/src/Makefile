@@ -112,12 +112,15 @@ jfreechart_jar : jcommon_jar
 	@#patch by Bhola Panta@NAOJ 2010/11/30
 	patch jfreechart-$(JFREECHART_VER)/ant/build.xml < java_src.patch
 
-	@# TODO: Apply patch for http://jira.alma.cl/browse/CSV-182 , changing
+	@# Apply patch for http://jira.alma.cl/browse/CSV-182 , changing
 	@# 'Domain Axis' to 'Abscissa'
 	@# 'Range Axis' to 'Ordinate' 
 	@# It looks like this should be done in one or both of these files:
 	@#   jfreechart-1.0.13/source/org/jfree/chart/editor/LocalizationBundle.properties
 	@#   jfreechart-1.0.13/source/org/jfree/chart/LocalizationBundle.properties
+
+	@#2010/12/10 patch for /chart/LocalizationBundle.properties 
+	patch jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/LocalizationBundle.properties < axis_name.patch
 
 	cd jfreechart-$(JFREECHART_VER)/ant; ant compile
 	@cp jfreechart-$(JFREECHART_VER)/lib/jfreechart-$(JFREECHART_VER).jar ../lib
