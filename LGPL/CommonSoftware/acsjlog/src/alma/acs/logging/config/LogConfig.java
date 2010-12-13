@@ -444,7 +444,8 @@ public class LogConfig {
 	 * @throws TransformerException 
 	 * @throws IllegalStateException if the cdb ref has not been set
 	 */
-	String getLogConfigXml(String cdbPathParent, String xpathLogConfigNode) throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException {
+	String getLogConfigXml(String cdbPathParent, String xpathLogConfigNode) 
+		throws CDBXMLErrorEx, CDBRecordDoesNotExistEx, ParserConfigurationException, SAXException, IOException, XPathExpressionException, TransformerException {
 		if (cdb == null) {
 			throw new IllegalStateException("CDB reference has not been set.");
 		}
@@ -456,7 +457,14 @@ public class LogConfig {
 		DocumentBuilder builder = factory.newDocumentBuilder();
 
 		// parse the XML file into a DOM
-		Document parentDoc = builder.parse(new InputSource(new StringReader(parentConfigXML)));
+		Document parentDoc;
+		try {
+			parentDoc = builder.parse(new InputSource(new StringReader(parentConfigXML)));
+		} catch (SAXException ex) {
+			String msg = "Failed to parse the following XML retrieved from the CDB (get_DAO(" + cdbPathParent + "):\n" + parentConfigXML;
+			log(Level.FINE, msg, ex);
+			throw ex;
+		}
 		String encoding = parentDoc.getXmlEncoding();
 		Element rootElement = parentDoc.getDocumentElement();
 		
