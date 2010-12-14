@@ -2,7 +2,7 @@
 #***********************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: config_all,v 1.3 2010/07/06 14:21:32 alopatin Exp $"
+# "@(#) $Id: config_all,v 1.4 2010/12/14 11:22:13 bjeram Exp $"
 #
 # who       when         what  
 # --------  --------     ----------------------------------------------
@@ -39,6 +39,7 @@ OS=`uname -s`
 OS_REV=`uname -r`
 DOX_VER=$1
 GVIZ_VER=$2
+ARCH=`uname -p`
 
 case $OS in
 Linux) 
@@ -81,13 +82,23 @@ Linux)
     # Graphviz Compilation
     echo ". . . graphviz $GVIZ_VER configure"
     cd graphviz-$GVIZ_VER
-    ./configure --prefix=$INSTALL_DIR 
+    if [ "$ARCH" == "x86_64" ]
+    then
+	./configure --prefix=$INSTALL_DIR --with-expatlibdir=/usr/lib64  --build=x86_64
+    else
+	./configure --prefix=$INSTALL_DIR 
+    fi
     cd ..
 
     # Doxygen Compilation
     echo ". . . doxygen $DOX_VER configure"
     cd doxygen-$DOX_VER
-    ./configure --prefix $INSTALL_DIR  
+     if [ "$ARCH" == "x86_64" ]
+     then
+	 ./configure --prefix $INSTALL_DIR  --platform linux-64
+    else
+	 ./configure --prefix $INSTALL_DIR
+    fi
     cd .. 
 
     ;;
