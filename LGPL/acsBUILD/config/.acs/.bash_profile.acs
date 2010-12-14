@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.107 2010/11/21 14:39:21 javarias Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.108 2010/12/14 16:48:58 rbourtem Exp $"
 #
 #
 #
@@ -859,10 +859,22 @@ elif [ "$OSYSTEM" = "Linux" ]
 then
    if  [ X"$RTAI_HOME" != X ]
    then
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$RTAI_HOME/lib:$LD_LIBRARY_PATH
-   else
-	 LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$LD_LIBRARY_PATH	
+      LD_LIBRARY_PATH=$RTAI_HOME/lib:$LD_LIBRARY_PATH
    fi
+
+   # No need to add /usr/lib in the LD_LIBRARY_PATH
+   if [ "$GNU_ROOT" != "/usr" ]
+   then
+      # Warning: On 64 bits machines, there might be the need to add $GNU_ROOT/lib64 
+      # instead of $GNU_ROOT/lib ? 
+      LD_LIBRARY_PATH=$GNU_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+   if [ "$TCLTK_ROOT" != "/usr" ]
+   then
+      LD_LIBRARY_PATH=$TCLTK_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$LD_LIBRARY_PATH
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
