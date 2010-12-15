@@ -10,7 +10,12 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.tmcdb.Container;
 import alma.acs.tmcdb.ContainerStartupOption;
 import alma.acs.tmcdb.logic.ContainerStartupOptionHelper.OptionType;
+import alma.acs.tmcdb.logic.ContainerStartupOptionHelper.WrapperOptionParser;
 
+/**
+ * stand-alone test for {@link ContainerStartupOptionHelper}.
+ * @author hsommer
+ */
 public class ContainerStartupOptionHelperTest extends TestCase {
 
 	private ContainerStartupOptionHelper optionHelper;
@@ -22,23 +27,125 @@ public class ContainerStartupOptionHelperTest extends TestCase {
 
 	protected void setUp() {
 		logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(getName(), false);
+		logger.info("----- " + getName() + " -----");
 		optionHelper = new ContainerStartupOptionHelper(logger);
 	}
 	
+	public void testWrapperOptionParser() {
+		WrapperOptionParser wop = new WrapperOptionParser();
+		
+		// test null option string
+		wop.parseAll(null);
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals("", wop.getRemainingOptions());
+		
+		// test empty option string
+		wop.parseAll("");
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals("", wop.getRemainingOptions());
+		
+		// test without wrapper options
+		String flags1 = "-a b what  --stupid option";
+		wop.parseAll(flags1);
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals(flags1, wop.getRemainingOptions());
+		
+		// test without wrapper options, plus padded spaces
+		wop.parseAll("  " + flags1 + " ");
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals(flags1, wop.getRemainingOptions());
+		
+		// test with empty wrapper options
+		String flags2 = "--passthroughProcessStart=\"\" --passthrough=\"\"";
+		wop.parseAll(flags2);
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals("", wop.getRemainingOptions());
+		
+		// test with empty wrapper options and other options
+		wop.parseAll(" --passthroughProcessStart=\"\"  -a=b  --passthrough=\"\"c d ");
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("", wop.getWrappedOptionsContainerArgs());
+		assertEquals("-a=b  c d", wop.getRemainingOptions());
+		
+		// test with multiple wrapper option occurrence and other options
+		wop.parseAll(" --passthrough = \"one option\"  -a=b  --passthrough=\"another option\"c d ");
+		assertEquals("", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("one option another option", wop.getWrappedOptionsContainerArgs());
+		assertEquals("-a=b  c d", wop.getRemainingOptions());
+		
+		// test malformatted quotes around wrapped options
+		try {
+			wop.parseAll("--passthrough=bla missing quotes");
+			fail("expected IllegalArgumentException for missing quotes");
+		} catch (IllegalArgumentException ex) {
+			assertEquals("Wrapper option at pos.0 must be followed by '=' and single or double quotes.", ex.getMessage());
+		}
+		
+		try {
+			wop.parseAll("--passthrough=\"bla missing closing quotes");
+			fail("expected IllegalArgumentException for missing closing quotes");
+		} catch (IllegalArgumentException ex) {
+			assertEquals("Wrapper option at pos.0 must be followed by '=' and a pair of '\"' chars around the wrapped options.", ex.getMessage());
+		}
+		
+		try {
+			wop.parseAll("--passthrough='bla unequal quotes\"");
+			fail("expected IllegalArgumentException for unequal quotes");
+		} catch (IllegalArgumentException ex) {
+			assertEquals("Wrapper option at pos.0 must be followed by '=' and a pair of '\'' chars around the wrapped options.", ex.getMessage());
+		}
+		
+		try {
+			wop.parseAll("--passthrough=.'bad char before quotes\"");
+			fail("expected IllegalArgumentException for unequal quotes");
+		} catch (IllegalArgumentException ex) {
+			assertEquals("Wrapper option at pos.0 must be followed by '=' and single or double quotes.", ex.getMessage());
+		}
+		
+		// one more test, with the flags used for other tests
+		wop.parseAll(testFlags);
+		assertEquals("-maxHeapSize 100m -clientVM -D mytest.prop=dontdoit", wop.getWrappedOptionsContainerExecutable());
+		assertEquals("-myDummyContainerArg 77", wop.getWrappedOptionsContainerArgs());
+		assertEquals("-e myOtherContainerExecutable --managerReference=corbalocToOtherManager", wop.getRemainingOptions());
+	}
 	
+	/**
+	 * Tests parsing of an options string into the 3 categories.
+	 */
 	public void testFromOptionsString() {
 		Container container = new Container();
 		logger.info("Will convert the following flags string: " + testFlags);
 		
 		Collection<ContainerStartupOption> options = optionHelper.convertFlagsString(container, testFlags);
 		
-		assertEquals("Whole flags string should become one TMCDB option since we don't parse it yet.", 1, options.size());
-		ContainerStartupOption option = options.iterator().next();
-		
-		assertSame("container reference should be as provided", container, option.getContainer());
-		assertEquals(OptionType.EXEC_ARG.toString(), option.getOptionType());
-		assertEquals(ContainerStartupOptionHelper.OPTION_NAME_LEGACY_CONCATENATED, option.getOptionName());
-		assertEquals("flags string should become the option value", testFlags, option.getOptionValue());
+		assertEquals("Expected 3 ContainerStartupOption instances, 2 for the wrapper contents and 1 for the unwrapped options.", 3, options.size());
+		for (ContainerStartupOption option : options) {
+			assertSame("container reference should be as provided", container, option.getContainer());
+			assertEquals(ContainerStartupOptionHelper.OPTION_NAME_LEGACY_CONCATENATED, option.getOptionName());
+			if (option.getOptionType().equals(OptionType.EXEC_ARG.toString())) {
+				assertEquals("all unwrapped options expected here.", 
+						"-e myOtherContainerExecutable --managerReference=corbalocToOtherManager", 
+						option.getOptionValue() );
+				logger.info("EXEC_ARG was OK");
+			}
+			else if (option.getOptionType().equals(OptionType.EXEC_ARG_LANG.toString())) {
+				assertEquals("--passthroughProcessStart options expected here.", 
+						"-maxHeapSize 100m -clientVM -D mytest.prop=dontdoit", 
+						option.getOptionValue() );
+				logger.info("EXEC_ARG_LANG was OK");
+			}
+			else if (option.getOptionType().equals(OptionType.CONT_ARG.toString())) {
+				assertEquals("--passthrough options expected here.", 
+						"-myDummyContainerArg 77", 
+						option.getOptionValue() );
+				logger.info("CONT_ARG was OK");
+			}
+		}
 	}
 	
 	
