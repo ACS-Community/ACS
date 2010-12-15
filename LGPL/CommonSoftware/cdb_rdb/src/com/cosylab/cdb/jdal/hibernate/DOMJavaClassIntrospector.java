@@ -13,6 +13,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import alma.acs.util.XmlNormalizer;
+
 import com.cosylab.cdb.jdal.DAOImpl;
 import com.cosylab.cdb.jdal.XMLTreeNode;
 
@@ -615,8 +617,8 @@ public class DOMJavaClassIntrospector {
 		String[] fields = getFields(node);
 		for (String field : fields)
 		{
-			// TODO escape strings
 			Object fieldValue = handleInfinity(getChild(field, node));
+			fieldValue = escapeString(fieldValue);
 			if (fieldValue != null)
 				buffer.append(' ').append(field).append('=').append('"').append(fieldValue).append('"');
 		}
@@ -707,5 +709,12 @@ public class DOMJavaClassIntrospector {
 			return value;
 	}
 	
+	public static final Object escapeString(final Object value)
+	{
+		if (value instanceof String)
+			return XmlNormalizer.normalize((String)value);
+		else
+			return value;
+	}
 	
 }
