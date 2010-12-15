@@ -22,6 +22,7 @@
 SOURCE cdbrdbTATEnvironment
 PROLOGUE cdbrdbTATPrologue
 
-1 pojosTest    "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.tmcdb.AllPojoTests"
+1 containerOptionTest "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.tmcdb.logic.ContainerStartupOptionHelperTest"
+2 pojosTest           "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.tmcdb.AllPojoTests"
 
 EPILOGUE cdbrdbTATEpilogue

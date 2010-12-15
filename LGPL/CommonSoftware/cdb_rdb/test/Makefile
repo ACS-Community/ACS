@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2010/04/29 15:39:21 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2010/12/15 17:19:30 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -42,8 +42,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES = cdbrdbPojosTest
-cdbrdbPojosTest_DIRS =  alma
+JARFILES = cdbrdbTest
+cdbrdbTest_DIRS = alma
 
 #
 # Scripts (public and local)
