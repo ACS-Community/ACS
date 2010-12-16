@@ -273,7 +273,7 @@ module xmlstore
 		 * The XML string newChild as appended as the last child of the root element in the database.
 		 * No history information is maintained in this case for this update operation (as opposed to the normal update). 
 		 */
-		void updateXML(in URI uid, in string schema, in string newChild) raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere); 
+		void updateXML(in URI uid, in string schema, in wstring newChild) raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere); 
 		
 		/** Retrieves an entity (latest version) from the Archive. If the entity
 		 * is marked as dirty an exception is thrown. 
@@ -318,28 +318,28 @@ module xmlstore
 		 * XPath expressions querying for content (eg. a/attribute::b) as query *result*
 		 * correctly. For these queries you'll have to use the dedicated queryContent method.
 		 */
-		Cursor query( in string query, in string schema)
+		Cursor query( in wstring query, in string schema)
 		raises (ArchiveInternalError);
 /**
  * Same as query, but is able to handle content queries (eg. a/b/text() ) correctly. 
  * Do not use this method for non-content queries (eg. a[@b]/c ). 
  */
-		Cursor queryContent( in string query, in string schema)
+		Cursor queryContent( in wstring query, in string schema)
 			raises (ArchiveInternalError);
 			
 		/** Same as query, but entities flagged as dirty are returned, too. */
-		Cursor queryDirty( in string query, in string schema)
+		Cursor queryDirty( in wstring query, in string schema)
 			raises (ArchiveInternalError);
 
 		/** Same as query, but returns a sequence of UniqueIdentifiers for 
 		 * the matching documents instead of a cursor (which contains the 
 		 * documents itself). Entities flagged as dirty are not returned.  
 		 */			
-		URISeq queryUIDs( in string query, in string schema)
+		URISeq queryUIDs( in wstring query, in string schema)
 			raises (ArchiveInternalError);		
 
 		/** Same as queryUIDs, but entities flagged dirty are returned, too. */
-		URISeq queryUIDsDirty( in string query, in string schema)
+		URISeq queryUIDsDirty( in wstring query, in string schema)
 			raises (ArchiveInternalError);
 		
 		/** Returns UIDs of all documents belonging to specified schema 
@@ -353,20 +353,20 @@ module xmlstore
 		/**
 		 * Adds xmlElement as last child of the (first) element found by xPath in document uid (belonging to schema schema)
 		 */	
-		void addElement(in URI uid, in string schema, in string xPath, in string xmlElement)
+		void addElement(in URI uid, in string schema, in wstring xPath, in wstring xmlElement)
 		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
 	
 		/**
 		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be replaced by element xmlElement.
 		 */	
-		void updateElement(in URI uid, in string schema, in string xPath, in string xmlElement)
+		void updateElement(in URI uid, in string schema, in wstring xPath, in wstring xmlElement)
 		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
 
 			
 		/**
 		 * The (first) element pointed at by xPath in document uid (belonging to schema schema) will be deleted.
 		 */	
-		void deleteElement(in URI uid, in string schema, in string xPath)
+		void deleteElement(in URI uid, in string schema, in wstring xPath)
 		    	raises (ArchiveInternalError, IllegalEntity, MalformedURI, NotYetThere);
 
 		

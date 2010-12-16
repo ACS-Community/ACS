@@ -28,7 +28,7 @@ module xmlentity
 {
   struct XmlEntityStruct
   {
-    string xmlString;		// works only for Latin-1 characters; otherwise use wstring!
+    wstring xmlString;		// 16 bits chars to support a wide range of symbols (greek, umlauts, etc)
     string entityId;		// unique ID, same as inside the xml, but easier to access
     string entityTypeName;	// unique name like "SchedBlock" (should be the schema name w/o ".xsd")
     string schemaVersion;	// the schema version that the entity complies with
