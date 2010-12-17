@@ -14,10 +14,12 @@
 # This Makefile follows VLT Standards (see Makefile(5) for more).
 #*******************************************************************************
 # REMARKS
-#    None
+#    jfreechart ver 13 is available, but for now (2010/12/16) we restrict 
+#    our upgrade  to ver 12 (Honglin's quicklook does not work otherwise)
+#    expect to upgrade to the latest version at a later TBD date 
 #------------------------------------------------------------------------
-JCOMMON_VER = 1.0.16
-JFREECHART_VER = 1.0.13
+JCOMMON_VER = 1.0.15
+JFREECHART_VER = 1.0.12
 
 #
 # other files to be installed
@@ -84,7 +86,7 @@ jcommon_jar : unpack
 	@rm -rf jcommon-$(JCOMMON_VER)/lib
 
 	@#patch by Bhola Panta@NAOJ 2010/11/30
-	patch jcommon-$(JCOMMON_VER)/ant/build.xml < java_src_jc.patch
+	@patch jcommon-$(JCOMMON_VER)/ant/build.xml < java_src_jc.patch
 
 	cd jcommon-$(JCOMMON_VER)/ant; ant -Dbuild.target=$(JDK_VERSION) compile
 	@cp jcommon-$(JCOMMON_VER)/jcommon-$(JCOMMON_VER).jar ../lib/jfree-jcommon-$(JCOMMON_VER).jar
@@ -123,7 +125,7 @@ jfreechart_jar : jcommon_jar
 	patch jfreechart-$(JFREECHART_VER)/source/org/jfree/chart/LocalizationBundle.properties < axis_name.patch
 
 	cd jfreechart-$(JFREECHART_VER)/ant; ant compile
-	@cp jfreechart-$(JFREECHART_VER)/lib/jfreechart-$(JFREECHART_VER).jar ../lib
+	@cp jfreechart-$(JFREECHART_VER)/jfreechart-$(JFREECHART_VER).jar ../lib
 	@echo "done"
 
 #___oOo___
