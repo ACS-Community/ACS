@@ -15,6 +15,10 @@ public class ComponentsManagerTest extends TestCase {
 		cManager = new ComponentsManager(client.getContainerServices());
 	}
 
+	protected void tearDown() throws Exception {
+		client.tearDown();
+	}
+
 	public void testSetUp() throws Exception {
 		assertNotNull(cManager);
 	}
