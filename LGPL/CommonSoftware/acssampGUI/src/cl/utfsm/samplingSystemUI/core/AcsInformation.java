@@ -104,6 +104,7 @@ public class AcsInformation {
 	public void shutDown() throws java.lang.Exception{
 		m_logger.info("Sampling System UI tear down requested");
 		client.tearDown();
+		_instance = null;
 	}
 
 	public boolean componentExists(String componentName){
