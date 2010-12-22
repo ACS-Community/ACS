@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.10 2010/11/30 09:13:13 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.11 2010/12/22 15:06:08 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -716,11 +716,7 @@ $(foreach obj,$3,$(eval $$2_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_expObjList += ../object/$(obj).o))
 
 ifeq ($(DEPENDENCIES),on)
-   ifdef ($(MAKE_DEBUG))
-      include $($2_depList)
-   else
-      -include $($2_depList)
-   endif
+   include $($2_depList)
 endif
 
 .PHONY: do_lib_$2 
@@ -837,11 +833,7 @@ $(foreach obj,$3,$(eval $$2_exe_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_exe_objList += ../object/$(obj).o))
 
 ifeq ($(DEPENDENCIES),on)
-   ifdef ($(MAKE_DEBUG))
-      include $($2_exe_depList)
-   else
-      -include $($2_exe_depList)
-   endif
+   include $($2_exe_depList)
 endif
 
 
