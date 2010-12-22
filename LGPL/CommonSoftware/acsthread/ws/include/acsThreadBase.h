@@ -20,7 +20,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: acsThreadBase.h,v 1.34 2009/10/07 14:46:39 bjeram Exp $"
+ * "@(#) $Id: acsThreadBase.h,v 1.35 2010/12/22 16:00:18 bjeram Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -759,6 +759,13 @@ namespace ACS {
 	 * @return -1 if fail
 	 */
 	int join(const ACE_thread_t& tid);
+
+	/**
+     *join joinable thread
+	 * @param pointer to thread
+	 * @return -1 if fail
+	 */
+	int join(const ThreadBase *th);
 
 	/**
 	 * Returns pointer to the ACE Thread Manager
