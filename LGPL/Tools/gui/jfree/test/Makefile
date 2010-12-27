@@ -20,8 +20,8 @@
 #
 # Version of tools.
 #
-JCOMMON_VER = 1.0.16
-JFREECHART_VER = 1.0.13
+JCOMMON_VER = 1.0.15
+JFREECHART_VER = 1.0.12
 
 JCOMMON_JAR = ../lib/jcommon-$(JCOMMON_VER).jar
 
