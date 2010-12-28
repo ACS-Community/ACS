@@ -20,7 +20,7 @@
 -- /////////////////////////////////////////////////////////////////
 
 «FOREACH this.tables.reverse() AS t-»
-DROP TABLE «t.name» CASCADE CONSTRAINTS;
+DROP TABLE «t.name» CASCADE CONSTRAINTS PURGE;
 «ENDFOREACH-»
 «ENDFILE»
 «ENDDEFINE»
