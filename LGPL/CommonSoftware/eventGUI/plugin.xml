@@ -165,10 +165,10 @@
             point="org.eclipse.core.runtime.products">
          <product
                application="ACS_eventGUI.application"
-               name="ALMA ACS Event Browser">
+               name="ACS_eventGUI product">
             <property
                   name="appName"
-                  value="ALMA ACS Event Browser">
+                  value="ACS_eventGUI product">
             </property>
          </product>
       </extension>
@@ -191,6 +191,25 @@
                   style="push">
             </command>
          </menuContribution>
+      </extension>
+      <extension
+            point="org.eclipse.help.toc">
+         <toc
+               file="toc.xml"
+               primary="true">
+         </toc>
+         <toc
+               file="tocconcepts.xml">
+         </toc>
+         <toc
+               file="tocgettingstarted.xml">
+         </toc>
+         <toc
+               file="tocreference.xml">
+         </toc>
+         <toc
+               file="toctasks.xml">
+         </toc>
       </extension>
 
 </plugin>

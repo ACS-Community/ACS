@@ -12,6 +12,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     private IWorkbenchAction preferencesAction;
 	private IWorkbenchAction exitAction;
+	private IWorkbenchAction aboutAction;
+	private IWorkbenchAction helpAction;
 //	private IWorkbenchAction showViewsAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -23,6 +25,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(preferencesAction);
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
+        aboutAction = ActionFactory.ABOUT.create(window);
+        register(aboutAction);
+        helpAction = ActionFactory.HELP_CONTENTS.create(window);
+        register(helpAction);
 //        showViewsAction = ActionFactory.SHOW_VIEW_MENU.create(window);
     }
 
@@ -31,6 +37,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     	eventGuiMenu.add(preferencesAction);
     	eventGuiMenu.add(exitAction);
     	menuBar.add(eventGuiMenu);
+    	MenuManager helpMenu = new MenuManager("&Help", "help");
+    	helpMenu.add(helpAction);
+    	helpMenu.add(aboutAction);
+    	menuBar.add(helpMenu);
 //    	MenuManager windowMenu = new MenuManager("Window", "window");
 //    	windowMenu.add(showViewsAction);
 //    	menuBar.add(windowMenu);

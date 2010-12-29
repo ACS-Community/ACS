@@ -6,6 +6,8 @@ Bundle-Version: 1.0.0
 Require-Bundle: alma.acs.rcp.jars,
  org.eclipse.core.runtime,
  org.eclipse.ui,
- org.eclipse.ui.views
+ org.eclipse.ui.views,
+ org.eclipse.help.ui,
+ org.eclipse.help.webapp
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

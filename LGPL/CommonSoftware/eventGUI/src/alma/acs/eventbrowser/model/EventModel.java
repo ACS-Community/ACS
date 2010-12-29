@@ -51,7 +51,7 @@ import alma.acs.util.StopWatch;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.25 2010/10/29 16:48:18 jschwarz Exp $
+ * $Id: EventModel.java,v 1.26 2010/12/29 16:48:37 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -161,7 +161,8 @@ public class EventModel {
 		final String[] MC_IORS = {"NotifyMCIOR" };
 		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
 		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[MC_IORS.length];
-		String iorbase = System.getenv("ACS_TMP");
+		String iorbase = System.getProperty("ACS.tmp");
+		System.out.println("ACS_TMP:"+iorbase);
 		String instdir = System.getenv("ACS_INSTANCE");
 		if (instdir == null)
 			instdir = "ACS_INSTANCE.0";
