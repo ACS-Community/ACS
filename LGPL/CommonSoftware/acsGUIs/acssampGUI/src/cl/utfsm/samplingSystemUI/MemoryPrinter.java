@@ -25,8 +25,6 @@ public class MemoryPrinter extends DataPrinter {
 	public void updateValue(DataItem item) {
 		samples.add(item);
 		samplesCounter++;
-		//if(samplesCounter%1000==0)
-		//	System.out.println("MemoryPrinter size: " + samplesCounter);
 		widget.updateValues(item.getTime(), item.getValue(), 0);
 	}
 

@@ -60,7 +60,10 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	* @return double. frequency in Hz.
 	*/
 	public double getFrequency() {
-		double freq = (double)(frequency/FREQ_CONV);
+		double freq = ((double)FREQ_CONV/(double)this.frequency);
+		String tmp = new Double(freq).toString();
+		tmp = tmp.substring(0,tmp.lastIndexOf(".")+2);
+		freq = Double.parseDouble(tmp);
 		return freq;
 	}
 

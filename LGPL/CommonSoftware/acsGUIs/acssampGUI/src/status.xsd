@@ -7,6 +7,7 @@
         <xs:complexType>
           <xs:sequence>
             <xs:element name="SamplingGroupName" type="xs:string"/>
+            <xs:element name="SamplingManagerName" type="xs:string"/>
             <xs:element name="Frequency" type="xs:double"/>
             <xs:element name="SamplingTime" type="xs:int"/>
             <xs:element name="TimeWindow" type="xs:int"/>

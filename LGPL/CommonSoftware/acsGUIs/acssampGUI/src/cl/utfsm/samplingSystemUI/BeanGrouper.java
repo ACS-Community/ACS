@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -16,7 +15,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -169,11 +167,11 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridwidth = 5;//5
+		c.gridwidth = 4;//5
 		c.weightx = 1;
 		this.add(getFileNameLabel(), c);
 
-		c.gridx = 6;//6
+		c.gridx = 5;//6
 		c.gridwidth = 5;//5
 		c.weightx = 0;
 		c.anchor = GridBagConstraints.EAST;

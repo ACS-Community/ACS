@@ -71,7 +71,6 @@ public class SampTool extends SamplingManagerUITool {
 				}
 			} catch(AcsJContainerServicesEx e){
 				e.getMessage();
-				System.out.println("IN");
 			}
 		}
 
@@ -81,6 +80,7 @@ public class SampTool extends SamplingManagerUITool {
 	}
 
 	public static void main(String[] args) throws ParserConfigurationException, SAXException, IOException{
+		boolean check = false;
 		window = new SamplingSystemGUI();
 		try {
 			initializeComponents();
@@ -94,6 +94,14 @@ public class SampTool extends SamplingManagerUITool {
 				System.exit(1);
 			}
 			//spinUp(NAME,sampManList.getFirst());
+			
+			// -f option
+			if (args.length != 0){
+				window.specialReadStatusFile(args[1]);
+				check = true;
+			}
+			
+				
 		} catch (AcsInformationException e) {
 			e.printStackTrace();
 		} catch (AcsJContainerEx e) {
@@ -105,8 +113,9 @@ public class SampTool extends SamplingManagerUITool {
 				    JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		window.loadWindow();
+		window.loadWindow(check);
 		window.fillWidgets(getComponents(), propList);
+
 
 		try {
 			tearDown();

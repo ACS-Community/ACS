@@ -73,6 +73,7 @@ public class SamplingSystemGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	public String MAN_NAME = "";
+	public boolean correctManName = false;
 	
 	private LinkedList<List<String>> propList;
 	private String[] compList = null;
@@ -622,6 +623,7 @@ public class SamplingSystemGUI extends JFrame {
 		return groupTextField;
 	}
 	
+	
 	/**
 	 * Adds a Property to a SamplingGroup, creating its BeanGrouper
 	 * @param component Component that contains the Property to be sampled.
@@ -683,7 +685,9 @@ public class SamplingSystemGUI extends JFrame {
 		return null;
 	}
 
-	public void loadWindow() throws ParserConfigurationException, SAXException, IOException{
+	public void loadWindow(boolean check) throws ParserConfigurationException, SAXException, IOException{
+		
+		if (!check){
 		/* Select the sampling manager */
 		String s = (String)JOptionPane.showInputDialog(this,
 				"Please Select a Sampling Manager",
@@ -696,30 +700,18 @@ public class SamplingSystemGUI extends JFrame {
 			this.MAN_NAME = s;
 		else
 			System.exit(0);
+		}
+		else{
+			//Setear el MAN_NAME
+			// Verificar que es correcto
+		}
 		
 		checkSamplingManager();
 		
 		/* Show the main window */
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		/*
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			public void windowClosing(java.awt.event.WindowEvent e) {
-				if(status!=null){
-					try {
-						writeStatusFile();
-					} catch (ParserConfigurationException e1) {
 						
-						e1.printStackTrace();
-					} catch (TransformerException e1) {
-						
-						e1.printStackTrace();
-					}
-				}
-			}
-		});
-		*/
-		//readStatusFile(true);
 	}
 	
 	private void checkSamplingManager() {
@@ -794,8 +786,11 @@ public class SamplingSystemGUI extends JFrame {
 		return valid;
 	}
 	
+	public void specialReadStatusFile(String filename) throws ParserConfigurationException, SAXException, IOException{
+		readStatusFile(filename, false);
+	}
+	
 	private void readStatusFile(String filename,boolean startup) throws ParserConfigurationException, SAXException, IOException{
-		
 		try {
 			if(startup){
 				int n = JOptionPane.showConfirmDialog(this,
@@ -824,9 +819,29 @@ public class SamplingSystemGUI extends JFrame {
 		                 //-------
 		                 NodeList nameList = firstSamplingGroupElement.getElementsByTagName("SamplingGroupName");
 		                 Element nameElement = (Element)nameList.item(0);
-	
 		                 NodeList nameText = nameElement.getChildNodes();
 		                 String samplingGroupName = ((Node)nameText.item(0)).getNodeValue().trim();
+		                 
+		                 // MAN_NAME
+		                 NodeList manNameList = firstSamplingGroupElement.getElementsByTagName("SamplingManagerName");
+		                 Element manNameElement = (Element)manNameList.item(0);
+		                 NodeList manNameText = manNameElement.getChildNodes();
+		                 String manName = ((Node)manNameText.item(0)).getNodeValue().trim();
+		                 System.out.println("Manager Name: "+manName);
+		                 
+		                 String[] managers = SampTool.getSamplingManagers();
+		                 for (int i = 0; i < managers.length; i++) {
+		                	 if (managers[i].equals(manName)){
+		                		 correctManName = true;
+		                	 }
+						 }
+		                 if (correctManName){
+		                	 MAN_NAME = manName;
+		                 }
+		                 else{
+		                	 System.out.println("ERROR: The Sampling Manager Name on the loaded file doesn't exist.");
+		                	 return;
+		                 }                  
 	                     //-------
 	                     NodeList freqList = firstSamplingGroupElement.getElementsByTagName("Frequency");
 	                     Element freqElement = (Element)freqList.item(0);
@@ -866,7 +881,6 @@ public class SamplingSystemGUI extends JFrame {
 		                    for( BeanGrouper bg: BeanGrouperList){
 		    					if( bg.getGroupName().equals(samplingGroupName) ){
 		    						bg.loadConfiguration(frequency, timewindow, samplingtime);
-		    						System.out.println("loadConfiguration"+bg.getGroupName()+ " ="+frequency+","+timewindow+","+samplingtime);
 		    						break;
 		    					}
 		    				}
@@ -941,8 +955,14 @@ public class SamplingSystemGUI extends JFrame {
 		    name_element.appendChild(document.createTextNode(name_data));
 		    groupElement.appendChild(name_element);
 
+		    String manName = "SamplingManagerName";
+		    String manName_data = MAN_NAME;
+		    Element manName_element = document.createElement(manName);
+		    manName_element.appendChild(document.createTextNode(manName_data));
+		    groupElement.appendChild(manName_element);
+
 		    String freq = "Frequency";
-		    String freq_data = Double.toString(status.get(i).getFrequency())	;
+		    String freq_data = Double.toString(status.get(index).getFrequency());
 		    Element freq_element = document.createElement(freq);
 		    freq_element.appendChild(document.createTextNode(freq_data));
 		    groupElement.appendChild(freq_element);
@@ -995,23 +1015,9 @@ public class SamplingSystemGUI extends JFrame {
 		if( file.exists() ) file.delete();
 	    
 	    DOMSource source = new DOMSource(document);
-	    //StreamResult result =  new StreamResult(System.out);
 	    Result result = new StreamResult(new FileOutputStream(filename));
 	    transformer.transform(source, result);
 		
-		//FileOutputStream fos = null;
-		//ObjectOutputStream out = null;
-		
-		/*
-		try {
-			fos = new FileOutputStream(filename);
-			out = new ObjectOutputStream(fos);
-			out.writeObject(status);
-			out.close();
-		} catch (FileNotFoundException e) {
-		} catch (IOException e) {
-		}
-		*/
 	}
 	
 	
