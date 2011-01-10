@@ -381,6 +381,13 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	err.log();
 	error_m = true;
 	}
+    catch(std::exception &stdex)
+        {
+    	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::receive_frame");
+    	err.addData("std::exception", stdex.what());
+    	err.log();
+    	error_m = true;
+        }
     catch(...)
 	{
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::receive_frame");
