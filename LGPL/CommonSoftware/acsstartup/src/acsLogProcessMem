@@ -42,7 +42,7 @@ fi
 PID="$1"
 
 echo "Will monitor memory for process $PID"
-echo "time        VSZ  RSS"
+echo "TIMESTAMP               VSZ (kB)  RSS (kB)"
 while :;
 do
 	ps -p $PID >/dev/null
