@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.53 2010/07/26 16:59:37 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.54 2011/01/12 11:00:28 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -28,34 +28,35 @@ USER_LIB = -lacsutil -lACE -lTAO -lTAO_PortableServer
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = acsStartContainer acsStopContainer \
-                  acsStartORBSRVC acsStopORBSRVC \
-	          acsStartManager acsStopManager \
-		  acsStart acsStop \
-		  acsstartupAcsPorts acsstartupPids \
-		  acsStartJava \
-		  acsList \
-		  acsKillProc \
-		  irbrowser nsbrowser \
-		  acsStartLight \
-                  acsstartupConstants \
-		  acsstartupAcsInstance \
-		  acsstartupLogging.sh \
-		  acsstartupReport \
-		  acsStatus acsstartupLoadIFR \
-		  acsstartupProcesses \
-		  acsACSLogService \
-		  acsConfigurationDatabase \
-		  acsInterfaceRepository \
-		  acsLoggingService \
-		  acsManager \
-		  acsNamingService \
-		  acsNotifyService \
-		  acsAlarmService \
-		  acsStartContainerWithCASA \
-		  acsstartupNotifyPortViaErrorCode
-
-
+SCRIPTS         = \
+		acsStartContainer \
+		acsStopContainer \
+		acsStartORBSRVC acsStopORBSRVC \
+		acsStartManager acsStopManager \
+		acsStart acsStop \
+		acsstartupAcsPorts acsstartupPids \
+		acsStartJava \
+		acsList \
+		acsKillProc \
+		irbrowser nsbrowser \
+		acsStartLight \
+		acsstartupConstants \
+		acsstartupAcsInstance \
+		acsstartupLogging.sh \
+		acsstartupReport \
+		acsStatus acsstartupLoadIFR \
+		acsstartupProcesses \
+		acsACSLogService \
+		acsConfigurationDatabase \
+		acsInterfaceRepository \
+		acsLoggingService \
+		acsManager \
+		acsNamingService \
+		acsNotifyService \
+		acsAlarmService \
+		acsStartContainerWithCASA \
+		acsstartupNotifyPortViaErrorCode \
+		acsLogProcessMem
 
 SCRIPTS_L       =
 
