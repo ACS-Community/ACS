@@ -30,6 +30,7 @@ import si.ijs.maci.ComponentInfo;
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.corba.AcsCorba;
@@ -330,7 +331,9 @@ public class ComponentAdapter
 			
 			// @TODO 
 			// (4) "close" m_componentClassLoader (otherwise JVM native mem leak, see COMP-4929)
-			m_componentClassLoader.close();
+			if (m_componentClassLoader instanceof AcsComponentClassLoader) {
+				((AcsComponentClassLoader)m_componentClassLoader).close();
+			}
 		}
 		catch (Throwable thr) {
 			String msg = "an error occured while deactivating component " + m_compInstanceName;
