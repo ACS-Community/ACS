@@ -282,7 +282,7 @@ public class ComponentAdapter
 	void deactivateComponent()
 		throws AcsJContainerEx
 	{
-		if (m_containerLogger.isLoggable(Level.FINER)) {			
+		if (m_containerLogger.isLoggable(Level.FINER)) {
 			m_containerLogger.finer("about to deactivate component " + m_compInstanceName);
 		}
 		
@@ -327,6 +327,10 @@ public class ComponentAdapter
 				m_containerLogger.warning("Component '" + m_compInstanceName + "' failed to be etherealized in " + 
 						etherealizeTimeoutMillis + " ms, probably because of pending calls.");
 			}
+			
+			// @TODO 
+			// (4) "close" m_componentClassLoader (otherwise JVM native mem leak, see COMP-4929)
+			m_componentClassLoader.close();
 		}
 		catch (Throwable thr) {
 			String msg = "an error occured while deactivating component " + m_compInstanceName;
