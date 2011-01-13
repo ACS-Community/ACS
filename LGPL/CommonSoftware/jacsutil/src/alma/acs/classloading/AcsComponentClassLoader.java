@@ -22,11 +22,14 @@
 package alma.acs.classloading;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+// import sun.misc.ClassLoaderUtil;
 
 import alma.acs.makesupport.AcsJarFileFinder;
 
@@ -75,6 +78,8 @@ public class AcsComponentClassLoader extends URLClassLoader
     public AcsComponentClassLoader(ClassLoader parent, Logger logger, String componentName)
 	{
 		super(new URL[0], parent);
+		
+		ClassLoaderUtil.setLogger(logger);
 
 		verbose = Boolean.getBoolean(PROPERTY_CLASSLOADERVERBOSE);
 		this.logger = logger;
@@ -241,6 +246,17 @@ public class AcsComponentClassLoader extends URLClassLoader
                     }
             }
             return loggerName;
+    }
+    
+    /**
+     * This method will be added to {@link URLClassLoader} in JDK 1.7. 
+     * Until then, we do something similar already with JDK 1.6.
+     * <p>
+     * @TODO: Test / remove this once we use JDK 1.7
+     * @since ACS 9.1 
+     */
+    public void close() throws IOException {
+    	ClassLoaderUtil.releaseLoader(this);
     }
 
 }
