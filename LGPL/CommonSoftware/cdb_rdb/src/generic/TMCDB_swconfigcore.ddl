@@ -138,8 +138,6 @@ ENDTABLE
 //                            in times when the log service is not available (e.g. during container start, or any kind of network and service failure). 
 //                            Thus they get stored in a queue, which gets drained once the log service becomes available. However, logging should not compete for memory with the functional parts of the software, so we limit this queue. 
 //                            Values below "DispatchPacketSize"  will be ignored, as we first must queue the records that should be sent together.
-// MaxLogsPerSecond           A simple per-process log throttle will enforce this value if it is non-negative.
-//
 // Constraint description:    
 // MaxLogQueueSize 
 TABLE LoggingConfig
@@ -151,7 +149,7 @@ TABLE LoggingConfig
     ImmediateDispatchLevel  TINYINT                     DEFAULT 10
     FlushPeriodSeconds      TINYINT                     DEFAULT 10
     MaxLogQueueSize         INTEGER                     DEFAULT 1000
-    MaxLogsPerSecond        INTEGER                     DEFAULT -1
+    MaxLogsPerSecond		INTEGER						DEFAULT -1
     KEY LoggingConfigId GENERATED
 ENDTABLE
 
@@ -349,6 +347,8 @@ TABLE BACIProperty
 	archive_priority		INTEGER						 NOT NULL
 	archive_min_int			DOUBLE					 NOT NULL
 	archive_max_int			DOUBLE					 NOT NULL
+	archive_mechanism       LONGVARCHAR (24)      NOT NULL
+	archive_suppress        BOOLEAN               NOT NULL
 	default_timer_trig		DOUBLE					 NOT NULL
 	min_timer_trig			DOUBLE					 NOT NULL
 	initialize_devio		BOOLEAN					 NOT NULL
@@ -377,6 +377,7 @@ TABLE BACIProperty
 	alarm_level				INTEGER					 NULL
   	Data					TEXT					 NULL
 	KEY BACIPropertyId GENERATED FROM PropertyName ComponentId
+	CONSTRAINT BACIPropArchMech CHECK (archive_mechanism IN ('notification_channel', 'monitor_collector'))
 	CONSTRAINT BACIPropertyCompId FOREIGN KEY (ComponentId) REFERENCES Component CASCADING INVERSE COMPOSITION
 ENDTABLE
 

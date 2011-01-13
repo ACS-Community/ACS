@@ -75,6 +75,26 @@ public interface BACIPropertyTypeIF extends ExtraDataFeature {
 	public void setArchive_max_int(double archive_max_int);
 
 	/**
+	 * @return the archive_suppress
+	 */
+	public boolean getArchive_suppress();
+
+	/**
+	 * @param archive_suppress the archive_suppress to set
+	 */
+	public void setArchive_suppress(boolean archive_suppress);
+
+	/**
+	 * @return the archive_mechanism
+	 */
+	public String getArchive_mechanism();
+
+	/**
+	 * @param archive_mechanism the archive_mechanism to set
+	 */
+	public void setArchive_mechanism(String archive_mechanism);
+
+	/**
 	 * @return the archive_min_int
 	 */
 	public double getArchive_min_int();

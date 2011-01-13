@@ -143,6 +143,21 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 		return delegate.getArchive_max_int();
 	}
 
+	/**
+	 * @return
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_suppress()
+	 */
+	public boolean getArchive_suppress() {
+		return delegate.getArchive_suppress();
+	}
+
+	/**
+	 * @return
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_mechanism()
+	 */
+	public String getArchive_mechanism() {
+		return handleOutput(delegate.getArchive_mechanism());
+	}
 
 	/**
 	 * @return
@@ -458,6 +473,21 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 		delegate.setArchive_min_int(archiveMinInt);
 	}
 
+	/**
+	 * @param archiveSuppress
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_suppress(boolean)
+	 */
+	public void setArchive_suppress(boolean archiveSuppress) {
+		delegate.setArchive_suppress(archiveSuppress);
+	}
+
+	/**
+	 * @param archiveMechanism
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_mechanism(String)
+	 */
+	public void setArchive_mechanism(String archiveMechanism) {
+		delegate.setArchive_mechanism(archiveMechanism);
+	}
 
 	/**
 	 * @param archivePriority

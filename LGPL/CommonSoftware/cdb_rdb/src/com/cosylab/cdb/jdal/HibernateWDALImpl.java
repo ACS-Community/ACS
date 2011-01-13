@@ -1192,6 +1192,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 										baciPropertyType.setArchive_priority(componentConfigurationDAO.get_long(propertyName + "/archive_priority"));
 										baciPropertyType.setArchive_min_int(componentConfigurationDAO.get_double(propertyName + "/archive_min_int"));
 										baciPropertyType.setArchive_max_int(componentConfigurationDAO.get_double(propertyName + "/archive_max_int"));
+										baciPropertyType.setArchive_suppress(Boolean.parseBoolean(componentConfigurationDAO.get_string(propertyName + "/archive_suppress")));
+										baciPropertyType.setArchive_mechanism(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/archive_mechanism"), "monitor_collector"));
 										baciPropertyType.setDefault_timer_trig(componentConfigurationDAO.get_double(propertyName + "/default_timer_trig"));
 										baciPropertyType.setMin_timer_trig(componentConfigurationDAO.get_double(propertyName + "/min_timer_trig"));
 		

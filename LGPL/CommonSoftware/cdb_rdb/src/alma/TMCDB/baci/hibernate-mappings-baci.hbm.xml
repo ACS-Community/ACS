@@ -64,6 +64,8 @@
     <property name="archive_priority" />
     <property name="archive_min_int" />
     <property name="archive_max_int" />
+    <property name="archive_suppress" />
+    <property name="archive_mechanism" />
     <property name="default_timer_trig" />
     <property name="min_timer_trig" />
     <property name="initialize_devio" />

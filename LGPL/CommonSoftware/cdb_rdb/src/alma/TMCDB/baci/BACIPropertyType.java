@@ -94,6 +94,8 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
     private int archive_priority;
     private double archive_min_int;
     private double archive_max_int;
+    private boolean archive_suppress;
+    private String archive_mechanism;
     private double default_timer_trig;
     private double min_timer_trig;
 
@@ -166,6 +168,10 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
         s += "\tarchive_min_int: " + archive_min_int + newline;
 
         s += "\tarchive_max_int: " + archive_max_int + newline;
+
+        s += "\tarchive_suppress: " + archive_suppress + newline;
+
+        s += "\tarchive_mechanism: " + archive_mechanism + newline;
 
         s += "\tdefault_timer_trig: " + default_timer_trig + newline;
 
@@ -318,6 +324,34 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
 	 */
 	public void setArchive_max_int(double archive_max_int) {
 		this.archive_max_int = archive_max_int;
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_suppress()
+	 */
+	public boolean getArchive_suppress() {
+		return archive_suppress;
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_suppress(boolean)
+	 */
+	public void setArchive_suppress(boolean archive_suppress) {
+		this.archive_suppress = archive_suppress;
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_mechanism()
+	 */
+	public String getArchive_mechanism() {
+		return archive_mechanism;
+	}
+
+	/* (non-Javadoc)
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_mechanism(String)
+	 */
+	public void setArchive_mechanism(String archive_mechanism) {
+		this.archive_mechanism = archive_mechanism;
 	}
 
 	/* (non-Javadoc)

@@ -292,6 +292,8 @@ public class TestPojosCascading extends TestCase {
 		prop.setArchive_priority(1);
 		prop.setArchive_min_int(1.0);
 		prop.setArchive_max_int(1.0);
+		prop.setArchive_suppress(false);
+		prop.setArchive_mechanism("monitor_collector");
 		prop.setDefault_timer_trig(0.1);
 		prop.setMin_timer_trig(0.1);
 		prop.setInitialize_devio(true);
