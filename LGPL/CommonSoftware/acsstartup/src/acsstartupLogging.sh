@@ -87,14 +87,13 @@ echo $OUTPUT_FILE
 export getLogFile
 
 #------------------------------------------------------------------------------------
-#--Simple function which prints out the current timestamp in ISO-8601 format
+#--Simple function which prints out the current timestamp in ISO-8601 format (e.g. 2011-01-13T11:43:08.164)
 #--No parameters.
 function getTimeStamp
 {
 local TS
-#TS=`date --iso-8601=seconds`
-TS=`date --utc +%Y-%m-%dT%H:%M:%S`
-echo "$TS.000"
+TS=`date --utc +%Y-%m-%dT%H:%M:%S.%N | cut -c1-23`
+echo "$TS"
 }
 
 export getTimeStamp
