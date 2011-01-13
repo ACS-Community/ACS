@@ -41,14 +41,14 @@ fi
 
 PID="$1"
 
-echo "Will monitor memory for process $PID"
-echo "TIMESTAMP               VSZ (kB)  RSS (kB)"
+echo "# Will monitor memory for process $PID"
+echo "# TIMESTAMP             VSZ (kB)  RSS (kB)"
 while :;
 do
 	ps -p $PID >/dev/null
 	status=$?
 	if [ $status -ne 0 ] ; then
-		echo "process $PID terminated."
+		echo "# process $PID terminated."
 		break
 	else
 		timestamp=`getTimeStamp`
@@ -57,5 +57,24 @@ do
 	fi
 	sleep 5
 done
+
+
+#**********************************************************
+# gnuplot example using captured output of this script
+#**********************************************************
+# set title "Test results for COMP-4929"
+# 
+# set xdata time
+# set timefmt "%Y-%m-%dT%H:%M:%S"
+# set format x "%H:%M"
+# 
+# set xlabel "time"
+# set ylabel "JVM native memory (kB)"
+# 
+# set term svg font "arial,10" size 800, 600
+# set output 'Comp4929loadTimes.svg'
+# 
+# plot "sampleJvmNativeMemData.txt" using 1:2 title "VSZ",\
+#      "sampleJvmNativeMemData.txt" using 1:3 title "RSS"
 
 # __oOo__
