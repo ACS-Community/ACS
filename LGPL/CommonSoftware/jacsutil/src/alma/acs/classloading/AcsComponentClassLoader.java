@@ -69,6 +69,8 @@ public class AcsComponentClassLoader extends URLClassLoader
 	private final Logger logger;
 	private final String componentName;
 
+	private ClassLoaderUtil classLoaderUtil;
+
     /**
      * @param parent  parent class loader (currently the container class loader)
      * @param logger  the container logger, for debug output (see <code>PROPERTY_CLASSLOADERVERBOSE</code>). 
@@ -79,7 +81,13 @@ public class AcsComponentClassLoader extends URLClassLoader
 	{
 		super(new URL[0], parent);
 		
-		ClassLoaderUtil.setLogger(logger);
+		try {
+			classLoaderUtil = new ClassLoaderUtil(logger);
+		} catch (Exception ex) {
+			// @TODO (HSO): or should we simply fail with an exception?
+			logger.log(Level.SEVERE, "Component class loader for " + componentName + " will work without " + ClassLoaderUtil.class.getName() +
+					" which may cause JVM native memory problems.", ex);
+		}
 
 		verbose = Boolean.getBoolean(PROPERTY_CLASSLOADERVERBOSE);
 		this.logger = logger;
@@ -126,8 +134,8 @@ public class AcsComponentClassLoader extends URLClassLoader
 		for (int i = 0; tok.hasMoreTokens(); i++) {
 			jarDirs[i] = new File(tok.nextToken());
 			if (verbose) {
-	        	logger.finer("Classloader for component '" + componentName + "' will look for jar files in directory " + 
-	        			jarDirs[i].getAbsolutePath());
+				logger.finer("Classloader for component '" + componentName + "' will look for jar files in directory "
+						+ jarDirs[i].getAbsolutePath());
 			}
 		}
 		return jarDirs;
@@ -152,7 +160,7 @@ public class AcsComponentClassLoader extends URLClassLoader
 		// First, check if the class has already been loaded by this classloader
 		Class c = findLoadedClass(name);
 		if (c == null) {
-            // try to load the component impl class before delegating to the parent class loader.
+			// try to load the component impl class before delegating to the parent class loader.
 			try {
 				c = findClass(name);
 			}
@@ -162,13 +170,14 @@ public class AcsComponentClassLoader extends URLClassLoader
 			if (c == null) {
 				// The super implementation will delegate to the parent class loader.
 				// This is the default for all J2SE class loaders: first try parent, then self
-                if (verbose) {
-                    logger.finer("AcsComponentClassLoader will delegate loading '" + name + "' to parent CL, a " + getParent().getClass().getName());
-                }
+				if (verbose) {
+					logger.finer("AcsComponentClassLoader will delegate loading '" + name + "' to parent CL, a "
+							+ getParent().getClass().getName());
+				}
 				c = super.loadClass(name, false);
 			}
 		}
-        else if (verbose) {
+		else if (verbose) {
         	logger.finer("Class '" + name + "' already loaded by AcsComponentClassLoader for '" + componentName + 
         			"'. Nothing to do.");
         }
@@ -256,7 +265,9 @@ public class AcsComponentClassLoader extends URLClassLoader
      * @since ACS 9.1 
      */
     public void close() throws IOException {
-    	ClassLoaderUtil.releaseLoader(this);
+    	if (classLoaderUtil != null) {
+    		classLoaderUtil.releaseLoader(this);
+    	}
     }
 
 }

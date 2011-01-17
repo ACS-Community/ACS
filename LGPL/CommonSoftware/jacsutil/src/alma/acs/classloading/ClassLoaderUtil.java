@@ -60,13 +60,13 @@ import sun.misc.URLClassPath;
  * was its ugly stdout printing of lines like
  * <pre>
  * classLoader = alma.acs.classloading.AcsComponentClassLoader@10ba001
- * SharedSecrets.getJavaNetAccess()=java.net.URLClassLoader$7@170888e
- * </pre>
+ * SharedSecrets.getJavaNetAccess()=java.net.URLClassLoader$7@170888e </pre>
  * which would disturb TAT tests and users alike.
  * Other assumed benefits of com.sun.appserv.ClassLoaderUtil will still have to be discovered.
  * <p>
- * Make sure to provide an ACS logger, in {@link #setLogger(Logger)}.
+ * Make sure to provide an ACS-enabled logger, in {@link #setLogger(Logger)}.
  * <p>
+ * Below is the original javadoc of <code>com.sun.appserv.ClassLoaderUtil</code>: <br>
  * Provides utility functions related to URLClassLoaders or subclasses of it.
  *
  *                  W  A  R  N  I  N  G    
@@ -89,38 +89,24 @@ public class ClassLoaderUtil {
     private static final String URLCLASSPATH_JARLOADER_JARFILE_FIELD_NAME = "jar";
     
     /* Fields used during processing - they can be set up once and then used repeatedly */
-    private static Field jcpField;
-    private static Field loadersField;
-    private static Field urlsField;
-    private static Field lmapField;
-    private static Class jarLoaderInnerClass;
+    private final Field jcpField;
+    private final Field loadersField;
+    private final Field urlsField;
+    private final Field lmapField;
+    private final Class jarLoaderInnerClass;
 
-    private static Field jarFileField;
+    private final Field jarFileField;
     
-    private static boolean initDone = false;
+	private final Logger logger;
 
-	private static Logger logger;
-    
-    
-    /**
-     *Initializes the class.
-     *<p>
-     *Each utility method should invoke init() before doing their own work
-     *to make sure the initialization is done.
-     *@throws any Throwable detected during static init.
-     */
-    private static void init() throws Throwable {
-        if ( ! initDone) {
-            initForClosingJars();
-            initDone = true;
-            }
-    }
-    
-    /**
-     *Sets up variables used in closing a loader's jar files.
-     *@throws NoSuchFieldException in case a field of interest is not found where expected
-     */
-    private static void initForClosingJars() throws NoSuchFieldException {
+
+	/**
+	 * @param logger The ACS logger, which in the original implementation 
+	 *               was retrieved as <code>LogDomains.getLogger(ClassLoaderUtil.class, LogDomains.UTIL_LOGGER)</code>.
+	 * @throws NoSuchFieldException 
+	 */
+	public ClassLoaderUtil(Logger logger) throws NoSuchFieldException {
+		this.logger = logger;
         jcpField = getField(URLClassLoader.class, URLCLASSLOADER_UCP_FIELD_NAME);
         loadersField = getField(URLClassPath.class, URLCLASSPATH_LOADERS_FIELD_NAME);
         urlsField = getField(URLClassPath.class, URLCLASSPATH_URLS_FIELD_NAME);
@@ -128,8 +114,8 @@ public class ClassLoaderUtil {
         
         jarLoaderInnerClass = getInnerClass(URLClassPath.class, URLCLASSPATH_JARLOADER_INNER_CLASS_NAME);
         jarFileField = getField(jarLoaderInnerClass, URLCLASSPATH_JARLOADER_JARFILE_FIELD_NAME);
-    }
-    
+	}
+
     /**
      *Retrieves a Field object for a given field on the specified class, having
      *set it accessible.
@@ -137,7 +123,7 @@ public class ClassLoaderUtil {
      *@param fieldName the name of the field of interest
      *@throws NoSuchFieldException in case of any error retriving information about the field
      */
-    private static Field getField(Class cls, String fieldName) throws NoSuchFieldException {
+    private Field getField(Class cls, String fieldName) throws NoSuchFieldException {
         try {
             Field field = cls.getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -174,7 +160,7 @@ public class ClassLoaderUtil {
      *@param classLoader the instance of URLClassLoader (or a subclass) 
      *@return array of IOExceptions reporting jars that failed to close
      */
-    public static void releaseLoader(URLClassLoader classLoader) {
+    public void releaseLoader(URLClassLoader classLoader) {
         releaseLoader(classLoader, null);
     }
     
@@ -194,12 +180,11 @@ public class ClassLoaderUtil {
      *release the loader; empty indicates a successful release; non-empty 
      *indicates at least one error attempting to close an open jar.
      */
-    public static IOException [] releaseLoader(URLClassLoader classLoader, Vector<String> jarsClosed) {
+    public IOException [] releaseLoader(URLClassLoader classLoader, Vector<String> jarsClosed) {
         
         IOException[] result = null;
         
         try { 
-            init();
 
             /* Records all IOExceptions thrown while closing jar files. */
             Vector<IOException> ioExceptions = new Vector<IOException>();
@@ -312,22 +297,10 @@ public class ClassLoaderUtil {
     }
     
     /**
-     * Sets the ACS logger, which in the original implementation 
-     * was retrieved as <code>LogDomains.getLogger(ClassLoaderUtil.class, LogDomains.UTIL_LOGGER)</code>.
-     * @param inLogger
-     */
-    static void setLogger(Logger inLogger) {
-    	logger = inLogger;
-    }
-    
-    /**
      *Returns the logger for the common utils component.
      *@return the Logger for this component
      */
-    private static Logger getLogger() {
-    	if (logger == null) {
-    		System.err.println("Error in getLogger(): No logger has been provided in setLogger method!");
-    	}
+    private Logger getLogger() {
     	return logger;
 //        return LogDomains.getLogger(ClassLoaderUtil.class, LogDomains.UTIL_LOGGER);
     }
@@ -339,7 +312,7 @@ public class ClassLoaderUtil {
      *@param o the object(s), if any, to be substituted into the message
      *@return a String containing the formatted message
      */
-    private static String getMessage(String key, Object... o) {
+    private String getMessage(String key, Object... o) {
         String msg = getLogger().getResourceBundle().getString(key);
         return MessageFormat.format(msg, o);
     }
