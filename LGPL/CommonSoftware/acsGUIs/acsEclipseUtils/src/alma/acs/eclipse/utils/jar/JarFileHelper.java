@@ -58,6 +58,24 @@ import alma.acs.makesupport.AcsJarFileFinder;
 public class JarFileHelper {
 	
 	/**
+	 * When adding a package in {@link JarFileHelper#addJavaPackage(String, Collection)} a package
+	 * is added to the vector only if it was not already there.
+	 * 
+	 * We need to know in the returned value of that method if what happened with a package
+	 * because we want to send a log if a jar file does not contain any package because it be an error.
+	 * <i>NOTE</i> that it is different to say that a jar does not contain any package (an error) or that the package
+	 * 	 has not been added to the vector because already present (not an error).
+	 *      
+	 * @author acaproni
+	 *
+	 */
+	private enum AddPackageReturnType {
+		NO_PACKAGE,
+		PKG_ALREADY_IN_VECTOR,
+		PKG_ADDED
+	};
+	
+	/**
 	 * The filter is used by {@link AcsJarFileFinder} to look for more then one
 	 * jar in the same time.
 	 * <P>
@@ -183,14 +201,18 @@ public class JarFileHelper {
 		if (javaPackages==null) {
 			throw new IllegalArgumentException("The vector can't be null");
 		}
-		int sz=javaPackages.size();
+		AddPackageReturnType ret;
+		int sz=0;
 		JarFile jar = new JarFile(file);
 		Enumeration<JarEntry> entries = jar.entries();
 	    for (Enumeration<JarEntry> em1 = entries; em1.hasMoreElements();) {
 	        String str=em1.nextElement().toString().trim();
-	        addJavaPackage(str,javaPackages);
+	        ret=addJavaPackage(str,javaPackages);
+	        if (ret!=AddPackageReturnType.NO_PACKAGE) {
+	        	sz++;
+	        }
 	    }
-	    return javaPackages.size()-sz;
+	    return sz;
 	}
 	
 	/**
@@ -200,17 +222,19 @@ public class JarFileHelper {
 	 * 
 	 * @param str The entry of the jar that could point to a jar
 	 * @param vector The vector of packages where the package must be added
+	 * @return <code>true</code> if the package has been added to the vector;
+	 * 		<code>false</code> otherwise
 	 * 
 	 */
-	private void addJavaPackage(String str, Collection<String> vector) {
+	private AddPackageReturnType addJavaPackage(String str, Collection<String> vector) {
 		if (vector==null) {
 			throw new IllegalArgumentException("The vector can't be null");
 		}
 		if (str==null || str.isEmpty()) {
-			return;
+			return AddPackageReturnType.NO_PACKAGE;
 		}
 		if (!str.toLowerCase().endsWith(".class")) {
-        	return;
+        	return AddPackageReturnType.NO_PACKAGE;
         }
 		int pos = str.lastIndexOf("/");
 		if (pos>0) {
@@ -219,7 +243,10 @@ public class JarFileHelper {
 		str=str.replaceAll("/", ".");
 		if (!vector.contains(str)) {
 			vector.add(str);
-		} 
+			return AddPackageReturnType.PKG_ADDED;
+		} else {
+			return AddPackageReturnType.PKG_ALREADY_IN_VECTOR;
+		}
 	}
 	
 	/**
