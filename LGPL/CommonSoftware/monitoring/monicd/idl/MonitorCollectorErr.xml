@@ -1,0 +1,36 @@
+<Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="MonitorCollectorErr" type="60200" _prefix="alma">
+<ErrorCode name="DeviceAlreadyRegistred" shortDescription="Device already registred." description="Device already registred.">
+	<Member name="Device" type="string" description="Device name."/>
+</ErrorCode>
+
+<ErrorCode name="RegisteringDeviceProblem" shortDescription="Registering Device Problem." description="Problem to register the device.">
+	<Member name="Device" type="string" description="Device name."/>
+</ErrorCode>
+
+<ErrorCode name="DeviceNotRegistred" shortDescription="Device has not been registred." description="Device has not been registred.">
+	<Member name="Device" type="string" description="Device name."/>
+</ErrorCode>
+
+<ErrorCode name="StartMonitoringProblem" shortDescription="Could not start monitoring." description="Could not start monitoring the device">
+	<Member name="Device" type="string" description="Device name."/>
+</ErrorCode>
+
+<ErrorCode name="StopMonitoringProblem" shortDescription="Could not stop monitoring." description="Could not stop monitoring the device">
+	<Member name="Device" type="string" description="Device name."/>
+</ErrorCode>
+
+<ErrorCode name="NonExsistentProperty" shortDescription="Property does not exist." description="The property does not exist.">
+	<Member name="Property" type="string" description="Property name."/>
+</ErrorCode>
+
+<ErrorCode name="NonSupportedType" shortDescription="Non supported type." description="Non supported property type.">
+    <Member name="Property" type="string" description="Property name."/>
+	<Member name="PropertyType" type="string" description="Property type."/>
+</ErrorCode>
+
+<ErrorCode name="NotCollocatedComponent" shortDescription="Device not collocated." description="Try to monitor component that's not collocated.">
+	<Member name="Component" type="string" description="Component name."/>
+</ErrorCode>
+
+</Type>
+

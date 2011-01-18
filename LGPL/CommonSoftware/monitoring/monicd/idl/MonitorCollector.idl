@@ -1,0 +1,48 @@
+#ifndef _TMCBD_MONITOR_COLLECTOR_
+#define _TMCBD_MONITOR_COLLECTOR_
+
+#include <acscommon.idl>
+#include <acscomponent.idl>
+#include <TMCDBCOMMON_IDL.idl>
+
+#include "MonitorCollectorErr.idl"
+
+#pragma prefix "alma"
+
+
+module TMCDB
+{
+
+struct propertySerailNumber
+{
+	string  propertyName;
+	serialNumberTypeSeq  serialNumbers;
+};
+
+typedef sequence<propertySerailNumber> propertySerialNumberSeq; 
+
+
+ interface MonitorCollector : ACS::ACSComponent
+    {
+    /// methods for a component/device
+    void registerMonitoredDevice(in string componentName, in serialNumberType serialNumber) 
+    	raises (MonitorCollectorErr::DeviceAlreadyRegistredEx, MonitorCollectorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    	
+	void registerMonitoredDeviceWithMultipleSerial(in string componentName, in  propertySerialNumberSeq serialNumbers) 
+    	raises (MonitorCollectorErr::DeviceAlreadyRegistredEx, MonitorCollectorErr::RegisteringDeviceProblemEx); /// Called by device (MonCol gets non-sticky reference)
+    	    	
+    void deregisterMonitoredDevice(in string componentName)
+    	raises(MonitorCollectorErr::DeviceNotRegistredEx);
+    
+    void startMonitoring(in string componentName) raises(MonitorCollectorErr::StartMonitoringProblemEx);
+    
+    void stopMonitoring(in string componentName) raises (MonitorCollectorErr::StopMonitoringProblemEx);
+
+	///for the archiver or better monitor controler
+    MonitorDataBlocks getMonitorData();  
+    };//interface MonitorCollector
+
+
+};//module  TMCDB
+
+#endif

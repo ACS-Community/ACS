@@ -1,0 +1,210 @@
+#ifndef _TMCBD_COMMON_IDL__
+#define _TMCBD_COMMON_IDL__
+
+#include <acscommon.idl>
+
+#pragma prefix "alma"
+
+
+module TMCDB
+{
+
+typedef unsigned short DataValueType;
+
+const DataValueType doubleValueType=0; 
+const DataValueType doubleSeqValueType=1;
+
+const DataValueType floatValueType=2;
+const DataValueType floatSeqValueType=3;
+
+const DataValueType longValueType=4;
+const DataValueType longSeqValueType=5;
+
+const DataValueType longLongValueType=6;
+const DataValueType longLongSeqValueType=7;
+
+
+const DataValueType uLongLongValueType=8;
+const DataValueType uLongLongSeqValueType=9;
+
+const DataValueType stringValueType=10;
+const DataValueType stringSeqValueType=11;
+
+const DataValueType patternValueType=12;
+const DataValueType patternSeqValueType=13; // does not exist, just placeholder
+
+const DataValueType enumValueType=14;
+
+
+struct doubleBlobData
+  {
+      ACS::Time time;
+      double value;
+  };
+  
+  typedef  sequence<doubleBlobData> doubleBlobDataSeq;
+    
+    
+  struct doubleSeqBlobData
+  {
+      ACS::Time time;
+      ACS::doubleSeq value;
+  };
+  
+  typedef  sequence<doubleSeqBlobData> doubleSeqBlobDataSeq;
+    
+ /**************************************************************************/
+    
+  struct floatBlobData
+  {
+      ACS::Time time;
+      float value;
+  };
+
+typedef  sequence<floatBlobData> floatBlobDataSeq;
+
+  struct floatSeqBlobData
+  {
+      ACS::Time time;
+      ACS::floatSeq value;
+  };
+
+typedef  sequence<floatSeqBlobData> floatSeqBlobDataSeq;
+
+/**************************************************************************/
+
+struct longBlobData
+  {
+      ACS::Time time;
+      long value;
+  };
+  
+ typedef  sequence<longBlobData> longBlobDataSeq;
+
+
+struct longSeqBlobData
+  {
+      ACS::Time time;
+      ACS::longSeq value;
+  };
+  
+ typedef  sequence<longSeqBlobData> longSeqBlobDataSeq;
+
+
+/**************************************************************************/
+
+struct longLongBlobData
+  {
+      ACS::Time time;
+      long long value;
+  };
+  
+ typedef  sequence<longLongBlobData> longLongBlobDataSeq;
+  
+  
+  struct longLongSeqBlobData
+  {
+      ACS::Time time;
+      ACS::longLongSeq value;
+  };
+  
+ typedef  sequence<longLongSeqBlobData> longLongSeqBlobDataSeq;
+  
+  /**************************************************************************/
+  
+  struct uLongLongBlobData
+  {
+      ACS::Time time;
+      unsigned long long value;
+  };
+  
+  typedef  sequence<uLongLongBlobData> uLongLongBlobDataSeq;
+  
+  
+  struct uLongLongSeqBlobData
+  {
+      ACS::Time time;
+      ACS::uLongLongSeq value;
+  };
+  
+  typedef  sequence<uLongLongSeqBlobData> uLongLongSeqBlobDataSeq;
+  
+  /**************************************************************************/
+  
+  struct patternBlobData
+  {
+      ACS::Time time;
+      ACS::pattern value;
+  };
+  
+  typedef  sequence<patternBlobData> patternBlobDataSeq;
+  
+  /**************************************************************************/
+  
+struct stringBlobData
+  {
+      ACS::Time time;
+      string value;
+  };
+
+typedef  sequence<stringBlobData> stringBlobDataSeq;
+
+
+struct stringSeqBlobData
+  {
+      ACS::Time time;
+      ACS::stringSeq value;
+  };
+
+typedef  sequence<stringSeqBlobData> stringSeqBlobDataSeq;
+
+/**************************************************************************/
+  
+  struct enumBlobData
+  {
+      ACS::Time time;
+      unsigned long value;  //enums are sent as unsigned long (short ?)
+  };
+  
+  typedef  sequence<enumBlobData> enumBlobDataSeq;
+  
+ /**************************************************************************/
+  
+  struct anyBlobData
+  {
+      ACS::Time time;
+      any value;
+  };
+
+typedef  sequence<anyBlobData> anyBlobDataSeq;
+
+
+typedef string serialNumberType;
+
+typedef sequence<serialNumberType> serialNumberTypeSeq;
+
+  struct MonitorBlob
+  {
+
+      boolean archiveOnChange;
+      DataValueType typeOfValue; // can be found in any as well
+      serialNumberTypeSeq propertySerialNumber; // sequence that we can handle also sequnces
+      string propertyName; // full qualified property name (=component name included)
+      any blobDataSeq;    /// here we put a seqence od data xyzBlobData
+  };
+
+ struct MonitorDataBlock
+ {
+     ACS::Time startTime;
+     ACS::Time stopTime;
+     string componentName;
+     serialNumberType deviceSerialNumber;
+     sequence<MonitorBlob> monitorBlobs; ///monitored properties
+ }; 
+
+ typedef  sequence<MonitorDataBlock> MonitorDataBlocks;
+ 
+
+};//module  TMCDB
+
+#endif

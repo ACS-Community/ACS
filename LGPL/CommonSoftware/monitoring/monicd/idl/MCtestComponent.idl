@@ -1,0 +1,27 @@
+#ifndef _MC_TESTCOMPONENT_
+#define _MC_TESTCOMPONENT_
+
+#include <acscommon.idl>
+#include <baci.idl>
+
+
+#pragma prefix "alma"
+
+
+module TMCDB
+{
+
+
+ interface MCtestComponent : ACS::CharacteristicComponent
+    {
+	readonly attribute ACS::ROdoubleSeq doubleSeqProp;
+	readonly attribute ACS::ROdouble doubleProp;
+	
+	/// resets devio values and time
+	void reset();
+    };//interface MCTestComponent
+
+
+};//module  TMCDB
+
+#endif
