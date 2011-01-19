@@ -1,0 +1,11 @@
+#! /bin/bash
+
+# delete old tmp folder and create a new one
+rm -rf tmp
+mkdir tmp
+
+#Start the ORB services and manager.
+acsutilTATPrologue  -noloadifr
+
+#start  container
+acsutilAwaitContainerStart -cpp monColTestCont

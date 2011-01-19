@@ -1,0 +1,10 @@
+
+SOURCE MCTestEnv.tcl
+PROLOGUE MCTestPrologue
+
+1 "registerDevice" "acsutilTATTestRunner mcTestRegisterDevice MONITOR_COLLECTOR_TEST"
+2 "registerDeviceWithMultipleSerial" "acsutilTATTestRunner mcTestRegisterDeviceWithMultipleSerial MONITOR_COLLECTOR_TEST"
+3 "DeviceWithSeqAndMultipleSerial" "acsutilTATTestRunner mcTestDeviceWithSeqAndMultipleSerial MONITOR_COLLECTOR_TEST"
+4 "MCtestComponent"  "acsutilTATTestRunner  mcTestComponent MONITOR_COLLECTOR_TEST"
+
+EPILOGUE acsutilTATEpilogue

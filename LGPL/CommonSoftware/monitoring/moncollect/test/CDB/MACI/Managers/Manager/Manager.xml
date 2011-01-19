@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Manager   xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns="urn:schemas-cosylab-com:Manager:1.0" 
+	   xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+      Timeout="50.0"
+      ClientPingInterval="10.0"
+      ContainerPingInterval="10.0"
+      AdministratorPingInterval="10.0">
+  <Startup>
+        <cdb:_ string="TEST_PS_1"/>
+        <cdb:_ string="FRIDGE1"/>
+	<cdb:_ string="MOUNT1"/>
+	<cdb:_ string="AMSSEQ1"/>
+	<cdb:_ string="MC_TEST_COMPONENT"/>
+	<cdb:_ string="ARCHIVE/TMCDB/MONITOR_BLOBBER"/>
+	<cdb:_ string="ARCHIVE/TMCDB/MONITOR_CONTROL"/>
+  </Startup>
+
+  <ServiceComponents>
+	<cdb:_ string="Log"/>
+	<cdb:_ string="LogFactory"/>
+	<cdb:_ string="NotifyEventChannelFactory"/>
+	<cdb:_ string="ArchivingChannel"/>
+	<cdb:_ string="LoggingChannel"/>
+	<cdb:_ string="InterfaceRepository"/>
+	<cdb:_ string="CDB"/>
+	<cdb:_ string="ACSLogSvc"/>
+	<cdb:_ string="PDB"/>
+  </ServiceComponents>
+  
+  <LoggingConfig>
+    <log:_ Name="jacorb@Manager" minLogLevel="5" minLogLevelLocal="4"/>
+  </LoggingConfig>
+
+</Manager>
+
