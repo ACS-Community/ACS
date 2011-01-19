@@ -1,13 +1,13 @@
 #*******************************************************************************
-# PPPPPPPP
+# E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 14:38:01 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# bjeram  11/02/09  created
+# ramestic  2004-05-25  created
 #
 
 #*******************************************************************************
@@ -20,6 +20,8 @@
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
+#USER_RTAI_CFLAGS = 
+
 
 #
 # additional include and library search paths
@@ -33,6 +35,14 @@
 #                     local (_L) are not "installed".
 
 #
+# RTAI modules
+#
+#RTAI_MODULES    = 
+
+#
+# <brief description of xxxxx rtai module>
+
+#
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
@@ -40,9 +50,8 @@ EXECUTABLES_L   =
 
 #
 # <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+
+
 
 #
 # special compilation flags for single c sources
@@ -51,24 +60,30 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = MonitorCollectorImpl.h MonitorComponent.h MonitorPoint.h MonitorPoint.i
+INCLUDES        =
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = MonitorCollector
-LIBRARIES_L     =
+LIBRARIES       =
+LIBRARIES_L     = MCtestComponent MCmockBlobber MCmockController
 
 #
 # <brief description of lllll library>
-MonitorCollector_OBJECTS   = MonitorCollectorImpl MonitorComponent MonitorPoint
-MonitorCollector_LIBS = baci TMCDBCOMMON_IDLStubs MonitorCollectorStubs MonitorArchiverIFStubs MonitorCollectorErr CollectorListStatusStubs acscommonStubs enumpropMACROStubs TAO_DynamicInterface
+MCtestComponent_OBJECTS = MCtestComponentImpl
+MCtestComponent_LIBS= MCtestComponentStubs baci
+
+MCmockBlobber_OBJECTS = MCmockBlobberImpl
+MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent 
+
+MCmockController_OBJECTS = MCmockControllerImpl
+MCmockController_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent
 
 #
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       =
+SCRIPTS_L       = MCTestPrologue
 
 #
 # TCL scripts (public and local)
@@ -80,8 +95,8 @@ TCL_SCRIPTS_L   =
 # Python stuff (public and local)
 # ----------------------------
 PY_SCRIPTS         =
-PY_SCRIPTS_L       =
-
+PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
+						mcTestComponent
 PY_MODULES         =
 PY_MODULES_L       =
 
@@ -114,11 +129,8 @@ CDB_SCHEMAS =
 # IDL Files and flags
 # 
 IDL_FILES = 
-TAO_IDLFLAGS =
+IDL_TAO_FLAGS =
 USER_IDL =
-
-
-ACSERRDEF = 
 #
 # Jarfiles and their directories
 #
@@ -127,7 +139,7 @@ jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= on 
+DEBUG= 
 #
 # ACS XmlIdl generation on/off
 #
@@ -182,12 +194,13 @@ CSOURCENAMES = \
 #
 # INCLUDE STANDARDS
 # -----------------
-
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
    MAKEDIR := $(MAKEDIRTMP)/include
    include $(MAKEDIR)/acsMakefile
-endif
+endif 
+
+
 
 #
 # TARGETS
@@ -195,7 +208,8 @@ endif
 all:	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all
+	rm -rf tmp 
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -206,6 +220,5 @@ man   : do_man
 
 install : install_all
 	@echo " . . . installation done"
-
 
 #___oOo___

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 14:38:01 tstaig Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 14:38:01 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"

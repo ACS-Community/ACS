@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MCmockBlobberImpl.cpp,v 1.1 2011/01/19 14:38:01 tstaig Exp $"
+* "@(#) $Id: MCmockControllerImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,52 +25,45 @@
 
 
 
-static char *rcsId="@(#) $Id: MCmockBlobberImpl.cpp,v 1.1 2011/01/19 14:38:01 tstaig Exp $";
+static char *rcsId="@(#) $Id: MCmockControllerImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
 
 
-#include "MCmockBlobberImpl.h"
+#include "MCmockControllerImpl.h"
 
 
 using namespace MC;
 
 
-mockBlobberImpl::mockBlobberImpl(const ACE_CString& name,
+mockControllerImpl::mockControllerImpl(const ACE_CString& name,
 			     maci::ContainerServices * containerServices)
 	: acscomponent::ACSComponentImpl(name, containerServices)
 {
-    AUTO_TRACE("mockBlobberImpl::mockBlobberImpl");
-}//mockBlobberImpl
+    AUTO_TRACE("mockControllerImpl::mockControllerImpl");
+}//mockControllerImpl
 
-mockBlobberImpl::~mockBlobberImpl()
+mockControllerImpl::~mockControllerImpl()
 {
-    AUTO_TRACE("mockBlobberImpl::~mockBlobberImpl");
+    AUTO_TRACE("mockControllerImpl::~mockControllerImpl");
 
-}//~mockBlobberImpl
+}//~mockControllerImpl
 
 
-MonitorArchiver::CollectorListStatus mockBlobberImpl::addCollector(const char* componentName)
+void mockControllerImpl::registerCollector(const char* componentName)
 {
-	AUTO_TRACE("mockBlobberImpl::addCollector");
-	return MonitorArchiver::ADDED;
-}
-
-MonitorArchiver::CollectorListStatus mockBlobberImpl::containsCollector(const char* componentName)
-{
-        AUTO_TRACE("mockBlobberImpl::containsCollector");
-	return MonitorArchiver::KNOWN;
-}
-MonitorArchiver::CollectorListStatus mockBlobberImpl::removeCollector(const char* componentName)
-{
-        AUTO_TRACE("mockBlobberImpl::removeCollector");
-	return MonitorArchiver::REMOVED;
+	AUTO_TRACE("mockControllerImpl::registerCollector");
 }
 
 
+
+void mockControllerImpl::deregisterCollector(const char* componentName)
+{
+	AUTO_TRACE("mockControllerImpl::deregisterCollector");
+}
 
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
-MACI_DLL_SUPPORT_FUNCTIONS(mockBlobberImpl)
+MACI_DLL_SUPPORT_FUNCTIONS(mockControllerImpl)
 /* ----------------------------------------------------------------*/
 
 

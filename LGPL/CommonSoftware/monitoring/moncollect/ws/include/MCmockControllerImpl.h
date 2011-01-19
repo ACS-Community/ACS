@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MCmockBlobberImpl.h,v 1.1 2011/01/19 14:38:01 tstaig Exp $"
+* "@(#) $Id: MCmockControllerImpl.h,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,23 +39,21 @@ namespace MC
 /**
  * It is just fake/mock implementation of blobber that is used for test purpose.
  */
-class mockBlobberImpl :
+class mockControllerImpl :
 public acscomponent::ACSComponentImpl,
-public POA_MonitorArchiver::Blobber
+public POA_MonitorArchiver::Controller
 {
 public:
-	mockBlobberImpl(const ACE_CString& name,
+	mockControllerImpl(const ACE_CString& name,
 			maci::ContainerServices * containerServices);
 
-	~mockBlobberImpl();
+	~mockControllerImpl();
 
-	MonitorArchiver::CollectorListStatus  addCollector(const char* inComponentName);
+	void registerCollector(const char* componentName);
 
-	MonitorArchiver::CollectorListStatus  containsCollector(const char* inComponentName);
+	void deregisterCollector(const char* componentName);
 
-	MonitorArchiver::CollectorListStatus  removeCollector(const char* inComponentName);
-
-};//class mockBlobberImpl
+};//class mockControllerImpl
 
 };//namespace MC
 
