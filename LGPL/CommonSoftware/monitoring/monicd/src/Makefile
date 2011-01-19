@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2011/01/19 14:10:34 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.3 2011/01/19 14:15:39 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -123,7 +123,8 @@ ACSERRDEF= MonitorCollectorErr
 # Jarfiles and their directories
 #
 JARFILES=MonitoringDAO 
-jjj_DIRS=alma/acs/monitoring/DAO
+MonitoringDAO_DIRS=alma/acs/monitoring/DAO
+jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
