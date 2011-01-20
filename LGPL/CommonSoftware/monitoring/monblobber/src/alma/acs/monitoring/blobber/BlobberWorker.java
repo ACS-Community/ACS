@@ -1,15 +1,15 @@
 package alma.acs.monitoring.blobber;
 
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.sql.BatchUpdateException;
 
-import org.exolab.castor.util.Iterator;
 import org.omg.CORBA.Any;
 
 import alma.MonitorArchiver.CollectorListStatus;
@@ -50,7 +50,6 @@ import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
 import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.archive.tmcdb.DAO.MonitorDAOImpl;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
 import alma.acs.monitoring.blobber.CollectorList.CollectorData;
 
@@ -91,10 +90,24 @@ public class BlobberWorker implements Runnable {
         setCollectInterval(COLLECT_INTERVAL);
     }
 
+    /**
+     * The entire DAO implementation is in ARCHIVE/TMCDB/DAO/
+     * which is why we create <code>alma.archive.tmcdb.DAO.MonitorDAOImpl</code>
+     * through java reflection. 
+     * Tests should override this method and store a mock DAO in <code>myMonitorDAO</code>.
+     */
     protected void initMonitorDAO() {
         this.myLogger.fine("Initializing MonitorDAO.");
-        this.myMonitorDAO = new MonitorDAOImpl(this.myLogger);
-        //this.myMonitorDAO = null;
+        try {
+			Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl").asSubclass(MonitorDAO.class);
+			Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
+			this.myMonitorDAO = ctor.newInstance(myLogger);
+//        this.myMonitorDAO = new MonitorDAOImpl(this.myLogger);
+		} catch (Exception ex) {
+			// @TODO refactor to throw a checked exception
+			myLogger.log(Level.SEVERE, "", ex);
+			throw new IllegalArgumentException(ex);
+		} 
     }
 
     protected boolean canHandle() {
