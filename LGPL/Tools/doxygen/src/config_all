@@ -2,7 +2,7 @@
 #***********************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: config_all,v 1.4 2010/12/14 11:22:13 bjeram Exp $"
+# "@(#) $Id: config_all,v 1.5 2011/01/20 08:25:59 rbourtem Exp $"
 #
 # who       when         what  
 # --------  --------     ----------------------------------------------
@@ -82,12 +82,7 @@ Linux)
     # Graphviz Compilation
     echo ". . . graphviz $GVIZ_VER configure"
     cd graphviz-$GVIZ_VER
-    if [ "$ARCH" == "x86_64" ]
-    then
-	./configure --prefix=$INSTALL_DIR --with-expatlibdir=/usr/lib64  --build=x86_64
-    else
-	./configure --prefix=$INSTALL_DIR 
-    fi
+    ./configure --prefix=$INSTALL_DIR --disable-swig
     cd ..
 
     # Doxygen Compilation
