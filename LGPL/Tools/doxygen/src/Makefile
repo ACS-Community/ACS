@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.25 2010/08/16 06:20:01 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.26 2011/01/20 08:26:18 rbourtem Exp $"
 #
 # Makefile of ........
 #
@@ -108,6 +108,7 @@ patch: unpack last_patched
 
 last_patched: unpack doxygen.patch
 	@cd doxygen-$(DOX_VER); patch -p1 < ../doxygen.patch
+	@cd graphviz-$(GRAPH_VER); patch -p1 < ../graphviz.patch
 	@touch last_patched
 	@echo " . . . patch applied";\
 
