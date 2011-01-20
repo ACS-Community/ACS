@@ -6,7 +6,7 @@
      Author: Pablo Burgos
      Created: 25-Apr-2009
 
-     $Id: build.xml,v 1.1 2011/01/19 23:44:15 tstaig Exp $
+     $Id: build.xml,v 1.2 2011/01/20 18:01:15 tstaig Exp $
 -->
         <property environment="env"/>
         <property name="ACSROOT" value="${env.ACSROOT}"/>
@@ -106,12 +106,22 @@
                 </and>
      </condition>
 
-        <condition property="MonitoringDAO.path"
-                   value="${INTROOT}/lib/MonitoringDAO.jar"
-                   else="${ACSROOT}/lib/MonitoringDAO.jar">
+        <condition property="MonitoringDAO_IF.path"
+                   value="${INTROOT}/lib/MonitoringDAO_IF.jar"
+                   else="${ACSROOT}/lib/MonitoringDAO_IF.jar">
                 <and>
-                        <available property="MonitoringDAO.introot.present"
-                                   file="${INTROOT}/lib/MonitoringDAO.jar"
+                        <available property="MonitoringDAO_IF.introot.present"
+                                   file="${INTROOT}/lib/MonitoringDAO_IF.jar"
+                                   type="file"/>
+                </and>
+        </condition>
+        
+        <condition property="MonitorBlobber.path"
+                   value="${INTROOT}/lib/MonitorBlobber.jar"
+                   else="${ACSROOT}/lib/MonitorBlobber.jar">
+                <and>
+                        <available property="MonitorBlobber.introot.present"
+                                   file="${INTROOT}/lib/MonitorBlobber.jar"
                                    type="file"/>
                 </and>
         </condition>
@@ -120,7 +130,8 @@
                 <path refid="project.classpath"/>
                 <pathelement location="${MonitorCollector.path}"/>
                 <pathelement location="${TMCDBCOMMON_IDL.path}"/>
-                <pathelement location="${MonitoringDAO.path}"/>
+                <pathelement location="${MonitoringDAO_IF.path}"/>
+                <pathelement location="${MonitorBlobber.path}"/>
                 <pathelement location="${MonitorArchiver.path}"/>
                 <pathelement location="${MonitorCollectorErr.path}"/>
                 <pathelement location="${TMCDBPersistenceLayer.path}"/>
