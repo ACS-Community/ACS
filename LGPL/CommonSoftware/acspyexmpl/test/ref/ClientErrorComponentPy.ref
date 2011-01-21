@@ -6,8 +6,8 @@
 1 - ContainerStatusMsg: Manager access initialization begins
 1 - ContainerStatusMsg: Manager access initialization ends
 1 - ContainerStatusMsg: Automatic component loading begins
-1 - ----------T--:--:--.--- pyErrContainer taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- pyErrContainer taggedmessage - Info message from the manager: Startup statistics: 0 of 0 components activated.
+1 - ----------T--:--:--.--- pyErrContainer taggedmessage - Info message from the manager: Startup statistics: 0 components queued to be activated.
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- pyErrContainer __init__ - Container pyErrContainer waiting for requests
@@ -39,237 +39,236 @@
 2 -                 Code=16,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Severity=Error,
-2 - ----------T--:--:--.--- Python Client Error Trace
 2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
 2 - 
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -                     File=xxx
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion, of depth 3.
 2 -                     Line=xxx
 2 -                     Routine=__errorTrace,
 2 -                     Host=xxxx,
 2 -                     Process=xxx,
-2 -                     Thread=omniORB--XXXXXXX,
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
-2 -                     Type=10,
 2 - ----------T--:--:--.--- Python Client Error Trace
+2 -                     Thread=omniORB--XXXXXXX,
+2 -                     Type=10,
 2 -                     Code=16,
-2 - ErrorTrace (TimeStamp=xxxx,
-2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3a: ExceptionFromCompletion with depth 0
-2 -             File=xxx
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             Line=xxx
 2 -                     Severity=Error,
-2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3b: ExceptionFromCompletion with depth 3
-2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: No exception thrown
 2 -                     Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 - 
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
+2 -                         File=xxx
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion, of depth 3.
+2 -                         Line=xxx
+2 -                         Routine=__errorTrace,
+2 -                         Host=xxxx,
+2 -                         Process=xxx,
+2 -                         Thread=omniORB--XXXXXXX,
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
+2 -                         Type=10,
+2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3a: ExceptionFromCompletion with depth 0
+2 -                         Code=16,
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -             File=xxx
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
+2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: No exception thrown
+2 -             Line=xxx
+2 -                         Severity=Error,
+2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3b: ExceptionFromCompletion with depth 3
+2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 -             Routine=__errorTrace,
 2 - 
 2 -             Host=xxxx,
-2 -             ErrorTrace (TimeStamp=xxxx,
 2 -             Process=xxx,
-2 -                         File=xxx
 2 -             Thread=omniORB--XXXXXXX,
-2 -                         Line=xxx
 2 -             Type=10,
 2 -             Code=16,
-2 -                         Routine=__errorTrace,
-2 -                         Host=xxxx,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 - ----------T--:--:--.--- Python Client Error Trace
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: ACSErrTypeCommon.GenericErrorEx exception thrown
-2 -                         Process=xxx,
 2 -             Severity=Error,
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 -             Data: Name=ErrorDesc, Value=Generated multi level exception; )
 2 - ErrorTrace (TimeStamp=xxxx,
-2 -                         Thread=omniORB--XXXXXXX,
 2 - 
-2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
 2 -             File=xxx
-2 -                         Type=10,
-2 - ----------T--:--:--.--- Python Client testTypeException - OK: No exception thrown
-2 -                         Code=16,
 2 -     ErrorTrace (TimeStamp=xxxx,
 2 -             Line=xxx
-2 - ----------T--:--:--.--- Python Client testTypeException - Example 4b: TypeException with depth 3
+2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
 2 -                 File=xxx
 2 -             Routine=__returnCompletion,
-2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             Host=xxxx,
 2 -                 Line=xxx
-2 -                         Severity=Error,
-2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 - ----------T--:--:--.--- Python Client testTypeException - OK: No exception thrown
 2 -             Process=xxx,
 2 -                 Routine=__errorTrace,
-2 - 
+2 - ----------T--:--:--.--- Python Client testTypeException - Example 4b: TypeException with depth 3
 2 -                 Host=xxxx,
 2 -             Thread=omniORB--XXXXXXX,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ----------T--:--:--.--- Python Client testTypeException - OK: ACSErrTypeCommonEx exception thrown
 2 -                 Process=xxx,
 2 -             Type=10,
-2 - ----------T--:--:--.--- Python Client testCORBASystemException - Example 5: CORBA exception
 2 -             Code=16,
-2 - ErrorTrace (TimeStamp=xxxx,
 2 -                 Thread=omniORB--XXXXXXX,
-2 -             File=xxx
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Type=10,
 2 -                 Code=16,
-2 -             Line=xxx
 2 -             Severity=Error,
 2 -             Data: Name=ErrorDesc, Value=Exception generated by adding an error trace from a completion; )
-2 -             Routine=typeException,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 - 
-2 -             Host=xxxx,
 2 -                 Severity=Error,
 2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -             Process=xxx,
 2 - 
+2 - ----------T--:--:--.--- Python Client testTypeException - OK: ACSErrTypeCommonEx exception thrown
 2 -                 File=xxx
-2 -             Thread=omniORB--XXXXXXX,
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 -         ErrorTrace (TimeStamp=xxxx,
+2 - ErrorTrace (TimeStamp=xxxx,
 2 -                 Line=xxx
-2 -             Type=10,
-2 -             Code=16,
 2 -                     File=xxx
+2 -             File=xxx
 2 -                 Routine=__returnCompletion,
+2 - ----------T--:--:--.--- Python Client testCORBASystemException - Example 5: CORBA exception
 2 -                 Host=xxxx,
+2 -             Line=xxx
 2 -                     Line=xxx
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Process=xxx,
 2 -                     Routine=__errorTrace,
+2 -             Routine=typeException,
+2 -                     Host=xxxx,
+2 -             Host=xxxx,
+2 -                 Thread=omniORB--XXXXXXX,
+2 -                     Process=xxx,
+2 -             Process=xxx,
+2 -                 Type=10,
+2 -                 Code=16,
+2 -                     Thread=omniORB--XXXXXXX,
+2 -             Thread=omniORB--XXXXXXX,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                     Type=10,
+2 -             Type=10,
+2 -                     Code=16,
+2 -             Code=16,
+2 -                 Severity=Error,
+2 - ----------T--:--:--.--- Python Client testCORBASystemException - OK: CORBA.SystemException exception received
+2 -                 Data: )
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 - 
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -                     Severity=Error,
 2 -             Severity=Error,
 2 -             Data: )
-2 -                     Host=xxxx,
-2 -                 Thread=omniORB--XXXXXXX,
-2 - 
-2 -                     Process=xxx,
-2 -                 Type=10,
-2 -                 Code=16,
-2 -     ErrorTrace (TimeStamp=xxxx,
-2 -                     Thread=omniORB--XXXXXXX,
-2 -                 File=xxx
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                     Type=10,
-2 -                     Code=16,
-2 -                 Line=xxx
-2 -                 Severity=Error,
-2 -                 Data: )
-2 -                 Routine=__errorTrace,
-2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 - 
-2 -                 Host=xxxx,
-2 -                     Severity=Error,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ----------T--:--:--.--- Python Client testCORBASystemException - OK: CORBA.SystemException exception received
 2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 -         ErrorTrace (TimeStamp=xxxx,
-2 -                 Process=xxx,
-2 - 
-2 - ErrorTrace (TimeStamp=xxxx,
-2 -                     File=xxx
-2 -                 Thread=omniORB--XXXXXXX,
 2 -             File=xxx
-2 -                     Line=xxx
-2 -                 Type=10,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
-2 -                 Code=16,
-2 -             Line=xxx
-2 -                     Routine=__returnCompletion,
-2 -                     Host=xxxx,
-2 -             Routine=testCORBASystemException,
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
-2 -             Host=xxxx,
-2 -                     Process=xxx,
-2 -                 Severity=Error,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6b: completionFromCompletion with depth 3
-2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
-2 -             Process=xxx,
-2 -                     Thread=omniORB--XXXXXXX,
 2 - 
+2 - 
+2 -                     File=xxx
+2 -             Line=xxx
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                     Line=xxx
+2 -             Routine=testCORBASystemException,
+2 -                 File=xxx
+2 -             Host=xxxx,
+2 -                     Routine=__returnCompletion,
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
+2 -                     Host=xxxx,
+2 -                 Line=xxx
+2 -             Process=xxx,
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6b: completionFromCompletion with depth 3
+2 -                     Process=xxx,
+2 -                 Routine=__errorTrace,
 2 -             Thread=MainThread,
-2 -                     Type=10,
-2 -                     Code=16,
-2 -         ErrorTrace (TimeStamp=xxxx,
+2 -                 Host=xxxx,
+2 -                     Thread=omniORB--XXXXXXX,
 2 -             Type=10,
 2 -             Code=16,
-2 -                     File=xxx
-2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - OK: Completion with error trace
-2 -                     Line=xxx
-2 -                     Severity=Error,
+2 -                 Process=xxx,
+2 -                     Type=10,
+2 -                     Code=16,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Thread=omniORB--XXXXXXX,
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - OK: Completion with error trace
+2 -             Severity=Error,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Type=10,
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 -                 Code=16,
+2 -             Data: )
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -                     Severity=Error,
+2 - 
 2 - ----------T--:--:--.--- Python Client testOutCompletion - Example 8: outCompletion
 2 -                     Data: )
-2 - ErrorTrace (TimeStamp=xxxx,
-2 -                     Routine=__errorTrace,
-2 -             Severity=Error,
+2 -             File=xxx
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 - 
 2 - ----------T--:--:--.--- Python Client testOutCompletion - Completion Ok, without error trace
-2 -             Data: )
-2 -             File=xxx
-2 -                     Host=xxxx,
-2 - 
-2 -             Line=xxx
-2 -                     Process=xxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -             Routine=__returnCompletion,
-2 -                     Thread=omniORB--XXXXXXX,
+2 -             Line=xxx
+2 -                 Severity=Error,
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
 2 -                 File=xxx
+2 -             Routine=__returnCompletion,
+2 - 
 2 -             Host=xxxx,
-2 -                     Type=10,
-2 -                     Code=16,
 2 -                 Line=xxx
+2 -         ErrorTrace (TimeStamp=xxxx,
 2 -             Process=xxx,
 2 -                 Routine=testCORBASystemException,
-2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             Thread=omniORB--XXXXXXX,
-1 - ----------T--:--:--.--- pyErrContainer deactivate_component - Deactivating component: ERRORCOMP_PY
+2 -                     File=xxx
 2 -                 Host=xxxx,
-2 -                     Severity=Error,
-2 -             Type=10,
-1 - Goodbye
-2 -             Code=16,
-2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 -             Thread=omniORB--XXXXXXX,
+2 -                     Line=xxx
 2 -                 Process=xxx,
-2 - 
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             Type=10,
+2 -             Code=16,
+2 -                     Routine=__errorTrace,
 2 -                 Thread=MainThread,
-2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
-2 -             Severity=Error,
+2 -                     Host=xxxx,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Type=7,
 2 -                 Code=0,
+2 -                     Process=xxx,
+2 -             Severity=Error,
 2 -             Data: Name=ErrorDesc, Value=Put an error trace in completionFromCompletion; )
-2 - 
 2 -                 ShortDescrip=A Python exception,
-2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                     Thread=omniORB--XXXXXXX,
+2 - 
 2 -                 Severity=Error,
+2 -                     Type=10,
+2 -                     Code=16,
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -   File "/somepath/acspyexmplClientErrorComponent, line XXX, in testCORBASystemException
 2 -                 File=xxx
-2 -   File "/somepath/acspyexmplClientErrorComponent, line 324, in testCORBASystemException
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Line=xxx
-2 -                 Routine=__returnCompletion,
 2 -     self.foo.corbaSystemException()
-2 -   File "/somepath/acsexmplErrorComponent_idl.py, line 82, in corbaSystemException
+2 -                     Severity=Error,
+2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 -   File "/somepath/acsexmplErrorComponent_idl.py, line XXX, in corbaSystemException
+2 -                 Routine=__returnCompletion,
+2 - 
 2 -                 Host=xxxx,
-2 -                 Process=xxx,
 2 -     return _omnipy.invoke(self, "corbaSystemException", _0_acsexmplErrorComponent.ErrorComponent._d_corbaSystemException, args)
 2 - BAD_PARAM: CORBA.BAD_PARAM(0x0, CORBA.COMPLETED_NO)
-2 -                 Thread=omniORB--XXXXXXX,
+2 -                 Process=xxx,
 2 - ; )
-2 -                 Type=10,
+2 -                 Thread=omniORB--XXXXXXX,
 2 - 
+2 -                 Type=10,
 2 -                 Code=16,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Severity=Error,
 2 -                 Data: )
+1 - ----------T--:--:--.--- pyErrContainer deactivate_component - Deactivating component: ERRORCOMP_PY
 2 - 
+1 - Goodbye
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -                     File=xxx
 2 -                     Line=xxx
@@ -283,4 +282,5 @@
 2 -                     Severity=Error,
 2 -                     Data: )
 2 - 
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'pyErrContainer' exited with code: 0.
