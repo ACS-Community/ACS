@@ -16,7 +16,7 @@ return MasterCompDevIO()
                     ID="IDL:alma/xmlentity/XmlEntityStruct:1.0"
                     Frequency="10.0">
 print 'Code defined within this element gets executed only once.'
-my_xml_event = xmlentity.XmlEntityStruct('xml_stuff',
+my_xml_event = xmlentity.XmlEntityStruct(u'xml_stuff',
                                          'urn:schemas-cosylab-com:Stuff:1.0',
                                          'Stuff',
                                          '1.0',
