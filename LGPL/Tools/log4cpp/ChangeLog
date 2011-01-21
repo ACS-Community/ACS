@@ -1,0 +1,17 @@
+2011-01-21 htischer ws/src/Makefile robusteness and support to create new patch version on source updates
+
+	- on 'make clean_dist' create a new patch version including sourcecode updates
+	- on unpack/patch/clean do not overwrite sourcecode updates
+	- Allow build with 'make all' and allow 'make clean' without reconfiguring 
+	  and without overwriting source modifications done after unpacking.
+	- build output more self descriptive
+	
+---
+
+2010-10-27 htischer move src down to ws/src and added lcu/src/Makefile to prepare APEX port
+
+---
+
+2010-05-05 javarias Added log4cpp to ACS
+
+--- End ---
