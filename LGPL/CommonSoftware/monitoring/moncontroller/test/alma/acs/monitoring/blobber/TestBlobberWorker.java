@@ -6,12 +6,12 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.lang.reflect.Constructor;
 
 import alma.TMCDB.MonitorCollector;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.archive.tmcdb.DAO.MonitorDAOImpl;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
 
 public class TestBlobberWorker extends BlobberWorker implements MonitorDAO {
@@ -111,7 +111,16 @@ public class TestBlobberWorker extends BlobberWorker implements MonitorDAO {
         this.myBlobDataLock.put(cloneData(inData));
         if (useDatabase) {
             if (this.myDao == null) {
-                this.myDao = new MonitorDAOImpl(this.myLogger);
+					try {
+						Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl").asSubclass(MonitorDAO.class);
+						Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
+						this.myDao = ctor.newInstance(this.myLogger);
+						//this.myDao = new MonitorDAOImpl(this.myLogger);
+					} catch (Exception ex) {
+						// @TODO refactor to throw a checked exception
+						myLogger.log(Level.SEVERE, "", ex);
+						throw new IllegalArgumentException(ex);
+					} 
             }
             this.myDao.store(inData);
         }
