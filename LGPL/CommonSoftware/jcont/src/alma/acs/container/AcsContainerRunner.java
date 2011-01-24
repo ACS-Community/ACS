@@ -319,9 +319,13 @@ public class AcsContainerRunner
 				m_managerLoc = AcsManagerProxy.getLocalManagerCorbaloc();
 			}
 			
-			// -- recovery mode: default is "-recovery", so only "-nr" or "-norecovery" is interesting.
+			// -- recovery mode: command line default is "-recovery", so only "-nr" or "-norecovery" is interesting.
 			//    For historical reasons we also have the "-r" or "-recovery" flag, and we check both to rule out a conflict.
-			m_useRecoveryMode = !cmdArgs.isSpecified(optNoRecoveryMode);
+			//    As long as the java container does not evaluate the Recovery attribute from the CDB, 
+			//    we at least use the CDB default (instead of cmd line default which would be overwritten later).
+			if (!cmdArgs.isSpecified(optNoRecoveryMode) && !cmdArgs.isSpecified(optRecoveryMode)) {
+				m_useRecoveryMode = (new alma.maci.containerconfig.Container()).getRecovery();
+			}
 			if (cmdArgs.isSpecified(optNoRecoveryMode) && cmdArgs.isSpecified(optRecoveryMode)) {
 				m_logger.warning("Conflicting command line options for recovery mode: both -r and -nr are specified. Will use -r.");
 				m_useRecoveryMode = true;
