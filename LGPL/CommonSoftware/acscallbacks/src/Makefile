@@ -123,7 +123,7 @@ acsCallbacksSupport_DIRS= alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
 #
 # ACS XmlIdl generation on/off
 #
