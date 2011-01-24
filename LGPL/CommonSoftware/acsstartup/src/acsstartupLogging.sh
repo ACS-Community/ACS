@@ -16,6 +16,21 @@ local OUTPUT_PATH
 if [ "X$ACS_TMP" != "X" ] && [ -w $ACS_TMP ]
 then
     OUTPUT_PATH=$ACS_TMP
+    if [ ! -e $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    then
+        if ! mkdir $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 2> /dev/null
+        then
+            if [ ! -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+            then
+                echo "Cannot create $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE (getLogPath function)"
+                exit $EC_CANNOTCREATE
+            else
+                echo "Diagnostic Message(getLogPath): $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE exists (OK)" >&2
+            fi
+        fi
+    fi
+    chmod 777 $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 
+
     if [ -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
     then
         OUTPUT_PATH=$OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE
@@ -37,14 +52,29 @@ then
         then
             if [ ! -d $OUTPUT_PATH ]
             then
-                echo "Cannot create $OUTPUT_PATH (getLogFile function)"
+                echo "Cannot create $OUTPUT_PATH (getLogPath function)"
                 exit $EC_CANNOTCREATE
             else
-                echo "Diagnostic Message(getLogFile): $OUTPUT_PATH exists (OK)" >&2
+                echo "Diagnostic Message(getLogPath): $OUTPUT_PATH exists (OK)" >&2
             fi
         fi
     fi
     chmod 777 $OUTPUT_PATH
+
+    if [ ! -e $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+    then
+        if ! mkdir $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 2> /dev/null
+        then
+            if [ ! -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
+            then
+                echo "Cannot create $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE (getLogPath function)"
+                exit $EC_CANNOTCREATE
+            else
+                echo "Diagnostic Message(getLogPath): $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE exists (OK)" >&2
+            fi
+        fi
+    fi
+    chmod 777 $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 
 
     if [ -d $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ] && [ -w $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE ]
     then

@@ -140,11 +140,13 @@ fi
 if [ -d $ACS_INSTANCE_DIR ]
 then
 	ACS_SILENT_LOG "WARNING $ACS_INSTANCE_DIR already exists!"
+	#If it already exists ensure 775 privileges.
+	chmod 775 $ACS_INSTANCE_DIR
 
 #OK to create the ACS INSTANCE directory
 else
 	mkdir -p $ACS_INSTANCE_DIR
-	chmod 774 $ACS_INSTANCE_DIR
+	chmod 775 $ACS_INSTANCE_DIR
 fi
 
 #now create USED_CONTAINER_PORTS
