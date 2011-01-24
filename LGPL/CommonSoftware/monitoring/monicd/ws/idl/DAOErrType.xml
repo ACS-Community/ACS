@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Type 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="DAOErrType" type="60205" _prefix="alma">
+    <ErrorCode name="GettingMonitorCharacteristics" 
+        shortDescription="error while getting characteristics" 
+	description="An exception occurred when getting the properties characteristics." 
+    />
+    <ErrorCode name="StoreFailure" 
+        shortDescription="error while storing monitor data" 
+	description="An exception occurred when storing monitoring data." 
+    />
+    <ErrorCode name="DynConfigFailure" 
+        shortDescription="error on dynamic configuration" 
+	description="An exception occurred inside dynamic configuration." 
+    />
+    <ErrorCode name="DBConnectionFailure"
+        shortDescription="TMC DAO couldn't establish a DB connection"
+        description="TMC DAO could not establish a Database Connection. Please Check dbConfig.properties file (hostname, url, username, password, tmc configuration name) or/and check that TMC oracle database is alive and healthy"
+    />
+
+</Type>

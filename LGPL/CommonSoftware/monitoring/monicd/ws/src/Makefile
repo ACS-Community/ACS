@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2011/01/20 17:07:09 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2011/01/24 13:50:21 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -117,7 +117,7 @@ TAO_IDLFLAGS =
 USER_IDL =
 
 #Error definition xml files
-ACSERRDEF= MonitorCollectorErr
+ACSERRDEF= MonitorCollectorErr DAOErrType
 #
 #
 # Jarfiles and their directories
