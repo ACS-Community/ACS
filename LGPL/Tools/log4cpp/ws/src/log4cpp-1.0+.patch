@@ -1,6 +1,6 @@
 diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/Priority.hh
 --- log4cpp-1.0/include/log4cpp/Priority.hh	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-01-21 14:46:27.732337000 +0000
++++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-01-25 15:43:11.988397000 +0000
 @@ -69,14 +69,19 @@
           **/
          typedef enum {EMERG  = 0, 
@@ -125,7 +125,7 @@ diff -Naur log4cpp-1.0/log4cpp.spec log4cpp-1.0+/log4cpp.spec
 -
 diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
 --- log4cpp-1.0/src/Priority.cpp	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/src/Priority.cpp	2011-01-21 14:46:27.735338000 +0000
++++ log4cpp-1.0+/src/Priority.cpp	2011-01-25 15:43:11.992382000 +0000
 @@ -14,28 +14,30 @@
  namespace log4cpp {
  

@@ -1,7 +1,6 @@
 #*******************************************************************************
-# PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2011/01/21 15:13:03 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.3 2011/01/25 15:54:55 htischer Exp $"
 #
 # Makefile of log4cpp
 #
@@ -15,17 +14,45 @@
 #					  Allow build with 'make all' and allow make 'clean'
 #					    without reconfiguring and without overwriting source
 #					    modifications done after unpacking.
+# htischer  25/01/11  Move ws/lcu common part to a common file (version numbers).
+#					  Remove editor backup files *~. Comments.
 #
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
 #*******************************************************************************
 # REMARKS
-#    None
+# make targets:
+#
+# clean_dist	Bring subtree in a state suitable for version control checkin.
+#				This includes also creating a new patch version in case of
+#				modifications in the extracted sourcecode.
+#
+# all			Build. Do unpack, patch and configure if and only if necessary.
+#
+# clean			Prepares for a clean rebuild, but leaves configure results.
+#
+# unpack		Unpack the original log4cpp package.
+#
+# patch			patch the original log4cpp package with sourcecode updates.
+#				unpack when necessary.
+#
+# configure		autoconfigure the build to the current runtime/build environment.
+#				Unpack and patch when necessary.
+#
+# test			Run a subset of the provided test code.
+#
+# printenv		Dump the Shell environment as seen inside make
 #------------------------------------------------------------------------
 
-LOG4CPP_VER = 1.0+
-LOG4CPP_TAR = 1.0
+# Version of current patched state of log4cpp package
+# Version of original tgz of log4cpp package
+# These must be synchronized in ../../ws/src/Makefile and ../../lcu/src/Makefile
+# Moved to a common file for inclusion 
+# LOG4CPP_VER = 1.0+
+# LOG4CPP_TAR = 1.0
+
+include common.Makefile
 
 #
 # Check for installation directories
@@ -140,6 +167,7 @@ clean :
 .PHONY : clean_dist 
 clean_dist :
 	@echo ". . . clean_dist . . ."
+	rm -f `find .. -name "*~"`
 	@if [ -d log4cpp-$(LOG4CPP_VER) ]; then \
 		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
 		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean || exit 1; \

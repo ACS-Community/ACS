@@ -1,3 +1,16 @@
+2011-01-25 htischer
+
+	- ws/src/Makefile
+		summarized available targets
+		Move ws/lcu common part to a common file (version numbers)
+		Remove editor backup files *~
+	- lcu/src/Makefile
+		sourcecodechange/patchcreation management
+		unified lcu and ws repository
+		!preliminary! still building for ws on lcu tree for build test
+
+---
+
 2011-01-21 htischer ws/src/Makefile robusteness and support to create new patch version on source updates
 
 	- on 'make clean_dist' create a new patch version including sourcecode updates
