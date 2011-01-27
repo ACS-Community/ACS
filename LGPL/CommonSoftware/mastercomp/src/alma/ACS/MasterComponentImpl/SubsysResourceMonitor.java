@@ -519,6 +519,9 @@ public class SubsysResourceMonitor {
 	/**
 	 * A custom <code>ResourceChecker</code> for objects implementing
 	 * PingableResource interface.
+	 * <p>
+	 * @TODO: Since ACS 9.1 the ping() method has parameters, incl. one for recursion.
+	 *        The current choice is fast=false, recursive=false, but maybe this should be adjusted.
 	 */
 	public static class PingableResourceChecker<T extends PingableResourceOperations> implements
 			SubsysResourceMonitor.ResourceChecker<T> {
@@ -534,8 +537,8 @@ public class SubsysResourceMonitor {
 
 		public String checkState() {
 			String errMsg = null;
-			if (!resource.ping()) {
-				errMsg = "ping() failed.";
+			if (!resource.ping(false, false, -1)) {
+				errMsg = "ping(false, false, -1) failed.";
 			}
 			return errMsg;
 		}
