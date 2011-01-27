@@ -23,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscomponent.idl,v 1.4 2007/06/22 12:46:52 nbarriga Exp $"
+* "@(#) $Id: acscomponent.idl,v 1.5 2011/01/27 17:01:52 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -120,14 +120,21 @@ module ACS {
    * by your master component, but in that case you must implement a custom "ResourceChecker" class;
    * with "PingableResource" you can use the convenience methods provided by ACS.
    *
-   * @return true means the resource is OK
    */
   interface PingableResource
   {
-          boolean ping();
+    /**
+     * @param fast  If true, skip performing fancier checks, so that the returned result only tells us whether the resources can communicate,
+     *              but not if they are otherwise healthy. This could be used for performance measurements.
+     * @param recursive  If true, the call should recursively ping other PingableResources managed by this PingableResource.
+     * @param id  The caller may pass a random number that can be used by the resources to identify this call
+     *            and avoid endless recursion if "recursive" is true and it is not clear whether the resource topology is free of cycles.
+     * @return true means the resource is OK
+     */
+    boolean ping(in boolean fast, in boolean recursive, in long id);
   };
 
-  
+
 };
 
 #endif /* _ACSCOMPONENT_IDL_ */
