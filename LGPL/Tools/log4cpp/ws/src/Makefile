@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.3 2011/01/25 15:54:55 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/01/28 17:56:01 htischer Exp $"
 #
 # Makefile of log4cpp
 #
@@ -16,7 +16,8 @@
 #					    modifications done after unpacking.
 # htischer  25/01/11  Move ws/lcu common part to a common file (version numbers).
 #					  Remove editor backup files *~. Comments.
-#
+# htischer  28/01/11  clean_configure to clean up without creating a new patch
+#					  exclude autom4te.cache from patch.
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
@@ -24,11 +25,16 @@
 # REMARKS
 # make targets:
 #
+# all			Build. Do unpack, patch and configure if and only if necessary.
+#
 # clean_dist	Bring subtree in a state suitable for version control checkin.
 #				This includes also creating a new patch version in case of
 #				modifications in the extracted sourcecode.
 #
-# all			Build. Do unpack, patch and configure if and only if necessary.
+# clean_configure remove configure results, if they got created.
+#				Avoids doing a configure just to be able to do a distclean.
+#				Useful to start configure from scratch or checking current state
+#				before creating a new patch. 
 #
 # clean			Prepares for a clean rebuild, but leaves configure results.
 #
@@ -120,8 +126,29 @@ clean :
 	fi
 	@echo " . . . clean done"
 
+# Remove results of configure
+# Useful to rerun configure from scratch, or to check current state result before creating a new patch version
+# Can be done only if Makefile got created during configuration
+# Use Makefile existence as indicator.
+# Cannot use make dependency, to avoid creating files which immediately get deleted again.
+# Attention!
+# If a configure run breaks before creating the Makefile, the file tree is inconsistent!
+# In this case don't create a new patch untile configure was runing successfully!
+
+.PHONY : clean_configure
+clean_configure :
+	@echo ". . . clean_configure . . ."
+	@if [ -r log4cpp-$(LOG4CPP_VER)/Makefile ]; then \
+		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
+		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
+	fi
+	@echo " . . . clean_configure done"
+
 # Create a new patch version to reflect changes in the sourcecode.
 # Before that clean up the build of the package to the state of distribution (nested distclean)
+# Attention!
+# If configure failed previously, clean_configure or distclean cannot clean up appropriately!
+# Create a new patch version only if make configure was successful!
 # No need to do a clean of the package, because done in turn of distclean.
 # After creating a new patch, to be ready for checkin, rm also unpacked and patched subtrees
 # Attention!
@@ -158,6 +185,15 @@ clean :
 # But on no change and keeping file dates on copy the new patch should be identical or equivalent,
 # therefore for now skip this complicated check.
 #
+# Attention!
+# According to current observations, autom4te.cache contained only empty files. Empty files do not go into patch.
+# But danger if the wrong autom4te.cache makes it to the lcu side which runs with a different configuration.
+# autom4te.cache: Can be savely deleted. Created on certain configure steps. Turn off creation with one of
+# autom4te.cfg ~/.autom4te.cfg ./.autom4te.cfg :
+# begin-language: "Autoconf-without-aclocal-m4"
+# args: --no-cache
+# end-language: "Autoconf-without-aclocal-m4"
+#
 # Note:
 # If build breaks after 'make -C log4cpp distclean' but before 'rm -r distclean', then manual investigation
 # is needed, because 'make patch' is rejected and 'make clean_dist' cannot be resumed half way through.
@@ -165,12 +201,12 @@ clean :
 # - Or manually preserve all modified source files, remove patched folder,
 #   restore 'make patch' and manually preserved files.
 .PHONY : clean_dist 
-clean_dist :
+clean_dist : clean_configure
 	@echo ". . . clean_dist . . ."
 	rm -f `find .. -name "*~"`
 	@if [ -d log4cpp-$(LOG4CPP_VER) ]; then \
-		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
-		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean || exit 1; \
+		echo rm -rf log4cpp-$(LOG4CPP_VER)/autom4te.cache; \
+		rm -rf log4cpp-$(LOG4CPP_VER)/autom4te.cache || exit 1; \
 		if [ ! -d log4cpp-$(LOG4CPP_TAR) ]; then \
 			echo tar -xzf log4cpp-$(LOG4CPP_TAR).tar.gz; \
 			tar -xzf log4cpp-$(LOG4CPP_TAR).tar.gz || exit 1; \
@@ -243,6 +279,10 @@ patch : unpack log4cpp-$(LOG4CPP_VER)
 
 # File name of one configure result. Created by configure.
 # Create only if not existing, therefore no dependencies.
+# Attention!
+# If configure fails half way through, the file tree is not consistent, but distclean
+# also does not work!
+# Do not create a new patch version until configure was successful!
 log4cpp-$(LOG4CPP_VER)/Makefile :
 	@echo ". . . running configure . . ."
 	echo "   log4cpp tar file is: log4cpp-$(LOG4CPP_TAR).tar.gz" >configure.log

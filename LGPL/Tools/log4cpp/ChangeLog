@@ -1,3 +1,15 @@
+2011-01-28 htischer
+
+	- make clean_dist : creates a new patch with sourcecode changes before checkin
+	- make clean_configure : preview clean new state before packing to patch and rm of extracted
+	- configure compile and create library for VxWorks (not yet linking)
+	- install library, headers and doxygen documentation for VxWorks
+	- common sourcecode for ws and lcu
+	- fixed compile and doxygen warnings for ws and lcu
+	- build stabilizing
+
+---
+
 2011-01-25 htischer
 
 	- ws/src/Makefile
