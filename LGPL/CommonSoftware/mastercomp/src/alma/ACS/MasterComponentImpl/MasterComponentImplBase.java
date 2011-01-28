@@ -49,6 +49,7 @@ import alma.acs.exceptions.AcsJException;
 import alma.acs.genfw.runtime.sm.AcsState;
 import alma.acs.genfw.runtime.sm.AcsStateChangeListener;
 import alma.acs.genfw.runtime.sm.AcsStateUtil;
+import alma.maciErrType.ComponentCleanUpEx;
 
 /**
  * Base class for subsystem master components.
@@ -141,7 +142,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 	 * Master component subclasses must call <code>super.cleanUp()</code> if they override this method!
 	 * @see alma.ACS.impl.CharacteristicComponentImpl#cleanUp()
 	 */
-	public void cleanUp() {
+	public void cleanUp() throws ComponentCleanUpEx {
 		try {
 			subsysComponentMonitor.destroy(5, TimeUnit.SECONDS);
 		} catch (Exception e) {
