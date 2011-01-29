@@ -1803,7 +1803,7 @@ MessageWidgetListener
 	 * 
 	 * @param audienceInfo The audience: it can be <code>null</code>.
 	 */
-	private void initAudience(AudienceInfo audienceInfo) {
+	protected void initAudience(AudienceInfo audienceInfo) {
 		AudienceInfo aInfo=null;
 		if (audienceInfo!=null) {
 			// Audience set in the command line
