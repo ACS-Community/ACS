@@ -368,7 +368,7 @@ public class IOHelper extends LogMatcher {
 		if (wBuffer==null) {
 			throw new IllegalArgumentException("The BufferedWriter can't be null");
 		}
-		String header = new String("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n<Log>\n");
+		String header = new String("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<Log>\n<Header Name=\"NameForXmlDocument\" Type=\"LOGFILE\" />\n");
 		wBuffer.write(header, 0,header.length());
 	}
 	
