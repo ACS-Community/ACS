@@ -396,7 +396,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
 	 */
 	@Override
-	protected void updateTableEntries() {
+	protected synchronized void updateTableEntries() {
 		super.updateTableEntries();
 		if (System.currentTimeMillis()>nextDeletionCheckTime) {
 			deleteLogsFromTable();
@@ -449,6 +449,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 		if (removed<=0) {
 			return;
 		}
+		System.out.println("deleteLogsFromTable.fire");
 		fireTableDataChanged();
 		
 		deleterThread = new Thread(new DeleteFromCache(keys),"DeleteFromCache");

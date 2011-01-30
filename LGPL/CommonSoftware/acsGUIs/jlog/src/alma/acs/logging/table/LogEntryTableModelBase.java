@@ -183,7 +183,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @see javax.swing.table.TableModel#getRowCount()
 	 */
 	@Override
-	public int getRowCount() {
+	public synchronized int getRowCount() {
 		synchronized (rows) {
 			return rows.size();	
 		}
@@ -408,7 +408,7 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * 
 	 * @return <code>true</code> If the model has been changed and the table needs to be refreshed
 	 */
-	protected void updateTableEntries() {
+	protected synchronized void updateTableEntries() {
 		flushLogs();
 	}
 	
@@ -425,19 +425,17 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	private void flushLogs() {
 		int added=0;
 		synchronized (rowsToAdd) {
-			if (!rowsToAdd.isEmpty()) {
-				added=rowsToAdd.size();
+			added=rowsToAdd.size();
+			if (added>0) {
 				synchronized (rows) {
-					added=rowsToAdd.size();
 					rows.addAll(0,rowsToAdd);
 				}
 				rowsToAdd.clear();
+			} else {
+				return;
 			}
 		}
-		if (added>0) {
-			//fireTableRowsInserted(0, added);
-			fireTableDataChanged();
-		}
+		fireTableDataChanged();
 	}
 	
 	/**
