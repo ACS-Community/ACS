@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2011/01/28 17:56:01 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/01/31 15:38:12 htischer Exp $"
 #
 # Makefile of log4cpp port to VxWorks
 #
@@ -33,6 +33,8 @@
 #					  install library, headers and doxygen documentation
 #					  build stabilizing.
 #					  exclude autom4te.cache from clean_dist.
+# htischer  31/01/11  moved INSTALL_DIR to common file
+#					  add compilation of testcases  
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
@@ -66,44 +68,18 @@
 # printenv		Dump the Shell environment as seen inside make
 #------------------------------------------------------------------------
 
+# Settings to be synchronized in ../../ws/src/Makefile and ../../lcu/src/Makefile
+# Moved to a common file for inclusion 
+
 # Version of current patched state of log4cpp package
 # Version of original tgz of log4cpp package
-# These must be synchronized in ../../ws/src/Makefile and ../../lcu/src/Makefile
-# Moved to a common file for inclusion 
 # LOG4CPP_VER = 1.0+
 # LOG4CPP_TAR = 1.0
 
-include ../../ws/src/common.Makefile
+# Installation location for 'make install'
+# INSTALL_DIR = e.g. $(INTROOT)
 
-#
-# Check for installation directories
-#
-# Initially this was tested only before configuring on rule execution.
-# But if the folder gets deleted in the meantime make install would not work anyway.
-# Therefore for simplification, do the check on every make run.
-# On INTLIST -
-# Don't check existence of folders, e.g. like .bash_profile.acs
-# Always use first folder
-# Use builtin make expansion instead of external tools.
-# INSTALL_DIR:=$(shell echo $(INTLIST) | awk 'BEGIN {FS=":"} {print $$1}')
-# INSTALL_DIR:=$(firstword $(subst :, ,$(INTLIST))))
-ifneq ($(INTROOT),) 
-   INSTALL_DIR:=$(INTROOT)
-else
-ifneq ($(INTLIST),) 
-   INSTALL_DIR:=$(firstword $(subst :, ,$(INTLIST)))
-else
-ifneq ($(ACSROOT),) 
-   INSTALL_DIR:=$(ACSROOT)
-else
-ifneq ($(VLTROOT),) 
-   INSTALL_DIR:=$(VLTROOT)
-else 
-   $(error No installation directories (INTROOT, INTLIST, ACSROOT, VLTROOT) have been found. Please define one and start again)
-endif
-endif
-endif
-endif
+include ../../ws/src/common.Makefile
 
 # List of files to be linked
 LINK_FILES =
@@ -381,12 +357,19 @@ LD=ldppc
 # -------
 
 # patch and configure are not repeated on calling again, therefore no separate build rule needed.
+# Build the testcases in addition to the library and test driver.
+# 'make check' builds the testcases as well as executes them.
+# Therefore do the build as separate step. Not available as separate pseudotarget.
+# List of testcases in log4cpp-$(LOG4CPP_VER)/tests/makefile.am not available before
+# unpacking and patching. Therefore delegate into sub-make to be invoked after this.
+# Need to treat 'make install' and 'make tests' special also. But 'make clean' already cleans the tests.
 #skip default acsMakefile things
 #all:	do_all
 .PHONY : all
 all: configure
 	@echo ". . . building . . ."
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) all
+	$(MAKE) -f tests.Makefile all
 	@echo " . . . 'all' done" 
 
 #skip default acsMakefile things
@@ -485,12 +468,15 @@ db :
 # Therefore o 
  
 #skip default acsMakefile things
+# Install the testcases also, see rule 'all'.
+# Fix the link before installing the executables
 #install : install_all
 .PHONY : install 
 install : 
 	@echo ". . . installing cppunit . . ."
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) install
 	mv $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp-config $(INSTALL_DIR)/bin/log4cpp-config
+#	$(MAKE) -f tests.Makefile install
 	@echo " . . . installation done"
 
 # Folder name of patched version of extracted tgz. Create only if not existing, therefore no dependencies.
@@ -580,7 +566,9 @@ printenv:
 # testbench, 12 iterations.
 # optional 1st argument: records per iteration, default=100
 # optional 2nd argument: record size, default=128
-# Todo: Temporary treat lcu like ws to test the build
+# Run the the individual testcases also, see rule 'all'.
+# 'make check' already available, also builds if not present.
+# Todo: remote execution
 #
 .PHONY : test 	
 test :
@@ -589,5 +577,7 @@ test :
 #	log4cpp-$(LOG4CPP_VER)/tests/testbench 10 5
 #	log4cpp-$(LOG4CPP_VER)/tests/testbench 10
 #	log4cpp-$(LOG4CPP_VER)/tests/testbench
+#	$(MAKE) -C log4cpp-$(LOG4CPP_VER) check
+	@echo " . . . test done"
 
 #___oOo___

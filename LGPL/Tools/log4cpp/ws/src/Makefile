@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.4 2011/01/28 17:56:01 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/01/31 15:38:12 htischer Exp $"
 #
 # Makefile of log4cpp
 #
@@ -18,6 +18,8 @@
 #					  Remove editor backup files *~. Comments.
 # htischer  28/01/11  clean_configure to clean up without creating a new patch
 #					  exclude autom4te.cache from patch.
+# htischer  31/01/11  moved INSTALL_DIR to common file
+#					  add build, install, exec of testcases  
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
@@ -51,44 +53,18 @@
 # printenv		Dump the Shell environment as seen inside make
 #------------------------------------------------------------------------
 
+# Settings to be synchronized in ../../ws/src/Makefile and ../../lcu/src/Makefile
+# Moved to a common file for inclusion 
+
 # Version of current patched state of log4cpp package
 # Version of original tgz of log4cpp package
-# These must be synchronized in ../../ws/src/Makefile and ../../lcu/src/Makefile
-# Moved to a common file for inclusion 
 # LOG4CPP_VER = 1.0+
 # LOG4CPP_TAR = 1.0
 
-include common.Makefile
+# Installation location for 'make install'
+# INSTALL_DIR = e.g. $(INTROOT)
 
-#
-# Check for installation directories
-#
-# Initially this was tested only before configuring on rule execution.
-# But if the folder gets deleted in the meantime make install would not work anyway.
-# Therefore for simplification, do the check on every make run.
-# On INTLIST -
-# Don't check existence of folders, e.g. like .bash_profile.acs
-# Always use first folder
-# Use builtin make expansion instead of external tools.
-# INSTALL_DIR:=$(shell echo $(INTLIST) | awk 'BEGIN {FS=":"} {print $$1}')
-# INSTALL_DIR:=$(firstword $(subst :, ,$(INTLIST))))
-ifneq ($(INTROOT),) 
-   INSTALL_DIR:=$(INTROOT)
-else
-ifneq ($(INTLIST),) 
-   INSTALL_DIR:=$(firstword $(subst :, ,$(INTLIST)))
-else
-ifneq ($(ACSROOT),) 
-   INSTALL_DIR:=$(ACSROOT)
-else
-ifneq ($(VLTROOT),) 
-   INSTALL_DIR:=$(VLTROOT)
-else 
-   $(error No installation directories (INTROOT, INTLIST, ACSROOT, VLTROOT) have been found. Please define one and start again)
-endif
-endif
-endif
-endif
+include common.Makefile
 
 #
 # Scripts (public and local)
@@ -112,10 +88,17 @@ SCRIPTS_L       =
 # -------
 
 # patch and configure are not repeated on calling again, therefore no separate build rule needed.
+# Build the testcases in addition to the library and test driver.
+# 'make check' builds the testcases as well as executes them.
+# Therefore do the build as separate step. Not available as separate pseudotarget.
+# List of testcases in log4cpp-$(LOG4CPP_VER)/tests/makefile.am not available before
+# unpacking and patching. Therefore delegate into sub-make to be invoked after this.
+# Need to treat 'make install' and 'make tests' special also. But 'make clean' already cleans the tests.
 .PHONY : all
 all: configure
 	@echo ". . . building . . ."
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) all
+	$(MAKE) -f tests.Makefile all
 	@echo " . . . 'all' done" 
 
 .PHONY : clean 
@@ -233,10 +216,12 @@ man :
 db :
 	@echo " . . . ../DB done"
 
+# Install the testcases also, see rule 'all'.
 .PHONY : install 
 install : 
 	@echo ". . . installing cppunit . . ."
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) install
+	$(MAKE) -f tests.Makefile install
 	@echo " . . . installation done"
 
 # Folder name of extracted tgz. Create only if not existing. No dependencies.
@@ -311,6 +296,8 @@ printenv:
 # optional 1st argument: records per iteration, default=100
 # optional 2nd argument: record size, default=128
 #
+# Run the the individual testcases also, see rule 'all'.
+# 'make check' already available, also builds if not present.
 .PHONY : test 	
 test :
 #	log4cpp-$(LOG4CPP_VER)/tests/testmain
@@ -318,5 +305,7 @@ test :
 	log4cpp-$(LOG4CPP_VER)/tests/testbench 10 5
 #	log4cpp-$(LOG4CPP_VER)/tests/testbench 10
 #	log4cpp-$(LOG4CPP_VER)/tests/testbench
+	$(MAKE) -C log4cpp-$(LOG4CPP_VER) check
+	@echo " . . . test done"
 
 #___oOo___

@@ -1,6 +1,6 @@
 diff -Naur log4cpp-1.0/configure log4cpp-1.0+/configure
 --- log4cpp-1.0/configure	2007-08-29 09:33:57.000000000 +0000
-+++ log4cpp-1.0+/configure	2011-01-27 13:08:11.830697000 +0000
++++ log4cpp-1.0+/configure	2011-01-31 09:19:04.911738000 +0000
 @@ -21253,7 +21253,17 @@
  ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
  ac_compiler_gnu=$ac_cv_c_compiler_gnu
@@ -22,7 +22,7 @@ diff -Naur log4cpp-1.0/configure log4cpp-1.0+/configure
  # requires special compiler flags (e.g. on True64 or Sequent).
 diff -Naur log4cpp-1.0/doc/Doxyfile.in log4cpp-1.0+/doc/Doxyfile.in
 --- log4cpp-1.0/doc/Doxyfile.in	2007-09-03 09:53:14.000000000 +0000
-+++ log4cpp-1.0+/doc/Doxyfile.in	2011-01-27 13:07:44.093066000 +0000
++++ log4cpp-1.0+/doc/Doxyfile.in	2011-01-31 09:18:53.391682000 +0000
 @@ -62,7 +62,9 @@
  INCLUDE_GRAPH        = YES
  INCLUDED_BY_GRAPH    = YES
@@ -37,7 +37,7 @@ diff -Naur log4cpp-1.0/doc/Doxyfile.in log4cpp-1.0+/doc/Doxyfile.in
  DOT_IMAGE_FORMAT = gif
 diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log4cpp/config-vxworks.h
 --- log4cpp-1.0/include/log4cpp/config-vxworks.h	1970-01-01 00:00:00.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/config-vxworks.h	2011-01-27 14:03:51.096126000 +0000
++++ log4cpp-1.0+/include/log4cpp/config-vxworks.h	2011-01-31 09:18:53.396671000 +0000
 @@ -0,0 +1,297 @@
 +#ifndef _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H
 +#define _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H 1
@@ -338,7 +338,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log
 +#endif
 diff -Naur log4cpp-1.0/include/log4cpp/PatternLayout.hh log4cpp-1.0+/include/log4cpp/PatternLayout.hh
 --- log4cpp-1.0/include/log4cpp/PatternLayout.hh	2003-03-10 09:01:16.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/PatternLayout.hh	2011-01-27 13:07:44.110070000 +0000
++++ log4cpp-1.0+/include/log4cpp/PatternLayout.hh	2011-01-31 09:18:53.398674000 +0000
 @@ -62,6 +62,7 @@
           * Sets the format of log lines handled by this
           * PatternLayout. By default, set to "%%m%%n".<br>
@@ -357,7 +357,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/PatternLayout.hh log4cpp-1.0+/include/log
           **/
 diff -Naur log4cpp-1.0/include/log4cpp/Portability.hh log4cpp-1.0+/include/log4cpp/Portability.hh
 --- log4cpp-1.0/include/log4cpp/Portability.hh	2007-07-03 17:19:36.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/Portability.hh	2011-01-27 13:07:44.112072000 +0000
++++ log4cpp-1.0+/include/log4cpp/Portability.hh	2011-01-31 09:18:53.400670000 +0000
 @@ -16,6 +16,8 @@
  #    else
  #        include <log4cpp/config-win32.h>
@@ -369,7 +369,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/Portability.hh log4cpp-1.0+/include/log4c
  #    include <log4cpp/config-openvms.h>
 diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/Priority.hh
 --- log4cpp-1.0/include/log4cpp/Priority.hh	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-01-27 13:07:44.114068000 +0000
++++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-01-31 09:18:53.423672000 +0000
 @@ -69,14 +69,19 @@
           **/
          typedef enum {EMERG  = 0, 
@@ -393,7 +393,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/
          /**
 diff -Naur log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh
 --- log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh	2005-04-12 17:57:14.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh	2011-01-27 13:07:44.116068000 +0000
++++ log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh	2011-01-31 09:18:53.425670000 +0000
 @@ -33,7 +33,7 @@
      LOG_WARNING = 4,       ///< warning conditions
      LOG_NOTICE  = 5,       ///< normal but significant condition
@@ -515,7 +515,7 @@ diff -Naur log4cpp-1.0/log4cpp.spec log4cpp-1.0+/log4cpp.spec
 -
 diff -Naur log4cpp-1.0/m4/ACX_PTHREAD.m4 log4cpp-1.0+/m4/ACX_PTHREAD.m4
 --- log4cpp-1.0/m4/ACX_PTHREAD.m4	2007-08-24 05:51:58.000000000 +0000
-+++ log4cpp-1.0+/m4/ACX_PTHREAD.m4	2011-01-27 13:07:44.119067000 +0000
++++ log4cpp-1.0+/m4/ACX_PTHREAD.m4	2011-01-31 09:18:53.428674000 +0000
 @@ -87,7 +87,15 @@
  AC_REQUIRE([AC_CANONICAL_HOST])
  AC_LANG_SAVE
@@ -535,7 +535,7 @@ diff -Naur log4cpp-1.0/m4/ACX_PTHREAD.m4 log4cpp-1.0+/m4/ACX_PTHREAD.m4
  # requires special compiler flags (e.g. on True64 or Sequent).
 diff -Naur log4cpp-1.0/src/BasicConfigurator.cpp log4cpp-1.0+/src/BasicConfigurator.cpp
 --- log4cpp-1.0/src/BasicConfigurator.cpp	2002-10-26 18:30:55.000000000 +0000
-+++ log4cpp-1.0+/src/BasicConfigurator.cpp	2011-01-27 13:07:44.122069000 +0000
++++ log4cpp-1.0+/src/BasicConfigurator.cpp	2011-01-31 09:18:53.432671000 +0000
 @@ -13,6 +13,9 @@
  #ifdef LOG4CPP_HAVE_UNISTD_H
  #    include <unistd.h>
@@ -548,7 +548,7 @@ diff -Naur log4cpp-1.0/src/BasicConfigurator.cpp log4cpp-1.0+/src/BasicConfigura
  #include <log4cpp/BasicConfigurator.hh>
 diff -Naur log4cpp-1.0/src/Category.cpp log4cpp-1.0+/src/Category.cpp
 --- log4cpp-1.0/src/Category.cpp	2002-10-27 01:38:15.000000000 +0000
-+++ log4cpp-1.0+/src/Category.cpp	2011-01-27 13:07:44.125068000 +0000
++++ log4cpp-1.0+/src/Category.cpp	2011-01-31 09:18:53.434681000 +0000
 @@ -200,8 +200,13 @@
      }
  
@@ -566,7 +566,7 @@ diff -Naur log4cpp-1.0/src/Category.cpp log4cpp-1.0+/src/Category.cpp
          if (NULL != appender) {
 diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
 --- log4cpp-1.0/src/FileAppender.cpp	2006-09-30 06:03:20.000000000 +0000
-+++ log4cpp-1.0+/src/FileAppender.cpp	2011-01-27 13:07:44.128064000 +0000
++++ log4cpp-1.0+/src/FileAppender.cpp	2011-01-31 09:18:53.436681000 +0000
 @@ -12,7 +12,14 @@
  #    include <io.h>
  #endif
@@ -584,7 +584,7 @@ diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
  #include <memory>
 diff -Naur log4cpp-1.0/src/Localtime.cpp log4cpp-1.0+/src/Localtime.cpp
 --- log4cpp-1.0/src/Localtime.cpp	2007-08-19 10:20:18.000000000 +0000
-+++ log4cpp-1.0+/src/Localtime.cpp	2011-01-27 13:07:44.131062000 +0000
++++ log4cpp-1.0+/src/Localtime.cpp	2011-01-31 09:18:53.438672000 +0000
 @@ -1,7 +1,6 @@
  #include <log4cpp/Portability.hh>
  #include "Localtime.hh"
@@ -609,7 +609,7 @@ diff -Naur log4cpp-1.0/src/Localtime.cpp log4cpp-1.0+/src/Localtime.cpp
        ::tm* tmp = ::localtime(time);
 diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
 --- log4cpp-1.0/src/Priority.cpp	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/src/Priority.cpp	2011-01-27 13:07:44.133064000 +0000
++++ log4cpp-1.0+/src/Priority.cpp	2011-01-31 09:18:53.440670000 +0000
 @@ -14,28 +14,30 @@
  namespace log4cpp {
  
@@ -649,7 +649,7 @@ diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
      Priority::Value Priority::getPriorityValue(const std::string& priorityName) 
 diff -Naur log4cpp-1.0/src/RemoteSyslogAppender.cpp log4cpp-1.0+/src/RemoteSyslogAppender.cpp
 --- log4cpp-1.0/src/RemoteSyslogAppender.cpp	2007-07-03 09:17:27.000000000 +0000
-+++ log4cpp-1.0+/src/RemoteSyslogAppender.cpp	2011-01-27 13:07:44.136063000 +0000
++++ log4cpp-1.0+/src/RemoteSyslogAppender.cpp	2011-01-31 09:18:53.442690000 +0000
 @@ -29,6 +29,10 @@
  #include <sys/socket.h>
  #include <netinet/in.h>
@@ -663,7 +663,7 @@ diff -Naur log4cpp-1.0/src/RemoteSyslogAppender.cpp log4cpp-1.0+/src/RemoteSyslo
  namespace log4cpp {
 diff -Naur log4cpp-1.0/src/SimpleConfigurator.cpp log4cpp-1.0+/src/SimpleConfigurator.cpp
 --- log4cpp-1.0/src/SimpleConfigurator.cpp	2007-07-03 09:17:28.000000000 +0000
-+++ log4cpp-1.0+/src/SimpleConfigurator.cpp	2011-01-27 13:07:44.139062000 +0000
++++ log4cpp-1.0+/src/SimpleConfigurator.cpp	2011-01-31 09:18:53.444677000 +0000
 @@ -13,6 +13,9 @@
  #ifdef LOG4CPP_HAVE_IO_H
  #    include <io.h>
@@ -676,7 +676,7 @@ diff -Naur log4cpp-1.0/src/SimpleConfigurator.cpp log4cpp-1.0+/src/SimpleConfigu
  #include <iostream>
 diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
 --- log4cpp-1.0/tests/Clock.cpp	2002-09-15 22:40:50.000000000 +0000
-+++ log4cpp-1.0+/tests/Clock.cpp	2011-01-27 13:51:45.536751000 +0000
++++ log4cpp-1.0+/tests/Clock.cpp	2011-01-31 09:18:53.446675000 +0000
 @@ -4,8 +4,17 @@
   * See the COPYING file for the terms of usage and distribution.
   */
@@ -726,7 +726,7 @@ diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
  
 diff -Naur log4cpp-1.0/tests/Clock.hh log4cpp-1.0+/tests/Clock.hh
 --- log4cpp-1.0/tests/Clock.hh	2002-09-15 22:40:50.000000000 +0000
-+++ log4cpp-1.0+/tests/Clock.hh	2011-01-27 13:35:41.318641000 +0000
++++ log4cpp-1.0+/tests/Clock.hh	2011-01-31 09:18:53.448669000 +0000
 @@ -6,6 +6,8 @@
  #ifndef __CLOCK_H
  #define __CLOCK_H
