@@ -9,6 +9,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.omg.CORBA.NO_RESOURCES;
 import org.omg.PortableServer.POA;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
@@ -156,6 +159,24 @@ public class HibernateWDAOImpl implements WDAOOperations {
 		if (field instanceof ConvertToPrimitiveFeature)
 			field = ((ConvertToPrimitiveFeature)field).convert();
 	
+		// array support
+		if (field instanceof Element)
+		{
+			NodeList childList = ((Element)field).getChildNodes();
+			int childCount = childList.getLength();
+			StringBuffer strignifiedArray = new StringBuffer();
+			for (int i = 0; i < childCount; i++)
+			{
+				Node childNode = childList.item(i);
+				if (childNode instanceof Element && childNode.getAttributes().getLength() > 0)
+				{
+					if (strignifiedArray.length() > 0) strignifiedArray.append(',');
+					strignifiedArray.append(childNode.getAttributes().item(0).getTextContent());
+				}
+			}
+			field = strignifiedArray.toString();
+		}
+		
 		if (!m_silent)
 			m_logger.log(AcsLogLevel.NOTICE, "DAO: '" + m_name + "' returned '" + path + "' = '" +
 					(field.getClass().isArray() ? DOMJavaClassIntrospector.stringifyArray(field) : field) + "'");  
