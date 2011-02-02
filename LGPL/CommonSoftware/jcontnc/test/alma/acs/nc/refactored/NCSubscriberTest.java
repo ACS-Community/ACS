@@ -22,385 +22,462 @@ package alma.acs.nc.refactored;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.portable.IDLEntity;
-import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextHelper;
 
 import alma.ADMINTEST1.statusBlockEvent1;
 import alma.ADMINTEST2.statusBlockEvent2;
 import alma.acs.component.client.ComponentClientTestCase;
 import alma.acs.exceptions.AcsJException;
-import alma.acs.nc.AcsEventSubscriber;
-import alma.acs.nc.Consumer;
-import alma.acs.nc.SimpleSupplier;
+import alma.acs.nc.AcsEventPublisher;
+import alma.acs.nc.AcsEventSubscriber.Callback;
+import alma.acs.nc.AcsEventSubscriber.GenericCallback;
+import alma.acs.nc.CannotAddSubscriptionException;
+import alma.acs.nc.SubscriptionNotFoundException;
 import alma.acsnc.EventDescription;
 
 /**
- * This test class aims to <b>investigate</b> how to reuse the NC Admin Object. 
- * Also the filtering capabilities are checked.
+ * Test class for the new generation of NC Subscribers.
  * 
- * @author jslopez
+ * @author rtobar
  */
-@SuppressWarnings("deprecation") // We're using Consumer on purpose
 public class NCSubscriberTest extends ComponentClientTestCase {
 
-	/**
-	 * Naming service reference must be given to NCPublisher
-	 */
-	private NamingContext nctx;
-	private SimpleSupplier supplier;
-	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		// store the naming service reference
-		ORB orb = getContainerServices().getAdvancedContainerServices().getORB();
-		org.omg.CORBA.Object nameServiceObj = orb.resolve_initial_references("NameService");
-		assertNotNull("NameService must not be null", nameServiceObj);
-		nctx = NamingContextHelper.narrow(nameServiceObj);
-		
-		// set up an event supplier for the test channel
-		supplier = new SimpleSupplier(TEST_CHANNEL_NAME, getContainerServices());
+	private static String CHANNEL_NAME = "pink-floyd";
+	private NCSubscriber m_subscriber;
+	private AcsEventPublisher m_publisher;
+
+	private enum EventType {
+		statusBlock1,
+		statusBlock2
+	};
+
+	public NCSubscriberTest() throws Exception {
+		super("NCSubscriberTest");
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	public void setUp() throws Exception {
+		super.setUp();
+		m_publisher = getContainerServices().createNotificationChannelPublisher(CHANNEL_NAME);
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+
+		// This is the all-exclusive filter
+		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
+	}
+
+
+	public void tearDown() throws Exception {
+		m_publisher.disconnect();
 		super.tearDown();
 	}
 
-	private static final String TEST_CHANNEL_NAME = "refactoredLibsTestChannel";
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void testAddSubscription() throws Exception {
 
-	public NCSubscriberTest() throws Exception {
-		super(NCSubscriberTest.class.getSimpleName());
-	}
-	
-	/**
-	 * Tests the generic subscription (all event types) mechanism,
-	 * without any competing type-specific subscriptions present.
-	 */
-	public void testGenericCallback() throws Exception {
-		NCSubscriber subscriber = null;
+		// Invalid receiver (returns null)
 		try {
-			subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-			
-			int numExpectedEvents = 1;
-			CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-			
-			// set up receiver callback
-			GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-			subscriber.addGenericSubscription(genericReceiver);
-			
-			// activate event listening
-			subscriber.startReceivingEvents();
-			
-			// publish event and wait to receive it
-			supplier.publishEvent(new EventDescription("abused idl struct", 32L, 64L));
-			assertTrue("Got a timeout while waiting for " + numExpectedEvents
-					+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-			
-			// register the same generic receiver again, which should not change anything
-			subscriber.addGenericSubscription(genericReceiver);
-			
-			
-			// register another generic receiver, which should replace the previous one
-			
-		} 
-		finally {
-			if (subscriber != null) {
-				subscriber.disconnect();
-			}
+			m_subscriber.addSubscription(new EventReceiver1() {
+				public Class<statusBlockEvent1> getEventType() {
+					return null;
+				}	
+			});
+			fail("Event receiver is invalid, as it returns a null event type");
+		} catch(CannotAddSubscriptionException e) { }
+
+		// Invalid receiver (returns String.class)
+		try {
+			m_subscriber.addSubscription(new Callback() {
+				public void receive(IDLEntity event,
+						EventDescription eventDescrip) {
+				}
+				public Class getEventType() {
+					return String.class;
+				}
+			});
+			fail("Event receiver is invalid, as it returns a java.lang.String as the event type");
+		} catch(CannotAddSubscriptionException e) { }
+
+		// Several receiver subscriptions for the same type overwrite the previous one
+		m_subscriber.addSubscription(new EventReceiver1());
+		m_subscriber.addSubscription(new EventReceiver1());
+		m_subscriber.addSubscription(new EventReceiver1());
+		m_subscriber.addSubscription(new EventReceiver1());
+		assertEquals(1, m_subscriber.subscriptionsFilters.size());
+		assertEquals(1, m_subscriber.receivers.size());
+		assertNull(m_subscriber.genericReceiver);
+		assertEquals(2, m_subscriber.proxySupplier.get_all_filters().length);
+
+		m_subscriber.addSubscription(new EventReceiver2());
+		m_subscriber.addSubscription(new EventReceiver2());
+		m_subscriber.addSubscription(new EventReceiver2());
+		m_subscriber.addSubscription(new EventReceiver2());
+		assertEquals(2, m_subscriber.subscriptionsFilters.size());
+		assertEquals(2, m_subscriber.receivers.size());
+		assertNull(m_subscriber.genericReceiver);
+		assertEquals(3, m_subscriber.proxySupplier.get_all_filters().length);
+
+		m_subscriber.addGenericSubscription(new GenericEventReceiver());
+		m_subscriber.addGenericSubscription(new GenericEventReceiver());
+		m_subscriber.addGenericSubscription(new GenericEventReceiver());
+		m_subscriber.addGenericSubscription(new GenericEventReceiver());
+		assertEquals(3, m_subscriber.subscriptionsFilters.size());
+		assertEquals(2, m_subscriber.receivers.size());
+		assertNotNull(m_subscriber.genericReceiver);
+		assertEquals(4, m_subscriber.proxySupplier.get_all_filters().length);
+
+	}
+
+	public void testRemoveSubscription() throws Exception {
+
+		// Invalid removals, then subscription //
+
+		// event 1
+		try {
+			m_subscriber.removeSubscription(statusBlockEvent1.class);
+			fail("Should fail because we don't have a subscription yet to statusBlockEvent1");
+		} catch (SubscriptionNotFoundException e) { }
+		m_subscriber.addSubscription(new EventReceiver1());
+
+		// event 2
+		try {
+			m_subscriber.removeSubscription(statusBlockEvent2.class);
+			fail("Should fail because we don't have a subscription yet to statusBlockEvent2");
+		} catch (SubscriptionNotFoundException e) { }
+		m_subscriber.addSubscription(new EventReceiver2());
+
+		// generic
+		try {
+			m_subscriber.removeGenericSubscription();
+			fail("Should fail because we don't have a generic subscription");
+		} catch(SubscriptionNotFoundException e) {}
+		m_subscriber.addGenericSubscription(new GenericEventReceiver());
+
+		// Now we can safely remove all subscriptions
+		m_subscriber.removeGenericSubscription();
+		m_subscriber.removeSubscription(statusBlockEvent1.class);
+		m_subscriber.removeSubscription(statusBlockEvent2.class);
+		assertEquals(0, m_subscriber.subscriptionsFilters.size());
+		assertEquals(0, m_subscriber.receivers.size());
+		assertNull(m_subscriber.genericReceiver);
+
+		// After we remove all subscriptions, only the all-exclusive filter is set in the server
+		assertEquals(1, m_subscriber.proxySupplier.get_all_filters().length);
+
+		// Trying to remove subscriptions should fail now
+		try {
+			m_subscriber.removeSubscription(statusBlockEvent1.class);
+			fail("Should fail because we don't have a subscription yet to statusBlockEvent1");
+		} catch (SubscriptionNotFoundException e) { }
+		try {
+			m_subscriber.removeSubscription(statusBlockEvent2.class);
+			fail("Should fail because we don't have a subscription yet to statusBlockEvent2");
+		} catch (SubscriptionNotFoundException e) { }
+
+	}
+
+	public void testSubscriptionbyEventTypeReceiving() throws Exception {
+
+		int nEvents = 10;
+
+		// Simple case: 1 receiver per event type, publisher publishes same amount of events for each type
+		CountDownLatch c1 = new CountDownLatch(nEvents);
+		CountDownLatch c2 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.addSubscription(new EventReceiver2(c2));
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		c2.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(0, c1.getCount());
+		assertEquals(0, c2.getCount());
+
+		// Overriding case: 1 receiver per event type, 2nd receiver is overridden
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		c1 = new CountDownLatch(nEvents);
+		c2 = new CountDownLatch(nEvents);
+		CountDownLatch c3 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.addSubscription(new EventReceiver2(c2));
+		m_subscriber.addSubscription(new EventReceiver2(c3));
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		c2.await(10, TimeUnit.SECONDS);
+		c3.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(0,  c1.getCount());
+		assertEquals(10, c2.getCount());
+		assertEquals(0,  c3.getCount());
+
+		// Overriding case 2: 1 receiver per event type, 2nd receiver is overridden two times, but second time is invalid
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		c1 = new CountDownLatch(nEvents);
+		c2 = new CountDownLatch(nEvents);
+		c3 = new CountDownLatch(nEvents);
+		m_subscriber.addSubscription(new EventReceiver1(c1));
+		m_subscriber.addSubscription(new EventReceiver2(c2));
+		try {
+			m_subscriber.addSubscription(new EventReceiver1(c3) {
+				public Class<statusBlockEvent1> getEventType() {
+					return null;
+				}	
+			});
+			fail("Event receiver is invalid, as it returns a null event type");
+		} catch(CannotAddSubscriptionException e) { }
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		c2.await(10, TimeUnit.SECONDS);
+		c3.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(0,  c1.getCount());
+		assertEquals(0,  c2.getCount());
+		assertEquals(nEvents, c3.getCount());
+
+	}
+
+	public void testSubscriptionGenericReceiving() throws Exception {
+
+		int nEvents = 10;
+
+		// Simple case: just the generic receiver, receiving 2 event types
+		CountDownLatch c1 = new CountDownLatch(2*nEvents);
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(0, c1.getCount());
+
+		// Overriding case: generic subscriber, then overridden by a different one
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		c1 = new CountDownLatch(2*nEvents);
+		CountDownLatch c2 = new CountDownLatch(2*nEvents);
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c2));
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		c2.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(2*nEvents, c1.getCount());
+		assertEquals(0, c2.getCount());
+
+		// Add/remove case: add generic subscription, then remove it, then listen: nothing should arrive
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		c1 = new CountDownLatch(2*nEvents);
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
+		m_subscriber.removeGenericSubscription();
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(2*nEvents, c1.getCount());
+
+		// Mixed case: a generic receiver + receiver for event type 1
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
+		c1 = new CountDownLatch(2*nEvents);
+		c2 = new CountDownLatch(nEvents);
+		m_subscriber.addGenericSubscription(new GenericEventReceiver(c1));
+		m_subscriber.addSubscription(new EventReceiver2(c2));
+		m_subscriber.startReceivingEvents();
+
+		publish(nEvents, EventType.statusBlock1);
+		publish(nEvents, EventType.statusBlock2);
+		c1.await(10, TimeUnit.SECONDS);
+		c2.await(10, TimeUnit.SECONDS);
+		m_subscriber.disconnect();
+
+		assertEquals(10, c1.getCount()); // we set 2*nEvents as the initial count for c1
+		assertEquals(0, c2.getCount());
+
+	}
+
+	public void testLifecycle() throws Exception {
+
+		// We're totally disconnected, try to do illegal stuff
+		try {
+			m_subscriber.suspend();
+			fail("suspend() should fail, as we're not yet connected");
+		} catch(IllegalStateException e) { }
+
+		try {
+			m_subscriber.resume();
+			fail("resume() should fail, as we're not yet connected");
+		} catch(IllegalStateException e) { }
+
+		try {
+			m_subscriber.disconnect();
+			fail("disconnect() should fail, as we're not yet connected");
+		} catch(IllegalStateException e) { }
+
+		m_subscriber.startReceivingEvents();
+		assertFalse(m_subscriber.isDisconnected());
+
+		// Now we're connected, try to do illegal stuff
+		try {
+			m_subscriber.startReceivingEvents();
+			fail("startReceivingEvents() should fail, as we're already connected");
+		} catch(IllegalStateException e) { }
+
+		try {
+			m_subscriber.resume();
+			fail("resume() should fail, as we're not suspended yet");
+		} catch(IllegalStateException e) { }
+
+		m_subscriber.suspend();
+
+		// Now we're suspended, try to do illegal stuff
+		try {
+			m_subscriber.suspend();
+			fail("suspend() should fail, as we're already suspended");
+		} catch (IllegalStateException e) { }
+
+		try {
+			m_subscriber.startReceivingEvents();
+			fail("startReceivingEvents() should fail, as we're already connected");
+		} catch (IllegalStateException e) { }
+
+		m_subscriber.resume();
+		m_subscriber.disconnect();
+		assertTrue(m_subscriber.isDisconnected());
+
+		// Now we're disconnected, try to do illegal stuff
+		try {
+			m_subscriber.disconnect();
+			fail("disconnect() should fail, as we're already disconnected");
+		} catch (IllegalStateException e) { }
+
+		try {
+			m_subscriber.suspend();
+			fail("suspend() should fail, as we're already disconnected");
+		} catch (IllegalStateException e) { }
+
+		try {
+			m_subscriber.resume();
+			fail("resume() should fail, as we're already disconnected");
+		} catch (IllegalStateException e) { }
+
+	}
+
+	/*===================================*/
+	/* Support methods                   */
+	/*===================================*/
+	private void publish(int nEvents, EventType type) {
+
+		IDLEntity event = null;
+		if( type.equals(EventType.statusBlock1) ) {
+			event = new statusBlockEvent1();
+			((statusBlockEvent1)event).counter1 = 0;
+			((statusBlockEvent1)event).counter2 = 0;
+			((statusBlockEvent1)event).flipFlop = true;
+			((statusBlockEvent1)event).onOff = alma.ADMINTEST1.OnOffStates.ON;
 		}
-	}
-
-	/**
-	 * This test creates Subscriber and add all event types giving a proper
-	 * generic receiver callback and then add a particular subscription. The
-	 * goal of this test is to check the priority on the receiver handler.
-	 */
-	public void testGenericCallbackWithPriority() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-
-		int numExpectedEvents = 1;
-		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
-		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-		
-		E1Receiver e1Receiver = new E1Receiver(counterE1);
-		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-
-		subscriber.addSubscription(e1Receiver);
-		subscriber.addGenericSubscription(genericReceiver);
-		
-		subscriber.startReceivingEvents();
-		
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-	}
-
-	/**
-	 * This test aims to test the add/remove of the generic handler.
-	 */
-	public void testWithGenericSubscription() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-
-		int numExpectedEvents = 1;
-		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-		
-		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-
-		subscriber.addGenericSubscription(genericReceiver);
-		subscriber.startReceivingEvents();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-		subscriber.removeGenericSubscription();
-		subscriber.addGenericSubscription(genericReceiver);
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-	}
-
-	/**
-	 * This test aims to determinate the behavior of using specific
-	 * subscriptions and a generic one combined.
-	 */
-	public void testCombinedSubscriptions() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-
-		int numExpectedEvents = 1;
-		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
-		CountDownLatch counterE2 = new CountDownLatch(numExpectedEvents);
-		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-		
-		E1Receiver e1Receiver = new E1Receiver(counterE1);
-		E2Receiver e2Receiver = new E2Receiver(counterE2);
-		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-		
-		subscriber.addSubscription(e1Receiver);
-		subscriber.addSubscription(e2Receiver);
-		subscriber.addGenericSubscription(genericReceiver);
-		subscriber.startReceivingEvents();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE2.await(10, TimeUnit.SECONDS));
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-		subscriber.removeGenericSubscription();
-		subscriber.removeSubscription(statusBlockEvent1.class);
-		subscriber.addSubscription(e1Receiver);
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-	}
-
-	/**
-	 * This tests check the behavior of calling the removeSubscription with null
-	 * as parameter.
-	 */
-
-	public void testRemoveAllSubscription() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-		
-		int numExpectedEvents = 1;
-		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
-		CountDownLatch counterE2 = new CountDownLatch(numExpectedEvents);
-		
-		E1Receiver e1Receiver = new E1Receiver(counterE1);
-		E2Receiver e2Receiver = new E2Receiver(counterE2);
-
-		subscriber.addSubscription(e1Receiver);
-		subscriber.addSubscription(e2Receiver);
-		subscriber.startReceivingEvents();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE2.await(10, TimeUnit.SECONDS));
-		subscriber.removeSubscription(null);
-		subscriber.addSubscription(e1Receiver);
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-
-	}
-	
-	/**
-	 * This test checks the removeGenericSubscription method.
-	 */
-	public void testDisconnect() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-		
-		int numExpectedEvents = 5;
-		CountDownLatch counterGeneric = new CountDownLatch(numExpectedEvents);
-		GenericReceiver genericReceiver = new GenericReceiver(counterGeneric);
-		
-		try {
-			subscriber.removeGenericSubscription();
-			fail("Expected IllegalStateException because no generic subscription added before.");
-		} catch(IllegalStateException expected) {
-			
+		else if( type.equals(EventType.statusBlock2) ) {
+			event = new statusBlockEvent2();
+			((statusBlockEvent2)event).counter1 = 0;
+			((statusBlockEvent2)event).counter2 = 0;
+			((statusBlockEvent2)event).flipFlop = true;
+			((statusBlockEvent2)event).onOff = alma.ADMINTEST2.OnOffStates.ON;
 		}
-		
-		subscriber.addGenericSubscription(genericReceiver);
-		subscriber.startReceivingEvents();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterGeneric.await(10, TimeUnit.SECONDS));
-		
-		subscriber.disconnect();
-		
-	}
-	
-	/** 
-	 * This test checks the behavior of concurrent subscriber clients.
-	 */
-	public void testMultipleSubscribers() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-		NCSubscriber otherSubscriber = createNCSubscriber(TEST_CHANNEL_NAME);
 
-		int numExpectedEvents = 1;
-		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
-		CountDownLatch counterE2 = new CountDownLatch(numExpectedEvents);
-		
-		E1Receiver e1Receiver = new E1Receiver(counterE1);
-		E2Receiver e2Receiver = new E2Receiver(counterE2);
-		
-		subscriber.addSubscription(e1Receiver);
-		otherSubscriber.addSubscription(e2Receiver);
-		subscriber.startReceivingEvents();
-		otherSubscriber.startReceivingEvents();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE1.await(10, TimeUnit.SECONDS));
-		subscriber.disconnect();
-		assertTrue("Got a timeout while waiting for " + numExpectedEvents
-				+ " events.", counterE2.await(10, TimeUnit.SECONDS));
-		otherSubscriber.disconnect();
-	}
-
-	/**
-	 * This test checks the behavior of the current subscriber client
-	 * concurrently with the old API.
-	 */
-	public void testOldSubscriber() throws Exception {
-		NCSubscriber subscriber = createNCSubscriber(TEST_CHANNEL_NAME);
-		
-		Consumer oldConsumer = null;
-		oldConsumer = new Consumer(TEST_CHANNEL_NAME, getContainerServices());
-		assertNotNull("Construction of Consumer failed.", oldConsumer);
-		
-		int numExpectedEvents = 1;
-		CountDownLatch counterE1 = new CountDownLatch(numExpectedEvents);
-		E1Receiver e1Receiver = new E1Receiver(counterE1);
-		
-		subscriber.addSubscription(e1Receiver);
-		subscriber.startReceivingEvents();
-		
-		oldConsumer.addSubscription(statusBlockEvent1.class);
-		oldConsumer.consumerReady();
-	}
-	
-	/**
-	 * Factory method for NCSubscriber
-	 */
-	private NCSubscriber createNCSubscriber(String channelName) throws AcsJException {
-		return new NCSubscriber(channelName, null, getContainerServices(), nctx, getName());
-	}
-}
-
-
-///**
-// * This class overload some methods for testing purposes.
-// */
-//final class NCSubscriberDirect<T extends IDLEntity> extends NCSubscriber<T> {
-//	NCSubscriberDirect(String channelName, ContainerServices services)
-//			throws AcsJException {
-//		super(channelName, services);
-//	}
-//
-//	/**
-//	 * Overloaded version that doesn't require the callback. Commented, since is
-//	 * no longer used. (Can be used again for testing purposes).
-//	 * 
-//	 * @see alma.acs.nc.refactored.NCSubscriber#push_structured_event(org.omg.CosNotification.StructuredEvent)
-//	 */
-//	public void push_structured_event(StructuredEvent structuredEvent)
-//	throws Disconnected {
-//		EventDescription eDescrip = EventDescriptionHelper
-//		.extract(structuredEvent.remainder_of_body);
-//
-//		System.out.println("Channel:" + channelName + ", Publisher:"
-//				+ eDescrip.name + ", Event Type:"
-//				+ structuredEvent.header.fixed_header.event_type.type_name);
-//	}
-//}
-
-/**
- * Base class of the various custom receivers, to limit code duplication.
- */
-abstract class ReceiverBase {
-	protected final CountDownLatch counter;
-	
-	ReceiverBase(CountDownLatch counter) {
-		this.counter = counter;
-	}
-	
-	protected void handleMyEvent(String eventData, EventDescription eDescrip) {
-		System.out.println("Got a call to " + getClass().getSimpleName()+ "#receive: " + eventData + " : " + eDescrip.name);
-		counter.countDown();
-		// Little hack to force the maxProcessTime warning
 		try {
-			Thread.sleep(1000 * 0);
-		} catch (InterruptedException e) {
+			for(int i=0; i!=nEvents; i++)
+				m_publisher.publishEvent(event);
+		} catch (AcsJException e) {
 			e.printStackTrace();
 		}
 	}
-}
 
-/**
- * This class implements the receiver handler for statusBlockEvent1.
- */
-class E1Receiver extends ReceiverBase implements AcsEventSubscriber.Callback<statusBlockEvent1> {
-	
-	E1Receiver(CountDownLatch counter) {
-		super(counter);
-	}
-	
-	public void receive(statusBlockEvent1 event, EventDescription eDescrip) {
-		handleMyEvent(event.myString, eDescrip);
-	}
-	
-	@Override
-	public Class<statusBlockEvent1> getEventType() {
-		return statusBlockEvent1.class;
-	}
-}
+	/*===================================*/
+	/* Support classes                   */
+	/*===================================*/
 
-/**
- * This class implements the receiver handler for statusBlockEvent2.
- */
-class E2Receiver extends ReceiverBase implements AcsEventSubscriber.Callback<statusBlockEvent2> {
-	
-	E2Receiver(CountDownLatch counter) {
-		super(counter);
-	}
-	public void receive(statusBlockEvent2 event, EventDescription eDescrip) {
-		handleMyEvent(event.myString, eDescrip);
-	}
-	
-	@Override
-	public Class<statusBlockEvent2> getEventType() {
-		return statusBlockEvent2.class;
-	}
-}
+	private abstract class EventReceiverWithCounter {
 
-/**
- * This class implements the generic receiver handler.
- */
-class GenericReceiver extends ReceiverBase implements AcsEventSubscriber.GenericCallback {
-	
-	GenericReceiver(CountDownLatch counter) {
-		super(counter);
+		private CountDownLatch m_countDownLatch;
+
+		public EventReceiverWithCounter(CountDownLatch c) {
+			m_countDownLatch = c;
+		}
+
+		public void receive(EventDescription event) {
+			if( m_countDownLatch != null )
+				m_countDownLatch.countDown();
+		}
 	}
 
-	public void receive(IDLEntity event, EventDescription eDescrip) {
-		handleMyEvent("<generic>", eDescrip);
+	private class EventReceiver1 extends EventReceiverWithCounter implements Callback<statusBlockEvent1> {
+
+		public EventReceiver1() {
+			super(null);
+		}
+
+		public EventReceiver1(CountDownLatch c) {
+			super(c);
+		}
+
+		public void receive(statusBlockEvent1 event, EventDescription eventDescrip) {
+			super.receive(eventDescrip);
+		}
+
+		public Class<statusBlockEvent1> getEventType() {
+			return statusBlockEvent1.class;
+		}
+
+	}
+
+	private class EventReceiver2 extends EventReceiverWithCounter implements Callback<statusBlockEvent2> {
+
+		public EventReceiver2() {
+			super(null);
+		}
+
+		public EventReceiver2(CountDownLatch c) {
+			super(c);
+		}
+
+		public void receive(statusBlockEvent2 event, EventDescription eventDescrip) {
+			super.receive(eventDescrip);
+		}
+
+		public Class<statusBlockEvent2> getEventType() {
+			return statusBlockEvent2.class;
+		}
+		
+	}
+
+	private class GenericEventReceiver extends EventReceiverWithCounter implements GenericCallback {
+
+		public GenericEventReceiver() {
+			super(null);
+		}
+
+		public GenericEventReceiver(CountDownLatch c) {
+			super(c);
+		}
+
+		public void receive(IDLEntity event, EventDescription eventDescrip) {
+			super.receive(eventDescrip);
+		}
+		
 	}
 }
