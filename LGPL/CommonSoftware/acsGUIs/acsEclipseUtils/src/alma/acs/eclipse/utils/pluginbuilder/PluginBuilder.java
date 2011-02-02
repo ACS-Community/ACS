@@ -501,8 +501,8 @@ public class PluginBuilder {
 		ret.append("\t-d, --userDirs <dirs>: supply a comma separated list of folder for searching jars\n");
 		ret.append("\t-e, --endorsedDirs: looks for jars in endosed folders\n");
 		ret.append("\t-r, --requiredPlugins: a comma separated list of plugin names required by this plugin\n");
-		ret.append("Required plugin must be insreted in the following way: org.eclipse.swt_3.6.0:org.aparche.xerces\n");
-		ret.append("  means to add version 3.6.0 of org.eclipse.swt and org.aparche.xerces");
+		ret.append("Required plugin must be inserted in the following way: org.eclipse.swt_3.6.0:org.aparche.xerces\n");
+		ret.append("  means to add version 3.6.0 of org.eclipse.swt and org.aparche.xerces\n");
 		try {
 			stream.write(ret.toString().getBytes());
 		} catch (IOException e) {
