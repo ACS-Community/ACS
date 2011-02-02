@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.5 2011/01/31 15:38:12 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2011/02/02 16:51:02 rtobar Exp $"
 #
 # Makefile of log4cpp
 #
@@ -104,8 +104,8 @@ all: configure
 .PHONY : clean 
 clean : 
 	@if [ -d log4cpp-$(LOG4CPP_VER) ]; then \
-		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
-		$(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
+		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
+		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
 	fi
 	@echo " . . . clean done"
 
