@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.12 2011/01/03 13:20:00 hsommer Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.13 2011/02/03 14:27:44 mzampare Exp $
 #
 #(info Entering definitions.mk)
 
@@ -49,7 +49,7 @@ define createJar
                (cd $3 && echo "ACS-Created-From: $$$$thisModule" > $1.manifest; ); \
              else \
                if [ -d .svn ]; then \
-                 thisModule=`svn info . | grep URL | awk '{print $2}'`; \
+                 thisModule=`svn info . | grep URL | awk '{print $$2}'`; \
                  (cd $3 && echo "ACS-Created-From: $$$$thisModule" > $1.manifest; ); \
                else \
                  (cd $3 && echo "ACS-Created-From: $(PWD)" > $1.manifest;) ;\
@@ -648,7 +648,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
 	   echo "$(strip $1)-ACS-Generated-FromModule: `cat CVS/Repository`" >  ../object/$1/$(strip $1).manifest; \
            else \
              if  [ -d .svn ]; then \
-               thisModule=`svn info . | grep URL | awk '{print $2}'`; \
+               thisModule=`svn info . | grep URL | awk '{print $$2}'`; \
                echo "$(strip $1)-ACS-Generated-FromModule: $$$$thisModule" >  ../object/$1/$(strip $1).manifest; \
              else \
                echo "$(strip $1)-ACS-Generated-FromModule: $(PWD)" >  ../object/$1/$(strip $1).manifest; \
