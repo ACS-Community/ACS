@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="TestNG Persistence2Database Suite" verbose="10" parallel="false">
+  <test name="Persistence2Database">
+    <classes>
+      <class name="alma.acs.monitoring.blobber.BlobberWorkerUnitTest"/>
+    </classes>
+  </test>
+</suite>

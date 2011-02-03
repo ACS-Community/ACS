@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: runMonitorArchiverUnitTest.sh,v 1.1 2011/01/19 23:44:15 tstaig Exp $"
+# "@(#) $Id: runMonitorArchiverUnitTest.sh,v 1.2 2011/02/03 17:07:22 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -28,7 +28,6 @@
 
 export PYTHONPATH=../lib/python/site-packages:$PYTHONPATH
 
-declare TEST_SCRIPT="`which ant` "
 declare TEST_SUITE=1
 declare TEST_LOG=/dev/stdout
 
@@ -51,7 +50,7 @@ mkdir $TEST_TMP
 touch $TEST_TMP/MonitorArchiverUnitTest.log
 fi
 
-$TEST_SCRIPT &> $TEST_LOG
+acsStartJava -Darchive.configFile="archiveConfig.properties.blobberTest" -DACS.log.minlevel.namedloggers="hibernateSQL=2,2:hibernate=2,2" org.testng.TestNG testng.xml &> $TEST_LOG
 declare TEST_RESULT="`grep -R FAIL ../test/test-output/testng-results.xml`"
 
 #RESULT=$?

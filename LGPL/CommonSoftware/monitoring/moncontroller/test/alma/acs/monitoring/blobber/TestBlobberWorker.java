@@ -13,6 +13,7 @@ import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
+import alma.acs.container.ContainerServices;
 
 public class TestBlobberWorker extends BlobberWorker implements MonitorDAO {
 
@@ -112,10 +113,11 @@ public class TestBlobberWorker extends BlobberWorker implements MonitorDAO {
         if (useDatabase) {
             if (this.myDao == null) {
 					try {
+						Class<? extends ContainerServices> csClass = Class.forName("alma.archive.tmcdb.DAO.testsupport.DummyContainerServices").asSubclass(ContainerServices.class);
+						Constructor<? extends ContainerServices> ctor = csClass.getConstructor(Logger.class);
 						Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl").asSubclass(MonitorDAO.class);
-						Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
-						this.myDao = ctor.newInstance(this.myLogger);
-						//this.myDao = new MonitorDAOImpl(this.myLogger);
+						Constructor<? extends MonitorDAO> ctor2 = daoClass.getConstructor(csClass);
+						this.myDao = ctor2.newInstance(ctor.newInstance(myLogger.getName()));
 					} catch (Exception ex) {
 						// @TODO refactor to throw a checked exception
 						myLogger.log(Level.SEVERE, "", ex);

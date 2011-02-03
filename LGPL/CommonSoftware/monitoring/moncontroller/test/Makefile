@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 23:44:15 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/02/03 17:07:22 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -133,8 +133,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES=
-jjj_DIRS=alma
+JARFILES = testMonitorArchiver
+testMonitorArchiver_DIRS = alma
+jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
@@ -207,7 +208,6 @@ all:	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	@ant clean
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
