@@ -31,7 +31,7 @@ public class PlotWidget extends SamplingWidget {
 	// UI Attributes
 	private static final long serialVersionUID = 4823621192367385664L;
 	private Chart2D chart;
-	private Color[] colors = {Color.RED, Color.BLUE, Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.GRAY, Color.ORANGE, Color.BLACK, Color.CYAN, Color.DARK_GRAY, Color.PINK};
+	private Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.GRAY, Color.ORANGE, Color.BLACK, Color.CYAN, Color.DARK_GRAY, Color.PINK};
 	private int currentColor = 0;
 
 	public PlotWidget() {
