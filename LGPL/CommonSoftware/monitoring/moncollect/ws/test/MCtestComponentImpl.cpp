@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MCtestComponentImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MCtestComponentImpl.cpp,v 1.2 2011/02/07 16:13:58 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MCtestComponentImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
+static char *rcsId="@(#) $Id: MCtestComponentImpl.cpp,v 1.2 2011/02/07 16:13:58 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MCtestComponentImpl.h"
@@ -45,14 +45,18 @@ MCtestComponentImpl::MCtestComponentImpl(const ACE_CString& name,
     AUTO_TRACE("MCtestComponentImpl::MCtestComponentImpl");
 
     m_doubleSeqVal.length(25);
+    //Changed starting value to -1.0 since the value is read for initialization
+    //purposes in the monitoring loop.
     for(unsigned int i=0;i<m_doubleSeqVal.length();i++)
-    	m_doubleSeqVal[i]=0;
+    	m_doubleSeqVal[i]=-1.0;
     m_time1 = 134608945243381570;
     m_doubleSeqDevIO = new MCtestDevIOSeq<ACS::doubleSeq>(m_doubleSeqVal, m_time1);
     m_doubleSeqProp_p  = new ROdoubleSeq(name+":doubleSeqProp", getComponent(), m_doubleSeqDevIO);
     CHARACTERISTIC_COMPONENT_PROPERTY(doubleSeqProp, m_doubleSeqProp_p);
 
-    m_doubleVal = 0.0;
+    //Changed starting value to -1.0 since the value is read for initialization
+    //purposes in the monitoring loop.
+    m_doubleVal = -1.0;
     m_time2 = 134608945243381570;
     m_doubleDevIO = new MCtestDevIO<double>(m_doubleVal, m_time2);
     m_doubleProp_p  = new ROdouble(name+":doubleProp", getComponent(), m_doubleDevIO);
