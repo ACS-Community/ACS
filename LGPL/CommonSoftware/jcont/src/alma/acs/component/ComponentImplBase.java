@@ -25,7 +25,7 @@ import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogger;
-import alma.maciErrType.ComponentCleanUpEx;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
  * Convenience base class for components. 
@@ -82,7 +82,7 @@ public class ComponentImplBase implements ComponentLifecycle, ACSComponentOperat
 	/* (non-Javadoc)
 	 * @see alma.acs.component.ComponentLifecycle#cleanUp()
 	 */
-	public void cleanUp() throws ComponentCleanUpEx
+	public void cleanUp() throws AcsJComponentCleanUpEx
 	{
 		// by default nothing to do
 	}
@@ -99,7 +99,7 @@ public class ComponentImplBase implements ComponentLifecycle, ACSComponentOperat
 		m_logger.fine("calling cleanUp() from the abort thread...");
 		try {
 			cleanUp();
-		} catch (ComponentCleanUpEx ex) {
+		} catch (AcsJComponentCleanUpEx ex) {
 			ex.printStackTrace();
 		}
 	}

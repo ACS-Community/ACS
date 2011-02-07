@@ -22,7 +22,7 @@
 package alma.acs.component;
 
 import alma.acs.container.ContainerServices;
-import alma.maciErrType.ComponentCleanUpEx;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
  * Interface that every component has to implement.
@@ -81,7 +81,7 @@ public interface ComponentLifecycle
      * Called after the last functional call to the component has finished.
      * The component should then orderly release resources etc.
      */
-    public void cleanUp() throws ComponentCleanUpEx;
+    public void cleanUp() throws AcsJComponentCleanUpEx;
 
 
     /**

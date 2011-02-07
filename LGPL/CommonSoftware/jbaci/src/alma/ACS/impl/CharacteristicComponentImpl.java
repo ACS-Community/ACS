@@ -34,6 +34,8 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CosPropertyService.PropertySet;
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+
 import alma.ACS.CharacteristicComponentDesc;
 import alma.ACS.CharacteristicComponentOperations;
 import alma.ACS.NoSuchCharacteristic;
@@ -49,9 +51,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.maciErrType.ComponentCleanUpEx;
-
-import com.cosylab.CDB.DAL;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
  * Implementation of <code>alma.ACS.CharacteristicComponentImpl</code>.
@@ -123,7 +123,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#cleanUp()
 	 */
-	public void cleanUp() throws ComponentCleanUpEx {
+	public void cleanUp() throws AcsJComponentCleanUpEx {
 		super.cleanUp();
 		
 		// shutdown thread-pool
