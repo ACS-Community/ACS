@@ -285,7 +285,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			try {
 				catList = getActiveListReference(categoryId);
 			} catch (AlarmCacheException ace) {
-				// In this implementation no excaption can be thrown
+				// In this implementation no exception can be thrown
 				// by getActiveListReference
 				// I write a message in case someone changes the things
 				System.err.println("Exception "+ace.getMessage());
