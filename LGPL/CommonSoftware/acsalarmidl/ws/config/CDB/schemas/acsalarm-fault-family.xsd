@@ -10,7 +10,7 @@
 				<xs:element name="fault-member-default" type="fault-member-default" minOccurs="0"/>
 				<xs:element name="fault-member" type="fault-member" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="name" type="xs:NCName" use="required"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="contact">
