@@ -443,7 +443,14 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:all>
-		<xs:attribute name="type" type="xs:string" use="required"/>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="MULTIPLICITY"/>
+					<xs:enumeration value="NODE"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:element name="mask-definitions">
 		<xs:annotation>
