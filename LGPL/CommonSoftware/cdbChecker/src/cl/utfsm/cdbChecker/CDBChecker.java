@@ -12,10 +12,10 @@ import gnu.getopt.LongOpt;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
@@ -28,13 +28,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.Repository;
+import org.omg.CORBA.RepositoryHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import org.omg.CORBA.Repository;
-import org.omg.CORBA.RepositoryHelper;
 
 
 
@@ -46,12 +46,12 @@ public class CDBChecker {
 	private File tmpDir;
 	private SAXParser SP;
 	private Properties props = new Properties();
-	private Hashtable xsd_targetns;
+	private Hashtable<String, String> xsd_targetns;
 	public static final String IR_CORBALOC = "ACS.repository";
 	private String schemaFolder;
 
 	private static String targetNamespace;
-	public  static Vector reqSchemas;
+	public  static Vector<String> reqSchemas;
 	
 	private String componentsFolder = null;
 	private String containersFolder = null;
@@ -90,8 +90,8 @@ public class CDBChecker {
 	 * @return a vector of strings with the filenames of type 'type' with absolute path.
 	 *         An empty vector is returned if paths is empty.
 	 */		
-	protected Vector getFilenames(String paths[],String type){
-		Vector vector = new Vector();
+	protected Vector<String> getFilenames(String paths[],String type){
+		Vector<String> vector = new Vector<String>();
 		
 		String files[];
 		
@@ -189,34 +189,41 @@ public class CDBChecker {
 	 * 
 	 * @param filename name with absolute path of the XSD file to validate.
 	 */
-	protected void XSDValidate(Vector filename){
+	protected void XSDValidate(Vector<String> filename){
+
 		System.out.println("*** Will verify XSD files in directory: " + this.XSDPath);
+
 		for(int i=0;i<filename.size();i++){
-                        File file = new File((String)filename.get(i));
-                        if(file.length()!=0){
-                                if(verbose){
-                                        System.out.print("    "+(String)filename.get(i));
-                                        /*for(int j=0;j<(91-(int)((String)filename.get(i)).length())/8;j++)
+			File file = new File(filename.get(i));
+			if(file.length()!=0){
+				if(verbose){
+					System.out.print("    " + filename.get(i));
+					/*for(int j=0;j<(91-(int)((String)filename.get(i)).length())/8;j++)
                                           System.out.print("\t");
-                                         */}
-                                try{
-													validateFileEncoding((String)filename.get(i));
-                                        SP.reset();
-                                        SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
-                                        SP.setFeature("http://xml.org/sax/features/validation",true);
-                                        SP.setFeature("http://apache.org/xml/features/validation/schema",true);
-                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
-                                        SP.setErrorHandler(new CDBErrorHandler());	
-                                        SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
-                                	    SP.parse((String)filename.get(i));
-                                        if(verbose && !errorFlag)
-                                                System.out.println("[OK]");
-                                }catch (SAXException e){e.printStackTrace();}
-                                catch (IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
-                        }else{
-                                System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
-                        }
+					 */}
+				try{
+					validateFileEncoding(filename.get(i));
+					SP.reset();
+					SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
+					SP.setFeature("http://xml.org/sax/features/validation",true);
+					SP.setFeature("http://apache.org/xml/features/validation/schema",true);
+					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+					SP.setFeature("http://xml.org/sax/features/namespaces",true);
+					SP.setErrorHandler(new CDBErrorHandler());	
+					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
+
+					FileInputStream fis = new FileInputStream(file);
+					InputSource inputSource = new InputSource(fis);
+					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					SP.parse(inputSource);
+					fis.close();
+					if(verbose && !errorFlag)
+						System.out.println("[OK]");
+				}catch (SAXException e){e.printStackTrace();}
+				catch (IOException e){System.out.println("[IOException] Probably "+ filename.get(i)+" doesn't exists.");}
+			}else{
+				System.out.print( filename.get(i)+": [Warning] file is empty.\n");
+			}
 		}	
 	}
 
@@ -246,39 +253,47 @@ public class CDBChecker {
 	/**
 	 * This method validates the XML files.
 	 * 
-	 * @param filename name with absolute path of the XML file to validate.
+	 * @param filenames name with absolute path of the XML file to validate.
 	 */	
-	protected void XMLValidate(Vector filename){
+	protected void XMLValidate(Vector<String> filenames){
+
 		System.out.println("*** Will verify XML files in directory: " + this.XMLPath);
-		for(int i=0;i<filename.size();i++){
-                        File file = new File((String)filename.get(i));
-                        if(file.length()!=0){
-                                if(verbose){
-                                        System.out.print("    "+(String)filename.get(i));
-                                        /*for(int j=0;j<(90-(int)((String)filename.get(i)).length())/8;j++)
+
+		for(int i=0;i<filenames.size();i++){
+
+			File file = new File(filenames.get(i));
+			if(file.length()!=0){
+				if(verbose){
+					System.out.print("    "+ filenames.get(i));
+					/*for(int j=0;j<(90-(int)((String)filename.get(i)).length())/8;j++)
                                           System.out.print("\t");
-                                         */}
-                                String targetNamespace;
-                                targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
-                                CDBChecker.errorFlag=false;
-                                try{
-										validateFileEncoding((String)filename.get(i));
-										
-								        SP.reset();
-                                        SP.setFeature("http://xml.org/sax/features/validation",true);
-                                        SP.setFeature("http://apache.org/xml/features/validation/schema", true);
-                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
-                                        SP.setErrorHandler(new CDBErrorHandler());
-                                        SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",targetNamespace);
-                                        SP.parse((String)filename.get(i));
-                                        if(verbose && !errorFlag)
-                                                System.out.println("[OK]");
-                                }catch(SAXException e){System.out.println("[SAXException] " + e.getMessage());}
-                                catch(IOException e){System.out.println("[IOException] Probably "+(String)filename.get(i)+" doesn't exists.");}
-                        }else{
-                                System.out.print((String)filename.get(i)+": [Warning] file is empty.\n");
-                        }
+					 */}
+				String targetNamespace;
+				targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
+				CDBChecker.errorFlag=false;
+				try{
+					validateFileEncoding(filenames.get(i));
+
+					SP.reset();
+					SP.setFeature("http://xml.org/sax/features/validation",true);
+					SP.setFeature("http://apache.org/xml/features/validation/schema", true);
+					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+					SP.setFeature("http://xml.org/sax/features/namespaces",true);
+					SP.setErrorHandler(new CDBErrorHandler());
+					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",targetNamespace);
+
+					FileInputStream fis = new FileInputStream(file);
+					InputSource inputSource = new InputSource(fis);
+					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					SP.parse(inputSource);
+					fis.close();
+					if(verbose && !errorFlag)
+						System.out.println("[OK]");
+				}catch(SAXException e){System.out.println("[SAXException] " + e.getMessage());}
+				catch(IOException e){System.out.println("[IOException] Probably "+ filenames.get(i) + " doesn't exists.");}
+			}else{
+				System.out.print( filenames.get(i) + ": [Warning] file is empty.\n");
+			}
 
 		}
 	}
@@ -289,60 +304,66 @@ public class CDBChecker {
 	 * 
 	 * @param XSDFilenames Vector with all the XSD filenames with absolute path.
 	 */	
-	protected void getTargetNamespace(Vector XSDFilenames){
+	protected void getTargetNamespace(Vector<String> XSDFilenames){
+
 		String filename;
-		
+
 		for(int i=0;i<XSDFilenames.size();i++){
-                        filename=(String)XSDFilenames.get(i);
-                        File file = new File((String)XSDFilenames.get(i));
-                        if(file.length()!=0){
-                                SP.setContentHandler(new CDBContentHandler());
-                                SP.reset();
-                                try{
-                                        SP.setFeature("http://xml.org/sax/features/validation",false);
-                                        SP.setFeature("http://apache.org/xml/features/validation/schema",false);
-                                        SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
-                                        SP.setFeature("http://xml.org/sax/features/namespaces",true);
-                                        SP.setErrorHandler(new CDBErrorHandler());	
 
-                                        SP.parse(filename);
-                                }catch(SAXException e){e.getMessage();}
-                                catch (IOException e){System.out.println("[IOException] Probably "+filename+" doesn't exists.");}
+			filename= XSDFilenames.get(i);
+			File file = new File(XSDFilenames.get(i));
+			if(file.length()!=0){
+				SP.setContentHandler(new CDBContentHandler());
+				SP.reset();
+				try{
+					SP.setFeature("http://xml.org/sax/features/validation",false);
+					SP.setFeature("http://apache.org/xml/features/validation/schema",false);
+					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
+					SP.setFeature("http://xml.org/sax/features/namespaces",true);
+					SP.setErrorHandler(new CDBErrorHandler());	
 
-                                if(targetNamespace!=null)
-                                {
-                                        /* GCH
-                                         * If the targetNamespace has been already registered,
-                                         * I skip registering it again.
-                                         * In this way I give priority to definitions that come first.
-                                         * Since the search order depents on the order int the ACS.cdbPath
-                                         * property, standard definitions can be overwritten byte newer ones in
-                                         * the standard search path algorithm.
-                                         */
-                                        if(xsd_targetns.containsKey(targetNamespace))
-                                        {
-                                                /*
-                                                 * If the same targetNamespace appears int files with
-                                                 * the same name, then we are simply overriding the
-                                                 * default version with a new one and we need to warning.
-                                                 * Otherwise, a warning can be useful to discover
-                                                 * inconsistencies.
-                                                 */
-                                                String[] newArr = filename.split("/");
-                                                String[] oldArr = ((String)xsd_targetns.get(targetNamespace)).split("/");
-                                                if(newArr[newArr.length-1].compareTo(oldArr[oldArr.length-1])!=0)
-                                                {
-                                                        System.out.println("[Warning] The XSD files \""+(String)XSDFilenames.get(i)+"\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
-                                                }
-                                        }
-                                        else
-                                        {
-                                                xsd_targetns.put(targetNamespace,XSDFilenames.get(i));
-                                        }
-                                }
-                        }else{
-                                System.out.print((String)XSDFilenames.get(i)+": [Warning] file is empty.\n");
-                        }
+					FileInputStream fis = new FileInputStream(file);
+					InputSource inputSource = new InputSource(fis);
+					inputSource.setSystemId("file://" + file.getAbsolutePath());
+					SP.parse(filename);
+					fis.close();
+				} catch(SAXException e){e.getMessage();}
+				catch (IOException e){System.out.println("[IOException] Probably "+filename+" doesn't exists.");}
+
+				if(targetNamespace!=null)
+				{
+					/* GCH
+					 * If the targetNamespace has been already registered,
+					 * I skip registering it again.
+					 * In this way I give priority to definitions that come first.
+					 * Since the search order depends on the order int the ACS.cdbPath
+					 * property, standard definitions can be overwritten byte newer ones in
+					 * the standard search path algorithm.
+					 */
+					if(xsd_targetns.containsKey(targetNamespace))
+					{
+						/*
+						 * If the same targetNamespace appears int files with
+						 * the same name, then we are simply overriding the
+						 * default version with a new one and we need to warning.
+						 * Otherwise, a warning can be useful to discover
+						 * inconsistencies.
+						 */
+						String[] newArr = filename.split("/");
+						String[] oldArr = ((String)xsd_targetns.get(targetNamespace)).split("/");
+						if(newArr[newArr.length-1].compareTo(oldArr[oldArr.length-1])!=0)
+						{
+							System.out.println("[Warning] The XSD files \""+ XSDFilenames.get(i) + "\" and \""+xsd_targetns.get(targetNamespace)+"\" have same targetNamespace: \""+targetNamespace+"\". Skipping this one.");
+						}
+					}
+					else
+					{
+						xsd_targetns.put(targetNamespace, "file://" + XSDFilenames.get(i));
+					}
+				}
+			}else{
+				System.out.print( XSDFilenames.get(i) + ": [Warning] file is empty.\n");
+			}
 		}
 	}
 	
@@ -393,13 +414,13 @@ public class CDBChecker {
 	 * Calls CDBChecker.getFile() to download files usually needed by XSD schema files.
 	 * @param reqSchemas Vector that contains the required schemas, to be downloaded.
 	 */
-	public void downloadSchemas(Vector reqSchemas){
+	public void downloadSchemas(Vector<String> reqSchemas){
 		System.out.print("*** Downloading remote schemas");
 		if(verbose) {
 			System.out.print("\n*** Storing schemas in: " + schemaFolder);
 		}
 		for(int i=0;i<reqSchemas.size();i++){
-			String fileToGet = (String) reqSchemas.get(i);
+			String fileToGet = reqSchemas.get(i);
 			getFile(fileToGet);
 			if(verbose) {
 				System.out.print("\n\tDownloaded file: " + fileToGet);
@@ -440,7 +461,6 @@ public class CDBChecker {
 	{
 		boolean retVal = true;
 		int c;
-		String arg;
 		LongOpt[] longopts = new LongOpt[5];
 		longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
 		longopts[1] = new LongOpt("network", LongOpt.NO_ARGUMENT, null, 'n'); 
@@ -640,11 +660,11 @@ public class CDBChecker {
 				}
 			}
        		//add panta@naoj 2009/10/05 end
-       	
+
 			//Creating the parser
 //			System.setProperty("org.apache.xerces.xni.parser.XMLParserConfiguration", "org.apache.xerces.parsers.XIncludeAwareParserConfiguration");
 			cdbchecker.SP=new SAXParser();
-			cdbchecker.xsd_targetns=new Hashtable();
+			cdbchecker.xsd_targetns=new Hashtable<String,String>();
 			
 			//Download the required Schemas
 			if(cdbchecker.verbose)System.out.println("*** Reading required schema files");			
@@ -674,7 +694,7 @@ public class CDBChecker {
 					cdbchecker.checkIdlTypes();
 
 				String paths[]=cdbchecker.XSDPath.split(""+File.pathSeparatorChar);
-				Vector XSDFilenames=new Vector();
+				Vector<String> XSDFilenames=new Vector<String>();
 				XSDFilenames=cdbchecker.getFilenames(paths,"xsd");
 			
 				if(cdbchecker.verbose)System.out.println("*** Reading given XML files");			
@@ -682,7 +702,7 @@ public class CDBChecker {
 				// initialised to the empty string and never null
 		
 				paths=cdbchecker.XMLPath.split(""+File.pathSeparatorChar);
-				Vector XMLFilenames=new Vector();
+				Vector<String> XMLFilenames=new Vector<String>();
 				XMLFilenames=cdbchecker.getFilenames(paths,"xml");
 				
 				//Fill the map with the targetNamespace and the filenames
