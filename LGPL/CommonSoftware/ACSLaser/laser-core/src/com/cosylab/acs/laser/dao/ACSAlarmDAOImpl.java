@@ -27,18 +27,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -55,6 +51,13 @@ import alma.acs.alarmsystem.generated.FaultFamily;
 import alma.acs.alarmsystem.generated.FaultMember;
 import alma.acs.alarmsystem.generated.FaultMemberDefault;
 import alma.acs.logging.AcsLogLevel;
+import alma.alarmsystem.alarmmessage.generated.Child;
+import alma.alarmsystem.alarmmessage.generated.Parent;
+import alma.alarmsystem.alarmmessage.generated.ReductionDefinitions;
+import alma.alarmsystem.alarmmessage.generated.ReductionLinkDefinitionListType;
+import alma.alarmsystem.alarmmessage.generated.ReductionLinkType;
+import alma.alarmsystem.alarmmessage.generated.Threshold;
+import alma.alarmsystem.alarmmessage.generated.Thresholds;
 import alma.alarmsystem.core.alarms.LaserCoreAlarms;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import cern.laser.business.LaserObjectNotFoundException;
@@ -71,17 +74,13 @@ import cern.laser.business.data.Status;
 import cern.laser.business.data.Triplet;
 import cern.laser.business.definition.data.SourceDefinition;
 
-import com.cosylab.acs.laser.dao.xml.AlarmDefinition;
-import com.cosylab.acs.laser.dao.xml.Child;
-import com.cosylab.acs.laser.dao.xml.LinksToCreate;
-import com.cosylab.acs.laser.dao.xml.Parent;
-import com.cosylab.acs.laser.dao.xml.ReductionDefinitions;
-import com.cosylab.acs.laser.dao.xml.ReductionLink;
-import com.cosylab.acs.laser.dao.xml.Thresholds;
-import com.cosylab.acs.laser.dao.xml.Threshold;
+import com.cosylab.acs.laser.dao.utils.AlarmRefMatcher;
+import com.cosylab.acs.laser.dao.utils.LinkSpec;
 
 class HardcodedBuilding extends Building
 {
+	private static final long serialVersionUID = -2341173312854231369L;
+
 	private HardcodedBuilding()
 	{
 		super("B/1", "Site", new Integer(1), "Map");
@@ -92,6 +91,8 @@ class HardcodedBuilding extends Building
 
 class HardcodedLocation extends Location
 {
+	private static final long serialVersionUID = -4988092784308952674L;
+
 	private HardcodedLocation()
 	{
 		super("L/1", "1", "L/1/1", "1", "1");
@@ -101,159 +102,6 @@ class HardcodedLocation extends Location
 	static final HardcodedLocation instance = new HardcodedLocation();
 }
 
-class AlarmRefMatcher
-{
-	final String family;
-	final Pattern member;
-	final int minCode, maxCode;
-	
-	public AlarmRefMatcher(String family, String memberPattern, String codeSpec) throws IllegalArgumentException
-	{
-		if (family==null || memberPattern==null || codeSpec==null)
-			throw new IllegalArgumentException();
-
-		this.family=family;
-		this.member=processRef(null, memberPattern);
-		
-		try {
-			int minus=codeSpec.indexOf('-');
-			if (codeSpec.lastIndexOf('-')!=minus)
-				throw new IllegalArgumentException("Only a single - allowed in code spec");
-			if (minus<0) {
-				minCode=maxCode=Integer.parseInt(codeSpec);
-			} else {
-				if (minus==0) {
-					minCode=Integer.MIN_VALUE;
-					maxCode=Integer.parseInt(codeSpec.substring(1));
-				} else
-				if (minus==codeSpec.length()-1) {
-					minCode=Integer.parseInt(codeSpec.substring(0, codeSpec.length()-1));
-					maxCode=Integer.MAX_VALUE;
-				} else {
-					minCode=Integer.parseInt(codeSpec.substring(0, minus));
-					maxCode=Integer.parseInt(codeSpec.substring(minus+1));
-				}
-			}
-		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException("Invalid code spec");
-		}
-	}
-	
-	static Pattern processRef(String abase, String ref) throws PatternSyntaxException
-	{
-		Stack stack;
-		String[] tmp;
-		if (ref.startsWith("/") || abase==null) {
-			if (ref.startsWith("/")) {
-				tmp=ref.substring(1).split("/");
-			} else {
-				tmp=ref.split("/");
-			}
-			stack=new Stack();
-		} else {
-			tmp=ref.split("/");
-			stack=new Stack();
-			String[] orig=abase.substring(1).split("/");
-			for (int a=0; a<orig.length; a++)
-				stack.push(orig[a]);
-		}			
-		
-		for (int a=0; a<tmp.length; a++) {
-			String t=tmp[a];
-			if (".".equals(t)) {
-				// ignore
-			} else
-			if ("..".equals(t)) {
-				if (stack.size()>0) {
-					String removed=(String)stack.pop();
-					if ("**".equals(removed))
-						throw new PatternSyntaxException(".. can't follow **", ref, -1);
-				}
-			} else {
-				stack.push(t);
-			}
-		}
-		
-		StringBuffer sb=new StringBuffer();
-		sb.append('^');
-		int s=stack.size();
-		for (int a=0; a<s; a++) {
-			if (a>0)
-				sb.append("/");
-			
-			String t=(String)stack.get(a);
-			if (t.indexOf("**")>=0) {
-				if ("**".equals(t)) {
-					sb.append(".*");
-				} else {
-					throw new PatternSyntaxException("** can't appear as a substring", t, -1);
-				}
-			} else {
-				int l=t.length();
-				for (int b=0; b<l; b++) {
-					char c=t.charAt(b);
-					if (c=='*') {
-						sb.append("[^/]*");
-					} else {
-						DAOUtil.regexEncodeChar(sb, c);
-					}
-				}
-			}
-		}
-		sb.append('$');
-		
-		return Pattern.compile(sb.toString());
-	}
-	
-	public boolean isMatch(AlarmImpl a)
-	{
-		if (a==null)
-			throw new IllegalArgumentException();
-
-		// checks in order of speed, so failure happens asap
-		Triplet t=a.getTriplet();
-		
-		int acde=t.getFaultCode().intValue();
-		if (acde<minCode || acde>maxCode)
-			return false;
-		
-		if (!t.getFaultFamily().equals(this.family))
-			return false;
-		
-		return member.matcher(t.getFaultMember()).matches();
-	}
-}
-
-class LinkSpec
-{
-	final AlarmRefMatcher parent, child;
-	final boolean isMultiplicity;
-	
-	public LinkSpec(AlarmRefMatcher parent, AlarmRefMatcher child, boolean isMultiplicity)
-	{
-		if (parent==null || child==null)
-			throw new IllegalArgumentException();
-		
-		this.parent=parent;
-		this.child=child;
-		this.isMultiplicity=isMultiplicity;
-	}
-	
-	public boolean matchParent(AlarmImpl parent)
-	{
-		return this.parent.isMatch(parent);
-	}
-	
-	public boolean matchChild(AlarmImpl child)
-	{
-		return this.child.isMatch(child);
-	}
-	
-	public boolean isMultiplicity()
-	{
-		return isMultiplicity;
-	}
-}
 
 /**
  * Read alarms from the CDB.
@@ -614,7 +462,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		}
 		ReductionDefinitions rds = null;
 		try {
-			rds=(ReductionDefinitions) ReductionDefinitions.unmarshal(new StringReader(xml));
+			rds=(ReductionDefinitions) ReductionDefinitions.unmarshalReductionDefinitions(new StringReader(xml));
 		} catch (Exception e) {
 			throw new RuntimeException("Couldn't parse "+REDUCTION_DEFINITION_PATH, e);
 		}
@@ -637,42 +485,42 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
 
 		// Read the links to create from the CDB
-		LinksToCreate ltc=rds.getLinksToCreate();
+		ReductionLinkDefinitionListType ltc=rds.getLinksToCreate();
 		//	Read the thresholds from the CDB
 		Thresholds thresholds = rds.getThresholds();
 		if (ltc!=null) { 
-			ReductionLink[] rls=ltc.getReductionLink();
-			for (ReductionLink link: rls) {
-				Parent p=link.getParent();
-				Child c=link.getChild();
-				if (p==null || c==null) {
-					throw new RuntimeException("Missing child or parent in a reduction link");
-				}
-				boolean isMulti;
-				if ("MULTIPLICITY".equals(link.getType())) {
-					isMulti=true;
-				} else
-				if ("NODE".equals(link.getType())) {
-					isMulti=false;
-				} else {
-					throw new RuntimeException("Unknown reduction-link type: "+link.getType());
-				}
-				
-				if (p.getAlarmDefinition()==null || c.getAlarmDefinition()==null)
-					throw new RuntimeException("Missing alarm-definition in child or parent");
-				
-				LinkSpec newRule =new LinkSpec(toMatcher(p.getAlarmDefinition()), toMatcher(c.getAlarmDefinition()), isMulti);
+			ReductionLinkType[] rls=ltc.getReductionLink();
+			for (ReductionLinkType link: rls) {
+
+				LinkSpec newRule =new LinkSpec(link);
 				reductionRules.add(newRule);
-				StringBuffer buf = new StringBuffer();
-				buf.replace(0, buf.length(), "");
-				if (newRule.isMultiplicity) {
-					buf.append("Found MULTIPLICITY RR: parent <");
-				} else {
-					buf.append("Found NODE RR: parent=<");
+
+				if( logger.isLoggable(AcsLogLevel.DEBUG) ) {
+					
+					Parent p=link.getParent();
+					Child c=link.getChild();
+
+					StringBuffer buf = new StringBuffer();
+					buf.replace(0, buf.length(), "");
+					if (newRule._isMultiplicity) {
+						buf.append("Found MULTIPLICITY RR: parent <");
+					} else {
+						buf.append("Found NODE RR: parent=<");
+					}
+					buf.append(p.getAlarmDefinition().getFaultFamily());
+					buf.append(", ");
+					buf.append(p.getAlarmDefinition().getFaultMember());
+					buf.append(", ");
+					buf.append(p.getAlarmDefinition().getFaultCode());
+					buf.append("> child=<");
+					buf.append(c.getAlarmDefinition().getFaultFamily());
+					buf.append(", ");
+					buf.append(c.getAlarmDefinition().getFaultMember());
+					buf.append(", ");
+					buf.append(c.getAlarmDefinition().getFaultCode());
+					buf.append('>');
+					logger.log(AcsLogLevel.DEBUG,buf.toString());
 				}
-				buf.append(newRule.parent.family+", "+newRule.parent.member+", "+newRule.parent.minCode+"-"+newRule.parent.minCode+">");
-				buf.append(" child=<"+newRule.child.family+", "+newRule.child.member+", "+newRule.child.minCode+"-"+newRule.child.minCode+">");
-				logger.log(AcsLogLevel.DEBUG,buf.toString());
 			}
 		}
 		logger.log(AcsLogLevel.DEBUG,reductionRules.size()+" reduction rules read from CDB");
@@ -685,13 +533,12 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		reductionRules.toArray(ls);
 		
 		int num=allAlarms.length;
-		int numls=ls.length;
 		
 		for (int a=0; a<num; a++) {
 			AlarmImpl parent=allAlarms[a];
 			for (LinkSpec lsb: ls) {
 				if (lsb.matchParent(parent)) {
-					AlarmRefMatcher childMatcher=lsb.child;
+					AlarmRefMatcher childMatcher=lsb._child;
 					boolean isMulti=lsb.isMultiplicity();
 					for (int c=0; c<num; c++) {
 						if (a==c) {
@@ -731,22 +578,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			}
 		}
 	}
-	
-	static AlarmRefMatcher toMatcher(AlarmDefinition def)
-	{
-		String family=def.getFaultFamily();
-		if (family==null || family.length()<1)
-			throw new IllegalArgumentException("Missing fault-family");
-		
-		String member=def.getFaultMember();
-		if (member==null || member.length()<1)
-			member="*";
-		
-		int code=def.getFaultCode();
-		
-		return new AlarmRefMatcher(family, member, String.valueOf(code));
-	}
-	
+
 	private void saveAllIDs()
 	{
 		if (conf==null) {
@@ -761,10 +593,10 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		result.append("<?xml version=\"1.0\"?>\n");
 		result.append("<alarm-definition-list>\n");
 		
-		Iterator i=alarmDefs.values().iterator();
+		Iterator<Alarm> i=alarmDefs.values().iterator();
 		while (i.hasNext()) {
-			Alarm a=(Alarm)i.next();
-			Triplet t=a.getTriplet();
+			Alarm a = i.next();
+			Triplet t = a.getTriplet();
 			result.append("\t<alarm-definition fault-family=\"");
 			DAOUtil.escapeXMLEntities(result, t.getFaultFamily());
 			result.append("\" fault-member=\"");
@@ -877,15 +709,15 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	public String[] findAlarmIdsByPriority(Integer priority)
 	{
 		int p=priority.intValue();
-		ArrayList result=null;
-		Iterator i=alarmDefs.entrySet().iterator();
+		ArrayList<String> result=null;
+		Iterator<Entry<String, Alarm>> i=alarmDefs.entrySet().iterator();
 		while (i.hasNext()) {
-			Map.Entry e=(Map.Entry) i.next();
+			Entry<String, Alarm> e=i.next();
 			String id=e.getKey().toString();
 			AlarmImpl ai=(AlarmImpl) e.getValue();
 			if (ai.getPriority().intValue()==p) {
 				if (result==null)
-					result=new ArrayList();
+					result=new ArrayList<String>();
 				result.add(id);				
 			}
 		}
@@ -1076,7 +908,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	
 	public String[] getAllAlarmIDs()
 	{
-		Set keyset=alarmDefs.keySet();
+		Set<String> keyset=alarmDefs.keySet();
 		String[] result=new String[keyset.size()];
 		keyset.toArray(result);
 		return result;

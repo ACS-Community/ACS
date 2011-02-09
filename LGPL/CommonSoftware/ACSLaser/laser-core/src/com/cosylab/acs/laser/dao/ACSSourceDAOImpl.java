@@ -25,23 +25,21 @@ package com.cosylab.acs.laser.dao;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import alma.acs.logging.AcsLogLevel;
+import alma.alarmsystem.alarmmessage.generated.SourceDefinition;
+import alma.alarmsystem.alarmmessage.generated.SourceDefinitionListType;
+import alma.alarmsystem.alarmmessage.generated.SourceDefinitions;
 import cern.laser.business.LaserObjectNotFoundException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.ResponsiblePersonDAO;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Source;
-
-import com.cosylab.acs.laser.dao.xml.SourceDefinition;
-import com.cosylab.acs.laser.dao.xml.SourceDefinitions;
-import com.cosylab.acs.laser.dao.xml.SourcesToCreate;
 
 /**
  * The sources are now defined together with the alarms and read by
@@ -161,12 +159,12 @@ public class ACSSourceDAOImpl implements SourceDAO
 			throw new RuntimeException("Configuration accessor not writeable");
 		
 		SourceDefinitions out=new SourceDefinitions();
-		SourcesToCreate stc=new SourcesToCreate();
+		SourceDefinitionListType stc=new SourceDefinitionListType();
 		out.setSourcesToCreate(stc);
 		
-		Iterator i=sourceDefs.values().iterator();
+		Iterator<Source> i=sourceDefs.values().iterator();
 		while (i.hasNext()) {
-			Source s=(Source)i.next();
+			Source s = i.next();
 			SourceDefinition sd=new SourceDefinition();
 			sd.setConnectionTimeout(s.getConnectionTimeout().intValue());
 			sd.setDescription(s.getDescription());

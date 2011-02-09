@@ -214,31 +214,5 @@ public final class DAOUtil
 			}
 		}
 	}
-	
-	public static void regexEncodeChar(StringBuffer sb, char c)
-	{
-		switch(c) {
-		case '[':
-		case ']':
-		case '^':
-		case '&':
-		case '\\':
-		case '{':
-		case '}':
-		case '(':
-		case ')':
-		case '+':
-		case '-':
-		case '*':
-		case '$':
-		case '.':
-		case '?':
-		case '|':
-			sb.append('\\');
-			sb.append(c);
-			break;
-		default:
-			sb.append(c);
-		}
-	}
+
 }
