@@ -1,3 +1,20 @@
+htischer  11/02/11  Enhance testsuite, automated run, preprocess test log for easier diff.
+					Rename 'make clean' without rtobar change to 'make clean_build'
+					Rename 'make clean_configure' to 'make clean'
+				    Portability changes in sourcecode.
+				    For VxWorks:
+					- building, loading and running rpeatedly and reproducable.
+				    - Remote execution of testsuite
+                    - Treat library as application to load once in common address space.
+				    - Linking all testcases into a single application without library
+                      testxxx.cpp:main(argc,argv) turned into testxxx.cpp:testxxx(char *args)
+				    - Todo: Verify detailed test results.
+
+---
+
+2011-02-02 rtobar	on 'make clean', internally also clean the configure results of log4cpp
+---
+
 2011-01-28 htischer
 
 	- make clean_dist : creates a new patch with sourcecode changes before checkin

@@ -1,6 +1,6 @@
 diff -Naur log4cpp-1.0/configure log4cpp-1.0+/configure
 --- log4cpp-1.0/configure	2007-08-29 09:33:57.000000000 +0000
-+++ log4cpp-1.0+/configure	2011-01-31 09:19:04.911738000 +0000
++++ log4cpp-1.0+/configure	2011-02-11 17:14:34.248520000 +0000
 @@ -21253,7 +21253,17 @@
  ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
  ac_compiler_gnu=$ac_cv_c_compiler_gnu
@@ -22,7 +22,7 @@ diff -Naur log4cpp-1.0/configure log4cpp-1.0+/configure
  # requires special compiler flags (e.g. on True64 or Sequent).
 diff -Naur log4cpp-1.0/doc/Doxyfile.in log4cpp-1.0+/doc/Doxyfile.in
 --- log4cpp-1.0/doc/Doxyfile.in	2007-09-03 09:53:14.000000000 +0000
-+++ log4cpp-1.0+/doc/Doxyfile.in	2011-01-31 09:18:53.391682000 +0000
++++ log4cpp-1.0+/doc/Doxyfile.in	2011-02-11 17:14:06.892821000 +0000
 @@ -62,7 +62,9 @@
  INCLUDE_GRAPH        = YES
  INCLUDED_BY_GRAPH    = YES
@@ -37,8 +37,8 @@ diff -Naur log4cpp-1.0/doc/Doxyfile.in log4cpp-1.0+/doc/Doxyfile.in
  DOT_IMAGE_FORMAT = gif
 diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log4cpp/config-vxworks.h
 --- log4cpp-1.0/include/log4cpp/config-vxworks.h	1970-01-01 00:00:00.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/config-vxworks.h	2011-01-31 09:18:53.396671000 +0000
-@@ -0,0 +1,297 @@
++++ log4cpp-1.0+/include/log4cpp/config-vxworks.h	2011-02-11 17:14:06.906842000 +0000
+@@ -0,0 +1,366 @@
 +#ifndef _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H
 +#define _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H 1
 +
@@ -142,10 +142,45 @@ diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log
 +#define LOG4CPP_HAVE_LOCALTIME_R 1
 +#endif
 +
-+/* Wrong by autoconfigure! define to get around problems with ERROR in vxWorks.h */
++/* Wrong by autoconfigure! define to get around problems with ERROR and DEBUG in vxWorks.h
++ * 
++ * ERROR and DEBUG used by Priority.hh as scoped C++ symbol.
++ * but Macros override the value in all Scopes. 
++ * 
++ * In VxWorks Application Processes (#if defined(__RTP__) ), Name collision free pure Posix
++ * conformance could be enforced by #define _POSIX_C_SOURCE 200112L. But this precludes
++ * some VxWorks features in this application.
++ * Don't taking care about further VxWorks Process details for now.
++ * 
++ * For VxWorks Kernel Process:
++ * DEBUG:
++ *   Used only as #ifdef by compiler command line. Value irrelevant.
++ *   Sufficient to override #define DEBUG DEBUG to keep meaning when used as C++ symbol.
++ * ERROR:
++ *   Value is important, defined by VxWorks indirectly included header file.
++ *
++ *   Need to put a variable ERROR with the correct value into global scope, in addition to
++ *   override #define ERROR ERROR. Then VxWorks as well as scoped use of ERROR expand to the
++ *   proper variable. static linkage is sufficient, because Priority.hh included in all conflicting files.
++ *
++ *   It must be prevented, that #define ERROR is overriden by a later VxWorks header
++ *   after it got fixed in Priority.hh
++ *   Unfortunately system headers do not show a warning on override, see -isystem, -Wsystem-headers
++ *   Also the Priority.hh fix is only in effect, if the VxWorks value was already defined before.
++ *   Therefore in Portability.hh always refering the platform specific value by an
++ *   extern const int ERROR_platform variable in PortabilityImpl.cpp does not help.
++ *   Also it is not obvious what OS internal header file got indirectly included, and therefore
++ *   there is no specific correct log4cpp header inclusion order.
++ *   The only way is, to include the entire OS specific header which defines ERROR, to benefit from the
++ *   double inclusion protection. This must be done within a sub include of Portability.hh, to
++ *   be sure that it is available before Priority.hh
++ *   The minimum system header which fullfills this, and does not collide with VxWorks.h inclusion
++ *   order is vxWorksCommon.h
++ */   
 +#ifndef LOG4CPP_FIX_ERROR_COLLISION
 +#define LOG4CPP_FIX_ERROR_COLLISION 1
 +#endif
++#include <vxWorksCommon.h>
 +
 +/* Define to 1 if you have the <memory.h> header file. */
 +/* Note: With VxWorks corresponding functions are in string.h instead
@@ -333,12 +368,46 @@ diff -Naur log4cpp-1.0/include/log4cpp/config-vxworks.h log4cpp-1.0+/include/log
 +#ifndef LOG4CPP_VERSION 
 +#define LOG4CPP_VERSION  "1.0" 
 +#endif
-+ 
++
++#if defined(__vxworks) && !defined(__RTP__)
++/* This Macro should immediately precede all main definitions and contain the application name:
++ * LOG4CPP_MAIN_DECL(example_appname)
++ * int main(int argc, char *argv[]) { ... }
++ * By default definition of Portability.hh expands to nothing, but config-xxx.h can redefine it.
++ * 
++ * VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore config-vxworks.h redefines the Macro to convert main into a suitable declaration.
++ * 
++ * common name main needs to be static. Since the compiler treats main special,
++ * need to redefine it to main_static by a Macrp.
++ *  
++ * provide a C function which takes a const string for the arguments.
++ * This converts the string to the argc/argv form and calls the local main function.
++ * 
++ * argument conversion function centralized in PortabilityImpl.cpp
++ */
++
++#define main main_static
++
++int log4cpp_maincall(const char *args, int (*main)(int argc, char** argv), char *appname );
++
++#undef LOG4CPP_MAIN_DECL
++#define LOG4CPP_MAIN_DECL(appname) \
++static int main(int argc, char** argv); \
++extern "C" int appname( const char *args) \
++{ \
++	return log4cpp_maincall(args, main, #appname); \
++} \
++static
++
++#endif
++
 +/* _INCLUDE_LOG4CPP_CONFIG_VXWORKS_H */
 +#endif
 diff -Naur log4cpp-1.0/include/log4cpp/PatternLayout.hh log4cpp-1.0+/include/log4cpp/PatternLayout.hh
 --- log4cpp-1.0/include/log4cpp/PatternLayout.hh	2003-03-10 09:01:16.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/PatternLayout.hh	2011-01-31 09:18:53.398674000 +0000
++++ log4cpp-1.0+/include/log4cpp/PatternLayout.hh	2011-02-11 17:14:06.908856000 +0000
 @@ -62,6 +62,7 @@
           * Sets the format of log lines handled by this
           * PatternLayout. By default, set to "%%m%%n".<br>
@@ -357,8 +426,24 @@ diff -Naur log4cpp-1.0/include/log4cpp/PatternLayout.hh log4cpp-1.0+/include/log
           **/
 diff -Naur log4cpp-1.0/include/log4cpp/Portability.hh log4cpp-1.0+/include/log4cpp/Portability.hh
 --- log4cpp-1.0/include/log4cpp/Portability.hh	2007-07-03 17:19:36.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/Portability.hh	2011-01-31 09:18:53.400670000 +0000
-@@ -16,6 +16,8 @@
++++ log4cpp-1.0+/include/log4cpp/Portability.hh	2011-02-11 17:14:06.912818000 +0000
+@@ -10,12 +10,24 @@
+ #ifndef _LOG4CPP_PORTABILITY_HH
+ #define _LOG4CPP_PORTABILITY_HH
+ 
++/* This Macro should immediately precede all main definitions and contain the application name:
++ * LOG4CPP_MAIN_DECL(example_appname)
++ * int main(int argc, char *argv[]) { .. }
++ * By default definition of Portability.hh expands to nothing, but config-xxx.h can redefine it.
++ * E.g.  VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore config-vxworks.h redefines the Macro to convert main into a suitable declaration.
++ */
++#define LOG4CPP_MAIN_DECL(appname)
++
+ #if defined (_MSC_VER) || defined(__BORLANDC__)
+ #    if defined (LOG4CPP_STLPORT_AND_BOOST_BUILD)
+ #        include <log4cpp/config-win32-stlport-boost.h>
  #    else
  #        include <log4cpp/config-win32.h>
  #    endif
@@ -369,7 +454,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/Portability.hh log4cpp-1.0+/include/log4c
  #    include <log4cpp/config-openvms.h>
 diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/Priority.hh
 --- log4cpp-1.0/include/log4cpp/Priority.hh	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-01-31 09:18:53.423672000 +0000
++++ log4cpp-1.0+/include/log4cpp/Priority.hh	2011-02-11 17:14:06.914825000 +0000
 @@ -69,14 +69,19 @@
           **/
          typedef enum {EMERG  = 0, 
@@ -393,7 +478,7 @@ diff -Naur log4cpp-1.0/include/log4cpp/Priority.hh log4cpp-1.0+/include/log4cpp/
          /**
 diff -Naur log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh
 --- log4cpp-1.0/include/log4cpp/RemoteSyslogAppender.hh	2005-04-12 17:57:14.000000000 +0000
-+++ log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh	2011-01-31 09:18:53.425670000 +0000
++++ log4cpp-1.0+/include/log4cpp/RemoteSyslogAppender.hh	2011-02-11 17:14:06.961817000 +0000
 @@ -33,7 +33,7 @@
      LOG_WARNING = 4,       ///< warning conditions
      LOG_NOTICE  = 5,       ///< normal but significant condition
@@ -515,7 +600,7 @@ diff -Naur log4cpp-1.0/log4cpp.spec log4cpp-1.0+/log4cpp.spec
 -
 diff -Naur log4cpp-1.0/m4/ACX_PTHREAD.m4 log4cpp-1.0+/m4/ACX_PTHREAD.m4
 --- log4cpp-1.0/m4/ACX_PTHREAD.m4	2007-08-24 05:51:58.000000000 +0000
-+++ log4cpp-1.0+/m4/ACX_PTHREAD.m4	2011-01-31 09:18:53.428674000 +0000
++++ log4cpp-1.0+/m4/ACX_PTHREAD.m4	2011-02-11 17:14:06.965817000 +0000
 @@ -87,7 +87,15 @@
  AC_REQUIRE([AC_CANONICAL_HOST])
  AC_LANG_SAVE
@@ -535,7 +620,7 @@ diff -Naur log4cpp-1.0/m4/ACX_PTHREAD.m4 log4cpp-1.0+/m4/ACX_PTHREAD.m4
  # requires special compiler flags (e.g. on True64 or Sequent).
 diff -Naur log4cpp-1.0/src/BasicConfigurator.cpp log4cpp-1.0+/src/BasicConfigurator.cpp
 --- log4cpp-1.0/src/BasicConfigurator.cpp	2002-10-26 18:30:55.000000000 +0000
-+++ log4cpp-1.0+/src/BasicConfigurator.cpp	2011-01-31 09:18:53.432671000 +0000
++++ log4cpp-1.0+/src/BasicConfigurator.cpp	2011-02-11 17:14:06.967812000 +0000
 @@ -13,6 +13,9 @@
  #ifdef LOG4CPP_HAVE_UNISTD_H
  #    include <unistd.h>
@@ -548,7 +633,7 @@ diff -Naur log4cpp-1.0/src/BasicConfigurator.cpp log4cpp-1.0+/src/BasicConfigura
  #include <log4cpp/BasicConfigurator.hh>
 diff -Naur log4cpp-1.0/src/Category.cpp log4cpp-1.0+/src/Category.cpp
 --- log4cpp-1.0/src/Category.cpp	2002-10-27 01:38:15.000000000 +0000
-+++ log4cpp-1.0+/src/Category.cpp	2011-01-31 09:18:53.434681000 +0000
++++ log4cpp-1.0+/src/Category.cpp	2011-02-11 17:14:06.969816000 +0000
 @@ -200,8 +200,13 @@
      }
  
@@ -566,7 +651,7 @@ diff -Naur log4cpp-1.0/src/Category.cpp log4cpp-1.0+/src/Category.cpp
          if (NULL != appender) {
 diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
 --- log4cpp-1.0/src/FileAppender.cpp	2006-09-30 06:03:20.000000000 +0000
-+++ log4cpp-1.0+/src/FileAppender.cpp	2011-01-31 09:18:53.436681000 +0000
++++ log4cpp-1.0+/src/FileAppender.cpp	2011-02-11 17:14:06.972832000 +0000
 @@ -12,7 +12,14 @@
  #    include <io.h>
  #endif
@@ -575,7 +660,7 @@ diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
 +#  define write write_vx_unistd_unused
  #    include <unistd.h>
 +#  undef write
-+extern ssize_t write (int fd, const char *buffer, size_t nbytes);
++extern "C" ssize_t write (int fd, const char *buffer, size_t nbytes);
 +#else
 +#    include <unistd.h>
 +#endif
@@ -584,7 +669,7 @@ diff -Naur log4cpp-1.0/src/FileAppender.cpp log4cpp-1.0+/src/FileAppender.cpp
  #include <memory>
 diff -Naur log4cpp-1.0/src/Localtime.cpp log4cpp-1.0+/src/Localtime.cpp
 --- log4cpp-1.0/src/Localtime.cpp	2007-08-19 10:20:18.000000000 +0000
-+++ log4cpp-1.0+/src/Localtime.cpp	2011-01-31 09:18:53.438672000 +0000
++++ log4cpp-1.0+/src/Localtime.cpp	2011-02-11 17:14:06.974841000 +0000
 @@ -1,7 +1,6 @@
  #include <log4cpp/Portability.hh>
  #include "Localtime.hh"
@@ -607,9 +692,52 @@ diff -Naur log4cpp-1.0/src/Localtime.cpp log4cpp-1.0+/src/Localtime.cpp
     void localtime(const ::time_t* time, ::tm* t)
     {
        ::tm* tmp = ::localtime(time);
+diff -Naur log4cpp-1.0/src/PortabilityImpl.cpp log4cpp-1.0+/src/PortabilityImpl.cpp
+--- log4cpp-1.0/src/PortabilityImpl.cpp	2002-10-27 19:44:50.000000000 +0000
++++ log4cpp-1.0+/src/PortabilityImpl.cpp	2011-02-11 17:14:06.978811000 +0000
+@@ -25,3 +25,39 @@
+ }
+ 
+ #endif
++
++#if defined(__vxworks) && !defined(__RTP__)
++/* VxWorks loadable kernel modules are in the same already running process,
++ * and therefore do not have the concept of a main function.
++ * Therefore by macro LOG4CPP_MAIN_DECL(example_appname) of config-vxworks.h/Portability.hh,
++ * An application specific function name is provided, which takes a string
++ * and passes the string together with the main function name on to here for parameter
++ * conversion to argc/argv and propagation to the passed main function.
++ * getOptServ rejects NULL and "" empty arguments. Special treatment to accept this cases.
++ */ 
++
++#include <unistd.h>
++#include <string.h>
++
++#define ARGC_MAX 64
++#define ARGS_MAX 512
++int log4cpp_maincall(const char *args, int (*main)(int argc, char** argv), char *appname )
++{
++	int argc;
++	char* argv[ARGC_MAX];
++	char argsm[ARGS_MAX];
++	
++	if (args == NULL || *args == '\0') {
++		argv[0] = appname;
++		argv[1] = NULL;
++		argc = 1;
++	} else {
++		strncpy(argsm,args,ARGS_MAX);
++		if ( getOptServ(argsm,appname,&argc,argv,ARGC_MAX) ) {
++			return 1;
++		}
++	}
++	return main(argc, argv);
++}
++#endif //defined(__vxworks) && !defined(__RTP__)
++
 diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
 --- log4cpp-1.0/src/Priority.cpp	2005-10-17 08:03:16.000000000 +0000
-+++ log4cpp-1.0+/src/Priority.cpp	2011-01-31 09:18:53.440670000 +0000
++++ log4cpp-1.0+/src/Priority.cpp	2011-02-11 17:14:06.979826000 +0000
 @@ -14,28 +14,30 @@
  namespace log4cpp {
  
@@ -649,7 +777,7 @@ diff -Naur log4cpp-1.0/src/Priority.cpp log4cpp-1.0+/src/Priority.cpp
      Priority::Value Priority::getPriorityValue(const std::string& priorityName) 
 diff -Naur log4cpp-1.0/src/RemoteSyslogAppender.cpp log4cpp-1.0+/src/RemoteSyslogAppender.cpp
 --- log4cpp-1.0/src/RemoteSyslogAppender.cpp	2007-07-03 09:17:27.000000000 +0000
-+++ log4cpp-1.0+/src/RemoteSyslogAppender.cpp	2011-01-31 09:18:53.442690000 +0000
++++ log4cpp-1.0+/src/RemoteSyslogAppender.cpp	2011-02-11 17:14:06.981830000 +0000
 @@ -29,6 +29,10 @@
  #include <sys/socket.h>
  #include <netinet/in.h>
@@ -663,7 +791,7 @@ diff -Naur log4cpp-1.0/src/RemoteSyslogAppender.cpp log4cpp-1.0+/src/RemoteSyslo
  namespace log4cpp {
 diff -Naur log4cpp-1.0/src/SimpleConfigurator.cpp log4cpp-1.0+/src/SimpleConfigurator.cpp
 --- log4cpp-1.0/src/SimpleConfigurator.cpp	2007-07-03 09:17:28.000000000 +0000
-+++ log4cpp-1.0+/src/SimpleConfigurator.cpp	2011-01-31 09:18:53.444677000 +0000
++++ log4cpp-1.0+/src/SimpleConfigurator.cpp	2011-02-11 17:14:06.984813000 +0000
 @@ -13,6 +13,9 @@
  #ifdef LOG4CPP_HAVE_IO_H
  #    include <io.h>
@@ -676,8 +804,8 @@ diff -Naur log4cpp-1.0/src/SimpleConfigurator.cpp log4cpp-1.0+/src/SimpleConfigu
  #include <iostream>
 diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
 --- log4cpp-1.0/tests/Clock.cpp	2002-09-15 22:40:50.000000000 +0000
-+++ log4cpp-1.0+/tests/Clock.cpp	2011-01-31 09:18:53.446675000 +0000
-@@ -4,8 +4,17 @@
++++ log4cpp-1.0+/tests/Clock.cpp	2011-02-11 17:14:06.986817000 +0000
+@@ -4,8 +4,21 @@
   * See the COPYING file for the terms of usage and distribution.
   */
  
@@ -689,13 +817,95 @@ diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
 +#endif
 +#if defined(__vxworks) && !defined(__RTP__)
 +#include <sys/times.h>			// for struct timeval
++#if (defined(__ppc) || defined(__386))
++#include <vxLib.h>	// For vxTimeBaseGet() and pentiumTscGet64()
++#include <sysLib.h> // For sysTimestampFreq() in drv/timer/timerDev.h
++#endif
 +#else
  #include <sys/time.h>			// for struct timeval
 +#endif
  #ifdef __osf__
  #    include <machine/builtins.h>       // for __RPCC()
  #elif __linux__ && __i386__
-@@ -51,10 +60,24 @@
+@@ -21,7 +34,22 @@
+     const usec_t UsecPerSec = INT64_CONSTANT(1000000);
+ }
+ 
++#if defined(__vxworks) && !defined(__RTP__) && (defined(__ppc) || defined(__386))
++/* For consistency with rest of application, don't check for defined(_WRS_KERNEL), but for !defined(__RTP__)
++ * In VxWorks kernel process, access to CPU clock is always possible,
++ * and the value can be scaled according to frequency.
++ * Therefore in VxWorks kernel, CPU clock is more precise as Posix Time, as opposed to Linux. 
++ * Clock.cpp implements only Pentium and PowerPC.
++ * For consistency between DIAB and GNU check for __386, not for __386__.  Don't care about 80486.
++ * C++ static member variable initialized at load time, not at start time.
++ * To avoid forgetting putenv("CLOCK_USE_CPU=1") ahead of time, make it default.
++ * VxWorks timestamp has a typical resolution of > 10 MHz (PPC) or > 1 GHz (IA)
++ * clock_gettime(CLOCK_REALTIME,&ts) has only a resolution of 1/sysClkRateGet(), typically (200/3) hz 
++ */
++bool Clock::UsingCPU  = true;
++#else
+ bool Clock::UsingCPU  = std::getenv("CLOCK_USE_CPU") ? true : false;
++#endif
+ 
+ // -----------------------------------------------------------------------------
+ usec_t Clock::time(void)
+@@ -39,10 +67,53 @@
+ #elif __linux__ && __i386__
+ 	{
+ 	    unsigned long tsc;
+-			
++
++		/* Attention!
++		 * Not scaled to 1 MHz! Can run up to several MHz!
++		 * Only lower 32Bits returned! Can roll over within a second!
++		 */
+ 	    rdtscl(tsc);
+ 	    return (usec_t) tsc;
+ 	}
++#elif defined(__vxworks) && !defined(__RTP__) && (defined(__ppc) || defined(__386))
++	{
++		static unsigned frequency = 0;
++		usec_t timestamp;
++		
++		/* Retrieve only once. Alternatively put it into a static class member variable. */
++		if (!frequency) {
++			frequency = sysTimestampFreq();
++			if (!frequency) {
++			    std::cerr << "CPU clock not implemented for this architecture" << std::endl;
++			    UsingCPU = false;
++			    return Clock::time();
++			}
++		}
++
++		/* By convention and historic restriction, in most VxWorks configurations
++		 * sysTimestamp() resets to 0 with every tick (default (200/3) Hz).
++		 * Therefore access a 64 bit CPU timer with same frequency and continuous run.
++		 * On integer math propagate to 64 Bit before doing computation!
++		 */
++#ifdef __ppc
++		unsigned hi;
++		unsigned lo;
++		
++		vxTimeBaseGet(&hi,&lo);
++		timestamp = ((int64_t)hi << 32) + lo;
++#else /* __i386 */
++		pentiumTscGet64(&timestamp);
++#endif
++		/* Convert to a resolution of 1 Microsecond.
++		 * (t/f)*c : rounding errors on integer
++		 * (t*c)/f : overflow
++		 * (t/f)*c + ((t%f)*c)/f : integer error compensated.
++		 * Overflow save while f*c has no overflow
++		 * With 64Bit and c=1M: until f=16THz 
++		 */
++		return ( timestamp / frequency ) * UsecPerSec +
++				( (timestamp % frequency) * UsecPerSec ) / frequency;
++	}
+ #else
+ 	{
+ 	    std::cerr << "CPU clock not implemented for this architecture" << std::endl;
+@@ -51,10 +122,24 @@
  	}
  #endif	
      } else {
@@ -719,14 +929,14 @@ diff -Naur log4cpp-1.0/tests/Clock.cpp log4cpp-1.0+/tests/Clock.cpp
 +		struct timespec ts;
 +		
 +		clock_gettime(CLOCK_REALTIME,&ts);
-+		return (usec_t) (ts.tv_sec * UsecPerSec + ts.tv_nsec / 1000 );
++		return (usec_t) (ts.tv_sec * UsecPerSec + (ts.tv_nsec * UsecPerSec)/1000000000 );
 +#endif		
      }
  }
  
 diff -Naur log4cpp-1.0/tests/Clock.hh log4cpp-1.0+/tests/Clock.hh
 --- log4cpp-1.0/tests/Clock.hh	2002-09-15 22:40:50.000000000 +0000
-+++ log4cpp-1.0+/tests/Clock.hh	2011-01-31 09:18:53.448669000 +0000
++++ log4cpp-1.0+/tests/Clock.hh	2011-02-11 17:14:06.988825000 +0000
 @@ -6,6 +6,8 @@
  #ifndef __CLOCK_H
  #define __CLOCK_H
@@ -744,12 +954,293 @@ diff -Naur log4cpp-1.0/tests/Clock.hh log4cpp-1.0+/tests/Clock.hh
 +    /* __extension__ should avoid GNU -pedantic warning: use of C99 long long integer constant
 +     * Not working, see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=7263
 +     * Also suggested workaround of using unsigned with "ULL" does not work with e.g. GNU 4.1.2
-+     * #   define INT64_CONSTANT(val)  ((int64_t)(uint64_t)(__extension__ val##LLU))
-+     * Instead, typecast of unspecified scalar literal, with GNU will expand automaticall to
-+     * 64Bit without warning on big number.
++     * #   define INT64_CONSTANT(val)  ((int64_t)(uint64_t)(__extension__ val##ULL))
++     * For now just typecast unspecified scalar literal to 64 Bit. OK on numbers which fit in 31/32 bit.
++     * Compiler error on numbers which do not fit. Need to express differently in sourcecode.
 +     */
 +    typedef int64_t usec_t;
 +#   define INT64_CONSTANT(val)  ((int64_t)val)
  #else
      typedef int64_t usec_t;
  #   define INT64_CONSTANT(val)  (val##LL)
+diff -Naur log4cpp-1.0/tests/testbench.cpp log4cpp-1.0+/tests/testbench.cpp
+--- log4cpp-1.0/tests/testbench.cpp	2007-08-29 08:52:40.000000000 +0000
++++ log4cpp-1.0+/tests/testbench.cpp	2011-02-11 17:14:06.991812000 +0000
+@@ -1,3 +1,15 @@
++#include "PortabilityImpl.hh"
++
++#ifdef LOG4CPP_HAVE_UNISTD_H
++#include <unistd.h> /* For dup() Linux or VxWorks application process */
++#endif
++#ifdef LOG4CPP_HAVE_IO_H
++#    include <io.h> /* For dup() Windows */
++#endif
++#if defined(__vxworks) && !defined(__RTP__)
++ # include <ioLib.h>  /* For dup() missing in unistd.h of VxWorks kernel process */
++#endif
++
+ #include <cstdlib>
+ #include <cstring>
+ #include <cstdio>
+@@ -14,6 +26,7 @@
+ 
+ 
+ // -----------------------------------------------------------------------------
++LOG4CPP_MAIN_DECL(testbench)
+ int main(int argc, char* argv[])
+ {
+     int    count  = argc > 1 ? std::atoi(argv[1]) : 100;
+@@ -26,8 +39,21 @@
+     log4cpp::Category&	root	 = log4cpp::Category::getRoot();
+     root.setPriority(log4cpp::Priority::ERROR);    
+ 
++    /* Compare with FileAppender usage
++     * in SimpleConfigurator::configure() and BasicConfigurator::configure()
++     * Ownership of the already opened file descriptor gets transfered to the FileAppender
++     * object which is responsible to close on Destruction.
++     * Closing stdout/stderr would prevent using stdout/stderr later in the application.
++     * If process lives longer as the application, this breaks also other applications which
++     * are running in the same process, e.g. if shell and application are loaded into a
++     * VxWorks kernel process.
++     * Therefore with dup() transfer an additional file descriptor to the same file,
++     * instead of the file descriptor itself.
++     * Note: OstreamAppender behaves different - ownership of stream remains at the caller
++     *   and gets not closed on Destruction.
++     */
+     log4cpp::OstreamAppender ostreamAppender("cerr", &std::cerr);
+-    log4cpp::FileAppender fileAppender("stderr", fileno(stderr));
++    log4cpp::FileAppender fileAppender("stderr", dup(fileno(stderr)));
+     ostreamAppender.setLayout(new log4cpp::BasicLayout());
+     fileAppender.setLayout(new log4cpp::BasicLayout());
+ 
+diff -Naur log4cpp-1.0/tests/testCategory.cpp log4cpp-1.0+/tests/testCategory.cpp
+--- log4cpp-1.0/tests/testCategory.cpp	2007-08-28 07:54:12.000000000 +0000
++++ log4cpp-1.0+/tests/testCategory.cpp	2011-02-11 17:14:06.993812000 +0000
+@@ -134,7 +134,7 @@
+ 
+ } /* end testMultiAppenders() */
+ 
+-
++LOG4CPP_MAIN_DECL(testCategory)
+ int main(int argc, char** argv) {    
+ 
+     testMultiAppenders();
+@@ -205,3 +205,4 @@
+ 
+     return 0;
+ }
++
+diff -Naur log4cpp-1.0/tests/testConfig.cpp log4cpp-1.0+/tests/testConfig.cpp
+--- log4cpp-1.0/tests/testConfig.cpp	2007-08-28 07:54:12.000000000 +0000
++++ log4cpp-1.0+/tests/testConfig.cpp	2011-02-11 17:14:06.995815000 +0000
+@@ -24,7 +24,10 @@
+ 
+ #include <log4cpp/SimpleConfigurator.hh>
+ 
+-double calcPi()
++/* static to avoid conflict when testConfig and testPropertyConfig
++ * are loaded into the same process e.g. in VxWorks
++ */
++static double calcPi()
+ {
+     double denominator = 3.0;
+     double retVal = 4.0;
+@@ -39,6 +42,7 @@
+     return retVal;
+ }
+ 
++LOG4CPP_MAIN_DECL(testConfig)
+ int main(int argc, char* argv[])
+ {
+     try {
+diff -Naur log4cpp-1.0/tests/testErrorCollision.cpp log4cpp-1.0+/tests/testErrorCollision.cpp
+--- log4cpp-1.0/tests/testErrorCollision.cpp	2001-06-01 17:56:59.000000000 +0000
++++ log4cpp-1.0+/tests/testErrorCollision.cpp	2011-02-11 17:14:06.997812000 +0000
+@@ -1,9 +1,40 @@
++/* If the platform has the ERROR problem, the full Portability.hh
++ * with double inclusion protection is needed before faking
++ * the ERROR definition, to prevent silent
++ * redefinition of ERROR by later indirectly included system internal
++ * headers. Implicite include of Portability.hh by Priority.hh
++ * after faking ERROR is not enough.
++ */
++#include <log4cpp/Portability.hh>
++#ifndef LOG4CPP_FIX_ERROR_COLLISION
++/* For consistency test,
++ * if, and only if current platform does not have the problem, simulate it.
++ */
+ #define ERROR 666
+ #define LOG4CPP_FIX_ERROR_COLLISION 1
++#endif
++
++/* Record the value as defined by the platform headers */
++const int ERROR_platform = ERROR;
+ 
+ #include <log4cpp/Priority.hh>
+ #include <assert.h>
++#include <iostream>
++
++/* Trying to define in non system header must produce a compiler warning
++ */
++//#define ERROR 777
+ 
++/* Make sure that Macro fix in Priority.hh did
++ * not change the value, neither for the system ERROR
++ * nor for the log4cpp ERROR.
++ * If the ERROR Macro got redefined to a numeric value,
++ * a syntax error results below. This is intentional.
++ */
++LOG4CPP_MAIN_DECL(testErrorCollision)
+ int main(int argc, char** argv) {
+-    assert(ERROR == 666);
++    assert(ERROR == ERROR_platform);
++    assert(log4cpp::Priority::ERROR == 300);
++    std::cout << "platform ERROR = " << ERROR << std::endl;
++    return 0;
+ }
+diff -Naur log4cpp-1.0/tests/testFilter.cpp log4cpp-1.0+/tests/testFilter.cpp
+--- log4cpp-1.0/tests/testFilter.cpp	2002-08-12 21:21:52.000000000 +0000
++++ log4cpp-1.0+/tests/testFilter.cpp	2011-02-11 17:14:07.000812000 +0000
+@@ -37,6 +37,7 @@
+     };
+ };
+ 
++LOG4CPP_MAIN_DECL(testFilter)
+ int main(int argc, char** argv) {
+     TestFilter filter;
+ 
+diff -Naur log4cpp-1.0/tests/testFixedContextCategory.cpp log4cpp-1.0+/tests/testFixedContextCategory.cpp
+--- log4cpp-1.0/tests/testFixedContextCategory.cpp	2007-08-28 07:54:12.000000000 +0000
++++ log4cpp-1.0+/tests/testFixedContextCategory.cpp	2011-02-11 17:14:07.001819000 +0000
+@@ -8,6 +8,7 @@
+ #include "log4cpp/Priority.hh"
+ #include "log4cpp/NDC.hh"
+ 
++LOG4CPP_MAIN_DECL(testFixedContextCategory)
+ int main(int argc, char** argv) {    
+     log4cpp::Appender* appender = 
+         new log4cpp::OstreamAppender("default", &std::cout);
+diff -Naur log4cpp-1.0/tests/testmain.cpp log4cpp-1.0+/tests/testmain.cpp
+--- log4cpp-1.0/tests/testmain.cpp	2007-08-28 07:54:12.000000000 +0000
++++ log4cpp-1.0+/tests/testmain.cpp	2011-02-11 17:14:07.004812000 +0000
+@@ -16,6 +16,7 @@
+ #include "log4cpp/Priority.hh"
+ #include "log4cpp/NDC.hh"
+ 
++LOG4CPP_MAIN_DECL(testmain)
+ int main(int argc, char** argv) {
+ 	log4cpp::Appender* appender;
+ #ifdef LOG4CPP_HAVE_SYSLOG
+@@ -28,10 +29,16 @@
+ 	syslogAppender = new log4cpp::OstreamAppender("syslogdummy", &std::cout);
+ #endif
+ 
+-	if (argc < 2) {
++	int count = 10000;
++	int argfn = 1;
++	if (argc >= 3 && !std::strcmp(argv[1],"-n")) {
++		count = std::atoi(argv[2]);
++		argfn = 3;
++	}
++	if (argc <= argfn ) {
+ 		appender = new log4cpp::OstreamAppender("default", &std::cout);
+ 	} else {
+-		appender = new log4cpp::FileAppender("default", argv[1]);
++		appender = new log4cpp::FileAppender("default", argv[argfn]);
+ 	}
+ 
+ 	syslogAppender->setLayout(new log4cpp::BasicLayout());
+@@ -78,7 +85,7 @@
+              << log4cpp::eol << " warn4";
+ 
+ 	{
+-		for(int i = 0; i < 10000; i++) {
++		for(int i = 0; i < count; i++) {
+ 			char ndc2[20];
+ 			sprintf(ndc2, "i=%d", i);
+ 			log4cpp::NDC::push(ndc2);
+diff -Naur log4cpp-1.0/tests/testNDC.cpp log4cpp-1.0+/tests/testNDC.cpp
+--- log4cpp-1.0/tests/testNDC.cpp	2002-06-18 11:31:53.000000000 +0000
++++ log4cpp-1.0+/tests/testNDC.cpp	2011-02-11 17:14:07.006812000 +0000
+@@ -3,6 +3,7 @@
+ 
+ using namespace log4cpp;
+ 
++LOG4CPP_MAIN_DECL(testNDC)
+ int main(int argc, char** argv) {
+     std::cout << "1. empty NDC: " << NDC::get() << std::endl;
+ 
+diff -Naur log4cpp-1.0/tests/testNTEventLog.cpp log4cpp-1.0+/tests/testNTEventLog.cpp
+--- log4cpp-1.0/tests/testNTEventLog.cpp	2002-06-17 07:43:43.000000000 +0000
++++ log4cpp-1.0+/tests/testNTEventLog.cpp	2011-02-11 17:14:07.008812000 +0000
+@@ -17,6 +17,7 @@
+ #include "log4cpp/NTEventLogAppender.hh"
+ #include "log4cpp/Priority.hh"
+ 
++LOG4CPP_MAIN_DECL(testNTEventLog)
+ int main(int argc, char* argv[])
+ {
+     log4cpp::Appender* appender = 
+diff -Naur log4cpp-1.0/tests/testPattern.cpp log4cpp-1.0+/tests/testPattern.cpp
+--- log4cpp-1.0/tests/testPattern.cpp	2003-05-09 23:24:31.000000000 +0000
++++ log4cpp-1.0+/tests/testPattern.cpp	2011-02-11 17:14:07.010814000 +0000
+@@ -18,6 +18,7 @@
+     }	
+ }                                                                              
+ 
++LOG4CPP_MAIN_DECL(testPattern)
+ int main(int argc, char* argv[])
+ {
+     log4cpp::BasicConfigurator::configure();
+diff -Naur log4cpp-1.0/tests/testPriority.cpp log4cpp-1.0+/tests/testPriority.cpp
+--- log4cpp-1.0/tests/testPriority.cpp	2002-03-22 12:44:28.000000000 +0000
++++ log4cpp-1.0+/tests/testPriority.cpp	2011-02-11 17:14:07.012814000 +0000
+@@ -3,6 +3,7 @@
+ 
+ using namespace log4cpp;
+ 
++LOG4CPP_MAIN_DECL(testPriority)
+ int main(int argc, char** argv) {
+     
+     std::cout << "priority debug(700): " << Priority::getPriorityName(700) << std::endl;
+diff -Naur log4cpp-1.0/tests/testProperties.cpp log4cpp-1.0+/tests/testProperties.cpp
+--- log4cpp-1.0/tests/testProperties.cpp	2002-08-15 23:17:31.000000000 +0000
++++ log4cpp-1.0+/tests/testProperties.cpp	2011-02-11 17:14:07.014817000 +0000
+@@ -2,6 +2,7 @@
+ #include <iostream>
+ #include <fstream>
+ 
++LOG4CPP_MAIN_DECL(testProperties)
+ int main(int argc, char** argv) {
+     log4cpp::Properties properties;
+     std::string inFile = (argc > 1) ? argv[1] : "log4cpp.properties";  
+@@ -9,5 +10,6 @@
+ 
+     properties.load(in);
+     properties.save(std::cout);
++    return 0;
+ }
+ 
+diff -Naur log4cpp-1.0/tests/testPropertyConfig.cpp log4cpp-1.0+/tests/testPropertyConfig.cpp
+--- log4cpp-1.0/tests/testPropertyConfig.cpp	2007-08-28 07:54:12.000000000 +0000
++++ log4cpp-1.0+/tests/testPropertyConfig.cpp	2011-02-11 17:14:07.016815000 +0000
+@@ -24,7 +24,10 @@
+ 
+ #include <log4cpp/PropertyConfigurator.hh>
+ 
+-double calcPi()
++/* static to avoid conflict when testConfig and testPropertyConfig
++ * are loaded into the same process e.g. in VxWorks
++ */
++static double calcPi()
+ {
+     double denominator = 3.0;
+     double retVal = 4.0;
+@@ -39,6 +42,7 @@
+     return retVal;
+ }
+ 
++LOG4CPP_MAIN_DECL(testPropertyConfig)
+ int main(int argc, char* argv[])
+ {
+     try {

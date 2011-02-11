@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2011/01/31 15:38:12 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/02/11 17:33:36 htischer Exp $"
 #
 # Makefile of log4cpp port to VxWorks
 #
@@ -35,13 +35,20 @@
 #					  exclude autom4te.cache from clean_dist.
 # htischer  31/01/11  moved INSTALL_DIR to common file
 #					  add compilation of testcases  
+# htischer  11/02/11  building for, loading and running rpeatedly and reproducable on VxWorks.
+#					  Remote execution of testsuite, processing of test log for easier diff.
+#					  Todo: Verify detailed test results.
+#                     Note: Treat library as application to load once in common address space.
+#					  Linking all testcases into a single application without library
+#                     testxxx.cpp:main(argc,argv) turned into testxxx.cpp:testxxx(char *args)
+#					  Rename 'make clean' to 'make clean_build' and 'make clean_configure' to 'make clean' 
 
 #*******************************************************************************
 # This Makefile follows VLT Standards (see Makefile(5) for more).
 #*******************************************************************************
 # REMARKS
 # make options:
-# DEBUG=on		for configure, activate debugging
+# OPTIMIZE=on		for configure, deactivate debugging
 # make targets:
 #
 # all			Build. Do unpack, patch and configure if and only if necessary.
@@ -50,12 +57,12 @@
 #				This includes also creating a new patch version in case of
 #				modifications in the extracted sourcecode.
 #
-# clean_configure remove configure results, if they got created.
+# clean			remove configure results, if they got created.
 #				Avoids doing a configure just to be able to do a distclean.
 #				Useful to start configure from scratch or checking current state
 #				before creating a new patch. 
 #
-# clean			Prepares for a clean rebuild, but leaves configure results.
+# clean_build	Prepares for a clean rebuild, but leaves configure results.
 #
 # patch			patch the original log4cpp package with sourcecode updates.
 #				unpack when necessary.
@@ -81,12 +88,22 @@
 
 include ../../ws/src/common.Makefile
 
+# undef as much as possible include paths which are unnecessary for a plain Posix/VxWorks application.
+# Attention! if ACE_ROOT_VW is cleared, special C++ LD must be restored after inclusion of acsMakefile!
+# VLTROOT clearing has no relevant effect (except shortening the include path a litle)
+# See more at CONFIGURE_CFLAGS
+
 # List of files to be linked
-LINK_FILES =
+#LINK_FILES =
 #
 
 #
 # user definable C-compilation flags
+# See more at CONFIGURE_CFLAGS
+# on use of VxWorks headers avoid harmless but confusing compiler warning.
+# No effect on plain Posix app.
+# USER_CFLAGS =-D_VSB_CONFIG_FILE=\"$(WIND_BASE)/target/lib/h/config/vsbConfig.h\"
+#
 #USER_CFLAGS = 
 
 #
@@ -103,14 +120,55 @@ LINK_FILES =
 #
 # C programs (public and local)
 # -----------------------------
-EXECUTABLES     =
-EXECUTABLES_L   = 
+
+EXECUTABLES     = log4cpptests log4cppcommon
+
+#EXECUTABLES_L   = 
 
 #
 # <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
+#xxxxx_OBJECTS   =	
+#xxxxx_LDFLAGS   =
+#xxxxx_LIBS      =
+
+#cpp.cpp: empty dummy object to trigger C++ linking,
+#because to vltMakefile this is not obvious for the externally compiled sources
+#For acsMakefile with ACE_ROOT_VW unnecessary, because always linking for C++ by the ace_ld wrapper.
+#log4cpptests_OBJECTS   = cpp
+#log4cppcommon_OBJECTS = cpp
+#example is an external object
+#Before do_all need to create files expected by acsMakefile, but cannot be created
+# by acsMakefile because of missing source.
+# The preceding 'lib' of the 'libxxx.a' must be omitted here!
+# To be on the save side don't name an application like the library with ommited 'lib'!
+#tests_OBJECTS   = cpp example
+#tests_LIBS = local
+#common_OBJECTS = cpp
+#common_LIBS = log4cpp
+#common_LDFLAGS = --whole-archive
+# all: example do_all
+# ...
+# .PHONY: example
+#	touch cpp.cpp
+#	ln -ft ../object -s ../src/log4cpp-$(LOG4CPP_VER)/tests/example.o
+#	touch ../object/example.d
+#	ln -ft ../lib -s ../src/log4cpp-$(LOG4CPP_VER)/src/.libs/liblocal.a
+# Create external libraries to be referenced.
+# Application specific library: here
+# Common library: Create as an extra application to download separately.
+# By --whole-archive ink in everything, because not known by later apps.
+# Application link without common library.
+# That way library can be loaded exactly once into the single kernel process for
+# more applications.
+#
+# Here for simplicifaction:
+# Put all application modules into a single executable.
+
+log4cpptests_LIBS = tests
+log4cpptests_LDFLAGS = --whole-archive
+
+log4cppcommon_LIBS = log4cpp
+log4cppcommon_LDFLAGS = --whole-archive
 
 #
 # special compilation flags for single c sources
@@ -119,89 +177,94 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        =
+#INCLUDES        =
 
 #
 # Libraries (public and local)
+# For now we link the entire log4cpp library to a downloadable application
+# to ensure one time download.
+# If it is sure, that log4cpp is used by exactly one application, alternatively
+# it could be statically linked to that application. In this case install the .a library here.
+# Note: So far installed anyway by 'configure' created install procedure. Consider to rm again.
 # ----------------------------
-LIBRARIES       =
-LIBRARIES_L     =
+#LIBRARIES       =
+#LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-lllll_OBJECTS   =
+#lllll_OBJECTS   =
 
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         =
-SCRIPTS_L       =
+#SCRIPTS         =
+#SCRIPTS_L       =
 
 #
 # TCL scripts (public and local)
 # ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
+#TCL_SCRIPTS     =
+#TCL_SCRIPTS_L   =
 
 #
 # <brief description of tttttt tcl-script>
-tttttt_OBJECTS  =
-tttttt_TCLSH    = 
-tttttt_LIBS     = 
+#tttttt_OBJECTS  =
+#tttttt_TCLSH    = 
+#tttttt_LIBS     = 
 
 #
 # TCL libraries (public and local)
 # ------------------------------
-TCL_LIBRARIES   =
-TCL_LIBRARIES_L =
+#TCL_LIBRARIES   =
+#TCL_LIBRARIES_L =
 
 #
 # <brief description of tttlll library>
-tttlll_OBJECTS  = 
+#tttlll_OBJECTS  = 
 
 #
 # UIF panels (public and local)
 # ----------------------------
-PANELS   =
-PANELS_L = 
+#PANELS   =
+#PANELS_L = 
 
 #
 # IDL Files and flags
 #
-IDL_FILES =
-IDL_TAO_FLAGS =
-USER_IDL =
+#IDL_FILES =
+#IDL_TAO_FLAGS =
+#USER_IDL =
 
 #
 # man pages to be done
 # --------------------
-MANSECTIONS =
-MAN1 =
-MAN3 =
-MAN5 =
-MAN7 =
-MAN8 =
+#MANSECTIONS =
+#MAN1 =
+#MAN3 =
+#MAN5 =
+#MAN7 =
+#MAN8 =
 
 #
 # local man pages
 # ---------------
-MANl =
+#MANl =
 
 #
 # ASCII file to be converted into Framemaker-MIF
 # --------------------
-ASCII_TO_MIF = 
+#ASCII_TO_MIF = 
 
 #
 # INS_ROOT files to be installed
 #-------------------------------
-INS_ROOT_FILES =
-INS_ROOT_DIR   =
+#INS_ROOT_FILES =
+#INS_ROOT_DIR   =
 
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+#INSTALL_FILES =
 
 #
 # list of all possible C-sources (used to create automatic dependencies)
@@ -217,26 +280,57 @@ CSOURCENAMES = \
 # CHOSE PLATFORM
 # --------------
 # This is a LCU Makefile, so for VxVorks applications we set:
-# Todo: Temporary treat lcu like ws to test the build
-#MAKE_VXWORKS = on   
+MAKE_VXWORKS = on   
 
 #
 # INCLUDE STANDARDS
 # -----------------
 
-# Todo: Temporary treat lcu like ws to test the build
-#MAKEDIRTMP := $(shell searchFile include/acsMakefile)
-#ifneq ($(MAKEDIRTMP),\#error\#)
-#   MAKEDIR := $(MAKEDIRTMP)/include
-#   include $(MAKEDIR)/acsMakefile
-#endif
+MAKEDIRTMP := $(shell searchFile include/acsMakefile)
+ifneq ($(MAKEDIRTMP),\#error\#)
+   MAKEDIR := $(MAKEDIRTMP)/include
+   include $(MAKEDIR)/acsMakefile
+endif
 
-ifeq ($(DEBUG),)
+# acsMakefile with ACE_ROOT_VW adds -fcheck-new to the ctdt.c compilation of the munch step,
+# like on other c/cpp files, causing:
+# cc1: warning: command line option "-fcheck-new" is valid for C++/ObjC++ but not for C
+# removing the option from $(LD), which contains the cpp arguments for munch also.
+
+LD := $(filter-out -fcheck-new,$(LD))
+
+# acsMakefile for VxWorks behaviour is
+# - if DEBUG is defined, always compile for debug, independent of additional optimization
+# - if OPTIMIZE is not defined, always compile for debug
+# configure behaviour os
+# - if compile for debug the no optimization, otherwise -O2
+# give the debug request precedence
+# explicitely define common for with and without acsMakefile.
+# On acsMakefile use we could deduct final debug mode by ifeq ($(filter -g,$(CFLAGS)),)...
+# Use CONFIGURE_DEBUG also as debug indicator further below
 CONFIGURE_DEBUG=
-else
+ifeq ($(OPTIMIZE),)
+CONFIGURE_DEBUG=--enable-debug
+endif
+ifneq ($(DEBUG),)
 CONFIGURE_DEBUG=--enable-debug
 endif
 
+CONFIGURE_acsMakefile = on
+
+ifneq ($(CONFIGURE_acsMakefile),)
+
+# acsMakefile VxWorks Kernel Module options.
+#
+# Final composition of options and commands for configure
+# Using acsMakefile settings
+# From acsMakefile '../object/%.o : ../object/%.cpp' template
+# Before configure remove options added automatically by configure, see below
+
+CONFIGURE_CFLAGS=$(CFLAGS) $(I_PATH) $($*_CFLAGS)
+CONFIGURE_CXXFLAGS=$(CFLAGS) $(CPPFLAGS) $(C_PLUS_PLUS_FLAGS) $(I_PATH) $($*_CFLAGS)
+
+else
 
 # Workbench VxWorks Kernel Module Project options. Use for now instead of VLT/APEX options.
 #
@@ -254,6 +348,8 @@ endif
 # VLT and APEX do this differently:
 # VLT creates a matching nested make file on the fly
 # APEX calls a fixed pearl script with the necessary arguments to do all the steps
+#   LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
+# Attention! Only if ACE_ROOT_VW is defined, the C++ compatible link is done! (internally translated to ACE_ROOT)
 #
 # Attention!
 # configure as of log4cpp unfortunately finds out the linker executable and calls it directly
@@ -282,105 +378,162 @@ endif
 # -E -dM on empty file dumps predefined Macros
 
 # Compiling for Debugging or optimization for normal files and ctdt file
-# See configure.in: depending on --enable-debug, GCC_CFLAGS -g/-O added automatically
-# In addition, configure adds -D_DEBUG/-DNDEBUG
-#CFLAGS_OPTIMIZE+=-O2
-#CFLAGS_OPTIMIZE+=-g
-ifeq ($(DEBUG),)
-CFLAGS_OPTIMIZE=-fstrength-reduce -fno-builtin
+ifeq ($(CONFIGURE_DEBUG),)
+WR_CFLAGS_OPTIMIZE=-O2 -fstrength-reduce -fno-builtin
 else
-CFLAGS_OPTIMIZE=
+WR_CFLAGS_OPTIMIZE=-g
 endif
 
-# Common for all compilations, normal files and ctdt file
-# configure adds-ansi -MD -MP -Wall automatically. In addition it adds -Wno-unused -pedantic
-#CFLAGS_COMMON+=-Wall -ansi -MD -MP
-CFLAGS_COMMON=-mcpu=604 -mstrict-align -fno-implicit-fp \
+# Only for normal source files, but not for ctdt.c
+WR_CFLAGS_SOURCE=-ansi -MD -MP
+
+# Common for all compilations
+WR_CFLAGS_COMMON=-mcpu=604 -mstrict-align -fno-implicit-fp -Wall \
 -I$(WIND_BASE)/target/h -I$(WIND_BASE)/target/h/wrn/coreip \
 -DCPU=PPC604 -DTOOL_FAMILY=gnu -DTOOL=gnu -D_WRS_KERNEL \
 -D_VSB_CONFIG_FILE=\"$(WIND_BASE)/target/lib/h/config/vsbConfig.h\"
 
 # compilation of ctdt file, C++ file level constructor/destructor list after the "munch" step
-# This is not covered by configure, therefore need to add those flags manually which normally
-# would be added by configure. But -ansi -MD -MP not needed for ctdt. Only add -Wall
-# CFLAGS_CTDT=$(filter-out -ansi -MD -MP,$(CFLAGS_CTDT))
-ifeq ($(DEBUG),)
-CFLAGS_OPTIMIZE_CTDT=-O2
-else
-CFLAGS_OPTIMIZE_CTDT=-g
-endif
-CFLAGS_CTDT=$(CFLAGS_OPTIMIZE_CTDT) $(CFLAGS_OPTIMIZE) $(CFLAGS_COMMON) -fdollars-in-identifiers -Wall
+# -ansi -MD -MP not needed for ctdt. Instead add -fdollars-in-identifiers
+WR_CFLAGS_CTDT=$(WR_CFLAGS_OPTIMIZE) $(WR_CFLAGS_COMMON) -fdollars-in-identifiers
 
 # only for intermediate link for reuse result in later link step
-CFLAGS_LINKPARTIAL=
+WR_CFLAGS_LINKPARTIAL=
 
 # only for final link of downloable kernel module, picking up intermediate and munch results
-CFLAGS_LINKFINAL=-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
+WR_CFLAGS_LINKFINAL=-T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
 
 # common for both link steps 
-CFLAGS_LINK=-r -nostdlib -Wl,-X
+WR_CFLAGS_LINK=-r -nostdlib -Wl,-X
 
 # -----
 
 # Final composition of options and commands for configure
 
 # C/C++ compiler options
-CFLAGS=$(CFLAGS_OPTIMIZE) $(CFLAGS_COMMON)
-CXXFLAGS=$(CFLAGS)
+# configure adds -ansi -MD -MP -Wall automatically.
+# See configure.in: depending on --enable-debug, GCC_CFLAGS -g/-O added automatically
+# In addition it adds -Wno-unused -pedantic and -D_DEBUG/-DNDEBUG
+#
+# Note: C compiler warning
+# 'warning: #warning "VxWorks Source Build (VSB) project not specified; \
+# using default VxWorks UP configuration under $WIND_BASE/target/lib/h/config"'
+# This occures if an application includes a VxWorks specific non Posix header file, e.g. <taskLib.h>
+# and is completely harmeless.
+# This should not happen with this application which was imported from Linux.
+# If warning occures after a sourcecode change, suppress it by following compiler argument, e.g. by USER_CFLAGS:
+# -D_VSB_CONFIG_FILE=\"$(WIND_BASE)/target/lib/h/config/vsbConfig.h\"
+#
+# Note:
+# Include path imported by acsMakefile: TAO, ACSSW, CCSLite, tcltk, relative paths, introot -
+# are not necessary here with application imported from plain Linux, but they do no harm.
+# Consider to remove them below.
+# Easy to remove CCSLite by deleting VLTROOT at beginning of makefile
+# TCL_ROOT cannot be undefined.
+# TAO cannot simply removed, because the C++ compatible link is done only if ACE_ROOT got active by ACE_ROOT_VW
+#  A method would be:
+#  - at beginning of Makefile:
+#    ACE_ROOT_FOR_LD=$(ACE_ROOT_VW)
+#    ACE_ROOT_VW=
+#  - after inclusion of acsMakefile
+#    LD = perl $(ACE_ROOT_FOR_LD)/bin/ace_ld ... continue like acsMakefile setting 
+# Or alternatively do the entire compilation using the WR_* flags above.
+#
+# Before configure, remove the options which got added automatically by configure, see below
+#
+# ACE_ROOT_VW propagates to ACE_ROOT also by acsMakefile. In this case additional compiler settings are active:
+#  CFLAGS :=   -ansi -pipe -D_REENTRANT -fno-builtin -fno-defer-pop -fvolatile -nostdlib -DACE_VXWORKS=0x670 -Wno-uninitialized -DACE_LACKS_RTTI  -fcheck-new $(CFLAGS)
+#  LD = perl $(ACE_ROOT)/bin/ace_ld -C ccppc $(CFLAGS) -- -m munch -n nm$(VX_CPU_FAMILY) ld$(VX_CPU_FAMILY) -X -r -T $(WIND_BASE)/target/h/tool/gnu/ldscripts/link.OUT
+
+CONFIGURE_CFLAGS=$(WR_CFLAGS_OPTIMIZE) $(WR_CFLAGS_COMMON) $(WR_CFLAGS_SOURCE)
+CONFIGURE_CXXFLAGS=$(CONFIGURE_CFLAGS)
+
+endif
+
+# Remove options added by configure, in particular -c to allow optional linking and -g/-Ox by --enable-debug
+# See below in WR options case
+
+CONFIGURE_AUTOCFLAGS=-c -O -O0 -O1 -O2 -O3 -g -ansi -MD -MP -Wall
+
+CONFIGURE_CFLAGS:=$(filter-out $(CONFIGURE_AUTOCFLAGS),$(CONFIGURE_CFLAGS))
+CONFIGURE_CXXFLAGS:=$(filter-out $(CONFIGURE_AUTOCFLAGS),$(CONFIGURE_CXXFLAGS))
 
 #ccppc routes the request through to c++ppc when necessary by options or file type.
 #By convention with C++, VxWorks RTP and VLT/APEX for VxWorks Kernel are using c++ppc,
 #and Wind River builds for VxWorks Kernel are using ccppc
 #For now follow the Wind River VxWorks Kernel convention 
-#CXX=c++ppc
-CXX=ccppc
-CC=ccppc
-
+##CXX=c++ppc
+#CXX=ccppc
+#CC=ccppc
 # Same Preprocessor for C and C++, behaviour adjustment by options and file type.
-CPP=cppppc
-CXXCPP=cppppc
-
-AR=arppc
-RANLIB=ranlibppc
-STRIP=stripppc
-
+#CPP=cppppc
+#CXXCPP=cppppc
+#used?
+#AR=arppc
+#RANLIB=ranlibppc
+#STRIP=stripppc
 #Not yet needed, but set to be correct in the auto-generated ./libtool
 #DLLTOOL not available for kernel modules in Vxworks
-DLLTOOL=echo
-OBJDUMP=objdumpppc
-AS=asppc
-NM=nmppc
-LD=ldppc
+#DLLTOOL=exit 1
+#OBJDUMP=objdumpppc
+#AS=asppc
+#NM=nmppc
+#LD=ldppc
+#For sure the LD setting confuses acsMakefile LD=perl ... setting.
+#To avoid conflicts use different variables to hold the VxWorks tool names for configure.
+#For convenience, all in one.
+
+CONFIGURE_TOOLS= CC=ccppc CXX=ccppc CPP=cppppc CXXCPP=cppppc AR=arppc RANLIB=ranlibppc STRIP=stripppc \
+			OBJDUMP=objdumpppc AS=asppc NM=nmppc LD=ldppc "DLLTOOL=exit 1" \
 
 #
 # TARGETS
 # -------
 
-# patch and configure are not repeated on calling again, therefore no separate build rule needed.
-# Build the testcases in addition to the library and test driver.
-# 'make check' builds the testcases as well as executes them.
-# Therefore do the build as separate step. Not available as separate pseudotarget.
-# List of testcases in log4cpp-$(LOG4CPP_VER)/tests/makefile.am not available before
-# unpacking and patching. Therefore delegate into sub-make to be invoked after this.
-# Need to treat 'make install' and 'make tests' special also. But 'make clean' already cleans the tests.
-#skip default acsMakefile things
-#all:	do_all
+# Before do_all need to create expected by acsMakefile by configure, configure-build and postprocess.
+# global NOTPARALLEL to impose 'list order of prerequisites is execution order' without additional pseudo targets.
+.NOTPARALLEL :
 .PHONY : all
-all: configure
-	@echo ". . . building . . ."
-	$(MAKE) -C log4cpp-$(LOG4CPP_VER) all
-	$(MAKE) -f tests.Makefile all
+all: configure compile do_all
 	@echo " . . . 'all' done" 
 
-#skip default acsMakefile things
-#clean : clean_all 
-.PHONY : clean 
-clean : 
-	@if [ -d log4cpp-$(LOG4CPP_VER) ]; then \
+# - patch and configure are not repeated on calling again, therefore no separate build rule needed.
+#   '-C log4cpp-$(LOG4CPP_VER) all' builds only library and testmain and testbench object modules.
+#   executables are not usable for VxWorks.
+# - link the created external library to a place more appropriate for acsMakefile
+# - Before very first run of do_all, folder for external might not exist. Create to be sure.
+# -  Build the testcases in addition to the library and test driver.
+#   'make check' builds the testcases as well as executes them.
+#   Therefore do the build as separate step. Not available as separate pseudotarget.
+#   List of testcases in log4cpp-$(LOG4CPP_VER)/tests/makefile.am not available before
+#   unpacking and patching. Therefore delegate into sub-make to be invoked after this.
+#   The submake creates also a library ../lib/libtests.a with test application main code.
+# - dummy cpp.cpp no longer needed, because acsMakefile with ACE_ROOT_VW always uses C++ link, see above.
+#	touch cpp.cpp	
+# Note: Need to treat 'make install' and 'make tests' special also. But 'make clean_build' already cleans the tests.
+
+compile:
+	@echo ". . . compiling . . ."
+	$(MAKE) -C log4cpp-$(LOG4CPP_VER) all
+	mkdir -p ../lib
+	ln -ft ../lib -s ../src/log4cpp-$(LOG4CPP_VER)/src/.libs/liblog4cpp.a
+	$(MAKE) -f tests.Makefile all
+	@echo " . . . 'compile' done" 
+
+# Additional files created by compile including libtests.a by 'tests.Makefile all'
+# dummy cpp.cpp no longer needed, see above.
+.PHONY : clean_compile 
+clean_compile :
+	rm -rf ../lib/libtests.a ../lib/liblog4cpp.a ../bin/rtests.expect
+
+# do clean of default acsMakefile things before cleaning special files, see target 'compile'.
+.PHONY : clean_build 
+clean_build : clean_compile clean_all 
+	@if [ -r log4cpp-$(LOG4CPP_VER)/Makefile ]; then \
 		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
 		$(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
 	fi
-	@echo " . . . clean done"
+	@echo " . . . clean_build done"
 
 # Remove results of configure
 # Useful to rerun configure from scratch, or to check current state result before creating a new patch version
@@ -390,15 +543,18 @@ clean :
 # Attention!
 # If a configure run breaks before creating the Makefile, the file tree is inconsistent!
 # In this case don't create a new patch untile configure was runing successfully!
+# '-C log4cpp-$(LOG4CPP_VER) distclean' covers also 'log4cpp-$(LOG4CPP_VER) clean', but not
+# the extra files by target 'compile'.
+# After clean no reuse of old acsMakefile results - clean 
 
-.PHONY : clean_configure
-clean_configure :
-	@echo ". . . clean_configure . . ."
+.PHONY : clean
+clean : clean_build
+	@echo ". . . clean . . ."
 	@if [ -r log4cpp-$(LOG4CPP_VER)/Makefile ]; then \
 		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
 		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
 	fi
-	@echo " . . . clean_configure done"
+	@echo " . . . clean done"
 
 # Create a new patch version to reflect changes in the sourcecode.
 # Before that clean up the build of the package to the state of distribution (nested distclean)
@@ -422,11 +578,14 @@ clean_configure :
 # begin-language: "Autoconf-without-aclocal-m4"
 # args: --no-cache
 # end-language: "Autoconf-without-aclocal-m4"
+# clean_dist_all after clean_all for acsMakefile created empty folders. log4cpp package unrelated, do afterwards.
+# clean_all contained in clean.
+# ../test created by acsMakefile, but not cleaned up. testcases currently not standalone, but part of ../src
 
-#skip default acsMakefile things
+#modify default acsMakefile things
 #clean_dist : clean_all clean_dist_all 
 .PHONY : clean_dist 
-clean_dist : clean_configure
+clean_dist : clean clean_dist_all
 	@echo ". . . clean_dist . . ."
 	rm -f `find .. -name "*~"`
 	@if [ -d log4cpp-$(LOG4CPP_VER) ]; then \
@@ -441,7 +600,7 @@ clean_dist : clean_configure
 		fi; \
 	fi
 	$(MAKE) -C ../../ws/src clean_dist
-	rm -rf configure.log log4cpp-$(LOG4CPP_VER)
+	rm -rf log4cpp-$(LOG4CPP_VER) configure.log log4cpp_teststimes.log log4cpp_tests.log ../test
 	@echo " . . . clean_dist done"
 
 #skip default acsMakefile things
@@ -464,19 +623,18 @@ db :
 # Exception: Script log4cpp-config is meant for execution on host, but cannot be redirected
 # separately. Therefore move to $(INSTALL_DIR)/bin afterwards.
 
-#  go to $(INSTALL_DIR)/vw/bin/$(CPU) and $(INSTALL_DIR)/vw/lib/$(CPU)
-# Therefore o 
- 
-#skip default acsMakefile things
-# Install the testcases also, see rule 'all'.
-# Fix the link before installing the executables
-#install : install_all
+# Install the testcases also in addition to the log4cpp results, see 'make all'.
+# For the testcases need also runtime files to be loaded.
+# Fix the host script location created by log4cpp
+# Attention! The host script log4cpp-config is still depending on configure parameter and shared with ws build!
+# store under a different name!
 .PHONY : install 
-install : 
-	@echo ". . . installing cppunit . . ."
+install : install_all
+	@echo ". . . installing log4cpp . . ."
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) install
-	mv $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp-config $(INSTALL_DIR)/bin/log4cpp-config
-#	$(MAKE) -f tests.Makefile install
+	mv $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp-config $(INSTALL_DIR)/bin/log4cpp-config_vw
+	$(MAKE) -f tests.Makefile install
+	cp -p ../bin/rtests.expect $(INSTALL_DIR)/bin/rtests.expect
 	@echo " . . . installation done"
 
 # Folder name of patched version of extracted tgz. Create only if not existing, therefore no dependencies.
@@ -496,22 +654,31 @@ install :
 # absolute  symbolic links, mkdir not in inner loop:
 #   mkdir -p $$(cd ../../ws/src; find log4cpp-$(LOG4CPP_VER) -type d)
 #	@STARTPWD=`pwd`; \
-#	for dir in `find log4cpp-1.0+ -type d`; do \
+#	for dir in `find log4cpp-$(LOG4CPP_VER) -type d`; do \
 #		echo ln -s -t $$dir `find $$STARTPWD/../../ws/src/$$dir -maxdepth 1 -type f`; \
 #		ln -s -t $$dir `find $$STARTPWD/../../ws/src/$$dir -maxdepth 1 -type f`; \
 #	done
 # relative symbolic links, nested commands on echo not expanded, mkdir not in inner loop
 #   mkdir -p $$(cd ../../ws/src; find log4cpp-$(LOG4CPP_VER) -type d)
-#	@for dir in `find log4cpp-1.0+ -type d`; do \
+#	@for dir in `find log4cpp-$(LOG4CPP_VER) -type d`; do \
 #		echo ln -s -t $$dir \$$\(cd $$dir\; find \$$\(sed -e "s#[^/]*#..#g" \<\<\<$$dir \)/../../ws/src/$$dir -maxdepth 1 -type f\); \
 #		ln -s -t $$dir $$(cd $$dir; find $$(sed -e "s#[^/]*#..#g" <<<$$dir )/../../ws/src/$$dir -maxdepth 1 -type f); \
 #	done
-
+#
+# Todo:
+# unnecessary execution of autoconf and automake or warning messages
+# 'missing --run automake-1.10', 'missing --run autoconf' etc
+# This means that a dependent file has a newer timestamp after unpacking and patching from the archive.
+# Non available autoconfigure tool is simulated by simply touching the dependent files.
+# See ./config/missing actions, and $(AUTOCONF) use in top Makfile to see when it is executed.
+# In particular $(top_srcdir)/m4/ACX_PTHREAD.m4 and configure got patched consistently.
+# configure must be newer.
+#
 log4cpp-$(LOG4CPP_VER) :
-	$(MAKE) -C ../../ws/src clean_dist
+	$(MAKE) -C ../../ws/src clean
 	$(MAKE) -C ../../ws/src patch
 	@echo ". . . replicating to ../../lcu/src . . ."
-	@for dir in $$(cd ../../ws/src; find log4cpp-1.0+ -type d); do \
+	@for dir in $$(cd ../../ws/src; find log4cpp-$(LOG4CPP_VER) -type d); do \
 		echo mkdir -p $$dir; \
 		mkdir -p $$dir || exit 1; \
 		echo ln -s -t $$dir $$(cd $$dir; find $$(sed -e "s#[^/]*#..#g" <<<$$dir )/../../ws/src/$$dir -maxdepth 1 -type f); \
@@ -540,9 +707,8 @@ log4cpp-$(LOG4CPP_VER)/Makefile :
 	cd log4cpp-$(LOG4CPP_VER); \
 		./configure --enable-shared=no $(CONFIGURE_DEBUG) --host=powerpc-wrs-vxworks \
 			--prefix=$(INSTALL_DIR)/vw --bindir=$(INSTALL_DIR)/vw/bin/$(CPU) --libdir=$(INSTALL_DIR)/vw/lib/$(CPU) \
-			CC=$(CC) CXX=$(CXX) CPP=$(CPP) CXXCPP=$(CXXCPP) AR=$(AR) RANLIB=$(RANLIB) STRIP=$(STRIP) \
-			OBJDUMP=$(OBJDUMP) AS=$(AS) NM=$(NM) LD=$(LD) DLLTOOL=$(DLLTOOL) \
-			"CFLAGS=$(CFLAGS)" "CXXFLAGS=$(CXXFLAGS)" \
+			$(CONFIGURE_TOOLS) \
+			"CFLAGS=$(CONFIGURE_CFLAGS)" "CXXFLAGS=$(CONFIGURE_CXXFLAGS)" \
  			>>../configure.log 2>&1
 	@echo " . . . configuration file created"
 
@@ -560,24 +726,30 @@ configure : patch log4cpp-$(LOG4CPP_VER)/Makefile
 printenv:
 	env | sort
 
-# Usage 
-# testmain, 10000 iterations.
-# optional 1st argument: unknown meaning. Hangs.
-# testbench, 12 iterations.
-# optional 1st argument: records per iteration, default=100
-# optional 2nd argument: record size, default=128
-# Run the the individual testcases also, see rule 'all'.
-# 'make check' already available, also builds if not present.
-# Todo: remote execution
-#
-.PHONY : test 	
-test :
-#	log4cpp-$(LOG4CPP_VER)/tests/testmain
-#	log4cpp-$(LOG4CPP_VER)/tests/testmain unknownarg
-#	log4cpp-$(LOG4CPP_VER)/tests/testbench 10 5
-#	log4cpp-$(LOG4CPP_VER)/tests/testbench 10
-#	log4cpp-$(LOG4CPP_VER)/tests/testbench
-#	$(MAKE) -C log4cpp-$(LOG4CPP_VER) check
-	@echo " . . . test done"
+# Executing all individual tests on VxWorks remote host
+# Need hostname as make Variable REMOTE_HOST
+# Assuming installation folder mounted to same place on remote host
+# Assuming home folder of remote user is writable and mounted since boot via rsh or ftp.
+# Assumes that tests and test execution script are already built and installed.
+# For "~" remote home folder as writeable folder, escape to not expanding by local shell!
+#   see tests.Makefile
+# redirect test output into file
+# For easier diff of results remove time stamps
+# log4cpp_tests.log
+# Known differences between VxWorks and Linux results
+# - Date Format with Month Name abbreviation uses capital letters "MMM" instead of mixed case "Mmm" 
+.PHONY : tests 	
+tests :
+	@if [ x$(REMOTE_HOST) == x ]; then echo Error: 'REMOTE_HOST=xxx' missing!; exit 1; fi
+	../bin/rtests.expect $(REMOTE_HOST) $(INSTALL_DIR)/vw/bin/$(CPU) "~" | tee log4cpp_teststimes.log
+	sed \
+	-e "s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/XXXX-XX-XX/" \
+	-e "s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]/XX:XX:XX,XXX/" \
+	-e "s/[0-9][0-9] [A-Z][A-Za-z][A-Za-z] [0-9][0-9][0-9][0-9]/XX XXX XXXX/" \
+	-e "s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9]/XX:XX:XX.XXX/" \
+	-e "s/[0-9][0-9]*\.*[0-9]* us/XX.XX us/" \
+	-e "s/^[0-9][0-9][0-9][0-9]*/XXX/" \
+	log4cpp_teststimes.log > log4cpp_tests.log
+	@echo " . . . remote test done"
 
 #___oOo___
