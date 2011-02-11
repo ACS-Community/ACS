@@ -303,7 +303,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 
 		try
 		{
-			com.cosylab.acs.laser.dao.xml.ReductionDefinitions redDefs = alarmDAO.getReductionDefinitions();
+			alma.alarmsystem.alarmmessage.generated.ReductionDefinitions redDefs = alarmDAO.getReductionDefinitions();
 			if (redDefs != null)
 			{
 				if (redDefs.getLinksToCreate() != null)
@@ -311,12 +311,12 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				if (redDefs.getLinksToRemove() != null)
 					saveReductionLinks(session, config, redDefs.getLinksToRemove().getReductionLink(), "REMOVE");
 				
-				 int count = 0;
-				 if (redDefs.getThresholds() != null)
-				 {
-					 com.cosylab.acs.laser.dao.xml.Threshold[] thresholds = redDefs.getThresholds().getThreshold();
-					 for ( com.cosylab.acs.laser.dao.xml.Threshold threshold : thresholds)
-					 {
+				int count = 0;
+				if (redDefs.getThresholds() != null)
+				{
+					alma.alarmsystem.alarmmessage.generated.Threshold[] thresholds = redDefs.getThresholds().getThreshold();
+					for ( alma.alarmsystem.alarmmessage.generated.Threshold threshold : thresholds)
+					{
 						// also commit first
 						if (count % 100 == 0)
 						{
@@ -353,11 +353,11 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		}
 	}
 
-	private static void saveReductionLinks(Session session, Configuration config, com.cosylab.acs.laser.dao.xml.ReductionLink[] links, String action)
+	private static void saveReductionLinks(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] links, String action)
 	{
 		int count = 0;
 		
-		for (com.cosylab.acs.laser.dao.xml.ReductionLink link : links)
+		for (alma.alarmsystem.alarmmessage.generated.ReductionLinkType link : links)
 		{
 			// also commit first
 			if (count % 100 == 0)
@@ -389,7 +389,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 
 			}
 			remoteLink.setAction(action);
-			remoteLink.setType(link.getType());
+			remoteLink.setType(link.getType().toString());
 			session.saveOrUpdate(remoteLink);
 		}
 
@@ -403,9 +403,9 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 	private static class ADWrapper
 	{
 		
-		private final com.cosylab.acs.laser.dao.xml.AlarmDefinition ad; 
+		private final alma.alarmsystem.alarmmessage.generated.AlarmDefinition ad; 
 		
-		public ADWrapper(com.cosylab.acs.laser.dao.xml.AlarmDefinition ad)
+		public ADWrapper(alma.alarmsystem.alarmmessage.generated.AlarmDefinition ad)
 		{
 			this.ad = ad;
 		}
@@ -443,7 +443,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 	static FaultFamily lastFaultFamily = null;
 	static FaultMember lastFaultMember = null;
 	
-	private static alma.acs.tmcdb.AlarmDefinition getAlarmDefinition(Session session, Configuration config, com.cosylab.acs.laser.dao.xml.AlarmDefinition alarmDef, boolean allowFMCreation)
+	private static alma.acs.tmcdb.AlarmDefinition getAlarmDefinition(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.AlarmDefinition alarmDef, boolean allowFMCreation)
 	{
 		// cache check
 		ADWrapper wrappedAD = new ADWrapper(alarmDef);
