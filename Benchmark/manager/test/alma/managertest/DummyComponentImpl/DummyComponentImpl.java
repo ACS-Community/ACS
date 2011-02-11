@@ -29,7 +29,7 @@ public class DummyComponentImpl extends ComponentImplBase  implements DummyCompo
 
 	public DummyComponentImpl(){}	
 
-	public void cleanUp() throws alma.maciErrType.ComponentCleanUpEx {
+	public void cleanUp() throws alma.maciErrType.wrappers.AcsJComponentCleanUpEx {
 		m_logger.info("cleanUp called.");
 		super.cleanUp();
 	}

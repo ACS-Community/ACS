@@ -68,7 +68,7 @@ public class NCReceiverImpl
     }
 
 	@Override
-	public void cleanUp() throws alma.maciErrType.ComponentCleanUpEx {
+	public void cleanUp() throws alma.maciErrType.wrappers.AcsJComponentCleanUpEx {
 		// of course our receiver is a CorbaReceiver, but the old API is so messed up that we do it like this
 		if (receiver instanceof CorbaReceiver) {
 			CorbaReceiver corbaReceiver = (CorbaReceiver) receiver;
