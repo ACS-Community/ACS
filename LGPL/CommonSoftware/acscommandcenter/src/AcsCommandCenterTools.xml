@@ -111,9 +111,19 @@ A Tool definition has the following elements:
 	</tool>
 
 	<tool>
-		<caption>Event Browser</caption>
+		<caption>Event Browser (classic)</caption>
 		<command>accEnableVars accStarter -e ACS_INSTANCE=? -p $HOME/.acs/commandcenter/acseventbrowser acseventbrowser</command>
 		<insertion source="model">ScriptBase</insertion>
+	</tool>
+
+	<tool>
+		<caption>Event Browser (modern)</caption>
+		<command>accEnableVars accStarter -e ACS_INSTANCE=? -e ACS_NAME_SERVICE=? -e ACS_INTERFACE_REPOSITORY=? -e MANAGER_REFERENCE=corbaloc::?:?/Manager -p $HOME/.acs/commandcenter/eventGUI eventGUI</command>
+		<insertion source="model">ScriptBase</insertion>
+		<insertion source="model">ToolAgainstNameService</insertion>
+		<insertion source="model">ToolAgainstInterfaceRepository</insertion>
+		<insertion source="model">ToolAgainstManagerHost</insertion>
+		<insertion source="model">ToolAgainstManagerPort</insertion>
 	</tool>
 
   <!--
