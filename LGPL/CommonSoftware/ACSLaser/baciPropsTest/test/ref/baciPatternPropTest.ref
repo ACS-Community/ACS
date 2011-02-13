@@ -2,12 +2,8 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] component 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
-1 - Ignoring call to ClientLogManager#init: already initialized!
-1 - suppressRemoteLogging called
-1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [BACITest:BACIPatternPropertyTest#testROPattern] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar:1> ACTIVE=true
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> TERMINATE

@@ -2,20 +2,16 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] -------------------------------
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] component 'alma.acs.alarmsystem.test.BACIDoublePropertyTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.--- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
-1 - Ignoring call to ClientLogManager#init: already initialized!
-1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
-1 - suppressRemoteLogging called
-1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- TRACE [laser-client_2] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- TRACE [BACITest:BACIDoublePropertyTest#testRODouble] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH ON
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 3> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:3> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 3> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Test: HIGH OFF
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 3> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropertyTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:3> ACTIVE=false
