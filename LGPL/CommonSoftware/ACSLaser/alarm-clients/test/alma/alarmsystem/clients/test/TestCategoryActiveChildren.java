@@ -70,7 +70,7 @@ public class TestCategoryActiveChildren extends ComponentClientTestCase implemen
 	/**
 	 * @see extends ComponentClientTestCase
 	 */
-	public void teraDown() throws Exception {
+	public void tearDown() throws Exception {
 		categoryClient.close();
 		super.tearDown();
 	}
