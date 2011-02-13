@@ -1,31 +1,30 @@
 1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] -------------------------------
 1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] component 'alma.alarmsystem.clients.test.CategoryClientTest' requested AdvancedContainerServices
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [laser-client] component 'laser-client' requested AdvancedContainerServices
 1 - --non-ISO timestamp-- INFO  MomConfig          - loading configuration...
 1 - --non-ISO timestamp-- WARN  MomConfig          - could not load configuration, using defaults
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.HEARTBEAT, listener, HEARTBEAT = TRUE)
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.HEARTBEAT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.HEARTBEAT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - Alarm Heartbeat client check frequency : 30000 milliseconds
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - starting heartbeat check...
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - started heartbeat check
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.ROOT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' ChannelId='15' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.ROOT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' ChannelId='13' Service='NotifyEventChannelFactory' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' ChannelId='18' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' ChannelId='16' Service='NotifyEventChannelFactory' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2' ChannelId='21' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2' ChannelId='19' Service='NotifyEventChannelFactory' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.CLIENTS.------'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [laser-client_2] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='24' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CLIENTS.------'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='22' Service='NotifyEventChannelFactory' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - unSubscribe(5)
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - instantiating the alarm system interface
 1 - --non-ISO timestamp-- INFO  Configurator       - loading configuration...
 1 - --non-ISO timestamp-- INFO  Configurator       - configuration loaded
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
-1 - ----------T--:--:--.--- CONFIG [laser-client_2] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
+1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - stopping heartbeat check...
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - stopped heartbeat check
 1 - --non-ISO timestamp-- INFO  ACSJMSTopicConnectionImpl - disconnected
