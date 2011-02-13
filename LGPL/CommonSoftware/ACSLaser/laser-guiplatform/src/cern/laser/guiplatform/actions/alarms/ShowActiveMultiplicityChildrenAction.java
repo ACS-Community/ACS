@@ -11,6 +11,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.NodeAction;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.LaserException;
 import cern.laser.client.data.Alarm;
@@ -35,6 +37,12 @@ public class ShowActiveMultiplicityChildrenAction extends NodeAction {
     /** logger */
     private static final Logger logger = 
             LogFactory.getLogger(ShowActiveMultiplicityChildrenAction.class.getName());
+    
+    private final ContainerServicesBase contSvcs;
+    
+    public ShowActiveMultiplicityChildrenAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
  
     protected void performAction(Node[] _nodes) {
         // do work based on the current node selection, e.g.:
@@ -59,7 +67,7 @@ public class ShowActiveMultiplicityChildrenAction extends NodeAction {
         AlarmInfoExplorer expl = null;
         List abAlarms = new java.util.ArrayList();
          try {
-            browser = AlarmReductionHandlerFactory.getHandler();
+            browser = AlarmReductionHandlerFactory.getHandler(contSvcs);
             Collection alarms = browser.getActiveMultiplicityChildren(_ab.getAlarmId());
 
             GPNode [] nodes = new GPNode[alarms.size()];

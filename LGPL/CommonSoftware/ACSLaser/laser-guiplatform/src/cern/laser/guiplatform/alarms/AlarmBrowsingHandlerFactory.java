@@ -6,6 +6,7 @@
 
 package cern.laser.guiplatform.alarms;
 
+import alma.acs.container.ContainerServicesBase;
 import cern.laser.client.LaserException;
 import cern.laser.client.services.browsing.AlarmBrowsingHandler;
 import cern.laser.guiplatform.util.Constants;
@@ -20,13 +21,13 @@ public class AlarmBrowsingHandlerFactory {
     private AlarmBrowsingHandlerFactory() {
     }
     
-    public static final AlarmBrowsingHandler getHandler() throws LaserException {
+    public static final AlarmBrowsingHandler getHandler(ContainerServicesBase contSvcs) throws LaserException {
         
         AlarmBrowsingHandler handler = null;
         if ( Constants.getDefaultWorkingMode() == Constants.TEST_WORKING_MODE )
             throw new RuntimeException("There is no AlarmBrowsingHandler for TEST_WORKING_MODE");
         else 
-            handler = AlarmBrowsingHandler.get();
+            handler = AlarmBrowsingHandler.get(contSvcs);
         return handler;
         
         

@@ -10,6 +10,8 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.client.LaserTimeOutException;
 import cern.laser.client.data.Category;
@@ -54,11 +56,13 @@ public class SearchWindow extends TopComponent /* or CloneableTopComponent */ {
     
     Logger logger = Logger.getLogger(this.getClass().getName());
     
+    private ContainerServicesBase contSvcs;
+    
     /**
      * Default constructor
      */
-    public SearchWindow() {
-        this(Constants.SEARCH_WINDOW_MODE_SEARCH_ACTIVE_LIST, null);
+    public SearchWindow(ContainerServicesBase contSvcs) {
+        this(Constants.SEARCH_WINDOW_MODE_SEARCH_ACTIVE_LIST, null,contSvcs);
         
     }
     /** Constructor
@@ -66,9 +70,10 @@ public class SearchWindow extends TopComponent /* or CloneableTopComponent */ {
      * SEARCH_WINDOW_MODE_GET_ALARMINFO, SEARCH_WINDOW_MODE_SEARCH_ACTIVE_LIST
      * @param selection collection of CategoryBeans used by BL to perform search
      */
-    public SearchWindow(int windowMode, Category [] choosenCategories) {
+    public SearchWindow(int windowMode, Category [] choosenCategories, ContainerServicesBase contSvcs) {
         // mm Selection object FIXED
     	this.selection = new SelectionImpl();
+    	this.contSvcs=contSvcs;
         CategorySelection cs = new CategorySelectionImpl();
         cs.addAll(Arrays.asList(choosenCategories));
         selection.setCategorySelection(cs);
@@ -796,7 +801,7 @@ public class SearchWindow extends TopComponent /* or CloneableTopComponent */ {
         // TODO
         
         try {
-			AlarmSelectionHandler selectionHandler = AlarmSelectionHandlerFactory.getHandler();
+			AlarmSelectionHandler selectionHandler = AlarmSelectionHandlerFactory.getHandler(contSvcs);
 			selectionHandler.search(selection, 10, AlarmContainer.getDefault());
 		} catch (LaserTimeOutException e) {
 			// TODO Auto-generated catch block

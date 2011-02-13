@@ -6,6 +6,7 @@
 
 package cern.laser.guiplatform.alarms;
 
+import alma.acs.container.ContainerServicesBase;
 import cern.laser.client.LaserException;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.guiplatform.util.Constants;
@@ -21,13 +22,13 @@ public class AlarmSelectionHandlerFactory {
     private AlarmSelectionHandlerFactory() {
     }
     
-    public static AlarmSelectionHandler getHandler() throws LaserException {
+    public static AlarmSelectionHandler getHandler(ContainerServicesBase contSvcs) throws LaserException {
        
         AlarmSelectionHandler handler = null;
         if ( Constants.getDefaultWorkingMode() == Constants.TEST_WORKING_MODE )
             throw new RuntimeException("AlarmSelectionHandler not implements for TEST_WORKING_MODE"); 
         else 
-            handler = AlarmSelectionHandler.get();
+            handler = AlarmSelectionHandler.get(contSvcs);
         return handler;
     }
     

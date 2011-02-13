@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.console.User;
@@ -22,6 +24,12 @@ import cern.laser.guiplatform.windowmanager.AcWindowManager;
 public class LogoutAction extends CallableSystemAction {
 
     private Logger logger = LogFactory.getLogger(LogoutAction.class.getName());
+    
+    private ContainerServicesBase contSvcs;
+    
+    public LogoutAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
 
     public void performAction() {
         // do what you want
@@ -40,7 +48,7 @@ public class LogoutAction extends CallableSystemAction {
 
         try {
             AlarmSelectionHandler jms_selectionHandler = 
-            AlarmSelectionHandlerFactory.getHandler();
+            AlarmSelectionHandlerFactory.getHandler(contSvcs);
             // disconnect from BL
             jms_selectionHandler.resetSelection();
         } catch (LaserException le) {

@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmReductionHandlerImpl.java,v 1.5 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: AlarmReductionHandlerImpl.java,v 1.6 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.5 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.6 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -11,6 +11,7 @@ package cern.laser.client.impl.services.reduction;
 
 import java.util.Collection;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.CERNAlarmService;
 
 import cern.laser.client.LaserConnectionException;
@@ -29,9 +30,9 @@ public class AlarmReductionHandlerImpl extends AlarmReductionHandler {
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-  public AlarmReductionHandlerImpl() throws LaserConnectionException {
+  public AlarmReductionHandlerImpl(ContainerServicesBase contSvcs) throws LaserConnectionException {
 	  try {
-		  this.m_laser = AlarmServiceSingleton.getInstance();
+		  this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
 	  } catch (Throwable t) {
 		  throw new LaserConnectionException("Error getting the alarm service",t);
 	  }

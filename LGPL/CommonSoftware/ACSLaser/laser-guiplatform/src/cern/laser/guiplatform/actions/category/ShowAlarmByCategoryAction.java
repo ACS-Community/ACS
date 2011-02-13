@@ -10,6 +10,8 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.LaserException;
 import cern.laser.client.data.Alarm;
@@ -39,6 +41,12 @@ public class ShowAlarmByCategoryAction extends cern.gp.actions.support.NodeActio
     /** logger */
     private static final Logger logger = 
             LogFactory.getLogger(ShowAlarmByCategoryAction.class.getName());
+    
+    private ContainerServicesBase contSvcs;
+    
+    public ShowAlarmByCategoryAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
   
     protected void performAction(GPNode [] activatedNodes) {
         AcWindowManager.setStatusText("Show alarm by category action is running .......");
@@ -50,7 +58,7 @@ public class ShowAlarmByCategoryAction extends cern.gp.actions.support.NodeActio
         AlarmInfoExplorer expl = null;
         List abAlarms = new java.util.ArrayList();
         try {
-            browser = AlarmBrowsingHandlerFactory.getHandler();
+            browser = AlarmBrowsingHandlerFactory.getHandler(contSvcs);
             Collection alarms = browser.getAlarmsByCategory(cb.getCategoryId());
 
             GPNode [] nodes = new GPNode[alarms.size()];

@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
 import cern.laser.client.services.selection.LaserSelectionException;
@@ -34,6 +36,8 @@ import cern.laser.guiplatform.util.ProxyBuffer;
  */
 public class AlarmStatisticInfoPanel extends JPanel implements
 		AlarmsNumberChangeListener, AlarmSelectionOnExceptionListener {
+	
+	private ContainerServicesBase contSvcs;
 
 	/**
 	 * Creates new form AlarmStatisticInfoPanel
@@ -45,7 +49,8 @@ public class AlarmStatisticInfoPanel extends JPanel implements
 	 * @param isReductionMaskeSet
 	 */
 	public AlarmStatisticInfoPanel(String configurationName,
-			Behaviour behaviour, boolean isReductionMaskSet) {
+			Behaviour behaviour, boolean isReductionMaskSet, ContainerServicesBase contSvcs) {
+		this.contSvcs=contSvcs;
 		initComponents();
 
 		postInitComponents(configurationName, behaviour, isReductionMaskSet);
@@ -484,7 +489,7 @@ public class AlarmStatisticInfoPanel extends JPanel implements
 					// disconnet from bussiens tier
 					AlarmSelectionHandler jms_selectionHandler = null;
 					jms_selectionHandler = AlarmSelectionHandlerFactory
-							.getHandler();
+							.getHandler(contSvcs);
 					jms_selectionHandler.resetSelection();
 
 					// disable ProxyBuffer

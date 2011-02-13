@@ -6,6 +6,8 @@
 
 package cern.laser.guiplatform.capabilities;
 
+import alma.acs.container.ContainerServicesBase;
+
 /**
  * Capability an object implements so that it can show details. 
  * This capability is invoked by the corresponding Action 
@@ -15,6 +17,6 @@ package cern.laser.guiplatform.capabilities;
 public interface DetailsCapability extends cern.gp.capabilities.Capability {
 
     /** Indicates to this object that it has to show details */
-    void details(/*GPNode node*/);
+    void details(/*GPNode node*/ContainerServicesBase contSvcs);
   
 }

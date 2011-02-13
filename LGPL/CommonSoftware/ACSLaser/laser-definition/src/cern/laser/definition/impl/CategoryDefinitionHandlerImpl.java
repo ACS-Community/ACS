@@ -14,13 +14,14 @@ import cern.laser.definition.LaserDefinitionNotFoundException;
 import cern.laser.definition.LaserDefinitionNotValidException;
 import cern.laser.definition.LaserDefinitionXMLException;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.AlarmService;
 
 /**
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl implements CategoryDefinitionHandler {
 	private AlarmService alarmService;
@@ -30,10 +31,10 @@ public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl impleme
    *
    * @param userId DOCUMENT ME!
    */
-  public CategoryDefinitionHandlerImpl(String userId) throws LaserDefinitionException {
+  public CategoryDefinitionHandlerImpl(String userId, ContainerServicesBase contSvcs) throws LaserDefinitionException {
     super(userId);
     try {
-		  this.alarmService=AlarmServiceSingleton.getInstance();
+		  this.alarmService=AlarmServiceSingleton.getInstance(contSvcs);
 	  } catch (Throwable t) {
 		  throw new LaserDefinitionException("Error getting the alarm service",t);
 	  }

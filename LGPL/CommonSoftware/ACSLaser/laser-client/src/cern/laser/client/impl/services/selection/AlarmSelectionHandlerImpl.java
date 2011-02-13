@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHandlerImpl.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: AlarmSelectionHandlerImpl.java,v 1.5 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import alma.acs.container.ContainerServicesBase;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
@@ -27,7 +29,7 @@ import cern.laser.util.LogTimeStamp;
  * DOCUMENT ME!
  * 
  * @author $author$
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   private static final Logger LOGGER = Logger.getLogger(AlarmSelectionHandlerImpl.class.getName());
@@ -35,20 +37,23 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   private HeartbeatHelper heartbeatHelper;
   private AlarmSelectionHelper alarmSelectionHelper;
   private AlarmSearchHelper alarmSearchHelper;
+  
+  private ContainerServicesBase contSvcs;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-//  /**
-//   * Creates a new AlarmSelectionHandlerImpl object.
-//   * 
-//   * @throws LaserException
-//   * 
-//   * @throws LaserException DOCUMENT ME!
-//   */
-//  public AlarmSelectionHandlerImpl() throws LaserConnectionException {
-//  }
+  /**
+   * Creates a new AlarmSelectionHandlerImpl object.
+   * 
+   * @throws LaserException
+   * 
+   * @throws LaserException DOCUMENT ME!
+   */
+  public AlarmSelectionHandlerImpl(ContainerServicesBase contSvcs) {
+	  this.contSvcs=contSvcs;
+  }
 
   //
   // -- PUBLIC METHODS ----------------------------------------------
@@ -149,7 +154,7 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   public void search(Selection selection, int nbOfRows, AlarmSearchListener searchListener) throws LaserException,
       LaserTimeOutException {
     if (alarmSearchHelper == null) {
-      alarmSearchHelper = new AlarmSearchHelper(searchListener);
+      alarmSearchHelper = new AlarmSearchHelper(searchListener,contSvcs);
     }
     alarmSearchHelper.search(selection, nbOfRows);
   }
@@ -172,7 +177,7 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
         LogTimeStamp.logMsg("subscribing to " + selection.getCategorySelection().list().length + " categories", true);
 
     if (alarmSelectionHelper == null) {
-      alarmSelectionHelper = new AlarmSelectionHelper(selectionListener);
+      alarmSelectionHelper = new AlarmSelectionHelper(selectionListener,contSvcs);
     }
     Map active_alarms = alarmSelectionHelper.subscribe(selection);
     if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg(active_alarms.size() + " active alarms returned");
@@ -191,7 +196,7 @@ public class AlarmSelectionHandlerImpl extends AlarmSelectionHandler {
   private void startHeartbeatSubscription(AlarmSelectionListener heartbeatListener) throws LaserException,
       LaserConnectionException {
     if (heartbeatHelper == null) {
-      heartbeatHelper = new HeartbeatHelper(heartbeatListener);
+      heartbeatHelper = new HeartbeatHelper(heartbeatListener,contSvcs);
     }
     heartbeatHelper.startHeartbeatCheck();
   }

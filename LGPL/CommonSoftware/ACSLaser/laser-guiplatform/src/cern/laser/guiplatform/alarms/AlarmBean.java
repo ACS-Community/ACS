@@ -23,6 +23,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.data.Location;
@@ -1398,14 +1400,14 @@ public class AlarmBean implements PropertyChangeListener, Cloneable, Comparable 
     // -- methods from capabilites ------------------------------------
     //
     /** show details */
-    public void details() {
+    public void details(ContainerServicesBase contSvcs) {
         
         AcWindowManager.setStatusText("Show details for: " + getName() + " is running ....");
         // before displaying this window ask BL for new Alarm
         AlarmBrowsingHandler browser =  null;
         
         try  {
-            browser = AlarmBrowsingHandlerFactory.getHandler();
+            browser = AlarmBrowsingHandlerFactory.getHandler(contSvcs);
             Alarm alarm = browser.getAlarmById(getAlarmId());
             
             AcWindowManager.showDetails(

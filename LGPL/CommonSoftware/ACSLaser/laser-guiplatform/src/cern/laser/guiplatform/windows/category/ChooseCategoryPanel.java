@@ -28,6 +28,8 @@ import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.actions.SystemAction;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.gp.nodes.children.NodeCollection;
 import cern.gp.nodes.children.NodeList;
@@ -72,18 +74,22 @@ public class ChooseCategoryPanel extends javax.swing.JPanel {
     private Configuration configuration = null;
     
     private Category [] choosenCategories = null;
+    
+    private final ContainerServicesBase contSvcs;
     /**
      * Creates a new instance of ChooseCategoryPanel
      * @param configuration configuration to be shown
      */
-    public ChooseCategoryPanel(Configuration configuration) {
+    public ChooseCategoryPanel(Configuration configuration, ContainerServicesBase contSvcs) {
         super();
         this.configuration = configuration;
+        this.contSvcs=contSvcs;
         initComponents();
     }
-    public ChooseCategoryPanel(Category [] choosenCategories) {
+    public ChooseCategoryPanel(Category [] choosenCategories, ContainerServicesBase contSvcs) {
         super();
         this.choosenCategories = choosenCategories;
+        this.contSvcs=contSvcs;
         initComponents();
     }
     /**
@@ -267,12 +273,12 @@ public class ChooseCategoryPanel extends javax.swing.JPanel {
      */
     private CategoryTreeExplorer createCategoryTree() throws LaserException {
         logger.debug("createCategoryRoot()");
-        CategoryBrowsingHandler handler = CategoryBrowsingHandlerFactory.getHandler();
+        CategoryBrowsingHandler handler = CategoryBrowsingHandlerFactory.getHandler(contSvcs);
         Category categoryRoot = handler.getCategoryTreeRoot();
         
         logger.debug("categoryRoot="+categoryRoot);
         
-        CategoryTreeExplorer categoryTreeTemp = new CategoryTreeExplorer(categoryRoot);
+        CategoryTreeExplorer categoryTreeTemp = new CategoryTreeExplorer(categoryRoot,contSvcs);
         logger.debug("categoryTree="+categoryTreeTemp);
         
         /*

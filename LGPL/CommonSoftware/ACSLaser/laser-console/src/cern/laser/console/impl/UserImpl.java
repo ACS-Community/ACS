@@ -1,14 +1,15 @@
 /*
- * $Id: UserImpl.java,v 1.7 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: UserImpl.java,v 1.8 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.7 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.8 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
 package cern.laser.console.impl;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.AlarmService;
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.data.Category;
@@ -45,16 +46,19 @@ public class UserImpl implements User {
   	}
   }
   private LocalConsoleUser user;
+  
+  private ContainerServicesBase contSvcs;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
 //  public UserImpl(Object newUser) throws LaserConsoleException {
-  public UserImpl(String newUserName) throws LaserConsoleException {
+  public UserImpl(String newUserName, ContainerServicesBase contSvcs) throws LaserConsoleException {
 	  this.user = new LocalConsoleUser(newUserName, newUserName);
+	  this.contSvcs=contSvcs;
       try {
-    	  this.laser = AlarmServiceSingleton.getInstance();
+    	  this.laser = AlarmServiceSingleton.getInstance(contSvcs);
       } catch (Exception e) {
     	  throw new LaserConsoleException("unable to create a console user : " + e.getMessage(), e);
       }
@@ -176,7 +180,7 @@ public class UserImpl implements User {
   }
 
   public Configuration getConfiguration(String name) throws LaserConsoleException, LaserConnectionException {
-  	return new ConfigurationImpl(name);
+  	return new ConfigurationImpl(name,contSvcs);
   	/* try {
       try {
         return new ConfigurationImpl(user.getRemoteConfiguration(name));
@@ -308,7 +312,7 @@ public class UserImpl implements User {
   		private String name = "Client-side in memory configuration";
   		private boolean isDefault = true;
   		private Behaviour behaviour = new BehaviourImpl();
-        private Selection selection = AlarmSelectionHandlerImpl.get().createSelection();
+        private Selection selection = AlarmSelectionHandlerImpl.get(contSvcs).createSelection();
         private CommentedAlarmMap highlighted = new CommentedAlarmMap();
         private CommentedAlarmMap autoHighlighted = new CommentedAlarmMap();
         private CommentedAlarmMap autoKlaxoned = new CommentedAlarmMap();

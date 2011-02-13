@@ -13,6 +13,8 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.LaserException;
 import cern.laser.console.Configuration;
@@ -46,9 +48,12 @@ public class ConfigurationLoadAction extends cern.gp.actions.support.NodeAction 
     ConfigurationLoadAction.class,
     "LBL_ConfigurationLoadAction_name");
     
+    private ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of ConfigurationLoadAction */
-    //public ConfigurationLoadAction() {
-    //}
+    public ConfigurationLoadAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
     
     public String getName() {
         return loadStr;
@@ -65,7 +70,7 @@ public class ConfigurationLoadAction extends cern.gp.actions.support.NodeAction 
         String confName = activatedNodes[0].getName();
         
         try {
-            User user = UserHandlerFactory.getHandler().getUser(confUserName);
+            User user = UserHandlerFactory.getHandler(contSvcs).getUser(confUserName,contSvcs);
             Configuration conf = user.getConfiguration(confName);
             
             

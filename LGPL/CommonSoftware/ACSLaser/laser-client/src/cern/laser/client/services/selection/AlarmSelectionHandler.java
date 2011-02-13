@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHandler.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: AlarmSelectionHandler.java,v 1.3 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.2 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.3 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -12,6 +12,8 @@ package cern.laser.client.services.selection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import alma.acs.container.ContainerServicesBase;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
@@ -37,11 +39,11 @@ public abstract class AlarmSelectionHandler {
    * @return an instance of the implementation class
    * @throws LaserException if the request can not be served
    */
-  public static AlarmSelectionHandler get() throws LaserConnectionException, LaserException {
+  public static AlarmSelectionHandler get(ContainerServicesBase contSvcs) throws LaserConnectionException, LaserException {
     AlarmSelectionHandler instance = (AlarmSelectionHandler) alarmSelectionHandler.get();
     if (instance == null) {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("AlarmSelectionHandler instance is null, creating...");
-      instance = new AlarmSelectionHandlerImpl();
+      instance = new AlarmSelectionHandlerImpl(contSvcs);
       alarmSelectionHandler.set(instance);
     }
 

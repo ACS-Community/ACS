@@ -1,14 +1,16 @@
 /*
- * $Id: UserHandler.java,v 1.2 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: UserHandler.java,v 1.3 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.2 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.3 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
  */
 package cern.laser.console;
 import java.util.Collection;
+
+import alma.acs.container.ContainerServicesBase;
 
 import cern.laser.console.impl.UserHandlerImpl;
 
@@ -23,10 +25,10 @@ public abstract class UserHandler
      * @return an instance of the implementation class
      * @throws LaserConsoleException if the request can not be served
      */    
-  public static UserHandler get() throws LaserConsoleException 
+  public static UserHandler get(ContainerServicesBase contSvcs) throws LaserConsoleException 
   {
     if (instance == null) {
-      instance = new UserHandlerImpl();
+      instance = new UserHandlerImpl(contSvcs);
     }
 
     return instance;
@@ -43,7 +45,7 @@ public abstract class UserHandler
    * @throws LaserConsoleException if the request can not be served.
    * @throws LaserUserNotFoundException if the user does not exist.
    */    
-  public abstract User getUser(String name) throws LaserConsoleException;
+  public abstract User getUser(String name, ContainerServicesBase contSvcs) throws LaserConsoleException;
   /** Factory method. Define a new alarm console user.
    * @param name the user name.
    * @param password the user password.

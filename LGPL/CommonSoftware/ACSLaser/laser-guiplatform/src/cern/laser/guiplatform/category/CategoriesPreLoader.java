@@ -12,6 +12,8 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.client.data.Category;
 import cern.laser.guiplatform.util.LogFactory;
@@ -25,14 +27,17 @@ public class CategoriesPreLoader {
     private Logger logger = LogFactory.getLogger(CategoriesPreLoader.class.getName());
     private HashMap categories = null;
     
+    private final ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of CategoriesPreLoader */
-    public CategoriesPreLoader() {
+    public CategoriesPreLoader(ContainerServicesBase contSvcs) {
         categories = new HashMap();
+        this.contSvcs=contSvcs;
         loadCategories();
     }
-    public static synchronized CategoriesPreLoader getInstance() {
+    public static synchronized CategoriesPreLoader getInstance(ContainerServicesBase contSvcs) {
         if ( INSTANCE == null )
-            INSTANCE = new CategoriesPreLoader();
+            INSTANCE = new CategoriesPreLoader(contSvcs);
         
         return INSTANCE;
     }
@@ -44,7 +49,7 @@ public class CategoriesPreLoader {
             public void run() {
                 try {
                     Category categoryRoot =
-                    CategoryBrowsingHandlerFactory.getHandler().getCategoryTreeRoot();
+                    CategoryBrowsingHandlerFactory.getHandler(contSvcs).getCategoryTreeRoot();
                     loadCategory( categoryRoot );
                     logger.debug("Categories Pre Loading finished");
                 }
@@ -64,7 +69,7 @@ public class CategoriesPreLoader {
     
     private void loadCategory(Category parent) {
         try {
-            Collection children = CategoryBrowsingHandlerFactory.getHandler().getChildren( parent );
+            Collection children = CategoryBrowsingHandlerFactory.getHandler(contSvcs).getChildren( parent );
             CategoryItem item = new CategoryItem(parent, children);
             categories.put(parent.getCategoryId(), item );
             Iterator iter = children.iterator();

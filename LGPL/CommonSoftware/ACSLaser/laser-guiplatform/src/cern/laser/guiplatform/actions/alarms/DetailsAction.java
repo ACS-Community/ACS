@@ -4,6 +4,8 @@ import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.guiplatform.alarms.AlarmBean;
 import cern.laser.guiplatform.alarms.AlarmBeanNode;
 
@@ -13,6 +15,12 @@ import cern.laser.guiplatform.alarms.AlarmBeanNode;
  * @author pawlowsk
  */
 public class DetailsAction extends org.openide.util.actions.NodeAction {
+	
+	private final ContainerServicesBase contSvcs;
+	
+	public DetailsAction(ContainerServicesBase contSvcs) {
+		this.contSvcs=contSvcs;
+	}
     
     /*
     protected void performAction(Node[] nodes) {
@@ -55,7 +63,7 @@ public class DetailsAction extends org.openide.util.actions.NodeAction {
     
     protected void performAction(org.openide.nodes.Node[] node) {
         for ( int i=0; i< node.length; i++) {
-            ((AlarmBean)((AlarmBeanNode)node[i]).getBean()).details();
+            ((AlarmBean)((AlarmBeanNode)node[i]).getBean()).details(contSvcs);
         }
     }
     

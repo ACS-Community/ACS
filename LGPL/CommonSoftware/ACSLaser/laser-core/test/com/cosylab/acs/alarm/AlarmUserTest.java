@@ -9,6 +9,8 @@ package com.cosylab.acs.alarm;
 import java.util.Collection;
 import java.util.Iterator;
 
+import alma.acs.component.client.ComponentClientTestCase;
+
 import junit.framework.TestCase;
 import cern.laser.client.LaserConnectionException;
 import cern.laser.console.Comment;
@@ -25,7 +27,7 @@ import cern.laser.guiplatform.alarms.helpers.AlarmImpl;
  * 
  * @author Klemen Zagar, Cosylab
  */
-public class AlarmUserTest extends TestCase {
+public class AlarmUserTest extends ComponentClientTestCase {
 	/* The prefix string of the username. */
 	private final String USER_PREFIX = "test_user";
 	/* Number of users to create during the test. */
@@ -39,7 +41,7 @@ public class AlarmUserTest extends TestCase {
 	/* The prefix string of a comment. */
 	private final String COMMENT_PREFIX = "test_comment";
 
-	public AlarmUserTest(String arg0) {
+	public AlarmUserTest(String arg0) throws Exception {
 		super(arg0);
 	}
 	
@@ -57,12 +59,13 @@ public class AlarmUserTest extends TestCase {
 	 * Tear-down the test. Removes all the users that have been created during
 	 * the test.
 	 */
-	public void tearDown() throws LaserConsoleException {
-		UserHandler handler = UserHandler.get();
+	public void tearDown() throws Exception {
+		UserHandler handler = UserHandler.get(getContainerServices());
 		handler.removeUser(USER_PREFIX);
 		for(int i = 0; i < NUM_OF_USERS; ++i) {
 			handler.removeUser(USER_PREFIX + i);
 		}
+		super.tearDown();
 	}
 
 	/**
@@ -71,7 +74,7 @@ public class AlarmUserTest extends TestCase {
 	 * @throws LaserConsoleException Should not happen.
 	 */
 	public void notestUserHandler() throws LaserConsoleException {
-		UserHandler handler = UserHandler.get();
+		UserHandler handler = UserHandler.get(getContainerServices());
 		
 		/* Create users. */
 		for(int i = 0; i < NUM_OF_USERS; ++i) {
@@ -81,14 +84,14 @@ public class AlarmUserTest extends TestCase {
 			assertEquals(PASSWORD, user.getPassword());
 		
 			/* Test UserHandler.getUser. */
-			User user2 = handler.getUser(USER_PREFIX + i);
+			User user2 = handler.getUser(USER_PREFIX + i,getContainerServices());
 			assertEquals(user.getName(), user2.getName());
 			assertEquals(PASSWORD, user2.getPassword());
 			
 			/* Test User.setPassword. */
 			user.setPassword(PASSWORD + PASSWORD);
 			assertEquals(PASSWORD + PASSWORD, user.getPassword());
-			user2 = handler.getUser(USER_PREFIX + i);
+			user2 = handler.getUser(USER_PREFIX + i,getContainerServices());
 			assertEquals(PASSWORD + PASSWORD, user2.getPassword());
 		}
 		
@@ -115,7 +118,7 @@ public class AlarmUserTest extends TestCase {
 		/* Make sure that UserHandler.removeUser actually removed the user. */
 		for(int i = 0; i < NUM_OF_USERS; ++i) {
 			try {
-				handler.getUser(USER_PREFIX + i);
+				handler.getUser(USER_PREFIX + i,getContainerServices());
 				fail();		
 			} catch(LaserConsoleException e) {
 				assertTrue(e.getMessage().startsWith("unable to get user"));
@@ -129,7 +132,7 @@ public class AlarmUserTest extends TestCase {
 	 */
 	public void notestUserConfiguration() throws LaserConsoleException
 	{
-		UserHandler handler = UserHandler.get();
+		UserHandler handler = UserHandler.get(getContainerServices());
 		User user = handler.createUser(USER_PREFIX, PASSWORD);
 				
 		CommentedAlarmMap cam1 = new CommentedAlarmMap();

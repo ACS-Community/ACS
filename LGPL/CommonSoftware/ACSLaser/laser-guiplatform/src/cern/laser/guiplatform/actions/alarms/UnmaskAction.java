@@ -11,6 +11,8 @@ import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.guiplatform.alarms.AlarmBean;
 import cern.laser.guiplatform.alarms.AlarmBeanNode;
 import cern.laser.guiplatform.alarms.AlarmContainer;
@@ -30,9 +32,12 @@ public class UnmaskAction extends org.openide.util.actions.NodeAction {
     private static final Logger logger = 
                             LogFactory.getLogger(UnmaskAction.class.getName());
     
+    private final ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of MaskAction */
-    //public UnmaskAction() {
-    //}
+    public UnmaskAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
     
     //protected void performCapability(cern.gp.nodes.GPNode gPNode, cern.gp.capabilities.Capability capability) {
     //}
@@ -80,7 +85,7 @@ public class UnmaskAction extends org.openide.util.actions.NodeAction {
         for (int i = 0; i < activatedNodes.length; i++) 
             unmaskedAlarms[i] = (AlarmBean) ((AlarmBeanNode)activatedNodes[i]).getBean();
         
-        AlarmContainer.getDefault().unmask(unmaskedAlarms);
+        AlarmContainer.getDefault().unmask(unmaskedAlarms,contSvcs);
         
         AcWindowManager.setZeroSelectedNodes(org.openide.util.NbBundle.getMessage(
                                             cern.laser.guiplatform.windows.ActiveListExplorerPanel.class, 

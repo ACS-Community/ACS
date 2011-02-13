@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.gp.util.GPManager;
 import cern.laser.client.LaserConnectionException;
@@ -114,14 +116,17 @@ public class ConsoleConfigurationPanel extends JPanel /*implements ActionListene
     
     private boolean ownConfiguration = true; // if lately Loaded config belongs to current user
     
+    private ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of ConsoleConfigurationPanel
      * @param configuration configuration for which this panel is created
      */
     public ConsoleConfigurationPanel(ConsoleConfigurationWindow parentWindow,
-    Configuration configuration) throws LaserConsoleException {
+    Configuration configuration, ContainerServicesBase contSvcs) throws LaserConsoleException {
         super();
         this.parentWindow = parentWindow;
         this.configuration = configuration;
+        this.contSvcs=contSvcs;
         initComponents();
     }
     
@@ -210,7 +215,7 @@ public class ConsoleConfigurationPanel extends JPanel /*implements ActionListene
      * This method create tabbed pane for category browser
      */
     protected void makeCategoryPanel() {
-        categoryPanel = new ChooseCategoryPanel(configuration);
+        categoryPanel = new ChooseCategoryPanel(configuration,contSvcs);
         mainPane.addTab("Category tree", ImageUtility.getPanelIcon(this,
         "/cern/laser/guiplatform/images/view_tree.png"),
         categoryPanel, "Choose category");
@@ -373,7 +378,7 @@ public class ConsoleConfigurationPanel extends JPanel /*implements ActionListene
         logger.debug("disconnet from bussiens tier");
         
         try {
-            jms_selectionHandler = AlarmSelectionHandlerFactory.getHandler();
+            jms_selectionHandler = AlarmSelectionHandlerFactory.getHandler(contSvcs);
             jms_selectionHandler.resetSelection();
             logger.debug("resetSelection");
         } catch (LaserException le) {
@@ -613,7 +618,7 @@ public class ConsoleConfigurationPanel extends JPanel /*implements ActionListene
         Selection selection = null;
         try {
             selection = ((AlarmSelectionHandler)
-            AlarmSelectionHandlerFactory.getHandler()).createSelection();
+            AlarmSelectionHandlerFactory.getHandler(contSvcs)).createSelection();
         } catch (LaserException le) {
             logger.error(le, le.fillInStackTrace());
             logger.error(le.getRootCause(), le.getRootCause().fillInStackTrace());

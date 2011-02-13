@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.console.LaserConsoleException;
 
 /**
@@ -46,7 +48,7 @@ public class UserHandler extends cern.laser.console.UserHandler {
         throw new UnsupportedOperationException("this method is not implemented");
     }
     
-    public cern.laser.console.User getUser(String name) throws LaserConsoleException {
+    public cern.laser.console.User getUser(String name, ContainerServicesBase contSvcs) throws LaserConsoleException {
         throw new UnsupportedOperationException("this method is not implemented");        
     }
     

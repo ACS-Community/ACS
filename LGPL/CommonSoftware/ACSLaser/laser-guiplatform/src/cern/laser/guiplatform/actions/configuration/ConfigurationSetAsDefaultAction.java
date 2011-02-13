@@ -15,6 +15,8 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.gp.nodes.children.NodeList;
 import cern.laser.client.LaserException;
@@ -44,6 +46,12 @@ public class ConfigurationSetAsDefaultAction extends cern.gp.actions.support.Nod
     private static final String setAsDefaultStr = NbBundle.getMessage(
                                         ConfigurationSetAsDefaultAction.class,
                                         "LBL_ConfigurationSetAsDefaultAction_name");
+    
+    private final ContainerServicesBase contSvcs;
+    
+    public ConfigurationSetAsDefaultAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
     
     /** Creates a new instance of ConfigurationSetAsDefaultAction */
     //public ConfigurationSetAsDefaultAction() {
@@ -141,7 +149,7 @@ public class ConfigurationSetAsDefaultAction extends cern.gp.actions.support.Nod
         try {
             User loggedUser = AppRegister.getInstance().getRegisteredUser();
             User user =
-                UserHandlerFactory.getHandler().getUser(confUserName);
+                UserHandlerFactory.getHandler(contSvcs).getUser(confUserName,contSvcs);
             Configuration conf =
                 user.getConfiguration(selectedConfName);
 

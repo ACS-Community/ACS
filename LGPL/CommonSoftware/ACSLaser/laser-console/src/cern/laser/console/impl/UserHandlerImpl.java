@@ -1,8 +1,8 @@
 /*
- * $Id: UserHandlerImpl.java,v 1.4 2006/09/25 08:52:36 acaproni Exp $
+ * $Id: UserHandlerImpl.java,v 1.5 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2006/09/25 08:52:36 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -15,6 +15,8 @@ import java.util.Iterator;
 
 import javax.naming.Context;
 import javax.rmi.PortableRemoteObject;
+
+import alma.acs.container.ContainerServicesBase;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.console.LaserConsoleException;
@@ -30,10 +32,10 @@ public class UserHandlerImpl extends UserHandler
 	// The list of the users
 	private ArrayList users = new ArrayList();
 	
-  public UserHandlerImpl() throws LaserConsoleException 
+  public UserHandlerImpl(ContainerServicesBase contSvcs) throws LaserConsoleException 
   {
 	  // Create a default user: test
-	  user = new UserImpl("test");
+	  user = new UserImpl("test",contSvcs);
 	  // Add the user to the collection
 	  users.add(user);
   }
@@ -66,7 +68,7 @@ public class UserHandlerImpl extends UserHandler
     }*/
   }
 
-  public User getUser(String name) throws LaserConsoleException 
+  public User getUser(String name, ContainerServicesBase contSvcs) throws LaserConsoleException 
   {
 	  // Check if the user is already in the list
 	  boolean found=false;
@@ -77,7 +79,7 @@ public class UserHandlerImpl extends UserHandler
 			  return user;
 		  }
 	  }
-	  user = new UserImpl(name);
+	  user = new UserImpl(name,contSvcs);
 	  users.add(user);
 	  return user;
   	

@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.data.Category;
 import cern.laser.guiplatform.category.CategoryBean;
@@ -41,19 +43,22 @@ public class CategorySelectorWindow extends TopComponent /* or CloneableTopCompo
     
     private int windowMode; // this window can be used for different purposes, this variable determine in which mode window works
     
+    private ContainerServicesBase contSvcs;
+    
     // REMEMBER: You should have a public default constructor!
     // This is for externalization. If you have a nondefault
     // constructor for normal creation of the component, leave
     // in a default constructor that will put the component into
     // a consistent but unconfigured state, and make sure readExternal
     // initializes it properly. Or, be creative with writeReplace().
-    public CategorySelectorWindow() {
-        this(null, Constants.SEARCH_WINDOW_MODE_SEARCH_ACTIVE_LIST);
+    public CategorySelectorWindow(ContainerServicesBase contSvcs) {
+        this(null, Constants.SEARCH_WINDOW_MODE_SEARCH_ACTIVE_LIST,contSvcs);
     }
     
-    public CategorySelectorWindow(Category [] categories, int windowMode) {
+    public CategorySelectorWindow(Category [] categories, int windowMode, ContainerServicesBase contSvcs) {
         this.choosenCategories = categories;
         this.windowMode = windowMode;
+        this.contSvcs=contSvcs;
         initComponents();
         setCloseOperation(CLOSE_LAST); // or CLOSE_EACH
 
@@ -100,7 +105,7 @@ public class CategorySelectorWindow extends TopComponent /* or CloneableTopCompo
         buttonsPanel = new javax.swing.JPanel();
         searchButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        categoryPanel = new ChooseCategoryPanel( choosenCategories );
+        categoryPanel = new ChooseCategoryPanel( choosenCategories, contSvcs);
 
         setLayout(new java.awt.BorderLayout());
 
@@ -136,7 +141,7 @@ public class CategorySelectorWindow extends TopComponent /* or CloneableTopCompo
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         storeCategorySelection();
         // put here creation Search Window with argument Selected Categories from this window
-        TopComponent top = new SearchWindow( windowMode, getChoosenCategoriesArray() );
+        TopComponent top = new SearchWindow( windowMode, getChoosenCategoriesArray(),contSvcs );
         top.open();
         
         close();

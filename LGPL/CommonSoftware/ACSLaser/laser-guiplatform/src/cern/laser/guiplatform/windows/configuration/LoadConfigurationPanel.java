@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 
 import org.openide.util.actions.SystemAction;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.LaserException;
 import cern.laser.console.LaserConsoleException;
@@ -46,15 +48,18 @@ public class LoadConfigurationPanel extends javax.swing.JPanel {
     
     private User loggedUser = null;
     
+    private ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of LoadCategoryPanel 
      *
      * @param parentWindows configuration window (mediator)
      * @param user logged user
      */
-    public LoadConfigurationPanel(ConsoleConfigurationWindow parentWindow, User user) 
+    public LoadConfigurationPanel(ConsoleConfigurationWindow parentWindow, User user, ContainerServicesBase contSvcs) 
         throws LaserException {
         super();
         this.parentWindow = parentWindow;
+        this.contSvcs=contSvcs;
         loggedUser = user;
         initComponents();
     }
@@ -111,7 +116,7 @@ public class LoadConfigurationPanel extends javax.swing.JPanel {
      * @param userName name of user who is currnetly logged
      */
     private void initUsersExplorer(String userName) throws LaserException {
-        Collection userList = UserHandlerFactory.getHandler().getUsers(); 
+        Collection userList = UserHandlerFactory.getHandler(contSvcs).getUsers(); 
         userListExpl = new UserExplorer(userList, userName);
     }
     

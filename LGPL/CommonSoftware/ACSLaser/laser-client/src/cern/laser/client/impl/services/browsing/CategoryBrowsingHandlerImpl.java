@@ -1,8 +1,8 @@
 /*
- * $Id: CategoryBrowsingHandlerImpl.java,v 1.8 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: CategoryBrowsingHandlerImpl.java,v 1.9 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.8 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.9 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,6 +19,7 @@ import cern.laser.client.impl.common.AlarmServiceSingleton;
 import cern.laser.client.impl.data.CategoryImpl;
 import cern.laser.client.services.browsing.CategoryBrowsingHandler;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.CERNAlarmService;
 
 public class CategoryBrowsingHandlerImpl extends CategoryBrowsingHandler {
@@ -30,9 +31,9 @@ public class CategoryBrowsingHandlerImpl extends CategoryBrowsingHandler {
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-  public CategoryBrowsingHandlerImpl() throws LaserConnectionException {
+  public CategoryBrowsingHandlerImpl(ContainerServicesBase contSvcs) throws LaserConnectionException {
 	  try {
-		  this.m_laser = AlarmServiceSingleton.getInstance();
+		  this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
 	  } catch (Throwable t) {
 		  throw new LaserConnectionException("Error getting the alarm service",t);
 	  }

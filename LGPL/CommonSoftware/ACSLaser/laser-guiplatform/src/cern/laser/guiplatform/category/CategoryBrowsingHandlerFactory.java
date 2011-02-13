@@ -6,6 +6,7 @@
 
 package cern.laser.guiplatform.category;
 
+import alma.acs.container.ContainerServicesBase;
 import cern.laser.client.LaserException;
 import cern.laser.client.services.browsing.CategoryBrowsingHandler;
 
@@ -19,13 +20,13 @@ public class CategoryBrowsingHandlerFactory {
     private CategoryBrowsingHandlerFactory() {
     }
     
-    public static CategoryBrowsingHandler getHandler() throws LaserException {
+    public static CategoryBrowsingHandler getHandler(ContainerServicesBase contSvcs) throws LaserException {
         CategoryBrowsingHandler handler = null;
         
         //if ( Constants.getDefaultWorkingMode() == Constants.TEST_WORKING_MODE )
         //    handler = CategoryHandler.get(); 
         //else 
-            handler = CategoryBrowsingHandler.get();
+            handler = CategoryBrowsingHandler.get(contSvcs);
 
         return handler;
     }

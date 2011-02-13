@@ -1,8 +1,8 @@
 /*
- * $Id: HeartbeatHelper.java,v 1.6 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: HeartbeatHelper.java,v 1.7 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.6 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.7 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -16,6 +16,7 @@ import javax.jms.Message;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.CERNAlarmService;
 
 import cern.cmw.mom.pubsub.ExceptionListener;
@@ -34,7 +35,7 @@ import cern.laser.client.services.selection.LaserSelectionException;
  * This class subscribes to the heartbeat from the business layer and verifies that it arrives in time. If it doesn't
  * the AlarmSelectionListener is informed. It is a helper class for the AlarmSelectionHandler.
  * 
- * @version $Revision: 1.6 $ $Date: 2009/06/03 16:23:20 $
+ * @version $Revision: 1.7 $ $Date: 2011/02/13 15:37:17 $
  * @author Katarina Sigerud
  */
 class HeartbeatHelper implements ExceptionListener {
@@ -71,11 +72,11 @@ class HeartbeatHelper implements ExceptionListener {
    * @throws LaserConnectionException
    *  
    */
-  public HeartbeatHelper(AlarmSelectionListener selectionListener) throws LaserException {
+  public HeartbeatHelper(AlarmSelectionListener selectionListener, ContainerServicesBase contSvcs) throws LaserException {
   	this.selectionListener = selectionListener;
 
     try {
-        this.m_laser = AlarmServiceSingleton.getInstance();
+        this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
 
       heartbeatFrequency = m_laser.getHeartbeatFrequency();
       heartbeatTopic = m_laser.getHeartbeatTopic();

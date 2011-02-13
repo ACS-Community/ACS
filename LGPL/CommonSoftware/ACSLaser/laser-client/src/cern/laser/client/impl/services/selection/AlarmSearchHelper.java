@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSearchHelper.java,v 1.5 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: AlarmSearchHelper.java,v 1.6 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.5 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.6 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -19,6 +19,7 @@ import javax.jms.ObjectMessage;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.CERNAlarmService;
 
 import cern.cmw.mom.pubsub.ExceptionListener;
@@ -40,7 +41,7 @@ import cern.laser.util.UUIDGenerator;
 /**
  * 
  * 
- * @version $Revision: 1.5 $ $Date: 2009/06/03 16:23:20 $
+ * @version $Revision: 1.6 $ $Date: 2011/02/13 15:37:17 $
  * @author Katarina Sigerud
  */
 class AlarmSearchHelper implements ExceptionListener {
@@ -67,11 +68,11 @@ class AlarmSearchHelper implements ExceptionListener {
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-  AlarmSearchHelper(AlarmSearchListener selectionListener) throws LaserException {
+  AlarmSearchHelper(AlarmSearchListener selectionListener, ContainerServicesBase contSvcs) throws LaserException {
   	this.searchListener = selectionListener;
 
     try {
-        this.m_laser = AlarmServiceSingleton.getInstance();
+        this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
     } catch (Exception e) {
       throw new LaserException("unable to setup initial selection", e);
     }

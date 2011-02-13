@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.guiplatform.actions.support.CallableSystemAction;
 import cern.laser.guiplatform.util.Constants;
 import cern.laser.guiplatform.util.LogFactory;
@@ -19,11 +21,17 @@ public class LoginAction extends CallableSystemAction {
     
     private Logger logger = LogFactory.getLogger(LoginAction.class.getName());
     
+    private final ContainerServicesBase contSvcs;
+    
+    public LoginAction(ContainerServicesBase contSvcs ) {
+    	this.contSvcs=contSvcs;
+    }
+    
     public void performAction() {
         // do what you want
         
         AcWindowManager.openInMode(Constants.ALARM_LOGIN_MODE_NAME, 
-                                    new AlarmConsoleLoginWindow());
+                                    new AlarmConsoleLoginWindow(contSvcs));
 
         //WindowUtils.openInMode(new AlarmConsoleLoginWindow(),
         //                         Constants.ALARM_LOGIN_MODE_NAME, WindowUtils.DESKTOP_FRAME);

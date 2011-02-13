@@ -15,6 +15,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
+
 import EDU.oswego.cs.dl.util.concurrent.Mutex;
 import cern.laser.client.LaserException;
 import cern.laser.client.data.Alarm;
@@ -876,7 +878,7 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
      *
      * @param inhibitedAlarm alarms to be inhibited
      */
-    public void uninhibit(AlarmBean [] uninhibitedAlarms) {
+    public void uninhibit(AlarmBean [] uninhibitedAlarms, ContainerServicesBase contSvcs) {
         boolean isLockReleased = false;
         
         Configuration conf = AppRegister.getInstance().getLoadedConfiguration();
@@ -896,7 +898,7 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
                 tempInhibited.putAll(inhibitList);
                 
                 try {
-                    alarmBrowser = AlarmBrowsingHandlerFactory.getHandler(); // laser exception
+                    alarmBrowser = AlarmBrowsingHandlerFactory.getHandler(contSvcs); // laser exception
                     
                     for (int i = 0; i < uninhibitedAlarms.length; i++) {
                         String alarmId = uninhibitedAlarms[i].getAlarmId();
@@ -1095,7 +1097,7 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
      *
      * @param unmaskedAlarms alarms to be inhibited
      */
-    public void unmask(AlarmBean [] unmaskedAlarms) {
+    public void unmask(AlarmBean [] unmaskedAlarms, ContainerServicesBase contSvcs) {
         boolean isLockReleased = false;
         
         Configuration conf = AppRegister.getInstance().getLoadedConfiguration();
@@ -1115,7 +1117,7 @@ public class AlarmContainer implements AlarmSelectionListener, AlarmSearchListen
                 tempMasked.putAll(maskedList);
                 
                 try {
-                    alarmBrowser = AlarmBrowsingHandlerFactory.getHandler(); // laser exception
+                    alarmBrowser = AlarmBrowsingHandlerFactory.getHandler(contSvcs); // laser exception
                     
                     for (int i = 0; i < unmaskedAlarms.length; i++) {
                         String alarmId = unmaskedAlarms[i].getAlarmId();

@@ -201,15 +201,15 @@ public class CategoryClient {
 			throw ex;
 		}
 		try {
-			userHandler=new UserHandlerImpl();
+			userHandler=new UserHandlerImpl(contSvc);
 			logger.log(AcsLogLevel.DEBUG,"UserHandler succesfully built");
 			
-			testUser = userHandler.getUser("test");
+			testUser = userHandler.getUser("test",contSvc);
 			logger.log(AcsLogLevel.DEBUG,"User generated");
 			
 			defaultConf=testUser.getDefaultConfiguration();
 			logger.log(AcsLogLevel.DEBUG,"Getting the selection handler");
-			jms_selectionHandler = AlarmSelectionHandler.get();
+			jms_selectionHandler = AlarmSelectionHandler.get(contSvc);
 			addCategories(defaultConf,categories);
 			
 			// Get the active alarms (they are received by the listener)

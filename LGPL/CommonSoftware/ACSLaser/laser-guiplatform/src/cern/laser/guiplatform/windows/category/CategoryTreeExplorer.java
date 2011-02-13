@@ -21,6 +21,8 @@ import javax.swing.tree.TreePath;
 
 import org.apache.log4j.Logger;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.NodeFactory;
 import cern.gp.nodes.children.ChildrenListManager;
 import cern.gp.nodes.children.NodeList;
@@ -48,10 +50,13 @@ public class CategoryTreeExplorer extends cern.gp.explorer.TreeExplorer {
     /** category node manager */
     private CategoryTreeNodeManager nodeManager = null;
     
+    private final ContainerServicesBase contSvcs;
+    
     /** Creates a new instance of CategoryTreeExplorer */
-    public CategoryTreeExplorer(Category rootCategory) {
+    public CategoryTreeExplorer(Category rootCategory, ContainerServicesBase contSvcs) {
         super();
         nodeManager = new CategoryTreeNodeManager(rootCategory);
+        this.contSvcs=contSvcs;
         try {
             setRootNode(NodeFactory.createNode(new CategoryBean(rootCategory), nodeManager));
         } catch (IntrospectionException e) { e.printStackTrace() ;}
@@ -141,11 +146,11 @@ public class CategoryTreeExplorer extends cern.gp.explorer.TreeExplorer {
             
             Collection children = null;
             try {
-                if( CategoriesPreLoader.getInstance().isLoaded(categoryRoot)) {
-                    children = CategoriesPreLoader.getInstance().getChildren(categoryRoot);
+                if( CategoriesPreLoader.getInstance(contSvcs).isLoaded(categoryRoot)) {
+                    children = CategoriesPreLoader.getInstance(contSvcs).getChildren(categoryRoot);
                 }
                 else {
-                    children = CategoryBrowsingHandlerFactory.getHandler().getChildren(categoryRoot);
+                    children = CategoryBrowsingHandlerFactory.getHandler(contSvcs).getChildren(categoryRoot);
                 }
                 Iterator iter = children.iterator();
                 while ( iter.hasNext() ) {

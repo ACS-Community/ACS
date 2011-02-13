@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmBrowsingHandlerImpl.java,v 1.5 2009/06/03 16:23:20 acaproni Exp $
+ * $Id: AlarmBrowsingHandlerImpl.java,v 1.6 2011/02/13 15:37:17 acaproni Exp $
  *
- * $Date: 2009/06/03 16:23:20 $ 
- * $Revision: 1.5 $ 
+ * $Date: 2011/02/13 15:37:17 $ 
+ * $Revision: 1.6 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Properties;
 
+import alma.acs.container.ContainerServicesBase;
 import alma.alarmsystem.CERNAlarmService;
 
 import cern.laser.business.definition.data.SourceDefinition;
@@ -39,9 +40,9 @@ public class AlarmBrowsingHandlerImpl extends AlarmBrowsingHandler {
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-  public AlarmBrowsingHandlerImpl() throws LaserConnectionException {
+  public AlarmBrowsingHandlerImpl(ContainerServicesBase contSvcs) throws LaserConnectionException {
 	  try {
-		  this.m_laser = AlarmServiceSingleton.getInstance();
+		  this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
 	  } catch (Throwable t) {
 		  throw new LaserConnectionException("Error getting the alarm service",t);
 	  }

@@ -9,6 +9,8 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.gp.nodes.GPNode;
 import cern.laser.client.LaserException;
 import cern.laser.console.Configuration;
@@ -45,6 +47,8 @@ public class ConsoleConfigurationWindow extends TopComponent /* or CloneableTopC
     /** logger*/
     private static Logger logger = LogFactory.getLogger(ConsoleConfigurationWindow.class.getName());
     
+    private ContainerServicesBase contSvcs;
+    
     // REMEMBER: You should have a public default constructor!
     // This is for externalization. If you have a nondefault
     // constructor for normal creation of the component, leave
@@ -61,8 +65,9 @@ public class ConsoleConfigurationWindow extends TopComponent /* or CloneableTopC
      * @param configuration, configuration which should be shown to the user
      *
      */
-    public ConsoleConfigurationWindow(User user, Configuration configuration)
+    public ConsoleConfigurationWindow(User user, Configuration configuration, ContainerServicesBase contSvcs)
         throws LaserException {
+    	this.contSvcs=contSvcs;
         initComponents();
         setCloseOperation(CLOSE_LAST); // or CLOSE_EACH
         // Display name of this window (not needed if you use the DataObject constructor):
@@ -125,8 +130,8 @@ public class ConsoleConfigurationWindow extends TopComponent /* or CloneableTopC
      * post Init components
      */   
     private void postInitComponents() throws LaserException {
-        loadConfigurationPanel = new LoadConfigurationPanel(this, user);
-        configurationPanel = new ConsoleConfigurationPanel(this, configuration);
+        loadConfigurationPanel = new LoadConfigurationPanel(this, user,contSvcs);
+        configurationPanel = new ConsoleConfigurationPanel(this, configuration,contSvcs);
 
         setLayout(new java.awt.BorderLayout());
 

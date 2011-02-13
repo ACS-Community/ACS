@@ -19,6 +19,8 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.openide.windows.Workspace;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
 import cern.laser.client.services.selection.AlarmSelectionHandler;
@@ -53,9 +55,12 @@ import cern.laser.guiplatform.windows.configuration.ConsoleConfigurationWindow;
  * @author  pawlowsk
  */
 public class AlarmConsoleLoginWindow extends TopComponent {
+	
+	private ContainerServicesBase contSvcs;
     
     /** Creates new form TestAlarmConsoleLoginWindow */
-    public AlarmConsoleLoginWindow() {
+    public AlarmConsoleLoginWindow(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
         initComponents();
         postInitComponents();
     }
@@ -277,7 +282,7 @@ public class AlarmConsoleLoginWindow extends TopComponent {
                 
                 try {
                     AlarmSelectionHandler jms_selectionHandler =
-                    AlarmSelectionHandlerFactory.getHandler();
+                    AlarmSelectionHandlerFactory.getHandler(contSvcs);
                     // disconnect from BL
                     
                     jms_selectionHandler.resetSelection();
@@ -338,12 +343,12 @@ public class AlarmConsoleLoginWindow extends TopComponent {
         // initialize the Category Loader, it will load all categories
         // later used by category tree explorer
                         
-        CategoriesPreLoader.getInstance();
+        CategoriesPreLoader.getInstance(contSvcs);
 
         try {
-            userHandler = UserHandlerFactory.getHandler();
+            userHandler = UserHandlerFactory.getHandler(contSvcs);
             logger.debug("after UserHandlerFactory");
-            user = userHandler.getUser(loginName);
+            user = userHandler.getUser(loginName,contSvcs);
             logger.debug("after getUser");
             if ( user == null) {
             	throw new LaserConnectionException("cannot get User");
@@ -486,7 +491,7 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             logger.debug(defaultConf.getSelection());
             
             AlarmSelectionHandler jms_selectionHandler =
-            AlarmSelectionHandlerFactory.getHandler();
+            AlarmSelectionHandlerFactory.getHandler(contSvcs);
             
             logger.debug("selecting ........... ");
             
@@ -546,7 +551,7 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             
             AlarmStatisticInfoPanel statisticPanel =
             new AlarmStatisticInfoPanel(defaultConfName, behaviourTemp,
-            isReducedMaskSet);
+            isReducedMaskSet,contSvcs);
             AlarmContainer.getDefault().attach("this_key_has_to_be_changed",
             statisticPanel);
             AlarmContainer.getDefault().addAlarmSelectionOnExceptionListener(statisticPanel);
@@ -580,7 +585,7 @@ public class AlarmConsoleLoginWindow extends TopComponent {
             withoutDefaultConf=true;
             // this is when user does not have default configuration
             if ( withoutDefaultConf ) {
-                final TopComponent top = new ConsoleConfigurationWindow(user, defaultConf);
+                final TopComponent top = new ConsoleConfigurationWindow(user, defaultConf,contSvcs);
                 top.open();
                 
                 final Runnable doLoadAllCategoriesInTreeExplorer = new Runnable() {

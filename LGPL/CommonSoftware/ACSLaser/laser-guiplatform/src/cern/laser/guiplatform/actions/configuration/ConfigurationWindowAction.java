@@ -17,6 +17,8 @@ import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserException;
 import cern.laser.guiplatform.actions.support.CallableSystemAction;
 import cern.laser.guiplatform.util.AppRegister;
@@ -34,6 +36,12 @@ public class ConfigurationWindowAction extends CallableSystemAction {
     private static Logger logger =
     LogFactory.getLogger(ConfigurationWindowAction.class.getName());
     
+    private final ContainerServicesBase contSvcs;
+    
+    public ConfigurationWindowAction(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
+    
     public void performAction() {
         String compName = NbBundle.getMessage(ConsoleConfigurationWindow.class,
         "LBL_ConsoleConfigurationWindow_component_name");
@@ -48,7 +56,8 @@ public class ConfigurationWindowAction extends CallableSystemAction {
             try {
                 final TopComponent top = new ConsoleConfigurationWindow(
                 AppRegister.getInstance().getRegisteredUser(),
-                AppRegister.getInstance().getLoadedConfiguration()
+                AppRegister.getInstance().getLoadedConfiguration(),
+                contSvcs
                 );
                 top.open();
                 

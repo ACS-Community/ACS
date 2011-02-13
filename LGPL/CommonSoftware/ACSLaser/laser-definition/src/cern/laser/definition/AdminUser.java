@@ -2,6 +2,8 @@ package cern.laser.definition;
 
 import java.util.Collection;
 
+import alma.acs.container.ContainerServicesBase;
+
 
 /** An adminitrative user. It can create, update and remove
  * alarm definitions from the system.
@@ -11,12 +13,12 @@ public interface AdminUser {
   /** Get the alarm definition handler.
  * @return the alarm definition handler.
  */
-  public AlarmDefinitionHandler getAlarmDefinitionHandler() throws LaserDefinitionException;
+  public AlarmDefinitionHandler getAlarmDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
 
   /** Get the category definition handler.
  * @return the category definition handler.
  */
-  public CategoryDefinitionHandler getCategoryDefinitionHandler() throws LaserDefinitionException;
+  public CategoryDefinitionHandler getCategoryDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
 
   /** Get the alarm/category link definition handler.
  * @return the alarm/category link definition handler.
@@ -31,7 +33,7 @@ public interface AdminUser {
   /** Get the source definition handler.
  * @return the source definition handler.
  */
-  public SourceDefinitionHandler getSourceDefinitionHandler() throws LaserDefinitionException;
+  public SourceDefinitionHandler getSourceDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
 
   /** Get the user defined alarms.
  * @return the user defined alarms.

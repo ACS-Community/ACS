@@ -9,6 +9,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.CallableSystemAction;
 import org.openide.windows.TopComponent;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.guiplatform.util.AppRegister;
 import cern.laser.guiplatform.util.Constants;
 import cern.laser.guiplatform.util.LogFactory;
@@ -22,9 +24,15 @@ public class SearchTrial extends CallableSystemAction {
     
     private Logger logger = LogFactory.getLogger(SearchTrial.class.getName());
     
+    private final ContainerServicesBase contSvcs;
+    
+    public SearchTrial(ContainerServicesBase contSvcs) {
+    	this.contSvcs=contSvcs;
+    }
+    
     public void performAction() {
         try {
-            final TopComponent top = new CategorySelectorWindow(AppRegister.getInstance().getSearchCategories(), Constants.SEARCH_WINDOW_MODE_GET_ALARMINFO);
+            final TopComponent top = new CategorySelectorWindow(AppRegister.getInstance().getSearchCategories(), Constants.SEARCH_WINDOW_MODE_GET_ALARMINFO,contSvcs);
             top.open();
             final Runnable doLoadAllCategoriesInTreeExplorer = new Runnable() {
                 public void run() {

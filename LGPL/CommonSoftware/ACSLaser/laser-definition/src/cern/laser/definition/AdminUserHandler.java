@@ -2,6 +2,8 @@ package cern.laser.definition;
 
 import java.util.Collection;
 
+import alma.acs.container.ContainerServicesBase;
+
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
 import cern.laser.definition.impl.AdminUserHandlerImpl;
@@ -18,9 +20,9 @@ public abstract class AdminUserHandler {
    * @throws LaserException
    * @throws LaserConnectionException
    */
-  public static AdminUserHandler get() throws LaserException, LaserConnectionException {
+  public static AdminUserHandler get(ContainerServicesBase contSvcs) throws LaserException, LaserConnectionException {
     if (instance == null) {
-      instance = new AdminUserHandlerImpl();
+      instance = new AdminUserHandlerImpl(contSvcs);
     }
 
     return instance;
