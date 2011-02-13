@@ -35,70 +35,14 @@ public class AlarmServiceSingleton {
 
 	private static CERNAlarmService instance = null;
 	
-	private static ComponentClient client;
-	private static ContainerServicesBase contSvcBase = null;
-	
-	/**
-	 * The alarm service utils 
-	 */
-	private static CernAlarmServiceUtils alarmUtils=null;
-
-	/**
-	 * Get an instance of the alarm service
-	 * <P>
-	 * This class instantiates a component client to get the Container Services out of it.
-	 * 
-	 * @return A reference to the alarm service
-	 * @throws ExceptionIn case of error getting the alarm service
-	 */
-	public static synchronized CERNAlarmService getInstance() throws Exception {
-		if (instance == null) {
-			String managerLoc = AcsLocations.figureOutManagerLocation();
-			String clientName = new String("laser-client");
-
-			if (client == null) {
-				try {
-					client = new ComponentClient(null, managerLoc, clientName);
-					contSvcBase=client.getContainerServices();
-					ACSJMSTopicConnectionImpl.containerServices = contSvcBase;
-				} catch (Exception e) {
-					client = null;
-					instance = null;
-					System.out.println("AlarmServiceSingleton::AlarmServiceSingleton() Error instantiating the component client!");
-					e.printStackTrace(System.out);
-				}
-			}
-			// Get the AlarmService 
-			if (client != null) {
-				alarmUtils = new CernAlarmServiceUtils(client.getContainerServices());
-				instance=alarmUtils.getCernAlarmService();
-			}
-		}
-		return instance;
-	}
-	
 	public static synchronized CERNAlarmService getInstance(ContainerServicesBase contSvc) throws Exception {
 		if (contSvc==null) {
 			throw new IllegalArgumentException("ContainerServicesBase can't be null");
 		}
-		contSvcBase=contSvc;
 		if (instance==null) {
-			if (alarmUtils==null) {
-				alarmUtils = new CernAlarmServiceUtils(contSvc);
-			}
+			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(contSvc);
 			instance=alarmUtils.getCernAlarmService();
 		}
 		return instance;
 	}
-	
-	
-	
-//	public static synchronized ComponentClient getComponentClientInstance()
-//	{
-//		if (instance == null)
-//		{
-//			getInstance();
-//		}
-//		return client;
-//	}
 }
