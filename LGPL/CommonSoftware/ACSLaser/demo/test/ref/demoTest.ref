@@ -34,3 +34,8 @@
 1 - Invoking methods on C++ components
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
+1 - ----------T--:--:----- FINE [DemoTest] successfully deactivated offshoot of type almaacsncAcsNcReconnectionCallback
+1 - ----------T--:--:----- FINE [DemoTest] successfully deactivated offshoot of type almaacsncConsumer
+1 - ----------T--:--:----- FINE [DemoTest] about to log out from manager
+1 - ----------T--:--:----- FINE [DemoTest] will disconnect ACS stuff
+1 - ----------T--:--:----- FINE [DemoTest] logged out from manager
