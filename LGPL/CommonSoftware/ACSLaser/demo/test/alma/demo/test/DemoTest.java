@@ -89,6 +89,11 @@ public class DemoTest {
 	public void disconnect() {
 		m_consumer.disconnect();
 		m_consumer=null;
+		try {
+			m_client.tearDown();
+		} catch (Throwable t) {
+			System.out.println("!!!! Error shutting down the ComponentClient: "+t.getMessage());
+		}
 	}
 	
 	/**
