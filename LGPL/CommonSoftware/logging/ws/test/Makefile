@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.52 2010/06/03 18:06:42 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.53 2011/02/14 21:15:08 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -89,7 +89,7 @@ testAUD_ARR_LIBS = logging
 testAUD_ARR_LDFLAGS = -lmaciClient
 
 testLog4cpp_OBJECTS = testLog4cpp
-testLog4cpp_LIBS   = logging
+testLog4cpp_LIBS   = log4cpplogging
 
 #
 # <brief description of xxxxx program>

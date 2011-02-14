@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.68 2010/08/27 21:15:10 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.69 2011/02/14 21:15:08 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -44,7 +44,10 @@ USER_CFLAGS =
 ## -lACE commented out because it makes the container crash on exit
 ## Seems a problem with singletons, being investigated.
 ##
-##USER_LIB = -lACE
+USER_LIB =	-lACE -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
+			-lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
+			-lTAO_CosTrading -lTAO_DynamicAny \
+			-lTAO_CosNotification -lTAO_CosNotification_Serv
 
 #USER_INC =
 
@@ -102,7 +105,8 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingLoggingTSSStorage.h loggingLoggingProxy.h loggingMACROS.h \
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h \
 			loggingAcsLogServiceImpl.h loggingStdoutlayout.h loggingXmlLayout.h\
-            loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h
+            loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h \
+            loggingACSRemoteAppender.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \
@@ -113,7 +117,7 @@ INCLUDES_L      = loggingService.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = baselogging logging
+LIBRARIES       = baselogging logging log4cpplogging
 LIBRARIES_L     =
 
 baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
@@ -128,18 +132,20 @@ baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
 ##baselogging_LIBS =    loki acsutil
 baselogging_LIBS =    acsutil
 baselogging_LDFLAGS = -lACE -lTAO -lTAO_PortableServer -lloki -ggdb
-logging_OBJECTS = 	logging loggingLoggable loggingXMLElement loggingXMLParser \
-                        loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
-			loggingLoggingTSSStorage loggingLogLevelDefinition loggingLoggingProxy \
-			loggingACSLogger loggingLogSvcHandler loggingStdoutlayout \
-           loggingACSCategory loggingACSHierarchyMaintainer \
-           loggingACSLoggingEvent loggingLogThrottle loggingXmlLayout
-logging_LIBS    =	log4cpp baselogging
-logging_LDFLAGS = -lTAO -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv \
-                        -lTAO_CosNaming -lTAO_IORTable -lTAO_PortableServer -lTAO_Svc_Utils \
-			            -lTAO_CosTrading -lTAO_DynamicAny \
-                        -lTAO_CosNotification -lTAO_CosNotification_Serv \
-                        -lacsutil -lacscommonStubs -llogging_idlStubs -ggdb
+logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
+						loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
+						loggingLoggingTSSStorage loggingLogLevelDefinition \
+						loggingLoggingProxy loggingACSLogger loggingLogSvcHandler  \
+						loggingLogThrottle 
+						
+logging_LIBS    =	baselogging
+logging_LDFLAGS =	-lacsutil -lacscommonStubs -llogging_idlStubs
+
+log4cpplogging_OBJECTS 	:= 	loggingACSLoggingEvent loggingXmlLayout \
+							loggingStdoutlayout loggingACSCategory \
+							loggingACSRemoteAppender loggingACSHierarchyMaintainer \
+							loggingLog4cpp loggingLogThrottle
+log4cpplogging_LIBS		:=	log4cpp logging_idlStubs
 #
 # other files to be installed
 #----------------------------

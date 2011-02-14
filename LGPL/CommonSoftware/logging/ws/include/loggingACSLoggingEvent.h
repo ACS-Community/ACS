@@ -26,8 +26,8 @@
  * javarias  May 6, 2010  	 created
  */
 
-#ifndef ACSLOGGINGEVENT_H_
-#define ACSLOGGINGEVENT_H_
+#ifndef LOGGING_ACSLOGGINGEVENT_H_
+#define LOGGING_ACSLOGGINGEVENT_H_
 
 #define LOG4CPP_FIX_ERROR_COLLISION 1
 #include <iostream>
@@ -54,12 +54,20 @@ struct ACSLoggingEvent: public ::log4cpp::LoggingEvent{
 	::std::string sourceObject;
 	::std::string array;
 	::std::string antenna;
+	::std::string stackId;
+	int stackLevel;
+	::std::string uri;
+
+	ACSLoggingEvent();
 
 	ACSLoggingEvent(const std::string& logger, const std::string& message,
 			::log4cpp::Priority::Value priority, const std::string& routine,
 			const std::string& file, unsigned int line,
 			const std::string& host, const std::string& context,
-			const std::string& audience);
+			const std::string& audience, const std::string& sourceObject,
+			const std::string& array, const std::string& antenna,
+			const std::string& stackId, const int stackLevel,
+			const std::string& uri);
 };
 }
 

@@ -46,16 +46,23 @@ public:
 
 	virtual ~ACSCategory();
 
-	void log(ACSLoggingEvent lr) throw ();
-	void log(const std::string& message, ::log4cpp::Priority::Value priority,
-			const std::string& routine, const std::string& file,
-			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+	void log(ACSLoggingEvent& lr) throw ();
+	void log(const std::string& message,
+			::log4cpp::Priority::Value priority, const std::string& routine,
+			const std::string& file, unsigned int line, const std::string& host,
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 
 	void trace(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
+
 	inline bool isTraceEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::TRACE);
 	}
@@ -63,7 +70,10 @@ public:
 	void delouse(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isDelouseEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::DELOUSE);
 	}
@@ -71,7 +81,10 @@ public:
 	void debug(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& urie) throw ();
 	inline bool isDebugEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::DEBUG);
 	}
@@ -80,7 +93,10 @@ public:
 	void info(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isInfoEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::INFO);
 	}
@@ -89,7 +105,10 @@ public:
 	void notice(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isNoticeEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::NOTICE);
 	}
@@ -98,7 +117,10 @@ public:
 	void warn(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isWarnEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::WARN);
 	}
@@ -107,7 +129,10 @@ public:
 	void error(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isErrorEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::ERROR);
 	}
@@ -116,7 +141,10 @@ public:
 	void crit(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isCritEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::CRIT);
 	}
@@ -125,7 +153,10 @@ public:
 	void alert(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isAlertEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::ALERT);
 	}
@@ -134,13 +165,18 @@ public:
 	void emerg(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,
-			const std::string& context, const std::string& audience) throw ();
+			const std::string& context, const std::string& audience,
+			const std::string& sourceObject, const std::string& array,
+			const std::string& antenna, const std::string& stackId,
+			const int stackLevel, const std::string& uri) throw ();
 	inline bool isEmergEnabled() const throw () {
 		return isPriorityEnabled(::log4cpp::Priority::EMERG);
 	}
 	;
 
 	static ACSCategory& getInstance(const std::string& name);
+
+	static ACSCategory* exist(const std::string& name);
 
 	void addAppender(log4cpp::Appender* appender) throw(std::invalid_argument);
 

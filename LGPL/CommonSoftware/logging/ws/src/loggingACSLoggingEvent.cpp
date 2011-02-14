@@ -30,13 +30,23 @@
 
 using namespace logging;
 
+ACSLoggingEvent::ACSLoggingEvent():
+		::log4cpp::LoggingEvent("", "", "", log4cpp::Priority::TRACE){
+
+}
+
 ACSLoggingEvent::ACSLoggingEvent(const std::string& logger,
 		const std::string& message, ::log4cpp::Priority::Value priority,
 		const std::string& routine = "", const std::string& file = "", unsigned int line = 0,
 		const std::string& host = "", const std::string& context="",
-		const std::string& audience = "") :
+		const std::string& audience = "", const std::string& sourceObject = "",
+		const std::string& array = "" , const std::string& antenna = "",
+		const std::string& stackId = "", const int stackLevel = -1,
+		const std::string& uri = "") :
 	::log4cpp::LoggingEvent(logger, message, "", priority),
 			routineName(routine), fileName(file), line(line), hostName(host),
-			contextName(context), audienceName(audience) {
+			contextName(context), audienceName(audience),
+			sourceObject(sourceObject), array(array), antenna(antenna),
+			stackId(stackId), stackLevel(stackLevel), uri(uri){
 
 }

@@ -19,20 +19,43 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) "
- *
- * who       when        what
- * --------  ----------  ----------------------------------------------
- * javarias  May 7, 2010  	 created
+ * "@(#) $Id: loggingLog4cpp.h,v 1.1 2011/02/14 21:15:08 javarias Exp $"
  */
+#ifndef LOGGING_LOG4CPP_H_
+#define LOGGING_LOG4CPP_H_
 
-#include "loggingLog4cpp.h"
-#include "loggingLog4cppMACROS.h"
 
-int main (int argc, char * argv[])
-{
-	LOG4CPP_LOG(log4cpp::Priority::TRACE, __PRETTY_FUNCTION__, "LOG");
-	LOG4CPP_LOG_FULL(log4cpp::Priority::INFO, __PRETTY_FUNCTION__, "LOG_FULL", "Engineering", "Array00X", "DVXX");
-	LOG4CPP_LOG_RECORD(log4cpp::Priority::INFO, "LOG_RECORD", __FILE__, __LINE__, __PRETTY_FUNCTION__, "newLogger");
-	return 0;
+#include "loggingACSCategory.h"
+#include "loggingACSRemoteAppender.h"
+#include <ace/Singleton.h>
+
+namespace logging {
+
+class Logger {
+public:
+	/**
+	 * The proper initialization of the RemoteAppender must be done by the class knowing about
+	 * the loggingService (like maciContainer or simpleClient)
+	 *
+	 * @param remoteAppender the remote appender to be used in the prior logger initializations
+	 *
+	 * @return the old remote appender reference, it can be NULL
+	 */
+	ACSRemoteAppender* setRemoteAppender(ACSRemoteAppender* remoteAppender);
+
+	Logger();
+	~Logger();
+
+	ACSCategory* getLogger(const std::string& loggerName);
+	ACSCategory* getGlobalLogger();
+	ACSCategory* getStaticLogger();
+private:
+	ACSRemoteAppender* remoteAppender;
+	ACSCategory* initLogger(const std::string& loggerName);
+};
+
 }
+
+#define LOGGER_FACTORY ACE_Singleton<logging::Logger, ACE_Null_Mutex>::instance()
+
+#endif

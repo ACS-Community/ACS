@@ -46,7 +46,6 @@ std::string ACSXmlLayout::format(const ::log4cpp::LoggingEvent& event) {
 			event.timeStamp.getMicroSeconds() * 1000
 					+ event.timeStamp.getMilliSeconds());
 	ACE_TCHAR timestamp[24];
-	ACE_TSS<LoggingTSSStorage> *tss = LoggingProxy::getTSS();
 	//TODO: should this conversion be improved to remove the ACE dependency?
 	ACSXmlLayout::formatISO8601inUTC(time, timestamp);
 
@@ -87,10 +86,18 @@ std::string ACSXmlLayout::format(const ::log4cpp::LoggingEvent& event) {
 	m_xml += " Context=\"" + acsLogEvent->contextName + "\"";
 	m_xml += " SourceObject=\"" + acsLogEvent->sourceObject + "\"";
 	m_xml += " Antenna=\"" + acsLogEvent->antenna + "\"";
-	//m_xml += " StackId=\"" + acsLog;
-	//m_xml += " StackLevel=\"";
+	if (acsLogEvent->stackId.length() > 0)
+		m_xml += " StackId=\"" + acsLogEvent->stackId + "\"";
+	if (acsLogEvent->stackLevel > -1) {
+		m_xml += " StackLevel=\"";
+		std::stringstream out;
+		out << acsLogEvent->stackLevel;
+		m_xml += out.str();
+		m_xml += "\"";
+	}
 	//m_xml += " LogId=\"";
-	m_xml += " Uri=\"\"";
+	if ( acsLogEvent->uri.length() > 0)
+		m_xml += " Uri=\"\"" + acsLogEvent->uri + "\"";
 	if(acsLogEvent->priority < log4cpp::Priority::DELOUSE){
 		//Convert to a priority number expected by ACS
 		unsigned int p = (1000 - (unsigned int)acsLogEvent->priority) / 100;
