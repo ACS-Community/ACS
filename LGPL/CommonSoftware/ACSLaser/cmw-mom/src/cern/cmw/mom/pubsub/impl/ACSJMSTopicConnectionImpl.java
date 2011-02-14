@@ -23,7 +23,7 @@ import javax.jms.TopicSession;
  * @see JMSTopicConnection
  */
 public class ACSJMSTopicConnectionImpl implements JMSTopicConnection {
-  public static ContainerServices containerServices = null;
+  public static ContainerServicesBase containerServices = null;
   static Category cat = Category.getInstance(ACSJMSTopicConnectionImpl.class.getName());
   private java.util.Properties momProperties = null;
   private String password = null;
