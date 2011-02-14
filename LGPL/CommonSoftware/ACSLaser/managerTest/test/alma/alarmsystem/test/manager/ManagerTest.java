@@ -42,7 +42,7 @@ import alma.alarmsystem.clients.source.SourceListener;
  * @author acaproni
  *
  */
-public class ManagerTest extends Thread implements SourceListener, AlarmSelectionListener {
+public class ManagerTest implements AlarmSelectionListener {
 	
 	/**
 	 * ACS component client
@@ -127,9 +127,16 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		try {
 			categoryClient.close();
 		} catch (Exception e) {
-			System.out.println("Exception while closing: "+e.getMessage());
+			System.out.println("Exception while closing CategoryClient: "+e.getMessage());
 			e.printStackTrace();
 		}
+		try {
+			client.tearDown();
+		} catch (Exception e) {
+			System.out.println("Exception while closing ComponentClient: "+e.getMessage());
+			e.printStackTrace();
+		}
+		System.out.println("ManagerTest closed");
 	}
 	
 	/**
@@ -148,7 +155,6 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		str.append(" active: ");
 		str.append(alarm.getStatus().isActive());
 		System.out.println(str.toString());
-		alarmsReceived++;
 		if (alarm.getAlarmId().equals("Manager:bilboContainer:1")) {
 			alarmsReceived++;
 		} else {
@@ -195,12 +201,6 @@ public class ManagerTest extends Thread implements SourceListener, AlarmSelectio
 		ManagerTest managertest=new ManagerTest();
 		managertest.test();
 	}
-
-	/**
-	 * @see alma.alarmsystem.clients.source.SourceListener#sourceXMLMsgReceived(java.lang.String)
-	 */
-	@Override
-	public void sourceXMLMsgReceived(String asiMessage) {}
 	
 	public void test() {
 		try {
