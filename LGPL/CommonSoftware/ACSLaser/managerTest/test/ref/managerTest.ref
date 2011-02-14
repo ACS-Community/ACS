@@ -1,14 +1,13 @@
-1 - Process xxxxx killed
-1 - Container killed
 1 - 
-1 - Ignoring call to ClientLogManager#init: already initialized!
-1 - ----------T--:--:--.--- WARNING [laser-client] ACS central logging not available!
-1 - suppressRemoteLogging called
 1 - ManagerTest ready to receive alarms
 1 - Waiting
+1 - Process xxxxx killed
+1 - Container killed
 1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: true
+1 - Container restarted
+1 - Alarm from category received: <Manager:bilboContainer:1> priority: 3 active: false
 1 - Closing; num of received alarms=2
 1 - ### DefaultSubscriberImpl::unSubscribeAll
+1 - ManagerTest closed
 1 - Done
-1 - Container restarted
 1 - managerTest script exiting
