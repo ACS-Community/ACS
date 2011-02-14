@@ -47,13 +47,17 @@ all:	do_all clean unpack jchart2d_jar
 clean : clean_all
 	@rm -rf unpacked
 
-	@rm -rf jchart2d-$(JCHART2D_VER)/
+	#@rm -rf jchart2d-$(JCHART2D_VER)/
+	@rm -rf jchart2d/
 
 	@rm -rf .purify
 	@rm -f ../lib/jchart2d-$(JCHART2D_VER).jar
 
-	@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/bin
-	@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/test
+	#@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/bin
+	#@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/test
+	@rm -rf jchart2d/bin
+	@rm -rf jchart2d/test
+
 	
 	@echo " . . . clean done"
 	
@@ -75,22 +79,31 @@ unpacked:
 	mkdir jchart2d-$(JCHART2D_VER)/
 	@ls
 	@unzip jchart2d-eclipse-project-$(JCHART2D_VER).zip -d jchart2d-$(JCHART2D_VER)
+	
+#modified to accomodate junit tests 2011/02/10
+#pull out the jchart2d directory from inside jchart2d-$(JCHART2D_VER)/
+#delete the jchart2d-$(JCHART2D_VER)/
+
+	@cp -r jchart2d-$(JCHART2D_VER)/jchart2d .
+	@rm -fr jchart2d-$(JCHART2D_VER)/
+	
 	@touch unpacked
 
-# build the jchart2d.jar file
+# build jchart2d.jar file
 jchart2d_jar: 
 
 	@echo ". . . building jchart2d . . . "
 	JDK_VERSION=$(shell java -version 2>&1 | grep 'java version' | cut -d\" -f2 | cut -d. -f1,2)
 
-	@mkdir jchart2d-$(JCHART2D_VER)/jchart2d/bin
-	@mkdir jchart2d-$(JCHART2D_VER)/jchart2d/test
+	@mkdir jchart2d/bin
+	@mkdir jchart2d/test
+
 
 	@#patch by Bhola Panta@NAOJ 2010/12/07
-	@patch jchart2d-$(JCHART2D_VER)/jchart2d/build.xml < include_src.patch
+	@patch jchart2d/build.xml < include_src.patch
 
-	@cd jchart2d-$(JCHART2D_VER)/jchart2d; ant -Dbuild.target=$(JDK_VERSION) 
-	@cd jchart2d-$(JCHART2D_VER)/jchart2d; mv jchart2d-$(JCHART2D_VER).jar ../../../lib
+	@cd jchart2d; ant -Dbuild.target=$(JDK_VERSION) 
+	@cd jchart2d; mv jchart2d-$(JCHART2D_VER).jar ../../lib
 
 	@echo "done"
 
