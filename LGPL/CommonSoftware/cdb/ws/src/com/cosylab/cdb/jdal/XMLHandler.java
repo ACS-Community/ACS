@@ -95,7 +95,7 @@ public class XMLHandler extends DefaultHandler {
 			}
 			startElements.add(raw);
 			
-			if(firstElementName == null)
+			if(firstElementName == null || raw.equals("fault-family"))	// alarm system fix to allow "component#property"
 				firstElementName = raw;
 			elementNames.add(firstElementName);
 			raw = firstElementName;
