@@ -20,11 +20,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
+acsStartJava -endorsed -Duser.dir=$PWD alma.alarmsystem.test.manager.ManagerTest $ACS_TMP/bilboContainer.out.pid &
 export ACS_TMP=../test/tmp
 . $PWD/killContainer
 echo "Container killed"
-acsStartJava -endorsed -Duser.dir=$PWD alma.alarmsystem.test.manager.ManagerTest $ACS_TMP/bilboContainer.out.pid &
-sleep 30
+sleep 45
 acsutilAwaitContainerStart -cpp bilboContainer 2>&1 >/dev/null &
 echo "Container restarted" 
 sleep 45 
