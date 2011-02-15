@@ -38,4 +38,4 @@ fi
 
 CLASSPATH=`acsGetAllJars $CPSEP $CL_JARPATH`$CLASSPATH
 
-java -classpath $CLASSPATH alma.acs.testsupport.tat.TATJUnitRunner info.monitorenter.gui.chart.JChart2DTestSuite
+java -classpath $CLASSPATH alma.acs.testsupport.tat.TATJUnitRunner info.monitorenter.gui.chart.AllTests
