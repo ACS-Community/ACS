@@ -21,6 +21,8 @@ package alma.acs.alarm.source.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.logging.Logger;
 
 import javax.swing.JButton;
@@ -120,6 +122,19 @@ public class SourcePanel extends JFrame implements ActionListener {
 	 */
 	private void initializeGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				sourceClient.close();
+				try {
+					acsClient.tearDown();
+				} catch (Throwable t) {
+					System.err.println("Exception while closing the ComponentClient: "+t.getMessage());
+				}
+				super.windowClosing(e);
+			}
+		});
 		JScrollPane scrollPane = new JScrollPane(table);
 		setLayout(new BorderLayout());
 		toolBar.add(clearButton);
