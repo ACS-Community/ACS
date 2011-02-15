@@ -61,7 +61,7 @@ all:	unpack do_all
 
 clean : clean_all
 	@rm -rf unpacked
-	@rm -rf .purify
+	@rm -rf .purifydir
 	@rm -rf $(JCHART2D_JAR) 
 	@rm -rf info
 	@echo " . . . clean done"
