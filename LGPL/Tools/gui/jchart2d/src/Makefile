@@ -46,19 +46,9 @@ all:	do_all clean unpack jchart2d_jar
 
 clean : clean_all
 	@rm -rf unpacked
-
-	#@rm -rf jchart2d-$(JCHART2D_VER)/
 	@rm -rf jchart2d/
-
-	@rm -rf .purify
+	@rm -rf .purifydir
 	@rm -f ../lib/jchart2d-$(JCHART2D_VER).jar
-
-	#@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/bin
-	#@rm -rf jchart2d-$(JCHART2D_VER)/jchart2d/test
-	@rm -rf jchart2d/bin
-	@rm -rf jchart2d/test
-
-	
 	@echo " . . . clean done"
 	
 clean_dist : clean clean_dist_all 
@@ -77,7 +67,6 @@ unpack : unpacked
 unpacked:
 	@echo ". . . unpacking the tar/zip files . . . "
 	mkdir jchart2d-$(JCHART2D_VER)/
-	@ls
 	@unzip jchart2d-eclipse-project-$(JCHART2D_VER).zip -d jchart2d-$(JCHART2D_VER)
 	
 #modified to accomodate junit tests 2011/02/10
@@ -103,7 +92,7 @@ jchart2d_jar:
 	@patch jchart2d/build.xml < include_src.patch
 
 	@cd jchart2d; ant -Dbuild.target=$(JDK_VERSION) 
-	@cd jchart2d; mv jchart2d-$(JCHART2D_VER).jar ../../lib
+	@cp jchart2d/jchart2d-$(JCHART2D_VER).jar ../lib
 
 	@echo "done"
 
