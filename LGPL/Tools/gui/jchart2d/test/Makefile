@@ -23,7 +23,7 @@
 JCHART2D_VER = 3.2.0
 
 
-JCHART2D_JAR = ../lib/jchart2d-$(JCHART2D_VER).jar
+JCHART2D_JUNIT_JAR = ../lib/jchart2djunit.jar
 
 #
 # Scripts (public and local)
@@ -62,7 +62,7 @@ all:	unpack do_all
 clean : clean_all
 	@rm -rf unpacked
 	@rm -rf .purifydir
-	@rm -rf $(JCHART2D_JAR) 
+	@rm -f $(JCHART2D_JUNIT_JAR) 
 	@rm -rf info
 	@echo " . . . clean done"
 
@@ -75,7 +75,7 @@ install : install_all
 # note:
 # the distributed zip file containing java sources does not have junit test files
 # instead, the test files have been downloaded from SourceForge CVS and 
-# zipped as jchart2dTest.zip. We need to unzip the files and put them
+# zipped as info.zip. We need to unzip the test files and put them
 # in /info under /test directory
 
 unpack : unpacked
