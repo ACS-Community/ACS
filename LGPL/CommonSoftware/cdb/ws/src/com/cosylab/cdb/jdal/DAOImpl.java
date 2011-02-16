@@ -104,6 +104,45 @@ public class DAOImpl implements DAOOperations {
 			throw e2;
 		}
 		String value;
+		value = getFieldValue(pNode, fieldName);
+		if (value == null) {
+			// we should try to get it as node
+			XMLTreeNode node =
+				(XMLTreeNode) pNode.m_subNodesMap.get(fieldName);
+			if (node == null) {
+				
+				// Components.xml Name="PARENT/CHILD/field" support
+				int lpos = strFieldName.lastIndexOf('/');
+		        if (lpos > 0)
+		        {
+		        	pNode = (XMLTreeNode) m_rootNode.m_subNodesMap.get(strFieldName.substring(0, lpos));
+		        	if (pNode != null)
+		        	{
+			        	fieldName = strFieldName.substring(lpos+1);
+		        		value = getFieldValue(pNode, fieldName);
+		        		if (value != null) {
+		        			if (!m_silent)
+		        				m_logger.log(AcsLogLevel.DEBUG, "DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
+		        			return value;
+		        		}
+		        	}
+		        }
+				
+				if (!m_silent)
+					m_logger.log(AcsLogLevel.NOTICE, "DAO:'" + m_name + "' Unable to return field: '" + strFieldName + "'");
+				AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
+				e2.setFieldName(strFieldName);
+				throw e2;
+			}
+			value = node.getAttributeAndNodeNames();
+		}
+		if (!m_silent)
+			m_logger.log(AcsLogLevel.DEBUG, "DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
+		return value;
+	}
+
+	private String getFieldValue(XMLTreeNode pNode, String fieldName) {
+		String value;
 		// backward compatibility
 		if (fieldName.equals("_characteristics")) {
 			value = pNode.getAttributeAndNodeNames();
@@ -116,21 +155,6 @@ public class DAOImpl implements DAOOperations {
 		} else {
 			value = (String) pNode.m_fieldMap.get(fieldName);
 		}
-		if (value == null) {
-			// we should try to get it as node
-			XMLTreeNode node =
-				(XMLTreeNode) pNode.m_subNodesMap.get(fieldName);
-			if (node == null) {
-				if (!m_silent)
-					m_logger.log(AcsLogLevel.NOTICE, "DAO:'" + m_name + "' Unable to return field: '" + strFieldName + "'");
-				AcsJCDBFieldDoesNotExistEx e2 = new AcsJCDBFieldDoesNotExistEx();
-				e2.setFieldName(strFieldName);
-				throw e2;
-			}
-			value = node.getAttributeAndNodeNames();
-		}
-		if (!m_silent)
-			m_logger.log(AcsLogLevel.DEBUG, "DAO:'" + m_name + "' returned '" + strFieldName + "'=" + value);  
 		return value;
 	}
 
