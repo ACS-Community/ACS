@@ -161,7 +161,7 @@ public abstract class MasterComponentImplBase extends CharacteristicComponentImp
 		} catch (Exception e) {
 			m_logger.log(Level.WARNING, "Failed to clean up the state machine's context object", e);
 		}
-		
+		super.cleanUp();
 	}
 	
 	
