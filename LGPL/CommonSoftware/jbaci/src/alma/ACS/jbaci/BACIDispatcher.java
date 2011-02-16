@@ -59,11 +59,11 @@ public class BACIDispatcher {
 		if (threadFactory != null)
 			threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
 					  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-					  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()), threadFactory);
+					  new PriorityBlockingQueue<Runnable>(MAX_REQUESTS, new PrioritizedRunnableComparator<Runnable>()), threadFactory);
 		else
 			threadPool = new ThreadPoolExecutor(POOL_THREADS, POOL_THREADS,
 	        								  Long.MAX_VALUE, TimeUnit.NANOSECONDS,
-	        								  new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()));
+	        								  new PriorityBlockingQueue<Runnable>(MAX_REQUESTS, new PrioritizedRunnableComparator<Runnable>()));
 		threadPool.prestartAllCoreThreads();
 	}
 	

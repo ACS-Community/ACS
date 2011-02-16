@@ -167,7 +167,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			
 			int max;
 			max = allSeq.length;
-			ArrayList arrSeq = new ArrayList();
+			ArrayList<String> arrSeq = new ArrayList<String>();
 			UtilsWildcards uw = new UtilsWildcards();
 
 			for(int i=0;i<max;i++)
@@ -179,7 +179,7 @@ public class CharacteristicModelImpl implements CharacteristicModelOperations {
 			String[] ret = new String[arrSeq.size()];
 			
 			for(int i=0;i<arrSeq.size();i++)
-				ret[i]=arrSeq.get(i).toString();
+				ret[i]=arrSeq.get(i);
 			
 			return ret;
 			

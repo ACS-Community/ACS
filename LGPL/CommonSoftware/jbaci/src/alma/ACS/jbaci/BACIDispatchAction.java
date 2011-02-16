@@ -158,7 +158,7 @@ public class BACIDispatchAction implements PrioritizedRunnable {
 	/**
 	 * List of registered listeners.
 	 */
-	protected ArrayList listeners = new ArrayList();
+	protected ArrayList<DispatchFailedListener> listeners = new ArrayList<DispatchFailedListener>();
 
 	/**
 	 * Constructor of NORMAL priority action (CBvoid callback).

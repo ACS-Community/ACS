@@ -34,7 +34,7 @@ public abstract class DataAccessSupport implements DataAccess {
 	/**
 	 * List of registered listeners.
 	 */
-	protected ArrayList listeners = new ArrayList();
+	protected ArrayList<ValueChangeListener> listeners = new ArrayList<ValueChangeListener>();
 
 	/**
 	 * Notifies about value change - internal method.
@@ -48,12 +48,12 @@ public abstract class DataAccessSupport implements DataAccess {
 			
 		synchronized (listeners)
 		{
-			Iterator iter = listeners.iterator();
+			Iterator<ValueChangeListener> iter = listeners.iterator();
 			while (iter.hasNext())
 			{
 				try
 				{
-					((ValueChangeListener)iter.next()).valueChanged(this, oldValue, newValue);
+					iter.next().valueChanged(this, oldValue, newValue);
 				}
 				catch (Throwable th)
 				{

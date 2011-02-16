@@ -28,7 +28,7 @@ import java.util.Comparator;
  * @author <a href="mailto:matej.sekoranjaATcosylab.com">Matej Sekoranja</a>
  * @version $id$
  */
-public class PrioritizedRunnableComparator implements Comparator
+public class PrioritizedRunnableComparator<T> implements Comparator<T>
 {
 	/**
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)

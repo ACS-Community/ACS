@@ -56,27 +56,35 @@ import org.omg.CosPropertyService.UnsupportedTypeCode;
  * @version $id$
  */
 public class PropertySetImpl extends PropertySetPOA
-								 {
+{
 
-	private Map propMap; 
-	private ArrayList allowed_property_types;
-	private ArrayList allowed_properties;
+	private Map<String, Any> propMap; 
+
+	/**
+	 * TODO (HSO): Do we ever put any data into this list? 
+	 */
+	private ArrayList<TypeCode> allowed_property_types;
+	
+	/**
+	 * TODO (HSO): Do we ever put any data into this list? 
+	 */
+	private ArrayList<String> allowed_properties;
 	
 	
 	//others constructors might be created on demand
 	
 	public PropertySetImpl(){
 
-		allowed_property_types = new ArrayList();
-		allowed_properties = new ArrayList();
-		propMap = new HashMap();
+		allowed_property_types = new ArrayList<TypeCode>();
+		allowed_properties = new ArrayList<String>();
+		propMap = new HashMap<String, Any>();
 	}
 	
 	public PropertySetImpl(Property[] propSet) throws MultipleExceptions{
 
-		allowed_property_types = new ArrayList();
-		allowed_properties = new ArrayList();
-		propMap = new HashMap();
+		allowed_property_types = new ArrayList<TypeCode>();
+		allowed_properties = new ArrayList<String>();
+		propMap = new HashMap<String, Any>();
 		define_properties(propSet);
 	}
 	
@@ -109,12 +117,14 @@ public class PropertySetImpl extends PropertySetPOA
 	
 	private boolean isValidProperty(String name) {
 		
-		if (allowed_properties.size()==0)
+		if (allowed_properties.size()==0) {
 			return true;
-		for (int i=0;i<allowed_properties.size();i++)
-			if(allowed_properties.get(i).toString()==name)
-			  return true;
-		
+		}
+		for (int i=0;i<allowed_properties.size();i++) {
+			if(allowed_properties.get(i).equals(name)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -122,16 +132,17 @@ public class PropertySetImpl extends PropertySetPOA
 		
 		if (allowed_property_types.size()==0)
 			return true;
-		for (int i=0;i<allowed_property_types.size();i++)
-			if(((TypeCode)allowed_property_types.get(i)).kind()==code.kind())
-			  return true;
-		
+		for (int i=0;i<allowed_property_types.size();i++) {
+			if(allowed_property_types.get(i).kind() == code.kind()) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	public void define_properties(Property[] propSet) throws MultipleExceptions {
 		
-		ArrayList errorList = new ArrayList();
+		ArrayList<PropertyException> errorList = new ArrayList<PropertyException>();
 		for (int i=0;i<propSet.length;i++)
 			try {
 				define_property(propSet[i].property_name,propSet[i].property_value);
@@ -147,8 +158,9 @@ public class PropertySetImpl extends PropertySetPOA
 				errorList.add(new PropertyException(ExceptionReason.invalid_property_name,propSet[i].property_name) );
 			}	
 			
-			if(errorList.size()>0) //TODO: check if this cast is possibly
-			throw new MultipleExceptions((PropertyException[])errorList.toArray());
+			if(!errorList.isEmpty()) {
+				throw new MultipleExceptions(errorList.toArray(new PropertyException[errorList.size()]));
+			}
 	}
 
 
@@ -160,7 +172,7 @@ public class PropertySetImpl extends PropertySetPOA
 		checkTypeAndProperty(name, value);
 		if(  propMap.containsKey(name) )
 		{
-			Property p =  new Property(name,(Any)propMap.get(name)) ;
+			Property p =  new Property(name, propMap.get(name)) ;
 			if (value.type().kind() != p.property_value.type().kind())
 				throw new ConflictingProperty();
 			else {
@@ -235,7 +247,7 @@ public class PropertySetImpl extends PropertySetPOA
 		//Returns the value of a property in the PropertySet.
 		Any p = null;
 		if(propMap.containsKey(name)){
-			p =  (Any)propMap.get(name) ;
+			p = propMap.get(name);
 		} 
 		else{
 			throw new PropertyNotFound();
