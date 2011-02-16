@@ -51,6 +51,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
@@ -76,7 +77,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	/**
 	 * List of all component properties (needed on component destruction).
 	 */
-	protected Map properties;
+	protected Map<PropertyOperations, Servant> properties;
 
 	/**
 	 * Component thread pool.
@@ -117,30 +118,47 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		}
 
 		// create properties list
-		properties = new HashMap();
+		properties = new HashMap<PropertyOperations, Servant>();
 	}
 
 	/**
 	 * @see alma.acs.component.ComponentLifecycle#cleanUp()
 	 */
 	public void cleanUp() throws AcsJComponentCleanUpEx {
-		super.cleanUp();
-		
 		// shutdown thread-pool
 		if (threadPool != null)
 		{
 			// initiate shutdown
 			threadPool.shutdown();
 			
+			boolean nicePoolShutdown = false;
 			// first be kind and wait up to 3 seconds to terminate
 			try {
-				threadPool.awaitTermination(3, TimeUnit.SECONDS);
+				nicePoolShutdown = threadPool.awaitTermination(3, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 				// noop
 			}
-			
-			// no more "mister-nice-guy", terminate all
-			threadPool.shutdownNow();
+			boolean cleanPoolShutdown = nicePoolShutdown;
+			if (!nicePoolShutdown) {
+				// no more "mister-nice-guy", terminate all
+				threadPool.shutdownNow();
+				try {
+					cleanPoolShutdown = threadPool.awaitTermination(1, TimeUnit.SECONDS);
+				} catch (InterruptedException e) {
+					// noop
+				}
+			}
+			String msg = "jbaci thread pool shutdown ";
+			if (!cleanPoolShutdown) {
+				msg += "failed.";
+			}
+			else if (!nicePoolShutdown) {
+				msg += "succeeded, but had to terminate running threads.";
+			}
+			else {
+				msg += "succeeded.";
+			}
+			m_logger.log(AcsLogLevel.DELOUSE, msg);
 		}
 
 		// destroy all properties
@@ -166,6 +184,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 				}
 			}
 		}
+		super.cleanUp();
 	}
 
 	/**
@@ -195,8 +214,8 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 				// TODO make PriorityBlockingQueue bounded!!! (to MAX_REQUESTS)
 				// TODO should I use PooledExecutorWithWaitInNewThreadWhenBlocked...?
 				threadPool = new ThreadPoolExecutor(1, MAX_POOL_THREADS, 1, TimeUnit.MINUTES,
-		        								    new PriorityBlockingQueue(MAX_REQUESTS, new PrioritizedRunnableComparator()),
-		        								    m_containerServices.getThreadFactory());
+										new PriorityBlockingQueue<Runnable>(MAX_REQUESTS, new PrioritizedRunnableComparator<Runnable>()),
+										m_containerServices.getThreadFactory());
 			}
 			
 			threadPool.execute(action);
@@ -213,7 +232,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	 * Registration is needed for property destruction on component destruction.
 	 * @param propertyImpl		property implementation.
 	 * @param propertyServant	property CORBA servant (e.g. Rx<type>POATie class). If <code>null</code> property will
-	 * 							be threated as non-CORBA property and no CORBA activation will be done.
+	 * 							be treated as non-CORBA property and no CORBA activation will be done.
 	 * @return CORBA activated property reference, <code>null</code> if <code>propertyServant == null</code>.
 	 */
 	public <T extends Servant & OffShootOperations> Property registerProperty(PropertyOperations propertyImpl, T propertyServant) {
@@ -260,7 +279,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 		// remove from list
 		synchronized (properties)
 		{
-			propertyServant = (Servant)properties.remove(propertyImpl);
+			propertyServant = properties.remove(propertyImpl);
 		}
 		
 		// deativate CORBA monitor servant
@@ -292,7 +311,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			{
 				int i = 0;
 				propertyDescriptors = new PropertyDesc[properties.size()];
-				Iterator iter = properties.keySet().iterator();
+				Iterator<PropertyOperations> iter = properties.keySet().iterator();
 				while (iter.hasNext())
 					propertyDescriptors[i] = ((PropertyImpl)iter.next()).getPropertyDescriptor(); 
 			}
