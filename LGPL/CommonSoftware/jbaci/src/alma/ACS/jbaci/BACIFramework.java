@@ -60,7 +60,7 @@ public class BACIFramework {
 	}
 
 	/**
-	 * Get dispather instance.
+	 * Get dispatcher instance.
 	 */
 	public synchronized BACIDispatcher getDispatcher()
 	{

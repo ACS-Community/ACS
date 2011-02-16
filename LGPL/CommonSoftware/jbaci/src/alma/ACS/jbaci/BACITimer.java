@@ -202,23 +202,25 @@ public class BACITimer  {
    * method can be invoked if the background thread crashed
    * due to an unrecoverable exception in an executed command.
    **/
-
-  protected synchronized void restart() {
-	if (shutdown_) return;
-	if (thread_ == null) {
-	  if (threadFactory_ != null)
-		  thread_ = threadFactory_.newThread(runLoop_);
-	  else {
-		  thread_ = new Thread(runLoop_);
-		  thread_.setName(this.getClass().getName());
-	  }
-	  thread_.setDaemon(true); // to ensure that this is a daemon thread
-	  thread_.start();
+	protected synchronized void restart() {
+		if (shutdown_) {
+			return;
+		}
+		if (thread_ == null) {
+			if (threadFactory_ != null) {
+				thread_ = threadFactory_.newThread(runLoop_);
+			}
+			else {
+				thread_ = new Thread(runLoop_);
+				thread_.setName(this.getClass().getName());
+			}
+			thread_.setDaemon(true); // to ensure that this is a daemon thread
+			thread_.start();
+		} 
+		else {
+			notify();
+		}
 	}
-	else
-	  notify();
-  }
-
 
   /**
    * Cancel all tasks and interrupt the background thread executing
