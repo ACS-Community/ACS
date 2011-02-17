@@ -249,4 +249,13 @@ public class CategoryClient {
 			}
 		}
 	}
+	
+	/**
+	 * Close all the subscribers
+	 */
+	public void close() {
+		for (CategorySubscriber cs: consumers) {
+			cs.close();
+		}
+	}
 }
