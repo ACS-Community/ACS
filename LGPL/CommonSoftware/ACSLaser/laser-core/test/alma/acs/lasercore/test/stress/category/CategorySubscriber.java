@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.3 2008/02/22 01:44:08 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.4 2011/02/17 14:00:35 acaproni Exp $
  * @since    
  */
 
@@ -287,6 +287,10 @@ public class CategorySubscriber   implements MessageListener {
 				}
 			}
 		}
-		categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName));
+		try {
+			categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName));
+		} catch (Throwable t) {
+			System.out.println("Error building alarm "+t.getMessage());
+		}
 	}
 }
