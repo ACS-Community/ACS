@@ -36,6 +36,7 @@ import cern.laser.business.data.AlarmImpl;
 import cern.laser.business.data.AlarmChange;
 import cern.laser.business.data.CategoryActiveList;
 import cern.laser.business.data.Category;
+import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 
 public class ACSAlarmCacheImpl implements AlarmCache 
 {
@@ -80,7 +81,8 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		
 		// Store the values in local variables
 		dao=alarmDAO;
-		
+		ACSAlarmDAOImpl t = (ACSAlarmDAOImpl)dao;
+		t.setAlarmCache(this);
 		listener=alarmCacheListener;
 		
 		// The alarms should be loaded in the cache in the constructor
@@ -149,7 +151,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		if (alarm==null) {
 			throw new IllegalArgumentException("Replacing with a null alarm is not allowed");
 		}
-		
 		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
 		sendMsgToListener(alarm,oldAl);
 		updateCategoryActiveLists(alarm);
@@ -160,7 +161,6 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		if (alarm==null) {
 			throw new IllegalArgumentException("Inserting a null alarm is not allowed");
 		}
-		
 		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
 		sendMsgToListener(alarm,oldAl);
 		updateCategoryActiveLists(alarm);
