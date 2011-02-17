@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.22 2008/10/09 04:56:55 cparedes Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.23 2011/02/17 18:25:40 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -149,6 +149,15 @@ namespace maci {
          */
         ACE_CString getName() {
             return m_componentName;
+        }
+
+        /**
+         * Return the component IDL type
+         * 
+         * @return The ACE_CString string with the component IDL type
+         */
+        ACE_CString getType() {
+            return m_componentType;
         }
         
         /**
@@ -433,6 +442,7 @@ namespace maci {
 
    protected:
         ACE_CString m_componentName;
+        ACE_CString m_componentType;
         
         ComponentListener* compListener; 
         bool withCompListener; 

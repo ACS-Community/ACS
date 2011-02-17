@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.124 2010/10/22 09:12:38 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.125 2011/02/17 18:25:38 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.124 2010/10/22 09:12:38 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.125 2011/02/17 18:25:38 rtobar Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1246,7 +1246,8 @@ ContainerImpl::connect()
 
       //Creating container services (container handle)
       ACE_CString ctrName(m_container_name);
-      m_containerServices = instantiateContainerServices(m_handle,ctrName,poaContainer.in());
+      ACE_CString unusedType("");
+      m_containerServices = instantiateContainerServices(m_handle,ctrName,unusedType,poaContainer.in());
 
       ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Logged into the Manager."));
 
@@ -1763,7 +1764,8 @@ ContainerImpl::activate_component (
   // so it is the component that deletes the ContainerServices when the smart
   // pointer is destroyed
   ACE_CString cmpName(name);
-  ContainerServices* acsCS = instantiateContainerServices(h,cmpName,poaContainer.in());
+  ACE_CString cmpType(type);
+  ContainerServices* acsCS = instantiateContainerServices(h,cmpName,cmpType,poaContainer.in());
   if (acsCS==NULL)
       {
       ACSErrTypeCommon::NullPointerExImpl nullEx(__FILE__, __LINE__,
@@ -2641,9 +2643,10 @@ ContainerServices*
 ContainerImpl::instantiateContainerServices(
         maci::Handle h,
         ACE_CString& name,
+        ACE_CString& type,
         PortableServer::POA_ptr poa)
 {
-  return new MACIContainerServices(h,name,poa);
+  return new MACIContainerServices(h,name,type,poa);
 }
 
 

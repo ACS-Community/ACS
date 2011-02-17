@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestServer.cpp,v 1.121 2006/10/03 22:11:18 gchiozzi Exp $"
+* "@(#) $Id: baciTestServer.cpp,v 1.122 2011/02/17 18:25:39 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * gchiozzi 2001-12-19 Added initialisation of standard LoggingProxy fields
 */
  
-static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.121 2006/10/03 22:11:18 gchiozzi Exp $";
+static char *rcsId="@(#) $Id: baciTestServer.cpp,v 1.122 2011/02/17 18:25:39 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -64,6 +64,7 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
  */ 
 static int   devCount = 2;
 static char *devices[] = {"BACI1", "BACI2"};
+static char *idlTypes[] = {"IDL:alma/Control/IFProc", "IDL:alma/Control/DRX"};
 static bool shutting_down = false;
 static bool signaled = false;
 static TestContainerServices *cs_p[]={0, 0};
@@ -277,8 +278,9 @@ int main(int argc, char* argv[])
         ACS_SHORT_LOG((LM_INFO,"baciTestServer: Exporting \"%s\"", devices[n]));
         
 	ACE_CString compName(devices[n]);
+	ACE_CString compType(idlTypes[n]);
 
-	cs_p[n] = new TestContainerServices(compName,
+	cs_p[n] = new TestContainerServices(compName,compType,
 					 BACI_CORBA::getPOA(), BACI_CORBA::getORB());
 
         BaciTestClassImpl* ps = new BaciTestClassImpl(devices[n], 

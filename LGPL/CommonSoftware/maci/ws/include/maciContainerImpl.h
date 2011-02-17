@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.58 2010/09/05 21:22:19 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.59 2011/02/17 18:25:38 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.58 2010/09/05 21:22:19 msekoran Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.59 2011/02/17 18:25:38 rtobar Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -483,6 +483,7 @@ public:
    ContainerServices* instantiateContainerServices(
         maci::Handle h, 
         ACE_CString& name, 
+        ACE_CString& type, 
         PortableServer::POA_ptr poa);
 
   /// File to output the process id.

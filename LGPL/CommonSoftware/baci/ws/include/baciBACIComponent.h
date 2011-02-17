@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.h,v 1.16 2010/09/29 10:39:29 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.h,v 1.17 2011/02/17 18:25:39 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -83,6 +83,7 @@ public:
      */
     BACIComponent( ACS::ThreadManager *thrMgr,
 		   const ACE_CString& name,
+		   const ACE_CString& type,
 		   CharacteristicModelImpl *characteristicModel,
 		   size_t actionThreadStackSize,
 		   size_t monitorThreadStackSize,
@@ -95,6 +96,8 @@ public:
 
 //  ACE_CString getName() const { return name; }
   const char * getName() const { return name_m.c_str(); }
+
+  const char * getType() const { return type_m.c_str(); }
 
   /**
    * Register callback to BACI
@@ -260,6 +263,7 @@ protected:
 private:
 
   ACE_CString name_m;
+  ACE_CString type_m;
   CharacteristicModelImpl* characteristicModel_mp;
 
   BACICallbackTable callbackTable_m;

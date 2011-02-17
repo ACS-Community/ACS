@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.22 2010/09/30 07:01:04 bjeram Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.23 2011/02/17 18:25:39 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.22 2010/09/30 07:01:04 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.23 2011/02/17 18:25:39 rtobar Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -320,6 +320,7 @@ const ACS::TimeInterval BACIComponent::minMTSleepTime_m=25*1000*10;	          //
 
 BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
 			      const ACE_CString& _name,
+			      const ACE_CString& _type,
 			      CharacteristicModelImpl *characteristicModel,
 			      size_t actionThreadStackSize,
 			      size_t monitorThreadStackSize,
@@ -328,6 +329,7 @@ BACIComponent::BACIComponent( ACS::ThreadManager *thrMgr,
 			      const ACS::TimeInterval& _monitorThreadResponseTime,
 			      const ACS::TimeInterval& _monitorThreadSleepTime) :
     name_m(_name),
+    type_m(_type),
     characteristicModel_mp(characteristicModel),
     actionThread_mp(BACIThread::NullBACIThread),
     monitorThread_mp(BACIThread::NullBACIThread),

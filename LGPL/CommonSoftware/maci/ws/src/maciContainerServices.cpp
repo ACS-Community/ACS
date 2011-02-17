@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.34 2010/01/22 00:50:33 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.35 2011/02/17 18:25:39 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -40,6 +40,7 @@ using namespace maciErrType;
 MACIContainerServices::MACIContainerServices(
     const maci::Handle componentHandle,
     ACE_CString& name,
+    ACE_CString& type,
     PortableServer::POA_ptr poa) :
   ContainerServices(name,poa), m_manager(0), m_componentHandle(componentHandle)
 {
@@ -49,6 +50,7 @@ MACIContainerServices::MACIContainerServices(
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
   m_poa = PortableServer::POA::_duplicate(m_containerImpl->getContainerPOA().in());
+  m_componentType = ACE_CString(type);
 }
 
 MACIContainerServices::MACIContainerServices(

@@ -196,14 +196,35 @@ bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
       str = dao->get_string("alarm_fault_family");
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultFamily_m = str.in();
-      else
-    	  alarmFaultFamily_m = "BACIProperty"; //default
+      else {
+        ACE_CString compType = this->property_mp->getComponent()->getType();
+        if( compType.length() == 0 ) {
+    	    alarmFaultFamily_m = "BACIProperty"; //default
+        }
+        else {
+
+          // strip out "IDL:" and ":1.0" from the component type string
+          alarmFaultFamily_m = compType.substr(4);
+          alarmFaultFamily_m = alarmFaultFamily_m.substr(0, alarmFaultFamily_m.length() - alarmFaultFamily_m.find(":1.0"));
+
+          // keep just the interface name, throw away the pragma and module names
+          size_t pos;
+          while( (pos = alarmFaultFamily_m.find('/')) != ACE_CString::npos )
+            alarmFaultFamily_m = alarmFaultFamily_m.substr(pos + 1);
+
+          ACE_CString fm(this->property_mp->getName());     // property name is "CompName:PropName
+          alarmFaultFamily_m += '#';
+          alarmFaultFamily_m += fm.substr(fm.find(':') + 1);
+        }
+      }
 
       str = dao->get_string("alarm_fault_member");
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultMember_m = str.in();
-      else
-    	  alarmFaultMember_m = this->property_mp->getName();
+      else {
+        ACE_CString fm(this->property_mp->getName());     // property name is "CompName:PropName"
+    	  alarmFaultMember_m = fm.substr(0, fm.find(':')); //
+      }
 
        alarmLevel_m = dao->get_long("alarm_level");
 

@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.31 2010/01/22 00:50:33 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.32 2011/02/17 18:25:38 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -63,6 +63,7 @@ class MACIContainerServices: public ContainerServices
   MACIContainerServices(
     const maci::Handle componentHandle, 
     ACE_CString& name,
+    ACE_CString& type,
     PortableServer::POA_ptr poa);
 
   /**

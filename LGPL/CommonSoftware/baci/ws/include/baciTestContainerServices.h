@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciTestContainerServices.h,v 1.7 2008/10/09 06:18:16 cparedes Exp $"
+* "@(#) $Id: baciTestContainerServices.h,v 1.8 2011/02/17 18:25:39 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,9 +36,11 @@ class TestContainerServices : public virtual maci::ContainerServices
   public:
     CORBA::ORB_var m_orb;
 
-    TestContainerServices(ACE_CString& compName, PortableServer::POA_ptr poa, CORBA::ORB_ptr orb) :
+    TestContainerServices(ACE_CString& compName, ACE_CString& type, PortableServer::POA_ptr poa, CORBA::ORB_ptr orb) :
 	ContainerServices(compName, poa), m_orb(CORBA::ORB::_duplicate(orb))
-	{;}
+	{
+		m_componentType = ACE_CString(type);
+	}
     
   protected:
     /**

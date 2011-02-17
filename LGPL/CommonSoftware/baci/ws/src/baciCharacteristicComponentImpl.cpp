@@ -19,13 +19,13 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.51 2010/09/29 10:40:18 bjeram Exp $"
+* "@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.52 2011/02/17 18:25:39 rtobar Exp $"
 *
 */
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.51 2010/09/29 10:40:18 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: baciCharacteristicComponentImpl.cpp,v 1.52 2011/02/17 18:25:39 rtobar Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <baci.h>
@@ -107,7 +107,7 @@ CharacteristicComponentImpl::CharacteristicComponentImpl(
 	monitoringThreadStackSize *= 1024;  // that we have size in bytes
 
   // Create Component
-    component_mp = new BACIComponent(getContainerServices()->getThreadManager(), name, this,
+    component_mp = new BACIComponent(getContainerServices()->getThreadManager(), name, getContainerServices()->getType(), this,
 										actionThreadStackSize, monitoringThreadStackSize);
     if (component_mp==0)
 	{
