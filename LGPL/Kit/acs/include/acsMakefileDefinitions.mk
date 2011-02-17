@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.13 2011/02/03 14:27:44 mzampare Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.14 2011/02/17 18:14:45 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -92,6 +92,7 @@ endef
 
 # $(call IDLInstall,TO-DIR,FROM-DIR,EXT,FILE)
 define IDLInstall
+
 $(PRJTOP)/$1/$4$3: ../$2/$4$3
 	$(AT)cp ../$2/$4$3 $(PRJTOP)/$1/$4$3;
 	$(AT)chmod $(P755) $(PRJTOP)/$1/$4$3;
@@ -330,7 +331,7 @@ $(call IDLInstall,idl,idl,.idl,$1)
 $(foreach ext,$(IDL_EXTENSIONS),$(call IDLInstall,include,object,$(ext),$1))
 
 .PHONY: install_IDL_$1_CPP_Sources
-install_IDL_$1_CPP_Sources: $(foreach ext, $(filter %.h,$(IDL_EXTENSIONS)) , $(PRJTOP)/include/$1$(ext)) ;
+install_IDL_$1_CPP_Sources: $(foreach ext, $(IDL_EXTENSIONS) , $(PRJTOP)/include/$1$(ext))
 
 endef
 
@@ -716,7 +717,7 @@ $(foreach obj,$3,$(eval $$2_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_expObjList += ../object/$(obj).o))
 
 ifeq ($(DEPENDENCIES),on)
-   ifdef ($(MAKE_DEBUG))
+   ifeq ($(MAKE_DEBUG),on)
       include $($2_depList)
    else
       -include $($2_depList)
@@ -792,12 +793,16 @@ $(CURDIR)/../lib/lib$2.a: $$(xyz_$2_OBJ)
 	$(AT)$(RANLIB) ../lib/lib$2.a
 
 
+../lib/lib$2.a: $(CURDIR)/../lib/lib$2.a
+
 $(CURDIR)/../lib/lib$2.so: $$(xyz_$2_OBJ) $$($2_lList) 
 	@echo "== Making library: ../lib/lib$2.so" 
 	-$(AT)$(RM) ../lib/lib$2.so 
 	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) $(L_PATH) $($2_libraryList) $4 -o ../lib/lib$2.so $$(xyz_$2_OBJ)
 	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.so; fi 
 	$(AT) chmod a-w ../lib/lib$2.so 
+
+../lib/lib$2.so: $(CURDIR)/../lib/lib$2.so
 
 
 .PHONY: clean_lib_shared_$2
@@ -837,7 +842,7 @@ $(foreach obj,$3,$(eval $$2_exe_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_exe_objList += ../object/$(obj).o))
 
 ifeq ($(DEPENDENCIES),on)
-   ifdef ($(MAKE_DEBUG))
+   ifeq ($(MAKE_DEBUG),on)
       include $($2_exe_depList)
    else
       -include $($2_exe_depList)
