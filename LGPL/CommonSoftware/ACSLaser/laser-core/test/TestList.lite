@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.9 2009/11/22 16:52:09 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.10 2011/02/17 14:29:12 acaproni Exp $"
 #
 # TestList
 #
@@ -34,5 +34,7 @@ PROLOGUE lasercoreTATPrologue
 3 testAlarmService "testAlarmService"
 4 testAlarmSender "testAlarmSender"
 5 testIDLSendAlarm "testIDLSendAlarm"
+6 testRRWithDefaultFM "testRRWithDefaultFM"
+7 testRRWithRegExp "testRRWithRegExp"
 
 EPILOGUE acsutilTATEpilogue
