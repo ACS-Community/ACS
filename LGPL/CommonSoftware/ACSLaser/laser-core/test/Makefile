@@ -67,13 +67,15 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 # jagonzal: These are shell scripts not Python scripts
-SCRIPTS         = lasercoreTATPrologue \
-                                        testCategoryDAO \
-                                        testAlarmSender \
-                                        testAlarmService \
-                                        testAlarmDAO \
-                                        testCDBCoreAlarm \
-                                        testIDLSendAlarm
+SCRIPTS     = lasercoreTATPrologue \
+            testCategoryDAO \
+            testAlarmSender \
+            testAlarmService \
+            testAlarmDAO \
+            testCDBCoreAlarm \
+            testIDLSendAlarm \
+			testRRWithDefaultFM \
+			testRRWithRegExp
 
 SCRIPTS_L       =
 
