@@ -33,13 +33,13 @@ public class AlarmView {
 	private final String TIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_FORMAT);
 	
-	public String alarmID=null; // Triplet
-	public Integer priority = null; // Priority
-	public Date sourceTimestamp=null; // Source timestamp
-	public String description=null; // Problem description
-	public String cause=null; // The cause
-	public Boolean active=null; // Active
-	public String hostName; // The name of the host of the source that sent the alarm
+	public final String alarmID; // Triplet
+	public final Integer priority; // Priority
+	public final Date sourceTimestamp; // Source timestamp
+	public final String description; // Problem description
+	public final String cause; // The cause
+	public final Boolean active;// Active
+	public final String hostName; // The name of the host of the source that sent the alarm
 	
 	/**
 	 * Constructor
@@ -50,7 +50,8 @@ public class AlarmView {
 	 * @param desc Problem description
 	 * @param act Active
 	 */
-	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act,String hostName) {
+	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act,String hostName) 
+	throws Exception {
 		if (id==null || id.length()==0) {
 			throw new IllegalArgumentException("Invalid triplet in constructor");
 		}
@@ -59,28 +60,12 @@ public class AlarmView {
 		this.cause=cause;
 		this.hostName=hostName;
 		// Get the date
-		try {
-			long nsec=Long.parseLong(timestamp);
-			 sourceTimestamp=new Date(nsec);
-		} catch (Exception e) {
-			// Invalid timestamp
-			sourceTimestamp=null;
-			System.err.println("Invalid timestamp for "+alarmID+": "+timestamp);
-		}
+		long nsec=Long.parseLong(timestamp);
+		 sourceTimestamp=new Date(nsec);
 		// Get the status
-		try {
-			active=Boolean.parseBoolean(act);
-		} catch (Exception e) {
-			System.err.println("Invalid priority for "+alarmID+": "+pri);
-			active=true;
-		}
+		active=Boolean.parseBoolean(act);
 		// Get the priority
-		try {
-			priority=new Integer(pri);
-		} catch (Exception e) {
-			System.err.println("Invalid priority for "+alarmID+": "+pri);
-			priority=0;
-		}
+		priority=new Integer(pri);
 	}
 
 	/**
