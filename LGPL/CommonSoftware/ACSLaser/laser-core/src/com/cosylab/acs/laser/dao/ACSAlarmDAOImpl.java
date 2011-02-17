@@ -143,23 +143,38 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	private static final String DEFAULT_FM = "*";
 	
 	// The ACS logger
-	Logger logger;
+	private Logger logger;
 	
-	ConfigurationAccessor conf;
-	String surveillanceAlarmId;
-	ResponsiblePersonDAO responsiblePersonDAO;
+	private ConfigurationAccessor conf;
+	private String surveillanceAlarmId;
+	private ResponsiblePersonDAO responsiblePersonDAO;
 	
 	/** The alarms read out the CDB
 	 *  The CDB contains fault families.
 	 *  The alarms are generated from the fault families.
 	 */
-	private ConcurrentHashMap<String,Alarm> alarmDefs=new ConcurrentHashMap<String,Alarm>();
+	private final ConcurrentHashMap<String,Alarm> alarmDefs=new ConcurrentHashMap<String,Alarm>();
 	
 	/**
 	 * Source are defined together with alarms
 	 * This HashMap contains all the sources read from CDB
 	 */
-	private ConcurrentHashMap<String, Source> srcDefs = new ConcurrentHashMap<String, Source>();
+	private final ConcurrentHashMap<String, Source> srcDefs = new ConcurrentHashMap<String, Source>();
+	
+	/**
+	 * The thresholds from the CDB
+	 */
+	private Thresholds thresholds;
+	
+	/**
+	 * The alarm cache used to notify on alarm changes
+	 */
+	private ACSAlarmCacheImpl alarmCache=null;
+	
+	/**
+	 * The reduction rules (<parent, child>)
+	 */
+	private final ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
 	
 	/**
 	 * Constructor 
@@ -245,7 +260,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		
 		loadReductionRules();
 
-                return cdbFamilies;
+        return cdbFamilies;
 	}
 	
 	/**
@@ -480,14 +495,11 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		ReductionDefinitions rds = getReductionDefinitions();
 		if (rds == null)
 			return;
-		
-		// The reduction rules (<parent, child>)
-		ArrayList<LinkSpec> reductionRules=new ArrayList<LinkSpec>();
 
 		// Read the links to create from the CDB
 		ReductionLinkDefinitionListType ltc=rds.getLinksToCreate();
 		//	Read the thresholds from the CDB
-		Thresholds thresholds = rds.getThresholds();
+		thresholds = rds.getThresholds();
 		if (ltc!=null) { 
 			ReductionLinkType[] rls=ltc.getReductionLink();
 			for (ReductionLinkType link: rls) {
@@ -520,11 +532,20 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					buf.append(c.getAlarmDefinition().getFaultCode());
 					buf.append('>');
 					logger.log(AcsLogLevel.DEBUG,buf.toString());
+					System.out.println(buf.toString());
 				}
 			}
 		}
 		logger.log(AcsLogLevel.DEBUG,reductionRules.size()+" reduction rules read from CDB");
 		
+		updateReductionRules();
+	}
+	
+	/**
+	 * Update the reduction rules in all the alarms in cache
+	 */
+	private void updateReductionRules() {
+		logger.log(AcsLogLevel.DEBUG,"Updating the reduction rules");
 		Collection<Alarm> cc=alarmDefs.values();
 		AlarmImpl[] allAlarms=new AlarmImpl[cc.size()];
 		cc.toArray(allAlarms);
@@ -549,9 +570,25 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 							if (isMulti) {
 								parent.addMultiplicityChild(aic);
 								logger.log(AcsLogLevel.DEBUG,"Added MULTI RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
+								if (alarmCache!=null) {
+									try {
+										alarmCache.replace(parent);
+									} catch (Throwable t) {
+										t.printStackTrace();
+										logger.log(AcsLogLevel.ERROR,"Error replacing alarm");
+									}
+								}
 							} else {
 								parent.addNodeChild(aic);
 								logger.log(AcsLogLevel.DEBUG,"Added NODE RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
+								if (alarmCache!=null) {
+									try {
+										alarmCache.replace(parent);
+									} catch (Throwable t) {
+										t.printStackTrace();
+										logger.log(AcsLogLevel.ERROR,"Error replacing alarm");
+									}
+								}
 							}
 						} 
 					}
@@ -577,6 +614,8 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				}
 			}
 		}
+		
+		dumpReductionRules();
 	}
 
 	private void saveAllIDs()
@@ -683,6 +722,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				return null;
 			}
 			logger.log(AcsLogLevel.DEBUG,"Default alarm found for "+alarmId);
+			System.out.println("Default alarm found for "+alarmId);
 			alarm=(AlarmImpl)defaultalarm.clone();
 			Triplet alarmTriplet = new Triplet(tripletItems[0],tripletItems[1],Integer.parseInt(tripletItems[2]));
 			alarm.setTriplet(alarmTriplet);
@@ -692,6 +732,12 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 							alarmTriplet.getFaultMember(), 
 							alarmTriplet.getFaultCode()));
 			// Add the alarm in the HashMap
+			//
+			// addAlarmToCache trigger the sending of the alarm to the clients
+			// i.e. a default alarm is sent to the client twice
+			addAlarmToCache(alarm);
+			// Refresh the reduction rules with the newly added alarm
+			updateReductionRules();
 		}
 		return alarm;
 		
@@ -904,6 +950,10 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			throw new IllegalStateException("Trying to add an alarm with an invalid ID!");
 		}
 		alarmDefs.put(alarmId, alarm);
+		System.out.println("Alarms in cache after adding "+alarm.getAlarmId());
+		for (String key: alarmDefs.keySet()) {
+			System.out.println("\tAlarm in cache: "+key);
+		}
 	}
 	
 	public String[] getAllAlarmIDs()
@@ -923,4 +973,38 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		return srcDefs;
 		
 	}
+	
+	public void setAlarmCache(ACSAlarmCacheImpl alarmCache) {
+		this.alarmCache=alarmCache;
+	}
+	
+	private void dumpReductionRules() {
+		System.out.println("Dumping reduction rules");
+		for (String key: alarmDefs.keySet()) {
+			AlarmImpl alarm = (AlarmImpl)alarmDefs.get(key);
+			System.out.println(alarm.getAlarmId());
+			String[] nodeParents=alarm.getNodeParents();
+			System.out.println("\tNODE parents");
+			for (String id: nodeParents) {
+				System.out.println("\t\t"+id);
+			}
+			String[] nodeChilds=alarm.getNodeChildren();
+			System.out.println("\tNODE childs");
+			for (String id: nodeChilds) {
+				System.out.println("\t\t"+id);
+			}
+			String[] multiParents=alarm.getMultiplicityParents();
+			System.out.println("\tMULTIPLICITY parents");
+			for (String id: multiParents) {
+				System.out.println("\t\t"+id);
+			}
+			String[] multiChilds=alarm.getMultiplicityChildren();
+			System.out.println("\tMULTIPLICITY childs");
+			for (String id: multiChilds) {
+				System.out.println("\t\t"+id);
+			}
+			System.out.println("\tMULTIPLICITY threshold: "+alarm.getMultiplicityThreshold());
+		}
+	}
 }
+
