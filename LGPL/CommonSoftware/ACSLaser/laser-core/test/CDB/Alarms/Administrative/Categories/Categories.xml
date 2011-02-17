@@ -7,6 +7,10 @@
     <alarms>
       <FaultFamily>Antenna</FaultFamily>
       <FaultFamily>Mount</FaultFamily>
+      <FaultFamily>MF_DEFAULT</FaultFamily>
+      <FaultFamily>NODE_DEFAULT</FaultFamily>
+      <FaultFamily>MF_REGEXP</FaultFamily>
+      <FaultFamily>NODE_REGEXP</FaultFamily>
     </alarms>
   </category>
   <category is-default="false" path="CATEGORY2">
