@@ -3,131 +3,221 @@ package alma.acs.monitoring.blobber;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+
+import org.apache.commons.collections.list.CursorableLinkedList;
 
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.acs.monitoring.DAO.ComponentData;
 
+/**
+ * This class encapsulates a <code>{@link CursorableLinkedList}&lt;{@link CollectorData}&gt;</code>,
+ * which holds all monitor collector references together with their data that got harvested by a blobber.
+ * It allows calls to {@link #add(CollectorData)} and {@link #remove(CollectorData)} while iterating
+ * over the list of CollectorData objects using methods {@link #next()} or {@link #hasNext()}.
+ * <p>
+ * The only added value compared to using the <code>CursorableLinkedList</code> directly is 
+ * the synchronization of concurrent calls and the type casts (CursorableLinkedList does not support generics).
+ */
 public class CollectorList {
 
-    private ArrayList<CollectorData> myList = new ArrayList<CollectorData>();
-    private int myIndex = 0;
-    private int myLastIndex = 0;
-
-    public CollectorList() {
+    /**
+     * CursorableLinkedList allows concurrent modifications and iteration, 
+     * so that we can use a simple iterator instead of taking care of list indices ourselves.
+     */
+    private final CursorableLinkedList myList = new CursorableLinkedList();
+    
+	/**
+	 * Smart list iterator, that takes account of list insertions and removals
+	 * in between the calls to next(), as long as the list methods
+	 * are not called concurrently.
+	 * @TOOD Use generics once the apache commons lists support them.
+	 */
+	private ListIterator myListIterator;
+    
+    
+	public CollectorList() {
+		resetIterator();
     }
 
-    public CollectorListStatus add(String inCollectorName)
-            throws InterruptedException {
+    /**
+     * Creates and adds a CollectorData object for the given collector ID.
+     * @see #add(CollectorData)
+     */
+    public CollectorListStatus add(String inCollectorName) {
         return add(new CollectorData(inCollectorName));
     }
 
-    public synchronized CollectorListStatus add(CollectorData inData)
-            throws InterruptedException {
+    /**
+     * @param inData  The object that identifies a collector and holds its data.
+     * @return ADDED if the CollectorData object was added to this list, or KNOWN if it was already in the list.
+     */
+    public CollectorListStatus add(CollectorData inData) {
         CollectorListStatus outValue = CollectorListStatus.KNOWN;
-        if (!this.myList.contains(inData)) {
-            if (this.myList.size() == 0) {
-                this.myIndex = 0;
-            }
-            this.myList.add(inData);
-            notify();
-            outValue = CollectorListStatus.ADDED;
+        synchronized (myList) {
+	        if (!this.myList.contains(inData)) {
+	            this.myList.add(inData);
+	            outValue = CollectorListStatus.ADDED;
+	        }
         }
         return outValue;
     }
 
+    
+    /**
+     * @param inCollectorName The ID of the collector for which we check the list.
+     * @return KNOWN if the given collector is already in this list, or UNKNOWN otherwise.
+     */
     public CollectorListStatus contains(String inCollectorName) {
         return contains(new CollectorData(inCollectorName));
     }
 
-    public synchronized CollectorListStatus contains(CollectorData inData) {
+    /**
+     * This method is currently used only from {@link #contains(String)}.
+     * Make it public if it should be used from outside.
+     */
+    protected CollectorListStatus contains(CollectorData inData) {
         CollectorListStatus outValue = CollectorListStatus.UNKNOWN;
-        if (this.myList.contains(inData)) {
-            outValue = CollectorListStatus.KNOWN;
+        synchronized (myList) {
+	        if (this.myList.contains(inData)) {
+	            outValue = CollectorListStatus.KNOWN;
+	        }
         }
         return outValue;
     }
 
+    /**
+     * 
+     * @param inCollectorName
+     * @return REMOVED if the given collector was in this list and got removed, or UNKNOWN otherwise.
+     */
     public CollectorListStatus remove(String inCollectorName) {
         return remove(new CollectorData(inCollectorName));
     }
 
-    public synchronized CollectorListStatus remove(CollectorData inData) {
-        CollectorListStatus outValue = CollectorListStatus.UNKNOWN;
-        int index = this.myList.indexOf(inData);
-        if (index != -1) {
-            if (index <= this.myIndex) {
-                this.myIndex--;
-            }
-            this.myList.remove(inData);
-            outValue = CollectorListStatus.REMOVED;
+    /**
+     * This method is currently used only from {@link #remove(String)}.
+     * Make it public if it should be used from outside.
+     */
+    protected synchronized CollectorListStatus remove(CollectorData inData) {
+    	boolean removedIt;
+        synchronized (myList) {
+        	removedIt = myList.remove(inData);
         }
-        return outValue;
+        return ( removedIt ? CollectorListStatus.REMOVED : CollectorListStatus.UNKNOWN );
     }
 
-    public synchronized int size() {
-        return this.myList.size();
-    }
-
-    public synchronized CollectorData next() throws InterruptedException {
-        CollectorData outData = null;
-        while (this.myList.size() == 0) {
-            wait();
-            this.myIndex = 0;
+    
+    /**
+     * @return The number of monitor collectors in this list.
+     */
+    public int size() {
+        synchronized (myList) {
+        	return this.myList.size();
         }
-        outData = this.myList.get(this.myIndex);
-        this.myLastIndex = this.myIndex;
-        this.myIndex++;
-        if (this.myIndex >= this.myList.size()) {
-            this.myIndex = 0;
+    }
+
+    
+    /**
+     * @return The next CollectorData from the list.
+     * @throws NoSuchElementException if we are at the end of the list. 
+     *         Should have checked with {@link #hasNext()}, and called {@link #resetIterator()}.
+     */
+    public CollectorData next() {
+        synchronized (myList) {
+	    	return (CollectorData) myListIterator.next();
         }
-        return outData;
     }
 
-    public synchronized int getLastIndex() {
-        return this.myLastIndex;
-    }
 
+    /**
+     * @return <code>true</code> if a subsequent call to {@link #next()}
+     *         will return another CollectorData object from the current iteration;
+     *         <code>false</code> otherwise.
+     */
+    public boolean hasNext() {
+        synchronized (myList) {
+        	return myListIterator.hasNext();
+        }
+    }        
+
+    public void resetIterator() {
+        synchronized (myList) {
+        	myListIterator = myList.listIterator();
+        }
+    }
+    
+    /**
+     * This class associates a Collector-ID with data:
+     * <ul>
+     *   <li>The {@link BlobData} for all properties watched by the collector.
+     *   <li>The last successful update time.
+     * </ul>.
+     * The collector-ID is the name of the collector component deployed in the container
+     * from whose components we want to collect monitoring data.
+     */
     protected static class CollectorData {
 
-        private String collectorId;
+        private final String collectorId;
 
-        public long lastSuccessfulAccessTime;
-
-        /**
-         * Key is property name, value is blob data
+		/**
+         * Key is property name, value is blob data.
+         * 
+         * HSO: Exposing a map in public is not nice. At least now it's final.
          */
-        public HashMap<String, BlobData> equipmentData = new HashMap<String, BlobData>();
+        public final HashMap<String, BlobData> equipmentData = new HashMap<String, BlobData>();
 
-        /**
-         * Used to store the previous value for archive-on-change values;
-         */
-        public Object previousValue;
+//        /**
+//         * Used to store the previous value for archive-on-change values;
+//         */
+//        public Object previousValue;
 
         public CollectorData(String inCollectorId) {
             if (inCollectorId == null) {
-                throw new IllegalArgumentException(
-                        "inCollectorId cannot be null.");
+                throw new IllegalArgumentException("inCollectorId cannot be null.");
             }
             this.collectorId = inCollectorId;
         }
 
-        @Override
-        public boolean equals(Object inObject) {
-            boolean outResult = false;
-            try {
-                CollectorData data = (CollectorData) inObject;
-                if (getCollectorId().equals(data.getCollectorId())) {
-                    outResult = true;
-                }
-            } catch (Exception e) {
-            }
-            return outResult;
-        }
-
+        /**
+         * @return The collector ID for a given container, which is the name of the collector component deployed in that container.
+         */
         public String getCollectorId() {
-            return this.collectorId;
+        	return this.collectorId;
         }
-    }
+        
+
+		@Override
+		public boolean equals(Object inObject) {
+			boolean outResult = false;
+			try {
+				CollectorData data = (CollectorData) inObject;
+				if (collectorId.equals(data.collectorId)) {
+					outResult = true;
+				}
+			} catch (Exception e) {
+			}
+			return outResult;
+		}
+
+		/**
+		 * Must be consistent with equals(), based only on collectorId.
+		 */
+		@Override
+		public int hashCode() {
+			return collectorId.hashCode();
+		}
+
+		/**
+		 * Timestamp of the last successful data retrieval from this monitor collector.
+		 * <p>
+		 * Currently no-op, but could be useful to store this data in the future.
+		 */
+		void setLastSuccessfulAccessTime(long currentTimeMillis) {
+		}
+
+	}
 
     protected static class BlobData extends ComponentData {
         public List<Object> dataList = new ArrayList<Object>();
