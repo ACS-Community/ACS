@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/jfree-jcommon-1.0.10.jar" sourcepath="src/jcommon-1.0.10/source"/>
-	<classpathentry kind="lib" path="lib/jfreechart-1.0.6.jar" sourcepath="src/jfreechart-1.0.6/source"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
-	<classpathentry kind="output" path="object/jfreejunit"/>
-</classpath>
