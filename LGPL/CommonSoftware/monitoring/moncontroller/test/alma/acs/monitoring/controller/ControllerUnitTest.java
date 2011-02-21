@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.component.ComponentLifecycleException;
+
+/**
+ * @TODO change from testng to junit
+ */
 public class ControllerUnitTest extends TestController {
 
     private static final boolean USE_DATABASE = false;
@@ -15,7 +21,7 @@ public class ControllerUnitTest extends TestController {
         IS_REGISTERED, ADD_COLLECTOR
     }
 
-    public ControllerUnitTest() {
+    public ControllerUnitTest() throws ComponentLifecycleException {
         super(USE_DATABASE);
     }
 
@@ -60,7 +66,7 @@ public class ControllerUnitTest extends TestController {
     }
 
     @Override
-    protected String isRegistered(String inComponentName) throws Exception {
+    protected String isRegistered(String inComponentName) throws AcsJContainerServicesEx  {
         myMilestoneList.add(Milestone.IS_REGISTERED);
         return super.isRegistered(inComponentName);
     }

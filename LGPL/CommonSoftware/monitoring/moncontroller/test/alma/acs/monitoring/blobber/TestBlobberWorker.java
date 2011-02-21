@@ -1,190 +1,104 @@
 package alma.acs.monitoring.blobber;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.lang.reflect.Constructor;
 
-import alma.TMCDB.MonitorCollector;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
+import alma.TMCDB.MonitorCollectorOperations;
+import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
-import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
-import alma.acs.container.ContainerServices;
 
-public class TestBlobberWorker extends BlobberWorker implements MonitorDAO {
+/**
+ * BlobberWorker mock.
+ */
+public class TestBlobberWorker extends BlobberWorker {
 
-    private MonitorTestCollector myCollector;
+	private volatile MonitorTestCollector myCollector;
 
-    private Long mySafetyMargin = 0L;
+//	private volatile Long mySafetyMargin = 0L;
 
-    private Boolean myCanHandle = true;
+	private volatile Boolean myCanHandle = true;
 
-    private DataLock<ComponentData> myBlobDataLock = new DataLock<ComponentData>();
+	/**
+	 * Allows a unit test to read all property data via (@link #fetchData()} 
+	 * before the next property data can be inserted.
+	 */
+	private final DataLock<ComponentData> myBlobDataLock;
 
-    private MonitorDAO myDao;
 
-    private static boolean useDatabase;
+	/**
+	 * @param inContainerServices
+	 * @param monitorDAO MonitorDAO, either mock or real
+	 * @param myBlobDataLock  see {@link #myBlobDataLock}.
+	 * @throws AcsJCouldntCreateObjectEx
+	 */
+	public TestBlobberWorker(ContainerServices inContainerServices, MonitorDAO monitorDAO, DataLock<ComponentData> myBlobDataLock) 
+			throws AcsJCouldntCreateObjectEx {
+		super(inContainerServices, new TestBlobberPlugin(inContainerServices.getLogger(), monitorDAO));
+		this.myBlobDataLock = myBlobDataLock;
+	}
 
-    public TestBlobberWorker() {
-        super(null);
-    }
+	@Override
+	protected void initWorker() {
+		this.myCollector = new MonitorTestCollector(myLogger);
+	}
 
-    public static void setUseDatabase(boolean inUseDatabase) {
-        useDatabase = inUseDatabase;
-    }
+	@Override
+	protected MonitorCollectorOperations getMonitorCollector(String inCollectorName) {
+		return this.myCollector;
+	}
 
-    @Override
-    protected void initWorker() {
-        this.myLogger = Logger.getLogger("alma.acs.monitoring.blobber");
+	@Override
+	protected boolean canHandle() {
+		return this.myCanHandle;
+	}
 
-        // get the top Logger:
-        Logger topLogger = java.util.logging.Logger.getLogger("");
-        // Handler for console (reuse it if it already exists)
-        Handler consoleHandler = null;
-        // see if there is already a console handler
-        for (Handler handler : topLogger.getHandlers()) {
-            if (handler instanceof ConsoleHandler) {
-                // found the console handler
-                consoleHandler = handler;
-                break;
-            }
-        }
-        if (consoleHandler == null) {
-            // there was no console handler found, create a new one
-            consoleHandler = new ConsoleHandler();
-            topLogger.addHandler(consoleHandler);
-        }
-        // set the console handler to finest
-        consoleHandler.setLevel(java.util.logging.Level.FINEST);
+	protected void setCanHandle(boolean inValue) {
+		this.myCanHandle = inValue;
+	}
 
-        this.myLogger.setLevel(Level.FINE);
-        this.myCollector = new MonitorTestCollector();
-    }
-
-    @Override
-    protected void initMonitorDAO() {
-        this.myMonitorDAO = this;
-        if (useDatabase) {
-            super.initMonitorDAO();
-        }
-    }
-
-    @Override
-    public void openTransactionStore() {
-    }
-
-    @Override
-    public void closeTransactionStore() {
-    }
-    
-    @Override
-    protected MonitorCollector getMonitorCollector(String inCollectorName) {
-        return this.myCollector;
-    }
-
-    @Override
-    protected boolean canHandle() {
-        synchronized (this.myCanHandle) {
-            return this.myCanHandle;
-        }
-    }
-
-    protected void setCanHandle(boolean inValue) {
-        synchronized (this.myCanHandle) {
-            this.myCanHandle = inValue;
-        }
-    }
-
-    @Override
-    protected void setCollectInterval(long inInterval) {
-        synchronized (this.myCollectInterval) {
-            this.myCollectInterval = inInterval;
-        }
-    }
-
-    @Override
-    public void store(ComponentData inData) throws Exception {
-        this.myLogger.fine("Storing blobber data.");
-        this.myBlobDataLock.put(cloneData(inData));
-        if (useDatabase) {
-            if (this.myDao == null) {
-					try {
-						Class<? extends ContainerServices> csClass = Class.forName("alma.archive.tmcdb.DAO.testsupport.DummyContainerServices").asSubclass(ContainerServices.class);
-						Constructor<? extends ContainerServices> ctor = csClass.getConstructor(Logger.class);
-						Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl").asSubclass(MonitorDAO.class);
-						Constructor<? extends MonitorDAO> ctor2 = daoClass.getConstructor(csClass);
-						this.myDao = ctor2.newInstance(ctor.newInstance(myLogger.getName()));
-					} catch (Exception ex) {
-						// @TODO refactor to throw a checked exception
-						myLogger.log(Level.SEVERE, "", ex);
-						throw new IllegalArgumentException(ex);
-					} 
-            }
-            this.myDao.store(inData);
-        }
-    }
-
-    private BlobData cloneData(ComponentData inBlob) {
-        BlobData outBlob = new BlobData();
-        outBlob.clob = inBlob.clob;
-        outBlob.componentName = inBlob.componentName;
-        outBlob.index = inBlob.index;
-        outBlob.propertyName = inBlob.propertyName;
-        outBlob.sampleSize = inBlob.sampleSize;
-        outBlob.serialNumber = inBlob.serialNumber;
-        outBlob.startTime = inBlob.startTime;
-        outBlob.stopTime = inBlob.stopTime;
-        if (inBlob.statistics != null) {
-            ComponentStatistics stats = new ComponentStatistics();
-            outBlob.statistics = stats;
-            stats.max = inBlob.statistics.max;
-            stats.mean = inBlob.statistics.mean;
-            stats.min = inBlob.statistics.min;
-            stats.stdDev = inBlob.statistics.stdDev;
-        }
-        return outBlob;
-    }
-
+    /**
+     * Fetches the data stored in {@link #storeData(BlobData)},
+     * with the side effect that the next ComponentData can then be stored.
+     * This mechanism puts the test in the position of the backing database that
+     * can see what property data came in.
+     */
     protected ComponentData fetchData() {
-        this.myLogger.fine("Fetching blobber data.");
+        myLogger.fine("Fetching blobber data.");
         return this.myBlobDataLock.take();
     }
 
-    protected void setSafetyMargin(long inMargin) {
-        synchronized (this.mySafetyMargin) {
-            this.mySafetyMargin = inMargin;
-        }
-    }
+//    protected void setSafetyMargin(long inMargin) {
+//    	this.mySafetyMargin = inMargin;
+//    }
 
-    protected MonitorTestCollector getCollector() {
-        synchronized (this.myCollector) {
-            return this.myCollector;
-        }
-    }
+	protected MonitorTestCollector getCollector() {
+		return this.myCollector;
+	}
 
-    protected void setCollector(MonitorTestCollector inCollector) {
-        synchronized (this.myCollector) {
-            this.myCollector = inCollector;
-        }
-    }
+//	protected void setCollector(MonitorTestCollector inCollector) {
+//		this.myCollector = inCollector;
+//	}
 
-    @Override
-    public List getMonitorData(long arg0, Timestamp arg1, Timestamp arg2) {
-        /*
-         * Method not used. Forced implementation from interface.
-         */
-        return null;
-    }
-
-    @Override
-    public void close() {
-        /*
-         * Method not used. Forced implementation from interface.
-         */
-    }
+	private static class TestBlobberPlugin extends BlobberPlugin {
+		private final MonitorDAO monitorDAO;
+		public TestBlobberPlugin(Logger logger, MonitorDAO monitorDAO) {
+			super(logger);
+			this.monitorDAO = monitorDAO;
+		}
+		@Override
+		public MonitorDAO createMonitorDAO() {
+			return monitorDAO;
+		}
+		@Override
+		public int getCollectorIntervalSec() {
+			return 60; // TODO old BlobberImpl.COLLECT_INTERVAL_SEC 
+		}
+		@Override
+		public boolean isProfilingEnabled() {
+			return false;
+		}
+	}
 
 }
