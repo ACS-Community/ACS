@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2011/02/03 17:07:22 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.3 2011/02/21 17:16:51 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = runMonitorArchiverUnitTest.sh
+SCRIPTS_L       = MonitorArchiverTATPrologue
 
 #
 # TCL scripts (public and local)
@@ -135,7 +135,6 @@ USER_IDL =
 #
 JARFILES = testMonitorArchiver
 testMonitorArchiver_DIRS = alma
-jjj_DIRS=
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
@@ -205,9 +204,11 @@ endif
 # TARGETS
 # -------
 all:	do_all
+	  mkdir -p tmp
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
+	$(RM) tatlogs tmp *gclog loggingClient.pid sed.scan .purifydir
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
