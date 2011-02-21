@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2011/02/11 17:33:36 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.6 2011/02/21 11:26:21 htischer Exp $"
 #
 # Makefile of log4cpp port to VxWorks
 #
@@ -70,7 +70,9 @@
 # configure		autoconfigure the build to the current runtime/build environment.
 #				Unpack and patch when necessary.
 #
-# test			Run a subset of the provided test code.
+# test			Run the provided test suite on the remote host
+#
+# reboot	    Reboot the remote host, optionally before a new test
 #
 # printenv		Dump the Shell environment as seen inside make
 #------------------------------------------------------------------------
@@ -511,6 +513,8 @@ all: configure compile do_all
 # - dummy cpp.cpp no longer needed, because acsMakefile with ACE_ROOT_VW always uses C++ link, see above.
 #	touch cpp.cpp	
 # Note: Need to treat 'make install' and 'make tests' special also. But 'make clean_build' already cleans the tests.
+#
+# Also create expect script to reboot the VxWorks remote host.
 
 compile:
 	@echo ". . . compiling . . ."
@@ -518,13 +522,31 @@ compile:
 	mkdir -p ../lib
 	ln -ft ../lib -s ../src/log4cpp-$(LOG4CPP_VER)/src/.libs/liblog4cpp.a
 	$(MAKE) -f tests.Makefile all
+	mkdir -p ../bin
+	@echo "echo '...remote reboot script...' >../bin/reboot.expect"
+	@{ \
+	echo "#!/usr/bin/expect -f"; \
+	echo "set xhost [lindex \$$argv 0]"; \
+	echo "set timeout 60\r"; \
+	echo "spawn rlogin \$$xhost"; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"reboot\r\r\r\r\r\""; \
+	echo "expect -ex \"Connection reset by peer\""; \
+	echo "spawn rlogin \$$xhost"; \
+	echo "send \"\r\r\r\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "close"; \
+	echo "wait"; \
+	} >../bin/reboot.expect
+	@[ -r ../bin/reboot.expect ] || exit 1
+	chmod a+x ../bin/reboot.expect
 	@echo " . . . 'compile' done" 
 
 # Additional files created by compile including libtests.a by 'tests.Makefile all'
 # dummy cpp.cpp no longer needed, see above.
 .PHONY : clean_compile 
 clean_compile :
-	rm -rf ../lib/libtests.a ../lib/liblog4cpp.a ../bin/rtests.expect
+	rm -rf ../lib/libtests.a ../lib/liblog4cpp.a ../bin/rtests.expect ../bin/reboot.expect
 
 # do clean of default acsMakefile things before cleaning special files, see target 'compile'.
 .PHONY : clean_build 
@@ -600,7 +622,7 @@ clean_dist : clean clean_dist_all
 		fi; \
 	fi
 	$(MAKE) -C ../../ws/src clean_dist
-	rm -rf log4cpp-$(LOG4CPP_VER) configure.log log4cpp_teststimes.log log4cpp_tests.log ../test
+	rm -rf log4cpp-$(LOG4CPP_VER) configure.log log4cpp_teststimes.log log4cpp_tests.log log4cpp_testsyslog.log log4cpp_testmain.log A1.log sub1.log ../test
 	@echo " . . . clean_dist done"
 
 #skip default acsMakefile things
@@ -728,20 +750,30 @@ printenv:
 
 # Executing all individual tests on VxWorks remote host
 # Need hostname as make Variable REMOTE_HOST
-# Assuming installation folder mounted to same place on remote host
-# Assuming home folder of remote user is writable and mounted since boot via rsh or ftp.
-# Assumes that tests and test execution script are already built and installed.
-# For "~" remote home folder as writeable folder, escape to not expanding by local shell!
-#   see tests.Makefile
+#
+# Not useful here, because rsh/ftp do not support append mode of files:
+#   Assuming installation folder mounted to same place on remote host
+#   Assuming home folder of remote user is writable and mounted since boot via rsh or ftp.
+#   Assumes that tests and test execution script are already built and installed.
+#   For "~" remote home folder as writeable folder, escape to not expanding by local shell!
+#     see tests.Makefile
+# Instead of rsh/ftp, create a nfs mount on the remote host for the remote accessible files.
+#   Below this provide a folder which is writeable for the remote user for temporary files.
+#   The remote host needs to know the name of the local workstation for nfsMount.
+#   Pass this instead of the now unused "~" for the tmp folder.
+#
+# After the test save the results in the current folder and remove the temp folder for security reasons.
+#
 # redirect test output into file
 # For easier diff of results remove time stamps
 # log4cpp_tests.log
-# Known differences between VxWorks and Linux results
-# - Date Format with Month Name abbreviation uses capital letters "MMM" instead of mixed case "Mmm" 
 .PHONY : tests 	
 tests :
 	@if [ x$(REMOTE_HOST) == x ]; then echo Error: 'REMOTE_HOST=xxx' missing!; exit 1; fi
-	../bin/rtests.expect $(REMOTE_HOST) $(INSTALL_DIR)/vw/bin/$(CPU) "~" | tee log4cpp_teststimes.log
+	rm -rf $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp
+	mkdir -p $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp
+	chmod a+w $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp
+	../bin/rtests.expect $(REMOTE_HOST) $(INSTALL_DIR)/vw/bin/$(CPU) `hostname` `date +%s`| tee log4cpp_teststimes.log
 	sed \
 	-e "s/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/XXXX-XX-XX/" \
 	-e "s/[0-9][0-9]:[0-9][0-9]:[0-9][0-9],[0-9][0-9][0-9]/XX:XX:XX,XXX/" \
@@ -750,6 +782,15 @@ tests :
 	-e "s/[0-9][0-9]*\.*[0-9]* us/XX.XX us/" \
 	-e "s/^[0-9][0-9][0-9][0-9]*/XXX/" \
 	log4cpp_teststimes.log > log4cpp_tests.log
+	mv -ft . $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp/log4cpp_testsyslog.log $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp/log4cpp_testmain.log $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp/A1.log  $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp/sub1.log
+	rm -rf $(INSTALL_DIR)/vw/bin/$(CPU)/log4cpp_temp
 	@echo " . . . remote test done"
+
+# Reboot the remote host
+.PHONY : reboot
+reboot :
+	@if [ x$(REMOTE_HOST) == x ]; then echo Error: 'REMOTE_HOST=xxx' missing!; exit 1; fi
+	../bin/reboot.expect $(REMOTE_HOST)
+	@echo " . . . remote reboot done"
 
 #___oOo___

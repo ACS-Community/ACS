@@ -1,3 +1,27 @@
+htischer 21/02/11 ressource cleanup, VxWorks fixes
+	Linux and Vxworks:
+	- FileAppender(name,fileName) Using the same filename for more appenders is not allowed.
+	  Instead use Appender::getAppender(name)
+	  or open the file externally and use dup()
+	  or use FileAppender::FileAppender(name,fd)
+    - object query and cleanup functions, Ressource cleanup on application end to allow multiple
+      sessions within a single process
+    - Appender::reopen() no longer skips remaining Appenders on first error and diagnostics
+    - Timestamp sign error
+    - text/num Conversion of added log Priorities now succeeds 
+    VxWorks:
+	- Timestamp with sub second resolution
+    - with nfs,rsh and ftp, O_APPEND is not supported and multiple opens with the same filename
+      are not detected as being the same file which can cause corrupted data. 
+      FileAppender workarounds: open() - unique filename explicte lseek, reopen() - keep same fd
+	  Note: dup() is ok even with nfs/rsh/ftp !
+	Note: For clients writing into the same nfs file in append mode from different
+	  machines, the corresponding restriction is inherent to nfs and affects all operating systems!
+	Todo: Priority.cpp: Verify correct offset for rounding.
+	  If e.g 100 delivers ALERT and 200 delivers CRITICAL, should 101 and/or 199 deliver ALERT or CRITICAL ? 
+
+---
+
 htischer  11/02/11  Enhance testsuite, automated run, preprocess test log for easier diff.
 					Rename 'make clean' without rtobar change to 'make clean_build'
 					Rename 'make clean_configure' to 'make clean'

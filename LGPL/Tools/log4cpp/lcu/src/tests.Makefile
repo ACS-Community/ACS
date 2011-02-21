@@ -50,10 +50,11 @@ all : expect
 
 # Create script to rlogin into remote VxWorks host and executing all individual tests.
 # Usage of script:
-# rtests.expect <RemoteHost> <RemoteBinFolder> <RemoteTmpFolder>
+# rtests.expect <RemoteHost> <RemoteBinFolder> <BuildHost> <CurTimestamp>
 # RemoteHost: Name of VxWorks machine where to execute tests
 # RemoteBinFolder: Folder of installed executables from the viewpoint of VxWorks
 # RemoteTmpFolder: Some Writeable Folder from the viewpoint of VxWorks
+# CurTimestamp: Seconds since 1-Jan-1970 00:00:00 of current time
 #
 # extra tests in noinst_PROGRAMS:
 # testmain [-n <count>] [<filename>]
@@ -74,7 +75,10 @@ all : expect
 #	echo "expect -gl \"us\r\""; \
 #
 # Testcases of $(TESTS):
-# testConfig and testPropertyConfig need additional files in current folder, see make install below
+# testConfig and testPropertyConfig need additional files, see make install below
+# Either in current folder or in folder given by environment variable $srcdir
+# current folder must be writeable, because config file set to write logs into same folder.
+# Therefore cd to tmp folder and set srcdir to the config file location.
 # 
 # Attention! Need to unload previous instance of test before downloading again!
 #
@@ -89,6 +93,33 @@ all : expect
 #
 # Before very first acsMakefile do_all, ../bin might not exist. Create to be sure.
 # Note: Failed redirection of comamnd grouping { } delivers no exit code!
+#
+# On VxWorks neither rsh/ftp not nfs do support append mode, important to not overwrite logs!
+# Workaround in FileAppender::_append
+# Now using nfs. Snippets below show rsh/ftp use:
+# Caller must make sure that <RemoteBinFolder> contains a writeable subfolder log4cpp_temp!
+# <RemoteTmpFolder> no longer needed, provide the nfs server name instead.
+# rtests.expect <RemoteHost> <RemoteBinFolder> <RemoteTmpFolder> <CurTimestamp>
+# tmpfolder accessible on build host, managed by caller, no longer need to clean up in script.
+# Assume that log files are empty at start.
+#	echo "send \"rm \\\"\$$tmp/log4cpp_testmain.log\\\"\r\""; \
+#	echo "expect -ex \"\\n-> \""; \
+#	echo "send \"rm \\\"\$$tmp/log4cpp_testsyslog.log\\\"\r\""; \
+#	echo "expect -ex \"\\n-> \""; \
+# Even though logs no accessible from host, keep them in the expect script,
+# because they are part of the test result log also on the ws.
+#
+# Known differences between VxWorks and Linux results
+# - Date Format with Month Name abbreviation uses capital letters "MMM" instead of mixed case "Mmm" 
+# - testPattern: VxWorks Kernel Process is running since boot, Process time clock() makes no sense
+#	  and returns -1, matching VxWorks documentation.
+#     See PatternLayout.hh, PatternLayout::format documentation for %u
+# - testPriority/cout:
+#     try { cout << "xxx" << throwexception(); } catch(...) : cout << caught;
+#     On an exception in throwexception(), Linux disposes the entire expression, VxWorks still shows the "xxx".
+# - Having the same log file open multiple times independently on OS level corrupts file output.
+#   Use the same FileAppender reference for multiple Categories, or
+#   on FileAppender::FileAppender(name,fileName) use the same name on all instances of the same fileName.
 
 .PHONY : expect	
 expect :
@@ -96,11 +127,28 @@ expect :
 	@echo "echo '...remote tests execution script...' >../bin/rtests.expect"
 	@{ \
 	echo "#!/usr/bin/expect -f"; \
-	echo "set host [lindex \$$argv 0]"; \
-	echo "set dir [lindex \$$argv 1]"; \
-	echo "set tmp [lindex \$$argv 2]"; \
+	echo "set xhost [lindex \$$argv 0]"; \
+	echo "set nfsexport [lindex \$$argv 1]"; \
+	echo "set bhost [lindex \$$argv 2]"; \
+	echo "set curtimestamp [lindex \$$argv 3]"; \
+	echo "set dir /INTROOTBIN"; \
+	echo "set tmp \$$dir/log4cpp_temp"; \
 	echo "set timeout 30\r"; \
-	echo "spawn rlogin \$$host"; \
+	echo "spawn rlogin \$$xhost"; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"curtimep = calloc(8,1)\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"*curtimep = \$$curtimestamp\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"clock_settime(0,curtimep)\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"curtime = time(0)\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"puts(ctime(&curtime))\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"nfsMount(\\\"\$$bhost\\\",\\\"\$$nfsexport\\\",\\\"\$$dir\\\")\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"putenv \\\"srcdir=\$$dir\\\"\r\""; \
 	echo "expect -ex \"\\n-> \""; \
 	echo "send \"cd \\\"\$$dir\\\"\r\""; \
 	echo "expect -ex \"\\n-> \""; \
@@ -112,21 +160,25 @@ expect :
 	echo "expect -ex \"\\n-> \""; \
 	echo "send \"ld 0,0,\\\"log4cpptests\\\"\r\""; \
 	echo "expect -ex \"\\n-> \""; \
+	echo "send \"cd \\\"\$$tmp\\\"\r\""; \
+	echo "expect -ex \"\\n-> \""; \
 	for atest in $(TESTS); do \
 		echo "send \"$$atest\r\""; \
 		echo "expect -ex \"\\n-> \""; \
 	done; \
-	echo "send \"testmain \\\"-n 21\\\"\r\""; \
+	echo "send \"copy \\\"A1.log\\\",0\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"copy \\\"sub1.log\\\",0\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"testmain \\\"-s log4cpp_testsyslog.log -n 21\\\"\r\""; \
 	echo "expect -timeout 30 -ex \"\\n-> \""; \
-	echo "send \"rm \\\"\$$tmp/log4cpp_testmain.log\\\"\r\""; \
+	echo "send \"testmain \\\"-s log4cpp_testsyslog.log -n 21 log4cpp_testmain.log\\\"\r\""; \
 	echo "expect -ex \"\\n-> \""; \
-	echo "send \"testmain \\\"-n 21 \$$tmp/log4cpp_testmain.log\\\"\r\""; \
-	echo "expect -ex \"\\n-> \""; \
-	echo "send \"copy \\\"\$$tmp/log4cpp_testmain.log\\\",0\r\""; \
-	echo "expect -ex \"\\n-> \""; \
-	echo "send \"rm \\\"\$$tmp/log4cpp_testmain.log\\\"\r\""; \
+	echo "send \"copy \\\"log4cpp_testmain.log\\\",0\r\""; \
 	echo "expect -ex \"\\n-> \""; \
 	echo "send \"testbench \\\"10 5\\\"\r\""; \
+	echo "expect -ex \"\\n-> \""; \
+	echo "send \"copy \\\"log4cpp_testsyslog.log\\\",0\r\""; \
 	echo "expect -ex \"\\n-> \""; \
 	echo "close"; \
 	echo "wait"; \

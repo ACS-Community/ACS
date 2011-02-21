@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.7 2011/02/11 17:33:36 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.8 2011/02/21 11:26:21 htischer Exp $"
 #
 # Makefile of log4cpp
 #
@@ -54,7 +54,7 @@
 # configure		autoconfigure the build to the current runtime/build environment.
 #				Unpack and patch when necessary.
 #
-# test			Run a subset of the provided test code.
+# test			Run the provided test suite
 #
 # printenv		Dump the Shell environment as seen inside make
 #------------------------------------------------------------------------
@@ -213,7 +213,7 @@ clean_dist : clean
 		echo mv log4cpp-$(LOG4CPP_VER).patch.tmp log4cpp-$(LOG4CPP_VER).patch; \
 		mv -f log4cpp-$(LOG4CPP_VER).patch.tmp log4cpp-$(LOG4CPP_VER).patch; \
 	fi
-	rm -rf log4cpp-$(LOG4CPP_TAR) log4cpp-$(LOG4CPP_VER) configure.log log4cpp_testmain.log log4cpp_teststimes.log log4cpp_tests.log
+	rm -rf log4cpp-$(LOG4CPP_TAR) log4cpp-$(LOG4CPP_VER) configure.log log4cpp_teststimes.log log4cpp_tests.log log4cpp_testmain.log
 	@echo " . . . clean_dist done"
 
 .PHONY : man
@@ -331,17 +331,22 @@ printenv:
 # redirect test output into file
 # For easier diff of results remove time stamps
 # log4cpp_tests.log
-# testmain appends to the log, therefore delete log4cpp_testmain.log before test to get consistent result.
+# testmain appends to the log, therefore delete log4cpp_testmain.log A1,log and sub1.log
+# before test to get consistent result.
 .PHONY : tests 	
 tests :
 	@echo "{...tests...} 2>&1 | tee log4cpp_teststimes.log"
 	@{ \
+	echo rm -f log4cpp_testmain.log log4cpp-$(LOG4CPP_VER)/tests/A1.log log4cpp-$(LOG4CPP_VER)/tests/sub1.log; \
+	rm -f log4cpp_testmain.log log4cpp-$(LOG4CPP_VER)/tests/A1.log log4cpp-$(LOG4CPP_VER)/tests/sub1.log; \
 	echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) check; \
 	$(MAKE) -C log4cpp-$(LOG4CPP_VER) check; \
+	echo cat log4cpp-$(LOG4CPP_VER)/tests/A1.log; \
+	cat log4cpp-$(LOG4CPP_VER)/tests/A1.log; \
+	echo cat log4cpp-$(LOG4CPP_VER)/tests/sub1.log; \
+	cat log4cpp-$(LOG4CPP_VER)/tests/sub1.log; \
 	echo log4cpp-$(LOG4CPP_VER)/tests/testmain -n 21; \
 	log4cpp-$(LOG4CPP_VER)/tests/testmain -n 21; \
-	echo rm -f log4cpp_testmain.log; \
-	rm -f log4cpp_testmain.log; \
 	echo log4cpp-$(LOG4CPP_VER)/tests/testmain -n 21 log4cpp_testmain.log; \
 	log4cpp-$(LOG4CPP_VER)/tests/testmain -n 21 log4cpp_testmain.log; \
 	echo cat log4cpp_testmain.log; \
