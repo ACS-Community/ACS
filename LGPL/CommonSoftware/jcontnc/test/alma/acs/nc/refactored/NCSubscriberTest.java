@@ -332,11 +332,18 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		m_subscriber.startReceivingEvents();
 		assertFalse(m_subscriber.isDisconnected());
 
-		// Now we're connected, try to do illegal stuff
+		// Verify that client can connect multiple times.
+		// This is an (ugly) side effect of having to enable -AllowReconnect in the TAO notify service configuration file,
+		// which is needed for reconnection after a notify service crash. 
+		// See also TAO/ACE_wrappers/build/linux/TAO/docs/notification/reliability.html
+		// and email by Jorge Avarias from 2011-02-18 ("NotifyService -AllowReconnect option"):
+		// "[...] component is able to detect that NC was down, but when the component tries 
+		// to reconnect to the NC it fails with several CORBA Exceptions because is unable to reconnect to the NC."
 		try {
 			m_subscriber.startReceivingEvents();
-			fail("startReceivingEvents() should fail, as we're already connected");
-		} catch(IllegalStateException e) { }
+		} catch(IllegalStateException e) { 
+			fail("Second call to startReceivingEvents() should be OK. Check TAO option -AllowReconnect!");
+		}
 
 		try {
 			m_subscriber.resume();
