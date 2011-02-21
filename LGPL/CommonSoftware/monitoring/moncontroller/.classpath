@@ -5,19 +5,22 @@
 	<classpathentry kind="lib" path="lib/testng-5.8-jdk15.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/MonitorArchiverIF.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/CollectorListStatus.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/CollectorListStatus.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserrj.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/TMCDBCOMMON_IDL.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/MonitorArchiver.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/MonitoringDAO_IF.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/TMCDBCOMMON_IDL.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorArchiverIF.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitoringDAO_IF.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/MonitorCollectorErr.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/MonitorCollector.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/MonitorBlobber.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollectorErr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollector.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorBlobber.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_monblobber"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
