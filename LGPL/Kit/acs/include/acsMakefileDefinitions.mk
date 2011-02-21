@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.14 2011/02/17 18:14:45 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.15 2011/02/21 09:55:20 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -31,6 +31,20 @@ $(eval toFile_$1 = $(if $(wildcard $(PRJTOP)/$(dir_$1)), \
                $(INSTALL_ROOT)/$(dir_$1)/$(name_$1), \
                $(error $(dir_$1) is not a standard directory) ) ))
 
+
+################################################################################
+# FUNCTION createJar
+#
+# Creates or updates (if already present) a jarfile with the .class files
+# present in a given root directory. Optionally, it also includes the source
+# files, if present.
+#
+# Arguments:
+#  $1  jarfile name, without extension
+#  $2  (not used?)
+#  $3  directory from where the source .java files are taken from
+#  $4  Whether the resulting jarfile should include the source .java files.
+#      Any non-empty value will produce that source files are included
 define createJar
 	$(AT) jarfile="`pwd`/../lib/$(strip $1).jar"; \
            $(RM) -f $$$${jarfile}.tmp.upd ; \
@@ -655,9 +669,9 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
                echo "$(strip $1)-ACS-Generated-FromModule: $(PWD)" >  ../object/$1/$(strip $1).manifest; \
              fi; \
         fi
-	$(AT)CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC)  -g -d $$(TMPSRC) @$$($1_FILELISTFILE)
-	$(AT)(cd $$(TMPSRC); jar cf ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest && $(RM) ../$(strip $1).manifest )
-	$(AT)$(RM) -fr $$(TMPSRC)
+	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC)  -g -d $$(TMPSRC) @$$($1_FILELISTFILE)
+	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
+	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)
 ifeq ($(strip $(DEBUG)),on)
 	$(AT)cd .. && jar uf $$(tgtDir$1)/$1.jar `for f in $$($1_source_file_list); do echo $$(currentLocation)/$$$${f} | tr '\n' ' '; done`
