@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Container xmlns="urn:schemas-cosylab-com:Container:1.0" 
+           xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0" 
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xmlns:log="urn:schemas-cosylab-com:LoggingConfig:1.0" 
+           PingInterval="120"
+           ImplLang="java">
+  <Autoload/>
+  <LoggingConfig 
+             minLogLevel="2" 
+             minLogLevelLocal="2" 
+             immediateDispatchLevel="99">
+	<log:_ Name="hibernate@ARCHIVE/TMCDB/BLOBBER1/javaContainer" minLogLevel="4" minLogLevelLocal="4" />
+	<log:_ Name="jacorb@ARCHIVE/TMCDB/BLOBBER1/javaContainer" minLogLevel="5" minLogLevelLocal="5" />
+  </LoggingConfig>
+</Container>
