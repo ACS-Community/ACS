@@ -333,7 +333,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		assertFalse(m_subscriber.isDisconnected());
 
 		// Verify that client can connect multiple times.
-		// This is an (ugly) side effect of having to enable -AllowReconnect in the TAO notify service configuration file,
+		// This reconnection ability is an (ugly) side effect of having to enable "-AllowReconnect" in the TAO notify service configuration file,
 		// which is needed for reconnection after a notify service crash. 
 		// See also TAO/ACE_wrappers/build/linux/TAO/docs/notification/reliability.html
 		// and email by Jorge Avarias from 2011-02-18 ("NotifyService -AllowReconnect option"):
@@ -360,8 +360,9 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 		try {
 			m_subscriber.startReceivingEvents();
-			fail("startReceivingEvents() should fail, as we're already connected");
-		} catch (IllegalStateException e) { }
+		} catch (IllegalStateException e) { 
+			fail("Second call to startReceivingEvents() should be OK. Check TAO option -AllowReconnect!");
+		}
 
 		m_subscriber.resume();
 		m_subscriber.disconnect();
