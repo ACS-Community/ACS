@@ -216,6 +216,13 @@ public class DummyContainerServices implements ContainerServices
 	}
 
 	/**
+	 * @see alma.acs.container.ContainerServices#releaseComponent(String, ComponentRequestCallback)
+	 */
+	@Override
+	public void releaseComponent(String componentUrl, ComponentRequestCallback callback) {
+	}
+
+	/**
 	 * @see alma.acs.container.ContainerServices#registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
 	 */
 	@Override

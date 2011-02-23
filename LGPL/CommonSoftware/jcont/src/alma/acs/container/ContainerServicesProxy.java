@@ -217,6 +217,10 @@ public class ContainerServicesProxy implements ContainerServices
 		delegate.releaseComponent(componentUrl);
 	}
 
+	public void releaseComponent(String componentUrl, ComponentRequestCallback callback) {
+		delegate.releaseComponent(componentUrl, callback);
+	}
+	
 	/**
 	 * @see alma.acs.container.ContainerServices#registerComponentListener(alma.acs.container.ContainerServices.ComponentListener)
 	 */

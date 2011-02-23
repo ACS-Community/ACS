@@ -260,9 +260,32 @@ public interface ContainerServices extends ContainerServicesBase
 	 * This method will return only when the component has actually been released,
 	 * which may take some time in case there are still active requests being processed.
 	 * 
-	 * @param componentUrl  the name/curl of the component instance as used by the manager  
+	 * @param componentUrl  the name/curl of the component instance as used by the manager
+	 * @deprecated since ACS 9.1.0
 	 */
 	public void releaseComponent(String componentUrl);
+
+	public static interface ComponentRequestCallback {
+		
+	}
+	
+	/**
+	 * Releases the reference to the specified component.
+	 * Releasing a component reference may result in the deactivation of that component, 
+	 * if no other clients hold (sticky) references. 
+	 * This call will return as soon as the release request has been delivered to the ACS manager, 
+	 * which means that the reference count evaluation and possible component deactivation will happen 
+	 * only after returning from this call. 
+	 * <p>
+	 * If your code must synchronize with the reference evaluation and possible component deactivation in the target container,
+	 * or if you are interested in exceptions that may occur during component deactivation, 
+	 * then you should supply the optional <code>ComponentRequestCallback</code> object and block execution of your 
+	 * calling thread until you receive the callback.
+	 * 
+	 * @param componentUrl the name/curl of the component instance as used by the manager
+	 * @param callback may be <code>null</code> if you do not need to wait for component activation or to see the results.
+	 */
+	public void releaseComponent(String componentUrl, ComponentRequestCallback callback);
 	
 	
 	public static interface ComponentListener {

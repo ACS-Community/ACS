@@ -40,8 +40,12 @@ import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
+
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
@@ -74,9 +78,6 @@ import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -817,6 +818,13 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 	}
 
+	@Override
+	public void releaseComponent(String componentUrl, ComponentRequestCallback callback) {
+		// @TODO implement for ACS 9.1, and have the old method call this one
+		m_logger.warning("releaseComponent(componentUrl, callback) not yet implemented. Will call the old synchronous method.");
+		releaseComponent(componentUrl);
+	}
+
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)
 	 */
@@ -1314,6 +1322,18 @@ public class ContainerServicesImpl implements ContainerServices
 				faultState = ACSAlarmSystemInterfaceFactory.createFaultState(faultFamily, faultMember, faultCode);
 			} catch (FaultStateCreationErrorEx e) {
 				e.printStackTrace();
+				// @TODO
+//			} catch (ACSASFactoryNotInitedEx ex) {
+//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
+//						+ " could not be thrown. Message=" + ex.getMessage());
+//			} catch (SourceCreationErrorEx ex) {
+//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
+//						+ " could not be thrown. Message=" + ex.getMessage());
+//			} catch (FaultStateCreationErrorEx ex) {
+//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
+//						+ " could not be thrown. Message=" + ex.getMessage());
+//			}
+
 			}
 
 			if( raise )
