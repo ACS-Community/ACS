@@ -42,9 +42,14 @@ import java.util.logging.Logger;
  */
 public class CleaningDaemonThreadFactory implements ThreadFactory
 {
-	// we keep track of our threads outside of the thread group
+	/**
+	 * We keep track of our threads also outside of the thread group.
+	 */
 	private final List<Thread> threadList = new ArrayList<Thread>();
 
+	/**
+	 * Running index used for thread names.
+	 */
 	private final AtomicInteger threadNumber = new AtomicInteger(1);
 
 	private final Logger logger;
