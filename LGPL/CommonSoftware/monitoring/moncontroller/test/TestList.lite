@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.2 2011/02/21 17:16:51 hsommer Exp $"
+# "@(#) $Id: TestList.lite,v 1.3 2011/02/28 16:57:23 tstaig Exp $"
 #
 # Makefile for running tat test.
 #
@@ -29,6 +29,6 @@ SOURCE TATEnvironment
 PROLOGUE MonitorArchiverTATPrologue
 
 #
-1 MonitorArchiverUnitTest "acsStartJava -D archive.configFile=archiveConfig.properties.blobberTest -D 'ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2'  alma.acs.testsupport.tat.TATJUnitRunner alma.archive.tmcdb.monitor.BlobberWorkerUnitTest"
+1 MonitorArchiverUnitTest "acsStartJava -D archive.configFile=archiveConfig.properties.blobberTest -D 'ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2' alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.BlobberWorkerUnitTest"
 
 EPILOGUE acsutilTATEpilogue
