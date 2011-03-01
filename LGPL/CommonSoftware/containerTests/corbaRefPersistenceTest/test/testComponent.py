@@ -17,7 +17,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: testComponent.py,v 1.3 2009/08/28 01:56:29 hyatagai Exp $"
+# "@(#) $Id: testComponent.py,v 1.4 2011/03/01 23:04:13 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -88,6 +88,7 @@ for cmd in clients:
     clients[cmd].sendline("Call")
     sleep(1)
     clients[cmd].expect('Call .*')
+    print clients[cmd].after
     print "%s: %s" % (cmd, clients[cmd].after.strip())
 print ""
 
@@ -98,10 +99,11 @@ for c,t in [("javaContainer", "--java"),("cppContainer", "--cpp"),("pyContainer"
     start_container(c, t)
 print ""
 
+sleep(10)
 print "Invoking Component methods after kill..."
 for cmd in clients:
     clients[cmd].sendline("Call")
-    sleep(1)
+    sleep(2)
     clients[cmd].expect(['Call .*',pexpect.EOF])
     print "%s: %s" % (cmd, clients[cmd].after.strip())
 print ""
