@@ -3,11 +3,41 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<title>Main Topic</title>
+	<title>The Event GUI</title>
 </head>
 
 <body>
-<h1>Main Topic</h1>
-Please enter your text here.
+<h1>Event GUI Overview</h1>
+The eventGUI is intended as a replacement for the Python-based acseventbrowser,
+which has shown stability problems in the past. The new, Eclipse RCP (Java) based
+eventGUI does not include all the functionality that was offered by its
+predecessor, but should be easier to use and understand.
+
+There are three principal views:
+<h2>Service Summary View</h2>
+This hierarchical view displays high-level information concerning each of the instances of
+the CORBA Notify Service that are currently running under ACS. At the time
+of writing, these are:
+<ol>
+<li><b>Default Notify Service</b>: used by subsystems for event communication</li>
+<li><b>Logging Notify Service</b>: currently carries logs across the network</li>
+<li><b>Archiving Notify Service</b>: carries those BACI properties for which it is enabled in the (TM)CDB</li>
+</ol>
+The leaves of the explorer-like tree show the number of consumers and the number of
+suppliers for each of these Services. When monitoring is enabled (right-click
+anywhere on the View and select "Start monitoring"), the recent (within the last
+10 seconds) increase or decrease in the number of suppliers/consumers will be
+shown next to the totals.
+<h2>Channel Tree View</h2>
+<h2>Event List View</h2>
+Clicking on an event in this view will open the
+<h3>Event Detail View</h3>
+This view (still somewhat of a work in progress) displays the decoded contents
+of the selected event. In the case of an event that contains one or more
+arrays, only the first 5 elements of the array will be shown.
+
+Note that for large events, <I>e.g.</I>. with thousand-element arrays, display
+of the event may take some time, as indicated by a rotating cursor.
+
 </body>
 </html>
