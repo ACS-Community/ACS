@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.15 2011/02/21 09:55:20 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.16 2011/03/01 13:13:31 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -1152,6 +1152,12 @@ do_python_package_$1: ../lib/python/site-packages/$1;
 $1_python_source_files:= $(if $1,$(shell find $1  -type f ! -path '*/CVS/*' ! -path '*/.svn/*'))
 $1_python_install_files:= $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
 
+LIB_SCAPE := $(LIB)/python/site-packages/
+$1_python_install_files_path := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LIB_SCAPE)$(1)/p' | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
+
+LOCAL_LIB_SCAPE := ../lib/python/site-packages/
+$1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LOCAL_LIB_SCAPE)$(1)/p' | sort -t\. -k 2 |tr '\n' ' ' ) )
+
 ../lib/python/site-packages/$1: OUTPUT=../lib/python/site-packages/$1
 ../lib/python/site-packages/$1: $$($1_python_source_files) Makefile
 	@echo "== Making python package: $$(OUTPUT)" 
@@ -1170,10 +1176,10 @@ clean_python_package_$1:
 clean_dist_python_package_$1: clean_python_package_$1;
 
 .PHONY : install_python_package_$1
-install_python_package_$1: $(addprefix $(LIB)/python/site-packages/,$$($1_python_install_files))
+install_python_package_$1: $$($1_python_install_files_path)
 
 
-$(addprefix  $(LIB)/python/site-packages/,$$($1_python_install_files)): $(filter-out,%.pyc,$(addprefix ../lib/python/site-packages,$$($1_python_install_files)))
+$$($1_python_install_files_path): $$($1_python_install_files_path_req)
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
 	$(AT)echo "Compiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
