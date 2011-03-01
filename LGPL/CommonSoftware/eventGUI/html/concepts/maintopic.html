@@ -9,7 +9,7 @@
 <body>
 <h1>Event GUI Overview</h1>
 The eventGUI is intended as a replacement for the Python-based acseventbrowser,
-which has shown stability problems in the past. The new, Eclipse RCP (Java) based
+which has shown stability problems in the past. The new, Eclipse RCP (Java)-based
 eventGUI does not include all the functionality that was offered by its
 predecessor, but should be easier to use and understand.
 
@@ -30,7 +30,27 @@ anywhere on the View and select "Start monitoring"), the recent (within the last
 shown next to the totals.
 <h2>Channel Tree View</h2>
 <h2>Event List View</h2>
-Clicking on an event in this view will open the
+Unless filtering (see below) is active, this View displays a scrolling list
+of events, updated roughly once per second. A handful of high-level fields are shown
+for each event, namely:
+<ol>
+<li><b>Timestamp</b>: </li>
+<li><b>Event source</b>: </li>
+<li><b>Number of events received for this channel</b>: </li>
+<li><b>Event type</b>: </li>
+<li><b>Number of events of this type received</b>: </li>
+</ol>
+Available memory is checked periodically, and when a low-water mark is reached, the
+oldest events will be deleted from the list. Note the contrast between this behavior and
+that of <tt>jlog</tt>, which can buffer log records to disk.
+<h3>Filtering</h3>
+This facility, most assuredly in a preliminary, experimental state, can select which <i>incoming</i> events
+to display based on their type. Entering any part of a regular expression into the box
+above the list will show only those events whose type is matched by the expression, and only
+those which arrive <i>after</i> the filter is set. To resume full event display, the filter
+text box should be cleared; again this is effective only for events arriving after the
+filter box has been cleared.
+Clicking on an event in this view will open the Event Detail View.
 <h3>Event Detail View</h3>
 This view (still somewhat of a work in progress) displays the decoded contents
 of the selected event. In the case of an event that contains one or more
