@@ -87,6 +87,7 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 	/**
 	 * @see alma.acs.component.client.ComponentClientTestCase#tearDown()
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void tearDown() throws Exception {
 		// Close the source client
@@ -101,7 +102,7 @@ public class BACITest extends ComponentClientTestCase implements SourceListener,
 		}
 		// release the component
 		if (testComponent!=null) {		
-			getContainerServices().releaseComponent(COMPONENT_NAME, null);
+			getContainerServices().releaseComponent(COMPONENT_NAME);
 			testComponent=null;
 		}
 		super.tearDown();
