@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.16 2011/03/01 13:13:31 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.17 2011/03/02 15:54:36 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -669,7 +669,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
                echo "$(strip $1)-ACS-Generated-FromModule: $(PWD)" >  ../object/$1/$(strip $1).manifest; \
              fi; \
         fi
-	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC)  -g -d $$(TMPSRC) @$$($1_FILELISTFILE)
+	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) -d $$(TMPSRC) @$$($1_FILELISTFILE)
 	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
 	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)
