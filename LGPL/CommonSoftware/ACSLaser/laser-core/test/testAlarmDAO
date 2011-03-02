@@ -21,4 +21,4 @@
 # MA 02111-1307  USA
 #
 export ACS_TMP=../test/tmp
-acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD junit.textui.TestRunner alma.acs.lasercore.test.TestAlarmDAO
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD alma.acs.testsupport.tat.TATJUnitRunner alma.acs.lasercore.test.TestAlarmDAO
