@@ -203,12 +203,15 @@ bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
         }
         else {
 
-          // strip out "IDL:" and ":1.0" from the component type string
-          alarmFaultFamily_m = compType.substr(4);
-          alarmFaultFamily_m = alarmFaultFamily_m.substr(0, alarmFaultFamily_m.length() - alarmFaultFamily_m.find(":1.0"));
+          size_t pos;
+
+          // strip out "IDL:" and ":1.0" from the type string, if necessary
+          if( compType.find("IDL:") == 0 )
+            alarmFaultFamily_m = compType.substr(4, -1);
+          if( (pos = alarmFaultFamily_m.find(":1.0")) == (alarmFaultFamily_m.length() - 4) )
+            alarmFaultFamily_m = alarmFaultFamily_m.substr(0, pos);
 
           // keep just the interface name, throw away the pragma and module names
-          size_t pos;
           while( (pos = alarmFaultFamily_m.find('/')) != ACE_CString::npos )
             alarmFaultFamily_m = alarmFaultFamily_m.substr(pos + 1);
 

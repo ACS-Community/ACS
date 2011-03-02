@@ -18,14 +18,14 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciTestAlarmServer.cpp,v 1.2 2011/02/17 18:25:39 rtobar Exp $"
+ * "@(#) $Id: baciTestAlarmServer.cpp,v 1.3 2011/03/02 16:46:36 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
  * oat      2008-02-28 created
  */
  
-static char *rcsId="@(#) $Id: baciTestAlarmServer.cpp,v 1.2 2011/02/17 18:25:39 rtobar Exp $";
+static char *rcsId="@(#) $Id: baciTestAlarmServer.cpp,v 1.3 2011/03/02 16:46:36 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -64,7 +64,7 @@ using namespace baci;
 static int   devCount = 1;
 ///////////static char *devices[] = {"BACI1", "BACI2"};
 static char *devices[] = {"BACIALARM"};
-static char *idlTypes[] = {"IDL:alma/Control/IFProc"};
+static char *idlTypes[] = {"IDL:alma/Control/IFProc:1.0"};
 static bool shutting_down = false;
 static bool signaled = false;
 static TestContainerServices *cs_p[]={0, 0};
