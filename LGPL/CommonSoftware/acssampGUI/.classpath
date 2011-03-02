@@ -5,7 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="ACSROOT/lib/abeansR2Components.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jACSCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
@@ -23,10 +22,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/baci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jfree-jcommon-1.0.10.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/jfreechart-1.0.6.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
-	<classpathentry kind="lib" path="lib/miglayout-3.5.5.jar"/>
-	<classpathentry kind="lib" path="/opt/almamgr/ssg/trunk/lib/jlibeps-0.1.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jfree-jcommon-1.0.15.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jfreechart-1.0.12.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/NotifyMonitoringExt.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jchart2d-3.1.0.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
