@@ -21,10 +21,13 @@
  */
 package alma.acs.lasercore.test;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import junit.framework.TestCase;
+import alma.acs.component.client.ComponentClientTestCase;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState;
+import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Source;
 import cern.laser.business.data.Triplet;
@@ -32,10 +35,6 @@ import cern.laser.business.data.Triplet;
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.acs.laser.dao.ConfigurationAccessorFactory;
-
-import alma.acs.component.client.ComponentClientTestCase;
-import alma.alarmsystem.core.alarms.LaserCoreFaultState;
-import alma.alarmsystem.core.alarms.LaserCoreFaultState.LaserCoreFaultCodes;
 
 /**
  * Test the alarm definitions read from the CDB
@@ -61,8 +60,69 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		TEST_DEF_1("TEST:*:1",2,"Test alarm 1","The cause","Run and fix quickly","A disaster"),
 		TEST_DEF_2("TEST:*:2",3,"Test alarm 2",null,null,null),
 		PS_PSM_1("PS:PS_MEMBER:1",2,"PS test alarm","A terrible mistake",null,null),
-		IDL("IDLFamily:IDLMember:1",0,"This alarm has been sent through an IDL method","Sent an IDL alarm",null,null);
-		
+		IDL("IDLFamily:IDLMember:1",0,"This alarm has been sent through an IDL method","Sent an IDL alarm",null,null),
+		NODE_DEFAULT("NODE_DEFAULT:*:1", 2, "NODE test", null, null, null),
+		NODE_DEFAULT1("NODE_DEFAULT:NODE1:1", 2, "NODE test", null, null, null),
+		NODE_DEFAULT4("NODE_DEFAULT:NODE4:1", 2, "NODE test", null, null, null),
+		REGEXP_NODE1("NODE_REGEXP:REGEXP_NODE1:1", 2, "NODE test", null, null, null),
+		REGEXP_NODE2("NODE_REGEXP:REGEXP_NODE_2:1", 2, "NODE test", null, null, null),
+		REGEXP_NODE3("NODE_REGEXP:REGEXP_NODE_3:1", 2, "NODE test", null, null, null),
+		REGEXP_NODE4("NODE_REGEXP:REGEXP_NODE_4:1", 2, "NODE test", null, null, null),
+		MF_DEFAULT0("MF_DEFAULT:MULTIPLE_MF_FAILURES:0", 0, "The description for 0",null, null, null),
+		MF_DEFAULT1("MF_DEFAULT:MULTIPLE_MF_FAILURES:1", 0, "Description 1",null, null, null),
+		MF_DEFAULT2("MF_DEFAULT:MULTIPLE_MF_FAILURES:2", 0, "The description for 2",null, null, null),
+		MF_DEFAULT3("MF_DEFAULT:MULTIPLE_MF_FAILURES:3", 0, "The description for 3",null, null, null),
+		MF_DEFAULT4("MF_DEFAULT:MULTIPLE_MF_FAILURES:4", 0, "The description for 4",null, null, null),
+		MF_DEFAULT5("MF_DEFAULT:MULTIPLE_MF_FAILURES:5", 1, "MR alarm","Multiplicity reduction generated", null, null),
+		MF_DEFAULT0_DFM("MF_DEFAULT:*:0", 0, "The description for 0",null, null, null),
+		MF_DEFAULT1_DFM("MF_DEFAULT:*:1", 0, "Description 1",null, null, null),
+		MF_DEFAULT2_DFM("MF_DEFAULT:*:2", 0, "The description for 2",null, null, null),
+		MF_DEFAULT3_DFM("MF_DEFAULT:*:3", 0, "The description for 3",null, null, null),
+		MF_DEFAULT4_DFM("MF_DEFAULT:*:4", 0, "The description for 4",null, null, null),
+		MF_DEFAULT5_DFM("MF_DEFAULT:*:5", 1, "MR alarm","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_REGEXP1("MF_REGEXP:REGEXP1:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_REGEXP1("MF_REGEXP:REGEXP1:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_REGEXP1("MF_REGEXP:REGEXP1:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_REGEXP1("MF_REGEXP:REGEXP1:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_REGEXP1("MF_REGEXP:REGEXP1:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_REGEXP1("MF_REGEXP:REGEXP1:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_REGEXP2("MF_REGEXP:REGEXP2:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_REGEXP2("MF_REGEXP:REGEXP2:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_REGEXP2("MF_REGEXP:REGEXP2:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_REGEXP2("MF_REGEXP:REGEXP2:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_REGEXP2("MF_REGEXP:REGEXP2:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_REGEXP2("MF_REGEXP:REGEXP2:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_REGEXP3("MF_REGEXP:REGEXP3:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_REGEXP3("MF_REGEXP:REGEXP3:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_REGEXP3("MF_REGEXP:REGEXP3:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_REGEXP3("MF_REGEXP:REGEXP3:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_REGEXP3("MF_REGEXP:REGEXP3:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_REGEXP3("MF_REGEXP:REGEXP3:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_REGEXP4("MF_REGEXP:REGEXP4:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_REGEXP4("MF_REGEXP:REGEXP4:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_REGEXP4("MF_REGEXP:REGEXP4:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_REGEXP4("MF_REGEXP:REGEXP4:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_REGEXP4("MF_REGEXP:REGEXP4:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_REGEXP4("MF_REGEXP:REGEXP4:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_REGEXP5("MF_REGEXP:REGEXP5:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_REGEXP5("MF_REGEXP:REGEXP5:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_REGEXP5("MF_REGEXP:REGEXP5:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_REGEXP5("MF_REGEXP:REGEXP5:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_REGEXP5("MF_REGEXP:REGEXP5:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_REGEXP5("MF_REGEXP:REGEXP5:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_MULTIPLE_MF_REGEXP("MF_REGEXP:MULTIPLE_MF_REGEXP:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		MF_REGEXP0_DFM("MF_REGEXP:*:0", 0, "Regexp for 0",null, null, null),
+		MF_REGEXP1_DFM("MF_REGEXP:*:1", 0, "Regexp 1",null, null, null),
+		MF_REGEXP2_DFM("MF_REGEXP:*:2", 0, "Regexp for 2",null, null, null),
+		MF_REGEXP3_DFM("MF_REGEXP:*:3", 0, "Regexp for 3",null, null, null),
+		MF_REGEXP4_DFM("MF_REGEXP:*:4", 0, "Regexp for 4",null, null, null),
+		MF_REGEXP5_DFM("MF_REGEXP:*:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null);
+
 		public final String ID;
 		public final int priority;
 		public final String description;
@@ -164,7 +224,7 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		// There are 8 alarms defined in the CDB 
 		// 6 alarms plus 2 defaults for TEST
 		// We have to consider the laser core alarms too...
-		assertEquals(8+LaserCoreFaultCodes.values().length, ids.length);
+		assertEquals(AlarmTriplets.values().length + LaserCoreFaultCodes.values().length, ids.length);
 		
 		// Check if all the triplets exist
 		for (String id: ids) {
