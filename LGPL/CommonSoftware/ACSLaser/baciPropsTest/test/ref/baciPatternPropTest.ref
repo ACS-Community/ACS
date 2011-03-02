@@ -4,10 +4,10 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] component 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- TRACE [BACITest:BACIPatternPropertyTest#testROPattern] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar:1> ACTIVE=true
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BACIProperty, TEST_COMPONENT#testPatternVar, 1> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BACIProperty:TEST_COMPONENT#testPatternVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BaciPropTest#testPatternVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Source alarm received: <BaciPropTest#testPatternVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] Alarm from categories: <BaciPropTest#testPatternVar:TEST_COMPONENT:1> ACTIVE=false
 1 - ----------T--:--:--.--- INFO [BACITest:BACIPatternPropertyTest#testROPattern] client 'alma.acs.alarmsystem.test.BACIPatternPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
 1 - 
 1 - 

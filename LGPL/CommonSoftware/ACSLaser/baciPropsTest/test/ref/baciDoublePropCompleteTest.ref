@@ -6,17 +6,17 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: No alarms
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: HIGH ON
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 3> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:3> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <BaciPropTest#testDoubleVar, TEST_COMPONENT, 3> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <BaciPropTest#testDoubleVar:TEST_COMPONENT:3> ACTIVE=true
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: HIGH OFF
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <BACIProperty, TEST_COMPONENT#testDoubleVar, 3> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TEST_COMPONENT#testDoubleVar, 3> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TEST_COMPONENT#testDoubleVar, 3> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <BaciPropTest#testDoubleVar, TEST_COMPONENT, 3> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TEST_COMPONENT, 3> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TEST_COMPONENT, 3> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TestFM, 3> ACTIVE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <TestFF, TestFM, 3> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <BACIProperty:TEST_COMPONENT#testDoubleVar:3> ACTIVE=false
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TEST_COMPONENT#testDoubleVar:3> ACTIVE=true
-1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TEST_COMPONENT#testDoubleVar:3> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <BaciPropTest#testDoubleVar:TEST_COMPONENT:3> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TEST_COMPONENT:3> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TEST_COMPONENT:3> ACTIVE=false
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TestFM:3> ACTIVE=true
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <TestFF:TestFM:3> ACTIVE=false
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: HIGH ON
@@ -37,10 +37,6 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Test: LOW OFF
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Source alarm received: <AnotherFF, TestFaultMember, 2> TERMINATE
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] Alarm from categories: <AnotherFF:TestFaultMember:2> ACTIVE=false
-1 - ----------T--:--:--.--- WARNING [BACITest:BACIDoublePropCompleteTest#testRODouble] LaserSelectionException: 
-1 - cern.laser.client.services.selection.LaserHeartbeatException
-1 - 	at java.util.TimerThread.mainLoop(Timer.java:512)
-1 - 	at java.util.TimerThread.run(Timer.java:462)
 1 - ----------T--:--:--.--- INFO [BACITest:BACIDoublePropCompleteTest#testRODouble] client 'alma.acs.alarmsystem.test.BACIDoublePropCompleteTest' has successfully released  a component with curl=TEST_COMPONENT
 1 - 
 1 - 
