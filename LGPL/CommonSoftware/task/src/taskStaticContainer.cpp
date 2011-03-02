@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: taskStaticContainer.cpp,v 1.16 2008/07/27 15:08:42 cparedes Exp $"
+* "@(#) $Id: taskStaticContainer.cpp,v 1.17 2011/03/02 17:23:42 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -335,10 +335,11 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
     ACS_DEBUG_PARAM("StaticContainer::createComponent", "Creating component: %s", compName);
     maci::ContainerServices* acsCS = 0;
     ACE_CString cmpName(compName);
+    ACE_CString cmpType("IDL:alma/ACS/Task:1.0");
 
     if (services_m == true)
 	{
-	acsCS =   new maci::MACIContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in());
+	acsCS =   new maci::MACIContainerServices(0/*handel*/, cmpName, cmpType, container_m.getContainerPOA().in());
 	if (acsCS==0)
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",
@@ -349,7 +350,7 @@ CORBA::Object_ptr StaticContainer::createComponent(const char* compName, const c
     else
 	{
 
-	acsCS =   new StaticContainerServices(0/*handel*/, cmpName, container_m.getContainerPOA().in(), orb_m.in());
+	acsCS =   new StaticContainerServices(0/*handel*/, cmpName, cmpType, container_m.getContainerPOA().in(), orb_m.in());
 	if (acsCS==0)
 	    {
 	    ACS_LOG(LM_RUNTIME_CONTEXT, "StaticContainer::createComponent",

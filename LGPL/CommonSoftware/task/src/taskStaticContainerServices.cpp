@@ -1,14 +1,14 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.cpp,v 1.6 2008/10/09 07:22:33 cparedes Exp $"
+* "@(#) $Id: taskStaticContainerServices.cpp,v 1.7 2011/03/02 17:23:42 rtobar Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram  yyyy-mm-dd  created 
 */
 
-static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.6 2008/10/09 07:22:33 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.7 2011/03/02 17:23:42 rtobar Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #define _POSIX_SOURCE 1
@@ -20,6 +20,7 @@ using namespace acsErrTypeContainerServices;
 
 StaticContainerServices::StaticContainerServices(const maci::Handle componentHandle, 
 						ACE_CString& name,
+						ACE_CString& type,
 						 PortableServer::POA_ptr poa,
 						 CORBA::ORB_ptr orb)
     :  maci::ContainerServices::ContainerServices(name, poa), 
@@ -27,6 +28,7 @@ StaticContainerServices::StaticContainerServices(const maci::Handle componentHan
        componentStateManager_m(name)
 {
     ACS_TRACE("StaticContainerServices:StaticContainerServices");
+    m_componentType = ACE_CString(type);
 }//StaticContainerServices
 
 CDB::DAL_ptr StaticContainerServices::getCDB()

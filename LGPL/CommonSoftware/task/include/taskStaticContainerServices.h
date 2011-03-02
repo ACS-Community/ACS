@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.10 2008/10/09 07:22:33 cparedes Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.11 2011/03/02 17:23:42 rtobar Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -35,6 +35,7 @@ class StaticContainerServices: public maci::ContainerServices
   StaticContainerServices(
     const maci::Handle componentHandle, 
     ACE_CString& name,
+    ACE_CString& type,
     PortableServer::POA_ptr poa,
     CORBA::ORB_ptr orb );
 
