@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.15 2010/08/05 11:16:05 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.16 2011/03/03 18:34:33 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -19,6 +19,7 @@
 
 SHELL=/bin/bash
 PLATFORM := $(shell uname)
+LD := ld
 CPPUNIT_VER = 1.12.1
 CPPUNIT_TAR = 1.12.1
 
