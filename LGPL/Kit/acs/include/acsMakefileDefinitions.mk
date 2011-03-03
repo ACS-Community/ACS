@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.17 2011/03/02 15:54:36 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.18 2011/03/03 22:59:57 javarias Exp $
 #
 #(info Entering definitions.mk)
 
@@ -200,7 +200,7 @@ endif
 ifeq ($(call mustBuild,C++),true)
 ../object/$1C.cpp: $1.idl Makefile $($1_IDLprereq)
 	-@echo "== IDL Compiling for TAO (C++): $1"
-	$(AT) $(TAO_IDL) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
+	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
 
 # this is a trick which I am trying to use for parallelization
 # this makes it unfortunately less maintainable, but easier to read and understand
