@@ -46,6 +46,31 @@ public class TestBlobber extends BlobberImpl {
 	}
 
 	/**
+	 * Creates a {@link TestBlobberPlugin}}.
+	 * 
+	 * @see alma.archive.tmcdb.monitor.BlobberImpl#createBlobberPlugin()
+	 */
+	@Override
+	protected BlobberPlugin createBlobberPlugin() {
+		MonitorDAO monitorDAO = null;
+		if (useDatabase) {
+			try {
+				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
+						.asSubclass(MonitorDAO.class);
+				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
+				monitorDAO = ctor.newInstance(m_logger);
+			} catch (Exception ex) {
+				// @TODO refactor to throw a checked exception
+				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
+				throw new IllegalArgumentException(ex);
+			}
+		} else {
+			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
+		}
+		return new TestBlobberWorker.TestBlobberPlugin(m_logger, monitorDAO);
+	}
+
+	/**
 	 * Creates a {@link TestBlobberWorker}, or the real one if <code>inUseDatabase == true</code> in
 	 * {@link #initialize(ContainerServices, String, boolean)}.
 	 * 

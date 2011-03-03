@@ -81,7 +81,7 @@ public class TestBlobberWorker extends BlobberWorker {
 //		this.myCollector = inCollector;
 //	}
 
-	private static class TestBlobberPlugin extends BlobberPlugin {
+	public static class TestBlobberPlugin extends BlobberPlugin {
 		private final MonitorDAO monitorDAO;
 		public TestBlobberPlugin(Logger logger, MonitorDAO monitorDAO) {
 			super(logger);

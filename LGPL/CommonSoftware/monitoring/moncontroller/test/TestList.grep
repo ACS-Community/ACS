@@ -1,0 +1,2 @@
+archive.configFile=archiveConfig.properties.blobberTest
+ACS.log.minlevel.namedloggers=hibernateSQL=2,2:hibernate=2,2
