@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.3 2010/10/01 21:05:53 mzampare Exp $
+# $Id: acsMakefileCore.mk,v 1.4 2011/03/04 21:20:52 javarias Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -142,7 +142,7 @@ $(foreach xml,$(ACSERRDEF),$(eval $(call XMLPrereq,$(xml))))
 $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeXMLErrDependencies,$(xml))))
 #
 ifndef MAKE_VXWORKS
-$(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeLibraryDependencies,,$(xml)Stubs,$(xml)S $(xml)C,,,$(call unique,$($(xml)Stubs_LIBS) $(TAO_LIBRARIES)))))
+$(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeLibraryDependencies,,$(xml)Stubs,$(xml)S $(xml)C,,,$(call unique,$($(xml)Stubs_LIBS) $(TAO_LIBRARIES)) acserrStubs)))
 else
 $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeExecutableDependencies,/vw,$(xml)Stubs,$(xml)S $(xml)C, , , )))
 endif
