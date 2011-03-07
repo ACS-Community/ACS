@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.19 2011/03/05 01:16:44 vsuorant Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.20 2011/03/07 12:05:53 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -200,7 +200,7 @@ endif
 ifeq ($(call mustBuild,C++),true)
 ../object/$1C.cpp: $1.idl Makefile $($1_IDLprereq)
 	-@echo "== IDL Compiling for TAO (C++): $1"
-	$(AT) $(TAO_IDL) $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
+	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
 
 # this is a trick which I am trying to use for parallelization
 # this makes it unfortunately less maintainable, but easier to read and understand
@@ -669,7 +669,7 @@ $(CURDIR)/../$$(tgtDir$1)/$1.jar: $$($1_source_file_list) $(foreach jar,$9,$(CUR
                echo "$(strip $1)-ACS-Generated-FromModule: $(PWD)" >  ../object/$1/$(strip $1).manifest; \
              fi; \
         fi
-	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC)  -g -d $$(TMPSRC) @$$($1_FILELISTFILE)
+	$(AT) CLASSPATH="`$$(classMaker)`$(PATH_SEP)."; export CLASSPATH ; $(JAVAC) $$(CompilerFlags) -d $$(TMPSRC) @$$($1_FILELISTFILE)
 	$(AT) (cd $$(TMPSRC); if [ -f ../../../$$(tgtDir$1)/$1.jar ]; then JAR="jar uf"; else JAR="jar cf"; fi; $$$${JAR} ../../../$$(tgtDir$1)/$1.jar $(foreach dir,$2,$(if $(filter .,$(dir)),*.class,$(dir))) ; jar ufm ../../../$$(tgtDir$1)/$1.jar ../$(strip $1).manifest 2> /dev/null && $(RM) ../$(strip $1).manifest )
 	$(AT) $(RM) -fr $$(TMPSRC)
 	$(AT) $(RM) $$($1_FILELISTFILE)
@@ -1152,6 +1152,12 @@ do_python_package_$1: ../lib/python/site-packages/$1;
 $1_python_source_files:= $(if $1,$(shell find $1  -type f ! -path '*/CVS/*' ! -path '*/.svn/*'))
 $1_python_install_files:= $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
 
+LIB_SCAPE := $(LIB)/python/site-packages/
+$1_python_install_files_path := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LIB_SCAPE)$(1)/p' | sed -n 's/\(.*\).py$$/\1.py\n\1.pyc/p; /\.py/!p' |sort -t\. -k 2 |tr '\n' ' ' ) )
+
+LOCAL_LIB_SCAPE := ../lib/python/site-packages/
+$1_python_install_files_path_req := $(if $1,$(shell find  $1 ! -path '*/.svn/*' ! -path '*/CVS/*' -type f  -name \*.py -o -name \*.def | sed -n 's/$(1)/$$(LOCAL_LIB_SCAPE)$(1)/p' | sort -t\. -k 2 |tr '\n' ' ' ) )
+
 ../lib/python/site-packages/$1: OUTPUT=../lib/python/site-packages/$1
 ../lib/python/site-packages/$1: $$($1_python_source_files) Makefile
 	@echo "== Making python package: $$(OUTPUT)" 
@@ -1170,10 +1176,10 @@ clean_python_package_$1:
 clean_dist_python_package_$1: clean_python_package_$1;
 
 .PHONY : install_python_package_$1
-install_python_package_$1: $(addprefix $(LIB)/python/site-packages/,$$($1_python_install_files))
+install_python_package_$1: $$($1_python_install_files_path)
 
 
-$(addprefix  $(LIB)/python/site-packages/,$$($1_python_install_files)): $(filter-out,%.pyc,$(addprefix ../lib/python/site-packages,$$($1_python_install_files)))
+$$($1_python_install_files_path): $$($1_python_install_files_path_req)
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
 	$(AT)echo "Compiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
