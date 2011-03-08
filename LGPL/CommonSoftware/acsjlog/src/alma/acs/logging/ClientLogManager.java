@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
@@ -37,6 +38,7 @@ import org.slf4j.impl.ACSLoggerFactory;
 
 import si.ijs.maci.Manager;
 
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.Logging.AcsLogServiceHelper;
 import alma.Logging.AcsLogServiceOperations;
 import alma.acs.logging.config.LogConfig;
@@ -95,7 +97,7 @@ public class ClientLogManager implements LogConfigSubscriber
 		AcsLoggingHandler remoteHandler;
 		StdOutConsoleHandler localHandler;
 		LoggerOwnerType loggerOwnerType = LoggerOwnerType.UnknownLogger;
-		boolean needsProcessNameUpdate = false;		
+		boolean needsProcessNameUpdate = false;
 	}
 	
 	/**
@@ -140,7 +142,7 @@ public class ClientLogManager implements LogConfigSubscriber
 	 * gets appended to the name for the Corba logger, 
 	 * so that different ORB instances in the system can be distinguished.
 	 */ 
-    private String processName;
+    private volatile String processName;
     private final ReentrantLock processNameLock = new ReentrantLock();
     
 	/**
@@ -148,24 +150,32 @@ public class ClientLogManager implements LogConfigSubscriber
 	 */
 	private volatile boolean suppressCorbaRemoteLogging = false;
 
-
 	private final LogThrottle logThrottle;
+
+	/**
+	 * Used to optionally raise/clear alarms from ClientLogManager or its dependent objects. 
+	 * This field is <code>null</code>, unless it gets set in {@link #enableLoggingAlarms(LogAlarmHandler)}.
+	 */
+	private volatile LogAlarmHandler logAlarmHandler;
 	
 	
 	/**
 	 * Singleton accessor.
-     * <p>
-     * TODO: rename, because now that we have class {@link AcsLogManager}, this method name is confusing.
+	 * <p>
+	 * TODO: rename, because now that we have class {@link AcsLogManager}, this method name is confusing.
+	 * 
 	 * @return ClientLogManager
 	 */
-	public static synchronized ClientLogManager getAcsLogManager()
-	{
+	public static synchronized ClientLogManager getAcsLogManager() {
 		if (s_instance == null) {
 			s_instance = new ClientLogManager();
 		}
 		return s_instance;
 	}
 
+	/**
+	 * 
+	 */
 	protected ClientLogManager()
 	{
         sharedLogConfig = new LogConfig();
@@ -186,14 +196,7 @@ public class ClientLogManager implements LogConfigSubscriber
         m_internalLogger = getAcsLogger("alma.acs.logging", LoggerOwnerType.OtherLogger);
         sharedLogConfig.setInternalLogger(m_internalLogger);
         
-		LogThrottle.ThrottleCallback throttleCallback = new LogThrottle.ThrottleCallback() {
-			public void clearedLogSuppression() {
-				// @TODO: clear the alarm, somehow saying (alarm property, log?) how many logs were suppressed by the throttle.
-			}
-			public void suppressedLog(boolean remoteLog) {
-				// @TODO: get alarm interface injected, and raise an alarm. Count invocations.
-			}
-		};
+		ThrottleCallback throttleCallback = new ThrottleCallback();
 		logThrottle = new LogThrottle(sharedLogConfig, throttleCallback);
 
         if (DEBUG) {
@@ -792,7 +795,7 @@ public class ClientLogManager implements LogConfigSubscriber
         	loggerName = "unknownClientApplication";
         }
         else {
-           	setProcessName(loggerName);
+            setProcessName(loggerName);
         }
         AcsLogger logger = null;
         if (enableRemoteLogging) {
@@ -820,7 +823,7 @@ public class ClientLogManager implements LogConfigSubscriber
      * @param name
      */
     private void setProcessName(String processName) {
-		if (processName != null) {
+		if (this.processName == null && processName != null) {
 			processNameLock.lock();
 			try {
 				this.processName = processName;
@@ -844,6 +847,29 @@ public class ClientLogManager implements LogConfigSubscriber
 				processNameLock.unlock();
 			}
 		}
+		else {
+			m_internalLogger.info("Ignored request to overwrite processName='" + this.processName + " with '" + processName + "'.");
+		}
+	}
+
+	/**
+	 * Because of build order problems (acsjlog before jcont), we cannot pass <code>ContainerServices</code> or some
+	 * other alarm API to <code>ClientLogManager</code>. Instead we define the alarm methods here and let the user
+	 * delegate to the underlying alarm API.
+	 * @see ClientLogManager#enableLoggingAlarms(LogAlarmHandler)
+	 */
+	public static interface LogAlarmHandler
+	{
+		public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx;
+
+		public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx;
+	}
+
+	/**
+	 * @since ACS 9.1
+	 */
+	public void enableLoggingAlarms(LogAlarmHandler logAlarmHandler) {
+		this.logAlarmHandler = logAlarmHandler;
 	}
 
 	/**
@@ -902,5 +928,70 @@ public class ClientLogManager implements LogConfigSubscriber
             logQueue.flushAllAndWait();
         }
     }
+
+	/**
+	 * Callback that gets notified about throttle actions and raises/clears throttle alarms,
+	 * using {@link ClientLogManager#logAlarmHandler}.
+	 * <p>
+	 * @TODO: Ensure that alarm gets cleared when container (or other throttled process) is shut down.
+	 * Not clear yet if we want to do the same for crashes (though rare in Java).
+	 * Thus maybe enough to add a shutdown method here, which gets called from {@link ClientLogManager#shutdown(boolean)},
+	 * which clears the alarm and removes log throttling.
+	 */
+	private class ThrottleCallback implements LogThrottle.ThrottleCallback {
+		public static final String throttleAlarmFF = "Logging";
+		/**
+		 * The FM is the container name (=process name), which becomes available to ClientLogManager only later on.
+		 */
+		private String throttleAlarmFM;
+		public static final int throttleAlarmFC = 10;
+		
+		private final AtomicLong suppressedLocalLogCount = new AtomicLong();
+		private final AtomicLong suppressedRemoteLogCount = new AtomicLong();
+		
+		public void suppressedLog(boolean remoteLog) {
+			boolean firstSuppressed = (suppressedLocalLogCount.get() + suppressedRemoteLogCount.get() > 0);
+			if (remoteLog) {
+				suppressedRemoteLogCount.incrementAndGet();
+			}
+			else {
+				suppressedLocalLogCount.incrementAndGet();
+			}
+			if (firstSuppressed) {
+				// raise alarm
+				if (logAlarmHandler != null && processName != null) {
+					// the processName should not change any more once it is != null, but just for safety, this copy will ensure 
+					// that we later clear the alarm using the same FM, even if the process name changes in between calls.
+					throttleAlarmFM = processName;
+					try {
+						logAlarmHandler.raiseAlarm(throttleAlarmFF, throttleAlarmFM, throttleAlarmFC);
+						m_internalLogger.fine("Log throttle kicked in, suppressing logs. Alarm has been raised."); // TODO type-safe log
+					} catch (AcsJCouldntPerformActionEx ex) {
+						m_internalLogger.severe("Failed to publish alarm about dropping logs in the log throttle.");
+					}
+				}
+				else {
+					m_internalLogger.warning("Cannot raise alarm about log throttle action because alarm callback or process name is not yet available.");
+				}
+			}
+		}
+		public void clearedLogSuppression() {
+			// @TODO: somehow say (alarm property, or only log?) how many logs were suppressed by the throttle,
+			//        based on suppressedLocalLogCount, suppressedRemoteLogCount
+			suppressedLocalLogCount.set(0);
+			suppressedRemoteLogCount.set(0);
+			if (logAlarmHandler != null) {
+				try {
+					// this method will not be called more than once a second because only a new time interval can "free" the logs
+					// (see LogThrottle.LogStreamThrottle#intervalLengthMillis),
+					// so that we don't have to worry about raising/clearing this alarm on a very short time scale.
+					logAlarmHandler.clearAlarm(throttleAlarmFF, throttleAlarmFM, throttleAlarmFC);
+					m_internalLogger.fine("Log throttle disengaged. Alarm has been cleared."); // TODO type-safe log
+				} catch (AcsJCouldntPerformActionEx ex) {
+					m_internalLogger.severe("Failed to clear alarm about dropping logs in the log throttle."); // TODO type-safe log
+				}
+			}
+		}
+	}
 
 }
