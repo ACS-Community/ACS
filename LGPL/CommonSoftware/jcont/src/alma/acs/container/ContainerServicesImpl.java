@@ -361,7 +361,7 @@ public class ContainerServicesImpl implements ContainerServices
 		try {
 			if (identifierArchive == null) {
 				Identifier identRaw = IdentifierHelper.narrow(getDefaultComponent("IDL:alma/xmlstore/Identifier:1.0"));
-				identifierArchive = getTransparentXmlComponent(IdentifierJ.class, identRaw, IdentifierOperations.class);
+				identifierArchive = getTransparentXmlWrapper(IdentifierJ.class, identRaw, IdentifierOperations.class);
 			}
 			if (uidLibrary == null) {
 				uidLibrary = new UIDLibrary(m_logger);
@@ -1014,16 +1014,6 @@ public class ContainerServicesImpl implements ContainerServices
             m_logger.info("component '" + getName() + "' requested AdvancedContainerServices");
         }
         return advancedContainerServices;
-    }
-
-    /*
-     * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, org.omg.CORBA.Object componentReference, Class flatXmlIF)
-    throws AcsJContainerServicesEx
-    {
-    	return (T) getTransparentXmlWrapper(transparentXmlIF, componentReference, flatXmlIF);
     }
 
 	/**
