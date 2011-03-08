@@ -532,7 +532,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 					buf.append(c.getAlarmDefinition().getFaultCode());
 					buf.append('>');
 					logger.log(AcsLogLevel.DEBUG,buf.toString());
-					System.out.println(buf.toString());
 				}
 			}
 		}
@@ -950,10 +949,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			throw new IllegalStateException("Trying to add an alarm with an invalid ID!");
 		}
 		alarmDefs.put(alarmId, alarm);
-		System.out.println("Alarms in cache after adding "+alarm.getAlarmId());
-		for (String key: alarmDefs.keySet()) {
-			System.out.println("\tAlarm in cache: "+key);
-		}
 	}
 	
 	public String[] getAllAlarmIDs()
@@ -1004,6 +999,13 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 				System.out.println("\t\t"+id);
 			}
 			System.out.println("\tMULTIPLICITY threshold: "+alarm.getMultiplicityThreshold());
+		}
+	}
+	
+	private void dumpAlarmCache() {
+		System.out.println("Alarms in cache");
+		for (String key: alarmDefs.keySet()) {
+			System.out.println("\tAlarm in cache: "+key);
 		}
 	}
 }
