@@ -247,16 +247,6 @@ public class DummyContainerServices implements ContainerServices
 	}
 
 	/**
-	 * @deprecated 
-	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
-	 */
-	@Override
-	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, Object componentReference, Class flatXmlIF)
-			throws AcsJContainerServicesEx {
-		throw new AcsJContainerServicesEx();
-	}
-
-	/**
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlWrapper(java.lang.Class, java.lang.Object, java.lang.Class)
 	 */
 	@Override

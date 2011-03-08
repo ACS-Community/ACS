@@ -249,17 +249,6 @@ public class ContainerServicesProxy implements ContainerServices
 	}
 
 	/**
-	 * @deprecated 
-	 * @see alma.acs.container.ContainerServices#getTransparentXmlComponent(java.lang.Class, org.omg.CORBA.Object, java.lang.Class)
-	 */
-	@Override
-	public <T> T getTransparentXmlComponent(Class<T> transparentXmlIF, Object componentReference, Class flatXmlIF)
-			throws AcsJContainerServicesEx {
-		check();
-		return delegate.getTransparentXmlComponent(transparentXmlIF, componentReference, flatXmlIF);
-	}
-
-	/**
 	 * @see alma.acs.container.ContainerServices#getTransparentXmlWrapper(java.lang.Class, java.lang.Object, java.lang.Class)
 	 */
 	@Override
