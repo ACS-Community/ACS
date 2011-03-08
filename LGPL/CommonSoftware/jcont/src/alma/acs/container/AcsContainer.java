@@ -41,6 +41,9 @@ import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
+
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ClientType;
@@ -51,6 +54,7 @@ import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
+
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
@@ -79,9 +83,6 @@ import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -241,8 +242,9 @@ public class AcsContainer extends ContainerPOA
 			// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
 			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
 			// Currently the alarm system acts under the container name.
+			// Setting of static fields in the AS classes should be removed altogether.
 			String name = m_containerName; 
-			ThreadFactory threadFactory = containerThreadFactory; 
+			ThreadFactory threadFactory = containerThreadFactory;
 
 			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"),
 	        		m_acsCorba, m_logger, 0, name, null, threadFactory) {
@@ -263,6 +265,21 @@ public class AcsContainer extends ContainerPOA
 			throw ex;
 		}
 
+		// @TODO: enable (throttle) alarms from the logging subsystem. 
+		// The ongoing container refactoring should ideally allow us to raise and clear an alarm as easily
+		// as the new ContainerServices alarm methods offer it. Maybe we use some special CS instance for this,
+		// or share the code in some other way.
+//		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
+//			@Override
+//			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
+//			}
+//			@Override
+//			public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
+//			}
+//		};
+//		ClientLogManager.getAcsLogManager().enableLoggingAlarms(logAlarmHandler);
+
+		
 		// init the BACI framework
 		try {
 			Class<?> clazz = Class.forName("alma.ACS.jbaci.BACIFramework");
