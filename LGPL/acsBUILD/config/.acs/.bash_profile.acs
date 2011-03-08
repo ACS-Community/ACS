@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.109 2011/02/11 10:29:22 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.110 2011/03/08 17:45:40 hsommer Exp $"
 #
 #
 #
@@ -835,27 +835,7 @@ fi
 
 # LD_LIBRARY_PATH common settings
 
-if [ "$OSYSTEM" = "SunOS" ]
-then
-
-   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:/usr/dt/lib:$LD_LIBRARY_PATH
-   if  [ X"$DDS_ROOT" != X ]
-   then
-	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
-   fi
-
-
-   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
-   then
-       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
-   fi
-
-   if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
-   then
-       LD_LIBRARY_PATH=$ACSROOT/lib:$LD_LIBRARY_PATH 
-   fi
-
-elif [ "$OSYSTEM" = "Linux" ]
+if [ "$OSYSTEM" = "Linux" ]
 then
    if  [ X"$RTAI_HOME" != X ]
    then
@@ -876,14 +856,14 @@ then
 
    LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$LD_LIBRARY_PATH
 
-   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
-   then
-       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
-   fi
-
    if  [ X"$DDS_ROOT" != X ]
    then
 	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
+   fi
+
+   if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
+   then
+       LD_LIBRARY_PATH=$VLTROOT/lib:$LD_LIBRARY_PATH
    fi
 
    if  [ X"$ACSROOT" != X ] && [ X"$VLTROOT" != X"$ACSROOT" ]
@@ -1340,11 +1320,11 @@ fi
 
 # We only add jar files to the CLASSPATH which cannot be picked up by the AcsSystemClassloader that the acsStartJava script enables.
 #
-# As of ACS 9.1, the version of avalon.jar installed by ACS is copied from the jacorb installation instead of keeping a copy in Tools/extjars,
-# so that we no longer add $JACORB_HOME/lib/avalon-framework-4.1.5.jar to the CLASSPATH here.
-# This avoids adding the same jar file twice on the classpath, with possible version conflicts. Same should be checked for logkit jar. 
-CLASSPATH=$JACORB_HOME/lib/logkit-1.2.jar$PATH_SEP$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
-	
+# As of ACS 9.1, avalon.jar and logkit.jar installed by ACS is copied from the jacorb installation instead of keeping a copy in Tools/extjars,
+# so that we no longer add $JACORB_HOME/lib/avalon-framework-4.1.5.jar and $JACORB_HOME/lib/logkit-1.2.jar to the CLASSPATH here.
+# This avoids adding the same jar files twice on the classpath, with possible version conflicts.
+CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$ANT_HOME/lib/ant.jar
+
 #
 # Now that PATH and LD_LIBRARY_PATH are properly set, I first need
 # to export them and then I can call the Python interpreter in order to
