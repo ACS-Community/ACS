@@ -56,7 +56,7 @@ public class MySillyPanel extends JPanel
 		XmlComponent xmlComp = alma.demo.XmlComponentHelper.narrow(compObj);
 		
 		m_xmlCompJ =
-			(XmlComponentJ) containerServices.getTransparentXmlComponent(XmlComponentJ.class,
+			(XmlComponentJ) containerServices.getTransparentXmlWrapper(XmlComponentJ.class,
 				xmlComp,
 				XmlComponentOperations.class);
 		

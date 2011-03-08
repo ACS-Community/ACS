@@ -66,7 +66,7 @@ public class XmlComponentClient extends ComponentClientTestCase
 		m_xmlComp = alma.demo.XmlComponentHelper.narrow(compObj);
 		assertNotNull(m_xmlComp);
 
-		m_xmlCompJ = getContainerServices().getTransparentXmlComponent(
+		m_xmlCompJ = getContainerServices().getTransparentXmlWrapper(
 				XmlComponentJ.class, m_xmlComp, XmlComponentOperations.class);
 		assertNotNull(m_xmlCompJ);
 	}
