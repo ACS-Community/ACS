@@ -20,7 +20,7 @@
  *    MA 02111-1307  USA
  */
 
-package alma.jconttest.ComponentWithBadNullsImpl;
+package alma.jconttest.DummyComponentWrapperImpl;
 
 import java.util.logging.Logger;
 
@@ -28,9 +28,9 @@ import org.omg.PortableServer.Servant;
 import alma.ACS.ACSComponentOperations;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.ComponentHelper;
-import alma.jconttest.ComponentWithBadNullsOperations;
-import alma.jconttest.ComponentWithBadNullsPOATie;
-import alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsImpl;
+import alma.jconttest.DummyComponentWrapperOperations;
+import alma.jconttest.DummyComponentWrapperPOATie;
+import alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperImpl;
 
 /**
  * Component helper class. 
@@ -41,17 +41,17 @@ import alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsImpl;
  * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml 
  * and modify the instance name of the component and the container: 
  * <p>
- * Name="COMPONENTWITHBADNULLS_1" Code="alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsHelper" Type="IDL:alma/jconttest/ComponentWithBadNulls:1.0" Container="frodoContainer" ImplLang="java"
+ * Name="DUMMYCOMPONENTWRAPPER_1" Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper" Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" Container="frodoContainer" ImplLang="java"
  * <p>
  * @author alma-component-helper-generator-tool
  */
-public class ComponentWithBadNullsHelper extends ComponentHelper
+public class DummyComponentWrapperComponentHelper extends ComponentHelper
 {
 	/**
 	 * Constructor
 	 * @param containerLogger logger used only by the parent class.
 	 */
-	public ComponentWithBadNullsHelper(Logger containerLogger)
+	public DummyComponentWrapperComponentHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}
@@ -61,7 +61,7 @@ public class ComponentWithBadNullsHelper extends ComponentHelper
 	*/
 	protected ComponentLifecycle _createComponentImpl()
 	{
-		return new ComponentWithBadNullsImpl();
+		return new DummyComponentWrapperImpl();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class ComponentWithBadNullsHelper extends ComponentHelper
 	*/
 	protected Class<? extends Servant> _getPOATieClass()
 	{
-		return ComponentWithBadNullsPOATie.class;
+		return DummyComponentWrapperPOATie.class;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class ComponentWithBadNullsHelper extends ComponentHelper
 	*/
 	protected Class<? extends ACSComponentOperations> _getOperationsInterface()
 	{
-		return ComponentWithBadNullsOperations.class;
+		return DummyComponentWrapperOperations.class;
 	}
 
 }
