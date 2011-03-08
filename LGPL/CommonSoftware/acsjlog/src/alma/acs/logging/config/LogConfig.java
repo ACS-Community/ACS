@@ -461,7 +461,7 @@ public class LogConfig {
 		try {
 			parentDoc = builder.parse(new InputSource(new StringReader(parentConfigXML)));
 		} catch (SAXException ex) {
-			String msg = "Failed to parse the following XML retrieved from the CDB (get_DAO(" + cdbPathParent + "):\n" + parentConfigXML;
+			String msg = "Failed to parse the following XML retrieved from CDB#get_DAO(" + cdbPathParent + "):\n" + parentConfigXML;
 			log(Level.FINE, msg, ex);
 			throw ex;
 		}
