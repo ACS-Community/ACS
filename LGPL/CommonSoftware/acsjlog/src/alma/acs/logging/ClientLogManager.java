@@ -823,7 +823,12 @@ public class ClientLogManager implements LogConfigSubscriber
      * @param name
      */
     private void setProcessName(String processName) {
-		if (this.processName == null && processName != null) {
+		if (processName == null) {
+			// just ignore this call
+			return;
+		}
+		if (this.processName == null) {
+			// first time we get a process name
 			processNameLock.lock();
 			try {
 				this.processName = processName;
@@ -847,7 +852,7 @@ public class ClientLogManager implements LogConfigSubscriber
 				processNameLock.unlock();
 			}
 		}
-		else {
+		else if (!processName.equals(this.processName)){
 			m_internalLogger.info("Ignored request to overwrite processName='" + this.processName + " with '" + processName + "'.");
 		}
 	}
@@ -950,7 +955,7 @@ public class ClientLogManager implements LogConfigSubscriber
 		private final AtomicLong suppressedRemoteLogCount = new AtomicLong();
 		
 		public void suppressedLog(boolean remoteLog) {
-			boolean firstSuppressed = (suppressedLocalLogCount.get() + suppressedRemoteLogCount.get() > 0);
+			boolean firstSuppressed = (suppressedLocalLogCount.get() + suppressedRemoteLogCount.get() == 0);
 			if (remoteLog) {
 				suppressedRemoteLogCount.incrementAndGet();
 			}
