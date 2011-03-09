@@ -8,7 +8,7 @@
 		ImplLang="java" />
 
 	<_ Name="DefaultDummyCompWrapper"
-		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
 		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
 		Container="frodoContainer"
 		Default="true"
@@ -16,19 +16,19 @@
 
 
 	<_ Name="DummyCompWrapper_ContainerTimeout1"
-		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
 		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
 		Container="frodoContainerWithTimeout1"
 		ImplLang="java" />
 
 	<_ Name="DummyCompWrapper_ContainerTimeout2"
-		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
 		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
 		Container="frodoContainerWithTimeout2"
 		ImplLang="java" />
 
 	<_ Name="DummyCompWrapper_ContainerTimeout3"
-		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperHelper"
+		Code="alma.jconttest.DummyComponentWrapperImpl.DummyComponentWrapperComponentHelper"
 		Type="IDL:alma/jconttest/DummyComponentWrapper:1.0" 
 		Container="frodoContainerWithTimeout3"
 		ImplLang="java" />
