@@ -816,29 +816,31 @@ public class ClientLogManager implements LogConfigSubscriber
      * and updates all Loggers which are waiting to get their overly simple name enriched.
      * The new name will be the old name + @ + processName.
      * <p>
+     * For example, the Java container first uses a logger from which the process name "AcsContainerRunner"
+     * is derived. Only later when the the real container name has been parsed out, this gets renamed.
+     * <p>
      * The update mechanism ensures that the process name will eventually be set also on loggers
      * which were created before the process name was known, e.g. component logger created before container logger.
      * @TODO check if we still need the process name appended to the logger name, now that we have a separate field for it in AcsLogger.
      * 
      * @param name
      */
-    private void setProcessName(String processName) {
-		if (processName == null) {
+    private void setProcessName(String newProcessName) {
+		if (newProcessName == null) {
 			// just ignore this call
 			return;
 		}
-		if (this.processName == null) {
-			// first time we get a process name
+		if (!newProcessName.equals(this.processName)) {
 			processNameLock.lock();
 			try {
-				this.processName = processName;
+				this.processName = newProcessName;
 				synchronized (loggers) {
 					for (String oldLoggerName : new ArrayList<String>(loggers.keySet())) { // iterate over copy to avoid ConcurrentModif.Ex 
 						AcsLoggerInfo loggerInfo = loggers.get(oldLoggerName);
 						if (loggerInfo.needsProcessNameUpdate) {
-							String newLoggerName = oldLoggerName + "@" + processName;
+							String newLoggerName = oldLoggerName + "@" + newProcessName;
 							loggerInfo.logger.setLoggerName(newLoggerName);
-							loggerInfo.logger.setProcessName(processName);
+							loggerInfo.logger.setProcessName(newProcessName);
 							loggerInfo.needsProcessNameUpdate = false;
 							AcsLoggerInfo gonner = loggers.put(newLoggerName, loggerInfo);
 							if (gonner != null) {
@@ -848,12 +850,10 @@ public class ClientLogManager implements LogConfigSubscriber
 						}
 					}
 				}
+				m_internalLogger.finer("Changed processName='" + this.processName + "' to '" + newProcessName + "' and updated logger names.");
 			} finally {
 				processNameLock.unlock();
 			}
-		}
-		else if (!processName.equals(this.processName)){
-			m_internalLogger.info("Ignored request to overwrite processName='" + this.processName + " with '" + processName + "'.");
 		}
 	}
 
