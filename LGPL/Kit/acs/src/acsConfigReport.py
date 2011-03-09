@@ -404,9 +404,9 @@ tmp_windbase=os.getenv('WIND_BASE','NOT_DEFINED')
 #
 
 commands.getoutput('echo " <br>" >> ./report.html')
-tmp_idl_path='-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao'
+tmp_idl_path='-I$ACE_ROOT/TAO/orbsvcs/orbsvcs -I$ACE_ROOT/TAO/orbsvcs -I$ACE_ROOT/TAO -I$ACE_ROOT/TAO/tao'
 
-if ((tmp_vltroot != '') and (tmp_vltroot !=  tmp_intlistPath)):
+if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
    tmp_idl_path='-I$VLTROOT/idl '+tmp_idl_path	
 
 if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):
@@ -448,20 +448,20 @@ if tmp_intlist[0] != '':
 
    if tmp_introot != '':
       if tmp_acsroot == '':
-          tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:'+tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
+          tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:'+tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'
       else:
-         tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:'+tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
+         tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:'+tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'
    else:
       if tmp_acsroot == '':
-         tmp_PYTHONPATH=tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
+         tmp_PYTHONPATH=tmp_list+'$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'
       else:
-         tmp_PYTHONPATH=tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'    
+         tmp_PYTHONPATH=tmp_list+'$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'    
 else:
    if tmp_introot != '':
       # ACSROOT must exist here since INTLIST is nott defined
-      tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
+      tmp_PYTHONPATH='$INTROOT/lib/python/site-packages:$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'
    else:
-      tmp_PYTHONPATH='$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.5/site-packages:$OMNI_ROOT/lib/python/site-packages'
+      tmp_PYTHONPATH='$ACSROOT/lib/python/site-packages:$OMNI_ROOT/lib/python:$OMNI_ROOT/lib:$PYTHON_ROOT/lib/python2.6/site-packages:$OMNI_ROOT/lib/python/site-packages'
    
 if tmp_modpath == '1':
    tmp_PYTHONPATH='../lib/python/site-packages:'+tmp_PYTHONPATH
@@ -524,9 +524,13 @@ if tmp_PATH != result_command:
 
 commands.getoutput('echo " <br>" >> ./report.html')
 if tmp_os == 'Linux':
-   tmp_LD_LIBRARY_PATH='$ACE_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:$GNU_ROOT/lib:$ORIG_LD_LIBRARY_PATH'
+   tmp_LD_LIBRARY_PATH='$DDS_ROOT/lib:$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$TCLTK_ROOT/lib:'
+   tmp_gnuroot=commands.getoutput('echo $GNU_ROOT')
+   if (tmp_gnuroot != '/usr'):
+     tmp_LD_LIBRARY_PATH=tmp_LD_LIBRARY_PATH+'$GNU_ROOT/lib:'
+   tmp_LD_LIBRARY_PATH=tmp_LD_LIBRARY_PATH+'$ORIG_LD_LIBRARY_PATH'
 
-   if ((tmp_vltroot != '') and (tmp_vltroot !=  tmp_intlistPath)):
+   if ((tmp_vltroot != '') and (tmp_vltroot != tmp_intlistPath)):
       tmp_LD_LIBRARY_PATH='$VLTROOT/lib:'+tmp_LD_LIBRARY_PATH
 
    if ((tmp_acsroot != '') and (tmp_vltroot != tmp_acsroot)):

@@ -42,10 +42,10 @@
 
 
 basic_tools = [('gcc','gcc --version','4.1.2'),\
-              ('binutils','ld --version','2.17.50.0.6-12.el5'),\
+              ('binutils','ld --version','2.17.50.0.6-14.el5'),\
               ('make','make --version','3.81'),\
               ('awk','awk --version','3.1.5'),\
-              ('gdb','gdb  -version','6.8-37.el5'),\
+              ('gdb','gdb  -version','7.0.1-23.el5_5.2'),\
               ('flex','flex --version','2.5.4'),\
               ('bison','bison --version','2.3'),\
               ('gzip','gzip --version','1.3.5'),\
@@ -62,7 +62,7 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('texinfo','info --version','4.8'),\
               ('diffutils','diff --version','2.8.1'),\
               ('groff','true | groff -v','1.18.1.1'),\
-              ('java','java -version','(build 1.6.0_14'),\
+              ('java','java -version','(build 1.6.0_20'),\
               ('Tcl','echo "puts [set ::tcl_patchLevel]; exit" | tclsh','8.4.19'),\
               ('Tk','echo "package require Tk; puts [set ::tk_patchLevel]; exit" | tclsh','8.4.19'),\
               ('incr Tcl','echo "puts [package require Itcl]; exit" | tclsh','3.4'),\
@@ -75,13 +75,13 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('snack','echo "puts [package require snack]; exit" | tclsh','2.2'),\
               ('expect','echo "puts [package require Expect]; exit" | tclsh','5.43.0')]
 
-other_tools = [('ACE','more $ACE_ROOT/VERSION','5.6.5'),\
-              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.6.5'),\
+other_tools = [('ACE','more $ACE_ROOT/VERSION','5.8.1'),\
+              ('TAO','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/TAO/ACE_wrappers/TAO/VERSION','1.8.1'),\
               ('JacORB','more $JACORB_HOME/doc/REL_NOTES','2.2'),\
               ('Ant','$ANT_HOME/bin/ant -version','1.7.1'),\
               ('doxygen','doxygen --version','1.7.0'),\
-              ('python','python -V','2.5.2'),\
-              ('mico','more $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/VERSION','2.3.12'),\
+              ('python','python -V','2.6.5'),\
+              ('mico','cat $ALMASW_ROOTDIR/$ALMASW_RELEASE/mico/include/mico/version.h | grep MICO_VERSION | cut -d\'"\' -f2','2.3.13'),\
               ('omniorb','cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni/; ls THIS_IS_OMNIORB_4_1_0','THIS_IS_OMNIORB_4_1_0')\
                ]
 
@@ -118,12 +118,12 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('ALMASW_RELEASE','--DUMP--'),\
                 ('ALMASW_ROOTDIR','--DUMP--'),\
                 ('ANT_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/ant'),\
-                ('CLASSPATH','$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.2.jar:$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar:'),\
+                ('CLASSPATH','$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.2.jar:$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
                 ('GNU_ROOT','/usr'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
                 ('JAVA_ENDORSED','--DUMP--'),\
-                ('JAVA_HOME','/usr/java/jdk1.6.0_14'),\
+                ('JAVA_HOME','/usr/java/default'),\
                 ('JAVA_ORB','--DUMP--'),\
                 ('MANAGER_REFERENCE','--DUMP--' ),\
                 ('NAMESERVICE_REFERENCE','--DUMP--'),\
@@ -131,7 +131,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('OMNI_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni'),\
                 ('OMNIORB_CONFIG','$OMNI_ROOT/config'),\
                 ('PYTHON_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python'),\
-                ('TCLTK_ROOT','/alma/ACS-8.1/tcltk'),\
+                ('TCLTK_ROOT','/alma/ACS-9.0/tcltk'),\
                 ('INTROOT','--DUMP--'),\
                 ('INTLIST','--DUMP--'),\
                 ('ACSROOT','--DUMP--'),\
