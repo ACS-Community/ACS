@@ -118,7 +118,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('ALMASW_RELEASE','--DUMP--'),\
                 ('ALMASW_ROOTDIR','--DUMP--'),\
                 ('ANT_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/ant'),\
-                ('CLASSPATH','$JACORB_HOME/lib/avalon-framework-4.1.5.jar:$JACORB_HOME/lib/logkit-1.2.jar:$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
+                ('CLASSPATH','$JACORB_HOME/lib/jacorb.jar:$JACORB_HOME/lib/idl.jar:$ANT_HOME/lib/ant.jar'),\
                 ('GNU_ROOT','/usr'),\
                 ('INTROOT','--DUMP--'),\
                 ('JACORB_HOME','$ALMASW_ROOTDIR/$ALMASW_RELEASE/JacORB'),\
@@ -131,7 +131,7 @@ acs_variables = [('ACE_ROOT','$ACE_ROOT_DIR/linux'),\
                 ('OMNI_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python/omni'),\
                 ('OMNIORB_CONFIG','$OMNI_ROOT/config'),\
                 ('PYTHON_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/Python'),\
-                ('TCLTK_ROOT','/alma/ACS-9.0/tcltk'),\
+                ('TCLTK_ROOT','$ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk'),\
                 ('INTROOT','--DUMP--'),\
                 ('INTLIST','--DUMP--'),\
                 ('ACSROOT','--DUMP--'),\
