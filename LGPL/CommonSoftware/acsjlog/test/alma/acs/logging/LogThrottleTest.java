@@ -29,7 +29,7 @@ public class LogThrottleTest extends TestCase
 	/**
 	 * Tests the LogThrottle class in isolation. 
 	 * Many logs are simulated, over more than a second, to test also the re-opening of the throttle.
-	 * Covers configuration without throttle, total throttle suppressing all logs, and "normal" throttling.
+	 * Covers configuration without throttle, "total throttle" suppressing all logs, and "normal" throttling.
 	 */
 	public void testSimulatedLogs() throws Exception {
 		LogConfig logConfig = new LogConfig();
@@ -127,7 +127,6 @@ public class LogThrottleTest extends TestCase
 		System.out.println("For stdout logs (level = TRACE) we expect " + expectedNumberOfLocalLogs + " logs, while for remote logs " + 
 				"(level = " + remoteLevel.name() + ") we expect " + expectedNumberOfRemoteLogs + " logs.");
 		
-		// log 3 times for each level, to challenge the throttle
 		for (int i = 0; i < numLoops; i++) {
 			for (Level level : levels) {
 				logger.log(level, "test message with level " + level.getName());
@@ -136,6 +135,12 @@ public class LogThrottleTest extends TestCase
 		
 		// verify the number of actual local logs
 		assertEquals("Each log level should have produced only one local log.", expectedNumberOfLocalLogs, clientLogManager.getNumberLocalLogs());
+
+		// The way this is constructed, the throttle should be active if numLoops > 1. 
+		// Since no alarms are configured, we expect one warning log about the failure to raise a throttle alarm.
+		int expectedAlarmErrorLogs = (numLoops > 1 ? 1 : 0);
+		assertEquals("Bad number of throttle alarm error log(s)", expectedAlarmErrorLogs, clientLogManager.getNumberLocalThrottleAlarmErrorLogs());
+		
 		assertEquals("Wrong number of remote logs", expectedNumberOfRemoteLogs, clientLogManager.testLogQueue.logRecords.size());
 	}
 
@@ -177,10 +182,15 @@ public class LogThrottleTest extends TestCase
 	private static class TestClientLogManager extends ClientLogManager {
 		
 		private volatile int numLocalLogs;
+		private volatile int numLocalThrottleAlarmErrorLogs;
 		TestLogQueue testLogQueue;
 		
 		int getNumberLocalLogs() {
 			return numLocalLogs;
+		}
+
+		int getNumberLocalThrottleAlarmErrorLogs() {
+			return numLocalThrottleAlarmErrorLogs;
 		}
 
 		@Override
@@ -189,7 +199,12 @@ public class LogThrottleTest extends TestCase
 			localHandler.setFormatter(new ConsoleLogFormatter() {
 				@Override
 				public String format(LogRecord record) {
-					numLocalLogs++;
+					if (record.getMessage().equals("Cannot raise alarm about log throttle action because alarm callback or process name is not yet available.")) {
+						numLocalThrottleAlarmErrorLogs++;
+					}
+					else {
+						numLocalLogs++;
+					}
 					return super.format(record);
 				}
 			});
