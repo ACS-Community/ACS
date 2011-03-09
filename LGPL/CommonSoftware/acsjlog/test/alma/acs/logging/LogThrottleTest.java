@@ -141,7 +141,13 @@ public class LogThrottleTest extends TestCase
 		int expectedAlarmErrorLogs = (numLoops > 1 ? 1 : 0);
 		assertEquals("Bad number of throttle alarm error log(s)", expectedAlarmErrorLogs, clientLogManager.getNumberLocalThrottleAlarmErrorLogs());
 		
-		assertEquals("Wrong number of remote logs", expectedNumberOfRemoteLogs, clientLogManager.testLogQueue.logRecords.size());
+		int numUserRemoteLogs = 0;
+		for (LogRecord logRecord : clientLogManager.testLogQueue.logRecords) {
+			if (!logRecord.getMessage().startsWith("Changed processName=")) {
+				numUserRemoteLogs++;
+			}
+		}
+		assertEquals("Wrong number of remote logs", expectedNumberOfRemoteLogs, numUserRemoteLogs);
 	}
 
 	
@@ -202,7 +208,7 @@ public class LogThrottleTest extends TestCase
 					if (record.getMessage().equals("Cannot raise alarm about log throttle action because alarm callback or process name is not yet available.")) {
 						numLocalThrottleAlarmErrorLogs++;
 					}
-					else {
+					else if (!record.getMessage().startsWith("Changed processName=")) { 
 						numLocalLogs++;
 					}
 					return super.format(record);
