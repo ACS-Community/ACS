@@ -3,7 +3,9 @@
 1 - Container will accept remote debuggers on port ----
 1 - Listening for transport dt_socket at address: ----
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'AcsContainerRunner' and updated logger names.
 1 - ----------T--:--:--.--- INFO [AcsContainerRunner] AcsContainerRunner#run with arguments -OAIAddr xxx.xxx.xxx.xxx -OAport xxx -m corbaloc::xxxx:xxxx/Manager -containerName testContainer 
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='AcsContainerRunner' to 'testContainer' and updated logger names.
 1 - ----------T--:--:--.--- FINER [testContainer] ORB initialized.
 1 - ----------T--:--:--.--- FINE [testContainer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
