@@ -833,6 +833,7 @@ public class ClientLogManager implements LogConfigSubscriber
 		if (!newProcessName.equals(this.processName)) {
 			processNameLock.lock();
 			try {
+				String oldProcessName = this.processName;
 				this.processName = newProcessName;
 				synchronized (loggers) {
 					for (String oldLoggerName : new ArrayList<String>(loggers.keySet())) { // iterate over copy to avoid ConcurrentModif.Ex 
@@ -850,7 +851,7 @@ public class ClientLogManager implements LogConfigSubscriber
 						}
 					}
 				}
-				m_internalLogger.finer("Changed processName='" + this.processName + "' to '" + newProcessName + "' and updated logger names.");
+				m_internalLogger.finer("Changed processName='" + oldProcessName + "' to '" + newProcessName + "' and updated logger names.");
 			} finally {
 				processNameLock.unlock();
 			}
