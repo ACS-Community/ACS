@@ -691,9 +691,10 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 				policies[i].destroy();
 
 			// disable cache for XML CDB DAL (important)
-			String[] newArgs = new String[args.length+1];
+			String[] newArgs = new String[args.length+2];
 			System.arraycopy(args, 0, newArgs, 0, args.length);
-			newArgs[args.length] = "-disableCache";
+			newArgs[args.length] = "-disableRecoveryFile";
+			newArgs[args.length+1] = "-disableCache";
 			
 			final WDALImpl servantDelegate = new WDALImpl(newArgs, orb, xmlCDBPOA, m_logger);
 			final Servant wdalImplServant = new WJDALPOATie(servantDelegate);
@@ -3242,18 +3243,17 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			curls.addAll(wdaoMap.keySet());
 		}
 		
-		for (String curl : curls)
-			clear_cache(curl);
-		
-		/*
 		synchronized (listenedCurls) {
 			Iterator iter = listenedCurls.keySet().iterator();
 			while (iter.hasNext()) {
 				String curl = (String) iter.next();
-				clear_cache(curl);
+				curls.add(curl);
 			}
 		}
-		*/
+
+		for (String curl : curls)
+			clear_cache(curl);
+		
 	}
 
 }
