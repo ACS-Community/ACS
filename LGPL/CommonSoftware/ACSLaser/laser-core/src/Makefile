@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.23 2009/06/20 18:34:50 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.24 2011/03/10 15:38:36 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -129,6 +129,7 @@ USER_IDL =
 #
 JARFILES= lasercore
 lasercore_DIRS=alma cern com
+lasercore_JLIBS = AlarmSystem
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
