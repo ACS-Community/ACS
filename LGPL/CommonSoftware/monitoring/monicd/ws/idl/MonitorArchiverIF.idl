@@ -46,6 +46,7 @@ module MonitorArchiver
 	{
 		void registerCollector(in string inComponentName);
 		void deregisterCollector(in string inComponentName);
+		void registerKnownCollectors(in string inComponentName);
 	};
 };
 
