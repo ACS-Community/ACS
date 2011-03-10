@@ -119,6 +119,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	private Random idPool = new Random();
 	private HashMap<Integer, DALChangeListener> regListeners = new HashMap<Integer, DALChangeListener>();
 	private boolean recoveryRead = true;
+	private boolean disableRecoveryFile = false;
 	private DALNode rootNode = null; // used for node listening 
 	private final Logger m_logger;
 	private volatile boolean shutdown = false;
@@ -190,11 +191,14 @@ public class DALImpl extends JDALPOA implements Recoverer {
 					m_root = args[++i] + "/CDB";
 				}
 			}
-			if (args[i].equals("-n")) {
+			else if (args[i].equals("-n")) {
 				recoveryRead = false;
 			}
-			if (args[i].equals("-disableCache")) {
+			else if (args[i].equals("-disableCache")) {
 				cacheDisabled = true;
+			}
+			else if (args[i].equals("-disableRecoveryFile")) {
+				disableRecoveryFile = true;
 			}
 		}
 
@@ -959,6 +963,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * 
 	 */
 	public void loadListeners() {
+		if (disableRecoveryFile) return;
 		File storageFile = getStorageFile();
 		if (storageFile == null || !storageFile.exists())
 			return;
@@ -1009,6 +1014,7 @@ public class DALImpl extends JDALPOA implements Recoverer {
 	 * @return boolean
 	 */
 	public boolean saveListeners() {
+		if (disableRecoveryFile) return false;
 		String key, ior;
 		File storageFile = getStorageFile();
 		if (storageFile == null)
