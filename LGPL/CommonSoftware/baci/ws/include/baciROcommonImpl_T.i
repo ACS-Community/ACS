@@ -193,7 +193,10 @@ bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
       alarmTimerTrig_m = static_cast<CORBA::ULong>(dbl);
 
 
-      str = dao->get_string("alarm_fault_family");
+      try {
+         str = dao->get_string("alarm_fault_family");
+      } catch (ACSErr::ACSbaseExImpl& ex) { }
+
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultFamily_m = str.in();
       else {
@@ -221,7 +224,10 @@ bool baci::ROcommonImpl<ACS_RO_TL>::readCharacteristics()
         }
       }
 
-      str = dao->get_string("alarm_fault_member");
+      try {
+         str = dao->get_string("alarm_fault_member");
+      } catch (ACSErr::ACSbaseExImpl& ex) { }
+
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultMember_m = str.in();
       else {
