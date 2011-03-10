@@ -335,50 +335,96 @@ TABLE Component
      CONSTRAINT ComponentImplLang CHECK (ImplLang IN ('java', 'cpp', 'py'))
 ENDTABLE
 
+// Entries in the BACIProperty table describe configuration for a single baci property.
+// BACIPropertyId                    Artificial ID
+// ComponentId                       Reference to the component that owns this baci property
+// PropertyName                      Name of the property as defined in the component's IDL interface
+// description                       Description of the function and purpose of the Property.
+// isSequence                        TODO: Check if this attribute can be removed. It is not needed by ACS, but perhaps by CONTROL? Always set to "false".
+//                                         Usage at AOS on 2011-03-10: 0: 598844, 1: 64660
+// format                            A printf-like formatting string, can be used by GUIs.
+// units                             Name of unit which this property's value represents.
+// resolution                        Bit pattern representing the significant bits in the property's value.
+//                                   TODO: Why defined as a string instead of a 64 bit number? Right now the string can only hold a 32 bit number with 10 digits.
+//                                         Usage at AOS on 2011-03-10: '0': 64448, '1': 597798, '10': 212, '65535': 1046
+// archive_priority                  Seems not used any more (probably was used as log level before ACS used NC for archiving monitoring data)
+//                                     1, 2, 3, 15 used at AOS
+// archive_min_int                   The shortest interval at which the value of a property gets archived, even if the on-change setup would cause shorter intervals. 
+//                                   (This interval should not be shorter than min_timer_trig).
+// archive_max_int                   Sets a fixed time trigger, to archive the property value even if it does not change.
+// archive_mechanism                 Determines which monitoring framework should be used for this property: 'notification_channel' or 'monitor_collector'
+// archive_suppress                  Can be used to enable, disable archiving of the property w/o changing the other values of archiving like archive_max_int, and archive_min_int.
+// default_timer_trig                Specifies how frequently the property value is sent to the callback method of a monitor of this property.
+// min_timer_trig                    Sets the shortest interval at which a monitor gets notified (what archive_min_int is for archiving). 
+// initialize_devio                  TODO copy descriptions from BACI.XSD
+// min_delta_trig                    
+// default_value           
+// graph_min               
+// graph_max               
+// min_step                
+// archive_delta           
+// alarm_high_on           
+// alarm_low_on            
+// alarm_high_off          
+// alarm_low_off           
+// alarm_timer_trig        
+// min_value               
+// max_value               
+// bitDescription          
+// whenSet                           Color index 
+// whenCleared             
+// statesDescription       
+// condition               
+// alarm_on                
+// alarm_off               
+// alarm_fault_family      
+// alarm_fault_member      
+// alarm_level             
+// Data                              XML string containing all non-standard attributes (e.g. when extending ROdouble property with new attributes).
 TABLE BACIProperty
-	BACIPropertyId          INTEGER                    	 NOT NULL
- 	ComponentId             INTEGER                      NOT NULL
-	PropertyName            NAME                     NOT NULL
- 	description             TEXT					 NOT NULL
-	isSequence          	BOOLEAN                  NOT NULL
-	format				 	LONGVARCHAR (16)		 NOT NULL
-	units					LONGVARCHAR (24)		 NOT NULL
-	resolution				LONGVARCHAR (10)		 NOT NULL
-	archive_priority		INTEGER						 NOT NULL
-	archive_min_int			DOUBLE					 NOT NULL
-	archive_max_int			DOUBLE					 NOT NULL
-	archive_mechanism       LONGVARCHAR (24)      NOT NULL
-	archive_suppress        BOOLEAN               NOT NULL
-	default_timer_trig		DOUBLE					 NOT NULL
-	min_timer_trig			DOUBLE					 NOT NULL
-	initialize_devio		BOOLEAN					 NOT NULL
-	min_delta_trig			DOUBLE					 NULL
-	default_value			TEXT					 NOT NULL
-	graph_min				DOUBLE					 NULL
-	graph_max				DOUBLE					 NULL
-	min_step				DOUBLE					 NULL
-	archive_delta			DOUBLE					 NOT NULL
- 	alarm_high_on			DOUBLE					 NULL
- 	alarm_low_on			DOUBLE					 NULL
- 	alarm_high_off			DOUBLE					 NULL
- 	alarm_low_off			DOUBLE					 NULL
- 	alarm_timer_trig		DOUBLE					 NULL
- 	min_value				DOUBLE					 NULL
-	max_value				DOUBLE					 NULL
- 	bitDescription			TEXT					 NULL
-	whenSet					TEXT					 NULL
-	whenCleared				TEXT					 NULL
-	statesDescription			TEXT					 NULL
-	condition				TEXT					 NULL
-	alarm_on				TEXT					 NULL
-	alarm_off				TEXT					 NULL
-	alarm_fault_family		TEXT					 NULL
-	alarm_fault_member		TEXT					 NULL
-	alarm_level				INTEGER					 NULL
-  	Data					TEXT					 NULL
-	KEY BACIPropertyId GENERATED FROM PropertyName ComponentId
-	CONSTRAINT BACIPropArchMech CHECK (archive_mechanism IN ('notification_channel', 'monitor_collector'))
-	CONSTRAINT BACIPropertyCompId FOREIGN KEY (ComponentId) REFERENCES Component CASCADING INVERSE COMPOSITION
+    BACIPropertyId          INTEGER                  NOT NULL
+    ComponentId             INTEGER                  NOT NULL
+    PropertyName            NAME                     NOT NULL
+    description             TEXT                     NOT NULL
+    isSequence              BOOLEAN                  NOT NULL
+    format                  LONGVARCHAR (16)         NOT NULL
+    units                   LONGVARCHAR (24)         NOT NULL
+    resolution              LONGVARCHAR (10)         NOT NULL
+    archive_priority        INTEGER                  NOT NULL
+    archive_min_int         DOUBLE                   NOT NULL
+    archive_max_int         DOUBLE                   NOT NULL
+    archive_mechanism       LONGVARCHAR (24)         NOT NULL
+    archive_suppress        BOOLEAN                  NOT NULL
+    default_timer_trig      DOUBLE                   NOT NULL
+    min_timer_trig          DOUBLE                   NOT NULL
+    initialize_devio        BOOLEAN                  NOT NULL
+    min_delta_trig          DOUBLE                   NULL
+    default_value           TEXT                     NOT NULL
+    graph_min               DOUBLE                   NULL
+    graph_max               DOUBLE                   NULL
+    min_step                DOUBLE                   NULL
+    archive_delta           DOUBLE                   NOT NULL
+    alarm_high_on           DOUBLE                   NULL
+    alarm_low_on            DOUBLE                   NULL
+    alarm_high_off          DOUBLE                   NULL
+    alarm_low_off           DOUBLE                   NULL
+    alarm_timer_trig        DOUBLE                   NULL
+    min_value               DOUBLE                   NULL
+    max_value               DOUBLE                   NULL
+    bitDescription          TEXT                     NULL
+    whenSet                 TEXT                     NULL
+    whenCleared             TEXT                     NULL
+    statesDescription       TEXT                     NULL
+    condition               TEXT                     NULL
+    alarm_on                TEXT                     NULL
+    alarm_off               TEXT                     NULL
+    alarm_fault_family      TEXT                     NULL
+    alarm_fault_member      TEXT                     NULL
+    alarm_level             INTEGER                  NULL
+    Data                    TEXT                     NULL
+    KEY BACIPropertyId GENERATED FROM PropertyName ComponentId
+    CONSTRAINT BACIPropArchMech CHECK (archive_mechanism IN ('notification_channel', 'monitor_collector'))
+    CONSTRAINT BACIPropertyCompId FOREIGN KEY (ComponentId) REFERENCES Component CASCADING INVERSE COMPOSITION
 ENDTABLE
 
 
