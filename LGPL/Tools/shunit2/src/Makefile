@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2009/09/30 22:19:35 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/03/10 13:59:06 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@ all:	do_all unpack build
 	@echo " . . . 'all' done" 
 
 clean : clean_all
-	@cd shunit2-$(SHUNIT_VER); make build-clean
+	@if [ -d shunit2-$(SHUNIT_VER) ]; then cd shunit2-$(SHUNIT_VER); make build-clean; fi
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
