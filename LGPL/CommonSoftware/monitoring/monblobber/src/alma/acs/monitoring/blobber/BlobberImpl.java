@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.MonitorArchiver.ControllerOperations;
+import alma.MonitorArchiver.ControllerHelper;
 import alma.MonitorArchiver.BlobberOperations;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.acs.component.ComponentImplBase;
@@ -77,6 +79,16 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			}
 			throw new ComponentLifecycleException(ex);
 		}	
+
+		ControllerOperations controller = null;
+		try {
+			controller = ControllerHelper.narrow(m_containerServices
+				.getDefaultComponent("IDL:alma/MonitorArchiver/Controller:1.0"));
+		} catch (AcsJContainerServicesEx ex1) {
+			throw new ComponentLifecycleException(
+				"Failed to get ARCHIVE_CONTROLLER instance.", ex1);
+		}
+		controller.registerKnownCollectors(name());
 	}
 
 	/**
