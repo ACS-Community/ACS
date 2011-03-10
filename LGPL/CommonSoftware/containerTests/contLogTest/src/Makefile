@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2008/06/24 13:45:01 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.7 2011/03/10 14:46:54 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -66,10 +66,12 @@ USER_LIB = 	-lACE \
 COMPONENTS_JARFILES = contLogTestComp
 contLogTestComp_DIRS = \
 	alma/contLogTest/TestLogLevelsCompImpl
+contLogTestComp_JLIBS = contLogTest_IF
 
 JARFILES = contLogTestClient
 contLogTestClient_DIRS = \
 	alma/contLogTest/client
+contLogTestClient_JLIBS = contLogTest_IF
 
 #
 # This will trigger debugging information for Java
