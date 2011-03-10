@@ -5,6 +5,7 @@
 1 - 
 1 - ----------T--:--:--.--- TRACE [alma.acs.logging.config.LogConfig] ACS.log.minlevel.namedloggers not defined.
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'testSimpleLog' and updated logger names.
 1 - ----------T--:--:--.--- INFO [testSimpleLog] -------------------------------
 1 - ----------T--:--:--.--- INFO [testSimpleLog] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- TRACE [testSimpleLog] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ]
