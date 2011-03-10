@@ -120,6 +120,7 @@ USER_IDL =
 #
 JARFILES= asdemo
 asdemo_DIRS=alma
+asdemo_JLIBS = demoComponents
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
