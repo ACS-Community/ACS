@@ -121,6 +121,7 @@ USER_IDL =
 JARFILES= alarmsysteminterface
 alarmsysteminterface_DIRS= cern alma
 alarmsysteminterface_EXTRAS= cern/laser/source/alarmsysteminterface/impl/asi-configuration.xml
+alarmsysteminterface_JLIBS = AlarmSourceSchemaBindings
 #
 # java sources in Jarfile on/off
 DEBUG= on
