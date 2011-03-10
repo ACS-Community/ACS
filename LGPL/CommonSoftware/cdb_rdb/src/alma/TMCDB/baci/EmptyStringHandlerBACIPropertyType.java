@@ -719,5 +719,8 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
     private String alarm_fault_family;
     private String alarm_fault_member;
     private Integer alarm_level;
-	
+
+    private boolean archive_suppress;
+    private String archive_mechanism;
+
 }
