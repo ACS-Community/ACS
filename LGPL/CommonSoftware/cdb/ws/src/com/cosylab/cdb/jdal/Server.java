@@ -228,8 +228,8 @@ public class Server {
 			    }
 
 			// recover (notify) clients
-			if (servant instanceof Recoverer) {
-				((Recoverer) servant).recoverClients();
+			if (servantDelegate instanceof Recoverer) {
+				((Recoverer) servantDelegate).recoverClients();
 			}
 
 			if (iorFileName != null) {
