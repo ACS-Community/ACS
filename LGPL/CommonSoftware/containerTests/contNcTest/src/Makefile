@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.1 2008/05/23 12:53:45 eallaert Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/03/10 15:04:27 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -129,6 +129,9 @@ counterSupplierComp_DIRS = \
 	alma/COUNTER/CounterSupplierImpl
 counterConsumerComp_DIRS = \
 	alma/COUNTER/CounterConsumerImpl
+counterSupplierComp_JLIBS = contNcTest_IF
+counterConsumerComp_JLIBS = contNcTest_IF
+
 
 #
 # java sources in Jarfile on/off
