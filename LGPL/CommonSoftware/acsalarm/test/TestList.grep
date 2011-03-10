@@ -21,3 +21,4 @@ loaded DLL
 1 - $
 ^[0-9 ]*- [jJ]ava
 ACS.log.minlevel.namedloggers not defined
+Changed processName
