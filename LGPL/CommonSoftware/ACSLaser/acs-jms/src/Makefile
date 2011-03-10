@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.3 2010/03/10 06:47:15 mzampare Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/03/10 15:15:53 jagonzal Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsjms/src
@@ -52,7 +52,7 @@ acsjms_LIBS     =
 JARFILES      = acsjms
 acsjms_DIRS   = com
 acsjms_EXTRAS =
-
+acsjms_JLIBS  = ACSJMSMessageEntity
 
 # list of all possible C-sources (used to create automatic dependencies)
 # ------------------------------
