@@ -1,4 +1,5 @@
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testAppend' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppend] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppend] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] calling orb.resolve_initial_references
@@ -9,6 +10,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppend] logged out from manager.
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] calling orb.resolve_initial_references
@@ -19,6 +21,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testAppendTimeout] logged out from manager.
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testCopy' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testCopy] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testCopy] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] calling orb.resolve_initial_references
@@ -29,6 +32,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testCopy] logged out from manager.
 1 - .----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
+1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'alma.acs.jlog.test.ErrorLogFileTest#testClear' and updated logger names.
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testClear] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.jlog.test.ErrorLogFileTest#testClear] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.jlog.test.ErrorLogFileTest#testClear] calling orb.resolve_initial_references
