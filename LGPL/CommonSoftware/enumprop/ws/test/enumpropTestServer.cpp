@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.54 2008/07/25 09:42:30 cparedes Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.55 2011/03/10 18:52:28 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.54 2008/07/25 09:42:30 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.55 2011/03/10 18:52:28 rtobar Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -67,6 +67,7 @@ class TestContainerServices : public maci::ContainerServices {
     TestContainerServices(ACE_CString& compName, PortableServer::POA_ptr poa, CORBA::ORB_ptr orb):
         maci::ContainerServices(compName,poa), m_orb(CORBA::ORB::_duplicate(orb)) {
             ACS_SHORT_LOG((LM_INFO,"TestContainerServices built"));
+				m_componentType = ACE_CString("IDL:ENUMPROP_TEST/enumpropTestDevice:1.0");
         }
         
         virtual ~TestContainerServices() {

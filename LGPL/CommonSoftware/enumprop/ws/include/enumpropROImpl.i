@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.57 2009/10/02 13:58:46 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.58 2011/03/10 18:52:28 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -366,17 +366,48 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
       m_archive_delta = dao->get_long("archive_delta");
 #endif
 
-      str = dao->get_string("alarm_fault_family");
+      // alarm_fault_{family,member} are optional, so don't fail if they're not present
+      try {
+         str = dao->get_string("alarm_fault_family");
+      } catch(ACSErr::ACSbaseExImpl& ex) {}
+
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultFamily_m = str.in();
-      else
-    	  alarmFaultFamily_m = "BACIProperty"; //default
+      else {
+        ACE_CString compType = this->property_mp->getComponent()->getType();
+        if( compType.length() == 0 ) {
+    	    alarmFaultFamily_m = "BACIProperty"; //default
+        }
+        else {
 
-      str = dao->get_string("alarm_fault_member");
+          size_t pos;
+
+          // strip out "IDL:" and ":1.0" from the type string, if necessary
+          if( compType.find("IDL:") == 0 )
+            alarmFaultFamily_m = compType.substr(4, -1);
+          if( (pos = alarmFaultFamily_m.find(":1.0")) == (alarmFaultFamily_m.length() - 4) )
+            alarmFaultFamily_m = alarmFaultFamily_m.substr(0, pos);
+
+          // keep just the interface name, throw away the pragma and module names
+          while( (pos = alarmFaultFamily_m.find('/')) != ACE_CString::npos )
+            alarmFaultFamily_m = alarmFaultFamily_m.substr(pos + 1);
+
+          ACE_CString fm(this->property_mp->getName());     // property name is "CompName:PropName
+          alarmFaultFamily_m += '#';
+          alarmFaultFamily_m += fm.substr(fm.find(':') + 1);
+        }
+      }
+
+      try {
+         str = dao->get_string("alarm_fault_member");
+      } catch(ACSErr::ACSbaseExImpl& ex) {}
+
       if (strlen(str)!=0) //if FF is not specified in the CDB
     	  alarmFaultMember_m = str.in();
-      else
-    	  alarmFaultMember_m = this->property_mp->getName();
+      else {
+        ACE_CString fm(this->property_mp->getName());     // property name is "CompName:PropName"
+    	  alarmFaultMember_m = fm.substr(0, fm.find(':')); //
+      }
 
       alarmLevel_m = dao->get_long("alarm_level");
 

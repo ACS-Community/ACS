@@ -104,7 +104,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): entering.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): inserting key: BACI_Value and value: 0
 1 - ----------T--:--:--.--- [GlobalLogger - ] Properties::setProperty(): exiting.
-1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <BACIProperty,EPTESTDEVICE1#currentStates,1> ACTIVE
+1 - ----------T--:--:--.--- [GlobalLogger - ] Alarm sent: <enumpropTestDevice#currentStates,EPTESTDEVICE1,1> ACTIVE
 1 - ON
 2 - ----------T--:--:--.--- [GlobalLogger - ] Device narrowed.
 2 - ----------T--:--:--.--- Local file logger: Cache saved to '----'.
