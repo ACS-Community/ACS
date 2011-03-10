@@ -1,0 +1,9 @@
+#Bhola Panta@NAOJ 2011/03/11
+
+1. The jchart2d tests need a GUI tester to run the test battery, so we decided 
+to disable the test by renaming the makefile so that the NRI reports 
+"no makefile found" instead of trying to run TAT only to fail and report
+test failure. 
+
+2. When TAT is run manually, "Makefile.manual" should be renamed to "Makefile", 
+and proceed  as usual. 
