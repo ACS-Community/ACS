@@ -1,5 +1,6 @@
 1 - 
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testNoALarmBranch' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testNoALarmBranch] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testNoALarmBranch] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] calling orbresolve_initial_references
@@ -13,6 +14,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testACSAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testACSAS] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testACSAS] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] calling orbresolve_initial_references
@@ -26,6 +28,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testCERNAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testCERNAS] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testCERNAS] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] calling orbresolve_initial_references
@@ -40,6 +43,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testWrongImplementationProp' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testWrongImplementationProp] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testWrongImplementationProp] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] calling orbresolve_initial_references
@@ -54,6 +58,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testFaultStateCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] calling orbresolve_initial_references
@@ -67,6 +72,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testAlarmSourceCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testAlarmSourceCreation] -------------------------------
 1 - ----------T--:--:----- INFO [FactoryTest#testAlarmSourceCreation] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] calling orbresolve_initial_references

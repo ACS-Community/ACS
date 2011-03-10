@@ -1,5 +1,6 @@
 1 - 
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testPushAlarm#testPushAlarm' and updated logger names
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] -------------------------------
 1 - ----------T--:--:----- INFO [testPushAlarm#testPushAlarm] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] calling orbresolve_initial_references
@@ -15,6 +16,7 @@
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] about to log out from manager
 1 - ----------T--:--:----- FINE [testPushAlarm#testPushAlarm] logged out from manager
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
+1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'testAlarmsCollection#testAlarmsCollection' and updated logger names
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] -------------------------------
 1 - ----------T--:--:----- INFO [testAlarmsCollection#testAlarmsCollection] ComponentClientTestCase#setUp()
 1 - ----------T--:--:----- FINE [testAlarmsCollection#testAlarmsCollection] calling orbresolve_initial_references
