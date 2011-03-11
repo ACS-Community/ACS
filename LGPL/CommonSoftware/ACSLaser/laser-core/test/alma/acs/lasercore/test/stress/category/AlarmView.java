@@ -40,6 +40,10 @@ public class AlarmView {
 	public final String cause; // The cause
 	public final Boolean active;// Active
 	public final String hostName; // The name of the host of the source that sent the alarm
+	public final Boolean nodeParent;
+	public final Boolean nodeChild;
+	public final Boolean multiplicityParent;
+	public final Boolean multiplicityChild;
 	
 	/**
 	 * Constructor
@@ -50,7 +54,8 @@ public class AlarmView {
 	 * @param desc Problem description
 	 * @param act Active
 	 */
-	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act,String hostName) 
+	public AlarmView(String id, String pri, String timestamp, String desc, String cause,String act,String hostName, 
+			String nodeParent, String nodeChild, String multiplicityParent, String multiplicityChild) 
 	throws Exception {
 		if (id==null || id.length()==0) {
 			throw new IllegalArgumentException("Invalid triplet in constructor");
@@ -66,6 +71,11 @@ public class AlarmView {
 		active=Boolean.parseBoolean(act);
 		// Get the priority
 		priority=new Integer(pri);
+		
+		this.nodeParent=Boolean.parseBoolean(nodeParent);
+		this.nodeChild=Boolean.parseBoolean(nodeChild);
+		this.multiplicityParent=Boolean.parseBoolean(multiplicityParent);
+		this.multiplicityChild=Boolean.parseBoolean(multiplicityChild);
 	}
 
 	/**

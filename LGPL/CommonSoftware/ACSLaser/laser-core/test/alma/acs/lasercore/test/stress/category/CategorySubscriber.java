@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.4 2011/02/17 14:00:35 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.5 2011/03/11 19:38:00 acaproni Exp $
  * @since    
  */
 
@@ -200,6 +200,10 @@ public class CategorySubscriber   implements MessageListener {
 		String cause=NOT_AVAILABLE; // The cause of the alarm
 		String active=NOT_AVAILABLE; // Active
 		String hostName=NOT_AVAILABLE;
+		String nodeParent=NOT_AVAILABLE;
+		String nodeChild=NOT_AVAILABLE;
+		String multiplicityParent=NOT_AVAILABLE;
+		String multiplicityChild=NOT_AVAILABLE;
 		
 		Document document = null;
 		try {
@@ -224,6 +228,22 @@ public class CategorySubscriber   implements MessageListener {
 			if (childNode.getNodeName().equals(("cause"))) {
 				Node priNode = childNode.getLastChild();
 				cause=priNode.getNodeValue();
+			}
+			if (childNode.getNodeName().equals(("nodeParent"))) {
+				Node priNode = childNode.getLastChild();
+				nodeParent=priNode.getNodeValue();
+			}
+			if (childNode.getNodeName().equals(("nodeChild"))) {
+				Node priNode = childNode.getLastChild();
+				nodeChild=priNode.getNodeValue();
+			}
+			if (childNode.getNodeName().equals(("multiplicityParent"))) {
+				Node priNode = childNode.getLastChild();
+				multiplicityParent=priNode.getNodeValue();
+			}
+			if (childNode.getNodeName().equals(("multiplicityChild"))) {
+				Node priNode = childNode.getLastChild();
+				multiplicityChild=priNode.getNodeValue();
 			}
 			// This tag sometimes appear inside visualFields (see below)
 			if (childNode.getNodeName().equals("problemDescription")) {
@@ -270,6 +290,7 @@ public class CategorySubscriber   implements MessageListener {
 					}
 				}
 			}
+			
 			// Sometimes problemDescription appeared into visualFields
 			if (childNode.getNodeName().equals("visualFields")) {
 				NodeList visualFieldsNodeList=childNode.getChildNodes();
@@ -288,7 +309,7 @@ public class CategorySubscriber   implements MessageListener {
 			}
 		}
 		try {
-			categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName));
+			categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName,nodeParent,nodeChild,multiplicityParent,multiplicityChild));
 		} catch (Throwable t) {
 			System.out.println("Error building alarm "+t.getMessage());
 		}
