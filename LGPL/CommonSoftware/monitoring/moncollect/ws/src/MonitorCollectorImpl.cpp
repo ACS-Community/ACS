@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.2 2011/03/11 13:59:55 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.2 2011/03/11 13:59:55 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorCollectorImpl.h"
@@ -57,7 +57,9 @@ void MonitorCollectorImpl::initialize()
 	{
 		contServ_m = getContainerServices();
 
-		//TBD for time being we register to the blobber latter should be controller
+		// we register with the controller, which will assign a blobber to this collector
+		// @TODO (HSO): Isn't the controller supposed to be a singleton component,
+		//       so that we could obtain it by type ("IDL:alma/MonitorArchiver/Controller:1.0") rather than by configured instance name?
 		archiveMonitorController_m = contServ_m->getComponentNonSticky<MonitorArchiver::Controller>("ARCHIVE/TMCDB/MONITOR_CONTROL");
 		archiveMonitorController_m->registerCollector(name());
 	}
