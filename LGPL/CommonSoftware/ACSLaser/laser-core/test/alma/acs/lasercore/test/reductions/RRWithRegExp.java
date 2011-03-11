@@ -28,6 +28,11 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	 * The alarm source
 	 */
 	private ACSAlarmSystemInterface alarmSource;
+	
+	/**
+	 * The number of received alarms
+	 */
+	private int receivedAlarms;
 
 	/**
 	 * Constructor 
@@ -43,6 +48,7 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		receivedAlarms=0;
 		categoryClient = new CategoryClient(this.getContainerServices());
 		assertNotNull(categoryClient);
 		categoryClient.connect();
@@ -54,6 +60,7 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 
 	@Override
 	protected void tearDown() throws Exception {
+		ACSAlarmSystemInterfaceFactory.done();
 		categoryClient.close();
 		super.tearDown();
 		System.out.println("tearDown done");
@@ -66,10 +73,21 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	@Override
 	public void alarmReceived(AlarmView alarm) {
 		System.out.println("Alarm received: "+alarm.alarmID+" "+alarm.active);
+		if (alarm.alarmID.startsWith("MF_REGEXP") || alarm.alarmID.startsWith("NODE_REGEXP")) {
+			receivedAlarms++;
+		}
 	}
 
 	/**
-	 * Test the MULTIPLICITY reduction 
+	 * Test the MULTIPLICITY and NODE reduction 
+	 * 
+	 * <B>Note</B>: initially I wrote 2 test for distinguishing between
+	 * 				NODe and MULTILPICITY but there is something going wrong 
+	 * 				when the alarms for the second tests are published: SimpleSupplier.publishEvent 
+	 * 				hangs probably due to some misuse of static variables.
+	 * 				I have decided to condesate the 2 tests in only one.
+	 * 
+	 * @TODO Split this test in two test when the problem described upon has been fixed.
 	 * 
 	 * @throws Exception
 	 */
@@ -95,32 +113,27 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
-	}
-	
-	/**
-	 * Test the NODE reduction 
-	 * 
-	 * @throws Exception
-	 */
-	public void testNode() throws Exception {
+		
+		////////////////////////////////////////////////////////////////////
 		System.out.println("testNode");
 		sendAlarm("NODE_REGEXP", "REGEXP_NODE1", 1, true);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE2", 1, true);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE3", 1, true);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE4", 1, true);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_2", 1, true);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_3", 1, true);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_4", 1, true);
 		// Give time for the reduced alarm to arrive
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
 		// Clear the alarms
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE1", 1, false);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE2", 1, false);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE3", 1, false);
-		sendAlarm("NODE_REGEXP", "REGEXP_NODE4", 1, false);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE1",  1, false);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_2", 1, false);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_3", 1, false);
+		sendAlarm("NODE_REGEXP", "REGEXP_NODE_4", 1, false);
 		// Give time for the alarms to arrive
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
+		assertEquals("Wrong number of alarms received", 8, receivedAlarms);
 	}
 
 	/**
@@ -142,6 +155,7 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 		fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
 
 		alarmSource.push(fs);
+		m_logger.info("Alarm sent <"+FF+", "+FM+", "+FC+"> "+fs.getDescriptor());
 	}
 	
 }
