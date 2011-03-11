@@ -2,12 +2,10 @@ package alma.acs.monitoring.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.MonitorArchiver.BlobberHelper;
@@ -37,15 +35,22 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
      */
     protected final List<String> myBlobberList = new ArrayList<String>();
 
-    /**
-     * Mapping Blobber name to known CORBA reference.
-     */
-    protected Map<String,BlobberOperations> myBlobberRefMap = new HashMap<String,BlobberOperations>();
+	/**
+	 * Mapping Blobber name to known CORBA reference.
+	 * <p>
+	 * @TODO (HSO): If myBlobberRefMap and myBlobberList contain information about the same blobbers, (which it seems
+	 *       to me it does), then we should try to keep that data only once. How about using a LinkedHashMap for myBlobberRefMap
+	 *       whose reliable iteration order then makes myBlobberList unnecessary?
+	 *       We would avoid possible misalignment between the two, at the expense that we'd have to iterate
+	 *       over myBlobberRefMap.keySet where now we call myBlobberList(index).
+	 */
+	protected final Map<String, BlobberOperations> myBlobberRefMap = new HashMap<String, BlobberOperations>();
 
-    /**
-     * Mapping MonitorCollector name to a Blobber name inside myBlobberList.
-     */
-    protected Map<String,String> myCollectorMap = new HashMap<String,String>();
+	/**
+	 * Maps names of MonitorCollector components to the corresponding Blobber components. 
+	 * The blobber name is expected to be contained in {@link #myBlobberList}.
+	 */
+	protected final Map<String, String> collector2BlobberName = new HashMap<String, String>();
 
     /**
      * Current position in {@link #myBlobberList}, pointing to the registered blobber component
@@ -61,10 +66,10 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 
     @Override
     public void cleanUp() {
-    	synchronized (this.myBlobberList) {
+    	synchronized (myBlobberList) {
             for (String blobberName : myBlobberList) {
                 if (myBlobberRefMap.containsKey(blobberName)) {
-                    m_containerServices.releaseComponent(blobberName);
+                    m_containerServices.releaseComponent(blobberName, null);
                 }
             }
     	}
@@ -79,13 +84,10 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
 			String[] componentNames = m_containerServices.findComponents(null, BLOBBER_IDL_TYPE);
             if (componentNames.length == 0) {
                 throw new ComponentLifecycleException(
-                        "No blobbers ("
-                                + BLOBBER_IDL_TYPE
-                                + ") found in the CDB. At least one must be configured.");
+                        "No blobbers (" + BLOBBER_IDL_TYPE + ") found in the CDB. At least one must be configured.");
             }
-            this.myBlobberList.addAll(Arrays.asList(componentNames));
-            m_logger.info("The following blobbers were found: "
-                    + this.myBlobberList);
+            myBlobberList.addAll(Arrays.asList(componentNames));
+            m_logger.info("The following blobbers were found: " + myBlobberList);
         } catch (AcsJContainerServicesEx e) {
             throw new ComponentLifecycleException(e);
         }
@@ -96,24 +98,20 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
     /////////////////////////////////
 
     @Override
-    public synchronized void registerCollector(String inComponentName) {
-        m_logger.info("Attempting to register collector " + inComponentName);
+    public synchronized void registerCollector(String collectorCompName) {
+        m_logger.info("Attempting to register collector " + collectorCompName);
         try {
-            String blobberName = isRegistered(inComponentName);
+            String blobberName = isRegistered(collectorCompName);
             if (blobberName == null) {
-                blobberName = addCollector(inComponentName);
+                blobberName = addCollector(collectorCompName);
                 if (blobberName == null) {
-                    // @TODO add dynamic blobber component (probably in method
-                    // addCollector) and/or raise alarm.
-                    m_logger.log(Level.SEVERE, inComponentName +
-                            " could not be registered to any of the blobbers.");
+                    // @TODO add dynamic blobber component (probably in method addCollector) and/or raise alarm.
+                    m_logger.log(Level.SEVERE, collectorCompName + " could not be registered to any of the blobbers.");
                 } else {
-                    m_logger.info(inComponentName
-                            + " was registered to blobber " + blobberName);
+                    m_logger.info(collectorCompName + " was registered to blobber " + blobberName);
                 }
             } else {
-                m_logger.warning(inComponentName
-                        + " is already registered to blobber " + blobberName);
+                m_logger.warning(collectorCompName + " is already registered to blobber " + blobberName);
             }
         } catch (Exception e) {
         	// @TODO (HSO): Shouldn't the IDL declare an exception for this?
@@ -121,56 +119,54 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
         }
     }
 
-    @Override
-    public synchronized void deregisterCollector(String inComponentName) {
-        try {
-            boolean removed = false;
-            String blobberName = null;
-        	synchronized (this.myBlobberList) {
-	            for (String name : this.myBlobberList) {
-	                blobberName = name;
-	                if (getBlobber(name).removeCollector(inComponentName) == CollectorListStatus.REMOVED) {
-                            this.myCollectorMap.remove(inComponentName);
-	                    removed = true;
-	                    break;
-	                }
-	            }
-        	}
-            if (!removed) {
-                m_logger.severe(inComponentName + " could not be deregistered.");
-                if (blobberName == null) {
-                	// @TODO (HSO): this can never happen, since blobberName gets assigned while iterating over the blobber name list,
-                	//              regardless of whether that blobber served the given collector. 
-                    m_logger.severe("Collector was not registered.");
-                } else {
-                	// @TODO (HSO): If this means that we found the right blobber but failed to deregister the monitor collector,
-                	//              then the log message should be changed.
-                    m_logger.severe("Collector was registered to blobber " + blobberName + ".");
-                }
-            } else {
-                m_logger.info(inComponentName
-                                + " was deregistered from blobber "
-                                + blobberName + ".");
-            }
-        } catch (Exception e) {
-        	// @TODO (HSO): Shouldn't the IDL declare an exception for this?
-            m_logger.log(Level.SEVERE, "Unexpected problem.", e);
-        }
-    }
+	@Override
+	public synchronized void deregisterCollector(String inComponentName) {
+		try {
+			boolean removed = false;
+			String blobberName = null;
+			synchronized (myBlobberList) {
+				for (String name : myBlobberList) {
+					blobberName = name;
+					if (getBlobber(name).removeCollector(inComponentName) == CollectorListStatus.REMOVED) {
+						collector2BlobberName.remove(inComponentName);
+						removed = true;
+						break;
+					}
+				}
+			}
+			if (!removed) {
+				m_logger.severe(inComponentName + " could not be deregistered.");
+				if (blobberName == null) {
+					// @TODO (HSO): this can never happen, since blobberName gets assigned while iterating over the blobber name list,
+					// regardless of whether that blobber served the given collector.
+					m_logger.severe("Collector was not registered.");
+				} else {
+					// @TODO (HSO): If this means that we found the right blobber but failed to deregister the monitor collector,
+					// then the log message should be changed.
+					m_logger.severe("Collector was registered to blobber " + blobberName + ".");
+				}
+			} else {
+				m_logger.info(inComponentName + " was deregistered from blobber " + blobberName + ".");
+			}
+		} catch (Exception e) {
+			// @TODO (HSO): Shouldn't the IDL declare an exception for this?
+			m_logger.log(Level.SEVERE, "Unexpected problem.", e);
+		}
+	}
 
     @Override
-    public void registerKnownCollectors(String inComponentName) {
-        if (!myCollectorMap.containsValue(inComponentName)) {
-            m_logger.info(inComponentName + " is unknown, not doing anything.");
+    public void registerKnownCollectors(String blobberCompName) {
+        if (!collector2BlobberName.containsValue(blobberCompName)) {
+            m_logger.info(blobberCompName + " is unknown, not doing anything.");
             return;
         }
 
-        AsynchronousRegistration process = new AsynchronousRegistration(inComponentName);
-        Thread t = new Thread(process);
+        AsynchronousRegistration process = new AsynchronousRegistration(blobberCompName);
+        Thread t = m_containerServices.getThreadFactory().newThread(process);
         t.start();
-
-        m_logger.info("Started asynchronous registration.");
+        m_logger.info("Started asynchronous registration of collectors previously assigned to " + blobberCompName);
     }
+
 
     //////////////////////////////////////
     ///////// Other impl methods /////////
@@ -182,8 +178,8 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
      */
     protected String isRegistered(String inComponentName) throws AcsJContainerServicesEx {
         String outValue = null;
-        synchronized (this.myBlobberList) {
-            for (String blobberName : this.myBlobberList) {
+        synchronized (myBlobberList) {
+            for (String blobberName : myBlobberList) {
                 try {
                     if (getBlobber(blobberName).containsCollector(inComponentName) == CollectorListStatus.KNOWN) {
                         outValue = blobberName;
@@ -200,43 +196,43 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
     /**
      * Iterates over the list of blobbers, starting from {@link #myBlobberListIndex},
      * and attempts to add the given collector to the first available blobber.
-     * @param inComponentName Name of collector component.
+     * @param collectorCompName Name of collector component.
      * @return Name of blobber component to which the collector was added, or <code>null</code> if none of the blobbers could add the collector.
      * @throws IllegalStateException if no blobber components are available.
      * @throws AcsJContainerServicesEx if a blobber component reference cannot be retrieved.
      */
-    protected String addCollector(String inComponentName) throws Exception {
+    protected String addCollector(String collectorCompName) throws Exception {
         String outValue = null;
-    	synchronized (this.myBlobberList) {
-	        int startIndex = this.myBlobberListIndex;
-	        if (this.myBlobberList.size() == 0) {
+    	synchronized (myBlobberList) {
+	        int startIndex = myBlobberListIndex;
+	        if (myBlobberList.size() == 0) {
 	            throw new IllegalStateException(
 	                    "Attempt to add a collector but the list of blobbers is empty.");
 	        }
 	        while (true) {
                     String blobberName = null;
-                    if (this.myCollectorMap.containsKey(inComponentName)) {
-                        blobberName = (String)this.myCollectorMap.get(inComponentName);
-                        m_logger.info(inComponentName + " will be re-registered to blobber "
+                    if (collector2BlobberName.containsKey(collectorCompName)) {
+                        blobberName = collector2BlobberName.get(collectorCompName);
+                        m_logger.info(collectorCompName + " will be re-registered to blobber "
                                 + blobberName);
                     } else {
-                        blobberName = this.myBlobberList.get(this.myBlobberListIndex);
+                        blobberName = myBlobberList.get(myBlobberListIndex);
                     }
 
                     // Register to Blobber
-                    if (getBlobber(blobberName).addCollector(inComponentName) == CollectorListStatus.ADDED) {
+                    if (getBlobber(blobberName).addCollector(collectorCompName) == CollectorListStatus.ADDED) {
                         outValue = blobberName;
-                        if (!this.myCollectorMap.containsKey(inComponentName)) {
+                        if (!collector2BlobberName.containsKey(collectorCompName)) {
                             // Add to myCollectorMap
-                            this.myCollectorMap.put(inComponentName, blobberName);
-                            this.myBlobberListIndex++;
+                        	collector2BlobberName.put(collectorCompName, blobberName);
+                            myBlobberListIndex++;
                         }
                     }
 
-                    if (this.myBlobberListIndex == this.myBlobberList.size()) {
-                        this.myBlobberListIndex = 0;
+                    if (myBlobberListIndex == myBlobberList.size()) {
+                        myBlobberListIndex = 0;
                     }
-                    if (outValue != null || this.myBlobberListIndex == startIndex) {
+                    if (outValue != null || myBlobberListIndex == startIndex) {
                         break;
                     }
 	        }
@@ -259,28 +255,25 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
         return myBlobberRefMap.get(inBlobberName);
     }
 
+	/**
+	 * Thread to re-register known collectors to a Blobber if restarted.
+	 */
+	private class AsynchronousRegistration implements Runnable
+	{
+		String blobberName = null;
 
-    /**
-     * Thread to re-register known collectors to a Blobber if restarted
-     */
-    private class AsynchronousRegistration implements Runnable
-    {
-        String blobberName = null;
+		public AsynchronousRegistration(String blobberName) {
+			this.blobberName = blobberName;
+		}
 
-        public AsynchronousRegistration(String blobberName) {
-            this.blobberName = blobberName;
-        }
-
-        public void run() {
-            Set<Map.Entry<String,String>> s = myCollectorMap.entrySet();
-            Iterator it = s.iterator();
-            while (it.hasNext()) {
-                Map.Entry m = (Map.Entry)it.next();
-                if (this.blobberName.equals(m.getValue()))
-                    // Re-register known Collector
-                    registerCollector((String)m.getKey());
-            }
-        }
-    }
+		public void run() {
+			for (Map.Entry<String, String> m : collector2BlobberName.entrySet()) {
+				if (this.blobberName.equals(m.getValue())) {
+					// Re-register known Collector
+					registerCollector(m.getKey());
+				}
+			}
+		}
+	}
 
 }
