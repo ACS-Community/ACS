@@ -31,10 +31,10 @@
 
 module MonitorArchiver
 {
-	/*
-	This interface is intended to be used by the Controller only.
-	If you use it directly you are on your own and don't come crying.
-	*/
+	/**
+	 * This interface is intended to be used by the Controller only.
+	 * If you use it directly you are on your own and don't come crying.
+	 */
 	interface Blobber : ACS::ACSComponent
 	{
 		CollectorListStatus addCollector(in string inComponentName);
@@ -42,11 +42,36 @@ module MonitorArchiver
 		CollectorListStatus removeCollector(in string inComponentName);
 	};
 
+	/**
+	 * The monitor controller brings together the collector and blobber components.
+	 */
 	interface Controller : ACS::ACSComponent
 	{
-		void registerCollector(in string inComponentName);
-		void deregisterCollector(in string inComponentName);
-		void registerKnownCollectors(in string inComponentName);
+		/**
+		 * A monitor collector registers itself using this method, 
+		  * so that the controller can assign a blobber to fetch data from that collector.
+		 */
+		void registerCollector(in string collectorCompName);
+
+		/**
+		 * Monitor collector deregisters here.
+		 */
+		void deregisterCollector(in string collectorCompName);
+
+		/**
+		 * If a blobber was shut down while collectors were still assigned to the blobber, 
+		 * upon restart the blobber can request to get the same known collectors assigned again, 
+		 * which will result in calls to Blobber.addCollector.
+		 * <p>
+		 * This call will be ignored by the controller if no collectors are assigned to the blobber, 
+		 * so that it is safe for the blobber to call this method just in case.
+		 * <p>
+		 * Once ACS will support persistence of component state data across component instantiations, 
+		 * we will have to decide whether the list of collectors assigned to a blobber should be stored
+		 * for recovery only by the blobber (using the new component state persistence feature), 
+		 * or should still be obtained from the controller.
+		 */
+		void registerKnownCollectors(in string blobberCompName);
 	};
 };
 
