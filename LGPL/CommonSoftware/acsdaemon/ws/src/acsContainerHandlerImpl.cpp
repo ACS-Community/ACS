@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.17 2010/11/02 13:00:35 tstaig Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.18 2011/03/11 15:00:21 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -188,6 +188,12 @@ ACSContainerHandlerImpl::stop_container (
 
     //get the directory name to store the container stdout
     std::string logDirectory="~/.acs/commandcenter/";
+    char * acsdata = ACE_OS::getenv("ACSDATA");
+    if(acsdata != 0)
+        logDirectory = std::string(acsdata) + std::string("/logs/");
+    char * host = ACE_OS::getenv("HOST");
+    if(host != NULL)
+        logDirectory = logDirectory + std::string(host) + std::string("/");
     std::string containerName(container_name);
     std::string::size_type pos=containerName.rfind("/"); 
     if(pos != std::string::npos){
