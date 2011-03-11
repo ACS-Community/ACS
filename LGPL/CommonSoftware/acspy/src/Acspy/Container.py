@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $
+# @(#) $Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.50 2010/10/18 22:31:12 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -807,7 +807,12 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         #get a list of libraries to preload
         # [{'string': 'baci'}]
-        temp_list = self.cdbAccess.getElement("MACI/Containers/" + self.name + "/Autoload", "Autoload/cdb:_")
+        temp_list = []
+        try:
+            temp_list = self.cdbAccess.getElement("MACI/Containers/" + self.name + "/Autoload", "Autoload/cdb:_")
+        except:
+            self.logger.logDebug("No autoload elemnt found in the CDB")
+            return
 
         #get rid of libraries that can't be found!
         for temp_dict in temp_list:
