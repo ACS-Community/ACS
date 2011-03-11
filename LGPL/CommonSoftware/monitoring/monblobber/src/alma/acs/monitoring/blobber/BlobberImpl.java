@@ -80,15 +80,21 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			throw new ComponentLifecycleException(ex);
 		}	
 
+		// In case this blobber is restarting after a shutdown while collectors were still assigned, 
+		// we ask the controller to add these otherwise lost collectors.
 		ControllerOperations controller = null;
 		try {
 			controller = ControllerHelper.narrow(m_containerServices
 				.getDefaultComponent("IDL:alma/MonitorArchiver/Controller:1.0"));
+			controller.registerKnownCollectors(name());
 		} catch (AcsJContainerServicesEx ex1) {
 			throw new ComponentLifecycleException(
 				"Failed to get ARCHIVE_CONTROLLER instance.", ex1);
+		} finally {
+			if (controller != null) {
+				m_containerServices.releaseComponent(controller.name(), null);
+			}
 		}
-		controller.registerKnownCollectors(name());
 	}
 
 	/**
