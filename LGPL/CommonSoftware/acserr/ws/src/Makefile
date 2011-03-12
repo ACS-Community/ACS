@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.86 2010/10/26 18:02:07 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.87 2011/03/12 22:15:37 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -154,9 +154,9 @@ ERRCODE_GEN = acserrHandlersErr ErrorSystemErrType
 
 ERRCODE_GEN_XML = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).xml)
 ERRCODE_GEN_IDL = $(foreach xml, $(ERRCODE_GEN), ../idl/$(xml).idl)
+ERRCODE_GEN_IDL_FULL_PATH = $(foreach xml, $(ERRCODE_GEN), $(CURDIR)/../idl/$(xml).idl)
 ERRCODE_GEN_H = $(foreach xml, $(ERRCODE_GEN), ../include/$(xml).h)
 ERRCODE_GEN_CPP = $(foreach xml, $(ERRCODE_GEN), ../src/$(xml).cpp) $(ERRCODE_GEN_H)
-
 
 MAKEDIRTMP := $(shell searchFile include/acsMakefile)
 ifneq ($(MAKEDIRTMP),\#error\#)
@@ -185,6 +185,12 @@ install : install_all
 
 
 $(ERRCODE_GEN_IDL) : $(ERRCODE_GEN_XML)
+	$(AT) for member in $(ERRCODE_GEN); do \
+	echo "== Generating:" $${member}".idl out of:" $${member}".xml"; \
+		sh ./acserrGenIDL  ../idl/$${member}.xml ../idl/$${member}.idl ; \
+		done
+
+$(ERRCODE_GEN_IDL_FULL_PATH) : $(ERRCODE_GEN_XML)
 	$(AT) for member in $(ERRCODE_GEN); do \
 	echo "== Generating:" $${member}".idl out of:" $${member}".xml"; \
 		sh ./acserrGenIDL  ../idl/$${member}.xml ../idl/$${member}.idl ; \
