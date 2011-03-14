@@ -6,3 +6,4 @@ ACS_CDB=$PWD
 
 echo " Starting ORB Services and Manager"
 acsutilTATPrologue -l --noloadifr
+acsutilTATTestRunner acsStartContainer -java ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer &> container.out &
