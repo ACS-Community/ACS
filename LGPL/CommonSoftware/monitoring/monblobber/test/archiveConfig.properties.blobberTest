@@ -1,0 +1,51 @@
+
+
+##############
+# general section
+archive.db.mode=test
+archive.db.connection=jdbc:oracle:thin:@//localhost:11521/ALMA.ESO.ORG
+archive.oracle.user=alma
+archive.oracle.passwd=alma$dba
+
+
+##############
+# TMCDB section
+
+# Service alias used by TMCDB, might be different from the one used by rest of Archive
+# connection: to be adapted
+archive.tmcdb.connection=jdbc:hsqldb:file:TMCDB/monitorTest
+archive.tmcdb.user=sa
+archive.tmcdb.passwd=
+archive.tmcdb.monitoring.enabled=true
+archive.tmcdb.monitoring.only=true
+
+###############
+# relational section, ie. the rest of subsystems accessing the DB
+# directly, but not monitor, log or statearchive data. In the moment, this would be shiftlog.archive.relational.user=almatest
+archive.relational.connection=jdbc:oracle:thin:@//localhost:11521/ALMA.ESO.ORG
+archive.relational.user=operlogtest
+archive.relational.passwd=alma$dba
+
+
+###############
+#schemas
+archive.bulkstore.schema=ASDMBinaryTable
+archive.bulkreceiver.schema=sdmDataHeader
+
+###############
+#NGAS 
+archive.ngast.servers=arch01:7777
+archive.ngast.bufferDir=/archiverd
+archive.ngast.interface=test:/my/test/dir
+
+###############
+#bulkreceiver
+archive.bulkreceiver.debug=True
+archive.bulkreceiver.DataBufferRetry=30 
+archive.bulkreceiver.DataBufferMax=10240000 
+archive.bulkreceiver.BufferThreadNumber=8 
+archive.bulkreceiver.BufferThreadWaitSleep=2000 
+archive.bulkreceiver.FetchThreadRetry=100 
+archive.bulkreceiver.FetchThreadRetrySleep=400000
+
+archive.db.tnsFileDirectory=/tmp
