@@ -27,8 +27,13 @@
 using namespace nc;
 
 CircularQueue::CircularQueue(unsigned int size):
+   length(0),
    max_size(size)
 {
+}
+
+CircularQueue::~CircularQueue() {
+	queue.clear();
 }
 
 void CircularQueue::push(CosNotification::StructuredEvent e)
@@ -49,13 +54,20 @@ void CircularQueue::clear()
    length = 0;
 }
 
-CosNotification::StructuredEvent *CircularQueue::pop()
+void CircularQueue::pop()
 {
-   CosNotification::StructuredEvent *e = NULL;
    if(queue.size() > 0){
-      CosNotification::StructuredEvent tmp = queue[0];
-      e = new CosNotification::StructuredEvent(tmp);
+		queue.pop_front();
       length--;
    }
-   return e;
 }
+
+CosNotification::StructuredEvent *CircularQueue::front() {
+
+   if(queue.size() == 0)
+      return NULL;
+
+   CosNotification::StructuredEvent tmp = queue.front();
+	return new CosNotification::StructuredEvent(tmp);
+}
+

@@ -51,6 +51,11 @@ namespace nc{
           */
          CircularQueue(unsigned int size = 100);
 
+         /**
+          * Clears the internal queue
+          */
+         ~CircularQueue();
+
         /**
          * Insert a structured event at the end of the queue. If the queue is
          * full, inserts the structured event and remove the first event in the
@@ -68,12 +73,20 @@ namespace nc{
          void clear();
 
          /**
-          * Remove the first element in the queue and return it. If there is no
+          * Removes the first element in the queue and return it. If there is no
           * elements in the queue returns <b>null</b>
+          */
+         void pop();
+
+         /**
+          * Returns the first element of the circular queue, without removing it
+          * from the queue.
           *
           * @return the first element in the queue
           */
-         CosNotification::StructuredEvent *pop();
+         CosNotification::StructuredEvent *front();
+
+         unsigned int size() { return queue.size(); }
    };
 
 	class EventDroppedException: std::exception

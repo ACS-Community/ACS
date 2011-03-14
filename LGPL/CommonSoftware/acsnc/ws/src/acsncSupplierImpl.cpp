@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.86 2009/09/24 23:08:03 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.87 2011/03/14 18:43:00 rtobar Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -181,8 +181,9 @@ Supplier::publishEvent(const CosNotification::StructuredEvent &event)
     CosNotification::StructuredEvent *tmp;
     try
     {
-       while( (tmp = eventBuff.pop()) != NULL){
+       while( (tmp = eventBuff.front()) != NULL){
           proxyConsumer_m->push_structured_event(*tmp);
+          eventBuff.pop();
           delete tmp;
        }
     	// Invoke a method on consumer proxy
