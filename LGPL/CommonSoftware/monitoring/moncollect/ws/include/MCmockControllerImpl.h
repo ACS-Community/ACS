@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MCmockControllerImpl.h,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MCmockControllerImpl.h,v 1.2 2011/03/14 14:08:15 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,6 +52,8 @@ public:
 	void registerCollector(const char* componentName);
 
 	void deregisterCollector(const char* componentName);
+
+	void registerKnownCollectors(const char* componentName);
 
 };//class mockControllerImpl
 

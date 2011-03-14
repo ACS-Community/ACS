@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MCmockControllerImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MCmockControllerImpl.cpp,v 1.2 2011/03/14 14:08:15 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 
 
-static char *rcsId="@(#) $Id: MCmockControllerImpl.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
+static char *rcsId="@(#) $Id: MCmockControllerImpl.cpp,v 1.2 2011/03/14 14:08:15 tstaig Exp $";
 
 
 #include "MCmockControllerImpl.h"
@@ -60,6 +60,10 @@ void mockControllerImpl::deregisterCollector(const char* componentName)
 	AUTO_TRACE("mockControllerImpl::deregisterCollector");
 }
 
+void mockControllerImpl::registerKnownCollectors(const char* componentName)
+{
+	AUTO_TRACE("mockControllerImpl::registerKnownCollectors");
+}
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>
