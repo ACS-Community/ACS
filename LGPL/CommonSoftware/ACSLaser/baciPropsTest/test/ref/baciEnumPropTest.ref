@@ -4,14 +4,14 @@
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] component 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- TRACE [BACITest:BACIEnumPropertyTest#testROEnum] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ChannelName='xxx' Service='NotifyEventChannelFactory' ]
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='xxx' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> ACTIVE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=true
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BACIProperty, TEST_COMPONENT#testEnumVar, 1> TERMINATE
-1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BACIProperty:TEST_COMPONENT#testEnumVar:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=false
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> ACTIVE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=true
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Source alarm received: <BaciPropTest#testEnumVar, TEST_COMPONENT, 1> TERMINATE
+1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] Alarm from categories: <BaciPropTest#testEnumVar:TEST_COMPONENT:1> ACTIVE=false
 1 - ----------T--:--:--.--- INFO [BACITest:BACIEnumPropertyTest#testROEnum] client 'alma.acs.alarmsystem.test.BACIEnumPropertyTest' has successfully released  a component with curl=TEST_COMPONENT
 1 - 
 1 - 
