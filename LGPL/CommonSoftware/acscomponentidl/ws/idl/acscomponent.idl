@@ -23,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscomponent.idl,v 1.5 2011/01/27 17:01:52 hsommer Exp $"
+* "@(#) $Id: acscomponent.idl,v 1.6 2011/03/15 18:04:35 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,13 +35,6 @@
 
 
 module ACS {
-  
-  /** OffShoot is a base interface used to identify 
-      CORBA objects that created by components and whose lifecycle is
-      limited to the lifecycle of the component who created and
-      handed them over to clients. */
-  interface OffShoot {
-  };
   
   
   /**

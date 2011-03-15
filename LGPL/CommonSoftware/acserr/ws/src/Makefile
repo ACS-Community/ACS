@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.87 2011/03/12 22:15:37 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.88 2011/03/15 18:06:48 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -87,7 +87,7 @@ LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-acserr_OBJECTS = acserr acserrC acserrS acserrExceptionManager \
+acserr_OBJECTS = acserr acserrExceptionManager \
 		 acserrLegacy acserrACSbaseExImpl \
 		 acserrHandlersErrC acserrHandlersErrS  acserrHandlersErr acserrHandlers ErrorSystemErrType
 acserr_LIBS = logging loki acsutil
@@ -115,13 +115,7 @@ CSOURCENAMES = \
 #
 # IDL FILES
 #
-# WARNING: Here the order is important, since it is the IDL stub generation
-#          and is therefore essential when building stubs that 
-#          depend on other stubs.
-#          acserr.idl depends on the error types.
-
-# we create acserr and acserrHandlersErr because we want that the makfile takes care for install
-IDL_FILES =  acserr acserrHandlersErr ErrorSystemErrType
+IDL_FILES = acserrHandlersErr ErrorSystemErrType
 
 
 XSDBIND = ACSError
@@ -131,11 +125,10 @@ XSDBIND_INCLUDE = commontypes
 # Jarfiles and their directories
 #
 JARFILES = acserrj
-acserrj_JLIBS=acserr
 acserrj_DIRS = alma/acs
 
 # Here we have to generate the code for errors by hand because the acserr library is not available yet
-# and because we want to make err system mor compact (w/o too much err type libraries)
+# and because we want to make err system more compact (w/o too much err type libraries)
 ERRCODE_GEN = acserrHandlersErr ErrorSystemErrType
 
 #ACSERRDEF = ErrorSystemErrType
