@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.20 2011/03/07 12:05:53 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.21 2011/03/15 10:09:06 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -149,14 +149,19 @@ endif
 
 ifeq ($(call mustBuild,C++),true)
  do_idl_$1_prereq += $1_IDL_CPP
- install_idl_$1_prereq += $(PRJTOP)/idl/$1.idl install_IDL_$1_CPP
+ install_idl_$1_prereq += install_IDL_$1_CPP
  clean_idl_$1_prereq += clean_IDL_$1_CPP
  clean_dist_idl_$1_prereq += clean_dist_IDL_$1_CPP
 endif
 
 $1_IDLprereqLocal:=$(if $(wildcard ../idl/$1.idl),$(strip $(shell egrep '^#include' ../idl/$1.idl | sed 's/#include \"\(.*\)\".*/\1/; s/#include <\(.*\)>.*/\1/;' | sed 's/.*\///g;' | tr '\n' ' ')),)
 
-$1_IDLprereq = $(if $(wildcard ../idl/$1.idl),$(subst ../idl/$1.idl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.idl |  tr  '\\\n' ' '  ))) ,)
+$1_IDLprereq := $(if $(wildcard ../idl/$1.idl),$(subst ../idl/$1.idl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.idl 2>/dev/null |  tr  '\\\n' ' '  ))) ,)
+
+# jagonzal: Add dependencies on IDLs generated from XMLs since the preprocessor requires all the included IDLs to be available in order to produce any output
+ifdef ACSERRDEF
+   $1_IDLprereq += $(filter-out $(CURDIR)/../idl/$(1).idl,$(foreach xml,$(ACSERRDEF),$(CURDIR)/../idl/$(xml).idl))
+endif
 
 endef
 
@@ -178,6 +183,7 @@ install_idl_$1: $(install_idl_$1_prereq)
 .PHONY: clean_idl_$1
 clean_idl_$1: $(clean_idl_$1_prereq)
 	$(AT)if [ -f ../idl/$1.midl ]; then $(RM) ../idl/$1.idl; fi
+	$(AT)if [ -f result.idl ]; then $(RM) result.idl; fi
 
 
 .PHONY: clean_dist_idl_$1
@@ -189,6 +195,7 @@ clean_dist_idl_$1: $(clean_dist_idl_$1_prereq)
 #########################################
 do_idl_$1_irCheck:
 	$(AT) if [ "$(MAKE_NOIFR_CHECK)" == "" ]; then  echo "== checking IDL for Interface Repository ==" ; acsstartupLoadIFR -c ../idl/$1.idl; fi
+	$(AT)if [ -f result.idl ]; then $(RM) result.idl; fi
 
 .PHONY: $1_IDL_CPP
 ifdef MAKE_VXWORKS
@@ -198,7 +205,7 @@ $1_IDL_CPP: do_lib_$1Stubs;
 endif
 
 ifeq ($(call mustBuild,C++),true)
-../object/$1C.cpp: $1.idl Makefile $($1_IDLprereq)
+../object/$1C.cpp: $(CURDIR)/../idl/$1.idl $($1_IDLprereq)
 	-@echo "== IDL Compiling for TAO (C++): $1"
 	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
 
@@ -211,7 +218,7 @@ ifeq ($(call mustBuild,C++),true)
 endif
 
 $(if $(wildcard ../idl/$1.midl), 
-../idl/$1.idl: ../idl/$1.midl
+$(CURDIR)/../idl/$1.idl: ../idl/$1.midl
 	-@echo "== (preprocessing MIDL => IDL) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$1.idl
 )
@@ -222,7 +229,7 @@ $1_IDL_Java: $(CURDIR)/../lib/$1.jar;
 
 
 $(CURDIR)/../lib/$1.jar: TMPSRC=../object/$1/src
-$(CURDIR)/../lib/$1.jar: $1.idl $($1_IDLprereq) $(subst ../idl/,,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
+$(CURDIR)/../lib/$1.jar: $(CURDIR)/../idl/$1.idl $($1_IDLprereq) $(subst ../idl/,,$(subst .pidl,.jar,$(subst .idl,.jar,$(foreach idl,$($1_IDLprereq),$(if $(wildcard ../idl/$(idl)),$(CURDIR)/../lib/$(idl), ))  ))) $(if $(filter $1,$(ACSERRDEF)),../idl/$1.xml,)
 	- @echo "== (preprocessing) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) " >  /tmp/$(UNIQUE_NUMBER).$1.idl
 	- @echo "== IDL Compiling for JacORB (Java): $1 "
@@ -303,7 +310,7 @@ clean_IDL_$1_Java:
 .PHONY: $1_IDL_Python
 $1_IDL_Python: ../lib/python/site-packages/$1_idl.py ; 
 
-../lib/python/site-packages/$1_idl.py:   ../idl/$1.idl  $$($1_IDLprereq)
+../lib/python/site-packages/$1_idl.py: $(CURDIR)/../idl/$1.idl $($1_IDLprereq)
 	$(AT)lockfile -s 2 -r 10 ../lib/python/site-packages/.make-OmniOrb.lock || echo "WARNING, ignoring lock ../lib/python/site-packages/.make-OmniOrb.lock"
 	- @echo "== IDL Compiling for OmniOrb (Python): $1"
 	$(AT) $(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C../lib/python/site-packages $$<
@@ -320,7 +327,7 @@ clean_IDL_$1_Python:
 #
 
 .PHONY: install_IDL_$1_Python
-install_IDL_$1_Python: $1.idl 
+install_IDL_$1_Python: $(CURDIR)/../idl/$1.idl
 	$(AT)lockfile -s 2 -r 10 $(LIB)/python/site-packages/.make-OmniOrb.lock || echo "WARNING, ignoring lock $(LIB)/python/site-packages/.make-OmniOrb.lock"
 	$(AT)$(OMNI_IDL)  -I$(OMNI_ROOT)/idl/ $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -bacs_python -C$(LIB)/python/site-packages $$< > /dev/null 2>&1
 	-$(AT)$(RM) $(LIB)/python/site-packages/.make-OmniOrb.lock
@@ -359,7 +366,7 @@ endef
 # $(call XMLPrereq,xml)
 define XMLPrereq
 # this we need anyway
-do_xmlerr_$1_prereq=../idl/$1.idl do_idl_$1
+do_xmlerr_$1_prereq=$(CURDIR)/../idl/$1.idl do_idl_$1
 clean_xmlerr_$1_prereq=clean_idl_$1
 clean_dist_xmlerr_$1_prereq=clean_dist_idl_$1
 install_xmlerr_$1_prereq=install_idl_$1
@@ -397,7 +404,7 @@ define acsMakeXMLErrDependencies
 .PHONY: do_xmlerr_$1
 do_xmlerr_$1: $(do_xmlerr_$1_prereq)
 
-../idl/$1.idl: ../idl/$1.xml
+$(CURDIR)/../idl/$1.idl: ../idl/$1.xml
 	$(AT)echo "=== Generating IDL from XMLERR definitions $1"
 	$(AT)acserrGenIDL ../idl/$1.xml ../idl/$1.idl
 
