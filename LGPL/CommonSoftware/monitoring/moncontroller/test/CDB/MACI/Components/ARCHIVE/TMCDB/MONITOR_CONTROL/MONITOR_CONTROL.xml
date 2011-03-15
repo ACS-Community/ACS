@@ -4,7 +4,7 @@
       xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" 
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       Name="ARCHIVE/TMCDB/MONITOR_CONTROL"
-      Code="alma.archive.tmcdb.monitor.ControllerHelper" 
+      Code="alma.acs.monitoring.controller.ControllerHelper" 
       Type="IDL:alma/MonitorArchiver/Controller:1.0"
       Container="ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer"
         Autostart="true"
