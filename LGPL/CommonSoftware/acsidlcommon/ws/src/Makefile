@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.6 2010/07/27 23:07:24 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.7 2011/03/15 23:05:41 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -114,7 +114,7 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = acscommon
+IDL_FILES = acserr acscommon
 IDL_TAO_FLAGS =
 USER_IDL =
 #
