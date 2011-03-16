@@ -1,0 +1,177 @@
+#ifndef _ACSERR_IDL_
+#define _ACSERR_IDL_
+
+/*******************************************************************************
+*    ALMA - Atacama Large Millimiter Array
+*    (c) European Southern Observatory, 2002
+*    Copyright by ESO (in the framework of the ALMA collaboration)
+*    and Cosylab 2002, All rights reserved
+*
+*    This library is free software; you can redistribute it and/or
+*    modify it under the terms of the GNU Lesser General Public
+*    License as published by the Free Software Foundation; either
+*    version 2.1 of the License, or (at your option) any later version.
+*
+*    This library is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    Lesser General Public License for more details.
+*
+*    You should have received a copy of the GNU Lesser General Public
+*    License along with this library; if not, write to the Free Software
+*    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+*/
+
+#pragma prefix "alma"
+
+module ACSErr {
+
+// it does not  work with JacORB
+//  const  ::ACSErrTypeOK::ACSErrTypeOK_ ACSErrOK = ::ACSErrTypeOK::ACSErrOK;
+
+    struct NameValue {
+	string name;
+	string value; // any ? -> use than Property from Property Service
+    };
+
+    typedef sequence<NameValue> NameValueSeq;
+
+    typedef unsigned long CompletionType;
+    typedef unsigned long CompletionCode;
+
+    typedef CompletionType ACSErrType;
+    typedef CompletionCode ErrorCode;
+
+    /**
+     * Error severities
+     *
+     */
+    enum Severity {
+	Error, /**< Default error severity. */
+        Critical, /**< Critical error. */
+        Alert, /**< Alert error */
+	Emergency /**< Emergency */
+    };
+
+    struct ErrorTrace; 
+    typedef sequence<ErrorTrace/*, 1*/> ErrorLinkedList;
+  
+
+    /**
+     * structure contains error information (error stack). It is defined in IDL that can be used for transfer error information between CORBA objects. 
+     *
+     */
+    struct ErrorTrace {
+
+	/**
+	 * file name
+	 */
+	string file;
+    
+	/**
+	 * line number
+	 */
+	long lineNum;
+    
+	/**
+	 * routine
+	 */
+	string routine;
+    
+	/**
+	 * host name
+	 */
+	string host;
+    
+	/**
+	 * process name or PID
+	 */
+	string process;
+
+	/**
+	 * thread name or its ID
+	 */
+	string thread;
+
+	/**
+	 * time stamp in 100 ns
+	 */
+	unsigned long long timeStamp;
+
+	/**
+	 * source object
+	 */
+	string sourceObject;
+
+	/**
+	 * error type (group)
+	 */
+	ACSErr::ACSErrType errorType;
+
+	/**
+	 * error code
+	 */
+	ACSErr::ErrorCode errorCode;
+
+	/**
+	 * error severity
+	 */
+	ACSErr::Severity severity;    
+
+	/**
+	 * short description of the error
+	 */
+	string shortDescription;
+    
+	/**
+	 *  container for pair(s) name-value
+	 */
+	NameValueSeq data;
+
+    	/**
+	 * previos error(s) (error stack)
+	 */
+	ErrorLinkedList previousError;
+    };
+
+    struct Completion {
+     
+	/**
+	 * time stamp in 100 ns
+	 */
+	unsigned long long timeStamp;
+	
+	/**
+	 * error type (group)
+	 */
+	ACSErr::CompletionType type;
+	
+	/**
+	 * error code
+	 */
+	ACSErr::CompletionCode code;
+	
+	/**
+	 * previos error(s) (error trace)
+	 */
+	ErrorLinkedList  previousError;
+    };
+
+    /** 
+     * A sequence of Completion structures 
+     */
+    typedef sequence <Completion> CompletionSeq;
+
+    /**
+     * Exception contains just ACSCompletion structure. It is  purposed for remote throwing exceptions.
+     */
+    exception ACSException {
+	ErrorTrace error;
+    };
+
+    exception ACSbaseEx {
+	ErrorTrace error;
+    };
+};
+
+#endif
