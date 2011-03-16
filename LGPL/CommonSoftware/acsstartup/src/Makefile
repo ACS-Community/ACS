@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.55 2011/03/16 13:38:14 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.56 2011/03/16 14:55:43 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ MAKE_NOIFR_CHECK = on # jagonzal: there is a cyclic dependency between acsstartu
 
 
 acsstartupIrFeed_OBJECTS = acsstartupIrFeed
-acsstartupIrFeed_LIBS    = acserrStubs
+
 
 # 
 # IDL Files and flags
