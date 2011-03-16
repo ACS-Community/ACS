@@ -23,6 +23,7 @@
 #define _XMLCOMPONENT_IDL_
 
 #include <xmlentity.idl>
+#include <acscommon.idl>
 #include <acscomponent.idl>
 #include <JContExmplErrTypeTest.idl>
 
