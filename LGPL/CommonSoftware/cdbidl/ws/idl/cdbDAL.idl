@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: cdbDAL.idl,v 1.7 2010/09/02 06:20:46 msekoran Exp $"
+* "@(#) $Id: cdbDAL.idl,v 1.8 2011/03/16 15:51:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 */
 
 
-#include <acscomponent.idl>
+#include <acscommon.idl>
 #include "cdbErrType.idl"
 
 #pragma prefix "cosylab.com"
