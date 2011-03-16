@@ -5,7 +5,7 @@ xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
 Name="CONTROL/DV01/MONITOR_COLLECTOR"            
-Code="alma.archive.tmcdb.monitor.FileReaderCollectorHelper"
+Code="alma.acs.monitoring.blobber.FileReaderCollectorHelper"
 Type="IDL:alma/TMCDB/MonitorCollector:1.0"
 Container="ARCHIVE/TMCDB/MONITOR_COLLECTOR/javaContainer"
 ImplLang="java" />
