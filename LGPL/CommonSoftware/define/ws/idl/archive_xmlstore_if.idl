@@ -24,6 +24,7 @@
  */
 
 #include <xmlentity.idl> 
+#include <acscommon.idl>
 #include <acscomponent.idl>
 
 // HSO 2006-09-15: it seems that after a year of freedom from this bug, 
