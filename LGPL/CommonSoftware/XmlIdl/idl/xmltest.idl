@@ -23,6 +23,7 @@
 #ifndef _XMLTEST_IDL_
 #define _XMLTEST_IDL_
 
+#include <acscommon.idl>
 #include <acscomponent.idl>
 
 #pragma prefix "alma"
