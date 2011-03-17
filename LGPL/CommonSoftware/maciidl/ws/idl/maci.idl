@@ -12,10 +12,10 @@
     which the services function and handles their life cycle.
 */
 
+#include <acscommon.idl>
 #include <logging_idl.idl>
 #include <ACSErrTypeCommon.idl>
 #include <maciErrType.idl>
-#include <acscommon.idl>
 
 #pragma prefix "ijs.si"
 module maci {
@@ -624,14 +624,17 @@ module maci {
 		Deactivate a components whose handle is given. Deactivation is the
 		inverse process of activation: component is detached from the POA, and
 		thus made unavailable through CORBA, and its resources are freed. If
-		it's code-base is no longer used, it is unloaded from memory.
+		its code-base is no longer used, it is unloaded from memory.
+		For the time being the Containers implement this as a synchronous call,
+		but in the future we may change it to return before the component has been fully deactivated.
+		TODO: Remove CannotDeactivateComponentEx, see http://almasw.hq.eso.org/almasw/bin/view/ACS/ReleaseComponentRefactoring2010
 	    */
 	    void deactivate_component (
 		in Handle h	///< A handle identifying
 				///a component to be released.
 
 		)
-		raises (maciErrType::CannotDeactivateComponentEx);
+		raises (maciErrType::CannotDeactivateComponentEx, maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx, maciErrType::ComponentDeactivationFailedPermEx);
 
 
 	    /** 
@@ -1128,16 +1131,20 @@ module maci {
 		    Releasing a component more times than 
 		    requesting it should be avoided, 
 		    but it produces no errors.
+		    
+		    This method will return before the manager/target container have deactivated the component.
+		    If the caller wants to synchronize with component deactivation, it must supply
+		    the optional ComponentRequestCallback.
 
 		    @return Number of clients that are still using the 
-		    component after the operation completed. 
-		    This is a useful debugging tool.
+		    component after the operation completed. This is a useful debugging tool.
 		 */
-		long release_component (
+		void release_component (
 			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
-			in CURL component_url	///< The CURL of the component to be released.
+			in CURL component_url,	///< The CURL of the component to be released.
+			in ACS::CBlong callback
 			)
-                    raises (maciErrType::NoPermissionEx);
+			raises (maciErrType::NoPermissionEx);
 
 		/** 
 		    Releases a component also if still referenced by other components/clients.
