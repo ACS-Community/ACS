@@ -17,19 +17,6 @@ import org.omg.CORBA.NO_RESOURCES;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.UNKNOWN;
 
-import com.cosylab.acs.maci.AccessRights;
-import com.cosylab.acs.maci.BadParametersException;
-import com.cosylab.acs.maci.Component;
-import com.cosylab.acs.maci.ComponentSpec;
-import com.cosylab.acs.maci.ComponentStatus;
-import com.cosylab.acs.maci.CoreException;
-import com.cosylab.acs.maci.Manager;
-import com.cosylab.acs.maci.NoDefaultComponentException;
-import com.cosylab.acs.maci.NoResourcesException;
-import com.cosylab.acs.maci.StatusHolder;
-import com.cosylab.acs.maci.manager.CURLHelper;
-import com.cosylab.acs.maci.HandleHelper;
-
 import si.ijs.maci.AdministratorHelper;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientHelper;
@@ -41,18 +28,25 @@ import si.ijs.maci.ContainerInfo;
 import si.ijs.maci.ManagerPOA;
 import si.ijs.maci.SynchronousAdministratorHelper;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-
+import alma.ACS.CBDescIn;
+import alma.ACS.CBDescOut;
+import alma.ACS.CBlong;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.maci.loggingconfig.UnnamedLogger;
+import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationFailedPermEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
 import alma.maciErrType.IncompleteComponentSpecEx;
@@ -68,6 +62,19 @@ import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoDefaultComponentEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
+
+import com.cosylab.acs.maci.AccessRights;
+import com.cosylab.acs.maci.BadParametersException;
+import com.cosylab.acs.maci.Component;
+import com.cosylab.acs.maci.ComponentSpec;
+import com.cosylab.acs.maci.ComponentStatus;
+import com.cosylab.acs.maci.CoreException;
+import com.cosylab.acs.maci.HandleHelper;
+import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.NoDefaultComponentException;
+import com.cosylab.acs.maci.NoResourcesException;
+import com.cosylab.acs.maci.StatusHolder;
+import com.cosylab.acs.maci.manager.CURLHelper;
 
 /**
  * Manager is the central point of interaction between the components
@@ -958,10 +965,67 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 	}
 
+	
+	@Override
+	public void release_component_async(int id, String component_url,
+			CBlong callback, CBDescIn desc) throws NoPermissionEx
+	{
+		// TODO async implementation, report error via Completion
+		pendingRequests.incrementAndGet();
+		try
+		{
+			// simply release Component
+			URI uri = null;
+			if (component_url != null)
+				uri = CURLHelper.createURI(component_url);
+			int clients = manager.releaseComponent(id, uri);
+			if (callback != null) {
+				CBDescOut descOut = new CBDescOut(0, desc.id_tag);
+				callback.done(clients, new ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+			}
+		}
+		catch (URISyntaxException usi)
+		{
+			BadParametersException hbpe = new BadParametersException(usi.getMessage(), usi);
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(usi.getMessage());
+		}
+		catch (BadParametersException bpe)
+		{
+			BadParametersException hbpe = new BadParametersException(bpe.getMessage(), bpe);
+			reportException(hbpe);
+
+			// rethrow CORBA specific
+			throw new BAD_PARAM(bpe.getMessage());
+		}
+		catch (NoResourcesException nre)
+		{
+			NoResourcesException hnre = new NoResourcesException(nre.getMessage(), nre);
+			reportException(hnre);
+
+			// rethrow CORBA specific
+			throw new NO_RESOURCES(nre.getMessage());
+		}
+		catch (Throwable ex)
+		{
+			CoreException hce = new CoreException(ex.getMessage(), ex);
+			reportException(hce);
+
+			// rethrow CORBA specific
+			throw new UNKNOWN(ex.getMessage());
+		}
+		finally
+		{
+			pendingRequests.decrementAndGet();
+		}
+	}
+
 	/**
 	 * Release a Component.
 	 * In order for this operation to be possible, the caller represented by the id
-	 * must have previously successfuly requested the Component via a call to get_component.
+	 * must have previously successfully requested the Component via a call to get_component.
 	 * Releasing a Component more times than requesting it should be avoided, but it produces no errors.
 	 *
 	 * @param id Identification of the caller. The caller must have previously gotten the Component through get_component.
@@ -970,7 +1034,11 @@ public class ManagerProxyImpl extends ManagerPOA
 	 *		  This is a useful debugging tool.
 	 */
 	public int release_component(int id, String component_url)
+		throws ComponentDeactivationFailedPermEx,
+		CannotDeactivateComponentEx, ComponentDeactivationUncleanEx,
+		ComponentDeactivationFailedEx, NoPermissionEx
 	{
+		// TODO support ACS exceptions
 		pendingRequests.incrementAndGet();
 		try
 		{
