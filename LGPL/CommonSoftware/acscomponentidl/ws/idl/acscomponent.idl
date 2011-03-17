@@ -23,7 +23,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: acscomponent.idl,v 1.6 2011/03/15 18:04:35 hsommer Exp $"
+* "@(#) $Id: acscomponent.idl,v 1.7 2011/03/17 10:25:30 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,37 +96,6 @@ module ACS {
     readonly attribute ComponentStates componentState;
 
   };
-
-  /**
-   * This interface may be implemented by any remote object (component, offshoot, other resources...)
-   * that you want to monitor in the master component.
-   * Note that resource monitoring framework in module 'mastercomp' supports monitoring of ACSComponents
-   * for which it checks the 'componentState' attribute.
-   * However, this componentState only tells us something about the Alma component itself, but not about
-   * any resources it controls or uses.
-   * While resource monitoring via 'componentState' does not require specific changes in the component,
-   * the check call cannot be intercepted by the component, which means that the value of the returned
-   * information is limited.
-   * On the other hand, this 'PingableResource' interface shows up in the component definition,
-   * but allows for "deeper" outreach of the status check.
-   * Of course your components and resources can use any other method to get their status checked
-   * by your master component, but in that case you must implement a custom "ResourceChecker" class;
-   * with "PingableResource" you can use the convenience methods provided by ACS.
-   *
-   */
-  interface PingableResource
-  {
-    /**
-     * @param fast  If true, skip performing fancier checks, so that the returned result only tells us whether the resources can communicate,
-     *              but not if they are otherwise healthy. This could be used for performance measurements.
-     * @param recursive  If true, the call should recursively ping other PingableResources managed by this PingableResource.
-     * @param id  The caller may pass a random number that can be used by the resources to identify this call
-     *            and avoid endless recursion if "recursive" is true and it is not clear whether the resource topology is free of cycles.
-     * @return true means the resource is OK
-     */
-    boolean ping(in boolean fast, in boolean recursive, in long id);
-  };
-
 
 };
 

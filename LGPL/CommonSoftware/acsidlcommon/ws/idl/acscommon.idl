@@ -26,12 +26,15 @@
 
 #pragma prefix "alma"
 
-/**
- * The following used to be defined in baciidl. Because access to these typedefs
- * is needed in modules built earilier than acserr (baciidl is dependent upon this
- * module), they have been moved here.
- */
+
 module ACS {
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//// The following used to be defined in baciidl. Because access to these typedefs
+	//// is needed in modules built earlier than acserr (baciidl is dependent upon this
+	//// module), they have been moved here.
+	///////////////////////////////////////////////////////////////////////////////////////
+
     /** Time - absolute time in 100 ns since 1582-10-15 00:00:00 see OMG Time Service Specification,	
      * ftp://ftp.omg.org/pub/docs/formal/97-12-21.pdf. Currently, Time is handled as longlong.
      */
@@ -111,6 +114,10 @@ module ACS {
     typedef sequence <uLongLong> uLongLongSeq;
 
 
+	///////////////////////////////////////////////////////////////////////////////////////
+	/////// Special interfaces used in the context of components or other processes ///////
+	///////////////////////////////////////////////////////////////////////////////////////
+
 	/** 
 	 * OffShoot is a base interface used to identify CORBA objects created by components, clients, 
 	 * or other processes, and whose lifecycle is limited to the that of the component or process 
@@ -120,9 +127,39 @@ module ACS {
 	};
 
 
-	////////////////////////////////////////////////////////////////////////////////////////
-	/////// Callbacks (see also baci.idl which adds a few specialized CBxxx classes) ///////
-	////////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * This interface may be implemented by any remote object (component, offshoot, other resources...)
+	 * that you want to monitor in the master component (or of course also possible to monitor it "by hand").
+	 * 
+	 * Note that the resource monitoring framework in module 'mastercomp' supports monitoring of ACSComponents
+	 * for which it checks the 'componentState' attribute. However, this componentState only tells us something about 
+	 * the Alma component itself, but not about any resources it controls or uses.
+	 * While resource monitoring via 'componentState' does not require specific changes in the component,
+	 * the check call cannot be intercepted by the component, which means that the value of the returned
+	 * information is limited.
+	 * 
+	 * On the other hand, this 'PingableResource' interface shows up in the component definition,
+	 * but allows for "deeper" outreach of the status check.
+	 * Of course your components and resources can use any other method to get their status checked
+	 * by your master component, but in that case you must implement a custom "ResourceChecker" class;
+	 * with "PingableResource" you can use the convenience methods provided by ACS.
+	 */
+	interface PingableResource {
+		/**
+		 * @param fast  If true, skip performing fancier checks, so that the returned result only tells us whether the resources can communicate,
+		 *              but not if they are otherwise healthy. This could be used for performance measurements.
+		 * @param recursive  If true, the call should recursively ping other PingableResources managed by this PingableResource.
+		 * @param id  The caller may pass a (random) number that can be used by the resources to identify this call
+		 *            and avoid endless recursion if "recursive" is true and if it is not clear whether the resource topology is free of cycles.
+		 * @return true means the resource is OK
+		 */
+		boolean ping(in boolean fast, in boolean recursive, in long id);
+	};
+
+
+	/////////////////////////////////////////////////////////////////////////////////////
+	/////// Callbacks (see also baci.idl which may add specialized CBxxx classes) ///////
+	/////////////////////////////////////////////////////////////////////////////////////
 	
 	/** A Tag type that allows the client to tag and later identify Callbacks through the 
 	 * DescIn and DescOut structures. Through both structures, the client programmer can 
@@ -747,6 +784,8 @@ module ACS {
 };
 
 
+
+
 /**
  * The optional audience field in the log record should be filled using the constant strings 
  * defined in this module. 
@@ -761,6 +800,8 @@ module log_audience
 	const string NO_AUDIENCE = "";
 	const string SCILOG = "SciLog";
 };
+
+
 
 
 /**
