@@ -1122,7 +1122,7 @@ module maci {
 
 
 		/** 
-		    Release a component. 
+		    Asynchronously release a component. 
 		    In order for this operation to be possible, 
 		    the caller represented by the id must have 
 		    previously successfuly requested the 
@@ -1139,12 +1139,36 @@ module maci {
 		    @return Number of clients that are still using the 
 		    component after the operation completed. This is a useful debugging tool.
 		 */
-		void release_component (
+		void release_component_async (
 			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
 			in CURL component_url,	///< The CURL of the component to be released.
-			in ACS::CBlong callback
+			in ACS::CBlong callback,
+			in ACS::CBDescIn desc
 			)
 			raises (maciErrType::NoPermissionEx);
+
+		/** 
+		    Release a component. 
+		    In order for this operation to be possible, 
+		    the caller represented by the id must have 
+		    previously successfuly requested the 
+		    component via a call to get_component.
+
+		    Releasing a component more times than 
+		    requesting it should be avoided, 
+		    but it produces no errors.
+
+		    @return Number of clients that are still using the 
+		    component after the operation completed. 
+		    This is a useful debugging tool.
+		 */
+		long release_component (
+			in Handle id,	///< Identification of the caller. The caller must have previously gotten the component through get_component.
+			in CURL component_url	///< The CURL of the component to be released.
+			)
+                    raises (maciErrType::NoPermissionEx, maciErrType::CannotDeactivateComponentEx,
+                    		maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx,
+                    		maciErrType::ComponentDeactivationFailedPermEx);
 
 		/** 
 		    Releases a component also if still referenced by other components/clients.
