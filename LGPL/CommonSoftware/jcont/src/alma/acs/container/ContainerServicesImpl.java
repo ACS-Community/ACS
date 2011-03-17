@@ -807,7 +807,7 @@ public class ContainerServicesImpl implements ContainerServices
 				m_acsManagerProxy.force_release_component(getEffectiveClientHandle(), curl);
 			}
 			else {
-				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl);
+				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, null); // @TODO: use callback
 			}
 			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
 			stub._release();

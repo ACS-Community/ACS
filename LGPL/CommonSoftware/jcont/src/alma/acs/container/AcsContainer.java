@@ -79,6 +79,9 @@ import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationFailedPermEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
@@ -199,7 +202,7 @@ public class AcsContainer extends ContainerPOA
 		}
 	}
 
-    /**
+	/**
 	 * Container initialization such as logging in to the manager, configuring logging, initializing the alarm system.
 	 * This is taken out of the ctor just to keep is lean and be able to instantiate a minimum container for testing.
 	 * 
@@ -660,7 +663,7 @@ public class AcsContainer extends ContainerPOA
 
                 try {
 					deactivate_component(componentHandle);
-				} catch (CannotDeactivateComponentEx e) {
+				} catch (Exception ex) {
 					m_logger.log(Level.FINE, "Failed to deactivate existing component with handle " + componentHandle);
 				}
                 existingCompAdapter = null;
@@ -792,7 +795,8 @@ public class AcsContainer extends ContainerPOA
      * and thus made unavailable through CORBA, and its resources are freed.
      * If its code-base is no longer used, it is unloaded from memory.</i>
      * <p>
-     *
+     * @TODO: Adjust exception handling, then remove old CannotDeactivateComponentEx declaration
+     * 
      * @param handles  a sequence of handles identifying components that are to be released.
      *                  If null, then all active components will be deactivated!
      *
@@ -801,7 +805,7 @@ public class AcsContainer extends ContainerPOA
      *
      */
     public void deactivate_component(int handle) 
-    	throws CannotDeactivateComponentEx
+    	throws CannotDeactivateComponentEx, ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx, ComponentDeactivationFailedPermEx
     {
         m_logger.fine("received call to deactivate_component, handle=" + handle);
 
@@ -996,7 +1000,7 @@ public class AcsContainer extends ContainerPOA
 		if (gracefully) {
 			try {
 				deactivate_component(0);
-			} catch (CannotDeactivateComponentEx e) {
+			} catch (Exception ex) {
 				m_logger.log(Level.WARNING, "Failed to deactivate components for graceful shutdown");
 			}
 		} else {

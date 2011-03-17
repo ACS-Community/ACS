@@ -36,6 +36,7 @@ import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ManagerOperations;
 
+import alma.ACS.CBlong;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -809,16 +810,12 @@ public class AcsManagerProxy
 	 * @param clientHandle  handle of requesting component or other kind of client
 	 *        (for non-container clients this will always be the login-handle)
 	 * @param component_url  
-	 * @return int  Number of clients that are still using the component 
-	 * 			after the operation completed. This is a useful debugging tool.
+	 * @param callback  to synch on actual component release, receive possible exceptions, 
+	 *        and returned number of remaining clients (which could be a useful debugging tool).
 	 */
-	public int release_component(int clientHandle, String component_url)
-	    throws AcsJNoPermissionEx
-	{
+	public void release_component(int clientHandle, String component_url, CBlong callback) throws AcsJNoPermissionEx {
 		try {
-			int clientNumber = m_manager.release_component(clientHandle, component_url);
-			return clientNumber;
-
+			m_manager.release_component(clientHandle, component_url, callback);
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
