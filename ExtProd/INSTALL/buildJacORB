@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.21 2010/06/02 15:38:38 hsommer Exp $"
+# "@(#) $Id: buildJacORB,v 1.22 2011/03/17 00:06:01 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -87,6 +87,7 @@ CUR_DIR=`pwd`
 #fi
 
 echo ==== Building JacORB from: $JACORB_SOURCES    into:   $ALMASW_INSTDIR
+
 
 if [ -d $JACORB_HOME ]
 then
@@ -249,6 +250,11 @@ ant realclean
 # our JacORB should not use backport-util-concurrent.jar
 rm $JACORB_HOME/lib/backport-util-concurrent.jar
 ant convert.jdk5 
+
+# Now that the standard ACS CLASSPATH no longer contains logkit-1.2.jar,
+# we need to add it here in order to compile JacORB. 
+# Later this same jar will be copied to ACSROOT/lib (in LGPL/Tools/).
+CLASSPATH=$CLASSPATH:$JACORB_HOME/lib/logkit-1.2.jar
 
 # the main jacorb compilation
 # To include debug information, exchange the following two lines:
