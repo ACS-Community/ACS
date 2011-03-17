@@ -36,6 +36,7 @@ import si.ijs.maci.Manager;
 import si.ijs.maci.ManagerHelper;
 import si.ijs.maci.ManagerOperations;
 
+import alma.ACS.CBDescIn;
 import alma.ACS.CBlong;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
@@ -815,7 +816,7 @@ public class AcsManagerProxy
 	 */
 	public void release_component(int clientHandle, String component_url, CBlong callback) throws AcsJNoPermissionEx {
 		try {
-			m_manager.release_component(clientHandle, component_url, callback);
+			m_manager.release_component_async(clientHandle, component_url, callback, new CBDescIn());
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
 			throw exc;
