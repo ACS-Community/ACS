@@ -41,7 +41,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBstring giveCBString (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBstring giveCBString (ContainerServices cs, ResponseReceiver<String> x) throws AcsJContainerServicesEx {
 		CBstring ret;
 
 		Objects.CBstringImpl cb = new Objects.CBstringImpl(x);
@@ -58,7 +58,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBstringSeq giveCBStringSequence (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBstringSeq giveCBStringSequence (ContainerServices cs, ResponseReceiver<String[]> x) throws AcsJContainerServicesEx {
 		CBstringSeq ret;
 
 		Objects.CBstringSeqImpl cb = new Objects.CBstringSeqImpl(x);
@@ -76,7 +76,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBlong giveCBLong (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBlong giveCBLong (ContainerServices cs, ResponseReceiver<Integer> x) throws AcsJContainerServicesEx {
 		CBlong ret;
 
 		Objects.CBlongImpl cb = new Objects.CBlongImpl(x);
@@ -93,7 +93,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBlongSeq giveCBLongSequence (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBlongSeq giveCBLongSequence (ContainerServices cs, ResponseReceiver<Integer[]> x) throws AcsJContainerServicesEx {
 		CBlongSeq ret;
 
 		Objects.CBlongSeqImpl cb = new Objects.CBlongSeqImpl(x);
@@ -111,7 +111,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBdouble giveCBDouble (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBdouble giveCBDouble (ContainerServices cs, ResponseReceiver<Double> x) throws AcsJContainerServicesEx {
 		CBdouble ret;
 
 		Objects.CBdoubleImpl cb = new Objects.CBdoubleImpl(x);
@@ -129,7 +129,7 @@ public class RequesterUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	static public CBdoubleSeq giveCBDoubleSequence (ContainerServices cs, ResponseReceiver x) throws AcsJContainerServicesEx {
+	static public CBdoubleSeq giveCBDoubleSequence (ContainerServices cs, ResponseReceiver<Double[]> x) throws AcsJContainerServicesEx {
 		CBdoubleSeq ret;
 
 		Objects.CBdoubleSeqImpl cb = new Objects.CBdoubleSeqImpl(x);

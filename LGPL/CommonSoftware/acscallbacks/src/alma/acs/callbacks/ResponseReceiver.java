@@ -4,63 +4,13 @@
 package alma.acs.callbacks;
 
 
-
-
 /**
  * 
- * @author mschilli
+ * @author mschilli, hsommer
  */
-public abstract class ResponseReceiver {
-
-
-	// ===== String =====
-
-	public void incomingResponse (String s) {
-		incomingResponse((Object) s);
-	}
-
-	public void incomingResponse (String[] s) {
-		incomingResponse((Object) s);
-	}
-
-	// ===== Long =====
-
-	public void incomingResponse (int s) {
-		incomingResponse((Object) new Integer(s));
-	}
-
-	public void incomingResponse (int[] s) {
-		incomingResponse((Object) s);
-	}
-
-	// ===== Double =====
-
-	public void incomingResponse (double s) {
-		incomingResponse((Object) new Double(s));
-	}
-
-	public void incomingResponse (double[] s) {
-		incomingResponse((Object) s);
-	}
-
-	// ===== Generic =====
-
+public abstract class ResponseReceiver<T> {
+	
 	public void incomingException (Exception e) {}
 	
-	public void incomingResponse (Object s) {}
-
-
+	public void incomingResponse (T value) {}
 }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//

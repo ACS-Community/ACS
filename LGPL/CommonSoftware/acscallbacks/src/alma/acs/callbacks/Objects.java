@@ -3,6 +3,7 @@
  */
 package alma.acs.callbacks;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.omg.CORBA.UserException;
 
 import alma.ACS.CBDescOut;
@@ -76,13 +77,13 @@ public class Objects {
 	 */
 	static public class CBstringImpl extends alma.ACS.CBstringPOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<String> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<String> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBstringImpl(ResponseReceiver x) {
+		protected CBstringImpl(ResponseReceiver<String> x) {
 			toBeCalledBack = x;
 		}
 
@@ -119,13 +120,13 @@ public class Objects {
 	 */
 	static public class CBstringSeqImpl extends alma.ACS.CBstringSeqPOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<String[]> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<String[]> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBstringSeqImpl(ResponseReceiver x) {
+		protected CBstringSeqImpl(ResponseReceiver<String[]> x) {
 			toBeCalledBack = x;
 		}
 
@@ -164,13 +165,13 @@ public class Objects {
 	 */
 	static public class CBlongImpl extends alma.ACS.CBlongPOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<Integer> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<Integer> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBlongImpl(ResponseReceiver x) {
+		protected CBlongImpl(ResponseReceiver<Integer> x) {
 			toBeCalledBack = x;
 		}
 
@@ -209,13 +210,13 @@ public class Objects {
 	 */
 	static public class CBlongSeqImpl extends alma.ACS.CBlongSeqPOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<Integer[]> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<Integer[]> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBlongSeqImpl(ResponseReceiver x) {
+		protected CBlongSeqImpl(ResponseReceiver<Integer[]> x) {
 			toBeCalledBack = x;
 		}
 
@@ -239,7 +240,7 @@ public class Objects {
 				toBeCalledBack.incomingException(c.getAcsJException());
 
 			} else {
-				toBeCalledBack.incomingResponse(returnValue);
+				toBeCalledBack.incomingResponse(ArrayUtils.toObject(returnValue));
 
 			}
 		}
@@ -257,13 +258,13 @@ public class Objects {
 	 */
 	static public class CBdoubleImpl extends alma.ACS.CBdoublePOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<Double> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<Double> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBdoubleImpl(ResponseReceiver x) {
+		protected CBdoubleImpl(ResponseReceiver<Double> x) {
 			toBeCalledBack = x;
 		}
 
@@ -302,13 +303,13 @@ public class Objects {
 	 */
 	static public class CBdoubleSeqImpl extends alma.ACS.CBdoubleSeqPOA {
 
-		protected ResponseReceiver toBeCalledBack;
+		protected ResponseReceiver<Double[]> toBeCalledBack;
 
-		public void setXXX (ResponseReceiver x) {
+		public void setXXX (ResponseReceiver<Double[]> x) {
 			this.toBeCalledBack = x;
 		}
 
-		protected CBdoubleSeqImpl(ResponseReceiver x) {
+		protected CBdoubleSeqImpl(ResponseReceiver<Double[]> x) {
 			toBeCalledBack = x;
 		}
 
@@ -332,7 +333,7 @@ public class Objects {
 				toBeCalledBack.incomingException(c.getAcsJException());
 
 			} else {
-				toBeCalledBack.incomingResponse(returnValue);
+				toBeCalledBack.incomingResponse(ArrayUtils.toObject(returnValue));
 
 			}
 		}
@@ -342,15 +343,3 @@ public class Objects {
 
 }
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
