@@ -73,7 +73,7 @@ int BulkDataDistributerCb::handle_stop (void)
 	} // we didn't receive the first frame yet
     if ( locLoop == 0 )
 	{
-	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerCb::handle_stop timeout expired"));
+	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerCb::handle_stop timeout %f sec expired for flow: %s", loop_m * (waitPeriod_m.sec()+waitPeriod_m.usec()/1000000.0), flowname_m.c_str()));
 	throw CORBA::TIMEOUT();
 	}
 
