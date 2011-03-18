@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainer.cpp,v 1.18 2009/10/19 08:03:01 javarias Exp $"
+* "@(#) $Id: maciContainer.cpp,v 1.19 2011/03/18 17:02:40 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -73,7 +73,7 @@ int g_containerShutdownAction = 0;
 
  using namespace maci;
 
-ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.18 2009/10/19 08:03:01 javarias Exp $")
+ACE_RCSID(maci, maciContainer, "$Id: maciContainer.cpp,v 1.19 2011/03/18 17:02:40 rtobar Exp $")
 
 volatile bool shutting_down = false;
 
@@ -119,6 +119,19 @@ int main(int argc, char *argv[])
   ACE_OS::signal(SIGINT,  TerminationSignalHandler);  // Ctrl+C
   ACE_OS::signal(SIGTERM, TerminationSignalHandler);  // termination request
 
+  // This call is necessary for proper handling of wide characters, so the
+  // wchar_t* <-> char* conversions work depending on the current value of
+  // the LANG (and family) environment variables. This is necessary since
+  // xmlEntities are defined as wstring in IDL, and represented as
+  // CORBA::WString in C++
+  //
+  // In ALMA, the standard machines have LANG=en_US.UTF-8, which will use
+  // UTF-8 as the character encoding. Other ALMA tools, such as the ALMA-OT,
+  // also use UTF-8 to encode/decode strings
+  //
+  // For more information, please visit, for example
+  //    http://www.cl.cam.ac.uk/~mgk25/unicode.html#c
+  setlocale(LC_ALL, "");
 
 //  ContainerImpl &container = *ACE_Singleton<ContainerImpl, ACE_Null_Mutex>::instance();
 //  ContainerImpl &container = Loki::SingletonHolder<ContainerImpl,
