@@ -1,0 +1,12 @@
+diff -Naur PyXB-1.1.2-old/pyxb/binding/datatypes.py PyXB-1.1.2/pyxb/binding/datatypes.py
+--- PyXB-1.1.2-old/pyxb/binding/datatypes.py	2010-05-30 11:40:15.000000000 -0600
++++ PyXB-1.1.2/pyxb/binding/datatypes.py	2011-02-23 13:42:24.000000000 -0700
+@@ -162,7 +162,7 @@
+ 
+     @classmethod
+     def XsdLiteral (cls, value):
+-        return '%s' % (value,)
++        return '%r' % (value,)
+ 
+ _PrimitiveDatatypes.append(double)
+ 

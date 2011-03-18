@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.38 2010/09/09 00:33:19 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.39 2011/03/18 00:00:18 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -48,8 +48,8 @@ LXML: lxml-2.2.6.tar.gz
 
 PYXB: PyXB-full-1.1.2.tar.gz
 	@echo "== Building PyXB"
-	@gtar -zxvf PyXB-full-1.1.2.tar.gz; 
-	@cd PyXB-1.1.2; $(PYTHON_ROOT)/bin/python setup.py build; $(PYTHON_ROOT)/bin/python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
+	@gtar -zxvf PyXB-full-1.1.2.tar.gz;
+	@cd PyXB-1.1.2; patch -p1 < ../pyxb-datatypes-repr.patch;$(PYTHON_ROOT)/bin/python setup.py build; $(PYTHON_ROOT)/bin/python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
 PMW: Pmw.1.2.tar.gz
 	@echo "== Building Python Mega Widgets"
