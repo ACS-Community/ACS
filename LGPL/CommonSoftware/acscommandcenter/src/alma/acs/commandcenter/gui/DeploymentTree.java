@@ -1485,11 +1485,9 @@ public class DeploymentTree extends JTree {
 			}
 		}
 
-		/**
-		 * @TODO: Marcus, please implement this.
-		 * Should we pass the actual exception as well?
-		 */
-		private void seemsComponentDeactivationFailed(GuiMaciSupervisor ms) {
+		private void seemsComponentDeactivationFailed (GuiMaciSupervisor ms) {
+			String msg = "The manager reported a problem taking down the component.\nThe component may still be active.";
+			ErrorBox.showMessageDialog(DeploymentTree.this, msg, true);
 		}
 
 	}
