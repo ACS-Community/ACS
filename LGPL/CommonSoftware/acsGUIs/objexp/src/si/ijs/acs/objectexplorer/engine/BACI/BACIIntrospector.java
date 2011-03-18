@@ -914,20 +914,19 @@ public java.lang.Object[] prepareDIIparameters(OperationDescription desc, java.l
 			case TCKind._tk_boolean:
 				return Boolean.TYPE;
 			case TCKind._tk_char:
+			case TCKind._tk_wchar:
 				return Character.TYPE;
 			case TCKind._tk_octet:
 				return Byte.TYPE;
 			case TCKind._tk_string:
+			case TCKind._tk_wstring:
 				return String.class;
 			case TCKind._tk_longlong:
 				return Long.TYPE;
 			case TCKind._tk_ulonglong:
 				return Long.TYPE;
-
 			case TCKind._tk_union:
 			case TCKind._tk_longdouble:
-			case TCKind._tk_wchar:
-			case TCKind._tk_wstring:
 			case TCKind._tk_fixed:
 			case TCKind._tk_value:
 			case TCKind._tk_value_box:
