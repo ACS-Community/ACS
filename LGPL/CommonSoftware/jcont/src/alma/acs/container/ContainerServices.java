@@ -22,6 +22,8 @@
 package alma.acs.container;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.omg.PortableServer.Servant;
 
@@ -261,18 +263,81 @@ public interface ContainerServices extends ContainerServicesBase
 	 * which may take some time in case there are still active requests being processed.
 	 * 
 	 * @param componentUrl  the name/curl of the component instance as used by the manager
-	 * @deprecated since ACS 9.1.0
+	 * @deprecated since ACS 9.1.0. Use <code>releaseComponent(componentUrl, null)</code> instead to get the same functionality.
 	 */
 	public void releaseComponent(String componentUrl);
 
-	public static interface ComponentRequestCallback {
+	
+	/**
+	 * Callback object that can be optionally given to 
+	 * {@link ContainerServices#releaseComponent(String, ComponentReleaseCallback)}.
+	 * Users may override the methods they need.
+	 * <p>
+	 * Note that {@link #awaitComponentRelease(long, TimeUnit)} is not a callback method
+	 * but should make it easier to synchronize user code execution with component release.
+	 */
+	public static class ComponentReleaseCallback {
+		private volatile CountDownLatch sync;
+		/**
+		 * Called by ACS to release the thread (if any) that blocks on {@link #awaitComponentRelease(long, TimeUnit)}.
+		 */
+		final void callOver() {
+			if (sync != null) {
+				sync.countDown();
+				sync = null;
+			}
+		}
+		/**
+		 * Called when a CORBA or other communication error occurred.
+		 */
+		public void errorCommunicationFailure(Throwable thr) {}
+		/**
+		 * Called when the client cannot legally release the component, e.g. because it no longer holds a reference to it.
+		 */
+		public void errorNoPermission(String reason) {}
+		/**
+		 * Called when the component reference has been successfully released.
+		 * @param clean  <code>false</code> if the target component was deactivated but with complications.
+		 */
+		public void componentReleased(boolean clean) {}
+		/**
+		 * Called when the target component deactivation failed.
+		 * @param isPermanentFailure  <code>false</code> if ACS has some hope that a future release request for the same component might succeed.
+		 */
+		public void errorComponentReleaseFailed(String reason, boolean isPermanentFailure) {}
 		
+		/**
+		 * This is not a callback method but a convenience method to "park" the calling thread
+		 * until 
+		 * <ul>
+		 *   <li>The component has been released, or 
+		 *   <li>the given timeout has struck, or
+		 *   <li>component release failed with an exception.
+		 * </ul>
+		 * A client that only wants to wait for component release without caring about the details
+		 * does not have to subclass <code>ComponentReleaseCallback</code>, 
+		 * but can simply call <code>awaitComponentRelease</code>.
+		 * The client may in addition override the callback methods though.
+		 *  
+		 * @param timeout The maximum time to wait for the component release to succeed.
+		 * @param unit  The unit of <code>timeout</code>.
+		 * @return <code>true</code> if the component was released properly, <code>false</code> if the call returns because of a timeout.
+		 *         See {@link CountDownLatch#await(long, TimeUnit)}.
+		 * @throws InterruptedException
+		 */
+		public boolean awaitComponentRelease(long timeout, TimeUnit unit) throws InterruptedException {
+			if (sync == null) {
+				sync = new CountDownLatch(1);
+			}
+			return sync.await(timeout, unit);
+		}
 	}
 	
 	/**
 	 * Releases the reference to the specified component.
 	 * Releasing a component reference may result in the deactivation of that component, 
-	 * if no other clients hold (sticky) references. 
+	 * if no other clients hold (sticky) references.
+	 * <p> 
 	 * This call will return as soon as the release request has been delivered to the ACS manager, 
 	 * which means that the reference count evaluation and possible component deactivation will happen 
 	 * only after returning from this call. 
@@ -281,11 +346,20 @@ public interface ContainerServices extends ContainerServicesBase
 	 * or if you are interested in exceptions that may occur during component deactivation, 
 	 * then you should supply the optional <code>ComponentRequestCallback</code> object and block execution of your 
 	 * calling thread until you receive the callback.
-	 * 
+	 * <p>
+	 * If an exception (such as no-permission) is thrown during the synchronous first part 
+	 * of the underlying call to the manager, then this exception will not be thrown upward by this method
+	 * but will instead be reported to the optional callback object, just like any
+	 * exception that happens later during the asynchronous part of the component release. 
+	 * The idea here is to have either "interested" clients that want to get all exceptions, 
+	 * or "easy" clients that do not care about any exceptions, thus do not provide a callback object, 
+	 * and also do not want to bother about a try/catch block.
+	 *
 	 * @param componentUrl the name/curl of the component instance as used by the manager
 	 * @param callback may be <code>null</code> if you do not need to wait for component activation or to see the results.
+	 * @since ACS 9.1
 	 */
-	public void releaseComponent(String componentUrl, ComponentRequestCallback callback);
+	public void releaseComponent(String componentUrl, ComponentReleaseCallback callback);
 	
 	
 	public static interface ComponentListener {

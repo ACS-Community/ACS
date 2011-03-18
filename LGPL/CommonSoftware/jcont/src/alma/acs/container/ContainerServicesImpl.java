@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.omg.CosNaming.NamingContext;
@@ -46,12 +47,15 @@ import com.cosylab.CDB.DALHelper;
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
 
+import alma.ACS.CBlong;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.callbacks.RequesterUtil;
+import alma.acs.callbacks.ResponseReceiver;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
@@ -60,6 +64,7 @@ import alma.acs.component.dynwrapper.DynamicProxyFactory;
 import alma.acs.container.archive.Range;
 import alma.acs.container.archive.UIDLibrary;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -72,6 +77,9 @@ import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.entities.commonentity.EntityT;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
 import alma.xmlstore.Identifier;
@@ -765,13 +773,70 @@ public class ContainerServicesImpl implements ContainerServices
 	 * Note that <i>references</i> to other components are released by this method, 
 	 * where the components hosted inside this container act as clients.
 	 * These referenced components may run inside this or some other container/container.
-	 * <p>
-	 * TODO optionally run in a separate thread to gain speed, especially needed for quick shutdown; 
-	 * consider race condition at the manager with new activation request for the same component though. 
 	 * 
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
 	public void releaseComponent(String curl) {
+		ComponentReleaseCallback callback = new ComponentReleaseCallback();
+		releaseComponent(curl, callback);
+		try {
+			callback.awaitComponentRelease(60, TimeUnit.SECONDS);
+		} catch (InterruptedException ex) {
+		}
+	}
+
+
+	/**
+	 * Used by {@link ContainerServicesImpl#releaseComponent(String, alma.acs.container.ContainerServices.ComponentReleaseCallback)}
+	 * to wrap the user-supplied <code>ComponentReleaseCallback</code> for usage over Corba and for cleaner exception dispatching.
+	 */
+	private class ComponentReleaseCallbackCorbaHandler extends ResponseReceiver<Integer> {
+		private final ComponentReleaseCallback delegate;
+		ComponentReleaseCallbackCorbaHandler(ComponentReleaseCallback delegate) {
+			this.delegate = delegate;
+		}
+		@Override
+		public void incomingException(AcsJException ex) {
+			try {
+				if (ex instanceof AcsJComponentDeactivationUncleanEx) {
+					delegate.componentReleased(false);
+				}
+				else if (ex instanceof AcsJComponentDeactivationFailedEx) {
+					delegate.errorComponentReleaseFailed( ((AcsJComponentDeactivationFailedEx)ex).getReason(), false);
+				}
+				else if (ex instanceof AcsJComponentDeactivationFailedPermEx) {
+					delegate.errorComponentReleaseFailed( ((AcsJComponentDeactivationFailedPermEx)ex).getReason(), true );
+				}
+				else {
+					m_logger.log(Level.WARNING, "Received unexpected exception from manager#release_component_async, please report to ACS developers.", ex);
+					delegate.errorCommunicationFailure(ex); // strictly speaking the wrong method, but better than nothing.
+				}
+			}
+			catch (RuntimeException handlerEx) {
+				m_logger.log(Level.FINE, "User-supplied handler threw an exception.", handlerEx);
+			}
+			finally {
+				delegate.callOver();
+			}
+		}
+		@Override
+		public void incomingResponse(Integer numberRemainingClients) {
+			// we do not expose numberRemainingClients in the CS API
+			try {
+				delegate.componentReleased(true);
+			}
+			catch (RuntimeException handlerEx) {
+				m_logger.log(Level.FINE, "User-supplied handler threw an exception.", handlerEx);
+			}
+			finally {
+				delegate.callOver();
+			}
+		}
+	}
+
+
+	@Override
+	public void releaseComponent(String curl, ComponentReleaseCallback callback) {
 		// we keep the "forceful" release option as a switch in the code. 
 		// It was taken out for ACS 7.0, but may come back in the future. 
 		final boolean forcibly = false;
@@ -782,7 +847,7 @@ public class ContainerServicesImpl implements ContainerServices
 		}
 		
 		org.omg.CORBA.Object stub = null;
-		// thread safe without locking across the remote call to manager#release_component etc
+		// This use of synchronized makes the code thread safe without locking across the remote call to manager#release_component etc
 		synchronized (m_usedComponentsMap) {
 			if (!m_usedComponentsMap.containsKey(curl))
 			{
@@ -807,23 +872,31 @@ public class ContainerServicesImpl implements ContainerServices
 				m_acsManagerProxy.force_release_component(getEffectiveClientHandle(), curl);
 			}
 			else {
-				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, null); // @TODO: use callback
+				ComponentReleaseCallbackCorbaHandler callbackCorba = new ComponentReleaseCallbackCorbaHandler(callback);
+				CBlong myCBlong = RequesterUtil.giveCBLong(this, callbackCorba);
+				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, myCBlong);
 			}
 			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
 			stub._release();
+		} 
+		catch (AcsJNoPermissionEx ex) {
+			AcsLogLevel level = ( callback == null ? AcsLogLevel.WARNING : AcsLogLevel.DEBUG );
+			m_logger.log(level, "client '" + m_clientName + "' (handle " + getEffectiveClientHandle() + ") cannot release " + 
+					" with the manager the component with curl=" + curl, ex);
+			if (callback != null) {
+				callback.errorNoPermission(ex.getReason());
+			}
 		}
-		catch (Throwable thr) { // mainly thinking of org.omg.CORBA.NO_PERMISSION
-			m_logger.log(Level.WARNING, "client '" + m_clientName + "' (handle " + getEffectiveClientHandle() + ") failed to release " + 
+		catch (Throwable thr) { // any org.omg.CORBA.SystemException, or whatever else can happen
+			AcsLogLevel level = ( callback == null ? AcsLogLevel.WARNING : AcsLogLevel.DEBUG );
+			m_logger.log(level, "client '" + m_clientName + "' (handle " + getEffectiveClientHandle() + ") failed to release " + 
 					" with the manager the component with curl=" + curl, thr);
+			if (callback != null) {
+				callback.errorCommunicationFailure(thr);
+			}
 		}
 	}
 
-	@Override
-	public void releaseComponent(String componentUrl, ComponentRequestCallback callback) {
-		// @TODO implement for ACS 9.1, and have the old method call this one
-		m_logger.warning("releaseComponent(componentUrl, callback) not yet implemented. Will call the old synchronous method.");
-		releaseComponent(componentUrl);
-	}
 
 	/**
 	 * @see alma.acs.container.ContainerServices#activateOffShoot(org.omg.PortableServer.Servant)

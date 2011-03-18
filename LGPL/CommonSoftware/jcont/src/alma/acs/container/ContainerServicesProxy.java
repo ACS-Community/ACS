@@ -217,7 +217,7 @@ public class ContainerServicesProxy implements ContainerServices
 		delegate.releaseComponent(componentUrl);
 	}
 
-	public void releaseComponent(String componentUrl, ComponentRequestCallback callback) {
+	public void releaseComponent(String componentUrl, ComponentReleaseCallback callback) {
 		delegate.releaseComponent(componentUrl, callback);
 	}
 	

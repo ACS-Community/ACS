@@ -801,11 +801,14 @@ public class AcsManagerProxy
 	/**
 	 * From maci IDL comments:
 	 * <i>
-	 * "Releases a component. In order for this operation to be possible, the caller 
-	 * represented by the id must have previously successfully requested the component 
-	 * via a call to {@link #get_service(String, boolean, IntHolder)}.
-     * Releasing a component more times than requesting it should be avoided, 
-     * but it produces no errors."
+	 * "Asynchronously release a component. In order for this operation to be possible,
+	 *  the caller represented by the id must have previously successfully requested the
+	 *  component via a call to get_component.
+	 *  Releasing a component more times than requesting it should be avoided,
+	 *  but it produces no errors. 
+	 *  This method will return before the manager/target container have deactivated the component.
+	 *  If the caller wants to synchronize with component deactivation, it must supply
+	 *  the optional CBlong callback."
 	 * </i>
 	 * 
 	 * @param clientHandle  handle of requesting component or other kind of client
@@ -813,9 +816,12 @@ public class AcsManagerProxy
 	 * @param component_url  
 	 * @param callback  to synch on actual component release, receive possible exceptions, 
 	 *        and returned number of remaining clients (which could be a useful debugging tool).
+	 * @throws AcsJNoPermissionEx If this client does not hold a valid reference to the target component.
+	 * @throws RuntimeException such as BAD_PARAM, NO_PERMISSION, NO_RESOURCES, OBJECT_NOT_EXIST, TIMEOUT, TRANSIENT UNKNOWN
 	 */
 	public void release_component(int clientHandle, String component_url, CBlong callback) throws AcsJNoPermissionEx {
 		try {
+			// currently we use a dummy CBDescIn. Should take care of the "tag" if we want to reuse the CBlong object.
 			m_manager.release_component_async(clientHandle, component_url, callback, new CBDescIn());
 		} catch (RuntimeException exc) {
 			handleRuntimeException(exc);
