@@ -19,30 +19,52 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.cpp,v 1.1 2011/02/14 21:15:08 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.cpp,v 1.2 2011/03/18 23:38:13 javarias Exp $"
  */
 
-#import "loggingLog4cpp.h"
-#import "loggingStdoutlayout.h"
-#import "loggingXmlLayout.h"
+#include "loggingLog4cpp.h"
+#include "loggingStdoutlayout.h"
+#include "loggingXmlLayout.h"
 
-#import <log4cpp/Appender.hh>
 #include <log4cpp/OstreamAppender.hh>
+#include <log4cpp/SyslogAppender.hh>
+
+#define DEFAULT_LOG_LEVEL_STDOUT 4
+#define DEFUALT_LOG_LEVEL_REMOTE 3
+#define DEFAULT_LOG_LEVEL_SYSLOG 3
 
 using namespace logging;
 
-Logger::Logger() {
-	remoteAppender = NULL;
+Logger::Logger() :
+		remoteAppenderEnabled(false),
+		syslogAppenderEnabled(false),
+		localLogLevel(DEFAULT_LOG_LEVEL_STDOUT),
+		remoteLogLevel(DEFUALT_LOG_LEVEL_REMOTE),
+		syslogLogLevel(DEFAULT_LOG_LEVEL_SYSLOG),
+		loggingService(NULL){
+
+	char* local_log_level = getenv("ACS_LOG_STDOUT");
+	char* remote_log_level = getenv("ACS_LOG_REMOTE");
+	char* syslog_log_level = getenv("ACS_LOG_SYSLOG");
+
+	if (local_log_level != NULL)
+		localLogLevel = atoi(local_log_level);
+	if (remote_log_level != NULL)
+		remoteLogLevel = atoi(remote_log_level);
+	if (syslog_log_level != NULL)
+		syslogLogLevel = atoi(syslog_log_level);
 }
 
 Logger::~Logger() {
-	//Clean the Categories
+	//Clean the Categories?
 }
 
-ACSRemoteAppender* Logger::setRemoteAppender(ACSRemoteAppender* remoteAppender) {
-	ACSRemoteAppender* tmp = Logger::remoteAppender;
-	Logger::remoteAppender = remoteAppender;
-	return tmp;
+void Logger::enableRemoteAppender(Logging::AcsLogService_ptr loggingService) {
+	remoteAppenderEnabled = true;
+}
+
+void Logger::enableSyslogAppender() {
+	syslogAppenderEnabled = true;
 }
 
 ACSCategory* Logger::getGlobalLogger() {
@@ -50,7 +72,7 @@ ACSCategory* Logger::getGlobalLogger() {
 }
 
 ACSCategory* Logger::getStaticLogger() {
-	return getLogger("staticLogger");
+	return getLogger("StaticMethodLogger");
 }
 
 ACSCategory* Logger::getLogger(const std::string& loggerName) {
@@ -60,19 +82,143 @@ ACSCategory* Logger::getLogger(const std::string& loggerName) {
 	return logger;
 }
 
-
-
 ACSCategory* Logger::initLogger(const std::string& loggerName) {
 	::log4cpp::Appender* localAppender = new ::log4cpp::OstreamAppender("STDOUT Appender", &::std::cout);
-	::log4cpp::Appender* remoteAppender = Logger::remoteAppender;
 	localAppender->setLayout(new logging::ACSstdoutLayout());
-	if (remoteAppender != NULL)
-		remoteAppender->setLayout(new logging::ACSXmlLayout());
+	localAppender->setThreshold(convertPriority(localLogLevel));
 	ACSCategory &logger = ACSCategory::getInstance(loggerName);
 	logger.addAppender(localAppender);
-	if (remoteAppender != NULL)
-		logger.addAppender(remoteAppender);
+
+	if (syslogAppenderEnabled) {
+		::log4cpp::Appender* syslogAppender = new ::log4cpp::SyslogAppender("SYSLOG Appender", "ACS");
+		syslogAppender->setLayout(new logging::ACSstdoutLayout());
+		syslogAppender->setThreshold(convertPriority(syslogLogLevel));
+		logger.addAppender(syslogAppender);
+	}
+
+	if (remoteAppenderEnabled) {
+		//ACSRemoteAppender remoteAppender = new ACSRemoteAppender()
+	}
+
 	return ACSCategory::exist(loggerName);
 }
 
+BasicLogInfo Logger::formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...) {
+	BasicLogInfo retVal;
+	retVal.priority = priority;
+	va_list argp;
+	va_start(argp, fmt);
+	char tmp_msg[1024];
+	vsnprintf(tmp_msg, sizeof(char) * 1024, fmt, argp);
+	va_end(argp);
+	retVal.message = tmp_msg;
+	return retVal;
+}
+
+BasicLogInfo Logger::formatLog(ACE_Log_Priority priority, const char *fmt, ...) {
+	BasicLogInfo retVal;
+	retVal.priority = convertPriority(priority);
+	va_list argp;
+	va_start(argp, fmt);
+	char tmp_msg[1024];
+	vsnprintf(tmp_msg, sizeof(char) * 1024, fmt, argp);
+	va_end(argp);
+	retVal.message = tmp_msg;
+	return retVal;
+}
+
+BasicLogInfo Logger::formatLog(unsigned int priority, const char *fmt, ...) {
+	BasicLogInfo retVal;
+	retVal.priority = convertPriority(priority);
+	va_list argp;
+	va_start(argp, fmt);
+	char tmp_msg[1024];
+	vsnprintf(tmp_msg, sizeof(char) * 1024, fmt, argp);
+	va_end(argp);
+	retVal.message = tmp_msg;
+	return retVal;
+}
+
+LogTrace::LogTrace(ACSCategory* logger, const std::string &method,
+		const std::string &file, const unsigned long line) :
+		logger(logger), method(method), file(file), line(line) {
+	if(logger != NULL)
+		logger->log("Entering", log4cpp::Priority::TRACE, method, file, line);
+	else {
+		std::cerr << "SEVERE LOGGING ERROR IN LogTrace/AUTO_TRACE - logger/getLogger() is NULL: routine=";
+		std::cerr << method << " file: " << file << " line: " << line << std::endl;
+	}
+}
+
+LogTrace::LogTrace (ACSCategory* logger, const std::string &method) :
+	logger(logger), method(method), file("Unavailable"), line(0UL) {
+	if(logger != NULL)
+		logger->log("Entering...", log4cpp::Priority::TRACE, method, file, line);
+	else {
+		std::cerr << "SEVERE LOGGING ERROR IN LogTrace/AUTO_TRACE - logger/getLogger() is NULL: routine=";
+		std::cerr << method << " file: " << file << " line: " << line << std::endl;
+	}
+}
+
+LogTrace::~LogTrace() {
+	if(logger != NULL)
+		logger->log("Exiting...", log4cpp::Priority::TRACE, method, file, line);
+}
+
+
+
+log4cpp::Priority::PriorityLevel logging::convertPriority (unsigned int logLevel) {
+	switch (logLevel) {
+	case 1:
+		return log4cpp::Priority::TRACE;
+	case 2:
+		return log4cpp::Priority::DELOUSE;
+	//Old LM_DELOUSE value = 010000
+	case LM_DELOUSE:
+		return log4cpp::Priority::DELOUSE;
+	case 3:
+		return log4cpp::Priority::DEBUG;
+	case 4:
+		return log4cpp::Priority::INFO;
+	case 5:
+		return log4cpp::Priority::NOTICE;
+	case 6:
+		return log4cpp::Priority::WARNING;
+	case 8:
+		return log4cpp::Priority::ERROR;
+	case 9:
+		return log4cpp::Priority::CRITICAL;
+	case 10:
+		return log4cpp::Priority::ALERT;
+	case 11:
+		return log4cpp::Priority::EMERGENCY;
+	default:
+		return log4cpp::Priority::NOTSET;
+	}
+}
+
+log4cpp::Priority::PriorityLevel logging::convertPriority(ACE_Log_Priority logLevel) {
+	switch (logLevel) {
+	case LM_TRACE:
+		return log4cpp::Priority::TRACE;
+	case LM_DEBUG:
+		return log4cpp::Priority::DEBUG;
+	case LM_INFO:
+		return log4cpp::Priority::INFO;
+	case LM_NOTICE:
+		return log4cpp::Priority::NOTICE;
+	case LM_WARNING:
+		return log4cpp::Priority::WARNING;
+	case LM_ERROR:
+		return log4cpp::Priority::ERROR;
+	case LM_CRITICAL:
+		return log4cpp::Priority::CRITICAL;
+	case LM_ALERT:
+		return log4cpp::Priority::ALERT;
+	case LM_EMERGENCY:
+		return log4cpp::Priority::EMERGENCY;
+	default:
+		return log4cpp::Priority::NOTSET;
+	}
+}
 

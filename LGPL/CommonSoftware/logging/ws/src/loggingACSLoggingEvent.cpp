@@ -48,5 +48,5 @@ ACSLoggingEvent::ACSLoggingEvent(const std::string& logger,
 			contextName(context), audienceName(audience),
 			sourceObject(sourceObject), array(array), antenna(antenna),
 			stackId(stackId), stackLevel(stackLevel), uri(uri){
-
+	const_cast<std::string * >(&threadName)->assign("");
 }

@@ -46,7 +46,7 @@ std::string ACSstdoutLayout::format(const ::log4cpp::LoggingEvent& event) {
 	//TODO: should this conversion be improved to remove the ACE dependency?
 	ACSstdoutLayout::formatISO8601inUTC(time, timestamp);
 	retStr += timestamp;
-	if (event.priority > ::log4cpp::Priority::INFO)
+	if (event.priority <= ::log4cpp::Priority::INFO)
 		retStr += " [" + event.categoryName + "] ";
 	else
 		retStr += " [" + event.categoryName + " - " + acsLogEvent->routineName

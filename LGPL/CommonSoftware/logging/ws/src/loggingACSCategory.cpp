@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingACSCategory.cpp,v 1.2 2011/02/14 21:15:08 javarias Exp $"
+ * "@(#) $Id: loggingACSCategory.cpp,v 1.3 2011/03/18 23:38:13 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -50,6 +50,14 @@ void ACSCategory::log(const std::string& message,
 	ACSLoggingEvent lr(getName(), message, priority, routine, file, line, host,
 			context, audience, sourceObject, array, antenna, stackId,
 			stackLevel, uri);
+	log(lr);
+}
+
+void ACSCategory::log(const std::string& message,
+		::log4cpp::Priority::Value priority, const std::string& routine,
+		const std::string& file, unsigned int line) throw () {
+	ACSLoggingEvent lr(getName(), message, priority, routine, file, line, "",
+			"", "", "", "", "", "", 0, "");
 	log(lr);
 }
 

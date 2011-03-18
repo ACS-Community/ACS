@@ -55,6 +55,10 @@ public:
 			const std::string& antenna, const std::string& stackId,
 			const int stackLevel, const std::string& uri) throw ();
 
+	void log (const std::string& message,
+			::log4cpp::Priority::Value priority, const std::string& routine,
+			const std::string& file, unsigned int line) throw ();
+
 	void trace(const std::string& message, ::log4cpp::Priority::Value priority,
 			const std::string& routine, const std::string& file,
 			unsigned int line, const std::string& host,

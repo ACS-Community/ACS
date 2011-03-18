@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLog4cppMACROS.h,v 1.1 2011/02/14 21:15:08 javarias Exp $"
+* "@(#) $Id: loggingLog4cppMACROS.h,v 1.2 2011/03/18 23:38:13 javarias Exp $"
 */
 
 #ifndef LOGGING_LOG4CPP_MACROS_H_
@@ -25,42 +25,80 @@
 #include "loggingLog4cpp.h"
 #include "loggingACSLoggingEvent.h"
 
+#include <acscommonC.h>
+
+#include <memory>
+
 #define LOG4CPP_LOG(priority, routine, text) \
 	LOGGER_FACTORY->getGlobalLogger()->log(text, priority, routine, __FILE__, __LINE__, \
 			"", "", "", "", "", "", "", 0, "");
 
 #define LOG4CPP_LOG_FULL(logPriority, logRoutine, logMessage, logAudience, logArray, logAntenna) \
-		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logPriority,logRoutine , __FILE__, __LINE__, \
+		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logging::convertPriority(logPriority), logRoutine , __FILE__, __LINE__, \
 				"", "", logAudience, "", logArray, logAntenna, "", 0, "");
 
 #define LOG4CPP_LOG_WITH_ANTENNA_CONTEXT(logPriority, logRoutine, logMessage, logArray, logAntenna) \
-		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logPriority,logRoutine , __FILE__, __LINE__, \
+		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logging::convertPriority(logPriority), logRoutine , __FILE__, __LINE__, \
 				"", "", "", "", logArray, logAntenna, "", 0, "");
 
 #define LOG4CPP_LOG_TO_AUDIENCE(logPriority, logRoutine, logMessage, logAudience) \
-		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logPriority,logRoutine , __FILE__, __LINE__, \
+		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logging::convertPriority(logPriority), logRoutine , __FILE__, __LINE__, \
 				"", "", logAudience, "", "", "", "", 0, "");
 
 #define LOG4CPP_LOG_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logSource) \
-		LOGGER_FACTORY->getLogger(logSource)->log(logMessage, logPriority,logRoutine , logFile, logLine, \
+		LOGGER_FACTORY->getLogger(logSource)->log(logMessage, logging::convertPriority(logPriority), logRoutine , logFile, logLine, \
 				"", "", "", "", "", "", "", 0, "");
 
 #define LOG4CPP_LOG_GLOBAL_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logTime) \
-		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logPriority,logRoutine , logFile, logLine, \
+		LOGGER_FACTORY->getGlobalLogger()->log(logMessage, logging::convertPriority(logPriority), logRoutine , logFile, logLine, \
 				"", "", "", "", "", "", "", 0, "");
 
 #define LOG4CPP_STATIC_LOG(priority, routine, text) \
-		LOGGER_FACTORY->getStaticLogger()->log(text, priority, routine, __FILE__, __LINE__, \
+		LOGGER_FACTORY->getStaticLogger()->log(text, logging::convertPriority(priority), routine, __FILE__, __LINE__, \
 				"", "", "", "", "", "", "", 0, "");
 
 #define LOG4CPP_STATIC_LOG_RECORD(logPriority, logMessage, logFile, logLine, logRoutine, logTime) \
-		LOGGER_FACTORY->getStaticLogger()->log(logMessage, logPriority,logRoutine , logFile, logLine, \
+		LOGGER_FACTORY->getStaticLogger()->log(logMessage, logging::convertPriority(logPriority), logRoutine , logFile, logLine, \
 				"", "", "", "", "", "", "", 0, "");
 
 #define LOG4CPP_STATIC_LOG_TO_AUDIENCE(priority, routine, text, logAudience) \
-		LOGGER_FACTORY->getStaticLogger()->log(text, priority, routine, __FILE__, __LINE__, \
+		LOGGER_FACTORY->getStaticLogger()->log(text, logging::convertPriority(priority), routine, __FILE__, __LINE__, \
 				"", "", logAudience, "", "", "", "", 0, "");
 
-//TODO: Re-implement AUTO TRACE MACROS
+#define LOG4CPP_AUTO_TRACE(routine) \
+		std::auto_ptr<logging::LogTrace> __x_logging__auto_trace__routine (new logging::LogTrace(LOGGER_FACTORY->getGlobalLogger(), routine, __FILE__, __LINE__));
 
+#define LOG4CPP_AUTO_STATIC_TRACE(routine) \
+		std::auto_ptr<logging::LogTrace>(new logging::LogTrace(LOGGER_FACTORY->getStaticLogger(), routine, __FILE__, __LINE__));
+
+#define LOG4CPP_LOG_TO_DEVELOPER(logPriority, logMessage) \
+		LOG4CPP_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::DEVELOPER);
+
+#define LOG4CPP_STATIC_LOG_TO_DEVELOPER(logPriority, logMessage) \
+		LOG4CPP_STATIC_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::DEVELOPER);
+
+#define LOG4CPP_LOG_TO_OPERATOR( logPriority, logMessage) \
+		LOG4CPP_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::OPERATOR);
+
+#define LOG4CPP_STATIC_LOG_TO_OPERATOR( logPriority, logMessage) \
+		LOG4CPP_STATIC_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::OPERATOR);
+
+#define LOG4CPP_LOG_TO_SCIENCE( logPriority, logMessage) \
+		LOG4CPP_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+#define LOG4CPP_STATIC_LOG_TO_SCIENCE( logPriority, logMessage) \
+		LOG4CPP_STATIC_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+#define LOG4CPP_LOG_TO_SCILOG( logPriority, logMessage) \
+		LOG4CPP_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+#define LOG4CPP_STATIC_LOG_TO_SCILOG( logPriority, logMessage) \
+		LOG4CPP_STATIC_LOG_TO_AUDIENCE(logPriority, __PRETTY_FUNCTION__, logMessage, log_audience::SCILOG);
+
+#define LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, logAudience, logger) \
+{ \
+	if (logger != NULL) {\
+		logger->log(logMessage, logPriority, __PRETTY_FUNCTION__, __FILE__, __LINE, "", "", logAudience, "", "", "", "", 0, ""); \
+	}\
+}
 #endif

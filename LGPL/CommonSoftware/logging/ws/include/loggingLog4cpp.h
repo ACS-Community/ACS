@@ -19,29 +19,29 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.h,v 1.1 2011/02/14 21:15:08 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.h,v 1.2 2011/03/18 23:38:13 javarias Exp $"
  */
 #ifndef LOGGING_LOG4CPP_H_
 #define LOGGING_LOG4CPP_H_
 
-
 #include "loggingACSCategory.h"
-#include "loggingACSRemoteAppender.h"
+#include "logging_idlC.h"
+
+#include <log4cpp/LayoutAppender.hh>
 #include <ace/Singleton.h>
+#include <ace/Synch.h>
+
+#define LM_DELOUSE 010000U
 
 namespace logging {
 
+struct BasicLogInfo {
+	log4cpp::Priority::PriorityLevel priority;
+	std::string message;
+};
+
 class Logger {
 public:
-	/**
-	 * The proper initialization of the RemoteAppender must be done by the class knowing about
-	 * the loggingService (like maciContainer or simpleClient)
-	 *
-	 * @param remoteAppender the remote appender to be used in the prior logger initializations
-	 *
-	 * @return the old remote appender reference, it can be NULL
-	 */
-	ACSRemoteAppender* setRemoteAppender(ACSRemoteAppender* remoteAppender);
 
 	Logger();
 	~Logger();
@@ -49,13 +49,42 @@ public:
 	ACSCategory* getLogger(const std::string& loggerName);
 	ACSCategory* getGlobalLogger();
 	ACSCategory* getStaticLogger();
+
+	void enableRemoteAppender(Logging::AcsLogService_ptr loggingService);
+	void enableSyslogAppender();
+
+	static BasicLogInfo formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...);
+	static BasicLogInfo formatLog(ACE_Log_Priority priority, const char *fmt, ...);
+	static BasicLogInfo formatLog(unsigned int priority, const char *fmt, ...);
+
 private:
-	ACSRemoteAppender* remoteAppender;
+	bool remoteAppenderEnabled;
+	bool syslogAppenderEnabled;
+	unsigned int localLogLevel;
+	unsigned int remoteLogLevel;
+	unsigned int syslogLogLevel;
+	Logging::AcsLogService_ptr loggingService;
+	//Naming Service here
 	ACSCategory* initLogger(const std::string& loggerName);
 };
 
+class LogTrace {
+public:
+	LogTrace (ACSCategory* logger, const std::string &method,
+			const std::string &file, const unsigned long line);
+	LogTrace (ACSCategory* logger, const std::string &method);
+	~LogTrace();
+
+private:
+	ACSCategory* logger;
+	const std::string method;
+	const std::string file;
+	const unsigned long line;
+};
+
+log4cpp::Priority::PriorityLevel convertPriority(unsigned int logLevel);
+log4cpp::Priority::PriorityLevel convertPriority(ACE_Log_Priority logLevel);
 }
 
 #define LOGGER_FACTORY ACE_Singleton<logging::Logger, ACE_Null_Mutex>::instance()
-
 #endif
