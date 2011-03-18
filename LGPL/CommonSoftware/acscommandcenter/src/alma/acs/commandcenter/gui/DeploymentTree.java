@@ -55,6 +55,10 @@ import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 import com.xtmod.util.collections.TreeMerge;
 
@@ -1317,6 +1321,14 @@ public class DeploymentTree extends JTree {
 			mce.handleException(supervisor, exc);
 		} catch (UnknownErrorException exc) {
 			mce.handleException(supervisor, exc);
+		} catch (AcsJCannotDeactivateComponentEx ex) { // @TODO remove after change in maci.idl
+			mce.handleException(supervisor, ex);
+		} catch (AcsJComponentDeactivationUncleanEx ex) {
+			mce.handleException(supervisor, ex);
+		} catch (AcsJComponentDeactivationFailedEx ex) {
+			mce.handleException(supervisor, ex);
+		} catch (AcsJComponentDeactivationFailedPermEx ex) {
+			mce.handleException(supervisor, ex);
 		}
 	}
 
@@ -1378,6 +1390,22 @@ public class DeploymentTree extends JTree {
 		protected void handleException (IMaciSupervisor ms, UnknownErrorException exc) {
 			String msg = "Unforeseen error talking to manager! Please report this to the Acs team.";
 			ErrorBox.showErrorDialog(DeploymentTree.this, msg,	exc);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, AcsJCannotDeactivateComponentEx exc) { // @TODO remove after change in maci.idl
+			seemsComponentDeactivationFailed(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, AcsJComponentDeactivationUncleanEx exc) {
+			seemsComponentDeactivationFailed(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, AcsJComponentDeactivationFailedEx exc) {
+			seemsComponentDeactivationFailed(ms);
+		}
+
+		protected void handleException (GuiMaciSupervisor ms, AcsJComponentDeactivationFailedPermEx exc) {
+			seemsComponentDeactivationFailed(ms);
 		}
 
 
@@ -1455,6 +1483,13 @@ public class DeploymentTree extends JTree {
 					continue;
 				}
 			}
+		}
+
+		/**
+		 * @TODO: Marcus, please implement this.
+		 * Should we pass the actual exception as well?
+		 */
+		private void seemsComponentDeactivationFailed(GuiMaciSupervisor ms) {
 		}
 
 	}
