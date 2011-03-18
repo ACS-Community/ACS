@@ -3,14 +3,18 @@
  */
 package alma.acs.callbacks;
 
+import alma.acs.exceptions.AcsJException;
+
 
 /**
- * 
+ * User should override the handler methods as needed.
  * @author mschilli, hsommer
  */
 public abstract class ResponseReceiver<T> {
 	
-	public void incomingException (Exception e) {}
+	public void incomingException (AcsJException e) {
+	}
 	
-	public void incomingResponse (T value) {}
+	public void incomingResponse (T value) {
+	}
 }
