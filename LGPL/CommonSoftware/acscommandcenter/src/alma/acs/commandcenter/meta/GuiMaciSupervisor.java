@@ -10,10 +10,19 @@ import org.omg.CORBA.ORB;
 
 import si.ijs.maci.ClientInfo;
 import si.ijs.maci.ContainerInfo;
+
+import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationFailedPermEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 
 /**
@@ -281,7 +290,10 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 	 * @throws CorbaNotExistException 
 	 * @throws CorbaUnknownException 
 	 */
-	public void managerReleaseComponents (String[] curls) throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, CorbaUnknownException {
+	public void managerReleaseComponents (String[] curls) 
+		throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, CorbaUnknownException, 
+		AcsJCannotDeactivateComponentEx, AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx, AcsJComponentDeactivationFailedPermEx
+	{
 		try {
 			log.fine("sending release_component requests to manager");
 			int hhhhh = myMaciHandle();
@@ -312,6 +324,18 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 		} catch (RuntimeException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw new UnknownErrorException(exc);
+
+		} catch (CannotDeactivateComponentEx ex) { // @TODO remove this catch once we remove this ex from maci.idl
+			throw AcsJCannotDeactivateComponentEx.fromCannotDeactivateComponentEx(ex);
+		
+		} catch (ComponentDeactivationUncleanEx ex) {
+			throw AcsJComponentDeactivationUncleanEx.fromComponentDeactivationUncleanEx(ex);
+		
+		} catch (ComponentDeactivationFailedEx ex) {
+			throw AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
+		
+		} catch (ComponentDeactivationFailedPermEx ex) {
+			throw AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
 		}
 	}
 
