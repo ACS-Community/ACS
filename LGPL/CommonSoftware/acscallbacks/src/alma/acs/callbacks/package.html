@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 import alma.acs.callbacks.RequesterUtil;
 import alma.acs.callbacks.ResponseReceiver;
 import alma.acs.commandcenter.meta.Firestarter;
-import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServicesBase;
 
 import alma.mysubsystem.Responder;
 
@@ -48,7 +48,7 @@ public class DemoRequester {
 
         Firestarter.configure(null, "te1.hq.eso.org", "3500");
         Firestarter.prepare();
-        ContainerServices cs = Firestarter.giveContainerServices();
+        ContainerServicesBase cs = Firestarter.giveContainerServices();
         Logger logger = cs.getLogger();
 
         Responder responder = ResponderHelper.narrow(cs.getComponent("RESPONDER"));
