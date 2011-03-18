@@ -205,7 +205,7 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 				add(tabContent, new JLabel(tabContent.getName()));
 				setTabComponentAt(indexOfComponent(tabContent), new ButtonTabComponent(thePane,tabContent));
 			}
-		};
+		}
 		SwingUtilities.invokeLater(new TabInserter(logTab,this));
 	}
 	
@@ -230,7 +230,7 @@ public class LogLevelPanel extends JTabbedPane implements IPanel {
 					public void run() {
 						remove(index);
 					}
-				};
+				}
 				SwingUtilities.invokeLater(new TabRemover(t));
 				return;
 			}

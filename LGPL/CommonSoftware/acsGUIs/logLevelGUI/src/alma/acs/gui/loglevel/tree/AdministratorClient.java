@@ -300,7 +300,6 @@ public class AdministratorClient extends AdministratorPOA {
 		boolean done=false;
 		int attempt=0;
 		interrupted=false;
-		ManagerBusyDlg busyDlg=null;
 		while (!done && !interrupted) {
 			try {
 				ret = managerRef.get_client_info(administratorInfo.h, client_handles, name_wildcard);
