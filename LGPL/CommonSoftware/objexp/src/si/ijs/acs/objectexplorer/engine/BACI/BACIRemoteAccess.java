@@ -2,7 +2,6 @@ package si.ijs.acs.objectexplorer.engine.BACI;
 
 
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -46,6 +45,8 @@ import si.ijs.acs.objectexplorer.NotificationBean;
 import si.ijs.acs.objectexplorer.OETreeNode;
 import si.ijs.acs.objectexplorer.TreeHandlerBean;
 import si.ijs.acs.objectexplorer.engine.Attribute;
+import si.ijs.acs.objectexplorer.engine.DataException;
+import si.ijs.acs.objectexplorer.engine.DataStruct;
 import si.ijs.acs.objectexplorer.engine.Introspectable;
 import si.ijs.acs.objectexplorer.engine.IntrospectionInconsistentException;
 import si.ijs.acs.objectexplorer.engine.Invocation;
@@ -55,8 +56,6 @@ import si.ijs.acs.objectexplorer.engine.Operation;
 import si.ijs.acs.objectexplorer.engine.RemoteAccess;
 import si.ijs.acs.objectexplorer.engine.RemoteException;
 import si.ijs.acs.objectexplorer.engine.RemoteResponseCallback;
-import si.ijs.acs.objectexplorer.engine.DataStruct;
-import si.ijs.acs.objectexplorer.engine.DataException;
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.Client;
 import si.ijs.maci.ClientInfo;
@@ -71,9 +70,18 @@ import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.UTCUtility;
+import alma.maciErrType.CannotDeactivateComponentEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationFailedPermEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.NoPermissionEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.objexpErrType.wrappers.AcsJObjectExplorerConnectEx;
 import alma.objexpErrType.wrappers.AcsJObjectExplorerInterfaceRepositoryAccessEx;
@@ -498,7 +506,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 	private TreeHandlerBean parent = null;
 	private BACIMenu baciEngineMenu = null;
 	private NotificationBean notifier = null;
-	private ArrayList invocations = new ArrayList();
+	private ArrayList<BACIInvocation> invocations = new ArrayList<BACIInvocation>();
 	private Dispatcher dispatcher = null;
 	private ArrayList<String> connected = new ArrayList<String>();
 	private BACIIntrospector baciIntrospector = new BACIIntrospector(this);
@@ -625,9 +633,7 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			return;
 		destroyed = true;
 		synchronized (invocations) {
-			Iterator i = invocations.iterator();
-			while (i.hasNext()) {
-				BACIInvocation invoc = (BACIInvocation) i.next();
+			for (BACIInvocation invoc : invocations) {
 				try {
 					if (invoc.isControllable())
 						BACIIntrospector.destroyInvocation(invoc);
@@ -728,12 +734,9 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			}
 		}
 		synchronized (invocations) {
-			Iterator i = invocations.iterator();
-			ArrayList removal = new ArrayList();
-			while (i.hasNext()) {
-				BACIInvocation invoc = (BACIInvocation) i.next();
-				if (invoc.getInvocationRequest().getIntrospectable()
-					== target) {
+			ArrayList<BACIInvocation> removal = new ArrayList<BACIInvocation>();
+			for (BACIInvocation invoc : invocations) {
+				if (invoc.getInvocationRequest().getIntrospectable() == target) {
 					BACIIntrospector.destroyInvocation(invoc);
 					removal.add(invoc);
 				}
@@ -756,13 +759,16 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				"BACIRemoteAccess::disconnect",
 				"Releasing component '" + target.getName() + "'.");
 			try {
-			    manager.release_component(handle, (String) baciNode.getUserObject());
+				manager.release_component(handle, (String) baciNode.getUserObject());
 				notifier.reportDebug(
 						"BACIRemoteAccess::disconnect",
 						"Component '" + target.getName() + "' released.");
-			    }
+				}
 			catch (NoPermissionEx npe) {
 				notifier.reportError("No permission to release component", npe);
+			} 
+			catch (Exception ex) {
+				notifier.reportError("Failed to release component", ex);
 			}
 		}
 		else
@@ -2299,13 +2305,25 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 			notifier.reportError(
 				"Failed to retrieve interface description from IR, releasing component on Manager, if needed.",
 				e);
+			AcsJException releaseCompEx = null;
 			try {
-				if (manager != null && obj != null && !baciNode.isNonSticky())
+				if (manager != null && obj != null && !baciNode.isNonSticky()) {
 					manager.release_component(handle, curl);
+				}
 			} catch (NoPermissionEx npe) {
-				notifier.reportError("No permission to release component", npe);
-			    AcsJNoPermissionEx acsjnpe = new AcsJNoPermissionEx(npe);
-			    logACSException(acsjnpe);
+				releaseCompEx = AcsJNoPermissionEx.fromNoPermissionEx(npe);
+			} catch (CannotDeactivateComponentEx ex) { // @TODO remove this catch once we remove this ex from maci.idl
+				releaseCompEx = AcsJCannotDeactivateComponentEx.fromCannotDeactivateComponentEx(ex);
+			} catch (ComponentDeactivationUncleanEx ex) {
+				releaseCompEx = AcsJComponentDeactivationUncleanEx.fromComponentDeactivationUncleanEx(ex);
+			} catch (ComponentDeactivationFailedEx ex) {
+				releaseCompEx = AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
+			} catch (ComponentDeactivationFailedPermEx ex) {
+				releaseCompEx = AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
+			}
+			if (releaseCompEx != null) {
+				notifier.reportError("Failed to release component", releaseCompEx);
+				logACSException(releaseCompEx);
 			}
 		    AcsJObjectExplorerInterfaceRepositoryAccessEx acsjex = 
 		    	new AcsJObjectExplorerInterfaceRepositoryAccessEx(e);
