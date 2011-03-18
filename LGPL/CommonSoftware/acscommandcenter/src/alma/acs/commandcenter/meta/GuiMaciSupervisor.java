@@ -300,10 +300,26 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 			for (int i = 0; i < curls.length; i++) {
 				myManagerReference().release_component(hhhhh, curls[i]);
 			}
+			
+			/* the first bunch of errors are not manager-communication
+			 * problems, so we do not pass them to the mce-handler. */
+			
 		} catch (org.omg.CORBA.UNKNOWN exc) {
 			/* may be thrown by manager if component is unknown.
 			 * thus, this is not a manager-communication problem. */
 			throw new CorbaUnknownException(exc);
+
+		} catch (CannotDeactivateComponentEx ex) { // @TODO remove this catch once we remove this ex from maci.idl
+			throw AcsJCannotDeactivateComponentEx.fromCannotDeactivateComponentEx(ex);
+		
+		} catch (ComponentDeactivationUncleanEx ex) {
+			throw AcsJComponentDeactivationUncleanEx.fromComponentDeactivationUncleanEx(ex);
+		
+		} catch (ComponentDeactivationFailedEx ex) {
+			throw AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
+		
+		} catch (ComponentDeactivationFailedPermEx ex) {
+			throw AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
 			
 		} catch (NotConnectedToManagerException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
@@ -324,18 +340,6 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 		} catch (RuntimeException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw new UnknownErrorException(exc);
-
-		} catch (CannotDeactivateComponentEx ex) { // @TODO remove this catch once we remove this ex from maci.idl
-			throw AcsJCannotDeactivateComponentEx.fromCannotDeactivateComponentEx(ex);
-		
-		} catch (ComponentDeactivationUncleanEx ex) {
-			throw AcsJComponentDeactivationUncleanEx.fromComponentDeactivationUncleanEx(ex);
-		
-		} catch (ComponentDeactivationFailedEx ex) {
-			throw AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
-		
-		} catch (ComponentDeactivationFailedPermEx ex) {
-			throw AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
 		}
 	}
 
