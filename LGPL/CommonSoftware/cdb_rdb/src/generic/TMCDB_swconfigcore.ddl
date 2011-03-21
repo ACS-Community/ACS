@@ -386,7 +386,6 @@ TABLE BACIProperty
     ComponentId             INTEGER                  NOT NULL
     PropertyName            NAME                     NOT NULL
     description             TEXT                     NOT NULL
-    isSequence              BOOLEAN                  NOT NULL
     format                  LONGVARCHAR (16)         NOT NULL
     units                   LONGVARCHAR (24)         NOT NULL
     resolution              LONGVARCHAR (10)         NOT NULL

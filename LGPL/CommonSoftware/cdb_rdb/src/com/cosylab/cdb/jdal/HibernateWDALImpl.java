@@ -1185,7 +1185,6 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 										baciPropertyType.setComponent(component);
 										baciPropertyType.setPropertyName(propertyName);
 										baciPropertyType.setDescription(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/description"), "-"));
-										baciPropertyType.setIsSequence(false);
 										baciPropertyType.setFormat(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/format"), "%s"));
 										baciPropertyType.setUnits(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/units"), "-"));
 										baciPropertyType.setResolution(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/resolution"), EmptyStringHandlerBACIPropertyType.EMPTY_STRING_SUBSTITUTE));
