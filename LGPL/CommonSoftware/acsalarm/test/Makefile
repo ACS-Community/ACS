@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.12 2010/04/27 12:06:51 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.13 2011/03/21 10:38:32 msekoran Exp $"
 #
 # Makefile of ........
 #
@@ -39,16 +39,16 @@ EXECUTABLES     =
 EXECUTABLES_L   = TestAcsAlarmSending unitTestDriver unitTestDriver2 FactoryTestCase propertyTest faultSateTest
 
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
-TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType
+TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType acscommonStubs
 
 unitTestDriver_OBJECTS   = unitTestDriver acsalarmDOMErrorHandler
-unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
+unitTestDriver_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs
 
 unitTestDriver2_OBJECTS   = unitTestDriver2 MockManager acsalarmDOMErrorHandler
-unitTestDriver2_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType
+unitTestDriver2_LIBS      = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource acsXercesUtilities maciErrType acscommonStubs
 
 FactoryTestCase_OBJECTS  = FactoryTestCase MockManager
-FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType 
+FactoryTestCase_LIBS     = acsErrTypeAlarmSourceFactory cdb cppunit logging acsAlSysSource maciErrType acscommonStubs 
 
 propertyTest_OBJECTS	= PropertyTest
 propertyTest_LIBS		= cppunit logging alSysSource

@@ -186,6 +186,9 @@ namespace maci
 		virtual ::CORBA::Long release_component (maci::Handle id, const char * component_url)
       	{ return 0; }
 
+		virtual void release_component_async (maci::Handle id, const char * component_url, ACS::CBlong_ptr cb, const ACS::CBDescIn& desc)
+		{}
+
 		/** 
 		    Releases a component also if still referenced by other components/clients.
                     @return Number of clients that were still referencing the component 
