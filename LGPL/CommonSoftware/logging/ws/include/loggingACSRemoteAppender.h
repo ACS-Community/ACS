@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.h,v 1.2 2011/03/21 02:55:09 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.h,v 1.3 2011/03/21 03:46:36 javarias Exp $"
 *
 */
 
@@ -51,16 +51,32 @@ protected:
 	void _append(const log4cpp::LoggingEvent& event);
 
 private:
-	unsigned int _cacheSize;
-	unsigned int _flushTimeout;
-	Logging::AcsLogService_ptr _logger;
 	log4cpp::Priority::Value _threshold;
 	log4cpp::Filter* _filter;
 
-	void flushCache();
+};
+
+/**
+ *  Thread safe buffer
+ */
+class RemoteLoggerBuffer {
+public :
+	RemoteLoggerBuffer(unsigned long cacheSize,
+			unsigned int autoFlushTimeoutSec,
+			Logging::AcsLogService_ptr centralizedLogger,
+			int maxLogsPerSecond );
+	void append(Logging::XmlLogRecord& log);
+private:
 	void sendLog(Logging::XmlLogRecord& log);
 	void sendLog(Logging::XmlLogRecordSeq& logs);
+	void flushCache();
 
+	unsigned int _cacheSize;
+	unsigned int _flushTimeout;
+	Logging::AcsLogService_ptr _logger;
+	std::deque<Logging::XmlLogRecord>* _cache;
+	ACE_Thread_Mutex _cacheMutex;
+	logging::LogThrottle* _logThrottle;
 	//worker entry thread function, it flush the thread at regular intervals or
 	//when the cache reaches the max size
 	static void* worker(void* arg);
@@ -70,7 +86,6 @@ private:
 	bool _stopThread;
 
 };
-
-};
+}
 
 #endif

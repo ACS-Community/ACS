@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.2 2011/03/21 02:55:09 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.3 2011/03/21 03:46:36 javarias Exp $"
 */
 
 #include "loggingACSRemoteAppender.h"
@@ -24,11 +24,9 @@
 
 #include <tao/SystemException.h>
 
-static std::deque<Logging::XmlLogRecord>* _cache = NULL;
-static ACE_Thread_Mutex _cacheMutex;
-static logging::LogThrottle* _logThrottle = NULL;
-
 using namespace logging;
+
+static RemoteLoggerBuffer* buffer = NULL;
 
 AcsLogLevels::logLevelValue toIdlLogLevel(log4cpp::Priority::Value prio) {
 	switch (prio) {
@@ -63,13 +61,43 @@ ACSRemoteAppender::ACSRemoteAppender(const std::string& name,
 		Logging::AcsLogService_ptr centralizedLogger,
 		int maxLogsPerSecond = -1) :
 	log4cpp::LayoutAppender(name),
-	_cacheSize(cacheSize),
-	_flushTimeout(autoFlushTimeoutSec),
-	_logger(Logging::AcsLogService::_duplicate(centralizedLogger)),
 	_threshold(log4cpp::Priority::NOTSET),
-	_filter(NULL),
-	_workCond(_workCondThreadMutex){
+	_filter(NULL) {
+	if (buffer == NULL)
+		buffer = new RemoteLoggerBuffer(cacheSize, autoFlushTimeoutSec, centralizedLogger, maxLogsPerSecond);
 
+}
+
+ACSRemoteAppender::~ACSRemoteAppender() {
+	close();
+}
+
+
+void ACSRemoteAppender::_append(const log4cpp::LoggingEvent& event) {
+	std::string message = _getLayout().format(event);
+	Logging::XmlLogRecord log;
+	log.logLevel = toIdlLogLevel(event.priority);
+	log.xml = message.c_str();
+	buffer->append(log);
+}
+
+
+void ACSRemoteAppender::close() {
+	//_stopThread = true;
+	//_workCond.signal();
+	//flushCache();
+	//flush the cache and stop the flushing thread
+}
+
+RemoteLoggerBuffer::RemoteLoggerBuffer(
+		unsigned long cacheSize,
+		unsigned int autoFlushTimeoutSec,
+		Logging::AcsLogService_ptr centralizedLogger,
+		int maxLogsPerSecond = -1) :
+		_cacheSize(cacheSize),
+		_flushTimeout(autoFlushTimeoutSec),
+		_logger(Logging::AcsLogService::_duplicate(centralizedLogger)),
+		_workCond(_workCondThreadMutex) {
 	_cacheMutex.acquire();
 	if (_logThrottle == NULL)
 		_logThrottle = new LogThrottle(maxLogsPerSecond);
@@ -80,66 +108,20 @@ ACSRemoteAppender::ACSRemoteAppender(const std::string& name,
 			// set the max size of the deque as double just in case appender could have a log overflow
 			_cache->resize(cacheSize * 2);
 			ACE_Thread::spawn(
-					static_cast<ACE_THR_FUNC> (ACSRemoteAppender::worker), this);
+					static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
 		}
 	}
 	_cacheMutex.release();
 }
 
-ACSRemoteAppender::~ACSRemoteAppender() {
-	close();
-//	delete _logThrottle;
-//	delete _cache;
-}
-
-
-void ACSRemoteAppender::_append(const log4cpp::LoggingEvent& event) {
-	std::string message = _getLayout().format(event);
-	if (_cacheSize > 0) {
-		if (_logThrottle->checkPublishLogRecord() > 0) {
-			_logThrottle->updateLogCounter(1);
-			Logging::XmlLogRecord log;
-			log.logLevel = toIdlLogLevel(event.priority);
-			log.xml = message.c_str();
-			//if the log is quite urgent put it directly in the remote log service
-			if (event.priority == log4cpp::Priority::EMERGENCY)
-				sendLog(log);
-			else {
-				_cacheMutex.acquire();
-				_cache->push_back(log);
-				_cacheMutex.release();
-			}
-		}
-		if (_cache->size() >= _cacheSize) {
-			_workCond.signal();
-		}
-	}
-	else {
-		if (_logThrottle->checkPublishLogRecord() > 0) {
-			_logThrottle->updateLogCounter(1);
-			Logging::XmlLogRecord log;
-			log.logLevel = toIdlLogLevel(event.priority);
-			log.xml = message.c_str();
-			sendLog(log);
-		}
-	}
-}
-
-void ACSRemoteAppender::close() {
-	_stopThread = true;
-	_workCond.signal();
-	flushCache();
-	//flush the cache and stop the flushing thread
-}
-
-void ACSRemoteAppender::sendLog(Logging::XmlLogRecord& log) {
+void RemoteLoggerBuffer::sendLog(Logging::XmlLogRecord& log) {
 	Logging::XmlLogRecordSeq seq;
 	seq.length(1);
 	seq[0] = log;
 	sendLog(seq);
 }
 
-void ACSRemoteAppender::sendLog(Logging::XmlLogRecordSeq& logs) {
+void RemoteLoggerBuffer::sendLog(Logging::XmlLogRecordSeq& logs) {
 	if (CORBA::is_nil(_logger)) {
 		std::cerr << "Remote logger is not available" << std::endl;
 		return;
@@ -151,7 +133,7 @@ void ACSRemoteAppender::sendLog(Logging::XmlLogRecordSeq& logs) {
 	}
 }
 
-void ACSRemoteAppender::flushCache() {
+void RemoteLoggerBuffer::flushCache() {
 	Logging::XmlLogRecordSeq logs;
 	logs.length(_cacheSize * 2);
 	unsigned int count = 0;
@@ -166,12 +148,12 @@ void ACSRemoteAppender::flushCache() {
 	sendLog(logs);
 }
 
-void* ACSRemoteAppender::worker(void* arg) {
-	static_cast<ACSRemoteAppender*>(arg)->svc();
+void* RemoteLoggerBuffer::worker(void* arg) {
+	static_cast<RemoteLoggerBuffer*>(arg)->svc();
 	return 0;
 }
 
-void ACSRemoteAppender::svc() {
+void RemoteLoggerBuffer::svc() {
 	while (!_stopThread) {
 		ACE_Time_Value timeout = ACE_OS::gettimeofday() + ACE_Time_Value(
 				_flushTimeout, 0);
@@ -183,4 +165,30 @@ void ACSRemoteAppender::svc() {
 			flushCache();
 	}
 }
+
+void RemoteLoggerBuffer::append(Logging::XmlLogRecord& log) {
+	if (_cacheSize > 0) {
+		if (_logThrottle->checkPublishLogRecord() > 0) {
+			_logThrottle->updateLogCounter(1);
+			//if the log is quite urgent put it directly in the remote log service
+			if (log.logLevel == AcsLogLevels::EMERGENCY_VAL)
+				sendLog(log);
+			else {
+				_cacheMutex.acquire();
+				_cache->push_back(log);
+				_cacheMutex.release();
+			}
+		}
+		if (_cache->size() >= _cacheSize) {
+			_workCond.signal();
+		}
+	}
+	else {
+		if (_logThrottle->checkPublishLogRecord() > 0) {
+			_logThrottle->updateLogCounter(1);
+			sendLog(log);
+		}
+	}
+}
+
 
