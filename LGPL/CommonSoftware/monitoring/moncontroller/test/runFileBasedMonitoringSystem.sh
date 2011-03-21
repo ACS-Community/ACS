@@ -11,8 +11,8 @@ acsutilTATPrologue
 acsutilAwaitContainerStart -java ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer
 
 # We use a file HSQLDB db, which we create and populate
-SQLTOOL="acsStartJava org.hsqldb.util.SqlTool --rcFile sqltool.rc tmcdb"
-
+rm -rf TMCDB/
+SQLTOOL="acsStartJava org.hsqldb.cmdline.SqlTool --rcFile sqltool.rc tmcdb"
 for i in swconfig{core,ext} hwconfigmonitoring; do
 	$SQLTOOL $ACSDATA/config/DDL/hsqldb/TMCDB_$i/CreateHsqldbTables.sql
 done
@@ -29,7 +29,7 @@ acsutilAwaitContainerStart -java ARCHIVE/TMCDB/MONITOR_COLLECTOR/javaContainer
 unset JAVA_OPTIONS
 
 # Start the test, who orchestrates the collector and controller lifecycles
-acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.archive.tmcdb.monitor.FileReaderControllerTest
+acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.monitoring.blobber.FileReaderControllerTest
 
 acsStopContainer ARCHIVE/TMCDB/BLOBBER1/javaContainer
 acsStopContainer ARCHIVE/TMCDB/MONITOR_CONTROL/javaContainer
