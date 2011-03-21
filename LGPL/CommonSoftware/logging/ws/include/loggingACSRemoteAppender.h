@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.h,v 1.1 2011/02/14 21:15:08 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.h,v 1.2 2011/03/21 02:55:09 javarias Exp $"
 *
 */
 
@@ -53,9 +53,7 @@ protected:
 private:
 	unsigned int _cacheSize;
 	unsigned int _flushTimeout;
-	logging::LogThrottle* _logThrottle;
 	Logging::AcsLogService_ptr _logger;
-	std::deque<Logging::XmlLogRecord>* _cache;
 	log4cpp::Priority::Value _threshold;
 	log4cpp::Filter* _filter;
 
@@ -70,6 +68,7 @@ private:
 	ACE_SYNCH_MUTEX _workCondThreadMutex;
 	ACE_SYNCH_CONDITION _workCond;
 	bool _stopThread;
+
 };
 
 };

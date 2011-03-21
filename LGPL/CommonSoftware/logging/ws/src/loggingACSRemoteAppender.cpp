@@ -16,14 +16,17 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.1 2011/02/14 21:15:08 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.2 2011/03/21 02:55:09 javarias Exp $"
 */
 
 #include "loggingACSRemoteAppender.h"
 #include <log4cpp/Priority.hh>
 
-#include <SystemException.h>
+#include <tao/SystemException.h>
 
+static std::deque<Logging::XmlLogRecord>* _cache = NULL;
+static ACE_Thread_Mutex _cacheMutex;
+static logging::LogThrottle* _logThrottle = NULL;
 
 using namespace logging;
 
@@ -67,19 +70,26 @@ ACSRemoteAppender::ACSRemoteAppender(const std::string& name,
 	_filter(NULL),
 	_workCond(_workCondThreadMutex){
 
-	_logThrottle = new LogThrottle(maxLogsPerSecond);
-	_cache = new std::deque<Logging::XmlLogRecord>();
-	if(_cacheSize > 0) {
-		// set the max size of the deque just in case appender could have a log overflow
-		_cache->resize(cacheSize * 2);
-		ACE_Thread::spawn(static_cast<ACE_THR_FUNC>(ACSRemoteAppender::worker), this);
+	_cacheMutex.acquire();
+	if (_logThrottle == NULL)
+		_logThrottle = new LogThrottle(maxLogsPerSecond);
+	if (_cache == NULL) {
+		_cache = new std::deque<Logging::XmlLogRecord>();
+
+		if (_cacheSize > 0) {
+			// set the max size of the deque as double just in case appender could have a log overflow
+			_cache->resize(cacheSize * 2);
+			ACE_Thread::spawn(
+					static_cast<ACE_THR_FUNC> (ACSRemoteAppender::worker), this);
+		}
 	}
+	_cacheMutex.release();
 }
 
 ACSRemoteAppender::~ACSRemoteAppender() {
 	close();
-	delete _logThrottle;
-	delete _cache;
+//	delete _logThrottle;
+//	delete _cache;
 }
 
 
@@ -94,8 +104,11 @@ void ACSRemoteAppender::_append(const log4cpp::LoggingEvent& event) {
 			//if the log is quite urgent put it directly in the remote log service
 			if (event.priority == log4cpp::Priority::EMERGENCY)
 				sendLog(log);
-			else
+			else {
+				_cacheMutex.acquire();
 				_cache->push_back(log);
+				_cacheMutex.release();
+			}
 		}
 		if (_cache->size() >= _cacheSize) {
 			_workCond.signal();
@@ -143,10 +156,12 @@ void ACSRemoteAppender::flushCache() {
 	logs.length(_cacheSize * 2);
 	unsigned int count = 0;
 
+	_cacheMutex.acquire();
 	while (!_cache->empty() || count == (_cacheSize * 2)) {
 		logs[count++] = _cache->front();
 		_cache->pop_front();
 	}
+	_cacheMutex.release();
 	logs.length(count);
 	sendLog(logs);
 }
