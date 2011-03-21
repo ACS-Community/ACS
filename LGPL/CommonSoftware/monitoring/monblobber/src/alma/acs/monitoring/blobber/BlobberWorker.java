@@ -56,6 +56,7 @@ import alma.TMCDB.uLongLongSeqBlobData;
 import alma.TMCDB.uLongLongSeqBlobDataSeqHelper;
 import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
@@ -71,6 +72,8 @@ import alma.acs.util.StopWatch;
  */
 public class BlobberWorker extends CancelableRunnable {
 
+	public static final String BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME = "alma.acs.monitoring.blobber.checkmemory";
+	
 	/**
 	 * Stores the data in the DB, inside proper transaction(s), and performing auto-completion of hardware tables if necessary.
 	 */
@@ -523,79 +526,97 @@ public class BlobberWorker extends CancelableRunnable {
     	return ret;
     }
 
-    /**
-     * This method will be called at fixed intervals.
-     * It gathers the data from all registered collectors and stores it in the database, 
-     * using the layer from module TMCBD/DAO.
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run() {
-        
-        cycleCount++;
-        myLogger.info("Running BlobberWorker cycle " + cycleCount);
-        
-        int collectorCount = 0;
-        int insertCount = 0;
-        
-        StopWatch stopWatchAllCollectors = new StopWatch(myLogger);
+	/**
+	 * This method will be called at fixed intervals. It gathers the data from all registered collectors and stores it
+	 * in the database, using the layer from module TMCBD/DAO.
+	 * 
+	 * @see java.lang.Runnable#run()
+	 */
+	@Override
+	public void run() {
 
-        // loop over all collectors. Note that collectors can be added and removed during this loop,
-        // so that the initial list size does not necessarily show the number of executed collectors.
-        CollectorData collectorData = null;
-        myCollectorList.resetIterator();
-        while (myCollectorList.hasNext()) {
-        	        	
-            try {
-            	collectorData = myCollectorList.next();
+		cycleCount++;
+		myLogger.info("Running BlobberWorker cycle " + cycleCount);
 
-            	// has this thread been requested to terminate? 
-            	if (shouldTerminate) {
-            		myLogger.info("Loop over collectors terminated prematurely, skipping '" + collectorData.getCollectorId() + "' and subsequent collectors.");
-            		break;
-            	}
-            	
-            	collectorCount++;
-            	StopWatch stopWatchCurrentCollector = new StopWatch(myLogger);
-            	
-            	// Get the corba ref for the current collector
-            	MonitorCollectorOperations collector = getMonitorCollector(collectorData.getCollectorId());
-            	
-            	insertCount += harvestCollector(collectorData, collector);
-            	
-            	stopWatchCurrentCollector.logLapTime("process monitoring data from collector " + collectorData.getCollectorId());
-            	            	
-            } catch (Exception e) {
-            	myLogger.log(Level.WARNING, "Exception caught while processing monitor collector " + collectorData.getCollectorId() +
-            			"; the data cache for this collector will be cleared, the data is LOST FOREVER", e);
-            	collectorData.equipmentData.clear();
-            	// @TODO Shouldn't we raise an alarm also here, now that we do when blobber comp fails to initialize?
-            	// Then it would need to be cleared once (the same collector's??) data is processed ok in the next round. 
-            }
+		int collectorCount = 0;
+		int insertCount = 0;
+
+		StopWatch stopWatchAllCollectors = new StopWatch(myLogger);
+
+		// Checking memory requires a GC run (and no other components running in the same container) 
+		// to give reasonable results. Running GC from inside the program we don't want to do as default,
+		// thus the use of the cheating property.
+		long usedMemKBBeforeCycle = -1;
+		if (Boolean.getBoolean(BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME)) {
+			System.gc();
+			Runtime rt = Runtime.getRuntime();
+			usedMemKBBeforeCycle = (rt.totalMemory() - rt.freeMemory()) / 1024;
+			myLogger.fine("Used JVM memory in kB after GC before blobber cycle: " + usedMemKBBeforeCycle);
 		}
-        
-    	long totalTimeMillis = stopWatchAllCollectors.getLapTimeMillis();
-    	
-    	if (totalTimeMillis < collectIntervalSec * 1000) {
-    		// the good case: all collectors were processed within the foreseen time window
-    		String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis + " ms (within the time limit).";
-    		myLogger.info(msg);
+		
+
+		// loop over all collectors. Note that collectors can be added and removed during this loop,
+		// so that the initial list size does not necessarily show the number of executed collectors.
+		CollectorData collectorData = null;
+		myCollectorList.resetIterator();
+		while (myCollectorList.hasNext()) {
+			try {
+				collectorData = myCollectorList.next();
+
+				// has this thread been requested to terminate?
+				if (shouldTerminate) {
+					myLogger.info("Loop over collectors terminated prematurely, skipping '" + collectorData.getCollectorId() + "' and subsequent collectors.");
+					break;
+				}
+
+				collectorCount++;
+				StopWatch stopWatchCurrentCollector = new StopWatch(myLogger);
+
+				// Get the corba ref for the current collector
+				MonitorCollectorOperations collector = getMonitorCollector(collectorData.getCollectorId());
+
+				insertCount += harvestCollector(collectorData, collector);
+
+				stopWatchCurrentCollector.logLapTime("process monitoring data from collector " + collectorData.getCollectorId());
+
+			} catch (Exception e) {
+				myLogger.log(Level.WARNING, "Exception caught while processing monitor collector " + collectorData.getCollectorId() 
+						+ "; the data cache for this collector will be cleared, the data is LOST FOREVER", e);
+				collectorData.equipmentData.clear();
+				// @TODO Shouldn't we raise an alarm also here, now that we do when blobber comp fails to initialize?
+				// Then it would need to be cleared once (the same collector's??) data is processed ok in the next round.
+			}
+		}
+
+		if (Boolean.getBoolean(BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME)) {
+			System.gc();
+			Runtime rt = Runtime.getRuntime();
+			long usedMemKBAfterCycle = (rt.totalMemory() - rt.freeMemory()) / 1024;
+			myLogger.fine("Used JVM memory in kB after GC after blobber cycle: " + usedMemKBAfterCycle);
+		}
+
+		long totalTimeMillis = stopWatchAllCollectors.getLapTimeMillis();
+
+		if (totalTimeMillis < collectIntervalSec * 1000) {
+			// the good case: all collectors were processed within the foreseen time window
+			String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis + " ms (within the time limit).";
+			myLogger.info(msg);
 			if (isProfilingEnabled) {
 				debugDataSender.sendUDPPacket(msg, cycleCount);
 				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount);
 			}
-    	} 
-    	else {
-    		// the bad case: this run took too long. 
-    		String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis + 
-    					" ms (exceeding the time limit of " + collectIntervalSec + " s).";
-    		myLogger.warning(msg);
+		} 
+		else {
+			// the bad case: this run took too long.
+			String msg = "Processed monitoring data from " + collectorCount + " collector(s) in " + totalTimeMillis
+					+ " ms (exceeding the time limit of " + collectIntervalSec + " s).";
+			myLogger.warning(msg);
 			if (isProfilingEnabled) {
 				debugDataSender.sendUDPPacket(msg, cycleCount);
 				debugDataSender.sendUDPPacket("Total inserts for cycle " + cycleCount + " were " + insertCount, cycleCount);
 			}
-    	}
-    }
+		}
+	}
 
 
     /**
@@ -640,7 +661,7 @@ public class BlobberWorker extends CancelableRunnable {
 
 		    // iterate over devices
 		    for (MonitorDataBlock block : dataBlocks) {
-		        myLogger.info("MonitorDataBlock for device " + block.componentName + " contains " + block.monitorBlobs.length + " MonitorBlobs");
+		        myLogger.log(AcsLogLevel.DEBUG, "MonitorDataBlock for device " + block.componentName + " contains " + block.monitorBlobs.length + " MonitorBlobs");
 		        
 		        // iterate over properties
 		        for (MonitorBlob blob : block.monitorBlobs) {
@@ -661,7 +682,7 @@ public class BlobberWorker extends CancelableRunnable {
 		                        key += index;
 		                        index++;
 		                    }
-		                    myLogger.info("Handling data for property " + key);
+		                    myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + key);
 		                    blobData = collectorData.equipmentData.get(key);
 		                    if (blobData == null) {
 		                        blobData = new BlobData();
