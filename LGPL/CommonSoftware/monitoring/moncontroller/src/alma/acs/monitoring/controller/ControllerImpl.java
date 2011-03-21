@@ -157,7 +157,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
     @Override
     public void registerKnownCollectors(String blobberCompName) {
         if (!collector2BlobberName.containsValue(blobberCompName)) {
-            m_logger.info(blobberCompName + " is unknown, not doing anything.");
+            m_logger.fine("Blobber '" + blobberCompName + "' seems to start cleanly, thus cannot register previously served collectors.");
             return;
         }
 
@@ -186,7 +186,9 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
                         break;
                     }
                 } catch (AcsJContainerServicesEx ex) {
-                    m_logger.warning("Failed to get Blobber component " + blobberName + ", probably inactive. Will skip verification.");
+                	// @TODO (HSO): what is meant by "inactive"? Is it normal that we configure blobber instances that cannot be instantiated?
+                    m_logger.log(Level.WARNING, "Failed to get the configured Blobber component '" + blobberName + 
+                    		"', probably inactive. Will skip verification of its assignment to '" + inComponentName + "'.", ex);
                 }
             }
         }
