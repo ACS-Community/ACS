@@ -350,6 +350,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					timeSampSpinner.setEnabled(true);
 					freqSpinner.setEnabled(true);
 					stopButton.setEnabled(false);
+					timeWindowSpinner.setEnabled(true);
 				}
 			});
 		}
