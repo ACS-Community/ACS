@@ -167,12 +167,12 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridwidth = 4;//5
+		c.gridwidth = 4;
 		c.weightx = 1;
 		this.add(getFileNameLabel(), c);
 
-		c.gridx = 5;//6
-		c.gridwidth = 5;//5
+		c.gridx = 5;
+		c.gridwidth = 5;
 		c.weightx = 0;
 		c.anchor = GridBagConstraints.EAST;
 		this.add(getStatusComboBox(),c);
@@ -311,6 +311,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					//to change the freq dinamically
 					//getFreqTextField().setEnabled(false);
 					getTimeSampSpinner().setEnabled(false);
+					getTimeWindowSpinner().setEnabled(false);
 					getSaveButton().setEnabled(false);
 					startSample();
 					setTimeWindow();
@@ -619,7 +620,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 				comProp          = jcombo.getSelectedItem().toString().split(":");
 				removeSamp(comProp[0],comProp[1]);
 				jcombo.removeItemAt(jcombo.getSelectedIndex());
-				addToStatusComboBox(comProp[0] + "->" + comProp[1] + "removed");
+				addToStatusComboBox(comProp[0] + "#" + comProp[1] + "removed");
 				
 			}
 		});
@@ -812,14 +813,13 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		}
 		
 		prev_status = getStatusIcon().getStatus();
-		
+		getStatusComboBox().removeAllItems();
 		for(DataPrinter wp : samplers){
 			wp.setFrequency(freq);
 			try {
 				wp.startSample();
 				isStopped = false;
-				getStatusComboBox().removeAllItems();
-				addToStatusComboBox("Status: Sampling of " + wp.getComponent() + ":" + wp.getProperty() + " started" );
+				addToStatusComboBox("Status: Sampling of " + wp.getComponent() + "#" + wp.getProperty() + " started" );
 				updateStatusComboBox();
 				setStatusIcon(StatusIcon.SAMPLING);
 			} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx e) {
@@ -829,7 +829,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 				setStatusIcon(StatusIcon.SAMPLING_WARNING);
 			} catch(alma.ACSErrTypeCommon.TypeNotSupportedEx e) {
 				wp.setComponentAvailable(false,"Type not supported");
-				addToStatusComboBox("Status: Type not supported " + wp.getComponent() + ":" + wp.getProperty());
+				addToStatusComboBox("Status: Type not supported " + wp.getComponent() + "#" + wp.getProperty());
 				updateStatusComboBox();
 				setStatusIcon(StatusIcon.SAMPLING_WARNING);
 			} catch(alma.ACSErrTypeCommon.CouldntAccessPropertyEx e) {

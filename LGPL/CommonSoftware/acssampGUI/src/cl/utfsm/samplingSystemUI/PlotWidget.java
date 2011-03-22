@@ -7,6 +7,7 @@ import info.monitorenter.gui.chart.TracePoint2D;
 import info.monitorenter.gui.chart.ZoomableChart;
 import info.monitorenter.gui.chart.axis.AAxis;
 import info.monitorenter.gui.chart.axis.AxisLinear;
+import info.monitorenter.gui.chart.controls.LayoutFactory;
 import info.monitorenter.gui.chart.labelformatters.LabelFormatterDate;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import info.monitorenter.gui.chart.views.ChartPanel;
@@ -52,21 +53,22 @@ public class PlotWidget extends SamplingWidget {
 	private void initialize(){
 		
 		if( position == 0){
+			LayoutFactory lfct = LayoutFactory.getInstance();
+			lfct.setShowTraceNameMenu(false);
+			lfct.setShowPhysicalUnitsMenu(false);
 			chart = new ZoomableChart();
 			
 			// Changing X Axis for time presentation
-			// TODO: Axis labels and units
 			IAxis xAxis = new AxisLinear();
 			IAxis yAxis = new AxisLinear();
 			
+			chart.setAxisXBottom((AAxis)xAxis,0);
+			chart.setAxisYLeft((AAxis)yAxis,0);
+			chart.setGridColor(Color.BLACK);
+           
 			xAxis.setFormatter( (IAxisLabelFormatter) new LabelFormatterDate(new SimpleDateFormat("H:mm:ss")));
 			xAxis.getAxisTitle().setTitle("Time [seconds]");
-			
 			yAxis.getAxisTitle().setTitle("Property Value");
-			chart.setAxisXBottom((AAxis)xAxis);
-			chart.setAxisYLeft((AAxis)yAxis);
-            		chart.setGridColor(Color.BLACK);
-           
             
 			traces = new ArrayList<Trace2DLtd>();
 			chart.setSize(800,600);
@@ -119,7 +121,7 @@ public class PlotWidget extends SamplingWidget {
 	}
 
 	public void setValues(String component, String property, int position) {
-		traces.get(position).setName(component + "->" + property);
+		traces.get(position).setName(component + "#" + property);
 	}
 
 	public void setComponentAvailable(boolean tmp, String reason, int position) {
@@ -134,7 +136,7 @@ public class PlotWidget extends SamplingWidget {
 	public void removeTrace(String component, String property) {
 		int index=0;
 		for (Trace2DLtd trace:traces) {
-			if(trace.getName().equals(component + "->" + property)) {
+			if(trace.getName().equals(component + "#" + property)) {
 				chart.removeTrace(trace);
 				//chart.setPaintLabels(false);
 				traces.remove(index);
@@ -143,13 +145,6 @@ public class PlotWidget extends SamplingWidget {
 			index++;
 		}
 	}
-	
-	//public void setTimeWindow(long frecuency, int time) {
-
-	//	for (Trace2DLtd trace : traces){
-	//		trace.setMaxSize((int) (frequency*time));//now are seconds no minutes
-	//	}
-	//}
 
 	public void setTimeWindow(double frequency, int time) {
 		// TODO Auto-generated method stub
@@ -157,7 +152,4 @@ public class PlotWidget extends SamplingWidget {
 			trace.setMaxSize((int)(frequency*time) + 1);//now are seconds no minutes
 		}
 	}
-
-	
-
 }

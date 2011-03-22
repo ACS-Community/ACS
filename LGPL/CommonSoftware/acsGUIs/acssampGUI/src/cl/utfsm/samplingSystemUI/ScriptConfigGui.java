@@ -106,9 +106,7 @@ public class ScriptConfigGui extends JDialog implements WindowListener {
 								"If you wish to abort, use the Cancel button", 
 								"Please select a script", JOptionPane.WARNING_MESSAGE);
 					}else{
-						System.out.println("Pressed accept button, and creation the ScripExecutor: " + scriptExec);
 						scriptExec = new ScriptExecutor( getLocationField().getText(), getArgsField().getText() );
-						System.out.println("Pressed accept button, and creation the ScripExecutor: " + scriptExec);
 					    closePanel();					
 					}
 					
@@ -156,7 +154,7 @@ public class ScriptConfigGui extends JDialog implements WindowListener {
 			BrowseButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 				    JFileChooser chooser = new JFileChooser();
-				    Filter filter = new Filter();
+				    ScriptFilter filter = new ScriptFilter();
 				    chooser.setFileFilter(filter);
 				    int returnVal = chooser.showOpenDialog(ScriptConfigGui.this);
 				    if(returnVal == JFileChooser.APPROVE_OPTION) {

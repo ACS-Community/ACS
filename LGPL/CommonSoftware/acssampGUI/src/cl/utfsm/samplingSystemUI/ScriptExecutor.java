@@ -19,8 +19,10 @@ public class ScriptExecutor {
         try {
             Runtime rt = Runtime.getRuntime();
             
+            System.out.println("Changing script permissions (chmod +x)...");
+            Process pr = rt.exec("chmod +x " + getExecutableName());
             System.out.println("Executing: " + getExecutableName() + " " + getArguments());
-            Process pr = rt.exec(getExecutableName() + " " + getArguments());
+            pr = rt.exec(getExecutableName() + " " + getArguments());
     
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
     

@@ -33,6 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
@@ -576,8 +577,16 @@ public class SamplingSystemGUI extends JFrame {
 								}
 							}
 							try{
-								if(propList.get(i) != null)
-									fillPropertyComboBox(propList.get(i));
+								if(propList.get(i) != null){
+									final int k = i;
+									SwingWorker<Object,Object> sw = new SwingWorker<Object, Object>() {
+										public Object doInBackground() {
+											fillPropertyComboBox(propList.get(k));
+											return null;
+										}
+									};
+									sw.execute();
+								}
 							}catch(IndexOutOfBoundsException ex){
 								PropertyComboBox.removeAllItems();
 								PropertyComboBox.setEnabled(false);
@@ -681,24 +690,29 @@ public class SamplingSystemGUI extends JFrame {
 				public void applyFilter(){
 					int total = compList.length;
 					String text = filterComponentTextField.getText();
-					ComponentComboBox.removeAllItems();
-					for(int j = 0; j < total;j++){
-						ComponentComboBox.addItem(compList[j]);
-					}
-					ComponentComboBox.showPopup();
 
-					if(filterPropertyTextField.getText() != ""){	
+					if(!filterComponentTextField.getText().isEmpty()){
 						ComponentComboBox.removeAllItems();
 						for (int i = 0; i < total; i++) {
 							if(compList[i].contains(text)){
 								ComponentComboBox.addItem(compList[i]);
 							}
 						}
+						ComponentComboBox.hidePopup();
+						ComponentComboBox.showPopup();
 					}
 					else{
 						ComponentComboBox.hidePopup();
+						ComponentComboBox.removeAllItems();
+						for(int j = 0; j < total;j++){
+							ComponentComboBox.addItem(compList[j]);
+						}
 					}
-
+					
+					if(ComponentComboBox.getItemCount() == 0){
+						PropertyComboBox.removeAllItems();
+					}
+					
 				}
 				public void changedUpdate(DocumentEvent e) {
 				}
@@ -709,7 +723,6 @@ public class SamplingSystemGUI extends JFrame {
 					applyFilter();
 				}
 			});
-		
 		}
 		return filterComponentTextField;
 	}
@@ -742,20 +755,34 @@ public class SamplingSystemGUI extends JFrame {
 			filterPropertyTextField.getDocument().addDocumentListener(new DocumentListener(){
 
 				public void applyFilter(){
-					int total = propList.get(0).size();
+					String item = (String)ComponentComboBox.getSelectedItem();
+					int i = -1;
+					for (int j =0; j < compList.length; j++ ) {
+						if(compList[j].compareTo(item)  == 0) {
+							i = j;
+							break;
+						}
+					}
+					if (i == -1){
+						PropertyComboBox.removeAll();
+						return;
+					}
+					
+					int total = propList.get(i).size();
+					
 					String text = filterPropertyTextField.getText();
 					PropertyComboBox.removeAllItems();
 					for(int j = 0; j < total;j++){
-						PropertyComboBox.addItem(propList.get(0).get(j).toString());
+						PropertyComboBox.addItem(propList.get(i).get(j).toString());
 					}
 				
 					PropertyComboBox.showPopup();
 					
-					if(filterPropertyTextField.getText() != ""){	
+					if(!filterPropertyTextField.getText().isEmpty()){	
 						PropertyComboBox.removeAllItems();
-						for (int i = 0; i < total; i++) {
-							if(propList.get(0).get(i).toString().contains(text)){
-								PropertyComboBox.addItem(propList.get(0).get(i).toString());
+						for (int j = 0; j < total; j++) {
+							if(propList.get(i).get(j).toString().contains(text)){
+								PropertyComboBox.addItem(propList.get(i).get(j).toString());
 							}
 						}
 					}
@@ -1057,7 +1084,15 @@ public class SamplingSystemGUI extends JFrame {
 								Element propElement = (Element)propList.item(0);
 								NodeList propText = propElement.getChildNodes();
 								String property = ((Node)propText.item(0)).getNodeValue().trim();
-								addToSampling(component, property, samplingGroupName);
+								boolean checkStatus = checkComponentProperty(component,property);
+								if (checkStatus){
+									addToSampling(component, property, samplingGroupName);
+								}
+								else{
+									JOptionPane.showMessageDialog(this,
+											"The component or the property in:\n\n- "+component+"#"+property+"\n\n are invalid on the Sampling Group: '"
+											+samplingGroupName+"'");
+								}
 							}
 						}
 						for(BeanGrouper bg: BeanGrouperList){
@@ -1081,6 +1116,29 @@ public class SamplingSystemGUI extends JFrame {
 			t.printStackTrace();
 		}
 
+	}
+
+	private boolean checkComponentProperty(String component, String property) {
+		int c = 0;
+		// Component verification
+		for (String comp :SampTool.getComponents()) {
+			if( comp.compareTo(component) == 0){
+				c++;
+			}
+		}
+		// Property verification
+		for(String prop: SampTool.getPropsForComponent(component)){			
+			if (prop.compareTo(property) == 0){
+				c++;
+			}
+		}
+		
+		if(c == 2){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
 	private void writeStatusFile(String filename) throws ParserConfigurationException, TransformerException, FileNotFoundException{
@@ -1243,5 +1301,23 @@ class Filter extends FileFilter {
 	public String getDescription() {
 		return "Sample System GUI status File (*.ssgst)";
 	}
+}
 
+class ScriptFilter extends FileFilter {
+	@Override
+	public boolean accept(File f) {
+		if(f.isDirectory()) return true;
+		String name = f.getName();
+		if(name==null) return false;
+		int index = name.lastIndexOf(".");
+		if (index <0) return false;
+		String ext = name.substring(index);
+		if(ext.equalsIgnoreCase(".sh") || ext.equalsIgnoreCase(".py") || ext.equalsIgnoreCase(".pl") || ext.equalsIgnoreCase(".rb")) return true;
+		return false;
+	}
+
+	@Override
+	public String getDescription() {
+		return "Script file(*.sh, *.py, *.pl, *.rb)";
+	}
 }
