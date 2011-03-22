@@ -60,7 +60,7 @@ BulkDataCallback::~BulkDataCallback()
 int BulkDataCallback::handle_start(void)
 {
     
-    // cout << "BulkDataCallback::handle_start - state_m: " << state_m << endl;
+    //cout << "BulkDataCallback::handle_start " << flowname_m << "- state_m: " << state_m << endl;
     //if(timeout_m == true)
     //ACS_SHORT_LOG((LM_INFO,"BulkDataCallback::handle_start - timeout_m == true !!!"));
 
@@ -99,8 +99,7 @@ int BulkDataCallback::handle_start(void)
 int BulkDataCallback::handle_stop (void)
 {
     //ACS_TRACE("BulkDataCallback::handle_stop");
-
-    // cout << "CCCCCCCCCCCCCCCCC enter stop state " << state_m << " " << substate_m << endl;
+    // cout << "CCCCCCCCCCCCCCCCC " << flowname_m << "enter stop state " << state_m << " " << substate_m << endl;
 
     try
 	{
