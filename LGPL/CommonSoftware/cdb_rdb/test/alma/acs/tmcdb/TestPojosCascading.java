@@ -285,7 +285,6 @@ public class TestPojosCascading extends TestCase {
 		prop.setComponent(comp);
 		prop.setPropertyName(name);
 		prop.setDescription("desc");
-		prop.setIsSequence(false);
 		prop.setFormat("%d");
 		prop.setUnits("[s]");
 		prop.setResolution("0.1");
