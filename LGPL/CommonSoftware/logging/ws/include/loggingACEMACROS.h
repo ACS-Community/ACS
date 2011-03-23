@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.10 2006/10/04 14:18:41 gchiozzi Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.11 2011/03/23 23:27:48 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,8 +29,11 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <ace/Log_Record.h>
 #include "loggingMACROS.h"
+
+#ifndef ENABLE_LOG4CPP_MACROS
+
+#include <ace/Log_Record.h>
 #include "loggingLogSvcHandler.h"
 #include "loggingLoggingProxy.h"
 #include "loggingACSLogger.h"
@@ -249,5 +252,9 @@ STATIC_LOG(Logging::ace2acsPriority(LM_TRACE), routine, Logging::BaseLog::FIELD_
 
 /** Maximum priority */
 #define LM_MAX_PRIORITY 0x0F
+
+#else
+#include "loggingLog4cppACEMACROS.h"
+#endif
 
 #endif /*!_H*/

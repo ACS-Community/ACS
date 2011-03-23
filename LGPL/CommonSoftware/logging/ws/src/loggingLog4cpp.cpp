@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.cpp,v 1.2 2011/03/18 23:38:13 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.cpp,v 1.3 2011/03/23 23:27:48 javarias Exp $"
  */
 
 #include "loggingLog4cpp.h"
@@ -191,6 +191,33 @@ log4cpp::Priority::PriorityLevel logging::convertPriority (unsigned int logLevel
 	case 10:
 		return log4cpp::Priority::ALERT;
 	case 11:
+		return log4cpp::Priority::EMERGENCY;
+	default:
+		return log4cpp::Priority::NOTSET;
+	}
+}
+
+log4cpp::Priority::PriorityLevel logging::convertPriority (Logging::BaseLog::Priority logLevel) {
+	switch (logLevel) {
+	case Logging::BaseLog::LM_TRACE:
+		return log4cpp::Priority::TRACE;
+	case 03:
+		return log4cpp::Priority::DELOUSE;
+	case Logging::BaseLog::LM_DEBUG:
+		return log4cpp::Priority::DEBUG;
+	case Logging::BaseLog::LM_INFO:
+		return log4cpp::Priority::INFO;
+	case Logging::BaseLog::LM_NOTICE:
+		return log4cpp::Priority::NOTICE;
+	case Logging::BaseLog::LM_WARNING:
+		return log4cpp::Priority::WARNING;
+	case Logging::BaseLog::LM_ERROR:
+		return log4cpp::Priority::ERROR;
+	case Logging::BaseLog::LM_CRITICAL:
+		return log4cpp::Priority::CRITICAL;
+	case Logging::BaseLog::LM_ALERT:
+		return log4cpp::Priority::ALERT;
+	case Logging::BaseLog::LM_EMERGENCY:
 		return log4cpp::Priority::EMERGENCY;
 	default:
 		return log4cpp::Priority::NOTSET;

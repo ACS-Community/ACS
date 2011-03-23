@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.69 2011/02/14 21:15:08 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.70 2011/03/23 23:28:11 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -117,7 +117,7 @@ INCLUDES_L      = loggingService.h \
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = baselogging logging log4cpplogging
+LIBRARIES       = baselogging logging 
 LIBRARIES_L     =
 
 baselogging_OBJECTS =	loggingBaseLog loggingHandler loggingLogger \
@@ -136,16 +136,21 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingLocalSyslog loggingRemoteSyslog loggingLocalFile \
 						loggingLoggingTSSStorage loggingLogLevelDefinition \
 						loggingLoggingProxy loggingACSLogger loggingLogSvcHandler  \
-						loggingLogThrottle 
+						loggingLogThrottle \
+						loggingACSLoggingEvent loggingXmlLayout \
+						loggingStdoutlayout loggingACSCategory \
+						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
+						loggingLog4cpp
 						
-logging_LIBS    =	baselogging
+logging_LIBS    =	baselogging log4cpp
 logging_LDFLAGS =	-lacsutil -lacscommonStubs -llogging_idlStubs
 
-log4cpplogging_OBJECTS 	:= 	loggingACSLoggingEvent loggingXmlLayout \
-							loggingStdoutlayout loggingACSCategory \
-							loggingACSRemoteAppender loggingACSHierarchyMaintainer \
-							loggingLog4cpp loggingLogThrottle
-log4cpplogging_LIBS		:=	log4cpp logging_idlStubs
+#log4cpplogging_OBJECTS 	:= 	loggingACSLoggingEvent loggingXmlLayout \
+#							loggingStdoutlayout loggingACSCategory \
+#							loggingACSRemoteAppender loggingACSHierarchyMaintainer \
+#							loggingLog4cpp loggingLogThrottle
+#log4cpplogging_LIBS		:=	log4cpp logging_idlStubs
+
 #
 # other files to be installed
 #----------------------------

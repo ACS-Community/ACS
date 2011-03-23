@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.h,v 1.2 2011/03/18 23:38:13 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.h,v 1.3 2011/03/23 23:27:48 javarias Exp $"
  */
 #ifndef LOGGING_LOG4CPP_H_
 #define LOGGING_LOG4CPP_H_
@@ -30,6 +30,7 @@
 #include <log4cpp/LayoutAppender.hh>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
+#include "loggingBaseLog.h"
 
 #define LM_DELOUSE 010000U
 
@@ -84,6 +85,7 @@ private:
 
 log4cpp::Priority::PriorityLevel convertPriority(unsigned int logLevel);
 log4cpp::Priority::PriorityLevel convertPriority(ACE_Log_Priority logLevel);
+log4cpp::Priority::PriorityLevel convertPriority (Logging::BaseLog::Priority logLevel);
 }
 
 #define LOGGER_FACTORY ACE_Singleton<logging::Logger, ACE_Null_Mutex>::instance()
