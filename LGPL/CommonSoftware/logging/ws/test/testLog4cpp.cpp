@@ -46,6 +46,9 @@ void testAutoTraceFunc()
 
 int main (int argc, char * argv[])
 {
+//#ifdef ENABLE_LOG4CPP_MACROS
+//	LOGGER_FACTORY->enableSyslogAppender();
+//#endif
 	char *tooLong_p = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
 	AUTO_TRACE("someFunc");
