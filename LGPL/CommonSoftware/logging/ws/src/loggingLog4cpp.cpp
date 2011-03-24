@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.cpp,v 1.3 2011/03/23 23:27:48 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.cpp,v 1.4 2011/03/24 17:38:25 javarias Exp $"
  */
 
 #include "loggingLog4cpp.h"
@@ -32,6 +32,10 @@
 #define DEFAULT_LOG_LEVEL_STDOUT 4
 #define DEFUALT_LOG_LEVEL_REMOTE 3
 #define DEFAULT_LOG_LEVEL_SYSLOG 3
+
+#define STDOUT_APPENDER_NAME "STDOUT_appender"
+#define SYSLOG_APPENDER_NAME "SYSLOG_appender"
+#define REMOTE_APPENDER_NAME "ACS_REMOTE_appender"
 
 using namespace logging;
 
@@ -60,11 +64,26 @@ Logger::~Logger() {
 }
 
 void Logger::enableRemoteAppender(Logging::AcsLogService_ptr loggingService) {
-	remoteAppenderEnabled = true;
+	if(!remoteAppenderEnabled) {
+		remoteAppenderEnabled = true;
+		//Do the same than enableSyslogAppender
+	}
 }
 
 void Logger::enableSyslogAppender() {
-	syslogAppenderEnabled = true;
+	if (!syslogAppenderEnabled) {
+		syslogAppenderEnabled = true;
+		std::vector<log4cpp::Category*>* loggers =
+				ACSHierarchyMaintainer::getDefaultMaintainer().getCurrentCategories();
+		std::vector<log4cpp::Category*>::iterator it;
+		for (it = loggers->begin(); it < loggers->end(); it++) {
+			::log4cpp::Appender * syslogAppender =
+					new ::log4cpp::SyslogAppender(SYSLOG_APPENDER_NAME, "ACS");
+			syslogAppender->setLayout(new logging::ACSstdoutLayout());
+			syslogAppender->setThreshold(convertPriority(syslogLogLevel));
+			(*it)->addAppender(syslogAppender);
+		}
+	}
 }
 
 ACSCategory* Logger::getGlobalLogger() {
@@ -83,14 +102,14 @@ ACSCategory* Logger::getLogger(const std::string& loggerName) {
 }
 
 ACSCategory* Logger::initLogger(const std::string& loggerName) {
-	::log4cpp::Appender* localAppender = new ::log4cpp::OstreamAppender("STDOUT Appender", &::std::cout);
+	::log4cpp::Appender* localAppender = new ::log4cpp::OstreamAppender(STDOUT_APPENDER_NAME, &::std::cout);
 	localAppender->setLayout(new logging::ACSstdoutLayout());
 	localAppender->setThreshold(convertPriority(localLogLevel));
 	ACSCategory &logger = ACSCategory::getInstance(loggerName);
 	logger.addAppender(localAppender);
 
 	if (syslogAppenderEnabled) {
-		::log4cpp::Appender* syslogAppender = new ::log4cpp::SyslogAppender("SYSLOG Appender", "ACS");
+		::log4cpp::Appender* syslogAppender = new ::log4cpp::SyslogAppender(SYSLOG_APPENDER_NAME, "ACS");
 		syslogAppender->setLayout(new logging::ACSstdoutLayout());
 		syslogAppender->setThreshold(convertPriority(syslogLogLevel));
 		logger.addAppender(syslogAppender);
@@ -168,6 +187,7 @@ LogTrace::~LogTrace() {
 
 
 log4cpp::Priority::PriorityLevel logging::convertPriority (unsigned int logLevel) {
+	std::cout << "unsigned int:" << logLevel << std::endl;
 	switch (logLevel) {
 	case 1:
 		return log4cpp::Priority::TRACE;
