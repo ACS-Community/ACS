@@ -18,16 +18,19 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.30 2010/03/30 20:29:09 javarias Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.31 2011/03/24 17:39:00 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * dfugate  2005-04-04  created
 */
 
+
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
+
+#ifndef ENABLE_LOG4CPP_MACROS
 
 #include "loggingLogger.h"
 #include "loggingLogTrace.h"
@@ -36,6 +39,7 @@
 #include <acsutilTimeStamp.h>
 
 #define LM_DELOUSE 010000
+
 
 /**
  * Used to send logs. This macro is primarily useful because it automatically
@@ -410,4 +414,9 @@ if (logger != 0) { \
  */
 #define LOG_TO_DEVELOPER_WITH_LOGGER(logPriority, logMessage, logger) \
     LOG_TO_AUDIENCE_WITH_LOGGER(logPriority, logMessage, log_audience::DEVELOPER, logger);
+
+#else
+#include "loggingLog4cppMACROS.h"
+#endif
+
 #endif /*!_H*/
