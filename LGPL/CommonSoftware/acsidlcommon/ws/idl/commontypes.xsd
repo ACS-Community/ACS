@@ -69,6 +69,7 @@ Type of the member value. Can be double, long or string.
 			<xs:enumeration value="double"/>
 			<xs:enumeration value="long"/>
 			<xs:enumeration value="string"/>
+			<xs:enumeration value="boolean"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>
