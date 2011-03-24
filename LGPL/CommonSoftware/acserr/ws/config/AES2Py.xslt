@@ -3,7 +3,7 @@
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/acserr:Type">
 <xsl:text>#!/usr/bin/env python
-# @(#) $Id: AES2Py.xslt,v 1.21 2009/02/18 00:36:46 agrimstrup Exp $
+# @(#) $Id: AES2Py.xslt,v 1.22 2011/03/24 16:53:35 tstaig Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -171,6 +171,9 @@ class BaseException:
 	<xsl:when test='@type="double"'>
 	<xsl:text>float</xsl:text>
 	</xsl:when>
+	<xsl:when test='@type="boolean"'>
+	<xsl:text>bool</xsl:text>
+	</xsl:when>
 	<xsl:otherwise>
 	<xsl:value-of select="@type"/>
 	</xsl:otherwise>
@@ -307,6 +310,9 @@ class BaseException:
 	</xsl:when>
 	<xsl:when test='@type="double"'>
 	<xsl:text>float</xsl:text>
+	</xsl:when>
+	<xsl:when test='@type="boolean"'>
+	<xsl:text>bool</xsl:text>
 	</xsl:when>
 	<xsl:otherwise>
 	<xsl:value-of select="@type"/>

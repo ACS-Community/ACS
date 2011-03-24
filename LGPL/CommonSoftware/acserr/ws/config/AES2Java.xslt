@@ -48,6 +48,11 @@
 	{ 
 		return Double.parseDouble(</xsl:text>
 					</xsl:when>
+					<xsl:when test='@type="boolean"'>
+					<xsl:text>
+	{ 
+		return Boolean.parseBoolean(</xsl:text>
+					</xsl:when>
 					<xsl:otherwise>
 					<xsl:text>
 	{ 

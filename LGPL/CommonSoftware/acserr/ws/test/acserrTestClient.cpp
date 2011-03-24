@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestClient.cpp,v 1.52 2007/04/27 14:38:40 bjeram Exp $"
+* "@(#) $Id: acserrTestClient.cpp,v 1.53 2011/03/24 16:53:35 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 * rlemke   30/08/01  integrated into tat 
 */
 
-static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.52 2007/04/27 14:38:40 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestClient.cpp,v 1.53 2011/03/24 16:53:35 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestC.h"
@@ -174,10 +174,10 @@ int main(int argc, char *argv[])
       ACS_SHORT_LOG((LM_INFO, "Catch ACSErrTest0Ex !"));
       ACSErrTest0ExImpl exorg(_ex);
       ACE_CString buf = exorg.getMember3();
-      ACS_SHORT_LOG((LM_INFO, "Members of the caught exception are: %d, %f, %s", 
+      ACS_SHORT_LOG((LM_INFO, "Members of the caught exception are: %d, %f, %s, %d", 
             	       exorg.getMember1(),
 		       exorg.getMember2(),
-		       buf.c_str()));
+		       buf.c_str(), exorg.getMember4()));
 	
       ACSErrTest0ExImpl *ex = new ACSErrTest0ExImpl(_ex, __FILE__, __LINE__, "testClient::main");
       ex->log();

@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrTestImpl.cpp,v 1.55 2008/09/29 08:38:53 cparedes Exp $"
+* "@(#) $Id: acserrTestImpl.cpp,v 1.56 2011/03/24 16:53:35 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 * rlemke   30/08/01  integrated into tat
 */
 
-static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.55 2008/09/29 08:38:53 cparedes Exp $"; 
+static char *rcsId="@(#) $Id: acserrTestImpl.cpp,v 1.56 2011/03/24 16:53:35 tstaig Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "acserrTestImpl.h"
@@ -111,13 +111,14 @@ void acserrTestImpl::testExceptions ( CORBA::Long depth, CORBA::Boolean err)
       ex.setMember1(3);
       ex.setMember2(3.33);
       ex.setMember3("stringMember");
+      ex.setMember4(true);
 //      char *strB = ex.getMember3();
 
-      ACS_SHORT_LOG((LM_INFO, "Exception members are: %d | %d, %f, %s", 
+      ACS_SHORT_LOG((LM_INFO, "Exception members are: %d | %d, %f, %s, %d", 
 		     ex.getMember1(),
 		     ex.getMemberValue<int>("Member1"),
 		     ex.getMember2(),
-		     ex.getMember3().c_str()/*strB*/));
+		     ex.getMember3().c_str()/*strB*/,ex.getMember4()));
 //      delete[] strB;
       throw ex.getACSErrTest0Ex();
       }// tr-catch

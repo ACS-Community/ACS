@@ -4,8 +4,9 @@
 	<Code name="ACSErrTestOK" shortDescription="Test OK" description="Test OK"/>
  	<ErrorCode name="ACSErrTest0" shortDescription="Test error 0" description="Test error 0">
 		<Member name="Member1" type="long" description="exmple of long member"/>
-		<Member name="Member2" type="double" description="exmple of long member"/>
-	 	<Member name="Member3" type="string" description="exmple of long member"/>
+		<Member name="Member2" type="double" description="exmple of double member"/>
+	 	<Member name="Member3" type="string" description="exmple of string member"/>
+	 	<Member name="Member4" type="boolean" description="exmple of boolean member"/>
 	</ErrorCode>
 	<ErrorCode name="ACSErrTest1" shortDescription="Test error 1" description="Test error 1"/>
 	<ErrorCode name="ACSErrTest2" shortDescription="Test error 2" description="Test error 2"/>
