@@ -20,7 +20,7 @@
 #
 # Internet email: alma-sw-admin@nrao.edu
 #
-# "@(#) $Id: Server.py,v 1.3 2010/10/01 17:20:48 javarias Exp $"
+# "@(#) $Id: Server.py,v 1.4 2011/03/24 16:09:44 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  -------------------------------------------------------
@@ -44,12 +44,12 @@ from ACSSim import NoSuchMethodEx
 from maciErrType import NoDefaultComponentEx
 
 #--GLOBALS---------------------------------------------------------------------
-__revision__ = "@(#) $Id: Server.py,v 1.3 2010/10/01 17:20:48 javarias Exp $"
+__revision__ = "@(#) $Id: Server.py,v 1.4 2011/03/24 16:09:44 javarias Exp $"
 #------------------------------------------------------------------------------
-def initialize(args): pass
+#def initialize(args): pass
 
 #------------------------------------------------------------------------------
-def cleanUp(args): pass
+#def cleanUp(args): pass
 
 #------------------------------------------------------------------------------
 class Server(BaseRepresentation):
@@ -67,8 +67,8 @@ class Server(BaseRepresentation):
            # fine, no Simulator Server component defined in the CDB
            pass
 
-        self.setMethod('initialize', {'Timeout': 0.0, 'Value': initialize})
-        self.setMethod('cleanUp', {'Timeout': 0.0, 'Value': cleanUp})
+#        self.setMethod('initialize', {'Timeout': 0.0, 'Value': initialize})
+#        self.setMethod('cleanUp', {'Timeout': 0.0, 'Value': cleanUp})
         
     #--------------------------------------------------------------------------
     # Note: this class is managed in a kind-of singleton way, so it's not
