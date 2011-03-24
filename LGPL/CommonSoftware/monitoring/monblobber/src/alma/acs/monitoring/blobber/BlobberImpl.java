@@ -59,17 +59,22 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
 		super.initialize(inContainerServices);
 
+		// clear alarm that might have been left active from a previous run
+		try {
+			inContainerServices.clearAlarm("Monitoring", "MonitorArchiver", 2); // @TODO use component-specific alarm triplet
+		} catch (AcsJContainerServicesEx ex) {
+			throw new ComponentLifecycleException("Failed to clear alarm", ex);
+		}
+
+		// create data-model-specific plugin and the blobber worker object
 		BlobberPlugin blobberPlugin = null;
 		try {
-			try {
-				inContainerServices.clearAlarm("Monitoring", "MonitorArchiver", 2);
-			} catch (AcsJContainerServicesEx ex) {
-				throw new ComponentLifecycleException("Failed to clear alarm", ex);
-			}
 			blobberPlugin = createBlobberPlugin();
 			collectorIntervalSec = blobberPlugin.getCollectorIntervalSec();
+			m_logger.finer("Instantiated blobber plugin object.");
 			// Create the blobber runnable (worker)
 			this.myWorker = createWorker(blobberPlugin);
+			m_logger.finer("Instantiated blobber worker object.");
 		} catch (AcsJCouldntCreateObjectEx ex) {
 			try {
 				inContainerServices.raiseAlarm("Monitoring", "MonitorArchiver", 2);
@@ -87,6 +92,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			controller = ControllerHelper.narrow(m_containerServices
 				.getDefaultComponent("IDL:alma/MonitorArchiver/Controller:1.0"));
 			controller.registerKnownCollectors(name());
+			m_logger.finer("Requested monitor controller to re-register collectors.");
 		} catch (AcsJContainerServicesEx ex1) {
 			throw new ComponentLifecycleException(
 				"Failed to get ARCHIVE_CONTROLLER instance.", ex1);
