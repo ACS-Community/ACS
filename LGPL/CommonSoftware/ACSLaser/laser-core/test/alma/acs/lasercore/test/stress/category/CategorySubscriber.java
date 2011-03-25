@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: CategorySubscriber.java,v 1.5 2011/03/11 19:38:00 acaproni Exp $
+ * @version $Id: CategorySubscriber.java,v 1.6 2011/03/25 13:57:08 acaproni Exp $
  * @since    
  */
 
@@ -204,6 +204,8 @@ public class CategorySubscriber   implements MessageListener {
 		String nodeChild=NOT_AVAILABLE;
 		String multiplicityParent=NOT_AVAILABLE;
 		String multiplicityChild=NOT_AVAILABLE;
+		String reduced=NOT_AVAILABLE;
+		String masked=NOT_AVAILABLE;
 		
 		Document document = null;
 		try {
@@ -262,6 +264,14 @@ public class CategorySubscriber   implements MessageListener {
 						Node activeNode=statusNode.getLastChild();
 						active=activeNode.getNodeValue();
 					}
+					if (statusNode.getNodeName().equals("reduced")) {
+						Node activeNode=statusNode.getLastChild();
+						reduced=activeNode.getNodeValue();
+					}
+					if (statusNode.getNodeName().equals("masked")) {
+						Node activeNode=statusNode.getLastChild();
+						masked=activeNode.getNodeValue();
+					}
 					if (statusNode.getNodeName().equals("sourceTimestamp")) {
 						NodeList timestampNodeList=statusNode.getChildNodes();
 						for (int m=0; m<timestampNodeList.getLength(); m++) {
@@ -309,7 +319,21 @@ public class CategorySubscriber   implements MessageListener {
 			}
 		}
 		try {
-			categoryClient.dispatchAlarm(new AlarmView(alarmID,priority,sourceTimestamp,description,cause,active,hostName,nodeParent,nodeChild,multiplicityParent,multiplicityChild));
+			categoryClient.dispatchAlarm(
+					new AlarmView(
+							alarmID,
+							priority,
+							sourceTimestamp,
+							description,
+							cause,
+							active,
+							hostName,
+							nodeParent,
+							nodeChild,
+							multiplicityParent,
+							multiplicityChild,
+							reduced,
+							masked));
 		} catch (Throwable t) {
 			System.out.println("Error building alarm "+t.getMessage());
 		}
