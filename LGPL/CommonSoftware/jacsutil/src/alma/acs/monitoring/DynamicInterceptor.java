@@ -46,7 +46,7 @@ public class DynamicInterceptor implements InvocationHandler
 	
 	/**
 	 * To be called only from the proxy factory method 
-	 * {@link #createDynamicInterceptor(Class, Object, String, Logger, ClassLoader, InterceptionHandlerFactory)}.
+	 * {@link #createDynamicInterceptor(Class, Object, Logger, ClassLoader, InterceptionHandlerFactory)}
 	 */
 	protected DynamicInterceptor(Object delegate, Logger logger, ClassLoader contextCL, InterceptionHandlerFactory interceptionHandlerFactory) {
 		this.delegate = delegate;
@@ -69,7 +69,7 @@ public class DynamicInterceptor implements InvocationHandler
 	 * @param dynInterface
 	 * @param delegate      The delegation object.
 	 *                      <br>
-	 *                      Note about usage of java generics: Ideally this would be declared "T" instead of "Object", 
+	 *                      Note about usage of java generics: Ideally this delegate would be declared "T" instead of "Object", 
 	 *                      but did not get it to work with that...
 	 * @param logger        The Logger to be used by this class.
 	 * @param contextCL     The class loader to be associated with the current thread during the forwarding of the call to the delegate object,

@@ -28,9 +28,8 @@ package alma.acs.classloading;
 public class TestMain 
 {
 	TestMain() {
-		// will be sun.misc.Launcher$AppClassLoader if TestMain.class is on the JVM classpath,
-		// alma.acs.classloading.AcsClassLoader otherwise
-		System.out.println("current class loader is " + getClass().getClassLoader().getClass().getName());		
+		// expecting alma.acs.classloading.AcsSystemClassLoader
+		System.out.println("current class loader is " + getClass().getClassLoader().getClass().getName());
 	}
 
 	public static void main(String[] args)
