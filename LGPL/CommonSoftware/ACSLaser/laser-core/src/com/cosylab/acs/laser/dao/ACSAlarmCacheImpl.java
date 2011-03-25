@@ -22,10 +22,12 @@
  */
 package com.cosylab.acs.laser.dao;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cern.laser.business.cache.AlarmCache;
 import cern.laser.business.cache.AlarmCacheException;
@@ -38,6 +40,23 @@ import cern.laser.business.data.CategoryActiveList;
 import cern.laser.business.data.Category;
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
 
+/**
+ * Implementation of the {@link AlarmCache} to use within ACS.
+ * <P>
+ * <b>Note on the locking mechanism.</b><BR>
+ * Each method that changes or reads the cache is surrounded by lock/unlock
+ * to ensure the mutual exclusion and therefore the integrity of the cache.
+ * If a sequence of operations have to be performed in mutual exclusion then
+ * the code must initially call <code>acquire()</code> and finally <code>release()</code>. 
+ * The locking mechanism of each method works as follows:
+ * <UL>
+ * <LI>if the lock is free then it is acquired at the beginning and released before exiting
+ * <LI>if the lock is not free then it is acquired only if owned by the same thread that is locking it 
+ *     and released before exiting
+ * </UL>
+ * 
+ * @author acaproni
+ */
 public class ACSAlarmCacheImpl implements AlarmCache 
 {
 	// The cache of the alarms
@@ -45,13 +64,21 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	// The key is a string (the same string generated 
 	// by Alarm.getTriplet().toIdentifier())
 	// The value is an alarm (AlarmImpl)
-	private HashMap<String,Alarm> alarms = new HashMap<String,Alarm>();
+	private Map<String,Alarm> alarms = Collections.synchronizedMap(new HashMap<String,Alarm>());
 	
 	// The object to access the database
 	private AlarmDAO dao;
 	
 	// The listener for the changes in this cache
 	private AlarmCacheListener listener;
+	
+	/**
+	 * the lock used to ensure mutual exclusion when accessing the cache.
+	 * 
+	 * It is required instead of synchronized because sometimes the mutual exclusion
+	 * spans between calls to a series of methods of the cache.  
+	 */
+	private final ReentrantLock lock=new ReentrantLock();
 	
 	/**
 	 * The HashMap with the active alarms per each category
@@ -86,7 +113,7 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		listener=alarmCacheListener;
 		
 		// The alarms should be loaded in the cache in the constructor
-		// but it is not workingbecause something in the DAO chain has
+		// but it is not working because something in the DAO chain has
 		// not yet been initialized
 		//
 		// All the alarms are load when the first request arrives 
@@ -94,8 +121,13 @@ public class ACSAlarmCacheImpl implements AlarmCache
 	}
 
 	public void initializeAlarmCache(Map alarms, Map activeLists) {
-		this.alarms.putAll(alarms);
-		this.activeLists.putAll(activeLists);
+		lock.lock();
+		try {
+			this.alarms.putAll(alarms);
+			this.activeLists.putAll(activeLists);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public Alarm getCopy(String identifier) throws AlarmCacheException {
@@ -103,98 +135,154 @@ public class ACSAlarmCacheImpl implements AlarmCache
 		// create a copy to return to the caller
 		
 		// The Alarm to return a copy of
+		lock.lock();
 		Alarm retAl;
-		
-		retAl = getReference(identifier);
-		
+		try {
+			retAl = getReference(identifier);
+		} finally {
+			lock.unlock();
+		}
 		return (Alarm)(((AlarmImpl)retAl).clone());
 	}
 
 	public Alarm getReference(String identifier) throws AlarmCacheException {
-		// The Alarm to return a reference of
+		lock.lock();
 		Alarm retAl;
-		
-		// Check the integrity of internal data structs
-		if (alarms==null || dao==null) {
-			System.err.println("*** ACSAlarmCache internal data corrupted!");
-			throw new AlarmCacheException("ACSAlarmCache internal data corrupted!");
-		}
-		
-		if (!alarms.containsKey(identifier)) {
-			// Get the alarm from the database
-			try {
-				retAl=(Alarm)dao.findAlarm(identifier);
-			} catch (Exception e) {
-				System.err.println("*** Exception reading from CDB "+e.getMessage());
-				throw new AlarmCacheException(e.getMessage());
+		try {
+			// The Alarm to return a reference of
+			// Check the integrity of internal data structs
+			if (alarms==null || dao==null) {
+				System.err.println("*** ACSAlarmCache internal data corrupted!");
+				throw new AlarmCacheException("ACSAlarmCache internal data corrupted!");
+			}
+			
+			if (!alarms.containsKey(identifier)) {
+				// Get the alarm from the database
+				try {
+					retAl=(Alarm)dao.findAlarm(identifier);
+				} catch (Exception e) {
+					System.err.println("*** Exception reading from CDB "+e.getMessage());
+					throw new AlarmCacheException(e.getMessage());
+				}
+				if (retAl==null) {
+					System.err.println("*** Alarm not found in database");
+					throw new AlarmCacheException("Alarm not found in database");
+				} else {
+					// Add the alarm to the cache
+					alarms.put(identifier,retAl);
+				}
+			} else {
+				// Get the alarm from the cache
+				retAl=alarms.get(identifier);
 			}
 			if (retAl==null) {
-				System.err.println("*** Alarm not found in database");
-				throw new AlarmCacheException("Alarm not found in database");
-			} else {
-				// Add the alarm to the cache
-				alarms.put(identifier,retAl);
+				System.err.println("*** Invalid Alarm");
+				throw new AlarmCacheException("Invalid Alarm");
 			}
-		} else {
-			// Get the alarm from the cache
-			retAl=alarms.get(identifier);
+		} finally {
+			lock.unlock();
 		}
-		if (retAl==null) {
-			System.err.println("*** Invalid Alarm");
-			throw new AlarmCacheException("Invalid Alarm");
-		}
-		
 		return retAl;
+	}
+	
+	/**
+	 * Update an alarm in the cache without notifying the listener.
+	 * 
+	 * NOTE: this is used when alarms are generated on the fly (defaultFM) because in
+	 * that case there i sno need to notify the listener
+	 * 
+	 * @param alarm
+	 */
+	public void update(Alarm alarm) {
+		lock.lock();
+		try {
+			if (alarm==null) {
+				throw new IllegalArgumentException("The alarm can't be null");
+			}
+			alarms.put(alarm.getAlarmId(), alarm);
+			dao.updateAlarm(alarm);
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public void replace(Alarm alarm) throws AlarmCacheException {
-		if (alarm==null) {
-			throw new IllegalArgumentException("Replacing with a null alarm is not allowed");
+		lock.lock();
+		try {
+			if (alarm==null) {
+				throw new IllegalArgumentException("Replacing with a null alarm is not allowed");
+			}
+			Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
+			dao.updateAlarm(alarm);
+			sendMsgToListener(alarm,oldAl);
+			updateCategoryActiveLists(alarm);
+			//dumpAlarmsCache(false); 
+		} finally {
+			lock.unlock();
 		}
-		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
-		sendMsgToListener(alarm,oldAl);
-		updateCategoryActiveLists(alarm);
-		//dumpAlarmsCache(false);
 	}
 
 	public void put(Alarm alarm) throws AlarmCacheException {
-		if (alarm==null) {
-			throw new IllegalArgumentException("Inserting a null alarm is not allowed");
+		lock.lock();
+		try {
+			if (alarm==null) {
+				throw new IllegalArgumentException("Inserting a null alarm is not allowed");
+			}
+			Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
+			dao.updateAlarm(alarm);
+			updateCategoryActiveLists(alarm);
+			sendMsgToListener(alarm,oldAl);
+			//dumpAlarmsCache(false);
+		} finally {
+			lock.unlock();
 		}
-		Alarm oldAl=alarms.put(alarm.getTriplet().toIdentifier(),alarm);
-		sendMsgToListener(alarm,oldAl);
-		updateCategoryActiveLists(alarm);
-		//dumpAlarmsCache(false);
 	}
 
 	public void invalidate(String identifier) throws AlarmCacheException {
-		if (identifier==null) {
-			throw new IllegalArgumentException("Invalidating a null key is not allowed");
+		lock.lock();
+		try {
+			if (identifier==null) {
+				throw new IllegalArgumentException("Invalidating a null key is not allowed");
+			}
+			
+			if (!alarms.containsKey(identifier)) {
+				throw new AlarmCacheException("The object with the given identifier does not exist");
+			}
+			alarms.remove(identifier);
+			//dumpAlarmsCache(false);
+		} finally {
+			lock.unlock();
 		}
-		
-		if (!alarms.containsKey(identifier)) {
-			throw new AlarmCacheException("The object with the given identifier does not exist");
-		}
-		alarms.remove(identifier);
-		//dumpAlarmsCache(false);
 	}
 
 	public CategoryActiveList getActiveListReference(Integer identifier) throws AlarmCacheException {
-		if (activeLists.containsKey(identifier)) {
-			return activeLists.get(identifier);
-		} else {
-			CategoryActiveList catList = new CategoryActiveList(identifier);
-			activeLists.put(identifier,catList);
-			return catList;
+		lock.lock();
+		try {
+			if (activeLists.containsKey(identifier)) {
+				return activeLists.get(identifier);
+			} else {
+				CategoryActiveList catList = new CategoryActiveList(identifier);
+				activeLists.put(identifier,catList);
+				return catList;
+			}
+		} finally {
+			lock.unlock();
 		}
 	}
 
 	public void close() {
-		alarms.clear();
+		lock.lock();
+		try {
+			alarms.clear();
+		} finally {
+			lock.unlock();
+		}
 	}
 
 	public void removeActiveList(Integer identifier) throws AlarmCacheException {
+		lock.lock();
 		activeLists.remove(identifier);
+		lock.unlock();
 	}
 	
 	/**
@@ -234,15 +322,21 @@ public class ACSAlarmCacheImpl implements AlarmCache
 			return;
 		} 
 		
+		System.out.println("*** ACSAlarmCacheImpl dumping cache.....");
 		// Get the keys
 		Set<String> keys = alarms.keySet();
 		Iterator<String> iter = keys.iterator();
 		while ( iter.hasNext() ) {
 			String key = iter.next();
+			System.out.print("***\t"+key+" ");
 			if (verbose) {
 				Alarm al = alarms.get(key);
+				System.out.println("active="+al.getStatus().getActive());
+			} else {
+				System.out.println();
 			}
 		}
+		System.out.println("ACSAlarmCacheImpl dumping cache..... done");
 	}
 	
 	/**
@@ -298,6 +392,23 @@ public class ACSAlarmCacheImpl implements AlarmCache
 				catList.removeAlarm(alarmId);
 			}
 		}
+	}
+	
+	/**
+	 * Acquire the lock for using the cache.
+	 */
+	public void acquire() {
+		if (lock.isHeldByCurrentThread()) {
+			System.out.println("===>>>>> The same thread tries to acquire the cache more then once!");
+		}
+		lock.lock();
+	}
+	
+	/**
+	 * Acquire the lock for using the cache.
+	 */
+	public void release() {
+		lock.unlock();
 	}
 
 }
