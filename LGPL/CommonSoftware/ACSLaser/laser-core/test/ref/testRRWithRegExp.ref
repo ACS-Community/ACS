@@ -3,39 +3,43 @@
 1 - SynchroBuffer[minWindowSize=500,maxWindowSize=5000,windowGrowthFactor=100,duplicatePolicy=DUPLICATE_OK]
 1 - setUp done
 1 - testMultiplicity
-1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true
-1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true
-1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP3:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP4:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
-1 - Alarm received: MF_REGEXP:REGEXP5:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=true, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=true, masked=false
+1 - Alarm received: MF_REGEXP:MULTIPLE_MF_REGEXP:5 active=false, nodeC=false, nodeP=false, multiC=false, multiP=true, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP1:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP2:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=true, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP3:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP4:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
+1 - Alarm received: MF_REGEXP:REGEXP5:0 active=false, nodeC=false, nodeP=false, multiC=true, multiP=false, reduced=false, masked=false
 1 - testNode
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false
-1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=true, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=true, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE1:1 active=false, nodeC=false, nodeP=true, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=true, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_2:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_3:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
+1 - Alarm received: NODE_REGEXP:REGEXP_NODE_4:1 active=false, nodeC=true, nodeP=false, multiC=false, multiP=false, reduced=false, masked=false
 1 - tearDown done
 1 - 
 1 - 
