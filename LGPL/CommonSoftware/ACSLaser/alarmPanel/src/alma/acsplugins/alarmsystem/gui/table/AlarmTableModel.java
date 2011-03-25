@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.29 2010/03/31 15:27:08 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.30 2011/03/25 20:28:59 acaproni Exp $
  * @since    
  */
 
@@ -62,8 +62,8 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *
 	 */
 	public enum AlarmTableColumn {
-		HIDES_CHILDREN("","Parent node flag",true), // The entry hides children because of RR
-		REDUCED("","Reduced flag",true), // The entry is reduced
+		IS_PARENT("","Parent node flag",true), // The entry hides children because of RR
+		IS_CHILD("","Child node flag",true), // The entry is reduced
 		ICON("","Not acknowledged flag",true), // The flag
 		TIME("Time",null,true),
 		COMPONENT("Component",null,true),
@@ -287,12 +287,13 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @param reduce <code>true</code> if the reduction rules must be applied
 	 * @param panel The <code>AlarmPanel</code>
 	 */
-	public AlarmTableModel(JComponent owner, boolean reduce) {
+	public AlarmTableModel(JComponent owner, boolean reduce, boolean addInactiveAlarms) {
 		if (owner==null) {
 			throw new IllegalArgumentException("The owner component can't be null");
 		}
 		this.owner=owner;
 		this.applyReductionRules=reduce;
+		this.addInactiveAlarms=addInactiveAlarms;
 		this.items = new AlarmsReductionContainer(MAX_ALARMS);
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
@@ -312,8 +313,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see AlarmSelectionListener
 	 */
 	public synchronized void onAlarm(Alarm alarm) {
-		//System.out.println("Alarm received: <"+alarm.getAlarmId()+">");
-		//System.out.println("\tisNodeChild="+alarm.isNodeChild()+". isNodeParent="+alarm.isNodeParent());
 		AlarmTableEntry tableEntry = new AlarmTableEntry(alarm);
 		// Add the alarm to the queue
 		if (waitIfQueueFull) {
@@ -332,6 +331,20 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		}
 	}
 	
+	private void dumpAlarm(Alarm alarm) {
+		System.out.print("Alarm received: <"+alarm.getAlarmId()+">");
+		if (alarm.getStatus().isActive()) {
+			System.out.println("\tACTIVE");
+		} else {
+			System.out.println("\tTERMINATE");
+		}
+		System.out.println("\tisNodeChild="+alarm.isNodeChild()+". isNodeParent="+alarm.isNodeParent());
+		System.out.println("\tisMultiplicityChild="+alarm.isMultiplicityChild()+". isMultiplicityParent="+alarm.isMultiplicityParent());
+		System.out.println("\tismasked="+alarm.getStatus().isMasked()+", isReduced="+alarm.getStatus().isReduced());
+		System.out.println("\tsource timestamp = "+alarm.getStatus().getSourceTimestamp());
+		System.out.println("\tsystem timestamp = "+alarm.getStatus().getSystemTimestamp());
+	}
+	
 	/**
 	 * @param alarm The alarm to add
 	 */
@@ -339,7 +352,7 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 		if (alarm==null) {
 			throw new IllegalArgumentException("The alarm can't be null");
 		}
-		if (!alarm.getStatus().isActive()) {
+		if (!alarm.getStatus().isActive() && !addInactiveAlarms) {
 			// do not add inactive alarms
 			return;
 		}
@@ -530,6 +543,18 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 *	If <code>true</code> applies the reduction rules hiding reduced alarms 
 	 */
 	private boolean applyReductionRules;
+	
+	/**
+	 * This boolean <code>addInactiveAlarms</code> says if the model has to add inactive alarms if
+	 * they are not already in the table.
+	 * <P>
+	 * Normally there is no need to need to add an inactive alarm to the model
+	 * unless we wish to change its state (i.e. we want to replace an active the alarm
+	 * with a terminate alarm).
+	 * However, when we want to show the table for the reductions in the
+	 * apposite dialog then we want to see the dependencies also for inactive alarms.
+	 */
+	private final boolean addInactiveAlarms;
 	
 	/**
 	 * The auto acknowledge level
@@ -857,7 +882,6 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 			} catch (InterruptedException e) {
 				continue;
 			}
-			
 			// Wait if the application is paused by getting the semaphore
 			try {
 				paused.acquire();
