@@ -15,5 +15,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/logkit-1.2.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/avalon-framework-4.1.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
