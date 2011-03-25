@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.54 2011/03/23 23:28:11 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.55 2011/03/25 23:42:28 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -79,7 +79,7 @@ testMacros_OBJECTS	= testMacros
 testMacros_LIBS		= logging
 
 testLoggingProxy_OBJECTS= testLoggingProxy
-testLoggingProxy_LIBS	= logging
+testLoggingProxy_LIBS	= logging 
 
 testAnyLog_OBJECTS = testAnyLog
 testAnyLog_LIBS   = logging
@@ -89,7 +89,7 @@ testAUD_ARR_LIBS = logging
 testAUD_ARR_LDFLAGS = -lmaciClient
 
 testLog4cpp_OBJECTS = testLog4cpp
-testLog4cpp_LIBS   = logging
+testLog4cpp_LIBS   = logging maciClient acserr
 
 #
 # <brief description of xxxxx program>
