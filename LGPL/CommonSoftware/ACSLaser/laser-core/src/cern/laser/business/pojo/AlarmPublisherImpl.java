@@ -88,8 +88,8 @@ public class AlarmPublisherImpl {
       return;
     }
     try {
-      LOGGER.info("publishing alarm change for \n" + alarmChange.getCurrent().getTriplet() + "\nwith current STATUS "
-          + alarmChange.getCurrent().getStatus());
+      LOGGER.info("publishing alarm change for " + alarmChange.getCurrent().getAlarmId() + ", active= "
+          + alarmChange.getCurrent().getStatus().getActive());
       Alarm alarm = alarmChange.getCurrent();
       Alarm previous = alarmChange.getPrevious();
       Iterator iterator = alarm.getCategories().iterator();
@@ -146,10 +146,6 @@ public class AlarmPublisherImpl {
         String xml = AlarmMessageConversion.getXML((AlarmImpl)alarm);
         message.setText(xml);
         
-        if (alarm.getStatus().getSourceTimestamp().getTime()==0) {
-        	// This should be filtered by jms...
-        	return;
-        }
         getTopicPublisher().publish(topic, message);
         LOGGER.info("change published on : " + destination);
       }
