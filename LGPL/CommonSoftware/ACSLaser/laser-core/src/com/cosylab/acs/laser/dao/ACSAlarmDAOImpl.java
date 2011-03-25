@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -61,6 +62,7 @@ import alma.alarmsystem.alarmmessage.generated.Thresholds;
 import alma.alarmsystem.core.alarms.LaserCoreAlarms;
 import alma.cdbErrType.CDBRecordDoesNotExistEx;
 import cern.laser.business.LaserObjectNotFoundException;
+import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.dao.AlarmDAO;
 import cern.laser.business.dao.ResponsiblePersonDAO;
 import cern.laser.business.data.Alarm;
@@ -73,6 +75,8 @@ import cern.laser.business.data.Source;
 import cern.laser.business.data.Status;
 import cern.laser.business.data.Triplet;
 import cern.laser.business.definition.data.SourceDefinition;
+import cern.laser.business.pojo.AlarmMessageProcessorImpl;
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 import com.cosylab.acs.laser.dao.utils.AlarmRefMatcher;
 import com.cosylab.acs.laser.dao.utils.LinkSpec;
@@ -170,6 +174,11 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 * The alarm cache used to notify on alarm changes
 	 */
 	private ACSAlarmCacheImpl alarmCache=null;
+	
+	/**
+	 * The alarm message processor
+	 */
+	private AlarmMessageProcessorImpl messageProcessor;
 	
 	/**
 	 * The reduction rules (<parent, child>)
@@ -567,27 +576,9 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 						AlarmImpl aic=allAlarms[c];
 						if (childMatcher.isMatch(aic)) {
 							if (isMulti) {
-								parent.addMultiplicityChild(aic);
-								logger.log(AcsLogLevel.DEBUG,"Added MULTI RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
-								if (alarmCache!=null) {
-									try {
-										alarmCache.replace(parent);
-									} catch (Throwable t) {
-										t.printStackTrace();
-										logger.log(AcsLogLevel.ERROR,"Error replacing alarm");
-									}
-								}
+								addMultiplicityChild(parent, aic);
 							} else {
-								parent.addNodeChild(aic);
-								logger.log(AcsLogLevel.DEBUG,"Added NODE RR node child "+aic.getAlarmId()+" to "+parent.getAlarmId());
-								if (alarmCache!=null) {
-									try {
-										alarmCache.replace(parent);
-									} catch (Throwable t) {
-										t.printStackTrace();
-										logger.log(AcsLogLevel.ERROR,"Error replacing alarm");
-									}
-								}
+								addNodeChild(parent, aic);
 							}
 						} 
 					}
@@ -614,7 +605,76 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			}
 		}
 		
-		dumpReductionRules();
+		System.out.println("reduction rules updated");
+		//dumpReductionRules();
+	}
+	
+	/**
+	 * Add the child to the parent in the node reduction
+	 * <P>
+	 * It checks if the definition of the parent and/or the definition of the child
+	 * change after the updating and call a replace(...) in the cache to trigger
+	 * the notification to the clients.
+	 * 
+	 * @param parent The parent of the node reduction
+	 * @param child The child of the node reduction
+	 */
+	private void addNodeChild(Alarm parent, Alarm child) {
+		boolean notifyParent=!((AlarmImpl)parent).getNodeChildrenIds().contains(child.getAlarmId());
+		boolean notifyChild=!((AlarmImpl)child).getNodeParentIds().contains(parent.getAlarmId());
+		parent.addNodeChild(child);
+		logger.log(AcsLogLevel.DEBUG,"Added NODE RR node child "+child.getAlarmId()+" to "+parent.getAlarmId());
+		if (notifyParent && alarmCache!=null) {
+			try {
+				alarmCache.replace(parent);
+				if (messageProcessor!=null) {
+					messageProcessor.updateReductionStatus(parent);
+				}
+			} catch (Throwable t) {
+				System.err.println("Error updating a node child:"+t.getMessage());
+				t.printStackTrace();
+			}
+		}
+		if (notifyChild && alarmCache!=null) {
+			try {
+				alarmCache.replace(child);
+				if (messageProcessor!=null) {
+					messageProcessor.updateReductionStatus(child);
+				}
+			} catch (Throwable t) {
+				System.err.println("Error updating a node child:"+t.getMessage());
+				t.printStackTrace();
+			}
+		}
+	}
+	
+	private void addMultiplicityChild(Alarm parent, Alarm child) {
+		boolean notifyParent=!((AlarmImpl)parent).getMultiplicityChildrenIds().contains(child.getAlarmId());
+		boolean notifyChild=!((AlarmImpl)child).getMultiplicityParentIds().contains(parent.getAlarmId());
+		
+		parent.addMultiplicityChild(child);
+		if (notifyParent && alarmCache!=null) {
+			try {
+				alarmCache.replace(parent);
+				if (messageProcessor!=null) {
+					messageProcessor.updateReductionStatus(parent);
+				}
+			} catch (Throwable t) {
+				System.err.println("Error updating a node child:"+t.getMessage());
+				t.printStackTrace();
+			}
+		}
+		if (notifyChild && alarmCache!=null) {
+			try {
+				alarmCache.replace(child);
+				if (messageProcessor!=null) {
+					messageProcessor.updateReductionStatus(child);
+				}
+			} catch (Throwable t) {
+				System.err.println("Error updating a node child:"+t.getMessage());
+				t.printStackTrace();
+			}
+		}
 	}
 
 	private void saveAllIDs()
@@ -973,9 +1033,16 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		this.alarmCache=alarmCache;
 	}
 	
+	public void setAlarmProcessor(AlarmMessageProcessorImpl processor) {
+		this.messageProcessor=processor;
+	}
+	
 	private void dumpReductionRules() {
-		System.out.println("Dumping reduction rules");
-		for (String key: alarmDefs.keySet()) {
+		Vector<String> keys=new Vector<String>(alarmDefs.keySet());
+		Collections.sort(keys);
+		System.out.println("VVVVV Dumping reduction rules VVVVV");
+		System.out.println("defined reduction rules: "+keys.size());
+		for (String key: keys) {
 			AlarmImpl alarm = (AlarmImpl)alarmDefs.get(key);
 			System.out.println(alarm.getAlarmId());
 			String[] nodeParents=alarm.getNodeParents();
@@ -1000,13 +1067,22 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			}
 			System.out.println("\tMULTIPLICITY threshold: "+alarm.getMultiplicityThreshold());
 		}
+		System.out.println("^^^^^                         ^^^^^");
 	}
 	
 	private void dumpAlarmCache() {
-		System.out.println("Alarms in cache");
-		for (String key: alarmDefs.keySet()) {
-			System.out.println("\tAlarm in cache: "+key);
+		Vector<String> keys=new Vector<String>(alarmDefs.keySet());
+		Collections.sort(keys);
+		System.out.println("VVVVV ACSAlarmDAOImpl:: Alarms in cache VVVVV");
+		System.out.println("Number of alarms in cache: "+keys.size());
+		for (String key: keys) {
+			Alarm alarm = alarmDefs.get(key);
+			System.out.print("\t"+key);
+			System.out.print(" active="+alarm.getStatus().getActive());
+			System.out.print(" masked="+alarm.getStatus().getMasked());
+			System.out.println(" reduced="+alarm.getStatus().getReduced());
 		}
+		System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	}
 }
 
