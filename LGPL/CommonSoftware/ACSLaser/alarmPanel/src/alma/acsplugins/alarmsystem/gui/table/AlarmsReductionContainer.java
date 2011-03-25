@@ -131,6 +131,7 @@ public class AlarmsReductionContainer extends AlarmsContainer {
 			children=null;
 		}
 		if (children!=null) {
+			System.out.println("Childern of "+entry.getAlarmId());
 			for (Alarm al: children) {
 				System.out.println("\tchild "+al.getAlarmId());
 				indexWithReduction.remove(al.getAlarmId());
