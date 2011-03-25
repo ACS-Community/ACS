@@ -30,11 +30,6 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	private ACSAlarmSystemInterface alarmSource;
 	
 	/**
-	 * The number of received alarms
-	 */
-	private int receivedAlarms;
-
-	/**
 	 * Constructor 
 	 * 
 	 * @param name The name of the test
@@ -48,7 +43,6 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		receivedAlarms=0;
 		categoryClient = new CategoryClient(this.getContainerServices());
 		assertNotNull(categoryClient);
 		categoryClient.connect();
@@ -76,10 +70,9 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 		System.out.print(", nodeC="+alarm.nodeChild);
 		System.out.print(", nodeP="+alarm.nodeParent);
 		System.out.print(", multiC="+alarm.multiplicityChild);
-		System.out.println(", multiP="+alarm.multiplicityParent);
-		if (alarm.alarmID.startsWith("MF_REGEXP") || alarm.alarmID.startsWith("NODE_REGEXP")) {
-			receivedAlarms++;
-		}
+		System.out.print(", multiP="+alarm.multiplicityParent);
+		System.out.print(", reduced="+alarm.reduced);
+		System.out.println(", masked="+alarm.masked);
 	}
 
 	/**
