@@ -21,12 +21,14 @@
  */
 package alma.acs.container;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
 import si.ijs.maci.ComponentInfo;
+
 import alma.ACS.ComponentStates;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -35,6 +37,9 @@ import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.logging.AcsLogger;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 
 /**
@@ -278,15 +283,15 @@ public class ComponentAdapter
 	 *  </ul>
 	 * </ol>   
 	 * 
-	 * @throws AcsJContainerServicesEx
+	 * @throws ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx, ComponentDeactivationFailedPermEx 
 	 */
-	void deactivateComponent()
-		throws AcsJContainerEx
-	{
+	void deactivateComponent() throws AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx {
 		if (m_containerLogger.isLoggable(Level.FINER)) {
-			m_containerLogger.finer("about to deactivate component " + m_compInstanceName);
+			m_containerLogger.finer("About to deactivate component " + m_compInstanceName + " with handle " + getHandle());
 		}
 		
+		AcsJComponentDeactivationUncleanEx deactivationUncleanEx = null;
+		AcsJComponentDeactivationFailedEx deactivationFailedEx = null;
 		try
 		{
 			// (1) try to reject calls by sending poa manager to inactive state  
@@ -297,53 +302,91 @@ public class ComponentAdapter
 				m_containerLogger.finer("Now rejecting any calls to component '" + m_compInstanceName + "'. Will call cleanUp() next.");
 			}
 			else if (!isInactive) {
-				m_containerLogger.warning("Component '" + m_compInstanceName + "' failed to reject calls within " + 
-						deactivateTimeoutMillis + " ms, probably because of pending calls. Will call cleanUp() anyway.");
+				String msg = "Component '" + m_compInstanceName + "' failed to reject calls within " + 
+							deactivateTimeoutMillis + " ms, probably because of pending calls. Will call cleanUp() anyway.";
+				m_containerLogger.warning(msg);
+				deactivationUncleanEx = new AcsJComponentDeactivationUncleanEx();
+				deactivationUncleanEx.setCURL(m_compInstanceName);
+				deactivationUncleanEx.setReason(msg);
+				// do not yet throw deactivationUncleanEx as we need to go through the other steps first
 			}
 			
-			// (2) call the lifecycle method cleanUp
-            ClassLoader contCL = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(m_componentClassLoader);
-            try {
-            	// TODO: also use a timeout for cleanUp
-                m_component.cleanUp();
-            } catch (Throwable thr) {
-            	m_containerLogger.log(Level.INFO, "Failure in cleanUp() method of component " + m_compInstanceName);
-            } finally {
-                Thread.currentThread().setContextClassLoader(contCL);
-                m_componentStateManager.setStateByContainer(ComponentStates.COMPSTATE_DEFUNCT);
+			// (2) call the lifecycle method cleanUp and also clean container services and other support classes 
+			ClassLoader contCL = Thread.currentThread().getContextClassLoader();
+			Thread.currentThread().setContextClassLoader(m_componentClassLoader);
+			try {
+				// TODO: also use a timeout for cleanUp
+				m_component.cleanUp();
+			} catch (Throwable thr) {
+				// AcsJComponentCleanUpEx is declared, but any other ex will be wrapped by AcsJComponentDeactivationUncleanEx as well
+				m_containerLogger.log(Level.FINE, "Failure in cleanUp() method of component " + m_compInstanceName, thr);
+				deactivationUncleanEx = new AcsJComponentDeactivationUncleanEx(thr); // this would override a previous ex from POA deactivation 
+				deactivationUncleanEx.setCURL(m_compInstanceName);
+				// do not yet throw deactivationUncleanEx as we need to nonetheless destroy the POA
+			} finally {
+				Thread.currentThread().setContextClassLoader(contCL);
+				try {
+					m_componentStateManager.setStateByContainer(ComponentStates.COMPSTATE_DEFUNCT);
+				} catch (ComponentLifecycleException ex) {
+					if (deactivationUncleanEx == null) { // an ex from cleanUp would be more important
+						deactivationUncleanEx = new AcsJComponentDeactivationUncleanEx(ex);
+						deactivationUncleanEx.setCURL(m_compInstanceName);
+					}
+					else {
+						m_containerLogger.log(Level.WARNING, "Failed to set component state DEFUNCT on " + m_compInstanceName, ex);
+					}
+				}
 				m_containerServices.cleanUp();
-                m_threadFactory.cleanUp();
-            }
+				m_threadFactory.cleanUp();
+			}
 
 			// (3) destroy the component POA
 			// since we already tried to discard requests using the poa manager before,
 			// the additional timeout can be kept small. If calls are pending, we fail.
 			int etherealizeTimeoutMillis = 1000;
-			boolean isEtherealized = acsCorba.destroyComponentPOA(m_componentPOA, compServantManager, etherealizeTimeoutMillis);			
+			boolean isEtherealized = acsCorba.destroyComponentPOA(m_componentPOA, compServantManager, etherealizeTimeoutMillis);
 			if (isEtherealized && m_containerLogger.isLoggable(Level.FINER)) {
 				m_containerLogger.finer("Component '" + m_compInstanceName + "' is etherealized.");
 			}
 			else if (!isEtherealized){
 				m_containerLogger.warning("Component '" + m_compInstanceName + "' failed to be etherealized in " + 
 						etherealizeTimeoutMillis + " ms, probably because of pending calls.");
+				deactivationFailedEx = new AcsJComponentDeactivationFailedEx();
+				deactivationFailedEx.setCURL(m_compInstanceName);
+				deactivationFailedEx.setReason("Component POA etherialization timed out after " + etherealizeTimeoutMillis + " ms.");
+				deactivationFailedEx.setIsPermanentFailure(true); // @TODO: distinguish the cases better
+				// do not yet throw deactivationFailedEx as we need to nonetheless close the classloader
 			}
 			
-			// @TODO 
 			// (4) "close" m_componentClassLoader (otherwise JVM native mem leak, see COMP-4929)
 			if (m_componentClassLoader instanceof AcsComponentClassLoader) {
-				((AcsComponentClassLoader)m_componentClassLoader).close();
+				try {
+					((AcsComponentClassLoader)m_componentClassLoader).close();
+				} catch (IOException ex) {
+					m_containerLogger.log(Level.WARNING, "Failed to close component class loader", ex);
+				}
 			}
 		}
-		catch (Throwable thr) {
-			String msg = "an error occured while deactivating component " + m_compInstanceName;
-			AcsJContainerEx ex = new AcsJContainerEx(thr);
-			ex.setContextInfo(msg);
-			throw ex;
+		catch (RuntimeException ex) {
+			if (deactivationFailedEx == null) { // exception from POA destruction has precedence
+				deactivationFailedEx = new AcsJComponentDeactivationFailedEx(ex);
+				deactivationFailedEx.setCURL(m_compInstanceName);
+				deactivationFailedEx.setReason("Unexpected exception caught during component deactivation.");
+			}
+			else {
+				m_containerLogger.log(Level.WARNING, "Unexpected exception caught during deactivation of component " + m_compInstanceName, ex);
+			}
 		}
 
+		if (deactivationFailedEx != null) {
+			throw deactivationFailedEx;
+		}
+		if (deactivationUncleanEx != null) {
+			throw deactivationUncleanEx;
+		}
+		
 		if (m_containerLogger.isLoggable(Level.FINER)) {
-			m_containerLogger.finer("done deactivating component " + m_compInstanceName);
+			m_containerLogger.finer("Done deactivating component " + m_compInstanceName  + " with handle " + getHandle());
 		}
 	}
 

@@ -77,15 +77,14 @@ import alma.acs.util.UTCUtility;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.CannotActivateComponentEx;
-import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotRestartComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
-import alma.maciErrType.ComponentDeactivationFailedPermEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
-import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -787,76 +786,98 @@ public class AcsContainer extends ContainerPOA
     // Implementation of ContainerOperations#deactivate_component
     /////////////////////////////////////////////////////////////
 
-    /**
-     * Deactivates all components whose handles are given.
-     * <p>
-     * From maci.idl:
-     * <i>Deactivation is the inverse process of activation: component is detached from the POA,
-     * and thus made unavailable through CORBA, and its resources are freed.
-     * If its code-base is no longer used, it is unloaded from memory.</i>
-     * <p>
-     * @TODO: Adjust exception handling, then remove old CannotDeactivateComponentEx declaration
-     * 
-     * @param handles  a sequence of handles identifying components that are to be released.
-     *                  If null, then all active components will be deactivated!
-     *
-     * @see si.ijs.maci.ContainerOperations#deactivate_component(int)
-     * @see ComponentAdapter#deactivateComponent()
-     *
-     */
-    public void deactivate_component(int handle) 
-    	throws CannotDeactivateComponentEx, ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx, ComponentDeactivationFailedPermEx
-    {
-        m_logger.fine("received call to deactivate_component, handle=" + handle);
+	/**
+	 * Deactivates all components whose handles are given.
+	 * <p>
+	 * From maci.idl: <i>Deactivation is the inverse process of activation: component is detached from the POA, and thus
+	 * made unavailable through CORBA, and its resources are freed. If its code-base is no longer used, it is unloaded
+	 * from memory.</i>
+	 * 
+	 * @param handles
+	 *            a handle identifying the component that should be released. If <code>handle == 0</code>, then all
+	 *            active components will be deactivated!
+	 * 
+	 * @see si.ijs.maci.ContainerOperations#deactivate_component(int)
+	 * @see ComponentAdapter#deactivateComponent()
+	 * 
+	 */
+	@Override
+	public void deactivate_component(int handle) throws ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx {
+		m_logger.fine("received call to deactivate_component, handle=" + handle);
 
-        // get the component adapters which are all != null, but might be in the wrong state
-        ComponentAdapter[] compAdapters = null;
-        if (handle == 0) {
-            compAdapters = m_activeComponentMap.getAllComponentAdapters();
-        }
-        else {
-            compAdapters = m_activeComponentMap.getComponentAdapters(new int[] {handle});
-        }
+		// get the component adapter which will be != null, but might be in the wrong state
+		ComponentAdapter[] compAdapters = m_activeComponentMap.getComponentAdapters(new int[] { handle });
 
-        // synchronization issue: mark the components for deactivation first
-        // resulting adapters are all in an appropriate state;
-        // another thread coming in with overlapping handles will not get the same components back
-        ComponentAdapter[] validAdapters = markAndFilterForDeactivation(compAdapters);
+		// (synchronizedly) mark the component for deactivation first.
+		// If an adapter is returned, it will be in the appropriate state;
+		// another thread coming in with the same handle will not get this adapter back.
+		ComponentAdapter[] validAdapters = markAndFilterForDeactivation(compAdapters);
 
-        try
-        {
-            for (int i = 0; i < validAdapters.length; i++)
-            {
-                ComponentAdapter compAdapter = validAdapters[i];
-                int compHandle = compAdapter.getHandle();
+		if (validAdapters.length > 1) {
+			// @todo error
+		}
+		else if (validAdapters.length == 0) {
+			// @todo log the no-op
+		}
+		else {
+			ComponentAdapter compAdapter = validAdapters[0];
+			try {
+				deactivateComponentInternal(compAdapter);
+			} catch (AcsJComponentDeactivationUncleanEx ex) {
+				throw ex.toComponentDeactivationUncleanEx();
+			} catch (AcsJComponentDeactivationFailedEx ex) {
+				throw ex.toComponentDeactivationFailedEx();
+			}
+		}
+	}
+	
+	/**
+	 * Called internally during shutdown. 
+	 * A deactivation exception will be logged at INFO level but will not prevent deactvation attempts of the other components.
+	 */
+	private void deactivateAllComponents() {
 
-                if (m_logger.isLoggable(Level.FINER)) {
-                	m_logger.finer("will deactivate component '" + compAdapter.getName() + "' with handle " + compHandle);
-                }
+		// get the component adapters which are all != null, but might be in the wrong state
+		ComponentAdapter[] compAdapters = m_activeComponentMap.getAllComponentAdapters();
 
-                try {
-                    // todo: perhaps use thread pool and deactivate a bunch in parallel
-                    compAdapter.deactivateComponent();
-                    if (m_logger.isLoggable(Level.FINER)) {
-                    	m_logger.finer("deactivated component '" + compAdapter.getName() + "' with handle " + compHandle);
-                    }
-                }
-                catch (Exception ex) {
-                    m_logger.log(Level.INFO, "failed to properly deactivate component " + compAdapter.getName(), ex);
-                }
-                
-                // remove comp adapter from the map to allow GC of component resources,
-                // and to allow the same handle to be used for a new component instance in the future.
-                m_activeComponentMap.remove(compHandle);
-            }
-        }
-        catch (Throwable thr)
-        {
-            m_logger.log(Level.SEVERE, "failed to deactivate at least one component!", thr);
-            AcsJCannotDeactivateComponentEx ex = new AcsJCannotDeactivateComponentEx(thr); 
-            throw ex.toCannotDeactivateComponentEx();
-        }
-    }
+		// (synchronizedly) mark the component(s) for deactivation first.
+		// resulting adapters are all in an appropriate state;
+		// another thread coming in with overlapping handles will not get the same adapters back
+		ComponentAdapter[] validAdapters = markAndFilterForDeactivation(compAdapters);
+
+		// todo: perhaps use thread pool and deactivate a bunch in parallel
+		for (ComponentAdapter compAdapter : validAdapters) {
+			try {
+				deactivateComponentInternal(compAdapter);
+			} catch (Exception ex) {
+				m_logger.log(Level.INFO, "failed to properly deactivate component " + compAdapter.getName(), ex);
+			}
+		}
+	}
+
+	/**
+	 * The common part for deactivating either one or many components.
+	 * This method will directly activate the given component adatper, without caring about its state 
+	 * or synchronization issues.
+	 * @throws AcsJComponentDeactivationFailedEx 
+	 * @throws AcsJComponentDeactivationUncleanEx 
+	 * 
+	 * @see #deactivate_component(int)
+	 * @see #deactivateAllComponents()
+	 */
+	private void deactivateComponentInternal(ComponentAdapter compAdapter) throws AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx {
+		try {
+			
+			compAdapter.deactivateComponent();
+
+		} finally {
+			// remove comp adapter from the map to allow GC of component resources,
+			// and to allow the same handle to be used for a new component instance in the future.
+			// @TODO: Or should we not remove the component in case of AcsJComponentDeactivationFailedEx,
+			//        especially if "IsPermanentFailure==false", to allow further attempts?
+			m_activeComponentMap.remove(compAdapter.getHandle());
+		}
+	}
 
 
     /**
@@ -999,7 +1020,7 @@ public class AcsContainer extends ContainerPOA
 		// shut down all active components
 		if (gracefully) {
 			try {
-				deactivate_component(0);
+				deactivateAllComponents();
 			} catch (Exception ex) {
 				m_logger.log(Level.WARNING, "Failed to deactivate components for graceful shutdown");
 			}
