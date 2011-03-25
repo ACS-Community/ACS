@@ -65,15 +65,29 @@ public class RRWithDefaultFM extends ComponentClientTestCase implements Category
 	 */
 	@Override
 	public void alarmReceived(AlarmView alarm) {
-		System.out.println("Alarm received: "+alarm.alarmID+" "+alarm.active);
+		System.out.print("Alarm received: "+alarm.alarmID+" active="+alarm.active);
+		System.out.print(", nodeC="+alarm.nodeChild);
+		System.out.print(", nodeP="+alarm.nodeParent);
+		System.out.print(", multiC="+alarm.multiplicityChild);
+		System.out.print(", multiP="+alarm.multiplicityParent);
+		System.out.print(", reduced="+alarm.reduced);
+		System.out.println(", masked="+alarm.masked);
 	}
 
 	/**
-	 * Test the MULTIPLICITY reduction 
+	 * Test the default FM reductions 
+	 * 
+	 * B>Note</B>: initially I wrote 2 test for distinguishing between
+	 * 				NODe and MULTILPICITY but there is something going wrong 
+	 * 				when the alarms for the second tests are published: SimpleSupplier.publishEvent 
+	 * 				hangs probably due to some misuse of static variables.
+	 * 				I have decided to condesate the 2 tests in only one.
+	 * 
+	 * @TODO Split this test in two test when the problem described upon has been fixed.
 	 * 
 	 * @throws Exception
 	 */
-	public void testMultiplicity() throws Exception {
+	public void testReductionRules() throws Exception {
 		System.out.println("testMultiplicity");
 		// Send the alarms to trigger the reduction
 		sendAlarm("MF_DEFAULT", "MF1", 0, true);
@@ -86,23 +100,18 @@ public class RRWithDefaultFM extends ComponentClientTestCase implements Category
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
 		// Clear the alarms
-		//sendAlarm("MF_DEFAULT", "MF1", 0, false);
-		//sendAlarm("MF_DEFAULT", "MF2", 0, false);
-		//sendAlarm("MF_DEFAULT", "MF3", 0, false);
-		//sendAlarm("MF_DEFAULT", "MF4", 0, false);
-		//sendAlarm("MF_DEFAULT", "MF5", 0, false);
+		sendAlarm("MF_DEFAULT", "MF1", 0, false);
+		sendAlarm("MF_DEFAULT", "MF2", 0, false);
+		sendAlarm("MF_DEFAULT", "MF3", 0, false);
+		sendAlarm("MF_DEFAULT", "MF4", 0, false);
+		sendAlarm("MF_DEFAULT", "MF5", 0, false);
 		// Give time for the alarms to arrive
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
-	}
-	
-	/**
-	 * Test the NODE reduction 
-	 * 
-	 * @throws Exception
-	 */
-	public void testNode() throws Exception {
+		///////////////////////////////////////////////////////////
+		///////
+		///////////////////////////////////////////////////////////
 		System.out.println("testNode");
 		sendAlarm("NODE_DEFAULT", "NODE1", 1, true);
 		sendAlarm("NODE_DEFAULT", "NODE2", 1, true);
@@ -113,10 +122,10 @@ public class RRWithDefaultFM extends ComponentClientTestCase implements Category
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
 		// Clear the alarms
-		//sendAlarm("NODE_DEFAULT", "NODE1", 1, false);
-		//sendAlarm("NODE_DEFAULT", "NODE2", 1, false);
-		//sendAlarm("NODE_DEFAULT", "NODE3", 1, false);
-		//sendAlarm("NODE_DEFAULT", "NODE4", 1, false);
+		sendAlarm("NODE_DEFAULT", "NODE1", 1, false);
+		sendAlarm("NODE_DEFAULT", "NODE2", 1, false);
+		sendAlarm("NODE_DEFAULT", "NODE3", 1, false);
+		sendAlarm("NODE_DEFAULT", "NODE4", 1, false);
 		// Give time for the alarms to arrive
 		try {
 			Thread.sleep(10000);
