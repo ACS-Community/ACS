@@ -69,7 +69,7 @@ public class AlarmCacheServerImpl {
   }
 
   public void publish(Collection alarmChanges) {
-	  System.out.println("*** Publishing");
+	  System.out.println("*** AlarmCacheServerImpl.Publishing "+alarmChanges.size()+" alarms");
     try {
       LOGGER.info("publishing " + alarmChanges.size() + " alarm(s)...");
       if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("publishing " + alarmChanges.size() + " alarm(s)...", true);

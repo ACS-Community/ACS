@@ -59,7 +59,9 @@ public class AlarmCacheListenerImpl implements AlarmCacheListener {
   }
 
   public void onAlarmChange(AlarmChange change) {
-	  System.out.println("*** Message listener processing the message");
+	  String str= "*** Message listener processing the message current="+change.getAlarmId()+" state="+change.getCurrent().getStatus().getActive();
+	  str+=", prev="+change.getPrevious().getAlarmId()+" state="+change.getPrevious().getStatus().getActive();
+	System.out.println(str);
     // push the change into the buffers
     toBePublished.push(change);
     toBeNotified.push(change);
