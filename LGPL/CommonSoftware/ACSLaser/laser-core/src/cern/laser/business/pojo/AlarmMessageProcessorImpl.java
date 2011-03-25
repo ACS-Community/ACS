@@ -12,7 +12,10 @@ import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
 
+import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
+
 import cern.laser.business.cache.AlarmCache;
+import cern.laser.business.cache.AlarmCacheException;
 import cern.laser.business.dao.SourceDAO;
 import cern.laser.business.data.Alarm;
 import cern.laser.business.data.Source;
@@ -30,7 +33,7 @@ public class AlarmMessageProcessorImpl {
   private static final Logger LOGGER = Logger.getLogger(AlarmMessageProcessorImpl.class.getName());
 
   private SourceDAO sourceDAO;
-  private AlarmCache alarmCache;
+  private ACSAlarmCacheImpl alarmCache;
 
   //
   // -- PUBLIC METHODS ----------------------------------------------
@@ -40,7 +43,7 @@ public class AlarmMessageProcessorImpl {
     this.sourceDAO = sourceDAO;
   }
 
-  public void setAlarmCache(AlarmCache alarmCache) {
+  public void setAlarmCache(ACSAlarmCacheImpl alarmCache) {
     this.alarmCache = alarmCache;
   }
 
@@ -88,127 +91,123 @@ public class AlarmMessageProcessorImpl {
 
   public void processChange(FaultState faultState, String sourceName, String sourceHostname, Timestamp sourceTimestamp)
       throws Exception {
-    LOGGER.info("processing fault state :\n" + faultState);
-    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
-    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
-        faultState.getCode())));
-    
-    // XXX LOCKING EXPOSED
-    // AlarmImpl alarm = alarmCache.acquire(triplet.toIdentifier());
-    // boolean released = false;
-
-    // process the change
-    String defined_source_name = alarm.getSource().getName();
-    if (!defined_source_name.equals(sourceName)) {
-      LOGGER.error("source name mismatch : received " + sourceName + ", should be " + defined_source_name
-          + ".\nFault State was discarded :\n" + faultState);
-    } else {
-      Status current_status = alarm.getStatus();
-      boolean ordered = true;
-      // check if fault state changes were received in the right order
-      if ((current_status.getUserTimestamp() != null) && (faultState.getUserTimestamp() != null)) {
-        if (faultState.getUserTimestamp().before(current_status.getUserTimestamp())) {
-          LOGGER.error("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
-              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
-          System.err.println("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
-              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
-          ordered = false;
-        }
-      } else {
-        if (sourceTimestamp.before(current_status.getSourceTimestamp())) {
-          LOGGER.error("source timestamp not ordered : received " + sourceTimestamp + ", was "
-              + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
-          System.err.println("source timestamp not ordered : received " + sourceTimestamp + ", was "
-                  + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
-          ordered = false;
-        }
-      }
-      if (ordered) {
-        //        StatusImpl new_status = null;
-        //        StatusImpl alarm_status = alarm.getStatus();
-        boolean notify_reduction_relatives = false;
-        boolean alarm_updated = false;
-        if (alarm.getInstant().booleanValue()) {
-          if (faultState.getDescriptor().equalsIgnoreCase(FaultState.INSTANT)) {
-            // process INSTANT fault state
-            updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
-            alarm_updated = true;
-            //            new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(), new
-            // Boolean(
-            //                faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()), sourceHostname,
-            //                sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState.getUserProperties());
-          } else {
-            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
-                + FaultState.INSTANT + ".\nFault State was discarded :\n" + faultState);
-          }
-        } else {
-          if (faultState.getDescriptor().equalsIgnoreCase(FaultState.ACTIVE)) {
-            // process ACTIVE fault state
-            if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
-              updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
-              //              new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(),
-              //                  new Boolean(faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()),
-              //                  sourceHostname, sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState
-              //                      .getUserProperties());
-              notify_reduction_relatives = true;
-              alarm_updated = true;
-            } else {
-              LOGGER.error("alarm already active.\nFault State was discarded :\n" + faultState);
-              System.err.println("*** Alarm already active.\nFault State was discarded :\n" + faultState);
-            }
-          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.TERMINATE)) {
-            // process TERMINATE fault state
-            if (alarm.getStatus().getActive().equals(Boolean.TRUE)) {
-              updateStatus(faultState, current_status, Boolean.FALSE, sourceHostname, sourceTimestamp, system_timestamp);
-              //              new_status = new StatusImpl(Boolean.FALSE, current_status.getMasked(), current_status.getReduced(),
-              //                  new Boolean(faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()),
-              //                  sourceHostname, sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState
-              //                      .getUserProperties());
-              notify_reduction_relatives = true;
-              alarm_updated = true;
-            } else {
-              LOGGER.error("alarm already terminated.\nFault State was discarded :\n" + faultState);
-            }
-          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.CHANGE)) {
-            // process CHANGE fault state
-            if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
-              LOGGER.error("changed alarm was terminated : " + alarm.getAlarmId());
-              notify_reduction_relatives = true;
-            } else {
-              updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
-              //            new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(), new
-              // Boolean(
-              //                faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()), sourceHostname,
-              //                sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState.getUserProperties());
-              alarm_updated = true;
-            }
-          } else {
-            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
-                + FaultState.ACTIVE + "|" + FaultState.TERMINATE + "|" + FaultState.CHANGE
-                + ".\nFault State was discarded :\n" + faultState);
-          }
-        }
-        //        if (new_status != null) {
-        if (alarm_updated) {
-          //          alarm.setStatus(new_status);
-          if (LOGGER.isDebugEnabled()) LOGGER.debug("applying change...");
-          if (alarm.getSource()!=null && sourceHostname!=null) {
-        	  alarm.getSource().setHostName(sourceHostname.toLowerCase());
-          }
-          
-          alarmCache.put(alarm);
-          // XXX LOCKING EXPOSED
-          //alarmCache.replace(alarm);
-          //alarmCache.release(triplet.toIdentifier());
-          //released = true;
-          if (notify_reduction_relatives) {
-            notifyReductionRelatives(alarm);
-          }
-        }
-      }
-    }
-    // XXX LOCKING EXPOSED
-    //if (!released) alarmCache.release(triplet.toIdentifier());
+	alarmCache.acquire();
+	try {
+	    LOGGER.info("processing fault state:" + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+	    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
+	    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
+	        faultState.getCode())));
+	    
+	    // process the change
+	    String defined_source_name = alarm.getSource().getName();
+	    if (!defined_source_name.equals(sourceName)) {
+	      LOGGER.error("source name mismatch : received " + sourceName + ", should be " + defined_source_name
+	          + ".\nFault State was discarded :\n" + faultState);
+	    } else {
+	      Status current_status = alarm.getStatus();
+	      boolean ordered = true;
+	      // check if fault state changes were received in the right order
+	      if ((current_status.getUserTimestamp() != null) && (faultState.getUserTimestamp() != null)) {
+	        if (faultState.getUserTimestamp().before(current_status.getUserTimestamp())) {
+	          LOGGER.error("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
+	              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
+	          System.err.println("user timestamp not ordered : received " + faultState.getUserTimestamp() + ", was "
+	              + current_status.getUserTimestamp() + ".\nFault State was discarded :\n" + faultState);
+	          ordered = false;
+	        }
+	      } else {
+	        if (sourceTimestamp.before(current_status.getSourceTimestamp())) {
+	          LOGGER.error("source timestamp not ordered : received " + sourceTimestamp + ", was "
+	              + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
+	          System.err.println("source timestamp not ordered : received " + sourceTimestamp + ", was "
+	                  + current_status.getSourceTimestamp() + ".\nFault State was discarded :\n" + faultState);
+	          ordered = false;
+	        }
+	      }
+	      if (ordered) {
+	        //        StatusImpl new_status = null;
+	        //        StatusImpl alarm_status = alarm.getStatus();
+	        boolean notify_reduction_relatives = false;
+	        boolean alarm_updated = false;
+	        if (alarm.getInstant().booleanValue()) {
+	          if (faultState.getDescriptor().equalsIgnoreCase(FaultState.INSTANT)) {
+	            // process INSTANT fault state
+	            updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
+	            alarm_updated = true;
+	            //            new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(), new
+	            // Boolean(
+	            //                faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()), sourceHostname,
+	            //                sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState.getUserProperties());
+	          } else {
+	            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
+	                + FaultState.INSTANT + ".\nFault State was discarded :\n" + faultState);
+	          }
+	        } else {
+	          if (faultState.getDescriptor().equalsIgnoreCase(FaultState.ACTIVE)) {
+	            // process ACTIVE fault state
+	            if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
+	              updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
+	              //              new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(),
+	              //                  new Boolean(faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()),
+	              //                  sourceHostname, sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState
+	              //                      .getUserProperties());
+	              notify_reduction_relatives = true;
+	              alarm_updated = true;
+	            } else {
+	              LOGGER.error("alarm already active.\nFault State was discarded :\n" + faultState);
+	              System.err.println("*** Alarm already active.\nFault State was discarded :\n" + faultState);
+	            }
+	          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.TERMINATE)) {
+	            // process TERMINATE fault state
+	            if (alarm.getStatus().getActive().equals(Boolean.TRUE)) {
+	              updateStatus(faultState, current_status, Boolean.FALSE, sourceHostname, sourceTimestamp, system_timestamp);
+	              //              new_status = new StatusImpl(Boolean.FALSE, current_status.getMasked(), current_status.getReduced(),
+	              //                  new Boolean(faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()),
+	              //                  sourceHostname, sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState
+	              //                      .getUserProperties());
+	              notify_reduction_relatives = true;
+	              alarm_updated = true;
+	            } else {
+	              LOGGER.error("alarm already terminated.\nFault State was discarded :\n" + faultState);
+	            }
+	          } else if (faultState.getDescriptor().equalsIgnoreCase(FaultState.CHANGE)) {
+	            // process CHANGE fault state
+	            if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
+	              LOGGER.error("changed alarm was terminated : " + alarm.getAlarmId());
+	              notify_reduction_relatives = true;
+	            } else {
+	              updateStatus(faultState, current_status, Boolean.TRUE, sourceHostname, sourceTimestamp, system_timestamp);
+	              //            new_status = new StatusImpl(Boolean.TRUE, current_status.getMasked(), current_status.getReduced(), new
+	              // Boolean(
+	              //                faultState.getActivatedByBackup()), new Boolean(faultState.getTerminatedByBackup()), sourceHostname,
+	              //                sourceTimestamp, faultState.getUserTimestamp(), system_timestamp, faultState.getUserProperties());
+	              alarm_updated = true;
+	            }
+	          } else {
+	            LOGGER.error("invalid fault descriptor : received " + faultState.getDescriptor() + "  while expecting "
+	                + FaultState.ACTIVE + "|" + FaultState.TERMINATE + "|" + FaultState.CHANGE
+	                + ".\nFault State was discarded :\n" + faultState);
+	          }
+	        }
+	        //        if (new_status != null) {
+	        if (alarm_updated) {
+	          //          alarm.setStatus(new_status);
+	          if (LOGGER.isDebugEnabled()) LOGGER.debug("applying change...");
+	          if (alarm.getSource()!=null && sourceHostname!=null) {
+	        	  alarm.getSource().setHostName(sourceHostname.toLowerCase());
+	          }
+	          
+	          alarmCache.put(alarm);
+	          if (notify_reduction_relatives) {
+	            notifyReductionRelatives(alarm);
+	          }
+	        }
+	      }
+	    }
+	} finally {
+		alarmCache.release();
+		LOGGER.info("processed fault state:" + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+	}
   }
 
   private void updateStatus(FaultState faultState, Status currentStatus, Boolean active, String sourceHostname,
@@ -229,6 +228,7 @@ public class AlarmMessageProcessorImpl {
         if (alarm.getStatus().getActive().equals(Boolean.FALSE)) {
           // activate multiplicity parent
           if (LOGGER.isDebugEnabled()) LOGGER.debug("activating multiplicity parent " + alarm.getTriplet());
+          System.out.println("*** activating multiplicity parent " + alarm.getTriplet());
           alarm.getStatus().setActive(Boolean.TRUE);
           Timestamp current_time = new Timestamp(System.currentTimeMillis());
           alarm.getStatus().setSourceTimestamp(current_time);
@@ -241,6 +241,7 @@ public class AlarmMessageProcessorImpl {
         if (alarm.getStatus().getActive().equals(Boolean.TRUE)) {
           // terminate multiplicity parent
           if (LOGGER.isDebugEnabled()) LOGGER.debug("terminating multiplicity parent " + alarm.getTriplet());
+          System.out.println("*** terminating multiplicity parent " + alarm.getTriplet());
           alarm.getStatus().setActive(Boolean.FALSE);
           Timestamp current_time = new Timestamp(System.currentTimeMillis());
           alarm.getStatus().setSourceTimestamp(current_time);
@@ -488,6 +489,47 @@ public class AlarmMessageProcessorImpl {
       if (LOGGER.isDebugEnabled()) LOGGER.debug("notifying multiplicity parent " + parent.getTriplet());
       updateMultiplicityNode(parent);
     }
+  }
+  
+  private void dumpAlarm(Alarm alarm) {
+	  System.out.print  ("\t"+alarm.getAlarmId()+", active="+alarm.getStatus().getActive());
+	  System.out.print  (", reduced="+alarm.getStatus().getReduced());
+	  System.out.println(", masked="+alarm.getStatus().getMasked());
+  }
+  
+  /** 
+   * Print on the stdout the state of the reduction of the passed alarm.
+   * 
+   * @param alarm
+   */
+  private void dumpAlarmReductionStatus(Alarm alarm) throws AlarmCacheException {
+	  System.out.print("Reduction state of "+alarm.getAlarmId()+", active="+alarm.getStatus().getActive());
+	  System.out.print(", isReduced="+alarm.getStatus().getReduced());
+	  System.out.println(", isMasked="+alarm.getStatus().getMasked());
+	  System.out.println("NODE Parents:");
+	  String[] nodeP=alarm.getNodeParents();
+	  for (String id: nodeP) {
+		  Alarm parent=alarmCache.getReference(id);
+		  dumpAlarm(parent);
+	  }
+	  System.out.println("NODE Childs:");
+	  String[] nodeC=alarm.getNodeChildren();
+	  for (String id: nodeC) {
+		  Alarm child=alarmCache.getReference(id);
+		  dumpAlarm(child);
+	  }
+	  System.out.println("MULTIPLICITY Parents:");
+	  String[] multiP=alarm.getMultiplicityParents();
+	  for (String id: multiP) {
+		  Alarm parent=alarmCache.getReference(id);
+		  dumpAlarm(parent);
+	  }
+	  System.out.println("MULTIPLICITY Childs:");
+	  String[] multiC=alarm.getMultiplicityChildren();
+	  for (String id: multiC) {
+		  Alarm child=alarmCache.getReference(id);
+		  dumpAlarm(child);
+	  }
   }
 
 }
