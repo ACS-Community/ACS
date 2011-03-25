@@ -23,6 +23,7 @@ package alma.acs.exceptions;
 
 import org.omg.CORBA.UserException;
 
+import alma.ACSErr.ACSException;
 import alma.ACSErr.ErrorTrace;
 
 
@@ -37,7 +38,7 @@ import alma.ACSErr.ErrorTrace;
  * 		because its class is not on our classpath.
  * <li>original Java exception was not a subclass of <code>AcsJException</code>,
  * 		e.g. any of the <code>java.lang</code> exceptions.
- *    	In order to not loose the information contained in
+ *    	In order to not lose the information contained in
  * 		<code>ErrorTrace</code> or <code>AcsJException</code>, we reconstruct
  * 		the non-ACS exception as a <code>DefaultAcsJException</code>,
  * 		stating the original exception class in the message string.
@@ -82,7 +83,9 @@ public class DefaultAcsJException extends AcsJException
 	 */
 	public UserException toCorbaException()
 	{
-		return getACSException();
+		ErrorTrace et = getErrorTrace();
+		ACSException acsEx = new ACSException(et);
+		return acsEx;
 	}
 
 	/**

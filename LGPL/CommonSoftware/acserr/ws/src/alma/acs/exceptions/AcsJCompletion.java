@@ -44,9 +44,13 @@ import alma.acs.util.UTCUtility;
  * <p>   
  * For any combination of error type/code, the ACS framework generates subclasses
  * of <code>AcsJCompletion</code>, which ensure usage of the correct type and code.
- * To create a completion object from scratch, use the appropriate subclass; to convert
- * an existing CORBA <code>Completion</code> to an <code>AcsJCompletion</code>,
- * use the static method {@link #fromCorbaCompletion}.
+ * <ul>
+ *   <li> To create a completion object from scratch, use the appropriate subclass; 
+ *   <li> To create a completion from the base type <code>AcsJException</code>,
+ *        which may be useful inside a catch block, use {@link AcsJException#toAcsJCompletion()}.
+ *   <li> To convert an existing CORBA <code>Completion</code> to an <code>AcsJCompletion</code>,
+ *        use the static method {@link #fromCorbaCompletion}.
+ * </ul>
  * 
  * @author hsommer
  * created Jan 20, 2004 3:11:34 PM
@@ -114,7 +118,7 @@ public class AcsJCompletion
 			m_type = acsJEx.getErrorType();
 			m_code = acsJEx.getErrorCode();
 			m_timestamp = acsJEx.getTimestampMillis();
-			m_jex = acsJEx;					
+			m_jex = acsJEx;
 		}
 		else
 		{

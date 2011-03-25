@@ -303,6 +303,14 @@ public abstract class AcsJException extends Exception
 	public abstract UserException toCorbaException();
 
 	/**
+	 * Creates an AcsJCompletion that contains this exception. 
+	 * @return A completion object for which {@link AcsJCompletion#getAcsJException()} will yield this exception.
+	 */
+	public AcsJCompletion toAcsJCompletion() {
+		return new AcsJCompletion(this);
+	}
+
+	/**
 	 * Sets the default severity level to {@link Severity#Error}.
 	 * May be overridden by a subclass to set the default severity for that exception, 
 	 * or may be called from application code to set it for a specific exception instance.
@@ -510,27 +518,6 @@ public abstract class AcsJException extends Exception
             ErrorTraceManipulator.setProperty(et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_MESSAGE, thr.getMessage());
         }
     }
-
-    
-    
-    /**
-	 * Creates an <code>ACSException</code>.
-	 * Typically to be called from a top-level catch block that must
-	 * convert any of the Java exceptions used internally by the Java program
-	 * to an IDL type exception that can be thrown on over CORBA.
-	 *   
-	 * @return ACSException
-	 * 
-	 * @deprecated  <code>ACSException</code> should no longer be used since 
-	 * 				the new error framework generates type-safe corba exceptions
-	 * 				with an <code>ErrorTrace</code> inside.
-	 */
-	public ACSException getACSException()
-	{
-		ErrorTrace et = getErrorTrace();
-		ACSException acsEx = new ACSException(et);
-		return acsEx;
-	}
 
 
 	/**

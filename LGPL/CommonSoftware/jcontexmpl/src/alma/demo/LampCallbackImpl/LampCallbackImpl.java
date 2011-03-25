@@ -28,6 +28,7 @@ import alma.ACS.CBdouble;
 import alma.ACS.CBdoubleHelper;
 import alma.ACS.CBdoubleOperations;
 import alma.ACSErr.CompletionHolder;
+import alma.ACSErr.ErrorTrace;
 import alma.ACS.Monitordouble;
 import alma.ACS.RWdouble;
 import alma.ACSErr.ACSException;
@@ -63,7 +64,7 @@ public class LampCallbackImpl extends ComponentImplBase implements LampCallbackO
 	public void cleanUp()
 	{
 		m_logger.info("cleanUp() called...");
-		m_containerServices.releaseComponent(m_lampCurl);
+		m_containerServices.releaseComponent(m_lampCurl, null);
 	}
 
 	/////////////////////////////////////////////////////////////
@@ -184,8 +185,9 @@ public class LampCallbackImpl extends ComponentImplBase implements LampCallbackO
 		catch (AcsJException e)
 		{
 			// to the outside (CORBA) we must convert it
-			ACSException e2 = e.getACSException();
-			throw e2;
+			ErrorTrace et = e.getErrorTrace();
+			ACSException acsEx = new ACSException(et);
+			throw acsEx;
 		}
 	}
 
