@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: enumpropROImpl.i,v 1.58 2011/03/10 18:52:28 rtobar Exp $"
+* "@(#) $Id: enumpropROImpl.i,v 1.59 2011/03/25 10:33:40 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -409,7 +409,10 @@ bool ROEnumImpl<ACS_ENUM_T(T), SK>::readCharacteristics()
     	  alarmFaultMember_m = fm.substr(0, fm.find(':')); //
       }
 
-      alarmLevel_m = dao->get_long("alarm_level");
+      alarmLevel_m = 0;
+      try {
+         alarmLevel_m = dao->get_long("alarm_level");
+      } catch(ACSErr::ACSbaseExImpl& ex) {}
 
       return true;
       }
