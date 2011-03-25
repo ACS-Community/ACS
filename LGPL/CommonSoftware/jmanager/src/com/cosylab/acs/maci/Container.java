@@ -4,6 +4,12 @@
  
 package com.cosylab.acs.maci;
 
+import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
+
 /**
  * Container is an agent of MACI that is installed on every computer of the control system.
  * There can be more than one Container living on the same computer, but there can be only one Container per process.
@@ -57,7 +63,8 @@ public interface Container extends Client
 	 * @return			Returns the reference to the object that has just been activated.
 	 *					If the Component could not the activated, a nil reference is returned. 
 	 */
-	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type) throws RemoteException;
+	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type)
+		throws AcsJCannotActivateComponentEx;
 	
 	/**
 	 * Deactivate a component whose handles is given.
@@ -69,7 +76,9 @@ public interface Container extends Client
 	 * 
 	 * @param	handle	A handle identifying a component to be released.
 	 */
-	public void deactivate_component(int handle) throws RemoteException;
+	public void deactivate_component(int handle) 
+		throws AcsJComponentDeactivationFailedPermEx,AcsJCannotDeactivateComponentEx,
+			   AcsJComponentDeactivationUncleanEx,AcsJComponentDeactivationFailedEx;
 	
 	/**
 	 * Returns information about a subset of components that are currently hosted by the Container. 

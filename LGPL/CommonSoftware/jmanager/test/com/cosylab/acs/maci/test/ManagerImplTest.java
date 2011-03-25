@@ -38,6 +38,7 @@ import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.IntArray;
+import com.cosylab.acs.maci.Manager.LongCompletionCallback;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
@@ -2323,7 +2324,7 @@ public class ManagerImplTest extends TestCase
 			try { Thread.sleep(SLEEP_TIME_MS); } catch (InterruptedException ie) {}
 
 
-			// there should be only no components activated
+			// there should be no components activated
 			infos = manager.getComponentInfo(info.getHandle(), new int[0], "*", "*", true);
 			assertEquals(0, infos.length);
 
@@ -3175,6 +3176,159 @@ public class ManagerImplTest extends TestCase
 		
 	}
 	
+	class LongCompletionCallbackTestImpl implements LongCompletionCallback
+	{
+		public volatile int result = Integer.MAX_VALUE;
+		public volatile Throwable exception = null;
+		public volatile boolean doneFlag = false;
+
+		@Override
+		public synchronized void failed(int result, Throwable exception) {
+			this.result = result;
+			this.exception = exception;
+			doneFlag = true;
+			this.notifyAll();
+		}
+		
+		@Override
+		public synchronized void done(int result) {
+			this.result = result;
+			this.exception = null;
+			doneFlag = true;
+			this.notifyAll();
+		}
+		
+		public synchronized void reset()
+		{
+			result = Integer.MIN_VALUE;
+			exception = null;
+			doneFlag = false;
+		}
+	}
+	
+	public void testReleaseComponentAsync() throws Throwable
+	{
+		
+		try {
+			try
+			{
+				manager.releaseComponentAsync(0, null, null);
+				fail();
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+	
+				System.out.println("This is OK: null parameter");
+			}
+			
+			try
+			{
+				manager.releaseComponentAsync(Integer.MAX_VALUE, null, null);
+				fail();
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+	
+				System.out.println("This is OK: null parameter");
+			}
+			
+			// null callback is allowed
+			
+			try
+			{
+				manager.releaseComponentAsync(dummyHandle, dummyURI, null);
+				fail();
+			}
+			catch (AcsJNoPermissionEx npe)
+			{
+				System.out.println("This is OK: "+npe.toString());
+			}
+			catch (AcsJBadParameterEx bpe)
+			{
+				fail();
+			}
+			
+			
+			TestClient client = new TestClient(clientName);
+			ClientInfo info = manager.login(client);
+
+			TestClient client2 = new TestClient("anotherClient");
+			ClientInfo info2 = manager.login(client2);
+
+			TestContainer container = new TestContainer("Container");
+			Map supportedComponents = new HashMap();
+			Component mount1COB = new TestComponent("MOUNT1");
+			supportedComponents.put("MOUNT1", mount1COB);
+			Component mount4COB = new TestComponent("MOUNT4",false,true);
+			supportedComponents.put("MOUNT4", mount4COB);
+			container.setSupportedComponents(supportedComponents);
+
+			ClientInfo containerInfo = manager.login(container);
+
+			// here also parallel activation will be tested (autostart and activation bellow)
+
+			StatusHolder status = new StatusHolder();
+			Component ref = manager.getComponent(info.getHandle(), new URI("MOUNT1"), true, status);
+			
+			assertEquals(mount1COB, ref);
+			assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
+
+			status = new StatusHolder();
+			ref = manager.getComponent(info2.getHandle(), new URI("MOUNT1"), true, status);
+			
+			assertEquals(mount1COB, ref);
+			assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
+
+			
+			ref = manager.getComponent(info.getHandle(), new URI("MOUNT4"), true, status);
+			
+			assertEquals(mount4COB, ref);
+			assertEquals(ComponentStatus.COMPONENT_ACTIVATED, status.getStatus());
+			
+			try
+			{
+				LongCompletionCallbackTestImpl lcc = new LongCompletionCallbackTestImpl();
+					
+				synchronized (lcc) {
+					manager.releaseComponentAsync(info2.getHandle(), new URI("MOUNT1"), lcc);
+					if (!lcc.doneFlag)
+						lcc.wait(SLEEP_TIME_MS);
+					if (!lcc.doneFlag)
+						fail("callback not called");
+					assertEquals(1, lcc.result);
+					assertNull(lcc.exception);
+					lcc.reset();
+
+					manager.releaseComponentAsync(info.getHandle(), new URI("MOUNT1"), lcc);
+					if (!lcc.doneFlag)
+						lcc.wait(SLEEP_TIME_MS);
+					if (!lcc.doneFlag)
+						fail("callback not called");
+					assertEquals(0, lcc.result);
+					assertNull(lcc.exception);
+					lcc.reset();
+					
+					manager.releaseComponentAsync(info.getHandle(), new URI("MOUNT4"), lcc);
+					if (!lcc.doneFlag)
+						lcc.wait(SLEEP_TIME_MS);
+					if (!lcc.doneFlag)
+						fail("callback not called");
+					assertEquals(0, lcc.result);
+					assertNotNull(lcc.exception);
+					
+				}
+			}
+			catch (Exception ex)
+			{
+				fail(ex.toString());
+			}
+			
+		} catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+		
+	}
+
 	public void testMakeComponentMortal()
 	{
 		

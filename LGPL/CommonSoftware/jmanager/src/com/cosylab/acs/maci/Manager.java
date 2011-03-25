@@ -7,11 +7,11 @@ package com.cosylab.acs.maci;
 import java.net.URI;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
 import alma.maciErrType.wrappers.AcsJIncompleteComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJInvalidComponentSpecEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * Manager is the central point of interaction between the components 
@@ -190,6 +190,13 @@ public interface Manager extends ManagerConstants
 	 *					This is a useful debugging tool.
 	 */
 	public int releaseComponent(int id, URI curl) throws AcsJNoPermissionEx, AcsJBadParameterEx;
+
+	public interface LongCompletionCallback {
+		void done(int result);
+		void failed(int result, Throwable exception);
+	}
+	
+	public void releaseComponentAsync(int id, URI curl, LongCompletionCallback callback) throws AcsJNoPermissionEx, AcsJBadParameterEx;
 
 	/**
 	 * Forcefully release a component.

@@ -34,7 +34,9 @@ import alma.ACS.CBlong;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.config.LogConfigException;
@@ -71,6 +73,7 @@ import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.HandleHelper;
 import com.cosylab.acs.maci.Manager;
+import com.cosylab.acs.maci.Manager.LongCompletionCallback;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.StatusHolder;
@@ -964,13 +967,11 @@ public class ManagerProxyImpl extends ManagerPOA
 			pendingRequests.decrementAndGet();
 		}
 	}
-
 	
 	@Override
 	public void release_component_async(int id, String component_url,
 			CBlong callback, CBDescIn desc) throws NoPermissionEx
 	{
-		// TODO async implementation, report error via Completion
 		pendingRequests.incrementAndGet();
 		try
 		{
@@ -978,11 +979,45 @@ public class ManagerProxyImpl extends ManagerPOA
 			URI uri = null;
 			if (component_url != null)
 				uri = CURLHelper.createURI(component_url);
-			int clients = manager.releaseComponent(id, uri);
-			if (callback != null) {
-				CBDescOut descOut = new CBDescOut(0, desc.id_tag);
-				callback.done(clients, new ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+			
+			final CBlong fcallback = callback;
+			final CBDescOut descOut = new CBDescOut(0, desc.id_tag);
+			LongCompletionCallback lcc = null;
+			if (callback != null)
+			{
+				lcc = new LongCompletionCallback() {
+				
+					@Override
+					public void failed(int result, Throwable exception) {
+						if (exception instanceof AcsJException)
+						{
+							AcsJException aex = (AcsJException)exception;
+							fcallback.done(result, aex.toAcsJCompletion().toCorbaCompletion(), descOut);
+						
+						}
+						else
+						{
+							AcsJUnexpectedExceptionEx uex = new AcsJUnexpectedExceptionEx(exception);
+							fcallback.done(result, uex.toAcsJCompletion().toCorbaCompletion(), descOut);
+						}
+					}
+				
+					@Override
+					public void done(int result) {
+						fcallback.done(result, new ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+					}
+				};
 			}
+
+			manager.releaseComponentAsync(id, uri, lcc);
+			
+		}
+		catch (AcsJNoPermissionEx nop)
+		{
+			reportException(nop);
+
+			// rethrow CORBA specific
+			throw nop.toNoPermissionEx();
 		}
 		catch (URISyntaxException usi)
 		{

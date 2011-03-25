@@ -12,6 +12,12 @@ import java.net.URI;
 
 import org.omg.CORBA.Object;
 
+import alma.ACS.CBDescIn;
+import alma.ACS.CBDescOut;
+import alma.ACS.CBlongPOA;
+import alma.ACSErr.Completion;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
+import alma.acs.exceptions.AcsJCompletion;
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentSpecIncompatibleWithActiveComponentEx;
@@ -25,12 +31,12 @@ import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ContainerInfo;
+import com.cosylab.acs.maci.HandleHelper;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.Manager;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.StatusSeqHolder;
-import com.cosylab.acs.maci.HandleHelper;
 
 /**
  * CORBA Manager Proxy.
@@ -468,6 +474,43 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 		}
 		else
 			return false;
+	}
+
+	@Override
+	public void releaseComponentAsync(int id, URI curl,
+			LongCompletionCallback callback) throws AcsJNoPermissionEx, AcsJBadParameterEx {
+		try
+		{
+			final LongCompletionCallback fcallback = callback;
+			CBlongPOA cbo = new CBlongPOA() {
+				
+				@Override
+				public boolean negotiate(long time_to_transmit, CBDescOut desc) {
+					return false;
+				}
+				
+				@Override
+				public void working(int value, Completion c, CBDescOut desc) {
+					// noop
+				}
+				
+				@Override
+				public void done(int value, Completion c, CBDescOut desc) {
+					if (c.code == 0 && c.type == 0)
+						fcallback.done(value);
+					else
+						// TODO maybe convert to specific exceptions
+						fcallback.failed(value, AcsJCompletion.fromCorbaCompletion(c).getAcsJException());
+				}
+			};
+			
+			CBDescIn desc = new CBDescIn(0, 0, 0);
+		    manager.release_component_async(id, curl.toString(), cbo._this(), desc);
+		}
+		catch (NoPermissionEx nop)
+		{
+			throw new AcsJNoPermissionEx(nop);
+		}
 	}
 
 }

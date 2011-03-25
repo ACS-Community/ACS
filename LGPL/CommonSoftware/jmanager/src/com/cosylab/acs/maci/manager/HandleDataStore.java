@@ -364,7 +364,7 @@ public class HandleDataStore implements Serializable
 	/**
 	 * Allocate an element in this <code>HandleDataStore</code>.
 	 * 
-	 * @return	newly allocated handle if allocation was successfull, otherwise <code>0</code>
+	 * @return	newly allocated handle if allocation was successful, otherwise <code>0</code>
 	 * @see	#deallocate
 	 */
 	public int allocate()
@@ -376,7 +376,7 @@ public class HandleDataStore implements Serializable
 	 * Allocate an element in this <code>HandleDataStore</code>.
 	 * 
 	 * @param	handle	hanlde be allocated
-	 * @return	newly allocated handle if allocation was successfull, otherwise <code>0</code>
+	 * @return	newly allocated handle if allocation was successful, otherwise <code>0</code>
 	 * @see	#deallocate
 	 */
 	public int allocate(int handle)
@@ -387,7 +387,7 @@ public class HandleDataStore implements Serializable
 	/**
 	 * Preallocate an element in this <code>HandleDataStore</code>.
 	 * 
-	 * @return	newly allocated handle if allocation was successfull, otherwise <code>0</code>
+	 * @return	newly allocated handle if allocation was successful, otherwise <code>0</code>
 	 * @see	#allocate
 	 * @see	#deallocate
 	 */
@@ -407,7 +407,7 @@ public class HandleDataStore implements Serializable
 	 * 			listing through the ADT will skip preallocated elements), to completely allocate 
 	 * 			preallocated elements use <code>ackAllocation(handle)</code> or canceled by
 	 * 			<code>deallocate(handle, true)</code> method.
-	 * @return	newly allocated handle if allocation was successfull, otherwise <code>0</code>
+	 * @return	newly allocated handle if allocation was successful, otherwise <code>0</code>
 	 * @see	#deallocate
 	 */
 	public int allocate(int handle, boolean preallocate)

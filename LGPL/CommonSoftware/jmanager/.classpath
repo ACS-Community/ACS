@@ -30,5 +30,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/alarmsysteminterface.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/JavaContainerError.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeOK.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>

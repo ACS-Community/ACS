@@ -125,4 +125,19 @@ public class HandleDataStoreTest extends TestCase
 		assertEquals(right.length, pos);
 		
 	}
+	
+	/*
+	public void testWrapAllocationDeallocation()
+	{
+		HandleDataStore hds = new HandleDataStore();
+		long i = 1;
+		for (; i <= 3*Integer.MAX_VALUE; i++)
+		{
+			int handle = hds.allocate();
+			assertFalse(0 == handle);
+			hds.deallocate(handle);
+		} 
+	}
+	 */
+	
 }

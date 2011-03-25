@@ -55,6 +55,7 @@ import si.ijs.maci.ClientOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJNullPointerEx;
 import alma.acs.concurrent.DaemonThreadFactory;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.util.ACSPorts;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
 import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
@@ -2216,7 +2217,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		String requestorName = getRequestorName(id);
 		logger.log(Level.INFO,"'" + requestorName + "' requested release of component '" + curl + "'.");
 
-		int owners = internalReleaseComponent(id, curl, id == this.getHandle());
+		int owners = internalReleaseComponent(id, curl, id == this.getHandle()).owners;
 
 		logger.log(Level.INFO,"Component '" + curl + "' released by '" + requestorName + "'.");
 
@@ -2224,6 +2225,60 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		return owners;
 
+	}
+	
+	/**
+	 * @see com.cosylab.acs.maci.Manager#releaseComponentAsync(int, java.net.URI, com.cosylab.acs.maci.Manager.LongCompletionCallback)
+	 */
+	public void releaseComponentAsync(int id, URI curl,
+			LongCompletionCallback callback) throws AcsJNoPermissionEx, AcsJBadParameterEx
+	{
+		// checks CURL
+		// throw up same exceptions
+		try {
+			checkCURL(curl);
+		} catch (AcsJBadParameterEx e) {
+			throw e;
+		}
+
+		// check handle and NONE permissions
+		securityCheck(id, AccessRights.NONE);
+
+		/****************************************************************/
+
+		// log info
+		final String requestorName = getRequestorName(id);
+		logger.log(Level.INFO,"'" + requestorName + "' requested async release of component '" + curl + "'.");
+
+		final int fid = id;
+		final URI fcurl = curl;
+		final boolean force = (id == this.getHandle());
+		final LongCompletionCallback fcallback = callback;
+		threadPool.execute(new Runnable() {
+
+			@Override
+			public void run()
+			{
+				try
+				{
+					ReleaseComponentResult rcr = internalReleaseComponent(fid, fcurl, force);
+					if (fcallback != null) 
+					{
+						if (rcr.exception == null) {
+							logger.log(Level.INFO,"Component '" + fcurl + "' async released by '" + requestorName + "'.");
+							fcallback.done(rcr.owners);
+						}
+						else {
+							logger.log(Level.INFO,"Component '" + fcurl + "' async released by '" + requestorName + " with failure'.");
+							fcallback.failed(rcr.owners, rcr.exception);
+						}
+					}
+				} catch (Throwable th) {
+						if (fcallback != null) fcallback.failed(-1, th);
+				}
+			}
+				
+		});
 	}
 
 	/**
@@ -2257,7 +2312,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		String requestorName = getRequestorName(id);
 		logger.log(Level.INFO,"'" + requestorName + "' requested forceful release of component '" + curl + "'.");
 
-		int owners = internalReleaseComponent(id, curl, true);
+		int owners = internalReleaseComponent(id, curl, true).owners;
 
 		logger.log(Level.INFO,"Component '" + curl + "' forcefully released by '" + requestorName + "'.");
 
@@ -6508,6 +6563,17 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		return componentInfo;
 	}
 
+	class ReleaseComponentResult
+	{
+		public int owners;
+		public Throwable exception;
+
+		public ReleaseComponentResult(int owners, Throwable exception) {
+			this.owners = owners;
+			this.exception = exception;
+		}
+	}
+	
 	/**
 	 * Internal method for releasing components.
 	 *
@@ -6516,7 +6582,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	force	force deactivate, if still has owners then component will be made unavailable.
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
-	private int internalReleaseComponent(int owner, URI curl, boolean force)
+	private ReleaseComponentResult internalReleaseComponent(int owner, URI curl, boolean force)
 	   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
 
@@ -6544,7 +6610,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		if (h != 0)
 			return internalReleaseComponent(owner, h, force);
 		else
-			return 0;
+			return new ReleaseComponentResult(0, null);
 	}
 
 	/**
@@ -6591,7 +6657,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				releaseRWLock = true;
 				activationPendingRWLock.readLock().lock();
 
-				internalNoSyncDeactivateComponent(componentInfo);
+				try {
+					internalNoSyncDeactivateComponent(componentInfo);
+				} catch (Throwable th) {
+					// no handling, already logged
+				}
 			}
 			finally
 			{
@@ -6615,7 +6685,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	force	force deactivate, if still has owners then component will be made unavailable.
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
-	private int internalReleaseComponent(int owner, int h, boolean force)
+	private ReleaseComponentResult internalReleaseComponent(int owner, int h, boolean force)
 		   throws AcsJNoPermissionEx, AcsJBadParameterEx 
 	{
 
@@ -6684,7 +6754,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * @param	force	force deactivate, if still has owners then component will be made unavailable.
 	 * @return			Number of clients that are still using the component after the operation completed.
 	 */
-	private int internalNoSyncReleaseComponent(int owner, int h, boolean force)
+	private ReleaseComponentResult internalNoSyncReleaseComponent(int owner, int h, boolean force)
 	     throws AcsJNoPermissionEx 
 	{
 
@@ -6760,10 +6830,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 		/****************** component deactivation ******************/
 
+		ReleaseComponentResult result = new ReleaseComponentResult(owners, null);
+
 		// there is no owners of the component, deactivate it
 		if (force)
 		{
-			internalNoSyncDeactivateComponent(componentInfo);
+			try {
+				internalNoSyncDeactivateComponent(componentInfo);
+			} catch (Throwable th) {
+				result.exception = th;
+			}
 		}
 		else if (owners == 0)
 		{
@@ -6784,8 +6860,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				}
 			}
 
-			if (keepAliveTime == 0)
-				internalNoSyncDeactivateComponent(componentInfo);
+			if (keepAliveTime == 0) {
+				try {
+					internalNoSyncDeactivateComponent(componentInfo);
+				} catch (Throwable th) {
+					result.exception = th;
+				}
+			}
 			else if (keepAliveTime > 0)
 				delayedDeactivationTask.schedule(new DeactivateComponentTask(name), keepAliveTime * 1000);
 
@@ -6814,7 +6895,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				topologySortManager.notifyTopologyChange(componentInfo.getContainer());
 		}
 
-		return owners;
+		return result;
 	}
 
 
@@ -6822,7 +6903,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 * Deactivate component, issue deactivate reeust to container (or other manager).
 	 * @param componentInfo	info about component to be deactivated.
 	 */
-	private void internalNoSyncDeactivateComponent(ComponentInfo componentInfo)
+	private void internalNoSyncDeactivateComponent(ComponentInfo componentInfo) throws Throwable
 	{
 		// unbind from remote directory
 		unbind(convertToHiearachical(componentInfo.getName()), "O");
@@ -6830,8 +6911,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int handle = componentInfo.getHandle() & HANDLE_MASK;
 		int owners = componentInfo.getClients().size();
 
-		try
-		{
+//		try
+//		{
 			//
 			// get container/remote manager
 			//
@@ -6852,7 +6933,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				        throw new CoreException("Failed to obtain manager for domain '" + domainName + "'.");
 			    } catch (Throwable th) {
 					logger.log(Level.WARNING, "Failed to obtain non-local manager required by component '"+name+"'.", th);
-					return;
+					throw th;
 			    }
 
 				// @todo MF call release_component on other manager (logout?)
@@ -6866,6 +6947,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				catch (Throwable th)
 				{
 					logger.log(Level.WARNING, "Failed to release component '"+componentInfo.getName()+"' on remote manager.'", th);
+					throw th;
 				}
 
 			}
@@ -6924,10 +7006,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					{
 						componentInfo.getComponent().destruct();
 					}
-					catch (Exception ex)
+					catch (Throwable ex)
 					{
 						RemoteException re = new RemoteException("Failed to destruct component '"+componentInfo.getName()+"', exception caught when invoking 'destruct()' method.", ex);
 						logger.log(Level.SEVERE, re.getMessage(), re);
+						throw ex;
 					}
 
 					long deactivationTime = 0;
@@ -6938,10 +7021,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						container.deactivate_component(componentInfo.getHandle());
 					    deactivationTime = System.currentTimeMillis();
 					}
-					catch (Exception ex)
+					catch (AcsJException aex)
+					{
+						logger.log(Level.SEVERE, aex.getMessage(), aex);
+						throw aex;
+					}
+					catch (Throwable ex)
 					{
 						RemoteException re = new RemoteException("Failed to deactivate component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") on container '"+containerInfo.getName()+"'.", ex);
 						logger.log(Level.SEVERE, re.getMessage(), re);
+						throw ex;
 					}
 
 					// notify administrators about deactivation, but not if failed
@@ -6955,7 +7044,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			}
 
-		} finally {
+//		} finally {
 			if (owners == 0)
 			{
 				// deallocate Component
@@ -6965,7 +7054,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					//components.deallocate(handle);
 				}
 			}
-		}
+//		}
 
 		// log info
 		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") deactivated.");
