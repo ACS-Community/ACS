@@ -285,7 +285,7 @@ public class ComponentAdapter
 	 * This method logs errors as FINER if they also cause an exception, and as WARNING if they cannot lead to an exception
 	 * because other more important error conditions are present.
 	 * 
-	 * @throws ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx, ComponentDeactivationFailedPermEx 
+	 * @throws ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx 
 	 */
 	void deactivateComponent() throws AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx {
 		if (m_containerLogger.isLoggable(Level.FINER)) {

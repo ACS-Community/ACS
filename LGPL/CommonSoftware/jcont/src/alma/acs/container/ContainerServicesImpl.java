@@ -78,7 +78,6 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.maciErrType.wrappers.AcsJmaciErrTypeEx;
