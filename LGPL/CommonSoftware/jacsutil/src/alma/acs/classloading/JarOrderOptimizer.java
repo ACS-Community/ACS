@@ -67,6 +67,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"avalon-framework.jar",
 		"logkit.jar",
 		"acscomponent.jar",
+		"acsCallbacksSupport.jar",
 		
 		"jManager.jar",
 		"jmanagerErrType.jar",
