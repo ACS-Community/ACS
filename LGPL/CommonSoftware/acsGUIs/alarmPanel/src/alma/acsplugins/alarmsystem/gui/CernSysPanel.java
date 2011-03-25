@@ -157,7 +157,7 @@ public class CernSysPanel extends JPanel {
 		setLayout(new BorderLayout());
 		
 		// Build GUI objects
-		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES);
+		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES,false);
 		alarmSound= new AlarmSound(model);
 		alarmTable = new AlarmTable(model,this);
 		statusLine = new StatusLine(model,this);

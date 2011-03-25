@@ -118,7 +118,7 @@ public class ReducedChainDlg extends JDialog implements ActionListener {
 		categoryClient=client;
 		alarm=rootAlarm;
 		this.panel=panel;
-		model = new AlarmTableModel(rootPane,false);
+		model = new AlarmTableModel(rootPane,false,true);
 		table = new AlarmTable(model,panel);
 		initialize();
 		refreshContent();
