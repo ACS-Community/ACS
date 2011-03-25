@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.20 2010/02/15 15:23:49 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.21 2011/03/25 20:29:41 acaproni Exp $
  * @since    
  */
 
@@ -152,7 +152,7 @@ public class AlarmTable extends JTable implements ActionListener {
 				}
 				public void run() {
 					ackMI.setEnabled(!selectedAlarm.getStatus().isActive());
-					showReducedMI.setEnabled(selectedAlarm!=null && (selectedAlarm.isNodeParent() || selectedAlarm.isMultiplicityParent()));
+					showReducedMI.setEnabled(selectedAlarm!=null && (selectedAlarm.isParent()));
 					popupM.show(e.getComponent(),e.getX(),e.getY());
 					popupM.setVisible(true);
 				}
@@ -491,8 +491,8 @@ public class AlarmTable extends JTable implements ActionListener {
 			columns[t]=colModel.getColumn(t);
 			columns[t].setIdentifier(AlarmTableColumn.values()[t]);
 			if (columns[t].getIdentifier()==AlarmTableColumn.ICON || 
-					columns[t].getIdentifier()==AlarmTableColumn.REDUCED ||
-					columns[t].getIdentifier()==AlarmTableColumn.HIDES_CHILDREN) {
+					columns[t].getIdentifier()==AlarmTableColumn.IS_CHILD ||
+					columns[t].getIdentifier()==AlarmTableColumn.IS_PARENT) {
 				columns[t].setWidth(20);
 				columns[t].setResizable(false);
 				columns[t].setPreferredWidth(20);
@@ -563,13 +563,13 @@ public class AlarmTable extends JTable implements ActionListener {
 			} else {
 				return emptyLbl;
 			}
-		} else if (col.getIdentifier().equals(AlarmTableColumn.REDUCED))  {
-			if (entry.isReduced()) {
+		} else if (col.getIdentifier().equals(AlarmTableColumn.IS_CHILD))  {
+			if (entry.isChild()) {
 				return AlarmTable.reductionRenderer;
 			} else {
 				return emptyLbl;
 			}
-		} else if (col.getIdentifier().equals(AlarmTableColumn.HIDES_CHILDREN)) {
+		} else if (col.getIdentifier().equals(AlarmTableColumn.IS_PARENT)) {
 			if (entry.isParent()) {
 				return AlarmTable.hasReducedNodesRenderer;
 			} else {
