@@ -799,13 +799,10 @@ public class ContainerServicesImpl implements ContainerServices
 		public void incomingException(AcsJException ex) {
 			try {
 				if (ex instanceof AcsJComponentDeactivationUncleanEx) {
-					delegate.componentReleased(false);
+					delegate.componentReleased((AcsJComponentDeactivationUncleanEx)ex);
 				}
 				else if (ex instanceof AcsJComponentDeactivationFailedEx) {
-					delegate.errorComponentReleaseFailed( ((AcsJComponentDeactivationFailedEx)ex).getReason(), false);
-				}
-				else if (ex instanceof AcsJComponentDeactivationFailedPermEx) {
-					delegate.errorComponentReleaseFailed( ((AcsJComponentDeactivationFailedPermEx)ex).getReason(), true );
+					delegate.errorComponentReleaseFailed((AcsJComponentDeactivationFailedEx)ex);
 				}
 				else {
 					m_logger.log(Level.WARNING, "Received unexpected exception from manager#release_component_async, please report to ACS developers.", ex);
@@ -823,7 +820,7 @@ public class ContainerServicesImpl implements ContainerServices
 		public void incomingResponse(Integer numberRemainingClients) {
 			// we do not expose numberRemainingClients in the CS API
 			try {
-				delegate.componentReleased(true);
+				delegate.componentReleased(null);
 			}
 			catch (RuntimeException handlerEx) {
 				m_logger.log(Level.FINE, "User-supplied handler threw an exception.", handlerEx);

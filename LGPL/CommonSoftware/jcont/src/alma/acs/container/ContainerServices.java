@@ -37,6 +37,8 @@ import alma.acs.component.ComponentStateManager;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.entities.commonentity.EntityT;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 /**
  * Through this interface, the container offers services to its hosted components.
@@ -263,15 +265,15 @@ public interface ContainerServices extends ContainerServicesBase
 	 * which may take some time in case there are still active requests being processed.
 	 * 
 	 * @param componentUrl  the name/curl of the component instance as used by the manager
-	 * @deprecated since ACS 9.1.0. Use <code>releaseComponent(componentUrl, null)</code> instead to get the same functionality.
+	 * @deprecated since ACS 9.1.0. Use <code>releaseComponent(componentUrl, null)</code> instead.
 	 */
 	public void releaseComponent(String componentUrl);
 
 	
 	/**
-	 * Callback object that can be optionally given to 
+	 * Callback that can be optionally given to 
 	 * {@link ContainerServices#releaseComponent(String, ComponentReleaseCallback)}.
-	 * Users may override the methods they need.
+	 * Users may override the methods they need in their subclasses of <code>ComponentReleaseCallback</code>.
 	 * <p>
 	 * Note that {@link #awaitComponentRelease(long, TimeUnit)} is not a callback method
 	 * but should make it easier to synchronize user code execution with component release.
@@ -297,14 +299,14 @@ public interface ContainerServices extends ContainerServicesBase
 		public void errorNoPermission(String reason) {}
 		/**
 		 * Called when the component reference has been successfully released.
-		 * @param clean  <code>false</code> if the target component was deactivated but with complications.
+		 * @param deactivationUncleanEx If the component was deactivated with problems, this exception will be forwarded; otherwise <code>null</code> for clean deactivation.
 		 */
-		public void componentReleased(boolean clean) {}
+		public void componentReleased(AcsJComponentDeactivationUncleanEx deactivationUncleanEx) {}
 		/**
 		 * Called when the target component deactivation failed.
-		 * @param isPermanentFailure  <code>false</code> if ACS has some hope that a future release request for the same component might succeed.
+		 * @param deactivationFailureEx to provide details about the failure.
 		 */
-		public void errorComponentReleaseFailed(String reason, boolean isPermanentFailure) {}
+		public void errorComponentReleaseFailed(AcsJComponentDeactivationFailedEx deactivationFailureEx) {}
 		
 		/**
 		 * This is not a callback method but a convenience method to "park" the calling thread
@@ -325,7 +327,7 @@ public interface ContainerServices extends ContainerServicesBase
 		 *         See {@link CountDownLatch#await(long, TimeUnit)}.
 		 * @throws InterruptedException
 		 */
-		public boolean awaitComponentRelease(long timeout, TimeUnit unit) throws InterruptedException {
+		public final boolean awaitComponentRelease(long timeout, TimeUnit unit) throws InterruptedException {
 			if (sync == null) {
 				sync = new CountDownLatch(1);
 			}
