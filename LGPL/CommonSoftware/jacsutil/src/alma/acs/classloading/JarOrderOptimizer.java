@@ -80,6 +80,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"systementities.jar",
 		"acserr.jar",
 		"acserrj.jar",
+		"acscommon.jar",
 		"ACSErrTypeCommon.jar",
 		"acsnc.jar",
 		"baci.jar",
