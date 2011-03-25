@@ -272,7 +272,7 @@ public class ComponentAdapter
 	 *  <li>Second the component itself is deactivated:
 	 *  <ul>
 	 *   <li>The lifecycle method {@link ComponentLifecycle#cleanUp() cleanUp} is called, currently without enforcing a timeout.
-	 *   <li>TODO: use a timeout, unless we decide that a client-side timeout for releaseComponent is better.  
+	 *   <li>TODO: use a timeout, unless we decide that a client-side timeout for releaseComponent is good enough.
 	 *  </ul>
 	 *  <li>Third the component is disconnected from CORBA ("etherealized" from the POA).
 	 *  <ul>
@@ -282,6 +282,8 @@ public class ComponentAdapter
 	 *       TODO: check if using the "container sealant" we can identify and stop the active ORB threads.
 	 *  </ul>
 	 * </ol>   
+	 * This method logs errors as FINER if they also cause an exception, and as WARNING if they cannot lead to an exception
+	 * because other more important error conditions are present.
 	 * 
 	 * @throws ComponentDeactivationUncleanEx, ComponentDeactivationFailedEx, ComponentDeactivationFailedPermEx 
 	 */
@@ -379,9 +381,17 @@ public class ComponentAdapter
 		}
 
 		if (deactivationFailedEx != null) {
+			if (m_containerLogger.isLoggable(Level.FINER)) {
+				m_containerLogger.log(Level.FINER, "Deactivation of component " + m_compInstanceName + " failed. "
+						+ "Will throw AcsJComponentDeactivationFailedEx", deactivationFailedEx);
+			}
 			throw deactivationFailedEx;
 		}
 		if (deactivationUncleanEx != null) {
+			if (m_containerLogger.isLoggable(Level.FINER)) {
+				m_containerLogger.log(Level.FINER, "Deactivation of component " + m_compInstanceName + " finished with problems. "
+						+ "Will throw AcsJComponentDeactivationUncleanEx", deactivationFailedEx);
+			}
 			throw deactivationUncleanEx;
 		}
 		
