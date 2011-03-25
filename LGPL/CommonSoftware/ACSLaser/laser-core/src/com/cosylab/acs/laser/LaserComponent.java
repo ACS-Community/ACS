@@ -381,10 +381,9 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		sourceDefinitionService.setCategoryDAO(categoryDAO);
 		sourceDefinitionService.setResponsiblePersonDAO(responsiblePersonDAO);
 		sourceDefinitionService.setSourceDAO(sourceDAO);
-		sourceDefinitionService
-				.setAlarmDefinitionService(alarmDefinitionService);
+		sourceDefinitionService.setAlarmDefinitionService(alarmDefinitionService);
 
-		
+		alarmDAO.setAlarmProcessor(alarmMessageProcessor);
 		
 		
 		String[] allSources=sourceDAO.getAllSourceIDs();
@@ -406,7 +405,6 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 				}
 			}
 		}
-		
 		
 	}
 	
