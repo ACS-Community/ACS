@@ -19,12 +19,13 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.cpp,v 1.4 2011/03/24 17:38:25 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.cpp,v 1.5 2011/03/25 23:42:00 javarias Exp $"
  */
 
 #include "loggingLog4cpp.h"
 #include "loggingStdoutlayout.h"
 #include "loggingXmlLayout.h"
+#include "loggingACSRemoteAppender.h"
 
 #include <log4cpp/OstreamAppender.hh>
 #include <log4cpp/SyslogAppender.hh>
@@ -57,26 +58,66 @@ Logger::Logger() :
 		remoteLogLevel = atoi(remote_log_level);
 	if (syslog_log_level != NULL)
 		syslogLogLevel = atoi(syslog_log_level);
+
+	getGlobalLogger();
+	getStaticLogger();
 }
 
 Logger::~Logger() {
+	static RemoteLoggerBuffer* buffer;
+	if (buffer != NULL) {
+		delete buffer;
+		buffer = NULL;
+	}
 	//Clean the Categories?
 }
 
-void Logger::enableRemoteAppender(Logging::AcsLogService_ptr loggingService) {
+void Logger::enableRemoteAppender(unsigned long cacheSize,
+		unsigned int autoFlushTimeoutSec,
+		Logging::AcsLogService_ptr loggingService,
+		CosNaming::NamingContext_ptr namingService,
+		int maxLogsPerSecond) {
+	initMutex.acquire();
 	if(!remoteAppenderEnabled) {
 		remoteAppenderEnabled = true;
-		//Do the same than enableSyslogAppender
+		this->cacheSize = cacheSize;
+		this->autoFlushTimeoutSec = autoFlushTimeoutSec;
+		if (!CORBA::is_nil(loggingService))
+			this->loggingService = Logging::AcsLogService::_duplicate(loggingService);
+		if(!CORBA::is_nil(namingService))
+			this->namingService = CosNaming::NamingContext::_duplicate(namingService);
+		this->maxLogsPerSecond = maxLogsPerSecond;
+
+		std::vector<log4cpp::Category*>* loggers =
+						ACSHierarchyMaintainer::getDefaultMaintainer().getCurrentCategories();
+		std::vector<log4cpp::Category*>::iterator it;
+		for (it = loggers->begin(); it < loggers->end(); it++) {
+			if ((*it)->getAppender(REMOTE_APPENDER_NAME) != NULL)
+				continue;
+			::log4cpp::Appender* remoteAppender =
+					new logging::ACSRemoteAppender(REMOTE_APPENDER_NAME,
+					this->cacheSize, this->autoFlushTimeoutSec,
+					this->loggingService,
+					this->maxLogsPerSecond);
+			//TODO: use the naming service
+			remoteAppender->setLayout(new logging::ACSXmlLayout());
+			remoteAppender->setThreshold(convertPriority(remoteLogLevel));
+			(*it)->addAppender(remoteAppender);
+		}
 	}
+	initMutex.release();
 }
 
 void Logger::enableSyslogAppender() {
+	initMutex.acquire();
 	if (!syslogAppenderEnabled) {
 		syslogAppenderEnabled = true;
 		std::vector<log4cpp::Category*>* loggers =
 				ACSHierarchyMaintainer::getDefaultMaintainer().getCurrentCategories();
 		std::vector<log4cpp::Category*>::iterator it;
 		for (it = loggers->begin(); it < loggers->end(); it++) {
+			if ((*it)->getAppender(SYSLOG_APPENDER_NAME) != NULL)
+				continue;
 			::log4cpp::Appender * syslogAppender =
 					new ::log4cpp::SyslogAppender(SYSLOG_APPENDER_NAME, "ACS");
 			syslogAppender->setLayout(new logging::ACSstdoutLayout());
@@ -84,6 +125,7 @@ void Logger::enableSyslogAppender() {
 			(*it)->addAppender(syslogAppender);
 		}
 	}
+	initMutex.release();
 }
 
 ACSCategory* Logger::getGlobalLogger() {
@@ -108,16 +150,26 @@ ACSCategory* Logger::initLogger(const std::string& loggerName) {
 	ACSCategory &logger = ACSCategory::getInstance(loggerName);
 	logger.addAppender(localAppender);
 
-	if (syslogAppenderEnabled) {
+	initMutex.acquire();
+	if (syslogAppenderEnabled && logger.getAppender(SYSLOG_APPENDER_NAME) == NULL) {
 		::log4cpp::Appender* syslogAppender = new ::log4cpp::SyslogAppender(SYSLOG_APPENDER_NAME, "ACS");
 		syslogAppender->setLayout(new logging::ACSstdoutLayout());
 		syslogAppender->setThreshold(convertPriority(syslogLogLevel));
 		logger.addAppender(syslogAppender);
 	}
+	initMutex.release();
 
-	if (remoteAppenderEnabled) {
-		//ACSRemoteAppender remoteAppender = new ACSRemoteAppender()
+	initMutex.acquire();
+	if (remoteAppenderEnabled && logger.getAppender(REMOTE_APPENDER_NAME) == NULL) {
+		::log4cpp::Appender* remoteAppender = new logging::ACSRemoteAppender(REMOTE_APPENDER_NAME,
+				this->cacheSize, this->autoFlushTimeoutSec,
+				this->loggingService,
+				this->maxLogsPerSecond);
+		remoteAppender->setLayout(new logging::ACSXmlLayout());
+		remoteAppender->setThreshold(convertPriority(remoteLogLevel));
+		logger.addAppender(remoteAppender);
 	}
+	initMutex.release();
 
 	return ACSCategory::exist(loggerName);
 }
@@ -187,7 +239,6 @@ LogTrace::~LogTrace() {
 
 
 log4cpp::Priority::PriorityLevel logging::convertPriority (unsigned int logLevel) {
-	std::cout << "unsigned int:" << logLevel << std::endl;
 	switch (logLevel) {
 	case 1:
 		return log4cpp::Priority::TRACE;

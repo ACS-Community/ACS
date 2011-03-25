@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingMACROS.h,v 1.31 2011/03/24 17:39:00 javarias Exp $"
+* "@(#) $Id: loggingMACROS.h,v 1.32 2011/03/25 23:42:49 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,13 +30,14 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#ifndef ENABLE_LOG4CPP_MACROS
 
 #include "loggingLogger.h"
 #include "loggingLogTrace.h"
 #include "loggingGetLogger.h"
 #include <iostream>
 #include <acsutilTimeStamp.h>
+
+#ifndef ENABLE_LOG4CPP_MACROS
 
 #define LM_DELOUSE 010000
 

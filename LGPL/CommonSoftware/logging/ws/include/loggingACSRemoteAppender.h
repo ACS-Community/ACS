@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.h,v 1.3 2011/03/21 03:46:36 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.h,v 1.4 2011/03/25 23:42:00 javarias Exp $"
 *
 */
 
@@ -66,6 +66,7 @@ public :
 			Logging::AcsLogService_ptr centralizedLogger,
 			int maxLogsPerSecond );
 	void append(Logging::XmlLogRecord& log);
+	~RemoteLoggerBuffer();
 private:
 	void sendLog(Logging::XmlLogRecord& log);
 	void sendLog(Logging::XmlLogRecordSeq& logs);

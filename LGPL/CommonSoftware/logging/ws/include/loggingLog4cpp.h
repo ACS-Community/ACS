@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.h,v 1.4 2011/03/24 17:38:25 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.h,v 1.5 2011/03/25 23:42:00 javarias Exp $"
  */
 #ifndef LOGGING_LOG4CPP_H_
 #define LOGGING_LOG4CPP_H_
@@ -30,6 +30,8 @@
 #include <log4cpp/LayoutAppender.hh>
 #include <ace/Singleton.h>
 #include <ace/Synch.h>
+#include <orbsvcs/CosNamingC.h>
+
 #include "loggingBaseLog.h"
 
 #define LM_DELOUSE 010000U
@@ -51,7 +53,11 @@ public:
 	ACSCategory* getGlobalLogger();
 	ACSCategory* getStaticLogger();
 
-	void enableRemoteAppender(Logging::AcsLogService_ptr loggingService);
+	void enableRemoteAppender(unsigned long cacheSize = 100,
+			unsigned int autoFlushTimeoutSec = 3,
+			Logging::AcsLogService_ptr loggingService = Logging::AcsLogService::_nil(),
+			CosNaming::NamingContext_ptr namingService = CosNaming::NamingContext::_nil(),
+			int maxLogsPerSecond = -1);
 	void enableSyslogAppender();
 
 	static BasicLogInfo formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...);
@@ -64,8 +70,14 @@ private:
 	unsigned int localLogLevel;
 	unsigned int remoteLogLevel;
 	unsigned int syslogLogLevel;
+	//Configuration parameters for ACS Remote Logger
+	unsigned long cacheSize;
+	unsigned int autoFlushTimeoutSec;
 	Logging::AcsLogService_ptr loggingService;
-	//Naming Service here
+	CosNaming::NamingContext_ptr namingService;
+	int maxLogsPerSecond;
+	//
+	ACE_Thread_Mutex initMutex;
 	ACSCategory* initLogger(const std::string& loggerName);
 };
 

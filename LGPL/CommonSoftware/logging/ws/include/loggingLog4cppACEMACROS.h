@@ -29,7 +29,7 @@
 	}
 
 #define ACS_TRACE(routine) \
-		LOG(log4cpp::Priority::Trace, routine, FIELD_UNAVAILABLE);
+		LOG(log4cpp::Priority::TRACE, routine, FIELD_UNAVAILABLE);
 
 #define ACS_STATIC_TRACE(routine) \
 		STATIC_LOG(log4cpp::Priority::Trace, routine, FIELD_UNAVAILABLE);

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACEMACROS.h,v 1.11 2011/03/23 23:27:48 javarias Exp $"
+* "@(#) $Id: loggingACEMACROS.h,v 1.12 2011/03/25 23:42:00 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,13 +30,12 @@
 #endif
 
 #include "loggingMACROS.h"
-
-#ifndef ENABLE_LOG4CPP_MACROS
-
 #include <ace/Log_Record.h>
 #include "loggingLogSvcHandler.h"
 #include "loggingLoggingProxy.h"
 #include "loggingACSLogger.h"
+
+#ifndef ENABLE_LOG4CPP_MACROS
 
 /** @file loggingACSMACROS.h
  * <h2>Description</h2>

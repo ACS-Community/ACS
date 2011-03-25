@@ -31,6 +31,7 @@
 
 #define LOG4CPP_FIX_ERROR_COLLISION 1
 #include <log4cpp/Category.hh>
+#include <log4cpp/Appender.hh>
 #include "loggingACSLoggingEvent.h"
 #include "loggingACSHierarchyMaintainer.h"
 
@@ -183,6 +184,9 @@ public:
 	static ACSCategory* exist(const std::string& name);
 
 	void addAppender(log4cpp::Appender* appender) throw(std::invalid_argument);
+
+	log4cpp::Appender* getAppender (const std::string &name) const;
+
 
 private:
 	ACSCategory(const Category& other);

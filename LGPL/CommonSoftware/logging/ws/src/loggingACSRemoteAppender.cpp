@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.3 2011/03/21 03:46:36 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.4 2011/03/25 23:42:00 javarias Exp $"
 */
 
 #include "loggingACSRemoteAppender.h"
@@ -77,7 +77,7 @@ void ACSRemoteAppender::_append(const log4cpp::LoggingEvent& event) {
 	std::string message = _getLayout().format(event);
 	Logging::XmlLogRecord log;
 	log.logLevel = toIdlLogLevel(event.priority);
-	log.xml = message.c_str();
+	log.xml = ::CORBA::string_dup(message.c_str());
 	buffer->append(log);
 }
 
@@ -97,7 +97,10 @@ RemoteLoggerBuffer::RemoteLoggerBuffer(
 		_cacheSize(cacheSize),
 		_flushTimeout(autoFlushTimeoutSec),
 		_logger(Logging::AcsLogService::_duplicate(centralizedLogger)),
-		_workCond(_workCondThreadMutex) {
+		_cache(NULL),
+		_logThrottle(NULL),
+		_workCond(_workCondThreadMutex),
+		_stopThread(false) {
 	_cacheMutex.acquire();
 	if (_logThrottle == NULL)
 		_logThrottle = new LogThrottle(maxLogsPerSecond);
@@ -106,7 +109,6 @@ RemoteLoggerBuffer::RemoteLoggerBuffer(
 
 		if (_cacheSize > 0) {
 			// set the max size of the deque as double just in case appender could have a log overflow
-			_cache->resize(cacheSize * 2);
 			ACE_Thread::spawn(
 					static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
 		}
@@ -139,7 +141,7 @@ void RemoteLoggerBuffer::flushCache() {
 	unsigned int count = 0;
 
 	_cacheMutex.acquire();
-	while (!_cache->empty() || count == (_cacheSize * 2)) {
+	while (!_cache->empty() && count < (_cacheSize * 2)) {
 		logs[count++] = _cache->front();
 		_cache->pop_front();
 	}
@@ -161,8 +163,13 @@ void RemoteLoggerBuffer::svc() {
 		_workCond.wait(&timeout);
 		_workCondThreadMutex.release();
 		//if the thread was shut down, the close method should flush the cache
-		if (!_stopThread)
-			flushCache();
+		if (!_stopThread) {
+			try {
+				flushCache();
+			} catch (CORBA::SystemException &ex) {
+				std::cerr << "Problem with Remote Logger. Losing these logs" << std::endl;
+			}
+		}
 	}
 }
 
@@ -188,6 +195,15 @@ void RemoteLoggerBuffer::append(Logging::XmlLogRecord& log) {
 			_logThrottle->updateLogCounter(1);
 			sendLog(log);
 		}
+	}
+}
+
+RemoteLoggerBuffer::~RemoteLoggerBuffer() {
+	_stopThread = true;
+	try {
+		flushCache();
+	} catch (CORBA::SystemException &ex) {
+		std::cerr << "Problem with Remote Logger" << std::endl;
 	}
 }
 

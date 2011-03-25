@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingACSCategory.cpp,v 1.3 2011/03/18 23:38:13 javarias Exp $"
+ * "@(#) $Id: loggingACSCategory.cpp,v 1.4 2011/03/25 23:42:00 javarias Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -208,6 +208,10 @@ ACSCategory& ACSCategory::getInstance(const std::string& name) {
 void ACSCategory::addAppender(log4cpp::Appender* appender)
 		throw (std::invalid_argument) {
 	this->Category::addAppender(appender);
+}
+
+log4cpp::Appender* ACSCategory::getAppender (const std::string &name) const {
+	return this->Category::getAppender(name);
 }
 
 

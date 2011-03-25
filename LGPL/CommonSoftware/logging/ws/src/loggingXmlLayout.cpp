@@ -33,6 +33,33 @@
 
 using namespace logging;
 
+std::string getPriorityName(log4cpp::Priority::Value level) {
+	switch (level) {
+		case log4cpp::Priority::TRACE:
+			return "Trace";
+		case log4cpp::Priority::DELOUSE:
+			return "Delouse";
+		case log4cpp::Priority::DEBUG:
+			return "Debug";
+		case log4cpp::Priority::INFO:
+			return "Info";
+		case log4cpp::Priority::NOTICE:
+			return "Notice";
+		case log4cpp::Priority::WARNING:
+			return "Warning";
+		case log4cpp::Priority::ERROR:
+			return "Error";
+		case log4cpp::Priority::CRITICAL:
+			return "Critical";
+		case log4cpp::Priority::ALERT:
+			return "Alert";
+		case log4cpp::Priority::EMERGENCY:
+			return "Emergency";
+		default:
+			return "";
+		}
+}
+
 ACSXmlLayout::ACSXmlLayout(){
 	//allocated previously the size of the string
 	m_xml.reserve((size_t)1024);
@@ -50,7 +77,7 @@ std::string ACSXmlLayout::format(const ::log4cpp::LoggingEvent& event) {
 	ACSXmlLayout::formatISO8601inUTC(time, timestamp);
 
 	m_xml.clear();
-	m_xml = "<" + log4cpp::Priority::getPriorityName(acsLogEvent->priority)
+	m_xml = "<" + getPriorityName(acsLogEvent->priority)
 			+ " TimeStamp=\"" + timestamp + "\"";
 
 	//It should be enabled when SOURCE_INFO is enabled
@@ -110,7 +137,7 @@ std::string ACSXmlLayout::format(const ::log4cpp::LoggingEvent& event) {
 	}
 	m_xml += ">";
 	m_xml += "<![CDATA[" + acsLogEvent->message + "]]>";
-	m_xml += "</" + log4cpp::Priority::getPriorityName(acsLogEvent->priority) + ">\n";
+	m_xml += "</" + getPriorityName(acsLogEvent->priority) + ">";
 	return m_xml;
 }
 
