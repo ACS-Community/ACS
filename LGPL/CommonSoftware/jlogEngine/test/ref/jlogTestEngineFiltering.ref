@@ -1,11 +1,8 @@
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'EngineFilteringTest#testAddFilter' and updated logger names.
 1 - Disconnected
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'EngineFilteringTest#testAddFiltersVector' and updated logger names.
 1 - Disconnected
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- FINER [alma.acs.logging] Changed processName='null' to 'EngineFilteringTest#testFiltering' and updated logger names.
 1 - Disconnected
 1 - Flushing
 1 - Disconnected
