@@ -5,6 +5,7 @@ Starting Java application
 -D user.dir=
 Jlog will use cache for
 INFO
+FINER
 \[EngineFilteringTest.*\]
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 object is activated
