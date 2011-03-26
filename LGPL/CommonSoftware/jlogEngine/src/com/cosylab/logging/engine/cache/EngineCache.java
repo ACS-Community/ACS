@@ -312,6 +312,9 @@ public class EngineCache extends Thread {
 				files.put(outCacheFile.key,outCacheFile);
 			}
 		}
+		if (!string.endsWith("\n")) {
+			string=string+"\n";
+		}
 		// Write the string in the file
 		CacheEntry entry = outCacheFile.writeOnFile(string, outCacheFile.key);
 		entries.put(entry);
@@ -354,7 +357,12 @@ public class EngineCache extends Thread {
 				inCacheFile.setReadingMode(true);
 			}
 		}
-		return inCacheFile.readFromFile(entry);
+		String ret= inCacheFile.readFromFile(entry);
+		if (ret.endsWith("\n")) {
+			return ret.substring(0,ret.length()-1);
+		} else {
+			return ret;
+		}
 	}
 	
 	/**
