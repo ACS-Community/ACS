@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.5 2005/05/26 10:49:55 msekoran Exp $"
+# "@(#) $Id: Makefile,v 1.6 2011/03/27 10:19:29 msekoran Exp $"
 #
 # Makefile of jManager
 #
@@ -122,7 +122,7 @@ USER_IDL =
 JARFILES = jManagerTests
 jManagerTests_DIRS = com
 jManagerTests_EXTRAS =
-USER_JFLAGS=-source 1.4
+USER_JFLAGS=
 
 #
 # man pages to be done

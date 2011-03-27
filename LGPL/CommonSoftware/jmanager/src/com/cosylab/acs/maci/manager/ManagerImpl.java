@@ -2256,7 +2256,6 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		final LongCompletionCallback fcallback = callback;
 		threadPool.execute(new Runnable() {
 
-			@Override
 			public void run()
 			{
 				try

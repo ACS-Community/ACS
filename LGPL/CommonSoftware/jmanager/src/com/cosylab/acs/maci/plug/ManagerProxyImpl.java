@@ -968,7 +968,6 @@ public class ManagerProxyImpl extends ManagerPOA
 		}
 	}
 	
-	@Override
 	public void release_component_async(int id, String component_url,
 			CBlong callback, CBDescIn desc) throws NoPermissionEx
 	{
@@ -987,7 +986,6 @@ public class ManagerProxyImpl extends ManagerPOA
 			{
 				lcc = new LongCompletionCallback() {
 				
-					@Override
 					public void failed(int result, Throwable exception) {
 						if (exception instanceof AcsJException)
 						{
@@ -1002,7 +1000,6 @@ public class ManagerProxyImpl extends ManagerPOA
 						}
 					}
 				
-					@Override
 					public void done(int result) {
 						fcallback.done(result, new ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
 					}

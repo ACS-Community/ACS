@@ -3182,7 +3182,6 @@ public class ManagerImplTest extends TestCase
 		public volatile Throwable exception = null;
 		public volatile boolean doneFlag = false;
 
-		@Override
 		public synchronized void failed(int result, Throwable exception) {
 			this.result = result;
 			this.exception = exception;
@@ -3190,7 +3189,6 @@ public class ManagerImplTest extends TestCase
 			this.notifyAll();
 		}
 		
-		@Override
 		public synchronized void done(int result) {
 			this.result = result;
 			this.exception = null;

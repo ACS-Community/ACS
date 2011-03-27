@@ -476,7 +476,6 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 			return false;
 	}
 
-	@Override
 	public void releaseComponentAsync(int id, URI curl,
 			LongCompletionCallback callback) throws AcsJNoPermissionEx, AcsJBadParameterEx {
 		try
@@ -484,17 +483,14 @@ public class ManagerProxy extends CORBAReferenceSerializator implements Manager,
 			final LongCompletionCallback fcallback = callback;
 			CBlongPOA cbo = new CBlongPOA() {
 				
-				@Override
 				public boolean negotiate(long time_to_transmit, CBDescOut desc) {
 					return false;
 				}
 				
-				@Override
 				public void working(int value, Completion c, CBDescOut desc) {
 					// noop
 				}
 				
-				@Override
 				public void done(int value, Completion c, CBDescOut desc) {
 					if (c.code == 0 && c.type == 0)
 						fcallback.done(value);
