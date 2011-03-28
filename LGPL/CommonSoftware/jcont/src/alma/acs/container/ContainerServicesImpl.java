@@ -868,8 +868,11 @@ public class ContainerServicesImpl implements ContainerServices
 				m_acsManagerProxy.force_release_component(getEffectiveClientHandle(), curl);
 			}
 			else {
-				ComponentReleaseCallbackCorbaHandler callbackCorba = new ComponentReleaseCallbackCorbaHandler(callback);
-				CBlong myCBlong = RequesterUtil.giveCBLong(this, callbackCorba);
+				CBlong myCBlong = null;
+				if (callback != null) {
+					ComponentReleaseCallbackCorbaHandler callbackCorba = new ComponentReleaseCallbackCorbaHandler(callback);
+					myCBlong = RequesterUtil.giveCBLong(this, callbackCorba);
+				}
 				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, myCBlong);
 			}
 			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
