@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2009/03/19 13:41:16 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/03/28 09:19:59 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -145,6 +145,7 @@ USER_IDL =
 #
 JARFILES = TestLifeCycleComp # TestLifeCycleCharComp
 TestLifeCycleComp_DIRS = alma/lifecycleTest/TestLifeCycleCompImpl
+TestLifeCycleComp_JLIBS = lifecycleTest_IF
 #TestLifeCycleCharComp_DIRS = alma/lifecycleTest/TestLifeCycleCharCompImpl
 
 jjj_DIRS=
