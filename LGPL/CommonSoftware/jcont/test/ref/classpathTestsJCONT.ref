@@ -46,7 +46,6 @@
 1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'testContainer' exited with code: 0.
 1 - === Done running a Java container with prioritized jar files only
 1 - ----------T--:--:--.--- INFO [testContainer] received call to 'shutdown', action=2 (encryptedAction=512), gracefully=true.
-1 - ----------T--:--:--.--- FINE [testContainer] received call to deactivate_component, handle=0
 1 - ----------T--:--:--.--- FINE [testContainer] about to log out from manager...
 1 - ----------T--:--:--.--- WARNING [testContainer] Failed to graceful shutdown the BACI framework
 1 - ----------T--:--:--.--- FINE [testContainer] orb loop over.
