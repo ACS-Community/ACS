@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.27 2008/10/22 02:47:49 cparedes Exp $"
+# "@(#) $Id: Makefile,v 1.28 2011/03/28 11:27:36 jagonzal Exp $"
 #
 # Makefile of ........
 #
@@ -198,6 +198,7 @@ ACSERRDEF = BenchmarkErrType
 COMPONENTS_JARFILES=benchmarkComponents
 # currently the com.cosylab stuff does not compile, so we exclude it.
 benchmarkComponents_DIRS=alma
+benchmarkComponents_JLIBS=perftest
 
 #
 # java sources in Jarfile on/off
