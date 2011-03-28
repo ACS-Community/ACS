@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.82 2010/09/21 10:35:51 bjeram Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.83 2011/03/28 11:28:10 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -345,7 +345,7 @@ Helper::getAdminProps()
 
 bool Helper::resolveInternalNotificationChannel(){
 
-    ACS_TRACE("HelperTest::resolveInternalNotificationChannel");
+    ACS_TRACE("Helper::resolveInternalNotificationChannel");
 
     int retryNumberAttempts = 20;
     int retrySleepSec = 2;
