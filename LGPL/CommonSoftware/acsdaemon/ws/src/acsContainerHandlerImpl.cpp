@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.18 2011/03/11 15:00:21 tstaig Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.19 2011/03/29 15:41:24 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,16 +92,9 @@ ACSContainerHandlerImpl::start_container (
 
     const char * cmdln = (additional_command_line ? additional_command_line : "");
 
-	// About type modifier "archiveContainer", see COMP-1316 and COMP-1996
-	int isArchiveContainer = 0;
 	int isCasaContainer = 0;
 	for (unsigned int i = 0; i < type_modifiers.length(); ++i) {
-		if (!strcmp(type_modifiers[i], "archiveContainer")) {
-			if (!strcmp(container_type,"java"))
-				isArchiveContainer = 1;
-			break;
-		}
-		else if (!strcmp(type_modifiers[i], "casaContainer")) {
+		if (!strcmp(type_modifiers[i], "casaContainer")) {
 			isCasaContainer = 1;
 			break;
 		}
@@ -141,9 +134,7 @@ ACSContainerHandlerImpl::start_container (
 
 	char command[1000];
 
-	if (isArchiveContainer)
-		snprintf(command, 1000, "acsStartContainerOracleClasspath -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", "java", instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
-	else if (isCasaContainer)
+	if (isCasaContainer)
 		snprintf(command, 1000, "acsStartContainerWithCASA -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());
 	else
 		snprintf(command, 1000, "acsStartContainer -%s -b %d %s %s &> %sacsStartContainer_%s_%s&", container_type, instance_number, container_name, cmdln, logDirectory.c_str(), containerName.c_str(), timeStamp.c_str());

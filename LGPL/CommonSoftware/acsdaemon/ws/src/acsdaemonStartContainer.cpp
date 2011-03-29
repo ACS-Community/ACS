@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.15 2010/05/31 09:24:07 bjeram Exp $"
+* "@(#) $Id: acsdaemonStartContainer.cpp,v 1.16 2011/03/29 15:41:24 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -45,7 +45,7 @@ usage(const char *argv)
     ACE_OS::printf ("\t   -H, --host         Host where to start the container\n");
     ACE_OS::printf ("\t   -d, --daemon       Daemon reference\n");
     ACE_OS::printf ("\t   -a, --additional   passthrough options for startContaner. Put option between \"\"\n");
-    ACE_OS::printf ("\t   -m, --modifier     type modifier for the container (e.g. archiveContainer).  More than one can be specified.\n");
+    ACE_OS::printf ("\t   -m, --modifier     type modifier for the container (e.g. casaContainer).  More than one can be specified.\n");
 }
 
 int
