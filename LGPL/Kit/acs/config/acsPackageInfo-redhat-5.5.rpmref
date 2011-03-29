@@ -294,7 +294,6 @@ libsepol 1.15.2 3.el5
 libsepol-devel 1.15.2 3.el5
 libSM 1.0.1 3.1
 libsmbclient 3.0.33 3.29.el5_5.1
-libsmbios 2.2.26 3.1.el5
 libsmi 0.4.5 2.el5
 libsoup 2.2.98 2.el5_3.1
 libstdc++ 4.1.2 48.el5
@@ -501,7 +500,6 @@ python-iniparse 0.2.3 4.el5
 python-ldap 2.2.0 2.1
 python-numeric 23.7 2.2.2
 python-numpy 1.0.1 1.rf
-python-smbios 2.2.26 3.1.el5
 python-sqlite 1.1.7 1.2.1
 python-urlgrabber 3.1.0 5.el5
 pyxf86config 0.3.31 2.fc6
@@ -554,9 +552,6 @@ shadow-utils 4.0.17 15.el5
 shared-mime-info 0.19 5.el5
 slang 2.0.6 4.el5
 slang-devel 2.0.6 4.el5
-smbios-utils 2.2.26 3.1.el5
-smbios-utils-bin 2.2.26 3.1.el5
-smbios-utils-python 2.2.26 3.1.el5
 sox 12.18.1 1.el5_5.1
 spamassassin 3.2.5 1.el5
 speex 1.2 0.2.beta1
