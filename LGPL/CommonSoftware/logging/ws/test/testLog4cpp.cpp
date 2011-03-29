@@ -53,15 +53,15 @@ int main (int argc, char * argv[])
 //	LOGGER_FACTORY->enableSyslogAppender();
 //#endif
 
-	maci::SimpleClient* client = new maci::SimpleClient();
-	client->init(argc, argv);
-	client->login();
+//	maci::SimpleClient* client = new maci::SimpleClient();
+//	client->init(argc, argv);
+//	client->login();
 
-	Logging::AcsLogService_ptr log = client->getContainerServices()->getComponent<Logging::AcsLogService>("Log");
-	LOGGER_FACTORY->enableRemoteAppender(100, 3, log);
-	LOGGER_FACTORY->enableSyslogAppender();
+//	Logging::AcsLogService_ptr log = client->getContainerServices()->getComponent<Logging::AcsLogService>("Log");
+//	LOGGER_FACTORY->enableRemoteAppender(100, 3, log);
+//	LOGGER_FACTORY->enableSyslogAppender();
 
-	sleep(1);
+//	sleep(1);
 	char *tooLong_p = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
 
 	AUTO_TRACE("someFunc");
@@ -132,6 +132,6 @@ int main (int argc, char * argv[])
 
 	    testStaticLoggingWithAudience();
 
-	    sleep(5);
+//	    sleep(5);
 	return 0;
 }
