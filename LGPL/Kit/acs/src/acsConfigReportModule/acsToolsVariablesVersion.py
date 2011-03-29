@@ -45,7 +45,7 @@ basic_tools = [('gcc','gcc --version','4.1.2'),\
               ('binutils','ld --version','2.17.50.0.6-14.el5'),\
               ('make','make --version','3.81'),\
               ('awk','awk --version','3.1.5'),\
-              ('gdb','gdb  -version','7.0.1-23.el5_5.2'),\
+              ('gdb','gdb --version','7.2-16.el5'),\
               ('flex','flex --version','2.5.4'),\
               ('bison','bison --version','2.3'),\
               ('gzip','gzip --version','1.3.5'),\
