@@ -124,7 +124,7 @@ filesystem 2.4.0 3.el5
 findutils 4.2.27 6.el5
 fipscheck 1.2.0 1.el5
 fipscheck-lib 1.2.0 1.el5
-firefox 3.6.13 2.el5
+firefox 3.6.15 1.el5
 firstboot-tui 1.4.27.8 1.el5
 flex 2.5.4a 41.fc6
 fontconfig 2.4.1 7.el5
@@ -141,7 +141,7 @@ gcc-c++ 4.1.2 48.el5
 gcc-gfortran 4.1.2 48.el5
 GConf2 2.14.0 9.el5
 gd 2.0.33 9.4.el5_4.2
-gdb 7.0.1 23.el5_5.2
+gdb 7.2 16.el5
 gdbm 1.8.0 26.2.1
 gdbm-devel 1.8.0 26.2.1
 gettext 0.14.6 4.el5
@@ -563,9 +563,6 @@ speex 1.2 0.2.beta1
 splint 3.1.1 16.el5
 sqlite 3.5.9 2
 sqlite-devel 3.5.9 2
-srvadmin-hapi 6.0.0 134
-srvadmin-ipmi 6.0.0 207.rhel5
-srvadmin-omilcore 6.0.0 134
 star 1.5a75 3
 startup-notification 0.8 4.1
 statserial 1.1 38.2.2
@@ -645,7 +642,7 @@ xorg-x11-xauth 1.0.1 2.1
 xorg-x11-xfs 1.0.2 4
 xorg-x11-xinit 1.0.2 15.el5
 xterm 215 8.el5_4.1
-xulrunner 1.9.2.13 3.el5
+xulrunner 1.9.2.15 1.el5
 ypbind 1.19 12.el5
 yp-tools 2.9 1.el5
 yum 3.2.22 26.el5_5.1
