@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.21 2011/03/15 10:09:06 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.22 2011/03/29 10:43:14 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -154,7 +154,7 @@ ifeq ($(call mustBuild,C++),true)
  clean_dist_idl_$1_prereq += clean_dist_IDL_$1_CPP
 endif
 
-$1_IDLprereqLocal:=$(if $(wildcard ../idl/$1.idl),$(strip $(shell egrep '^#include' ../idl/$1.idl | sed 's/#include \"\(.*\)\".*/\1/; s/#include <\(.*\)>.*/\1/;' | sed 's/.*\///g;' | tr '\n' ' ')),)
+$1_MIDLprereqLocal:=$(if $(wildcard ../idl/$1.midl),$(foreach idl,$(strip $(shell egrep '^#include' ../idl/$1.idl | sed 's/#include \"\(.*\)\".*/\1/; s/#include <\(.*\)>.*/\1/;' | sed 's/.*\///g;' | tr '\n' ' ')),../idl/$(idl)),)
 
 $1_IDLprereq := $(if $(wildcard ../idl/$1.idl),$(subst ../idl/$1.idl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.idl 2>/dev/null |  tr  '\\\n' ' '  ))) ,)
 
@@ -207,7 +207,8 @@ endif
 ifeq ($(call mustBuild,C++),true)
 ../object/$1C.cpp: $(CURDIR)/../idl/$1.idl $($1_IDLprereq)
 	-@echo "== IDL Compiling for TAO (C++): $1"
-	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o ../object/ $(TAO_IDLFLAGS) $$< 
+	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o /tmp/ $(TAO_IDLFLAGS) $$< 
+	$(AT) mv -f $(foreach ext,$(IDL_EXTENSIONS),/tmp/$1$(ext)) ../object/
 
 # this is a trick which I am trying to use for parallelization
 # this makes it unfortunately less maintainable, but easier to read and understand
