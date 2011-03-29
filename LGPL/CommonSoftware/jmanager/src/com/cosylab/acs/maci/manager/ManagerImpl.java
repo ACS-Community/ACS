@@ -6910,8 +6910,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		int handle = componentInfo.getHandle() & HANDLE_MASK;
 		int owners = componentInfo.getClients().size();
 
-//		try
-//		{
+		try
+		{
 			//
 			// get container/remote manager
 			//
@@ -7043,7 +7043,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			}
 
-//		} finally {
+		} finally {
 			if (owners == 0)
 			{
 				// deallocate Component
@@ -7053,7 +7053,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					//components.deallocate(handle);
 				}
 			}
-//		}
+		}
 
 		// log info
 		logger.log(Level.INFO,"Component '"+componentInfo.getName()+"' (" + HandleHelper.toString(componentInfo.getHandle()) + ") deactivated.");
