@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.h,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MonitorCollectorImpl.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,9 +67,13 @@ public:
 
 	void stopMonitoring (const char * componentName);
 
-
 	TMCDB::MonitorDataBlocks * getMonitorData ();
 
+	void set_archiving_interval(const char* componentName, const char* propertyName, ACS::TimeInterval time);
+
+	void suppress_archiving(const char* componentName, const char* propertyName);
+
+	void enable_archiving(const char* componentName, const char* propertyName);
 
 private:
 

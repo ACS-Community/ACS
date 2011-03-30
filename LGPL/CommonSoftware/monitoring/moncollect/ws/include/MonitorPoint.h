@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.h,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MonitorPoint.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,12 +66,19 @@ public:
 	/// method that puts sequence of data blobDataSeq to the any
 	virtual void fillSeq()=0;
 
+	virtual void set_archiving_interval(ACS::TimeInterval time)=0;
+
+	virtual void suppress_archiving()=0;
+
+	virtual void enable_archiving()=0;
 
 protected:
 
 	ACE_CString propertyName_m; /// property name
 
 	ACS::TimeInterval archivingInterval_m; // interval in which the value should be archived (and so monitored)
+
+	double valuePercentTrigger_m; // Delta value percentage a value can change before the value should be archived (and so monitored)
 
 	MonitorBlob& monitorBlob_m; ///here we put the values
 
@@ -85,11 +92,13 @@ protected:
 
 	ACE_Thread_Mutex switchMutex_m; //when we switch the collection sequence
 
+	bool suppressed_m;
+
 	static const unsigned int prealocSeqLen_m = 100; // preallocated length of the seqnece. This is the step that the sequence will grow
 	//TBD: do we need also type (as string or ..)?
 };//MonitorPointBase
 
-template <class T, class TBLOB_SEQ, class TPROP, class TCB>
+template <class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 class MonitorPoint : public MonitorPointBase, public virtual TCB
 {
 public:
@@ -103,8 +112,13 @@ public:
 	///stop monitoring the property (monitor point)
 	void stopMonitoring();
 
-
 	void fillSeq();
+
+	void set_archiving_interval(ACS::TimeInterval time);
+
+	void suppress_archiving();
+
+	void enable_archiving();
 
 	/// implementig CB interface
 	void working(T value, const ACSErr::Completion& comp, const ACS::CBDescOut& cbdescout);
@@ -114,6 +128,7 @@ public:
 protected:
 	TPROP* property_m;
 	TBLOB_SEQ blobDataSeq_m;
+	TBASE valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
 };//MonitorPoint
 
 #include "MonitorPoint.i"

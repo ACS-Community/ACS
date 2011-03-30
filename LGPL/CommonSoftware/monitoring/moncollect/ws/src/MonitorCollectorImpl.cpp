@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.2 2011/03/11 13:59:55 hsommer Exp $"
+* "@(#) $Id: MonitorCollectorImpl.cpp,v 1.3 2011/03/30 18:11:18 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.2 2011/03/11 13:59:55 hsommer Exp $";
+static char *rcsId="@(#) $Id: MonitorCollectorImpl.cpp,v 1.3 2011/03/30 18:11:18 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorCollectorImpl.h"
@@ -340,6 +340,68 @@ TMCDB::MonitorDataBlocks * MonitorCollectorImpl::getMonitorData ()
     return monitorDataBlock;
 }//getMonitorData
 
+void MonitorCollectorImpl::set_archiving_interval(const char* componentName, const char* propertyName, ACS::TimeInterval time)
+{
+	AUTO_TRACE("MonitorCollectorImpl::set_archiving_interval");
+	MonitorComponent* mc=0;
+	
+	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
+	
+	if (monitorComponents_m.find(componentName, mc)) {
+		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::set_archiving_interval");
+		ex.setDevice(componentName);
+		throw ex.getDeviceNotRegistredEx();
+	}//if
+	if (mc) {
+		mc->set_archiving_interval(propertyName, time);
+	} else {
+		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::deregisterMonitoredDevice");
+		ex.setVariable("mc");
+		ex.log(LM_WARNING);
+	}//if-else
+}
+
+void MonitorCollectorImpl::suppress_archiving(const char* componentName, const char* propertyName)
+{
+	AUTO_TRACE("MonitorCollectorImpl::suppress_archiving");
+	MonitorComponent* mc=0;
+	
+	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
+	
+	if (monitorComponents_m.find(componentName, mc)) {
+		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::suppress_archiving");
+		ex.setDevice(componentName);
+		throw ex.getDeviceNotRegistredEx();
+	}//if
+	if (mc) {
+		mc->suppress_archiving(propertyName);
+	} else {
+		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::suppress_archiving");
+		ex.setVariable("mc");
+		ex.log(LM_WARNING);
+	}//if-else
+}
+
+void MonitorCollectorImpl::enable_archiving(const char* componentName, const char* propertyName)
+{
+	AUTO_TRACE("MonitorCollectorImpl::enable_archiving");
+	MonitorComponent* mc=0;
+	
+	ACE_GUARD (ACE_Recursive_Thread_Mutex, proSect, mcMutex_m); // protection
+	
+	if (monitorComponents_m.find(componentName, mc)) {
+		DeviceNotRegistredExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::enable_archiving");
+		ex.setDevice(componentName);
+		throw ex.getDeviceNotRegistredEx();
+	}//if
+	if (mc) {
+		mc->enable_archiving(propertyName);
+	} else {
+		ACSErrTypeCommon::NullPointerExImpl ex(__FILE__, __LINE__, "MonitorCollectorImpl::enable_archiving");
+		ex.setVariable("mc");
+		ex.log(LM_WARNING);
+	}//if-else
+}
 
 /* --------------- [ MACI DLL support functions ] -----------------*/
 #include <maciACSComponentDefines.h>

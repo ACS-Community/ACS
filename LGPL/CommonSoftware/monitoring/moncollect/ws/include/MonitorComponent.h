@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: MonitorComponent.h,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+ * "@(#) $Id: MonitorComponent.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -67,6 +67,12 @@ public:
 	void setDeviceSerialNumber(serialNumberType sn);
 
 	void setPropertySerialNumber(char* propertyName, serialNumberTypeSeq sn);
+
+	void set_archiving_interval(const char* propertyName, ACS::TimeInterval time);
+
+	void suppress_archiving(const char* propertyName);
+
+	void enable_archiving(const char* propertyName);
 
 private:
 

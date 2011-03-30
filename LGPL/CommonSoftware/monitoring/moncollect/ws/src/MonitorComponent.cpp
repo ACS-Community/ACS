@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"
@@ -121,21 +121,6 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 
 	try
 	{
-
-		anyCharacteristic = property->get_characteristic_by_name("archive_suppress");
-		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
-		if ( strcmp(strCharacteristic, "false")!=0 )
-		{
-			ACS_LOG(LM_FULL_INFO ,"MonitorComponent::propertyArchivingInterval", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is NOT set to 'false', but to: %s.",
-					propertyDesc->name.in(),
-					property->_repository_id(),
-					strCharacteristic
-			));
-			return 0;
-		}//if
-
-
-
 		anyCharacteristic = property->get_characteristic_by_name("archive_mechanism");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		if ( strcmp(strCharacteristic, "monitor_collector")!=0 )
@@ -154,16 +139,6 @@ ACS::TimeInterval MonitorComponent::propertyArchivingInterval(ACS::PropertyDesc 
 		std::istringstream i(strCharacteristic);
 		i >> archiveMaxInt;
 		archiveMaxInt *= static_cast<double>(10000000.0); //we have to convert to 100s nsec.
-		if ( archiveMaxInt==0.0 )
-		{
-			ACS_LOG(LM_FULL_INFO ,"MonitorComponent::propertyArchivingInterval", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_max_int is 0 (%f).",
-					propertyDesc->name.in(),
-					property->_repository_id(),
-					archiveMaxInt
-			));
-			return 0;
-		}//if
-
 
 		anyCharacteristic = property->get_characteristic_by_name("min_timer_trig");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
@@ -212,12 +187,12 @@ bool MonitorComponent::addProperty(const char *propName)
 			ACE_CString  propType = compDesc_m->properties[i].property_ref->_repository_id();
 
 			ACS::TimeInterval monitoringInterval = propertyArchivingInterval(&compDesc_m->properties[i]);
-			if ( monitoringInterval!=0 )
-			{
-				//should we check the return value ?
+ 			if ( monitoringInterval!=0 )
+ 			{
+ 				//should we check the return value ?
 				return addProperty(compDesc_m->properties[i].name.in(), propType.c_str(), compDesc_m->properties[i].property_ref, monitoringInterval);
-			}//if
-			break; //we have found the property so we can exit
+ 			}//if
+			break;
 		}//if
 
 		}//for
@@ -243,7 +218,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("doubleSeq")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::doubleSeq&, TMCDB::doubleSeqBlobDataSeq, ACS::PdoubleSeq, POA_ACS::CBdoubleSeq>(
+		mp = new MonitorPoint<const ACS::doubleSeq&, TMCDB::doubleSeqBlobDataSeq, ACS::PdoubleSeq, POA_ACS::CBdoubleSeq, CORBA::Double>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -258,7 +233,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("double")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Double, TMCDB::doubleBlobDataSeq, ACS::Pdouble, POA_ACS::CBdouble>(
+		mp = new MonitorPoint<CORBA::Double, TMCDB::doubleBlobDataSeq, ACS::Pdouble, POA_ACS::CBdouble, CORBA::Double>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -274,7 +249,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	////////////////////
 	if (propType.find("longSeq")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::longSeq&, TMCDB::longSeqBlobDataSeq, ACS::PlongSeq, POA_ACS::CBlongSeq>(
+		mp = new MonitorPoint<const ACS::longSeq&, TMCDB::longSeqBlobDataSeq, ACS::PlongSeq, POA_ACS::CBlongSeq, CORBA::Long>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -289,7 +264,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("long")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Long, TMCDB::longBlobDataSeq, ACS::Plong, POA_ACS::CBlong>(
+		mp = new MonitorPoint<CORBA::Long, TMCDB::longBlobDataSeq, ACS::Plong, POA_ACS::CBlong, CORBA::Long>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -304,7 +279,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	///////////////////////
 	if (propType.find("floatSeq")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<const ACS::floatSeq&, TMCDB::floatSeqBlobDataSeq, ACS::PfloatSeq, POA_ACS::CBfloatSeq>(
+		mp = new MonitorPoint<const ACS::floatSeq&, TMCDB::floatSeqBlobDataSeq, ACS::PfloatSeq, POA_ACS::CBfloatSeq, CORBA::Float>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -318,7 +293,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("float")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<CORBA::Float, TMCDB::floatBlobDataSeq, ACS::Pfloat, POA_ACS::CBfloat>(
+		mp = new MonitorPoint<CORBA::Float, TMCDB::floatBlobDataSeq, ACS::Pfloat, POA_ACS::CBfloat, CORBA::Float>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -343,7 +318,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("pattern")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::pattern, TMCDB::patternBlobDataSeq, ACS::Ppattern, POA_ACS::CBpattern>(propName,
+		mp = new MonitorPoint<ACS::pattern, TMCDB::patternBlobDataSeq, ACS::Ppattern, POA_ACS::CBpattern, ACS::pattern>(propName,
 				monitoringInterval,
 				propRef,
 				TMCDB::patternValueType,
@@ -368,7 +343,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("longLong")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::longLong, TMCDB::longLongBlobDataSeq, ACS::PlongLong, POA_ACS::CBlongLong>(
+		mp = new MonitorPoint<ACS::longLong, TMCDB::longLongBlobDataSeq, ACS::PlongLong, POA_ACS::CBlongLong, ACS::longLong>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -394,7 +369,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 	if (propType.find("uLongLong")!=ACE_CString::npos)
 	{
-		mp = new MonitorPoint<ACS::uLongLong, TMCDB::uLongLongBlobDataSeq, ACS::PuLongLong, POA_ACS::CBuLongLong>(
+		mp = new MonitorPoint<ACS::uLongLong, TMCDB::uLongLongBlobDataSeq, ACS::PuLongLong, POA_ACS::CBuLongLong, ACS::uLongLong>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -410,7 +385,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	if (propType.find("stringSeq")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
-		mp = new MonitorPoint<const ACS::stringSeq&, TMCDB::stringSeqBlobDataSeq, ACS::PstringSeq, POA_ACS::CBstringSeq>(
+		mp = new MonitorPoint<const ACS::stringSeq&, TMCDB::stringSeqBlobDataSeq, ACS::PstringSeq, POA_ACS::CBstringSeq, char *>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -425,7 +400,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	if (propType.find("string")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
-		mp = new MonitorPoint<const char*, TMCDB::stringBlobDataSeq, ACS::Pstring, POA_ACS::CBstring>(
+		mp = new MonitorPoint<const char*, TMCDB::stringBlobDataSeq, ACS::Pstring, POA_ACS::CBstring, char *>(
 				propName,
 				monitoringInterval,
 				propRef,
@@ -468,11 +443,11 @@ void MonitorComponent::addAllProperties()
 		propType = compDesc_m->properties[i].property_ref->_repository_id();
 
 		monitoringInterval = propertyArchivingInterval(&compDesc_m->properties[i]);
-		if ( monitoringInterval!=0 )
-		{
-			//should we check the return value ?
-			addProperty(compDesc_m->properties[i].name.in(), propType.c_str(), compDesc_m->properties[i].property_ref, monitoringInterval);
-		}//if
+ 		if ( monitoringInterval!=0 )
+ 		{
+ 			//should we check the return value ?
+ 			addProperty(compDesc_m->properties[i].name.in(), propType.c_str(), compDesc_m->properties[i].property_ref, monitoringInterval);
+ 		}//if
 	}//for
 
 	// do we have to readjust the size ?
@@ -539,5 +514,39 @@ void MonitorComponent::fillSeq()
 	}//if
 }//fillSeq
 
+
+void MonitorComponent::set_archiving_interval(const char* propertyName, ACS::TimeInterval time)
+{
+	AUTO_TRACE("MonitorComponent::set_archiving_interval");
+	unsigned int numOfProp = monitorPoints_m.size();
+	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+
+	for( unsigned int i=0; i<numOfProp; i++ )
+		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)
+			monitorPoints_m[i]->set_archiving_interval(time);
+}
+
+void MonitorComponent::suppress_archiving(const char* propertyName)
+{
+	AUTO_TRACE("MonitorComponent::supress_archiving");
+	unsigned int numOfProp = monitorPoints_m.size();
+	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+
+	for( unsigned int i=0; i<numOfProp; i++ ) {
+		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)
+			monitorPoints_m[i]->suppress_archiving();
+	}
+}
+
+void MonitorComponent::enable_archiving(const char* propertyName)
+{
+	AUTO_TRACE("MonitorComponent::enable_archiving");
+	unsigned int numOfProp = monitorPoints_m.size();
+	ACE_CString prop(ACE_CString(component_m->name())+ACE_CString(":")+ACE_CString(propertyName));
+
+	for( unsigned int i=0; i<numOfProp; i++ )
+		if(strcmp(monitorPoints_m[i]->getPropertyName().c_str(), prop.c_str())==0)
+			monitorPoints_m[i]->enable_archiving();
+}
 
 /*___oOo___*/

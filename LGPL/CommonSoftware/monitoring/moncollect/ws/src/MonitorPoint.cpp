@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+* "@(#) $Id: MonitorPoint.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.1 2011/01/19 21:20:41 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorPoint.h"
@@ -37,7 +37,7 @@ MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInte
 	propertyName_m(propertyName),
 	archivingInterval_m(archivingInterval),
 	monitorBlob_m(mb)
-	{
+{
 	AUTO_TRACE("MonitorPointBase::MonitorPointBase");
 
 	monitor_m = ACS::Monitor::_nil();
@@ -45,7 +45,9 @@ MonitorPointBase::MonitorPointBase(const char *propertyName, const ACS::TimeInte
 	//monitorBlob_m = new MonitorBlob;
 	monitorBlob_m.propertyName = CORBA::string_dup(propertyName);
 	monitorBlob_m.typeOfValue = typeOfData;
-	}
+	suppressed_m = false;
+	valuePercentTrigger_m = 0;
+}
 
 void MonitorPointBase::setPropertySerialNumber(serialNumberTypeSeq& sn)
 {
@@ -70,6 +72,5 @@ MonitorPointBase::~MonitorPointBase()
 {
 	AUTO_TRACE("MonitorPointBase::~MonitorPointBase");
 }
-
 
 /*___oOo___*/
