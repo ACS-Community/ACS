@@ -114,11 +114,17 @@ int BulkDataCallback::handle_stop (void)
 	    ACE_OS::sleep(waitPeriod_m);
 	    locLoop--; 
 	    } // we didn't receive the first frame yet
+	if ( locLoop == 0 )
+			{
+			ACS_SHORT_LOG((LM_ERROR,"BulkDataCallback::handle_stop timeout ( (%ld sec + %ld usec) * %ld ) expired for flow: %s of receiver: %s (state: %d) - not received first frame",
+					waitPeriod_m.sec(), waitPeriod_m.usec(), loop_m, flowname_m.c_str(), recvName_m.c_str(), state_m));
+			}
 
 
 	if(state_m == CB_UNS)
-	    { 
-	    res = cbStop();
+	    {
+		if (fwdData2UserCB_m)
+			res = cbStop();
 	    return 0;
 	    }
 
@@ -155,24 +161,26 @@ int BulkDataCallback::handle_stop (void)
 
 	    if ( locLoop == 0 )
 		{
-		ACS_SHORT_LOG((LM_ERROR,"BulkDataCallback::handle_stop timeout ( (%ld sec + %ld usec) * %ld ) expired for flow %s - not all data received", waitPeriod_m.sec(), waitPeriod_m.usec(), loop_m, flowname_m.c_str()));
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataCallback::handle_stop timeout ( (%ld sec + %ld usec) * %ld ) expired for flow: %s of receiver: %s (state: %d) - not all data received",
+				waitPeriod_m.sec(), waitPeriod_m.usec(), loop_m, flowname_m.c_str(), recvName_m.c_str(), state_m));
 
 		timeout_m = true;
 		//cleaning the recv buffer
 		///cleanRecvBuffer();
 		//cout << "BulkDataCallback::handle_stop - handle removed: " << getHandle() << endl;
 		TAO_AV_CORE::instance()->reactor()->remove_handler(getHandle(),ACE_Event_Handler::READ_MASK);
-		ACS_SHORT_LOG((LM_DEBUG,"BulkDataCallback::handle_stop - receiver handler removed from the ACE reactor"));
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataCallback::handle_stop - due to TIMEOUT receiver handler removed from the ACE reactor"));
 		//ACE_OS::sleep(1);  // seems necessary to give time to remove
 		                   // the handler from the reactor
-		throw CORBA::TIMEOUT();
+		throw CORBA::TIMEOUT(9, CORBA::COMPLETED_MAYBE);
 		}
 
 	    if(state_m == CB_SEND_PARAM)
 		{		
 		//res ignored by reactor
 		if (dim_m != 0)
-		    res = cbStart(bufParam_p);
+			if (fwdData2UserCB_m)
+				res = cbStart(bufParam_p);
 
 		if(bufParam_p)
 		    {
@@ -234,18 +242,45 @@ int BulkDataCallback::handle_stop (void)
 	throw;
 	//throw CORBA::TIMEOUT();
 	}
-    catch(...)
-	{
-	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::handle_stop");
-	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::handle_stop");
-	err.log();
-//	error_m = true;
+    catch(std::exception &stdex)
+    {
+    	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::handle_stop");
+    	err.addData("std::exception", stdex.what());
+    	err.log();
 
-	if(bufParam_p)
-	    {
-	    bufParam_p->release();
-	    bufParam_p = 0;
-	    }
+    	if (errComp_p == 0)
+    	{
+    		errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop");
+    		error_m = true;
+    	}
+
+    	if(bufParam_p)
+    	{
+    		bufParam_p->release();
+    		bufParam_p = 0;
+    	}
+
+    	state_m = CB_UNS;
+    	substate_m = CB_SUB_UNS;
+    	throw;
+    }
+    catch(...)
+    {
+    	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::handle_stop");
+    	err.addData("UNKNOWN Exception", "Unknown ex in BulkDataCallback::handle_stop");
+    	err.log();
+
+    	if (errComp_p == 0)
+    	{
+    		errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::handle_stop");
+    		error_m = true;
+    	}
+
+    	if(bufParam_p)
+    	{
+    		bufParam_p->release();
+    		bufParam_p = 0;
+    	}
 
 	state_m = CB_UNS;
 	substate_m = CB_SUB_UNS;
@@ -342,7 +377,8 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 
 	    if ( dim_m == 0 )
 		{
-		res = cbStart();
+	    	if (fwdData2UserCB_m)
+	    		res = cbStart();
 
 		checkFlowTimeout();
 		working_m = false;
@@ -358,7 +394,8 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 	
 	if (state_m == CB_SEND_DATA)
 	    {
-	    res = cbReceive(frame);
+		if (fwdData2UserCB_m)
+			res = cbReceive(frame);
 	    count_m += frame->length();
 
 	    checkFlowTimeout();
@@ -368,13 +405,13 @@ int BulkDataCallback::receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info
 
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
-	{
-	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(ex,__FILE__,__LINE__,"BulkDataCallback::receive_frame");
-	err.log();
-	// add to the completion
-	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::receive_frame"); 
-	error_m = true;
-	}
+    {
+    	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(ex,__FILE__,__LINE__,"BulkDataCallback::receive_frame");
+    	err.log();
+    	// add to the completion
+    	errComp_p = new AVCbErrorCompletion(err, __FILE__, __LINE__, "BulkDataCallback::receive_frame");
+    	error_m = true;
+    }
     catch(CORBA::Exception &ex)
 	{
 	AVCallbackErrorExImpl err = AVCallbackErrorExImpl(__FILE__,__LINE__,"BulkDataCallback::receive_frame");
@@ -493,6 +530,19 @@ void BulkDataCallback::setFlowTimeout(CORBA::ULong timeout)
     flowTimeout_m = timeout;
 }
 
+
+void BulkDataCallback::fwdData2UserCB(CORBA::Boolean enable)
+{
+	fwdData2UserCB_m = enable;
+	if (fwdData2UserCB_m)
+	{
+	    ACS_SHORT_LOG((LM_WARNING,"BulkDataCallback::fwdData2UserCB enabled data forwarding to the user's CB for flow %s", flowname_m.c_str()));
+	}
+	else
+	{
+		ACS_SHORT_LOG((LM_WARNING,"BulkDataCallback::fwdData2UserCB disabled data forwarding to the user's CB for flow %s", flowname_m.c_str()));
+	}
+}//fwdData2UserCB
 
 void BulkDataCallback::checkFlowTimeout()
 {
