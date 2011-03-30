@@ -15,13 +15,11 @@ import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
-import alma.maciErrType.ComponentDeactivationFailedPermEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 
@@ -292,7 +290,7 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 	 */
 	public void managerReleaseComponents (String[] curls) 
 		throws UnknownErrorException, NotConnectedToManagerException, NoPermissionEx, CorbaTransientException, CorbaNotExistException, CorbaUnknownException, 
-		AcsJCannotDeactivateComponentEx, AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx, AcsJComponentDeactivationFailedPermEx
+		AcsJCannotDeactivateComponentEx, AcsJComponentDeactivationUncleanEx, AcsJComponentDeactivationFailedEx
 	{
 		try {
 			log.fine("sending release_component requests to manager");
@@ -318,9 +316,6 @@ public class GuiMaciSupervisor extends MaciSupervisor {
 		} catch (ComponentDeactivationFailedEx ex) {
 			throw AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
 		
-		} catch (ComponentDeactivationFailedPermEx ex) {
-			throw AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
-			
 		} catch (NotConnectedToManagerException exc) {
 			mcehandler.handleExceptionTalkingToManager(exc);
 			throw exc;

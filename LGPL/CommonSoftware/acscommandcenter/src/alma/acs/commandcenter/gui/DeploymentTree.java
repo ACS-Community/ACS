@@ -57,7 +57,6 @@ import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 import com.xtmod.util.collections.TreeMerge;
@@ -1327,8 +1326,6 @@ public class DeploymentTree extends JTree {
 			mce.handleException(supervisor, ex);
 		} catch (AcsJComponentDeactivationFailedEx ex) {
 			mce.handleException(supervisor, ex);
-		} catch (AcsJComponentDeactivationFailedPermEx ex) {
-			mce.handleException(supervisor, ex);
 		}
 	}
 
@@ -1401,10 +1398,6 @@ public class DeploymentTree extends JTree {
 		}
 
 		protected void handleException (GuiMaciSupervisor ms, AcsJComponentDeactivationFailedEx exc) {
-			seemsComponentDeactivationFailed(ms);
-		}
-
-		protected void handleException (GuiMaciSupervisor ms, AcsJComponentDeactivationFailedPermEx exc) {
 			seemsComponentDeactivationFailed(ms);
 		}
 
