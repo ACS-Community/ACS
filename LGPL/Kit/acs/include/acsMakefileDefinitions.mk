@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.22 2011/03/29 10:43:14 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.23 2011/03/30 10:35:37 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -154,13 +154,16 @@ ifeq ($(call mustBuild,C++),true)
  clean_dist_idl_$1_prereq += clean_dist_IDL_$1_CPP
 endif
 
-$1_MIDLprereqLocal:=$(if $(wildcard ../idl/$1.midl),$(foreach idl,$(strip $(shell egrep '^#include' ../idl/$1.idl | sed 's/#include \"\(.*\)\".*/\1/; s/#include <\(.*\)>.*/\1/;' | sed 's/.*\///g;' | tr '\n' ' ')),../idl/$(idl)),)
 
-$1_IDLprereq := $(if $(wildcard ../idl/$1.idl),$(subst ../idl/$1.idl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.idl 2>/dev/null |  tr  '\\\n' ' '  ))) ,)
+$1_IDLprereq += $(if $(wildcard ../idl/$1.idl),$(subst ../idl/$1.idl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.idl 2>/dev/null |  tr  '\\\n' ' '  ))) ,)
+
+$1_MIDLprereq += $(if $(wildcard ../idl/$1.midl),$(subst ../idl/$1.midl,,$(subst $1.o:, ,$(shell cpp  $(MK_IDL_PATH) $(TAO_MK_IDL_PATH)  -E -M ../idl/$1.midl 2>/dev/null |  tr  '\\\n' ' '  ))) ,)
+
 
 # jagonzal: Add dependencies on IDLs generated from XMLs since the preprocessor requires all the included IDLs to be available in order to produce any output
 ifdef ACSERRDEF
    $1_IDLprereq += $(filter-out $(CURDIR)/../idl/$(1).idl,$(foreach xml,$(ACSERRDEF),$(CURDIR)/../idl/$(xml).idl))
+   $1_MIDLprereq += $(filter-out $(CURDIR)/../idl/$(1).idl,$(foreach xml,$(ACSERRDEF),$(CURDIR)/../idl/$(xml).idl))
 endif
 
 endef
@@ -219,7 +222,7 @@ ifeq ($(call mustBuild,C++),true)
 endif
 
 $(if $(wildcard ../idl/$1.midl), 
-$(CURDIR)/../idl/$1.idl: ../idl/$1.midl
+$(CURDIR)/../idl/$1.idl: ../idl/$1.midl $($1_MIDLprereq)
 	-@echo "== (preprocessing MIDL => IDL) $1"
 	$(AT) JacPrep $$< " -I$(JACORB_HOME)/idl/jacorb -I$(JACORB_HOME)/idl/omg $(MK_IDL_PATH) $(MIDL_FLAGS)" >  ../idl/$1.idl
 )
