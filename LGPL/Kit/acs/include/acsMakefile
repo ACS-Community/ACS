@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.198 2010/10/11 13:30:24 mzampare Exp $" 
+# "@(#) $Id: acsMakefile,v 1.199 2011/03/30 12:44:24 jagonzal Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -1737,6 +1737,11 @@ clean_all: clean_links  $(CLEAN_TARGET)
 	-$(AT)find .. -name \#\* -o -name core -o -name \*\.gdb_history -print | $(XARGS) -i $(RM) {}
 #	-$(AT)vltMakeCleanDB 
 #	-@$(ECHO) " .\c"
+
+.PHONY : clean_dependencies
+clean_dependencies:
+	-$(AT) $(RM) $(clean_dependencies_target)
+	-$(AT) $(ECHO) "Dependency files cleaned..."
 
 ifneq ($(strip $(MANSECTIONS)),)
 	-$(AT)  for i in $(MANSECTIONS) ; \

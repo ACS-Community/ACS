@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.23 2011/03/30 10:35:37 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.24 2011/03/30 12:44:24 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -741,6 +741,8 @@ $2_expObjList  =
 $(foreach obj,$3,$(eval $$2_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_expObjList += ../object/$(obj).o))
 
+clean_dependencies_target += $($2_depList)
+
 ifeq ($(DEPENDENCIES),on)
    ifeq ($(MAKE_DEBUG),on)
       include $($2_depList)
@@ -865,6 +867,8 @@ $2_exe_depList =
 $2_exe_objList =
 $(foreach obj,$3,$(eval $$2_exe_depList += ../object/$(obj).d))
 $(foreach obj,$3,$(eval $$2_exe_objList += ../object/$(obj).o))
+
+clean_dependencies_target += $($2_exe_depList)
 
 ifeq ($(DEPENDENCIES),on)
    ifeq ($(MAKE_DEBUG),on)
