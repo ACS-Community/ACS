@@ -277,17 +277,16 @@ public interface ContainerServices extends ContainerServicesBase
 	 * <p>
 	 * Note that {@link #awaitComponentRelease(long, TimeUnit)} is not a callback method
 	 * but should make it easier to synchronize user code execution with component release.
+	 * <p>
+	 * An instance of <code>ComponentReleaseCallback</code> can be used for only one component release call.
 	 */
 	public static class ComponentReleaseCallback {
-		private volatile CountDownLatch sync;
+		private CountDownLatch sync = new CountDownLatch(1);
 		/**
 		 * Called by ACS to release the thread (if any) that blocks on {@link #awaitComponentRelease(long, TimeUnit)}.
 		 */
 		final void callOver() {
-			if (sync != null) {
-				sync.countDown();
-				sync = null;
-			}
+			sync.countDown();
 		}
 		/**
 		 * Called when a CORBA or other communication error occurred.
@@ -328,9 +327,6 @@ public interface ContainerServices extends ContainerServicesBase
 		 * @throws InterruptedException
 		 */
 		public final boolean awaitComponentRelease(long timeout, TimeUnit unit) throws InterruptedException {
-			if (sync == null) {
-				sync = new CountDownLatch(1);
-			}
 			return sync.await(timeout, unit);
 		}
 	}
@@ -359,6 +355,7 @@ public interface ContainerServices extends ContainerServicesBase
 	 *
 	 * @param componentUrl the name/curl of the component instance as used by the manager
 	 * @param callback may be <code>null</code> if you do not need to wait for component activation or to see the results.
+	 *                 An new instance of <code>ComponentReleaseCallback</code> is required for every call.
 	 * @since ACS 9.1
 	 */
 	public void releaseComponent(String componentUrl, ComponentReleaseCallback callback);
