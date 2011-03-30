@@ -59,6 +59,10 @@ import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.AcsContainerLog.LOG_CompAct_Corba_OK;
+import alma.AcsContainerLog.LOG_CompAct_Init_OK;
+import alma.AcsContainerLog.LOG_CompAct_Instance_OK;
+import alma.AcsContainerLog.LOG_CompAct_Loading_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.classloading.AcsComponentClassLoader;
@@ -434,10 +438,10 @@ public class AcsContainer extends ContainerPOA
 		
 		StopWatch activationWatch = new StopWatch(m_logger);
 
-        // to make component activations stick out in the log list
-        m_logger.finer("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-        m_logger.fine("activate_component: handle=" + componentHandle + " name=" + compName +
-                        " helperClass=" + exe + " type=" + type);
+		// to make component activations stick out in the log list
+		m_logger.finer("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+		m_logger.fine("activate_component: handle=" + componentHandle + " name=" + compName + " helperClass=" + exe
+				+ " type=" + type);
 
 		// if the container is still starting up, then hold the request until the container is ready
 		boolean contInitWaitSuccess = false; 
@@ -494,9 +498,9 @@ public class AcsContainer extends ContainerPOA
             // Objects for container interception ("tight container") and for automatic xml binding class
             // de-/serialization are chained up and inserted here. End-to-end they have to translate between the
             // operations interface derived from corba IDL and the component's declared internalInterface.
-
+            StopWatch compStopWatch = new StopWatch();
             ComponentLifecycle compImpl = compHelper.getComponentImpl();
-
+            LOG_CompAct_Instance_OK.log(m_logger, compName, compStopWatch.getLapTimeMillis());
 //m_logger.finest(compName + " component impl created, with classloader " + compImpl.getClass().getClassLoader().getClass().getName());
 
             Class<? extends ACSComponentOperations> operationsIFClass = compHelper.getOperationsInterface();
@@ -557,9 +561,11 @@ public class AcsContainer extends ContainerPOA
 
             // for future offshoots created by this component we must pass on the no-auto-logging info
             compAdapter.setMethodsExcludedFromInvocationLogging(methodsExcludedFromInvocationLogging);
-
+            
+            compStopWatch.reset();
             compAdapter.activateComponent(servant);
-
+            LOG_CompAct_Corba_OK.log(m_logger, compName, compStopWatch.getLapTimeMillis());
+            
             // now it's time to turn off ORB logging if the new component is requesting this
             if (compHelper.requiresOrbCentralLogSuppression()) {
             	ClientLogManager.getAcsLogManager().suppressCorbaRemoteLogging();
@@ -574,8 +580,10 @@ public class AcsContainer extends ContainerPOA
             // if the Manager supports new calling semantics, we could separate the two
             // as described in ComponentLifecycle
             m_logger.fine("about to initialize component " + compName);
+            compStopWatch.reset();
             compAdapter.initializeComponent();
             compAdapter.executeComponent();
+            LOG_CompAct_Init_OK.log(m_logger, compName, compStopWatch.getLapTimeMillis());
 
             // we've deferred storing the component in the map until after it's been initialized successfully
             m_activeComponentMap.put(componentHandle, compAdapter);
@@ -715,7 +723,8 @@ public class AcsContainer extends ContainerPOA
         throws AcsJContainerEx
     {
         m_logger.finer("creating component helper instance of type '" + exe + "' using classloader " + compCL.getClass().getName());
-
+        
+        StopWatch sw = new StopWatch();
         Class<? extends ComponentHelper> compHelperClass = null;
         try  {
             compHelperClass = (Class.forName(exe, true, compCL).asSubclass(ComponentHelper.class));
@@ -729,7 +738,11 @@ public class AcsContainer extends ContainerPOA
                                             + ComponentHelper.class.getName());
         	throw ex2;
         }
-
+        // We really only measure the time to load the component helper class, 
+        // but since we expect the comp impl class to be in the same jar file, our class loader should 
+        // then learn about it and be very fast loading it later.
+        LOG_CompAct_Loading_OK.log(m_logger, compName, sw.getLapTimeMillis());
+        
         Constructor<? extends ComponentHelper> helperCtor = null;
         ComponentHelper compHelper = null;
         try {
@@ -749,6 +762,10 @@ public class AcsContainer extends ContainerPOA
         	ex.setContextInfo("component helper class '" + exe + "' could not be instantiated");
         	throw ex;
         }
+        // here we don't log LOG_CompAct_Instance_OK because instantiating the component itself is expected to take longer
+        // than instantiating the comp helper here. 
+        // To be more accurate, we'd have to add up those times, which would be rather ugly in the current code.
+        
         compHelper.setComponentInstanceName(compName);
 
         return compHelper;
@@ -857,11 +874,24 @@ public class AcsContainer extends ContainerPOA
 
 	/**
 	 * The common part for deactivating either one or many components.
-	 * This method will directly activate the given component adatper, without caring about its state 
+	 * This method will directly deactivate the given component adatper, without caring about its state 
 	 * or synchronization issues.
+	 * <p>
+	 * Note that the container "forgets" about this component, even if deactivation fails with a 
+	 * <code>AcsJComponentDeactivationFailedEx</code>:
+	 * <ul>
+	 *   <li> If the poa deactivation failed with a timeout, it could be that it fully deactivates a bit later,
+	 *        which would make the reference useless.
+	 *   <li> Even if such a component stays around, it may be so messed up that it is too risky to use it further. 
+	 * </ul>
+	 * The consequence is that an attempt to activate another instance of the same component may fail in the future,
+	 * without a specific message from the container that a previous instance had failed. The information can only
+	 * be connected from the logs in this case.
+	 * The exception parameter AcsJComponentDeactivationFailedEx#IsPermanentFailure therefore has no meaning for the manager. 
+* @TODO complete this comment: A client might find it useful though, and set to false in case of timeout, because then the client can hope that this comp will disappear later.
+	 * 
 	 * @throws AcsJComponentDeactivationFailedEx 
 	 * @throws AcsJComponentDeactivationUncleanEx 
-	 * 
 	 * @see #deactivate_component(int)
 	 * @see #deactivateAllComponents()
 	 */
@@ -871,10 +901,6 @@ public class AcsContainer extends ContainerPOA
 			compAdapter.deactivateComponent();
 
 		} finally {
-			// remove comp adapter from the map to allow GC of component resources,
-			// and to allow the same handle to be used for a new component instance in the future.
-			// @TODO: Or should we not remove the component in case of AcsJComponentDeactivationFailedEx,
-			//        especially if "IsPermanentFailure==false", to allow further attempts?
 			m_activeComponentMap.remove(compAdapter.getHandle());
 		}
 	}
