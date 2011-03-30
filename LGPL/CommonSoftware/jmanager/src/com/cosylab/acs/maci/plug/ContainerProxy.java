@@ -10,6 +10,15 @@ import java.io.ObjectOutputStream;
 
 import org.omg.CORBA.TIMEOUT;
 
+import alma.maciErrType.CannotActivateComponentEx;
+import alma.maciErrType.CannotDeactivateComponentEx;
+import alma.maciErrType.ComponentDeactivationFailedEx;
+import alma.maciErrType.ComponentDeactivationUncleanEx;
+import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
+import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
+import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
+
 import com.cosylab.acs.maci.AccessRights;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
@@ -17,17 +26,6 @@ import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.IntArray;
 import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.TimeoutRemoteException;
-
-import alma.maciErrType.CannotActivateComponentEx;
-import alma.maciErrType.CannotDeactivateComponentEx;
-import alma.maciErrType.ComponentDeactivationFailedEx;
-import alma.maciErrType.ComponentDeactivationFailedPermEx;
-import alma.maciErrType.ComponentDeactivationUncleanEx;
-import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
-import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 
 /**
@@ -115,15 +113,12 @@ public class ContainerProxy extends ClientProxy implements Container
 	 * @see com.cosylab.acs.maci.Container#deactivate_component(int)
 	 */
 	public void deactivate_component(int handle) throws
-		AcsJComponentDeactivationFailedPermEx,AcsJCannotDeactivateComponentEx,
+		AcsJCannotDeactivateComponentEx,
 	    AcsJComponentDeactivationUncleanEx,AcsJComponentDeactivationFailedEx
 	{
 		try
 		{
 			container.deactivate_component(handle);
-		}
-		catch (ComponentDeactivationFailedPermEx cdfpe) {
-			throw AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(cdfpe);
 		}
 		catch (CannotDeactivateComponentEx cdce) {
 			throw AcsJCannotDeactivateComponentEx.fromCannotDeactivateComponentEx(cdce);

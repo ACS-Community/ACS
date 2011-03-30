@@ -7,7 +7,6 @@ package com.cosylab.acs.maci;
 import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 
 /**
@@ -77,8 +76,8 @@ public interface Container extends Client
 	 * @param	handle	A handle identifying a component to be released.
 	 */
 	public void deactivate_component(int handle) 
-		throws AcsJComponentDeactivationFailedPermEx,AcsJCannotDeactivateComponentEx,
-			   AcsJComponentDeactivationUncleanEx,AcsJComponentDeactivationFailedEx;
+		throws AcsJCannotDeactivateComponentEx,AcsJComponentDeactivationUncleanEx,
+			   AcsJComponentDeactivationFailedEx;
 	
 	/**
 	 * Returns information about a subset of components that are currently hosted by the Container. 

@@ -47,7 +47,6 @@ import alma.maciErrType.CannotGetComponentEx;
 import alma.maciErrType.CannotRegisterComponentEx;
 import alma.maciErrType.ComponentConfigurationNotFoundEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
-import alma.maciErrType.ComponentDeactivationFailedPermEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.ComponentNotAlreadyActivatedEx;
 import alma.maciErrType.ComponentSpecIncompatibleWithActiveComponentEx;
@@ -1066,8 +1065,7 @@ public class ManagerProxyImpl extends ManagerPOA
 	 *		  This is a useful debugging tool.
 	 */
 	public int release_component(int id, String component_url)
-		throws ComponentDeactivationFailedPermEx,
-		CannotDeactivateComponentEx, ComponentDeactivationUncleanEx,
+		throws CannotDeactivateComponentEx, ComponentDeactivationUncleanEx,
 		ComponentDeactivationFailedEx, NoPermissionEx
 	{
 		// TODO support ACS exceptions
