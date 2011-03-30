@@ -45,7 +45,6 @@ public class PlotWidget extends SamplingWidget {
 		initialize();
 		this.position = position;
 	}
-
 	/**
 	 * This method initializes this
 	 * 

@@ -131,7 +131,7 @@ public abstract class DataPrinter extends SamplingManagerUITool{
 	public void startSample() throws CouldntAccessComponentEx, TypeNotSupportedEx , CouldntAccessPropertyEx, SamplingManagerException{
 		samp = new Sampler();
 		synchronized(this){
-			System.out.println(initializations);
+			System.out.println("Initialization:"+ initializations);
 			if(initializations==0){
 				try{
 					spinUp(SampTool.NAME,ssg.MAN_NAME);

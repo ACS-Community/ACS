@@ -16,10 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -551,7 +553,6 @@ public class SamplingSystemGUI extends JFrame {
 					String comp = e.getItem().toString();
 					PropertyComboBox.removeAllItems();
 					for(int i=0; i<compList.length;i++){
-
 						/* We find the component. We show the properties for it. If we do not
 						 * have them, we go and find them */
 						if(compList[i].compareTo(comp)==0){
@@ -560,33 +561,48 @@ public class SamplingSystemGUI extends JFrame {
 								 * (cuased because of the IR not available or not
 								 * having the interface definition), this should be
 								 * notified to the user. */
-								List<String> list = SampTool.getPropsForComponent(compList[i]);
-								if(list == null) {
-									PropertyComboBox.removeAllItems();
-									PropertyComboBox.setEnabled(false);
-									ComponentComboBox.hidePopup();
-									JOptionPane.showMessageDialog(PropertyComboBox.getParent().getParent(),
-										"The interface definition for the component '" + comp +
-										"' could not be found in the Interface Repository\n" +
-										"Please check that you have the Interface Repository running " +
-										"and that the interface is loaded into it",
-										"IR error",
-										JOptionPane.ERROR_MESSAGE);
-								} else {
-									propList.add(i, list);
+								final int k = i;
+								SwingWorker<List<String>, Object> sw = new SwingWorker<List<String>, Object>() {
+									public List<String> doInBackground() {
+										ComponentComboBox.setEnabled(false);
+										PropertyComboBox.setEnabled(false);
+										List<String> list_ = SampTool.getPropsForComponent(compList[k]);
+										return list_;
+									}
+									public void done(){
+										ComponentComboBox.setEnabled(true);
+										PropertyComboBox.setEnabled(true);
+									}
+								};
+								sw.execute();
+								try {
+									List<String> list = sw.get();
+									if(list == null) {
+										PropertyComboBox.removeAllItems();
+										PropertyComboBox.setEnabled(false);
+										ComponentComboBox.hidePopup();
+										JOptionPane.showMessageDialog(PropertyComboBox.getParent().getParent(),
+											"The interface definition for the component '" + comp +
+											"' could not be found in the Interface Repository\n" +
+											"Please check that you have the Interface Repository running " +
+											"and that the interface is loaded into it",
+											"IR error",
+											JOptionPane.ERROR_MESSAGE);
+									} else {
+										propList.add(i, list);
+									}
+								} catch (InterruptedException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (ExecutionException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
 								}
 							}
 							try{
-								if(propList.get(i) != null){
-									final int k = i;
-									SwingWorker<Object,Object> sw = new SwingWorker<Object, Object>() {
-										public Object doInBackground() {
-											fillPropertyComboBox(propList.get(k));
-											return null;
-										}
-									};
-									sw.execute();
-								}
+								if(propList.get(i) != null) {
+									fillPropertyComboBox(propList.get(i));
+									}
 							}catch(IndexOutOfBoundsException ex){
 								PropertyComboBox.removeAllItems();
 								PropertyComboBox.setEnabled(false);

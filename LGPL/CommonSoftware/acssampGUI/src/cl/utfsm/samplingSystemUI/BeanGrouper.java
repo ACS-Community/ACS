@@ -15,15 +15,18 @@ import java.util.Date;
 import java.util.Iterator;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -70,7 +73,9 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	private JSpinner timeWindowSpinner = null;
 	private JToggleButton saveButton = null;
 	private JLabel fileNameLabel = null;
-	private JComboBox statusComboBox = null;
+	private JScrollPane statusScrollBar = null;
+	private DefaultListModel model = null;
+	private JList statusList = null;
 	private StatusIcon statusIcon;
 	//Menu
 	private JMenuItem addScriptMenuItem;
@@ -111,7 +116,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 	 * This method initializes the GUI, setting up the layout.
 	 */
 	private void initialize() {
-		this.setMinimumSize(new Dimension(990,550));
+		this.setMinimumSize(new Dimension(990,600));
 		this.setLayout(new GridBagLayout());
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -167,15 +172,17 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
-		c.gridwidth = 4;
+		c.gridwidth = 5;
 		c.weightx = 1;
 		this.add(getFileNameLabel(), c);
 
-		c.gridx = 5;
-		c.gridwidth = 5;
+		c.gridx = 6;
+		c.gridwidth = 4;
 		c.weightx = 0;
-		c.anchor = GridBagConstraints.EAST;
-		this.add(getStatusComboBox(),c);
+		c.fill = 1;
+		c.anchor = GridBagConstraints.WEST;
+		this.add(getStatusScrollBar(),c);
+		
 		c.gridx = 10;
 		c.gridwidth = 1;
 		this.add(getStatusIcon(), c);
@@ -349,8 +356,8 @@ public class BeanGrouper extends JFrame implements WindowListener {
 					// Enable/disable buttons
 					timeSampSpinner.setEnabled(true);
 					freqSpinner.setEnabled(true);
-					stopButton.setEnabled(false);
 					timeWindowSpinner.setEnabled(true);
+					stopButton.setEnabled(false);
 				}
 			});
 		}
@@ -535,20 +542,27 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		return fileNameLabel;
 	}
 	
-	private JComboBox getStatusComboBox() {
-		if(statusComboBox==null) {
-			statusComboBox = new JComboBox();
-			statusComboBox.addItem("Status: Sampling Group ready to start.");
+	private JScrollPane getStatusScrollBar() {
+		model = new DefaultListModel();
+		if(statusList==null) {
+			statusList = new JList(model);
+			model.addElement("Status: Sampling Group ready to start.");
 		}
-		return statusComboBox;
+		if(statusScrollBar==null) {
+			statusScrollBar= new JScrollPane(statusList);
+		}
+		statusList.setVisibleRowCount(1);
+		statusScrollBar.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		return statusScrollBar;
 	}
 
-	private void addToStatusComboBox(String status) {
-		statusComboBox.addItem(status);
+	private void addToStatusList(String status) {
+		model.addElement(status);
 	}
 
-	private void updateStatusComboBox() {
-		statusComboBox.setSelectedIndex(statusComboBox.getItemCount()-1);
+	private void updateStatusList() {
+		statusList.setSelectedIndex(statusList.getModel().getSize()-1);
+		statusScrollBar.repaint();
 	}
 
 	private JMenuBar getBeanGrouperMenuBar() {
@@ -621,7 +635,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 				comProp          = jcombo.getSelectedItem().toString().split(":");
 				removeSamp(comProp[0],comProp[1]);
 				jcombo.removeItemAt(jcombo.getSelectedIndex());
-				addToStatusComboBox(comProp[0] + "#" + comProp[1] + "removed");
+				addToStatusList(comProp[0] + "#" + comProp[1] + "removed");
 				
 			}
 		});
@@ -814,40 +828,42 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		}
 		
 		prev_status = getStatusIcon().getStatus();
-		getStatusComboBox().removeAllItems();
+		model.clear();
 		for(DataPrinter wp : samplers){
 			wp.setFrequency(freq);
 			try {
 				wp.startSample();
 				isStopped = false;
-				addToStatusComboBox("Status: Sampling of " + wp.getComponent() + "#" + wp.getProperty() + " started" );
-				updateStatusComboBox();
+				addToStatusList("Status: Sampling of " + wp.getComponent() + "#" + wp.getProperty() + " started" );
+				updateStatusList();
 				setStatusIcon(StatusIcon.SAMPLING);
+				ssg.setStatus(StatusIcon.CONNECTED_TO_SAMPMANAGER);
 			} catch(alma.ACSErrTypeCommon.CouldntAccessComponentEx e) {
 				wp.setComponentAvailable(false,"Cannot access component");
-				addToStatusComboBox("Status: Cannot access component " + wp.getComponent());
-				updateStatusComboBox();
+				addToStatusList("Status: Cannot access component " + wp.getComponent());
+				updateStatusList();
 				setStatusIcon(StatusIcon.SAMPLING_WARNING);
 			} catch(alma.ACSErrTypeCommon.TypeNotSupportedEx e) {
 				wp.setComponentAvailable(false,"Type not supported");
-				addToStatusComboBox("Status: Type not supported " + wp.getComponent() + "#" + wp.getProperty());
-				updateStatusComboBox();
+				addToStatusList("Status: Type not supported " + wp.getComponent() + "#" + wp.getProperty());
+				updateStatusList();
 				setStatusIcon(StatusIcon.SAMPLING_WARNING);
 			} catch(alma.ACSErrTypeCommon.CouldntAccessPropertyEx e) {
 				wp.setComponentAvailable(false,"Cannot access property");
-				addToStatusComboBox("Status: Cannot access property " + wp.getProperty());
-				updateStatusComboBox();
+				addToStatusList("Status: Cannot access property " + wp.getProperty());
+				updateStatusList();
 				setStatusIcon(StatusIcon.SAMPLING_WARNING);
 			} catch(cl.utfsm.samplingSystemUI.core.SamplingManagerException e) {
 				
 				wp.setComponentAvailable(false,"Sampling Manager fault");
 				//to have only one "Status: Sampling Manager Fault" in the statusComboBox
 				if(!faultErrorAddedToStatusBox) {				
-					addToStatusComboBox("Status: Sampling Manager fault");
-					updateStatusComboBox();
+					addToStatusList("Status: Sampling Manager fault");
+					updateStatusList();
 					faultErrorAddedToStatusBox = true;
 				}
 				getStatusIcon().setStatus(StatusIcon.DISCONNECTED);
+				ssg.setStatus(StatusIcon.DISCONNECTED);
 			}
 		}
 
@@ -858,7 +874,7 @@ public class BeanGrouper extends JFrame implements WindowListener {
 			freqSpinner.setEnabled(true);
 			timeSampSpinner.setEnabled(true);
 			getSaveButton().setEnabled(true);
-			setStatusIcon(prev_status);
+			//setStatusIcon(prev_status);
 			return;
 		}
 		
@@ -929,10 +945,10 @@ public class BeanGrouper extends JFrame implements WindowListener {
 		stopButton.setEnabled(false);
 		pauseButton.setEnabled(false);
 		startButton.setEnabled(true);
-		getStatusComboBox().removeAllItems();
+		model.clear();
 		getSaveButton().setEnabled(true);
-		addToStatusComboBox("Status: Sampling stoped");
-		updateStatusComboBox();
+		addToStatusList("Status: Sampling stoped");
+		updateStatusList();
 		setStatusIcon(StatusIcon.CONNECTED_TO_SAMPMANAGER);
 
 		for(DataPrinter i : samplers) {
