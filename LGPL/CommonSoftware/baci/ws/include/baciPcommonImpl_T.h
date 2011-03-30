@@ -154,6 +154,8 @@ public:
    */
   BACIProperty* getProperty() const { return property_mp; }
 
+  virtual void publishNow();
+
   /**
    * Destructor method
    * This method must be called to destroy property,

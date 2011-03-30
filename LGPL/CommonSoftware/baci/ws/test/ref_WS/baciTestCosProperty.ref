@@ -915,10 +915,10 @@
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getPropertySet] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_number_of_properties] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_number_of_properties = 26
+2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_number_of_properties = 27
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_property_value] 
-2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_property_value("") = alarm_fault_family,alarm_fault_member,alarm_high_off,alarm_high_on,alarm_level,alarm_low_off,alarm_low_on,alarm_timer_trig,archive_delta,archive_max_int,archive_mechanism,archive_min_int,archive_priority,archive_suppress,default_timer_trig,default_value,description,format,graph_max,graph_min,initialize_devio,min_delta_trig,min_step,min_timer_trig,resolution,units
+2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_property_value("") = alarm_fault_family,alarm_fault_member,alarm_high_off,alarm_high_on,alarm_level,alarm_low_off,alarm_low_on,alarm_timer_trig,archive_delta,archive_delta_percent,archive_max_int,archive_mechanism,archive_min_int,archive_priority,archive_suppress,default_timer_trig,default_value,description,format,graph_max,graph_min,initialize_devio,min_delta_trig,min_step,min_timer_trig,resolution,units
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::get_all_property_names] 
 1 - ----------T--:--:--.--- [GlobalLogger - baci::CDBPropertySet::getObjectId] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] baciTestClient: get_all_property_names() = 
@@ -931,6 +931,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	alarm_low_on
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	alarm_timer_trig
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	archive_delta
+2 - ----------T--:--:--.--- [GlobalLogger - ] 	archive_delta_percent
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	archive_max_int
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	archive_mechanism
 2 - ----------T--:--:--.--- [GlobalLogger - ] 	archive_min_int

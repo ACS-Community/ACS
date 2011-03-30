@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.cpp,v 1.12 2010/07/05 10:54:19 bjeram Exp $"
+* "@(#) $Id: baciBACIProperty.cpp,v 1.13 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include "baciDB.h"
 
 
-ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.12 2010/07/05 10:54:19 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIProperty.cpp,v 1.13 2011/03/30 17:57:23 tstaig Exp $");
 
 namespace baci {
 
@@ -50,7 +50,7 @@ BACIProperty::BACIProperty(const ACE_CString& _name,
   propertyImplementator_mp(_propertyImplementator),
   characteristicModel_mp(characteristicModel),
   lastValue_m(_defaultValue), component_mp(component_p), 
-  monitorVector_m(), triggerOnValueMonitor_m(false), 
+  monitorVector_m(), triggerOnValueMonitor_m(false), triggerOnValuePercentMonitor_m(false),
   pollInterval_m(0), lastPollTime_m(0), monMinTriggerTime_m(0LL),
   inDestructionState_m(false)
 {
@@ -260,6 +260,7 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 
   ACS::TimeInterval monitorTriggerTime, monitorLastTime;
   BACIValue monitorTriggerValue;
+  BACIValue monitorTriggerValuePercent;
   
   BACIMonitor* mon_p=0;
 
@@ -389,10 +390,55 @@ void BACIProperty::dispatchMonitors(Completion& completion, CBDescOut& descOut)
 		      {
 		      mon_p->setLastTime(lastPollTime);
 		      }
+		  //If we already executed the callback due to delta_value, then we don't
+		  //require to check for delta_percent_value.
+		  continue;
 		}
 	    }
 	}      
-    }
+
+		// if this monitor is setup to be triggered when the property's underlying value
+		// reaches a percentual delta value
+		if (mon_p->getTriggerOnValuePercent() == true) {
+			// monitorTriggerValuePercent is a local copy of the monitor's trigger value percent
+			monitorTriggerValuePercent = mon_p->getTriggerValuePercent(); 
+			// if the trigger value percent is not null and contains a delta value do something
+			if ((monitorTriggerValuePercent.isNull()==0) && (monitorTriggerValuePercent.noDelta()==false)) {
+				//create a copy of the last monitored value
+				BACIValue monitorLastValue=mon_p->getLastValue();
+				
+				// if the last monitored value is not null OR the "lastValue" (DWF-this looks like
+				// a bug to me...why not use the local copy just created!!!)
+				if (((monitorLastValue.isNull()!=0 ) || (lastValue.lessThanPercentDelta(monitorLastValue, monitorTriggerValuePercent)==false)) && 
+					((mon_p->isDeltaValueAndTimerInteraction()==false) || (lastPollTime-monitorLastTime)>=mon_p->getMinTriggerTime())) {
+					if ( completion.previousError.length() == 0 ) { // does completion contain an error ?
+						completion.type = ACSErr::ACSErrTypeMonitor;
+						completion.code = ACSErrTypeMonitor::ACSErrMonitorOnValuePercent;	 //  value triggered
+						ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, completion, archiver_p);
+					} else {
+						ACSErrTypeMonitor::ACSErrMonitorErrorCompletion c(completion, __FILE__, __LINE__, "BACIProperty::dispatchMonitors");
+						ok = component_mp->dispatchCallback(mon_p->getCallbackID(), lastValue, descOut, c, archiver_p);
+					}//if-else
+					
+					if (ok==false && component_mp->getCallback(mon_p->getCallbackID())->isOK()==false && 
+						mon_p->isInDestructionState()==false) 
+					{
+						mon_p->internalDestroy(); 
+						n--;
+						continue;
+					}
+					
+					mon_p->setLastValue(lastValue);
+					if (mon_p->isDeltaValueAndTimerInteraction()==true)
+					{
+						mon_p->setLastTime(lastPollTime);
+					}
+					//This is here to replicate the structure as for delta_value checks.
+					continue;
+				}
+			}
+		}
+	}
 }
 
 ACS::TimeInterval BACIProperty::GCD(ACS::TimeInterval t1, ACS::TimeInterval t2) 
@@ -435,6 +481,7 @@ void BACIProperty::updateMonitorStates()
   
   // update pollInterval
   triggerOnValueMonitor_m=false;
+  triggerOnValuePercentMonitor_m=false;
   setMonMinTriggerTime(0LL);
   ACS::TimeInterval pi=0;
   ACS::TimeInterval minTriggerTime = 0LL;
@@ -445,9 +492,10 @@ void BACIProperty::updateMonitorStates()
       if (mon_p!=0 && 
 	  mon_p->isSuspended()==false) 
 	{
-	  if (mon_p->getTriggerOnValue() == true)
+	  if (mon_p->getTriggerOnValue() == true || mon_p->getTriggerOnValuePercent() == true)
 	      {
-	      triggerOnValueMonitor_m=true;
+	      triggerOnValueMonitor_m=mon_p->getTriggerOnValue();
+	      triggerOnValuePercentMonitor_m=mon_p->getTriggerOnValuePercent();
 	      //first time being set...take the monitor's value!
 	      if (minTriggerTime==0)
 		  {

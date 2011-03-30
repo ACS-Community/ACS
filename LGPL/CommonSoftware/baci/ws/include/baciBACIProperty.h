@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIProperty.h,v 1.7 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIProperty.h,v 1.8 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -157,6 +157,7 @@ public:
   BACIMonitor* getMonitorAt(int pos) const { return monitorVector_m[pos]; }
   
   bool hasTriggerOnValueMonitor() const { return triggerOnValueMonitor_m; }
+  bool hasTriggerOnValuePercentMonitor() const { return triggerOnValuePercentMonitor_m; }
 
   ACS::TimeInterval getPollInterval() const { return pollInterval_m; }
   ACS::TimeInterval getLastPollTime() const { return lastPollTime_m; }
@@ -196,6 +197,7 @@ private:
   BACIMonitorVector monitorVector_m;
 
   bool triggerOnValueMonitor_m;
+  bool triggerOnValuePercentMonitor_m;
     ACS::TimeInterval pollInterval_m;
     ACS::TimeInterval lastPollTime_m;
     ACS::TimeInterval monMinTriggerTime_m;

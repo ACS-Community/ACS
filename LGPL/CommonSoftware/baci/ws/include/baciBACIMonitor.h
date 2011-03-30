@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.h,v 1.5 2007/06/12 08:02:23 nbarriga Exp $"
+* "@(#) $Id: baciBACIMonitor.h,v 1.6 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -150,9 +150,11 @@ public:
   void resume();
   void setLastTime(const ACS::TimeInterval& _lastTime);
   void setTriggerValue(const BACIValue& _triggerValue);
+  void setTriggerValuePercent(const BACIValue& _triggerValuePercent);
   void setMinTriggerValue(const BACIValue& _minTriggerValue);
   void setLastValue(const BACIValue& _lastValue);
   void setTriggerOnValue(bool enable);
+  void setTriggerOnValuePercent(bool enable);
 
   /* ---- */
 
@@ -169,8 +171,10 @@ public:
 	transmitTime_m=mon.transmitTime_m;
 	lastTime_m=mon.lastTime_m; 
 	triggerValue_m=mon.triggerValue_m; 
+	triggerValuePercent_m=mon.triggerValuePercent_m; 
 	lastValue_m=mon.lastValue_m; 
 	triggerOnValue_m=mon.triggerOnValue_m;
+	triggerOnValuePercent_m=mon.triggerOnValuePercent_m;
 	property_mp=mon.property_mp;
 	suspended_m=mon.suspended_m; 
 	archivingMonitor_m=mon.archivingMonitor_m; 
@@ -197,9 +201,11 @@ public:
   ACS::TimeInterval getLastTime() const { return lastTime_m; }
   ACS::TimeInterval getTransmitTime() const { return transmitTime_m; }
   BACIValue getTriggerValue() const { return triggerValue_m; }
+  BACIValue getTriggerValuePercent() const { return triggerValuePercent_m; }
   BACIValue getMinTriggerValue() const { return minTriggerValue_m; }
   BACIValue getLastValue() const { return lastValue_m; }
   bool getTriggerOnValue() const { return triggerOnValue_m; }
+  bool getTriggerOnValuePercent() const { return triggerOnValuePercent_m; }
 
   void setUpdateMode(const UpdateMode& _updateMode);
   void setTriggerTime(const ACS::TimeInterval& _triggerTime);
@@ -259,9 +265,11 @@ private:
   ACS::TimeInterval lastTime_m;
     
     BACIValue triggerValue_m;
+    BACIValue triggerValuePercent_m;
     BACIValue minTriggerValue_m; 
     BACIValue lastValue_m;
   bool triggerOnValue_m;
+  bool triggerOnValuePercent_m;
   
   BACIProperty* property_mp;
   

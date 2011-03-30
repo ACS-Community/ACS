@@ -139,6 +139,40 @@ void baci::PcommonImpl<ACS_P_TL>::destroy()
   
 }
 
+template<ACS_P_C> 
+void baci::PcommonImpl<ACS_P_TL>::publishNow()
+{
+  BACIValue value;
+  CompletionImpl co;
+  ACS::CBDescOut descOut;
+  BACIMonitor* mon_p=0;
+  ACS::TimeInterval time = getTimeStamp();
+  value.reset();
+  getValue((BACIProperty *)property_mp, (BACIValue *)&value, co, descOut);
+  property_mp->setLastValue(value);
+  for (int n=0; n<property_mp->getMonitorCount(); n++)
+  {
+    mon_p = property_mp->getMonitorAt(n);
+    if (mon_p==0 || mon_p->isInDestructionState()==true)
+      continue;
+    bool ok;
+    if(co.isErrorFree()) {
+      co.timeStamp = time;
+      co.type = ACSErr::ACSErrTypeMonitor;
+      co.code = ACSErrTypeMonitor::ACSErrMonitorOnPush;
+      ok = property_mp->getComponent()->dispatchCallback(mon_p->getCallbackID(), value, descOut, co);
+    } else {
+      baciErrTypeProperty::CanNotGetValueCompletion ec(co, __FILE__, __LINE__, "baci::PcommonImpl&lt;&gt;::publishNow");
+      ACSErrTypeMonitor::ACSErrMonitorErrorCompletion c(ec, __FILE__, __LINE__, "baci::PcommonImpl&lt;&gt;::publishNow");
+      ok = property_mp->getComponent()->dispatchCallback(mon_p->getCallbackID(), value, descOut, c);
+    }
+    if(ok == false) {
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::PcommonImpl&lt;&gt;::publishNow",
+				(LM_ERROR, "Failed to execute monitor callback for property '%s'", property_mp->getName()));
+    }
+  }
+}
+
 /* --------------- [ Action implementator interface ] -------------- */
 
 template<ACS_P_C> 

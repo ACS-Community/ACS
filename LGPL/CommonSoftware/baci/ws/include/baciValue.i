@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.i,v 1.108 2008/12/24 10:31:50 bjeram Exp $"
+* "@(#) $Id: baciValue.i,v 1.109 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -547,6 +547,91 @@ LESS_THAN_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
 }
 
 #undef LESS_THAN_DELTA_NUM_INLINE_TYPE
+
+/**
+ * Helper macro.
+ */
+#define LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(ty, realType)                              \
+    case ( type_##ty ): {                                                          \
+      double diff;                                                        \
+      if((*( realType *)inlineData_m) == 0) {                                   \
+         if(*( realType *)value.inlineData_m == 0) return true;                \
+         else return false;                                                      \
+      }                                                                         \
+      if (*(realType*)value.inlineData_m>*( realType *)inlineData_m)            \
+      {                                                                         \
+         diff=((*( realType *)value.inlineData_m - *( realType *)inlineData_m))/(double)(*( realType *)inlineData_m)*100.0;  \
+      }                                                                         \
+      else                                                                      \
+      {                                                                         \
+         diff=((*( realType *)inlineData_m - *( realType *)value.inlineData_m))/(double)(*( realType *)inlineData_m)*100.0;  \
+      }                                                                         \
+      if(diff < 0)                                                              \
+         diff = -diff;                                                          \
+      return ( (double)delta.ty##Value() > diff);                                       \
+      break; }
+/**
+ * Helper macro.
+ */
+#define LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(ty, realType, deltaType, realDeltaType)         \
+    case ( type_##ty ): {                                                            \
+      double diff;                                                            \
+      for (CORBA::ULong i=0; i < (*( realType *)ptr_m.pointer).length(); i++) {      \
+         if((*( realType *)ptr_m.pointer)[i] == 0) {                                   \
+            if((*( realType *)ptr_m.pointer)[i] == 0) continue;                \
+            else return false;                                                      \
+         }                                                                         \
+      	 if ((*( realType *)value.ptr_m.pointer)[i]>(*( realType *)ptr_m.pointer)[i])\
+      	 {                                                                           \
+            diff = ((*( realType *)value.ptr_m.pointer)[i]-(*( realType *)ptr_m.pointer)[i])/(double)(*( realType *)ptr_m.pointer)[i]*100.0; \
+         }                                                                           \
+         else                                                                        \
+         {                                                                           \
+            diff = ((*( realType *)ptr_m.pointer)[i]-(*( realType *)value.ptr_m.pointer)[i])/(double)(*( realType *)ptr_m.pointer)[i]*100.0; \
+         }                                                                           \
+         if(diff < 0)                                                              \
+            diff = -diff;                                                          \
+         if ((double)(delta.deltaType##Value())<=diff) return false;                         \
+      }                                                                              \
+      return true;                                                                   \
+      break; }
+
+inline bool BACIValue::lessThanPercentDelta(const BACIValue &value, const BACIValue &delta) const
+{
+
+  if (type_m != value.type_m)
+    return false;
+
+
+  switch(type_m)
+    {
+/*TBdeleted
+    case (type_pattern) : {
+
+    return (*(BACIpattern*)inlineData_m == *(BACIpattern*)value.inlineData_m);
+    break;
+    }
+*/
+/// User defined
+
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(double, BACIdouble)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(float, BACIfloat)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(long, BACIlong)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(longLong, BACIlongLong)
+LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE(uLongLong, BACIuLongLong)
+// for sequences delta is scalar
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(doubleSeq, BACIdoubleSeq, double, BACIdouble)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(floatSeq, BACIfloatSeq, float, BACIfloat)
+LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(longSeq, BACIlongSeq, long, BACIlong)
+/// LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE(stringSeq, BACIstringSeq, string, BACIstring)
+
+    default:
+      return false;
+    }
+}
+
+#undef LESS_THAN_PERCENT_DELTA_NUM_INLINE_TYPE
+#undef LESS_THAN_PERCENT_DELTA_NUM_SEQ_TYPE
 
 // ------------------------------------------------------------------------
 /**

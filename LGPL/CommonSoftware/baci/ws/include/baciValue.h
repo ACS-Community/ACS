@@ -18,7 +18,7 @@
  *License along with this library; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciValue.h,v 1.110 2008/08/21 15:30:52 bjeram Exp $"
+ * "@(#) $Id: baciValue.h,v 1.111 2011/03/30 17:57:23 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -291,6 +291,15 @@ class baci_EXPORT BACIValue
      * <br><hr>
      */
     bool lessThanDelta(const BACIValue &value, const BACIValue &delta) const;
+
+    /**
+     * Check if percentual difference between values is less than delta value
+     * @param value value
+     * @param delta percentual delta value
+     * @return true if percentual difference between this object's value and given value is less that delta value
+     * <br><hr>
+     */
+    bool lessThanPercentDelta(const BACIValue &value, const BACIValue &delta) const;
 
     // --Methods-------------------------------------------------------------
     /**

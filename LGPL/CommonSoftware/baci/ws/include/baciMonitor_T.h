@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.104 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.105 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -238,6 +238,10 @@ public:
   virtual void set_value_trigger (TCORBA delta, CORBA::Boolean enable);
   
   virtual void get_value_trigger (TCORBA_out delta, CORBA::Boolean_out enable);
+
+  virtual void set_value_percent_trigger (CORBA::Double delta, CORBA::Boolean enable);
+  
+  virtual void get_value_percent_trigger (CORBA::Double_out delta, CORBA::Boolean_out enable);
 
   virtual ACS::Time start_time ();
 

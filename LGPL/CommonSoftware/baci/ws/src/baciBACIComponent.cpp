@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIComponent.cpp,v 1.23 2011/02/17 18:25:39 rtobar Exp $"
+* "@(#) $Id: baciBACIComponent.cpp,v 1.24 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baciError.h"
 #include "logging.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.23 2011/02/17 18:25:39 rtobar Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIComponent.cpp,v 1.24 2011/03/30 17:57:23 tstaig Exp $");
 
 using namespace baciErrTypeProperty;
 using namespace ACSErrTypeCommon;
@@ -228,14 +228,16 @@ void monitorThreadWorker(void* param) {
 		  continue;
 		  }
 	      if ((property_p->getMonitorCount() > 0) &&
-		  ((property_p->getPollInterval() > 0) || property_p->hasTriggerOnValueMonitor()==true)
-		  )
+		  ((property_p->getPollInterval() > 0) || property_p->hasTriggerOnValueMonitor()==true ||
+		  property_p->hasTriggerOnValuePercentMonitor()==true))
 		  {
 		  pollInterval = property_p->getPollInterval();
 		  //if we're dealing with a property containing trigger by value monitors AND
 		  //the minimum monitor time is NOT default AND
 		  //it's less than the main polling interval...
-		  if ((property_p->hasTriggerOnValueMonitor()==true) &&
+
+		  if ((property_p->hasTriggerOnValueMonitor()==true ||
+				property_p->hasTriggerOnValuePercentMonitor()==true) &&
 		      (property_p->getMonMinTriggerTime()!=0) &&
 		      (property_p->getMonMinTriggerTime()<pollInterval))
 		      {
@@ -259,7 +261,8 @@ void monitorThreadWorker(void* param) {
 		      }
 
 		  //timeTriggered = (time-lastPollTime)>=pollInterval;
-		  if (timeTriggered==true)//property_p->hasTriggerOnValueMonitor() || timeTriggered)
+		  //if (timeTriggered==true)//property_p->hasTriggerOnValueMonitor() || timeTriggered)
+		  if (property_p->hasTriggerOnValueMonitor() || property_p->hasTriggerOnValuePercentMonitor() || timeTriggered == true)
 		    {
 		    CompletionImpl co;
 

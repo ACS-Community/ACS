@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciBACIMonitor.cpp,v 1.8 2008/06/17 07:15:42 bjeram Exp $"
+* "@(#) $Id: baciBACIMonitor.cpp,v 1.9 2011/03/30 17:57:23 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include "baci.h"
 #include "baciUtil.h"
 
-ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.8 2008/06/17 07:15:42 bjeram Exp $");
+ACE_RCSID(baci, baci, "$Id: baciBACIMonitor.cpp,v 1.9 2011/03/30 17:57:23 tstaig Exp $");
 
 
 namespace baci {
@@ -53,7 +53,7 @@ BACIMonitor::BACIMonitor(const ACE_CString& _name, int _callbackID,
   monitorImplementator_mp(_monitorImplementator_p), updateMode_m(mumLast),
   triggerTime_m(0), minTriggerTime_m(_minTriggerTime),
   transmitTime_m(0), userControlledTransmitTime_m(false), lastTime_m(0), 
-  minTriggerValue_m(_minTriggerValue), triggerOnValue_m(false),  
+  minTriggerValue_m(_minTriggerValue), triggerOnValue_m(false), triggerOnValuePercent_m(false),
   property_mp(_property), archivingMonitor_m(_archivingMonitor), 
   suspended_m(_suspended),
   deltaValueAndTimerInteraction_m(_deltaValueAndTimerInteraction),
@@ -86,6 +86,10 @@ BACIMonitor::BACIMonitor(const ACE_CString& _name, int _callbackID,
   if (getTriggerValue().isNull()==0 && getTriggerValue().noDelta()==false)
       {
       setTriggerOnValue(true);
+      }
+  if (getTriggerValuePercent().isNull()==0 && getTriggerValuePercent().noDelta()==false)
+      {
+      setTriggerOnValuePercent(true);
       }
   
   // set transmit_time
@@ -189,6 +193,24 @@ void BACIMonitor::setTriggerOnValue(bool enable)
   ACS_TRACE("baci::BACIMonitor::setTriggerOnValue");
   if (triggerOnValue_m!=enable) {
     triggerOnValue_m=enable;
+    if((triggerOnValue_m == true || triggerOnValuePercent_m == true) && triggerTime_m > 0)
+      deltaValueAndTimerInteraction_m = true;
+    else
+      deltaValueAndTimerInteraction_m = false;
+    monitorStateChanged();
+    property_mp->updateMonitorStates();
+  }
+}
+
+void BACIMonitor::setTriggerOnValuePercent(bool enable)
+{
+  ACS_TRACE("baci::BACIMonitor::setTriggerOnValuePercent");
+  if (triggerOnValuePercent_m!=enable) {
+    triggerOnValuePercent_m=enable;
+    if((triggerOnValue_m == true || triggerOnValuePercent_m == true) && triggerTime_m > 0)
+      deltaValueAndTimerInteraction_m = true;
+    else
+      deltaValueAndTimerInteraction_m = false;
     monitorStateChanged();
     property_mp->updateMonitorStates();
   }
@@ -245,6 +267,10 @@ void BACIMonitor::setTriggerTime(const ACS::TimeInterval& _triggerTime)
 
       setLastTime(getTimeStamp()-getTriggerTime());
 
+      if((triggerOnValue_m == true || triggerOnValuePercent_m == true) && triggerTime_m > 0)
+        deltaValueAndTimerInteraction_m = true;
+      else
+        deltaValueAndTimerInteraction_m = false;
       monitorStateChanged();
       property_mp->updateMonitorStates();
     }
@@ -283,6 +309,20 @@ void BACIMonitor::setTriggerValue(const BACIValue& _triggerValue)
 	  }
       monitorStateChanged();
     }
+}
+
+void BACIMonitor::setTriggerValuePercent(const BACIValue& _triggerValuePercent) 
+{
+	//TODO
+	ACS_TRACE("baci::BACIMonitor::setTriggerValuePercent");
+	if ((_triggerValuePercent==triggerValuePercent_m)==false) {
+		if (_triggerValuePercent < minTriggerValue_m) {
+			triggerValue_m = minTriggerValue_m; 
+		} else {
+			triggerValuePercent_m=_triggerValuePercent;
+		}
+		monitorStateChanged();
+	}
 }
 
 void BACIMonitor::setMinTriggerValue(const BACIValue& _minTriggerValue) 

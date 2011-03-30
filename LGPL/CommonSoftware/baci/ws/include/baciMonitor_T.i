@@ -322,6 +322,25 @@ void baci::Monitor<ACS_MONITOR_T>::get_value_trigger (TCORBA_out delta, CORBA::B
 }
 
 template<ACS_MONITOR_C>
+void baci::Monitor<ACS_MONITOR_T>::set_value_percent_trigger (CORBA::Double delta, CORBA::Boolean enable)
+{
+    ACS_TRACE("baci::Monitor&lt;&gt;::set_value_percent_trigger");
+    if(enable == false) monitor_mp->setTriggerOnValuePercent(false);
+    else {
+        monitor_mp->setTriggerValuePercent(baci::BACIValue(delta));
+        monitor_mp->setTriggerOnValuePercent(true);
+    }
+}
+
+template<ACS_MONITOR_C>
+void baci::Monitor<ACS_MONITOR_T>::get_value_percent_trigger (CORBA::Double_out delta, CORBA::Boolean_out enable)
+{
+    ACS_TRACE("baci::Monitor&lt;&gt;::get_value_percent_trigger");
+    delta = monitor_mp->getTriggerValuePercent().getValue(static_cast<CORBA::Double*>(0));
+    enable = monitor_mp->getTriggerOnValuePercent();
+}
+
+template<ACS_MONITOR_C>
 ACS::Time baci::Monitor<ACS_MONITOR_T>::start_time ()
 {
 ACS_TRACE("baci::Monitor&lt;&gt;::start_time");
