@@ -12,6 +12,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: MOUNT2 (type: IDL:alma/MOUNT_ACS/Mount:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: TOWER_H (type: IDL:alma/acsexmplBuilding/Building:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: ALMA_BACK_DOOR (type: IDL:alma/acsexmplBuilding/Door:1.0)
+1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: ALMA_BACK_DOOR/LAMP (type: IDL:alma/acsexmplLamp/Lamp:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: CONSTR_ERROR (type: IDL:alma/acsexmplConstrErrorHelloWorld/ConstrError:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: ERRORCOMP1 (type: IDL:alma/acsexmplErrorComponent/ErrorComponent:1.0)
 1 - ----------T--:--:--.--- [GlobalLogger - ] 	Component: FRIDGE1 (type: IDL:alma/FRIDGE/FridgeControl:1.0)
