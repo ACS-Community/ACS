@@ -75,12 +75,10 @@ import alma.acs.logging.ClientLogManager;
 import alma.acs.util.UTCUtility;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
-import alma.maciErrType.ComponentDeactivationFailedPermEx;
 import alma.maciErrType.ComponentDeactivationUncleanEx;
 import alma.maciErrType.NoPermissionEx;
 import alma.maciErrType.wrappers.AcsJCannotDeactivateComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
-import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedPermEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
 import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 import alma.objexpErrType.wrappers.AcsJObjectExplorerConnectEx;
@@ -2318,8 +2316,6 @@ public class BACIRemoteAccess implements Runnable, RemoteAccess {
 				releaseCompEx = AcsJComponentDeactivationUncleanEx.fromComponentDeactivationUncleanEx(ex);
 			} catch (ComponentDeactivationFailedEx ex) {
 				releaseCompEx = AcsJComponentDeactivationFailedEx.fromComponentDeactivationFailedEx(ex);
-			} catch (ComponentDeactivationFailedPermEx ex) {
-				releaseCompEx = AcsJComponentDeactivationFailedPermEx.fromComponentDeactivationFailedPermEx(ex);
 			}
 			if (releaseCompEx != null) {
 				notifier.reportError("Failed to release component", releaseCompEx);
