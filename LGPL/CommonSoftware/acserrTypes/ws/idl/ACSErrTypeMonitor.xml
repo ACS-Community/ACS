@@ -6,4 +6,6 @@
 	  <ErrorCode name="ACSErrMonitorError"	
 		shortDescription="Error retreiving value for the monitor"
 		description="Error retreiving value for the monitor"/>	
+	<Code name="ACSErrMonitorOnValuePercent" shortDescription="The value changed by a specified percentual amount or more." description="The value changed by a specified percentual amount or more."/>
+	<Code name="ACSErrMonitorOnPush" shortDescription="A manual request triggered the event." description="A manual request triggered the event."/>
 </Type>
