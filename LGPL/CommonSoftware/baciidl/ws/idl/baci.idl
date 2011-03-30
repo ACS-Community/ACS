@@ -22,7 +22,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: baci.idl,v 1.10 2011/03/15 18:04:36 hsommer Exp $"
+* "@(#) $Id: baci.idl,v 1.11 2011/03/30 17:55:24 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -230,6 +230,33 @@ module ACS {
      */
     void get_value_trigger (out double delta,
 			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
     };
     
     interface Monitorfloat : ACS::Monitor {
@@ -259,6 +286,33 @@ module ACS {
      * <br><hr>
      */
     void get_value_trigger (out float delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
 			    out boolean enable);
     };
 
@@ -296,6 +350,33 @@ module ACS {
      */
     void get_value_trigger (out pattern delta,
 			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
     };
 
     /**
@@ -329,6 +410,33 @@ module ACS {
      * <br><hr>
      */
     void get_value_trigger (out string delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
 			    out boolean enable);
     };
 
@@ -365,6 +473,33 @@ module ACS {
      * <br><hr>
      */
     void get_value_trigger (out stringSeq delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
 			    out boolean enable);
     };
 
@@ -405,6 +540,33 @@ module ACS {
      */
     void get_value_trigger (out long delta,
 			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
     };
 	
     /** The Monitor for Properties that have value of type longLong. On 
@@ -442,6 +604,33 @@ module ACS {
      * <br><hr>
      */
     void get_value_trigger (out longLong delta,
+			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
 			    out boolean enable);
     };
 
@@ -481,6 +670,33 @@ module ACS {
      */
     void get_value_trigger (out uLongLong delta,
 			    out boolean enable);
+
+    /**
+     * set_value_percent_trigger is a method used to enable or disable percentual on-change monitors. When 
+     * enabled,the monitor      * is triggered by one of two conditions:
+     * 1. If an amount of time equivalent to the value returned by the get_timer_trigger method has passed, 
+     *    the callback will be invoked.
+     * 2. If the value we're interested in changes by a percentage delta at some point in time inbetween 
+     * T0 and T1 (where T1-T0==get_timer_trigger()), the callback is invoked. 
+     * 
+     * @param delta For a description of what this does, see 2.
+     * @param enable A value of true enables on-change monitors and false disables them.
+     * @roseuid 3AC90A250057 
+     * <br><hr>
+     */
+    void set_value_percent_trigger (in double delta, 
+			    in boolean enable);
+			
+    /**
+     * Returns the current on-change delta percentage value and a boolean value which tells whether
+     * on-change monitors are being utilized.
+     * @param delta Current on-change delta percentage value
+     * @param enable Boolean value which tells whether on-change monitors are being utilized.
+     * @roseuid 3AC90A25005A 
+     * <br><hr>
+     */
+    void get_value_percent_trigger (out double delta,
+			    out boolean enable);
     };
 
 
@@ -507,6 +723,7 @@ module ACS {
      * Useful also for returning the resolution of analog-digital convertion 
      */
     readonly attribute pattern resolution;
+
     };
 	
     /** The descriptor for a Component with Characteristics (CharacteristicComponent). 

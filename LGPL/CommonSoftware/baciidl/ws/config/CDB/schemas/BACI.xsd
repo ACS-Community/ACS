@@ -251,6 +251,14 @@ If the value changes for less than the amount specified here, no log entry is ge
                                        </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>
+A percentage value of double type. Defines what a percentual change in parameter value is.
+If the value changes percentually less than the amount specified here, no log entry is generated.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -407,6 +415,14 @@ of the Plong propery.
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="bitDescription" type="xs:string" use="optional" default="">
 					<xs:annotation>
 						<xs:documentation>This characteristic is a comma separated list of strings, each describing one of the bits in the pattern (in that order).</xs:documentation>
@@ -531,6 +547,13 @@ of the Plong propery.</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.                                </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -669,6 +692,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -782,6 +812,14 @@ of the Plong propery.
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                       </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -880,6 +918,13 @@ of the Plong propery.</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.                                      </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1013,6 +1058,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1130,6 +1182,13 @@ of the Plong propery.</xs:documentation>
 Same type and units as parameter Property. Defines what a change in parameter value is.
 If the value changes for less than the amount specified here, no log entry is generated.
                                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="graph_min" type="xs:int" use="optional" default="0"/>
@@ -1266,6 +1325,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                     </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1398,6 +1464,13 @@ of the Plong propery.</xs:documentation>
 					<xs:annotation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.                                     </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -1568,6 +1641,13 @@ of the Plong propery.</xs:documentation>
 of the Plong propery.                                  </xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+						</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -1678,6 +1758,14 @@ of the Plong propery.</xs:documentation>
 						<xs:documentation>For a description of this characteristic, see documentation 
 of the Plong propery.          
 NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.                                        </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="archive_delta_percent" type="xs:double" use="optional" default="0">
+					<xs:annotation>
+						<xs:documentation>For a description of this characteristic, see documentation 
+of the Plong propery.
+NOTE: This is normally not used, since the concept or "delta" does not really match well with the concept of a bit patterns. The charasteristic is defined because used in the template implementation of properties in C++. It might be possible to remove it using less generic templates.
+						</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
