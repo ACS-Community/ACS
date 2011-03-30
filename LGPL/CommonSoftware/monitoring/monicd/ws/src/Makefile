@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2011/01/24 13:50:21 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/03/30 17:59:22 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -115,9 +115,16 @@ CDB_SCHEMAS =
 IDL_FILES = TMCDBCOMMON_IDL MonitorCollector MCtestComponent CollectorListStatus MonitorArchiverIF 
 TAO_IDLFLAGS =
 USER_IDL =
+TMCDBCOMMON_IDLStubs_LIBS = acscommonStubs
+MonitorCollectorStubs_LIBS = acscommonStubs acscomponentStubs TMCDBCOMMON_IDLStubs MonitorCollectorErr
+MCtestComponentStubs_LIBS = acscommonStubs baciStubs
+CollectorListStatusStubs_LIBS = baciStubs enumpropMACROStubs
+MonitorArchiverIFStubs_LIBS = acscomponentStubs CollectorListStatusStubs
 
 #Error definition xml files
 ACSERRDEF= MonitorCollectorErr DAOErrType
+MonitorCollectorErrStubs_LIBS = acserr
+DAOErrTypeStubs_LIBS = acserr
 #
 #
 # Jarfiles and their directories

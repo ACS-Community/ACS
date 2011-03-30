@@ -40,6 +40,12 @@ typedef sequence<propertySerailNumber> propertySerialNumberSeq;
 
 	///for the archiver or better monitor controler
     MonitorDataBlocks getMonitorData();  
+
+    void set_archiving_interval(in string componentName, in string propertyName, in ACS::TimeInterval time);
+
+    void suppress_archiving(in string componentName, in string propertyName);
+
+    void enable_archiving(in string componentName, in string propertyName);
     };//interface MonitorCollector
 
 
