@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.4 2007/12/20 17:28:43 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/03/30 16:45:08 hsommer Exp $"
 #
 # Makefile of ........
 #
@@ -34,38 +34,7 @@
 
 #
 # Type-safe log code generation
-ACSLOGTSDEF = AcsNCTraceLog
-
-#
-# C programs (public and local)
-# -----------------------------
-EXECUTABLES     =
-EXECUTABLES_L   = 
-
-#
-# <brief description of xxxxx program>
-xxxxx_OBJECTS   =	
-xxxxx_LDFLAGS   =
-xxxxx_LIBS      =
-
-#
-# special compilation flags for single c sources
-#yyyyy_CFLAGS   = 
-
-#
-# Includes (.h) files (public only)
-# ---------------------------------
-INCLUDES        =
-
-#
-# Libraries (public and local)
-# ----------------------------
-LIBRARIES       =
-LIBRARIES_L     =
-
-#
-# <brief description of lllll library>
-lllll_OBJECTS   =
+ACSLOGTSDEF = AcsContainerLog AcsNCTraceLog
 
 #
 # Scripts (public and local)
@@ -73,58 +42,7 @@ lllll_OBJECTS   =
 SCRIPTS         =
 SCRIPTS_L       =
 
-#
-# TCL scripts (public and local)
-# ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
 
-#
-# Python stuff (public and local)
-# ----------------------------
-PY_SCRIPTS         =
-PY_SCRIPTS_L       =
-
-PY_MODULES         =
-PY_MODULES_L       =
-
-PY_PACKAGES        =
-PY_PACKAGES_L      =
-pppppp_MODULES	   =
-
-#
-# <brief description of tttttt tcl-script>
-tttttt_OBJECTS  =
-tttttt_TCLSH    = 
-tttttt_LIBS     = 
-
-#
-# TCL libraries (public and local)
-# ------------------------------
-TCL_LIBRARIES   =
-TCL_LIBRARIES_L =
-
-#
-# <brief description of tttlll library>
-tttlll_OBJECTS  = 
-
-#
-# Configuration Database Files
-# ----------------------------
-CDB_SCHEMAS = 
-
-# 
-# IDL Files and flags
-# 
-IDL_FILES =
-IDL_TAO_FLAGS =
-USER_IDL =
-#
-# Jarfiles and their directories
-#
-JARFILES= 
-jjj_DIRS=
-jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
 DEBUG=on 
@@ -144,24 +62,7 @@ XSDBIND=
 # Schema Config files for the above
 #
 XSDBIND_INCLUDE=
-# man pages to be done
-# --------------------
-MANSECTIONS =
-MAN1 =
-MAN3 =
-MAN5 =
-MAN7 =
-MAN8 =
 
-#
-# local man pages
-# ---------------
-MANl =
-
-#
-# ASCII file to be converted into Framemaker-MIF
-# --------------------
-ASCII_TO_MIF = 
 
 #
 # other files to be installed
