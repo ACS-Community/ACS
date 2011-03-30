@@ -200,7 +200,15 @@ class BulkDataSendRecvImpl : public virtual baci::CharacteristicComponentImpl,
 	{
 	}
 
-
+    /**
+     *   NOT implemented for distributor
+       		 <br><hr>
+       		 @endhtmlonly
+     */
+    void fwdData2UserCB(CORBA::Boolean enable)
+    {
+    	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerImpl<>::fwdData2UserCB not implemnted!"));
+    }
   private:
 
     AcsBulkdata::BulkDataSender<TSenderCallback> sender;

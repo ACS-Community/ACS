@@ -89,6 +89,8 @@ class BulkDataCallback : public TAO_AV_Callback
 	    // empty
 	}
 
+    void fwdData2UserCB(CORBA::Boolean enable);
+
     /********************* methods to be implemented by the user *****************/
 
     virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
@@ -104,6 +106,8 @@ class BulkDataCallback : public TAO_AV_Callback
     CORBA::ULong flowNumber_m;
 
     ACE_CString recvName_m;
+
+    bool fwdData2UserCB_m;
 
   private:
 

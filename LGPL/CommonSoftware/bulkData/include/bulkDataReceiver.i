@@ -870,6 +870,31 @@ void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::subscribeNotification(ACS
 
 
 template<class TReceiverCallback>
+void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::fwdData2UserCB(CORBA::Boolean enable)
+{
+	for(CORBA::ULong i = 0; i < fepsData.length(); i++)
+	{
+		ACE_CString flowName = TAO_AV_Core::get_flowname(fepsData[i]);
+
+		BulkDataFlowConsumer<TReceiverCallback> *fep = 0;
+
+		fepMap_m.find(flowName, fep);
+		if(fep != 0)
+		{
+			TReceiverCallback *cb_p = fep->getBulkDataCallback();
+			if(cb_p != 0)
+			{
+			cb_p->fwdData2UserCB(enable);
+			}
+		}
+		else
+		{
+			ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver::fwdData2UserCB Flow End Point null"));
+		}//if-else
+	}//for
+}//useUserCB
+
+template<class TReceiverCallback>
 void AcsBulkdata::BulkDataReceiver<TReceiverCallback>::notifySender(const ACSErr::Completion& comp)
 {
     CompletionImpl complImp = comp;

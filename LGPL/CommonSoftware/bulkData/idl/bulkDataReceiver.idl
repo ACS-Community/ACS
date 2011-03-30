@@ -120,6 +120,22 @@ module bulkdata
 	*/
 	void subscribeNotification(in ACS::CBvoid notifCb)
 	    raises (ACSBulkDataError::AVNotificationMechanismErrorEx);
+	    
+	 /**
+	 *  Enable or disable that data are sent/forwarded to the user's CB.
+	 *  By default this is enable.
+	 *  This operation has to be use with caution for debugging purposes only!!!
+	 *  The operation has effect only if it is ivoked after the connection with the receiver 
+	 *  has been established i.e. the callback object has been created !!
+	 *  @param enable true -> data will be sent to the user's CB,
+	 *                false -> data will *not* be sent to the user's CB,
+	 *  @return void
+	 *  @htmlonly
+	 <br><hr>
+	 @endhtmlonly
+	*/
+	void fwdData2UserCB(in boolean enable);
+
 	};
 
     /** @interface BulkDataReceiverDistr

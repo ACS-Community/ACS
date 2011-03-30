@@ -32,6 +32,8 @@ BulkDataCallback::BulkDataCallback()
     flowTimeout_m = 0;
 
     isFepAlive_m = true;
+
+    fwdData2UserCB_m = true;
 }
 
 

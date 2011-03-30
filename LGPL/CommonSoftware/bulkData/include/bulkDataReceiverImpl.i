@@ -256,3 +256,19 @@ void BulkDataReceiverImpl<TCallback>::subscribeNotification(ACS::CBvoid_ptr noti
 	throw err.getAVNotificationMechanismErrorEx();
 	}
 }
+
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::fwdData2UserCB(CORBA::Boolean enable)
+{
+	try
+	{
+		getReceiver()->fwdData2UserCB(enable);
+	}
+	catch(...)
+	{
+		ACS_SHORT_LOG((LM_WARNING,"BulkDataReceiverImpl<>::fwdData2UserCB - problem to set fwdData2UserCB"));
+	}
+}//fwdData2UserCB
+
+
+

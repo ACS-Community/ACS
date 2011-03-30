@@ -521,6 +521,7 @@ template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, ACE_Message_Block *buffer_p)
 {
     ACS_TRACE("BulkDataSender<>::startSend(ACE_Message_Block *)");
+    int debug_location=0;
 
     try
 	{
@@ -542,6 +543,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	locSpec[0] = flowSpec_m[flowNumber];
 
 	streamctrl_p->start(locSpec);
+	debug_location=1; // after 1st start
 
 	TAO_AV_Protocol_Object *dp_p = 0;
 	getFlowProtocol(flowname, dp_p);
@@ -550,6 +552,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	ACE_OS::sprintf(tmp, "2 %u", (unsigned int)buffer_p->length()); 
 
 	res = dp_p->send_frame(tmp, sizeof(tmp));
+	debug_location=2; // after 1st send_frame
 	if(res < 0)
 	    {
 	    ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
@@ -557,9 +560,11 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	    }
 
 	streamctrl_p->stop(locSpec);
+	debug_location=3; // after 1st stop
 
 //	cout << "TTTTTTTTTT: lenbuf: " << buffer_p->length() << endl;
 	res = dp_p->send_frame(buffer_p);
+	debug_location=4; // after 2nd send_frame
 	if(res < 0)
 	    {
 	    ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
@@ -572,6 +577,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	//	acsQoS::Timeout tim(timeout);
 	
 	streamctrl_p->stop(locSpec);
+	debug_location=5; // after 2nd stop
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
@@ -586,9 +592,10 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(CORBA::TIMEOUT & tim)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData TIMEOUT expired"));
-	ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
-	throw err;
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData TIMEOUT expired at location: %d", debug_location));
+    	ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+    	err.addData("DEBUG LOCATION", debug_location);
+    	throw err;
 	}
     catch(CORBA::SystemException &ex)
 	{
@@ -617,6 +624,7 @@ template<class TSenderCallback>
 void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNumber, const char *buffer_p, size_t len)
 {
     ACS_TRACE("BulkDataSender<>::startSend(const char *)");
+    int debug_location=0;
 
     try
 	{
@@ -637,6 +645,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	locSpec[0] = flowSpec_m[flowNumber];
 	
 	streamctrl_p->start(locSpec);
+	debug_location=1; // after 1st start
 
 	TAO_AV_Protocol_Object *dp_p = 0;
 	getFlowProtocol(flowname, dp_p);
@@ -645,6 +654,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	char tmp[locDim];
 	ACE_OS::sprintf(tmp, "2 %u", (unsigned int)len); 
 	res = dp_p->send_frame(tmp, locDim);
+	debug_location=2; // after 1st send_frame
 	if(res < 0)
 	    {
 	    ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
@@ -652,8 +662,10 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	    }
 
 	streamctrl_p->stop(locSpec);
+	debug_location=3; // after 1st stop
 
 	res = dp_p->send_frame(buffer_p, len);
+	debug_location=4; // after 2nd send_frame
 	if(res < 0)
 	    {
 	    ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
@@ -661,6 +673,7 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	    }
 	
 	streamctrl_p->stop(locSpec);
+	debug_location=5; // after 2nd stop
 	}
     catch(ACSErr::ACSbaseExImpl &ex)
 	{
@@ -675,8 +688,9 @@ void AcsBulkdata::BulkDataSender<TSenderCallback>::sendData(CORBA::ULong flowNum
 	}
     catch(CORBA::TIMEOUT & tim)
 	{
-	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData TIMEOUT expired"));
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataSender<>::sendData TIMEOUT expired at location: %d", debug_location));
 	ACSBulkDataError::AVSendFrameErrorExImpl err = ACSBulkDataError::AVSendFrameErrorExImpl(__FILE__,__LINE__,"BulkDataSender::sendData");
+	err.addData("DEBUG LOCATION", debug_location);
 	throw err;
 	}
     catch(CORBA::SystemException &ex)

@@ -261,6 +261,15 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
      */
     virtual void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
+    /**
+     *   NOT implemented for distributor
+    		 <br><hr>
+    		 @endhtmlonly
+     */
+    void fwdData2UserCB(CORBA::Boolean enable)
+    {
+    	ACS_SHORT_LOG((LM_WARNING,"BulkDataDistributerImpl<>::fwdData2UserCB not implemnted!"));
+    }
 
   private:
 

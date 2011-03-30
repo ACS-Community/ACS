@@ -141,6 +141,16 @@ class BulkDataReceiverImpl : public baci::CharacteristicComponentImpl,
      */
     virtual void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
+    /**
+   	 *  Enable or disable that data are sent to the user's CB.
+   	 *  By default this is enable.
+   	 *  This operation has to be use with caution!!!
+   	 *  @param enable true -> data will be sent to the user's CB,
+   	 *                false -> data will *not* be sent to the user's CB,
+   	 *  @return void
+   	*/
+    void fwdData2UserCB(CORBA::Boolean enable);
+
   protected: 
 
     
