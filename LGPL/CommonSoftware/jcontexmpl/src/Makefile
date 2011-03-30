@@ -86,7 +86,7 @@ jcontexmplClient_DIRS = \
 	alma/demo/EventConsumerImpl \
 	alma/acsexmpl/clients
 
-jcontexmplClient_JLIBS= XmlComponent
+jcontexmplClient_JLIBS= XmlComponent LampCallback
 
 DEBUG = on
 #COMPONENT_HELPERS=on
