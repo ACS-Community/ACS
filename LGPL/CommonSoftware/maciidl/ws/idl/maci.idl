@@ -634,7 +634,7 @@ module maci {
 				///a component to be released.
 
 		)
-		raises (maciErrType::CannotDeactivateComponentEx, maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx, maciErrType::ComponentDeactivationFailedPermEx);
+		raises (maciErrType::CannotDeactivateComponentEx, maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx);
 
 
 	    /** 
@@ -1167,8 +1167,7 @@ module maci {
 			in CURL component_url	///< The CURL of the component to be released.
 			)
                     raises (maciErrType::NoPermissionEx, maciErrType::CannotDeactivateComponentEx,
-                    		maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx,
-                    		maciErrType::ComponentDeactivationFailedPermEx);
+                    		maciErrType::ComponentDeactivationUncleanEx, maciErrType::ComponentDeactivationFailedEx);
 
 		/** 
 		    Releases a component also if still referenced by other components/clients.

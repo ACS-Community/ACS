@@ -273,19 +273,5 @@
 		/>
 	</ErrorCode>
 
-
-	<ErrorCode name="ComponentDeactivationFailedPerm"
-			shortDescription="Component deactivation failed, without hope for recovery."
-			description="Thrown if the container failed to deactivate a component (e.g. because POA destruction failed). There is no indication that another deactivation attempt will succeed or that the problem will be resolved by itself. The container may not be able to activate another component instance of the same name, or container resources may still be used for the old component instance.">
-		<Member name="CURL"
-			type="string"
-			description="CURL/Name of the component."
-		/>
-		<Member name="Reason"
-			type="string"
-			description="Detailed explanation of failure (Optional)"
-		/>
-	</ErrorCode>
-
 </Type>
 
