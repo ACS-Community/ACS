@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.125 2011/02/17 18:25:38 rtobar Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.126 2011/03/31 13:17:33 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -73,13 +73,14 @@
 #include <archiveeventsArchiveSupplier.h>
 
 #include <acsutilTimeStamp.h>
+#include <AcsContainerLog.h>
 
 /// @todo Alarm System is not yet supported for VxWorks
 #ifndef MAKE_VXWORKS
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.125 2011/02/17 18:25:38 rtobar Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.126 2011/03/31 13:17:33 rtobar Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1723,6 +1724,7 @@ ContainerImpl::activate_component (
   int libHandle = 0;
 
   // load the executable
+  ACE_Time_Value start_time = ACE_OS::gettimeofday();
   if((libHandle = loadDLL(exe)) == 0)
     {
     ACSErrTypeCommon::CannotLoadExImpl lex(__FILE__, __LINE__,
@@ -1736,6 +1738,11 @@ ContainerImpl::activate_component (
     ex.log(LM_DEBUG);
     throw ex.getCannotActivateComponentEx();
     }//if
+  ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
+  AcsContainerLog::LOG_CompAct_Loading_OK loadingLog(__FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+  loadingLog.setCompName(name);
+  loadingLog.setTimeMillis(elapsed_time.sec()*1000 + elapsed_time.usec()/1000);
+  loadingLog.log();
 
 
   // get entry point of the component DLL.
@@ -1786,7 +1793,13 @@ ContainerImpl::activate_component (
 
   try
       {
+      start_time = ACE_OS::gettimeofday();
       servant = ConstructComponent(h, name, type, acsCS);
+      elapsed_time = ACE_OS::gettimeofday() - start_time;
+      AcsContainerLog::LOG_CompAct_Instance_OK instantiationLog(__FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+      instantiationLog.setCompName(name);
+      instantiationLog.setTimeMillis(elapsed_time.sec()*1000 + elapsed_time.usec()/1000);
+      instantiationLog.log();
       }
   catch (ACSErr::ACSbaseExImpl &_ex)
       {
@@ -1835,8 +1848,14 @@ ContainerImpl::activate_component (
     throw ex.getCannotActivateComponentEx();
     }//if
 
+  start_time = ACE_OS::gettimeofday();
   info.lib = libHandle;
   info.info.reference = activateCORBAObject(servant, name);
+  elapsed_time = ACE_OS::gettimeofday() - start_time;
+  AcsContainerLog::LOG_CompAct_Corba_OK corbaActivationLog(__FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+  corbaActivationLog.setCompName(name);
+  corbaActivationLog.setTimeMillis(elapsed_time.sec()*1000 + elapsed_time.usec()/1000);
+  corbaActivationLog.log();
 
   // in case of an error
   if(CORBA::is_nil(info.info.reference.in()))
@@ -1880,12 +1899,18 @@ ContainerImpl::activate_component (
 	      throw ex; // this exception will be caught few lines lower
 	      }//if
 
+	  start_time = ACE_OS::gettimeofday();
 	  ComponentStateManager *csm = tempComp->getContainerServices()->getComponentStateManager();
 	  csm->setState(ACS::COMPSTATE_INITIALIZING);
 	  tempComp->__initialize();
 	  csm->setState(ACS::COMPSTATE_INITIALIZED);
 	  csm->setState(ACS::COMPSTATE_OPERATIONAL);
 	  tempComp->__execute();
+	  elapsed_time = ACE_OS::gettimeofday() - start_time;
+	  AcsContainerLog::LOG_CompAct_Init_OK initLog(__FILE__, __LINE__, "maci::ContainerImpl::activate_component");
+	  initLog.setCompName(name);
+	  initLog.setTimeMillis(elapsed_time.sec()*1000 + elapsed_time.usec()/1000);
+	  initLog.log();
 	  }
       catch (ACSErr::ACSbaseExImpl &_ex)
 	  {
