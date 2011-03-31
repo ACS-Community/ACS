@@ -15,7 +15,7 @@
 
 	<LogDefinition
 		logName="LOG_CompAct_Loading_OK"
-		shortDescription="Successfully loaded component library/classes."
+		shortDescription="Successfully loaded component code."
 		description="Partial success during component activation: loaded component shared library (C++), or classes (Java), or ??? (Python)."
 		priority="DEBUG"
 		audience="Developer">
