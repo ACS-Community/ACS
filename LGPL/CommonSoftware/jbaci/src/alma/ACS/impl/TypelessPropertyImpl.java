@@ -122,4 +122,22 @@ public class TypelessPropertyImpl
 		return resolution;
 	}
 
+	/**
+	 * @see alma.ACS.TypelessPropertyOperations#archive_now()
+	 */
+	public void archive_now() {
+	}
+
+	/**
+	 * @see alma.ACS.TypelessPropertyOperations#set_archiving_interval()
+	 */
+	public void set_archiving_interval(long time) {
+	}
+
+	/**
+	 * @see alma.ACS.TypelessPropertyOperations#set_archive()
+	 */
+	public void set_archive(boolean enable) {
+	}
+
 }

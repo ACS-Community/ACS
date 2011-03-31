@@ -66,4 +66,15 @@ public class MonitorstringSeqImpl
 		setValueTrigger(null /*delta*/, enable);
 	}
 
+	/**
+	 * @see alma.ACS.MonitorstringSeqOperations#get_value_percent_trigger(org.omg.CORBA.DoubleHolder, org.omg.CORBA.BooleanHolder)
+	 */
+	public void get_value_percent_trigger(org.omg.CORBA.DoubleHolder deltaHolder, org.omg.CORBA.BooleanHolder enableHolder) {
+	}
+
+	/**
+	 * @see alma.ACS.MonitorstringSeqOperations#set_value_percent_trigger(org.omg.CORBA.DoubleHolder, boolean)
+	 */
+	public void set_value_percent_trigger(double delta, boolean enable) {
+	}
 }

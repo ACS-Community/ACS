@@ -67,4 +67,15 @@ public class MonitordoubleImpl
 		setValueTrigger(new Double(delta), enable);
 	}
 
+	/**
+	 * @see alma.ACS.MonitordoubleOperations#get_value_percent_trigger(org.omg.CORBA.DoubleHolder, org.omg.CORBA.BooleanHolder)
+	 */
+	public void get_value_percent_trigger(org.omg.CORBA.DoubleHolder deltaHolder, org.omg.CORBA.BooleanHolder enableHolder) {
+	}
+
+	/**
+	 * @see alma.ACS.MonitordoubleOperations#set_value_percent_trigger(org.omg.CORBA.DoubleHolder, boolean)
+	 */
+	public void set_value_percent_trigger(double delta, boolean enable) {
+	}
 }
