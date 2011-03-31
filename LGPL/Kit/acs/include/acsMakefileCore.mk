@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.5 2011/03/04 21:25:29 javarias Exp $
+# $Id: acsMakefileCore.mk,v 1.6 2011/03/31 21:22:12 jagonzal Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -435,11 +435,11 @@ RTAI_MODULES_LIST = $(RTAI_MODULES) $(RTAI_MODULES_L)
 ifneq "$(strip $(RTAI_MODULES_LIST))" "" 
 $(eval $(call top-level,rtai,$(RTAI_MODULES_LIST),$(RTAI_MODULES)))
 
-$(foreach rm,$(RTAI_MODULES), \
+$(foreach rm,$(RTAI_MODULES_LIST), \
    $(eval $(call acsMakeExecutableDependencies,,load$(rm),load$(rm),$(load$(rm)_LDFLAGS),on,LKM C++ )))
-$(foreach rm,$(RTAI_MODULES), \
+$(foreach rm,$(RTAI_MODULES_LIST), \
    $(eval $(call acsMakeExecutableDependencies,,unload$(rm),unload$(rm),$(unload$(rm)_LDFLAGS),on,LKM C++ )))
-$(foreach rm,$(RTAI_MODULES), \
+$(foreach rm,$(RTAI_MODULES_LIST), \
    $(eval $(call acsMakeRTAIDependencies,$(rm),$($(rm)_OBJECTS) ) ) )
 
 # enhancing the clean target further
