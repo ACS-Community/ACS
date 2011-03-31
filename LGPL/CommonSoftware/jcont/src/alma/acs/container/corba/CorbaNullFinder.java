@@ -45,7 +45,7 @@ public class CorbaNullFinder
 	synchronized private void checkForNulls() {
 		if (errors == null) {
 			errors = new ArrayList<String>();
-			if (corbaData != null) {
+			if (corbaData != null && !corbaData.getClass().getPackage().getName().startsWith("java")) {
 				recursiveCheckForNulls(corbaData, corbaData.getClass().getSimpleName());
 			}
 			else {
@@ -106,7 +106,8 @@ public class CorbaNullFinder
 				}
 				else {
 					// @TODO: check test output, and eventually remove this println!
-					System.out.println("DEBUG: Need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName());
+					System.out.println("DEBUG: Need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName() 
+							+ " used in " + qualifiedFieldName);
 				}
 			} catch (Exception ex) {
 				errors.add("Failed to read field of type " + clzz.getName());
