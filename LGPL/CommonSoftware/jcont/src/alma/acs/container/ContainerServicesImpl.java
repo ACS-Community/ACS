@@ -791,8 +791,14 @@ public class ContainerServicesImpl implements ContainerServices
 	 */
 	private class ComponentReleaseCallbackCorbaHandler extends ResponseReceiver<Integer> {
 		private final ComponentReleaseCallback delegate;
-		ComponentReleaseCallbackCorbaHandler(ComponentReleaseCallback delegate) {
+		private final org.omg.CORBA.Object stub;
+		/**
+		 * @param delegate The user-provided callback pojo (unaware of corba)
+		 * @param stub  The client stub that will be released only when the component has been deactivated.
+		 */
+		ComponentReleaseCallbackCorbaHandler(ComponentReleaseCallback delegate, org.omg.CORBA.Object stub ) {
 			this.delegate = delegate;
+			this.stub = stub;
 		}
 		@Override
 		public void incomingException(AcsJException ex) {
@@ -813,6 +819,7 @@ public class ContainerServicesImpl implements ContainerServices
 			}
 			finally {
 				delegate.callOver();
+				stub._release();
 			}
 		}
 		@Override
@@ -826,6 +833,7 @@ public class ContainerServicesImpl implements ContainerServices
 			}
 			finally {
 				delegate.callOver();
+				stub._release();
 			}
 		}
 	}
@@ -870,13 +878,17 @@ public class ContainerServicesImpl implements ContainerServices
 			else {
 				CBlong myCBlong = null;
 				if (callback != null) {
-					ComponentReleaseCallbackCorbaHandler callbackCorba = new ComponentReleaseCallbackCorbaHandler(callback);
+					// @TODO reuse ComponentReleaseCallbackCorbaHandler
+					ComponentReleaseCallbackCorbaHandler callbackCorba = new ComponentReleaseCallbackCorbaHandler(callback, stub);
 					myCBlong = RequesterUtil.giveCBLong(this, callbackCorba);
 				}
 				m_acsManagerProxy.release_component(getEffectiveClientHandle(), curl, myCBlong);
 			}
 			m_logger.info("client '" + m_clientName + "' has successfully released " +  " a component with curl=" + curl);
-			stub._release();
+
+			if (callback == null) { // otherwise this step should be deferred until we receive the callback, to not abort running calls with COMM_FAILURE
+				stub._release();
+			}
 		} 
 		catch (AcsJNoPermissionEx ex) {
 			AcsLogLevel level = ( callback == null ? AcsLogLevel.WARNING : AcsLogLevel.DEBUG );
