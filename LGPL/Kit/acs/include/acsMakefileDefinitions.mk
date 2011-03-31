@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.24 2011/03/30 12:44:24 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.25 2011/03/31 21:21:16 jagonzal Exp $
 #
 #(info Entering definitions.mk)
 
@@ -470,7 +470,7 @@ install_xmlerr_$1_Python:$(LIB)/python/site-packages/$1Impl.py
 $(LIB)/python/site-packages/$1Impl.py: ../lib/python/site-packages/$1Impl.py
 	$(AT)cp ../lib/python/site-packages/$1Impl.py $(LIB)/python/site-packages
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1Impl.py
-	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages 
+	$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT) 
 	$(AT)cp ../lib/python/site-packages/$1Impl.pyc $(LIB)/python/site-packages
 	$(AT)chmod $(P644) $(LIB)/python/site-packages/$1Impl.pyc
 
@@ -545,7 +545,7 @@ do_xsdbind_Python_$1: ../lib/python/site-packages/$1
 ../lib/python/site-packages/$1: ../idl/$1.xml
 	-@echo "== XSD Compiling with pyxbgen (Python): $1"
 	-$(AT)generateXsdPythonBinding $1
-	-$(AT)(cd ../lib/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $1)
+	-$(AT)(cd ../lib/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $1) $(OUTPUT)
 
 .PHONY: clean_xsdbind_$1_Python
 clean_xsdbind_$1_Python:
@@ -558,7 +558,7 @@ install_xsdbind_$1_Python:$(LIB)/python/site-packages/$1 $(LIB)/python/site-pack
 $(LIB)/python/site-packages/$1: ../lib/python/site-packages/$1
 	-$(AT)cp -pr ../lib/python/site-packages/$1 $(LIB)/python/site-packages
 	-$(AT)chmod $(P755) $(LIB)/python/site-packages/$1
-	-$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages 
+	-$(AT)python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT)
 
 $(LIB)/python/site-packages/$1.wxs: ../lib/python/site-packages/$1.wxs
 	$(AT)echo "\t$1.wxs";
@@ -1198,7 +1198,7 @@ $$($1_python_install_files_path): $$($1_python_install_files_path_req)
 	$(AT)mkdir -p $(LIB)/python/site-packages/$1  
 	$(AT)echo "Compiling python $1" 
 	$(AT)cp -pr `find ../lib/python/site-packages/$1/* -maxdepth 0 -type d;find ../lib/python/site-packages/$1/* -maxdepth 0 -type f` $(LIB)/python/site-packages/$1/
-	$(AT)(cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(LIB)/python/site-packages/$1 )
+	$(AT)(cd $(LIB)/python/site-packages && python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py $(LIB)/python/site-packages/$1 $(OUTPUT) )
 	$(AT)chmod -R $(P755) $(LIB)/python/site-packages/$1
 
 
@@ -1223,7 +1223,7 @@ $(LIB)/python/site-packages/$1.py: ../lib/python/site-packages/$1.py
 	$(AT)echo "\t$1.py";\
 	cp ../lib/python/site-packages/$1.py $(LIB)/python/site-packages
 	chmod $(P644) $(LIB)/python/site-packages/$1.py
-	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages 
+	python $(PYTHON_ROOT)/lib/python$(PYTHON_VERS)/compileall.py ../lib/python/site-packages $(OUTPUT)
 	cp ../lib/python/site-packages/$1.pyc $(LIB)/python/site-packages
 	chmod $(P644) $(LIB)/python/site-packages/$1.pyc
 
@@ -1469,9 +1469,9 @@ rtai_$1_components = $(if $(and $(filter 1,$(words $2)),$(filter $1,$(word 1,$2)
 	$(AT)$(ECHO) "EXTRA_CFLAGS := $(EXTRA_CFLAGS)" >> Kbuild
 	$(AT)$(ECHO) "KBUILD_EXTRA_SYMBOLS=\"$(RTAI_HOME)/modules/Module.symvers\"" >> Kbuild
 ifdef MAKE_VERBOSE
-	$(AT)make -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=2 modules
 else
-	$(AT)make -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
+	+$(AT)$(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) V=0 modules
 endif
 	$(AT)$(RM) Kbuild.lock
 	$(AT)mv $1.ko ../rtai/$(rtai_install_subfold)
@@ -1479,7 +1479,7 @@ endif
 # LKM Support binaries
 .PHONY: clean_rtai_$1
 clean_rtai_$1:
-	$(AT)if [ -f Kbuild ]; then make -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
+	+$(AT)if [ -f Kbuild ]; then $(MAKE) -C $(KDIR) CC=$(CCRTAI) ARCH=i386 RTAI_CONFIG=$(RTAI_CONFIG) M=$(PWD) clean ; fi
 	$(AT)$(RM) ../rtai/$(rtai_install_subfold)/$1.ko $(addprefix ../object/,$(addsuffix .o,$2)) Kbuild.lock ../bin/installLKM-$1
 
 #../bin/installLKM-$1: 
