@@ -92,6 +92,9 @@
 1 - This is OK: null parameter
 1 - This is OK: null parameter
 1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ] 
+1 - This is OK: null parameter
+1 - This is OK: null parameter
+1 - This is OK: alma.maciErrType.wrappers.AcsJNoPermissionEx [ ID='Handle (xxxxxxx) = { type = unknown (xxxxxxx), key = (xxxxxxx), id = (xxxxxxx) }' Reason='Invalid handle, handle was never known.' ] 
 1 - This is OK
 1 - This is OK
 1 - This is OK
@@ -109,20 +112,20 @@
 1 - This is OK: alma.maciErrType.wrappers.AcsJCannotGetComponentEx [ CURL='DEMANDER' ] 
 1 - 
 1 - 
-1 - OK (40 tests)
+1 - OK (41 tests)
 1 - 
 1 -  Stopping the services
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.HandleDataStoreTest
 1 - 
-1 - {0, 2, 4, 6, 8, 10, 12}
-1 - 
-1 - 
 1 - 
 1 - OK (2 tests)
 1 - 
+1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
+1 - {0, 2, 4, 6, 8, 10, 12}
+1 - 
+1 - 
 1 - OK (5 tests)
 1 - 
-1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.IntArrayTest
 1 -  -- alma.acs.testsupport.tat.NoDotJUnitRunner com.cosylab.acs.maci.test.MACIModelTest
 1 - ComponentStatus = { name = 'COMPONENT_ACTIVATED', description = 'Component is activated.' }
 1 - ComponentStatus = { name = 'COMPONENT_NOT_ACTIVATED', description = 'Component is not activated.' }
