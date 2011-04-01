@@ -125,6 +125,18 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 
 	}
 
+    @Override
+    public void set_archiving_interval(String compName, String propName, long time) {
+    }
+
+    @Override
+    public void enable_archiving(String compName, String propName) {
+    }
+
+    @Override
+    public void suppress_archiving(String compName, String propName) {
+    }
+
 	@Override
 	public MonitorDataBlock[] getMonitorData() {
 
