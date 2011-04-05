@@ -1,13 +1,13 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2007/11/07 11:52:40 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/04/05 09:37:25 acaproni Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# almadev  07/11/07  created
+# acaproni  07/11/07  created
 #
 
 #*******************************************************************************
@@ -66,7 +66,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = alarmSourcePanel
+SCRIPTS         = alarmSourcePanel alarmSenderPanel
 SCRIPTS_L       =
 
 #
@@ -118,8 +118,8 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES= alarmSourceGui
-alarmSourceGui_DIRS=alma
+JARFILES= alarmGuiTools
+alarmGuiTools_DIRS=alma
 jjj_EXTRAS= 
 #
 # java sources in Jarfile on/off
