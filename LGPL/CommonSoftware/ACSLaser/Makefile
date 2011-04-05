@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.28 2010/12/09 16:35:41 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.29 2011/04/05 13:02:54 acaproni Exp $"
 #
 #
 
@@ -46,7 +46,6 @@ MODULES_ACSLASER = alarmCommon \
       managerTest \
       baciPropsTest \
       alarmTests
-#     NetbeansACS
 
 ifeq ($(os) $(VXWORKS_RTOS),Linux NO)
     MAKE_FLAGS = "NOCCS=1"
@@ -72,7 +71,6 @@ startupDir = $(shell pwd)
 #
 define canned
 	@$(ECHO) "############ Executing '$@' on all Laser modules #################"
-	@$(ECHO) "############ '$@' on NetbeansACS must be executed manually!" 
 	@for member in  $(foreach name, $(MODULES_ACSLASER), $(name) ) ; do \
 		    $(ECHO) "############ $${member}" ;\
 		    if [ ! -d $${member} ]; then \
@@ -152,7 +150,6 @@ clean_test_log:
 
 update:
 	@$(ECHO) "############ (Re-)build Laser Software         #################"| tee -a build.log
-	@$(ECHO) "############ NetbeansACS will NOT be built: it must be done manually!" | tee -a build.log
 	@for member in  $(foreach name, $(MODULES_ACSLASER), $(name) ) ; do \
 		    if [ ! -d $${member} ]; then \
                          echo "######## ==> $${member} MODULE NOT FOUND! FAILED! " | tee -a build.log;\
