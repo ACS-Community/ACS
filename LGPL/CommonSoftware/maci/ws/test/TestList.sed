@@ -67,3 +67,8 @@ s/IDL\:alma[0-9,a-z,A-Z,\.,_,\:,-]*_[0-9]*/IDL<Dynamic Component>/g
 s/\.java:[0-9]*/.java:xxx/g
 s/Filename='[0-9,a-z,A-Z,\/,_,-]*\/ACS\/LGPL/Filename='xxx\/ACS\/LGPL/g
 
+
+s/logName="LOG_CompAct_Corba_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Corba_OK" TimeMillis="nnn"/g
+s/logName="LOG_CompAct_Init_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Init_OK" TimeMillis="nnn"/g
+s/logName="LOG_CompAct_Instance_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Instance_OK" TimeMillis="nnn"/g
+s/logName="LOG_CompAct_Loading_OK" TimeMillis="[0-9]\+"/logName="LOG_CompAct_Loading_OK" TimeMillis="nnn"/g
