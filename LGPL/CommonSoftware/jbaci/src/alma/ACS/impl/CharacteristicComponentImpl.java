@@ -317,8 +317,8 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 			}
 						
 			// TODO CORBA reference to this component to be set
-				new CharacteristicComponentDesc(null,
-						    m_instanceName,
+			characteristicComponentDesc = new CharacteristicComponentDesc(null,
+						m_instanceName,
 						propertyDescriptors,
 					    get_all_characteristics());
 
