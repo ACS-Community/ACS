@@ -314,7 +314,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 				propertyDescriptors = new PropertyDesc[properties.size()];
 				Iterator<PropertyOperations> iter = properties.keySet().iterator();
 				while (iter.hasNext())
-					propertyDescriptors[i] = ((PropertyImpl)iter.next()).getPropertyDescriptor(); 
+					propertyDescriptors[i++] = ((PropertyImpl)iter.next()).getPropertyDescriptor(); 
 			}
 						
 			// TODO CORBA reference to this component to be set
