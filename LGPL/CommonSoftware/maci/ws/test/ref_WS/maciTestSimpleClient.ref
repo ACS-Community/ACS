@@ -86,7 +86,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI01"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI01"
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
@@ -152,7 +152,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
@@ -213,7 +213,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
@@ -269,7 +269,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
@@ -324,7 +324,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
@@ -369,7 +369,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
@@ -433,7 +433,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 

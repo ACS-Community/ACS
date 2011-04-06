@@ -76,7 +76,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully loaded component library/classes. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
