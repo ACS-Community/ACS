@@ -20,7 +20,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: LTS2Cpp.xslt,v 1.6 2008/09/11 09:09:16 hsommer Exp $"
+* "@(#) $Id: LTS2Cpp.xslt,v 1.7 2011/04/06 15:36:19 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -98,6 +98,7 @@ void </xsl:text><xsl:value-of select="$logName"/><xsl:text>::log(){
         }
         LoggingProxy::Flags(LM_SOURCE_INFO | LM_RUNTIME_CONTEXT);
         getLogger()->log(lr);
+		LoggingProxy::audience(NULL);
 
 }
 
