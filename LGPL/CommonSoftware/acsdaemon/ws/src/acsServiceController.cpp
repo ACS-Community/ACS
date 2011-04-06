@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.13 2009/10/01 11:36:04 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.14 2011/04/06 16:40:41 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -290,19 +290,35 @@ acsdaemon::ServiceState ACSServiceController::getActualState() {
         obj = acsQoS::Timeout::setObjectTimeout(CORBA_TIMEOUT, obj.in());
 
         if (obj->_non_existent()) {
-            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+        	if (desc->getName()) {
+	            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
+        	} else {	
+    	        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+    	    }
             return acsdaemon::NOT_EXISTING;
         }
-        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' responded.", desc->getACSServiceName()));
+    	if (desc->getName()) {
+            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' responded.", desc->getACSServiceName(), desc->getName()));
+    	} else {
+	        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' responded.", desc->getACSServiceName()));
+	    }
         return getContext()->getDetailedServiceState(desc, obj.in()); // acsdaemon::RUNNING;
 //    } catch(CORBA::OBJECT_NOT_EXIST &ex) {
     } catch(CORBA::TRANSIENT &ex) {
-        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+    	if (desc->getName()) {
+            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' doesn't exist.", desc->getACSServiceName(), desc->getName()));
+    	} else {
+	        ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' doesn't exist.", desc->getACSServiceName()));
+	    }
         return acsdaemon::NOT_EXISTING;
     } catch(CORBA::Exception &ex) {
 //        ACS_SHORT_LOG((LM_ERROR, "Failed."));
 //        ACE_PRINT_EXCEPTION (ex, ACE_TEXT ("Caught unexpected exception:"));
-        ACS_SHORT_LOG((LM_INFO, "ACS service '%s' is defunct.", desc->getACSServiceName()));
+    	if (desc->getName()) {
+            ACS_SHORT_LOG((LM_DEBUG, "ACS service '%s' with name '%s' is defunct.", desc->getACSServiceName(), desc->getName()));
+    	} else {	
+	        ACS_SHORT_LOG((LM_INFO, "ACS service '%s' is defunct.", desc->getACSServiceName()));
+	    }
         return acsdaemon::DEFUNCT;
     }
 }
