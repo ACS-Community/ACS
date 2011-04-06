@@ -175,6 +175,7 @@ public class PropertyImpl implements PropertyOperations {
 	
 	/**
 	 * Get property descriptor.
+	 * NOTE: <code>property_ref</code> member of <code>PropertyDesc</code> is always set to <code>null</code>.
 	 * @see alma.ACS.PropertyDesc
 	 */
 	public PropertyDesc getPropertyDescriptor()

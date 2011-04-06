@@ -300,6 +300,7 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 	/*********************** [ CharacteristicComponent ] ***********************/
 
 	/**
+	 * NOTE: <code>characteristic_component_ref</code> member of <code>CharacteristicComponentDesc</code> is always set to <code>null</code>.
 	 * @see alma.ACS.CharacteristicComponentOperations#descriptor()
 	 */
 	public CharacteristicComponentDesc descriptor() {
