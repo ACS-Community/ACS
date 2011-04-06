@@ -539,6 +539,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
+	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
+	 *   providing a new generation of container-managed NC subscribers.
 	 */
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName) throws AcsJContainerServicesEx;
 
@@ -554,6 +556,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @return a Notification Channel subscriber, to which the user can attach one or more handlers for each data type, and that will
 	 *   be automatically disconnected if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the subscriber
+	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
+	 *   providing a new generation of container-managed NC subscribers.
 	 */
 	public AcsEventSubscriber createNotificationChannelSubscriber(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx;
 
@@ -567,6 +571,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @return a Notification Channel publisher, that will get automatically stopped and disconnected when the component is unloaded,
 	 *   or the client disconnected, depending on the case, if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the publisher
+	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
+	 *   providing a new generation of container-managed NC publishers.
 	 */
 	public AcsEventPublisher createNotificationChannelPublisher(String channelName) throws AcsJContainerServicesEx;
 
@@ -582,6 +588,8 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @return a Notification Channel publisher, that will get automatically stopped and disconnected when the component is unloaded,
 	 *   or the client disconnected, depending on the case, if the user doesn't do so.
 	 * @throws AcsJContainerServicesEx if anything goes wrong while creating the publisher
+	 * @deprecated This method is not meant to be used yet. Future releases of ACS will remove this deprecation,
+	 *   providing a new generation of container-managed NC publishers.
 	 */
 	public AcsEventPublisher createNotificationChannelPublisher(String channelName, String channelNotifyServiceDomainName) throws AcsJContainerServicesEx;
 
