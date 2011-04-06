@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplConstrErrorHelloWorld.cpp,v 1.1 2010/10/22 15:06:01 rbourtem Exp $"
+* "@(#) $Id: acsexmplConstrErrorHelloWorld.cpp,v 1.2 2011/04/06 17:26:51 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <acsexmplErrTest.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplConstrErrorCompImpl, "$Id: acsexmplConstrErrorHelloWorld.cpp,v 1.1 2010/10/22 15:06:01 rbourtem Exp $")
+ACE_RCSID(acsexmpl, acsexmplConstrErrorCompImpl, "$Id: acsexmplConstrErrorHelloWorld.cpp,v 1.2 2011/04/06 17:26:51 msekoran Exp $")
 
 /* ----------------------------------------------------------------*/
 ConstrErrorHelloWorld::ConstrErrorHelloWorld( 
@@ -43,7 +43,8 @@ ConstrErrorHelloWorld::ConstrErrorHelloWorld(
 {
     // ACS_TRACE is used for debugging purposes
     ACS_TRACE("::ConstrErrorHelloWorld::ConstrErrorHelloWorld");
-    throw (acsexmplErrTest::ConstructionFailureExImpl(__FILE__, __LINE__, "ConstrErrorHelloWorld::ConstrErrorHelloWorld").getConstructionFailureEx());
+    // we do not throw CORBA exception here
+    throw (acsexmplErrTest::ConstructionFailureExImpl(__FILE__, __LINE__, "ConstrErrorHelloWorld::ConstrErrorHelloWorld"));
 }
 /* ----------------------------------------------------------------*/
 ConstrErrorHelloWorld::~ConstrErrorHelloWorld()

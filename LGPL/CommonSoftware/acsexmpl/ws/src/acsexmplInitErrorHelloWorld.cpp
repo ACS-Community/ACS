@@ -21,7 +21,7 @@
 *
 *
 *
-* "@(#) $Id: acsexmplInitErrorHelloWorld.cpp,v 1.1 2010/10/22 15:07:41 rbourtem Exp $"
+* "@(#) $Id: acsexmplInitErrorHelloWorld.cpp,v 1.2 2011/04/06 17:26:51 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
 #include <acsexmplErrTest.h>
 #include <iostream>
 
-ACE_RCSID(acsexmpl, acsexmplInitErrorCompImpl, "$Id: acsexmplInitErrorHelloWorld.cpp,v 1.1 2010/10/22 15:07:41 rbourtem Exp $")
+ACE_RCSID(acsexmpl, acsexmplInitErrorCompImpl, "$Id: acsexmplInitErrorHelloWorld.cpp,v 1.2 2011/04/06 17:26:51 msekoran Exp $")
 
 /* ----------------------------------------------------------------*/
 InitErrorHelloWorld::InitErrorHelloWorld( 
@@ -69,7 +69,8 @@ InitErrorHelloWorld::badMethod()
  void InitErrorHelloWorld::initialize()
 {
     ACS_TRACE("::InitErrorHelloWorld::initialize");
-    throw (acsexmplErrTest::InitializationFailureExImpl(__FILE__, __LINE__, "InitErrorHelloWorld::initialize").getInitializationFailureEx());
+    // we do not throw CORBA exception here
+    throw (acsexmplErrTest::InitializationFailureExImpl(__FILE__, __LINE__, "InitErrorHelloWorld::initialize"));
 }
 
 
