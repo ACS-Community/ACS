@@ -68,7 +68,7 @@ public class DataStruct implements DataElement {
 				result.append(key);
 				result.append(": ");
 				Object value = get(key);
-				if (value.getClass().isArray()) {
+				if (value != null && value.getClass().isArray()) {
 					result.append(DataElementFormatter.unpackArray(value,start,level, expand));
 				} else {
 					if(value instanceof DataElement)
