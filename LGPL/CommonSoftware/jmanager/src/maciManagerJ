@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.61 2011/03/18 18:13:22 hsommer Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.62 2011/04/07 08:59:28 hsommer Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -168,6 +168,7 @@ fi
 acsStartJava -endorsed \
     -noClassLoader -noAutoClasspath -addToClasspath acsASsources.jar:acscommon.jar:acscomponent.jar:acsContainerServices.jar:acsdaemon.jar:acsdaemonErrType.jar:acserr.jar:acserrj.jar:acsErrTypeAlarmSourceFactory.jar:ACSErrTypeCommon.jar:ACSErrTypeCORBA.jar:ACSErrTypeJavaNative.jar:ACSErrTypeOK.jar:acsjlog.jar:acsjms.jar:ACSJMSMessageEntity.jar:acsnc.jar:AlarmSourceSchemaBindings.jar:alarmsysteminterface.jar:avalon-framework.jar:castor.jar:cdbDAL.jar:cdbErrType.jar:CDB.jar:cmwmom.jar:commons-logging-1.1.1.jar:jACSUtil.jar:JavaContainerError.jar:jcontnc.jar:jmanagerErrType.jar:jManager.jar:jms.jar:laserutil.jar:log4j-1.2.15.jar:logging_idl.jar:maciErrType.jar:maci.jar:maciSchemaBindings.jar:NotifyExt.jar:NotifyMonitoringExt.jar:prevayler-1.02.001.jar:xalan.jar:xalan_serializer.jar \
     -Djacorb.poa.thread_pool_max=200 \
+    -Djacorb.poa.queue_max=500 \
     -DNamingServiceRemoteDirectory.reference=$NAMESERVICE_REFERENCE \
     -DDAL.defaultReference=$ACS_DAL_REF \
     -DOAPort=$ACS_MANAGER_PORT \
