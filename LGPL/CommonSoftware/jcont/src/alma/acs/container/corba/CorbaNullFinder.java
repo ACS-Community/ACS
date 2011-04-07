@@ -104,9 +104,9 @@ public class CorbaNullFinder
 						}
 					}
 				}
-				else {
+				else if (!isIDLInterfaceClass(clzz)) {
 					// @TODO: check test output, and eventually remove this println!
-					System.out.println("DEBUG: Need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName() 
+					System.out.println("DEBUG: Check if we need to update " + CorbaNullFinder.class.getName() + " to support " + clzz.getName() 
 							+ " used in " + qualifiedFieldName);
 				}
 			} catch (Exception ex) {

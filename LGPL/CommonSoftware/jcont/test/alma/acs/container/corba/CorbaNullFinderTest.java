@@ -109,13 +109,17 @@ public class CorbaNullFinderTest extends TestCase
 	}
 	
 	/**
-	 * Tests how java classes for IDL structs and enums are distinguished.
+	 * Tests how java classes for IDL interfaces, structs, and enums are distinguished.
 	 */
 	public void testIdlTypeInfering() {
 		assertTrue(CorbaNullFinder.isIDLEnumClass(Enum1.class));
 		assertFalse(CorbaNullFinder.isIDLEnumClass(Struct1.class));
 		assertTrue(CorbaNullFinder.isIDLStructClass(Struct1.class));
 		assertFalse(CorbaNullFinder.isIDLStructClass(Enum1.class));
+		
+		assertTrue(CorbaNullFinder.isIDLInterfaceClass(alma.ACS.Property.class));
+		assertFalse(CorbaNullFinder.isIDLStructClass(alma.ACS.Property.class));
+		assertFalse(CorbaNullFinder.isIDLEnumClass(alma.ACS.Property.class));
 	}
 	
 	
