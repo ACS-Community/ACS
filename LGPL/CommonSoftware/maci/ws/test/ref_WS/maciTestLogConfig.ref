@@ -29,7 +29,7 @@
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ] Using ACS alarm system
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery disabled.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' initialized successfuly

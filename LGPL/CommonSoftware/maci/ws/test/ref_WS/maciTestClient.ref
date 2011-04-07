@@ -60,7 +60,7 @@
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
-1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery disabled.
+1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
@@ -115,7 +115,7 @@
 2 - ----------T--:--:--.--- [Container02-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [Container02-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [Container02-GL - ] Using ACS alarm system
-2 - ----------T--:--:--.--- [Container02 - maci::Container::init] Recovery disabled.
+2 - ----------T--:--:--.--- [Container02 - maci::Container::init] Recovery enabled.
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::init] Using DLL path: .....
 2 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::activateCORBAObject] 
@@ -170,7 +170,7 @@
 3 - ----------T--:--:--.--- [Container03-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 3 - ----------T--:--:--.--- [Container03-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 3 - ----------T--:--:--.--- [Container03-GL - ] Using ACS alarm system
-3 - ----------T--:--:--.--- [Container03 - maci::Container::init] Recovery disabled.
+3 - ----------T--:--:--.--- [Container03 - maci::Container::init] Recovery enabled.
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::init] Using DLL path: .....
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
 3 - ----------T--:--:--.--- [Container03 - maci::ContainerImpl::activateCORBAObject] 
