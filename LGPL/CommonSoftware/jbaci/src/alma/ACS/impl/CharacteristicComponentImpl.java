@@ -247,6 +247,10 @@ public class CharacteristicComponentImpl extends ComponentImplBase
 				property = PropertyHelper.narrow(
 					getComponentContainerServices().activateOffShoot(propertyServant)
 				);
+				
+				// set reference to itself
+				if (propertyImpl instanceof PropertyReferenceHolder)
+					((PropertyReferenceHolder)propertyImpl).setPropertyRef(property);
 			}
 			catch (Throwable th)
 			{

@@ -27,6 +27,7 @@ import org.omg.CosPropertyService.PropertySet;
 import com.cosylab.CDB.DAL;
 
 import alma.ACS.NoSuchCharacteristic;
+import alma.ACS.Property;
 import alma.ACS.PropertyDesc;
 import alma.ACS.PropertyOperations;
 import alma.ACS.jbaci.PropertyInitializationFailed;
@@ -38,7 +39,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
  * @author <a href="mailto:cmenayATcsrg.inf.utfsm.cl">Camilo Menay</a>
  * @version $id$
  */
-public class PropertyImpl implements PropertyOperations {
+public class PropertyImpl implements PropertyOperations, PropertyReferenceHolder {
 
 	/**
 	 * Property name.
@@ -175,18 +176,26 @@ public class PropertyImpl implements PropertyOperations {
 	
 	/**
 	 * Get property descriptor.
-	 * NOTE: <code>property_ref</code> member of <code>PropertyDesc</code> is always set to <code>null</code>.
 	 * @see alma.ACS.PropertyDesc
 	 */
-	public PropertyDesc getPropertyDescriptor()
+	public synchronized PropertyDesc getPropertyDescriptor()
 	{
 		if (propertyDesc == null)
 		{
-			// TODO CORBA reference to this property to be set, PropertySet
-			propertyDesc =	new PropertyDesc(null, name, get_all_characteristics());
+			propertyDesc =	new PropertyDesc(propertyRef, name, get_all_characteristics());
 		}
 		
 		return propertyDesc; 
 	}
 
+	protected Property propertyRef;
+	
+	public synchronized Property getPropertyRef() {
+		return propertyRef;
+	}
+
+	public synchronized void setPropertyRef(Property ref) {
+		propertyRef = ref;
+	}
+	
 }
