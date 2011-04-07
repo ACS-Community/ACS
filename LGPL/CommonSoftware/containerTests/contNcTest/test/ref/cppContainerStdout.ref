@@ -11,7 +11,7 @@
 1 - ContainerStatusMsg: ORB initialization ends
 1 - <timestamp> [cppContainer - maci::ContainerImpl::getManager] Resolving manager...
 1 - <timestamp> [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::<IP address>:<port>/Manager'
-1 - <timestamp> [cppContainer - maci::Container::init] Recovery disabled.
+1 - <timestamp> [cppContainer - maci::Container::init] Recovery enabled.
 1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' activated.
 1 - <timestamp> [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
 1 - <timestamp> [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
