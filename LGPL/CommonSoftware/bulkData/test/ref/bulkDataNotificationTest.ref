@@ -11,7 +11,7 @@
 1 - ContainerStatusMsg: ORB initialization ends
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::---:----/Manager'
-1 - ----------T--:--:--.--- [ContainerNotifTest - maci::Container::init] Recovery disabled.
+1 - ----------T--:--:--.--- [ContainerNotifTest - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [ContainerNotifTest - maci::ContainerImpl::init] Container 'ContainerNotifTest' activated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libbaci.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
