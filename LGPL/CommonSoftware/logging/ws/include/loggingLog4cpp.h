@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.h,v 1.5 2011/03/25 23:42:00 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.h,v 1.6 2011/04/08 14:33:38 javarias Exp $"
  */
 #ifndef LOGGING_LOG4CPP_H_
 #define LOGGING_LOG4CPP_H_
@@ -34,7 +34,9 @@
 
 #include "loggingBaseLog.h"
 
+#ifndef LM_DELOUSE
 #define LM_DELOUSE 010000U
+#endif
 
 namespace logging {
 
@@ -59,6 +61,8 @@ public:
 			CosNaming::NamingContext_ptr namingService = CosNaming::NamingContext::_nil(),
 			int maxLogsPerSecond = -1);
 	void enableSyslogAppender();
+
+	void setLogLevels(const std::string& loggerName, log4cpp::Priority::PriorityLevel remote, log4cpp::Priority::PriorityLevel local);
 
 	static BasicLogInfo formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...);
 	static BasicLogInfo formatLog(ACE_Log_Priority priority, const char *fmt, ...);
@@ -98,6 +102,7 @@ private:
 log4cpp::Priority::PriorityLevel convertPriority(unsigned int logLevel);
 log4cpp::Priority::PriorityLevel convertPriority(ACE_Log_Priority logLevel);
 log4cpp::Priority::PriorityLevel convertPriority(Logging::BaseLog::Priority logLevel);
+log4cpp::Priority::PriorityLevel convertPriority(AcsLogLevels::logLevelValue logLevel);
 }
 
 #define LOGGER_FACTORY ACE_Singleton<logging::Logger, ACE_Null_Mutex>::instance()

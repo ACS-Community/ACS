@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.70 2011/03/23 23:28:11 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.71 2011/04/08 14:33:38 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -106,7 +106,8 @@ INCLUDES        = 	logging.h loggingExport.h loggingXMLElement.h loggingXMLParse
 			loggingACEMACROS.h loggingGetLogger.h loggingGenericLogger.h loggingStdoutHandler.h \
 			loggingAcsLogServiceImpl.h loggingStdoutlayout.h loggingXmlLayout.h\
             loggingACSCategory.h loggingACSLoggingEvent.h loggingLogThrottle.h \
-            loggingACSRemoteAppender.h
+            loggingACSRemoteAppender.h loggingLog4cpp.h loggingLog4cppMACROS.h \
+			loggingLog4cppACEMACROS.h loggingACSHierarchyMaintainer.h
 INCLUDES_L      = loggingService.h \
 		  loggingACSStructuredPushSupplier.h \
 		  loggingACSStructuredPushSupplierXml.h \

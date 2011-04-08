@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.cpp,v 1.5 2011/03/25 23:42:00 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.cpp,v 1.6 2011/04/08 14:33:38 javarias Exp $"
  */
 
 #include "loggingLog4cpp.h"
@@ -126,6 +126,19 @@ void Logger::enableSyslogAppender() {
 		}
 	}
 	initMutex.release();
+}
+
+void Logger::setLogLevels(const std::string& loggerName, log4cpp::Priority::PriorityLevel remote,
+		log4cpp::Priority::PriorityLevel local) {
+	ACSCategory* logger = ACSCategory::exist(loggerName);
+	if (logger == NULL)
+		return;
+	if (logger->getAppender(REMOTE_APPENDER_NAME))
+		logger->getAppender(REMOTE_APPENDER_NAME)->setThreshold(remote);
+	if (logger->getAppender(STDOUT_APPENDER_NAME))
+		logger->getAppender(STDOUT_APPENDER_NAME)->setThreshold(local);
+	if (logger->getAppender(SYSLOG_APPENDER_NAME))
+		logger->getAppender(SYSLOG_APPENDER_NAME)->setThreshold(local);
 }
 
 ACSCategory* Logger::getGlobalLogger() {
@@ -314,6 +327,33 @@ log4cpp::Priority::PriorityLevel logging::convertPriority(ACE_Log_Priority logLe
 	case LM_ALERT:
 		return log4cpp::Priority::ALERT;
 	case LM_EMERGENCY:
+		return log4cpp::Priority::EMERGENCY;
+	default:
+		return log4cpp::Priority::NOTSET;
+	}
+}
+
+log4cpp::Priority::PriorityLevel logging::convertPriority (AcsLogLevels::logLevelValue logLevel) {
+	switch (logLevel) {
+	case AcsLogLevels::TRACE_VAL:
+		return log4cpp::Priority::TRACE;
+	case AcsLogLevels::DELOUSE_VAL:
+		return log4cpp::Priority::DELOUSE;
+	case AcsLogLevels::DEBUG_VAL:
+		return log4cpp::Priority::DEBUG;
+	case AcsLogLevels::INFO_VAL:
+		return log4cpp::Priority::INFO;
+	case AcsLogLevels::NOTICE_VAL:
+		return log4cpp::Priority::NOTICE;
+	case AcsLogLevels::WARNING_VAL:
+		return log4cpp::Priority::WARNING;
+	case AcsLogLevels::ERROR_VAL:
+		return log4cpp::Priority::ERROR;
+	case AcsLogLevels::CRITICAL_VAL:
+		return log4cpp::Priority::CRITICAL;
+	case AcsLogLevels::ALERT_VAL:
+		return log4cpp::Priority::ALERT;
+	case AcsLogLevels::EMERGENCY_VAL:
 		return log4cpp::Priority::EMERGENCY;
 	default:
 		return log4cpp::Priority::NOTSET;
