@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.29 2011/04/05 13:02:54 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.30 2011/04/08 11:17:31 acaproni Exp $"
 #
 #
 
@@ -38,7 +38,6 @@ MODULES_ACSLASER = alarmCommon \
       laser-client \
       laser-definition \
       laser-console \
-      laser-guiplatform \
       alarm-clients \
       alarmSourcePanel \
 	  alarmPanel \
