@@ -21,7 +21,6 @@ package alma.acsplugins.alarmsystem.gui.table;
 import java.util.Vector;
 
 import cern.laser.client.data.Alarm;
-import cern.laser.guiplatform.alarms.AlarmContainer;
 
 import alma.alarmsystem.clients.CategoryClient;
 
