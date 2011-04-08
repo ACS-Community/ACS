@@ -60,7 +60,7 @@ import alma.alarmsystem.source.ACSFaultState;
  * @author acaproni
  *
  */
-public class SourceStressTest extends ComponentClientTestCase {
+public class MultiSourceStressTest extends ComponentClientTestCase {
 	
 	/**
 	 * The relevant fields of a fault state to compare against
@@ -78,8 +78,8 @@ public class SourceStressTest extends ComponentClientTestCase {
 		public final Timestamp timestamp;
 		
 		public MiniFaultState() {
-			FF=SourceStressTest.FF+(countFF++);
-			FM=SourceStressTest.FM+(countFM++);
+			FF=MultiSourceStressTest.FF+(countFF++);
+			FM=MultiSourceStressTest.FM+(countFM++);
 			FC=Math.abs(rnd.nextInt());
 			msec=System.currentTimeMillis();
 			timestamp=new Timestamp(msec);
@@ -176,7 +176,7 @@ public class SourceStressTest extends ComponentClientTestCase {
 	 * Constructor 
 	 * @throws Exception
 	 */
-	public SourceStressTest() throws Exception {
+	public MultiSourceStressTest() throws Exception {
 		super("Source stress test");
 	}
 	
@@ -302,25 +302,20 @@ public class SourceStressTest extends ComponentClientTestCase {
 	/**
 	 * Test by sending all the fault states using the same source. 
 	 * When all the alarms have arrived it checks for their
-	 * correctness.
-	 * 
-	 * NOTE: when using only on source, not all the FS arrive in the same
-	 *      order they are submitted to the source.
-	 *      For this reason the collection are sorted before comparing.
+	 * correctness 
 	 * 
 	 * @throws Exception
 	 */
-	public void testStressSameSource() throws Exception {
-		buildData(NUM_OF_FS_TO_SEND_ONE_SOURCE);
+	public void testStressDifferentSources() throws Exception {
+		buildData(NUM_OF_FS_TO_SEND_MORE_SOURCES);
 		
 		// Send the alarms
 		for (int t=0; t<statesToPublish.size(); t++) {
-			send(statesToPublish.get(t),true);
+			send(statesToPublish.get(t),false);
 		}
 		
 		waitForFSs();
 		
-		// Resort the collection before comparing
 		Collections.sort(receivedFS);
 		Collections.sort(statesToPublish);
 		
