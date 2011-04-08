@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.126 2011/03/31 13:17:33 rtobar Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.127 2011/04/08 14:34:15 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,6 +57,7 @@
 
 #include <cdbDALaccess.h>
 #include <loggingLogLevelDefinition.h>
+#include <loggingLog4cpp.h>
 /*
 #ifdef MAKE_VXWORKS
 #include <err.h>
@@ -80,7 +81,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.126 2011/03/31 13:17:33 rtobar Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.127 2011/04/08 14:34:15 javarias Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -111,7 +112,14 @@ ContainerImpl::ContainerImpl() :
   m_containerServices(0),
   m_logger(0),
   m_executionId(0),
-  m_startTime(::getTimeStamp())
+  m_startTime(::getTimeStamp()),
+  //logging stuff
+  cacheSize(5U),
+  minCachePriority(0),
+  maxCachePriority (LM_MAX_PRIORITY),
+  flushPeriodSeconds(10),
+  maxLogsPerSecond(-1)
+
 {
 
   orb = CORBA::ORB::_nil();
@@ -634,7 +642,6 @@ ContainerImpl::init(int argc, char *argv[])
       Field fld;
 
       CORBA::ULong ul;
-      unsigned long cacheSize = 5;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/dispatchPacketSize", fld))
 	{
 	  if (fld.GetULong(ul))
@@ -647,21 +654,18 @@ ContainerImpl::init(int argc, char *argv[])
 	  m_dynamicContainer = true;
 	}
 
-      unsigned long minCachePriority = 0;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/minLogLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      minCachePriority = ul;
 	}
 
-      unsigned long maxCachePriority = LM_MAX_PRIORITY;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/immediateDispatchLevel", fld))
 	{
 	  if (fld.GetULong(ul))
 	      maxCachePriority = ul;
 	}
 
-      unsigned int flushPeriodSeconds = 10;
       if (!m_dynamicContainer && m_database->GetField(m_dbPrefix, "LoggingConfig/flushPeriodSeconds", fld))
 	{
 	  if (fld.GetULong(ul))
@@ -1150,6 +1154,8 @@ ContainerImpl::connect()
 		  if (logger.ptr() != Logging::AcsLogService::_nil())
 		    {
 		      m_loggerProxy->setCentralizedLogger(logger.in());
+		      //Log4cpp remote logging initialization
+		      LOGGER_FACTORY->enableRemoteAppender(cacheSize, flushPeriodSeconds, logger, NULL, maxLogsPerSecond);
 		      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connected to the Centralized Logger."));
 		    }
 		  else
@@ -2861,6 +2867,10 @@ void ContainerImpl::refresh_logging_config()
 
 void ContainerImpl::configureLogger(const std::string& loggerName)
 {
+	//Log4cpp Log creation
+	LOGGER_FACTORY->getLogger(loggerName);
+
+
 	maci::LoggingConfigurable::LogLevels logLevels;
 	if (getContainer()->m_logLevels.find(loggerName) != getContainer()->m_logLevels.end())
 		logLevels = getContainer()->m_logLevels[loggerName];
@@ -2872,11 +2882,19 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
+		//Log4cpp: set levels
+		LOGGER_FACTORY->setLogLevels(loggerName,
+				logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevel),
+				logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal));
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
+		//Log4cpp: set levels
+		LOGGER_FACTORY->setLogLevels(loggerName,
+				logging::convertPriority(logLevels.minLogLevel),
+				logging::convertPriority(logLevels.minLogLevelLocal));
 	}
 
 }

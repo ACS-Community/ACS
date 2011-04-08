@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.59 2011/02/17 18:25:38 rtobar Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.60 2011/04/08 14:34:15 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.59 2011/02/17 18:25:38 rtobar Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.60 2011/04/08 14:34:15 javarias Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -653,6 +653,13 @@ public:
 
   // startup timestamp
   ACS::Time m_startTime;
+
+  //Logging stuff
+  unsigned long cacheSize;
+  unsigned long minCachePriority;
+  unsigned long maxCachePriority;
+  unsigned int flushPeriodSeconds;
+  int maxLogsPerSecond;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
