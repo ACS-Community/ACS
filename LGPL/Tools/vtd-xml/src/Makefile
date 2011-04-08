@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.3 2008/06/19 08:38:16 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/04/08 09:13:29 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -189,6 +189,7 @@ Prepare:
 	mkdir -p ../lib
 	unzip -o ximpleware_2.4_java.zip >/dev/null
 	cp  ximpleware_2.4_java/vtd-xml.jar ../lib/
+	rm -rf ximpleware_2.4_java
 #
 # TARGETS
 # -------
