@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2008/02/19 15:43:37 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.4 2011/04/08 14:56:52 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -52,7 +52,7 @@ laserSourceTest_DIRS = alma
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         = 
-SCRIPTS_L       = laserSourceTATPrologue testObjects testSend testStress
+SCRIPTS_L       = laserSourceTATPrologue testObjects testSend testStress testStressMultiSources
 
 #>>>>> END OF standard rules
   

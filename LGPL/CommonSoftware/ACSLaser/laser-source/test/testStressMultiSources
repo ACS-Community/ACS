@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,19 +20,4 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.4 2011/04/08 14:56:52 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# acaproni 2006-09-13 created
-SOURCE laserSourceTATEnvironment
-PROLOGUE laserSourceTATPrologue
-
-1 testObjects	"testObjects"
-2 testSend		"testSend"
-3 testStress	"testStress"
-4 testStressMultiSources	"testStressMultiSources"
-
-EPILOGUE acsutilTATEpilogue
+acsutilTATTestRunner acsStartJava -endorsed -Duser.dir=$PWD junit.textui.TestRunner alma.lasersource.test.MultiSourceStressTest
