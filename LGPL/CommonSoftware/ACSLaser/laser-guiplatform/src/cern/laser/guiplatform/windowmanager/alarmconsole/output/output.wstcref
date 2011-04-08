@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<tc-ref version="1.0" id="output" >
-    <ui-type type="any" state="opened" constraint="center" selected="true" />
-</tc-ref>
-

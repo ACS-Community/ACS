@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Dependencies: cern.gp > 1.0
-OpenIDE-Module-Specification-Version: 0.1
-Created-By: Bartlomiej Pawlowski, Laser Project
-OpenIDE-Module: cern.laser.guiplatform
-OpenIDE-Module-Name: Alarm console
-OpenIDE-Module-Layer: cern/laser/guiplatform/mf-layer.xml
-OpenIDE-Module-Module-Dependencies: cern.gp 

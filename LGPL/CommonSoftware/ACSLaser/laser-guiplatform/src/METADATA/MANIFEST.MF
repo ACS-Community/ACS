@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Specification-Version: 0.1
-Created-By: Bartlomiej Pawlowski, Laser Project
-OpenIDE-Module: cern.laser.guiplatform
-OpenIDE-Module-Name: Alarm console
-OpenIDE-Module-Layer: cern/laser/guiplatform/mf-layer.xml
-OpenIDE-Module-IDE-Dependencies: IDE/1 = 3.42.1
-Class-Path: laser/log4j-1.2.8.jar laser/commons-logging.jar laser/acsjms.jar laser/alarmsysteminterface.jar laser/cmwmom.jar laser/gp.jar laser/jms.jar laser/laserclient.jar laser/laserconsole.jar laser/lasercore.jar laser/laserdefinition.jar laser/laserutil.jar laser/AlarmSystem.jar laser/acscomponent.jar laser/ACSJMSMessageEntity.jar laser/AbsoluteLayout.jar laser/ACSAlarmMessage.jar laser/ laser/castor.jar

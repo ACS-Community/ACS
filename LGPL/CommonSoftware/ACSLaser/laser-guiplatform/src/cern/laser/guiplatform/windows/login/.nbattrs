@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
-<attributes version="1.0">
-    <fileobject name="AlarmConsoleLoginWindow.java">
-        <attr name="class_dependency_org.openide.windows.TopComponent" stringvalue="AlarmConsoleLoginWindow"/>
-    </fileobject>
-</attributes>
-
