@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.199 2011/03/30 12:44:24 jagonzal Exp $" 
+# "@(#) $Id: acsMakefile,v 1.200 2011/04/11 10:31:04 jagonzal Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -1952,11 +1952,13 @@ endif
 #    execute the TAT test.
 #
 
+ifndef NO_TEST_TARGET
 acsTest = test
 $(acsTest):
 	export MAKE_PURE
 	tat -nc -v
 	@echo " . . . test done"
+endif
 
 
 pureReport:
