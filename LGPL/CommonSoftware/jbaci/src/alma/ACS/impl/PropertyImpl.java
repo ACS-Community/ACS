@@ -182,7 +182,7 @@ public class PropertyImpl implements PropertyOperations, PropertyReferenceHolder
 	{
 		if (propertyDesc == null)
 		{
-			propertyDesc =	new PropertyDesc(propertyRef, name, get_all_characteristics());
+			propertyDesc =	new PropertyDesc(propertyRef, parentComponent.name() + ":" + name, get_all_characteristics());
 		}
 		
 		return propertyDesc; 
