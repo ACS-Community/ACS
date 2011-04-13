@@ -20,7 +20,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/maciErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/cdbErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
-	<classpathentry kind="lib" path="lib/jcontnctest.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/EventComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplFridge.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
@@ -47,5 +46,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncSchemaBindings.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
