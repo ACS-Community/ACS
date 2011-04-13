@@ -25,3 +25,4 @@ s/process='[0-9]*'/process=XXXX/g
 s/file=.*acspy/file='acspy/g
 s/file=.*ACSSW/file='acspy/g
 s/lineNum=[0-9]*/lineNum=XXXX/g
+s/TimeMillis=[0-9]\+/TimeMillis=nnn/g
