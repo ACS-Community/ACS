@@ -17,14 +17,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: alarmPanel,v 1.2 2008/02/13 01:17:38 acaproni Exp $"
+# "@(#) $Id: alarmPanel,v 1.3 2011/04/13 15:47:41 acaproni Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # acaproni  2007-09-14  created
 #
 
-acsStartJava -endorsed alma.acs.gui.util.panel.Frame alma.acsplugins.alarmsystem.gui.AlarmPanel
+acsStartJava -endorsed alma.acsplugins.alarmsystem.gui.AlarmPanelFrame
 
 
 #
