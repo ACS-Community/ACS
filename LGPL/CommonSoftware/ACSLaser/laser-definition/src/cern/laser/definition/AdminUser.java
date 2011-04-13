@@ -2,7 +2,10 @@ package cern.laser.definition;
 
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 
 
 /** An adminitrative user. It can create, update and remove
@@ -13,12 +16,12 @@ public interface AdminUser {
   /** Get the alarm definition handler.
  * @return the alarm definition handler.
  */
-  public AlarmDefinitionHandler getAlarmDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
+  public AlarmDefinitionHandler getAlarmDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException;
 
   /** Get the category definition handler.
  * @return the category definition handler.
  */
-  public CategoryDefinitionHandler getCategoryDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
+  public CategoryDefinitionHandler getCategoryDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException;
 
   /** Get the alarm/category link definition handler.
  * @return the alarm/category link definition handler.
@@ -33,7 +36,7 @@ public interface AdminUser {
   /** Get the source definition handler.
  * @return the source definition handler.
  */
-  public SourceDefinitionHandler getSourceDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException;
+  public SourceDefinitionHandler getSourceDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException;
 
   /** Get the user defined alarms.
  * @return the user defined alarms.

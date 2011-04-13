@@ -2,10 +2,13 @@ package cern.laser.definition.impl;
 
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
 import cern.laser.client.impl.common.AlarmServiceSingleton;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.CERNAlarmService;
 import cern.laser.definition.AdminUser;
 import cern.laser.definition.AdminUserHandler;
@@ -18,16 +21,16 @@ import cern.laser.definition.LaserDefinitionNotFoundException;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class AdminUserHandlerImpl extends AdminUserHandler {
   private CERNAlarmService alarmService;
 
-  public AdminUserHandlerImpl(ContainerServicesBase contSvcs) throws LaserException, LaserConnectionException
+  public AdminUserHandlerImpl(ORB orb, AcsLogger logger) throws LaserException, LaserConnectionException
   {
     super();
     try {
-		  this.alarmService=AlarmServiceSingleton.getInstance(contSvcs);
+		  this.alarmService=AlarmServiceSingleton.getInstance(orb,logger);
 	  } catch (Throwable t) {
 		  throw new LaserConnectionException("Error getting the alarm service",t);
 	  }

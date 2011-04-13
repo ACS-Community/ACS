@@ -1,8 +1,8 @@
 /*
- * $Id: UserImpl.java,v 1.8 2011/02/13 15:37:17 acaproni Exp $
+ * $Id: UserImpl.java,v 1.9 2011/04/13 15:45:42 acaproni Exp $
  *
- * $Date: 2011/02/13 15:37:17 $ 
- * $Revision: 1.8 $ 
+ * $Date: 2011/04/13 15:45:42 $ 
+ * $Revision: 1.9 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -10,6 +10,7 @@
 package cern.laser.console.impl;
 
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.AlarmService;
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.data.Category;
@@ -27,6 +28,8 @@ import cern.laser.client.impl.services.selection.CategorySelectionImpl;
 import java.util.ArrayList;
 
 import java.util.Collection;
+
+import org.omg.CORBA.ORB;
 
 public class UserImpl implements User {
 //  private String userId;
@@ -47,18 +50,27 @@ public class UserImpl implements User {
   }
   private LocalConsoleUser user;
   
-  private ContainerServicesBase contSvcs;
+  /**
+   * The ORB
+   */
+  private final ORB orb;
+  
+  /**
+   * The logger
+   */
+  private final AcsLogger logger;
 
   //
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
 //  public UserImpl(Object newUser) throws LaserConsoleException {
-  public UserImpl(String newUserName, ContainerServicesBase contSvcs) throws LaserConsoleException {
+  public UserImpl(String newUserName, ORB orb, AcsLogger logger) throws LaserConsoleException {
 	  this.user = new LocalConsoleUser(newUserName, newUserName);
-	  this.contSvcs=contSvcs;
+	  this.orb=orb;
+	  this.logger=logger;
       try {
-    	  this.laser = AlarmServiceSingleton.getInstance(contSvcs);
+    	  this.laser = AlarmServiceSingleton.getInstance(orb,logger);
       } catch (Exception e) {
     	  throw new LaserConsoleException("unable to create a console user : " + e.getMessage(), e);
       }
@@ -180,7 +192,7 @@ public class UserImpl implements User {
   }
 
   public Configuration getConfiguration(String name) throws LaserConsoleException, LaserConnectionException {
-  	return new ConfigurationImpl(name,contSvcs);
+  	return new ConfigurationImpl(name,orb,logger);
   	/* try {
       try {
         return new ConfigurationImpl(user.getRemoteConfiguration(name));
@@ -312,7 +324,7 @@ public class UserImpl implements User {
   		private String name = "Client-side in memory configuration";
   		private boolean isDefault = true;
   		private Behaviour behaviour = new BehaviourImpl();
-        private Selection selection = AlarmSelectionHandlerImpl.get(contSvcs).createSelection();
+        private Selection selection = AlarmSelectionHandlerImpl.get(orb,logger).createSelection();
         private CommentedAlarmMap highlighted = new CommentedAlarmMap();
         private CommentedAlarmMap autoHighlighted = new CommentedAlarmMap();
         private CommentedAlarmMap autoKlaxoned = new CommentedAlarmMap();

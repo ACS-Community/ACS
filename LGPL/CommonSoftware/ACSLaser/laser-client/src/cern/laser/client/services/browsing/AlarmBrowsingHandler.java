@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmBrowsingHandler.java,v 1.3 2011/02/13 15:37:17 acaproni Exp $
+ * $Id: AlarmBrowsingHandler.java,v 1.4 2011/04/13 15:45:42 acaproni Exp $
  *
- * $Date: 2011/02/13 15:37:17 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2011/04/13 15:45:42 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -11,7 +11,10 @@ package cern.laser.client.services.browsing;
 
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
@@ -38,10 +41,10 @@ public abstract class AlarmBrowsingHandler {
    * @return an instance of the implementation class
    * @throws LaserException if the request can not be served
    */
-  public static AlarmBrowsingHandler get(ContainerServicesBase contSvcs) throws LaserConnectionException {
+  public static AlarmBrowsingHandler get(ORB orb, AcsLogger logger) throws LaserConnectionException {
     AlarmBrowsingHandler instance = (AlarmBrowsingHandler) alarmBrowsingHandler.get();
     if (instance == null) {
-      instance = new AlarmBrowsingHandlerImpl(contSvcs);
+      instance = new AlarmBrowsingHandlerImpl(orb,logger);
       alarmBrowsingHandler.set(instance);
     }
 

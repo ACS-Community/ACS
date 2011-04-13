@@ -18,9 +18,12 @@
  */
 package cern.laser.client.impl.common;
 
+import org.omg.CORBA.ORB;
+
 import cern.cmw.mom.pubsub.impl.ACSJMSTopicConnectionImpl;
 import alma.acs.component.client.ComponentClient;
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.acs.util.AcsLocations;
 import alma.alarmsystem.AlarmService;
 import alma.alarmsystem.CERNAlarmService;
@@ -35,12 +38,15 @@ public class AlarmServiceSingleton {
 
 	private static CERNAlarmService instance = null;
 	
-	public static synchronized CERNAlarmService getInstance(ContainerServicesBase contSvc) throws Exception {
-		if (contSvc==null) {
-			throw new IllegalArgumentException("ContainerServicesBase can't be null");
+	public static synchronized CERNAlarmService getInstance(ORB orb, AcsLogger logger) throws Exception {
+		if (orb==null) {
+			throw new IllegalArgumentException("ORB can't be null");
+		}
+		if (logger==null) {
+			throw new IllegalArgumentException("The Logger can't be null");
 		}
 		if (instance==null) {
-			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(contSvc);
+			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(orb, logger);
 			instance=alarmUtils.getCernAlarmService();
 		}
 		return instance;

@@ -5,7 +5,10 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.AlarmService;
 
 import cern.laser.business.definition.data.SourceDefinition;
@@ -23,7 +26,7 @@ import cern.laser.definition.SourceDefinitionHandler;
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class SourceDefinitionHandlerImpl extends DefinitionHandlerImpl implements SourceDefinitionHandler {
 	private AlarmService alarmService;
@@ -33,10 +36,10 @@ public class SourceDefinitionHandlerImpl extends DefinitionHandlerImpl implement
    *
    * @param userId DOCUMENT ME!
    */
-  public SourceDefinitionHandlerImpl(String userId, ContainerServicesBase contSvcs) throws LaserDefinitionException {
+  public SourceDefinitionHandlerImpl(String userId, ORB orb, AcsLogger logger) throws LaserDefinitionException {
     super(userId);
     try {
-		  this.alarmService=AlarmServiceSingleton.getInstance(contSvcs);
+		  this.alarmService=AlarmServiceSingleton.getInstance(orb,logger);
 	  } catch (Throwable t) {
 		  throw new LaserDefinitionException("Error getting the alarm service",t);
 	  }

@@ -24,8 +24,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.Category;
 import alma.alarmsystem.clients.alarm.AlarmClientException;
@@ -93,12 +96,17 @@ public class CategoryClient {
 	/**
 	 *  ACS ContainerServices
 	 */
-	private ContainerServices contSvc;
+	//private ContainerServices contSvc;
 	
 	/** 
 	 * The logger
 	 */
-	private Logger logger;
+	private final AcsLogger logger;
+	
+	/**
+	 * The orb
+	 */
+	private final ORB orb;
 	
 	/**
 	 * The alarm service component
@@ -117,14 +125,23 @@ public class CategoryClient {
 	 * @throws AlarmClientException
 	 */
 	public CategoryClient(ContainerServices contServices) throws AlarmClientException {
-		if (contServices==null) {
-			throw new IllegalArgumentException("ContainerServices can't be null");
-		}
-		contSvc=contServices;
-		
-		logger=contSvc.getLogger();
+		this(contServices.getAdvancedContainerServices().getORB(),contServices.getLogger());
+	}
+	
+	/**
+	 * Contructor
+	 * 
+	 * @param orb The orb
+	 * @param logger The logger
+	 */
+	public CategoryClient(ORB orb, AcsLogger logger) {
+		this.logger=logger;
 		if (logger==null) {
 			throw new IllegalStateException("Got a null logger from the container services!");
+		}
+		this.orb=orb;
+		if (orb==null) {
+			throw new IllegalStateException("Got a null ORB from the container services!");
 		}
 	}
 	
@@ -193,7 +210,7 @@ public class CategoryClient {
 			throw new IllegalStateException("SourceClient is closed!");
 		}
 		try {
-			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(contSvc);
+			CernAlarmServiceUtils alarmUtils = new CernAlarmServiceUtils(orb,logger);
 			alarm=alarmUtils.getCernAlarmService();
 		} catch (Throwable t) {
 			AcsJCannotGetComponentEx ex = new AcsJCannotGetComponentEx(t);
@@ -201,15 +218,15 @@ public class CategoryClient {
 			throw ex;
 		}
 		try {
-			userHandler=new UserHandlerImpl(contSvc);
+			userHandler=new UserHandlerImpl(orb,logger);
 			logger.log(AcsLogLevel.DEBUG,"UserHandler succesfully built");
 			
-			testUser = userHandler.getUser("test",contSvc);
+			testUser = userHandler.getUser("test",orb,logger);
 			logger.log(AcsLogLevel.DEBUG,"User generated");
 			
 			defaultConf=testUser.getDefaultConfiguration();
 			logger.log(AcsLogLevel.DEBUG,"Getting the selection handler");
-			jms_selectionHandler = AlarmSelectionHandler.get(contSvc);
+			jms_selectionHandler = AlarmSelectionHandler.get(orb,logger);
 			addCategories(defaultConf,categories);
 			
 			// Get the active alarms (they are received by the listener)

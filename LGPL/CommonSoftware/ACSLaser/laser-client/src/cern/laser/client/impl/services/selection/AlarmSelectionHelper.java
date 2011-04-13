@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmSelectionHelper.java,v 1.10 2011/02/13 15:37:17 acaproni Exp $
+ * $Id: AlarmSelectionHelper.java,v 1.11 2011/04/13 15:45:42 acaproni Exp $
  *
- * $Date: 2011/02/13 15:37:17 $ 
- * $Revision: 1.10 $ 
+ * $Date: 2011/04/13 15:45:42 $ 
+ * $Revision: 1.11 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -23,8 +23,10 @@ import javax.jms.Message;
 import javax.jms.TextMessage;
 
 import org.apache.log4j.Logger;
+import org.omg.CORBA.ORB;
 
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.CERNAlarmService;
 
 import com.cosylab.acs.jms.ACSJMSTextMessage;
@@ -50,7 +52,7 @@ import alma.alarmsystem.alarmmessage.AlarmMessageConversion;
 /**
  * 
  * 
- * @version $Revision: 1.10 $ $Date: 2011/02/13 15:37:17 $
+ * @version $Revision: 1.11 $ $Date: 2011/04/13 15:45:42 $
  * @author Katarina Sigerud
  */
 class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
@@ -83,12 +85,12 @@ class AlarmSelectionHelper implements SubscriptionListener, ExceptionListener {
   // -- CONSTRUCTORS ------------------------------------------------
   //
 
-  AlarmSelectionHelper(AlarmSelectionListener selectionListener, ContainerServicesBase contSvcs) throws LaserException {
+  AlarmSelectionHelper(AlarmSelectionListener selectionListener, ORB orb, AcsLogger logger) throws LaserException {
   	this.selectionListener = selectionListener;
     initialSelection = Collections.synchronizedMap(new HashMap());
 
     try {
-        this.m_laser = AlarmServiceSingleton.getInstance(contSvcs);
+        this.m_laser = AlarmServiceSingleton.getInstance(orb,logger);
     } catch (Exception e) {
       throw new LaserException("unable to setup initial selection", e);
     }

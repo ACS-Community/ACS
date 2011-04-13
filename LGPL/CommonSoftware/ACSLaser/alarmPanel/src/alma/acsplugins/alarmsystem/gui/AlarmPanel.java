@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.27 2009/09/28 15:29:06 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.28 2011/04/13 15:48:21 acaproni Exp $
  * @since    
  */
 
@@ -27,33 +27,21 @@ package alma.acsplugins.alarmsystem.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
+import org.omg.CORBA.ORB;
+
 import cern.laser.client.data.Alarm;
-import cern.laser.client.services.selection.AlarmSelectionListener;
 
 import alma.acs.alarmsystem.corbaservice.AlarmServiceUtils;
-import alma.acs.container.ContainerServices;
-import alma.alarmsystem.clients.CategoryClient;
 
-import alma.acs.gui.util.panel.IPanel;
-import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
+import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmGUIType;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
-import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
-import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
-import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
 /**
  * 
@@ -65,13 +53,22 @@ import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
  * 	<LI>The CERN AS is use but the alarm client is not connected to the alarm service
  * 	<LI>The CERN AS is use and the alarm client is connected to the alarm service
  * </UL>
+ * <P>
+ * The panel runs in stand alone and inside the OMC. Its interface is not
+ * the standard SubsystemPlugin but the more generic OmcPlugin. For that reason
+ * we can't use  {@link alma.acs.gui.util.panel.Frame}.
  */
-public class AlarmPanel extends JPanel implements IPanel {
+public class AlarmPanel extends JPanel {
 
 	/**
-	 * The container services
+	 * The ORB
 	 */
-    private ContainerServices contSvc=null;
+    private ORB orb=null;
+    
+    /**
+	 * The logger
+	 */
+    private AcsLogger logger=null;
 	
 	/**
 	 * The window that shows this panel
@@ -179,25 +176,7 @@ public class AlarmPanel extends JPanel implements IPanel {
 		// but for sure we are not connected to the alarm service
 		showPanel(alSysNotAvailName);
 	}
-	
-	/**
-	 * Pause by delegating to the cern panel
-	 * 
-	 * @see IpauseResume
-	 */
-	public void pause() throws Exception {
-		cernSysPnl.pause();
-	}
-	
-	/**
-	 * Unpause by delegating to the cern panel
-	 * 
-	 * @see IpauseResume
-	 */
-	public void resume() throws Exception {
-		cernSysPnl.resume();
-	}
-	
+
 	/**
 	 * Connect the Client and listens to the categories.
 	 * 
@@ -209,9 +188,10 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 */
 	public void start() throws Exception {
 		// Check if the CS have been set
-		if (contSvc==null) {
-			throw new Exception("PluginContainerServices not set");
+		if (orb==null || logger==null) {
+			throw new Exception("Services not set!");
 		}
+		cernSysPnl.setServices(orb, logger);
 		cernSysPnl.start();
 	}
 	
@@ -221,37 +201,15 @@ public class AlarmPanel extends JPanel implements IPanel {
 	public void stop() throws Exception {
 		cernSysPnl.stop();
 	}
-	
 	/**
-	 * @see SubsystemPlugin
-	 */
-	public void setServices (ContainerServices ctrl) {
-		contSvc=ctrl;
-		cernSysPnl.setContainerServices(contSvc);
-		initAlarmServiceType();
-	}
-	
-	/**
-	 * @see SubsystemPlugin
-	 */
-	public boolean runRestricted (boolean restricted) throws Exception {
-		return restricted;
-	}
-	
-	
-	
-	/**
-	 * Set the ContainerServices
+	 * Set the services
 	 * 
-	 * @see alma.acs.gui.util.panel.IPanel
+	 * @param orb The ORB
+	 * @param logger The logger
 	 */
-	public void setACSContainerServices(ContainerServices cs) {
-		if (cs==null) {
-			throw new IllegalArgumentException("Invalid null ContainerServices");
-		}
-		contSvc=cs;	
-		cernSysPnl.setContainerServices(cs);
-		initAlarmServiceType();
+	public void setServices(ORB orb, AcsLogger logger) {
+		this.orb=orb;
+		this.logger=logger;
 	}
 	
 	/**
@@ -316,11 +274,11 @@ public class AlarmPanel extends JPanel implements IPanel {
 	 * If the AS is ACS, the ACS panel is shown.
 	 */
 	private void initAlarmServiceType() {
-		if (contSvc==null) {
-			throw new IllegalStateException("The ContainerServices is still null!");
+		if (orb==null || logger==null) {
+			throw new IllegalStateException("The ORB/logger are still null!");
 		}
 		System.out.println("getAlarmServiceType");
-		AlarmServiceUtils utils = new AlarmServiceUtils(contSvc);
+		AlarmServiceUtils utils = new AlarmServiceUtils(orb,logger);
 		boolean ret=false;
 		try {
 			ret=utils.getAlarmServiceType();

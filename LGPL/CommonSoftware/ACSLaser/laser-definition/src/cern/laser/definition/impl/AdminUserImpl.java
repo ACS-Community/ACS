@@ -2,7 +2,9 @@ package cern.laser.definition.impl;
 
 import java.util.Collection;
 
-import alma.acs.container.ContainerServicesBase;
+import org.omg.CORBA.ORB;
+
+import alma.acs.logging.AcsLogger;
 
 import cern.laser.definition.AdminUser;
 import cern.laser.definition.AlarmDefinitionHandler;
@@ -16,7 +18,7 @@ import cern.laser.definition.SourceDefinitionHandler;
  * DOCUMENT ME!
  * 
  * @author $author$
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class AdminUserImpl implements AdminUser {
   private AlarmDefinitionHandler alarmHandler;
@@ -47,9 +49,9 @@ public class AdminUserImpl implements AdminUser {
    * 
    * @return DOCUMENT ME!
    */
-  public AlarmDefinitionHandler getAlarmDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException {
+  public AlarmDefinitionHandler getAlarmDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException {
     if (alarmHandler == null) {
-      alarmHandler = new AlarmDefinitionHandlerImpl(userId,contSvcs);
+      alarmHandler = new AlarmDefinitionHandlerImpl(userId,orb,logger);
     }
 
     return alarmHandler;
@@ -60,9 +62,9 @@ public class AdminUserImpl implements AdminUser {
    * 
    * @return DOCUMENT ME!
    */
-  public CategoryDefinitionHandler getCategoryDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException {
+  public CategoryDefinitionHandler getCategoryDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException {
     if (categoryHandler == null) {
-      categoryHandler = new CategoryDefinitionHandlerImpl(userId,contSvcs);
+      categoryHandler = new CategoryDefinitionHandlerImpl(userId,orb,logger);
     }
 
     return categoryHandler;
@@ -99,9 +101,9 @@ public class AdminUserImpl implements AdminUser {
    * 
    * @return DOCUMENT ME!
    */
-  public SourceDefinitionHandler getSourceDefinitionHandler(ContainerServicesBase contSvcs) throws LaserDefinitionException {
+  public SourceDefinitionHandler getSourceDefinitionHandler(ORB orb, AcsLogger logger) throws LaserDefinitionException {
     if (sourceHandler == null) {
-      sourceHandler = new SourceDefinitionHandlerImpl(userId,contSvcs);
+      sourceHandler = new SourceDefinitionHandlerImpl(userId,orb,logger);
     }
 
     return sourceHandler;

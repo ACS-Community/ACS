@@ -1,8 +1,8 @@
 /*
- * $Id: ConfigurationImpl.java,v 1.4 2011/02/13 15:37:17 acaproni Exp $
+ * $Id: ConfigurationImpl.java,v 1.5 2011/04/13 15:45:42 acaproni Exp $
  *
- * $Date: 2011/02/13 15:37:17 $ 
- * $Revision: 1.4 $ 
+ * $Date: 2011/04/13 15:45:42 $ 
+ * $Revision: 1.5 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -21,7 +21,10 @@ import java.util.Iterator;
 import javax.naming.Context;
 import javax.rmi.PortableRemoteObject;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.data.Alarm;
@@ -43,10 +46,13 @@ public class ConfigurationImpl implements Configuration {
   // -- CONSTRUCTORS ------------------------------------------------
   //
   
-  private ContainerServicesBase contSvcs;
+  private final ORB orb;
+  
+  private final AcsLogger logger;
 
-  public ConfigurationImpl(Object newConfiguration, ContainerServicesBase contSvcs) throws LaserConsoleException {
-	  this.contSvcs=contSvcs;
+  public ConfigurationImpl(Object newConfiguration, ORB orb, AcsLogger logger) throws LaserConsoleException {
+	  this.orb=orb;
+	  this.logger=logger;
   	/*try {
       laser = new LaserClientContext();
       configuration = newConfiguration;
@@ -471,7 +477,7 @@ public class ConfigurationImpl implements Configuration {
     Iterator iterator = commentedAlarmRefs.iterator();
     while (iterator.hasNext()) {
       CommentedAlarmRef ref = (CommentedAlarmRef) iterator.next();
-      Alarm alarm = AlarmBrowsingHandler.get(contSvcs).getAlarmById(ref.getAlarmId());
+      Alarm alarm = AlarmBrowsingHandler.get(orb,logger).getAlarmById(ref.getAlarmId());
       if ((!removeChanged)
           || (removeChanged && alarm.getStatus().getSourceTimestamp().equals(ref.getSourceTimestamp()))) {
         result.put(new CommentedAlarm(alarm, ref.getComment()));

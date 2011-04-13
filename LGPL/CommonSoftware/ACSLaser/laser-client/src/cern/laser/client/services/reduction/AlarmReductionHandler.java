@@ -1,8 +1,8 @@
 /*
- * $Id: AlarmReductionHandler.java,v 1.3 2011/02/13 15:37:17 acaproni Exp $
+ * $Id: AlarmReductionHandler.java,v 1.4 2011/04/13 15:45:42 acaproni Exp $
  *
- * $Date: 2011/02/13 15:37:17 $ 
- * $Revision: 1.3 $ 
+ * $Date: 2011/04/13 15:45:42 $ 
+ * $Revision: 1.4 $ 
  * $Author: acaproni $
  *
  * Copyright CERN, All Rights Reserved.
@@ -11,7 +11,10 @@ package cern.laser.client.services.reduction;
 
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 
 import cern.laser.client.LaserConnectionException;
 import cern.laser.client.LaserException;
@@ -35,10 +38,10 @@ public abstract class AlarmReductionHandler {
    * @return an instance of the implementation class
    * @throws LaserConnectionException if the request can not be served
    */
-  public static AlarmReductionHandler get(ContainerServicesBase contSvcs) throws LaserConnectionException {
+  public static AlarmReductionHandler get(ORB orb, AcsLogger logger) throws LaserConnectionException {
     AlarmReductionHandler instance = (AlarmReductionHandler) alarmReductionHandler.get();
     if (instance == null) {
-      instance = new AlarmReductionHandlerImpl(contSvcs);
+      instance = new AlarmReductionHandlerImpl(orb,logger);
       alarmReductionHandler.set(instance);
     }
 

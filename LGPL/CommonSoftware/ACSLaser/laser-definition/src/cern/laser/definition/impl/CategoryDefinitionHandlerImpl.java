@@ -4,6 +4,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
+import org.omg.CORBA.ORB;
+
 import cern.laser.business.definition.data.CategoryDefinition;
 import cern.laser.client.impl.common.AlarmServiceSingleton;
 import cern.laser.definition.CategoryDefinitionHandler;
@@ -15,13 +17,14 @@ import cern.laser.definition.LaserDefinitionNotValidException;
 import cern.laser.definition.LaserDefinitionXMLException;
 
 import alma.acs.container.ContainerServicesBase;
+import alma.acs.logging.AcsLogger;
 import alma.alarmsystem.AlarmService;
 
 /**
  * DOCUMENT ME!
  *
  * @author $author$
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl implements CategoryDefinitionHandler {
 	private AlarmService alarmService;
@@ -31,10 +34,10 @@ public class CategoryDefinitionHandlerImpl extends DefinitionHandlerImpl impleme
    *
    * @param userId DOCUMENT ME!
    */
-  public CategoryDefinitionHandlerImpl(String userId, ContainerServicesBase contSvcs) throws LaserDefinitionException {
+  public CategoryDefinitionHandlerImpl(String userId, ORB orb, AcsLogger logger) throws LaserDefinitionException {
     super(userId);
     try {
-		  this.alarmService=AlarmServiceSingleton.getInstance(contSvcs);
+		  this.alarmService=AlarmServiceSingleton.getInstance(orb,logger);
 	  } catch (Throwable t) {
 		  throw new LaserDefinitionException("Error getting the alarm service",t);
 	  }

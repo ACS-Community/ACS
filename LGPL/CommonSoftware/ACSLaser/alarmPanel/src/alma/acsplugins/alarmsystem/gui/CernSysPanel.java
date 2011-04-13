@@ -13,10 +13,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
+import org.omg.CORBA.ORB;
+
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 
 import alma.acs.container.ContainerServices;
+import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
 import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
 import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
@@ -124,11 +127,16 @@ public class CernSysPanel extends JPanel {
      *  The client to listen alarms from categories
      */
     private CategoryClient categoryClient=null;
+
+    /**
+     * The ORB
+     */
+    private ORB orb;
     
     /**
-	 * The container services
-	 */
-    private ContainerServices contSvc=null;
+     * The logger
+     */
+    private AcsLogger logger;
     
     /**
      * The panel to show messages while connecting
@@ -287,7 +295,7 @@ public class CernSysPanel extends JPanel {
 		notAvaiPnl.addMessage("Connecting to the alarm service");
 		notAvaiPnl.addMessage("Instantiating the category client");
 		try {
-			categoryClient = new CategoryClient(contSvc);
+			categoryClient = new CategoryClient(orb,logger);
 		} catch (Throwable t) {
 			System.err.println("Error instantiating the CategoryClient: "+t.getMessage());
 			notAvaiPnl.addMessage("Error instantiating the CategoryClient: "+t.getMessage());
@@ -374,14 +382,15 @@ public class CernSysPanel extends JPanel {
 		return connecting;
 	}
 	
-	/**
-	 * Set the ContainerServices
-	 */
-	public void setContainerServices(ContainerServices cs) {
-		if (cs==null) {
-			throw new IllegalArgumentException("Invalid null ContainerServices");
+	public void setServices(ORB orb, AcsLogger logger) {
+		if (orb==null) {
+			throw new IllegalArgumentException("The ORB can't be null");
 		}
-		contSvc=cs;	
+		this.orb=orb;
+		if (logger==null) {
+			throw new IllegalArgumentException("The Logger can't be null");
+		}
+		this.logger=logger;
 	}
 	
 	/**
@@ -395,8 +404,8 @@ public class CernSysPanel extends JPanel {
 	 */
 	public void start() throws Exception {
 		// Check if the CS have been set
-		if (contSvc==null) {
-			throw new Exception("ContainerServices not set");
+		if (orb==null || logger==null) {
+			throw new IllegalStateException("ORB?Logger not set");
 		}
 		class StartAlarmPanel extends Thread {
 			public void run() {
