@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $
+# @(#) $Id: Container.py,v 1.52 2011/04/13 07:56:13 rtobar Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.52 2011/04/13 07:56:13 rtobar Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,10 +38,11 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.51 2011/03/11 00:14:47 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.52 2011/04/13 07:56:13 rtobar Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
+from time      import time
 from signal    import signal, SIGINT
 from new       import instance
 from traceback import print_exc
@@ -72,6 +73,10 @@ from Acspy.Servants.CharacteristicComponent import CharacteristicComponent
 from Acspy.Util                             import ACSCorba
 from AcsutilPy.FindFile                     import findFile
 from Acspy.Util                             import LoggingConfig_xsd
+from AcsContainerLogLTS                     import LOG_CompAct_Loading_OK
+from AcsContainerLogLTS                     import LOG_CompAct_Instance_OK
+from AcsContainerLogLTS                     import LOG_CompAct_Corba_OK
+from AcsContainerLogLTS                     import LOG_CompAct_Init_OK
 #--GLOBALS---------------------------------------------------------------------
 #Manager commands to this container
 ACTIVATOR_RELOAD = 0
@@ -251,7 +256,15 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
             temp[CORBAREF] = None  #Reference to the CORBA object
             temp[COMPONENTINFO] = None  #An IDL struct given to manager
             temp[PYCLASS] = temp[TYPE].split(':')[1].split('/').pop() #get class name
+
+            start = time()
             temp[COMPMODULE] = __import__(temp[EXE], globals(), locals(), [temp[PYCLASS]]) #get module
+            interval = time() - start
+
+            log = LOG_CompAct_Loading_OK()
+            log.setTimeMillis(int(interval*1000))
+            log.setCompName(name)
+            log.log()
 
             try:
                 temp[PYCLASS] = temp[EXE].split('.').pop() #get class name
@@ -283,7 +296,14 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
 
         #instance(...) does not call the constructor!
         try:
+            start = time()
             temp[PYREF].__init__()
+            interval = time() - start
+
+            log = LOG_CompAct_Instance_OK()
+            log.setTimeMillis(int(interval*1000))
+            log.setCompName(name)
+            log.log()
         except:
             print_exc()
             self.logger.logWarning("Standard constructor does not exist for: " + name)
@@ -305,6 +325,8 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         #If it is, we have to mess with the state model and invoke the lifecycle
         #methods accordingly.
         if isinstance(temp[PYREF], ComponentLifecycle):
+
+            start = time()
             try:
                 #Have to mess with the state model
                 if isinstance(temp[PYREF], ACSComponent):
@@ -373,13 +395,27 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
                 self.failedActivation(temp)
                 return None
 
+            interval = time() - start
+
+            log = LOG_CompAct_Init_OK()
+            log.setTimeMillis(int(interval*1000))
+            log.setCompName(name)
+            log.log()
+
 
         #DWF-should check to see if it's derived from CharacteristicComponent next!!!
 
         #Next activate it as a CORBA object.
         try:
+            start = time()
             temp[POA].activate_object_with_id(temp[NAME], temp[PYREF])
             temp[CORBAREF] = temp[POA].servant_to_reference(temp[PYREF])
+            interval = time() - start
+
+            log = LOG_CompAct_Corba_OK()
+            log.setTimeMillis(int(interval*1000))
+            log.setCompName(name)
+            log.log()
             if(temp[CORBAREF]==None):
                 self.logger.logWarning("CORBA object Nil for: " + name)
                 self.failedActivation(temp)
