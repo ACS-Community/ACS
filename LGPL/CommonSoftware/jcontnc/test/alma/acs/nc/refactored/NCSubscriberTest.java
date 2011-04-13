@@ -40,6 +40,7 @@ import alma.acsnc.EventDescription;
  * 
  * @author rtobar
  */
+@SuppressWarnings("deprecation")
 public class NCSubscriberTest extends ComponentClientTestCase {
 
 	private static String CHANNEL_NAME = "pink-floyd";
@@ -329,6 +330,8 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			fail("disconnect() should fail, as we're not yet connected");
 		} catch(IllegalStateException e) { }
 
+		// We need to create it again, since after disconnect() the object is not usable anymore
+		m_subscriber = (NCSubscriber)getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME);
 		m_subscriber.startReceivingEvents();
 		assertFalse(m_subscriber.isDisconnected());
 

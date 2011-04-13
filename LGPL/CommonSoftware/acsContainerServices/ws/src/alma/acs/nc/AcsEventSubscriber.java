@@ -127,7 +127,7 @@ public interface AcsEventSubscriber {
 	/**
 	 * Disconnects this subscriber from the Notification Channel, and releases all
 	 * the resources associated with it. After this call, all registered handlers
-	 * will stop receiving events.
+	 * will stop receiving events, and this subscriber becomes unusable.
 	 * 
 	 * Calling this method over a subscriber object that has been already disconnected
 	 * will throw an {@link IllegalStateException}.

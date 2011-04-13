@@ -45,6 +45,9 @@ import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
 import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
+import org.omg.CosNotifyChannelAdmin.ProxyNotFound;
+import org.omg.CosNotifyChannelAdmin.ProxySupplier;
+import org.omg.CosNotifyChannelAdmin.ProxyType;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
 import org.omg.CosNotifyComm.InvalidEventType;
@@ -58,6 +61,7 @@ import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.AcsNCTraceLog.LOG_NC_ConsumerAdminObtained_OK;
+import alma.AcsNCTraceLog.LOG_NC_ConsumerAdmin_Overloaded;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_NoHandler;
@@ -224,6 +228,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 	private final ReentrantLock disconnectLock = new ReentrantLock();
 
+	protected static final int PROXIES_PER_ADMIN = 5;
 
 	/**
 	 * Creates a new instance of NCSubscriber.
@@ -299,6 +304,13 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		// get the proxy Supplier
 		proxySupplier = createProxySupplier();
 
+		// Just check if our shared consumer admin is handling more proxies that it should, and log it
+		// (+1) goes for the dummy proxy that we're using the transition between old and new NC classes
+		int currentProxies = sharedConsumerAdmin.push_suppliers().length;
+		if( currentProxies > PROXIES_PER_ADMIN+1 )
+			LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
+					currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName);
+
 		// The user might create this object, and startReceivingEvents() without attaching any receiver
 		// If so, it's useless to get all the events, so we start setting the all-exclusive filter
 		// in the server
@@ -326,56 +338,95 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		
 		ConsumerAdmin ret = null;
 		org.omg.CosNotifyChannelAdmin.ConsumerAdmin retBase = null;
-		
-		int consumerAdminIds[] = channel.get_all_consumeradmins();
-		int consumerAdminId = -1;
 		boolean created = false;
-		if (consumerAdminIds.length == 0) {
-			// create an NC admin object
-			IntHolder consumerAdminIDHolder = new IntHolder();
-			retBase = channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
-			consumerAdminId = consumerAdminIDHolder.value;
-			created = true;
-		}
-		else {
+		int consumerAdminId = -1;
+
+		// Check if we can reuse an already existing consumer admin
+		int consumerAdminIds[] = channel.get_all_consumeradmins();
+		for(int i=0; i!=consumerAdminIds.length && retBase == null; i++) {
+
+			int adminID = consumerAdminIds[i];
 			try {
-				// reuse existing admin object
-				retBase = channel.get_consumeradmin(consumerAdminIds[0]);
-				consumerAdminId = consumerAdminIds[0];
-				if (consumerAdminIds.length > 1) {
-					// @TODO Log a warning if in the future we decide that there should be only a single consumer admin object per NC.
-					//       This would mean that
-					//       - all code uses the new NC libs that reuse admin objects (the old Consumer classes legally use many admin objects for an NC object)
-					//       - we do not need multiple admin objects for thread optimization or per-subscriber-group configurations
-					//       - there cannot be race conditions which may sometimes lead to erroneous but harmless creation of a few admin objects.
+
+				// Get the consumer admin. Then, check if any of its proxies is of type ANY_EVENT
+				// This is a temporary hack to recognize shared admins from those created by the old
+				// NC classes, and that are not meant to be reused
+				org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminID);
+
+				int[] push_suppliers_ids = tmpAdmin.push_suppliers();
+				for(int proxyID: push_suppliers_ids) {
+					try {
+						ProxySupplier proxy = tmpAdmin.get_proxy_supplier(proxyID);
+						if(ProxyType.PUSH_ANY.equals(proxy.MyType())) {
+
+							// OK, we have a shared admin. Now, we do some simple load balancing,
+							// so we use this shared admin only if it has space for more proxies
+							// (the -1 goes because of the dummy proxy that is attached to the shared admin)
+							if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
+								retBase = tmpAdmin;
+								consumerAdminId = adminID;
+								break;
+							}
+							// shortcut: don't check the remaining proxies and continue with the next admin
+							else
+								break;
+						}
+					} catch(ProxyNotFound e) {
+						logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + adminID + "', " +
+								"will continue anyway to search for shared consumer admins", e);
+					}
 				}
+
 			} catch (AdminNotFound e) {
-				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx();
-				e2.setInfo("The attempt to reuse the admin object for channel '" + channelName + "' failed: " + e.toString());
-				throw e2;
+				logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminID + "' not found for channel '" + channelName + "', " +
+						"will continue anyway to search for shared consumer admins", e);
 			}
 		}
+
+		// If no suitable consumer admin was found, we create a new one 
 		if (retBase == null) {
-			AcsJCORBAReferenceNilEx ex = new AcsJCORBAReferenceNilEx();
-			ex.setVariable(getClass().getName() + "#getSharedAdmin :: retBase");
-			ex.setContext("Failed to create or retrieve consumer admin object for channel '" + channelName + "'.");
-			throw ex;
+
+			// create a new consumer admin
+			IntHolder consumerAdminIDHolder = new IntHolder();
+			retBase = channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
+
+			// Create a dummy proxy in the new consumer admin.
+			// 
+			// rtobar, Apr. 13th, 2011:
+			// This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies
+			// that are created for the NC in the admin objects. This way we can recognize a shared consumer admin
+			// by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
+			//
+			// This hack is only needed while we are in transition between the old and new NC classes,
+			// and should get removed once the old classes are not used anymore
+			try {
+				retBase.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
+			} catch (AdminLimitExceeded e) {
+				retBase.destroy();
+				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
+				e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
+				throw e2;
+			}
+
+			consumerAdminId = consumerAdminIDHolder.value;
+			created = true;
 		}
 
 		try {
 			ret = ConsumerAdminHelper.narrow(retBase);
 		} catch (BAD_PARAM ex) {
-			if (created) {
-				// @TODO destroy the admin obj
-			}
+
+			if (created)
+				retBase.destroy();
+
 			LOG_NC_TaoExtensionsSubtypeMissing.log(logger, "ConsumerAdmin for channel " + channelName, ConsumerAdminHelper.id(), org.omg.CosNotifyChannelAdmin.ConsumerAdminHelper.id());
 			AcsJNarrowFailedEx ex2 = new AcsJNarrowFailedEx(ex);
 			ex2.setNarrowType(ConsumerAdminHelper.id());
 			throw ex2;
 		}
-		
+
 		LOG_NC_ConsumerAdminObtained_OK.log(logger, consumerAdminId, (created ? "created" : "reused"), clientName, channelName, getNotificationFactoryName());
-		
+
 		return ret;
 	}
 
@@ -657,7 +708,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			Filter filter = filterFactory.create_filter(getFilterLanguage());
 
 			// Information needed to construct the constraint expression object
-			// (any domain, any type)
+			// (any domain, THE type)
 			EventType[] t_info = { new EventType("*", eventType) };
 
 			// Add constraint expression object to the filter
@@ -681,14 +732,18 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 	}
 
-	/* TODO Notice that the consumer admin object is not being destroyed. For
-	 * doing this we must check if there's no more clients using it. Check if
-	 * it's possible using TAO extensions.
-	 */
 	@Override
 	public void disconnect() throws IllegalStateException {
+
+		/*
+		 * TODO: (rtobar) Maybe this code can be wrote more nicely,
+		 *  but always taking care that, if not in an illegal state,
+		 *  then we should destroy the remove proxySupplier object
+		 */
 		disconnectLock.lock();
 		boolean success = false;
+		boolean shouldDestroyProxy = true;
+
 		try {
 
 			checkConnection();
@@ -696,43 +751,45 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			// stop receiving events
 			suspend();
 
-			// remove all filters
+			// remove all filters and destroy the proxy supplier
 			proxySupplier.remove_all_filters();
 
-			// remove all subscriptions
-			// DWF-fix me!
-			// removeSubscription(null);
-
-			// handle notification channel cleanup
-			proxySupplier.disconnect_structured_push_supplier();
-
-			// clean-up CORBA stuff
-			if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
-				helper.getContainerServices().deactivateOffShoot(this);
+			try{
+				// clean-up CORBA stuff
+				if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
+					helper.getContainerServices().deactivateOffShoot(this);
+				}
+			} catch (AcsJContainerServicesEx e) {
+				e.printStackTrace();
 			}
+
 			logger.finer("Disconnected from NC '" + channelName + "'.");
 			success = true;
-		}
-		catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
+			shouldDestroyProxy = true;
+
+		} catch (IllegalStateException ex) {
+			throw ex;
+		} catch (org.omg.CORBA.OBJECT_NOT_EXIST ex1) {
 			// this is OK, because someone else has already destroyed the remote resources
 			logger.fine("No need to release resources for channel " + channelName + " because the NC has been destroyed already.");
 			success = true;
-		}
-		catch (IllegalStateException ex) {
-			throw ex;
-		}
-		catch (Exception ex2) {
-			
+			shouldDestroyProxy = false;
 		}
 		finally {
+
+			if( shouldDestroyProxy && proxySupplier != null ) {
+				proxySupplier.disconnect_structured_push_supplier();
+				proxySupplier = null;
+			}
+
 			if (success) {
 				// null the refs if everything was fine, or if we got the OBJECT_NOT_EXIST
 				channelReconnectionCallback = null;
 				corbaRef = null;
 				sharedConsumerAdmin = null;
-				proxySupplier = null;
 				channel = null;
 			}
+
 			disconnectLock.unlock();
 		}
 	}
