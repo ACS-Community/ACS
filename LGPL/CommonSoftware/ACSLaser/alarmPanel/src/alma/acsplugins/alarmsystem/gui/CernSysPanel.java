@@ -257,27 +257,6 @@ public class CernSysPanel extends JPanel {
 	public void showAlarmDetails(Alarm alarm) {
 		detailTable.showAlarmDetails(alarm);
 	}
-	
-	/**
-	 * A method to send alarms to the GUI outside of the alarm service.
-	 * <P>
-	 * At the present it is used by the OMC GUI to send alarms before the alarm
-	 * service is started.
-	 * 
-	 * @deprecated this method will be deleted when the alarm system will run as a daemon 
-	 * 				or as an ACS service.
-	 * 
-	 * @param alarm The alarm to show in the table (can't be <code>null</code>)
-	 * @throws Exception In case the alarm is not well formed
-	 * 
-	 * 
-	 */
-	public synchronized void addSpecialAlarm(Alarm alarm) throws Exception {
-		if (alarm==null || alarm.getAlarmId()==null || alarm.getAlarmId().isEmpty()) {
-			throw new Exception("The alarm cant'be null and must have a valid ID!");
-		}
-		model.onAlarm(alarm);
-	}
 
 	public void setModel(AlarmTableModel model) {
 		this.model = model;

@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.28 2011/04/13 15:48:21 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.29 2011/04/13 16:14:03 acaproni Exp $
  * @since    
  */
 
@@ -226,24 +226,6 @@ public class AlarmPanel extends JPanel {
 	 */
 	public boolean isConnecting() {
 		return cernSysPnl.isConnecting();
-	}
-
-	/**
-	 * A method to send alarms to the GUI outside of the alarm service.
-	 * <P>
-	 * At the present it is used by the OMC GUI to send alarms before the alarm
-	 * service is started.
-	 * 
-	 * @deprecated this method will be deleted when the alarm system will run as a daemon 
-	 * 				or as an ACS service.
-	 * 
-	 * @param alarm The alarm to show in the table (can't be <code>null</code>)
-	 * @throws Exception In case the alarm is not well formed
-	 * 
-	 * 
-	 */
-	public synchronized void addSpecialAlarm(Alarm alarm) throws Exception {
-		cernSysPnl.addSpecialAlarm(alarm);
 	}
 
 	/**
