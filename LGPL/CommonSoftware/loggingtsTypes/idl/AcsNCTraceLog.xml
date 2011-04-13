@@ -69,6 +69,19 @@
 		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
 	</LogDefinition>
+
+	<LogDefinition
+		logName="LOG_NC_ConsumerAdmin_Overloaded"
+		shortDescription="Shared consumer admin object is handling more proxies than it should"
+		description="Shared consumer admin object has more push suppliers than it should, probably because a race condition was met by two simultaneous subscribers trying to acquire the same almost-full consumer admin."
+		priority="DEBUG"
+		audience="Developer">
+		<Member name="ConsumerAdminId" type="long" description="ID of the admin object created." />
+		<Member name="CurrentProxiesForAdmin" type="long" description="Current number of proxies associated with the consumer admin." />
+		<Member name="MaxProxiesPerAdmin" type="long" description="Maximum expected number of proxies associated with this consumer admin." />
+		<Member name="ChannelName" type="string" description="Name of the channel for which the ConsumerAdmin was created." />
+		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the NC." />
+	</LogDefinition>
 	
 	<LogDefinition
 		logName="LOG_NC_SupplierProxyCreation_OK"
