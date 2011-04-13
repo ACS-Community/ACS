@@ -18,7 +18,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.19 2009/04/27 13:50:46 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.20 2011/04/13 16:51:32 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -37,7 +37,7 @@ archiveeventsSupplier_LIBS    = baci maciClient maciStubs maci
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = runHelperTest.sh jcontncTATRunTest.sh
+SCRIPTS_L       = runHelperTest.sh jcontncTATRunTest.sh runNCSubscriberTests.sh
 
 
 #

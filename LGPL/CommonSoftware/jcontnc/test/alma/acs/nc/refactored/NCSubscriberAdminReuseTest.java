@@ -17,7 +17,7 @@ import alma.acscommon.NC_KIND;
 
 public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
-	private static String CHANNEL_NAME = "pink-floyd";
+	private static String CHANNEL_NAME = "bob-dylan";
 	private EventChannel channel;
 
 	public NCSubscriberAdminReuseTest() throws Exception {

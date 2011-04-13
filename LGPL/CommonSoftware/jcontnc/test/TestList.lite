@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.26 2011/02/02 14:02:21 rtobar Exp $"
+# "@(#) $Id: TestList.lite,v 1.27 2011/04/13 16:51:32 rtobar Exp $"
 #
 # TestList
 #
@@ -48,7 +48,7 @@ PROLOGUE acsutilTATPrologue -l
 
 7 testNotificationServiceConfiguration "acsutilTATTestRunner acsStartJava alma.demo.test.client.NotificationServiceConfigurationTest"
 
-8 testRefactoredNCSubscriber "acsStartJava alma.acs.testsupport.tat.TATJUnitRunner alma.acs.nc.refactored.NCSubscriberTest"
+8 testRefactoredNCSubscriber "acsutilTATTestRunner runNCSubscriberTests.sh"
 
 EPILOGUE acsutilTATEpilogue
 
