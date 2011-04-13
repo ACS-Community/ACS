@@ -24,6 +24,8 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -47,14 +49,11 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.container.ContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.exceptions.AcsJException;
