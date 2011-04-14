@@ -230,7 +230,7 @@ public class AcsCorba
 			prepareOrb(args);
 			
 			// for a container we need the following POAs:
-			initPOAForContainer();			
+			initPOAForContainer();
 			initPOAForComponents();
 			
 			setInitialized(true);
@@ -1202,7 +1202,7 @@ public class AcsCorba
 				setORB(re.orb);
 
 			}
-		}		
+		}
 	}
 
 
@@ -1216,15 +1216,22 @@ public class AcsCorba
 	 * @return 
 	 */
 	private ORB createOrb(String[] args, Integer port) {
-        ORB orb = null;
-        // sets CORBA options
-        OrbConfigurator orbConf = OrbConfigurator.getOrbConfigurator();
-        orbConf.setOptions(args);
-        if (port != null) {
-        	orbConf.setPort(port.intValue());
-        }
-        String[] orbOpts = orbConf.getOptions();
-        
+		ORB orb = null;
+		// sets CORBA options
+		OrbConfigurator orbConf = OrbConfigurator.getOrbConfigurator();
+		
+		// IFR access is generally discouraged but needed if clients such as the sampling manager call "get_interface"
+		// on a reference to a corba object inside this container.
+		// @TODO: Don't set this reference if CDB value Container#useIFR is false
+		orbConf.setORBInitRef("InterfaceRepository", System.getProperty("ACS.repository"));
+		// orbConf.setORBInitRef("NameService", System.getProperty("ACS.???")); // currently the JacORB-specific property ORBInitRef.NameService is set instead (acsStartJava)
+		
+		orbConf.setOptions(args);
+		if (port != null) {
+			orbConf.setPort(port.intValue());
+		}
+		String[] orbOpts = orbConf.getOptions();
+
 		/*
 		 * We start an ORB, which needs its own port ('OAPort'). There are, however, no
 		 * conventions in Acs which port to assign to our ORB (which will be used by a

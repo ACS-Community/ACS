@@ -96,6 +96,15 @@ public abstract class OrbConfigurator
 		m_cmdArgs.parseArgs(args);
 	}
 	
+	/**
+	 * Sets the standard option "-ORBInitRef", see Corba spec 4.5.3.2.
+	 */
+	public void setORBInitRef(String objectID, String objectURL) {
+		if (objectID != null && objectURL != null) {
+			m_cmdArgs.parseArgs(new String[] {"-ORBInitRef", objectID + "=" + objectURL});
+		}
+	}
+	
 	public void setPort(int port)
 	{
 		m_port = port;
@@ -184,22 +193,8 @@ public abstract class OrbConfigurator
 	//	  strCmdLn += ":3 0 5 0";                                // to be done with #define
 	//	}
 	//
-	//      // add local IFR address if no other specified
-	//      if (strCmdLn.find("-ORBInitRef InterfaceRepository")==ACE_CString::npos)
-	//	{
-	//	  ACE_CString managerHostname = MACIHelper::getManagerHostname(argc, argv, 
-	//								       m_database, m_dbPrefix.c_str());
-	//	  if (managerHostname.length()>0)
-	//	    {
-	//	      strCmdLn += " -ORBInitRef InterfaceRepository=corbaloc::";
-	//	      strCmdLn += managerHostname;
-	//	      strCmdLn += ":xxxx/DefaultRepository";               // to be done with #define
-	//	    }
-	//	}
-	//
-		
 	}
-	
+
 //	/**
 //	 * Checks if a given exception comes from a failed CORBA narrow operation.
 //	 * To be overridden by ORB-specific subclasses. Default return value is <code>false</code>.
