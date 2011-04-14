@@ -515,16 +515,16 @@ ENDTABLE
 // which must belong to the same FaultFamily.
 //
 // AlarmDefinitionId    UID.
-// FaultMemberId        The FM of the alarm triplet
-// FaultCodeId          The FC of the alarm triplet
+// FaultFamily		  The FF of the alarm triplet, regexp supported.
+// FaultMember        The FM of the alarm triplet, regexp supported.
+// FaultCode          The FC of the alarm triplet, regexp supported.
 //
 TABLE AlarmDefinition
-	AlarmDefinitionId	INTEGER		NOT NULL
-	FaultMemberId		INTEGER		NOT NULL
-	FaultCodeId			INTEGER		NOT NULL
-	KEY AlarmDefinitionId	GENERATED FROM FaultMemberId FaultCodeId
-	CONSTRAINT AlarmDefMmemberRef FOREIGN KEY (FaultMemberId) REFERENCES FaultMember CASCADING AGGREGATION
-	CONSTRAINT AlarmDefCodeRef FOREIGN KEY (FaultCodeId) REFERENCES FaultCode CASCADING AGGREGATION
+	AlarmDefinitionId	INTEGER	NOT NULL
+	FaultFamily		LONGNAME	NOT NULL
+	FaultMember		LONGNAME	NOT NULL
+	FaultCode		LONGNAME	NOT NULL
+	KEY AlarmDefinitionId	GENERATED FROM FaultFamily FaultMember FaultCode
 ENDTABLE
 
 TABLE ReductionLink
