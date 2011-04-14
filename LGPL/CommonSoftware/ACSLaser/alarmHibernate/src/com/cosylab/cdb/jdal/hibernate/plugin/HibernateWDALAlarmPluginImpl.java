@@ -181,7 +181,18 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 					contact.setGsm(daoContact.getGsm());
 					session.persist(contact);
 				}
-				
+				// If contact exist, let's check if this contact contains different information. If so,
+				// issue an error
+				else {
+					if( !trimAndNullToEmpty(contact.getEmail()).equals(trimAndNullToEmpty(daoContact.getEmail())) ||
+					    !trimAndNullToEmpty(contact.getGsm()).equals(trimAndNullToEmpty(daoContact.getGsm())) ) {
+						throw new RuntimeException("Data stored for contact '" + contact.getContactName() + "' in TMCDB " +
+								"does not match that comming from the 'contact' node of fault family '" + family.getName() +"'. " +
+								"TMCDB: <" + contact.getEmail() +  ", " + contact.getGsm() +">, " +
+								"CDB: <" + daoContact.getEmail() +  ", " + daoContact.getGsm() +">");
+					}
+				}
+
 				FaultFamily faultFamily = (FaultFamily)session.createCriteria(FaultFamily.class).
 					add(Restrictions.eq("configuration", config)).
 					add(Restrictions.eq("familyName", family.getName())).uniqueResult();
@@ -348,6 +359,12 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 			// clear cache (to free memory)
 			adCache.clear();
 		}
+	}
+
+	private static String trimAndNullToEmpty(String s) {
+		if( s == null )
+			return "";
+		return s.trim();
 	}
 
 	private static void saveReductionLinks(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] links, String action)
