@@ -29,7 +29,7 @@ public class AlarmDefinition implements ExtraDataFeature, NameOverrideFeature {
 		return _extraData;
 	}
 	
-	public AlarmDefinition(String faultFamilyName, String faultMemberName, int faultCode) {
+	public AlarmDefinition(String faultFamilyName, String faultMemberName, String faultCode) {
 		// add xmlns attributes
 		try
 		{
@@ -40,7 +40,7 @@ public class AlarmDefinition implements ExtraDataFeature, NameOverrideFeature {
 			_extraData = xmldoc.getDocumentElement();
 			_extraData.setAttribute("fault-family", faultFamilyName);
 			_extraData.setAttribute("fault-member", faultMemberName);
-			_extraData.setAttribute("fault-code", String.valueOf(faultCode));
+			_extraData.setAttribute("fault-code", faultCode);
 		}
 		catch (Throwable th)
 		{

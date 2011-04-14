@@ -41,7 +41,6 @@ import com.cosylab.acs.laser.dao.ACSResponsiblePersonDAOImpl;
 import com.cosylab.acs.laser.dao.ConfigurationAccessor;
 import com.cosylab.cdb.client.CDBAccess;
 import com.cosylab.cdb.jdal.hibernate.RootMap;
-import com.cosylab.cdb.jdal.hibernate.plugin.HibernateWDALPlugin.ControlDeviceBindCallback;
 
 /**
  * @author msekoranja
@@ -311,12 +310,12 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				if (redDefs.getLinksToRemove() != null)
 					saveReductionLinks(session, config, redDefs.getLinksToRemove().getReductionLink(), "REMOVE");
 				
-				int count = 0;
-				if (redDefs.getThresholds() != null)
-				{
-					alma.alarmsystem.alarmmessage.generated.Threshold[] thresholds = redDefs.getThresholds().getThreshold();
-					for ( alma.alarmsystem.alarmmessage.generated.Threshold threshold : thresholds)
-					{
+				 int count = 0;
+				 if (redDefs.getThresholds() != null)
+				 {
+					 alma.alarmsystem.alarmmessage.generated.Threshold[] thresholds = redDefs.getThresholds().getThreshold();
+					 for ( alma.alarmsystem.alarmmessage.generated.Threshold threshold : thresholds)
+					 {
 						// also commit first
 						if (count % 100 == 0)
 						{
@@ -348,8 +347,6 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		{
 			// clear cache (to free memory)
 			adCache.clear();
-			lastFaultFamily = null;
-			lastFaultMember = null;
 		}
 	}
 
@@ -365,8 +362,6 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				session.getTransaction().commit();
 				session.clear();		// cleanup first level cache
 				adCache.clear();
-				lastFaultFamily = null;
-				lastFaultMember = null;
 				session.beginTransaction();
 				// refresh
 				config = (Configuration)session.get(Configuration.class, config.getConfigurationId());
@@ -439,9 +434,6 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 	}
 	
 	static Map<ADWrapper, alma.acs.tmcdb.AlarmDefinition> adCache = new HashMap<ADWrapper, alma.acs.tmcdb.AlarmDefinition>();
-	// "local" cache... since is very likely last FF and FF will be used
-	static FaultFamily lastFaultFamily = null;
-	static FaultMember lastFaultMember = null;
 	
 	private static alma.acs.tmcdb.AlarmDefinition getAlarmDefinition(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.AlarmDefinition alarmDef, boolean allowFMCreation)
 	{
@@ -451,66 +443,16 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		if (cachedAD != null)
 			return cachedAD;
 			
-		boolean ffMatch = false;
-		FaultFamily parentFF = null;
-		if (lastFaultFamily != null && lastFaultFamily.getFamilyName().equals(alarmDef.getFaultFamily()))
-		{
-			ffMatch = true;
-			parentFF = lastFaultFamily;
-		}
-		if (parentFF == null)
-			parentFF = (FaultFamily)session.createCriteria(FaultFamily.class).
-				add(Restrictions.eq("configuration", config)).
-				add(Restrictions.eq("familyName", alarmDef.getFaultFamily())).uniqueResult();
-		if (parentFF == null)
-			throw new IllegalStateException("no faultFamily '" + alarmDef.getFaultFamily() + "' found");
-		lastFaultFamily = parentFF;
-		
-		FaultCode parentFC = (FaultCode)session.createCriteria(FaultCode.class).
-		add(Restrictions.eq("faultFamily", parentFF)).
-		add(Restrictions.eq("codeValue", alarmDef.getFaultCode())).uniqueResult();
-		if (parentFC == null)
-			throw new IllegalStateException("no faultCode '" + alarmDef.getFaultFamily() + "/" + alarmDef.getFaultCode() + "' found");
-
-		FaultMember parentFM = null;
-		if (ffMatch && lastFaultMember != null && lastFaultMember.getMemberName().equals(alarmDef.getFaultMember()))
-		{
-			parentFM = lastFaultMember;
-		}
-		if (parentFM == null)
-			parentFM = (FaultMember)session.createCriteria(FaultMember.class).
-				add(Restrictions.eq("faultFamily", parentFF)).
-				add(Restrictions.eq("memberName", alarmDef.getFaultMember())).uniqueResult();
-		if (parentFM == null)
-		{
-			// do not give up yet, create a new FM from default member
-			List defaults = allowFMCreation ? session.createCriteria(DefaultMember.class).
-            					add(Restrictions.eq("faultFamily", parentFF)).list() : null;
-			//Set<DefaultMember> defaults = allowFMCreation ? parentFF.getDefaultMembers() : null;
-			if (defaults != null && defaults.size() > 0)
-			{
-				// create FM from default, i.e. use its location
-				FaultMember fm = new FaultMember();
-				fm.setMemberName(alarmDef.getFaultMember());
-				fm.setFaultFamily(parentFF);
-				fm.setLocation(((DefaultMember)defaults.get(0)).getLocation());
-				session.persist(fm);
-				
-				parentFM = fm;
-			}
-			else
-				throw new IllegalStateException("no faultMember '" + alarmDef.getFaultFamily() + "/" + alarmDef.getFaultMember() + "' found, and there is no default member");
-		}
-		lastFaultMember = parentFM;
-		
 		alma.acs.tmcdb.AlarmDefinition alarm = (alma.acs.tmcdb.AlarmDefinition)session.createCriteria(alma.acs.tmcdb.AlarmDefinition.class).
-			add(Restrictions.eq("faultMember", parentFM)).
-			add(Restrictions.eq("faultCode", parentFC)).uniqueResult();
+			add(Restrictions.eq("faultFamily", alarmDef.getFaultFamily())).
+			add(Restrictions.eq("faultMember", alarmDef.getFaultMember())).
+			add(Restrictions.eq("faultCode", String.valueOf(alarmDef.getFaultCode()))).uniqueResult(); // TODO remove
 		if (alarm == null)
 		{
 			alarm = new alma.acs.tmcdb.AlarmDefinition();
-			alarm.setFaultMember(parentFM);
-			alarm.setFaultCode(parentFC);
+			alarm.setFaultFamily(alarmDef.getFaultFamily());
+			alarm.setFaultMember(alarmDef.getFaultMember());
+			alarm.setFaultCode(String.valueOf(alarmDef.getFaultCode()));	// TODO remove
 			session.persist(alarm);
 		}
 		
@@ -734,13 +676,13 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				toLink._.put("link" + (linkCount++),
 						new ReductionLink(link.getType(),
 								new AlarmDefinition(
-										parent.getFaultMember().getFaultFamily().getFamilyName(),
-										parent.getFaultMember().getMemberName(),
-										parent.getFaultCode().getCodeValue()),
+										parent.getFaultFamily(),
+										parent.getFaultMember(),
+										parent.getFaultCode()),
 								new AlarmDefinition(
-										child.getFaultMember().getFaultFamily().getFamilyName(),
-										child.getFaultMember().getMemberName(),
-										child.getFaultCode().getCodeValue())
+										child.getFaultFamily(),
+										child.getFaultMember(),
+										child.getFaultCode())
 						));
 			}
 
@@ -754,9 +696,9 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				redDefs.getThresholds()._.put("threshold" + (thresholdCount++),
 						new alma.TMCDB.alarm.ReductionThreshold(threshold.getValue(),
 								new AlarmDefinition(
-										alarm.getFaultMember().getFaultFamily().getFamilyName(),
-										alarm.getFaultMember().getMemberName(),
-										alarm.getFaultCode().getCodeValue())
+										alarm.getFaultFamily(),
+										alarm.getFaultMember(),
+										alarm.getFaultCode())
 						));
 			}
 			
