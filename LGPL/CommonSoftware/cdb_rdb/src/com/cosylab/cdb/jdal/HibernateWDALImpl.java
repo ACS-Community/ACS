@@ -2490,7 +2490,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		
 		try
 		{
-			String ret = "<?xml version='1.0' encoding='ISO-8859-1'?>" + DOMJavaClassIntrospector.toXML(DOMJavaClassIntrospector.getRootNodeXMLName(name, node), node);
+			String ret = "<?xml version='1.0' encoding='ISO-8859-1'?>" + DOMJavaClassIntrospector.toXML(DOMJavaClassIntrospector.getRootNodeXMLName(name, node), node, curl, m_logger);
 			m_logger.finest("get_DAO(" + curl + ") returning " + ret);
 			return ret;
 		}

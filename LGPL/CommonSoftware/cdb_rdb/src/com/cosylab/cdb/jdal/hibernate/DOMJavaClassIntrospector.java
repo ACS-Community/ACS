@@ -4,10 +4,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -245,7 +248,7 @@ public class DOMJavaClassIntrospector {
 					}
 				}
 				
-				// check fo subnodesMap map
+				// check for subnodesMap map
 				Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
 				if (subnodesMap instanceof Map)
 					return ((Map)subnodesMap).get(name);
@@ -405,6 +408,11 @@ public class DOMJavaClassIntrospector {
 
 	public static String[] getFields(Object node)
 	{
+		return getFields(node, null, null);
+	}
+	
+	public static String[] getFields(Object node, String nodeName, Logger log)
+	{
 		if (node instanceof Map)
 			return new String[0];
 		else if (node instanceof Element)
@@ -420,15 +428,23 @@ public class DOMJavaClassIntrospector {
 		{
 			if (node instanceof ExtraDataFeature)
 			{
-				String[] extraFields = new String[0];
+				String[] extraFields = null;
 				Element extraData = ((ExtraDataFeature)node).getExtraData();
 				if (extraData != null)
 					extraFields = getFields(extraData);
+				
 				String[] fields = getAccessibleFields(node, true);
-				String[] concat = new String[extraFields.length + fields.length];
-				System.arraycopy(extraFields, 0, concat, 0, extraFields.length);
-				System.arraycopy(fields, 0, concat, extraFields.length, fields.length);
-				return concat;
+				
+				if (extraFields == null)
+					return fields;
+				
+				// concat and remove duplicates
+				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				for (String ef : extraFields)
+					if (!set.add(ef))
+						if (log != null) log.warning("Duplicate field '" + nodeName + "/" + ef +"'.");
+						
+				return set.toArray(new String[0]);
 			}
 			else
 				return getAccessibleFields(node, true);
@@ -460,6 +476,11 @@ public class DOMJavaClassIntrospector {
 	
 	public static String[] getNodes(Object node)
 	{
+		return getNodes(node, null, null);
+	}
+		
+	public static String[] getNodes(Object node, String nodeName, Logger log)
+	{
         if (node instanceof DAOImpl)
         {
         	return getNodes(((DAOImpl)node).getRootNode().getNodesMap());
@@ -489,22 +510,35 @@ public class DOMJavaClassIntrospector {
 		else
 			if (node instanceof ExtraDataFeature)
 			{
-				String[] extraFields = new String[0];
+				String[] extraFields = null;
 				Element extraData = ((ExtraDataFeature)node).getExtraData();
 				if (extraData != null)
 					extraFields = getNodes(extraData);
+				
 				String[] fields = getAccessibleFields(node, false);
-				String[] concat = new String[extraFields.length + fields.length];
-				System.arraycopy(extraFields, 0, concat, 0, extraFields.length);
-				System.arraycopy(fields, 0, concat, extraFields.length, fields.length);
-				return concat;
+				
+				if (extraFields == null)
+					return fields;
+				
+				// concat and remove duplicates
+				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				for (String ef : extraFields)
+					if (!set.add(ef))
+						if (log != null) log.warning("Duplicate node '" + nodeName + "/" + ef + "'.");
+				
+				return set.toArray(new String[0]);
 			}
 			else
 				return getAccessibleFields(node, false);
 	}
 	
-	// element = internal node (excluding hierarchy)
 	public static String[] getElements(Object node)
+	{
+		return getElements(node, null, null);
+	}
+	
+	// element = internal node (excluding hierarchy)
+	public static String[] getElements(Object node, String nodeName, Logger log)
 	{
         if (node instanceof DAOImpl)
         {
@@ -540,15 +574,23 @@ public class DOMJavaClassIntrospector {
 		else
 			if (node instanceof ExtraDataFeature)
 			{
-				String[] extraFields = new String[0];
+				String[] extraFields = null;
 				Element extraData = ((ExtraDataFeature)node).getExtraData();
 				if (extraData != null)
 					extraFields = getElements(extraData);
+				
 				String[] fields = getElementFields(node);
-				String[] concat = new String[extraFields.length + fields.length];
-				System.arraycopy(extraFields, 0, concat, 0, extraFields.length);
-				System.arraycopy(fields, 0, concat, extraFields.length, fields.length);
-				return concat;
+				
+				if (extraFields == null)
+					return fields;
+				
+				// concat and remove duplicates
+				HashSet<String> set = new HashSet<String>(Arrays.asList(fields));
+				for (String ef : extraFields)
+					if (!set.add(ef))
+						if (log != null) log.warning("Duplicate element '" + nodeName + "/" + ef + "'.");
+				
+				return set.toArray(new String[0]);
 			}
 			else
 				return getElementFields(node);
@@ -596,6 +638,11 @@ public class DOMJavaClassIntrospector {
 
 	public static String toXML(String name, Object node)
 	{
+		return toXML(name, node, null, null);
+	}
+	
+	public static String toXML(String name, Object node, String nodeName, Logger log)
+	{
 		// to confirm w/ XML naming
 		if (Character.isDigit(name.charAt(0)))
 			name = "id" + name;
@@ -614,7 +661,7 @@ public class DOMJavaClassIntrospector {
 		if (name.startsWith("amb:"))
 		    buffer.append(" xmlns:amb=\"urn:schemas-cosylab-com:AmbDevice:1.0\" ");
 		
-		String[] fields = getFields(node);
+		String[] fields = getFields(node, nodeName, log);
 		for (String field : fields)
 		{
 			Object fieldValue = handleInfinity(getChild(field, node));
@@ -624,7 +671,7 @@ public class DOMJavaClassIntrospector {
 		}
 		buffer.append('>');
 		
-		String[] subnodes = getNodes(node);
+		String[] subnodes = getNodes(node, nodeName, log);
 		for (String subnode : subnodes)
 		{
 			Object childNode = getNode(subnode, node);
@@ -644,7 +691,7 @@ public class DOMJavaClassIntrospector {
 				if (subsubMap instanceof Map && ((Map)subsubMap).size() > 0)
 					dashAsName = false;
 			}
-			buffer.append(toXML(getNodeXMLName(dashAsName ? "_" : subnode, childNode), childNode));
+			buffer.append(toXML(getNodeXMLName(dashAsName ? "_" : subnode, childNode), childNode, (nodeName == null) ? null : nodeName + "/" + subnode, log));
 		}
 		
 		// element value
