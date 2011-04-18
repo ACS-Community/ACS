@@ -13,7 +13,7 @@
 //     without express or implied warranty.
 ////////////////////////////////////////////////////////////////////////////////
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiSmallObj.cpp,v 1.2 2007/02/01 17:29:01 sharring Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/src/lokiSmallObj.cpp,v 1.3 2011/04/18 20:45:32 javarias Exp $
 
 
 #include <lokiSmallObj.h>
@@ -21,6 +21,7 @@
 #include <cassert>
 #include <vector>
 #include <bitset>
+#include <limits.h>
 
 //#define DO_EXTRA_LOKI_TESTS
 //#define USE_NEW_TO_ALLOCATE
@@ -1226,7 +1227,11 @@ bool SmallObjAllocator::IsCorrupt( void ) const
 ////////////////////////////////////////////////////////////////////////////////
 
 // $Log: lokiSmallObj.cpp,v $
+// Revision 1.3  2011/04/18 20:45:32  javarias
+// Added missing includes for compatibility for gcc >= 4.4 (limits.h string.h)
+//
 // Revision 1.2  2007/02/01 17:29:01  sharring
+//
 // updating to newer version of loki library, with support for multi-threading enabled. manually renamed files to avoid name conflicts, by
 // prepending "loki" to the names of header files. also manually edited lokiThreads.h to #define LOKI_OBJECT_LEVEL_THREADING; this could
 // also be done with a compile FLAG, perhaps would be better.

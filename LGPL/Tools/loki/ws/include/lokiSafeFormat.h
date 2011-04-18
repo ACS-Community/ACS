@@ -19,13 +19,15 @@
 #ifndef LOKI_SAFEFORMAT_H_
 #define LOKI_SAFEFORMAT_H_
 
-// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSafeFormat.h,v 1.3 2007/02/22 09:00:32 bjeram Exp $
+// $Header: /diskb/tmp/stefano/project2/CVS/ACS/LGPL/Tools/loki/ws/include/lokiSafeFormat.h,v 1.4 2011/04/18 20:45:32 javarias Exp $
 
 #include <cstdio>
 #include <string>
 #include <stdexcept>
 #include <utility>
 #include <cassert>
+#include <string.h>
+#include <limits.h>
 #ifndef MAKE_VXWORKS
 #include <locale>   // we do not have this header file for VxWorks
 #else
@@ -577,6 +579,9 @@ namespace Loki
 #endif //SAFEFORMAT_H_
 
 // $Log: lokiSafeFormat.h,v $
+// Revision 1.4  2011/04/18 20:45:32  javarias
+// Added missing includes for compatibility for gcc >= 4.4 (limits.h string.h)
+//
 // Revision 1.3  2007/02/22 09:00:32  bjeram
 // ported to VxWorks
 //
