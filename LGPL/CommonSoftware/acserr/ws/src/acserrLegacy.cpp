@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acserrLegacy.cpp,v 1.19 2010/04/30 09:08:00 bjeram Exp $"
+* "@(#) $Id: acserrLegacy.cpp,v 1.20 2011/04/18 21:47:10 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,12 +49,13 @@
 #include <acsutilFindFile.h>
 #include <acsutilTimeStamp.h>
 #include <fstream>
+#include <cstring>
 #include "acserrOldDescriptions.h"
 #include "acserrACSbaseExImpl.h"
 #include "acserrHandlers.h"
 #include "ace/UUID.h"
 
-static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.19 2010/04/30 09:08:00 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acserrLegacy.cpp,v 1.20 2011/04/18 21:47:10 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 

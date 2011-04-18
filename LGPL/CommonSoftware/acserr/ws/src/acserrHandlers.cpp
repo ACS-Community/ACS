@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: acserrHandlers.cpp,v 1.11 2010/11/19 14:54:13 bjeram Exp $"
+* "@(#) $Id: acserrHandlers.cpp,v 1.12 2011/04/18 21:47:10 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -10,11 +10,12 @@
 
 #include "vltPort.h"
 #include "acserrHandlers.h"
+#include <cstring>
 #ifndef MAKE_VXWORKS
 #include <execinfo.h>
 #endif
 
-static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.11 2010/11/19 14:54:13 bjeram Exp $";
+static char *rcsId="@(#) $Id: acserrHandlers.cpp,v 1.12 2011/04/18 21:47:10 javarias Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #ifndef MAKE_VXWORKS
