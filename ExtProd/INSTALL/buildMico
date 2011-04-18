@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.12 2010/07/04 16:14:03 hsommer Exp $"
+# "@(#) $Id: buildMico,v 1.13 2011/04/18 20:33:18 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -87,6 +87,7 @@ echo ""
 
 echo "==== Patching mico (needed for gcc >= 4.3)"
 patch -p0 < mico-2.3.13-limits.patch
+patch -p0 < mico-2.3.13-tk_recursive.patch
 echo "done Patching mico ===="
 echo ""
 
