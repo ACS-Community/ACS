@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.4 2010/10/22 11:48:09 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/04/18 21:06:41 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -93,6 +93,7 @@ install : install_all
 unpack :
 	@echo " . . . unpacking antlr . . . "
 	@gtar -xzf antlr-${ANTLR_VER_2}.tar.gz
+	@patch -p0 < gcc44.patch
 #	@gtar -xzf antlr-${ANTLR_VER_3}.tar.gz
 
 .PHONY: configure
