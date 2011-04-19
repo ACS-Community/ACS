@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.11 2009/09/14 13:14:38 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.12 2011/04/19 14:59:22 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -17,6 +17,7 @@
 #    None
 #------------------------------------------------------------------------
 
+VALGRIND_VERSION:=3.6.1
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
@@ -186,14 +187,14 @@ ifneq ($(MAKEDIRTMP),\#error\#)
 endif
 
 
-VALGRIND_all: valgrind-3.5.0.tar.bz2
+VALGRIND_all: valgrind-$(VALGRIND_VERSION).tar.bz2
 	@echo "== Building valgrind"
-	@bunzip2 -k valgrind-3.5.0.tar.bz2; tar -xvf valgrind-3.5.0.tar
-	@cd valgrind-3.5.0; ./configure --prefix=$(INSTALL_ROOT); make
+	@bunzip2 -k valgrind-$(VALGRIND_VERSION).tar.bz2; tar -xvf valgrind-$(VALGRIND_VERSION).tar
+	@cd valgrind-$(VALGRIND_VERSION); ./configure --prefix=$(INSTALL_ROOT); make
 
 VALGRIND_install: 
 	@echo "== Installing valgrind"
-	@cd valgrind-3.5.0 && make install
+	@cd valgrind-$(VALGRIND_VERSION) && make install
 
 #
 # TARGETS
@@ -202,7 +203,7 @@ all:	do_all VALGRIND_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all 
-	$(RM) *~ valgrind-3.5.0 valgrind-3.5.0.tar
+	$(RM) *~ valgrind-$(VALGRIND_VERSION) valgrind-$(VALGRIND_VERSION).tar
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
