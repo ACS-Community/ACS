@@ -27,24 +27,35 @@ public class ACSLaserSource extends AlarmSystemInterfaceProxy implements ACSAlar
 	/**
 	 * @see cern.laser.source.alarmsysteminterface.AlarmSystemInterface
 	 */
+	@Override
 	public synchronized void push(ACSFaultState state){
-		logFaultState(state);
 		try {
 			this.push((FaultState)state);
+			logFaultState(state);
 		} catch (Throwable t) {
 			StringBuilder logStr = new StringBuilder("Exception "+t.getMessage()+" throwing alarm <");
 			logStr.append(state.getFamily()+','+state.getMember()+','+state.getCode()+">");
 			logStr.append(" "+state.getDescriptor());
-			logger.log(AcsLogLevel.ERROR,logStr.toString());
+			logger.log(AcsLogLevel.ERROR,logStr.toString(),t);
 		}
 	}
 	
+	@Override
 	public synchronized void push(Collection states) {
-		this.push(states);
+		try {
+			super.push(states);
+		} catch (Throwable t) {
+			logger.log(AcsLogLevel.ERROR,"Error pushing the collection of alarms",t);
+		}
 	}
 	
+	@Override
 	public synchronized void pushActiveList(Collection active) {
-		this.pushActiveList(active);
+		try {
+			super.pushActiveList(active);
+		} catch (Throwable t) {
+			logger.log(AcsLogLevel.ERROR,"Error pushing the activeList of alarms",t);
+		}
 	}
 	
 	/**
