@@ -511,45 +511,71 @@ TABLE FaultCode
 	CONSTRAINT PriorityValue CHECK (Priority IN (0,1,2,3))
 ENDTABLE
 
-// The entries in this table represent the alarm triplets, joining FaultMember and FaultCode, 
-// which must belong to the same FaultFamily.
+// The entries in this table represent alarm triplets referenced by node reduction rules or multiplicity reduction rules.
+// Note that since ACS 9.1 this AlarmDefinition table no longer references tables FaultMember and FaultCode 
+// (and thus indirectly also table FaultFamily), but instead has its own fields for FF, FM, and FC.
+// This is a loss of referential integrity in case of "straight" node reduction rules that connect two triplets,
+// but it allows using wildcards for the FF, FM (or even FC), which became necessary with the refactoring of baci property alarms.
 //
-// AlarmDefinitionId    UID.
-// FaultFamily		  The FF of the alarm triplet, regexp supported.
+// AlarmDefinitionId  UID.
+// FaultFamily        The FF of the alarm triplet, regexp supported.
 // FaultMember        The FM of the alarm triplet, regexp supported.
 // FaultCode          The FC of the alarm triplet, regexp supported.
 //
 TABLE AlarmDefinition
-	AlarmDefinitionId	INTEGER	NOT NULL
-	FaultFamily		LONGNAME	NOT NULL
-	FaultMember		LONGNAME	NOT NULL
-	FaultCode		LONGNAME	NOT NULL
-	KEY AlarmDefinitionId	GENERATED FROM FaultFamily FaultMember FaultCode
+	AlarmDefinitionId   INTEGER             NOT NULL
+	FaultFamily         LONGNAME            NOT NULL
+	FaultMember         LONGNAME            NOT NULL
+	FaultCode           LONGNAME            NOT NULL
+	KEY AlarmDefinitionId GENERATED FROM FaultFamily FaultMember FaultCode
 ENDTABLE
 
+
+// An entry in the ReductionLink table represents reduction rule (node or multiplicity),
+// where the distinction is given through the Type attribute.
+// Multiplicity reduction rule: 
+//           If a sufficiently many "child" alarms are active, they are reduced to a single "parent" alarm.
+//           The "parent" alarm is created by the alarm service.
+// Node reduction rules: 
+//           If both the "parent" and the "child" alarm are active, then the "child" alarm will be flagged as "reduced".
+//           The "parent" alarm will not be created by the system though.
+// ReductionLinkId    UID
+// ParentAlarmDefId   AlarmDefinition for the "parent" alarm.
+// ChildAlarmDefId    AlarmDefinition for the "child" alarm.
+// Type               RR type: 'MULTIPLICITY' or 'NODE'
+// Action             'CREATE', or 'REMOVE'. Currently we only use 'CREATE'. 
+//                    @TODO: Describe the meaning of 'REMOVE' (should that RR be removed?)
+// ConfigurationId    Ref to TMCDB Configuration.
+//
 TABLE ReductionLink
-	ReductionLinkId		INTEGER				NOT NULL
-	ParentAlarmDefId	INTEGER				NOT NULL
-	ChildAlarmDefId		INTEGER				NOT NULL
-	Type				LONGVARCHAR (12)	NOT NULL
-	Action				LONGVARCHAR (6)		NOT NULL
-	ConfigurationId		INTEGER				NOT NULL
-	KEY ReductionLinkId	GENERATED FROM ParentAlarmDefId ChildAlarmDefId
-	CONSTRAINT RLParentRef FOREIGN KEY (ParentAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
-	CONSTRAINT RLChildRef FOREIGN KEY (ChildAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
-	CONSTRAINT ReductionLinkType CHECK (Type IN ('MULTIPLICITY', 'NODE'))
-	CONSTRAINT ReductionLinkAction CHECK (Action IN ('CREATE', 'REMOVE'))
-	CONSTRAINT ReductionLinkConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
+    ReductionLinkId     INTEGER             NOT NULL
+    ParentAlarmDefId    INTEGER             NOT NULL
+    ChildAlarmDefId     INTEGER             NOT NULL
+    Type                LONGVARCHAR (12)    NOT NULL
+    Action              LONGVARCHAR (6)     NOT NULL
+    ConfigurationId     INTEGER             NOT NULL
+    KEY ReductionLinkId	GENERATED FROM ParentAlarmDefId ChildAlarmDefId
+    CONSTRAINT RLParentRef FOREIGN KEY (ParentAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
+    CONSTRAINT RLChildRef FOREIGN KEY (ChildAlarmDefId) REFERENCES AlarmDefinition CASCADING AGGREGATION
+    CONSTRAINT ReductionLinkType CHECK (Type IN ('MULTIPLICITY', 'NODE'))
+    CONSTRAINT ReductionLinkAction CHECK (Action IN ('CREATE', 'REMOVE'))
+    CONSTRAINT ReductionLinkConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
 ENDTABLE
 
+
+// An entry in the ReductionThreshold table refers to an AlarmDefinition that is the parent in a set of multiplicity reduction rules.
+// Several child alarms that map to this parent alarm (ReductionLink entries) will be reduced to the parent alarm
+// if more than the given "Value" of child alarms are active.
+//
 TABLE ReductionThreshold
-	AlarmDefinitionId		INTEGER		NOT NULL
-	Value					INTEGER		NOT NULL
-	ConfigurationId			INTEGER		NOT NULL
-	KEY AlarmDefinitionId
-	CONSTRAINT RTAlarmRef FOREIGN KEY (AlarmDefinitionId) REFERENCES AlarmDefinition CASCADING AGGREGATION
-	CONSTRAINT RTConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
+    AlarmDefinitionId       INTEGER     NOT NULL
+    Value                   INTEGER     NOT NULL
+    ConfigurationId         INTEGER     NOT NULL
+    KEY AlarmDefinitionId
+    CONSTRAINT RTAlarmRef FOREIGN KEY (AlarmDefinitionId) REFERENCES AlarmDefinition CASCADING AGGREGATION
+    CONSTRAINT RTConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
 ENDTABLE
+
 
 // Schema which describes an ACS event channel. At the moment, the only info included here are some
 // Quality of Service and Administrative properties that are applicable to the type of notification channels ACS utilizes.
