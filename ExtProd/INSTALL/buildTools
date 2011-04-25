@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.34 2010/10/22 14:38:19 rbourtem Exp $"
+# "@(#) $Id: buildTools,v 1.35 2011/04/25 15:54:14 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -43,6 +43,9 @@
 #
 . standardUtilities
 os_discovery
+
+setup_colors
+
 
 #
 # No INTROOT please!
@@ -93,8 +96,8 @@ fi
 if [ "$OS" != "LINUX" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
 then
 	echo "Build GNU tools only on RedHat 7.2, 7.3 and 9 and Solaris machines"
-	echo "buildGNU"
-	./buildGNU
+	echo -n "buildGNU"
+	./buildGNU &&  echo_success || echo_failure
 fi
 
 #
@@ -121,14 +124,15 @@ fi
 # For VxWorks this is due to dependencies in the CCSLite code (quite old).
 # TODO: We should be able to cleanup this problem in case of need,
 #       bug given the limited resources for VxWorks support we do not do it now.
-echo "buildTcltk"
 export TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
 if [ "$BUILD_VX_WORKS" = "1" ]
 then
     # for VxWorks (better: vcc/CCSLite) we still need to install msqltcl
+    echo "buildTcltk"
     ./buildTcltk -m
 else 
-    ./buildTcltk
+    echo -n "buildTcltk"
+    ./buildTcltk &&  echo_success || echo_failure
 fi
 
 
@@ -160,36 +164,36 @@ fi
 # It is assumed it is already installed on any other platform.
 if [ "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
 then
-        echo "buildJava"
-        ./buildJava
+        echo -n "buildJava"
+        ./buildJava &&  echo_success || echo_failure
 fi
 
 #
 # We need to re-evaluate the environment
 # to make sure that the presence of VxWorks is detected.
 # I have to use the --login option, because on sun -l does not work.
-#
-echo "buildTAO (ignore the following login messages and wait for buildTAO to complete)"
-bash --login ./buildTAO
 
-echo "buildDDS"
-./buildDDS
-echo "buildOpenSpliceDDS (ignore the following login messages and wait for buildOpenSpliceDDS to complete)"
-bash --login ./buildOpenSpliceDDS
-echo "buildAnt"
-./buildAnt
-echo "buildJacORB"
-./buildJacORB
-echo "buildPython"
-./buildPython
-echo "buildPyModules"
-./buildPyModules
-echo "buildOmniORB"
-./buildOmniORB
-echo "buildMico"
-./buildMico
-echo "buildEclipse"
-./buildEclipse
+echo -n "buildTAO"
+bash --login ./buildTAO &>/dev/null &&  echo_success || echo_failure
+
+echo -n "buildDDS"
+./buildDDS  &&  echo_success || echo_failure
+echo -n "buildOpenSpliceDDS"
+bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+echo -n "buildAnt"
+./buildAnt && echo_success || echo_failure
+echo  -n "buildJacORB" 
+./buildJacORB && echo_success || echo_failure
+echo -n "buildPython"
+./buildPython && echo_success || echo_failure
+echo -n "buildPyModules"
+./buildPyModules && echo_success || echo_failure
+echo -n "buildOmniORB"
+./buildOmniORB && echo_success || echo_failure
+echo -n "buildMico"
+./buildMico && echo_success || echo_failure
+echo -n "buildEclipse"
+./buildEclipse && echo_success || echo_failure
 
 # if the user wants RTOS he/she has to build it by hand using buildRTOS
 # from the directory ../RTOS.

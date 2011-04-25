@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.22 2011/03/17 00:06:01 hsommer Exp $"
+# "@(#) $Id: buildJacORB,v 1.23 2011/04/25 15:54:14 javarias Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -233,11 +233,11 @@ echo "========= Done with unpacking and patching, can compile now... =========="
 
 
 echo ==== Building jaco
-ant jaco
+ant jaco 
 if [ $? -ne 0 ]
 then
      echo "========= FAILED =========="
-	exit 1
+     exit 1
 fi
 
 echo "==== Building jars"
@@ -245,11 +245,11 @@ cd $JACORB_HOME/
 
 # get rid of precompiled jacorb jars which sometimes mess with the classpath
 # to the effect that incompatible versions of some org.omg interface come in from the JDK libs
-ant realclean
+ant realclean || exit 1
 
 # our JacORB should not use backport-util-concurrent.jar
 rm $JACORB_HOME/lib/backport-util-concurrent.jar
-ant convert.jdk5 
+ant convert.jdk5  || exit 1
 
 # Now that the standard ACS CLASSPATH no longer contains logkit-1.2.jar,
 # we need to add it here in order to compile JacORB. 

@@ -62,7 +62,7 @@ Install_Ant()
     cd ..
     rm -rf $BIN_DIR
     export CLASSPATH=$CLASSPATH:$JAR_ARCHIVE/junit.jar
-    sh build.sh install-lite
+    sh build.sh install-lite || exit 1
 # HSO 2007-07-08: The patch to suppress the system-wide ant config is no longer needed
 #                 with ANT 1.7, because it respects the ANT_HOME installation.
 # 
