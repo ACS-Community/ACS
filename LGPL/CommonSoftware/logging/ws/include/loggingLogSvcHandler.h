@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogSvcHandler.h,v 1.9 2007/12/28 04:13:33 cparedes Exp $"
+* "@(#) $Id: loggingLogSvcHandler.h,v 1.10 2011/04/26 20:19:22 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -129,7 +129,11 @@ namespace Logging {
 	static DeprecatedLogInfo
 	unformatted2formatted(ACE_Log_Priority messagePriority,
 			      const char *fmt,
-			      ...);
+			      ...) 
+#if defined(__GNUC__)
+	__attribute__ ((format (printf, 2, 3)))
+#endif
+	;
 	
       private:
 	/**

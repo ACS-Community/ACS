@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: loggingLog4cpp.h,v 1.6 2011/04/08 14:33:38 javarias Exp $"
+ * "@(#) $Id: loggingLog4cpp.h,v 1.7 2011/04/26 20:19:22 javarias Exp $"
  */
 #ifndef LOGGING_LOG4CPP_H_
 #define LOGGING_LOG4CPP_H_
@@ -64,9 +64,21 @@ public:
 
 	void setLogLevels(const std::string& loggerName, log4cpp::Priority::PriorityLevel remote, log4cpp::Priority::PriorityLevel local);
 
-	static BasicLogInfo formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...);
-	static BasicLogInfo formatLog(ACE_Log_Priority priority, const char *fmt, ...);
-	static BasicLogInfo formatLog(unsigned int priority, const char *fmt, ...);
+	static BasicLogInfo formatLog(log4cpp::Priority::PriorityLevel priority, const char *fmt, ...)
+#if defined(__GNUC__)
+	__attribute__ ((format (printf, 2, 3)))
+#endif
+		;
+	static BasicLogInfo formatLog(ACE_Log_Priority priority, const char *fmt, ...)
+#if defined(__GNUC__)
+	__attribute__ ((format (printf, 2, 3)))
+#endif
+		;
+	static BasicLogInfo formatLog(unsigned int priority, const char *fmt, ...)
+#if defined(__GNUC__)
+	__attribute__ ((format (printf, 2, 3)))
+#endif
+		;
 
 private:
 	bool remoteAppenderEnabled;
