@@ -468,7 +468,7 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 	 * @param archiveDeltaPercent
 	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_delta_percent(Double)
 	 */
-	public void setArchive_delta(Double archiveDeltaPercent) {
+	public void setArchive_delta_percent(Double archiveDeltaPercent) {
 		delegate.setArchive_delta_percent(archiveDeltaPercent);
 	}
 
