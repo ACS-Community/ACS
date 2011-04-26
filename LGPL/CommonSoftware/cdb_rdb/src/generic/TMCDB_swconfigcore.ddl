@@ -517,17 +517,19 @@ ENDTABLE
 // This is a loss of referential integrity in case of "straight" node reduction rules that connect two triplets,
 // but it allows using wildcards for the FF, FM (or even FC), which became necessary with the refactoring of baci property alarms.
 //
-// AlarmDefinitionId  UID.
-// FaultFamily        The FF of the alarm triplet, regexp supported.
+// AlarmDefinitionId    UID.
+// FaultFamily		  The FF of the alarm triplet, regexp supported.
 // FaultMember        The FM of the alarm triplet, regexp supported.
 // FaultCode          The FC of the alarm triplet, regexp supported.
 //
 TABLE AlarmDefinition
-	AlarmDefinitionId   INTEGER             NOT NULL
-	FaultFamily         LONGNAME            NOT NULL
-	FaultMember         LONGNAME            NOT NULL
-	FaultCode           LONGNAME            NOT NULL
-	KEY AlarmDefinitionId GENERATED FROM FaultFamily FaultMember FaultCode
+	AlarmDefinitionId	INTEGER	NOT NULL
+	ConfigurationId  INTEGER NOT NULL
+	FaultFamily		LONGNAME	NOT NULL
+	FaultMember		LONGNAME	NOT NULL
+	FaultCode		LONGNAME	NOT NULL
+	KEY AlarmDefinitionId	GENERATED FROM ConfigurationId FaultFamily FaultMember FaultCode
+	CONSTRAINT AlarmDefinitionConfig FOREIGN KEY (ConfigurationId) REFERENCES Configuration CASCADING INVERSE AGGREGATION
 ENDTABLE
 
 

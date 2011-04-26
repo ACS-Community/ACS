@@ -467,6 +467,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		if (alarm == null)
 		{
 			alarm = new alma.acs.tmcdb.AlarmDefinition();
+			alarm.setConfiguration(config);
 			alarm.setFaultFamily(alarmDef.getFaultFamily());
 			alarm.setFaultMember(alarmDef.getFaultMember());
 			alarm.setFaultCode(String.valueOf(alarmDef.getFaultCode()));	// TODO remove
