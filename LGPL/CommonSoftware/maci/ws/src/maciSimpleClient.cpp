@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.cpp,v 1.114 2011/04/08 14:43:21 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.cpp,v 1.115 2011/04/26 16:53:11 javarias Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -467,7 +467,9 @@ SimpleClient::init(int argc, char *argv[])
 	      if (logger.ptr() != Logging::AcsLogService::_nil())
 		  {
 		  m_logger->setCentralizedLogger(logger.in());
-		  LOGGER_FACTORY->enableRemoteAppender(100, 3, logger.ptr());
+		  char * disable_log4cpp = getenv("ACS_DISABLE_LOG4CPP");
+		  if (disable_log4cpp == NULL)
+		     LOGGER_FACTORY->enableRemoteAppender(100, 3, logger.ptr());
 		  }
 	      else
 		  {

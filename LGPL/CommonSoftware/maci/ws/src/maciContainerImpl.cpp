@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.127 2011/04/08 14:34:15 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.128 2011/04/26 16:53:11 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -81,7 +81,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.127 2011/04/08 14:34:15 javarias Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.128 2011/04/26 16:53:11 javarias Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1155,7 +1155,9 @@ ContainerImpl::connect()
 		    {
 		      m_loggerProxy->setCentralizedLogger(logger.in());
 		      //Log4cpp remote logging initialization
-		      LOGGER_FACTORY->enableRemoteAppender(cacheSize, flushPeriodSeconds, logger, NULL, maxLogsPerSecond);
+			  char * log4cpp_disabled = getenv("ACS_DISABLE_LOG4CPP");
+			  if (log4cpp_disabled == NULL)
+		      	LOGGER_FACTORY->enableRemoteAppender(cacheSize, flushPeriodSeconds, logger, NULL, maxLogsPerSecond);
 		      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connected to the Centralized Logger."));
 		    }
 		  else
@@ -2868,7 +2870,10 @@ void ContainerImpl::refresh_logging_config()
 void ContainerImpl::configureLogger(const std::string& loggerName)
 {
 	//Log4cpp Log creation
-	LOGGER_FACTORY->getLogger(loggerName);
+
+	char * log4cpp_disabled = getenv("ACS_DISABLE_LOG4CPP");
+	if (log4cpp_disabled == NULL)
+		LOGGER_FACTORY->getLogger(loggerName);
 
 
 	maci::LoggingConfigurable::LogLevels logLevels;
@@ -2883,18 +2888,20 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
 		//Log4cpp: set levels
-		LOGGER_FACTORY->setLogLevels(loggerName,
-				logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevel),
-				logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal));
+		if (log4cpp_disabled == NULL)
+			LOGGER_FACTORY->setLogLevels(loggerName,
+					logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevel),
+					logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal));
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
 		//Log4cpp: set levels
-		LOGGER_FACTORY->setLogLevels(loggerName,
-				logging::convertPriority(logLevels.minLogLevel),
-				logging::convertPriority(logLevels.minLogLevelLocal));
+		if (log4cpp_disabled == NULL)
+			LOGGER_FACTORY->setLogLevels(loggerName,
+					logging::convertPriority(logLevels.minLogLevel),
+					logging::convertPriority(logLevels.minLogLevelLocal));
 	}
 
 }
