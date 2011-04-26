@@ -109,6 +109,7 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
     private Double graph_max;
     private Double min_step;
     private double archive_delta;
+    private Double archive_delta_percent;
 
     // RO<type>
     private Double alarm_high_on;
@@ -190,6 +191,8 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
         s += "\tmin_step: " + min_step + newline;
 
         s += "\tarchive_delta: " + archive_delta + newline;
+
+        s += "\tarchive_delta_percent: " + archive_delta_percent + newline;
 
         s += "\talarm_high_on: " + alarm_high_on + newline;
 
@@ -310,6 +313,14 @@ public class BACIPropertyType implements java.io.Serializable, BACIPropertyTypeI
 	 */
 	public void setArchive_delta(double archive_delta) {
 		this.archive_delta = archive_delta;
+	}
+
+	public Double getArchive_delta_percent() {
+		return archive_delta_percent;
+	}
+
+	public void setArchive_delta_percent(Double archive_delta_percent) {
+		this.archive_delta_percent = archive_delta_percent;
 	}
 
 	/* (non-Javadoc)

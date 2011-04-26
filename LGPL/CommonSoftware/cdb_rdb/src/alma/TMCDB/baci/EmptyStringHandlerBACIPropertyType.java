@@ -137,6 +137,14 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 
 	/**
 	 * @return
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_delta_percent()
+	 */
+	public Double getArchive_delta_percent() {
+		return delegate.getArchive_delta_percent();
+	}
+
+	/**
+	 * @return
 	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#getArchive_max_int()
 	 */
 	public double getArchive_max_int() {
@@ -457,6 +465,14 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
 
 
 	/**
+	 * @param archiveDeltaPercent
+	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_delta_percent(Double)
+	 */
+	public void setArchive_delta(Double archiveDeltaPercent) {
+		delegate.setArchive_delta_percent(archiveDeltaPercent);
+	}
+
+	/**
 	 * @param archiveMaxInt
 	 * @see alma.TMCDB.baci.BACIPropertyTypeIF#setArchive_max_int(double)
 	 */
@@ -692,6 +708,7 @@ public class EmptyStringHandlerBACIPropertyType implements BACIPropertyTypeIF {
     private Double graph_max;
     private Double min_step;
     private double archive_delta;
+    private Double archive_delta_percent;
 
     // RO<type>
     private Double alarm_high_on;

@@ -65,6 +65,16 @@ public interface BACIPropertyTypeIF extends ExtraDataFeature {
 	public void setArchive_delta(double archive_delta);
 
 	/**
+	 * @return the archive_delta_percent
+	 */
+	public Double getArchive_delta_percent();
+
+	/**
+	 * @param archive_delta the archive_delta to set
+	 */
+	public void setArchive_delta_percent(Double archive_delta_percent);
+
+	/**
 	 * @return the archive_max_int
 	 */
 	public double getArchive_max_int();

@@ -403,6 +403,7 @@ TABLE BACIProperty
     graph_max               DOUBLE                   NULL
     min_step                DOUBLE                   NULL
     archive_delta           DOUBLE                   NOT NULL
+    archive_delta_percent   DOUBLE     				 DEFAULT 0
     alarm_high_on           DOUBLE                   NULL
     alarm_low_on            DOUBLE                   NULL
     alarm_high_off          DOUBLE                   NULL

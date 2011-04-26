@@ -1207,6 +1207,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 										baciPropertyType.setGraph_max(limitDouble(readDouble(componentConfigurationDAO, propertyName + "/graph_max", null)));
 										baciPropertyType.setMin_step(readDouble(componentConfigurationDAO, propertyName + "/min_step", null));
 										baciPropertyType.setArchive_delta(readDouble(componentConfigurationDAO, propertyName + "/archive_delta", 0.0));
+										baciPropertyType.setArchive_delta_percent(readDouble(componentConfigurationDAO, propertyName + "/archive_delta_percent", null));
 		
 										/* RO<type> */
 										baciPropertyType.setAlarm_high_on(readDouble(componentConfigurationDAO, propertyName + "/alarm_high_on", null));

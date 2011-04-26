@@ -75,6 +75,7 @@
     <property name="graph_max" />
     <property name="min_step" />
     <property name="archive_delta" />
+    <property name="archive_delta_percent" />
     <property name="alarm_high_on" />
     <property name="alarm_low_on" />
     <property name="alarm_high_off" />
