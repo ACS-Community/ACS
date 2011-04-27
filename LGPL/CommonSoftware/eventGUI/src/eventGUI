@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- ksh -*-
-# $Id: eventGUI,v 1.3 2010/10/21 00:34:50 rtobar Exp $
+# $Id: eventGUI,v 1.4 2011/04/27 13:48:43 jschwarz Exp $
 #
 # DESCRIPTION
 #    Starts the ACS Event Browser
@@ -51,9 +51,11 @@ fi
 dir=$(searchFile bin/eventGUI)
 
 $dir/lib/ACS_eventGUI/eventGUI \
+     -consoleLog \
      -vmargs \
      -DACS.repository=$ACS_INTERFACE_REPOSITORY \
      -DACS.manager=$MANAGER_REFERENCE \
      -DORBInitRef.NameService=$ACS_NAME_SERVICE \
+     -DACS.tmp=$ACS_TMP
 
 
