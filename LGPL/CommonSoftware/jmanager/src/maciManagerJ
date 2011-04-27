@@ -25,7 +25,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@@(#) $Id: maciManagerJ,v 1.62 2011/04/07 08:59:28 hsommer Exp $"
+# "@@(#) $Id: maciManagerJ,v 1.63 2011/04/27 08:55:39 rtobar Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -144,6 +144,10 @@ fi
 #
 export JVM_GC_LOG_NAME=jmanager
 
+# COMP-4114 opened the discussion about having idle connection timeout options in the manager
+# The conclusion was that we are going to use the server-side solution provided by JacORB,
+# disconnecting the clients from the Manager ORB
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djacorb.connection.server.timeout=15000"
 
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
