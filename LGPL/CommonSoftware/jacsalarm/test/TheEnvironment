@@ -1,0 +1,17 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TheEnvironment,v 1.1 2011/04/28 15:07:53 acaproni Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+set ACS_LOG_STDOUT 2
+set env(ACS_LOG_STDOUT) $ACS_LOG_STDOUT
+
+#
+# ___oOo___
+
