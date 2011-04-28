@@ -321,6 +321,7 @@ public class ACSAlarmSystemInterfaceFactory {
 	   * Return the type of AS used
 	   * 
 	   * @return True if ACS AS is used, false otherwise
+	   * @throws IllegalStateException If the factory has not been initialized yet
 	   */
 	  public static boolean usingACSAlarmSystem() throws ACSASFactoryNotInitedEx {
 		  if (useACSAlarmSystem==null) {
