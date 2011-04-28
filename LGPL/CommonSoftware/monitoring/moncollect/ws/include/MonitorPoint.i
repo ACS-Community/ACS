@@ -23,14 +23,13 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 //TBD: improve error handling
 		ACE_PRINT_EXCEPTION(cex, "in MonitorPoint<>::MonitorPoint");
 	}
-   valueTrigger_m = 0;
+	valueTrigger_m = 0;
 	try
 	{
 		CORBA::Any *anyCharacteristic;
 		char *strCharacteristic;
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_suppress");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
-      std::cout << strCharacteristic << std::endl;
 		if ( strcmp(strCharacteristic, "false")!=0 ) {
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected, because archive_suppress is set to 'false', but to: %s.",
 					property_m->name(),
@@ -39,7 +38,7 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			));
 			suppressed_m = true;
 		}
-      double archiveMaxInt;
+		double archiveMaxInt;
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_max_int");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		std::istringstream i(strCharacteristic);
@@ -54,14 +53,11 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			));
 			archivingInterval_m = 0;
 		}//if
-      TBASE val;// = static_cast<TBASE>(0);
+		TBASE val;
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_delta");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
-      std::cout << typeid(val).name() << std::endl;
-      std::cout << val << std::endl;
-      std::cout << strCharacteristic << std::endl;
 		if ( val == 0 ) {
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value change, because archive_delta is set to '%s'.",
 					property_m->name(),
@@ -72,12 +68,10 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			valueTrigger_m = val;
 		}
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_delta_percent");
-      double valPer;// = 0.0;
+		double valPer;
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
 		std::istringstream i2(strCharacteristic);
 		i2 >> valPer;
-      std::cout << valPer << std::endl;
-      std::cout << strCharacteristic << std::endl;
 		if ( valPer == 0 ) {
 			ACS_LOG(LM_FULL_INFO ,"MonitorPoint::MonitorPoint", (LM_DEBUG, "Values from property %s (%s) will NOT be collected on value percentage change, because archive_delta_percent is set to '%s'.",
 					property_m->name(),
@@ -88,9 +82,9 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			valuePercentTrigger_m = valPer;
 		}
 	} catch(CORBA::SystemException &ex) {
-		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorComponent::addProperty");
+		ACE_PRINT_EXCEPTION(ex, "CORBA problem in MonitorPoint::MonitorPoint");
 	} catch(...) {
-		printf("problem in MonitorComponent::addProperty!!!\n");
+		printf("problem in MonitorPoint::MonitorPoint!!!\n");
 	}//try-catch
 }//MonitorPoint
 

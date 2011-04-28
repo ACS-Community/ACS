@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorComponent.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
+* "@(#) $Id: MonitorComponent.cpp,v 1.3 2011/04/28 02:14:13 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorComponent.cpp,v 1.3 2011/04/28 02:14:13 tstaig Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorComponent.h"
@@ -216,7 +216,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	// ... or put to an any and get type out
 	// here we use if but could be something else
 
-	if (propType.find("doubleSeq")!=ACE_CString::npos)
+	if (propType.find("doubleSeq:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<const ACS::doubleSeq&, TMCDB::doubleSeqBlobDataSeq, ACS::PdoubleSeq, POA_ACS::CBdoubleSeq, CORBA::Double>(
 				propName,
@@ -231,7 +231,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;
 	}//if
 
-	if (propType.find("double")!=ACE_CString::npos)
+	if (propType.find("double:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<CORBA::Double, TMCDB::doubleBlobDataSeq, ACS::Pdouble, POA_ACS::CBdouble, CORBA::Double>(
 				propName,
@@ -247,7 +247,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	}//if
 
 	////////////////////
-	if (propType.find("longSeq")!=ACE_CString::npos)
+	if (propType.find("longSeq:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<const ACS::longSeq&, TMCDB::longSeqBlobDataSeq, ACS::PlongSeq, POA_ACS::CBlongSeq, CORBA::Long>(
 				propName,
@@ -262,7 +262,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;;
 	}//if
 
-	if (propType.find("long")!=ACE_CString::npos)
+	if (propType.find("long:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<CORBA::Long, TMCDB::longBlobDataSeq, ACS::Plong, POA_ACS::CBlong, CORBA::Long>(
 				propName,
@@ -277,7 +277,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	}//if
 
 	///////////////////////
-	if (propType.find("floatSeq")!=ACE_CString::npos)
+	if (propType.find("floatSeq:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<const ACS::floatSeq&, TMCDB::floatSeqBlobDataSeq, ACS::PfloatSeq, POA_ACS::CBfloatSeq, CORBA::Float>(
 				propName,
@@ -291,7 +291,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;;
 	}//if
 
-	if (propType.find("float")!=ACE_CString::npos)
+	if (propType.find("float:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<CORBA::Float, TMCDB::floatBlobDataSeq, ACS::Pfloat, POA_ACS::CBfloat, CORBA::Float>(
 				propName,
@@ -306,7 +306,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	}//if
 
 	/////////////////////////////
-	if (propType.find("patternSeq")!=ACE_CString::npos)
+	if (propType.find("patternSeq:")!=ACE_CString::npos)
 	{
 		NonSupportedTypeExImpl ex(__FILE__, __LINE__, "MonitorComponent::addProperties");
 		ex.setProperty(propName);
@@ -316,7 +316,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return false;
 	}//if
 
-	if (propType.find("pattern")!=ACE_CString::npos)
+	if (propType.find("pattern:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<ACS::pattern, TMCDB::patternBlobDataSeq, ACS::Ppattern, POA_ACS::CBpattern, ACS::pattern>(propName,
 				monitoringInterval,
@@ -331,7 +331,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 
 	////////
-	if (propType.find("longLongSeq")!=ACE_CString::npos)
+	if (propType.find("longLongSeq:")!=ACE_CString::npos)
 	{
 		NonSupportedTypeExImpl ex(__FILE__, __LINE__, "MonitorComponent::addProperties");
 		ex.setProperty(propName);
@@ -341,7 +341,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return false;
 	}//if
 
-	if (propType.find("longLong")!=ACE_CString::npos)
+	if (propType.find("longLong:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<ACS::longLong, TMCDB::longLongBlobDataSeq, ACS::PlongLong, POA_ACS::CBlongLong, ACS::longLong>(
 				propName,
@@ -357,7 +357,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 
 
 	/////////
-	if (propType.find("uLongLongSeq")!=ACE_CString::npos)
+	if (propType.find("uLongLongSeq:")!=ACE_CString::npos)
 	{
 		NonSupportedTypeExImpl ex(__FILE__, __LINE__, "MonitorComponent::addProperties");
 		ex.setProperty(propName);
@@ -367,7 +367,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return false;
 	}//if
 
-	if (propType.find("uLongLong")!=ACE_CString::npos)
+	if (propType.find("uLongLong:")!=ACE_CString::npos)
 	{
 		mp = new MonitorPoint<ACS::uLongLong, TMCDB::uLongLongBlobDataSeq, ACS::PuLongLong, POA_ACS::CBuLongLong, ACS::uLongLong>(
 				propName,
@@ -382,7 +382,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 	}//if
 
 	/////////
-	if (propType.find("stringSeq")!=ACE_CString::npos)
+	if (propType.find("stringSeq:")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
 		mp = new MonitorPoint<const ACS::stringSeq&, TMCDB::stringSeqBlobDataSeq, ACS::PstringSeq, POA_ACS::CBstringSeq, char *>(
@@ -397,7 +397,7 @@ bool MonitorComponent::addProperty(const char *propName,  const char *pType,  AC
 		return true;;
 	}//if
 
-	if (propType.find("string")!=ACE_CString::npos)
+	if (propType.find("string:")!=ACE_CString::npos)
 	{
 		//TBD: could be that string/const char* needs template specialization due to corba memory management!
 		mp = new MonitorPoint<const char*, TMCDB::stringBlobDataSeq, ACS::Pstring, POA_ACS::CBstring, char *>(
