@@ -20,5 +20,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcontnc.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsnc.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
