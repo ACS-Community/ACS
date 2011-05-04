@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.10 2010/05/07 09:08:05 bjeram Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.11 2011/05/04 14:14:53 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -429,10 +429,10 @@ long DAONode::getValue(const char * propertyName)
 
 //we have to cast because from DAO we get just get_long
 template<>
-long long DAONode::getValue(const char * propertyName)
+ACS::longLong DAONode::getValue(const char * propertyName)
 {
 	// until get_long is fixed that it can read also xs:long which is 64 bit we have to read string and cast it to long long
-	long long var;
+	ACS::longLong var;
 	CORBA::String_var str = this->get_string( propertyName );
 	std::istringstream is(str.in());
 	(istream&) is >> var ;
@@ -456,11 +456,11 @@ int DAONode::getValue(const char * propertyName)
 
 //we have to cast because from DAO we get just get_long
 template<>
-unsigned long long  DAONode::getValue(const char * propertyName)
+ACS::uLongLong DAONode::getValue(const char * propertyName)
 {
 	// we can not use get_long to read xs:unisngedLong which is 64 bit we have to read string and cast it to unsigned long long
 	// see: COMP-4268
-		unsigned long long var;
+		ACS::uLongLong var;
 		CORBA::String_var str = this->get_string( propertyName );
 		std::istringstream is(str.in());
 		(istream&) is >> var ;
