@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- ksh -*-
-# $Id: eventGUI,v 1.4 2011/04/27 13:48:43 jschwarz Exp $
+# $Id: eventGUI,v 1.5 2011/05/05 10:30:56 jschwarz Exp $
 #
 # DESCRIPTION
 #    Starts the ACS Event Browser
@@ -56,6 +56,8 @@ $dir/lib/ACS_eventGUI/eventGUI \
      -DACS.repository=$ACS_INTERFACE_REPOSITORY \
      -DACS.manager=$MANAGER_REFERENCE \
      -DORBInitRef.NameService=$ACS_NAME_SERVICE \
-     -DACS.tmp=$ACS_TMP
+     -DACS.tmp=$ACS_TMP \
+     -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB \
+     -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton
 
 
