@@ -29,17 +29,32 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+import alma.acs.concurrent.ThreadLoopRunner;
+import alma.acs.concurrent.ThreadLoopRunner.CancelableRunnable;
+import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
 
 /**
- * The map of alarms
+ * The map of active and inactive alarms.
+ * <P>
+ * Alarms that are not updated after {@link #ALARM_ACTIVITY_TIME} are removed
+ * from the map so that they will be sent again to the alarm service.
+ * <P>
+ * This class does not need any locking because the map contains immutable
+ * {@link AlarmInfo} objects and a {@link ConcurrentHashMap}.
  * 
  * @author acaproni
- *
  */
-public class AlarmsMap extends TimerTask {
+public class AlarmsMap {
 	
 	/**
-	 * The data stored for each alarm in the map
+	 * The data stored for each alarm in the map.
+	 * <P>
+	 * Objects of this class are immutable.
 	 * 
 	 * @author acaproni
 	 */
@@ -48,12 +63,12 @@ public class AlarmsMap extends TimerTask {
 		/**
 		 * The time of the last update of this alarm
 		 */
-		private long time;
+		public final long time;
 		
 		/**
 		 * The state active/terminate of the alarm
 		 */
-		private boolean active;
+		public final boolean active;
 		
 		/**
 		 * Constructor 
@@ -62,52 +77,41 @@ public class AlarmsMap extends TimerTask {
 		 */
 		public AlarmInfo(boolean active) {
 			this.active=active;
-			time=System.currentTimeMillis();
+			this.time=System.currentTimeMillis();
 		}
 		
-		/**
-		 * Update the state of the alarm 
-		 * 
-		 * @param active The new state of the alarm
-		 * @return The previous state of the alarm
-		 */
-		public boolean update(boolean active) {
-			boolean ret=this.active;
-			this.active=active;
-			time=System.currentTimeMillis();
-			return ret;
-		}
-		
-		/**
-		 * 
-		 * @return The current state of the alarm
-		 */
-		public boolean isActive() {
-			return active;
-		}
-		
-		/**
-		 * 
-		 * @return The time when the alarm has been updated the last time
-		 */
-		public long lastUpdateTime() {
-			return time;
+	}
+	
+	/**
+	 * The thread to delete the alarms older then the time interval.
+	 * <P>
+	 * This thread is scheduled by the ThreadLoopRunner.
+	 * 
+	 * @author acaproni
+	 */
+	public class AlarmsMapRunnable extends CancelableRunnable {
+		public void run() {
+			int size=alarms.size();
+			for (String key: alarms.keySet()) {
+				AlarmInfo info = alarms.get(key);
+				if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME*1000>info.time) {
+					alarms.remove(key);
+				}
+				if (shouldTerminate) {
+					return;
+				}
+			}
 		}
 	}
 	
 	/**
-	 * The alarms that have no activity after the following time interval (msecs)
+	 * The alarms that have no activity after the following time interval
 	 * are removed from the map. 
 	 * <P>
 	 * In practice, it means that an alarm with the same state will be sent again
-	 * if it arrives after <code>ALARM_ACTIVITY_TIME</code> msecs.
+	 * if it arrives after <code>ALARM_ACTIVITY_TIME</code> seconds.
 	 */
-	public static final int ALARM_ACTIVITY_TIME=30000;
-	
-	/**
-	 * The timer to remove from the map the alarms older then {@link AlarmsMap#ALARM_ACTIVITY_TIME}
-	 */
-	private final Timer timer = new Timer("AlarmsMap.timer", true);
+	public static final int ALARM_ACTIVITY_TIME=30;
 	
 	/**
 	 * The map of alarms.
@@ -116,14 +120,22 @@ public class AlarmsMap extends TimerTask {
 	 * The value is <code>true</code> if the alarm has been activated,
 	 * <code>false</code> otherwise.
 	 */
-	private final Map<String, AlarmInfo>alarms = 
-		Collections.synchronizedMap(new HashMap<String, AlarmInfo>());
+	private final Map<String, AlarmInfo> alarms = new ConcurrentHashMap<String, AlarmsMap.AlarmInfo>();
+	
+	/**
+	 * The runner for scheduling the thread to delete old alarms
+	 * from the map
+	 */
+	private final ThreadLoopRunner loopRunner;
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param threadFactory The thread factory to schedule the timer loop
+	 * @param logger The logger
 	 */
-	public AlarmsMap() {
-		timer.schedule(this,ALARM_ACTIVITY_TIME, ALARM_ACTIVITY_TIME);
+	public AlarmsMap(ThreadFactory threadFactory, Logger logger) {
+		loopRunner=new ThreadLoopRunner(new AlarmsMapRunnable(), ALARM_ACTIVITY_TIME, TimeUnit.SECONDS, threadFactory, logger);
 	}
 	
 	/**
@@ -131,11 +143,11 @@ public class AlarmsMap extends TimerTask {
 	 * 
 	 * @return the active alarms in the map
 	 */
-	public synchronized Collection<String> getActiveAlarms() {
+	public Collection<String> getActiveAlarms() {
 		Vector<String>ret = new Vector<String>();
 		Set<String> keys=alarms.keySet();
 		for (String key: keys) {
-			if (alarms.get(key).isActive()) {
+			if (alarms.get(key).active) {
 				ret.add(key);
 			}
 		}
@@ -149,15 +161,10 @@ public class AlarmsMap extends TimerTask {
 	 * @return <code>true</code> if the alarm with the give ID was already present 
 	 * 		   in the list and it was active; <code>false</code> otherwise.
 	 */
-	public synchronized boolean raise(String alarmID) {
+	public boolean raise(String alarmID) {
 		AlarmInfo info=alarms.get(alarmID);
-		boolean ret=(info!=null) && (info.isActive());
-		if (info==null) {
-			info = new AlarmInfo(true);
-			alarms.put(alarmID, info);
-		} else {
-			info.update(true);
-		}
+		boolean ret=(info!=null) && (info.active);
+		alarms.put(alarmID, new AlarmInfo(true));
 		return ret;
 	}
 	
@@ -168,58 +175,41 @@ public class AlarmsMap extends TimerTask {
 	 * @return <code>true</code> if the alarm with the give ID was already present 
 	 * 		   in the list and it was terminated; <code>false</code> otherwise.
 	 */
-	public synchronized boolean clear(String alarmID) {
+	public boolean clear(String alarmID) {
 		AlarmInfo info=alarms.get(alarmID);
-		boolean ret=(info!=null) && (!info.isActive());
-		if (info==null) {
-			info = new AlarmInfo(false);
-			alarms.put(alarmID, info);
-		} else {
-			info.update(false);
-		}
+		boolean ret=(info!=null) && (!info.active);
+		alarms.put(alarmID, new AlarmInfo(false));
 		return ret;
 	}
 	
-	public synchronized void close() {
-		timer.cancel();
+	/**
+	 * Start the thread to delete the oldest alarms
+	 */
+	public void start() {
+		loopRunner.setDelayMode(ScheduleDelayMode.FIXED_DELAY);
+		loopRunner.runLoop();
+	}
+	
+	/**
+	 * Shutdown the thread a frees the resources
+	 */
+	public void shutdown() {
+		try {
+			loopRunner.shutdown(1, TimeUnit.SECONDS);
+		} catch (InterruptedException ie) {
+			System.err.println("Error shutting down the AlarmsMap timer task");
+		}
 		alarms.clear();
 	}
 
 	/**
-	 * Remove the alarms older then {@link AlarmsMap#ALARM_ACTIVITY_TIME}
-	 */
-	@Override
-	public synchronized void run() {
-		System.out.println("Timer iteration at "+System.currentTimeMillis()+" with size="+alarms.size());
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized(this) {
-					Vector<String>toRemove=new Vector<String>();
-					for (String key: alarms.keySet()) {
-						AlarmInfo info = alarms.get(key);
-						if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME>info.lastUpdateTime()) {
-							toRemove.add(key);
-						}
-					}
-					int size=toRemove.size();
-					for (String key: toRemove) {
-						alarms.remove(key);
-					}
-					toRemove.clear();
-					System.out.println("Removed "+size+" items; items in map="+alarms.size());
-				}
-			}
-		},"AlarmsMap.run");
-		t.setDaemon(true);
-		t.start();
-	}
-
-	/**
+	 * The size of the map
 	 * 
 	 * @return The size of the map
+	 * 
+	 * @see ConcurrentHashMap#size()
 	 */
-	public synchronized int size() {
+	public int size() {
 		return alarms.size();
 	}
 
@@ -229,7 +219,7 @@ public class AlarmsMap extends TimerTask {
 	 * 
 	 * @return <code>true</code> if the map contains an item with the given ket
 	 */
-	public synchronized boolean containsKey(Object key) {
+	public boolean containsKey(Object key) {
 		return alarms.containsKey(key);
 	}
 
@@ -248,6 +238,4 @@ public class AlarmsMap extends TimerTask {
 	public AlarmInfo get(Object key) {
 		return alarms.get(key);
 	}
-	
-	
 }
