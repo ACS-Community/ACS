@@ -85,7 +85,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	/**
 	 * The alarms sent or terminated
 	 */
-	private final AlarmsMap alarms=new AlarmsMap();
+	private final AlarmsMap alarms;
 
 	/**
 	 * The queue of alarms to be sent when the queuing will be disabled
@@ -135,7 +135,10 @@ public class AlarmSourceImpl implements AlarmSource {
 			throw new IllegalArgumentException("Invalid null ContainerServicesBase");
 		}
 		this.containerServices=containerServices;
+		alarms=new AlarmsMap(containerServices.getThreadFactory(),containerServices.getLogger());
+		alarms.start();
 		alarmSender=new AlarmSender(containerServices);
+		
 	}
 
 	@Override
@@ -271,7 +274,7 @@ public class AlarmSourceImpl implements AlarmSource {
 		if (timer!=null) {
 			timer.cancel();
 		}
-		alarms.close();
+		alarms.shutdown();
 		queue.clear();
 	}
 }
