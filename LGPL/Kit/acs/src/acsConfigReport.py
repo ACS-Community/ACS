@@ -601,35 +601,35 @@ if ((rpmcheck == True) and (standardRedHat ==  True)):
        	expected_package=pack_name+'-'+pack_rel+'-'+pack_ver
       
 	# Special case : could have two versions of the same package installed
+	status = commands.getstatusoutput('rpm -q ' + pack_name )[0]
 	package_nr = commands.getoutput('rpm -q ' + pack_name + ' | wc -l')
-	if int(package_nr) > 1:
+	print "STATUS = " + str(status)
+	if status: 
+		# Package is not installed
+      	   	commands.getoutput('echo "<font color=#ff0000>===> Package '+pack_name+ ' IS NOT INSTALLED</font><br>"  >>  ./report.html')
+      	   	commands.getoutput('echo "<br>"   >>  ./report.html')
+	elif int(package_nr) > 1:
+		# More than 1 rpm with the same name
 		commands.getoutput('echo "<font color=#ff0000>===> There are  ' + package_nr  + ' version of the package ' + pack_name + ' installed</font><br>"  >>  ./report.html')
 		for i in commands.getoutput('rpm -q ' + pack_name).split('\n'):
 			commands.getoutput('echo "<font color=#ff0000>=========> '+i+'</font><br>"  >>  ./report.html')
 		commands.getoutput('echo "<font color=#ff0000>===> Expected Version is : '+expected_package+'<font><br>"  >>  ./report.html')
 	else:
+		# standard situation, 1 package installed
 		installed_package=commands.getoutput('rpm -q ' + pack_name)
-        
-      		#print installed_pack_name, installed_pack_rel, installed_pack_ver
-      		not_installed=result.count('is not installed')
-      		if not_installed == 1:
-	   		# Package is not installed
-      	   		commands.getoutput('echo "<font color=#ff0000>===> Package '+pack_name+'-'+pack_second_part+' IS NOT INSTALLED</font><br>"  >>  ./report.html')
-      	   		commands.getoutput('echo "<br>"   >>  ./report.html')
+		command="rpm -q --queryformat '%{NAME} %{RELEASE} %{VERSION}' " + pack_name
+		commands.getoutput(command)
+      		(installed_pack_name, installed_pack_rel, installed_pack_ver )=commands.getoutput(command).split()
+		installed_package=commands.getoutput('rpm -q ' + pack_name)
+		if pack_rel != installed_pack_rel or pack_ver != installed_pack_ver:
+           		# Package is installed but with the wrong version
+               		commands.getoutput('echo "'+'Package '.ljust(23)+' = '+installed_package+'<br>" >>  ./report.html')
+               		commands.getoutput('echo "<font color=#ff0000>'+'===> Expected Version'.ljust(23)+'   '+expected_package+'</font><br>" >>  ./report.html')
+               		commands.getoutput('echo " <br>" >> ./report.html')
       		else:
-			command="rpm -q --queryformat '%{NAME} %{RELEASE} %{VERSION}' " + pack_name
-			#print pack_name
-      			(installed_pack_name, installed_pack_rel, installed_pack_ver )=commands.getoutput(command).split()
-			installed_package=commands.getoutput('rpm -q ' + pack_name)
-			if pack_rel != installed_pack_rel or pack_ver != installed_pack_ver:
-				#print "==> "+pack_name + ': ==> '+ pack_rel, installed_pack_rel, pack_ver, installed_pack_ver
-           			# Package is installed but with the wrong version
-               			commands.getoutput('echo "'+'Package '.ljust(23)+' = '+installed_package+'<br>" >>  ./report.html')
-               			commands.getoutput('echo "<font color=#ff0000>'+'===> Expected Version'.ljust(23)+'   '+expected_package+'</font><br>" >>  ./report.html')
-               			commands.getoutput('echo " <br>" >> ./report.html')
-      			else:
-         			# Package is installed with the right version and release. 
-         			commands.getoutput('echo "<font color=#000000>'+'Package '.ljust(23)+' = '+installed_package+'</font><br>" >>  ./report.html')
+         		# Package is installed with the right version and release. 
+         		commands.getoutput('echo "<font color=#000000>'+'Package '.ljust(23)+' = '+installed_package+'</font><br>" >>  ./report.html')
+		#sys.exit(-1)
 
 
    package_file.close()
