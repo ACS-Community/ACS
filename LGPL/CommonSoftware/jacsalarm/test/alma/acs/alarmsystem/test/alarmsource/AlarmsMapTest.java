@@ -21,7 +21,6 @@
  */
 package alma.acs.alarmsystem.test.alarmsource;
 
-import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.alarmsystem.source.AlarmsMap;
 import alma.acs.component.client.ComponentClientTestCase;
 
@@ -44,13 +43,14 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		alarmsMap=new AlarmsMap();
+		alarmsMap=new AlarmsMap(this.getContainerServices().getThreadFactory(),this.m_logger);
 		assertNotNull(alarmsMap);
+		alarmsMap.start();
 	}
 
 	@Override
 	protected void tearDown() throws Exception {
-		alarmsMap.close();
+		alarmsMap.shutdown();
 		super.tearDown();
 	}
 	
@@ -81,22 +81,22 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 			alarmsMap.raise(keyBase+t);
 		}
 		assertEquals(10, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME+1000);
+		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
 		assertEquals(0, alarmsMap.size());
 		// Now check if the timer selectively removes items
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
 		assertEquals(10, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME/2+1000);
+		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000/2+1000);
 		assertEquals(10, alarmsMap.size());
 		for (int t=10; t<20; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
 		assertEquals(20, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME/2+1000);
+		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000/2+1000);
 		assertEquals(10, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME/2+1000);
+		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
 		assertEquals(0, alarmsMap.size());
 	}
 	
