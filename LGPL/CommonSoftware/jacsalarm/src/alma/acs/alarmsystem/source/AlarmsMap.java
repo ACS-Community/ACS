@@ -91,7 +91,6 @@ public class AlarmsMap {
 	 */
 	public class AlarmsMapRunnable extends CancelableRunnable {
 		public void run() {
-			int size=alarms.size();
 			for (String key: alarms.keySet()) {
 				AlarmInfo info = alarms.get(key);
 				if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME*1000>info.time) {
