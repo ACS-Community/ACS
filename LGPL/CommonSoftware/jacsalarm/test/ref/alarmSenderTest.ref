@@ -1,0 +1,17 @@
+1 - Java(TM) SE Runtime Environment (build 1.6.0_22-b04)
+1 - Java HotSpot(TM) Server VM (build 17.1-b03, mixed mode)
+1 - 
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] Alarm sent: &lt;TestFF,TestFM1,0&gt; ACTIVE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] Alarm sent: &lt;TestFF,TestFM2,1&gt; TERMINATE
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSenderTest#testAlarmSending] logged out from manager.
+1 - 
+1 - 
+1 - OK (1 test)
+1 - 
