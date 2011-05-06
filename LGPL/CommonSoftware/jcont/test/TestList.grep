@@ -5,7 +5,7 @@ Starting Java application
 Using endorsed jar files in
 DEBUG \[acsStartJava\] ACS
 DEBUG \[acsStartJava\] exported
-ORB options -OAIAddr 
+ORB options -ORBInitRef 
 Running the following command
 Running the container with these arguments
 ^. - [jJ]ava
