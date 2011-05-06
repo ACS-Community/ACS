@@ -31,5 +31,6 @@ SOURCE TheEnvironment
 PROLOGUE ThePrologue
 
 1 alarmsMapTest	"alarmsMapTest"
+2 alarmSenderTest "alarmSenderTest"
 
 EPILOGUE acsutilTATEpilogue
