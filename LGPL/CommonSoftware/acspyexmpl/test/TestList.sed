@@ -35,3 +35,4 @@ s/\(2 -[ ]*Thread=RequestProcessor-\)[0-9]*,/\1xxx,/g
 s/Using DLL path: .*/Using DLL path: xxxx/
 s/\.java:[0-9]*/.java:xxx/g
 s/, line [0-9]*/, line XXX/g
+s/TimeMillis="[0-9]*"/TimeMillis="XX"/g

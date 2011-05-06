@@ -15,12 +15,12 @@
 1 - ----------T--:--:--.--- [cppContainer - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libbaci.so'
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libbaci.so'.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Container 'cppContainer' initialized successfuly
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
-1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libbaci.so'.
 1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [cppContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxxx:xxxx/Manager'
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connected to the Manager.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
@@ -38,11 +38,11 @@
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/somepath/libacsexmplErrorComponentImpl.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'acsexmplErrorComponentImpl'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: NEW -> INITIALIZING logName="LOG_CompAct_Loading_OK" TimeMillis="XX" CompName="ERRORCOMP_CPP"
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/somepath/libacsexmplErrorComponentImpl.so'.
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activate_component] Component 'ERRORCOMP_CPP' activated.
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::activate_component] Component 'ERRORCOMP_CPP' activated. logName="LOG_CompAct_Init_OK" TimeMillis="XX" CompName="ERRORCOMP_CPP"
 1 - ----------T--:--:--.--- [ERRORCOMP_CPP - ErrorComponent::displayMessage] Hello World
 2 - ----------T--:--:--.--- Python Client TestReceiveRemoteException - Example 1: Calls a method that throws an exception.
 2 - ErrorTrace (TimeStamp=xxxx,
@@ -51,257 +51,257 @@
 2 -             Routine=TestReceiveRemoteException,
 2 -             Host=xxxx,
 2 -             Process=xxx,
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 -             Thread=MainThread,
 2 -             Type=10,
 2 -             Code=16,
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
 2 -             Severity=Error,
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion, of depth 3.
 2 -             Data: Name=ErrorDesc, Value=badMethod has thrown the expected exception; )
 2 - 
+2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
 2 - ----------T--:--:--.--- Python Client Error Trace
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -                 File=xxx
-2 -                 Line=xxx
-2 -                 Routine=ErrorComponent::badMethod,
-2 -                 Host=xxxx,
-2 -                 Process=xxxcppContainer,
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2a: Calls a method that returns an OK completion.
-2 -                 Thread=ORBTask,
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion Ok, without error trace
-2 -                 Type=10,
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Example 2b: Calls a method that returns an Error completion, of depth 3.
-2 -                 Code=16,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ----------T--:--:--.--- Python Client TestReceiveRemoteCompletion - Completion with error trace
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 - ErrorTrace (TimeStamp=xxxx,
-2 -                 Severity=Error,
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3a: ExceptionFromCompletion with depth 0
-2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -                 File=xxx
 2 -             File=xxx
-2 - 
-2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3b: ExceptionFromCompletion with depth 3
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: No exception thrown
 2 -             Line=xxx
-2 -         ErrorTrace (TimeStamp=xxxx,
+2 -                 Line=xxx
+2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - Example 3b: ExceptionFromCompletion with depth 3
+2 -                 Routine=ErrorComponent::badMethod,
 2 -             Routine=ErrorComponent::createCompletion,
-2 -                     File=xxx
+2 -                 Host=xxxx,
 2 -             Host=xxxx,
-2 -                     Line=xxx
+2 -                 Process=xxxcppContainer,
 2 -             Process=xxxcppContainer,
-2 - ----------T--:--:--.--- Python Client Error Trace
 2 - ----------T--:--:--.--- Python Client testExceptionFromCompletion - OK: ACSErrTypeCommon.GenericErrorEx exception thrown
-2 -                     Routine=ErrorComponent::errorTrace,
+2 -                 Thread=ORBTask,
 2 -             Thread=ORBTask,
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 - ErrorTrace (TimeStamp=xxxx,
-2 -                     Host=xxxx,
+2 -                 Type=10,
 2 -             Type=10,
 2 - ----------T--:--:--.--- Python Client testTypeException - Example 4a: TypeException with depth 0
+2 -                 Code=16,
 2 -             Code=16,
 2 -             File=xxx
-2 -                     Process=xxxcppContainer,
-2 - ----------T--:--:--.--- Python Client testTypeException - Example 4b: TypeException with depth 3
 2 - ----------T--:--:--.--- Python Client testTypeException - OK: No exception thrown
 2 -             Line=xxx
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                     Thread=ORBTask,
-2 - ----------T--:--:--.--- Python Client testTypeException - OK: ACSErrTypeCommonEx exception thrown
+2 - ----------T--:--:--.--- Python Client testTypeException - Example 4b: TypeException with depth 3
 2 -             Routine=ErrorComponent::exceptionFromCompletion,
+2 -                 Severity=Error,
 2 -             Severity=Error,
-2 -                     Type=10,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 -                     Code=16,
+2 - ----------T--:--:--.--- Python Client testTypeException - OK: ACSErrTypeCommonEx exception thrown
 2 -             Data: Name=ErrorDesc, Value=Building a Completion with a previous errorTrace; )
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -             Host=xxxx,
+2 - 
+2 - 
+2 - ----------T--:--:--.--- Python Client Error Trace
 2 - ErrorTrace (TimeStamp=xxxx,
-2 -             Host=xxxx,
-2 - 
+2 -             Process=xxxcppContainer,
 2 - ----------T--:--:--.--- Python Client testCORBASystemException - Example 5: CORBA exception
-2 -             File=xxx
-2 -             Process=xxxcppContainer,
-2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -         ErrorTrace (TimeStamp=xxxx,
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -             Line=xxx
-2 -                     Severity=Error,
+2 -             File=xxx
 2 -             Thread=ORBTask,
-2 -                     Data: Name=ErrorDesc, Value=Generated multi level exception level; )
+2 -                     File=xxx
 2 -                 File=xxx
-2 -             Routine=ErrorComponent::badMethod,
+2 -             Line=xxx
 2 -             Type=10,
-2 - 
 2 -             Code=16,
-2 -             Host=xxxx,
+2 -                     Line=xxx
 2 -                 Line=xxx
-2 -             ErrorTrace (TimeStamp=xxxx,
-2 -             Process=xxxcppContainer,
+2 -             Routine=ErrorComponent::badMethod,
+2 -             Host=xxxx,
+2 -                     Routine=ErrorComponent::errorTrace,
 2 -                 Routine=ErrorComponent::errorTrace,
 2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                         File=xxx
+2 -                     Host=xxxx,
 2 -                 Host=xxxx,
+2 -             Process=xxxcppContainer,
 2 -             Severity=Error,
-2 -             Thread=ORBTask,
-2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ----------T--:--:--.--- Python Client testCORBASystemException - OK: CORBA.SystemException exception received
 2 -             Data: Name=ErrorDesc, Value=Exception generated by adding an error trace from a completion; )
-2 -                         Line=xxx
+2 -                     Process=xxxcppContainer,
 2 -                 Process=xxxcppContainer,
-2 -             Type=10,
+2 -             Thread=ORBTask,
 2 - 
-2 -             Code=16,
-2 - ErrorTrace (TimeStamp=xxxx,
-2 -                         Routine=ErrorComponent::buildErrorTrace,
+2 - ----------T--:--:--.--- Python Client testCORBASystemException - OK: CORBA.SystemException exception received
+2 -                     Thread=ORBTask,
 2 -                 Thread=ORBTask,
+2 -             Type=10,
+2 - ----------T--:--:--.--- Python Client Error Trace
+2 -             Code=16,
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -             File=xxx
-2 -                         Host=xxxx,
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -                     Type=10,
 2 -                 Type=10,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
+2 -                     Code=16,
 2 -                 Code=16,
 2 -                 File=xxx
-2 -             Line=xxx
-2 -                         Process=xxxcppContainer,
-2 -             Severity=Error,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
-2 -             Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -             File=xxx
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 Line=xxx
-2 -             Routine=testCORBASystemException,
+2 -             Line=xxx
+2 -             Severity=Error,
+2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                         Thread=ORBTask,
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6a: completionFromCompletion with depth 0
+2 -             Data: Name=ErrorDesc, Value=Generated multi level exception; )
+2 -                 Routine=ErrorComponent::createCompletion,
+2 -             Routine=testCORBASystemException,
+2 -                     Severity=Error,
+2 -                 Severity=Error,
+2 - 
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Completion Ok, without error trace
+2 -                     Data: Name=ErrorDesc, Value=Generated multi level exception level; )
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception level; )
+2 -                 Host=xxxx,
+2 -             Host=xxxx,
+2 - 
 2 - 
 2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - Example 6b: completionFromCompletion with depth 3
-2 -             Host=xxxx,
-2 -                 Routine=ErrorComponent::createCompletion,
-2 -                 Severity=Error,
-2 -                         Type=10,
-2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - OK: Completion with error trace
-2 -                         Code=16,
-2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception level; )
 2 -     ErrorTrace (TimeStamp=xxxx,
-2 -                 Host=xxxx,
 2 -             Process=xxx,
-2 - 
+2 -                 Process=xxxcppContainer,
 2 - ----------T--:--:--.--- Python Client Error Trace
-2 - ErrorTrace (TimeStamp=xxxx,
+2 - ----------T--:--:--.--- Python Client testCompletionFromCompletion - OK: Completion with error trace
+2 -             ErrorTrace (TimeStamp=xxxx,
+2 -         ErrorTrace (TimeStamp=xxxx,
 2 -                 File=xxx
-2 -                 Process=xxxcppContainer,
-2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
 2 -             Thread=MainThread,
-2 - ----------T--:--:--.--- Python Client testOutCompletion - Example 8: outCompletion
-2 -         ErrorTrace (TimeStamp=xxxx,
-2 -             File=xxx
-2 -                 Line=xxx
-2 -                         Severity=Error,
 2 -                 Thread=ORBTask,
-2 -             Type=10,
-2 - ----------T--:--:--.--- Python Client testOutCompletion - Completion Ok, without error trace
-2 -             Code=16,
-2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 - ErrorTrace (TimeStamp=xxxx,
+2 -                         File=xxx
 2 -                     File=xxx
-2 -             Line=xxx
-2 -                 Routine=ErrorComponent::errorTrace,
+2 -                 Line=xxx
 2 -                 Type=10,
-2 - 
+2 -             Type=10,
+2 - ----------T--:--:--.--- Python Client testOutCompletion - Example 8: outCompletion
 2 -                 Code=16,
-2 -                 Host=xxxx,
+2 -             Code=16,
+2 -             File=xxx
+2 -                         Line=xxx
 2 -                     Line=xxx
-2 -             Routine=ErrorComponent::completionFromCompletion,
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             Host=xxxx,
-2 -                 Process=xxxcppContainer,
+2 -                 Routine=ErrorComponent::errorTrace,
+2 - ----------T--:--:--.--- Python Client testOutCompletion - Completion Ok, without error trace
+2 -                 Host=xxxx,
+2 -             Line=xxx
+2 -                         Routine=ErrorComponent::buildErrorTrace,
 2 -                     Routine=ErrorComponent::buildErrorTrace,
-2 -             Severity=Error,
 2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
-2 -             Data: )
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                         Host=xxxx,
 2 -                     Host=xxxx,
-2 -             Process=xxxcppContainer,
+2 -                 Process=xxxcppContainer,
+2 -             Routine=ErrorComponent::completionFromCompletion,
 2 -                 Severity=Error,
+2 -             Severity=Error,
+2 -             Data: )
+2 -                 Data: Name=ErrorDesc, Value=Building a Completion with a previous errorTrace; )
+2 -             Host=xxxx,
+2 -                         Process=xxxcppContainer,
+2 -                     Process=xxxcppContainer,
 2 -                 Thread=ORBTask,
 2 - 
-2 -                 Data: Name=ErrorDesc, Value=Building a Completion with a previous errorTrace; )
-2 -                     Process=xxxcppContainer,
-2 -             Thread=ORBTask,
-2 -                 Type=10,
 2 - 
-2 -                 Code=16,
-2 -     ErrorTrace (TimeStamp=xxxx,
+2 -             Process=xxxcppContainer,
+2 -                         Thread=ORBTask,
 2 -                     Thread=ORBTask,
-2 -             Type=10,
-2 -             Code=16,
+2 -                 Type=10,
+2 -                 Code=16,
 2 -         ErrorTrace (TimeStamp=xxxx,
-2 -                 File=xxx
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -             Thread=ORBTask,
+2 -                         Type=10,
 2 -                     Type=10,
+2 -                         Code=16,
 2 -                     Code=16,
 2 -                     File=xxx
+2 -                 File=xxx
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
+2 -             Type=10,
+2 -             Code=16,
 2 -                 Line=xxx
-2 -                 Severity=Error,
-2 -             ShortDescrip=An error occurred, see ErrorDesc member,
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: OPERATIONAL -> DESTROYING
-2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception level; )
 2 -                     Line=xxx
-2 -                 Routine=testCORBASystemException,
-2 -             Severity=Error,
+2 -                 Severity=Error,
+2 -                         ShortDescrip=An error occurred, see ErrorDesc member,
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Data: Name=ErrorDesc, Value=Generated multi level exception level; )
+2 -                     Routine=ErrorComponent::buildErrorTrace,
+2 -                 Routine=testCORBASystemException,
+2 -                         Severity=Error,
+2 -                     Severity=Error,
+2 -             ShortDescrip=An error occurred, see ErrorDesc member,
+2 - 
+2 -                         Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
+2 -                     Host=xxxx,
+2 -                 Host=xxxx,
+2 -             Severity=Error,
+2 - 
 2 - 
 2 -             Data: Name=ErrorDesc, Value=Put an error trace in completionFromCompletion; )
-2 -                 Host=xxxx,
-2 -                     Routine=ErrorComponent::buildErrorTrace,
-2 -                     Severity=Error,
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'ERRORCOMP_CPP' etherealized.
-2 - 
-2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
 2 -         ErrorTrace (TimeStamp=xxxx,
-2 -                     Host=xxxx,
 2 -                 Process=xxx,
-1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libacsexmplErrorComponentImpl.so'.
-2 - 
-2 -     ErrorTrace (TimeStamp=xxxx,
-2 -                     File=xxx
 2 -                     Process=xxxcppContainer,
+2 - 
+2 -                     File=xxx
 2 -                 Thread=MainThread,
-2 -                 File=xxx
-2 -                     Line=xxx
 2 -                     Thread=ORBTask,
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [cppContainer-GL - ] Switched state of component ERRORCOMP_CPP: OPERATIONAL -> DESTROYING
+2 -     ErrorTrace (TimeStamp=xxxx,
+2 -                     Line=xxx
+2 -                     Type=10,
 2 -                 Type=7,
 2 -                 Code=0,
-2 -                 Line=xxx
-2 -                     Routine=ErrorComponent::buildErrorTrace,
-2 -                     Type=10,
 2 -                     Code=16,
+2 -                 File=xxx
+2 -                     Routine=ErrorComponent::buildErrorTrace,
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::deactivate_component] Component 'ERRORCOMP_CPP' deactivated.
+1 - ----------T--:--:--.--- [cppContainer - maci::ContainerImpl::etherealizeComponent] Component 'ERRORCOMP_CPP' etherealized.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libacsexmplErrorComponentImpl.so'.
 2 -                     Host=xxxx,
-2 -                 Routine=ErrorComponent::createCompletion,
-2 -                 ShortDescrip=A Python exception,
-2 -                 Host=xxxx,
-2 -                     Process=xxxcppContainer,
-2 -                 Severity=Error,
+2 -                 Line=xxx
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
-2 -                 Process=xxxcppContainer,
+2 -                 ShortDescrip=A Python exception,
+2 -                     Process=xxxcppContainer,
+2 -                 Routine=ErrorComponent::createCompletion,
 2 -                     Severity=Error,
-2 -                     Thread=ORBTask,
+2 -                 Severity=Error,
 2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
-2 -   File "/somepath/acspyexmplClientErrorComponent, line XXX, in testCORBASystemException
-2 -                 Thread=ORBTask,
-2 -                     Type=10,
+2 -                 Host=xxxx,
+2 -                     Thread=ORBTask,
 2 - 
+2 -   File "/somepath/acspyexmplClientErrorComponent, line XXX, in testCORBASystemException
+2 -                 Process=xxxcppContainer,
+2 -                     Type=10,
 2 -                     Code=16,
 2 -     self.foo.corbaSystemException()
-2 -                 Type=10,
-2 -                 Code=16,
+2 -                 Thread=ORBTask,
 2 -   File "/somepath/acsexmplErrorComponent_idl.py, line XXX, in corbaSystemException
 2 -                     ShortDescrip=An error occurred, see ErrorDesc member,
+2 -                 Type=10,
+2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
+2 -                 Code=16,
 2 -     return _omnipy.invoke(self, "corbaSystemException", _0_acsexmplErrorComponent.ErrorComponent._d_corbaSystemException, args)
 2 -                     Severity=Error,
-2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
-2 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client
 2 - BAD_PARAM: CORBA.BAD_PARAM(0x2, CORBA.COMPLETED_NO)
 2 -                     Data: Name=ErrorDesc, Value=Bottom of error trace; )
-2 -                 Severity=Error,
+2 -                 ShortDescrip=An error occurred, see ErrorDesc member,
 2 - 
 2 - ; )
-2 -                 Data: Name=ErrorDesc, Value=Building a Completion with a previous errorTrace; )
+2 -                 Severity=Error,
 2 - 
+2 -                 Data: Name=ErrorDesc, Value=Building a Completion with a previous errorTrace; )
 2 - 
 2 -         ErrorTrace (TimeStamp=xxxx,
 2 -                     File=xxx
@@ -321,7 +321,7 @@
 1 - ----------T--:--:--.--- [cppContainer - ContainerImpl::run] Container stopping...
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Stopping container... 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Request to unload 'libbaci.so'.
+1 - /somepath/libbaci.so
 1 - ----------T--:--:--.--- [cppContainer-GL - ] Container stopped.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/somepath/libbaci.so'.
-1 - /somepath/libbaci.so
 1 - ----------T--:--:--.--- INFO [acsStartContainer] Container: 'cppContainer' exited with code: 0.
