@@ -846,25 +846,30 @@ public class ContainerServicesImpl implements ContainerServices
 		final boolean forcibly = false;
 		
 		if (curl == null) {
-			m_logger.info("Invalid curl 'null', nothing to release.");
+			String msg = "Invalid curl 'null', nothing to release.";
+			m_logger.log(( callback == null ? AcsLogLevel.INFO : AcsLogLevel.DEBUG ), msg);
+			if (callback != null) {
+				callback.errorNoPermission(msg);
+			}
 			return;
 		}
 		
 		org.omg.CORBA.Object stub = null;
 		// This use of synchronized makes the code thread safe without locking across the remote call to manager#release_component etc
 		synchronized (m_usedComponentsMap) {
-			if (!m_usedComponentsMap.containsKey(curl))
-			{
-				if (m_usedNonStickyComponentsMap.containsKey(curl)) {
-					m_logger.info("ignoring request by client '" + m_clientName + 
-							"' to release component '" + curl + "' because the reference is non-sticky and does not need to be released.");				
-				}
-				else {
-					m_logger.info("ignoring request by client '" + m_clientName + 
-										"' to release other component with unknown curl='" + curl + "'.");
+			if (!m_usedComponentsMap.containsKey(curl)) {
+				String msg = "ignoring request by client '" + m_clientName + (
+							m_usedNonStickyComponentsMap.containsKey(curl) 
+							? "' to release component '" + curl + "' because the reference is non-sticky and does not need to be released."
+							: "' to release other component with unknown curl='" + curl + "'."
+							);
+				m_logger.log(( callback == null ? AcsLogLevel.INFO : AcsLogLevel.DEBUG ), msg);
+				if (callback != null) {
+					callback.errorNoPermission(msg);
 				}
 				return;
 			}
+			
 			// the CURL is in the map and gets removed now
 			stub = m_usedComponentsMap.get(curl);
 			m_usedComponentsMap.remove(curl);
