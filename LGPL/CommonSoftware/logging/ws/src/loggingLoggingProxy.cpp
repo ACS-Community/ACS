@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
 *
-* "@(#) $Id: loggingLoggingProxy.cpp,v 1.81 2010/10/29 15:37:06 javarias Exp $"
+* "@(#) $Id: loggingLoggingProxy.cpp,v 1.82 2011/05/06 23:19:02 javarias Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -59,7 +59,7 @@
 #define LOG_NAME "Log"
 #define DEFAULT_LOG_FILE_NAME "acs_local_log"
 
-ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.81 2010/10/29 15:37:06 javarias Exp $");
+ACE_RCSID(logging, logging, "$Id: loggingLoggingProxy.cpp,v 1.82 2011/05/06 23:19:02 javarias Exp $");
 unsigned int LoggingProxy::setClrCount_m = 0;
 bool LoggingProxy::initialized = false;
 int LoggingProxy::instances = 0;
@@ -1666,7 +1666,7 @@ LoggingProxy::init(LoggingProxy *loggingProxy) {
 
  //check if callback has been already set for this thread
  // for some reson  it's problem (at thread shutdown) if we set the callback two times
-    if (ACE_LOG_MSG->msg_callback () == 0)
+//    if (ACE_LOG_MSG->msg_callback () == 0)
 	{
 	ACE_LOG_MSG->clr_flags (ACE_Log_Msg::STDERR);
 	ACE_LOG_MSG->set_flags (ACE_Log_Msg::MSG_CALLBACK);
