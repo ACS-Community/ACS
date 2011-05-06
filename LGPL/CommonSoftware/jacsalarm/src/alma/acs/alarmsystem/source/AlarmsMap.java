@@ -44,8 +44,10 @@ import alma.acs.concurrent.ThreadLoopRunner.ScheduleDelayMode;
  * Alarms that are not updated after {@link #ALARM_ACTIVITY_TIME} are removed
  * from the map so that they will be sent again to the alarm service.
  * <P>
- * This class does not need any locking because the map contains immutable
- * {@link AlarmInfo} objects and a {@link ConcurrentHashMap}.
+ * The class is thread safe i.e. the methods can be called without any further locking.
+ * <P>
+ * {@link AlarmsMap} does not need any locking because the map contains immutable
+ * {@link AlarmInfo} objects and the map itself is implemented by a {@link ConcurrentHashMap}.
  * 
  * @author acaproni
  */
