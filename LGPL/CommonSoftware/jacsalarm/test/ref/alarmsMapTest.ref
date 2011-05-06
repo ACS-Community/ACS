@@ -1,0 +1,47 @@
+1 - 
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClearMap] logged out from manager.
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAutoRemoval] logged out from manager.
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testRaise] logged out from manager.
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testClear] logged out from manager.
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmUpdate] logged out from manager.
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] -------------------------------
+1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] ComponentClientTestCase#setUp()
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] calling orb.resolve_initial_references
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] POA activated
+1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] Alarm system type: ACS
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmsMapTest#testAlarmReplacement] logged out from manager.
+1 - 
+1 - 
+1 - OK (6 tests)
+1 - 

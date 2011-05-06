@@ -21,7 +21,10 @@
  */
 package alma.acs.alarmsystem.test.alarmsource;
 
+import java.util.Collection;
+
 import alma.acs.alarmsystem.source.AlarmsMap;
+import alma.acs.alarmsystem.source.AlarmsMap.AlarmInfo;
 import alma.acs.component.client.ComponentClientTestCase;
 
 public class AlarmsMapTest extends ComponentClientTestCase {
@@ -146,6 +149,53 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 			assertTrue("Key not in the map", alarmsMap.containsKey(keyBase+t));
 		}
 		assertEquals(11, alarmsMap.size());
+	}
+	
+	/**
+	 * Activate and deactivate an alarm to check if its state
+	 * has been updated
+	 * @throws Exception
+	 */
+	public void testAlarmUpdate() throws Exception {
+		alarmsMap.clear();
+		// Clear one alarm and check if it is present in the list
+		String keyBase="UpdateFF:UpdateFM:1";
+		alarmsMap.clear(keyBase);
+		assertEquals(1, alarmsMap.size());
+		AlarmInfo info=alarmsMap.get(keyBase);
+		assertNotNull(info);
+		assertFalse("The alarm shoud not be active",info.active);
+		Thread.sleep(500);
+		// Set the alarm
+		alarmsMap.raise(keyBase);
+		assertEquals(1, alarmsMap.size());
+		AlarmInfo info2=alarmsMap.get(keyBase);
+		assertNotNull(info2);
+		assertTrue("The alarm shoud be active",info2.active);
+		assertTrue("time not updated", info.time!=info2.time);
+	}
+	
+	/**
+	 * Check if the alarms raised/cleared are correctly replaced
+	 */
+	public void testAlarmReplacement() {
+		alarmsMap.clear();
+		// Clear one alarm and check if it is present in the list
+		String keyBase="ReplaceFF:replaceFM:";
+		// Adds 10 alarms
+		for (int t=1; t<=10; t++) {
+			alarmsMap.raise(keyBase+t);
+		}
+		assertEquals(10, alarmsMap.size());
+		// Clear 5 alarms
+		for (int t=2; t<=10; t+=2) {
+			alarmsMap.clear(keyBase+t);
+		}
+		assertEquals(10, alarmsMap.size());
+		Collection<String> actives=alarmsMap.getActiveAlarms();
+		for (String active: actives) {
+			assertTrue(alarmsMap.get(active).active);
+		}
 	}
 
 }
