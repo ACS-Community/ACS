@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: enumpropROImpl.h,v 1.50 2009/09/15 09:05:59 bjeram Exp $"
+* "@(#) $Id: enumpropROImpl.h,v 1.51 2011/05/06 21:04:47 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -244,12 +244,14 @@ public:
     /**
      * Sets alarm fault family
      * @param fault family
+     * @deprecated
      */
     void setAlarmFaultFamily(const char* ff);
 
     /**
      * Sets alarm fault member
      * @param fault member
+     * @deprecated
      */
     void setAlarmFaultMember(const char* fm);
 
