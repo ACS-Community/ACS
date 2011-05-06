@@ -14,6 +14,7 @@ manager reference not yet available in method loginToManager
 Manager login done
 FINER
 FINEST
+DELOUSE
 [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F] [0-9A-F][0-9A-F]
 will retrieve remote component
 retrieved successfully
@@ -23,3 +24,4 @@ Don't need to create servant for offshoot
 successfully activated offshoot of type
 successfully deactivated offshoot of type
 ACS.log.minlevel.namedloggers not defined
+Using endorsed jar files in
