@@ -263,7 +263,7 @@ public class AlarmSourceImpl implements AlarmSource {
 		AlarmToQueue[] temp = new AlarmToQueue[queue.size()];
 		queue.toArray(temp);
 		for (AlarmToQueue alarm: temp) {
-			setAlarm(alarm.faultFamily, alarm.faultMember, alarm.faultCode, alarm.properties, alarm.active);
+			setAlarm(alarm.faultFamily, alarm.faultMember, alarm.faultCode, alarm.getProperties(), alarm.active);
 		}
 		queue.clear();
 	}
