@@ -22,19 +22,24 @@
 package alma.acs.alarmsystem.source;
 
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 /**
  * A queue of alarms.
  * <P>The alarms in the vector are ordered following their arrival time
  * i.e. the oldest item is in the head.
+ * <P>
+ * The class is thread safe.
  * 
  * @author acaproni
  *
  */
-public class AlarmQueue extends Vector<Vector> {
+public class AlarmQueue extends Vector<AlarmQueue.AlarmToQueue> {
 	/**
-	 * An alarm to be queued
+	 * An alarm to be queued.
+	 * <P>
+	 * The object is immutable.
 	 * 
 	 * @author acaproni
 	 *
@@ -43,7 +48,7 @@ public class AlarmQueue extends Vector<Vector> {
 		public final String faultFamily;
 		public final String faultMember;
 		public final int faultCode;
-		public final Properties properties;
+		private final Properties properties;
 		public final boolean active;
 
 		/**
@@ -65,15 +70,44 @@ public class AlarmQueue extends Vector<Vector> {
 			this.faultFamily = faultFamily;
 			this.faultMember = faultMember;
 			this.faultCode = faultCode;
-			this.properties = properties;
 			this.active = active;
+			if (properties==null) {
+				this.properties=null;
+			} else {
+				this.properties=new Properties();
+				copyProperties(properties, this.properties);
+			}
+		}
+		
+		/**
+		 * Return a copy of the properties to avoid publishing {@link #properties}, keeping
+		 * the object immutable.
+		 *  
+		 * @return A copy of the properties; It can be <code>null</code>
+		 */
+		public Properties getProperties() {
+			if (properties==null) {
+				return null;
+			}
+			Properties ret = new Properties();
+			copyProperties(properties, ret);
+			return ret;
+		}
+		
+		private void copyProperties(Properties src, Properties dest) {
+			if (src==null) {
+				throw new NullPointerException("Invalid null source properties");
+			}
+			if (dest==null) {
+				throw new NullPointerException("Invalid null destintaion properties");
+			}
+			Set<String> names=src.stringPropertyNames(); 
+			for (String propertyName: names) {
+				String value=src.getProperty(propertyName);
+				dest.setProperty(propertyName, value);
+			}
 		}
 	}
-
-	/**
-	 * The queue of alarms
-	 */
-	private final Vector<AlarmToQueue> queue = new Vector<AlarmToQueue>();
 	
 	/**
 	 * 
@@ -83,11 +117,11 @@ public class AlarmQueue extends Vector<Vector> {
 	 * @param properties The user properties
 	 * @param active The state active/terminate
 	 */
-	public synchronized void add(String faultFamily, 
+	public void add(String faultFamily, 
 			String faultMember,
 			int faultCode, 
 			Properties properties, 
 			boolean active) {
-		queue.add(new AlarmToQueue(faultFamily, faultMember, faultCode, properties, active));
+		add(new AlarmToQueue(faultFamily, faultMember, faultCode, properties, active));
 	}
 }
