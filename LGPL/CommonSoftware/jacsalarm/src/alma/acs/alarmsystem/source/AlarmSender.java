@@ -27,7 +27,6 @@ import java.util.Properties;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.AcsLogger;
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
 import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
 import alma.alarmsystem.source.ACSAlarmSystemInterface;
@@ -35,7 +34,7 @@ import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
 import alma.alarmsystem.source.ACSFaultState;
 
 /**
- * A support class for sending alarms
+ * A support class for sending alarms.
  * 
  * @author acaproni
  *
@@ -87,7 +86,6 @@ public class AlarmSender {
 			boolean active) {
 		if (closed) {
 			StringBuilder str = new StringBuilder("Alarm factory closed alarm sending disabled");
-			
 			containerServices.getLogger().log(AcsLogLevel.WARNING,str.toString()); 
 			return;
 		}
@@ -107,12 +105,7 @@ public class AlarmSender {
 				fs.setDescriptor(ACSFaultState.TERMINATE);
 			}
 			fs.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-
-			Properties props = new Properties();
-			props.setProperty(ACSFaultState.ASI_PREFIX_PROPERTY, "prefix");
-			props.setProperty(ACSFaultState.ASI_SUFFIX_PROPERTY, "suffix");
-			props.setProperty("TEST_PROPERTY", "TEST_VALUE");
-			fs.setUserProperties(props);
+			fs.setUserProperties(properties);
 
 			source.push(fs);
 		} catch (Exception e) {
