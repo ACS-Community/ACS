@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  * and send them to the alarm service the method <code>flushAlarms()</code> 
  * must be executed.
  * The queuing of the alarms has the advantage that if an alarm is activated
- * and the deactivated during the queuing time, it is not sent to the
+ * and then deactivated during the queuing time, it is not sent to the
  * alarm service.
  * This functionalities can be useful for example when starting up a piece
  * of software connected to an hardware device. In that case it is quite 
@@ -57,7 +57,6 @@ import java.util.concurrent.TimeUnit;
  * With the queuing the operator does not receive this kind of (false)
  * alarms. It is left to developer the responsibility to enable/disable
  * the queuing at the right moment.
- * 
  * 
  * @author acaproni
  */
@@ -227,7 +226,12 @@ public interface AlarmSource {
 	public void enableAlarms();
 	
 	/**
-	 * Called when terminated using this class
+	 * Lifecycle: this method must be called before using this class.
+	 */
+	public void start();
+	
+	/**
+	 * Lifecycle: tearDown must be called when terminated using this class
 	 */
 	public void tearDown();
 }
