@@ -27,6 +27,15 @@ import alma.acs.alarmsystem.source.AlarmsMap;
 import alma.acs.alarmsystem.source.AlarmsMap.AlarmInfo;
 import alma.acs.component.client.ComponentClientTestCase;
 
+/**
+ * The test for the {@link AlarmsMap}.
+ * <P>
+ * The test is done entirely by junit by
+ * means of assert.
+ * 
+ * @author acaproni
+ *
+ */
 public class AlarmsMapTest extends ComponentClientTestCase {
 	
 	/**

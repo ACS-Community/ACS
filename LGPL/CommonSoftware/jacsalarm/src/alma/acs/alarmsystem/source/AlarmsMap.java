@@ -22,12 +22,8 @@
 package alma.acs.alarmsystem.source;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
@@ -95,6 +91,8 @@ public class AlarmsMap {
 		public void run() {
 			for (String key: alarms.keySet()) {
 				AlarmInfo info = alarms.get(key);
+				// Info can't be null because this is the only
+				// thread removing items from the map
 				if (System.currentTimeMillis()-ALARM_ACTIVITY_TIME*1000>info.time) {
 					alarms.remove(key);
 				}
