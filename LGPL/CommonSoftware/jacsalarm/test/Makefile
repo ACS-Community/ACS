@@ -81,7 +81,7 @@ lllll_OBJECTS   =
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = ThePrologue alarmsMapTest alarmSenderTest
+SCRIPTS         = ThePrologue alarmsMapTest alarmSenderTest alarmSourceTest
 SCRIPTS_L       =
 
 #
