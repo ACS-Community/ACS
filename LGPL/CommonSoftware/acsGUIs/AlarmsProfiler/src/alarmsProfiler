@@ -1,6 +1,6 @@
 #!/bin/bash
 # -*- ksh -*-
-# $Id: alarmsProfiler,v 1.3 2011/05/06 22:18:48 acaproni Exp $
+# $Id: alarmsProfiler,v 1.4 2011/05/08 20:07:29 acaproni Exp $
 #
 # DESCRIPTION
 #    Starts the Tmcdb Explorer
@@ -42,6 +42,10 @@ do
 		break;
 	fi
 done
+
+if [ -d ${workspace_dir} ]; then
+    rm -rf  ${workspace_dir} 
+fi
 
 $dir/lib/AlarmsProfiler/alarmsProfiler \
 	-data ${workspace_dir} \
