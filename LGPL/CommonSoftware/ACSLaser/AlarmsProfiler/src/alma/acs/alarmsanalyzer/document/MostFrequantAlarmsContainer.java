@@ -213,12 +213,15 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 	public void setTableContent(TableData tData) {
 		Collection<AlarmActNumber> vals = mostFrequentAlarms.values();
 		for (AlarmActNumber val: vals) {
+			if (val==null) {
+				continue;
+			}
 			String[] row = new String[5];
 			row[0]=val.getAlarmID();
 			row[1]=Long.valueOf(val.getNumActivation()).toString();
-			row[2]=val.getLastActivationTime().toString();
+			row[2]=(val.getLastActivationTime()!=null)?val.getLastActivationTime().toString():"";
 			row[3]=Long.valueOf(val.getNumTermination()).toString();
-			row[4]=val.getLastTerminationTime().toString();
+			row[4]=(val.getLastTerminationTime()!=null)?val.getLastTerminationTime().toString():"";
 			tData.addRowData(row);
 		}
 	}
