@@ -337,7 +337,8 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 			row[0]=val.ID;
 			row[1]=Integer.valueOf(val.getNumActive()).toString();
 			row[2]=Integer.valueOf(val.getNumTerminate()).toString();
-			row[3]=val.getTimestamp().toString();
+			row[3]=Integer.valueOf(val.getTotAlarms()).toString();
+			row[4]=val.getTimestamp().toString();
 			tData.addRowData(row);
 		}
 	}
