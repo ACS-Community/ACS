@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm profiler RCP" id="org.eclipse.epp.package.rcp.product" application="alma.acs.alarmsanalyzer.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="Alarm profiler RCP" uid="aalma.acs.alarmsanalyzer.product" id="org.eclipse.epp.package.rcp.product" application="alma.acs.alarmsanalyzer.application" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -24,7 +24,7 @@
 
    <plugins>
       <plugin id="alma.acs.alarmsanalyzer"/>
-      <plugin id="alma.acs.jars"/>
+      <plugin id="alma.acs.jars" fragment=""/>
       <plugin id="com.ibm.icu"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -47,7 +47,7 @@
       <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
-      <plugin id="org.swtchart"/>
+      <plugin id="org.swtchart" fragment=""/>
    </plugins>
 
 
