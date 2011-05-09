@@ -333,7 +333,7 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 	public void setTableContent(TableData tData) {
 		Collection<ChatteringAlarm> vals = chatteringAlarms.values();
 		for (ChatteringAlarm val: vals) {
-			String[] row = new String[4];
+			String[] row = new String[5];
 			row[0]=val.ID;
 			row[1]=Integer.valueOf(val.getNumActive()).toString();
 			row[2]=Integer.valueOf(val.getNumTerminate()).toString();
