@@ -752,7 +752,7 @@ public class ContainerServicesImpl implements ContainerServices
 			m_logger.log(Level.FINE, errMsg, ex);
 			throw new AcsJContainerServicesEx(ex);
 		}
-        catch (Throwable thr) {
+		catch (Throwable thr) {
 			String msg = "Unexpectedly failed to get the CDB reference!";
 			m_logger.log(Level.FINE, msg, thr);
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
@@ -866,6 +866,7 @@ public class ContainerServicesImpl implements ContainerServices
 				m_logger.log(( callback == null ? AcsLogLevel.INFO : AcsLogLevel.DEBUG ), msg);
 				if (callback != null) {
 					callback.errorNoPermission(msg);
+					callback.callOver();
 				}
 				return;
 			}
