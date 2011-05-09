@@ -18,7 +18,7 @@
  *    License along with this library; if not, write to the Free Software
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: cdbDAONode.cpp,v 1.12 2011/05/05 02:07:20 tstaig Exp $"
+ * "@(#) $Id: cdbDAONode.cpp,v 1.13 2011/05/09 18:21:04 tstaig Exp $"
  *
  * who       when        what
  * --------  ----------  ----------------------------------------------
@@ -409,30 +409,30 @@ CDB::doubleSeq * DAONode::get_double_seq (const char * propertyName)
 
 // Specialization for double
 template<>
-double DAONode::getValue(const char * propertyName)
+CORBA::Double DAONode::getValue(const char * propertyName)
 {
 	return this->get_double( propertyName );
 }
 //we have to cast because from DAO we get just get_double
 template<>
-float DAONode::getValue(const char * propertyName)
+CORBA::Float DAONode::getValue(const char * propertyName)
 {
-	return static_cast<float>(this->get_double( propertyName ));
+	return static_cast<CORBA::Float>(this->get_double( propertyName ));
 }
 
 // Specialization for long
 template<>
-long DAONode::getValue(const char * propertyName)
+CORBA::Long DAONode::getValue(const char * propertyName)
 {
 	return get_long( propertyName );
 }
 
 //we have to cast because from DAO we get just get_long
 template<>
-long long DAONode::getValue(const char * propertyName)
+ACS::longLong DAONode::getValue(const char * propertyName)
 {
 	// until get_long is fixed that it can read also xs:long which is 64 bit we have to read string and cast it to long long
-	long long var;
+	ACS::longLong var;
 	CORBA::String_var str = this->get_string( propertyName );
 	std::istringstream is(str.in());
 	(istream&) is >> var ;
@@ -446,21 +446,13 @@ long long DAONode::getValue(const char * propertyName)
 		return var;
 }
 
-
 //we have to cast because from DAO we get just get_long
 template<>
-int DAONode::getValue(const char * propertyName)
-{
-	return static_cast<int>(get_long( propertyName ));
-}
-
-//we have to cast because from DAO we get just get_long
-template<>
-unsigned long long  DAONode::getValue(const char * propertyName)
+ACS::uLongLong DAONode::getValue(const char * propertyName)
 {
 	// we can not use get_long to read xs:unisngedLong which is 64 bit we have to read string and cast it to unsigned long long
 	// see: COMP-4268
-		unsigned long long var;
+		ACS::uLongLong var;
 		CORBA::String_var str = this->get_string( propertyName );
 		std::istringstream is(str.in());
 		(istream&) is >> var ;
@@ -475,9 +467,9 @@ unsigned long long  DAONode::getValue(const char * propertyName)
 }
 
 template<>
-unsigned long DAONode::getValue(const char * propertyName)
+CORBA::ULong DAONode::getValue(const char * propertyName)
 {
-	return static_cast<unsigned long>(get_long( propertyName ));
+	return static_cast<CORBA::ULong>(get_long( propertyName ));
 }
 
 
