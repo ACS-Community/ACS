@@ -126,7 +126,7 @@ public class SaveData {
 	 */
 	private String toWikiString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
-		StringBuffer ret = new StringBuffer("---+ Alarm statistics ");
+		StringBuffer ret = new StringBuffer("---+ Alarm profiling ");
 		ret.append(dateFormat.format(new Date()));
 		ret.append('\n');
 		
