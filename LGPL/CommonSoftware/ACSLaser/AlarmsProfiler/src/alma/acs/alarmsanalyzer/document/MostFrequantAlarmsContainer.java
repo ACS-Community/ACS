@@ -20,9 +20,12 @@ package alma.acs.alarmsanalyzer.document;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
+import alma.acs.alarmsanalyzer.document.MostFrequantAlarmsContainer.AlarmActNumber;
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
 import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
@@ -41,12 +44,15 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 	
 	/**
 	 * An object storing statistics for each alarm.
+	 * <P>
+	 * The {@link Comparable} define the ordering depending on the 
+	 * number of activations. 
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public class AlarmActNumber {
-		
+	public class AlarmActNumber implements Comparable<AlarmActNumber>{
+
 		/**
 		 * The ID of this alarm
 		 */
@@ -134,6 +140,14 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 		public String getAlarmID() {
 			return alarmID;
 		}
+		
+		@Override
+		public int compareTo(AlarmActNumber o) {
+			if (o==null) {
+				throw new NullPointerException();
+			}
+			return Long.valueOf(numActivation).compareTo(o.getNumActivation());
+		}
 	}
 	
 	/**
@@ -212,7 +226,9 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 	@Override
 	public void setTableContent(TableData tData) {
 		Collection<AlarmActNumber> vals = mostFrequentAlarms.values();
-		for (AlarmActNumber val: vals) {
+		Vector<AlarmActNumber> items = new Vector<MostFrequantAlarmsContainer.AlarmActNumber>(vals);
+		Collections.sort(items);
+		for (AlarmActNumber val: items) {
 			if (val==null) {
 				continue;
 			}
