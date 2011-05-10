@@ -128,7 +128,7 @@ public class SaveData {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
 		StringBuffer ret = new StringBuffer("---+ Alarm profiling ");
 		ret.append(dateFormat.format(new Date()));
-		ret.append('\n');
+		ret.append("\n%TOC%\n");
 		
 		for (TableData tData: tables) {
 			// Append the title
