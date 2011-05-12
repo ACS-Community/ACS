@@ -19,7 +19,11 @@
 package alma.acs.alarmsanalyzer.document;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -42,12 +46,14 @@ import cern.laser.source.alarmsysteminterface.FaultState;
 public class StaleAlarmsContainer extends DocumentBase implements SourceListener {
 	
 	/**
-	 * A stale alarm
+	 * A stale alarm.
+	 * <P>
+	 * {@link Comparable} orders by activation time.
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public class StaleAlarm {
+	public class StaleAlarm implements Comparable<StaleAlarm> {
 		/**
 		 * The ID of the alarm
 		 */
@@ -67,6 +73,35 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		public StaleAlarm(String id, Timestamp time) {
 			this.ID=id;
 			this.activationTime=time;
+		}
+		
+		/**
+		 * Return a string with the time that the alarm is active
+		 * 
+		 * @return How long the alarm is active
+		 */
+		public String activationDuration() {
+			Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+			long now =cal.getTime().getTime();
+			long alTime=activationTime.getTime();
+			cal.setTime(new Date(now-alTime));
+			int days = cal.get(Calendar.DAY_OF_YEAR)-1;
+			int hrs = cal.get(Calendar.HOUR_OF_DAY);
+			int mins = cal.get(Calendar.MINUTE);
+			int secs = cal.get(Calendar.SECOND);
+			if (days<=0) { 
+				return String.format("%02d:%02d:%02d", hrs,mins,secs);
+			} else {
+				return String.format("%d days, %02d:%02d:%02d", days,hrs,mins,secs);
+			}
+		}
+
+		@Override
+		public int compareTo(StaleAlarm o) {
+			if (o==null) {
+				throw new NullPointerException();
+			}
+			return activationTime.compareTo(o.activationTime);
 		}
 	}
 	
@@ -152,7 +187,7 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		for (StaleAlarm val: vals) {
 			String[] row = new String[2];
 			row[0]=val.ID;
-			row[1]=val.activationTime.toString();
+			row[1]=val.activationDuration();
 			tData.addRowData(row);
 		}
 	}
