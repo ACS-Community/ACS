@@ -136,7 +136,7 @@ public class SuppressedContainer extends DocumentBase implements AlarmCategoryLi
 		Collections.sort(vals);
 		for (ReductionValue val: vals) {
 			String[] row = new String[2];
-			row[0]=val.ID;
+			row[0]="="+val.ID+"=";
 			row[1]=Integer.valueOf(val.getValue()).toString();
 			tData.addRowData(row);
 		}

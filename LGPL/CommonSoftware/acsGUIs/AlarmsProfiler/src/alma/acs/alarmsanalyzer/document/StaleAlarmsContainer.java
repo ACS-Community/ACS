@@ -186,7 +186,7 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		Collection<StaleAlarm> vals = staleAlarms.values();
 		for (StaleAlarm val: vals) {
 			String[] row = new String[2];
-			row[0]=val.ID;
+			row[0]="="+val.ID+"=";
 			row[1]=val.activationDuration();
 			tData.addRowData(row);
 		}

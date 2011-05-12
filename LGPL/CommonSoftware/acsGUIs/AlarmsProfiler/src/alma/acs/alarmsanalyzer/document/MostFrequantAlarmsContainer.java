@@ -232,7 +232,7 @@ public class MostFrequantAlarmsContainer extends DocumentBase implements SourceL
 				continue;
 			}
 			String[] row = new String[5];
-			row[0]=val.getAlarmID();
+			row[0]="="+val.getAlarmID()+"=";
 			row[1]=Long.valueOf(val.getNumActivation()).toString();
 			row[2]=(val.getLastActivationTime()!=null)?val.getLastActivationTime().toString():"";
 			row[3]=Long.valueOf(val.getNumTermination()).toString();

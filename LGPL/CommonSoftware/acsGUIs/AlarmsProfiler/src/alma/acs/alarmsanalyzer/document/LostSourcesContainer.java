@@ -174,7 +174,7 @@ public class LostSourcesContainer implements AlarmCategoryListener, SourceListen
 		Collections.sort(ids);
 		for (String id: ids) {
 			String[] row = new String[1];
-			row[0]=id;
+			row[0]="="+id+"=";
 			tData.addRowData(row);
 		}
 		return tData;

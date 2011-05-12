@@ -347,7 +347,7 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 		Collections.sort(vals);
 		for (ChatteringAlarm val: vals) {
 			String[] row = new String[5];
-			row[0]=val.ID;
+			row[0]="="+val.ID+"=";
 			row[1]=Integer.valueOf(val.getNumActive()).toString();
 			row[2]=Integer.valueOf(val.getNumTerminate()).toString();
 			row[3]=Integer.valueOf(val.getTotAlarms()).toString();
