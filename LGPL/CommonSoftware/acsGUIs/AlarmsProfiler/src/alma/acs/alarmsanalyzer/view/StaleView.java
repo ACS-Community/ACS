@@ -75,20 +75,7 @@ public class StaleView extends TableViewBase {
 			switch (columnIndex) {
 			case 0: return item.ID;
 			case 1: {
-				Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("GMT"));
-				long now =cal.getTime().getTime();
-				long alTime=item.activationTime.getTime();
-				cal.setTime(new Date(now-alTime));
-				int days = cal.get(Calendar.DAY_OF_YEAR)-1;
-				int hrs = cal.get(Calendar.HOUR_OF_DAY);
-				int mins = cal.get(Calendar.MINUTE);
-				int secs = cal.get(Calendar.SECOND);
-				if (days<=0) { 
-					return String.format("%02d:%02d:%02d", hrs,mins,secs);
-				} else {
-					return String.format("%d days, %02d:%02d:%02d", days,hrs,mins,secs);
-				}
-				//return item.activationTime.toString();
+				item.activationDuration();
 			}
 			default: return "Unknown!";
 			}
