@@ -19,6 +19,8 @@
 package alma.acs.alarmsanalyzer.document;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.client.data.Alarm;
@@ -37,11 +39,13 @@ public class SuppressedContainer extends DocumentBase implements AlarmCategoryLi
 	 * The item to send to the table.
 	 * <P>
 	 * The same type is used by the {@link AnnunciatedContainer}
+	 * <P>
+	 * Items are ordered by the number of events
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public static class ReductionValue {
+	public static class ReductionValue implements Comparable<ReductionValue> {
 		/**
 		 * The ID of the alarm
 		 */
@@ -70,6 +74,14 @@ public class SuppressedContainer extends DocumentBase implements AlarmCategoryLi
 		 */
 		public int getValue() {
 			return value;
+		}
+
+		@Override
+		public int compareTo(ReductionValue o) {
+			if (o==null) {
+				throw new NullPointerException();
+			}
+			return Integer.valueOf(value).compareTo(Integer.valueOf(o.getValue()));
 		}
 	}
 	/**
@@ -120,7 +132,8 @@ public class SuppressedContainer extends DocumentBase implements AlarmCategoryLi
 	
 	@Override
 	public void setTableContent(TableData tData) {
-		Collection<ReductionValue> vals = suppressed.values();
+		Vector<ReductionValue>vals = new Vector<SuppressedContainer.ReductionValue>(suppressed.values());
+		Collections.sort(vals);
 		for (ReductionValue val: vals) {
 			String[] row = new String[2];
 			row[0]=val.ID;

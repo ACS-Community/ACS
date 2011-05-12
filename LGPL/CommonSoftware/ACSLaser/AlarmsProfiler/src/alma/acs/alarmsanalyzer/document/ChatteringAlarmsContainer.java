@@ -20,7 +20,9 @@ package alma.acs.alarmsanalyzer.document;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -52,12 +54,14 @@ import cern.laser.source.alarmsysteminterface.FaultState;
 public class ChatteringAlarmsContainer extends DocumentBase implements SourceListener, Runnable {
 	
 	/**
-	 * A chattering alarm
+	 * A chattering alarm.
+	 * <P>
+	 * {@link Comparable} orders items by number of activations.
 	 * 
 	 * @author acaproni
 	 *
 	 */
-	public class ChatteringAlarm {
+	public class ChatteringAlarm implements Comparable<ChatteringAlarm> {
 		/**
 		 * The ID of the alarm
 		 */
@@ -74,7 +78,7 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 		protected int numTerminate=0;
 		
 		/**
-		 * The time when the chattering has been registered
+		 * The time when the chattering event has been registered
 		 */
 		protected Timestamp timestamp;
 		
@@ -148,6 +152,14 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 		 */
 		public Timestamp getTimestamp() {
 			return timestamp;
+		}
+
+		@Override
+		public int compareTo(ChatteringAlarm o) {
+			if (o==null) {
+				throw new NullPointerException();
+			}
+			return Integer.valueOf(numActive).compareTo(o.getNumActive());
 		}
 	}
 	
@@ -331,7 +343,8 @@ public class ChatteringAlarmsContainer extends DocumentBase implements SourceLis
 	
 	@Override
 	public void setTableContent(TableData tData) {
-		Collection<ChatteringAlarm> vals = chatteringAlarms.values();
+		Vector<ChatteringAlarm> vals = new Vector<ChatteringAlarm>(chatteringAlarms.values());
+		Collections.sort(vals);
 		for (ChatteringAlarm val: vals) {
 			String[] row = new String[5];
 			row[0]=val.ID;

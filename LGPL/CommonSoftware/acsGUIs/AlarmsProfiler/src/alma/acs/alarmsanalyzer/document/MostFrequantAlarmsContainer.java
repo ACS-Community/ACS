@@ -25,7 +25,6 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.source.alarmsysteminterface.FaultState;
-import alma.acs.alarmsanalyzer.document.MostFrequantAlarmsContainer.AlarmActNumber;
 import alma.acs.alarmsanalyzer.engine.AlarmUtils;
 import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;

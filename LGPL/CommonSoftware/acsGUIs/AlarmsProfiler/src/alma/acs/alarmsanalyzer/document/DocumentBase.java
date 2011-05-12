@@ -22,7 +22,6 @@ import java.util.Collection;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Table;
 
 import alma.acs.alarmsanalyzer.save.TableData;
 

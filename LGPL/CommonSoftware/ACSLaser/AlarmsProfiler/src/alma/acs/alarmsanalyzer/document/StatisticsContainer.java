@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import cern.laser.client.data.Alarm;
 import cern.laser.source.alarmsysteminterface.FaultState;
 
-import alma.acs.alarmsanalyzer.document.SuppressedContainer.ReductionValue;
 import alma.acs.alarmsanalyzer.engine.AlarmCategoryListener;
 import alma.acs.alarmsanalyzer.save.TableData;
 import alma.alarmsystem.clients.source.SourceListener;
@@ -222,13 +221,87 @@ public class StatisticsContainer extends DocumentBase implements SourceListener,
 	
 	@Override
 	public void setTableContent(TableData tData) {
-		Collection<AlarmStat> vals = values.values();
-		for (AlarmStat val: vals) {
-			String[] row = new String[2];
-			row[0]=val.name;
-			row[1]=Integer.valueOf(val.getValue()).toString();
-			tData.addRowData(row);
-		}
+		String[] row = new String[2];
+		row[0]="Source alarms";
+		row[1]="";
+		tData.addRowData(row);
+		
+		AlarmStat stat = values.get(totSrcAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(totActiveSrcAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(totTerminateSrcAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		row = new String[2];
+		row[0]="Category alarms";
+		row[1]="";
+		tData.addRowData(row);
+		
+		stat = values.get(totCatAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(totActiveCatAlas);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(totTerminateCatAlas);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(pri0);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(pri1);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(pri2);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(pri3);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+
+		stat = values.get(suppressedAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
+		
+		stat = values.get(annunciatedAlarms);
+		row = new String[2];
+		row[0]=stat.name;
+		row[1]=Integer.valueOf(stat.getValue()).toString();
+		tData.addRowData(row);
 	}
 
 }

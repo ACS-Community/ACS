@@ -19,6 +19,8 @@
 package alma.acs.alarmsanalyzer.document;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import cern.laser.client.data.Alarm;
@@ -83,7 +85,8 @@ public class AnnunciatedContainer extends DocumentBase implements AlarmCategoryL
 
 	@Override
 	public void setTableContent(TableData tData) {
-		Collection<ReductionValue> vals = annunciated.values();
+		Vector<ReductionValue>vals = new Vector<SuppressedContainer.ReductionValue>(annunciated.values());
+		Collections.sort(vals);
 		for (ReductionValue val: vals) {
 			String[] row = new String[2];
 			row[0]=val.ID;
