@@ -100,6 +100,7 @@ public class ACSLoggerFactory implements ILoggerFactory
 				name.equals("org.hibernate.jdbc.util.SQLStatementLogger")) {
 				if (acsLoggerDelegateSql == null) {
 					acsLoggerDelegateSql = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_SQL_LOGGER_NAME_PREFIX, true);
+					acsLoggerDelegateSql.addLoggerClass(JDK14LoggerAdapter.class);
 					jdkAdapterSql = new JDK14LoggerAdapter(acsLoggerDelegateSql);
 				}
 				return jdkAdapterSql;
@@ -107,6 +108,7 @@ public class ACSLoggerFactory implements ILoggerFactory
 			else {
 				if (acsLoggerDelegateDefault == null) {
 					acsLoggerDelegateDefault = ClientLogManager.getAcsLogManager().getLoggerForCorba(HIBERNATE_LOGGER_NAME_PREFIX, true);
+					acsLoggerDelegateDefault.addLoggerClass(JDK14LoggerAdapter.class);
 					jdkAdapterDefault = new JDK14LoggerAdapter(acsLoggerDelegateDefault);
 				}
 				return jdkAdapterDefault;
