@@ -59,6 +59,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.persistence.EnumType;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -92,17 +93,26 @@ import alma.TMCDB.maci.Channels;
 import alma.TMCDB.maci.EventChannelNode;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.tmcdb.AcsService;
+import alma.acs.tmcdb.AcsServiceServiceType;
+import alma.acs.tmcdb.BACIPropArchMech;
 import alma.acs.tmcdb.BACIProperty;
 import alma.acs.tmcdb.ChannelMapping;
 import alma.acs.tmcdb.Component;
+import alma.acs.tmcdb.ComponentImplLang;
 import alma.acs.tmcdb.ComponentType;
 import alma.acs.tmcdb.Computer;
+import alma.acs.tmcdb.ComputerProcessorType;
 import alma.acs.tmcdb.Configuration;
 import alma.acs.tmcdb.Container;
+import alma.acs.tmcdb.ContainerImplLang;
 import alma.acs.tmcdb.ContainerStartupOption;
 import alma.acs.tmcdb.DomainsMapping;
 import alma.acs.tmcdb.Event;
 import alma.acs.tmcdb.EventChannel;
+import alma.acs.tmcdb.EventChannelConReliability;
+import alma.acs.tmcdb.EventChannelDiscardPolicy;
+import alma.acs.tmcdb.EventChannelEventReliability;
+import alma.acs.tmcdb.EventChannelOrderPolicy;
 import alma.acs.tmcdb.LoggingConfig;
 import alma.acs.tmcdb.Manager;
 import alma.acs.tmcdb.NamedLoggerConfig;
@@ -835,7 +845,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 							hostComputer.setNetworkName(computerHostName);
 							hostComputer.setRealTime(false);
 							hostComputer.setDiskless(false);
-							hostComputer.setProcessorType("uni");
+							hostComputer.setProcessorType(ComputerProcessorType.uni);
 							hostComputer.setPhysicalLocation(null);
 							session.persist(hostComputer);
 						}
@@ -858,7 +868,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					container.setLoggingConfig(loggingConfig);
 					container.setComputer(hostComputer);
 					
-					container.setImplLang(readString(containerDAO, "ImplLang", "cpp")); // cpp is default, since field is required
+					container.setImplLang(ContainerImplLang.valueOf(readString(containerDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 					container.setTypeModifiers(readString(containerDAO, "DeployInfo/TypeModifiers", null));
 					container.setStartOnDemand(Boolean.valueOf(readString(containerDAO, "DeployInfo/StartOnDemand", "false")));
 					
@@ -1008,7 +1018,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 								container.setConfiguration(config);
 								container.setLoggingConfig(loggingConfig);
 								container.setComputer(null);
-								container.setImplLang(readString(componentDAO, "ImplLang", "cpp")); // cpp is default, since field is required
+								container.setImplLang(ContainerImplLang.valueOf(readString(componentDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 								container.setTypeModifiers(DUMMY_CONTAINER_FLAG);
 								container.setRealTime(false);
 								container.setRealTimeType(null);
@@ -1123,7 +1133,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					    component.setConfiguration(config);
 //					    component.setContainerId(componentContainerId);
 					    component.setContainer(tmpComponentContainer); // TODO verify this and clean up
-						component.setImplLang(readString(componentDAO, componentName+"/ImplLang", "cpp"));	// cpp is default, since field is required
+						component.setImplLang(ComponentImplLang.valueOf(readString(componentDAO, componentName+"/ImplLang", "cpp")));	// cpp is default, since field is required
 						component.setRealTime(false);
 						component.setCode(componentDAO.get_string(componentName+"/Code"));
 						component.setPath(path);
@@ -1193,7 +1203,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 										baciPropertyType.setArchive_min_int(componentConfigurationDAO.get_double(propertyName + "/archive_min_int"));
 										baciPropertyType.setArchive_max_int(componentConfigurationDAO.get_double(propertyName + "/archive_max_int"));
 										baciPropertyType.setArchive_suppress(Boolean.parseBoolean(componentConfigurationDAO.get_string(propertyName + "/archive_suppress")));
-										baciPropertyType.setArchive_mechanism(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/archive_mechanism"), "monitor_collector"));
+										baciPropertyType.setArchive_mechanism(BACIPropArchMech.valueOf(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/archive_mechanism"), "monitor_collector")));
 										baciPropertyType.setDefault_timer_trig(componentConfigurationDAO.get_double(propertyName + "/default_timer_trig"));
 										baciPropertyType.setMin_timer_trig(componentConfigurationDAO.get_double(propertyName + "/min_timer_trig"));
 		
@@ -1318,12 +1328,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					eventChannel.setMaxConsumers(readLong(channelDAO, "MaxConsumers", 0));
 					eventChannel.setMaxSuppliers(readLong(channelDAO, "MaxSuppliers", 0));
 					eventChannel.setRejectNewEvents(Boolean.valueOf(readString(channelDAO, "RejectNewEvents", "false")));
-					eventChannel.setDiscardPolicy(readString(channelDAO, "DiscardPolicy", "AnyOrder"));
-					eventChannel.setEventReliability(readString(channelDAO, "EventReliability", "BestEffort"));
-					eventChannel.setConnectionReliability(readString(channelDAO, "ConnectionReliability", "BestEffort"));
+					eventChannel.setDiscardPolicy(EventChannelDiscardPolicy.valueOf(readString(channelDAO, "DiscardPolicy", "AnyOrder")));
+					eventChannel.setEventReliability(EventChannelEventReliability.valueOf(readString(channelDAO, "EventReliability", "BestEffort")));
+					eventChannel.setConnectionReliability(EventChannelConReliability.valueOf(readString(channelDAO, "ConnectionReliability", "BestEffort")));
 					eventChannel.setPriority((short)readLong(channelDAO, "Priority", 0));
 					eventChannel.setTimeout(readLong(channelDAO, "Timeout", 0));
-					eventChannel.setOrderPolicy(readString(channelDAO, "OrderPolicy", "AnyOrder"));
+					eventChannel.setOrderPolicy(EventChannelOrderPolicy.valueOf(readString(channelDAO, "OrderPolicy", "AnyOrder")));
 					eventChannel.setStartTimeSupported(Boolean.valueOf(readString(channelDAO, "StartTimeSupported", "false")));
 					eventChannel.setStopTimeSupported(Boolean.valueOf(readString(channelDAO, "StopTimeSupported", "false")));
 					eventChannel.setMaxEventsPerConsumer(readLong(channelDAO, "MaxEventsPerConsumer", 0));
@@ -1867,23 +1877,34 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			String toAdd = acsService.getServiceInstanceName();
 			if (toAdd == null)
 			{
-				String type = acsService.getServiceType(); 
-				if (type.equals("NAMING") || type.equals("MANAGER"))
-					toAdd = null; // noop since it is supported by manager by default 
-				else if (type.equals("IFR"))
+				AcsServiceServiceType type = acsService.getServiceType();
+				switch(type) {
+				case NAMING:
+				case MANAGER:
+					toAdd = null; // noop since it is supported by manager by default
+					break;
+				case IFR:
 					toAdd = "InterfaceRepository";
-				else if (type.equals("CDB"))
+					break;
+				case CDB:
 					toAdd = "CDB";
-				else if (type.equals("NOTIFICATION"))
+					break;
+				case NOTIFICATION:					
 					toAdd = "NotifyEventChannelFactory";
-				else if (type.equals("LOGGING"))
+					break;
+				case LOGGING:
 					toAdd = "Log";
-				else if (type.equals("ALARM"))
+					break;
+				case ALARM:
 					toAdd = "AcsAlarmService";
-				else if (type.equals("LOGPROXY"))
+					break;
+				case LOGPROXY:
 					toAdd = "ACSLogSvc";
-				else
+					break;
+				default:
 					m_logger.warning("Unknown AcsService type '" + type + "'");
+				}
+					
 			}
 			
 			if (toAdd != null)

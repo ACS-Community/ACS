@@ -1,4 +1,4 @@
-/* @(#)TestTmcdb.java $Revision: 1.3 $ $Date: 2010/08/31 08:40:16 $
+/* @(#)TestTmcdb.java $Revision: 1.4 $ $Date: 2011/05/13 15:36:44 $
  *
  * ALMA - Atacama Large Millimiter Array (c) European Southern Observatory,
  * 2007
@@ -49,7 +49,7 @@ import com.cosylab.cdb.jdal.logging.AcsLoggerHelper;
 /** TestTmcdb class tests TMCDB for SNMP.  It creates a NodeTree, fills the
  *  TMCDB, and finally creates a new NodeTree based on the TMCDB content.
  *
- * @version $Id: TestSnmpTables.java,v 1.3 2010/08/31 08:40:16 rtobar Exp $
+ * @version $Id: TestSnmpTables.java,v 1.4 2011/05/13 15:36:44 rtobar Exp $
  * @author P.Grosbol, ESO, <pgrosbol@eso.org>
  */
 
@@ -104,7 +104,7 @@ public class TestSnmpTables extends TestCase {
     		comp1.setPhysicalLocation("Alma building");
     		comp1.setRealTime(false); 
     		comp1.setDiskless(false);        
-    		comp1.setProcessorType("smp");         
+    		comp1.setProcessorType(ComputerProcessorType.smp);
     		comp1.setConfiguration(config);
 
     		Computer comp2 = new Computer();
@@ -113,7 +113,7 @@ public class TestSnmpTables extends TestCase {
     		comp2.setPhysicalLocation("Alma building");
     		comp2.setRealTime(false); 
     		comp2.setDiskless(false);        
-    		comp2.setProcessorType("uni");         
+    		comp2.setProcessorType(ComputerProcessorType.uni);         
     		comp2.setConfiguration(config);
 
     		/* setup a SNMP trap sink                                */
@@ -166,7 +166,7 @@ public class TestSnmpTables extends TestCase {
     		NetworkDeviceSnmpConfig snmp1 = new NetworkDeviceSnmpConfig();
     		snmp1.setPropagateNA(false);
     		snmp1.setSnmpCommunity("public");
-    		snmp1.setAcsAlarm("NEVER");
+    		snmp1.setAcsAlarm(NetDevSnmpConfigAcsAlarm.NEVER);
     		snmp1.setNetworkDevice(comp1);
     		String xml1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
     			+"<netnode name=\"ps014692\" xmlns=\"Alma/Exec/SnmpConfig\">\n"
@@ -199,7 +199,7 @@ public class TestSnmpTables extends TestCase {
     		NetworkDeviceSnmpConfig snmp2 = new NetworkDeviceSnmpConfig();
     		snmp2.setPropagateNA(true);
     		snmp2.setSnmpCommunity("public");
-    		snmp2.setAcsAlarm("ALWAYS");
+    		snmp2.setAcsAlarm(NetDevSnmpConfigAcsAlarm.ALWAYS);
     		snmp2.setNetworkDevice(comp2);
     		String xml2 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
     			+"<netnode name=\"pc008506\" xmlns=\"Alma/Exec/SnmpConfig\">\n"

@@ -265,7 +265,7 @@ public class TestPojosCascading extends TestCase {
 		comp.setContainer(null); // Container can be null
 		comp.setComponentName("COMPONENT");
 		comp.setCode("Code");
-		comp.setImplLang("java");
+		comp.setImplLang(ComponentImplLang.java);
 		comp.setRealTime(false);
 		comp.setPath(".");
 		comp.setIsAutostart(true);
@@ -292,7 +292,7 @@ public class TestPojosCascading extends TestCase {
 		prop.setArchive_min_int(1.0);
 		prop.setArchive_max_int(1.0);
 		prop.setArchive_suppress(false);
-		prop.setArchive_mechanism("monitor_collector");
+		prop.setArchive_mechanism(BACIPropArchMech.monitor_collector);
 		prop.setDefault_timer_trig(0.1);
 		prop.setMin_timer_trig(0.1);
 		prop.setInitialize_devio(true);

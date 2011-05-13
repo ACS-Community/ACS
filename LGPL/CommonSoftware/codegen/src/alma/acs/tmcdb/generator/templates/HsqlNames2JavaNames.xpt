@@ -5,6 +5,11 @@
 «EXTENSION alma::acs::tmcdb::generator::templates::sqlutil»
 
 «DEFINE Root FOR TMCDBModel»
+«EXPAND HibernateTranslations»
+«EXPAND CreateEnumClasses::Root»
+«ENDDEFINE»
+
+«DEFINE HibernateTranslations FOR TMCDBModel»
 «FILE "alma/acs/tmcdb/translator/Table2Class_"+modelName.name+".java"-»
 package alma.acs.tmcdb.translator;
 
@@ -39,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Column2Attribute_«modelName.name» extends AbstractColumn2Attribute {
-	
+
 	public Column2Attribute_«modelName.name»() {
 
 		Map<String,String> tmpMap;
@@ -58,7 +63,7 @@ public class Column2Attribute_«modelName.name» extends AbstractColumn2Attribut
 «ENDFOREACH-»
 
 	}
-	
+
 }
 «ENDFILE»
 
@@ -67,11 +72,14 @@ package alma.acs.tmcdb.translator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 public class TableInheritance_«modelName.name» extends AbstractTableInheritance {
 
 	public TableInheritance_«modelName.name»() {
+
+		Map<String, String> tmpMap;
 
 		map = new HashMap<String, String>();
 «FOREACH tables AS t-»
@@ -166,6 +174,16 @@ public class TableInheritance_«modelName.name» extends AbstractTableInheritanc
 «ENDFOREACH-»
 «ENDFOREACH-»
 
+		checkConstraints = new HashMap<String, Map<String, String>>();
+«FOREACH tables AS t»
+			tmpMap = new HashMap<String,String>();
+	«FOREACH getCheckConstraints(t) AS constraint-»
+		«IF TextTypes.isInstance(constraint.column.type) || LengthDefinedTypes.isInstance(constraint.column.type)-»
+			tmpMap.put("«constraint.column.name.toLowerCase()»", "alma.acs.tmcdb.«constraint.name»");
+		«ENDIF-»
+	«ENDFOREACH-»
+			checkConstraints.put("«t.name.toLowerCase()»", tmpMap);
+«ENDFOREACH»
 	}
 }
 «ENDFILE»

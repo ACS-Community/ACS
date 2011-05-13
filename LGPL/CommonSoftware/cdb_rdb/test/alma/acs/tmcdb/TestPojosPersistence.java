@@ -270,7 +270,7 @@ public class TestPojosPersistence extends TestCase {
 					assertEquals( comp.getName(), COMPUTER_NAME);
 					assertEquals( comp.getRealTime().booleanValue(), COMPUTER_RT);
 					assertEquals( comp.getNetworkName(), COMPUTER_NETNAME);
-					assertEquals( comp.getProcessorType(), COMPUTER_PROCTYPE);
+					assertEquals( comp.getProcessorType(), ComputerProcessorType.smp);
 					assertEquals( comp.getPhysicalLocation(), COMPUTER_LOCATION);
 					assertEquals( comp.getDiskless().booleanValue(), COMPUTER_DISKLESS);
 					found = true;
@@ -298,7 +298,7 @@ public class TestPojosPersistence extends TestCase {
 		computer.setName(COMPUTER_NAME);
 		computer.setRealTime(COMPUTER_RT);
 		computer.setNetworkName(COMPUTER_NETNAME);
-		computer.setProcessorType(COMPUTER_PROCTYPE);
+		computer.setProcessorType(ComputerProcessorType.smp);
 		computer.setPhysicalLocation(COMPUTER_LOCATION);
 		computer.setDiskless(COMPUTER_DISKLESS);
 		computer.setConfiguration(config);
@@ -437,7 +437,7 @@ public class TestPojosPersistence extends TestCase {
 		comp.setConfiguration(config);
 		comp.setXMLDoc("Something that is not XML");
 		comp.setRealTime(true);
-		comp.setImplLang("java");
+		comp.setImplLang(ComponentImplLang.java);
 		comp.setIsAutostart(true);
 		comp.setIsDefault(false);
 		comp.setIsControl(true);

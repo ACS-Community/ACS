@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.tmcdb.ContStartOptType;
 import alma.acs.tmcdb.Container;
 import alma.acs.tmcdb.ContainerStartupOption;
-import alma.acs.tmcdb.logic.ContainerStartupOptionHelper.OptionType;
 import alma.acs.tmcdb.logic.ContainerStartupOptionHelper.WrapperOptionParser;
 
 /**
@@ -127,19 +127,19 @@ public class ContainerStartupOptionHelperTest extends TestCase {
 		for (ContainerStartupOption option : options) {
 			assertSame("container reference should be as provided", container, option.getContainer());
 			assertEquals(ContainerStartupOptionHelper.OPTION_NAME_LEGACY_CONCATENATED, option.getOptionName());
-			if (option.getOptionType().equals(OptionType.EXEC_ARG.toString())) {
+			if (option.getOptionType().equals(ContStartOptType.EXEC_ARG)) {
 				assertEquals("all unwrapped options expected here.", 
 						"-e myOtherContainerExecutable --managerReference=corbalocToOtherManager", 
 						option.getOptionValue() );
 				logger.info("EXEC_ARG was OK");
 			}
-			else if (option.getOptionType().equals(OptionType.EXEC_ARG_LANG.toString())) {
+			else if (option.getOptionType().equals(ContStartOptType.EXEC_ARG_LANG)) {
 				assertEquals("--passthroughProcessStart options expected here.", 
 						"-maxHeapSize 100m -clientVM -D mytest.prop=dontdoit", 
 						option.getOptionValue() );
 				logger.info("EXEC_ARG_LANG was OK");
 			}
-			else if (option.getOptionType().equals(OptionType.CONT_ARG.toString())) {
+			else if (option.getOptionType().equals(ContStartOptType.CONT_ARG)) {
 				assertEquals("--passthrough options expected here.", 
 						"-myDummyContainerArg 77", 
 						option.getOptionValue() );
@@ -152,12 +152,12 @@ public class ContainerStartupOptionHelperTest extends TestCase {
 	public void testToOptionsString() {
 		Container container = new Container();
 		
-		ContainerStartupOption execOpt1 = new ContainerStartupOptionForTest(container, OptionType.EXEC_ARG, "-e myOtherContainerExecutable");
-		ContainerStartupOption execOpt2 = new ContainerStartupOptionForTest(container, OptionType.EXEC_ARG, "--managerReference=corbalocToOtherManager");
-		ContainerStartupOption execLangOpt1 = new ContainerStartupOptionForTest(container, OptionType.EXEC_ARG_LANG, "-maxHeapSize 100m");
+		ContainerStartupOption execOpt1 = new ContainerStartupOptionForTest(container, ContStartOptType.EXEC_ARG, "-e myOtherContainerExecutable");
+		ContainerStartupOption execOpt2 = new ContainerStartupOptionForTest(container, ContStartOptType.EXEC_ARG, "--managerReference=corbalocToOtherManager");
+		ContainerStartupOption execLangOpt1 = new ContainerStartupOptionForTest(container, ContStartOptType.EXEC_ARG_LANG, "-maxHeapSize 100m");
 		// next option is not "atomic", but that should be tolerated
-		ContainerStartupOption execLangOpt2 = new ContainerStartupOptionForTest(container, OptionType.EXEC_ARG_LANG, "-clientVM -D mytest.prop=dontdoit");
-		ContainerStartupOption contOpt1 = new ContainerStartupOptionForTest(container, OptionType.CONT_ARG, "-myDummyContainerArg 77");
+		ContainerStartupOption execLangOpt2 = new ContainerStartupOptionForTest(container, ContStartOptType.EXEC_ARG_LANG, "-clientVM -D mytest.prop=dontdoit");
+		ContainerStartupOption contOpt1 = new ContainerStartupOptionForTest(container, ContStartOptType.CONT_ARG, "-myDummyContainerArg 77");
 		
 		// give options in mixed order with respect to type
 		List<ContainerStartupOption> options = new ArrayList<ContainerStartupOption>();
@@ -172,9 +172,11 @@ public class ContainerStartupOptionHelperTest extends TestCase {
 	}
 
 	private class ContainerStartupOptionForTest extends ContainerStartupOption {
-		ContainerStartupOptionForTest(Container container, ContainerStartupOptionHelper.OptionType type, String value) {
+		private static final long serialVersionUID = 5456679798313111043L;
+
+		ContainerStartupOptionForTest(Container container, ContStartOptType type, String value) {
 			setContainer(container);
-			setOptionType(type.toString());
+			setOptionType(type);
 			setOptionValue(value);
 		}
 	}

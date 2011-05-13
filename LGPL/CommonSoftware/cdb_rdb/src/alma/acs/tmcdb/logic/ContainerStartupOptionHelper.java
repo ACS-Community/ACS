@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import alma.acs.tmcdb.ContStartOptType;
 import alma.acs.tmcdb.Container;
 import alma.acs.tmcdb.ContainerStartupOption;
 
@@ -26,16 +27,6 @@ public class ContainerStartupOptionHelper {
 	
 	private final Logger logger;
 
-	/**
-	 * These values correspond to the allowed content of attribute 'OptionType' in table ContainerStartupOption.
-	 */
-	public static enum OptionType {
-		ENV_VAR,
-		EXEC_ARG,
-		EXEC_ARG_LANG,
-		CONT_ARG
-	}
-	
 	/**
 	 * Wrapper for options targeted at the container application (passed to the container's main method).
 	 */
@@ -86,7 +77,7 @@ public class ContainerStartupOptionHelper {
 						ContainerStartupOption containerStartupOption = new ContainerStartupOption();
 						ret.add(containerStartupOption);
 						containerStartupOption.setContainer(container);
-						containerStartupOption.setOptionType(OptionType.EXEC_ARG_LANG.toString());
+						containerStartupOption.setOptionType(ContStartOptType.EXEC_ARG_LANG);
 						containerStartupOption.setOptionName(OPTION_NAME_LEGACY_CONCATENATED);
 						containerStartupOption.setOptionValue(wop.getWrappedOptionsContainerExecutable());
 					}
@@ -94,7 +85,7 @@ public class ContainerStartupOptionHelper {
 						ContainerStartupOption containerStartupOption = new ContainerStartupOption();
 						ret.add(containerStartupOption);
 						containerStartupOption.setContainer(container);
-						containerStartupOption.setOptionType(OptionType.CONT_ARG.toString());
+						containerStartupOption.setOptionType(ContStartOptType.CONT_ARG);
 						containerStartupOption.setOptionName(OPTION_NAME_LEGACY_CONCATENATED);
 						containerStartupOption.setOptionValue(wop.getWrappedOptionsContainerArgs());
 					}
@@ -107,7 +98,7 @@ public class ContainerStartupOptionHelper {
 					ContainerStartupOption containerStartupOption = new ContainerStartupOption();
 					ret.add(containerStartupOption);
 					containerStartupOption.setContainer(container);
-					containerStartupOption.setOptionType(OptionType.EXEC_ARG.toString());
+					containerStartupOption.setOptionType(ContStartOptType.EXEC_ARG);
 					containerStartupOption.setOptionName(OPTION_NAME_LEGACY_CONCATENATED);
 					containerStartupOption.setOptionValue(verbatimOptions);
 				}
@@ -254,16 +245,16 @@ public class ContainerStartupOptionHelper {
 			}
 			
 			// gather by option type
-			if (option.getOptionType().equals(OptionType.ENV_VAR.toString())) {
-				logger.warning("Ignoring option of type " + OptionType.ENV_VAR);
+			if (option.getOptionType().equals(ContStartOptType.ENV_VAR)) {
+				logger.warning("Ignoring option of type " + ContStartOptType.ENV_VAR);
 			}
-			else if (option.getOptionType().equals(OptionType.EXEC_ARG.toString())) {
+			else if (option.getOptionType().equals(ContStartOptType.EXEC_ARG)) {
 				execArgs += " " + option.getOptionValue();
 			}
-			else if (option.getOptionType().equals(OptionType.EXEC_ARG_LANG.toString())) {
+			else if (option.getOptionType().equals(ContStartOptType.EXEC_ARG_LANG)) {
 				execArgsLang += " " + option.getOptionValue();
 			}
-			else if (option.getOptionType().equals(OptionType.CONT_ARG.toString())) {
+			else if (option.getOptionType().equals(ContStartOptType.CONT_ARG)) {
 				contArgs += " " + option.getOptionValue();
 			}
 		}

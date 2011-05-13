@@ -33,6 +33,8 @@ import alma.acs.tmcdb.FaultCode;
 import alma.acs.tmcdb.FaultFamily;
 import alma.acs.tmcdb.FaultMember;
 import alma.acs.tmcdb.Location;
+import alma.acs.tmcdb.ReductionLinkAction;
+import alma.acs.tmcdb.ReductionLinkType;
 import alma.acs.tmcdb.ReductionThreshold;
 
 import com.cosylab.acs.laser.dao.ACSAlarmDAOImpl;
@@ -400,8 +402,8 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				remoteLink.setConfiguration(config);
 
 			}
-			remoteLink.setAction(action);
-			remoteLink.setType(link.getType().toString());
+			remoteLink.setAction(ReductionLinkAction.valueOf(action));
+			remoteLink.setType(ReductionLinkType.valueOf(link.getType().toString()));
 			session.saveOrUpdate(remoteLink);
 		}
 
@@ -692,7 +694,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 					throw new RuntimeException("unsupported reduction link action");
 					
 				toLink._.put("link" + (linkCount++),
-						new ReductionLink(link.getType(),
+						new ReductionLink(link.getType().toString(),
 								new AlarmDefinition(
 										parent.getFaultFamily(),
 										parent.getFaultMember(),

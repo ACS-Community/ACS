@@ -22,7 +22,8 @@ public abstract class AbstractTableInheritance {
 	protected Map<String, List<String>> xmlClobTableColumns;
 	protected Map<String, String> sequences;
 	protected Map<String, String> duplicatedForeignKeys;
-	
+	protected Map<String, Map<String, String>> checkConstraints;
+
 	/**
 	 * Returns the Java table name for the given sql-short table name
 	 * @param table The child table name, in the sql-short form
@@ -41,7 +42,7 @@ public abstract class AbstractTableInheritance {
 	 * Checks whether the indicated column of the given table is part of the pieces
 	 * that are supposed to generate the primary key. In the grammar, these are written
 	 * after the GENERATED FROM statement of the key declaration, if any
-	 * 
+	 *
 	 * @param table The table
 	 * @param column The columns
 	 * @return Whether the given column participates in the creation of the PK of the mentioned table
@@ -131,4 +132,28 @@ public abstract class AbstractTableInheritance {
 		return true;
 	}
 
+	/**
+	 * Returns all the columns, and their associated enum classes, that exist
+	 * in a given table
+	 *
+	 * @param tableName The table name
+	 * @return A map with columns/enum classes.
+	 */
+	public String getEnumTypeForColumn(String tableName, String columnName) {
+		if( checkConstraints.get(tableName) != null )
+			if( checkConstraints.get(tableName).get(columnName) != null )
+				return checkConstraints.get(tableName).get(columnName);
+		return null;
+	}
+
+	/**
+	 * Returns all the columns, and their associated enum classes, that exist
+	 * in a given table
+	 *
+	 * @param tableName The table name
+	 * @return A map with columns/enum classes.
+	 */
+	public Map<String, String> getEnumTypesForTable(String tableName) {
+		return checkConstraints.get(tableName);
+	}
 }

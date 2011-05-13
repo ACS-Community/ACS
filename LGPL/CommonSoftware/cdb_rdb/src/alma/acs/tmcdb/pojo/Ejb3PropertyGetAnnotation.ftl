@@ -26,5 +26,9 @@ ${pojo.generateAnnColumnAnnotation(property)}
 <#if pojo.getMetaAttribAsBool(property, "isXmlClobType", false) >
     @${pojo.importType("org.hibernate.annotations.Type")}(type="xmltype")
 </#if>
+<#assign name = pojo.getPropertyName(property)?lower_case>
+<#if pojo.getMetaAsString("enum-types")?contains(name+"|")>
+    @${pojo.importType("org.hibernate.annotations.Type")}(type="${name}")
+</#if>
 </#if>
 </#if>

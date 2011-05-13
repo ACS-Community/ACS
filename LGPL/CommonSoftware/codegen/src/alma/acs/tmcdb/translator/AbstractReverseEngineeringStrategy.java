@@ -1,6 +1,7 @@
 package alma.acs.tmcdb.translator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,13 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
     private static final String ORACLE_SEQUENCE = "oracle-sequence";
 	private static final String IS_XML_CLOB_TYPE = "isXmlClobType";
 	private static final String HAS_XML_CLOB_TYPE = "hasXmlClobType";
+	private static final String HAS_ENUM_TYPES = "has-enum-types";
+	private static final String ENUM_TYPES = "enum-types";
 	private static final String IS_SUPER_CLASS = "isSuperClass";
+	private static final String IS_ENUM_TYPE = "is-enum-type";
+	private static final String ENUM_TYPE_NAME = "enum-type-name";
+
+
 	protected AbstractColumn2Attribute []columnTranslators;
     protected AbstractTable2Class []tableTranslators;
     protected AbstractTableInheritance []inheritanceTranslators;
@@ -70,6 +77,13 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 	public String columnToHibernateTypeName(TableIdentifier table,
 			String columnName, int sqlType, int length, int precision,
 			int scale, boolean nullable, boolean generatedIdentifier) {
+
+		String tableName = table.getName().toLowerCase();
+		for (int i = 0; i < inheritanceTranslators.length; i++) {
+			if( inheritanceTranslators[i].getEnumTypeForColumn(tableName, columnName.toLowerCase()) != null ) {
+				return inheritanceTranslators[i].getEnumTypeForColumn(tableName, columnName.toLowerCase());
+			}
+		}
 		return super.columnToHibernateTypeName(table, columnName, sqlType, length,
 				precision, scale, true, generatedIdentifier);
 	}
@@ -105,6 +119,35 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 			}
 		}
 
+		// Check all CHECK constraints for this table
+		for (int i = 0; i < inheritanceTranslators.length; i++) {
+			String tableName = tableIdentifier.getName().toLowerCase();
+			if( inheritanceTranslators[i].getEnumTypesForTable(tableName) != null ) {
+
+				Map<String, String> typesForTable = inheritanceTranslators[i].getEnumTypesForTable(tableName);
+				if( typesForTable == null )
+					continue;
+
+				MetaAttribute mattr2 = new MetaAttribute(HAS_ENUM_TYPES);
+				mattr2.addValue("true");
+				map.put(HAS_ENUM_TYPES, mattr2);
+
+				mattr2 = new MetaAttribute(ENUM_TYPES);
+				Iterator<Map.Entry<String, String>> it = typesForTable.entrySet().iterator();
+				StringBuilder sb = new StringBuilder();
+				while(it.hasNext()) {					
+					Map.Entry<String, String> entry = it.next();
+					sb.append(entry.getKey());
+					sb.append("|");
+					sb.append(entry.getValue());
+					if(it.hasNext())
+						sb.append(",");
+				}
+				mattr2.addValue(sb.toString());
+				map.put(ENUM_TYPES, mattr2);
+			}
+		}
+
 		// Check if table is superclass or child class
 		for (int i = 0; i < inheritanceTranslators.length; i++) {
 			String tableName = tableIdentifier.getName().toLowerCase();
@@ -128,7 +171,7 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 					}
 				}
 			}
-			
+
 		}
 
 		return map;
@@ -200,7 +243,7 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 			TableIdentifier fromTable, List fromColumns,
 			TableIdentifier referencedTable, List referencedColumns,
 			boolean checkDuplicatedFK) {
-		
+
 		for (int i = 0; i < inheritanceTranslators.length; i++) {
 			String tName = fromTable.getName().toLowerCase();
 			String superTable = inheritanceTranslators[i].getSuperTable(tName);
@@ -293,8 +336,8 @@ public abstract class AbstractReverseEngineeringStrategy extends DelegatingRever
 //				System.out.println("KeyColumns!!!!!!! " + tableName + ":" + columnName);
 //				return true;
 //			}
-//		} 
+//		}
 //		return super.excludeColumn(identifier, columnName);
 //	}
-	
+
 }
