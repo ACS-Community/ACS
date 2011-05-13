@@ -1,4 +1,4 @@
-/* @(#)TestTmcdb.java $Revision: 1.4 $ $Date: 2011/05/13 15:36:44 $
+/* @(#)TestTmcdb.java $Revision: 1.5 $ $Date: 2011/05/13 17:40:40 $
  *
  * ALMA - Atacama Large Millimiter Array (c) European Southern Observatory,
  * 2007
@@ -49,7 +49,7 @@ import com.cosylab.cdb.jdal.logging.AcsLoggerHelper;
 /** TestTmcdb class tests TMCDB for SNMP.  It creates a NodeTree, fills the
  *  TMCDB, and finally creates a new NodeTree based on the TMCDB content.
  *
- * @version $Id: TestSnmpTables.java,v 1.4 2011/05/13 15:36:44 rtobar Exp $
+ * @version $Id: TestSnmpTables.java,v 1.5 2011/05/13 17:40:40 rtobar Exp $
  * @author P.Grosbol, ESO, <pgrosbol@eso.org>
  */
 
@@ -104,7 +104,7 @@ public class TestSnmpTables extends TestCase {
     		comp1.setPhysicalLocation("Alma building");
     		comp1.setRealTime(false); 
     		comp1.setDiskless(false);        
-    		comp1.setProcessorType(ComputerProcessorType.smp);
+    		comp1.setProcessorType(ComputerProcessorType.SMP);
     		comp1.setConfiguration(config);
 
     		Computer comp2 = new Computer();
@@ -113,7 +113,7 @@ public class TestSnmpTables extends TestCase {
     		comp2.setPhysicalLocation("Alma building");
     		comp2.setRealTime(false); 
     		comp2.setDiskless(false);        
-    		comp2.setProcessorType(ComputerProcessorType.uni);         
+    		comp2.setProcessorType(ComputerProcessorType.UNI);         
     		comp2.setConfiguration(config);
 
     		/* setup a SNMP trap sink                                */

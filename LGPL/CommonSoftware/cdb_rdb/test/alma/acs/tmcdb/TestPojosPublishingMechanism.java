@@ -42,7 +42,7 @@ public class TestPojosPublishingMechanism extends TestCase {
 		comp.setComponentType(new ComponentType());
 		comp.setConfiguration(new Configuration());
 		comp.setComponentName("");
-		comp.setImplLang(ComponentImplLang.cpp);
+		comp.setImplLang(ComponentImplLang.CPP);
 		comp.setRealTime(true);
 		comp.setCode("");
 		comp.setPath("");

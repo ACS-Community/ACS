@@ -845,7 +845,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 							hostComputer.setNetworkName(computerHostName);
 							hostComputer.setRealTime(false);
 							hostComputer.setDiskless(false);
-							hostComputer.setProcessorType(ComputerProcessorType.uni);
+							hostComputer.setProcessorType(ComputerProcessorType.UNI);
 							hostComputer.setPhysicalLocation(null);
 							session.persist(hostComputer);
 						}
@@ -868,7 +868,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					container.setLoggingConfig(loggingConfig);
 					container.setComputer(hostComputer);
 					
-					container.setImplLang(ContainerImplLang.valueOf(readString(containerDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
+					container.setImplLang(ContainerImplLang.valueOfForEnum(readString(containerDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 					container.setTypeModifiers(readString(containerDAO, "DeployInfo/TypeModifiers", null));
 					container.setStartOnDemand(Boolean.valueOf(readString(containerDAO, "DeployInfo/StartOnDemand", "false")));
 					
@@ -1018,7 +1018,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 								container.setConfiguration(config);
 								container.setLoggingConfig(loggingConfig);
 								container.setComputer(null);
-								container.setImplLang(ContainerImplLang.valueOf(readString(componentDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
+								container.setImplLang(ContainerImplLang.valueOfForEnum(readString(componentDAO, "ImplLang", "cpp"))); // cpp is default, since field is required
 								container.setTypeModifiers(DUMMY_CONTAINER_FLAG);
 								container.setRealTime(false);
 								container.setRealTimeType(null);
@@ -1133,7 +1133,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					    component.setConfiguration(config);
 //					    component.setContainerId(componentContainerId);
 					    component.setContainer(tmpComponentContainer); // TODO verify this and clean up
-						component.setImplLang(ComponentImplLang.valueOf(readString(componentDAO, componentName+"/ImplLang", "cpp")));	// cpp is default, since field is required
+						component.setImplLang(ComponentImplLang.valueOfForEnum(readString(componentDAO, componentName+"/ImplLang", "cpp")));	// cpp is default, since field is required
 						component.setRealTime(false);
 						component.setCode(componentDAO.get_string(componentName+"/Code"));
 						component.setPath(path);
@@ -1203,7 +1203,7 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 										baciPropertyType.setArchive_min_int(componentConfigurationDAO.get_double(propertyName + "/archive_min_int"));
 										baciPropertyType.setArchive_max_int(componentConfigurationDAO.get_double(propertyName + "/archive_max_int"));
 										baciPropertyType.setArchive_suppress(Boolean.parseBoolean(componentConfigurationDAO.get_string(propertyName + "/archive_suppress")));
-										baciPropertyType.setArchive_mechanism(BACIPropArchMech.valueOf(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/archive_mechanism"), "monitor_collector")));
+										baciPropertyType.setArchive_mechanism(BACIPropArchMech.valueOfForEnum(nonEmptyString(componentConfigurationDAO.get_string(propertyName + "/archive_mechanism"), "monitor_collector")));
 										baciPropertyType.setDefault_timer_trig(componentConfigurationDAO.get_double(propertyName + "/default_timer_trig"));
 										baciPropertyType.setMin_timer_trig(componentConfigurationDAO.get_double(propertyName + "/min_timer_trig"));
 		
@@ -1328,12 +1328,12 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 					eventChannel.setMaxConsumers(readLong(channelDAO, "MaxConsumers", 0));
 					eventChannel.setMaxSuppliers(readLong(channelDAO, "MaxSuppliers", 0));
 					eventChannel.setRejectNewEvents(Boolean.valueOf(readString(channelDAO, "RejectNewEvents", "false")));
-					eventChannel.setDiscardPolicy(EventChannelDiscardPolicy.valueOf(readString(channelDAO, "DiscardPolicy", "AnyOrder")));
-					eventChannel.setEventReliability(EventChannelEventReliability.valueOf(readString(channelDAO, "EventReliability", "BestEffort")));
-					eventChannel.setConnectionReliability(EventChannelConReliability.valueOf(readString(channelDAO, "ConnectionReliability", "BestEffort")));
+					eventChannel.setDiscardPolicy(EventChannelDiscardPolicy.valueOfForEnum(readString(channelDAO, "DiscardPolicy", "AnyOrder")));
+					eventChannel.setEventReliability(EventChannelEventReliability.valueOfForEnum(readString(channelDAO, "EventReliability", "BestEffort")));
+					eventChannel.setConnectionReliability(EventChannelConReliability.valueOfForEnum(readString(channelDAO, "ConnectionReliability", "BestEffort")));
 					eventChannel.setPriority((short)readLong(channelDAO, "Priority", 0));
 					eventChannel.setTimeout(readLong(channelDAO, "Timeout", 0));
-					eventChannel.setOrderPolicy(EventChannelOrderPolicy.valueOf(readString(channelDAO, "OrderPolicy", "AnyOrder")));
+					eventChannel.setOrderPolicy(EventChannelOrderPolicy.valueOfForEnum(readString(channelDAO, "OrderPolicy", "AnyOrder")));
 					eventChannel.setStartTimeSupported(Boolean.valueOf(readString(channelDAO, "StartTimeSupported", "false")));
 					eventChannel.setStopTimeSupported(Boolean.valueOf(readString(channelDAO, "StopTimeSupported", "false")));
 					eventChannel.setMaxEventsPerConsumer(readLong(channelDAO, "MaxEventsPerConsumer", 0));
