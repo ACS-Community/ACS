@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.30 2011/04/08 11:17:31 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.31 2011/05/13 12:56:48 mpasquat Exp $"
 #
 #
 
@@ -9,7 +9,7 @@
 # Macro definitions.                          #
 ###############################################
 define makeIt
-   (( /usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   ( ((/usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1) && ( echo "### ==> SUCCEDED" | tee -a  $4 >/dev/null )) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
 define makeItAux

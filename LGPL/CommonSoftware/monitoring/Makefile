@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 23:49:22 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/05/13 12:55:58 mpasquat Exp $"
 #
 # Makefile of containerTests (the package dealing with container tests)
 #
@@ -36,7 +36,7 @@
 # Macro definitions.                          #
 ###############################################
 define makeIt
-   (( /usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1 ) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
+   ( ((/usr/bin/time -f "$1 COMPILATION TIME %E" make $(MAKE_FLAGS) -C $1 $2 2>&1) && ( echo "### ==> SUCCEDED" | tee -a  $4 >/dev/null )) || ( echo "### ==> FAILED $2 ! " | tee -a $3 $4 1>&2 )) | tee -a $3 $4 >/dev/null;
 endef
 
 define makeItAux
