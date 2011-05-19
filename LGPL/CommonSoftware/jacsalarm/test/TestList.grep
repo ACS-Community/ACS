@@ -2,8 +2,7 @@ ACS Manager:
 ACS Interface Repository:
 java -classpath
 java version
-Java(TM)
-Java HotSpot(TM)
+Java
 Time:
 has not defined the Timeout for the component
 export
