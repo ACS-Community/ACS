@@ -5563,7 +5563,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		}
 
 		// try to acquire lock
-		boolean lockAcquired = acquireSynchronizationObject(name, getLockTimeout());
+		long lockTimeoutMillis = getLockTimeout();
+		boolean lockAcquired = acquireSynchronizationObject(name, lockTimeoutMillis);
 		if (lockAcquired)
 		{
 			boolean releaseRWLock = true;
@@ -5588,21 +5589,26 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 					
 				}
 
-				if (componentInfo != null)
+				if (componentInfo != null) {
 					return componentInfo.getComponent();
-				else
+				}
+				else {
 					return null;
+				}
 			}
 			finally
 			{
-				if (releaseRWLock)
+				if (releaseRWLock) {
 					activationPendingRWLock.readLock().unlock();
+				}
 				releaseSynchronizationObject(name);
 			}
 		}
 		else
 		{
-			NoResourcesException nre = new NoResourcesException("Failed to obtain synchronization lock for component '"+name+"', possible deadlock.");
+			String msg = "Failed to obtain synchronization lock for component '" + name + "' within '" + lockTimeoutMillis + "' ms, possible deadlock." ;
+			logger.fine(msg);
+			NoResourcesException nre = new NoResourcesException(msg);
 			throw nre;
 		}
 	}
