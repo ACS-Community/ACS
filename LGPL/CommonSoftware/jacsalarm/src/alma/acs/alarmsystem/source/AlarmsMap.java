@@ -128,12 +128,18 @@ public class AlarmsMap {
 	private final ThreadLoopRunner loopRunner;
 	
 	/**
+	 * The logger
+	 */
+	private final Logger logger;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param threadFactory The thread factory to schedule the timer loop
 	 * @param logger The logger
 	 */
 	public AlarmsMap(ThreadFactory threadFactory, Logger logger) {
+		this.logger=logger;
 		loopRunner=new ThreadLoopRunner(new AlarmsMapRunnable(), ALARM_ACTIVITY_TIME, TimeUnit.SECONDS, threadFactory, logger);
 	}
 	
@@ -193,10 +199,17 @@ public class AlarmsMap {
 	 * Shutdown the thread a frees the resources
 	 */
 	public void shutdown() {
-		try {
-			loopRunner.shutdown(1, TimeUnit.SECONDS);
-		} catch (InterruptedException ie) {
-			System.err.println("Error shutting down the AlarmsMap timer task");
+		if (loopRunner.isLoopRunning()) {
+			try {
+				if (loopRunner.shutdown(ALARM_ACTIVITY_TIME+1, TimeUnit.SECONDS)) {
+					logger.fine("Thread shut down");
+				} else {
+					logger.warning("Failed to cleanly shut down the AlarmsMap thread");
+				}
+			} catch (InterruptedException ie) {
+				logger.warning("AlarmsMap thread interrupetd while shutting down");
+				Thread.currentThread().interrupt();
+			}
 		}
 		alarms.clear();
 	}
