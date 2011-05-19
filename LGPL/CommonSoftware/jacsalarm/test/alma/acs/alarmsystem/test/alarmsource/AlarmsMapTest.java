@@ -70,6 +70,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * Test the clearing of alarms
 	 */
 	public void testClearMap() throws Exception {
+		System.out.println("testClearMap");
 		String keyBase="ClearListFF:ClearListFM:";
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
@@ -86,6 +87,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testAutoRemoval() throws Exception {
+		System.out.println("testAutoRemoval");
 		// First test is simply done by adding elements and waiting 
 		// enough time to see if they are removed
 		String keyBase="RemovalFF:RemovalFM:";
@@ -120,6 +122,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testRaise() throws Exception{
+		System.out.println("testRaise");
 		alarmsMap.clear();
 		// Raise one alarm and check if it is present in the list
 		String keyBase="RaiseFF:RaiseFM:";
@@ -144,6 +147,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testClear() throws Exception {
+		System.out.println("testClear");
 		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="ClearFF:ClearFM:";
@@ -166,6 +170,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * @throws Exception
 	 */
 	public void testAlarmUpdate() throws Exception {
+		System.out.println("testAlarmUpdate");
 		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="UpdateFF:UpdateFM:1";
@@ -188,6 +193,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 * Check if the alarms raised/cleared are correctly replaced
 	 */
 	public void testAlarmReplacement() {
+		System.out.println("testAlarmReplacement");
 		alarmsMap.clear();
 		// Clear one alarm and check if it is present in the list
 		String keyBase="ReplaceFF:replaceFM:";
