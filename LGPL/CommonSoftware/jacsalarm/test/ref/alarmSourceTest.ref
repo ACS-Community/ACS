@@ -7,6 +7,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleRaise] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleRaise] Alarm sent: &lt;RaiseMultipleSend,RaiseMultipleSendMember,1&gt; ACTIVE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleRaise] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleRaise] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleRaise] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] ComponentClientTestCase#setUp()
@@ -16,6 +17,7 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] Alarm sent: &lt;ClearMultipleSend,ClearMultipleSendMember,1&gt; TERMINATE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testMultipleClear] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] ComponentClientTestCase#setUp()
@@ -25,6 +27,7 @@
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] Alarm sent: &lt;OscillationFF,OscillationFM,1&gt; ACTIVE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] Alarm sent: &lt;OscillationFF,OscillationFM,1&gt; TERMINATE
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testOscillation] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] -------------------------------
@@ -32,9 +35,10 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Alarm system type: ACS
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Alarm sent: &lt;DisableFF,DisableFM,15&gt; ACTIVE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Alarm sent: &lt;DisableFF,DisableFM,15&gt; ACTIVE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Alarm sent: &lt;DisableFF,DisableFM,15&gt; TERMINATE
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] about to log out from manager...
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testDisable] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] -------------------------------
@@ -42,8 +46,8 @@
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm system type: ACS
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; ACTIVE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm source of UNDEFINED connected to the logging
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; ACTIVE
 1 - Queueing alarms
 1 - Flushing alarms
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM0,20&gt; ACTIVE
@@ -56,26 +60,27 @@
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM7,20&gt; ACTIVE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM8,20&gt; ACTIVE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM9,20&gt; ACTIVE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,1&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,4&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,5&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,1&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,8&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,0&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,9&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,3&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,8&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,9&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,15&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,2&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,6&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,7&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Alarm sent: &lt;QueueFF,QueueFM,2&gt; TERMINATE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueing] logged out from manager.
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] -------------------------------
 1 - ----------T--:--:--.--- INFO [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] calling orb.resolve_initial_references
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] POA activated
 1 - ----------T--:--:--.--- DEBUG [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm system type: ACS
-1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm source of UNDEFINED connected to the logging
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,15&gt; ACTIVE
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm source of UNDEFINED connected to the logging
 1 - Queueing alarms with timer
 1 - Waiting for the flush to happen
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM0,20&gt; ACTIVE
@@ -92,14 +97,15 @@
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,8&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,0&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,1&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,5&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,2&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,4&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,5&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,3&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,4&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,15&gt; TERMINATE
-1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,7&gt; TERMINATE
 1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,6&gt; TERMINATE
+1 - ----------T--:--:--.--- ALERT [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Alarm sent: &lt;QueueTimerFF,QueueTimerFM,7&gt; TERMINATE
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] about to log out from manager...
+1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] Thread shut down
 1 - ----------T--:--:--.--- FINE [alma.acs.alarmsystem.test.alarmsource.AlarmSourceTest#testQueueingTimer] logged out from manager.
 1 - 
 1 - 
