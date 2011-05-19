@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +52,7 @@ import alma.acs.container.ContainerServicesBase;
 public class AlarmSourceImpl implements AlarmSource {
 	
 	/**
-	 * The TimerTask to flush the queue of alarms 
+	 * The task to flush the queue of alarms 
 	 * 
 	 * @author acaproni
 	 *
@@ -96,14 +95,14 @@ public class AlarmSourceImpl implements AlarmSource {
 		private final long delay;
 		
 		/**
-		 * Signal if the task has been cancelled
+		 * Signal if the task has been canceled
 		 */
 		private volatile boolean cancelled=false;
 		
 		/**
 		 * The thread executing this task
 		 */
-		private Thread thread=null;
+		private volatile Thread thread=null;
 		
 		/**
 		 * Constructor
@@ -233,7 +232,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	private final ThreadLoopRunner oscillationLoop;
 	
 	/**
-	 * The flusher for the queueing
+	 * The flusher for the queuing
 	 * 
 	 * Guarded by "this"
 	 */
