@@ -26,24 +26,27 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collection;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import cern.laser.source.alarmsysteminterface.FaultState;
 
 import alma.acs.alarm.gui.senderpanel.table.AlarmsSentTable;
 import alma.acs.component.client.AdvancedComponentClient;
@@ -87,9 +90,45 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	private final JTextField propsTF = new JTextField();
 	
 	/**
-	 * The state of the alarm to send
+	 * The (active) state of the alarm to send
+	 * <P>
+	 * The name of the button contains the FaultState descriptor
 	 */
-	private final JCheckBox activeCB = new JCheckBox();
+	private final JRadioButton activeRB = new JRadioButton("Active");
+	
+	/**
+	 * The (change) state of the alarm to send
+	 * <P>
+	 * The name of the button contains the FaultState descriptor
+	 */
+	private final JRadioButton changeRB = new JRadioButton("Change");
+	
+	/**
+	 * The (terminate) state of the alarm to send
+	 * <P>
+	 * The name of the button contains the FaultState descriptor
+	 */
+	private final JRadioButton terminateRB = new JRadioButton("Terminate");
+	
+	/**
+	 * The (instant) state of the alarm to send
+	 * <P>
+	 * The name of the button contains the FaultState descriptor
+	 */
+	private final JRadioButton instantRB = new JRadioButton("Instant");
+	
+	/**
+	 * The array with the buttons to facilitate getting their state
+	 */
+	private final JRadioButton[] descriptorBtns = {
+			activeRB,terminateRB,changeRB,instantRB
+	};
+	
+	/**
+	 * It contains the radio buttons for the activation
+	 * of an alarm
+	 */
+	private final ButtonGroup activationBG = new ButtonGroup();
 	
 	/**
 	 * The button to send the alarm
@@ -156,17 +195,43 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 			}
 		});
 		
-		JPanel alrmSendPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		alrmSendPnl.add(new JLabel("Triplet: "));
-		alrmSendPnl.add(tripletTF);
+		activeRB.setName(FaultState.ACTIVE);
+		terminateRB.setName(FaultState.TERMINATE);
+		changeRB.setName(FaultState.CHANGE);
+		instantRB.setName(FaultState.INSTANT);
+		
+		JPanel alrmSendPnl = new JPanel(new BorderLayout());
+		JPanel upperPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		upperPnl.add(new JLabel("Triplet: "));
+		upperPnl.add(tripletTF);
 		tripletTF.setColumns(40);
 		tripletTF.getDocument().addDocumentListener(this);
 		tripletTF.setToolTipText("Insert triplet: FaultFamily,FaultMember,1");
-		alrmSendPnl.add(new JLabel("Active: "));
-		alrmSendPnl.add(activeCB);
-		alrmSendPnl.add(sendBtn);
 		sendBtn.setEnabled(false);
 		sendBtn.addActionListener(this);
+		upperPnl.add(sendBtn);
+		alrmSendPnl.add(upperPnl, BorderLayout.NORTH);
+		
+		JPanel centerPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		centerPnl.add(new JLabel("Descriptor: "));
+		centerPnl.add(activeRB);
+		centerPnl.add(terminateRB);
+		centerPnl.add(changeRB);
+		centerPnl.add(instantRB);
+		activationBG.add(activeRB);
+		activationBG.add(changeRB);
+		activationBG.add(terminateRB);
+		activationBG.add(instantRB);
+		activeRB.setSelected(true);
+		alrmSendPnl.add(centerPnl, BorderLayout.CENTER);
+		JPanel lowerPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		lowerPnl.add(new JLabel("Properties"));
+		lowerPnl.add(propsTF);
+		propsTF.setColumns(40);
+		propsTF.setToolTipText("User properties key=val, key2=val2,....");
+		alrmSendPnl.add(lowerPnl, BorderLayout.SOUTH);
+		alrmSendPnl.setBorder(BorderFactory.createTitledBorder("Send alarm"));
+		
 		add(alrmSendPnl,BorderLayout.NORTH);
 		
 		JPanel alarmClearingPnl = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -231,7 +296,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 			setVisible(false);
 			this.dispose();
 		} else if (e.getSource()==sendBtn) {
-			sendAlarm(tripletTF.getText().trim(), activeCB.isSelected());
+			sendAlarm(tripletTF.getText().trim(), getDescriptor(), propsTF.getText());
 		} else if (e.getSource()==clearAllBtn) {
 			clearAllAlarms();
 		} else if (e.getSource()==clearSelectedAlarmsBtn) {
@@ -240,7 +305,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	}
 	
 	public static void main(String[] args) {
-		SenderPanel panel = new SenderPanel();
+		new SenderPanel();
 		System.out.println("Done.");
 	}
 
@@ -265,22 +330,25 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 	 * This method must not be executed inside the swing thread.
 	 * 
 	 * @param triplet The triplet in the format FF,FM,FC
-	 * @param active active <code>true</code> meanc ACTIVE, <code>false</code> means TERMINATE
+	 * @param descriptor The {@link FaultState} descriptor
+	 * @param props The user properties
 	 * @throws Exception
 	 */
-	private void sendAlarm(final String triplet, final boolean active) {
+	private void sendAlarm(final String triplet, final String descriptor, final String props) {
 		Runnable r = new Runnable() {
 			public void run() {
 				try {
-					System.out.println("Sending "+triplet+", "+active);
-					alarmSender.send(triplet, active);
-					final int nAlarms=alarmsSent.alarmSent(triplet, active);
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							clearAllBtn.setEnabled(nAlarms>0);
-							clearSelectedAlarmsBtn.setEnabled(nAlarms>0);
-						}
-					});
+					System.out.println("Sending "+triplet+", "+descriptor);
+					alarmSender.send(triplet, descriptor,getUserProperties());
+					if (descriptor.equals(FaultState.ACTIVE) || descriptor.equals(FaultState.TERMINATE)) {
+						final int nAlarms=alarmsSent.alarmSent(triplet, descriptor.equals(FaultState.ACTIVE));
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								clearAllBtn.setEnabled(nAlarms>0);
+								clearSelectedAlarmsBtn.setEnabled(nAlarms>0);
+							}
+						});	
+					}
 				} catch (Throwable t) {
 					t.printStackTrace();
 					JOptionPane.showMessageDialog(null, t.getMessage(), "Error sending alarm "+triplet, JOptionPane.ERROR_MESSAGE);
@@ -296,7 +364,7 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		Collection<String> triplets= alarmsSent.getAlarms();
 		System.out.println("Alarms to terminate "+triplets.size());
 		for (String triplet: triplets) {
-			sendAlarm(triplet, false);
+			sendAlarm(triplet, FaultState.TERMINATE, null);
 		}
 	}
 	
@@ -304,7 +372,47 @@ public class SenderPanel extends JFrame implements ActionListener, DocumentListe
 		Collection<String> triplets= alarmsSent.getSelectedAlarms();
 		System.out.println("Alarms to terminate "+triplets.size());
 		for (String triplet: triplets) {
-			sendAlarm(triplet, false);
+			sendAlarm(triplet, FaultState.TERMINATE, null);
 		}
+	}
+	
+	/**
+	 * The state descriptor from the radio buttons
+	 * 
+	 * @return The state descriptor
+	 */
+	private String getDescriptor() {
+		for (JRadioButton btn: descriptorBtns) {
+			if (btn.isSelected()) {
+				return btn.getName();
+			}
+		}
+		throw new IllegalStateException("Descriptor not found");
+	}
+	
+	/**
+	 * Build the user properties from the text field 
+	 * 
+	 * @return the user properties or <code>null</code> if the
+	 *         user did not add props in the text field
+	 */
+	private Properties getUserProperties() throws Exception {
+		String props= propsTF.getText().trim();
+		if (props.isEmpty()) {
+			return null;
+		}
+		Properties ret = new Properties();
+		String[] properties=props.split(",");
+		for (String str: properties) {
+			if (!str.contains("=")) {
+				throw new Exception("Invalid user properties\nUse: key=val, key2=val2,...");
+			}
+			String[] pair = str.trim().split("=");
+			if (pair.length!=2) {
+				throw new Exception("Invalid user properties\nUse: key=val, key2=val2,...");
+			}
+			ret.put(pair[0], pair[1]);
+		}
+		return ret;
 	}
 }

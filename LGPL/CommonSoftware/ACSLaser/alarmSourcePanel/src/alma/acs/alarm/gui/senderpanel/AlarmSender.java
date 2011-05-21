@@ -20,6 +20,7 @@ package alma.acs.alarm.gui.senderpanel;
 
 import java.security.InvalidParameterException;
 import java.sql.Timestamp;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
@@ -62,27 +63,32 @@ public class AlarmSender {
 	}
 	
 	/**
-	 * Send the specified alarm
+	 * Send an alarm 
 	 * 
 	 * @param faultFamily The Fault Family
 	 * @param faultMember The Fault member
 	 * @param faultCode The Fault Code
-	 * @param active <code>true</code> meanc ACTIVE, <code>false</code> means TERMINATE
-	 * @throws FaultStateCreationErrorEx 
-	 * @throws ACSASFactoryNotInitedEx 
+	 * @param descriptor The descritptor (ACTIVE, TERMINATE, CHANGE, INSTANT)
+	 * @param props The user properties
+	 * @throws ACSASFactoryNotInitedEx
+	 * @throws FaultStateCreationErrorEx
 	 */
-	public void send(String faultFamily, String faultMember, int faultCode, boolean active) throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx {
-		logger.finer("Sending alarm "+faultFamily+","+faultMember+","+faultCode+" with state "+active);
+	public void send(
+			String faultFamily, 
+			String faultMember, 
+			int faultCode, 
+			String descriptor,
+			Properties props) throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx {
+		logger.finer("Sending alarm "+faultFamily+","+faultMember+","+faultCode+" with descriptor "+descriptor);
 		ACSFaultState state =ACSAlarmSystemInterfaceFactory.createFaultState(
 				faultFamily.trim(),
 				faultMember.trim(),
 				faultCode);
-		if (active) {
-			state.setDescriptor(ACSFaultState.ACTIVE);
-		} else {
-			state.setDescriptor(ACSFaultState.TERMINATE);
-		}
+		state.setDescriptor(descriptor);
 		state.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
+		if (props!=null && !props.isEmpty()) {
+			state.setUserProperties(props);
+		}
 		alarmSource.push(state);
 		logger.finer("Alarm "+faultFamily+","+faultMember+","+faultCode+" sent");
 	}
@@ -90,11 +96,12 @@ public class AlarmSender {
 	/**
 	 * Send the specified alarm
 	 * @param triplet The triplet in the form FF,FM,FC
-	 * @param active <code>true</code> meanc ACTIVE, <code>false</code> means TERMIANTE
+	 * @param The descriptor
+	 * @param props The user properties
 	 * @throws FaultStateCreationErrorEx 
 	 * @throws ACSASFactoryNotInitedEx 
 	 */
-	public void send(String triplet, boolean active) throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx {
+	public void send(String triplet, String descriptor, Properties props) throws ACSASFactoryNotInitedEx, FaultStateCreationErrorEx {
 		triplet=triplet.trim();
 		String[] vals=triplet.split(",");
 		if (vals.length!=3) {
@@ -107,7 +114,7 @@ public class AlarmSender {
 			throw new InvalidParameterException("Invalid fault code "+vals[2]);
 		}
 		System.out.println("FF="+vals[0]+" FM="+vals[1]+", FC="+vals[2]);
-		send(vals[0],vals[1],code,active);
+		send(vals[0],vals[1],code,descriptor,props);
 	}
 	
 	/**
