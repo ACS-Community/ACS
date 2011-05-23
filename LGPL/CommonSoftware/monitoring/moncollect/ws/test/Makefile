@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 21:20:41 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/05/23 19:31:45 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -66,12 +66,15 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     = MCtestComponent MCmockBlobber MCmockController
+LIBRARIES_L     = MCtestComponent MCtestPropertiesComponent MCmockBlobber MCmockController
 
 #
 # <brief description of lllll library>
 MCtestComponent_OBJECTS = MCtestComponentImpl
 MCtestComponent_LIBS= MCtestComponentStubs baci
+
+MCtestPropertiesComponent_OBJECTS = MCtestPropertiesComponentImpl
+MCtestPropertiesComponent_LIBS= MCtestComponentStubs baci
 
 MCmockBlobber_OBJECTS = MCmockBlobberImpl
 MCmockBlobber_LIBS = baci MonitorArchiverIFStubs CollectorListStatusStubs acscomponent 
@@ -96,7 +99,7 @@ TCL_SCRIPTS_L   =
 # ----------------------------
 PY_SCRIPTS         =
 PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
-						mcTestComponent
+						mcTestComponent mcTestPropertiesComponent
 PY_MODULES         =
 PY_MODULES_L       =
 

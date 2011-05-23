@@ -8,3 +8,4 @@ s/TimeStamp=[0-9,a-z,A-Z, :,-, ]*/TimeStamp=XXXX,/g
 s/Line=[0-9]*/Line=XXXX/g
 s/Thread=RequestProcessor-[0-9]*/Thread=RequestProcessor-XX/g
 s/ime=[0-9]*L/ime=XXXX/g
+s/'time': [0-9]*L/'time': ------------------L/g

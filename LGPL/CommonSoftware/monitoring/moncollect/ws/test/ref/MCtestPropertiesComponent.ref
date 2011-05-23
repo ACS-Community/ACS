@@ -1,0 +1,63 @@
+1 - Number of Devices: 1
+1 - MC_TEST_PROPERTIES_COMPONENT 
+1 - 	MC_TEST_PROPERTIES_COMPONENT:doubleROProp ['1']
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:floatROProp ['2']
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longROProp ['3']
+1 - 		{'value': 0, 'time': ------------------L}
+1 - 		{'value': 0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:patternROProp ['4']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:stringROProp ['5']
+1 - 		{'value': 'TestRO', 'time': ------------------L}
+1 - 		{'value': 'TestRO', 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longLongROProp ['6']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:uLongLongROProp ['7']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:doubleSeqROProp ['8']
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:floatSeqROProp ['9']
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longSeqROProp ['10']
+1 - 		{'value': [0, 0], 'time': ------------------L}
+1 - 		{'value': [0, 0], 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:doubleRWProp ['11']
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:floatRWProp ['12']
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 		{'value': 0.0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longRWProp ['13']
+1 - 		{'value': 0, 'time': ------------------L}
+1 - 		{'value': 0, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:patternRWProp ['14']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:stringRWProp ['15']
+1 - 		{'value': 'TestRW', 'time': ------------------L}
+1 - 		{'value': 'TestRW', 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longLongRWProp ['16']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:uLongLongRWProp ['17']
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 		{'value': 0L, 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:doubleSeqRWProp ['18']
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:floatSeqRWProp ['19']
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 		{'value': [0.0, 0.0], 'time': ------------------L}
+1 - 	MC_TEST_PROPERTIES_COMPONENT:longSeqRWProp ['20']
+1 - 		{'value': [0, 0], 'time': ------------------L}
+1 - 		{'value': [0, 0], 'time': ------------------L}
+1 - ----------T--:--:--.--- Python Client disconnect - Shutdown called for client

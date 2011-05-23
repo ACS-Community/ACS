@@ -53,9 +53,10 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 			));
 			archivingInterval_m = 0;
 		}//if
-		TBASE val;
+		TBASE val(0);
 		anyCharacteristic = property_m->get_characteristic_by_name("archive_delta");
 		*anyCharacteristic >>= CORBA::Any::to_string(strCharacteristic, 0);
+      val = initValue<TBASE>(strlen(strCharacteristic));
 		std::istringstream i1(strCharacteristic);
 		i1 >> val;
 		if ( val == 0 ) {
@@ -87,6 +88,12 @@ MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::MonitorPoint(const char *property
 		printf("problem in MonitorPoint::MonitorPoint!!!\n");
 	}//try-catch
 }//MonitorPoint
+
+template<class T>
+T initValue(unsigned int len)
+{
+   return 0;
+}
 
 template<class T, class TBLOB_SEQ, class TPROP, class TCB, class TBASE>
 MonitorPoint<T, TBLOB_SEQ, TPROP, TCB, TBASE>::~MonitorPoint()

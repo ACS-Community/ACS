@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
+* "@(#) $Id: MonitorPoint.cpp,v 1.3 2011/05/23 19:31:44 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,7 +25,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.2 2011/03/30 18:11:18 tstaig Exp $";
+static char *rcsId="@(#) $Id: MonitorPoint.cpp,v 1.3 2011/05/23 19:31:44 javarias Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "MonitorPoint.h"
@@ -71,6 +71,12 @@ void MonitorPointBase::activate(maci::ContainerServices *cs)
 MonitorPointBase::~MonitorPointBase()
 {
 	AUTO_TRACE("MonitorPointBase::~MonitorPointBase");
+}
+
+template<>
+char* initValue<char*>(unsigned int len)
+{
+   return new char[len+1];
 }
 
 /*___oOo___*/

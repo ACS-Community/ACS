@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: MonitorPoint.h,v 1.2 2011/03/30 18:11:18 tstaig Exp $"
+* "@(#) $Id: MonitorPoint.h,v 1.3 2011/05/23 19:31:44 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -131,6 +131,10 @@ protected:
 	TBASE valueTrigger_m; // Delta value describing how much a value can change before the value should be archived (and so monitored)
 };//MonitorPoint
 
+template <class T>
+T initValue(unsigned int len);
+template <>
+char* initValue(unsigned int len);
 #include "MonitorPoint.i"
 
 };
