@@ -11,17 +11,17 @@ module ACSBulkData {
 	
 	const DataType BD_PARAM=0; //start
 	const DataType BD_DATA=1;  // data
-	const DataType BD_STOP=1;  //stop
+	const DataType BD_STOP=2;  //stop
 	
-	
-	//typedef sequence<octet, 10*1024> dataChunk;
 
-// #pragma DCPS_DATA_TYPE "BD_DDS::BDdataMessage"
 	struct BulkDataNTFrame{
 	// data type: parameter or real data
 	    DataType dataType;
 	// just for data rest data length, how many chunks do we still have to get 
 	    unsigned long restDataLength;
+	    
+	    
+	    
 // old	    
 	    unsigned long transactionnum;
 		unsigned long seqnum;
