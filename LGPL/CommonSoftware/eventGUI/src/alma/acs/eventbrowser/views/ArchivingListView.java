@@ -133,9 +133,9 @@ public class ArchivingListView extends ViewPart {
 //		makeActions();
 //		hookContextMenu();
 
-		pel = new PopulateEventList(logger, viewer, em, aqueue, "Monitor points");
+		pel = new PopulateEventList(logger, viewer, aqueue, "Monitor points");
 		
-		channelRefreshThread = pel.getChannelRefreshThread();
+		channelRefreshThread = pel.getChannelRefreshThread(em);
 		channelRefreshThread.start();
 //		em.refreshChannelSubscriptions(); // TODO: remove workaround
 		

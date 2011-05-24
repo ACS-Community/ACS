@@ -133,9 +133,9 @@ public class EventListView extends ViewPart {
 		makeActions();
 		hookContextMenu();
 
-		pel = new PopulateEventList(logger, viewer, em, equeue, "NC Events");
+		pel = new PopulateEventList(logger, viewer, equeue, "NC Events");
 		
-		channelRefreshThread = pel.getChannelRefreshThread();
+		channelRefreshThread = pel.getChannelRefreshThread(em);
 		channelRefreshThread.start();
 //		em.refreshChannelSubscriptions(); // TODO: remove workaround
 		

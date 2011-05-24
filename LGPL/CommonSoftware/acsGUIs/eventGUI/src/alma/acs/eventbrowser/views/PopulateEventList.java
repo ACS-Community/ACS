@@ -22,15 +22,13 @@ public class PopulateEventList {
 	private Logger logger;
 	private TableViewer viewer;
 	private final Display display;
-	private EventModel em;
 	private ArrayBlockingQueue<?> queue;
 	private final String threadName;
 
-	public PopulateEventList(Logger logger, TableViewer viewer, EventModel em, ArrayBlockingQueue<?> queue, String threadName) {
+	public PopulateEventList(Logger logger, TableViewer viewer, ArrayBlockingQueue<?> queue, String threadName) {
 		super();
 		this.logger = logger;
 		this.viewer = viewer;
-		this.em = em;
 		this.queue = queue;
 		display = viewer.getControl().getDisplay();
 		this.threadName = threadName;
@@ -107,7 +105,7 @@ public class PopulateEventList {
 		return th;
 	}
 
-	public Thread getChannelRefreshThread() {
+	public Thread getChannelRefreshThread(final EventModel em) {
 		final Thread subscrTh = new Thread(new Runnable() {
 			@Override
 			public void run() {
