@@ -6,6 +6,6 @@ PROLOGUE MCTestPrologue
 2 "registerDeviceWithMultipleSerial" "acsutilTATTestRunner mcTestRegisterDeviceWithMultipleSerial MONITOR_COLLECTOR_TEST"
 3 "DeviceWithSeqAndMultipleSerial" "acsutilTATTestRunner mcTestDeviceWithSeqAndMultipleSerial MONITOR_COLLECTOR_TEST"
 4 "MCtestComponent"  "acsutilTATTestRunner  mcTestComponent MONITOR_COLLECTOR_TEST"
-12 "MCtestPropertiesComponent"  "acsutilTATTestRunner  mcTestPropertiesComponent MONITOR_COLLECTOR_TEST"
+5 "MCtestPropertiesComponent"  "acsutilTATTestRunner  mcTestPropertiesComponent MONITOR_COLLECTOR_TEST"
 
 EPILOGUE acsutilTATEpilogue
