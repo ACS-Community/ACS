@@ -67,11 +67,13 @@
 		Container="*"
 		KeepAliveTime="1"
 		ImplLang="java" />
+		
 	<_ Name="MyCollocationTargetDummy"
 		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
 		Type="IDL:alma/jconttest/DummyComponent:1.0" 
 		Container="frodoContainer"
 		ImplLang="java" />
+		
 	<_ Name="MyCollocatedDummy2"
 		Code="alma.jconttest.DummyComponentImpl.DummyComponentHelper" 
 		Type="IDL:alma/jconttest/DummyComponent:1.0" 
@@ -80,7 +82,7 @@
 	
 	
 	<_ Name="DefaultComponentWithBadNulls" 
-		Code="alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsHelper"
+		Code="alma.jconttest.ComponentWithBadNullsImpl.ComponentWithBadNullsComponentHelper"
 		Type="IDL:alma/jconttest/ComponentWithBadNulls:1.0" 
 		Container="frodoContainer" 
 		Default="true"
