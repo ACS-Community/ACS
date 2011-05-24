@@ -1,3 +1,4 @@
+SOURCE environment
 PROLOGUE prologue.sh
 #1 test1 "acsStartJava -endorsed -Dacsdata=$PWD/.. cl.utfsm.cdbChecker.CDBChecker -v $PWD/testdata/good/ $PWD/testdata/good/"
 1 test-basic "test-basic.sh"

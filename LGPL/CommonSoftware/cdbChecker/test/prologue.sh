@@ -1,5 +1,6 @@
 #!/bin/bash
-if [ ! -d tmp ]
+
+if [ ! -d $ACS_TMP ]
 then
-	mkdir tmp
+	mkdir $ACS_TMP
 fi

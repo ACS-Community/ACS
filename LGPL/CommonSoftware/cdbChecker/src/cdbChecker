@@ -2,7 +2,7 @@
 #*******************************************************************************
 # cdbChecker
 #
-# "@(#) $Id: cdbChecker,v 1.8 2009/11/27 08:04:32 bpanta Exp $"
+# "@(#) $Id: cdbChecker,v 1.9 2011/05/24 08:22:33 rtobar Exp $"
 #
 
 #************************************************************************
@@ -117,13 +117,6 @@ if [ "X$intlist_list" != "X" ]; then
    SCHEMA_PATH=$intlist_list:$ACSROOT/$SUB
 fi
 
-# configure tmp path
-if [ "X$ACSDATA" != "X" ]; then  
-   TMP_PATH=$ACSDATA/tmp
-else
-   TMP_PATH="/tmp"
-fi
-
 # INTROOT path, if exists.
 if [ "X$INTROOT" != "X" ]; then  
    SCHEMA_PATH=$INTROOT/$SUB:$SCHEMA_PATH
@@ -164,12 +157,12 @@ fi
 if [ "$config_path" != "#error#" ]
 then
    export ACS_LOG_STDOUT=99
-   acsStartJava --noDirectory -endorsed -DACS.tmp=$TMP_PATH -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
+   acsStartJava --noDirectory -endorsed -DACS.config_path=$config_path -DACS.cdbpath=$SCHEMA_PATH cl.utfsm.cdbChecker.CDBChecker $1 $2 $3 $4 $5 $6 $7 $8 $9 
    returnCode=$?
 else
    echo "[Error] The configuration files are missing... Do a 'make install'"	   
    returnCode=1
-fi					     
+fi
 
 if [ "X$RUN_IR" != "X" ]; then
 echo Killing Interface Repository

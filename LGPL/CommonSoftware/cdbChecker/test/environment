@@ -1,0 +1,14 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: environment,v 1.1 2011/05/24 08:22:33 rtobar Exp $"
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+# 
+
+set ACS_TMP $env(PWD)/tmp
+set env(ACS_TMP) $ACS_TMP
+
+#
+# ___oOo___
