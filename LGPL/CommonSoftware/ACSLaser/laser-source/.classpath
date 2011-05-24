@@ -3,12 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="var" path="ACSROOT/lib/log4j-1.2.8.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jms.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ACS_jcont"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/jcont.jar"/>
-	<classpathentry exported="true" kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/maci.jar"/>
@@ -37,8 +35,11 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeJavaNative.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCORBA.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/endorsed/xercesImpl.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/commons-logging.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjms.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/AlarmSourceSchemaBindings.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
