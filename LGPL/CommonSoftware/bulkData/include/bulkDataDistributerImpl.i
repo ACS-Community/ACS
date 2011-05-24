@@ -560,7 +560,7 @@ ACSErr::Completion * BulkDataDistributerImpl<TReceiverCallback, TSenderCallback>
 {
     ACS_TRACE("BulkDataDistributerImpl<>::getReceiverCbStatus");
 
-    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(recvName);
+    bulkdata::BulkDataReceiver_var receiver = containerServices_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(recvName);
     if(!CORBA::is_nil(receiver.in()))
 	{
 	return receiver->getCbStatus(flowNumber);

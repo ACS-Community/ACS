@@ -144,7 +144,7 @@ void AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallback>::multi
 	    g.take_ownership(); //we give mutex dor the guard - not the nicest way, but in this way we delete the mutex
 	    // when the guard is deleted
 
-	    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
+	    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(receiverName.c_str());
 	    if(CORBA::is_nil(receiver.in()))
 		{
 		ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributer<>::multiDisconnect could not get receiver reference"));	
@@ -791,7 +791,7 @@ CORBA::Boolean AcsBulkdata::BulkDataDistributer<TReceiverCallback, TSenderCallba
     if ( flowsStatusMap_m.find(currFlowPos,currStatus) != 0 )
 	return true;
 	
-    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponent<bulkdata::BulkDataReceiver>(receiverName.c_str());
+    bulkdata::BulkDataReceiver_var receiver = contSvc_p->maci::ContainerServices::getComponentNonSticky<bulkdata::BulkDataReceiver>(receiverName.c_str());
     if(!CORBA::is_nil(receiver.in()))
 	{
 	CompletionImpl comp = receiver->getCbStatus(flowNumber);
