@@ -45,8 +45,10 @@ public class CorbaNullFinder
 	synchronized private void checkForNulls() {
 		if (errors == null) {
 			errors = new ArrayList<String>();
-			if (corbaData != null && !corbaData.getClass().getPackage().getName().startsWith("java")) {
-				recursiveCheckForNulls(corbaData, corbaData.getClass().getSimpleName());
+			if (corbaData != null) {
+				if (!corbaData.getClass().getPackage().getName().startsWith("java")) { // dont recurse into the fields of String etc
+					recursiveCheckForNulls(corbaData, corbaData.getClass().getSimpleName());
+				}
 			}
 			else {
 				errors.add("Top-level object is null; cannot distinguish between a legal null object reference and an illegal null data item.");
