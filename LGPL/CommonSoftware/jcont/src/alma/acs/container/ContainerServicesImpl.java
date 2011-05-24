@@ -850,6 +850,7 @@ public class ContainerServicesImpl implements ContainerServices
 			m_logger.log(( callback == null ? AcsLogLevel.INFO : AcsLogLevel.DEBUG ), msg);
 			if (callback != null) {
 				callback.errorNoPermission(msg);
+				callback.callOver();
 			}
 			return;
 		}
