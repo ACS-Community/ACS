@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2010/06/28 12:11:55 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/05/24 08:19:28 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -79,17 +79,6 @@ XSDBIND_INCLUDE=
 
 INSTALL_FILES= 	../lib/java-getopt-1.0.12.jar ../config/reqSchemas.xml \
 		../config/reqSchemas.xsd
-
-
-
-# man pages to be done
-# --------------------
-MANSECTIONS = 1
-MAN1 =cdbChecker
-MAN3 =
-MAN5 =
-MAN7 =
-MAN8 =
 
 #
 # Scripts (public and local)
