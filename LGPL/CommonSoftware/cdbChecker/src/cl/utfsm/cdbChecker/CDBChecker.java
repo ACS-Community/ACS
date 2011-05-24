@@ -14,11 +14,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -50,20 +53,27 @@ public class CDBChecker {
 	public static final String IR_CORBALOC = "ACS.repository";
 	private String schemaFolder;
 
-	private static String targetNamespace;
-	public  static Vector<String> reqSchemas;
+	private String targetNamespace;
 	
 	private String componentsFolder = null;
 	private String containersFolder = null;
 	private boolean foundErr = false;
 
-  /**
+	/**
 	 * This errorFlag is used to signal from the parser
 	 * callbacks that something failed int the validation
 	 * of one specific file.
 	 * It shall be reset before starting the validation of each file.
 	 */
-	public  static boolean errorFlag       = false;
+	private boolean errorFlag = false;
+
+	public boolean isErrorFlag() {
+		return errorFlag;
+	}
+
+	public void setErrorFlag(boolean errorFlag) {
+		this.errorFlag = errorFlag;
+	}
 
 	/**
 	 * This globalErrorFlag is used to keep memory of any failure.
@@ -72,15 +82,55 @@ public class CDBChecker {
 	 * failed and therefore we have to return with a failure
 	 * error code.
 	 */
-    public  static boolean globalErrorFlag = false;
-	public static Repository rep= null;
+    private boolean globalErrorFlag = false;
+	public boolean isGlobalErrorFlag() {
+		return globalErrorFlag;
+	}
+
+	public void setGlobalErrorFlag(boolean globalErrorFlag) {
+		this.globalErrorFlag = globalErrorFlag;
+	}
+
+	private Repository rep= null;
+
+	public Repository getIrRep() {
+		return rep;
+	}
 
 	// Command line parameter flags
-	public  static  boolean verbose       = false;
-	private         boolean network       = false;
-	public  static 	boolean checkidl      = false;
-	private         boolean recursive     = true;
-	
+	private boolean verbose       = false;
+	private boolean network       = false;
+	private boolean checkidl      = false;
+	private boolean recursive     = true;
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
+	public boolean isCheckIdl() {
+		return checkidl;
+	}
+
+	/* Filename filters used when recursively collecting files from the paths */
+	private FilenameFilter xmlFileFilter = new FilenameFilter() {
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.endsWith(".xml");
+		}
+	};
+	private FilenameFilter xsdFileFilter = new FilenameFilter() {
+		@Override
+		public boolean accept(File dir, String name) {
+			return name.endsWith(".xsd");
+		}
+	};
+	private FilenameFilter dirFileFilter = new FilenameFilter() {
+		@Override
+		public boolean accept(File dir, String name) {
+			return new File(dir.getAbsolutePath() + File.separatorChar + name).isDirectory();
+		}
+	};
+
 	/**
 	 * This get the filenames of type 'type' from the given path. 
 	 * There could be several paths separated by ":". 
@@ -117,8 +167,8 @@ public class CDBChecker {
 				    paths[i]=paths[i]+"/";
 			    
 				//Search for files, filtering for 'type'
-				if(type.equals("xml"))   files = (new File(paths[i])).list(new XMLFilter());
-				else files = (new File(paths[i])).list(new XSDFilter());
+				if(type.equals("xml"))   files = (new File(paths[i])).list(xmlFileFilter);
+				else files = (new File(paths[i])).list(xsdFileFilter);
 				
 				//Add the files to the vector.
 				if (files!=null)
@@ -127,7 +177,7 @@ public class CDBChecker {
 			    
 				if(this.recursive)
 				    {
-				    String[] dirs = (new File(paths[i])).list(new DirFilter());
+				    String[] dirs = (new File(paths[i])).list(dirFileFilter);
 				    if(dirs.length != 0)
 					for (int j=0; j < dirs.length; j++){
 					dirs[j]=paths[i]+dirs[j]+"/";
@@ -204,12 +254,12 @@ public class CDBChecker {
 				try{
 					validateFileEncoding(filename.get(i));
 					SP.reset();
-					SP.setEntityResolver(new CDBSchemasResolver(schemaFolder+":"+XSDPath));
+					SP.setEntityResolver(new CDBSchemasResolver(this, schemaFolder+":"+XSDPath));
 					SP.setFeature("http://xml.org/sax/features/validation",true);
 					SP.setFeature("http://apache.org/xml/features/validation/schema",true);
 					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
 					SP.setFeature("http://xml.org/sax/features/namespaces",true);
-					SP.setErrorHandler(new CDBErrorHandler());	
+					SP.setErrorHandler(new CDBErrorHandler(this));	
 					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation","http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd");
 
 					FileInputStream fis = new FileInputStream(file);
@@ -270,7 +320,7 @@ public class CDBChecker {
 					 */}
 				String targetNamespace;
 				targetNamespace = ((xsd_targetns.toString()).replace(',',' ')).replace('=',' ').replace('{',' ').replace('}',' ');
-				CDBChecker.errorFlag=false;
+				errorFlag=false;
 				try{
 					validateFileEncoding(filenames.get(i));
 
@@ -279,7 +329,7 @@ public class CDBChecker {
 					SP.setFeature("http://apache.org/xml/features/validation/schema", true);
 					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
 					SP.setFeature("http://xml.org/sax/features/namespaces",true);
-					SP.setErrorHandler(new CDBErrorHandler());
+					SP.setErrorHandler(new CDBErrorHandler(this));
 					SP.setProperty("http://apache.org/xml/properties/schema/external-schemaLocation",targetNamespace);
 
 					FileInputStream fis = new FileInputStream(file);
@@ -313,19 +363,19 @@ public class CDBChecker {
 			filename= XSDFilenames.get(i);
 			File file = new File(XSDFilenames.get(i));
 			if(file.length()!=0){
-				SP.setContentHandler(new CDBContentHandler());
+				SP.setContentHandler(new CDBContentHandler(this));
 				SP.reset();
 				try{
 					SP.setFeature("http://xml.org/sax/features/validation",false);
 					SP.setFeature("http://apache.org/xml/features/validation/schema",false);
 					SP.setFeature("http://xml.org/sax/features/namespace-prefixes",false);
 					SP.setFeature("http://xml.org/sax/features/namespaces",true);
-					SP.setErrorHandler(new CDBErrorHandler());	
+					SP.setErrorHandler(new CDBErrorHandler(this));	
 
 					FileInputStream fis = new FileInputStream(file);
 					InputSource inputSource = new InputSource(fis);
 					inputSource.setSystemId("file://" + file.getAbsolutePath());
-					SP.parse(filename);
+					SP.parse(inputSource);
 					fis.close();
 				} catch(SAXException e){e.getMessage();}
 				catch (IOException e){System.out.println("[IOException] Probably "+filename+" doesn't exists.");}
@@ -371,8 +421,8 @@ public class CDBChecker {
 	 * Sets the static variable CDBChecker.targetNamespace
 	 * @param targetNamespace 
 	 */
-	public static void setTargetNamespaceString(String targetNamespace){
-		CDBChecker.targetNamespace=targetNamespace;
+	public void setTargetNamespaceString(String targetNamespace){
+		this.targetNamespace = targetNamespace;
 	}
 	
 	/**
@@ -399,6 +449,7 @@ public class CDBChecker {
 		} catch( MalformedURLException e ){e.printStackTrace();}
 		catch( IOException e) {
 			System.out.println("[IOexception] Probably "+myFile+" couldn't be written.");
+			e.printStackTrace();
 		}		
 	}
 	
@@ -414,7 +465,7 @@ public class CDBChecker {
 	 * Calls CDBChecker.getFile() to download files usually needed by XSD schema files.
 	 * @param reqSchemas Vector that contains the required schemas, to be downloaded.
 	 */
-	public void downloadSchemas(Vector<String> reqSchemas){
+	public void downloadSchemas(List<String> reqSchemas){
 		System.out.print("*** Downloading remote schemas");
 		if(verbose) {
 			System.out.print("\n*** Storing schemas in: " + schemaFolder);
@@ -563,6 +614,8 @@ public class CDBChecker {
    private boolean configLoader(){
       String config_path;
       String tmp_path;
+
+      List<String> reqSchemas = new ArrayList<String>();
       
       if((config_path = props.getProperty("ACS.config_path"))==null){
 	 System.out.println("config_path not defined");
@@ -578,7 +631,7 @@ public class CDBChecker {
 		}
       
       
-      SP.setContentHandler(new ConfigurationCH());
+      SP.setContentHandler(new ConfigurationCH(reqSchemas));
       SP.reset();
       try{
 	 SP.setFeature("http://xml.org/sax/features/validation",false);
@@ -628,7 +681,6 @@ public class CDBChecker {
 	public static void main(String[] args) {
 		
 		CDBChecker cdbchecker=new CDBChecker();
-		reqSchemas = new Vector();
 		cdbchecker.props = System.getProperties();
 		
 		
@@ -654,7 +706,7 @@ public class CDBChecker {
 				File file_ = new File(pathsMulti[i]);
 				if(!file_.exists()){
 					System.out.println("*** ImplLang Check: Specified path " + file_+ " does not exist");
-					globalErrorFlag = true;
+					cdbchecker.setGlobalErrorFlag(true);
 					cdbchecker.showEndResult();
 					break;
 				}
@@ -687,10 +739,10 @@ public class CDBChecker {
 				    		cdbchecker.XSDPath = cdbchecker.XSDPath + ":" + ACS_cdbpath;
 				    	}
 				    }
-				if(cdbchecker.verbose && checkidl){
+				if(cdbchecker.verbose && cdbchecker.checkidl){
 					System.out.println("*** Checking Idl Types");
 				}
-				if (checkidl)
+				if (cdbchecker.checkidl)
 					cdbchecker.checkIdlTypes();
 
 				String paths[]=cdbchecker.XSDPath.split(""+File.pathSeparatorChar);
@@ -730,10 +782,10 @@ public class CDBChecker {
 					//System.out.println("contFolder: " + contFolder);
 					
 					if(compFolder.exists() && contFolder.exists()){
-						globalErrorFlag = cdbchecker.checkImplLangMatch(compFolder, contFolder);
-						
+						cdbchecker.setGlobalErrorFlag(cdbchecker.checkImplLangMatch(compFolder, contFolder));
+
 						//exit if error
-						if(globalErrorFlag==true) {
+						if( cdbchecker.isGlobalErrorFlag() ) {
 						    break;
 						}
 					}
@@ -773,8 +825,6 @@ public class CDBChecker {
 	 * added by panta@naoj 2009/10/05 
 	 *****************************************************************/
 	protected boolean checkImplLangMatch(File compFolder, File contFolder){ 
-		
-		CDBChecker cdbchecker=new CDBChecker();
 		
 		File[] files = compFolder.listFiles();
 	 

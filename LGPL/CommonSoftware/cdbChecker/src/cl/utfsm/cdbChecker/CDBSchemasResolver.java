@@ -10,15 +10,17 @@ import java.io.File;
 
 class CDBSchemasResolver implements EntityResolver
 {
-    String schemaPaths[];
+	private String schemaPaths[];
+	private CDBChecker _checker;
 
     /**
      * Instantiates a CDBSchemasResolver and
      * initialises the array of directories where to
      * search for schema files.
      */
-    public CDBSchemasResolver(String XSDPath)
+    public CDBSchemasResolver(CDBChecker checker, String XSDPath)
 	{
+    	_checker = checker;
 	    schemaPaths=XSDPath.split(""+File.pathSeparatorChar);
 	}
 
@@ -60,7 +62,7 @@ class CDBSchemasResolver implements EntityResolver
 		    return filePath;
 		    }
 		}
-	    CDBChecker.globalErrorFlag = true;
+	    _checker.setGlobalErrorFlag(true);
 
 	    return null;
 	}
