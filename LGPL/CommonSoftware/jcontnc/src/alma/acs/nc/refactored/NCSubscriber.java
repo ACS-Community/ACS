@@ -305,11 +305,11 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		proxySupplier = createProxySupplier();
 
 		// Just check if our shared consumer admin is handling more proxies that it should, and log it
-		// (+1) goes for the dummy proxy that we're using the transition between old and new NC classes
-		int currentProxies = sharedConsumerAdmin.push_suppliers().length;
-		if( currentProxies > PROXIES_PER_ADMIN+1 )
+		// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
+		int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
+		if( currentProxies > PROXIES_PER_ADMIN )
 			LOG_NC_ConsumerAdmin_Overloaded.log(logger, sharedConsumerAdmin.MyID(),
-					currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName);
+					currentProxies, PROXIES_PER_ADMIN, channelName, channelNotifyServiceDomainName == null ? "none" : channelNotifyServiceDomainName);
 
 		// The user might create this object, and startReceivingEvents() without attaching any receiver
 		// If so, it's useless to get all the events, so we start setting the all-exclusive filter
@@ -328,9 +328,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 
 	/**
 	 * Creates or reuses a shared server-side NC consumer admin object.
-	 * <p>
-	 * @TODO Investigate how the (TAO) NotifyService allocates threads to ConsumerAdmin objects,
-	 *       and try to optimize this by using a single ConsumerAdmin (what we do now) or a few such instances.
 	 * 
 	 * @throws AcsJException
 	 */
@@ -341,76 +338,80 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		boolean created = false;
 		int consumerAdminId = -1;
 
-		// Check if we can reuse an already existing consumer admin
-		int consumerAdminIds[] = channel.get_all_consumeradmins();
-		for(int i=0; i!=consumerAdminIds.length && retBase == null; i++) {
+		synchronized(NCSubscriber.class) {
 
-			int adminID = consumerAdminIds[i];
-			try {
+			// Check if we can reuse an already existing consumer admin
+			int consumerAdminIds[] = channel.get_all_consumeradmins();
+			for(int i=0; i!=consumerAdminIds.length && retBase == null; i++) {
 
-				// Get the consumer admin. Then, check if any of its proxies is of type ANY_EVENT
-				// This is a temporary hack to recognize shared admins from those created by the old
-				// NC classes, and that are not meant to be reused
-				org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminID);
+				int adminID = consumerAdminIds[i];
+				try {
 
-				int[] push_suppliers_ids = tmpAdmin.push_suppliers();
-				for(int proxyID: push_suppliers_ids) {
-					try {
-						ProxySupplier proxy = tmpAdmin.get_proxy_supplier(proxyID);
-						if(ProxyType.PUSH_ANY.equals(proxy.MyType())) {
+					// Get the consumer admin. Then, check if any of its proxies is of type ANY_EVENT
+					// This is a temporary hack to recognize shared admins from those created by the old
+					// NC classes, and that are not meant to be reused
+					org.omg.CosNotifyChannelAdmin.ConsumerAdmin tmpAdmin = channel.get_consumeradmin(adminID);
 
-							// OK, we have a shared admin. Now, we do some simple load balancing,
-							// so we use this shared admin only if it has space for more proxies
-							// (the -1 goes because of the dummy proxy that is attached to the shared admin)
-							if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
-								retBase = tmpAdmin;
-								consumerAdminId = adminID;
-								break;
+					int[] push_suppliers_ids = tmpAdmin.push_suppliers();
+					for(int proxyID: push_suppliers_ids) {
+						try {
+							ProxySupplier proxy = tmpAdmin.get_proxy_supplier(proxyID);
+							if(ProxyType.PUSH_ANY.equals(proxy.MyType())) {
+
+								// OK, we have a shared admin. Now, we do some simple load balancing,
+								// so we use this shared admin only if it has space for more proxies
+								// (the -1 goes because of the dummy proxy that is attached to the shared admin)
+								if( push_suppliers_ids.length-1 < PROXIES_PER_ADMIN) {
+									retBase = tmpAdmin;
+									consumerAdminId = adminID;
+									break;
+								}
+								// shortcut: don't check the remaining proxies and continue with the next admin
+								else
+									break;
 							}
-							// shortcut: don't check the remaining proxies and continue with the next admin
-							else
-								break;
+						} catch(ProxyNotFound e) {
+							logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + adminID + "', " +
+									"will continue anyway to search for shared consumer admins", e);
 						}
-					} catch(ProxyNotFound e) {
-						logger.log(AcsLogLevel.NOTICE, "Proxy with ID='" + proxyID + "' not found for consumer admin with ID='" + adminID + "', " +
-								"will continue anyway to search for shared consumer admins", e);
 					}
+
+				} catch (AdminNotFound e) {
+					logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminID + "' not found for channel '" + channelName + "', " +
+							"will continue anyway to search for shared consumer admins", e);
+				}
+			}
+
+			// If no suitable consumer admin was found, we create a new one 
+			if (retBase == null) {
+
+				// create a new consumer admin
+				IntHolder consumerAdminIDHolder = new IntHolder();
+				retBase = channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
+
+				// Create a dummy proxy in the new consumer admin.
+				// 
+				// rtobar, Apr. 13th, 2011:
+				// This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies
+				// that are created for the NC in the admin objects. This way we can recognize a shared consumer admin
+				// by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
+				//
+				// This hack is only needed while we are in transition between the old and new NC classes,
+				// and should get removed once the old classes are not used anymore
+				try {
+					retBase.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
+				} catch (AdminLimitExceeded e) {
+					retBase.destroy();
+					AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
+					e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
+					throw e2;
 				}
 
-			} catch (AdminNotFound e) {
-				logger.log(AcsLogLevel.NOTICE, "Consumer admin with ID='" + adminID + "' not found for channel '" + channelName + "', " +
-						"will continue anyway to search for shared consumer admins", e);
-			}
-		}
-
-		// If no suitable consumer admin was found, we create a new one 
-		if (retBase == null) {
-
-			// create a new consumer admin
-			IntHolder consumerAdminIDHolder = new IntHolder();
-			retBase = channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
-
-			// Create a dummy proxy in the new consumer admin.
-			// 
-			// rtobar, Apr. 13th, 2011:
-			// This dummy proxy is not of a StructuredProxyPushSupplier, like the rest of the proxies
-			// that are created for the NC in the admin objects. This way we can recognize a shared consumer admin
-			// by looking at its proxies, and checking if their "MyType" property is ANY_EVENT.
-			//
-			// This hack is only needed while we are in transition between the old and new NC classes,
-			// and should get removed once the old classes are not used anymore
-			try {
-				retBase.obtain_notification_push_supplier(ClientType.ANY_EVENT, new IntHolder());
-			} catch (AdminLimitExceeded e) {
-				retBase.destroy();
-				AcsJCORBAProblemEx e2 = new AcsJCORBAProblemEx(e);
-				e2.setInfo("Coundn't attach dummy ANY_EVENT proxy to newly created shared admin consumer for channel '" + channelName + "'. Newly created shared admin is now destroyed.");
-				throw e2;
+				consumerAdminId = consumerAdminIDHolder.value;
+				created = true;
 			}
 
-			consumerAdminId = consumerAdminIDHolder.value;
-			created = true;
-		}
+		} // synchronize(NCSubscriber.class) ...
 
 		try {
 			ret = ConsumerAdminHelper.narrow(retBase);

@@ -4,12 +4,16 @@ import gov.sandia.NotifyMonitoringExt.EventChannel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.omg.CosNotifyChannelAdmin.AdminNotFound;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
 import org.omg.CosNotifyChannelAdmin.ProxySupplier;
 import org.omg.CosNotifyChannelAdmin.ProxyType;
 
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.client.ComponentClientTestCase;
+import alma.acs.concurrent.ThreadBurstExecutorService;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.Consumer;
 import alma.acs.nc.Helper;
@@ -33,9 +37,13 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 
 	public void tearDown() throws Exception {
 		// Make sure we don't have any admin for the next round
+		destroyConsumers();
+		super.tearDown();
+	}
+
+	private void destroyConsumers() throws AdminNotFound {
 		for(int adminID: channel.get_all_consumeradmins())
 			channel.get_consumeradmin(adminID).destroy();
-		super.tearDown();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -113,5 +121,76 @@ public class NCSubscriberAdminReuseTest extends ComponentClientTestCase {
 		// Manually free these old filthy consumers
 		for(Consumer c: consumers)
 			c.disconnect();
+	}
+
+	public void testConcurrentSubscribersCreation() throws Exception {
+		// We test the concurrent creation of subscribers with different loads
+		runConcurrentSubscribersCreation(10);
+		runConcurrentSubscribersCreation(15);
+		runConcurrentSubscribersCreation(53);
+		runConcurrentSubscribersCreation(42);
+	}
+
+	private void runConcurrentSubscribersCreation(int subscribersNum) throws Exception {
+
+		// Create all the tasks first
+		final List<AcsEventSubscriber> subscribers = new ArrayList<AcsEventSubscriber>();
+		ThreadBurstExecutorService executor = new ThreadBurstExecutorService(getContainerServices().getThreadFactory());
+
+		for(int i=0; i!=subscribersNum; i++) {
+
+			Runnable r = new Runnable() {
+				@SuppressWarnings("deprecation")
+				public void run() {
+					try {
+						subscribers.add( getContainerServices().createNotificationChannelSubscriber(CHANNEL_NAME) );
+					} catch (AcsJContainerServicesEx e) {
+						e.printStackTrace();
+						fail("Failed to create subscriber number");
+					}
+				}
+			};
+
+			try {
+				executor.submit(r, 100, TimeUnit.SECONDS);
+			} catch (InterruptedException e1) {
+				fail("Failed to submit the subscriber creator thread to the executor service");
+			}
+		}
+
+		// and now run'em all at the same time! (concurrently)
+		try {
+			executor.executeAllAndWait(100, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			fail("Got InterruptedException while running all my threads");
+		}
+
+		// After all the show, we should get all the subscribers
+		assertEquals(subscribersNum, subscribers.size());
+
+		// ...and all the admins should be full, except the last one (depending if CONCURRENT_SUBSCRIBERS is multiple of PROXIES_PER_ADMIN)
+		int subscribersForLastAdmin = subscribersNum % NCSubscriber.PROXIES_PER_ADMIN;
+		int expectedAdmins          = subscribersNum / NCSubscriber.PROXIES_PER_ADMIN;
+		if( subscribersForLastAdmin != 0 )
+			expectedAdmins++;
+
+		int[] admins = channel.get_all_consumeradmins();
+		assertEquals(expectedAdmins, admins.length);
+
+		// And all admins should get example PROXIES_PER_ADMIN (+1, the dummy one), except the last one that gets the remains, if any
+		for(int i=0; i != admins.length; i++) {
+			int admin = admins[i];
+			try {
+				int subs = channel.get_consumeradmin(admin).push_suppliers().length;
+				if( i == admins.length - 1 && subscribersForLastAdmin != 0 )
+					assertEquals(subscribersForLastAdmin + 1, subs);
+				else
+					assertEquals(NCSubscriber.PROXIES_PER_ADMIN + 1, subs);
+			} catch (AdminNotFound e) {
+				fail("Can't get information about consumer admin " + admin);
+			}
+		}
+
+		destroyConsumers();
 	}
 }
