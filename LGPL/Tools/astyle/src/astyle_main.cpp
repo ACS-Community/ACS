@@ -27,8 +27,9 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <stdio.h>
+#include <cstdlib>
+#include <cstring>
 
 
 #define IS_OPTION(arg,op)          ((arg).compare(op)==0)

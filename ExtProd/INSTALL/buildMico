@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.13 2011/04/18 20:33:18 javarias Exp $"
+# "@(#) $Id: buildMico,v 1.14 2011/05/25 15:48:47 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -95,7 +95,7 @@ echo ==== Configuring mico
 cd mico
 # Use this command line if you want to build also CORBA CCM support
 #./configure --prefix=$MICO_HOME --enable-ccm
-./configure --prefix=$MICO_HOME
+./configure --prefix=$MICO_HOME --disable-optimize
 
 if [ $? -ne 0 ]
 then

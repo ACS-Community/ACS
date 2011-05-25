@@ -1,0 +1,11 @@
+--- gmp-impl.h 2011-05-04 14:24:25.249500000 -0300
+--- gmp-4.1.3/gmp-impl.h 2011-05-04 14:12:32.077625000 -0300
+@@ -40,7 +40,7 @@
+ #endif
+ 
+ #ifdef __cplusplus
+-#include <string>
++#include <cstring>
+ #endif
+ 
+ /* Might search and replace _PROTO to __GMP_PROTO internally one day, to

@@ -49,6 +49,7 @@ check:  unpack config
 unpack:
 	@if [ ! -d gmp-$(GMP_VER) ]; then \
            tar zxf gmp-$(GMP_VER).tar.gz; \
+           patch gmp-$(GMP_VER)/gmp-impl.h < gmp-impl.patch; \
         fi
 config: unpack
 	@cd gmp-$(GMP_VER) && \
