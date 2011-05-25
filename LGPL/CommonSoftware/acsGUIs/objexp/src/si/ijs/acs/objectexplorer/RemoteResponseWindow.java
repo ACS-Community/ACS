@@ -464,17 +464,36 @@ void fillTrendList(RemoteResponse rr) {
 	String[] names = rr.getDataNames();
 	((DefaultListModel) getJList1().getModel()).addElement("[time]");
 	((DefaultListModel) getJList2().getModel()).addElement("[time]");
+	int length = 0;
 	for (int i = 0; i < values.length; i++) {
-		if ((values[i] != null) && (Number.class).isAssignableFrom(values[i].getClass())) {
-	        String name=names[i];
-	        if (values[i] instanceof Long) name=name+ " / 1000";
+		//if (values[i] != null && (Number.class).isAssignableFrom(values[i].getClass())) {
+		if (values[i] != null && ((Number.class).isAssignableFrom(values[i].getClass()) || 
+		   (values[i].getClass().isArray() && (Number.class).isAssignableFrom(values[i].getClass().getComponentType())))) {
+	        	String name=names[i];
+	        	if (values[i] instanceof Long) name=name+ " / 1000";
+			else if (values[i].getClass().isArray()) name=name+"[]";
 			((DefaultListModel) getJList1().getModel()).addElement(name);
 			((DefaultListModel) getJList2().getModel()).addElement(name);
 			numberIndexes.add(new Integer(i));
+			if(values[i].getClass().isArray()) {
+				java.util.ArrayList numberSubIndexes = new java.util.ArrayList();
+				for(int j = 0; j < ((Object [])values[i]).length; j++) {
+ 					if(((Object [])values[i])[j] != null && ((Number.class).isAssignableFrom(((Object [])values[i])[j].getClass()))) {
+	        				name=names[i]+"["+j+"]";
+	        				if (((Object [])values[i])[j] instanceof Long) name=name+ " / 1000";
+						((DefaultListModel) getJList1().getModel()).addElement(name);
+						((DefaultListModel) getJList2().getModel()).addElement(name);
+						numberSubIndexes.add(new Integer[]{i,j});
+					}
+				}
+				numberIndexes.add(numberSubIndexes);
+				length += numberSubIndexes.size();
+			}
 		}
 	}
-	mins=new double[numberIndexes.size()+1];
-	maxs=new double[numberIndexes.size()+1];
+	length += numberIndexes.size() + 1;
+	mins=new double[length];
+	maxs=new double[length];
 	for (int i = 0; i < mins.length; i++){
 		mins[i]=Double.MAX_VALUE;
 		maxs[i]=Double.MIN_VALUE;
@@ -1566,22 +1585,52 @@ public static void main(java.lang.String[] args) {
  */
 private void processChartValues(RemoteResponse response) {
 	Object[] data = response.getData();
-	double[] newNumbers=new double[numberIndexes.size()+1];
+	int length = 0;
+	for (int i = 0; i < numberIndexes.size(); i++) {
+		if (numberIndexes.get(i) instanceof java.util.ArrayList)
+			length += ((java.util.ArrayList)numberIndexes.get(i)).size();
+	}
+	length += numberIndexes.size()+1;
+	double[] newNumbers=new double[length];
 	newNumbers[0]=(double)response.getTimestamp()/1000.0;
 	maxs[0]=newNumbers[0];
+	// skip first element (time)
+	int k = 1;
 	for (int i = 0; i < numberIndexes.size(); i++) {
-		int numIndex=((Number)numberIndexes.get(i)).intValue();
-		double val=0;
-		if (data[numIndex] instanceof Long) {
-			val=((Long)data[numIndex]).longValue()/1000;
-		}
-		else val=((Number)data[numIndex]).doubleValue();
+		if (numberIndexes.get(i) instanceof java.util.ArrayList) {
+			for (int j = 0; j < ((java.util.ArrayList)numberIndexes.get(i)).size(); j++) {
+				int numIndex=((Number[])((java.util.ArrayList)numberIndexes.get(i)).get(j))[0].intValue();
+				int numSubIndex=((Number[])((java.util.ArrayList)numberIndexes.get(i)).get(j))[1].intValue();
+				double val=0;
+				if (((Object [])data[numIndex])[numSubIndex] instanceof Long) {
+					val=((Long)((Object [])data[numIndex])[numSubIndex]).longValue()/1000;
+				}
+				else val=((Number)((Object [])data[numIndex])[numSubIndex]).doubleValue();
 		
-		// skip first element (time)
-		final int ix = i+1;
-		newNumbers[ix]= val;
-		if (val<mins[ix]) mins[ix]=val;
-		if (val>maxs[ix]) maxs[ix]=val;
+				newNumbers[k]= val;
+				if (val<mins[k]) mins[k]=val;
+				if (val>maxs[k]) maxs[k]=val;
+				k++;
+			}
+		}
+		else {
+			int numIndex=((Number)numberIndexes.get(i)).intValue();
+			double val=0;
+			if (data[numIndex].getClass().isArray()) {
+				//Have to handle this.
+				//Plotting all the subpoints is an alternative.
+			}
+			else if (data[numIndex] instanceof Long) {
+				val=((Long)data[numIndex]).longValue()/1000;
+			}
+			else val=((Number)data[numIndex]).doubleValue();
+		
+			// skip first element (time)
+			newNumbers[k]= val;
+			if (val<mins[k]) mins[k]=val;
+			if (val>maxs[k]) maxs[k]=val;
+			k++;
+		}
 	}
 	chartData.add(newNumbers);
 	if (chartData.size()>maxLines) chartData.remove(0);
