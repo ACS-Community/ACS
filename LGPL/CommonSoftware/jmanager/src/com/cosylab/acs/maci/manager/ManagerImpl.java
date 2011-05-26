@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -91,6 +92,7 @@ import com.cosylab.acs.maci.MessageType;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
 import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.RemoteTransientException;
 import com.cosylab.acs.maci.ServiceDaemon;
 import com.cosylab.acs.maci.StatusHolder;
 import com.cosylab.acs.maci.SynchronousAdministrator;
@@ -342,6 +344,91 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				{
 					CoreException ce = new CoreException("Failed to release component with handle '"+handles[i]+"'.", ex);
 					reportException(ce);
+				}
+			}
+		}
+	}
+
+	
+	private transient Map<Object, GroupedNotifyTask> groupedNotifyTaskMap;
+
+	interface GroupedRunnable extends Runnable {
+		public void cancelAll();
+		public boolean isCancelAll();
+	}
+	
+	abstract class DefaultGroupedRunnable implements GroupedRunnable {
+		private boolean cancelAll = false;
+		
+		public void cancelAll() { cancelAll = true; }
+		public boolean isCancelAll() { return cancelAll; }
+	}
+	
+	protected void registerGroupedNotifyTaks(Object key, GroupedRunnable runnable)
+	{
+		synchronized (groupedNotifyTaskMap) {
+			GroupedNotifyTask gnt = groupedNotifyTaskMap.get(key);
+			if (gnt == null)
+			{
+				gnt = new GroupedNotifyTask(key, runnable);
+				groupedNotifyTaskMap.put(key, gnt);
+				threadPool.execute(gnt);
+			}
+			else
+				gnt.addTask(runnable);
+		}
+	}
+	
+	
+	/**
+	 * Task thats invokes <code>Runnable</code> method.
+	 */
+	private class GroupedNotifyTask implements Runnable
+	{
+		private final Object key;
+		// synced to groupedNotifyTaskMap
+		private final Deque<GroupedRunnable> tasks = new LinkedList<GroupedRunnable>();
+
+		public GroupedNotifyTask(Object key, GroupedRunnable task)
+		{
+			this.key = key;
+			addTask(task);
+		}
+		
+		// must be synced outside
+		public void addTask(GroupedRunnable task)
+		{
+			tasks.addLast(task);
+		}
+
+		public void run()
+		{
+			while (true)
+			{
+				GroupedRunnable taskToRun;
+				synchronized (groupedNotifyTaskMap) {
+					taskToRun = tasks.pollLast();
+					if (taskToRun == null) {
+						groupedNotifyTaskMap.remove(key);
+						break;
+					}
+				}
+				
+				// run
+				try {
+					taskToRun.run();
+				} catch (Throwable th) {
+					logger.log(Level.SEVERE, "Unhandeled exception caught.", th);
+				}
+				
+				// checked after
+				if (taskToRun.isCancelAll())
+				{
+					synchronized (groupedNotifyTaskMap) {
+						tasks.clear();
+						groupedNotifyTaskMap.remove(key);
+						break;
+					}
 				}
 			}
 		}
@@ -603,7 +690,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	private transient Timer heartbeatTask = null;
 
 	/**
-	 * Delatyed release timer.
+	 * Delayed release timer.
 	 */
 	private transient Timer delayedDeactivationTask = null;
 
@@ -870,6 +957,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		prevaylerAlarmState = new AtomicBoolean(true);
 		
 		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
+		
+		groupedNotifyTaskMap = new HashMap<Object, GroupedNotifyTask>();
 		
 		// create threads
 		threadPool.prestartAllCoreThreads();
@@ -4349,7 +4438,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#clientLoggedIn</code> method.
 			 */
-			class ClientLoggedInTask implements Runnable
+			class ClientLoggedInTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private ClientInfo clientInfo;
@@ -4362,14 +4451,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).clientLoggedIn(clientInfo, timeStamp, executionId);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.clientLoggedIn' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4383,11 +4477,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ClientLoggedInTask(admins[i], clientInfo);
+				GroupedRunnable task = new ClientLoggedInTask(admins[i], clientInfo);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4410,7 +4505,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#containerLoggedIn</code> method.
 			 */
-			class ContainerLoggedInTask implements Runnable
+			class ContainerLoggedInTask  extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private ContainerInfo containerInfo;
@@ -4423,14 +4518,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).containerLoggedIn(containerInfo, timeStamp, executionId);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.containerLoggedIn' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4444,11 +4544,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ContainerLoggedInTask(admins[i], containerInfo);
+				GroupedRunnable task = new ContainerLoggedInTask(admins[i], containerInfo);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4474,7 +4575,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#clientLoggedOut</code> method.
 			 */
-			class ClientLoggedOutTask implements Runnable
+			class ClientLoggedOutTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private ClientInfo clientInfo;
@@ -4487,14 +4588,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).clientLoggedOut(clientInfo.getHandle(), timeStamp);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.clientLoggedOut' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4508,11 +4614,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ClientLoggedOutTask(admins[i], clientInfo);
+				GroupedRunnable task = new ClientLoggedOutTask(admins[i], clientInfo);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4537,7 +4644,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#containerLoggedIn</code> method.
 			 */
-			class ContainerLoggedOutTask implements Runnable
+			class ContainerLoggedOutTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private ContainerInfo containerInfo;
@@ -4550,14 +4657,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).containerLoggedOut(containerInfo.getHandle(), timeStamp);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.containerLoggedOut' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4570,11 +4682,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ContainerLoggedOutTask(admins[i], containerInfo);
+				GroupedRunnable task = new ContainerLoggedOutTask(admins[i], containerInfo);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4610,14 +4723,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							(containerInfo.getContainer()).shutdown(code);
-							break;
+							//break;
 						}
 						catch (RemoteException re)
 						{
@@ -4641,14 +4754,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							(containerInfo.getContainer()).disconnect();
-							break;
+							//break;
 						}
 						catch (RemoteException re)
 						{
@@ -4696,14 +4809,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			public void run()
 			{
-				final int MAX_RETRIES = 3;
+				//final int MAX_RETRIES = 3;
 
-				for (int retries = 0; retries < MAX_RETRIES; retries++)
+				//for (int retries = 0; retries < MAX_RETRIES; retries++)
 				{
 					try
 					{
 						(containerInfo.getContainer()).set_component_shutdown_order(handles);
-						break;
+						//break;
 					}
 					catch (RemoteException re)
 					{
@@ -4734,7 +4847,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     		/**
     		 * Task thats invokes <code>Client#disconnect</code> method.
     		 */
-    		class ClientDisconnectTask implements Runnable
+    		class ClientDisconnectTask extends DefaultGroupedRunnable
     		{
     			private ClientInfo clientInfo;
 
@@ -4745,15 +4858,20 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
     			public void run()
     			{
-    				final int MAX_RETRIES = 3;
+    				//final int MAX_RETRIES = 3;
 
-    				for (int retries = 0; retries < MAX_RETRIES; retries++)
+    				//for (int retries = 0; retries < MAX_RETRIES; retries++)
     				{
     					try
     					{
     						(clientInfo.getClient()).disconnect();
-    						break;
+    						//break;
     					}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Client.disconnect' on "+clientInfo+".", re);
+							cancelAll();
+						}
     					catch (RemoteException re)
     					{
     						logger.log(Level.WARNING, "RemoteException caught while invoking 'Client.disconnect' on "+clientInfo+".", re);
@@ -4765,8 +4883,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
     		// spawn new task which surely does not block
     		for (int i = 0; i < clts.length; i++)
     		{
-   				Runnable task = new ClientDisconnectTask(clts[i]);
-   				threadPool.execute(task);
+   				GroupedRunnable task = new ClientDisconnectTask(clts[i]);
+   				registerGroupedNotifyTaks(clts[i].getClient(), task);
+   				//threadPool.execute(task);
     		}
 
     	}
@@ -4794,7 +4913,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#components_requested</code> method.
 			 */
-			class ComponentRequestedTask implements Runnable
+			class ComponentRequestedTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private int[] requestors;
@@ -4809,14 +4928,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).components_requested(requestors, components, timeStamp);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.components_requested' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4830,11 +4954,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ComponentRequestedTask(admins[i], requestors, components);
+				GroupedRunnable task = new ComponentRequestedTask(admins[i], requestors, components);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4858,7 +4983,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#component_activated</code> method.
 			 */
-			class ComponentActivatedTask implements Runnable
+			class ComponentActivatedTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 
@@ -4869,14 +4994,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).component_activated(componentInfo, timeStamp, executionId);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.component_activated' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4890,11 +5020,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ComponentActivatedTask(admins[i]);
+				GroupedRunnable task = new ComponentActivatedTask(admins[i]);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 		}
 
@@ -4917,7 +5048,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#component_deactivated</code> method.
 			 */
-			class ComponentDeactivatedTask implements Runnable
+			class ComponentDeactivatedTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 
@@ -4928,14 +5059,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).component_deactivated(handle, timeStamp);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.component_deactivated' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -4949,11 +5085,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ComponentDeactivatedTask(admins[i]);
+				GroupedRunnable task = new ComponentDeactivatedTask(admins[i]);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -4979,7 +5116,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Administrator#components_requested</code> method.
 			 */
-			class ComponentReleasedTask implements Runnable
+			class ComponentReleasedTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo administratorInfo;
 				private int[] requestors;
@@ -4994,14 +5131,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							((Administrator)administratorInfo.getClient()).components_released(requestors, components, timeStamp);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Administrator.components_released' on "+administratorInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -5015,11 +5157,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < admins.length; i++)
 			{
-				Runnable task = new ComponentReleasedTask(admins[i], requestors, components);
+				GroupedRunnable task = new ComponentReleasedTask(admins[i], requestors, components);
 				if (admins[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(admins[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -5046,7 +5189,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Client#components_available</code> method.
 			 */
-			class ComponentAvailableTask implements Runnable
+			class ComponentAvailableTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo clientInfo;
 				private ComponentInfo[] info;
@@ -5059,14 +5202,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							clientInfo.getClient().components_available(info);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Client.components_available' on "+clientInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -5080,11 +5228,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
 			{
-				Runnable task = new ComponentAvailableTask(clients[i], info);
+				GroupedRunnable task = new ComponentAvailableTask(clients[i], info);
 				if (clients[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(clients[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -5111,7 +5260,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			/**
 			 * Task thats invokes <code>Client#components_unavailable</code> method.
 			 */
-			class ComponentUnavailableTask implements Runnable
+			class ComponentUnavailableTask extends DefaultGroupedRunnable
 			{
 				private ClientInfo clientInfo;
 				private String[] names;
@@ -5124,14 +5273,19 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				public void run()
 				{
-					final int MAX_RETRIES = 3;
+					//final int MAX_RETRIES = 3;
 
-					for (int retries = 0; retries < MAX_RETRIES; retries++)
+					//for (int retries = 0; retries < MAX_RETRIES; retries++)
 					{
 						try
 						{
 							clientInfo.getClient().components_unavailable(names);
-							break;
+							//break;
+						}
+						catch (RemoteTransientException re)
+						{
+							logger.log(Level.WARNING, "RemoteTransientException caught while invoking 'Client.components_unavailable' on "+clientInfo+".", re);
+							cancelAll();
 						}
 						catch (RemoteException re)
 						{
@@ -5145,11 +5299,12 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// spawn new task which surely does not block
 			for (int i = 0; i < clients.length; i++)
 			{
-				Runnable task = new ComponentUnavailableTask(clients[i], names);
+				GroupedRunnable task = new ComponentUnavailableTask(clients[i], names);
 				if (clients[i].getClient() instanceof SynchronousAdministrator)
 					task.run();
 				else
-					threadPool.execute(task);
+					registerGroupedNotifyTaks(clients[i].getClient(), task);
+					//threadPool.execute(task);
 			}
 
 		}
@@ -5188,9 +5343,9 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 			public void run()
 			{
-				final int MAX_RETRIES = 3;
+				//final int MAX_RETRIES = 3;
 
-				for (int retries = 0; retries < MAX_RETRIES; retries++)
+				//for (int retries = 0; retries < MAX_RETRIES; retries++)
 				{
 					try
 					{
@@ -5200,7 +5355,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						} else {
 						        client.message(messageType, message);
 						}
-						break;
+						//break;
 					}
 					catch (Throwable re)
 					{

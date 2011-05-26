@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import org.omg.CORBA.Object;
+import org.omg.CORBA.TIMEOUT;
+import org.omg.CORBA.TRANSIENT;
 
 import si.ijs.maci.Container;
 import alma.acs.util.UTCUtility;
@@ -18,6 +20,8 @@ import com.cosylab.acs.maci.ClientInfo;
 import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.RemoteException;
+import com.cosylab.acs.maci.RemoteTimeoutException;
+import com.cosylab.acs.maci.RemoteTransientException;
 
 /**
  * CORBA Administrator Proxy.
@@ -68,10 +72,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 			
 			administrator.container_logged_in(containerInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'containerLoggedIn()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'container_logged_in()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'container_logged_in()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'container_logged_in()' method.", ex);
 		}
 	}
 
@@ -84,10 +95,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		{
 			administrator.container_logged_out(handle, UTCUtility.utcJavaToOmg(timeStamp));
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'containerLoggedOut()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'container_logged_out()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'container_logged_out()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'container_logged_out()' method.", ex);
 		}
 	}
 
@@ -108,10 +126,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 			
 			administrator.client_logged_in(clientInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'clientLoggedIn()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'client_logged_in()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'client_logged_in()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'client_logged_in()' method.", ex);
 		}
 	}
 
@@ -124,10 +149,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		{
 			administrator.client_logged_out(handle, UTCUtility.utcJavaToOmg(timeStamp));
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'clientLoggedOut()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'client_logged_out()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'client_logged_out()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'client_logged_out()' method.", ex);
 		}
 	}
 
@@ -140,10 +172,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		{
 			administrator.components_released(clients, components, UTCUtility.utcJavaToOmg(timeStamp));
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'components_released()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'components_released()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'components_released()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'components_released()' method.", ex);
 		}
 	}
 
@@ -157,10 +196,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		{
 			administrator.components_requested(clients, components, UTCUtility.utcJavaToOmg(timeStamp));
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'components_requested()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'components_requested()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'components_requested()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'components_requested()' method.", ex);
 		}
 	}
 
@@ -199,10 +245,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 			
 			administrator.component_activated(componentInfo, UTCUtility.utcJavaToOmg(timeStamp), executionId);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'component_activated()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'component_activated()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'component_activated()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'component_activated()' method.", ex);
 		}
 	}
 
@@ -214,10 +267,17 @@ public class AdministratorProxy extends ClientProxy implements Administrator
 		{
 			administrator.component_deactivated(handle, UTCUtility.utcJavaToOmg(timeStamp));
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'component_deactivated()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'component_deactivated()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'component_deactivated()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'component_deactivated()' method.", ex);
 		}
 	}
 

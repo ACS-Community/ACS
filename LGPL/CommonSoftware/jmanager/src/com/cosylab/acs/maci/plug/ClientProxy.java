@@ -167,10 +167,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 			
 			client.components_available(infos);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'components_available()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'components_available()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'components_available()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'component_available()' method.", ex);
 		}
 	}
 
@@ -183,10 +190,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		{
 			client.components_unavailable(cobs);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'components_unavailable()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'components_unavailable()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'uncomponents_available()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'component_unavailable()' method.", ex);
 		}
 	}
 
@@ -199,10 +213,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		{
 			client.disconnect();
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'disconnect()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'disconnect()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'disconnect()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'disconnect()' method.", ex);
 		}
 	}
 
@@ -223,10 +244,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 			
 			client.message(msgType, message);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'message()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'message()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'message()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'message()' method.", ex);
 		}
 	}
 
@@ -247,10 +275,17 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 			
 			client.taggedmessage(msgType, id, message);
 		}
-		catch (Exception ex)
+		catch (TIMEOUT te)
 		{
-			RemoteException re = new RemoteException("Failed to invoke 'message()' method.", ex);
-			throw re;
+			throw new RemoteTimeoutException("Failed to invoke 'tagged_message()' method due to timeout.", te);
+		}
+		catch (TRANSIENT tre)
+		{
+			throw new RemoteTransientException("Failed to invoke 'tagged_message()' method due to transient exception.", tre);
+		}
+		catch (Throwable ex)
+		{
+			throw new RemoteException("Failed to invoke 'tagged_message()' method.", ex);
 		}
 	}
 
