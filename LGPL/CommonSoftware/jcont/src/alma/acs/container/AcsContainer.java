@@ -58,6 +58,7 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.AcsContainerLog.LOG_CompAct_Corba_OK;
 import alma.AcsContainerLog.LOG_CompAct_Init_OK;
@@ -65,6 +66,8 @@ import alma.AcsContainerLog.LOG_CompAct_Instance_OK;
 import alma.AcsContainerLog.LOG_CompAct_Loading_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
@@ -133,6 +136,10 @@ public class AcsContainer extends ContainerPOA
     private final ThreadFactory containerThreadFactory;
     
     private final ComponentMap m_activeComponentMap;
+
+    private ContainerServicesImpl m_alarmContainerServices;
+
+    private AlarmSource m_alarmSource;
 
 	/**
 	 * Gate that blocks some (currently: only activate_component) incoming calls while the container is 
@@ -244,46 +251,51 @@ public class AcsContainer extends ContainerPOA
 		}
 		
 		// init the alarm system
-		try {
-			// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
-			// in order to allow CERN alarm libs to get their static field for ContainerServices set.
-			// Currently the alarm system acts under the container name.
-			// Setting of static fields in the AS classes should be removed altogether.
-			String name = m_containerName; 
-			ThreadFactory threadFactory = containerThreadFactory;
+		//
+		// TODO: clean up the construction of CS which is ad-hoc implemented right before ACS 7.0
+		// in order to allow CERN alarm libs to get their static field for ContainerServices set.
+		// Currently the alarm system acts under the container name.
+		// Setting of static fields in the AS classes should be removed altogether.
 
-			ContainerServicesImpl cs = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"),
-	        		m_acsCorba, m_logger, 0, name, null, threadFactory) {
-	        	private AcsLogger alarmLogger;
-	        	public AcsLogger getLogger() {
-	                if (alarmLogger == null) {
-	                	// @TODO perhaps get a container logger "alarms@containername"
-	                	alarmLogger = ClientLogManager.getAcsLogManager().getLoggerForContainer(getName());
-	                }
-	                return alarmLogger;
-	        	}
-	        };
-			
-			ACSAlarmSystemInterfaceFactory.init(cs);
+
+		// TODO: maybe we should pass a alarms@container logger instead of the normal one
+		m_alarmContainerServices = new ContainerServicesImpl(m_managerProxy, m_acsCorba.createPOAForComponent("alarmSystem"),
+        		m_acsCorba, m_logger, 0, m_containerName, null, containerThreadFactory) {
+			private AcsLogger alarmLogger;
+        	public AcsLogger getLogger() {
+                if (alarmLogger == null) {
+                	// @TODO perhaps get a container logger "alarms@containername"
+                	alarmLogger = ClientLogManager.getAcsLogManager().getLoggerForContainer(getName());
+                }
+                return alarmLogger;
+        	}
+		};
+		m_alarmSource = new AlarmSourceImpl(m_alarmContainerServices);
+		m_alarmSource.start();
+
+		try {
+			ACSAlarmSystemInterfaceFactory.init(m_alarmContainerServices);
 		} catch (Throwable thr) {
 			AcsJContainerEx ex = new AcsJContainerEx(thr);
 			ex.setContextInfo("Error initializing the alarm system factory");
 			throw ex;
 		}
 
-		// @TODO: enable (throttle) alarms from the logging subsystem. 
+		// enable (throttle) alarms from the logging subsystem. 
 		// The ongoing container refactoring should ideally allow us to raise and clear an alarm as easily
 		// as the new ContainerServices alarm methods offer it. Maybe we use some special CS instance for this,
 		// or share the code in some other way.
-//		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
-//			@Override
-//			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-//			}
-//			@Override
-//			public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-//			}
-//		};
-//		ClientLogManager.getAcsLogManager().enableLoggingAlarms(logAlarmHandler);
+		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
+			@Override
+			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
+				m_alarmSource.raiseAlarm(faultFamily, faultMember, faultCode);
+			}
+			@Override
+			public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
+				m_alarmSource.clearAlarm(faultFamily, faultMember, faultCode);
+			}
+		};
+		ClientLogManager.getAcsLogManager().enableLoggingAlarms(logAlarmHandler);
 
 		
 		// init the BACI framework
@@ -1068,12 +1080,16 @@ public class AcsContainer extends ContainerPOA
 
 		m_managerProxy.logoutFromManager();
 
+		// shutdown logging subsystem
 		if (!isEmbedded) {
 			ClientLogManager.getAcsLogManager().shutdown(gracefully);
 			// here the flag "wait_for_completion" is taken from "gracefully"
 			// Note that it is not considered anyway if isOrbThread == true
 			m_acsCorba.shutdownORB(gracefully, isOrbThread);
 		}
+
+		m_alarmSource.tearDown(); // we tear it down here because it's used by the logging classes
+		m_alarmContainerServices.cleanUp();
 
 		// to allow creation of a new container in the same VM
 		s_instance = null;

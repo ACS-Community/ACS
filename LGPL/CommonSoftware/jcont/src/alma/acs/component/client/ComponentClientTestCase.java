@@ -234,7 +234,6 @@ public class ComponentClientTestCase extends TestCase
 				logReceiver.stop();
 			}
 			m_acsManagerProxy.logoutFromManager();
-			m_threadFactory.cleanUp();
 
 			ClientLogManager.getAcsLogManager().shutdown(true);
 		} 
@@ -246,6 +245,7 @@ public class ComponentClientTestCase extends TestCase
 		finally {
 			ACSAlarmSystemInterfaceFactory.done();
 			m_containerServices.cleanUp();
+			m_threadFactory.cleanUp();
 			if (acsCorba != null) {
 				// @todo investigate COMP-2632 which happened here.
 				// Check if the wait_for_completion is buggy and returns too early.

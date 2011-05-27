@@ -24,7 +24,6 @@ package alma.acs.container;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,12 +40,8 @@ import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
-
 import si.ijs.maci.ComponentInfo;
 import si.ijs.maci.ComponentSpec;
-
 import alma.ACS.CBlong;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootHelper;
@@ -54,6 +49,8 @@ import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
+import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.callbacks.RequesterUtil;
 import alma.acs.callbacks.ResponseReceiver;
 import alma.acs.component.ComponentDescriptor;
@@ -70,12 +67,6 @@ import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.nc.AcsEventSubscriber;
-import alma.acsErrTypeAlarmSourceFactory.ACSASFactoryNotInitedEx;
-import alma.acsErrTypeAlarmSourceFactory.FaultStateCreationErrorEx;
-import alma.acsErrTypeAlarmSourceFactory.SourceCreationErrorEx;
-import alma.alarmsystem.source.ACSAlarmSystemInterface;
-import alma.alarmsystem.source.ACSAlarmSystemInterfaceFactory;
-import alma.alarmsystem.source.ACSFaultState;
 import alma.entities.commonentity.EntityT;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
@@ -85,6 +76,9 @@ import alma.xmlstore.Identifier;
 import alma.xmlstore.IdentifierHelper;
 import alma.xmlstore.IdentifierJ;
 import alma.xmlstore.IdentifierOperations;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 /**
  * Implementation of the <code>ContainerServices</code> interface.
@@ -122,6 +116,9 @@ public class ContainerServicesImpl implements ContainerServices
     
     // logger given to component
     private volatile AcsLogger componentLogger;
+
+    // alarm source used by components when raising/clearing alarms
+    private final AlarmSource m_alarmSource;
 
 	// sync'd map, key=curl, value=corbaStub
 	private final Map<String, org.omg.CORBA.Object> m_usedComponentsMap;
@@ -220,6 +217,9 @@ public class ContainerServicesImpl implements ContainerServices
 		if (fakeUIDsForTesting) {
 			m_logger.warning("Running in test mode where UIDs will be constructed randomly instead of being retrieved from the archive!");
 		}
+
+		m_alarmSource = new AlarmSourceImpl(this);
+		m_alarmSource.start();
 	}
 
 	void setComponentXmlTranslatorProxy(Object xmlTranslatorProxy) {
@@ -1245,6 +1245,9 @@ public class ContainerServicesImpl implements ContainerServices
 				// Silently ignore this exception, as the subscriber was already disconnected. Well done, developers! :)
 			}
 		}
+
+		/* Cleanup the alarm source */
+		m_alarmSource.tearDown();
 	}
 
 	/**
@@ -1385,49 +1388,7 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 	private void submitAlarm(String faultFamily, String faultMember, int faultCode, boolean raise) throws AcsJContainerServicesEx {
-
-		try {
-
-			ACSAlarmSystemInterface source = null;
-			ACSFaultState faultState = null;
-
-			try {
-				// TODO: Store a map of the created sources if the AS supports more than one source in the future
-				//       Also, don't have a default hardcoded source name here
-				source = ACSAlarmSystemInterfaceFactory.createSource("ALARM_SYSTEM_SOURCES");
-			} catch (SourceCreationErrorEx e) {
-				throw new AcsJContainerServicesEx(e);
-			}
-
-			try {
-				faultState = ACSAlarmSystemInterfaceFactory.createFaultState(faultFamily, faultMember, faultCode);
-			} catch (FaultStateCreationErrorEx e) {
-				e.printStackTrace();
-				// @TODO
-//			} catch (ACSASFactoryNotInitedEx ex) {
-//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
-//						+ " could not be thrown. Message=" + ex.getMessage());
-//			} catch (SourceCreationErrorEx ex) {
-//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
-//						+ " could not be thrown. Message=" + ex.getMessage());
-//			} catch (FaultStateCreationErrorEx ex) {
-//				log.severe("Alarm with FF=" + faultFamily + " FM=" + faultMember + " FC=" + faultCode
-//						+ " could not be thrown. Message=" + ex.getMessage());
-//			}
-
-			}
-
-			if( raise )
-				faultState.setDescriptor(ACSFaultState.ACTIVE);
-			else
-				faultState.setDescriptor(ACSFaultState.TERMINATE);
-
-			faultState.setUserTimestamp(new Timestamp(System.currentTimeMillis()));
-			source.push(faultState);
-
-		} catch (ACSASFactoryNotInitedEx e) {
-			throw new AcsJContainerServicesEx(e);
-		}
+		m_alarmSource.setAlarm(faultFamily, faultMember, faultCode, raise);
 	}
 
 	/**
