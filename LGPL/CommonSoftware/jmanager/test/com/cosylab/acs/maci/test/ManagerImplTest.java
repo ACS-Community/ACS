@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +39,7 @@ import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.HandleConstants;
 import com.cosylab.acs.maci.IntArray;
+import com.cosylab.acs.maci.RemoteException;
 import com.cosylab.acs.maci.Manager.LongCompletionCallback;
 import com.cosylab.acs.maci.NoDefaultComponentException;
 import com.cosylab.acs.maci.NoResourcesException;
@@ -4228,6 +4230,92 @@ public class ManagerImplTest extends TestCase
 		}
 	}
 
+	
+	// first two callback blocks
+	// this means that third should not happen before first two
+	// and all calls should be done from the same thread
+	public void testBadAdministratorNotifications()
+	{
+		try
+		{
+			final long BLOCK_TIMEOUT_MS = 3000;
+			
+			TestAdministrator admin = new TestAdministrator("admin", true) {
+				
+				private AtomicInteger counter = new AtomicInteger(0);
+				private AtomicLong threadId = new AtomicLong(-1);
+				
+				public void clientLoggedIn(ClientInfo info, long timeStamp, long executionId) {
+					
+					// same as last thread check (transitive)
+					long thisThreadId = Thread.currentThread().getId();	// positive
+					long previousId = threadId.getAndSet(thisThreadId);
+					if (previousId != thisThreadId && previousId >= 0)
+						fail("notification called from other thread");
+					
+					// only first two block for a while
+					if (counter.incrementAndGet() < 3)
+					{
+						try {
+							Thread.sleep(BLOCK_TIMEOUT_MS);
+						} catch (InterruptedException e) {
+							// noop
+						}
+					}
+					super.clientLoggedIn(info, timeStamp, executionId);
+				}				
+			};
+			ClientInfo adminInfo = manager.login(admin);
+			assertNotNull(adminInfo);
+
+			// now we login 3 clients
+			Client client1 = new TestClient("client1");
+			Client client2 = new TestClient("client2");
+			Client client3 = new TestClient("client3");
+
+			// even if admin is blocking, this should not block this
+			// notification are async (not a SyncAdmin)
+			
+			long startTS = System.currentTimeMillis();
+			
+			ClientInfo clientInfo1 = manager.login(client1);
+			assertNotNull(clientInfo1);
+
+			ClientInfo clientInfo2 = manager.login(client2);
+			assertNotNull(clientInfo2);
+
+			ClientInfo clientInfo3 = manager.login(client3);
+			assertNotNull(clientInfo3);
+
+			long stopTS = System.currentTimeMillis();
+			assertTrue((stopTS-startTS) < BLOCK_TIMEOUT_MS);
+
+			ArrayList notifications = admin.getClientLoggedInNotifications();
+			synchronized (notifications) {
+				int count = 0;
+				while (notifications.size() < 3)
+				{
+					// wait max up to 3*BLOCK_TIMEOUT_MS (must be careful about spurious wakeups)
+					if ((System.currentTimeMillis()-stopTS) > 3*BLOCK_TIMEOUT_MS)
+					{
+						fail("expected 3 notifications, got " + notifications.size());
+					}
+					try {
+						notifications.wait(3*BLOCK_TIMEOUT_MS);
+					} catch (InterruptedException e) { /* noop */ }
+				}
+				
+				assertEquals(3, notifications.size());
+				assertEquals(clientInfo1, notifications.get(0));
+				assertEquals(clientInfo2, notifications.get(1));
+				assertEquals(clientInfo3, notifications.get(2));
+			}
+			
+		} catch (AcsJNoPermissionEx e) {
+			fail("No permission");
+		}
+	}
+	
 	public void testManagerIsServiceComponent()
 	{
 		assertTrue(manager.isServiceComponent("Log"));

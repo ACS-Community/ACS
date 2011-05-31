@@ -407,7 +407,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			{
 				GroupedRunnable taskToRun;
 				synchronized (groupedNotifyTaskMap) {
-					taskToRun = tasks.pollLast();
+					taskToRun = tasks.pollFirst();
 					if (taskToRun == null) {
 						groupedNotifyTaskMap.remove(key);
 						break;
