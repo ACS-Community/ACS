@@ -202,7 +202,7 @@ public class AlarmsMap {
 		if (loopRunner.isLoopRunning()) {
 			try {
 				if (loopRunner.shutdown(ALARM_ACTIVITY_TIME+1, TimeUnit.SECONDS)) {
-					logger.fine("Thread shut down");
+					logger.finest("Thread shut down");
 				} else {
 					logger.warning("Failed to cleanly shut down the AlarmsMap thread");
 				}
