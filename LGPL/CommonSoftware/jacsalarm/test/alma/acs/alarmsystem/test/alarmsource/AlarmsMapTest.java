@@ -88,6 +88,8 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	 */
 	public void testAutoRemoval() throws Exception {
 		System.out.println("testAutoRemoval");
+		alarmsMap.clear();
+		assertEquals(0, alarmsMap.size());
 		// First test is simply done by adding elements and waiting 
 		// enough time to see if they are removed
 		String keyBase="RemovalFF:RemovalFM:";
