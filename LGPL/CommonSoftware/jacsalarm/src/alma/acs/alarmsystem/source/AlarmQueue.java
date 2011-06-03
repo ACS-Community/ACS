@@ -23,19 +23,23 @@ package alma.acs.alarmsystem.source;
 
 import java.util.Properties;
 import java.util.Set;
-import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A queue of alarms.
- * <P>The alarms in the vector are ordered following their arrival time
+ * <P>The alarms are stored in a map because we want to storein the vector are ordered following their arrival time
  * i.e. the oldest item is in the head.
  * <P>
  * The class is thread safe.
+ * <P>
+ * For the implementation a Set would have been enough but the ConcurrentHashMap
+ * is thread safe and there should not be big perfromance difference between
+ * this and a concrete Set.
  * 
  * @author acaproni
  *
  */
-public class AlarmQueue extends Vector<AlarmQueue.AlarmToQueue> {
+public class AlarmQueue extends ConcurrentHashMap<String,AlarmQueue.AlarmToQueue> {
 	/**
 	 * An alarm to be queued.
 	 * <P>
@@ -122,6 +126,8 @@ public class AlarmQueue extends Vector<AlarmQueue.AlarmToQueue> {
 			int faultCode, 
 			Properties properties, 
 			boolean active) {
-		add(new AlarmToQueue(faultFamily, faultMember, faultCode, properties, active));
+		put(
+				faultFamily+":"+faultMember+":"+faultCode,
+				new AlarmToQueue(faultFamily, faultMember, faultCode, properties, active));
 	}
 }
