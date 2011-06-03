@@ -57,6 +57,9 @@ import java.util.concurrent.TimeUnit;
  * With the queuing the operator does not receive this kind of (false)
  * alarms. It is left to developer the responsibility to enable/disable
  * the queuing at the right moment.
+ * <BR>
+ * If {@link AlarmSource#queueAlarms(long, TimeUnit)} is called twice,
+ * the the new time interval is used to flush the queue and the old one is discarded.
  * <P>
  * Alarm sending can be inhibited by calling {@link AlarmSource#disableAlarms()}:
  * all the alarm events submitted after calling this method are discarded. 
@@ -177,15 +180,6 @@ public interface AlarmSource {
 	 * Terminate all the active alarms.
 	 */
 	public void terminateAllAlarms();
-	
-	/**
-	 * Start queuing the alarms.
-	 * <P>
-	 * The alarms are flushed when the passed time expires or flush gets called.
-	 * 
-	 * @param delayTime The time to queue alarms in milliseconds
-	 */
-	public void queueAlarms(long delayTime);
 	
 	/**
 	 * Start queuing the alarms.
