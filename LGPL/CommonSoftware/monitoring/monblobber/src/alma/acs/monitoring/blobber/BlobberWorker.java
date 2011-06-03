@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Any;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
+import alma.DAOErrType.wrappers.AcsJGettingMonitorCharacteristicsEx;
+import alma.DAOErrType.wrappers.AcsJDynConfigFailureEx;
+import alma.DAOErrType.wrappers.AcsJStoreFailureEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.TMCDB.MonitorBlob;
@@ -59,6 +63,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
+import alma.acs.monitoring.DAO.MonitorCharacteristicIDs;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
 import alma.acs.monitoring.blobber.CollectorList.CollectorData;
 import alma.acs.util.IsoDateFormat;
@@ -128,6 +133,19 @@ public class BlobberWorker extends CancelableRunnable {
      */
     private final HashMap<String, MonitorCollectorOperations> collectorName2ComponentReference = 
     												new HashMap<String, MonitorCollectorOperations>();
+    private LinkedBlockingQueue<BlobData> myBlobDataQueue;
+    private LinkedBlockingQueue<BlobData> myMQDataQueue;
+
+    protected BlobberDBConnector myDBConnector;
+    protected Thread  myDBConnectorThread;
+
+    protected BlobberQueueWatchDog myBlobberQueueWatchDog;
+    protected Thread  myBlobberQueueWatchDogThread;
+
+    protected BlobberMQConnector myMQConnector;
+    protected Thread  myMQConnectorThread;
+
+    protected String confName;
 
     /**
      * @param inContainerServices used for logging and to get references to the collector components.
@@ -135,12 +153,16 @@ public class BlobberWorker extends CancelableRunnable {
      * @throws AcsJCouldntCreateObjectEx If <code>blobberPlugin#createMonitorDAO</code> fails.
      */
     public BlobberWorker(ContainerServices inContainerServices, BlobberPlugin blobberPlugin) throws AcsJCouldntCreateObjectEx {
+        confName = System.getenv("TMCDB_CONFIGURATION_NAME");
         this.myContainerServices = inContainerServices;
         myLogger = myContainerServices.getLogger();
         this.isProfilingEnabled = blobberPlugin.isProfilingEnabled();
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
         this.myMonitorDAO = blobberPlugin.createMonitorDAO();
+        initDBConnector();
+        initMQConnector();
+        initWatchDog();
     }
 
     protected void initWorker() {
@@ -182,6 +204,48 @@ public class BlobberWorker extends CancelableRunnable {
             throw new IllegalArgumentException(inCount + " must be above 0.");
         }
         myMaxCollectorCount = inCount;
+    }
+
+    protected void initDBConnector() {
+       this.myBlobDataQueue = new LinkedBlockingQueue<BlobData>(100000);
+       this.myDBConnector = createDBConnector();
+       startDBConnector(myDBConnector);
+    }
+
+    protected BlobberDBConnector createDBConnector() {
+        return new BlobberDBConnector(this.myContainerServices, this.myBlobDataQueue);
+    }
+
+    protected void startDBConnector(BlobberDBConnector inDBConnector) {
+        this.myDBConnectorThread = this.myContainerServices.getThreadFactory().newThread(inDBConnector);
+        this.myDBConnectorThread.start();
+    }
+
+    protected void initMQConnector() {
+       this.myMQDataQueue = new LinkedBlockingQueue<BlobData>(100000);
+       this.myMQConnector = createMQConnector();
+       startMQConnector(myMQConnector);
+    }
+
+    protected BlobberMQConnector createMQConnector() {
+        return new BlobberMQConnector(this.myContainerServices, this.myMQDataQueue);
+    }
+
+    protected void startMQConnector(BlobberMQConnector inMQConnector) {
+        this.myMQConnectorThread = this.myContainerServices.getThreadFactory().newThread(inMQConnector);
+        this.myMQConnectorThread.start();
+    }
+
+    protected void initWatchDog() {
+       this.myBlobberQueueWatchDog = new BlobberQueueWatchDog(this.myContainerServices, 
+                                                              this.myBlobDataQueue,
+                                                              this.myMQDataQueue);
+       startWatchDog(myBlobberQueueWatchDog);
+    }
+
+    protected void startWatchDog(BlobberQueueWatchDog inWatchDog) {
+        this.myBlobberQueueWatchDogThread = this.myContainerServices.getThreadFactory().newThread(inWatchDog);
+        this.myBlobberQueueWatchDogThread.start();
     }
 
     /**
@@ -697,7 +761,7 @@ public class BlobberWorker extends CancelableRunnable {
 
 		                    // Update blob data.
 		                    blobData.dataList.addAll(container.dataList);
-		                    blobData.clob += container.clobBuilder;
+		                    blobData.clob = container.clobBuilder.toString();
 		                    blobData.index = container.index;
 		                    blobData.stopTime = block.stopTime;
 		                    if (blobData.startTime == 0) {
@@ -718,7 +782,7 @@ public class BlobberWorker extends CancelableRunnable {
 
 		                        insertCount++;
 		                        storeData(blobData);
-		                        blobData.reset();
+		                        //blobData.reset();
 		                    }
 		                }
 		            } catch (Exception e) {
@@ -785,7 +849,58 @@ public class BlobberWorker extends CancelableRunnable {
     		myLogger.finest("Storing property data for " + inBlobData.componentName + ": " + inBlobData.toString());
     	}
         inBlobData.sampleSize = inBlobData.dataList.size();
-        this.myMonitorDAO.store(inBlobData);
+
+        //this.myMonitorDAO.store(inBlobData);
+
+       if (!myMonitorDAO.hasFailedToBeConfigured(inBlobData)) {
+//           try {
+               MonitorCharacteristicIDs monitorCharacteristicIDs;
+               // find or create the meta data
+               monitorCharacteristicIDs = myMonitorDAO.getMonitorCharacteristicIDs(confName, inBlobData);
+
+               // copy over from monitorCharacteristics all data to blobData 
+               inBlobData.configurationId=monitorCharacteristicIDs.getConfigurationId();
+               inBlobData.hwConfigurationId=monitorCharacteristicIDs.getHwConfigurationId();
+               inBlobData.assemblyId=monitorCharacteristicIDs.getAssemblyId();
+               inBlobData.componentId=monitorCharacteristicIDs.getComponentId();
+               inBlobData.baciPropertyId=monitorCharacteristicIDs.getBACIPropertyId();
+               inBlobData.monitorPointId=monitorCharacteristicIDs.getMonitorPointId();
+               inBlobData.index=monitorCharacteristicIDs.getIndex();
+               inBlobData.isOnDB=monitorCharacteristicIDs.isOnDB();
+               inBlobData.monitorPointName=monitorCharacteristicIDs.getMonitorPointName();
+
+               this.myMQDataQueue.put(inBlobData);
+               this.myBlobDataQueue.put(inBlobData);
+//           } catch (AcsJGettingMonitorCharacteristicsEx e) {
+//               /*
+//                * This exception typically is thrown when a
+//                * NonUniqueResultException has been received
+//                */
+//               myLogger.log(Level.WARNING, "Failure when getting monitor characteristics ", e);
+//               e.printStackTrace();
+//               throw new AcsJStoreFailureEx("Failure when getting monitor characteristics", e);
+//           } catch (AcsJDynConfigFailureEx e) {
+//               /*
+//                * This exception is thrown when an attempt to auto
+//                * configure has been made and it failed.
+//                */
+//               myMonitorDAO.setHasFailedToBeConfigured(inBlobData);
+//               myLogger.log(Level.WARNING, "Monitor point could not be autoconfigured for component = "
+//                       + inBlobData.componentName
+//                       + ", serialNumber = "
+//                       + inBlobData.serialNumber
+//                       + ", propertyName = "
+//                       + inBlobData.propertyName
+//                       + ", index = "
+//                       + inBlobData.index + " .",
+//                       e);
+//               e.printStackTrace();
+//               throw new AcsJStoreFailureEx("Failure when configuring DB for: "
+//                                            + inBlobData.componentName + ":"
+//                                            + inBlobData.propertyName + ":"
+//                                            + inBlobData.index, e);
+//           }
+       }
     }
 
     private ComponentStatistics calculateStatistics(List<Object> inDataList) {

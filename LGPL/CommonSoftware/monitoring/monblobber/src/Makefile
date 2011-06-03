@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2011/01/19 23:44:15 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/06/03 22:29:54 vgonzale Exp $"
 #
 # Makefile of ........
 #
@@ -161,7 +161,7 @@ ASCII_TO_MIF =
 #
 # other files to be installed
 #----------------------------
-INSTALL_FILES =
+INSTALL_FILES = ../lib/activemq-all-5.4.1.jar
 
 #
 # list of all possible C-sources (used to create automatic dependencies)

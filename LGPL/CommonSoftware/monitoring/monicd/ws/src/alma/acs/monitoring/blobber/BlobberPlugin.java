@@ -20,6 +20,10 @@ public abstract class BlobberPlugin
 	 * Reads profiling setting, possibly from class <code>TMCDBConfig</code>.
 	 */
 	public abstract boolean isProfilingEnabled();
+
+    public abstract boolean isBrokerEnabled();
+
+    public abstract String getBrokerURL();
 	
 	/**
 	 * Gets the collector interval, possibly from class <code>TMCDBConfig</code>.

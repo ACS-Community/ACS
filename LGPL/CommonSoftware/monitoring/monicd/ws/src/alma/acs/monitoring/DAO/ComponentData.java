@@ -19,6 +19,18 @@ public class ComponentData {
     
     public ComponentStatistics statistics = null;
 
+    // data from monitorCharacteristic
+    // moved to componentData so it's available through the queue
+    public Long configurationId=-1L;
+    public Long hwConfigurationId=-1L;
+    public Long assemblyId=-1L;
+    public Long componentId=-1L;
+    public Long baciPropertyId=-1L;
+    public Long monitorPointId=-1L;
+    public boolean isOnDB=false;
+    public String monitorPointName = "generic";
+
+
     public void reset() {
         clob = "";
         startTime = 0;
@@ -40,8 +52,10 @@ public class ComponentData {
         builder.append(startTime);
         builder.append("] stopTime: [");
         builder.append(stopTime);
-        builder.append("] clobBuilder: [");
-        builder.append(clob);
+// 	HSO: logging the clob in alma.archive.tmcdb.monitor.BlobberWorker.storeData(BlobData) is too much for the current tests, so I temporarily comment it out here.
+//      	TODO: check where else it is used, or if we should log it when a special debug property is set.
+//		builder.append("] clobBuilder: [");
+//		builder.append(clob);
         builder.append("] index: [");
         builder.append(index);
         builder.append("]");
@@ -51,6 +65,39 @@ public class ComponentData {
         }
         return builder.toString();
     }
+
+	/*
+	 * Next methods hashCode and equals override the ones that are inherited
+	 * from Object They were added to allow ComponentData to be a key of a
+	 * HashMap ( ComponenentData => MonitorCharacteristicIds
+	 */
+	public int hashCode() {
+		return componentName.toString().hashCode()
+				+ serialNumber.toString().hashCode()
+				+ propertyName.toString().hashCode() + index.hashCode();
+	}
+
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		ComponentData componentData = (ComponentData) obj;
+
+		if (componentData.componentName.equals(this.componentName)
+				&& componentData.propertyName.equals(this.propertyName)
+				&& componentData.serialNumber.equals(this.serialNumber)
+				&& componentData.index == this.index) {
+			return true;
+		}
+
+		return false;
+	}
+	
+	public String propertyPathname() {
+		return componentName + ":" + propertyName + ":" + index;
+	}
 }
-
-
