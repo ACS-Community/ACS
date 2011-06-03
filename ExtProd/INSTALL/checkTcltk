@@ -2,12 +2,13 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: checkTcltk,v 1.10 2008/05/23 14:51:23 eallaert Exp $"
+# "@(#) $Id: checkTcltk,v 1.11 2011/06/03 13:26:21 eallaert Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
 # wpirani   31/08/99    Created for OCT99 (New Tcl/Tk baseline)
 # eallaert  2007-09-03  updated for ACS 7.0
+# eallaert  2011-06-03  updated for ACS 10.0
 
 #************************************************************************
 #   NAME
@@ -143,6 +144,8 @@ echo ""
 if [     ${build_OS}-${build_OSV} != "SunOS-5.8"                  \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise4"    \
      -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.2"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise5.3"  \
+     -a  ${build_OS}-${build_OSV} != "Linux-RedHatEnterprise6.1"  \
      -a  ${build_OS}-${build_OSV} != "Linux-FedoraCore6"          \
    ]
 then
