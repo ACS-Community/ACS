@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.35 2011/02/17 18:25:39 rtobar Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.36 2011/06/03 20:30:40 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -718,35 +718,37 @@ MACIContainerServices::getCDB()
       }//try-catch
 }//getCDB
 
-ACS::OffShoot_ptr
+    ACS::OffShoot_ptr
 MACIContainerServices::activateOffShoot(PortableServer::Servant cbServant)
 {
-  if (!dynamic_cast<POA_ACS::OffShoot_ptr> (cbServant))
+    ACS::OffShoot_ptr inOffShoot = ACS::OffShoot::_narrow(cbServant->_get_component());
+    if (CORBA::is_nil(inOffShoot))
     {
-      return ACS::OffShoot ::_nil();
+        CORBA::release(inOffShoot);
+        return ACS::OffShoot ::_nil();
+    }
+    CORBA::release(inOffShoot);
+    if (CORBA::is_nil(m_offShootPOA.ptr()))
+    {
+        // It is normal the first time we execute this method
+        m_offShootPOA=createOffShootPOA();
+        if (CORBA::is_nil(m_offShootPOA.ptr()))
+        {
+            // Something went wrong creating the POA
+            return ACS::OffShoot ::_nil();
+        }
     }
 
-  if (CORBA::is_nil(m_offShootPOA.ptr()))
-    {
-    	// It is normal the first time we execute this method
-    	m_offShootPOA=createOffShootPOA();
-    	if (CORBA::is_nil(m_offShootPOA.ptr()))
-    	{
-    		// Something went wrong creating the POA
-      		return ACS::OffShoot ::_nil();
-    	}
-    }
+    // activate the CORBA object (SYSTEM_ID -> activate_object)
+    PortableServer::ObjectId_var oid;
+    oid = m_offShootPOA->activate_object(cbServant);
 
-  // activate the CORBA object (SYSTEM_ID -> activate_object)
-  PortableServer::ObjectId_var oid;
-  oid = m_offShootPOA->activate_object(cbServant);
+    // create an object reference
+    CORBA::Object_var obj;
+    obj = m_offShootPOA->id_to_reference(oid.in());
+    ACS::OffShoot_var shoot = ACS::OffShoot::_narrow(obj.in());
 
-  // create an object reference
-  CORBA::Object_var obj;
-  obj = m_offShootPOA->id_to_reference(oid.in());
-  ACS::OffShoot_var shoot = ACS::OffShoot::_narrow(obj.in());
-
-  return shoot._retn();
+    return shoot._retn();
 }
 
 PortableServer::POA_var MACIContainerServices::createOffShootPOA()
@@ -803,7 +805,8 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
 
 void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant)
 {
-	if (!dynamic_cast<POA_ACS::OffShoot_ptr> (cbServant))
+    ACS::OffShoot_ptr offShoot = ACS::OffShoot::_narrow(cbServant->_get_component());
+	if (CORBA::is_nil(offShoot))
     {
     	// TODO: throw the exception
     	acsErrTypeContainerServices::OffShootDeactivationExImpl ex(__FILE__,__LINE__,"MACIContainerServices::deactivateOffShoot");
@@ -815,7 +818,7 @@ void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant
 		acsErrTypeContainerServices::OffShootPOAExImpl ex(__FILE__,__LINE__,"MACIContainerServices::deactivateOffShoot");
 		throw ex;
 	}
-
+    CORBA::release(offShoot);
 	// Deactivate the servant
 	PortableServer::ObjectId* id = m_offShootPOA->servant_to_id(cbServant);
 
