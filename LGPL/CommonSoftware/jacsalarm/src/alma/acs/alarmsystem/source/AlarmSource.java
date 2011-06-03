@@ -57,6 +57,18 @@ import java.util.concurrent.TimeUnit;
  * With the queuing the operator does not receive this kind of (false)
  * alarms. It is left to developer the responsibility to enable/disable
  * the queuing at the right moment.
+ * <P>
+ * Alarm sending can be inhibited by calling {@link AlarmSource#disableAlarms()}:
+ * all the alarm events submitted after calling this method are discarded. 
+ * To revert just call {@link AlarmSource#enableAlarms()}.
+ * The inhibition of the alarms does not interfere with the queuing: alarms queued
+ * before inhibit alarms remain queued and will be sent when flushing.
+ * 
+ * <P>
+ * Life cycle:
+ * {@link AlarmSource#start()} must be called before using methods of this
+ * class.  {@link AlarmSource#tearDown()} must be called when finished 
+ * using this class. 
  * 
  * @author acaproni
  */
@@ -169,7 +181,7 @@ public interface AlarmSource {
 	/**
 	 * Start queuing the alarms.
 	 * <P>
-	 * The alarms are flushed when the passed time expires.
+	 * The alarms are flushed when the passed time expires or flush gets called.
 	 * 
 	 * @param delayTime The time to queue alarms in milliseconds
 	 */
@@ -178,7 +190,11 @@ public interface AlarmSource {
 	/**
 	 * Start queuing the alarms.
 	 * <P>
-	 * The alarms are flushed when the passed time expires.
+	 * The alarms are flushed when the passed time expires or flush gets called.
+	 * <P>
+	 * The purpose of the queuing is to avoid alarms flickering for example 
+	 * during the initialization phase of a device where spurious states 
+	 * could trigger the event of false alarms
 	 * 
 	 * @param delayTime The time to queue alarms
 	 * @param unit The unit of the delay
@@ -189,8 +205,11 @@ public interface AlarmSource {
 	 * Start queuing the alarms.
 	 * <P>
 	 * The alarms are queued until <code>flushAlarms()</code> is executed.
+	 * <P>
+	 * The purpose of the queuing is to avoid alarms flickering for example 
+	 * during the initialization phase of a device where spurious states 
+	 * could trigger the event of false alarms.
 	 * 
-	 * @param time The time to queue alarms
 	 * @see AlarmSource#flushAlarms()
 	 */
 	public void queueAlarms();
@@ -207,8 +226,7 @@ public interface AlarmSource {
 	 * <P>
 	 * When the alarms are disabled, all the alarms submitted with
 	 * raise, clear and set are discarded. This means that those alarms
-	 * never arrive to the alarm service neither be part of queuing neither
-	 * guarded. 
+	 * are immediately discarded. They are not queued, and will never arrive at the alarm service. 
 	 * 
 	 * @see AlarmSource#enableAlarms()
 	 */
@@ -217,7 +235,8 @@ public interface AlarmSource {
 	/**
 	 * Enable the sending of alarms.
 	 * <P>
-	 * This method has to be called after disableAlarms().
+	 * Better just "This method reverts the effect of a previous call to disableAlarms(),
+	 * so that alarms will get processed again.
 	 * <P>
 	 * Alarms are enabled by default.
 	 * 
@@ -226,12 +245,12 @@ public interface AlarmSource {
 	public void enableAlarms();
 	
 	/**
-	 * Lifecycle: this method must be called before using this class.
+	 * Life-cycle: this method must be called before using this class.
 	 */
 	public void start();
 	
 	/**
-	 * Lifecycle: tearDown must be called when terminated using this class
+	 * Life-cycle: tearDown must be called when terminated using this class
 	 */
 	public void tearDown();
 }
