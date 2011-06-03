@@ -99,7 +99,7 @@ public class AlarmSourceTest extends ComponentClientTestCase {
 	}
 	
 	/**
-	 * Test if the source si limiting the oscillation of alarms
+	 * Test if the source is limiting the oscillation of alarms
 	 * <P>
 	 * The test is done by activating and clearing the alarm several time inside 
 	 * the {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME} time interval.
@@ -194,5 +194,32 @@ public class AlarmSourceTest extends ComponentClientTestCase {
 		// Wait 30 seconds until the flush terminates
 		System.out.println("Waiting for the flush to happen");
 		Thread.sleep(TimeUnit.SECONDS.toMillis(30));
+	}
+	
+	/**
+	 * When queuing is activated we expect that an alarm that has been
+	 * raised and cleared is not published at all
+	 */
+	public void testQueuingSingleAlarm() throws Exception {
+		// An alarm sent before queuing: it must be published
+		alarmSource.raiseAlarm("QueueFFSA", "QueueFMSA", 15);
+		System.out.println("Queueing alarms");
+		alarmSource.queueAlarms();
+		// The following alarms will be published after queueing
+		for (int t=0; t<10; t++) {
+			alarmSource.raiseAlarm("QueueFFSA", "QueueFMSA", t);
+			Thread.sleep(250);
+		}
+		for (int t=0; t<10; t++) {
+			alarmSource.clearAlarm("QueueFFSA", "QueueFMSA", t);
+			Thread.sleep(250);
+		}
+		Thread.sleep(10000);
+		System.out.println("Flushing alarms");
+		alarmSource.flushAlarms();
+		// An alarm sent after, it must be published
+		alarmSource.clearAlarm("QueueFFSA", "QueueFMSA", 15);
+		// Give the oscillation thread enough time to clear the alarm
+		Thread.sleep(TimeUnit.SECONDS.toMillis(AlarmSourceImpl.ALARM_OSCILLATION_TIME*2));
 	}
 }
