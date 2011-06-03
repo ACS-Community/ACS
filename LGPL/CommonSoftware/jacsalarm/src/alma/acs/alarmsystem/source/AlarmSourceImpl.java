@@ -25,7 +25,11 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import alma.acs.alarmsystem.source.AlarmQueue.AlarmToQueue;
@@ -74,78 +78,6 @@ public class AlarmSourceImpl implements AlarmSource {
 		public void run() {
 			for (AlarmToQueue alarm: alarmsToFlush) {
 				setAlarm(alarm.faultFamily, alarm.faultMember, alarm.faultCode, alarm.getProperties(), alarm.active);
-			}
-		}
-	}
-	
-	/**
-	 * The thread activated after a delay to flush the alarms queued.
-	 * <P>
-	 * This class has been written to avoid using the unsafe {@link Timer}.
-	 * {@link ThreadLoopRunner} is not either suitable because it runs a loop
-	 * while we need a single run of this thread. 
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private class TimerFlusherTask implements Runnable {
-		/**
-		 * The time (msecs) to wait before flushing the queue
-		 */
-		private final long delay;
-		
-		/**
-		 * Signal if the task has been canceled
-		 */
-		private volatile boolean cancelled=false;
-		
-		/**
-		 * The thread executing this task
-		 */
-		private volatile Thread thread=null;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param delay The number of milliseconds to wait before
-		 *              flushing the queue
-		 */
-		public TimerFlusherTask(long delay) {
-			if (delay<=0) {
-				throw new IllegalArgumentException("Invalid delay: "+delay);
-			}
-			this.delay=delay;
-		}
-		
-		/**
-		 * Setter
-		 * 
-		 * @param t The thread executing this task
-		 */
-		public void setThread(Thread t) {
-			thread=t;
-		}
-		
-		/**
-		 * Cancel the current task
-		 */
-		public void cancel() {
-			cancelled=true;
-			if (thread!=null && !thread.isInterrupted()) {
-				thread.interrupt();
-			}
-		}
-
-		@Override
-		public void run() {
-			try {
-				Thread.sleep(delay);
-			} catch (InterruptedException ie) {
-				// Propagate to the caller
-				Thread.currentThread().interrupt();
-			}
-			if (!cancelled) {
-				flushAlarms();
 			}
 		}
 	}
@@ -232,13 +164,6 @@ public class AlarmSourceImpl implements AlarmSource {
 	private final ThreadLoopRunner oscillationLoop;
 	
 	/**
-	 * The flusher for the queuing
-	 * 
-	 * Guarded by "this"
-	 */
-	private volatile TimerFlusherTask queueingTimerFlusherTask=null;
-	
-	/**
 	 * The alarms to clean are initially stored in alarmToClean.
 	 * <P> In fact the deletion of alarms is delayed of {@link AlarmSourceImpl#ALARM_OSCILLATION_TIME}
 	 * to limit the effect of oscillation.
@@ -247,6 +172,22 @@ public class AlarmSourceImpl implements AlarmSource {
 	 * has been sent.
 	 */
 	private final ConcurrentHashMap<String, Long>alarmsToClean=new ConcurrentHashMap<String, Long>();
+	
+	/**
+	 * The executor to schedule the threads for flushing the queue
+	 * after a given time interval.
+	 *
+	 * @see AlarmSource#queueAlarms(long, TimeUnit)
+	 */
+	private final ScheduledExecutorService scheduledExecutor;
+	
+	/**
+	 * The future for the thread to flush the que of alarms
+	 * after a given time interval.
+	 * <P>
+	 * Only one thread can be scheduled by AlarmSource#queueAlarms(long, TimeUnit) 
+	 */
+	private ScheduledFuture<Void> flusherFuture;
 	
 	/**
 	 * Constructor 
@@ -260,6 +201,8 @@ public class AlarmSourceImpl implements AlarmSource {
 		this.containerServices=containerServices;
 		alarms=new AlarmsMap(containerServices.getThreadFactory(),containerServices.getLogger());
 		alarmSender=new AlarmSender(containerServices);
+		// The pool size is 1 because we can have only one thread at a time
+		scheduledExecutor= Executors.newScheduledThreadPool(1,containerServices.getThreadFactory());
 		oscillationLoop=new ThreadLoopRunner(
 				new OscillationTask(), 
 				ALARM_OSCILLATION_TIME, 
@@ -356,22 +299,17 @@ public class AlarmSourceImpl implements AlarmSource {
 	}
 
 	@Override
-	public synchronized void queueAlarms(long delayTime) {
-		queuing=true;
-		if (queueingTimerFlusherTask!=null) {
-			queueingTimerFlusherTask.cancel();
-		}
-		queueingTimerFlusherTask=new TimerFlusherTask(delayTime);
-		Thread thread=containerServices.getThreadFactory().newThread(queueingTimerFlusherTask);
-		queueingTimerFlusherTask.setThread(thread);
-		thread.setName("TimerFlusherTask");
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	@Override
 	public synchronized void queueAlarms(long delayTime, TimeUnit unit) {
-		queueAlarms(unit.toMillis(delayTime));
+		queuing=true;
+		if (flusherFuture!=null && !flusherFuture.isDone()) {
+			flusherFuture.cancel(false);
+		}
+		flusherFuture = scheduledExecutor.schedule(new Callable<Void>() {
+			public Void call() throws Exception {
+				flushAlarms();
+				return null;
+			}
+		}, delayTime, unit);
 	}
 
 	@Override
@@ -381,8 +319,9 @@ public class AlarmSourceImpl implements AlarmSource {
 
 	@Override
 	public synchronized void flushAlarms() {
-		if (queueingTimerFlusherTask!=null) {
-			queueingTimerFlusherTask.cancel();
+		queuing=false;
+		if (flusherFuture!=null) {
+			flusherFuture.cancel(false);
 		}
 		AlarmToQueue[] temp = new AlarmToQueue[queue.size()];
 		queue.values().toArray(temp);
@@ -390,7 +329,7 @@ public class AlarmSourceImpl implements AlarmSource {
 		thread.setName("AlarmQueueFlusher");
 		thread.setDaemon(true);
 		thread.start();
-		queuing=false;
+		
 	}
 
 	@Override
@@ -431,9 +370,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	@Override
 	public void tearDown() {
 		enabled=false;
-		if (queueingTimerFlusherTask!=null) {
-			queueingTimerFlusherTask.cancel();
-		}
+		scheduledExecutor.shutdownNow();
 		alarmsToClean.clear();
 		try {
 			oscillationLoop.shutdown(2, TimeUnit.SECONDS);
