@@ -385,7 +385,7 @@ public class AlarmSourceImpl implements AlarmSource {
 			queueingTimerFlusherTask.cancel();
 		}
 		AlarmToQueue[] temp = new AlarmToQueue[queue.size()];
-		queue.toArray(temp);
+		queue.values().toArray(temp);
 		Thread thread=containerServices.getThreadFactory().newThread(new QueueFlusherTask(temp));
 		thread.setName("AlarmQueueFlusher");
 		thread.setDaemon(true);
