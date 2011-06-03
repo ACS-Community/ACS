@@ -26,7 +26,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsStart,v 1.47 2010/09/13 16:34:36 tstaig Exp $"
+# "@(#) $Id: acsStart,v 1.48 2011/06/03 15:36:44 tstaig Exp $"
 #
 # who       when      what
 # -------- ---------- ----------------------------------------------
@@ -188,6 +188,7 @@ if [ ! -d $INSTANCES_DIR ] ; then
     then
         exit $EC_CANNOTCREATE
     fi
+	chmod 775 $INSTANCES_DIR
 fi
 ACS_LOG_COMMAND $@
 if ! createInstanceDirectory $ACS_INSTANCE
