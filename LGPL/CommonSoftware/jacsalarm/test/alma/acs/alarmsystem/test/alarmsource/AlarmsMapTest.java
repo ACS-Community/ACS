@@ -22,6 +22,8 @@
 package alma.acs.alarmsystem.test.alarmsource;
 
 import java.util.Collection;
+import java.util.concurrent.ThreadFactory;
+import java.util.logging.Logger;
 
 import alma.acs.alarmsystem.source.AlarmsMap;
 import alma.acs.alarmsystem.source.AlarmsMap.AlarmInfo;
@@ -39,9 +41,37 @@ import alma.acs.component.client.ComponentClientTestCase;
 public class AlarmsMapTest extends ComponentClientTestCase {
 	
 	/**
+	 * Extends {@link AlarmsMap} with the dump method 
+	 * for debugging
+	 * 
+	 * @author acaproni
+	 *
+	 */
+	private class AlarmsMapWithDump extends  AlarmsMap {
+		/**
+		 * Constructor
+		 * 
+		 * @param threadFactory
+		 * @param logger
+		 */
+		public AlarmsMapWithDump(ThreadFactory threadFactory, Logger logger) {
+			super(threadFactory, logger);
+		}
+		
+		public StringBuilder dump() {
+			StringBuilder ret = new StringBuilder("\nAlarmsMap content:\n");
+			for (String key: alarms.keySet()) {
+				ret.append(key);
+				ret.append('\n');
+			}
+			return ret;
+		}
+	}
+	
+	/**
 	 * The object to test
 	 */
-	private AlarmsMap alarmsMap;
+	private AlarmsMapWithDump alarmsMap;
 	
 	/**
 	 * Constructor
@@ -55,7 +85,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		alarmsMap=new AlarmsMap(this.getContainerServices().getThreadFactory(),this.m_logger);
+		alarmsMap=new AlarmsMapWithDump(this.getContainerServices().getThreadFactory(),this.m_logger);
 		assertNotNull(alarmsMap);
 		alarmsMap.start();
 	}
@@ -96,24 +126,24 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
-		assertEquals(10, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
 		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
 		assertEquals(0, alarmsMap.size());
 		// Now check if the timer selectively removes items
 		for (int t=0; t<10; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
-		assertEquals(10, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
 		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000/2+1000);
-		assertEquals(10, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
 		for (int t=10; t<20; t++) {
 			alarmsMap.raise(keyBase+t);
 		}
-		assertEquals(20, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),20, alarmsMap.size());
 		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000/2+1000);
-		assertEquals(10, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
 		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
-		assertEquals(0, alarmsMap.size());
+		assertEquals(alarmsMap.dump().toString(),0, alarmsMap.size());
 	}
 	
 	/**
