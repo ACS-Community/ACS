@@ -116,10 +116,10 @@ public class AlarmsMap {
 	 * The map of alarms.
 	 * <P>
 	 * The key is the alarm ID i.e. FF:FM:FC.
-	 * The value is <code>true</code> if the alarm has been activated,
-	 * <code>false</code> otherwise.
+	 * The value is an {@link AlarmInfo} with boolean set to <code>true</code> 
+	 * if the alarm has been activated, <code>false</code> otherwise.
 	 */
-	private final Map<String, AlarmInfo> alarms = new ConcurrentHashMap<String, AlarmsMap.AlarmInfo>();
+	protected final Map<String, AlarmInfo> alarms = new ConcurrentHashMap<String, AlarmsMap.AlarmInfo>();
 	
 	/**
 	 * The runner for scheduling the thread to delete old alarms
