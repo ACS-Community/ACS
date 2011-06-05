@@ -4,4 +4,5 @@ SOURCE acsAlarmTATEnv
 2 FactoryTestCase "testFactory.sh"
 3 unitTest2 "unitTestDriver2"
 4 propertyTest "propertyTest"
-faultSateTest "faultSateTest"
+5 faultSateTest "faultSateTest"
+6 alarmThrowTest "alarmThrowTest"
