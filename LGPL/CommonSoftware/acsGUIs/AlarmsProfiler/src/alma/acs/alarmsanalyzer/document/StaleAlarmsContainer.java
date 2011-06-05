@@ -81,7 +81,7 @@ public class StaleAlarmsContainer extends DocumentBase implements SourceListener
 		 * @return How long the alarm is active
 		 */
 		public String activationDuration() {
-			Calendar cal=Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+			Calendar cal=Calendar.getInstance();
 			long now =cal.getTime().getTime();
 			long alTime=activationTime.getTime();
 			cal.setTime(new Date(now-alTime));
