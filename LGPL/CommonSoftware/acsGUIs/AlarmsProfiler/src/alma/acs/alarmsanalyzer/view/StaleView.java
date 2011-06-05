@@ -75,7 +75,7 @@ public class StaleView extends TableViewBase {
 			switch (columnIndex) {
 			case 0: return item.ID;
 			case 1: {
-				item.activationDuration();
+				return item.activationDuration();
 			}
 			default: return "Unknown!";
 			}
