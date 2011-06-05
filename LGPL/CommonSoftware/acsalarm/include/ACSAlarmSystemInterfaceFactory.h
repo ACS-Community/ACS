@@ -47,6 +47,15 @@
 #include "ace/Task.h"
 
 /**
+ * The type of alarm system in use
+ */
+enum AlarmSystemType {
+	NOT_YET_INITIALIZED, // unknown type: not initialized
+	CERN_AS, // CERN implementation
+	ACS_AS  // ACS implementation
+};
+
+/**
  * The class to create sources and fault states.
  * It extends the laser source but it returns different implementations of the
  * sources depending of a value of a property of the CDB
@@ -67,14 +76,12 @@ class ACSAlarmSystemInterfaceFactory
 	// the logic in ACSLaser/laser-source-cpp
 	static void *dllHandle;
 
-	// At the present all the alarm are mapped in the same NC
+	// At the present all the alarms are mapped in the same NC
 	// so we need only one source to publish all the alarms
 	static acsalarm::AlarmSystemInterface* m_sourceSingleton_p;
 
-	// It is true if ACS implementation for sources must be used,  and
-	// false means CERN implementation
-	// The pointer is null if it has not yet been initialized (this is done by the init method)
-	static bool* m_useACSAlarmSystem;
+	// The type of alarm system in use.
+	static AlarmSystemType m_AlarmSystemType;
 		
 	// The manager
 	static maci::Manager_ptr m_manager;
@@ -94,7 +101,6 @@ class ACSAlarmSystemInterfaceFactory
 	static void cleanUpAlarmSystemInterfacePtr();
 	static void cleanUpSourceSingleton();
 	static void cleanUpDLL();
-	static void cleanUpBooleanPtr();
 	static void cleanUpManagerReference();
 	static void initImplementationType(maci::Manager_ptr manager);
 	static bool initDLL();
@@ -125,7 +131,7 @@ class ACSAlarmSystemInterfaceFactory
 	 * @return boolean indicating whether the ACS alarm system is in use (true) or not (false), where ACS
 	 * alarm system means alarms are sent to the logs, otherwise they are sent to the alarm channel.
 	 */
-	static bool usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
+	static AlarmSystemType usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl);
 		
 	/**
 	 * Release the resources: must be called when finished using the

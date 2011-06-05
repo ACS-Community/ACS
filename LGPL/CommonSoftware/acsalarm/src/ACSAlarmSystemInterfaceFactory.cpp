@@ -46,7 +46,7 @@ using acsalarm::AlarmSystemInterface;
 using acsalarm::Properties;
 using acsalarm::Timestamp;
 
-bool* ACSAlarmSystemInterfaceFactory::m_useACSAlarmSystem = NULL;
+AlarmSystemType ACSAlarmSystemInterfaceFactory::m_AlarmSystemType = NOT_YET_INITIALIZED;
 maci::Manager_ptr ACSAlarmSystemInterfaceFactory::m_manager = maci::Manager::_nil();
 AlarmSystemInterfaceFactory * ACSAlarmSystemInterfaceFactory::m_AlarmSystemInterfaceFactory_p = NULL;
 void* ACSAlarmSystemInterfaceFactory::dllHandle = NULL;
@@ -80,10 +80,13 @@ acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::getSourceSinglet
 	if (m_sourceSingleton_p!=NULL) {
 		return m_sourceSingleton_p;
 	}
-	if (!(*m_useACSAlarmSystem)) {
+	if (m_AlarmSystemType  == CERN_AS) {
 		m_sourceSingleton_p = m_AlarmSystemInterfaceFactory_p->createSource(ALARM_SOURCE_NAME);
-	} else {
+	} else if  (m_AlarmSystemType  == ACS_AS) {
 		m_sourceSingleton_p = new ACSAlarmSystemInterfaceProxy(ALARM_SOURCE_NAME);
+	} else {
+		// OPS: alarm system not yet initialized
+		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::getSourceSingleton");
 	}
 	return m_sourceSingleton_p;
 }
@@ -91,20 +94,15 @@ acsalarm::AlarmSystemInterface* ACSAlarmSystemInterfaceFactory::getSourceSinglet
 /**
  * Getter for whether we're using the ACS Alarm system (true) or not (false).
  */
-bool ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
+AlarmSystemType ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem() throw (acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl)
 { 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()");
-	bool retVal = true;
-	if(NULL == m_useACSAlarmSystem)
+	if(m_AlarmSystemType  == NOT_YET_INITIALIZED)
 	{ 
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem"); 
 	}
-	else	
-	{
-		retVal = *m_useACSAlarmSystem; 
-	}
-	return retVal;
+	return m_AlarmSystemType;
 }
 
 auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(string family, string member, int code) 
@@ -113,10 +111,10 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState(s
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
-	if (m_useACSAlarmSystem==NULL) {
+	if (m_AlarmSystemType  == NOT_YET_INITIALIZED) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState(string, string, int)");
 	}
-	if (!(*m_useACSAlarmSystem)) {
+	if (m_AlarmSystemType  == CERN_AS) {
 		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState(family, member, code);
 	} else {
 		retVal.reset(new acsalarm::FaultState(family, member, code));
@@ -129,10 +127,10 @@ auto_ptr<acsalarm::FaultState>ACSAlarmSystemInterfaceFactory::createFaultState()
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::createFaultState()");
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
 	auto_ptr<acsalarm::FaultState> retVal;
-	if (m_useACSAlarmSystem==NULL) {
+	if (m_AlarmSystemType  == NOT_YET_INITIALIZED) {
 		throw acsErrTypeAlarmSourceFactory::ACSASFactoryNotInitedExImpl(__FILE__,__LINE__,"ACSAlarmSystemInterfaceFactory::createFaultState()");
 	}
-	if (!(*m_useACSAlarmSystem)) {
+	if (m_AlarmSystemType  == CERN_AS) {
 		retVal = m_AlarmSystemInterfaceFactory_p->createFaultState();
 	} else {
 		retVal.reset(new acsalarm::FaultState());
@@ -206,7 +204,6 @@ void ACSAlarmSystemInterfaceFactory::done()
 	cleanUpAlarmSystemInterfacePtr();
 	cleanUpSourceSingleton();
 	cleanUpDLL();
-	cleanUpBooleanPtr();
 	cleanUpManagerReference();
 }
 
@@ -218,18 +215,6 @@ void ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()
 	if (!CORBA::is_nil(m_manager)) {
 		CORBA::release(m_manager);
 		m_manager = maci::Manager::_nil();
-	}
-}
-
-// private method called at shutdown
-void ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()
-{
-	ACS_TRACE("ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()");
-	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	if(NULL != m_useACSAlarmSystem) 
-	{
-		delete m_useACSAlarmSystem;
-		m_useACSAlarmSystem = NULL;
 	}
 }
 
@@ -266,7 +251,7 @@ void ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
-	if (NULL != m_useACSAlarmSystem && !(*m_useACSAlarmSystem) && NULL != m_AlarmSystemInterfaceFactory_p) {
+	if (m_AlarmSystemType==CERN_AS && NULL != m_AlarmSystemInterfaceFactory_p) {
 		m_AlarmSystemInterfaceFactory_p->done();
 		delete m_AlarmSystemInterfaceFactory_p;
 		m_AlarmSystemInterfaceFactory_p = NULL;
@@ -283,7 +268,7 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsE
 
 	initImplementationType(manager);
 
-	if (!(*m_useACSAlarmSystem)) 
+	if (m_AlarmSystemType==CERN_AS)
 	{
 		retVal = initDLL();
 	}
@@ -291,7 +276,7 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsE
 	return retVal;
 }
 
-// private method callled during initialization (at container startup)
+// private method called during initialization (at container startup)
 void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr manager)
 {
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr)");
@@ -300,17 +285,23 @@ void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr ma
 	if (manager!=maci::Manager::_nil()) 
 	{
 		m_manager = maci::Manager::_duplicate(manager);
-		m_useACSAlarmSystem = new bool(); // It implicitly says that the init has been called
 		try
 		{
 			ConfigPropertyGetter pGetter(m_manager);
 			string str = pGetter.getProperty("Implementation");
-			*m_useACSAlarmSystem = !(str=="CERN");
+			if (str=="CERN")
+			{
+				m_AlarmSystemType=CERN_AS;
+			}
+			else
+			{
+				m_AlarmSystemType=ACS_AS;
+			}
 		}
 		catch(...)
 		{
 			// if we get any exception from accessing CDB we use the default ACS alarm system
-			*m_useACSAlarmSystem=true;
+			m_AlarmSystemType=ACS_AS;
 		}
 	} 
 	else 
@@ -318,15 +309,16 @@ void ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr ma
 		// if we were passed a NULL for the manager reference, this means we should use the ACS (logging) style for alarms
 		// this typically will only happen in test code within the acsalarm module, which due to build/dependency order issues
 		// cannot access things in the ACSLaser package (which is built later). 
-		m_useACSAlarmSystem = new bool();
-		*m_useACSAlarmSystem=true;
+		m_AlarmSystemType=ACS_AS;
 	}
 
 	// Print a debug message
-	if (*m_useACSAlarmSystem) {
+	if (m_AlarmSystemType==ACS_AS) {
 		ACS_SHORT_LOG((LM_DEBUG, "Using ACS alarm system"));
-	} else {
+	} else if (m_AlarmSystemType==CERN_AS) {
 		ACS_SHORT_LOG((LM_DEBUG, "Using CERN alarm system"));
+	} else {
+		ACS_SHORT_LOG((LM_WARNING, "Alarm system not initialized"));
 	}
 }
 

@@ -115,7 +115,7 @@ void FactoryTestCase::testNoAlarmBranch() {
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
 	replaceAlarmBranch(cwd);
-	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
+	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (no Alarms in CDB case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()==ACS_AS);
 	ACSAlarmSystemInterfaceFactory::done();
 }
 
@@ -129,7 +129,7 @@ void FactoryTestCase::testACSAlarmSystem() {
 	configureAlarmBranch(cwd, "ACS");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (ACS case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
+	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (ACS case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()==ACS_AS);
 	ACSAlarmSystemInterfaceFactory::done();
 }
 
@@ -141,7 +141,7 @@ void FactoryTestCase::testWrongImplementationProp() {
 	configureAlarmBranch(cwd, "Wrong property");
 	clearCdbCache();
 	ACSAlarmSystemInterfaceFactory::init(myMockMgr);
-	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (wrong prop case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem());
+	CPPUNIT_ASSERT_MESSAGE("Wrong implementation in use (wrong prop case)", ACSAlarmSystemInterfaceFactory::usingACSAlarmSystem()==ACS_AS);
 	ACSAlarmSystemInterfaceFactory::done();
 }
 
