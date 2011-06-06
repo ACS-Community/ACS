@@ -27,6 +27,7 @@ from sys                        import argv
 from sys                        import exit
 from TMCDB                      import MonitorCollector
 from TMCDB                      import propertySerailNumber
+from omniORB                    import any
 import MonitorCollectorErrImpl
 import MonitorCollectorErr
 import time
@@ -42,25 +43,23 @@ try:
     mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT', psns)
     tc.reset();
     mc.startMonitoring('MC_TEST_COMPONENT')    
+    time.sleep(20)
+    mc.stopMonitoring('MC_TEST_COMPONENT')
 except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
-
-
-time.sleep(20)
 
 data = mc.getMonitorData()
 
 print "Number of Devices:", len(data);
 for d in data:
-    print d
     print d.componentName, d.deviceSerialNumber 
     for blob in d.monitorBlobs:
         print "\t", blob.propertyName, blob.propertySerialNumber
+        for blobData in any.from_any(blob.blobDataSeq):
+            print "\t\t", blobData
 
-mc.stopMonitoring('MC_TEST_COMPONENT')
 mc.deregisterMonitoredDevice('MC_TEST_COMPONENT')
-
 
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])

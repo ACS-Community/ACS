@@ -34,42 +34,24 @@ import time
 
 # Make an instance of the PySimpleClient
 simpleClient = PySimpleClient()
-
 mc = simpleClient.getComponent(argv[1])
 
 try:
-    tc =   simpleClient.getComponent('MC_TEST_PROPERTIES_COMPONENT')
-    psns =[propertySerailNumber('doubleROProp',    ['1']),
-           propertySerailNumber('floatROProp',     ['2']),
-           propertySerailNumber('longROProp',      ['3']),
-           propertySerailNumber('patternROProp',   ['4']),
-           propertySerailNumber('stringROProp',    ['5']),
-           propertySerailNumber('longLongROProp',  ['6']),
-           propertySerailNumber('uLongLongROProp', ['7']),
-           propertySerailNumber('doubleSeqROProp', ['8']),
-           propertySerailNumber('floatSeqROProp',  ['9']),
-           propertySerailNumber('longSeqROProp',   ['10']),
-           propertySerailNumber('doubleRWProp',    ['11']),
-           propertySerailNumber('floatRWProp',     ['12']),
-           propertySerailNumber('longRWProp',      ['13']),
-           propertySerailNumber('patternRWProp',   ['14']),
-           propertySerailNumber('stringRWProp',    ['15']),
-           propertySerailNumber('longLongRWProp',  ['16']),
-           propertySerailNumber('uLongLongRWProp', ['17']),
-           propertySerailNumber('doubleSeqRWProp', ['18']),
-           propertySerailNumber('floatSeqRWProp',  ['19']),
-           propertySerailNumber('longSeqRWProp',   ['20'])
-        ]
-    mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_PROPERTIES_COMPONENT', psns)
-    mc.startMonitoring('MC_TEST_PROPERTIES_COMPONENT')    
-    time.sleep(1.9)
-    mc.stopMonitoring('MC_TEST_PROPERTIES_COMPONENT')
+    tc =   simpleClient.getComponent('MC_TEST_COMPONENT2')
+    psns =[propertySerailNumber('doubleSeqProp', ['12124']),propertySerailNumber('doubleProp', ['3432535'])]    
+    mc.registerMonitoredDeviceWithMultipleSerial('MC_TEST_COMPONENT2', psns)
+    tc.reset();
+    mc.startMonitoring('MC_TEST_COMPONENT2')    
+    time.sleep(10)
+    mc.enable_archiving('MC_TEST_COMPONENT2','doubleSeqProp')
+    mc.enable_archiving('MC_TEST_COMPONENT2','doubleProp')
+    time.sleep(10)
+    mc.stopMonitoring('MC_TEST_COMPONENT2')
 except MonitorCollectorErr.RegisteringDeviceProblemEx, _ex:
     ex = MonitorCollectorErrImpl.RegisteringDeviceProblemExImpl(exception=_ex)
     ex.Print();   
 
 data = mc.getMonitorData()
-
 print "Number of Devices:", len(data);
 for d in data:
     print d.componentName, d.deviceSerialNumber 
@@ -78,10 +60,8 @@ for d in data:
         for blobData in any.from_any(blob.blobDataSeq):
             print "\t\t", blobData
 
-mc.deregisterMonitoredDevice('MC_TEST_PROPERTIES_COMPONENT')
+mc.deregisterMonitoredDevice('MC_TEST_COMPONENT2')
 
 #cleanly disconnect
 simpleClient.releaseComponent(argv[1])
 simpleClient.disconnect()
-
-
