@@ -17,7 +17,6 @@ import javax.jms.TopicSession;
 
 import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
-import alma.archive.tmcdb.Persistence.Util.TMCDBConfig;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
