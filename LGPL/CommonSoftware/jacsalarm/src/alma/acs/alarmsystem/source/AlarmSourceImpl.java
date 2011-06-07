@@ -224,7 +224,9 @@ public class AlarmSourceImpl implements AlarmSource {
 			return;
 		}
 		if (queuing) {
-			queue.add(faultFamily, faultMember, faultCode, properties, true);
+			synchronized (queue) {
+				queue.add(faultFamily, faultMember, faultCode, properties, true);
+			}
 			return;
 		}
 		String id= buildAlarmID(faultFamily, faultMember, faultCode);
@@ -245,7 +247,9 @@ public class AlarmSourceImpl implements AlarmSource {
 			return;
 		}
 		if (queuing) {
-			queue.add(faultFamily, faultMember, faultCode, null, false);
+			synchronized (queue) {
+				queue.add(faultFamily, faultMember, faultCode, null, false);
+			}
 			return;
 		}
 		String id= buildAlarmID(faultFamily, faultMember, faultCode);
@@ -313,7 +317,7 @@ public class AlarmSourceImpl implements AlarmSource {
 	}
 
 	@Override
-	public synchronized void queueAlarms() {
+	public void queueAlarms() {
 		queuing=true;
 	}
 
@@ -323,8 +327,12 @@ public class AlarmSourceImpl implements AlarmSource {
 		if (flusherFuture!=null) {
 			flusherFuture.cancel(false);
 		}
-		AlarmToQueue[] temp = new AlarmToQueue[queue.size()];
-		queue.values().toArray(temp);
+		AlarmToQueue[] temp;
+		synchronized (queue) {
+			temp = new AlarmToQueue[queue.size()];
+			queue.values().toArray(temp);
+			queue.clear();	
+		}
 		Thread thread=containerServices.getThreadFactory().newThread(new QueueFlusherTask(temp));
 		thread.setName("AlarmQueueFlusher");
 		thread.setDaemon(true);
