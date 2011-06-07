@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.36 2011/06/03 20:30:40 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.37 2011/06/07 23:55:51 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -803,14 +803,14 @@ PortableServer::POA_var MACIContainerServices::createOffShootPOA()
   return m_offShootPOA;
 }
 
+//Don't throw exceptions the user doesn't want to know about de-activation
 void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant)
 {
     ACS::OffShoot_ptr offShoot = ACS::OffShoot::_narrow(cbServant->_get_component());
 	if (CORBA::is_nil(offShoot))
     {
-    	// TODO: throw the exception
-    	acsErrTypeContainerServices::OffShootDeactivationExImpl ex(__FILE__,__LINE__,"MACIContainerServices::deactivateOffShoot");
-		throw ex;
+    	// The OffShoot was already deactivated
+        return;
     }
 
 	if (CORBA::is_nil(m_offShootPOA.ptr()))
