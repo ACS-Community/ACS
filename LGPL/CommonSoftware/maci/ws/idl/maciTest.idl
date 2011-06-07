@@ -82,6 +82,10 @@ interface LogConfigTestClass : ACS::ACSComponent {
 	void log_all();
 };
 
+interface TestOffShoot : ACS::OffShoot {
+
+};
+
 };
 
 #endif

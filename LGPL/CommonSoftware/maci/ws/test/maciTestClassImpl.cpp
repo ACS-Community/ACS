@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.cpp,v 1.100 2008/10/09 07:05:37 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.cpp,v 1.101 2011/06/07 23:56:38 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -16,7 +16,7 @@
 
 #include <vltPort.h>
 
-static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.100 2008/10/09 07:05:37 cparedes Exp $";
+static char *rcsId="@(#) $Id: maciTestClassImpl.cpp,v 1.101 2011/06/07 23:56:38 javarias Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <logging.h>
@@ -282,7 +282,13 @@ ACS_DLL_UNMANGLED_EXPORT void DLLClose()
   ACS_SHORT_LOG((LM_INFO, "maciTestClassImpl::DLLClose"));
 }
 
+MaciTestOffShoot::MaciTestOffShoot()
+{
+}
 
+MaciTestOffShoot::~MaciTestOffShoot()
+{
+}
 
 
 

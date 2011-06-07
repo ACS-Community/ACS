@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciTestClassImpl.h,v 1.91 2008/10/09 07:05:37 cparedes Exp $"
+* "@(#) $Id: maciTestClassImpl.h,v 1.92 2011/06/07 23:56:38 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,7 +33,7 @@
  *
  * @author <a href=mailto:klemen.zagar@ijs.si>Klemen Zagar</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciTestClassImpl.h,v 1.91 2008/10/09 07:05:37 cparedes Exp $"
+ * @version "@(#) $Id: maciTestClassImpl.h,v 1.92 2011/06/07 23:56:38 javarias Exp $"
  */
 
 class MaciTestClass: public virtual acscomponent::ACSComponentImpl,
@@ -105,6 +105,13 @@ public:
  virtual void execute();
       
 
+};
+
+class MaciTestOffShoot: public POA_MACI_TEST::TestOffShoot
+{
+	public:
+		MaciTestOffShoot();
+		~MaciTestOffShoot();
 };
 
 #endif   /* maciTestClassImpl_h */

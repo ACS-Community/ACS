@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.101 2010/03/18 23:03:42 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.102 2011/06/07 23:56:38 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -65,7 +65,7 @@ maciTestSimpleClient_OBJECTS =  maciTestSimpleClient maciTestC
 maciTestSimpleClient_LIBS = maciClient
 
 maciTestSimpleClientContainerServices_OBJECTS =  maciTestSimpleClientContainerServices maciTestC
-maciTestSimpleClientContainerServices_LIBS = maciClient
+maciTestSimpleClientContainerServices_LIBS = maciClient maciTestClass
 
 maciTestComponentSmartPtr_OBJECTS =  maciTestComponentSmartPtr maciTestC
 maciTestComponentSmartPtr_LIBS = maciClient cppunit

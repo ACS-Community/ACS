@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: maciTestSimpleClientContainerServices.cpp,v 1.1 2010/03/18 23:03:42 javarias Exp $"
+* "@(#) $Id: maciTestSimpleClientContainerServices.cpp,v 1.2 2011/06/07 23:56:38 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -11,11 +11,12 @@
 #define _POSIX_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: maciTestSimpleClientContainerServices.cpp,v 1.1 2010/03/18 23:03:42 javarias Exp $"; 
+static char *rcsId="@(#) $Id: maciTestSimpleClientContainerServices.cpp,v 1.2 2011/06/07 23:56:38 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <maciTestC.h>
 #include <maciSimpleClient.h>
+#include "maciTestClassImpl.h"
 #include <logging.h>
 #include <string>
 #include <iostream>
@@ -161,6 +162,13 @@ int main (int argc, char **argv)
 	{
 		ex.log();
 	}//try-catch
+
+    //Test creation of OffShoot
+    MaciTestOffShoot offShoot;
+    MACI_TEST::TestOffShoot_var CORBAobj = MACI_TEST::TestOffShoot::_narrow(client.getContainerServices()->activateOffShoot(&offShoot));
+    CORBAobj = MACI_TEST::TestOffShoot::_nil();
+    client.getContainerServices()->deactivateOffShoot(&offShoot);
+
 	client.getContainerServices()->releaseComponent("MACI04");
 	client.logout();
 }//main
