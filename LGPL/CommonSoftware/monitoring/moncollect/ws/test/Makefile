@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.3 2011/06/06 21:31:15 tstaig Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/06/08 19:54:18 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -100,7 +100,7 @@ TCL_SCRIPTS_L   =
 PY_SCRIPTS         =
 PY_SCRIPTS_L       = mcTestRegisterDevice mcTestRegisterDeviceWithMultipleSerial  mcTestDeviceWithSeqAndMultipleSerial \
 						mcTestComponent mcTestPropertiesComponent mcTestDynEnable mcTestDynSuppress mcTestDynInterval \
-                  mcTestDynSupEn mcTestManualPublish mcTestManualPublishOnSuppressed mcTestArchiveDelta mcTestArchiveDeltaPercent 
+                  mcTestDynSupEn #mcTestManualPublish mcTestManualPublishOnSuppressed mcTestArchiveDelta mcTestArchiveDeltaPercent 
 PY_MODULES         =
 PY_MODULES_L       =
 
