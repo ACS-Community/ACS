@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.38 2011/06/08 21:49:49 tstaig Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.39 2011/06/08 23:21:43 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -724,7 +724,6 @@ MACIContainerServices::activateOffShoot(PortableServer::Servant cbServant)
     ACS::OffShoot_ptr inOffShoot = ACS::OffShoot::_narrow(cbServant->_get_component());
     if (CORBA::is_nil(inOffShoot))
     {
-        CORBA::release(inOffShoot);
         return ACS::OffShoot ::_nil();
     }
     //CORBA::release(inOffShoot);
