@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.37 2011/06/07 23:55:51 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.38 2011/06/08 21:49:49 tstaig Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -727,7 +727,7 @@ MACIContainerServices::activateOffShoot(PortableServer::Servant cbServant)
         CORBA::release(inOffShoot);
         return ACS::OffShoot ::_nil();
     }
-    CORBA::release(inOffShoot);
+    //CORBA::release(inOffShoot);
     if (CORBA::is_nil(m_offShootPOA.ptr()))
     {
         // It is normal the first time we execute this method
@@ -818,7 +818,7 @@ void MACIContainerServices::deactivateOffShoot(PortableServer::Servant cbServant
 		acsErrTypeContainerServices::OffShootPOAExImpl ex(__FILE__,__LINE__,"MACIContainerServices::deactivateOffShoot");
 		throw ex;
 	}
-    CORBA::release(offShoot);
+	//CORBA::release(offShoot);
 	// Deactivate the servant
 	PortableServer::ObjectId* id = m_offShootPOA->servant_to_id(cbServant);
 
