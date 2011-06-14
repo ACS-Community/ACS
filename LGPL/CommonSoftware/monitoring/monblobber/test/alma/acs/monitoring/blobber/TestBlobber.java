@@ -14,6 +14,9 @@ import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
+import alma.acs.monitoring.DAO.MonitorCharacteristicIDs;
+import alma.DAOErrType.wrappers.AcsJGettingMonitorCharacteristicsEx;
+import alma.DAOErrType.wrappers.AcsJDynConfigFailureEx;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
 
 
@@ -158,7 +161,22 @@ public class TestBlobber extends BlobberImpl {
 		@Override
 		public void closeTransactionStore() {
 		}
+
+		@Override
+		public MonitorCharacteristicIDs getMonitorCharacteristicIDs(String configurationName, ComponentData inData)
+				throws AcsJGettingMonitorCharacteristicsEx, AcsJDynConfigFailureEx {
+			return null;
+		}
 		
+		@Override
+		public boolean hasFailedToBeConfigured(ComponentData inData) {
+			return false;
+		}
+
+		@Override
+		public void setHasFailedToBeConfigured(ComponentData inData) {
+		}
+
 		private BlobData cloneData(ComponentData inBlob) {
 			BlobData outBlob = new BlobData();
 			outBlob.clob = inBlob.clob;
@@ -179,8 +197,5 @@ public class TestBlobber extends BlobberImpl {
 			}
 			return outBlob;
 		}
-
 	}
-	
-
 }

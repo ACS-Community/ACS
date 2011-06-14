@@ -99,6 +99,13 @@ public class TestBlobberWorker extends BlobberWorker {
 		public boolean isProfilingEnabled() {
 			return false;
 		}
+		@Override
+		public boolean isBrokerEnabled() {
+			return false;
+		}
+		@Override
+		public String getBrokerURL() {
+			return "";
+		}
 	}
-
 }
