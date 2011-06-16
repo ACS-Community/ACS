@@ -1,8 +1,7 @@
 # use with 
 # egrep -i "error|fail|undefined reference" build*.log | grep -v -f knownerr
 #
-# TODO: check why the following line is erroneously hit by these patterns, which must come from the hash sign.
-# _configtest.c:7:2: #error No _WIN32
+_configtest.c
 error\.h
 errors\.h
 error\.c
@@ -14,8 +13,13 @@ Error\.o
 error\.py
 errors\.py
 Errors\.py
+ErrorInfo\.
+error\.txt
 errorbar_demo\.py
 failure\.py
+test_fail\.py
+generator_failure_tests\.py
+FailoverListener
 no-importError
 no-syntaxErrors
 checking for gai_strerror
@@ -52,3 +56,5 @@ xmlerror\.p
 pylint-0.18.0/test/input/.*error.*
 pylint-0.18.0/test/regrtest_data/socketerror_import.py
 pylint-0.18.0/test/messages/.*error.*
+xjavadoc.TokenMgrError
+SUBROUTINE XERROR
