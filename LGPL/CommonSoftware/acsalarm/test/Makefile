@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.14 2011/06/05 22:12:57 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.15 2011/06/20 19:10:55 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -36,7 +36,14 @@ USER_LIB = -lstdc++ -lxerces-c
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     = 
-EXECUTABLES_L   = TestAcsAlarmSending unitTestDriver unitTestDriver2 FactoryTestCase propertyTest faultSateTest alarmThrowTest
+EXECUTABLES_L   = TestAcsAlarmSending \
+ 	              unitTestDriver \
+ 	              unitTestDriver2 \
+ 	              FactoryTestCase \
+ 	              propertyTest \
+ 	              faultSateTest \
+ 	              alarmThrowTest \
+ 	              alarmsMapTest
 
 TestAcsAlarmSending_OBJECTS   = TestAcsAlarmSending
 TestAcsAlarmSending_LIBS      = logging acsAlSysSource acsErrTypeAlarmSourceFactory cdb maciStubs maciErrType acscommonStubs
@@ -58,6 +65,9 @@ faultSateTest_LIBS		= cppunit logging alSysSource
 
 alarmThrowTest_OBJECTS = alarmThrowTest
 alarmThrowTest_LIBS    = C++  cppunit  acsAlSysSource maciClient
+
+alarmsMapTest_OBJECTS = alarmsMapTest 
+alarmsMapTest_LIBS    = C++  cppunit alarmSource acsAlSysSource
 #
 # special compilation flags for single c sources
 #yyyyy_CFLAGS   = 
