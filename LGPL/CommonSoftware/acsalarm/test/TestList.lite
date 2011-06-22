@@ -7,4 +7,4 @@ SOURCE acsAlarmTATEnv
 5 faultSateTest "faultSateTest"
 6 alarmThrowTest "alarmThrowTest"
 7 alarmsMapTest "alarmsMapTest"
-
+8 alarmSourceTest "alarmSourceTest"
