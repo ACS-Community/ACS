@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.13 2008/01/27 18:30:12 sharring Exp $"
+# "@(#) $Id: Makefile,v 1.14 2011/06/22 20:58:33 acaproni Exp $"
 #
 # Makefile of ........
 #
@@ -56,23 +56,34 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					FaultState.h \
 					faultStateConstants.h \
 			      AlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h \
-					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h
+					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h \
+					AlarmSource.h AlarmSourceImpl.h AlarmToQueue AlarmsMap
 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = alSysSource acsAlSysSource 
+LIBRARIES       = alSysSource acsAlSysSource alarmSource 
 LIBRARIES_L     = 
 
 # The alSysSource library is for all the 'generic' classes that are not coupled 
 # with ACS (except for logging) and can be reused by 3rd parties.
-alSysSource_OBJECTS = FaultState AlarmSystemInterface AlarmSystemInterfaceFactory Properties Timestamp ASIMessage ASIConfiguration
-alSysSource_LIBS = logging loki ACE
+alSysSource_OBJECTS = FaultState \
+					  AlarmSystemInterface \
+					  AlarmSystemInterfaceFactory \
+					  Properties \
+					  Timestamp \
+					  ASIMessage \
+					  ASIConfiguration
+					  
+alSysSource_LIBS = acsThread acstime logging loki ACE
 
 # The acsAlSysSource library is for classes that are coupled with ACS and are not to be reused by 3rd parties. This library
 # depends on the generic library, alSysSource.
 acsAlSysSource_OBJECTS   = ACSAlarmSystemInterfaceFactory ACSAlarmSystemInterfaceProxy ConfigPropertyGetter 
 acsAlSysSource_LIBS = maciStubs alSysSource acsutil expat maciErrType loki  cdbErrType acsErrTypeAlarmSourceFactory cdb
+
+alarmSource_OBJECTS = AlarmToQueue AlarmsMap AlarmSourceImpl
+alarmSource_LIBS = alSysSource acsAlSysSource
 
 #
 # Scripts (public and local)
