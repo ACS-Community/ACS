@@ -264,6 +264,9 @@ bool ACSAlarmSystemInterfaceFactory::init(maci::Manager_ptr manager) throw (acsE
 	ACS_TRACE("ACSAlarmSystemInterfaceFactory::init()");
 
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(main_mutex);
+	if (m_AlarmSystemType!=NOT_YET_INITIALIZED) {
+		return true;
+	}
 	bool retVal = true;
 
 	initImplementationType(manager);
