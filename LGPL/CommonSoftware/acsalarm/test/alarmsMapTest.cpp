@@ -108,9 +108,11 @@ public:
 	  CPPUNIT_ASSERT(map.raise(alRaise));
 	  CPPUNIT_ASSERT(map.clear(alClear));
 	  CPPUNIT_ASSERT(map.size()==2);
-	  for (int t=0; t<10; t++) {
-		  CPPUNIT_ASSERT(!map.raise(alRaise));
-		  CPPUNIT_ASSERT(!map.clear(alClear));
+	  for (int j=0; j<5; j++) {
+		  for (int t=0; t<10; t++) {
+			  CPPUNIT_ASSERT(!map.raise(alRaise));
+			  CPPUNIT_ASSERT(!map.clear(alClear));
+		  }
 	  }
 	  CPPUNIT_ASSERT(map.size()==2);
 
