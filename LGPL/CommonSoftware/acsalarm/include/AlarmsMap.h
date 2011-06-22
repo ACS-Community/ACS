@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.h,v 1.1 2011/06/20 19:06:26 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.h,v 1.2 2011/06/22 20:09:40 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,7 @@ struct AlarmInfo  {
 	/**
 	 * Copy constructor
 	 */
-	AlarmInfo(AlarmInfo& ai);
+	AlarmInfo(const AlarmInfo& ai);
 };
 
 /**
@@ -139,6 +139,18 @@ public:
 	 * @return the number of items in the map
 	 */
 	int size() { return alarmsMap.size(); }
+
+	/**
+	 * Copy of all the elements in the map in the passed vector.
+	 *
+	 * @param alarms the vector to store all the alarms in the map
+	 */
+	void getAllAlarms(std::vector<AlarmInfo> alarms);
+
+	/**
+	 * Clear the map
+	 */
+	void clear() { alarmsMap.clear(); }
 
 private:
 	// Alarms are stored in the que for the KEEP_ALARMS_TIME seconds

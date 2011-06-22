@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.cpp,v 1.1 2011/06/20 19:06:26 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.cpp,v 1.2 2011/06/22 20:09:40 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.1 2011/06/20 19:06:26 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.2 2011/06/22 20:09:40 acaproni Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <ctime>
@@ -52,7 +52,7 @@ AlarmInfo::AlarmInfo(const bool isActive):
 	acsTime_m=epoch.value;
 }
 
-AlarmInfo::AlarmInfo(AlarmInfo& ai)
+AlarmInfo::AlarmInfo(const AlarmInfo& ai)
 {
 	active_m=ai.active_m;
 	acsTime_m=ai.acsTime_m;
@@ -140,6 +140,17 @@ void AlarmsMap::runLoop()
 				alarmsMap.erase(it);
 			}
 		}
+	}
+}
+
+void AlarmsMap::getAllAlarms(std::vector<AlarmInfo> alarms) {
+	if (alarmsMap.empty()) {
+		return;
+	}
+	std::map<std::string,AlarmInfo*>::iterator it;
+	for (it=alarmsMap.begin(); it!=alarmsMap.end(); it++) {
+		const AlarmInfo aInfo((*it).second);
+		alarms.push_back(aInfo);
 	}
 }
 
