@@ -21,7 +21,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: acsStartContainerWithCASA,v 1.2 2009/10/23 19:51:24 agrimstrup Exp $"
+# "@(#) $Id: acsStartContainerWithCASA,v 1.3 2011/06/23 23:12:05 javarias Exp $"
 #
 # who        when       what
 # --------   --------   ----------------------------------------------
@@ -37,7 +37,7 @@ ACS_LOG_COMMAND $@
 # ordering.
 PYTHONPATH=`acsutilCASAPathInsert PYTHONPATH`
 LD_LIBRARY_PATH=`acsutilCASAPathInsert LD_LIBRARY_PATH`
-
+export LD_PRELOAD=`ls $CASA_ROOT/lib/libcasacore.so.*`
 # Start the container in the CASA environment
 acsStartContainer "$@"
 
