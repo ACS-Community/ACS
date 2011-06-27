@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.cpp,v 1.2 2011/06/22 20:09:40 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.cpp,v 1.3 2011/06/27 20:26:35 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -26,7 +26,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.2 2011/06/22 20:09:40 acaproni Exp $"; 
+static char *rcsId="@(#) $Id: AlarmsMap.cpp,v 1.3 2011/06/27 20:26:35 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <ctime>
@@ -35,7 +35,8 @@ static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "AlarmsMap.h"
 
-#include "acstimeTimeUtil.h"
+//TODO: acstime cannot be used here due the acstime module is not build yet
+//#include "acstimeTimeUtil.h"
 
 using namespace acsalarm;
 
@@ -46,10 +47,7 @@ using namespace acsalarm;
 AlarmInfo::AlarmInfo(const bool isActive):
 	active_m(isActive)
 {
-	time_t nowTime=time(NULL);
-	ACE_Time_Value now(nowTime);
-	acstime::Epoch epoch = TimeUtil::ace2epoch(now);
-	acsTime_m=epoch.value;
+	acsTime_m = time(NULL);
 }
 
 AlarmInfo::AlarmInfo(const AlarmInfo& ai)
@@ -127,15 +125,12 @@ void AlarmsMap::shutdown()
 void AlarmsMap::runLoop()
 {
 	ACE_Guard<ACE_Recursive_Thread_Mutex> guard(m_mutex);
-	time_t nowTime_t=time(NULL);
-	ACE_Time_Value now(nowTime_t);
-	acstime::Epoch epoch = TimeUtil::ace2epoch(now);
-	ACS::Time nowTime=epoch.value;
+	time_t nowTime = time(NULL);
 	// Clean the map
 	if (!alarmsMap.empty()) {
 		std::map<std::string,AlarmInfo*>::iterator it;
 		for (it=alarmsMap.begin(); it!=alarmsMap.end() && !m_closed && check(); it++) {
-			if ((*it).second->acsTime_m+30*10000000<nowTime)
+			if ((*it).second->acsTime_m + 30 < nowTime)
 			{
 				alarmsMap.erase(it);
 			}

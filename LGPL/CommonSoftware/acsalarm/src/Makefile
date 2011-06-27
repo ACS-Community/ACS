@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.14 2011/06/22 20:58:33 acaproni Exp $"
+# "@(#) $Id: Makefile,v 1.15 2011/06/27 20:26:35 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -75,7 +75,7 @@ alSysSource_OBJECTS = FaultState \
 					  ASIMessage \
 					  ASIConfiguration
 					  
-alSysSource_LIBS = acsThread acstime logging loki ACE
+alSysSource_LIBS = acsThread logging loki ACE
 
 # The acsAlSysSource library is for classes that are coupled with ACS and are not to be reused by 3rd parties. This library
 # depends on the generic library, alSysSource.

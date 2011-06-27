@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: AlarmsMap.h,v 1.2 2011/06/22 20:09:40 acaproni Exp $"
+* "@(#) $Id: AlarmsMap.h,v 1.3 2011/06/27 20:26:35 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -43,7 +43,7 @@ namespace acsalarm {
  */
 struct AlarmInfo  {
 	// The time the alarm event has been submitted for the last time
-	ACS::Time acsTime_m;
+	time_t acsTime_m;
 
 	// The state of the last submission
 	// It is true if ACTIVE, false if TERMINATE
