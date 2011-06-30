@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.6 2011/03/31 21:22:12 jagonzal Exp $
+# $Id: acsMakefileCore.mk,v 1.7 2011/06/30 15:35:39 jagonzal Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -464,11 +464,21 @@ $(foreach ifile,$(wildcard $(INSTALL_FILES)), \
 $(foreach ifile,$(wildcard $(INSTALL_FILES)), \
    $(eval $(call acsMakeInstallFileDependencies,$(ifile))) )
 
-install_files: files_begin $(foreach ifile,$(wildcard $(INSTALL_FILES)),install_file_$(ifile))
+.PHONY:
+install_sources:
+	$(AT) if [ `basename $(PWD)` == "src" ]; then \
+	         export INTROOT=$(PRJTOP); acsMakeCopySources $(VW); \
+	      fi
+
+.PHONY:
+install_files: files_begin $(foreach ifile,$(wildcard $(INSTALL_FILES)),install_file_$(ifile)) install_sources
 
 .PHONY:
 files_begin:
 	@echo "...other files"
+
+INSTALL_TARGET += install_files
+
 #
 #___oOo___
 
