@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.39 2011/03/18 00:00:18 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.40 2011/06/30 20:06:38 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -123,6 +123,11 @@ SNMP: pysnmp-2.0.9.tar.gz
 	@echo "== Building PySNMP"
 	@gtar -zxvf pysnmp-2.0.9.tar.gz;
 	@cd pysnmp-2.0.9; python setup.py install;
+
+SUDS: suds-0.4.tar.gz
+	@echo "== Building suds"
+	@gtar -zxvf suds-0.4.tar.gz;
+	@cd suds-0.4; python setup.py install;
 
 #
 # list all python tarballs
