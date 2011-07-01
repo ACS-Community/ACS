@@ -247,6 +247,11 @@ module xmlstore
 		/** An entity is requested that does not exist in the Archive. */
 		exception NotFound{};
 
+		/**
+		* An entity is tried to update, but a timestamp mismatch detected
+		**/
+		exception TimestampInconsistency{};
+
 		/** Checks whether an entity with given UID already exists in Archive. 
 		 * Returns true, if this is the case.
 		 */
@@ -261,13 +266,13 @@ module xmlstore
 		 * XmlEntityStruct is compared to the latest timestamp of that entity
 		 * in the Archive. If the timestamps mismatch an exception is thrown.  */
 		void update(in xmlentity::XmlEntityStruct entity)
-			raises (ArchiveInternalError, IllegalEntity);
+			raises (ArchiveInternalError, IllegalEntity, TimestampInconsistency);
 		
 		/** Updates an existing entity. No timestamp consistency check is
 		 * performed. 
 		 */
 		void forceUpdate(in xmlentity::XmlEntityStruct entity)
-			raises (ArchiveInternalError, IllegalEntity);
+			raises (ArchiveInternalError, IllegalEntity, TimestampInconsistency);
 			
 		/**
 		 * Performs an incremental update on the XML document stored under uid belonging to schema schema:
