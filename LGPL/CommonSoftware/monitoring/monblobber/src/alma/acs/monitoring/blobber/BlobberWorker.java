@@ -11,16 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.CORBA.Any;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
-import alma.DAOErrType.wrappers.AcsJGettingMonitorCharacteristicsEx;
-import alma.DAOErrType.wrappers.AcsJDynConfigFailureEx;
-import alma.DAOErrType.wrappers.AcsJStoreFailureEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.MonitorArchiver.CollectorListStatus;
 import alma.TMCDB.MonitorBlob;
@@ -63,7 +59,6 @@ import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.acs.monitoring.DAO.MonitorCharacteristicIDs;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
 import alma.acs.monitoring.blobber.CollectorList.CollectorData;
 import alma.acs.util.IsoDateFormat;
@@ -133,19 +128,6 @@ public class BlobberWorker extends CancelableRunnable {
      */
     private final HashMap<String, MonitorCollectorOperations> collectorName2ComponentReference = 
     												new HashMap<String, MonitorCollectorOperations>();
-    private LinkedBlockingQueue<BlobData> myBlobDataQueue;
-    private LinkedBlockingQueue<BlobData> myMQDataQueue;
-
-    protected BlobberDBConnector myDBConnector;
-    protected Thread  myDBConnectorThread;
-
-    protected BlobberQueueWatchDog myBlobberQueueWatchDog;
-    protected Thread  myBlobberQueueWatchDogThread;
-
-    protected BlobberMQConnector myMQConnector;
-    protected Thread  myMQConnectorThread;
-
-    protected String confName;
 
     /**
      * @param inContainerServices used for logging and to get references to the collector components.
@@ -153,16 +135,12 @@ public class BlobberWorker extends CancelableRunnable {
      * @throws AcsJCouldntCreateObjectEx If <code>blobberPlugin#createMonitorDAO</code> fails.
      */
     public BlobberWorker(ContainerServices inContainerServices, BlobberPlugin blobberPlugin) throws AcsJCouldntCreateObjectEx {
-        confName = System.getenv("TMCDB_CONFIGURATION_NAME");
         this.myContainerServices = inContainerServices;
         myLogger = myContainerServices.getLogger();
         this.isProfilingEnabled = blobberPlugin.isProfilingEnabled();
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
         this.myMonitorDAO = blobberPlugin.createMonitorDAO();
-        initDBConnector();
-        initMQConnector();
-        initWatchDog();
     }
 
     protected void initWorker() {
@@ -204,48 +182,6 @@ public class BlobberWorker extends CancelableRunnable {
             throw new IllegalArgumentException(inCount + " must be above 0.");
         }
         myMaxCollectorCount = inCount;
-    }
-
-    protected void initDBConnector() {
-       this.myBlobDataQueue = new LinkedBlockingQueue<BlobData>(100000);
-       this.myDBConnector = createDBConnector();
-       startDBConnector(myDBConnector);
-    }
-
-    protected BlobberDBConnector createDBConnector() {
-        return new BlobberDBConnector(this.myContainerServices, this.myBlobDataQueue);
-    }
-
-    protected void startDBConnector(BlobberDBConnector inDBConnector) {
-        this.myDBConnectorThread = this.myContainerServices.getThreadFactory().newThread(inDBConnector);
-        this.myDBConnectorThread.start();
-    }
-
-    protected void initMQConnector() {
-       this.myMQDataQueue = new LinkedBlockingQueue<BlobData>(100000);
-       this.myMQConnector = createMQConnector();
-       startMQConnector(myMQConnector);
-    }
-
-    protected BlobberMQConnector createMQConnector() {
-        return new BlobberMQConnector(this.myContainerServices, this.myMQDataQueue);
-    }
-
-    protected void startMQConnector(BlobberMQConnector inMQConnector) {
-        this.myMQConnectorThread = this.myContainerServices.getThreadFactory().newThread(inMQConnector);
-        this.myMQConnectorThread.start();
-    }
-
-    protected void initWatchDog() {
-       this.myBlobberQueueWatchDog = new BlobberQueueWatchDog(this.myContainerServices, 
-                                                              this.myBlobDataQueue,
-                                                              this.myMQDataQueue);
-       startWatchDog(myBlobberQueueWatchDog);
-    }
-
-    protected void startWatchDog(BlobberQueueWatchDog inWatchDog) {
-        this.myBlobberQueueWatchDogThread = this.myContainerServices.getThreadFactory().newThread(inWatchDog);
-        this.myBlobberQueueWatchDogThread.start();
     }
 
     /**
@@ -691,18 +627,18 @@ public class BlobberWorker extends CancelableRunnable {
      *   <li> Uses {@link MonitorDAO} to control DB transactions and store the data.
      *   <li> Uses a total of one DB transaction (for the data from all properties of all devices, which comes in many {@link MonitorDataBlock}s).
      * </ul>
-	 * @param collectorData
-	 * @param collector
-	 * @return Number of attempted or successful DB inserts, 
-	 *         i.e., calls to {@link alma.archive.tmcdb.DAO.MonitorDAO#store(alma.archive.tmcdb.DAO.ComponentData)}.
-	 * @throws Exception
-	 */
+     * @param collectorData
+     * @param collector
+     * @return Number of attempted or successful DB inserts, 
+     *         i.e., calls to {@link alma.archive.tmcdb.DAO.MonitorDAO#store(alma.archive.tmcdb.DAO.ComponentData)}.
+     * @throws Exception
+     */
 	private int harvestCollector(CollectorData collectorData, MonitorCollectorOperations collector)
 			throws Exception {
-    
+
 		int insertCount = 0;
 
-        myLogger.fine("About to call " + collectorData.getCollectorId() + "#getMonitorData()");
+		myLogger.fine("About to call " + collectorData.getCollectorId() + "#getMonitorData()");
 		MonitorDataBlock[] dataBlocks = collector.getMonitorData();
 		collectorData.setLastSuccessfulAccessTime(System.currentTimeMillis());
 		
@@ -721,107 +657,109 @@ public class BlobberWorker extends CancelableRunnable {
 				debugDataSender.sendUDPPacket("Total memory: " + Long.toString(runtime.totalMemory()), cycleCount);
 			}
 			
-		    this.myMonitorDAO.openTransactionStore();
+			this.myMonitorDAO.openTransactionStore();
 
-		    // iterate over devices
-		    for (MonitorDataBlock block : dataBlocks) {
-		        myLogger.log(AcsLogLevel.DEBUG, "MonitorDataBlock for device " + block.componentName + " contains " + block.monitorBlobs.length + " MonitorBlobs");
-		        
-		        // iterate over properties
-		        for (MonitorBlob blob : block.monitorBlobs) {
-		            BlobData blobData = null;
+			// iterate over devices
+			for (MonitorDataBlock block : dataBlocks) {
+				myLogger.log(AcsLogLevel.DEBUG, "MonitorDataBlock for device " + block.componentName + " contains " + block.monitorBlobs.length + " MonitorBlobs");
 
-		            try {
-		                List<AnyDataContainer> containerList = extractData(blob.blobDataSeq);
-		                int index = 0;
-		                for (AnyDataContainer container : containerList) {
-		                    String key = blob.propertyName;
-		                    String serialNumber = block.deviceSerialNumber;
-		                    if (blob.propertySerialNumber != null
-		                            && blob.propertySerialNumber.length != 0) {
-		                        // data is coming from correlator,
-		                        // handle serial numbers.
-		                        serialNumber = blob.propertySerialNumber[index];
-		                        // create unique key by adding the index number.
-		                        key += index;
-		                        index++;
-		                    }
-		                    myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + key);
-		                    blobData = collectorData.equipmentData.get(key);
-		                    if (blobData == null) {
-		                        blobData = new BlobData();
-		                        blobData.componentName = block.componentName;
-		                        blobData.serialNumber = serialNumber;
-		                        blobData.propertyName = blob.propertyName
-		                                .substring(blob.propertyName
-		                                        .indexOf(':') + 1);
-		                        blobData.startTime = block.startTime;
-		                        collectorData.equipmentData.put(key, blobData);
-		                    }
+				// iterate over properties
+				for (MonitorBlob blob : block.monitorBlobs) {
+					BlobData blobData = null;
 
-		                    // Update blob data.
-		                    blobData.dataList.addAll(container.dataList);
-		                    blobData.clob = container.clobBuilder.toString();
-		                    blobData.index = container.index;
-		                    blobData.stopTime = block.stopTime;
-		                    if (blobData.startTime == 0) {
-		                        /*
-		                                   * This construction is left from the
-		                                   * time when several accesses to the
-		                                   * collector was made before storing.
-		                                   * The construction is left in case this
-		                                   * is activated again.
-		                                   */
-		                        blobData.startTime = block.startTime;
-		                    }
+					try {
+						List<AnyDataContainer> containerList = extractData(blob.blobDataSeq);
+						int index = 0;
+						for (AnyDataContainer container : containerList) {
+							String key = blob.propertyName;
+							String serialNumber = block.deviceSerialNumber;
+							if (blob.propertySerialNumber != null
+									&& blob.propertySerialNumber.length != 0) {
+								// data is coming from correlator,
+								// handle serial numbers.
+								serialNumber = blob.propertySerialNumber[index];
+								// create unique key by adding the index number.
+								key += index;
+								index++;
+							}
+							myLogger.log(AcsLogLevel.DEBUG, "Handling data for property " + key);
+							blobData = collectorData.equipmentData.get(key);
+							if (blobData == null) {
+								blobData = new BlobData();
+								blobData.componentName = block.componentName;
+								blobData.serialNumber = serialNumber;
+								blobData.propertyName = blob.propertyName
+										.substring(blob.propertyName
+												.indexOf(':') + 1);
+								blobData.startTime = block.startTime;
+								collectorData.equipmentData.put(key, blobData);
+							}
 
-		                    if (blobData.dataList.size() > 0) {
-		                        if (blobData.dataList.get(0) instanceof BigDecimal) {
-		                            blobData.statistics = calculateStatistics(blobData.dataList);
-		                        }
+							// Update blob data.
+							blobData.dataList.addAll(container.dataList);
+							// TODO: The following change by Victor in 1.5 is kept in spite of the general rollback, until we clarify it:
+							blobData.clob = container.clobBuilder.toString();
+							// was: blobData.clob += container.clobBuilder;
+							blobData.index = container.index;
+							blobData.stopTime = block.stopTime;
+							if (blobData.startTime == 0) {
+								/*
+								 * This construction is left from the time when several accesses to the collector was
+								 * made before storing. The construction is left in case this is activated again.
+								 */
+								blobData.startTime = block.startTime;
+							}
 
-		                        insertCount++;
-		                        storeData(blobData);
-		                        //blobData.reset();
-		                    }
-		                }
-		            } catch (Exception e) {
+							if (blobData.dataList.size() > 0) {
+								if (blobData.dataList.get(0) instanceof BigDecimal) {
+									blobData.statistics = calculateStatistics(blobData.dataList);
+								}
 
-		                if (!this.loggedFailedStore.contains(blob.propertyName)) {
+								insertCount++;
+								storeData(blobData);
+								// TODO: The following change by Victor in 1.5 is kept in spite of the general rollback, until we clarify it:
+								// blobData.reset();
+								// (was not commented out)
+							}
+						}
+					} catch (Exception e) {
 
-		                	this.loggedFailedStore.add(blob.propertyName);
+						if (!this.loggedFailedStore.contains(blob.propertyName)) {
 
-		                    String msg = "Problem when handling property [" + blob.propertyName + "]. " + 
-		                					"The data cache for this property in collector [" + 
-		                					collectorData.getCollectorId() + "] will be cleared, the data is NOT stored. ";
-		                    myLogger.log(Level.WARNING, msg, e);
+							this.loggedFailedStore.add(blob.propertyName);
 
-		                    // unclear if we want this log. If so, it should be included in the above log,
-		                    // to avoid spreading the info over many log records that won't be adjacent in jlog.
-		                    // see alma.archive.tmcdb.DAO.ComponentData.toString() where currently the clob data is excluded.
-		                    myLogger.log(Level.WARNING, "The data contained in the data cache: " + blobData);
-		                }
-		                else {
+							// @TODO check if http://jira.alma.cl/browse/COMP-4512 can be closed
+							String msg = "Problem when handling property [" + blob.propertyName + "]. "
+									+ "The data cache for this property in collector ["
+									+ collectorData.getCollectorId() + "] will be cleared, the data is NOT stored. ";
+							myLogger.log(Level.WARNING, msg, e);
 
-		                	// RK: Matthias suggested we log this too
-		                	// HSO commented it out again, because now instead we log this AcsJStoreFailureEx 
-		                	// directly in alma.archive.tmcdb.DAO.MonitorDAOImpl.store(ComponentData) at level FINER
-//                                myLogger.log(Level.WARNING,
-//                                        "Repeat of problem when handling property ["
-//                                                + blob.propertyName + "]", e);
-		                }
-		                
-		                // RK: Matthias fixed a mem leak by moving this here:
+							// unclear if we want this log. If so, it should be included in the above log,
+							// to avoid spreading the info over many log records that won't be adjacent in jlog.
+							// see alma.archive.tmcdb.DAO.ComponentData.toString() where currently the clob data is excluded.
+							myLogger.log(Level.WARNING, "The data contained in the data cache: " + blobData);
+						} 
+						else {
 
-		                if (blobData != null) {
-		                    blobData.reset();
-		                }
-		            }
-		        } // end loop over properties of a single device
-		    } // end loop over devices of a single container
+							// RK: Matthias suggested we log this too
+							// HSO commented it out again, because now instead we log this AcsJStoreFailureEx
+							// directly in alma.archive.tmcdb.DAO.MonitorDAOImpl.store(ComponentData) at level FINER
+							// myLogger.log(Level.WARNING,
+							// "Repeat of problem when handling property ["
+							// + blob.propertyName + "]", e);
+						}
+
+						// RK: Matthias fixed a mem leak by moving this here:
+						if (blobData != null) {
+							blobData.reset();
+						}
+					}
+				} // end loop over properties of a single device
+			} // end loop over devices of a single container
 
 		    // close the transaction
 		    try {
+		    	// @TODO (HSO): We do not log the matching openTransactionStore at INFO level. Shouldn't this be symmetric?
 		        myLogger.info("myMonitorDAO.closeTransactionStore() for: "
 		                        + dataBlocks.length
 		                        + " MonitorDataBlocks from collector "
@@ -849,58 +787,7 @@ public class BlobberWorker extends CancelableRunnable {
     		myLogger.finest("Storing property data for " + inBlobData.componentName + ": " + inBlobData.toString());
     	}
         inBlobData.sampleSize = inBlobData.dataList.size();
-
-        //this.myMonitorDAO.store(inBlobData);
-
-       if (!myMonitorDAO.hasFailedToBeConfigured(inBlobData)) {
-//           try {
-               MonitorCharacteristicIDs monitorCharacteristicIDs;
-               // find or create the meta data
-               monitorCharacteristicIDs = myMonitorDAO.getMonitorCharacteristicIDs(confName, inBlobData);
-
-               // copy over from monitorCharacteristics all data to blobData 
-               inBlobData.configurationId=monitorCharacteristicIDs.getConfigurationId();
-               inBlobData.hwConfigurationId=monitorCharacteristicIDs.getHwConfigurationId();
-               inBlobData.assemblyId=monitorCharacteristicIDs.getAssemblyId();
-               inBlobData.componentId=monitorCharacteristicIDs.getComponentId();
-               inBlobData.baciPropertyId=monitorCharacteristicIDs.getBACIPropertyId();
-               inBlobData.monitorPointId=monitorCharacteristicIDs.getMonitorPointId();
-               inBlobData.index=monitorCharacteristicIDs.getIndex();
-               inBlobData.isOnDB=monitorCharacteristicIDs.isOnDB();
-               inBlobData.monitorPointName=monitorCharacteristicIDs.getMonitorPointName();
-
-               this.myMQDataQueue.put(inBlobData);
-               this.myBlobDataQueue.put(inBlobData);
-//           } catch (AcsJGettingMonitorCharacteristicsEx e) {
-//               /*
-//                * This exception typically is thrown when a
-//                * NonUniqueResultException has been received
-//                */
-//               myLogger.log(Level.WARNING, "Failure when getting monitor characteristics ", e);
-//               e.printStackTrace();
-//               throw new AcsJStoreFailureEx("Failure when getting monitor characteristics", e);
-//           } catch (AcsJDynConfigFailureEx e) {
-//               /*
-//                * This exception is thrown when an attempt to auto
-//                * configure has been made and it failed.
-//                */
-//               myMonitorDAO.setHasFailedToBeConfigured(inBlobData);
-//               myLogger.log(Level.WARNING, "Monitor point could not be autoconfigured for component = "
-//                       + inBlobData.componentName
-//                       + ", serialNumber = "
-//                       + inBlobData.serialNumber
-//                       + ", propertyName = "
-//                       + inBlobData.propertyName
-//                       + ", index = "
-//                       + inBlobData.index + " .",
-//                       e);
-//               e.printStackTrace();
-//               throw new AcsJStoreFailureEx("Failure when configuring DB for: "
-//                                            + inBlobData.componentName + ":"
-//                                            + inBlobData.propertyName + ":"
-//                                            + inBlobData.index, e);
-//           }
-       }
+        this.myMonitorDAO.store(inBlobData);
     }
 
     private ComponentStatistics calculateStatistics(List<Object> inDataList) {
