@@ -19,18 +19,6 @@ public class ComponentData {
     
     public ComponentStatistics statistics = null;
 
-    // data from monitorCharacteristic
-    // moved to componentData so it's available through the queue
-    public Long configurationId=-1L;
-    public Long hwConfigurationId=-1L;
-    public Long assemblyId=-1L;
-    public Long componentId=-1L;
-    public Long baciPropertyId=-1L;
-    public Long monitorPointId=-1L;
-    public boolean isOnDB=false;
-    public String monitorPointName = "generic";
-
-
     public void reset() {
         clob = "";
         startTime = 0;
@@ -69,7 +57,7 @@ public class ComponentData {
 	/*
 	 * Next methods hashCode and equals override the ones that are inherited
 	 * from Object They were added to allow ComponentData to be a key of a
-	 * HashMap ( ComponenentData => MonitorCharacteristicIds
+	 * HashMap ( ComponenentData => MonitorCharacteristicIds )
 	 */
 	public int hashCode() {
 		return componentName.toString().hashCode()
