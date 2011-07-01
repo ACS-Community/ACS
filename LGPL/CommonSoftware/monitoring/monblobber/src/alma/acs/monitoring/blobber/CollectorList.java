@@ -190,6 +190,10 @@ public class CollectorList {
 
 		@Override
 		public boolean equals(Object inObject) {
+			if (this == inObject)
+				return true;
+			if (inObject == null)
+				return false;
 			boolean outResult = false;
 			try {
 				CollectorData data = (CollectorData) inObject;
