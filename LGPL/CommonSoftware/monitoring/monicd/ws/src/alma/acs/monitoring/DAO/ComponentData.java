@@ -78,7 +78,7 @@ public class ComponentData {
 		if (componentData.componentName.equals(this.componentName)
 				&& componentData.propertyName.equals(this.propertyName)
 				&& componentData.serialNumber.equals(this.serialNumber)
-				&& componentData.index == this.index) {
+				&& componentData.index.equals(this.index)) {
 			return true;
 		}
 
