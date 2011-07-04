@@ -1,8 +1,6 @@
 package alma.acs.monitoring.blobber;
 
 import java.lang.reflect.Constructor;
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,10 +12,8 @@ import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.ComponentData;
 import alma.acs.monitoring.DAO.ComponentStatistics;
 import alma.acs.monitoring.DAO.MonitorDAO;
-import alma.acs.monitoring.DAO.MonitorCharacteristicIDs;
-import alma.DAOErrType.wrappers.AcsJGettingMonitorCharacteristicsEx;
-import alma.DAOErrType.wrappers.AcsJDynConfigFailureEx;
 import alma.acs.monitoring.blobber.CollectorList.BlobData;
+import alma.acs.monitoring.blobber.TestBlobberWorker.TestBlobberPlugin;
 
 
 /**
@@ -144,12 +140,6 @@ public class TestBlobber extends BlobberImpl {
 		}
 
 		@Override
-		public List getMonitorData(long monitorPointId, Timestamp startTimestamp, Timestamp stopTimestamp) {
-			// Method not used. Forced implementation from interface.
-			return null;
-		}
-
-		@Override
 		public void close() {
 			// Method not used. Forced implementation from interface.
 		}
@@ -160,21 +150,6 @@ public class TestBlobber extends BlobberImpl {
 
 		@Override
 		public void closeTransactionStore() {
-		}
-
-		@Override
-		public MonitorCharacteristicIDs getMonitorCharacteristicIDs(String configurationName, ComponentData inData)
-				throws AcsJGettingMonitorCharacteristicsEx, AcsJDynConfigFailureEx {
-			return null;
-		}
-		
-		@Override
-		public boolean hasFailedToBeConfigured(ComponentData inData) {
-			return false;
-		}
-
-		@Override
-		public void setHasFailedToBeConfigured(ComponentData inData) {
 		}
 
 		private BlobData cloneData(ComponentData inBlob) {
