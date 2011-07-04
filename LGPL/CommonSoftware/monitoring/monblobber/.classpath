@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_monicd"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/MonitorArchiverIF.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jcont.jar"/>
@@ -21,5 +23,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/MonitorCollectorErr.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
