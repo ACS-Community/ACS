@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildJacORB,v 1.23 2011/04/25 15:54:14 javarias Exp $"
+# "@(#) $Id: buildJacORB,v 1.24 2011/07/05 08:09:01 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -228,6 +228,31 @@ then
 else
     rm $JACORB_SOURCES/JacORB-ACS-profiling-2009-09-18.patch
 fi
+
+
+#
+# JacORB ACS profiling update patch
+#
+
+echo ==== ACS Profiling Update Patch
+if [ -f $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz ]
+then
+    gunzip -c $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz >$JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+else
+    echo "file $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch.gz not found"
+    echo "Installation aborted"
+    exit 3
+fi
+patch -p1 < $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+if [ $? -ne 0 ]
+then
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+    echo "========= FAILED =========="
+        exit 1
+else
+    rm $JACORB_SOURCES/JacORB-ACS-profiling-update-2011-07-04.patch
+fi
+
 
 echo "========= Done with unpacking and patching, can compile now... =========="
 
