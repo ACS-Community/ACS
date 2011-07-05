@@ -259,6 +259,25 @@ public class ManagerEngine
 
 	    manager = (ManagerImpl)prevayler.system();
 
+	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
+		
+	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
+		logConfig.setCDBLoggingConfigPath("MACI/Managers/Manager");
+		logConfig.setCDB(cdbAccess.connectAndGetDAL());
+		try {
+			logConfig.initialize(false);
+		} catch (LogConfigException ex) {
+			// if the CDB can't be read, we still want to run the manager, so
+			// we only log the problems
+			logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
+		}
+	    
+		// initialize manager "mock" container servies
+		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, managerPOA, cdbAccess.getDAL(), logger);
+		
+		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
+		manager.setShutdownImplementation(shutdownImplementation);
+
 	    // setup ORB profiling
 	    try
 	    {
@@ -269,11 +288,8 @@ public class ManagerEngine
 					@Override
 					public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, 
 							int maxThreads) {
-						if (totalThreads != 0)
-						{
-							int freeThreadsPrecentage = (int)((1 - (idleThreads/(double)totalThreads))*100);
-							manager.setThreadUsage(freeThreadsPrecentage);
-						}
+						int freeThreadsPrecentage = (int)(((totalThreads-idleThreads)/(double)maxThreads)*100);
+						manager.setThreadUsage(freeThreadsPrecentage);
 					}
 	
 					@Override
@@ -307,25 +323,6 @@ public class ManagerEngine
 	    	logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
 	    }
 	    
-	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
-		
-	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();
-		logConfig.setCDBLoggingConfigPath("MACI/Managers/Manager");
-		logConfig.setCDB(cdbAccess.connectAndGetDAL());
-		try {
-			logConfig.initialize(false);
-		} catch (LogConfigException ex) {
-			// if the CDB can't be read, we still want to run the manager, so
-			// we only log the problems
-			logger.log(Level.FINE, "Failed to configure logging (default values will be used). Reason: " + ex.getMessage());
-		}
-	    
-		// initialize manager "mock" container servies
-		ManagerContainerServices managerContainerServices = new ManagerContainerServices(orb, managerPOA, cdbAccess.getDAL(), logger);
-		
-		manager.initialize(prevayler, cdbAccess, context, logger, managerContainerServices);
-		manager.setShutdownImplementation(shutdownImplementation);
-		
 		FileHelper.setFileAttributes( "g+w", recoveryLocation );
 		// create new task for snapshoot creation,
 		final long MINUTE_IN_MS = 60*1000;
