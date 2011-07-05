@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 import javax.naming.Context;
 
+import org.jacorb.orb.acs.AcsORBProfiler;
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextHelper;
 import org.omg.PortableServer.IdAssignmentPolicyValue;
@@ -255,8 +257,56 @@ public class ManagerEngine
 			System.out.println( "Skipping saved manager state!");
 		}
 
-	    	manager = (ManagerImpl)prevayler.system();
+	    manager = (ManagerImpl)prevayler.system();
 
+	    // setup ORB profiling
+	    try
+	    {
+			if (orb instanceof AcsProfilingORB) {
+				AcsORBProfiler profiler = new AcsORBProfiler()
+				{
+	
+					@Override
+					public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, 
+							int maxThreads) {
+						if (totalThreads != 0)
+						{
+							int freeThreadsPrecentage = (int)((1 - (idleThreads/(double)totalThreads))*100);
+							manager.setThreadUsage(freeThreadsPrecentage);
+						}
+					}
+	
+					@Override
+					public void requestFinished(int arg0, String arg1, String arg2) {
+						// noop
+					}
+	
+					@Override
+					public void requestQueueSizeChanged(int arg0, String arg1, int arg2, int arg3) {
+						// noop
+					}
+	
+					@Override
+					public void requestStarted(int arg0, String arg1, String arg2) {
+						// noop
+					}
+	
+					@Override
+					public void threadPoolSizeChanged(String arg0, int arg1, int arg2, int arg3) {
+						// noop
+					}
+	
+					@Override
+					public void undeliveredRequest(int arg0, String arg1, String arg2, boolean arg3) {
+						// noop
+					}
+				};
+				((AcsProfilingORB)orb).registerAcsORBProfiler(profiler);
+			};
+	    } catch (Throwable th) {
+	    	logger.log(Level.WARNING, "Failed to setup ORB profiling.", th);
+	    }
+	    
 	    CDBAccess cdbAccess = new CDBAccess(orb, logger);
 		
 	    LogConfig logConfig = ClientLogManager.getAcsLogManager().getLogConfig();

@@ -916,6 +916,16 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	protected transient Map<Client, LinkedList<ClientMessageTask>> clientMessageQueue;
 
 	/**
+	 * Free threads precentage.
+	 */
+	private transient AtomicInteger threadsUsedPrecentage;
+	
+	public void setThreadUsage(int precentage)
+	{
+		threadsUsedPrecentage.set(precentage);
+	}
+	
+	/**
 	 * Initializes Manager.
 	 * @param	prevayler			implementation of prevayler system
 	 * @param	context				remote directory implementation
@@ -959,6 +969,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 		clientMessageQueue = new HashMap<Client, LinkedList<ClientMessageTask>>();
 		
 		groupedNotifyTaskMap = new HashMap<Object, GroupedNotifyTask>();
+		
+		threadsUsedPrecentage = new AtomicInteger(0);
 		
 		// create threads
 		threadPool.prestartAllCoreThreads();
@@ -3900,6 +3912,13 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 
 				h = clients.next(h);
 		    }
+			
+			// check thread resources
+			int usage = threadsUsedPrecentage.get(); 
+			if (usage > 90)
+			{
+				throw new NoResourcesException("Thread usage too high (%" + usage + "), rejecting login.");
+			}
 
 			// allocate new handle
 			// !!! ACID 2
