@@ -2,12 +2,11 @@
 #define _BD_DDS_IDL
 
 
-//#pragma prefix "alma"
 
 module ACSBulkData {
     typedef unsigned long DataType;
 	
-	const unsigned long FRAME_MAX_LEN = 64*1024;
+	const unsigned long FRAME_MAX_LEN = 64000;
 	
 	const DataType BD_PARAM=0; //start
 	const DataType BD_DATA=1;  // data
@@ -19,13 +18,7 @@ module ACSBulkData {
 	    DataType dataType;
 	// just for data rest data length, how many chunks do we still have to get 
 	    unsigned long restDataLength;
-	    
-	    
-	    
-// old	    
-	    unsigned long transactionnum;
-		unsigned long seqnum;
-		
+	        
 		sequence<octet, 64*1024>/*dataChunk*/ data;
 	};
 

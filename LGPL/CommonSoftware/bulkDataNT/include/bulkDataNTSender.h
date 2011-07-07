@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSender.h,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSender.h,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,9 +38,17 @@
 #include "bulkDataNTBase.h"
 #include "bulkDataNTDDSPublisher.h"
 
+
+
 namespace AcsBulkdata
 {
 
+
+struct SenderFlowData : public FlowData
+{
+	DDS::Publisher* publisher;
+	ACSBulkData::BulkDataNTFrameDataWriter *dataWriter;
+};
 
 // TBD: default class for TSenderCallback
 //template<class TSenderCallback>
@@ -61,7 +69,7 @@ public:
 	//TBD with stream name or better to have initalizeStream or createStream(const char* name, const char *config)
 	// what should be a format of config parameter ?
 	// can the stream name defeine QoS profile (problem that we need one for sender aone fro receiver(s) or similar ?
-	// void initialize();
+	void initialize();
 
 
 	// TBD: is this better than createSingleFlow and createMultipleFlows
@@ -96,12 +104,16 @@ public:
 	void stopSend(FlowNumberType flownumber);
 protected:
 
-	// common method for writing/sending data  from startSend adn stopSend (could be also used for sendDAta ?)
+	// common method for writing/sending data  from startSend and stopSend (could be also used for sendData ?)
 	// should we add also timeout parameter ?
+	// should it go to upper class Publisher ?
 	void writeFrame(FlowNumberType flownumber, ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0);
 
 	/*std::vector<FlowData>*/
 	SenderFlowData *senderFlows_m;
+
+	// frame
+	ACSBulkData::BulkDataNTFrame frame;
 
 };//class BulkDataSender
 

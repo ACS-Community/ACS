@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSender.cpp,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSender.cpp,v 1.2 2011/07/07 15:05:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include <iostream>
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSender.cpp,v 1.1 2011/05/20 13:39:23 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: bulkDataNTSender.cpp,v 1.2 2011/07/07 15:05:40 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -68,33 +68,36 @@ void BulkDataNTSender::sendData(FlowNumberType flownumber, ACE_Message_Block *bu
 void BulkDataNTSender::sendData(FlowNumberType flownumber, const unsigned char *buffer, size_t len)
 {
 	DDS::ReturnCode_t ret;
-	DDS_ReliableWriterCacheChangedStatus status;
+// RTI	DDS_ReliableWriterCacheChangedStatus status;
 	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
 
-	ACSBulkData::BulkDataNTFrame *frame;
+	//ACSBulkData::BulkDataNTFrame *frame;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: tmp should be configurable
 
-	unsigned int numOfFrames = (len*1024) / sizeOfFrame; // how many frames of size sizeOfDataChunk do we have to send
-	unsigned int restFrameSize = (len*1024) % sizeOfFrame; // what rests ?
+	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfDataChunk do we have to send
+	unsigned int restFrameSize = len % sizeOfFrame; // what rests ?
+
 
 	// should we wait for all ACKs? timeout should be configurable
 	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
+	/* RTI
 	// do we have to create the frame each time or ... ?
-	frame = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
+	 frame =  RTIACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
 		printf("BD_DDS::BDdataMessageTypeSupport::create_data error - frame null\n");
 		// delete
 	//TBD:: error handling
 	}
+	*/
 
-	frame->dataType = ACSBulkData::BD_DATA;  //we are going to send data
-	frame->data.length(sizeOfFrame);
+	frame.dataType = ACSBulkData::BD_DATA;  //we are going to send data
+    frame.data.resize(sizeOfFrame);//	frame.data.length(sizeOfFrame); // do we actually need resize ?
 
-/*	std::cout <<  " Going to send: " << dataSize << "kBytes";
-	std::cout << " = (" << numOfChunks << " times chunks of size: " << sizeOfDataChunk << " bytes => ";
-	std::cout << numOfChunks*sizeOfDataChunk/1024.0 << "kBytes ) + " <<  restDataSize/1024.0 << " kBytes"<< std::endl;
-*/
+	std::cout <<  " Going to send: " << len << " Bytes";
+	std::cout << " = (" << numOfFrames << " times chunks of size: " << sizeOfFrame << " bytes => ";
+	std::cout << numOfFrames*sizeOfFrame << "Bytes ) + " <<  restFrameSize << " Bytes"<< std::endl;
+
 //	start_time = ACE_OS::gettimeofday();
 
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
@@ -102,15 +105,23 @@ void BulkDataNTSender::sendData(FlowNumberType flownumber, const unsigned char *
 	for(unsigned int i=0; i<numOfIter; i++)
 	{
 		if (i==(numOfIter-1) && restFrameSize>0)
-			frame->data.length(restFrameSize);
+		{
+			// last frame
+			frame.data.resize(restFrameSize);
+			std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+restFrameSize), frame.data.begin() );
+		}else
+		{
+			std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
+		}
 
-		frame->restDataLength = numOfIter-1-i;
-		frame->data.from_array(buffer+(i*sizeOfFrame), sizeOfFrame);
 
-		ret = senderFlows_m[flownumber].dataWriter->write(*frame, handle);
+		frame.restDataLength = numOfIter-1-i;
+
+
+		ret = senderFlows_m[flownumber].dataWriter->write(&frame, handle);
 		if( ret != DDS::RETCODE_OK) {
 
-			senderFlows_m[flownumber].dataWriter->get_reliable_writer_cache_changed_status(status);
+// RTI			senderFlows_m[flownumber].dataWriter->get_reliable_writer_cache_changed_status(status);
 
 			if (ret==DDS::RETCODE_TIMEOUT)
 			{
@@ -120,9 +131,9 @@ void BulkDataNTSender::sendData(FlowNumberType flownumber, const unsigned char *
 				std::cerr << "Failed to send " <<  i << " data return code: " << ret << std::endl;
 			}
 
-			cout << "\t\t Int unacknowledged_sample_count: " << status.unacknowledged_sample_count;
+/* RTI			cout << "\t\t Int unacknowledged_sample_count: " << status.unacknowledged_sample_count;
 			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-
+*/
 			ret = senderFlows_m[flownumber].dataWriter->wait_for_acknowledgments(ack_timeout_delay);
 							if( ret != DDS::RETCODE_OK) {
 								std::cerr << " !Failed while waiting for acknowledgment of "
@@ -130,8 +141,9 @@ void BulkDataNTSender::sendData(FlowNumberType flownumber, const unsigned char *
 										<< "may not have been delivered." << std::endl;
 							}//if
 
-			cout << "\t\t Int1 unacknowledged_sample_count: " << status.unacknowledged_sample_count;
+/* RTI			cout << "\t\t Int1 unacknowledged_sample_count: " << status.unacknowledged_sample_count;
 			cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+			*/
 		}//if
 	}//for
 
@@ -153,8 +165,16 @@ void BulkDataNTSender::stopSend(FlowNumberType flownumber)
 }//stopSend
 
 
+void BulkDataNTSender::initialize()
+{
+	createDDSFactory();
+	createDDSParticipant(); //should be somewhere else in initialize or createStream
+	streamName_m = "TestFlow";
+}
+
 void BulkDataNTSender::createFlow(const unsigned short numberOfFlows)
 {
+
 	std::string topicName;
 	// should we check if we already have flows ?
 	if (senderFlows_m!=NULL)
@@ -171,11 +191,13 @@ void BulkDataNTSender::createFlow(const unsigned short numberOfFlows)
 	{
 		sprintf(strFlowNumber,"%d",i);
 		// error handling !!!
+		// the anme of the flow is stream anme + flow number;
+		std::string topicName = streamName_m + "#" + strFlowNumber;
+
 		DDS::Topic *topic = createDDSTopic(topicName.c_str());
 
 		DDS::Publisher *pub = createDDSPublisher();
-		// the anme of the flow is stream anme + flow number;
-		std::string topicName = streamName_m + "#" + strFlowNumber;
+
 
 		ACSBulkData::BulkDataNTFrameDataWriter *dw= createDDSWriter(pub, topic);
 
@@ -189,6 +211,7 @@ void BulkDataNTSender::createFlow(const unsigned short numberOfFlows)
 
 unsigned int BulkDataNTSender::destroyFlows()
 {
+	// should we check if all data were actaully sent (wait fro acsks)
 	unsigned int i=0;
 	if (senderFlows_m==NULL) return 0;
 
@@ -212,14 +235,14 @@ void BulkDataNTSender::writeFrame(FlowNumberType flownumber, ACSBulkData::DataTy
 
 	DDS::ReturnCode_t ret;
 	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
-	ACSBulkData::BulkDataNTFrame *frame;
+	//ACSBulkData::BulkDataNTFrame *frame;
 
 	if (len>ACSBulkData::FRAME_MAX_LEN){
 		printf("parameter too long !!\n");
 		// delete
 		//TBD:: error handling
 	}
-
+/* RTI
 	// do we have to create the frame each time or ... ?
 	frame = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
@@ -227,14 +250,14 @@ void BulkDataNTSender::writeFrame(FlowNumberType flownumber, ACSBulkData::DataTy
 		// delete
 		//TBD:: error handling
 	}
-
+*/
 	//frame
-	frame->dataType = dataType;
-	frame->data.length(len);
+	frame.dataType = dataType;
+	frame.data.resize/*length*/(len);
 	if (param!=0 && len!=0)
-		frame->data.from_array(param, len); //1st parameter  is of type const unsigned char !!
+		frame.data.assign(len, *param);  //	frame.data.from_array(param, len); //1st parameter  is of type const unsigned char !!
 
-	ret = senderFlows_m[flownumber].dataWriter->write(*frame, handle);
+	ret = senderFlows_m[flownumber].dataWriter->write(&frame, handle);
 	if( ret != DDS::RETCODE_OK)
 	{
 		//TBD EH  special for timeout
@@ -242,7 +265,7 @@ void BulkDataNTSender::writeFrame(FlowNumberType flownumber, ACSBulkData::DataTy
 	}//if
 
 	// should we wait for all ACKs? timeout should be configurable
-	DDS::Duration_t ack_timeout_delay = {0, 100};//100ms
+	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 	ret = senderFlows_m[flownumber].dataWriter->wait_for_acknowledgments(ack_timeout_delay);
 	if( ret != DDS::RETCODE_OK) {
 		std::cerr << " !Failed while waiting for acknowledgment of "

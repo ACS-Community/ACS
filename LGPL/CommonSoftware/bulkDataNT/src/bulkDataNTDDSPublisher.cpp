@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,33 +52,27 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 //PUBLISHER
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::PublisherQos pub_qos;
-	participant->get_default_publisher_qos(pub_qos);
+	participant->get_default_publisher_qos(&pub_qos);
 	//pub_qos.asynchronous_publisher.thread.priority =    RTI_OSAPI_THREAD_PRIORITY_HIGH;
 	DDS::Publisher *pub = participant->create_publisher(pub_qos,
 			NULL,
-			DDS::STATUS_MASK_NONE);
+			0/*DDS::STATUS_MASK_NONE*/);
 	if(pub==NULL){
 		std::cerr << "create publisher failed" << std::endl;
 		//TBD: error handling
-	}
-//REGISTER TYPE
-	/* Register the type before creating the topic */
-	const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
-	int retcode = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(participant, type_name);
 
-	if (retcode != DDS::RETCODE_OK) {
-		printf("register_type error %d\n", retcode);
 
-		if (participant != NULL) {
-			retcode = participant->delete_contained_entities();
+		if (participant != NULL)
+		{
+			int retcode = participant->delete_contained_entities();
 			if (retcode != DDS::RETCODE_OK) { printf("delete_contained_entities error %d\n", retcode);}
 
-			retcode = TheParticipantFactory->delete_participant(participant);
+			retcode = factory->delete_participant(participant);
 			if (retcode != DDS::RETCODE_OK) { printf("delete_participant error %d\n", retcode);	}
-		}
+		}//if
 
 		//TBD:: error handling
-	}//if
+	}
 
 	return pub;
 }//createDDSParticipant
@@ -87,7 +81,10 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(DDS::Publisher* pub, DDS::Topic *topic)
 {
 	DDS::DataWriterQos dw_qos;
-	pub->get_default_datawriter_qos (dw_qos);
+	if (pub==NULL || topic==NULL)
+		std::cerr << "BulkDataNTDDSPublisher::createDDSWriter pub || topic NULL" << std::cerr;
+
+	pub->get_default_datawriter_qos (&dw_qos);
 
 	// reliability bursty
 	dw_qos.reliability.kind =  DDS::RELIABLE_RELIABILITY_QOS;//DDS::BEST_EFFORT_RELIABILITY_QOS;
@@ -96,7 +93,11 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.history.kind  = ::DDS::KEEP_ALL_HISTORY_QOS;
 	dw_qos.history.depth  = 1; // maybe it is not good if it is too big -> it slows the writer and  receivers down if there is a rpoblem with one receiver
 	dw_qos.resource_limits.max_samples = 200;//worst_burst_in_samples;
-	dw_qos.resource_limits.initial_samples = 1;//worst_burst_in_samples;
+	dw_qos.resource_limits.max_samples_per_instance = dw_qos.resource_limits.max_samples;
+	dw_qos.resource_limits.max_instances = 1;
+
+	/* RTI
+	 dw_qos.resource_limits.initial_samples = 1;//worst_burst_in_samples;
 
 	dw_qos.protocol.push_on_write = DDS_BOOLEAN_TRUE;
 
@@ -121,7 +122,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec = 0;
 
-
+*/
 	/*
 			dw_qos.liveliness.lease_duration.sec=5;
 			dw_qos.liveliness.lease_duration.nanosec=0;//500000000;
@@ -135,7 +136,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 			dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 32*1024;
 	 */
 
-
+/* RTI
 	dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 2*32*1024; //works it does not block
 	dw_qos.protocol.rtps_reliable_writer.min_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.min_nack_response_delay.nanosec =
@@ -144,12 +145,8 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec =
 			1 * 1000000;//NANOSEC_PER_MILLISEC;
 
+*/
 
-
-	// deadline
-	/*dw_qos.deadline.period.sec = 1;
-			dw_qos.deadline.period.nanosec = 0;
-	 */
 	//Create the data writer listener
 
 	//BDDDSWriterListenerImpl* writer_listener_servant =	new BDDDSWriterListenerImpl();
@@ -166,10 +163,11 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	DDS::DataWriter* temp_dw = pub->create_datawriter(topic,
 														dw_qos,
 														writerListener,
-														DDS::STATUS_MASK_ALL
+														ALL_STATUS/*DDS::STATUS_MASK_ALL*/
 														);
 	if(/*CORBA::is_nil(dw.in())*/temp_dw==NULL){
 		std::cerr << "create datawriter failed" << std::endl;
+		return NULL;
 	}
 
 	//? is it ok to narrow a local temp_dw and return it

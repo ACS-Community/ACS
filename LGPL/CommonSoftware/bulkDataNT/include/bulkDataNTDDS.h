@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.2 2011/07/07 15:05:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,9 +34,13 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+/* RTI
 #include <ndds/ndds_cpp.h>
 #include <ndds/ndds_namespace_cpp.h>
 #include "bulkDataNTSupport.h"
+*/
+
+#include "bulkDataNTTypeSupport.hh"
 
 namespace AcsBulkdata
 {
@@ -70,7 +74,7 @@ protected:
 //	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Publisher* pub, DDS::Topic *topic);
 
 
-	DDSDomainParticipantFactory *factory;
+	DDS::DomainParticipantFactory *factory;
 	DDS::DomainParticipant* participant;
 
 //	DDS::Publisher* pub;

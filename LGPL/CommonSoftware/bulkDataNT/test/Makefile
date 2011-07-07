@@ -16,13 +16,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.1 2011/07/07 15:05:40 bjeram Exp $"
 #
 # Makefile of ........
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
-# bjeram  2011-04-19  created
+# bjeram  2011-07-05  created
 #
 
 #*******************************************************************************
@@ -34,12 +34,12 @@
 
 #
 # user definable C-compilation flags
-USER_CFLAGS =   
+#USER_CFLAGS = 
 
 #
 # additional include and library search paths
-USER_INC = -I$(COREDX_TOP)/target/include
-USER_LIB = -L$(COREDX_TOP)/target/Linux_2.6_x86_gcc34/lib
+USER_INC = -I$(COREDX_TOP)/target/include 
+#USER_LIB = 
 
 #
 # MODULE CODE DESCRIPTION:
@@ -51,10 +51,16 @@ USER_LIB = -L$(COREDX_TOP)/target/Linux_2.6_x86_gcc34/lib
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = 
+EXECUTABLES_L   = bdNTSenderTest bdNTReceiverTest
 
 #
 # <brief description of xxxxx program>
+bdNTSenderTest_OBJECTS= bdNTSenderTest
+bdNTSenderTest_LIBS= bulkDataNTSender
+
+bdNTReceiverTest_OBJECTS=  bdNTReceiverTest
+bdNTReceiverTest_LIBS= bulkDataNTReceiver
+
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
 xxxxx_LIBS      =
@@ -71,24 +77,12 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver
+LIBRARIES       =
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
-# bulkDataNTSender_OBJECTS   = bulkDataNTDDS bulkDataNTDDSPublisher bulkDataNTBase bulkDataNTSender bulkDataNT bulkDataNTSupport bulkDataNTPlugin
-
-bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTBase \
-					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader
-bulkDataNT_LDFLAGS = -ldds_cpp -ldds -lACE
-
-
-bulkDataNTSender_OBJECTS   = bulkDataNTDDSPublisher bulkDataNTSender 
-bulkDataNTSender_LIBS = bulkDataNT
-
-
-bulkDataNTReceiver_OBJECTS   = bulkDataNTDDSSubscriber bulkDataNTReaderListener 
-bulkDataNTReceiver_LIBS = bulkDataNT
+lllll_OBJECTS   =
 
 #
 # Scripts (public and local)
@@ -229,12 +223,6 @@ man   : do_man
 
 install : install_all
 	@echo " . . . installation done"
-	
-do_dds_gen:
-	$(COREDX_TOP)/host/bin/Linux_2.6_x86_gcc34_coredx_ddl -f  ../idl/bulkDataNT.idl -l cpp; \
-	rename .cc .cpp *.cc; \
-	mv *.hh ../include
-
 
 
 #___oOo___

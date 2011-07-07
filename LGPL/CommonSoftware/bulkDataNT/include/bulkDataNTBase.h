@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTBase.h,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTBase.h,v 1.2 2011/07/07 15:05:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,11 +56,6 @@ struct FlowData
 
 };
 
-struct SenderFlowData : public FlowData
-{
-	DDS::Publisher* publisher;
-	ACSBulkData::BulkDataNTFrameDataWriter *dataWriter;
-};
 
 /**
  *  base class for Bulk data sender and receiver

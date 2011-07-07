@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@ using namespace AcsBulkdata;
 using namespace std;
 
 BulkDataNTDDS::BulkDataNTDDS()
-	: participant(0)
+	: factory(0), participant(0)
 {
 
 }
@@ -47,17 +47,19 @@ BulkDataNTDDS::~BulkDataNTDDS()
 
 void BulkDataNTDDS::createDDSFactory()
 {
-    DDS_DomainParticipantFactoryQos factory_qos;
-    factory = DDSDomainParticipantFactory::get_instance();
+    //DDS::DomainParticipantFactoryQos factory_qos;
+    factory = DDS::DomainParticipantFactory::get_instance();
 
-    factory->get_qos(factory_qos);
+
+/* needed by RTI only
+   factory->get_qos(factory_qos);
     factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
     factory->set_qos(factory_qos);
+    */
 }//createDDSFactory
 
 void BulkDataNTDDS::createDDSParticipant()
 {
-	int retcode;
 	DDS::DomainParticipantQos participant_qos;
 
 	if (participant!=NULL)
@@ -65,9 +67,13 @@ void BulkDataNTDDS::createDDSParticipant()
 		printf("participant already created\n");
 		return;
 	}
+	if (factory==NULL)
+	{
+		std::cerr << "BulkDataNTDDS::createDDSParticipant factory NULL !!" << std::endl;
+	}
 
 	//PARTICIPANT
-	factory->get_default_participant_qos(participant_qos);
+	factory->get_default_participant_qos(&participant_qos);
 	// Configure built in IPv4 transport to handle large messages
 	/*TBD::  we have to configure those things from XML
 	DDS_DomainParticipantQos qos;
@@ -76,15 +82,17 @@ void BulkDataNTDDS::createDDSParticipant()
 					     args.qosLibrary.c_str(),
 					     args.qosProfile.c_str());
 	 */
-	participant_qos.transport_builtin.mask = 0; /* clear all xport first */
+	/* RTI specific
+	participant_qos.transport_builtin.mask = 0; // clear all xport first
 	participant_qos.transport_builtin.mask |= DDS_TRANSPORTBUILTIN_UDPv4;
 	participant_qos.receiver_pool.buffer_size = 65536;
 	participant_qos.event.max_count = 1024*16;
+	*/
 //TBD: where to get domain ID
 	participant =factory->create_participant(0,
 			participant_qos,
 			NULL,
-			DDS::STATUS_MASK_NONE
+			0/*DDS::STATUS_MASK_NONE*/
 	);
 	if (participant!=NULL)
 	{
@@ -99,6 +107,7 @@ void BulkDataNTDDS::createDDSParticipant()
 
 	//TBS should be completly replace by QoS configuration (?)
 // TRANSPORT
+/* RTI
 	struct NDDS_Transport_UDPv4_Property_t udpv4TransportProperty = NDDS_TRANSPORT_UDPV4_PROPERTY_DEFAULT;
 	retcode = NDDSTransportSupport::get_builtin_transport_property(participant, DDS_TRANSPORTBUILTIN_UDPv4,
 			(struct NDDS_Transport_Property_t&)udpv4TransportProperty);
@@ -119,29 +128,48 @@ void BulkDataNTDDS::createDDSParticipant()
 	int max_gather_send_buffers = udpv4TransportProperty.parent.gather_send_buffer_count_max;
 
 	retcode = participant->enable();
+	*/
 }//createDDSParticipant
 
 
 DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 {
+	if (participant==0)
+	{
+		std::cerr << "BulkDataNTDDS::createDDSTopic participant is 0" << std::cerr << endl;
+		return 0;
+	}
 //TOPIC
 	//TBD: check if topic already exists find_topic ??
 		DDS::TopicQos topic_qos;
-		participant->get_default_topic_qos(topic_qos);
+		participant->get_default_topic_qos(&topic_qos);
 //		topic_qos.ownership.kind = DDS_EXCLUSIVE_OWNERSHIP_QOS;
 		topic_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS; //::DDS::BEST_EFFORT_RELIABILITY_QOS;
+		topic_qos.durability.kind = DDS::VOLATILE_DURABILITY_QOS;
 //		topic_qos.resource_limits.max_samples_per_instance = 2;
 		//TBD: type name could be a parameter of the method or class member
-		const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
 
-		cout << "Going to create DDS topic: " << topicName << endl;
+		//REGISTER TYPE
+		/* Register the type before creating the topic */
+//	ACSBulkData::BulkDataNTFrameTypeSupport* ts =new ACSBulkData::BulkDataNTFrameTypeSupport();
+//		const char* type_name = ts->get_type_name();
+
+		const char* type_name = ACSBulkData::BulkDataNTFrameTypeSupport::get_type_name();
+		int retcode = ACSBulkData::BulkDataNTFrameTypeSupport::register_type(participant, type_name);
+
+		if (retcode != DDS::RETCODE_OK)
+				{
+			printf("register_type error %d\n", retcode);
+				}
+
+		cout << "Going to create DDS topic: " << topicName << " " << type_name << endl;
 		DDS::Topic *topic =  participant->create_topic(topicName,
 				type_name,
 				topic_qos,
 				NULL,
-				DDS::STATUS_MASK_NONE
+				0/*DDS::STATUS_MASK_NONE*/
 		);
-		if (/*CORBA::is_nil(topic.in())*/topic==NULL){
+		if (topic==NULL){
 			std::cerr << "create_topic failed" << std::endl;
 		//TBD: error handling
 		}

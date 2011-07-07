@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiver.h,v 1.1 2011/05/20 13:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiver.h,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,24 +36,34 @@
 
 #include "bulkDataNTBase.h"
 #include "bulkDataNTDDSSubscriber.h"
+#include "bulkDataNTReaderListener.h"
 
 namespace AcsBulkdata
 {
 
+struct ReceiverFlowData : public FlowData
+{
+	DDS::Subscriber* subscriber;
+	BulkDataNTReaderListener *dataReaderListener;  // we can keep it in  CB ?
+	ACSBulkData::BulkDataNTFrameDataReader* dataReader;
+	BulkDataCallback *callback_m; //we can keep it in "Subscriber" ?
+};
+
+
 template<class TReceiverCallback>
-class BulkDataReceiverNT
+class BulkDataNTReceiver : public AcsBulkdata::BulkDataNTBase, public AcsBulkdata::BulkDataNTDDSSubscriber
 {
   public:
 
 /**
  * Constructor
  */
-	BulkDataReceiverNT();
+	BulkDataNTReceiver();
 
 /**
  * Destructor
  */
-virtual ~BulkDataReceiverNT();
+virtual ~BulkDataNTReceiver();
 
 /** Initialize the A/V
  *  @throw ACSBulkDataError::AVInitErrorExImpl
@@ -74,7 +84,26 @@ void initialize();
 */
 void createSingleFlow();
 
-/** Create multiple flows (user defined)
+// TBD: is this better than createSingleFlow and createMultipleFlows
+	// do we have to provide a name or just a number, for example we need three flows
+	// if we decide for name then we have to change send methods as well.
+	// here we should connect to the DDS topic
+	// TBD: here we can also send the callback?
+	void createFlow(const unsigned short numberOfFlows=1); //const char* flowName);
+
+	//TBD should we use this and feps if QoS XML ?
+	//	void createMultipleFlows(const char *fepsConfig);
+
+	/**
+	 * destroys all created flows and returns number of destroyed flows
+	 * @return number of destroyed flows
+	 */
+	unsigned int destroyFlows();
+
+
+
+/** keep for backward compatibility
+ *  Create multiple flows (user defined)
  *  @param fepsConfig
  *  @throw ACSBulkDataError::AVStreamEndpointErrorExImpl
  *  @throw ACSBulkDataError::AVInvalidFlowNumberExImpl
@@ -93,7 +122,10 @@ void createMultipleFlows(const char *fepsConfig);
  <br><hr>
  @endhtmlonly
 */
-bulkdata::BulkDataReceiverConfig * getReceiverConfig();
+
+
+
+/// bulkdata::BulkDataReceiverConfig * getReceiverConfig();
 
 /** Accessor to allocated receiver callback
  * @param ACE_CString
@@ -104,7 +136,9 @@ bulkdata::BulkDataReceiverConfig * getReceiverConfig();
  <br><hr>
  @endhtmlonly
 */
-void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
+
+
+/// void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
 
 /** Accessor to allocated receiver callback
  * @param CORBA::ULong
@@ -116,7 +150,7 @@ void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
  <br><hr>
  @endhtmlonly
 */
-void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
+/// void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
 
 /** Close the Receiver
  *  @throw ACSBulkDataError::AVCloseReceiverErrorExImpl
@@ -133,7 +167,7 @@ void closeReceiver();
  <br><hr>
  @endhtmlonly
 */
-std::vector<std::string> getFlowNames();
+/// std::vector<std::string> getFlowNames();
 
 /** Set receiver name in receiver callback
  *  @param ACE_CString
@@ -142,7 +176,7 @@ std::vector<std::string> getFlowNames();
  <br><hr>
  @endhtmlonly
 */
-void setReceiverName(ACE_CString recvName);
+/// void setReceiverName(ACE_CString recvName);
 
 /** Subscribe to the Notification Mechanism
  *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
@@ -152,7 +186,7 @@ void setReceiverName(ACE_CString recvName);
  <br><hr>
  @endhtmlonly
 */
-void subscribeNotification(ACS::CBvoid_ptr notifCb);
+/// void subscribeNotification(ACS::CBvoid_ptr notifCb);
 
  /**
 	 *  Enable or disable that data are sent to the user's CB.
@@ -165,19 +199,28 @@ void subscribeNotification(ACS::CBvoid_ptr notifCb);
 	 <br><hr>
 	 @endhtmlonly
 	*/
-void fwdData2UserCB(CORBA::Boolean enable);
+/// void fwdData2UserCB(CORBA::Boolean enable);
 
  /*
  *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl
  */
-void notifySender(const ACSErr::Completion& comp);
+/// void notifySender(const ACSErr::Completion& comp);
 
 
 
-void setCbTimeout(const char * cbTimeout);
+/// void setCbTimeout(const char * cbTimeout);
+
+  protected:
+
+	ReceiverFlowData *receiverFlows_m;
+
+	//DataReader
+	//DataReaderListener
 
 };//class BulkDataReceiverNT
 
 };//namespace AcsBulkdata
+
+#include "bulkDataNTReceiver.i"
 
 #endif /*!_H*/
