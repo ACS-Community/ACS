@@ -25,7 +25,7 @@ import alma.acsnc.EventDescription;
 
 /**
  * This interface provides an event subscriber, 
- * that can be implemented over Corba NC or over DDS, or even other technologies.
+ * that can be implemented on top of Corba NC or DDS, in-memory for local testing, or on top of other technologies.
  * <p>
  * Discussion:
  * <ul>
