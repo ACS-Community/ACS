@@ -124,10 +124,8 @@
 *   
 *   #define _POSIX_SOURCE 1      <<<< if you delete this line you SHALL comment
 *                                     why POSIX does not apply for this file
-*   #include "vltPort.h"
 *                                   >>>>do not change the following lines<<<<
 *   static char *rcsId="@(#) ...."; 
-*   static void *use_rcsId = (&use_rcsId,(void *) &rcsId);
 *   
 *   /* 
 *    * System Headers 

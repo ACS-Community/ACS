@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: c++-class-file.template,v 1.21 2003/08/26 11:25:13 mpasquat Exp $"
+#%# "@(#) $Id: c++-class-file.template,v 1.22 2011/07/11 06:45:00 mpasquat Exp $"
 #%# 
 #%# Template for c++ class documentation header include files         
 #%# 
@@ -79,10 +79,7 @@
 *------------------------------------------------------------------------
 */
 
-#include "vltPort.h"
-
 static char *rcsId="@(#) $I>-<d$"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 /*___oOo___*/

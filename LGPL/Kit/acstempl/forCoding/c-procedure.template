@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: c-procedure.template,v 1.20 2002/12/05 19:09:20 vltsccm Exp $" 
+#%# "@(#) $Id: c-procedure.template,v 1.21 2011/07/11 06:45:01 mpasquat Exp $" 
 #%# 
 #%# Template for c-procedure          
 #%# 
@@ -55,10 +55,8 @@
 */
 
 #define _POSIX_SOURCE 1
-#include "vltPort.h"
 
 static char *rcsId="@(#) $I>-<d$"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 /* 
  * System Headers

@@ -57,10 +57,8 @@
 *------------------------------------------------------------------------
 */
 
-#include "vltPort.h"
 
 static char *rcsId="@(#) $Id: c++-file.template.doc,v 1.20 2002/12/05 19:09:18 vltsccm Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 /* 

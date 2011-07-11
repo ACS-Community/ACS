@@ -79,10 +79,8 @@
 *------------------------------------------------------------------------
 */
 
-#include "vltPort.h"
 
 static char *rcsId="@(#) $I>-<d$"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 /*___oOo___*/

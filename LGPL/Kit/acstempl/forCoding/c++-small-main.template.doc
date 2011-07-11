@@ -57,8 +57,6 @@
 *------------------------------------------------------------------------
 */
 
-// Uncomment this if you are using the VLT environment
-// #include "vltPort.h"
 
 
 #include <stdlib.h>
@@ -66,7 +64,6 @@
 #include <string.h>
 
 static char *rcsId="@(#) $Id: c++-small-main.template.doc,v 1.20 2002/12/05 19:09:19 vltsccm Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 
 int main(int argc, char *argv[])

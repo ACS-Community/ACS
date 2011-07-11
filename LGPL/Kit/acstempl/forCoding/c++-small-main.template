@@ -1,7 +1,7 @@
 #%#------------------------------------------------------------------------
 #%# E.S.O. - ACS project
 #%# 
-#%# "@(#) $Id: c++-small-main.template,v 1.21 2003/07/18 11:33:53 mpasquat Exp $"
+#%# "@(#) $Id: c++-small-main.template,v 1.22 2011/07/11 06:45:01 mpasquat Exp $"
 #%# 
 #%# Template for c++ small main program
 #%# 
@@ -57,16 +57,13 @@
 *------------------------------------------------------------------------
 */
 
-// Uncomment this if you are using the VLT environment
-// #include "vltPort.h"
 
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-static char *rcsId="@(#) $Id: c++-small-main.template,v 1.21 2003/07/18 11:33:53 mpasquat Exp $"; 
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+static char *rcsId="@(#) $Id: c++-small-main.template,v 1.22 2011/07/11 06:45:01 mpasquat Exp $"; 
 
 
 int main(int argc, char *argv[])
