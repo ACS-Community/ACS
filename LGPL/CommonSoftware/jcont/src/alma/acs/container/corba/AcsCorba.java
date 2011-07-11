@@ -230,6 +230,24 @@ public class AcsCorba
 			throw new IllegalStateException("Illegal call to initCorba. ORB/POAs have already been initialized.");
 		}
 
+		try {
+			setPortOptions(new Integer(port), new Integer(0));
+			prepareOrb(args);
+			
+			// for a container we need the following POAs:
+			initPOAForContainer();
+			initPOAForComponents();
+			
+			setInitialized(true);
+		} catch (Throwable thr) {
+			if (thr instanceof AcsJContainerEx) {
+				throw (AcsJContainerEx) thr;
+			}
+			AcsJContainerEx ex = new AcsJContainerEx(thr);
+			ex.setContextInfo("initCorba failed.");
+			throw ex;
+		}
+
 		// ORB profiling setup
 		try {
 			// orbProfilerClassname can be set in env var "JAVA_OPTIONS_ORB_PROFILER", or acsStartJavaContainer script will use the default.
@@ -243,7 +261,7 @@ public class AcsCorba
 					m_logger.finer("Orb profiling set up, using " + orbProfilerClassname);
 				}
 				else {
-					m_logger.warning("Orb profiling was selected, but the currently used ORB does not support it.");
+					m_logger.warning("Orb profiling was selected, but the currently used ORB " + m_orb.getClass().getName() + " does not support it.");
 				}
 			}
 			else {
@@ -251,32 +269,6 @@ public class AcsCorba
 			}
 		} catch (Throwable th) {
 			m_logger.log(Level.WARNING, "Failed to set up ORB profiling, will run without it.", th);
-		}
-
-		try {
-			setPortOptions(new Integer(port), new Integer(0));
-			prepareOrb(args);
-			
-			// for a container we need the following POAs:
-			initPOAForContainer();
-			initPOAForComponents();
-			
-			setInitialized(true);
-			
-			// register orb profiler
-//			if (m_orb instanceof AcsProfilingORB) {
-//				AcsORBProfiler profiler = new ContainerOrbProfiler(m_logger);
-//				((AcsProfilingORB)m_orb).registerAcsORBProfiler(profiler);
-//			}
-			
-
-		} catch (Throwable thr) {
-			if (thr instanceof AcsJContainerEx) {
-				throw (AcsJContainerEx) thr;
-			}
-			AcsJContainerEx ex = new AcsJContainerEx(thr);
-			ex.setContextInfo("initCorba failed.");
-			throw ex;
 		}
 	}
 
