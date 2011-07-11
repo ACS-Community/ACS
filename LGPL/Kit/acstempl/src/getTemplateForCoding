@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: getTemplateForCoding,v 1.30 2007/05/25 09:02:27 mpasquat Exp $" 
+# "@(#) $Id: getTemplateForCoding,v 1.31 2011/07/11 07:47:32 mpasquat Exp $" 
 # who       when      what
 # --------- --------  ----------------------------------------------
 # gchiozzi  27/06/95  Added c++ and various templates
@@ -226,11 +226,11 @@ Please specify your affiliation:
           ______________ NRAO             
           ______________ ESO             
           ______________ IRAM             
-          ______________ IJS             
-          ______________ MPIfA             
+          ______________ MPIfR             
           ______________ ATC             
-          ______________ NRO-NAO    
-          ______________ NRC
+          ______________ NAOJ
+          ______________ COSYLAB
+          ______________ OBSPM
           ______________ none
 
 abcd
@@ -243,39 +243,39 @@ abcd
 	    case $OPTION in
 
             NRAO)
-                COPYRIGHT="(c) Associated Universities Inc."
+                COPYRIGHT="Copyright (c) Associated Universities Inc."
                 ;;
 
 	    ESO)
-                COPYRIGHT="(c) European Southern Observatory"
+                COPYRIGHT="Copyright (c) European Southern Observatory"
                 ;;
 
 	    IRAM)
-                COPYRIGHT="(c) Institut de Radioastronomie Millimetrique"
+                COPYRIGHT="Copyright (c) Institut de Radioastronomie Millimetrique"
                 ;;
 
-	    IJS)
-                COPYRIGHT="(c) Institut Jozef Stefan - Ljubljana"
-                ;;
-
-	    MPIfA)
-                COPYRIGHT="(c) Max Plank Institut für Astronomie"
+	    MPIfR)
+                COPYRIGHT="Copyright (c) Max Plank Institut fuer Radioastronomie"
                 ;;
 
 	    ATC)
-                COPYRIGHT="(c) Astronomy Technology Center - Royal Observatory Edinborough"
+                COPYRIGHT="Copyright (c) Astronomy Technology Center - Royal Observatory Edingburgh"
                 ;;
 
-	    NRO-NAO)
-                COPYRIGHT="(c) Nobeyama Radio Observatory - NAOJ"
+	    NAOJ)
+                COPYRIGHT="Copyright (c) Nobeyama Radio Observatory - NAOJ"
                 ;;
 
-            NRC)
-                COPYRIGHT="(c) National Research Council of Canada"
+            COSYLAB)
+                COPYRIGHT="Copyright (c) Control System Laboratory"
+                ;;
+
+            OBSPM)
+                COPYRIGHT="Copyright (c) L'Observatoire astronomique de Paris-Meudon-Nancay"
                 ;;
 
 	    none) 	
-                COPYRIGHT="(c) UNSPECIFIED - FILL IN"
+                COPYRIGHT="Copyright (c) UNSPECIFIED - FILL IN"
                 ;;
 
             *)  
