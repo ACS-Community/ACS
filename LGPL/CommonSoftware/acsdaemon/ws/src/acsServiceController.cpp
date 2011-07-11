@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.14 2011/04/06 16:40:41 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.15 2011/07/11 07:35:48 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -384,7 +384,7 @@ void ACSServiceController::fireAlarm(acsdaemon::ServiceState state) {
     triplet.faultMember = desc->getACSServiceName();
     triplet.faultCode = 0; //(int)state;
 
-    ACS::Time acsTime = ::getTime();
+    ACS::Time acsTime = ::getTimeStamp();
 
     bool hasName = (desc->getName() != 0);
 
