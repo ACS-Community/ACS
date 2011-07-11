@@ -281,10 +281,7 @@ public class AcsContainer extends ContainerPOA
 			throw ex;
 		}
 
-		// enable (throttle) alarms from the logging subsystem. 
-		// The ongoing container refactoring should ideally allow us to raise and clear an alarm as easily
-		// as the new ContainerServices alarm methods offer it. Maybe we use some special CS instance for this,
-		// or share the code in some other way.
+		// enable (throttle) alarms from the logging subsystem
 		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
 			@Override
 			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
