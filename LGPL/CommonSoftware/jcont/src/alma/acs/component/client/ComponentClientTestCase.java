@@ -56,7 +56,11 @@ public class ComponentClientTestCase extends TestCase
 	protected AcsCorba acsCorba;
 	
 	private ContainerServicesImpl m_containerServices;
-    private CleaningDaemonThreadFactory m_threadFactory;
+	
+	/**
+	 * The thread factory used by <code>m_containerServices</code>.
+	 */
+	private CleaningDaemonThreadFactory m_threadFactory;
 	
 	/**
 	 * Special tests that need to call directly the manager API could use this proxy object.
