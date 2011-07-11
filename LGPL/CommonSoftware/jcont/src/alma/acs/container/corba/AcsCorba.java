@@ -21,6 +21,7 @@
  */
 package alma.acs.container.corba;
 
+import java.lang.reflect.Constructor;
 import java.util.ConcurrentModificationException;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jacorb.orb.acs.AcsORBProfiler;
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.Any;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
@@ -89,6 +92,8 @@ import alma.acs.util.UTCUtility;
  */
 public class AcsCorba 
 {
+	public static final String ORB_PROFILER_CLASS_PROPERTYNAME = "alma.acs.orb.profiler.class";
+
 	private org.omg.CORBA.ORB m_orb;
 
 	/**
@@ -225,6 +230,29 @@ public class AcsCorba
 			throw new IllegalStateException("Illegal call to initCorba. ORB/POAs have already been initialized.");
 		}
 
+		// ORB profiling setup
+		try {
+			// orbProfilerClassname can be set in env var "JAVA_OPTIONS_ORB_PROFILER", or acsStartJavaContainer script will use the default.
+			String orbProfilerClassname = System.getProperty(ORB_PROFILER_CLASS_PROPERTYNAME); 
+			if (orbProfilerClassname != null) {
+				if (m_orb instanceof AcsProfilingORB) {
+					Class<? extends AcsORBProfiler> orbProfilerClass = Class.forName(orbProfilerClassname).asSubclass(AcsORBProfiler.class);
+					Constructor<? extends AcsORBProfiler> ctor = orbProfilerClass.getConstructor(Logger.class);
+					AcsORBProfiler profiler = ctor.newInstance(m_logger);
+					((AcsProfilingORB) m_orb).registerAcsORBProfiler(profiler);
+					m_logger.finer("Orb profiling set up, using " + orbProfilerClassname);
+				}
+				else {
+					m_logger.warning("Orb profiling was selected, but the currently used ORB does not support it.");
+				}
+			}
+			else {
+				m_logger.finer("Orb profiling was not selected.");
+			}
+		} catch (Throwable th) {
+			m_logger.log(Level.WARNING, "Failed to set up ORB profiling, will run without it.", th);
+		}
+
 		try {
 			setPortOptions(new Integer(port), new Integer(0));
 			prepareOrb(args);
@@ -240,6 +268,8 @@ public class AcsCorba
 //				AcsORBProfiler profiler = new ContainerOrbProfiler(m_logger);
 //				((AcsProfilingORB)m_orb).registerAcsORBProfiler(profiler);
 //			}
+			
+
 		} catch (Throwable thr) {
 			if (thr instanceof AcsJContainerEx) {
 				throw (AcsJContainerEx) thr;

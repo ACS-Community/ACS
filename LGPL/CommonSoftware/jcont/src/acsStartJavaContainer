@@ -78,6 +78,17 @@ then
 fi
 
 #--------------------------------------------------------------------------------
+# Install an ORB profiler. 
+# For special profiling needs, another class implementing interface "org.jacorb.orb.acs.AcsORBProfiler" can be set in env var JAVA_OPTIONS_ORB_PROFILER;
+# it must provide a constructor with a java.util.Logger parameter. 
+if [ X"$JAVA_OPTIONS_ORB_PROFILER" = X ]
+then
+    JAVA_OPTIONS_ORB_PROFILER="-Dalma.acs.orb.profiler.class=alma.acs.container.corba.ContainerOrbProfiler"
+fi
+JAVA_OPTIONS="$JAVA_OPTIONS $JAVA_OPTIONS_ORB_PROFILER"
+
+
+#--------------------------------------------------------------------------------
 # Special container checks
 if [ "X$ACS_LOG_STDOUT" != "X" ] && [ $ACS_LOG_STDOUT -lt $ACS_DEBUG_PRIORITY ]
 then
