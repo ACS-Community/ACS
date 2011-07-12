@@ -943,6 +943,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin e) {
+		} catch (NullPointerException e) {
 		}
 		
 	}

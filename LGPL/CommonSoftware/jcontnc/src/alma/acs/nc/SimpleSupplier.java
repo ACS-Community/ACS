@@ -546,6 +546,7 @@ public class SimpleSupplier extends OSPushSupplierPOA implements ReconnectableSu
 		} catch (UnsupportedQoS e) {
 		} catch (AcsJException e) {
 		} catch (UnsupportedAdmin e) {
+		} catch (NullPointerException e) {
 		}
 	}
 
