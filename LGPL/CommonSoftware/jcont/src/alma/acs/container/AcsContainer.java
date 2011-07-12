@@ -199,7 +199,11 @@ public class AcsContainer extends ContainerPOA
 			m_activeComponentMap = new ComponentMap(m_logger);
 			m_acsCorba = acsCorba;
 
-			System.out.println(ContainerOperations.ContainerStatusORBInitBeginMsg);
+			// @TODO: Check with C++ and Py container how they use ContainerStatusORBInitBeginMsg.
+			// Here we interpret is as registering the container object with the ORB, 
+			// but it could mean "initialization of the ORB itself", and then these logs should move to 
+			// AcsContainerRunner.run(String[]), around initCorba and runCorba
+			System.out.println(ContainerOperations.ContainerStatusORBInitBeginMsg); 
 			registerWithCorba();
 			System.out.println(ContainerOperations.ContainerStatusORBInitEndMsg);
 
