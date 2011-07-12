@@ -8,3 +8,4 @@ s/spawn rlogin [a-z,A-Z,0-9]*/rlogin LCU/g
 s/l[a-z,A-Z,0-9]*->/LCU->/g
 s/task spawned: id = 0x[0-9,a-f]*, name = t[0-9]*/task spawned/g
 s/Cache saved to '[^']*'/Cache saved to '.\/log_cache.dat__XXXXXXXX_XXX'/g
+s/ Function took [0-9]*\.[0-9]* sec//g
