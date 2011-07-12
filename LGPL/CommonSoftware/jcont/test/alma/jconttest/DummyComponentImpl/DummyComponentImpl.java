@@ -75,9 +75,13 @@ public class DummyComponentImpl extends ComponentImplBase implements DummyCompon
 	 * This is a special hack for this test component which should never be used for any real components.
 	 */
 	private Logger getLogger() {
-		
 		if (myLogger == null) {
-			myLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DummyComponentImpl running outside of container", false);
+			if (m_logger != null) {
+				myLogger = m_logger;
+			}
+			else {
+				myLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication("DummyComponentImpl running outside of container", false);
+			}
 		}
 		return myLogger;
 	}
