@@ -15,3 +15,4 @@ s/HostName:[a-z,A-Z,0-9,.,_,-]*,/HostName:xxxxxxxxx/g
 s/Thread [a-z,A-Z,0-9]*: [0-9]*,/Thread:xxxxxxxxx/g
 s/Ran [0-9]* tests in [0-9].[0-9]*s/Ran xx tests in x.xxxs/g
 s/Ran 1 test in [0-9].[0-9]*s/Ran xx test in x.xxxs/g
+s/ Function took [0-9]*.[0-9]* sec//g
