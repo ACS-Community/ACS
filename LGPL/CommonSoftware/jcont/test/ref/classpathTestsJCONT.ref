@@ -11,6 +11,7 @@
 1 - ----------T--:--:--.--- FINE [testContainer] POA activated
 1 - ----------T--:--:--.--- FINEST [testContainer] ContainerPOA created.
 1 - ----------T--:--:--.--- FINEST [testContainer] ComponentPOA created.
+1 - ----------T--:--:--.--- FINER [testContainer] Orb profiling set up, using alma.acs.container.corba.ContainerOrbProfiler
 1 - ContainerStatusMsg: Startup begins
 1 - ----------T--:--:--.--- FINE [testContainer] Manager reference not available. Trying to resolve...
 1 - ----------T--:--:--.--- FINEST [testContainer] manager narrow successful.
