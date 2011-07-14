@@ -27,6 +27,7 @@ then
             else
                 echo "Diagnostic Message(getLogPath): $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE exists (OK)" >&2
             fi
+        else
             chmod 775 $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 
         fi
     fi
@@ -57,6 +58,7 @@ then
             else
                 echo "Diagnostic Message(getLogPath): $OUTPUT_PATH exists (OK)" >&2
             fi
+        else
             chmod 775 $OUTPUT_PATH
         fi
     fi
@@ -72,6 +74,7 @@ then
             else
                 echo "Diagnostic Message(getLogPath): $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE exists (OK)" >&2
             fi
+        else
             chmod 775 $OUTPUT_PATH/ACS_INSTANCE.$ACS_INSTANCE 
         fi
     fi

@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.12 2011/07/14 07:18:53 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.13 2011/07/14 14:52:17 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -272,11 +272,6 @@ then
     ACS_LOG_ERROR "$COMMAND" "It appears as if you're trying to run the `basename $0` command twice"
     ACS_LOG_ERROR "$COMMAND" "    in a row using the same ACS_INSTANCE ($ACS_INSTANCE). This is not possible."
     exit $EC_FAILURE
-  else
-    mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
-    mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
   fi
 
   # Make sure that the directory for temporary ACS_INSTANCE files exists.
@@ -285,6 +280,10 @@ then
      ACS_LOG_ERROR "$COMMAND" "Cannot create $INSTANCE_DIR"
      exit $EC_CANNOTCREATE
   fi
+  mkdir -p $INSTANCE_DIR/$ACS_PID_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_OUT_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_IOR_DIR
+  mkdir -p $INSTANCE_DIR/$ACS_CNF_DIR
 
   # Ensure the port numbers are actually free
   if ! checkTCPPort $NOTIFY_SERVICE_PORT
