@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsServiceController.h,v 1.9 2009/10/06 13:46:25 msekoran Exp $"
+* "@(#) $Id: acsServiceController.h,v 1.10 2011/07/14 06:53:42 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,6 +82,7 @@ class ServiceController {
     virtual acsdaemon::ServiceState getActualState() = 0;
     virtual void fireAlarm(acsdaemon::ServiceState state) = 0;
   public:
+    virtual ACE_CString getServiceName() = 0;
     ServiceController(ACSDaemonContext *icontext, bool iautorestart);
     virtual ~ServiceController();
     ACSDaemonContext *getContext() { return context; }
@@ -129,6 +130,7 @@ class ImpController : public ServiceController {
   public:
     ImpController(ACSDaemonContext *icontext, ACSServiceType iservice, bool iautostart = true);
     ACSServiceType getACSService() { return service; }
+    virtual ACE_CString getServiceName();
     void setManagerReference(const short instance_number, const char * ref);
 };
 
@@ -145,6 +147,7 @@ class ACSServiceController : public ServiceController {
     void fireAlarm(acsdaemon::ServiceState state);
   public:
     ACSServiceController(ACSDaemonContext *icontext, ACSServiceRequestDescription *idesc, bool iautostart);
+    virtual ACE_CString getServiceName();
     ~ACSServiceController();
 };
 

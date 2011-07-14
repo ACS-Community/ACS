@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsServiceController.cpp,v 1.15 2011/07/11 07:35:48 msekoran Exp $"
+* "@$Id: acsServiceController.cpp,v 1.16 2011/07/14 06:53:42 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,7 +114,8 @@ void ServiceController::restart() {
     if (active && setState(getActualState()) && autorestart && startreq == NULL /*&& stopreq == NULL*/) {
         // restarts only if state has just changed from RUNNING/DEGRADED to NOT_EXISTING
 
-	stopreq = NULL;
+        ACS_SHORT_LOG((LM_INFO, "Restarting %s.", getServiceName().c_str()));
+        stopreq = NULL;
         context->getRequestProcessor()->process(startreq = createControlledServiceRequest(START_SERVICE)); // enqueue service startup request
     }
     m_mutex->release();
@@ -200,6 +201,11 @@ ControlledServiceRequest *ImpController::createControlledServiceRequest(ACSServi
     return new ControlledServiceRequest(this, new ImpRequest(this, itype, service), itype == STOP_SERVICE);
 }
 
+ACE_CString ImpController::getServiceName()
+{
+    return ACE_CString("Imp '") + acsServices[service].impname + "'";
+}
+
 acsdaemon::ServiceState ImpController::getActualState() {
     try {
         ACS_SHORT_LOG((LM_DEBUG, "Evaluating state of Imp with Corba URI '%s'.", corbaloc.c_str()));
@@ -270,6 +276,15 @@ ACSServiceController::ACSServiceController(ACSDaemonContext *icontext, ACSServic
 
 ACSServiceController::~ACSServiceController() {
     delete desc;
+}
+
+ACE_CString ACSServiceController::getServiceName()
+{
+    if (desc->getName()) {
+        return ACE_CString("'") + desc->getACSServiceName() + "' with name '" + desc->getName() + "'";
+    } else {	
+        return ACE_CString("'") + desc->getACSServiceName() + "'";
+    }
 }
 
 ControlledServiceRequest *ACSServiceController::createControlledServiceRequest(ACSServiceRequestType itype, acsdaemon::DaemonCallback_ptr callback) {
