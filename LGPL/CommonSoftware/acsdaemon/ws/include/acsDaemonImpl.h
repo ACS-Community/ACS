@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.8 2009/06/12 13:32:14 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.9 2011/07/14 06:52:52 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -430,7 +430,10 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
 
     // Host IP information is needed to initialize the logging system
     // and for ORBEndpoint creation
-   const char* hostName = ACSPorts::getIP();
+    const char* hostName = ACSPorts::getIP();
+
+    // disable logging to local file cache
+    ACE_OS::setenv("ACS_LOG_FILE", "/dev/null", 1);
 
     // create logging proxy
     LoggingProxy::ProcessName(argv[0]);
