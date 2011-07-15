@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.h,v 1.4 2011/03/25 23:42:00 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.h,v 1.5 2011/07/15 17:36:54 javarias Exp $"
 *
 */
 
@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <deque>
+#include <pthread.h>
 
 #include <ace/Synch.h>
 
@@ -78,6 +79,7 @@ private:
 	std::deque<Logging::XmlLogRecord>* _cache;
 	ACE_Thread_Mutex _cacheMutex;
 	logging::LogThrottle* _logThrottle;
+	pthread_t *thread;
 	//worker entry thread function, it flush the thread at regular intervals or
 	//when the cache reaches the max size
 	static void* worker(void* arg);
