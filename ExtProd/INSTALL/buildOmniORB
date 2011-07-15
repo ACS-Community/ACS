@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.18 2010/05/30 14:07:26 agrimstrup Exp $"
+# "@(#) $Id: buildOmniORB,v 1.19 2011/07/15 22:37:04 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -130,7 +130,6 @@ cd build
 ../configure --prefix=$OMNI_ROOT PYTHON=$PYTHON_ROOT/bin/python 
 make
 make install
-
 #
 # Depending on the version of python installed and used for building,
 # the code generated will be put in python2.3 or 2.4 directory.
@@ -157,6 +156,11 @@ omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $ACE_ROOT/TAO/orbsvcs
 # This is not true for CosPropertyService which is in CosProperty.idl file, but module name is CosPropertyService
 #
 omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/CosProperty.idl
+
+#Make omniidl able to install in a non standard location
+#See ticket COMP-5526
+export OMNI_ROOT_PATH=$(echo $OMNI_ROOT | sed -e 's/\//\\\//g') 
+cat $OMNI_ROOT/bin/omniidl | sed -e s/\""$OMNI_ROOT_PATH"/os\.getenv\(\"OMNI_ROOT\"\)\ \+\ \"/g > $OMNI_ROOT/bin/omniidl
 
 cd $CWD
 echo omniORB installation done!
