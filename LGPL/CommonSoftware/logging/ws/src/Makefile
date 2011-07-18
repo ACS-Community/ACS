@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: Makefile,v 1.71 2011/04/08 14:33:38 javarias Exp $" 
+# "@(#) $Id: Makefile,v 1.72 2011/07/18 16:38:20 javarias Exp $" 
 #
 # Makefile of ........
 #
@@ -143,7 +143,7 @@ logging_OBJECTS 	=	logging loggingLoggable loggingXMLElement loggingXMLParser \
 						loggingACSRemoteAppender loggingACSHierarchyMaintainer \
 						loggingLog4cpp
 						
-logging_LIBS    =	baselogging log4cpp
+logging_LIBS    =	baselogging log4cpp pthread rt
 logging_LDFLAGS =	-lacsutil -lacscommonStubs -llogging_idlStubs
 
 #log4cpplogging_OBJECTS 	:= 	loggingACSLoggingEvent loggingXmlLayout \
