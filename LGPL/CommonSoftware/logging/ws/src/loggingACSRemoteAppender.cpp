@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.4 2011/03/25 23:42:00 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.5 2011/07/18 16:00:12 javarias Exp $"
 */
 
 #include "loggingACSRemoteAppender.h"
@@ -108,9 +108,7 @@ RemoteLoggerBuffer::RemoteLoggerBuffer(
 		_cache = new std::deque<Logging::XmlLogRecord>();
 
 		if (_cacheSize > 0) {
-			// set the max size of the deque as double just in case appender could have a log overflow
-			ACE_Thread::spawn(
-					static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
+			pthread_create(thread, NULL, static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
 		}
 	}
 	_cacheMutex.release();
@@ -146,6 +144,8 @@ void RemoteLoggerBuffer::flushCache() {
 		_cache->pop_front();
 	}
 	_cacheMutex.release();
+    if (count == 0)
+        return;
 	logs.length(count);
 	sendLog(logs);
 }
@@ -205,6 +205,8 @@ RemoteLoggerBuffer::~RemoteLoggerBuffer() {
 	} catch (CORBA::SystemException &ex) {
 		std::cerr << "Problem with Remote Logger" << std::endl;
 	}
+	void *res;
+	pthread_join(*thread, &res);
 }
 
 
