@@ -59,6 +59,7 @@ import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJGenericErrorEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
+import alma.AcsNCTraceLog.LOG_NC_ChannelCreatedRaw_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_ATTEMPT;
 import alma.AcsNCTraceLog.LOG_NC_ChannelCreated_OK;
 import alma.AcsNCTraceLog.LOG_NC_ChannelDestroyed_OK;
@@ -67,6 +68,7 @@ import alma.acs.container.AdvancedContainerServices;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.util.StopWatch;
 
 
 /**
@@ -406,6 +408,7 @@ public class Helper {
 		EventChannel retValue = null;
 		channelId = -1; // to be assigned by factory
 		
+		StopWatch stopwatch = new StopWatch();
 		try {
 			
 			initializeNotifyFactory(notifyFactoryName);
@@ -462,7 +465,7 @@ public class Helper {
 			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(cause);
 		}
 		
-		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, channelId, notifyFactoryName); 
+		LOG_NC_ChannelCreated_OK.log(m_logger, channelName, channelId, notifyFactoryName, stopwatch.getLapTimeMillis());
 		
 		return retValue;
 	}
@@ -477,6 +480,8 @@ public class Helper {
 		
 		EventChannel ret = null;
 		
+		StopWatch stopwatch = new StopWatch();
+		
 		// The TAO extension of the notify factory that we use declares only the plain EventChannel type, 
 		// even though it creates the TAO-extension subtype.
 		org.omg.CosNotifyChannelAdmin.EventChannel eventChannelBaseType = notifyFactory.create_named_channel(
@@ -484,6 +489,9 @@ public class Helper {
 				initial_admin, 
 				channelIdHolder, 
 				channelName);
+		
+		LOG_NC_ChannelCreatedRaw_OK.log(m_logger, channelName, channelIdHolder.value, stopwatch.getLapTimeMillis());
+		
 		try {
 			// re-create the client side corba stub, to get the extension subtype
 			ret = gov.sandia.NotifyMonitoringExt.EventChannelHelper.narrow(eventChannelBaseType);
