@@ -8,7 +8,7 @@
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] initialize() called...
-1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='blar' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='blar' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - ----------T--:--:--.--- INFO [CONSUMERCOMP1] Subscribed to 'EventDescription' and 'NestedFridgeEventSeqHolder' types of events on channel 'blar'
 1 - ----------T--:--:--.--- WARNING [CONSUMERCOMP1] The 'blar' channel: the receiver object is incapable of handling 'org.omg.CosNotification.StructuredEvent' type of events! It must have a method 'public void receive(org.omg.CosNotification.StructuredEvent)'.
 1 - java.lang.NoSuchMethodException: alma.demo.test.EventConsumerImpl.EventConsumerImpl.receive(org.omg.CosNotification.StructuredEvent)

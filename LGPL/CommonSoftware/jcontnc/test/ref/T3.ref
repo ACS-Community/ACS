@@ -7,7 +7,7 @@
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ContainerStatusMsg: Automatic component loading ends
 1 - ContainerStatusMsg: Ready
-1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='AbstractNC_Channel' ChannelId='xxx' Service='NotifyEventChannelFactory' ]
+1 - ----------T--:--:--.--- INFO [ABSTRACT_PUBLISHER] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='AbstractNC_Channel' ChannelId='xxx' Service='NotifyEventChannelFactory' TimeMillis='xxx' ]
 1 - Created NC Publisher
 1 - ----------T--:--:--.--- INFO [ABSTRACT_RECEIVER] Created legacy CorbaReceiver for channel 'AbstractNC_Channel'
 1 - ----------T--:--:--.--- INFO [ABSTRACT_RECEIVER] Attached 'NCReceiverImpl' as receiver object for 'alma.acsnc.EventDescription' events.
