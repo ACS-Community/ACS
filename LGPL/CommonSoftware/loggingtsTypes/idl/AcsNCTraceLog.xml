@@ -34,14 +34,26 @@
 	</LogDefinition>
 	
 	<LogDefinition
+		logName="LOG_NC_ChannelCreatedRaw_OK"
+		shortDescription="Successfully created a notification channel, w/o configuration."
+		description="Successfully created a notification channel, w/o configuration. Having this log message in addition to LOG_NC_ChannelCreated_OK is useful in order to measure performance bottlenecks in the various steps of NC creation."
+		priority="DELOUSE"
+		audience="Developer">
+		<Member name="ChannelName" type="string" description="Name of the channel created." />
+		<Member name="ChannelId" type="long" description="ID of the channel created." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms for just the channel creation (call to NotifyFactory#create_named_channel)" />
+	</LogDefinition>
+	
+	<LogDefinition
 		logName="LOG_NC_ChannelCreated_OK"
-		shortDescription="Successfully created a notification channel"
-		description="Successfully created a notification channel"
+		shortDescription="Successfully created and configured a notification channel."
+		description="Successfully created and configured a notification channel."
 		priority="INFO"
 		audience="Developer">
 		<Member name="ChannelName" type="string" description="Name of the channel created." />
 		<Member name="ChannelId" type="long" description="ID of the channel created." />
 		<Member name="Service" type="string" description="Name or ID of the notification service that hosts the channel." />
+		<Member name="TimeMillis" type="long" description="Elapsed time in ms, incl. channel configuration" />
 	</LogDefinition>
 	
 	<!-- @TODO: FIGURE OUT IF WE ACTUALLY (SHOULD) DESTROY NCs. IN JAVA THIS FEATURE IS NOT USED IN PRACTICE AS OF ALMA-5_0_1_9 -->
