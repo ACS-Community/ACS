@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiver.h,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiver.h,v 1.3 2011/07/21 15:14:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ void createSingleFlow();
 	// if we decide for name then we have to change send methods as well.
 	// here we should connect to the DDS topic
 	// TBD: here we can also send the callback?
-	void createFlow(const unsigned short numberOfFlows=1); //const char* flowName);
+	void createFlows(const unsigned short numberOfFlows=1); //const char* flowName);
 
 	//TBD should we use this and feps if QoS XML ?
 	//	void createMultipleFlows(const char *fepsConfig);
@@ -176,7 +176,7 @@ void closeReceiver();
  <br><hr>
  @endhtmlonly
 */
-/// void setReceiverName(ACE_CString recvName);
+void setReceiverName(ACE_CString recvName);
 
 /** Subscribe to the Notification Mechanism
  *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl

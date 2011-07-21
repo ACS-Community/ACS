@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSender.cpp,v 1.2 2011/07/07 15:05:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSender.cpp,v 1.3 2011/07/21 15:14:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -25,9 +25,11 @@
 
 #include "bulkDataNTSender.h"
 #include <iostream>
+#include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
+#include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSender.cpp,v 1.2 2011/07/07 15:05:40 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: bulkDataNTSender.cpp,v 1.3 2011/07/21 15:14:59 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -172,7 +174,7 @@ void BulkDataNTSender::initialize()
 	streamName_m = "TestFlow";
 }
 
-void BulkDataNTSender::createFlow(const unsigned short numberOfFlows)
+void BulkDataNTSender::createFlows(const unsigned short numberOfFlows)
 {
 
 	std::string topicName;
@@ -208,6 +210,39 @@ void BulkDataNTSender::createFlow(const unsigned short numberOfFlows)
 		senderFlows_m[i].dataWriter = dw;
 	}//for
 }//createFlow
+
+void BulkDataNTSender::createSingleFlow()
+{
+	createFlows(1);
+}
+
+void BulkDataNTSender::createMultipleFlows(const char *fepsConfig)
+{
+	try
+	{
+		if(ACE_OS::strcmp(fepsConfig, "") == 0)
+		{
+			createSingleFlow();
+			return;
+		}
+
+		TAO_Tokenizer addressToken(fepsConfig, '/');
+
+		int numOtherFeps = addressToken.num_tokens();
+		if(numOtherFeps > 19)
+		{
+			ACS_SHORT_LOG((LM_ERROR,"BulkDataNTSender::createMultipleFlows too many flows specified - maximum 19"));
+			ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+			throw err;
+		}
+		this->createFlows(numOtherFeps);
+
+	}catch(...)
+	{
+		printf("... ERROR in createMultipleFlows using fepsConfig\n");
+
+	}//try-catch
+}
 
 unsigned int BulkDataNTSender::destroyFlows()
 {

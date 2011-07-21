@@ -21,9 +21,10 @@
 #include "ACSBulkDataStatus.h"
 
 #include "bulkDataReceiver.h"
-
-#include <iostream>
 */
+
+#include <SString.h>
+
 class BulkDataCallback
 //: public TAO_AV_Callback
 {
@@ -56,10 +57,11 @@ class BulkDataCallback
 
     virtual int receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &);
 
-    virtual void setFlowname (const char*);
+*/
+    virtual void setFlowname (const char* name) { flowname_m =name; }
 
-    virtual void setReceiverName(ACE_CString recvName);
-
+    virtual void setReceiverName(ACE_CString &name) { recvName_m=name; }
+/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
     virtual void setSafeTimeout(CORBA::ULong locLoop);
@@ -102,15 +104,15 @@ class BulkDataCallback
     virtual int cbReceive(ACE_Message_Block * frame_p) = 0;
 
     virtual int cbStop() = 0;
-/*
+
   protected:
 
-    ACE_CString flowname_m;
+    std::string flowname_m;
 
-    CORBA::ULong flowNumber_m;
+    //unsigned int flowNumber_m;
 
     ACE_CString recvName_m;
-
+/*
     bool fwdData2UserCB_m;
 
   private:

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiver.i,v 1.1 2011/07/07 15:05:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiver.i,v 1.2 2011/07/21 15:14:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,8 +28,8 @@
  *----------------------------------------------------------------------
  */
 
-#include "bulkDataNTReceiver.h"
-
+#include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
+#include <ACSBulkDataError.h>   // error definition  ??
 
 using namespace AcsBulkdata;
 
@@ -60,10 +60,11 @@ void BulkDataNTReceiver<TReceiverCallback>::initialize()
 template<class TReceiverCallback>
 void BulkDataNTReceiver<TReceiverCallback>::createSingleFlow()
 {
+	this->createFlows(1);
 }
 
 template<class TReceiverCallback>
-void BulkDataNTReceiver<TReceiverCallback>::createFlow(const unsigned short numberOfFlows)
+void BulkDataNTReceiver<TReceiverCallback>::createFlows(const unsigned short numberOfFlows)
 {
 	std::string topicName;
 	// should we check if we already have flows ?
@@ -86,6 +87,7 @@ void BulkDataNTReceiver<TReceiverCallback>::createFlow(const unsigned short numb
 		DDS::Topic *topic = createDDSTopic(topicName.c_str());
 
 		receiverFlows_m[i].callback_m = new TReceiverCallback();
+		receiverFlows_m[i].callback_m->setFlowname(topicName.c_str());
 
 		receiverFlows_m[i].dataReaderListener = new BulkDataNTReaderListener(topicName.c_str(), receiverFlows_m[i].callback_m);
 
@@ -101,6 +103,37 @@ void BulkDataNTReceiver<TReceiverCallback>::createFlow(const unsigned short numb
 		receiverFlows_m[i].subscriber = sub;
 		receiverFlows_m[i].dataReader = dr;
 	}//for
+}
+
+
+
+template<class TReceiverCallback>
+void BulkDataNTReceiver<TReceiverCallback>::createMultipleFlows(const char *fepsConfig)
+{
+	try
+	{
+		if(ACE_OS::strcmp(fepsConfig, "") == 0)
+		{
+			createSingleFlow();
+			return;
+		}
+
+		TAO_Tokenizer addressToken(fepsConfig, '/');
+
+		int numOtherFeps = addressToken.num_tokens();
+		if(numOtherFeps > 19)
+		{
+			ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiver<>::createMultipleFlows too many flows specified - maximum 19"));
+			ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataReceiver::createMultipleFlows");
+			throw err;
+		}
+		 this->createFlows(numOtherFeps);
+
+	}catch(...)
+	{
+		printf("... ERROR in createMultipleFlows using fepsConfig\n");
+
+	}//try-catch
 }
 
 template<class TReceiverCallback>
@@ -122,6 +155,23 @@ unsigned int BulkDataNTReceiver<TReceiverCallback>::destroyFlows()
 }
 
 template<class TReceiverCallback>
-void BulkDataNTReceiver<TReceiverCallback>::createMultipleFlows(const char *fepsConfig)
+void BulkDataNTReceiver<TReceiverCallback>::closeReceiver()
 {
+	this->destroyFlows();
 }
+
+template<class TReceiverCallback>
+void BulkDataNTReceiver<TReceiverCallback>::setReceiverName(ACE_CString recvName)
+{
+	if (receiverFlows_m==NULL  )
+	{
+		printf("flows not created !!");
+		return;
+	}
+
+
+	for(unsigned int i=0; i<numOfFlows_m; i++)
+	{
+		receiverFlows_m[i].callback_m->setReceiverName(recvName);
+	}
+}//setReceiverName

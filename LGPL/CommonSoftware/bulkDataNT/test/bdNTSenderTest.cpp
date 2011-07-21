@@ -7,7 +7,7 @@ int main()
 {
 	AcsBulkdata::BulkDataNTSender sender;
 	sender.initialize();
-	sender.createFlow(2);
+	sender.createFlows(2);
 	std::cout << "press a key to start.." << std::endl;
 	getchar();
 

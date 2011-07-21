@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2011/07/07 15:05:40 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/07/21 15:14:16 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -51,7 +51,7 @@ USER_INC = -I$(COREDX_TOP)/target/include
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = bdNTSenderTest bdNTReceiverTest
+EXECUTABLES_L   = bdNTSenderTest bdNTReceiverTest bdNTTEST1
 
 #
 # <brief description of xxxxx program>
@@ -60,6 +60,9 @@ bdNTSenderTest_LIBS= bulkDataNTSender
 
 bdNTReceiverTest_OBJECTS=  bdNTReceiverTest
 bdNTReceiverTest_LIBS= bulkDataNTReceiver
+
+bdNTTEST1_OBJECTS = bdNTTEST1
+bdNTTEST1_LIBS = bulkDataReceiverStubs bulkDataSenderStubs
 
 xxxxx_OBJECTS   =	
 xxxxx_LDFLAGS   =
@@ -78,7 +81,12 @@ INCLUDES        =
 # Libraries (public and local)
 # ----------------------------
 LIBRARIES       =
-LIBRARIES_L     =
+LIBRARIES_L     = bdNTReceiverLibTest bdNTSenderLibTest
+bdNTReceiverLibTest_OBJECTS = bdNTReceiverImplTest
+bdNTReceiverLibTest_LIBS = bulkDataNTReceiver bulkDataReceiverStubs baci
+
+bdNTSenderLibTest_OBJECTS = bdNTSenderImplTest
+bdNTSenderLibTest_LIBS = bulkDataNTSender
 
 #
 # <brief description of lllll library>

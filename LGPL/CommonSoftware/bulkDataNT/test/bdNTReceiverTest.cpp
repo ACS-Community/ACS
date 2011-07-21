@@ -40,7 +40,7 @@ int main()
 {
 	AcsBulkdata::BulkDataNTReceiver<TestCB> receiver;
 	receiver.initialize();
-	receiver.createFlow(2);
+	receiver.createFlows(2);
 	std::cout << "press a key to end.." << std::endl;
 	getchar();
 	receiver.destroyFlows();

@@ -76,7 +76,7 @@ for(unsigned i=0; i<msgList.size()/*length()*/; i++)
 
     		if (message.dataType==ACSBulkData::BD_PARAM)
     		{
-    			cout << "#" << itera << "    " << listName << " Start ... " << message.data.size() << endl;
+    			cout << listName << " startSend: parameter size: " << message.data.size() << endl;
     			data_length = 0;
     			start_time = ACE_OS::gettimeofday();
     			ACE_Message_Block mb((const char*)&message.data[0], message.data.size()); // dirty ????
@@ -89,10 +89,10 @@ for(unsigned i=0; i<msgList.size()/*length()*/; i++)
     		{
     			if (data_length==0)
     			{
-    				std::cout << " *************************   New startSend  *******************************" << std::endl;
+    				std::cout << " *************************   New sendData @ " << listName << " *******************************" << std::endl;
     			}
 
-    			cout << listName << "got " << message.data.size() << " data on " << endl;
+    			cout << listName << " got " << message.data.size() << " data on " << endl;
     		//	std::cout << message.data[0];
 //    			std::copy(message.data.begin(), message.data.end(), out_it);
 // std::cout << std::endl;
@@ -142,7 +142,7 @@ for(unsigned i=0; i<msgList.size()/*length()*/; i++)
 
     				DDS::SampleLostStatus s;
     				reader->get_sample_lost_status(&s);
-    				cerr << "LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
+    				cerr << listName << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
     				itera++;
     				data_length = 0;
     			}
