@@ -908,7 +908,8 @@ public class CDBChecker {
 		      
 		      		compName = elm.getAttribute("Name" );
 	    			implLang = elm.getAttribute("ImplLang" );
-	    
+					//System.out.println("\ncompName being checked: " + compName );
+ 	    
 	    			if(compName.equals("*")){ //--> dynamic component
 	    	  			if(implLang.equals("") || implLang.equals("*")){
 				  			continue;
@@ -918,6 +919,11 @@ public class CDBChecker {
 		    				continue;
 		    			}
 	    	  		}
+                    //add bhola.panta@naoj 2011/07/21
+                    //component does have a name, but container is dynamic (?), that is, "*"
+					else if(elm.getAttribute("Container" ).equals("*")){ 
+						continue; 
+					}
 	    			else{//actually, ImpLang field in the CDB is mandatory since ACS 8
 	    				if(implLang.equals("")){
 	    					System.out.println("\nFile being checked: " + files[x] );
@@ -926,7 +932,7 @@ public class CDBChecker {
 	    					break search;
 	              		}
 	    			}
-	    			
+
 		 			//go get containers at the "Container" location
 		  			tempContainersFolder = containersFolder + "/" + elm.getAttribute("Container" );
 	    			
@@ -942,8 +948,8 @@ public class CDBChecker {
 		  			try {
 		  				//System.out.println("\ntempContainersFolder " + tempContainersFolder);
 		  				File contFile = new File(tempContainersFolder + "//" + new File(tempContainersFolder).getName()+ ".xml");
+						//System.out.println("\ncontainerFile " + contFile);
 		  				if(contFile.exists()){
-		  					//System.out.println("Container file being checked : " + contFile);
 		  					docCont = dbCont.parse(contFile);
 		  					
 		  					docCont.getDocumentElement().normalize();
