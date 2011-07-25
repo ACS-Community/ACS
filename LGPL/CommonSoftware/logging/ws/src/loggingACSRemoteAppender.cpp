@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.6 2011/07/18 18:14:12 javarias Exp $"
+* "@(#) $Id: loggingACSRemoteAppender.cpp,v 1.7 2011/07/25 20:56:33 javarias Exp $"
 */
 
 #include "loggingACSRemoteAppender.h"
@@ -110,7 +110,7 @@ RemoteLoggerBuffer::RemoteLoggerBuffer(
 		if (_cacheSize > 0) {
 			//This thread must not be a ACE_Thread.
 			// Otherwise the thread hook in maci Simple CLient will create a new logging proxy thread
-			pthread_create(thread, NULL, static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
+			pthread_create(&thread, NULL, static_cast<ACE_THR_FUNC> (RemoteLoggerBuffer::worker), this);
 		}
 	}
 	_cacheMutex.release();
@@ -208,7 +208,7 @@ RemoteLoggerBuffer::~RemoteLoggerBuffer() {
 		std::cerr << "Problem with Remote Logger" << std::endl;
 	}
 	void *res;
-	pthread_join(*thread, &res);
+	pthread_join(thread, &res);
 }
 
 
