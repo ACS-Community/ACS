@@ -46,7 +46,7 @@
 
 #include "bulkDataReceiverS.h"
 
-#include "bulkDataNTReceiver.h"
+#include "bulkDataNTReceiverStream.h"
 
 
 /** @file bulkDataReceiverImpl.h  
@@ -89,12 +89,14 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
      */
     virtual ~BulkDataNTReceiverImpl();
 
-    void cleanUp();
+    virtual void initialize();
+
+    virtual void cleanUp();
 
     // getReceiverForStrem or better getReceiverStream(name)
-    virtual AcsBulkdata::BulkDataNTReceiver<TCallback> * getReceiver()
+    virtual AcsBulkdata::BulkDataNTReceiverStream<TCallback> * getReceiverStream(/*const char *stream name*/)
 	{
-	    return & receiver_m;
+	    return receiverStream_m;
 	}
 
     /**
@@ -125,7 +127,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
      *  @throw ACSBulkDataError::AVFlowEndpointErrorEx 
      */
     // stream + flow name
-    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber){}
+    virtual ACSErr::Completion *getCbStatus(CORBA::ULong flowNumber){ printf("getCbStatus not implemnted yet. \n"); return 0;}
 
     /**
      *  @throw ACSBulkDataError::AVInvalidFlowNumberEx 
@@ -160,7 +162,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     
   private:
 
-    AcsBulkdata::BulkDataNTReceiver<TCallback> receiver_m;
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback> *receiverStream_m; //TBD latter we have to have map of streams
 
     maci::ContainerServices *containerServices_p;
 };

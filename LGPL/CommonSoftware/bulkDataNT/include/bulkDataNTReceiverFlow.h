@@ -1,5 +1,5 @@
-#ifndef _BULK_DATA_NT_BASE_H_
-#define _BULK_DATA_NT_BASE_H_
+#ifndef _BULK_DATA_NT_RECEIVER_FLOW_H_
+#define _BULK_DATA_NT_RECEIVER_FLOW_H_
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2011
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTBase.h,v 1.3 2011/07/25 13:50:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.1 2011/07/25 13:50:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,62 +35,43 @@
 #endif
 
 
-#include <vector>
-#include <string>
-#include <Message_Block.h>
-#include "bulkDataNTDDS.h"
+#include "bulkDataNTDDSSubscriber.h"
+#include "bulkDataNTStream.h"
+#include "bulkDataNTCallback.h"
+#include "bulkDataNTReaderListener.h"
+
 
 
 namespace AcsBulkdata
 {
 
-typedef unsigned long FlowNumberType;
-
-/**
- * structure for keeping flow related data
- */
-struct FlowData
-{
-	std::string topicName; // = flow name = stream name + flow number
-	DDS::Topic *topic;
-
-};
-
-
-/**
- *  base class for Bulk data sender and receiver
- *  TBD probably we do not need it
- */
-class BulkDataNTBase
+class BulkDataNTReceiverFlow
 {
 public:
 
 	/**
 	 * Constructor
 	 */
-	BulkDataNTBase(const char* name);
+	BulkDataNTReceiverFlow(const BulkDataNTStream *senderStream, const char* flowName, BulkDataCallback *cb);
 
 	/**
 	 * Destructor
 	 */
-	virtual ~BulkDataNTBase();
+	virtual ~BulkDataNTReceiverFlow();
 
-	std::string getName() { return streamName_m; }
-
+	//setCB();
 protected:
+	const AcsBulkdata::BulkDataNTStream *receiverStream_m;
+	std::string flowName_m;
 
-	const DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
-
-	std::string streamName_m;
-
-	// those two methods and members should probably go to another class  ??
-	void createDDSFactory();
-	void createDDSParticipant();
-	DDS::DomainParticipantFactory *factory_m;
-	DDS::DomainParticipant* participant_m;
-
-};//class BulkDataNTBase
+	AcsBulkdata::BulkDataNTDDSSubscriber *ddsSubscriber_m;
+	ACSBulkData::BulkDataNTFrameDataReader *ddsDataReader_m;
+	DDS::Topic *ddsTopic_m;
+	BulkDataNTReaderListener *dataReaderListener_m;  // we can keep it in  CB ?
+	BulkDataCallback *callback_m; //we can keep it in "Subscriber" ?
+};//class BulkDataSenderFlow
 
 };
 
-#endif
+
+#endif /*!_H*/

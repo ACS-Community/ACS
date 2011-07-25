@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2011/07/21 15:14:59 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/07/25 13:51:00 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -71,24 +71,28 @@ INCLUDES        =
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver
+LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver bulkDataNTSenderImpl
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 # bulkDataNTSender_OBJECTS   = bulkDataNTDDS bulkDataNTDDSPublisher bulkDataNTBase bulkDataNTSender bulkDataNT bulkDataNTSupport bulkDataNTPlugin
 
-bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTBase \
+bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream \
 					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
 bulkDataNT_LIBS = ACSBulkDataError
 bulkDataNT_LDFLAGS = -ldds_cpp -ldds -lACE -lTAO_AV
 
 
-bulkDataNTSender_OBJECTS   = bulkDataNTDDSPublisher bulkDataNTSender bulkDataNTSenderImpl
+#bulkDataNTSender_OBJECTS   = bulkDataNTDDSPublisher bulkDataNTSender bulkDataNTSenderImpl
+bulkDataNTSender_OBJECTS    = bulkDataNTSenderStream bulkDataNTSenderFlow bulkDataNTDDSPublisher 
 bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 
+bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
+bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
-bulkDataNTReceiver_OBJECTS   = bulkDataNTDDSSubscriber bulkDataNTReaderListener 
+bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener 
+#bulkDataNTCallback 
 bulkDataNTReceiver_LIBS = bulkDataNT  
 
 #

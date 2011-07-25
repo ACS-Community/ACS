@@ -1,3 +1,4 @@
+#include "bulkDataNTSenderFlow.h"
 #include "bulkDataNTSenderImpl.h"
 #include <ACSBulkDataError.h>   // error definition  ??
 
@@ -10,6 +11,7 @@ CharacteristicComponentImpl(name,containerServices)
 	containerServices_p = containerServices;
 
 	receiverObj_m = 0;
+	senderStream_m =0;
 }
 
 
@@ -19,9 +21,15 @@ BulkDataNTSenderImpl::~BulkDataNTSenderImpl()
 }
 
 
+void BulkDataNTSenderImpl::initialize()
+{
+	 senderStream_m = new AcsBulkdata::BulkDataNTSenderStream("TestFlow");
+	 //senderStream_m->initialize();
+}
+
 void BulkDataNTSenderImpl::cleanUp()
 {
-
+	delete senderStream_m;
 }
 
 void BulkDataNTSenderImpl::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
@@ -54,9 +62,9 @@ void BulkDataNTSenderImpl::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
 
 	try
 	{
-		getSender()->initialize();
+		getSenderStream()->initialize();
 
-		getSender()->createMultipleFlows(buf);
+		getSenderStream()->createMultipleFlowsFromConfig(buf);
 
 //		receiverObj_p->openReceiver();
 //		bulkdata::BulkDataReceiverConfig *receiverConfig = receiverObj_p->getReceiverConfig();
@@ -84,7 +92,7 @@ void BulkDataNTSenderImpl::disconnect()
 	ACS_TRACE("BulkDataNTSenderImpl::disconnect - deprecated");
 	try
 	{
-		getSender()->destroyFlows();
+		//getSenderStream()->destroyFlows();
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{

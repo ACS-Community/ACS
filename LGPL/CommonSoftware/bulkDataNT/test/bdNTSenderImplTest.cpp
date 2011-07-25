@@ -17,8 +17,8 @@ void bdNTSenderImplTest::startSend()
     ACS_TRACE("bdNTSenderImplTest::startSend");
     unsigned char parm[]="Test Parameter";
 
-    getSender()->startSend(0, parm, 14);
-    getSender()->startSend(1, parm, 14);
+    getSenderStream()->getFlow("0")->startSend(parm, 14);
+    getSenderStream()->getFlow("1")->startSend(parm, 14);
 }
 
 void bdNTSenderImplTest::paceData ()
@@ -27,19 +27,19 @@ void bdNTSenderImplTest::paceData ()
 	unsigned char *data= new unsigned char[65000];
 	for (unsigned int i=0; i<65000; i++)
 		data[i]=i;
-	getSender()->sendData(0, data, 65000);
+	getSenderStream()->getFlow("0")->sendData(data, 65000);
 
 	for (unsigned int i=0; i<65000; i++)
 		data[i]=i%10;
-	getSender()->sendData(1, data, 65000);
+	getSenderStream()->getFlow("1")->sendData(data, 65000);
 
 }
 
 void bdNTSenderImplTest::stopSend()
 {
     ACS_TRACE("bdNTSenderImplTest::stopSend");
-    getSender()->stopSend(0);
-    getSender()->stopSend(1);
+    getSenderStream()->getFlow("0")->stopSend();
+    getSenderStream()->getFlow("1")->stopSend();
 }
 
 /* --------------- [ MACI DLL support functions ] -----------------*/

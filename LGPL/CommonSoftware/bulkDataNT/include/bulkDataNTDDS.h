@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.2 2011/07/07 15:05:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.3 2011/07/25 13:50:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -48,7 +48,7 @@ namespace AcsBulkdata
 /**
  * class responsible for all DDS related details
  */
-
+//TBD should be renamed to Stream
 class BulkDataNTDDS
 {
 public:
@@ -57,25 +57,29 @@ public:
 	 * Constructor
 	 */
 	BulkDataNTDDS();
+	BulkDataNTDDS(const DDS::DomainParticipant*);
 
 	/**
 	 * Destructor
 	 */
 	virtual ~BulkDataNTDDS();
 
-protected:
 
-	void createDDSFactory();
-	void createDDSParticipant();
 	DDS::Topic* createDDSTopic(const char* topicName); // should return topic
 
+protected:
+/*
+	void createDDSFactory();
+	void createDDSParticipant();
+
+*/
 //	DDS::Publisher* createDDSPublisher(); // should return publisher ?
 	//should return generic writer and have another method in Base class that narrows
 //	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Publisher* pub, DDS::Topic *topic);
 
 
-	DDS::DomainParticipantFactory *factory;
-	DDS::DomainParticipant* participant;
+//	DDS::DomainParticipantFactory *factory;
+	const DDS::DomainParticipant* participant_m;
 
 //	DDS::Publisher* pub;
 //	DDS::Topic* topic; // should be  an array just temporary

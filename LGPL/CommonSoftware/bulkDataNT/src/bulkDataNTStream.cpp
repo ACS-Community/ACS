@@ -16,31 +16,32 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTBase.cpp,v 1.2 2011/07/25 13:51:01 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.1 2011/07/25 13:51:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
-#include "bulkDataNTBase.h"
+#include "bulkDataNTStream.h"
 #include <iostream>
 
 using namespace AcsBulkdata;
 
-BulkDataNTBase::BulkDataNTBase(const char* name) :
-	streamName_m(name)
+BulkDataNTStream::BulkDataNTStream(const char* name) :
+	streamName_m(name), factory_m(0), participant_m(0)
 {
 
 }
 
 
-BulkDataNTBase::~BulkDataNTBase()
+BulkDataNTStream::~BulkDataNTStream()
 {
 
 }
 
-void BulkDataNTBase::createDDSFactory()
+void BulkDataNTStream::createDDSFactory()
 {
+	printf("BulkDataNTStream::createDDSFactory\n");
     //DDS::DomainParticipantFactoryQos factory_qos;
     factory_m = DDS::DomainParticipantFactory::get_instance();
 
@@ -52,7 +53,7 @@ void BulkDataNTBase::createDDSFactory()
     */
 }
 
-void BulkDataNTBase::createDDSParticipant()
+void BulkDataNTStream::createDDSParticipant()
 {
 	DDS::DomainParticipantQos participant_qos;
 

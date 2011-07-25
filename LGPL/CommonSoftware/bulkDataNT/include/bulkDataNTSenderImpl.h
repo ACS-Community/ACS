@@ -41,7 +41,7 @@
 #include "bulkDataSenderS.h"
 #include "bulkDataReceiverC.h"
 
-#include "bulkDataNTSender.h"
+#include "bulkDataNTSenderStream.h"
 
 
 /** @file bulkDataSenderNTImpl.h
@@ -83,8 +83,9 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
      */
     virtual ~BulkDataNTSenderImpl();
   
+    virtual void initialize();
 
-    void cleanUp();
+    virtual void cleanUp();
 
     /**
      *  Negotiate and initialize connection with the Sender object.
@@ -103,9 +104,9 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
     virtual void disconnect();
 
 //getSenderStream(stream name)
-    virtual AcsBulkdata::BulkDataNTSender/*<TSenderCallback>*/ *getSender()
+    virtual AcsBulkdata::BulkDataNTSenderStream/*<TSenderCallback>*/ *getSenderStream(/*name*/)
 	{
-	    return &sender_m;
+	    return senderStream_m;
 	}
 
 
@@ -155,7 +156,7 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
 
     maci::ContainerServices *containerServices_p;
 
-    AcsBulkdata::BulkDataNTSender/*<TSenderCallback>*/ sender_m;
+    AcsBulkdata::BulkDataNTSenderStream/*<TSenderCallback>*/ *senderStream_m; //TBD convert to map to hold more streams
 //TBD do we need reference to receiver ?
     bulkdata::BulkDataReceiver_ptr receiverObj_m;
 };

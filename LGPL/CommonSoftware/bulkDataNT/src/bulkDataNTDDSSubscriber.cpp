@@ -7,16 +7,23 @@ using namespace std;
 
 BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber()
 {
+	subscriber_m = createDDSSubscriber();
+}
+
+BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(const DDS::DomainParticipant *p) :
+		BulkDataNTDDS(p)
+{
+	subscriber_m = createDDSSubscriber();
 }
 
 BulkDataNTDDSSubscriber::~BulkDataNTDDSSubscriber()
 {
-
+//TBD delete DDS subscriber
 }
 
 DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 {
-	if (participant==NULL)
+	if (participant_m==NULL)
 	{
 		printf("BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber participant NULL\n");
 		return NULL;
@@ -25,10 +32,10 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 	//SUBSCRIBER
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::SubscriberQos sub_qos;
-	participant->get_default_subscriber_qos(&sub_qos);
+	participant_m->get_default_subscriber_qos(&sub_qos);
 
 
-	DDS::Subscriber *sub = participant->create_subscriber(sub_qos,
+	DDS::Subscriber *sub = participant_m->create_subscriber(sub_qos,
 			NULL,
 			/*DDS::STATUS_MASK_NONE*/0
 	);
@@ -39,14 +46,14 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 	return sub;
 }
 
-ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader(DDS::Subscriber* sub, DDS::Topic *topic, DDS::DataReaderListener *listener)
+ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader(/*DDS::Subscriber* sub,*/ DDS::Topic *topic, DDS::DataReaderListener *listener)
 {
 	try
 	{
 	//READER
 			//Apply Qos Policies, in this case the partition
 			DDS::DataReaderQos dr_qos;
-			sub->get_default_datareader_qos (&dr_qos);
+			subscriber_m ->get_default_datareader_qos (&dr_qos);
 	//		std::cout << "dr_qos.livelines.lease_duration.sec = " << dr_qos.liveliness.lease_duration.sec << std::endl;
 			dr_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
 	//		dr_qos.reliability.synchronous = TRUE;
@@ -129,7 +136,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 
 	// READERs
 				//			if (noOfReaders>1) dr_qos.unicast.value[0].receive_port = 24000+readerIndex; // we get a thread per reader !
-				DDS::DataReader *dr = sub->create_datareader(topic,
+				DDS::DataReader *dr = subscriber_m->create_datareader(topic,
 						dr_qos,
 						listener,
 						ALL_STATUS);

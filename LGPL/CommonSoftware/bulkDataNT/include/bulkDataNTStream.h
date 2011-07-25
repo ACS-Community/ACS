@@ -1,5 +1,5 @@
-#ifndef _BULK_DATA_NT_BASE_H_
-#define _BULK_DATA_NT_BASE_H_
+#ifndef _BULK_DATA_NT_STREAM_H_
+#define _BULK_DATA_NT_STREAM_H_
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
 * (c) European Southern Observatory, 2011
@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTBase.h,v 1.3 2011/07/25 13:50:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,25 +61,30 @@ struct FlowData
  *  base class for Bulk data sender and receiver
  *  TBD probably we do not need it
  */
-class BulkDataNTBase
+class BulkDataNTStream
 {
+	friend class BulkDataNTReceiverFlow;
 public:
 
 	/**
 	 * Constructor
 	 */
-	BulkDataNTBase(const char* name);
+	BulkDataNTStream(const char* name);
 
 	/**
 	 * Destructor
 	 */
-	virtual ~BulkDataNTBase();
+	virtual ~BulkDataNTStream();
 
 	std::string getName() { return streamName_m; }
+
+	//void destroyFlow(const  char* flowName);
 
 protected:
 
 	const DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
+
+	virtual void removeFlowFromMap(const char* flow)=0;
 
 	std::string streamName_m;
 
@@ -89,7 +94,7 @@ protected:
 	DDS::DomainParticipantFactory *factory_m;
 	DDS::DomainParticipant* participant_m;
 
-};//class BulkDataNTBase
+};//class BulkDataNTStream
 
 };
 

@@ -1,4 +1,5 @@
-#include "bulkDataNTReceiver.h"
+//#include "bulkDataNTReceiverFlow.h"
+#include "bulkDataNTReceiverStream.h"
 #include "bulkDataNTCallback.h"
 #include <iostream>
 
@@ -38,10 +39,17 @@ public:
 
 int main()
 {
-	AcsBulkdata::BulkDataNTReceiver<TestCB> receiver;
-	receiver.initialize();
-	receiver.createFlows(2);
+	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream("TestFlow");
+	receiverStream.initialize();
+
+	receiverStream.createFlow("00");
+
+	TestCB *cb = new TestCB();
+	receiverStream.createFlow("01", cb);
+
+	BulkDataNTReceiverFlow *flow0 = receiverStream.getFlow("00");
+
 	std::cout << "press a key to end.." << std::endl;
 	getchar();
-	receiver.destroyFlows();
+
 }

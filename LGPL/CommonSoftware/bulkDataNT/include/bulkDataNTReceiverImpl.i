@@ -14,10 +14,22 @@ BulkDataNTReceiverImpl<TCallback>::~BulkDataNTReceiverImpl()
     ACS_TRACE("BulkDataNTReceiverImpl<>::~BulkDataNTReceiverImpl");
 }//~BulkDataNTReceiverImpl
 
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::initialize()
+{
+	ACS_TRACE("BulkDataNTReceiverImpl<>::initialize");
+	receiverStream_m = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("TestFlow");
+}//cleanUp
+
+
+
+
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::cleanUp()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::cleanUp");
+	delete receiverStream_m;
 }//cleanUp
 
 template<class TCallback>
@@ -51,10 +63,10 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 
 	try
 	{
-		receiver_m.initialize();
+		receiverStream_m->initialize();
 
-		receiver_m.createMultipleFlows(buf); // actaully here we need just number of flows !!!
-		receiver_m.setReceiverName(name());
+		receiverStream_m->createMultipleFlowsFromConfig(buf); // actaully here we need just number of flows !!!
+		receiverStream_m->setReceiverName(name());
 
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
@@ -79,7 +91,7 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 
 	try
 	{
-		receiver_m.closeReceiver();
+//		receiverStream_m->closeReceiver();
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.2 2011/07/07 15:05:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.3 2011/07/25 13:51:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,21 +30,27 @@ using namespace std;
 
 BulkDataNTDDSPublisher::BulkDataNTDDSPublisher()
 {
-
+	publisher_m = createDDSPublisher();
 }
 
+BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(const DDS::DomainParticipant *p) :
+		BulkDataNTDDS(p)
+{
+	publisher_m = createDDSPublisher();
+}
 
 
 BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 {
 
 	//TBD: do we have to delete something here ?
+	//TBD delete DDS publisher
 }
 
 
 DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 {
-	if (participant==NULL)
+	if (participant_m==NULL)
 	{
 		printf("participant NULL\n");
 		return NULL;
@@ -52,25 +58,13 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 //PUBLISHER
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::PublisherQos pub_qos;
-	participant->get_default_publisher_qos(&pub_qos);
+	participant_m->get_default_publisher_qos(&pub_qos);
 	//pub_qos.asynchronous_publisher.thread.priority =    RTI_OSAPI_THREAD_PRIORITY_HIGH;
-	DDS::Publisher *pub = participant->create_publisher(pub_qos,
+	DDS::Publisher *pub = participant_m->create_publisher(pub_qos,
 			NULL,
 			0/*DDS::STATUS_MASK_NONE*/);
 	if(pub==NULL){
 		std::cerr << "create publisher failed" << std::endl;
-		//TBD: error handling
-
-
-		if (participant != NULL)
-		{
-			int retcode = participant->delete_contained_entities();
-			if (retcode != DDS::RETCODE_OK) { printf("delete_contained_entities error %d\n", retcode);}
-
-			retcode = factory->delete_participant(participant);
-			if (retcode != DDS::RETCODE_OK) { printf("delete_participant error %d\n", retcode);	}
-		}//if
-
 		//TBD:: error handling
 	}
 
@@ -78,13 +72,13 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 }//createDDSParticipant
 
 
-ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(DDS::Publisher* pub, DDS::Topic *topic)
+ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(/*DDS::Publisher* pub, */DDS::Topic *topic)
 {
 	DDS::DataWriterQos dw_qos;
-	if (pub==NULL || topic==NULL)
+	if (publisher_m==NULL || topic==NULL)
 		std::cerr << "BulkDataNTDDSPublisher::createDDSWriter pub || topic NULL" << std::cerr;
 
-	pub->get_default_datawriter_qos (&dw_qos);
+	publisher_m->get_default_datawriter_qos (&dw_qos);
 
 	// reliability bursty
 	dw_qos.reliability.kind =  DDS::RELIABLE_RELIABILITY_QOS;//DDS::BEST_EFFORT_RELIABILITY_QOS;
@@ -160,7 +154,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	}
 
 
-	DDS::DataWriter* temp_dw = pub->create_datawriter(topic,
+	DDS::DataWriter* temp_dw = publisher_m->create_datawriter(topic,
 														dw_qos,
 														writerListener,
 														ALL_STATUS/*DDS::STATUS_MASK_ALL*/

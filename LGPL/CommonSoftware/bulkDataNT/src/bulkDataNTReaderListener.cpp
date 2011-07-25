@@ -79,6 +79,7 @@ for(unsigned i=0; i<msgList.size()/*length()*/; i++)
     			cout << listName << " startSend: parameter size: " << message.data.size() << endl;
     			data_length = 0;
     			start_time = ACE_OS::gettimeofday();
+    			// we still call the old cbReceive !!
     			ACE_Message_Block mb((const char*)&message.data[0], message.data.size()); // dirty ????
     			mb.length(message.data.size());
     			callback_m->cbStart(&mb);
