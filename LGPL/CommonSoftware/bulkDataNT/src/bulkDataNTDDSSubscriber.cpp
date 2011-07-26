@@ -23,6 +23,7 @@ BulkDataNTDDSSubscriber::~BulkDataNTDDSSubscriber()
 
 DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 {
+	DDS::ReturnCode_t ret;
 	if (participant_m==NULL)
 	{
 		printf("BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber participant NULL\n");
@@ -32,7 +33,7 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 	//SUBSCRIBER
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::SubscriberQos sub_qos;
-	participant_m->get_default_subscriber_qos(&sub_qos);
+	ret = participant_m->get_default_subscriber_qos(sub_qos);
 
 
 	DDS::Subscriber *sub = participant_m->create_subscriber(sub_qos,
@@ -48,12 +49,13 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 
 ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader(/*DDS::Subscriber* sub,*/ DDS::Topic *topic, DDS::DataReaderListener *listener)
 {
+	DDS::ReturnCode_t ret;
 	try
 	{
 	//READER
 			//Apply Qos Policies, in this case the partition
 			DDS::DataReaderQos dr_qos;
-			subscriber_m ->get_default_datareader_qos (&dr_qos);
+			ret = subscriber_m ->get_default_datareader_qos (dr_qos);
 	//		std::cout << "dr_qos.livelines.lease_duration.sec = " << dr_qos.liveliness.lease_duration.sec << std::endl;
 			dr_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
 	//		dr_qos.reliability.synchronous = TRUE;
@@ -139,7 +141,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 				DDS::DataReader *dr = subscriber_m->create_datareader(topic,
 						dr_qos,
 						listener,
-						ALL_STATUS);
+						DDS::STATUS_MASK_ALL/*ALL_STATUS*/);
 				if(dr==NULL)
 				{
 					std::cerr << "create_datareader failed" << std::endl;

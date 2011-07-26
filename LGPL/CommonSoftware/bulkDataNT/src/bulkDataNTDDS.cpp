@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.3 2011/07/25 13:51:01 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,6 +54,7 @@ BulkDataNTDDS::~BulkDataNTDDS()
 
 DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 {
+	DDS::ReturnCode_t ret;
 	if (participant_m==0)
 	{
 		std::cerr << "BulkDataNTDDS::createDDSTopic participant is 0" << std::cerr << endl;
@@ -62,10 +63,10 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 //TOPIC
 	//TBD: check if topic already exists find_topic ??
 		DDS::TopicQos topic_qos;
-		participant_m->get_default_topic_qos(&topic_qos);
+		ret = participant_m->get_default_topic_qos(topic_qos);
 //		topic_qos.ownership.kind = DDS_EXCLUSIVE_OWNERSHIP_QOS;
 		topic_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS; //::DDS::BEST_EFFORT_RELIABILITY_QOS;
-		topic_qos.durability.kind = DDS::VOLATILE_DURABILITY_QOS;
+//		topic_qos.durability.kind = DDS::VOLATILE_DURABILITY_QOS;
 //		topic_qos.resource_limits.max_samples_per_instance = 2;
 		//TBD: type name could be a parameter of the method or class member
 

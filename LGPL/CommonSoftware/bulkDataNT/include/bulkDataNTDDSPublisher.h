@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.3 2011/07/25 13:50:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.4 2011/07/26 15:18:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,8 @@
 #endif
 
 #include "bulkDataNTDDS.h"
-#include "bulkDataNTDataWriter.hh"
+//CoreDX
+//#include "bulkDataNTDataWriter.hh"
 
 namespace AcsBulkdata
 {

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.5 2011/07/26 09:18:11 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.6 2011/07/26 15:20:48 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -32,14 +32,14 @@
 #    None
 #------------------------------------------------------------------------
 
-#
+
 # user definable C-compilation flags
-USER_CFLAGS =   
+USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX 
 
 #
 # additional include and library search paths
-USER_INC = -I$(COREDX_TOP)/target/include
-USER_LIB = -L$(COREDX_TOP)/target/Linux_2.6_x86_gcc34/lib
+USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
+USER_LIB = -L$(NDDSHOME)/lib/i86Linux2.6gcc4.1.1  
 
 #
 # MODULE CODE DESCRIPTION:
@@ -79,9 +79,11 @@ LIBRARIES_L     =
 # bulkDataNTSender_OBJECTS   = bulkDataNTDDS bulkDataNTDDSPublisher bulkDataNTBase bulkDataNTSender bulkDataNT bulkDataNTSupport bulkDataNTPlugin
 
 bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream \
-					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
+						bulkDataNT bulkDataNTSupport bulkDataNTPlugin	
+#					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
 bulkDataNT_LIBS = ACSBulkDataError
-bulkDataNT_LDFLAGS = -ldds_cpp -ldds -lACE -lTAO_AV
+bulkDataNT_LDFLAGS = -lnddscpp -lnddsc -lnddscore  -lrt -l	dl -lnsl -lm -lpthread -lstdc++ -lACE -lTAO_AV
+#-ldds_cpp -ldds -lACE -lTAO_AV
 
 
 #bulkDataNTSender_OBJECTS   = bulkDataNTDDSPublisher bulkDataNTSender bulkDataNTSenderImpl
@@ -91,8 +93,7 @@ bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
 bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
-bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener 
-#bulkDataNTCallback 
+bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener bulkDataNTCallback 
 bulkDataNTReceiver_LIBS = bulkDataNT  
 
 #
@@ -220,10 +221,10 @@ endif
 #
 # TARGETS
 # -------
-all:	do_all
+all: do_dds_gen	do_all
 	@echo " . . . 'all' done" 
 
-clean : clean_all 
+clean : clean_all dds_clean
 	@echo " . . . clean done"
 
 clean_dist : clean_all clean_dist_all 
@@ -235,11 +236,15 @@ man   : do_man
 install : install_all
 	@echo " . . . installation done"
 	
-do_dds_gen:
-	$(COREDX_TOP)/host/bin/Linux_2.6_x86_gcc34_coredx_ddl -f  ../idl/bulkDataNT.idl -l cpp; \
-	rename .cc .cpp *.cc; \
-	mv *.hh ../include
+	
+do_dds_gen: bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp bulkDataNT.h  bulkDataNTSupport.h bulkDataNTPlugin.h
+	
+bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp bulkDataNT.h  bulkDataNTSupport.h bulkDataNTPlugin.h : ../idl/bulkDataNT.idl
+	$(NDDSHOME)/scripts/rtiddsgen -namespace -replace -d ../src ../idl/bulkDataNT.idl; \
+	rename .cxx .cpp *.cxx; \
+	mv *.h ../include
 
-
-
+dds_clean:
+	@rm -f bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp; \
+	rm -f ../include/bulkDataNT.h  ../include/bulkDataNTSupport.h ../include/bulkDataNTPlugin.h
 #___oOo___

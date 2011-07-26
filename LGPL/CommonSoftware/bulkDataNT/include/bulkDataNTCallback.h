@@ -101,13 +101,13 @@ class BulkDataCallback
 */
     /********************* methods to be implemented by the user *****************/
 
-    //deprecated !!
-    virtual int cbStart(ACE_Message_Block * userParam_p = 0) = 0;
-    virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0){return 0;};//=0;
+    //Depreciated !!
+    virtual int cbStart(ACE_Message_Block * userParam_p = 0){return 0;}
+    virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0)=0;
 
-    //deprecated !!
-    virtual int cbReceive(ACE_Message_Block * frame_p) = 0;
-    virtual int cbReceive(unsigned char * frame_p, unsigned  int size){return 0;};//=0;
+    //Depreciated !!
+    virtual int cbReceive(ACE_Message_Block * frame_p) {return 0;}
+    virtual int cbReceive(unsigned char * frame_p, unsigned  int size)=0;
 
     virtual int cbStop() = 0;
 

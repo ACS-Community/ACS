@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2011/07/25 13:51:02 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/07/26 15:20:48 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -35,10 +35,13 @@
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
+#USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX 
+
 
 #
 # additional include and library search paths
-USER_INC = -I$(COREDX_TOP)/target/include 
+#USER_INC = -I$(COREDX_TOP)/target/include 
+USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
 #USER_LIB = 
 
 #

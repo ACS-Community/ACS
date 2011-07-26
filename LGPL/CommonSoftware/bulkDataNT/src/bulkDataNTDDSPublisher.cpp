@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.3 2011/07/25 13:51:01 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,6 +50,7 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 
 DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 {
+	DDS::ReturnCode_t ret;
 	if (participant_m==NULL)
 	{
 		printf("participant NULL\n");
@@ -58,7 +59,7 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 //PUBLISHER
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::PublisherQos pub_qos;
-	participant_m->get_default_publisher_qos(&pub_qos);
+	ret = participant_m->get_default_publisher_qos(pub_qos);
 	//pub_qos.asynchronous_publisher.thread.priority =    RTI_OSAPI_THREAD_PRIORITY_HIGH;
 	DDS::Publisher *pub = participant_m->create_publisher(pub_qos,
 			NULL,
@@ -74,11 +75,12 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 
 ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(/*DDS::Publisher* pub, */DDS::Topic *topic)
 {
+	DDS::ReturnCode_t ret;
 	DDS::DataWriterQos dw_qos;
 	if (publisher_m==NULL || topic==NULL)
 		std::cerr << "BulkDataNTDDSPublisher::createDDSWriter pub || topic NULL" << std::cerr;
 
-	publisher_m->get_default_datawriter_qos (&dw_qos);
+	ret = publisher_m->get_default_datawriter_qos (dw_qos);
 
 	// reliability bursty
 	dw_qos.reliability.kind =  DDS::RELIABLE_RELIABILITY_QOS;//DDS::BEST_EFFORT_RELIABILITY_QOS;
@@ -88,11 +90,11 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.history.depth  = 1; // maybe it is not good if it is too big -> it slows the writer and  receivers down if there is a rpoblem with one receiver
 	dw_qos.resource_limits.max_samples = 200;//worst_burst_in_samples;
 	dw_qos.resource_limits.max_samples_per_instance = dw_qos.resource_limits.max_samples;
-	dw_qos.resource_limits.max_instances = 1;
+//	dw_qos.resource_limits.max_instances = 1;
 
-	/* RTI
+	// RTI
 	 dw_qos.resource_limits.initial_samples = 1;//worst_burst_in_samples;
-
+/*
 	dw_qos.protocol.push_on_write = DDS_BOOLEAN_TRUE;
 
 
@@ -157,7 +159,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter(topic,
 														dw_qos,
 														writerListener,
-														ALL_STATUS/*DDS::STATUS_MASK_ALL*/
+														/*ALL_STATUS*/DDS::STATUS_MASK_ALL
 														);
 	if(/*CORBA::is_nil(dw.in())*/temp_dw==NULL){
 		std::cerr << "create datawriter failed" << std::endl;

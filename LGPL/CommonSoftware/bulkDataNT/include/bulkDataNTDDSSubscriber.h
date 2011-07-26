@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.3 2011/07/25 13:50:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@
 #endif
 
 #include "bulkDataNTDDS.h"
-#include "bulkDataNTDataReader.hh"
+//#include "bulkDataNTDataReader.hh"
 
 namespace AcsBulkdata
 {

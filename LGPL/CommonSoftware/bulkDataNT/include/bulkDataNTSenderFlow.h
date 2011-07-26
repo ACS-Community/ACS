@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.2 2011/07/26 15:18:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,7 +90,7 @@ protected:
 
 
 	// frame
-	ACSBulkData::BulkDataNTFrame frame;
+	ACSBulkData::BulkDataNTFrame *frame;
 
 };//class BulkDataSenderFlow
 

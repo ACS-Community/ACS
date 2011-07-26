@@ -2,8 +2,13 @@
 #define BULKDATA_NT_READER_LISTENER
 
 
-#include "bulkDataNTDataReader.hh"
-#include <dds/dds.hh>
+//CoreDX
+//#include "bulkDataNTDataReader.hh"
+//#include <dds/dds.hh>
+
+//#include <ndds/ndds_cpp.h>
+#include "bulkDataNTSupport.h"
+#include <ndds/ndds_namespace_cpp.h>
 
 
 #include "bulkDataNTCallback.h"

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.1 2011/07/25 13:51:01 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.2 2011/07/26 15:18:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.1 2011/07/25 13:51:01 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.2 2011/07/26 15:18:23 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -97,18 +97,18 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	// should we wait for all ACKs? timeout should be configurable
 	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
-	/* RTI
-	// do we have to create the frame each time or ... ?
-	 frame =  RTIACSBulkData::BulkDataNTFrameTypeSupport::create_data();
+
+	//TBD  RTI do we have to create the frame each time or  just once in the constructor ... ?
+	 frame =  ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
 		printf("BD_DDS::BDdataMessageTypeSupport::create_data error - frame null\n");
 		// delete
 	//TBD:: error handling
 	}
-	*/
 
-	frame.dataType = ACSBulkData::BD_DATA;  //we are going to send data
-    frame.data.resize(sizeOfFrame);//	frame.data.length(sizeOfFrame); // do we actually need resize ?
+
+	frame->dataType = ACSBulkData::BD_DATA;  //we are going to send data
+	frame->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
 
 	std::cout <<  " Going to send: " << len << " Bytes";
 	std::cout << " = (" << numOfFrames << " times chunks of size: " << sizeOfFrame << " bytes => ";
@@ -123,18 +123,20 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 		if (i==(numOfIter-1) && restFrameSize>0)
 		{
 			// last frame
-			frame.data.resize(restFrameSize);
-			std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+restFrameSize), frame.data.begin() );
+			frame->data.length(sizeOfFrame); //frame.data.resize(restFrameSize);
+			frame->data.from_array((buffer+(i*sizeOfFrame)), restFrameSize);
+			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+restFrameSize), frame.data.begin() );
 		}else
 		{
-			std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
+			frame->data.from_array((buffer+(i*sizeOfFrame)), sizeOfFrame);
+			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
 		}
 
 
-		frame.restDataLength = numOfIter-1-i;
+		frame->restDataLength = numOfIter-1-i;
 
 
-		ret = ddsDataWriter_m->write(&frame, handle);
+		ret = ddsDataWriter_m->write(*frame, handle);
 		if( ret != DDS::RETCODE_OK) {
 
 // RTI			senderFlows_m[flownumber].dataWriter->get_reliable_writer_cache_changed_status(status);
@@ -200,22 +202,22 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		// delete
 		//TBD:: error handling
 	}
-/* RTI
-	// do we have to create the frame each time or ... ?
+
+	//RTI do we have to create the frame each time or ... ?
 	frame = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
 		printf("BD_DDS::BDdataMessageTypeSupport::create_data error - frame null\n");
 		// delete
 		//TBD:: error handling
 	}
-*/
-	//frame
-	frame.dataType = dataType;
-	frame.data.resize/*length*/(len);
-	if (param!=0 && len!=0)
-		frame.data.assign(len, *param);  //	frame.data.from_array(param, len); //1st parameter  is of type const unsigned char !!
 
-	ret = ddsDataWriter_m->write(&frame, handle);
+	//frame
+	frame->dataType = dataType;
+	frame->data./*resize*/length(len);
+	if (param!=0 && len!=0)
+		frame->data.from_array(param, len); //frame.data.assign(len, *param);   //1st parameter  is of type const unsigned char !!
+
+	ret = ddsDataWriter_m->write(*frame, handle);
 	if( ret != DDS::RETCODE_OK)
 	{
 		//TBD EH  special for timeout
