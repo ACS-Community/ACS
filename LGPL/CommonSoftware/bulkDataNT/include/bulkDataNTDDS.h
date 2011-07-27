@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.5 2011/07/27 07:12:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.6 2011/07/27 07:32:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -100,20 +100,12 @@ protected:
 	// so for each flow there is at least a topic + writer + publisher(?)
 //	ACSBulkData::BulkDataNTFrameDataWriter *dw;
 
-	/// disable defualt - empty constructor
+	/// disable default - empty constructor
 	BulkDataNTDDS();
-
-	/**
-	 * ALMA C++ coding standards state assignment operators should be disabled.
-	 */
+	/// ALMA C++ coding standards state assignment operators should be disabled.
 	void operator=(const BulkDataNTDDS&);
-
-	/**
-	 * ALMA C++ coding standards state copy constructors should be disabled.
-	 */
+	/// ALMA C++ coding standards state copy constructors should be disabled.
 	BulkDataNTDDS(const BulkDataNTDDS&);
-
-
 };//class BulkDataNTDDS
 
 };

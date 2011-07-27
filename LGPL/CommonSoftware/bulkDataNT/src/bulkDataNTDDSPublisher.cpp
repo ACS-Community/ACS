@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.5 2011/07/27 07:12:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.6 2011/07/27 07:33:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,10 +28,7 @@
 using namespace AcsBulkdata;
 using namespace std;
 
-BulkDataNTDDSPublisher::BulkDataNTDDSPublisher()
-{
-	publisher_m = createDDSPublisher();
-}
+
 
 BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p) :
 		BulkDataNTDDS(p)
@@ -170,7 +167,6 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	return ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
 
 }//createDDSWriter
-
 
 /*___oOo___*/
 

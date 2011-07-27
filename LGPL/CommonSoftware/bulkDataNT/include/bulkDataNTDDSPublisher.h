@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.5 2011/07/27 07:12:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.6 2011/07/27 07:32:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,6 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTDDSPublisher(); // do we need it ??
 	BulkDataNTDDSPublisher(DDS::DomainParticipant *p);
 
 
@@ -70,6 +69,12 @@ protected:
 	DDS::Publisher* createDDSPublisher(); // should return publisher ?
 	DDS::Publisher *publisher_m;
 
+	/// disable default - empty constructor
+	BulkDataNTDDSPublisher();
+	/// ALMA C++ coding standards state assignment operators should be disabled.
+	void operator=(const BulkDataNTDDSPublisher&);
+	/// ALMA C++ coding standards state copy constructors should be disabled.
+	BulkDataNTDDSPublisher(const BulkDataNTDDSPublisher&);
 };//class BulkDataNTDDSPublisher
 
 };

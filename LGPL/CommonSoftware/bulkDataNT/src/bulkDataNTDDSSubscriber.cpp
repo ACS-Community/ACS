@@ -5,10 +5,6 @@
 using namespace AcsBulkdata;
 using namespace std;
 
-BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber()
-{
-	subscriber_m = createDDSSubscriber();
-}
 
 BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p) :
 		BulkDataNTDDS(p)
@@ -167,3 +163,4 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		}
 
 }
+
