@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.5 2011/07/27 13:28:31 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.6 2011/07/27 14:42:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.5 2011/07/27 13:28:31 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.6 2011/07/27 14:42:28 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -52,7 +52,6 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
 	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m);
-
 }
 
 
@@ -61,6 +60,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	senderStream_m->removeFlowFromMap(flowName_m.c_str());
 
 	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
@@ -124,9 +124,8 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	frame->dataType = ACSBulkData::BD_DATA;  //we are going to send data
 	frame->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
 
-	std::cout <<  " Going to send: " << len << " Bytes";
-	std::cout << " = (" << numOfFrames << " times chunks of size: " << sizeOfFrame << " bytes => ";
-	std::cout << numOfFrames*sizeOfFrame << "Bytes ) + " <<  restFrameSize << " Bytes"<< std::endl;
+	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d",
+			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize));
 
 //	start_time = ACE_OS::gettimeofday();
 
@@ -188,21 +187,12 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	}//if
 
 
-
 }//sendData
 
 void BulkDataNTSenderFlow::stopSend()
 {
 	writeFrame(ACSBulkData::BD_STOP);
 }//stopSend
-
-
-
-
-
-
-
-
 
 void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len)
 {
