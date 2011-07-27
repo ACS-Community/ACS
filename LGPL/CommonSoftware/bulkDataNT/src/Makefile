@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.6 2011/07/26 15:20:48 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.7 2011/07/27 06:48:35 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -66,7 +66,10 @@ xxxxx_LIBS      =
 #
 # Includes (.h) files (public only)
 # ---------------------------------
-INCLUDES        = bulkDataNTBase.h bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h bulkDataNTDDSSubscriber.h bulkDataNTReaderListener.h bulkDataNTReceiverFlow.h bulkDataNTReceiver.h bulkDataNTReceiver.i bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i bulkDataNTSenderFlow.h bulkDataNTSender.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h
+INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h bulkDataNTDDSSubscriber.h \
+				bulkDataNTReaderListener.h bulkDataNTReceiverFlow.h bulkDataNTReceiver.h bulkDataNTReceiver.i \
+				bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i \
+				bulkDataNTSenderFlow.h bulkDataNTSender.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h
 
 #
 # Libraries (public and local)
