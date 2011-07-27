@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.2 2011/07/27 14:05:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.3 2011/07/27 14:42:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.2 2011/07/27 14:05:51 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.3 2011/07/27 14:42:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -38,14 +38,24 @@ using namespace std;
 BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name)
 : BulkDataNTStream(name)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 }
 
 BulkDataNTSenderStream::~BulkDataNTSenderStream()
 {
-}
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
+	SenderFlowMap::iterator i = flows_m.begin();
+	for(;i!=flows_m.end(); i++)
+	{
+		delete (i->second);
+	}
+	flows_m.clear();
+ }
 
 BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName/*, cb*/)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	if (this->getFlow(flowName)!=0)
 	{
 		std::cerr << "Flow: " << flowName << " already exists" << std::endl;
@@ -53,7 +63,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName/*,
 	}
 
 	BulkDataNTSenderFlow* flow = new BulkDataNTSenderFlow(this, flowName);
-	//add to map
+
 	flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
 	return flow;
 }//createFlow
@@ -61,6 +71,8 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName/*,
 
 BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	SenderFlowMap::iterator iter = flows_m.find(flowName);
 	if ( iter != flows_m.end() )
 		return iter->second;
@@ -71,6 +83,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 
 void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	SenderFlowMap::iterator iter = flows_m.find(flowName);
 	if ( iter != flows_m.end() )
 	{
@@ -85,6 +98,7 @@ void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 
 void BulkDataNTSenderStream::createMultipleFlowsFromConfig(const char *config)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	try
 	{
 		if(ACE_OS::strcmp(config, "") == 0)
