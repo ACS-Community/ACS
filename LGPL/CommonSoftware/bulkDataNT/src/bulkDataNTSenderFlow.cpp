@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.6 2011/07/27 14:42:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.7 2011/07/27 15:13:58 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.6 2011/07/27 14:42:28 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.7 2011/07/27 15:13:58 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -60,6 +60,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
 
 	senderStream_m->removeFlowFromMap(flowName_m.c_str());
 
@@ -67,12 +68,20 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	DDS::DomainParticipant *participant = senderStream_m->getDDSParticipant();
 	if (participant!=0)
 	{
-		participant->delete_datawriter(ddsDataWriter_m);
-		participant->delete_topic(ddsTopic_m);
+		ret = participant->delete_datawriter(ddsDataWriter_m);
+		if (ret!=DDS::RETCODE_OK)
+		{
+		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data writer (%d)", ret));
+		}
+		ret = participant->delete_topic(ddsTopic_m);
+		if (ret!=DDS::RETCODE_OK)
+		{
+			ACS_SHORT_LOG((LM_ERROR, "Problem deleting topic (%d)", ret));
+		}
 	}
 	else
 	{
-		//TBD: error handling
+		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data write and topic participant is NULL"));
 	}
 	delete ddsPublisher_m;
 }//~BulkDataNTSenderFlow
