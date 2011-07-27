@@ -1,0 +1,54 @@
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp	2007-02-12 04:54:49.000000000 -0300
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/InterfaceDef_i.cpp	2011-07-19 09:38:12.000000000 -0400
+@@ -1071,18 +1071,14 @@
+                                                 0,
+                                                 attrs_key);
+ 
+-          this->repo_->config ()->get_integer_value (attrs_key,
+-                                                     "count",
+-                                                     count);
+-
+-          for (u_int j = 0; j < count; ++j)
++          int index = 0;
++          ACE_TString section_name;
++          while (this->repo_->config ()->enumerate_sections (attrs_key, index++, section_name) == 0)
+             {
+-              char *stringified = TAO_IFR_Service_Utils::int_to_string (j);
+-              this->repo_->config ()->open_section (attrs_key,
+-                                                    stringified,
+-                                                    0,
+-                                                    attr_key);
+-
++              if(strcmp("inherited",section_name.c_str()) == 0) continue;
++              if(strcmp("ops",section_name.c_str()) == 0) continue;
++              if(strcmp("attrs",section_name.c_str()) == 0) continue;
++              this->repo_->config ()->open_section (attrs_key, section_name.c_str (), 0, attr_key);
+               key_queue.enqueue_tail (attr_key);
+             }
+         }
+@@ -1123,18 +1119,14 @@
+                                                 0,
+                                                 ops_key);
+ 
+-          this->repo_->config ()->get_integer_value (ops_key,
+-                                                     "count",
+-                                                     count);
+-
+-          for (u_int j = 0; j < count; ++j)
++          int index = 0;
++          ACE_TString section_name;
++          while (this->repo_->config ()->enumerate_sections (ops_key, index++, section_name) == 0)
+             {
+-              char *stringified = TAO_IFR_Service_Utils::int_to_string (j);
+-              this->repo_->config ()->open_section (ops_key,
+-                                                    stringified,
+-                                                    0,
+-                                                    op_key);
+-
++              if(strcmp("inherited",section_name.c_str()) == 0) continue;
++              if(strcmp("ops",section_name.c_str()) == 0) continue;
++              if(strcmp("attrs",section_name.c_str()) == 0) continue;
++              this->repo_->config ()->open_section (ops_key, section_name.c_str (), 0, op_key);
+               key_queue.enqueue_tail (op_key);
+             }
+         }

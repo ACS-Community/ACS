@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildTAO,v 1.45 2010/12/07 10:01:36 bjeram Exp $"
+# "@(#) $Id: buildTAO,v 1.46 2011/07/27 15:13:24 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -111,6 +111,8 @@ echo "- TAOLog.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAOLog.patch
 echo "- AVtimeout.patch"
 patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/AVtimeout.patch
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Service_preloaded_CORBA_module.patch
+patch -p1 < $CURR_DIR/../PRODUCTS/ACE+TAO_PATCHES/TAO_IFR_Inheritance_problems_workaround.patch
 
 echo "done"
 echo ""

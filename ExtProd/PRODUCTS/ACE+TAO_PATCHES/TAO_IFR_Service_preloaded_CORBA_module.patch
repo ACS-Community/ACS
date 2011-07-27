@@ -1,0 +1,16 @@
+diff -Naur TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/IFR_Service_Utils.cpp TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/IFR_Service_Utils.cpp
+--- TAO.org/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/IFR_Service_Utils.cpp	2008-11-01 11:09:11.000000000 -0300
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/IFRService/IFR_Service_Utils.cpp	2011-04-21 08:31:39.000000000 -0400
+@@ -786,6 +791,12 @@
+ {
+   TAO_IFR_Service_Utils::valid_container (container_kind,
+                                           contained_kind);
++     
++  /// IDL modules can be reopened, and thus pre-exist.                                        
++  if (contained_kind == CORBA::dk_Module)
++    {
++      return;
++    }
+ 
+   TAO_IFR_Service_Utils::pre_exist (id,
+                                     checker,
