@@ -8,6 +8,7 @@ int BulkDataCallback::cbStart(unsigned char* param, unsigned  int size)
 	ACE_Message_Block mb((char*)param, size); // dirty ????
 	mb.length(size);
 	this->cbStart(&mb);
+	return 0;
 }
 
 int BulkDataCallback::cbReceive(unsigned char * frame, unsigned  int size)
@@ -16,4 +17,5 @@ int BulkDataCallback::cbReceive(unsigned char * frame, unsigned  int size)
 	ACE_Message_Block mb((char*)frame, size); // dirty ????
 	mb.length(size);
 	this->cbReceive(&mb);
+	return 0;
 }
