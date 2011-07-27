@@ -40,7 +40,6 @@ public:
 int main()
 {
 	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream("TestFlow");
-	receiverStream.initialize();
 
 	receiverStream.createFlow("00");
 

@@ -6,7 +6,6 @@ using namespace AcsBulkdata;
 int main()
 {
 	BulkDataNTSenderStream senderStream1("TestFlow");
-	senderStream1.initialize();
 
 	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
 	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
