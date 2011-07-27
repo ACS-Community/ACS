@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.2 2011/07/27 07:12:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.3 2011/07/27 13:28:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.2 2011/07/27 07:12:10 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.3 2011/07/27 13:28:31 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -39,6 +39,8 @@ using namespace std;
 BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream, const char* flowName, BulkDataCallback *cb) :
 		receiverStream_m(receiverStream)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	std::string topicName;
 
 	flowName_m = flowName;
@@ -56,17 +58,28 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream,
 	dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
 
 	ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
-
-}
+}//BulkDataNTReceiverFlow
 
 
 BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	receiverStream_m->removeFlowFromMap(flowName_m.c_str());
+	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
+	DDS::DomainParticipant *participant = receiverStream_m->getDDSParticipant();
+	if (participant!=0)
+	{
+		participant->delete_datareader(ddsDataReader_m);
+		delete dataReaderListener_m;
+		participant->delete_topic(ddsTopic_m);
+	}
+	else
+	{
+		//TBD: error handling
+	}
 	delete ddsSubscriber_m;
 	// delete callback_m
-// +ddsDataWriter_m & ddsTopic_m ??
-}
+}//~BulkDataNTReceiverFlow
 
 
 /*___oOo___*/

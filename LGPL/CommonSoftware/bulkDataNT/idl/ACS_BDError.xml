@@ -4,12 +4,12 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSTopicCreatProblem" shortDescription="Problem to create DDS topic" description="">
+    <ErrorCode name="DDSTopicCreateProblem" shortDescription="Problem to create DDS topic" description="">
         <Member name="Topic" type="string" description="Topic name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSPublisherCreatProblem" shortDescription="Problem to create DDS publisher" description="">
+    <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
@@ -17,12 +17,25 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSDWCreatProblem" shortDescription="Problem to create DDS data writer" description="">
+    <ErrorCode name="DDSDWCreateProblem" shortDescription="Problem to create DDS data writer" description="">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
     <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
         <Member name="TypeName" type="string" description="Type name" />
+    </ErrorCode>
+    
+    
+    <ErrorCode name="DDSSubscriberCreateProblem" shortDescription="Problem to create DDS subscriber" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSSubscriberDestroyProblem" shortDescription="Problem to destroy  DDS subscriber" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDRCreateProblem" shortDescription="Problem to create DDS data reader" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
 </Type>

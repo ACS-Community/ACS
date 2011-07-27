@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.8 2011/07/27 10:06:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.9 2011/07/27 13:28:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		);
 		if (topic==0)
 		{
-			DDSTopicCreatProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			DDSTopicCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ex.setTopic(topicName);
 			throw ex;
 		}//if

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.6 2011/07/27 07:32:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.7 2011/07/27 13:28:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,8 +61,9 @@ public:
 		//should return generic writer and have another method in Base class that narrows
 	ACSBulkData::BulkDataNTFrameDataReader* createDDSReader(DDS::Topic *topic, DDS::DataReaderListener* listener);
 protected:
-	DDS::Subscriber* createDDSSubscriber();
 	DDS::Subscriber *subscriber_m;
+	DDS::Subscriber* createDDSSubscriber();
+	void destroyDDSSubscriber();
 
 	/// disable default - empty constructor
 	BulkDataNTDDSSubscriber();

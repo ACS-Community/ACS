@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.7 2011/07/27 10:06:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.8 2011/07/27 13:28:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,7 +24,7 @@
 */
 #include "bulkDataNTDDSPublisher.h"
 #include <iostream>
-#include "ACS_BDError.h"
+
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -46,9 +46,9 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 	{
 	destroyDDSPublisher();
 	}
-	catch(ACSErr::ACSbaseExImpl &ex)
+	catch(const ACSErr::ACSbaseExImpl &ex)
 	{
-
+		ex.log();
 	}
 }//~BulkDataNTDDSPublisher
 
@@ -73,7 +73,7 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 	DDS::Publisher *pub = participant_m->create_publisher(pub_qos, 0, DDS::STATUS_MASK_NONE);
 	if(pub==0)
 	{
-		DDSPublisherCreatProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		DDSPublisherCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
 
@@ -101,6 +101,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DataWriterQos dw_qos;
+
 	if (publisher_m==NULL || topic==NULL)
 	{
 		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -194,7 +195,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 														);
 	if(temp_dw==0)
 	{
-		DDSDWCreatProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		DDSDWCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
 
