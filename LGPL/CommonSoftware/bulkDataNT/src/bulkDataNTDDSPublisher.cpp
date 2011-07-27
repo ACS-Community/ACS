@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.6 2011/07/27 07:33:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.7 2011/07/27 10:06:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,9 +24,12 @@
 */
 #include "bulkDataNTDDSPublisher.h"
 #include <iostream>
+#include "ACS_BDError.h"
 
 using namespace AcsBulkdata;
 using namespace std;
+using namespace ACSErrTypeCommon;
+using namespace ACS_BDError;
 
 
 
@@ -39,45 +42,80 @@ BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p) :
 
 BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 {
+	try
+	{
+	destroyDDSPublisher();
+	}
+	catch(ACSErr::ACSbaseExImpl &ex)
+	{
 
-	//TBD: do we have to delete something here ?
-	//TBD delete DDS publisher
-}
+	}
+}//~BulkDataNTDDSPublisher
 
 
 DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
-	if (participant_m==NULL)
-	{
-		printf("participant NULL\n");
-		return NULL;
-	}
-//PUBLISHER
+
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::PublisherQos pub_qos;
 	ret = participant_m->get_default_publisher_qos(pub_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("get_default_publisher_qos");
+		throw ex;
+	}//if
+
 	//pub_qos.asynchronous_publisher.thread.priority =    RTI_OSAPI_THREAD_PRIORITY_HIGH;
-	DDS::Publisher *pub = participant_m->create_publisher(pub_qos,
-			NULL,
-			0/*DDS::STATUS_MASK_NONE*/);
-	if(pub==NULL){
-		std::cerr << "create publisher failed" << std::endl;
-		//TBD:: error handling
-	}
+	DDS::Publisher *pub = participant_m->create_publisher(pub_qos, 0, DDS::STATUS_MASK_NONE);
+	if(pub==0)
+	{
+		DDSPublisherCreatProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		throw ex;
+	}//if
 
 	return pub;
 }//createDDSParticipant
 
 
-ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(/*DDS::Publisher* pub, */DDS::Topic *topic)
+void  BulkDataNTDDSPublisher::destroyDDSPublisher()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
+	ret = participant_m->delete_publisher(publisher_m);
+	publisher_m = 0;
+	if (ret == 0)
+	{
+		DDSPublisherDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		throw ex;
+	}//if
+}//destroyDDSPublisher
+
+
+ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic *topic)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DataWriterQos dw_qos;
 	if (publisher_m==NULL || topic==NULL)
-		std::cerr << "BulkDataNTDDSPublisher::createDDSWriter pub || topic NULL" << std::cerr;
+	{
+		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setVariable("publisher_m or topic");
+		throw ex;
+	}
 
 	ret = publisher_m->get_default_datawriter_qos (dw_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("get_default_datawriter_qos");
+		throw ex;
+	}//if
 
 	// reliability bursty
 	dw_qos.reliability.kind =  DDS::RELIABLE_RELIABILITY_QOS;//DDS::BEST_EFFORT_RELIABILITY_QOS;
@@ -141,31 +179,27 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 */
 
 	//Create the data writer listener
-
 	//BDDDSWriterListenerImpl* writer_listener_servant =	new BDDDSWriterListenerImpl();
-
 	DDS::DataWriterListener* writerListener =  NULL; //writer_listener_servant;
 	//BDDDSWriterListenerImpl* writer_listener_servant =	dynamic_cast<BDDDSWriterListenerImpl*>(writerListener.in());
-
-	if(/*CORBA::is_nil (writerListener.in())*/writerListener==NULL){
+	if(writerListener==NULL){
 		std::cerr << "writer listener is nil" << std::endl;
 //TBD error handling
 	}
-
 
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter(topic,
 														dw_qos,
 														writerListener,
 														/*ALL_STATUS*/DDS::STATUS_MASK_ALL
 														);
-	if(/*CORBA::is_nil(dw.in())*/temp_dw==NULL){
-		std::cerr << "create datawriter failed" << std::endl;
-		return NULL;
-	}
+	if(temp_dw==0)
+	{
+		DDSDWCreatProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		throw ex;
+	}//if
 
 	//? is it ok to narrow a local temp_dw and return it
 	return ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
-
 }//createDDSWriter
 
 /*___oOo___*/

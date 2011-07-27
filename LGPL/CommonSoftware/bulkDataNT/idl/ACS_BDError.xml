@@ -1,10 +1,28 @@
 <Type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd" name="ACS_BDError" type="56" _prefix="alma">
-    <ErrorCode name="DDSQoSSettingProblem" shortDescription="Problem to set DDS QoS" description="">
+    <ErrorCode name="DDSQoSSetProblem" shortDescription="Problem to set DDS QoS" description="">
         <Member name="QoS" type="string" description="QoS name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSTopicCreationProblem" shortDescription="Problem to create DDS topic" description="">
+    <ErrorCode name="DDSTopicCreatProblem" shortDescription="Problem to create DDS topic" description="">
+        <Member name="Topic" type="string" description="Topic name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherCreatProblem" shortDescription="Problem to create DDS publisher" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSPublisherDestroyProblem" shortDescription="Problem to destroy  DDS publisher" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDWCreatProblem" shortDescription="Problem to create DDS data writer" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+        <Member name="TypeName" type="string" description="Type name" />
     </ErrorCode>
 </Type>

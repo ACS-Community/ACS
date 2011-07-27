@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.6 2011/07/27 07:32:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.7 2011/07/27 10:06:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,11 +34,6 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-/* RTI
-#include <ndds/ndds_cpp.h>
-#include <ndds/ndds_namespace_cpp.h>
-#include "bulkDataNTSupport.h"
-*/
 //COREDX
 //#include "bulkDataNTTypeSupport.hh"
 
@@ -50,11 +45,19 @@
 #define RTI_LINUX
 #endif
 
+
+//DDS RTI generated
 #include "bulkDataNTDDS.h"
 #include "bulkDataNTSupport.h"
-#include "ndds/ndds_cpp.h"
 
+//DDS RTI library
+#include "ndds/ndds_cpp.h"
 #include "ndds/ndds_namespace_cpp.h"
+
+
+#include <logging.h>
+#include <ACSErrTypeCommon.h>
+#include "ACS_BDError.h"
 
 namespace AcsBulkdata
 {

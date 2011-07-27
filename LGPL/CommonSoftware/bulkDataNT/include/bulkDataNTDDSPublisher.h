@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.6 2011/07/27 07:32:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.7 2011/07/27 10:06:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,11 +63,16 @@ public:
 
 
 	//should return generic writer and have another method in Base class that narrows
-	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(/*DDS::Publisher* pub,*/ DDS::Topic *topic);
+	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Topic *topic);
+
 
 protected:
-	DDS::Publisher* createDDSPublisher(); // should return publisher ?
 	DDS::Publisher *publisher_m;
+
+	DDS::Publisher* createDDSPublisher();
+	///Destroys publisher_m
+	void  destroyDDSPublisher();
+
 
 	/// disable default - empty constructor
 	BulkDataNTDDSPublisher();

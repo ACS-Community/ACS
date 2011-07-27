@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.3 2011/07/27 07:12:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.4 2011/07/27 10:06:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.3 2011/07/27 07:12:10 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.4 2011/07/27 10:06:11 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -43,7 +43,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 
 	flowName_m = flowName;
 
-	// should be refactor to have just one object for comunication !! DDSDataWriter or similar
+	// should be reactor to have just one object for comunication !! DDSDataWriter or similar
 	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant());
 
 	topicName = senderStream_m->getName() + "#" + flowName_m;
@@ -58,10 +58,22 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	senderStream_m->removeFlowFromMap(flowName_m.c_str());
+
+	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
+	DDS::DomainParticipant *participant = senderStream_m->getDDSParticipant();
+	if (participant!=0)
+	{
+		participant->delete_datawriter(ddsDataWriter_m);
+		participant->delete_topic(ddsTopic_m);
+	}
+	else
+	{
+		//TBD: error handling
+	}
 	delete ddsPublisher_m;
-// +ddsDataWriter_m & ddsTopic_m ??
-}
+}//~BulkDataNTSenderFlow
 
 
 
@@ -165,7 +177,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 		}//if
 	}//for
 
-// do we need to wait for ACK after each fram is sent or at the edn or not at all, configurable ?
+// do we need to wait for ACK after each frame is sent or at the edn or not at all, configurable ?
 	ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
 	if( ret != DDS::RETCODE_OK) {
 		std::cerr << " !Failed while waiting for acknowledgment of "
