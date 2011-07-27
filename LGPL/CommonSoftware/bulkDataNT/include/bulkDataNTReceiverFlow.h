@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.2 2011/07/27 07:12:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.3 2011/07/27 07:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,6 +69,13 @@ protected:
 	DDS::Topic *ddsTopic_m;
 	BulkDataNTReaderListener *dataReaderListener_m;  // we can keep it in  CB ?
 	BulkDataCallback *callback_m; //we can keep it in "Subscriber" ?
+
+	/// disable default - empty constructor
+	BulkDataNTReceiverFlow();
+	/// ALMA C++ coding standards state assignment operators should be disabled.
+	void operator=(const BulkDataNTReceiverFlow&);
+	/// ALMA C++ coding standards state copy constructors should be disabled.
+	BulkDataNTReceiverFlow(const BulkDataNTReceiverFlow&);
 };//class BulkDataSenderFlow
 
 };

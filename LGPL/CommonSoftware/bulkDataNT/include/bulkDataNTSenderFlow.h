@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.3 2011/07/27 07:12:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.4 2011/07/27 07:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,6 +92,12 @@ protected:
 	// frame
 	ACSBulkData::BulkDataNTFrame *frame;
 
+	/// disable default - empty constructor
+	BulkDataNTSenderFlow();
+	/// ALMA C++ coding standards state assignment operators should be disabled.
+	void operator=(const BulkDataNTSenderFlow&);
+	/// ALMA C++ coding standards state copy constructors should be disabled.
+	BulkDataNTSenderFlow(const BulkDataNTSenderFlow&);
 };//class BulkDataSenderFlow
 
 };

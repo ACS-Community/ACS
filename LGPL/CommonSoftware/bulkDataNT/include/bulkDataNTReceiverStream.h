@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.2 2011/07/27 07:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -200,6 +200,12 @@ void setReceiverName(ACE_CString recvName);
 	typedef std::map<std::string, BulkDataNTReceiverFlow*> ReceiverFlowMap;
 	ReceiverFlowMap receiverFlows_m;
 
+	/// disable default - empty constructor
+	BulkDataNTReceiverStream();
+	/// ALMA C++ coding standards state assignment operators should be disabled.
+	void operator=(const BulkDataNTReceiverStream&);
+	/// ALMA C++ coding standards state copy constructors should be disabled.
+	BulkDataNTReceiverStream(const BulkDataNTReceiverStream&);
 };//class BulkDataNTReceiverStream
 
 };//namespace AcsBulkdata

@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.2 2011/07/27 07:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -96,6 +96,12 @@ protected:
 	typedef  std::map<std::string, BulkDataNTSenderFlow*> SenderFlowMap;
 	SenderFlowMap flows_m;
 
+	/// disable default - empty constructor
+	BulkDataNTSenderStream();
+	/// ALMA C++ coding standards state assignment operators should be disabled.
+	void operator=(const BulkDataNTSenderStream&);
+	/// ALMA C++ coding standards state copy constructors should be disabled.
+	BulkDataNTSenderStream(const BulkDataNTSenderStream&);
 };//class BulkDataNTSenderStream
 
 };

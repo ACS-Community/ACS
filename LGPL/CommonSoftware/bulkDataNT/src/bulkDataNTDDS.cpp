@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.6 2011/07/27 07:33:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.7 2011/07/27 07:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -91,14 +91,6 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		return topic;
 }//createDDSTopic
 
-
-/*
-void BulkDataNTDDS::operator=(const BulkDataNTDDS&){}
-
-BulkDataNTDDS::BulkDataNTDDS(const BulkDataNTDDS&){}
-
-BulkDataNTDDS::BulkDataNTDDS() : participant_m(0){}
-*/
 
 
 /*___oOo___*/
