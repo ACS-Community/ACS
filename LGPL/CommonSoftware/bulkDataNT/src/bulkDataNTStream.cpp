@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.2 2011/07/26 15:18:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.3 2011/07/27 14:05:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,8 @@ using namespace AcsBulkdata;
 BulkDataNTStream::BulkDataNTStream(const char* name) :
 	streamName_m(name), factory_m(0), participant_m(0)
 {
-
+	createDDSFactory();
+	createDDSParticipant(); //should be somewhere else in initialize or createStream
 }
 
 
@@ -55,7 +56,7 @@ void BulkDataNTStream::createDDSFactory()
 
     NDDSConfigLogger::get_instance()->set_verbosity_by_category(
                         NDDS_CONFIG_LOG_CATEGORY_API,
-                        NDDS_CONFIG_LOG_VERBOSITY_STATUS_ALL);
+                        NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 
 }
 

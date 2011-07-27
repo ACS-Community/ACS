@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.2 2011/07/27 07:42:19 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.3 2011/07/27 14:05:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,12 +65,6 @@ public:
 	 * Destructor
 	 */
 	virtual ~BulkDataNTSenderStream();
-
-	//TBD with stream name or better to have initalizeStream or createStream(const char* name, const char *config)
-	// what should be a format of config parameter ?
-	// can the stream name defeine QoS profile (problem that we need one for sender aone fro receiver(s) or similar ?
-	void initialize();
-
 
 	// TBD: is this better than createSingleFlow and createMultipleFlows
 	// do we have to provide a name or just a number, for example we need three flows

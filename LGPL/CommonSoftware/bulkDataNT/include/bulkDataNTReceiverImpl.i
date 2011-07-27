@@ -63,7 +63,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 
 	try
 	{
-		receiverStream_m->initialize();
+		//receiverStream_m->initialize();
 
 		receiverStream_m->createMultipleFlowsFromConfig(buf); // actaully here we need just number of flows !!!
 		receiverStream_m->setReceiverName(name());

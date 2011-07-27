@@ -62,8 +62,7 @@ void BulkDataNTSenderImpl::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
 
 	try
 	{
-		getSenderStream()->initialize();
-
+//		getSenderStream()->initialize();
 		getSenderStream()->createMultipleFlowsFromConfig(buf);
 
 //		receiverObj_p->openReceiver();

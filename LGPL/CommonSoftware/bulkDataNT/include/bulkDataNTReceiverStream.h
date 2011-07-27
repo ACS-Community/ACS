@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.2 2011/07/27 07:42:19 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.3 2011/07/27 14:05:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,14 +67,6 @@ class BulkDataNTReceiverStream : public BulkDataNTStream
  */
 virtual ~BulkDataNTReceiverStream();
 
-/** Initialize the A/V
- *  @throw ACSBulkDataError::AVInitErrorExImpl
- *  @return void
- *  @htmlonly
- <br><hr>
- @endhtmlonly
-*/
-void initialize();
 
 
 // TBD: is this better than createSingleFlow and createMultipleFlows

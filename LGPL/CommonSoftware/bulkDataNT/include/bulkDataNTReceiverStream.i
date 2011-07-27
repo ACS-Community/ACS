@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.2 2011/07/27 14:05:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -47,14 +47,6 @@ template<class TReceiverCallback>
 BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 {
 	//destroyFlows(); //if flows have not been deleted
-}
-
-
-template<class TReceiverCallback>
-void BulkDataNTReceiverStream<TReceiverCallback>::initialize()
-{
-	createDDSFactory();
-	createDDSParticipant();
 }
 
 
