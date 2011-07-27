@@ -10,7 +10,7 @@ BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber()
 	subscriber_m = createDDSSubscriber();
 }
 
-BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(const DDS::DomainParticipant *p) :
+BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p) :
 		BulkDataNTDDS(p)
 {
 	subscriber_m = createDDSSubscriber();

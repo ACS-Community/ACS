@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.1 2011/07/25 13:50:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.2 2011/07/27 07:12:11 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTReceiverFlow(const BulkDataNTStream *senderStream, const char* flowName, BulkDataCallback *cb);
+	BulkDataNTReceiverFlow(BulkDataNTStream *senderStream, const char* flowName, BulkDataCallback *cb);
 
 	/**
 	 * Destructor
@@ -61,7 +61,7 @@ public:
 
 	//setCB();
 protected:
-	const AcsBulkdata::BulkDataNTStream *receiverStream_m;
+	AcsBulkdata::BulkDataNTStream *receiverStream_m;
 	std::string flowName_m;
 
 	AcsBulkdata::BulkDataNTDDSSubscriber *ddsSubscriber_m;

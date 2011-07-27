@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.1 2011/07/25 13:51:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.2 2011/07/27 07:12:10 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,7 +82,7 @@ public:
 
 protected:
 
-	const DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
+	DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
 
 	virtual void removeFlowFromMap(const char* flow)=0;
 

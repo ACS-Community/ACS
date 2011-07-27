@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.5 2011/07/27 07:12:10 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,8 +70,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTDDS();
-	BulkDataNTDDS(const DDS::DomainParticipant*);
+	BulkDataNTDDS(DDS::DomainParticipant*);
 
 	/**
 	 * Destructor
@@ -93,13 +92,27 @@ protected:
 
 
 //	DDS::DomainParticipantFactory *factory;
-	const DDS::DomainParticipant* participant_m;
+	DDS::DomainParticipant* participant_m;
 
 //	DDS::Publisher* pub;
 //	DDS::Topic* topic; // should be  an array just temporary
 	// + we need array of data writers
 	// so for each flow there is at least a topic + writer + publisher(?)
 //	ACSBulkData::BulkDataNTFrameDataWriter *dw;
+
+	/// disable defualt - empty constructor
+	BulkDataNTDDS();
+
+	/**
+	 * ALMA C++ coding standards state assignment operators should be disabled.
+	 */
+	void operator=(const BulkDataNTDDS&);
+
+	/**
+	 * ALMA C++ coding standards state copy constructors should be disabled.
+	 */
+	BulkDataNTDDS(const BulkDataNTDDS&);
+
 
 };//class BulkDataNTDDS
 

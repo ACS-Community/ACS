@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSSubscriber.h,v 1.5 2011/07/27 07:12:10 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,7 @@ public:
 	 * Constructor
 	 */
 	BulkDataNTDDSSubscriber();
-	BulkDataNTDDSSubscriber(const DDS::DomainParticipant *p);
+	BulkDataNTDDSSubscriber(DDS::DomainParticipant *p);
 
 	/**
 	 * Destructor

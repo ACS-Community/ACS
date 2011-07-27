@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.4 2011/07/26 15:18:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.5 2011/07/27 07:12:10 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,14 +28,8 @@
 using namespace AcsBulkdata;
 using namespace std;
 
-BulkDataNTDDS::BulkDataNTDDS() :
-	//: factory(0),
-	participant_m(0)
-{
 
-}
-
-BulkDataNTDDS::BulkDataNTDDS(const DDS::DomainParticipant* p) :
+BulkDataNTDDS::BulkDataNTDDS(DDS::DomainParticipant* p) :
 	participant_m(p)
 {
 
@@ -97,6 +91,12 @@ DDS::Topic* BulkDataNTDDS::createDDSTopic(const char* topicName)
 		return topic;
 }//createDDSTopic
 
+
+void BulkDataNTDDS::operator=(const BulkDataNTDDS&){}
+
+BulkDataNTDDS::BulkDataNTDDS(const BulkDataNTDDS&){}
+
+BulkDataNTDDS::BulkDataNTDDS() : participant_m(0){}
 
 
 
