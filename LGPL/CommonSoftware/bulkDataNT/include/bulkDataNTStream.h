@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.2 2011/07/27 07:12:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.3 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -91,6 +91,7 @@ protected:
 	// those two methods and members should probably go to another class  ??
 	void createDDSFactory();
 	void createDDSParticipant();
+	void destroyDDSParticipant();
 	DDS::DomainParticipantFactory *factory_m;
 	DDS::DomainParticipant* participant_m;
 

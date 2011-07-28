@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.3 2011/07/27 14:05:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,6 +30,8 @@ using namespace AcsBulkdata;
 BulkDataNTStream::BulkDataNTStream(const char* name) :
 	streamName_m(name), factory_m(0), participant_m(0)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	createDDSFactory();
 	createDDSParticipant(); //should be somewhere else in initialize or createStream
 }
@@ -37,43 +39,47 @@ BulkDataNTStream::BulkDataNTStream(const char* name) :
 
 BulkDataNTStream::~BulkDataNTStream()
 {
-
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	destroyDDSParticipant();
+	DDS::DomainParticipantFactory::finalize_instance();
 }
 
 void BulkDataNTStream::createDDSFactory()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
 	DDS::DomainParticipantFactoryQos factory_qos;
 
-	printf("BulkDataNTStream::createDDSFactory\n");
 	factory_m = DDS::DomainParticipantFactory::get_instance();
-
 
 	// needed by RTI only
 	factory_m->get_qos(factory_qos);
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
 	factory_m->set_qos(factory_qos);
 
-
+	//RTI logging
     NDDSConfigLogger::get_instance()->set_verbosity_by_category(
                         NDDS_CONFIG_LOG_CATEGORY_API,
                         NDDS_CONFIG_LOG_VERBOSITY_WARNING);
-
 }
 
 void BulkDataNTStream::createDDSParticipant()
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DomainParticipantQos participant_qos;
+
+	if (factory_m==NULL)
+		{
+			std::cerr << "BulkDataNTDDS::createDDSParticipant factory NULL !!" << std::endl;
+		}
 
 	if (participant_m!=NULL)
 	{
 		printf("participant already created\n");
 		return;
 	}
-	if (factory_m==NULL)
-	{
-		std::cerr << "BulkDataNTDDS::createDDSParticipant factory NULL !!" << std::endl;
-	}
+
 
 	//PARTICIPANT
 	ret = factory_m->get_default_participant_qos(participant_qos);
@@ -92,11 +98,7 @@ void BulkDataNTStream::createDDSParticipant()
 	participant_qos.event.max_count = 1024*16;
 
 //TBD: where to get domain ID
-	participant_m =factory_m->create_participant(0,
-			participant_qos,
-			NULL,
-			0/*DDS::STATUS_MASK_NONE*/
-	);
+	participant_m =factory_m->create_participant(0, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 	if (participant_m!=NULL)
 	{
 		std::cout << "created participant with domain ID:" << participant_m->get_domain_id() << std::endl;
@@ -131,7 +133,11 @@ void BulkDataNTStream::createDDSParticipant()
 	int max_gather_send_buffers = udpv4TransportProperty.parent.gather_send_buffer_count_max;
 
 	ret = participant_m->enable();
-
 }
 
-
+void BulkDataNTStream::destroyDDSParticipant()
+{
+	DDS::ReturnCode_t ret;
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	ret = factory_m->delete_participant(participant_m);
+}

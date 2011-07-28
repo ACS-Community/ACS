@@ -185,3 +185,15 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	return dr;
 }
 
+
+void BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader *dr)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
+
+	ret = subscriber_m->delete_datareader(dr);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data reader (%d)", ret));
+	}
+}

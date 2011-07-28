@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.3 2011/07/27 14:05:51 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,6 +89,8 @@ protected:
 
 	typedef  std::map<std::string, BulkDataNTSenderFlow*> SenderFlowMap;
 	SenderFlowMap flows_m;
+	// we need a flag that prevents elements to be removed from map when we delete flows from dtor
+	bool notRemoveFromMap_m;
 
 	/// disable default - empty constructor
 	BulkDataNTSenderStream();

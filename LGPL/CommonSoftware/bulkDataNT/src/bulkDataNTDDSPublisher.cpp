@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.8 2011/07/27 13:28:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.9 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,7 +44,7 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 {
 	try
 	{
-	destroyDDSPublisher();
+		destroyDDSPublisher();
 	}
 	catch(const ACSErr::ACSbaseExImpl &ex)
 	{
@@ -87,7 +87,7 @@ void  BulkDataNTDDSPublisher::destroyDDSPublisher()
 	DDS::ReturnCode_t ret;
 	ret = participant_m->delete_publisher(publisher_m);
 	publisher_m = 0;
-	if (ret == 0)
+	if (ret!=DDS::RETCODE_OK)
 	{
 		DDSPublisherDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
@@ -199,9 +199,23 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 		throw ex;
 	}//if
 
+	ACS_SHORT_LOG((LM_DEBUG, "Created DDS DataWriter"));
 	//? is it ok to narrow a local temp_dw and return it
 	return ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
 }//createDDSWriter
+
+
+void BulkDataNTDDSPublisher::destroyDDSWriter (ACSBulkData::BulkDataNTFrameDataWriter* dw)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReturnCode_t ret;
+
+	ret = publisher_m->delete_datawriter(dw);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data writer (%d)", ret));
+	}
+}//destroyDDSWriter
 
 /*___oOo___*/
 

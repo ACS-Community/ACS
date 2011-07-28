@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.3 2011/07/27 14:42:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,14 +29,14 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.3 2011/07/27 14:42:54 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
 
 BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name)
-: BulkDataNTStream(name)
+: BulkDataNTStream(name), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 }
@@ -45,6 +45,7 @@ BulkDataNTSenderStream::~BulkDataNTSenderStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
+	notRemoveFromMap_m = true; //elements should not be removed from the map
 	SenderFlowMap::iterator i = flows_m.begin();
 	for(;i!=flows_m.end(); i++)
 	{
@@ -83,6 +84,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 
 void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 {
+	if (notRemoveFromMap_m) return;
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	SenderFlowMap::iterator iter = flows_m.find(flowName);
 	if ( iter != flows_m.end() )

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.3 2011/07/27 14:42:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,7 @@ using namespace AcsBulkdata;
 
 template<class TReceiverCallback>
 BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* name)
-: BulkDataNTStream(name)
+: BulkDataNTStream(name), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 }
@@ -46,6 +46,8 @@ template<class TReceiverCallback>
 BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	notRemoveFromMap_m = true; //elements should not be removed from the map
+
 	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
 	for(;i!=receiverFlows_m.end(); i++)
 	{
@@ -88,6 +90,9 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::getFlow(con
 template<class TReceiverCallback>
 void BulkDataNTReceiverStream<TReceiverCallback>::removeFlowFromMap(const char* flowName)
 {
+	if (notRemoveFromMap_m) return;
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	// could we jsut use receiverFlows_m.erase(flowname); ??
 	ReceiverFlowMap::iterator iter = receiverFlows_m.find(flowName);
 	if ( iter != receiverFlows_m.end() )

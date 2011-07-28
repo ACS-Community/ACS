@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.7 2011/07/27 15:13:58 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.8 2011/07/28 10:28:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,10 +27,8 @@
 #include <iostream>
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
-#include <ACSBulkDataError.h>   // error definition  ??
 
-
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.7 2011/07/27 15:13:58 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.8 2011/07/28 10:28:57 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -68,11 +66,8 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	DDS::DomainParticipant *participant = senderStream_m->getDDSParticipant();
 	if (participant!=0)
 	{
-		ret = participant->delete_datawriter(ddsDataWriter_m);
-		if (ret!=DDS::RETCODE_OK)
-		{
-		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data writer (%d)", ret));
-		}
+		ddsPublisher_m->destroyDDSWriter(ddsDataWriter_m);
+		ddsDataWriter_m = 0;
 		ret = participant->delete_topic(ddsTopic_m);
 		if (ret!=DDS::RETCODE_OK)
 		{
