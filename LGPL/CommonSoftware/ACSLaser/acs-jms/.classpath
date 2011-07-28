@@ -9,7 +9,6 @@
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acsnc.jar"/>
 	<classpathentry exported="true" kind="var" path="ACSROOT/lib/acscomponent.jar"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="var" path="ACSROOT/lib/junit.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
@@ -18,5 +17,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/selector-1.1.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsContainerServices.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncErrType.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
