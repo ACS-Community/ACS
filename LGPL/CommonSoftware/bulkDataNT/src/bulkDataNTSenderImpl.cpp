@@ -23,7 +23,7 @@ BulkDataNTSenderImpl::~BulkDataNTSenderImpl()
 
 void BulkDataNTSenderImpl::initialize()
 {
-	 senderStream_m = new AcsBulkdata::BulkDataNTSenderStream("TestFlow");
+	 senderStream_m = new AcsBulkdata::BulkDataNTSenderStream("DefaultStream");
 	 //senderStream_m->initialize();
 }
 

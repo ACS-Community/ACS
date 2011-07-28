@@ -19,7 +19,7 @@ template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::initialize()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::initialize");
-	receiverStream_m = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("TestFlow");
+	receiverStream_m = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
 }//cleanUp
 
 
