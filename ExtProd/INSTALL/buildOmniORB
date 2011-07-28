@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.19 2011/07/15 22:37:04 javarias Exp $"
+# "@(#) $Id: buildOmniORB,v 1.20 2011/07/28 21:59:16 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -160,7 +160,8 @@ omniidl -I. -I$OMNI_ROOT/idl -I$OMNI_ROOT/idl/COS -bpython $OMNI_ROOT/idl/COS/Co
 #Make omniidl able to install in a non standard location
 #See ticket COMP-5526
 export OMNI_ROOT_PATH=$(echo $OMNI_ROOT | sed -e 's/\//\\\//g') 
-cat $OMNI_ROOT/bin/omniidl | sed -e s/\""$OMNI_ROOT_PATH"/os\.getenv\(\"OMNI_ROOT\"\)\ \+\ \"/g > $OMNI_ROOT/bin/omniidl
+cat $OMNI_ROOT/bin/omniidl | sed -e s/\""$OMNI_ROOT_PATH"/os\.getenv\(\"OMNI_ROOT\"\)\ \+\ \"/g > $OMNI_ROOT/bin/omniidl.new
+mv $OMNI_ROOT/bin/omniidl.new $OMNI_ROOT/bin/omniidl
 
 cd $CWD
 echo omniORB installation done!
