@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.7 2011/07/27 10:06:11 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.8 2011/07/28 15:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,10 +54,9 @@
 #include "ndds/ndds_cpp.h"
 #include "ndds/ndds_namespace_cpp.h"
 
-
 #include <logging.h>
 #include <ACSErrTypeCommon.h>
-#include "ACS_BDError.h"
+#include "ACS_DDS_Errors.h"
 
 namespace AcsBulkdata
 {

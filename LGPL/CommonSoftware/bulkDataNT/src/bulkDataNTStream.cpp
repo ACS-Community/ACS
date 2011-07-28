@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.5 2011/07/28 15:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,9 +40,16 @@ BulkDataNTStream::BulkDataNTStream(const char* name) :
 BulkDataNTStream::~BulkDataNTStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	try
+	{
 	destroyDDSParticipant();
 	DDS::DomainParticipantFactory::finalize_instance();
+	}catch(ACSErr::ACSbaseExImpl &ex)
+	{
+//throw
+	}
 }
+
 
 void BulkDataNTStream::createDDSFactory()
 {

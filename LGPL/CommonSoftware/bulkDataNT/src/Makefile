@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.8 2011/07/27 10:06:11 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.9 2011/07/28 15:11:54 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -84,7 +84,7 @@ LIBRARIES_L     =
 bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream \
 						bulkDataNT bulkDataNTSupport bulkDataNTPlugin	
 #					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
-bulkDataNT_LIBS = ACS_BDError ACSBulkDataError 
+bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors 
 bulkDataNT_LDFLAGS = -lnddscpp -lnddsc -lnddscore  -lrt -l	dl -lnsl -lm -lpthread -lstdc++ -lACE -lTAO_AV
 #-ldds_cpp -ldds -lACE -lTAO_AV
 
@@ -158,7 +158,7 @@ JARFILES=
 jjj_DIRS=
 jjj_EXTRAS= 
 
-ACSERRDEF = ACS_BDError
+ACSERRDEF = ACS_BD_Errors ACS_DDS_Errors
 
 
 #

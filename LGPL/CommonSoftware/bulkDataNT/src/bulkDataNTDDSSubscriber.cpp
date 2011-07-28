@@ -5,7 +5,7 @@
 using namespace AcsBulkdata;
 using namespace std;
 using namespace ACSErrTypeCommon;
-using namespace ACS_BDError;
+using namespace ACS_DDS_Errors;
 
 
 BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p) :

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.10 2011/07/28 14:06:06 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.11 2011/07/28 15:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 using namespace AcsBulkdata;
 using namespace std;
 using namespace ACSErrTypeCommon;
-using namespace ACS_BDError;
+using namespace ACS_DDS_Errors;
 
 
 

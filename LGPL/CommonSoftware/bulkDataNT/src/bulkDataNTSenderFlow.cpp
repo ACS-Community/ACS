@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.8 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.9 2011/07/28 15:11:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.8 2011/07/28 10:28:57 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.9 2011/07/28 15:11:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -51,8 +51,6 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 
 	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m);
 }
-
-
 
 
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
@@ -102,7 +100,7 @@ void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
 	DDS::ReturnCode_t ret;
-// RTI	DDS_ReliableWriterCacheChangedStatus status;
+	DDS_ReliableWriterCacheChangedStatus status; //RTI
 	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
 
 	//ACSBulkData::BulkDataNTFrame *frame;
@@ -111,19 +109,16 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfDataChunk do we have to send
 	unsigned int restFrameSize = len % sizeOfFrame; // what rests ?
 
-
 	// should we wait for all ACKs? timeout should be configurable
 	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
-
 
 	//TBD  RTI do we have to create the frame each time or  just once in the constructor ... ?
 	 frame =  ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
-		printf("BD_DDS::BDdataMessageTypeSupport::create_data error - frame null\n");
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "create_data failed"));
 		// delete
 	//TBD:: error handling
 	}
-
 
 	frame->dataType = ACSBulkData::BD_DATA;  //we are going to send data
 	frame->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
@@ -149,45 +144,43 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
 		}
 
-
 		frame->restDataLength = numOfIter-1-i;
 
-
 		ret = ddsDataWriter_m->write(*frame, handle);
-		if( ret != DDS::RETCODE_OK) {
-
-// RTI			senderFlows_m[flownumber].dataWriter->get_reliable_writer_cache_changed_status(status);
-
+		if( ret != DDS::RETCODE_OK)
+		{
+			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 			if (ret==DDS::RETCODE_TIMEOUT)
 			{
-				std::cerr << "Timeout while sending " <<  i << " data" << std::endl;
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data @ %d", i));
 			}else
 			{
-				std::cerr << "Failed to send " <<  i << " data return code: " << ret << std::endl;
-			}
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Failed to send @ %d (%d)", i));
+			}//if-else
 
-/* RTI			cout << "\t\t Int unacknowledged_sample_count: " << status.unacknowledged_sample_count;
-			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-*/
+			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count)); //RTI
+			// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 			ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-							if( ret != DDS::RETCODE_OK) {
-								std::cerr << " !Failed while waiting for acknowledgment of "
-										<< "data being received by subscriptions, some data "
-										<< "may not have been delivered." << std::endl;
-							}//if
+			if( ret != DDS::RETCODE_OK)
+			{
+				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
+			}//if
 
-/* RTI			cout << "\t\t Int1 unacknowledged_sample_count: " << status.unacknowledged_sample_count;
-			cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-			*/
+			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count after waiting: (%d)", status.unacknowledged_sample_count)); //RTI
+			//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+
 		}//if
 	}//for
 
-// do we need to wait for ACK after each frame is sent or at the edn or not at all, configurable ?
+	ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+	ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count));
+
+	//we have sent all frames
+	// do we need to wait for ACK after each frame is sent or at the end or not at all, configurable ?
 	ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-	if( ret != DDS::RETCODE_OK) {
-		std::cerr << " !Failed while waiting for acknowledgment of "
-				<< "data being received by subscriptions, some data "
-				<< "may not have been delivered." << std::endl;
+	if( ret != DDS::RETCODE_OK)
+	{
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments time-outed"));
 	}//if
 
 
@@ -206,7 +199,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	//ACSBulkData::BulkDataNTFrame *frame;
 
 	if (len>ACSBulkData::FRAME_MAX_LEN){
-		printf("parameter too long !!\n");
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "parameter too long"));
 		// delete
 		//TBD:: error handling
 	}
@@ -214,7 +207,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	//RTI do we have to create the frame each time or ... ?
 	frame = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
 	if (frame == NULL) {
-		printf("BD_DDS::BDdataMessageTypeSupport::create_data error - frame null\n");
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "create_data failed"));
 		// delete
 		//TBD:: error handling
 	}
@@ -228,18 +221,17 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	ret = ddsDataWriter_m->write(*frame, handle);
 	if( ret != DDS::RETCODE_OK)
 	{
-		//TBD EH  special for timeout
-		std::cerr << "Failed to send parameter. Return code: " << ret << std::endl;
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %d failed with error: %d", flowName_m.c_str(), ret));
+
+		//TBD EH
 	}//if
 
 	// should we wait for all ACKs? timeout should be configurable
 	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 	ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-	if( ret != DDS::RETCODE_OK) {
-		std::cerr << " !Failed while waiting for acknowledgment of "
-				<< "data being received by subscriptions, some data "
-				<< "may not have been delivered." << std::endl;
-		//TBD error handling
+	if( ret != DDS::RETCODE_OK)
+	{
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
 	}//if
 
 }//writeFrame
