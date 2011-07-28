@@ -12,3 +12,4 @@ s/Time:.*/Time: xx.xx/g
 s/Manager login done, handle .* obtained./Manager login done, handle xxxxxx obtained./g
 s/ChannelName='[^']*'/ChannelName='xxx'/g
 s/ChannelId='[^']*'/ChannelId='xxx'/g
+s/TimeMillis='[0-9]*'/TimeMillis='xxx'/g
