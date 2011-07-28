@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.3 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.4 2011/07/28 15:28:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@
 #include <string>
 #include <Message_Block.h>
 #include "bulkDataNTDDS.h"
-
+#include "ACS_BD_Errors.h"
 
 namespace AcsBulkdata
 {

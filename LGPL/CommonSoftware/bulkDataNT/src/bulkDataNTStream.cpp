@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.5 2011/07/28 15:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.6 2011/07/28 15:28:59 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,6 +24,9 @@
 */
 #include "bulkDataNTStream.h"
 #include <iostream>
+using namespace ACS_BD_Errors;
+using namespace ACSErrTypeCommon;
+using namespace ACS_DDS_Errors;
 
 using namespace AcsBulkdata;
 
@@ -32,22 +35,25 @@ BulkDataNTStream::BulkDataNTStream(const char* name) :
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
-	createDDSFactory();
-	createDDSParticipant(); //should be somewhere else in initialize or createStream
+	try
+	{
+		createDDSFactory();
+		createDDSParticipant(); //should be somewhere else in initialize or createStream
+	}catch(const ACSErr::ACSbaseExImpl &e)
+	{
+		StreamCreateProblemExImpl ex (e, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(name);
+		throw ex;
+	}
 }
 
 
 BulkDataNTStream::~BulkDataNTStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	try
-	{
+
 	destroyDDSParticipant();
 	DDS::DomainParticipantFactory::finalize_instance();
-	}catch(ACSErr::ACSbaseExImpl &ex)
-	{
-//throw
-	}
 }
 
 
@@ -60,9 +66,9 @@ void BulkDataNTStream::createDDSFactory()
 	factory_m = DDS::DomainParticipantFactory::get_instance();
 
 	// needed by RTI only
-	factory_m->get_qos(factory_qos);
+	ret = factory_m->get_qos(factory_qos);
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
-	factory_m->set_qos(factory_qos);
+	ret = factory_m->set_qos(factory_qos);
 
 	//RTI logging
     NDDSConfigLogger::get_instance()->set_verbosity_by_category(
@@ -77,9 +83,11 @@ void BulkDataNTStream::createDDSParticipant()
 	DDS::DomainParticipantQos participant_qos;
 
 	if (factory_m==NULL)
-		{
-			std::cerr << "BulkDataNTDDS::createDDSParticipant factory NULL !!" << std::endl;
-		}
+	{
+		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setVariable("factory_m");
+		throw ex;
+	}
 
 	if (participant_m!=NULL)
 	{
@@ -105,16 +113,13 @@ void BulkDataNTStream::createDDSParticipant()
 	participant_qos.event.max_count = 1024*16;
 
 //TBD: where to get domain ID
-	participant_m =factory_m->create_participant(0, participant_qos, NULL, DDS::STATUS_MASK_NONE );
-	if (participant_m!=NULL)
+	int domainID=0;
+	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
+	if (participant_m==NULL)
 	{
-		std::cout << "created participant with domain ID:" << participant_m->get_domain_id() << std::endl;
-	}
-	else
-	{
-		std::cerr << "Create Participant Failed." << std::endl;
-		//TBD: error handling exception !!
-	//	return 1;
+		DDSParticipantCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDomainID(domainID);
+		throw ex;
 	}
 
 	//TBS should be completly replace by QoS configuration (?)
