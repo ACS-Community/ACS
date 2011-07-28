@@ -39,6 +39,10 @@ public:
 
 int main()
 {
+	LoggingProxy m_logger(0, 0, 31, 0);
+	LoggingProxy::init (&m_logger);
+	ACS_CHECK_LOGGER;
+
 	AcsBulkdata::BulkDataNTReceiverStream<TestCB> receiverStream("TestFlow");
 
 	receiverStream.createFlow("00");

@@ -5,6 +5,13 @@ using namespace AcsBulkdata;
 
 int main()
 {
+
+	LoggingProxy m_logger(0, 0, 31, 0);
+
+	LoggingProxy::init (&m_logger);
+    ACS_CHECK_LOGGER;
+
+
 	BulkDataNTSenderStream senderStream1("TestFlow");
 
 	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
@@ -38,4 +45,5 @@ int main()
 
 	delete flow0;
 // flow1 will be deleted when senderStream1 is deleted
+
 }
