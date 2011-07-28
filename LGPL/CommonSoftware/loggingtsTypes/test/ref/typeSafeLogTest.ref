@@ -9,7 +9,7 @@
 1 - ----------T--:--:--.--- INFO [testSimpleLog] -------------------------------
 1 - ----------T--:--:--.--- INFO [testSimpleLog] ComponentClientTestCase#setUp()
 1 - ----------T--:--:--.--- TRACE [testSimpleLog] About to create a notification channel [ logName='LOG_NC_ChannelCreated_ATTEMPT' ]
-1 - ----------T--:--:--.--- INFO [testSimpleLog] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ]
+1 - ----------T--:--:--.--- INFO [testSimpleLog] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ]
 1 - ----------T--:--:--.--- INFO [testSimpleLog] Successfully destroyed a notification channel [ logName='LOG_NC_ChannelDestroyed_OK' ]
 1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Failed connecting to a notification channel [ logName='LOG_NC_SubscriptionConnect_FAIL' ]
 1 - ----------T--:--:--.--- DEBUG [testSimpleLog] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ]
