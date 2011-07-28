@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.9 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.10 2011/07/28 14:06:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -123,16 +123,14 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.reliability.max_blocking_time.sec = 10;
 	dw_qos.reliability.max_blocking_time.nanosec = 0;
 	dw_qos.history.kind  = ::DDS::KEEP_ALL_HISTORY_QOS;
-	dw_qos.history.depth  = 1; // maybe it is not good if it is too big -> it slows the writer and  receivers down if there is a rpoblem with one receiver
+	dw_qos.history.depth  = 10; // maybe it is not good if it is too big -> it slows the writer and  receivers down if there is a rpoblem with one receiver
 	dw_qos.resource_limits.max_samples = 200;//worst_burst_in_samples;
-	dw_qos.resource_limits.max_samples_per_instance = dw_qos.resource_limits.max_samples;
 //	dw_qos.resource_limits.max_instances = 1;
 
 	// RTI
 	 dw_qos.resource_limits.initial_samples = 1;//worst_burst_in_samples;
-/*
-	dw_qos.protocol.push_on_write = DDS_BOOLEAN_TRUE;
 
+	dw_qos.protocol.push_on_write = DDS_BOOLEAN_TRUE;
 
 	// if worst burst == expected burst
 	dw_qos.resource_limits.max_samples_per_instance = dw_qos.resource_limits.max_samples;
@@ -154,12 +152,9 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec = 0;
 
-*/
-	/*
-			dw_qos.liveliness.lease_duration.sec=5;
+	/*			dw_qos.liveliness.lease_duration.sec=5;
 			dw_qos.liveliness.lease_duration.nanosec=0;//500000000;
 	 */
-
 
 	/*
 	  		// multicast ???
@@ -168,7 +163,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 			dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 32*1024;
 	 */
 
-/* RTI
+// RTI
 	dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 2*32*1024; //works it does not block
 	dw_qos.protocol.rtps_reliable_writer.min_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.min_nack_response_delay.nanosec =
@@ -176,8 +171,6 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec =
 			1 * 1000000;//NANOSEC_PER_MILLISEC;
-
-*/
 
 	//Create the data writer listener
 	//BDDDSWriterListenerImpl* writer_listener_servant =	new BDDDSWriterListenerImpl();

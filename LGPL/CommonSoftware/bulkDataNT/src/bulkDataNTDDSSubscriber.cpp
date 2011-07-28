@@ -92,10 +92,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	}//if
 
 	dr_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
-	//		dr_qos.reliability.synchronous = TRUE;
 	/*
-			dr_qos.reliability.kind = ::DDS::BEST_EFFORT_RELIABILITY_QOS;//::DDS::RELIABLE_RELIABILITY_QOS;
-
 			dr_qos.resource_limits.max_samples_per_instance = 1;//queue size
 			dr_qos.resource_limits.max_samples = 10;
 			dr_qos.resource_limits.max_instances = 50;
@@ -114,56 +111,48 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	 */
 
 	//we can have just one writer & we have no keyed topic
-	/* RTI specific
-			dr_qos.reader_resource_limits.initial_remote_writers=1;
-			dr_qos.reader_resource_limits.max_remote_writers=1;
-			dr_qos.reader_resource_limits.initial_remote_writers_per_instance=1;
-			dr_qos.reader_resource_limits.max_remote_writers_per_instance=1;
-	 */
+	// RTI specific
+	dr_qos.reader_resource_limits.initial_remote_writers=1;
+	dr_qos.reader_resource_limits.max_remote_writers=1;
+	dr_qos.reader_resource_limits.initial_remote_writers_per_instance=1;
+	dr_qos.reader_resource_limits.max_remote_writers_per_instance=1;
+
 	const int UNRESOLVED_SAMPLE_PER_REMOTE_WRITER_MAX = 50; //2
 	dr_qos.resource_limits.max_samples = 2  * UNRESOLVED_SAMPLE_PER_REMOTE_WRITER_MAX; //should be 2x writer
-	//		dr_qos.resource_limits.initial_samples = dr_qos.resource_limits.max_samples;
+	dr_qos.resource_limits.initial_samples = dr_qos.resource_limits.max_samples;
 
-	//		dr_qos.reader_resource_limits.max_samples_per_remote_writer = 200;//dr_qos.resource_limits.initial_samples;
+	dr_qos.reader_resource_limits.max_samples_per_remote_writer = 200;//dr_qos.resource_limits.initial_samples;
 	dr_qos.resource_limits.max_samples_per_instance = 100; //dr_qos.resource_limits.initial_samples;
 
 	//		dr_qos.rtps_reader.heartbeat_response_delay.sec = 0;
 	//		dr_qos.rtps_reader.heartbeat_response_delay.nanosec = 0;
-	/* RTI
-			// the writer probably has more for the reader; ask right away
-			dr_qos.protocol.rtps_reliable_reader.min_heartbeat_response_delay.sec = 0;
-			dr_qos.protocol.rtps_reliable_reader.min_heartbeat_response_delay.nanosec = 0;
-			dr_qos.protocol.rtps_reliable_reader.max_heartbeat_response_delay.sec = 0;
-			dr_qos.protocol.rtps_reliable_reader.max_heartbeat_response_delay.nanosec = 100000;
+	// RTI the writer probably has more for the reader; ask right away
+	dr_qos.protocol.rtps_reliable_reader.min_heartbeat_response_delay.sec = 0;
+	dr_qos.protocol.rtps_reliable_reader.min_heartbeat_response_delay.nanosec = 0;
+	dr_qos.protocol.rtps_reliable_reader.max_heartbeat_response_delay.sec = 0;
+	dr_qos.protocol.rtps_reliable_reader.max_heartbeat_response_delay.nanosec = 100000;
 
-			if (noOfReaders==1)
-			{
-				//multicast
-				struct DDS_TransportMulticastSettings_t* multicast_locator = NULL;
-				// DDS_TransportMulticastSettingsSeq_ensure_length(&, 1, 1);
-				dr_qos.multicast.value.ensure_length(1,1);
-				// DDS_TransportMulticastSettingsSeq_get_reference(&qos.multicast.value, 0);
-				multicast_locator = &dr_qos.multicast.value[0];
+	//multicast
+	struct DDS_TransportMulticastSettings_t* multicast_locator = NULL;
+	// DDS_TransportMulticastSettingsSeq_ensure_length(&, 1, 1);
+	dr_qos.multicast.value.ensure_length(1,1);
+	// DDS_TransportMulticastSettingsSeq_get_reference(&qos.multicast.value, 0);
+	multicast_locator = &dr_qos.multicast.value[0];
 
-				string mcasta="225.3.2.1";
-				DDS_String_replace(&multicast_locator->receive_address,	mcasta.c_str()	);
-				cout << "going to listen on multicast address: " << mcasta << endl;
+	string mcasta="225.3.2.1";
+	DDS_String_replace(&multicast_locator->receive_address,	mcasta.c_str()	);
+	cout << "going to listen on multicast address: " << mcasta << endl;
 
 
-				dr_qos.resource_limits.initial_samples *= 1;//multicast_reader_count;
-				if (dr_qos.resource_limits.initial_samples >
-					dr_qos.resource_limits.max_samples) {
-					dr_qos.resource_limits.max_samples =
-							dr_qos.resource_limits.initial_samples;
-				}
-				dr_qos.reader_resource_limits.max_samples_per_remote_writer =
-						dr_qos.resource_limits.initial_samples;
-			}
-			else
-			{
-				dr_qos.unicast.value.ensure_length(1,1);
-			}
-	 */
+	dr_qos.resource_limits.initial_samples *= 1;//multicast_reader_count;
+	if (dr_qos.resource_limits.initial_samples >
+	dr_qos.resource_limits.max_samples) {
+		dr_qos.resource_limits.max_samples =
+				dr_qos.resource_limits.initial_samples;
+	}
+	dr_qos.reader_resource_limits.max_samples_per_remote_writer =
+			dr_qos.resource_limits.initial_samples;
+	//unicast				dr_qos.unicast.value.ensure_length(1,1);
 
 	// deadline
 	/*		dr_qos.deadline.period.sec = 1;
