@@ -9,16 +9,16 @@
 1 - --non-ISO timestamp-- INFO  HeartbeatHelper    - started heartbeat check
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.ROOT, listener, NOT_REDUCED_MASKED_SET = TRUE)
 1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.ROOT'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' ChannelId='xx' ]
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.ROOT' ChannelId='xx' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1, listener, NOT_REDUCED_MASKED_SET = TRUE)
 1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' ChannelId='xx' ]
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY1' ChannelId='xx' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2, listener, NOT_REDUCED_MASKED_SET = TRUE)
 1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2' ChannelId='xx' ]
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CATEGORIES.CATEGORY2' ChannelId='xx' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - subscribe(CMW.ALARM_SYSTEM.CLIENTS.------, listener, (NOT_REDUCED_MASKED_SET = TRUE) OR LASER_INIT = TRUE)
 1 - ----------T--:--:--.--- CONFIG [CategoryClientTest#testAlarmReception] Config issue for channel 'CMW.ALARM_SYSTEM.CLIENTS.------'. Failed to get MACI/Channels DAO from CDB. Will use default notification service.
-1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created a notification channel [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
+1 - ----------T--:--:--.-----non-ISO timestamp-- INFO [CategoryClientTest#testAlarmReception] Successfully created and configured a notification channel. [ logName='LOG_NC_ChannelCreated_OK' ChannelName='CMW.ALARM_SYSTEM.CLIENTS.------' ChannelId='xx' ]
 1 - --non-ISO timestamp-- INFO  DefaultSubscriberImpl - unSubscribe(5)
 1 - --non-ISO timestamp-- INFO  AlarmSystemInterfaceProxy - instantiating the alarm system interface
 1 - --non-ISO timestamp-- INFO  Configurator       - loading configuration...
