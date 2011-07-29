@@ -27,6 +27,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -57,6 +59,13 @@ import com.cosylab.logging.settings.LogTypeRenderer;
  * The panel to select the log level of the named loggers
  * 
  * @author acaproni
+ * 
+ * update history:
+ * 2011/07/27 -- bhola.panta @ naoj  
+ *  JIRA-COMP-4183 related
+ *	1. need to catch system exception, when for example. a container is unresponsive
+ *  2. a logger is used to log exceptions  
+						
  *
  */
 public class LogLevelSelectorPanel extends JPanel implements ActionListener {
@@ -85,6 +94,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	public LogTypeRenderer editorGlobal;
 	
 	private JButton   defaultBtn = new JButton("Reset all loggers to use default levels");
+	
 	
 	/**
 	 * Constructor 
@@ -124,6 +134,11 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		setName(name);
 		initialize(name);
 	}
+	/**
+	 *  A logger to record exceptions
+	 */
+	private static Logger logger = Logger.getLogger(LogLevelSelectorPanel.class.getName());
+
 	
 	/**
 	 * Init the GUI
@@ -247,9 +262,10 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	 * Apply the changes to the log levels, if any
 	 *
 	 */
+	// JIRA-COMP-4183 related changes made on 2011/07/27
 	private void applyChanges() {
 		final LogLevelHelper[] newLevels = model.getLevels();
-
+		
 		SwingWorker<Void,Void> worker = new SwingWorker<Void, Void>() {
 			@Override
 			protected Void doInBackground() throws Exception {
@@ -259,9 +275,18 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 						try {
 							System.out.println("Applying new log levels to "+logLvl.getName()+": <"+logLvl.isUsingDefault()+", "+logLvl.getGlobalLevel()+", "+logLvl.getLocalLevel()+">");
 							logConf.set_logLevels(logLvl.getName(), logLvl.getLogLevels());
-						} catch (Throwable t) {
-							System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+t.getMessage());
-							t.printStackTrace(System.err);
+						//} catch (Throwable t) {
+						} catch (org.omg.CORBA.SystemException cse) {
+							System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+cse.getMessage());
+							//t.printStackTrace(System.err);
+							return null; //if system exception, get out of the loop
+						}
+						catch (Exception e) {
+							logger.info(e.toString());
+							//e.printStackTrace();
+							JOptionPane.showMessageDialog(null,
+									" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
+									"Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				}
@@ -272,9 +297,22 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 
 		try {
 			worker.get();
+		} catch (/*org.omg.CORBA.SystemException*/ExecutionException cse) {
+				
+			logger.info(cse.toString());
+			//t.printStackTrace(System.err);
+			JOptionPane.showMessageDialog(null,
+					" Container failed to receive the log level change or refresh request:\n"+cse.toString(), 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+			
 		} catch(Exception e) {
-			// TODO: proper error handling
-			e.printStackTrace(System.err);
+			logger.info(e.toString());
+			//e.printStackTrace(System.err);
+			JOptionPane.showMessageDialog(null,
+					" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 
 		try {
@@ -297,9 +335,21 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			worker2.execute();
 			worker2.get();
 			
+		} catch (/*org.omg.CORBA.SystemException*/ExecutionException cse) {
+			logger.info(cse.toString());
+			//t.printStackTrace(System.err);
+			JOptionPane.showMessageDialog(null,
+					" Container failed to receive the log level change or refresh request:\n"+cse.getClass(), 
+					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
+			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info(e.toString());
+			JOptionPane.showMessageDialog(null,
+					" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
 		model.changesApplied();
 		updateMinLevels();
 
@@ -326,10 +376,15 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		LogLevelHelper[] levels=null;
 		try {
 			levels = loggersLbl();
+		} 
+		 catch (ExecutionException e) { 
+			//e.printStackTrace();
+			 logger.info(e.toString());
+			return;
 		} catch (Exception e) {
 			System.err.println("Function not yet implemented by "+getName());
-			e.printStackTrace(System.err);
-			return;
+			logger.info(e.toString());
+			//e.printStackTrace(System.err);
 		}
 
 		model.setLevels(levels);
@@ -498,9 +553,14 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 
 		try {
 			defaultLevels = worker.get();
-		} catch (Exception e1) {
-			// TODO: proper error handling?
-			e1.printStackTrace();
+		} catch (/*org.omg.CORBA.SystemException cse*/ExecutionException ee) {
+			System.out.println("refreshAllLoggersPanel.ExecutionException");
+			//e1.printStackTrace();
+			return;
+		}
+		catch (Exception e1) {
+			System.out.println("refreshAllLoggersPanel.Exception");
+			//e1.printStackTrace();
 		}
 		
 		int acsLevel = defaultLevels.minLogLevelLocal;
