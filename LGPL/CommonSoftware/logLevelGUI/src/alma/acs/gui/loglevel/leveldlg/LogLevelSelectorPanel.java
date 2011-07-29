@@ -279,6 +279,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 						} catch (org.omg.CORBA.SystemException cse) {
 							System.err.println("Exception caught while setting log level "+logLvl.getName()+": "+cse.getMessage());
 							//t.printStackTrace(System.err);
+							logger.info(cse.toString());
 							return null; //if system exception, get out of the loop
 						}
 						catch (Exception e) {
@@ -298,7 +299,6 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 		try {
 			worker.get();
 		} catch (/*org.omg.CORBA.SystemException*/ExecutionException cse) {
-				
 			logger.info(cse.toString());
 			//t.printStackTrace(System.err);
 			JOptionPane.showMessageDialog(null,
@@ -348,6 +348,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			JOptionPane.showMessageDialog(null,
 					" Container failed to receive the log level change or refresh request:\n"+e.toString(), 
 					"Error", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		
 		model.changesApplied();
@@ -385,6 +386,7 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 			System.err.println("Function not yet implemented by "+getName());
 			logger.info(e.toString());
 			//e.printStackTrace(System.err);
+			return;
 		}
 
 		model.setLevels(levels);
