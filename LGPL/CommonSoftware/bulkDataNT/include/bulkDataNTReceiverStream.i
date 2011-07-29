@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.5 2011/07/29 11:49:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,11 +28,11 @@
  *----------------------------------------------------------------------
  */
 
-#include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 #include <ACSBulkDataError.h>   // error definition  ??
+#include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 using namespace AcsBulkdata;
-
+using namespace ACS_BD_Errors;
 
 template<class TReceiverCallback>
 BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* name)
@@ -47,12 +47,9 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	notRemoveFromMap_m = true; //elements should not be removed from the map
-
 	ReceiverFlowMap::iterator i = receiverFlows_m.begin();
 	for(;i!=receiverFlows_m.end(); i++)
-	{
 		delete (i->second);
-	}
 	receiverFlows_m.clear();
 }//~BulkDataNTReceiverStream
 
@@ -60,31 +57,67 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 template<class TReceiverCallback>
 BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, BulkDataCallback *cb)
 {
-	BulkDataCallback *callback;
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	BulkDataCallback *callback=0;
+	BulkDataNTReceiverFlow* flow;
 
 	if (this->getFlow(flowName)!=0)
 	{
-		std::cerr << "Flow: " << flowName << " already exists" << std::endl;
-		return 0;
+		FlowAlreadyExistsExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}//if
+	try{
+		callback = (cb==0) ? new TReceiverCallback() : cb;
+		flow = new BulkDataNTReceiverFlow(this, flowName, callback);
+		receiverFlows_m.insert(std::pair<std::string, BulkDataNTReceiverFlow*>(flowName, flow));
+		return flow;
+	}catch(const ACSErr::ACSbaseExImpl &acsEx)
+	{
+		FlowCreateProblemExImpl ex(acsEx, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
 	}
+	catch(const std::exception &stdEx)
+	{
+		ACSErrTypeCommon::StdExceptionExImpl stdExWrapper(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		stdExWrapper.setWhat(stdEx.what());
 
-	callback = (cb==0) ? new TReceiverCallback() : cb;
+		FlowCreateProblemExImpl ex(stdExWrapper, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}
+	catch(...)
+	{
+		ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,__PRETTY_FUNCTION__);
 
-	BulkDataNTReceiverFlow* flow = new BulkDataNTReceiverFlow(this, flowName, callback);
-
-	receiverFlows_m.insert(std::pair<std::string, BulkDataNTReceiverFlow*>(flowName, flow));
-
-	return flow;
-}
+		FlowCreateProblemExImpl ex(uex, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}//try-catch
+}//createFlow
 
 template<class TReceiverCallback>
 BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char *flowName)
 {
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+
 	ReceiverFlowMap::iterator iter = receiverFlows_m.find(flowName);
 	if ( iter != receiverFlows_m.end() )
+	{
 		return iter->second;
+	}
 	else
-		return 0;
+	{
+		FlowNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}
 }//getFlow
 
 template<class TReceiverCallback>
@@ -138,8 +171,6 @@ void BulkDataNTReceiverStream<TReceiverCallback>::createMultipleFlowsFromConfig(
 
 	}//try-catch
 }
-
-
 
 
 template<class TReceiverCallback>
