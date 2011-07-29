@@ -61,9 +61,9 @@ void BulkDataNTDDSSubscriber::destroyDDSSubscriber()
 	DDS::ReturnCode_t ret;
 	ret = participant_m->delete_subscriber(subscriber_m);
 	subscriber_m = 0;
-	if (ret == 0)
+	if (ret!=DDS::RETCODE_OK)
 	{
-		DDSPublisherDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		DDSSubscriberDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
 		throw ex;
 	}//if
