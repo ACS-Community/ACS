@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.5 2011/07/29 12:00:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,20 +29,18 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.5 2011/07/29 12:00:39 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
 
-BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream, const char* flowName, BulkDataCallback *cb) :
-		receiverStream_m(receiverStream)
+BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream, const char* flowName, BulkDataCallback *cb, bool releaseCB) :
+		receiverStream_m(receiverStream),
+		flowName_m(flowName), callback_m(cb), releaseCB_m(releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-
 	std::string topicName;
-
-	flowName_m = flowName;
 
 	// should be refactor to have just one object for comunication !! DDSDataWriter or similar
 	ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant());
@@ -50,13 +48,12 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream,
 	topicName = receiverStream_m->getName() + "#" + flowName_m;
 	ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
 
-	callback_m = cb;
-
-	callback_m->setFlowName(topicName.c_str());
-
 	dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
 
 	ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
+
+	callback_m->setStreamName(receiverStream_m->getName().c_str());
+	callback_m->setFlowName(topicName.c_str());
 }//BulkDataNTReceiverFlow
 
 
@@ -78,7 +75,7 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data reader and topic participant is NULL"));
 	}
 	delete ddsSubscriber_m;
-	// delete callback_m
+	if (releaseCB_m) delete callback_m;
 }//~BulkDataNTReceiverFlow
 
 
