@@ -122,5 +122,13 @@
 			type="string"
 			description="XML that case the problem"/>
 	</ErrorCode>
+	
+	<ErrorCode name="StdException"
+		shortDescription="std::exception caught"
+		description="A wrapper for std::exception">
+		<Member name="What" 
+			type="string"
+			description="What caused std::exception"/>
+	</ErrorCode>
 </Type>
 
