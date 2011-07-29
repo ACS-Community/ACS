@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.5 2011/07/29 08:16:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,11 +29,13 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.4 2011/07/28 10:28:57 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.5 2011/07/29 08:16:08 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
+using namespace ACS_BD_Errors;
+using namespace ACSErrTypeCommon;
 
 BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name)
 : BulkDataNTStream(name), notRemoveFromMap_m(false)
@@ -57,16 +59,45 @@ BulkDataNTSenderStream::~BulkDataNTSenderStream()
 BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName/*, cb*/)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
+	BulkDataNTSenderFlow *flow = 0;
 	if (this->getFlow(flowName)!=0)
 	{
-		std::cerr << "Flow: " << flowName << " already exists" << std::endl;
-		return 0;
+		FlowAlreadyExistsExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
 	}
 
-	BulkDataNTSenderFlow* flow = new BulkDataNTSenderFlow(this, flowName);
+	try{
+		flow = new BulkDataNTSenderFlow(this, flowName);
+		flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
+		return flow;
+	}catch(const ACSErr::ACSbaseExImpl &acsEx)
+	{
+		FlowCreateProblemExImpl ex(acsEx, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}
+    catch(const std::exception &stdEx)
+    {
+    	StdExceptionExImpl stdExWrapper(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    	stdExWrapper.setWhat(stdEx.what());
 
-	flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
-	return flow;
+    	FlowCreateProblemExImpl ex(stdExWrapper, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    	ex.setStreamName(streamName_m.c_str());
+    	ex.setFlowName(flowName);
+    	throw ex;
+    }
+    catch(...)
+    {
+    	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,__PRETTY_FUNCTION__);
+
+    	FlowCreateProblemExImpl ex(uex, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+    	ex.setStreamName(streamName_m.c_str());
+    	ex.setFlowName(flowName);
+    	throw ex;
+    }//try-catch
 }//createFlow
 
 
@@ -76,11 +107,17 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 
 	SenderFlowMap::iterator iter = flows_m.find(flowName);
 	if ( iter != flows_m.end() )
+	{
 		return iter->second;
+	}
 	else
-		return 0;
-}
-
+	{
+		FlowNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setStreamName(streamName_m.c_str());
+		ex.setFlowName(flowName);
+		throw ex;
+	}
+}//getFlow
 
 void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 {

@@ -12,6 +12,16 @@
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
+    <ErrorCode name="FlowAlreadyExists" shortDescription="Flow alread exists" description="">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="FlowNotExist" shortDescription="Flow does not exist" description="">
+        <Member name="FlowName" type="string" description="Name of flow" />
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
     <ErrorCode name="StreamDestroyProblem" shortDescription="Problem to destroy BD stream" description="">
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
