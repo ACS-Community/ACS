@@ -48,5 +48,13 @@
     </ErrorCode>
     <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="">
     </ErrorCode>
+    
+    <ErrorCode name="DDSCreateDataProblem" shortDescription="Problem to create Data" description="">
+        <Member name="DataType" type="string" description="Domain ID" />
+    </ErrorCode>
+    
+    <ErrorCode name="DDSDeleteDataProblem" shortDescription="Problem to delete Data" description="">
+        <Member name="DataType" type="string" description="Domain ID" />
+    </ErrorCode>
    
 </Type>

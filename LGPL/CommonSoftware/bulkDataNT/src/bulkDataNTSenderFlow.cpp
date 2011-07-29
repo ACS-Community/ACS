@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.9 2011/07/28 15:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.10 2011/07/29 08:16:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,20 +28,19 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.9 2011/07/28 15:11:54 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.10 2011/07/29 08:16:50 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
+using namespace ACS_DDS_Errors;
 
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream, const char* flowName/*, cb*/) :
-		senderStream_m(senderStream)
+		senderStream_m(senderStream), flowName_m(flowName),
+		ddsPublisher_m(0), ddsTopic_m(0), ddsDataWriter_m(0), frame_m(0)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-
 	std::string topicName;
-
-	flowName_m = flowName;
 
 	// should be reactor to have just one object for comunication !! DDSDataWriter or similar
 	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant());
@@ -50,7 +49,17 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
 	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m);
-}
+
+	//RTI probably is enough to create frame once
+	frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
+	if (frame_m == 0)
+	{
+		//TBD delete dw/topic/publisher
+		DDSCreateDataProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDataType("ACSBulkData::BulkDataNTFrameTypeSupport");
+		throw ex;
+	}//if
+}//BulkDataNTSenderFlow
 
 
 BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
@@ -58,7 +67,13 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 
+	// no matter what happen we remove flow from the map
 	senderStream_m->removeFlowFromMap(flowName_m.c_str());
+
+	ret = ACSBulkData::BulkDataNTFrameTypeSupport::delete_data(frame_m);
+	if (ret != DDS::RETCODE_OK) {
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "BulkDataNTFrameTypeSupport::delete_data failed"));
+	}//if
 
 	// this part can go to BulkDataNTDDSPublisher, anyway we need to refactor
 	DDS::DomainParticipant *participant = senderStream_m->getDDSParticipant();
@@ -71,12 +86,14 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 		{
 			ACS_SHORT_LOG((LM_ERROR, "Problem deleting topic (%d)", ret));
 		}
+		ddsTopic_m=0;
 	}
 	else
 	{
-		ACS_SHORT_LOG((LM_ERROR, "Problem deleting data write and topic participant is NULL"));
+		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Problem deleting data write and topic participant is NULL"));
 	}
 	delete ddsPublisher_m;
+	ddsPublisher_m=0;
 }//~BulkDataNTSenderFlow
 
 
@@ -100,8 +117,8 @@ void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
 	DDS::ReturnCode_t ret;
-	DDS_ReliableWriterCacheChangedStatus status; //RTI
 	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
+	DDS_ReliableWriterCacheChangedStatus status; //RTI
 
 	//ACSBulkData::BulkDataNTFrame *frame;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: tmp should be configurable
@@ -112,16 +129,8 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	// should we wait for all ACKs? timeout should be configurable
 	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
-	//TBD  RTI do we have to create the frame each time or  just once in the constructor ... ?
-	 frame =  ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
-	if (frame == NULL) {
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "create_data failed"));
-		// delete
-	//TBD:: error handling
-	}
-
-	frame->dataType = ACSBulkData::BD_DATA;  //we are going to send data
-	frame->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
+	frame_m->dataType = ACSBulkData::BD_DATA;  //we are going to send data
+	frame_m->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
 
 	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d",
 			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize));
@@ -135,18 +144,18 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 		if (i==(numOfIter-1) && restFrameSize>0)
 		{
 			// last frame
-			frame->data.length(sizeOfFrame); //frame.data.resize(restFrameSize);
-			frame->data.from_array((buffer+(i*sizeOfFrame)), restFrameSize);
+			frame_m->data.length(sizeOfFrame); //frame.data.resize(restFrameSize);
+			frame_m->data.from_array((buffer+(i*sizeOfFrame)), restFrameSize);
 			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+restFrameSize), frame.data.begin() );
 		}else
 		{
-			frame->data.from_array((buffer+(i*sizeOfFrame)), sizeOfFrame);
+			frame_m->data.from_array((buffer+(i*sizeOfFrame)), sizeOfFrame);
 			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
 		}
 
-		frame->restDataLength = numOfIter-1-i;
+		frame_m->restDataLength = numOfIter-1-i;
 
-		ret = ddsDataWriter_m->write(*frame, handle);
+		ret = ddsDataWriter_m->write(*frame_m, handle); //Should we here just call writeFrame ??
 		if( ret != DDS::RETCODE_OK)
 		{
 			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
@@ -168,7 +177,6 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 
 			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count after waiting: (%d)", status.unacknowledged_sample_count)); //RTI
 			//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-
 		}//if
 	}//for
 
@@ -195,6 +203,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 {
 
 	DDS::ReturnCode_t ret;
+	DDS_ReliableWriterCacheChangedStatus status; //RTI
 	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
 	//ACSBulkData::BulkDataNTFrame *frame;
 
@@ -204,26 +213,27 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		//TBD:: error handling
 	}
 
-	//RTI do we have to create the frame each time or ... ?
-	frame = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
-	if (frame == NULL) {
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "create_data failed"));
-		// delete
-		//TBD:: error handling
-	}
+
 
 	//frame
-	frame->dataType = dataType;
-	frame->data./*resize*/length(len);
+	frame_m->dataType = dataType;
+	frame_m->data./*resize*/length(len);
 	if (param!=0 && len!=0)
-		frame->data.from_array(param, len); //frame.data.assign(len, *param);   //1st parameter  is of type const unsigned char !!
+		frame_m->data.from_array(param, len); //frame.data.assign(len, *param);   //1st parameter  is of type const unsigned char !!
 
-	ret = ddsDataWriter_m->write(*frame, handle);
+	ret = ddsDataWriter_m->write(*frame_m, handle);
 	if( ret != DDS::RETCODE_OK)
 	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %d failed with error: %d", flowName_m.c_str(), ret));
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		if (ret==DDS::RETCODE_TIMEOUT)
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data"));
+		}else
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %d failed with error: %d", flowName_m.c_str(), ret));
+		}//if-else
 
-		//TBD EH
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count)); //RTI
 	}//if
 
 	// should we wait for all ACKs? timeout should be configurable
