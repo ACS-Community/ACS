@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.5 2011/07/29 08:16:08 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.6 2011/07/29 12:04:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.5 2011/07/29 08:16:08 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.6 2011/07/29 12:04:52 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -41,20 +41,17 @@ BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name)
 : BulkDataNTStream(name), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-}
+}//BulkDataNTSenderStream
 
 BulkDataNTSenderStream::~BulkDataNTSenderStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-
 	notRemoveFromMap_m = true; //elements should not be removed from the map
 	SenderFlowMap::iterator i = flows_m.begin();
 	for(;i!=flows_m.end(); i++)
-	{
 		delete (i->second);
-	}
 	flows_m.clear();
- }
+ }//~BulkDataNTSenderStream
 
 BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName/*, cb*/)
 {
