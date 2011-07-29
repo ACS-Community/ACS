@@ -7,7 +7,7 @@ int BulkDataNTReaderListener::sleep_period=0;
 
 // Implementation skeleton constructor
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* n, BulkDataCallback* cb)
-  : num_reads_(-1),
+: num_reads_(-1),
   lost_packs(0),
   listName(n),
   data_length(0),
@@ -32,14 +32,12 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 	num_reads_ ++;
 
-	if (message_dr==NULL)
-		message_dr = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
+	if (message_dr==NULL)	message_dr = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
 
 	if  (  message_dr==NULL) {
 		cerr << "read: _narrow failed." << endl;
 		exit(1);
 	}
-
 
 	message.data.maximum(ACSBulkData::FRAME_MAX_LEN); //TBD constant from
 	status = message_dr->take_next_sample(message, si) ;
@@ -48,22 +46,18 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	{
 		if (status == DDS::RETCODE_OK)
 		{
-			if (message.dataType==ACSBulkData::BD_PARAM)
+			switch(message.dataType)
+			{
+			case ACSBulkData::BD_PARAM:
 			{
 				cout << listName << " startSend: parameter size: " << message.data.length() << endl;
 				data_length = 0;
 				start_time = ACE_OS::gettimeofday();
 				message.data.to_array(tmpArray, message.data.length());
 				callback_m->cbStart(tmpArray, message.data.length());
-				// we still call the old cbReceive !!
-				/*ACE_Message_Block mb((const char*)&message.data[0], message.data.length()); // dirty ????
-					mb.length(message.data.length());
-					callback_m->cbStart(&mb);
-				 */
-			}
-			//    		std::ostream_iterator<unsigned char> out_it(std::cout, "");
-
-			if (message.dataType==ACSBulkData::BD_DATA)
+				break;
+			}//	case ACSBulkData::BD_PARAM:
+			case ACSBulkData::BD_DATA:
 			{
 				if (data_length==0)
 				{
@@ -88,8 +82,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}
 				data_length += message.data.length();
 				/* simulate seg fault
-    			if (data_length>100000)
-    			{
+    			if (data_length>100000) {
     			char *tt=0;
     			printf("XXX %s\n", tt);
     			printf("crash\n");
@@ -98,16 +91,13 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
     			DDS::DataReaderQos *ddr_qos=0;
     			ddr_qos->reliability.kind = 0;
     			printf("after crash\n");
-    			}
-				 */
-
+    			} */
 				if ( message.restDataLength>0)
 				{
 					if (next_sample!=0 && next_sample!=message.restDataLength)
 					{
 						cerr << "#" << itera << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << listName << endl;
 					}
-
 					next_sample=message.restDataLength-1;
 				}
 				else //message.restDataLength==0
@@ -127,16 +117,17 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 				message.data.to_array(tmpArray, message.data.length());
 				callback_m->cbReceive(tmpArray, message.data.length());
-				/*ACE_Message_Block mb ((char*)&message.data[0], message.data.length()); // dirty ????
-					mb.length(message.data.length());
-					callback_m->cbReceive(&mb);
-				 */
-			} else if (message.dataType==ACSBulkData::BD_STOP)
-			{
-				cout << "===============================================================" << endl;
+				break;
+			}//case ACSBulkData::BD_DATA
+			case ACSBulkData::BD_STOP:
+			{	cout << "===============================================================" << endl;
 				itera =0;
 				callback_m->cbStop();
-			}
+				break;
+			}//case ACSBulkData::BD_STOP
+			default:
+				cerr << "Unknown message.dataType: " << message.dataType << endl;
+			}//switch
 		}else if (status == DDS::RETCODE_NO_DATA) {
 			cerr << "ERROR: reader received DDS::RETCODE_NO_DATA!" << endl;
 		}
@@ -154,64 +145,58 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 		cout << " received unknown instance state " << si.instance_state;
 		cout << endl;
 	}
-}
+}//on_data_available
 
 void BulkDataNTReaderListener::on_requested_deadline_missed (
-    DDS::DataReader*,
-    DDS::RequestedDeadlineMissedStatus )
- // throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::RequestedDeadlineMissedStatus )
 {
-  cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_deadline_missed" << endl;
+	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_deadline_missed" << endl;
 }
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos (
-    DDS::DataReader*,
-    DDS::RequestedIncompatibleQosStatus)
- // throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::RequestedIncompatibleQosStatus)
 {
-  cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_incompatible_qos" << endl;
+	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_incompatible_qos" << endl;
 }
 
 void BulkDataNTReaderListener::on_liveliness_changed (
-    DDS::DataReader*,
-    DDS::LivelinessChangedStatus lcs)
-// throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::LivelinessChangedStatus lcs)
 {
-  cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
-  cerr << "    alive_count: " << lcs.alive_count << endl;
-  cerr << "    not_alive_count: " << lcs.not_alive_count << endl;
-  cerr << "    alive_count_change: " << lcs.alive_count_change << endl;
-  cerr << "    not_alive_count_change: " << lcs.not_alive_count_change << endl;
+	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
+	cerr << "    alive_count: " << lcs.alive_count << endl;
+	cerr << "    not_alive_count: " << lcs.not_alive_count << endl;
+	cerr << "    alive_count_change: " << lcs.alive_count_change << endl;
+	cerr << "    not_alive_count_change: " << lcs.not_alive_count_change << endl;
 
 
-  cout << "Received:"  << data_length << endl;
+	cout << "Received:"  << data_length << endl;
 }
 
 void BulkDataNTReaderListener::on_subscription_matched (
-    DDS::DataReader*,
-    DDS::SubscriptionMatchedStatus )
- // throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::SubscriptionMatchedStatus )
 {
-  cerr << "BulkDataNTReaderListener(" << listName << ")::on_subscription_match" << endl;
-  num_reads_ = -1;
-   lost_packs = 0;
+	cerr << "BulkDataNTReaderListener(" << listName << ")::on_subscription_match" << endl;
+	num_reads_ = -1;
+	lost_packs = 0;
 }
 
 void BulkDataNTReaderListener::on_sample_rejected(
-    DDS::DataReader*,
-    DDS::SampleRejectedStatus srs)
-//  throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::SampleRejectedStatus srs)
 {
-  cerr << "BulkDataNTReaderListener(" << listName << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
-  cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
-  cerr << " SampleRejectedStatus.total_count: " << srs.total_count << endl;
+	cerr << "BulkDataNTReaderListener(" << listName << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
+	cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
+	cerr << " SampleRejectedStatus.total_count: " << srs.total_count << endl;
 }
 
 void BulkDataNTReaderListener::on_sample_lost(
-  DDS::DataReader*,
-  DDS::SampleLostStatus s)
- // throw (CORBA::SystemException)
+		DDS::DataReader*,
+		DDS::SampleLostStatus s)
 {
-  cerr << endl << endl << "BulkDataNTReaderListener(" << listName << "::on_sample_lost: ";
-  cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
+	cerr << endl << endl << "BulkDataNTReaderListener(" << listName << "::on_sample_lost: ";
+	cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
 }
