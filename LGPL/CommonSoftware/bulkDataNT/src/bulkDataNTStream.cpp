@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.6 2011/07/28 15:28:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.7 2011/07/29 06:45:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,11 +41,13 @@ BulkDataNTStream::BulkDataNTStream(const char* name) :
 		createDDSParticipant(); //should be somewhere else in initialize or createStream
 	}catch(const ACSErr::ACSbaseExImpl &e)
 	{
+		if (factory_m!=0)
+			DDS::DomainParticipantFactory::finalize_instance();
 		StreamCreateProblemExImpl ex (e, __FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(name);
 		throw ex;
-	}
-}
+	}//try-catch
+}//BulkDataNTStream
 
 
 BulkDataNTStream::~BulkDataNTStream()
@@ -54,7 +56,7 @@ BulkDataNTStream::~BulkDataNTStream()
 
 	destroyDDSParticipant();
 	DDS::DomainParticipantFactory::finalize_instance();
-}
+}//~BulkDataNTStream
 
 
 void BulkDataNTStream::createDDSFactory()
@@ -67,14 +69,28 @@ void BulkDataNTStream::createDDSFactory()
 
 	// needed by RTI only
 	ret = factory_m->get_qos(factory_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("factory_m->get_qos");
+		throw ex;
+	}//if
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
 	ret = factory_m->set_qos(factory_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("factory_m->set_qos");
+		throw ex;
+	}//if
 
 	//RTI logging
-    NDDSConfigLogger::get_instance()->set_verbosity_by_category(
-                        NDDS_CONFIG_LOG_CATEGORY_API,
-                        NDDS_CONFIG_LOG_VERBOSITY_WARNING);
-}
+	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
+			NDDS_CONFIG_LOG_CATEGORY_API,
+			NDDS_CONFIG_LOG_VERBOSITY_WARNING);
+}//createDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
 {
@@ -95,9 +111,16 @@ void BulkDataNTStream::createDDSParticipant()
 		return;
 	}
 
-
-	//PARTICIPANT
 	ret = factory_m->get_default_participant_qos(participant_qos);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("get_default_participant_qos");
+		throw ex;
+	}//if
+
+
 	// Configure built in IPv4 transport to handle large messages
 	/*TBD::  we have to configure those things from XML
 	DDS_DomainParticipantQos qos;
@@ -145,11 +168,16 @@ void BulkDataNTStream::createDDSParticipant()
 	int max_gather_send_buffers = udpv4TransportProperty.parent.gather_send_buffer_count_max;
 
 	ret = participant_m->enable();
-}
+}//createDDSParticipant
 
 void BulkDataNTStream::destroyDDSParticipant()
 {
 	DDS::ReturnCode_t ret;
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	ret = factory_m->delete_participant(participant_m);
-}
+	if (ret != DDS_RETCODE_OK)
+	{
+		DDSParticipantDestroyProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.log();
+	}//if
+}//destroyDDSParticipant

@@ -46,5 +46,7 @@
     <ErrorCode name="DDSParticipantCreateProblem" shortDescription="Problem to create DDS participant" description="">
         <Member name="DomainID" type="long" description="Domain ID" />
     </ErrorCode>
+    <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="">
+    </ErrorCode>
    
 </Type>
