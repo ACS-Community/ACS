@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.5 2011/07/29 11:59:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -74,7 +74,7 @@ virtual ~BulkDataNTReceiverStream();
 	// if we decide for name then we have to change send methods as well.
 	// here we should connect to the DDS topic
 	// TBD: here we can also send the callback?
-	BulkDataNTReceiverFlow* createFlow(const char *flowName, BulkDataCallback *cb=0);
+	BulkDataNTReceiverFlow* createFlow(const char *flowName, BulkDataCallback *cb=0, bool releaseCB=false);
 
 	BulkDataNTReceiverFlow* getFlow(const char* flowName);
 

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.5 2011/07/29 11:49:50 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.6 2011/07/29 11:59:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,7 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 
 
 template<class TReceiverCallback>
-BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, BulkDataCallback *cb)
+BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, BulkDataCallback *cb, bool releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	BulkDataCallback *callback=0;
@@ -70,7 +70,7 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(
 	}//if
 	try{
 		callback = (cb==0) ? new TReceiverCallback() : cb;
-		flow = new BulkDataNTReceiverFlow(this, flowName, callback);
+		flow = new BulkDataNTReceiverFlow(this, flowName, callback, (cb==0)||releaseCB);
 		receiverFlows_m.insert(std::pair<std::string, BulkDataNTReceiverFlow*>(flowName, flow));
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
