@@ -31,8 +31,18 @@ TABLE TMCDBVersion
      KEY DBName
 ENDTABLE
 
+
 // The AcsService table records the ACS services to be run when starting ACS.
 //
+// ServiceType              The type of service that this entry describes. 
+//                          Must be one of NAMING, IFR, CDB, NOTIFICATION, LOGGING, MANAGER, ALARM, LOGPROXY
+// ServiceInstanceName      Only applicable for ServiceType = 'NOTIFICATION' that runs with multiple instances.
+//                          For the four notify service instances required by ACS, use their proper names 
+//                          ("NotifyEventChannelFactory", "AlarmNotifyEventChannelFactory", "LoggingNotifyEventChannelFactory", "ArchiveNotifyEventChannelFactory"). 
+//                          For additional notify services that can host user-created notification channels, use a freely chosen name. 
+//                          See also ChannelMapping#NotificationService. 
+// ComputerId               Reference to the computer on which this service should be run.
+//                          Note that spreading the ACS services over different computers can improve performance. 
 TABLE AcsService
     AcsServiceId            INTEGER                 NOT NULL
     ConfigurationId         INTEGER                 NOT NULL
@@ -54,6 +64,7 @@ TABLE MasterComponent
      KEY MasterComponentId GENERATED FROM ComponentId
      CONSTRAINT MComponentId FOREIGN KEY (ComponentId) REFERENCES Component
 ENDTABLE
+
 
 // The NetworkDeviceSnmpConfig table adds SNMP related information to records of the NetworkDevice table.
 // (The reason for splitting this up into two tables is just to keep the core tables clear of SNMP stuff.)
