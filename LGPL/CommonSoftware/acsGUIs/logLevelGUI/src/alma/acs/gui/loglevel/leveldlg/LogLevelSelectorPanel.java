@@ -48,6 +48,7 @@ import si.ijs.maci.LoggingConfigurableOperations;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.acs.gui.loglevel.LogLvlSelNotSupportedException;
+import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.maciErrType.LoggerDoesNotExistEx;
 
@@ -137,8 +138,8 @@ public class LogLevelSelectorPanel extends JPanel implements ActionListener {
 	/**
 	 *  A logger to record exceptions
 	 */
-	private static Logger logger = Logger.getLogger(LogLevelSelectorPanel.class.getName());
-
+	//private static Logger logger = Logger.getLogger(LogLevelSelectorPanel.class.getName());
+	private static Logger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(LogLevelSelectorPanel.class.getName(), true);
 	
 	/**
 	 * Init the GUI
