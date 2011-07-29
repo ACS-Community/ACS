@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.6 2011/07/29 12:04:52 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.7 2011/07/29 12:29:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.6 2011/07/29 12:04:52 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.7 2011/07/29 12:29:17 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -109,6 +109,8 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 	}
 	else
 	{
+		return 0;
+				//TBD exception or 0, or flag that indicates
 		FlowNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(streamName_m.c_str());
 		ex.setFlowName(flowName);
