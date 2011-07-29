@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.4 2011/07/14 14:52:16 tstaig Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.5 2011/07/29 16:52:12 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -262,11 +262,11 @@ then
   ACS_LOG_INFO "$COMMAND" "Starting Interface Repository${LOGPOSTFIX}"
 
   # This is TAO Interface Repository
-  # $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT  -o $IR_IOR $ORBOPTS &
+  $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT -o $IR_IOR $ORBOPTS &
 
   #This is MICO Interface Repository
   LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
-  $MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$IR_PORT --ior $IR_IOR &
+  #$MICO_HOME/bin/ird -ORBNoResolve -ORBIIOPAddr inet:$HOST:$IR_PORT --ior $IR_IOR &
 
   IR_PID=$!
   echo $IR_PID > $IR_PIDFILE

@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.6 2010/07/22 11:02:00 jagonzal Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.7 2011/07/29 16:52:12 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -136,7 +136,8 @@ then
 #    rm -f result.idl
     IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --codegen-idl --name=result.idl $ACS_IDL_IRFEED_FILE"
 else
-    IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+    #IRFEED_CMD="$MICO_HOME/bin/idl -I../idl $IDL_PATH --no-codegen-c++ --feed-ir -ORBIfaceRepoAddr inet:$HOST:$ACS_IR_PORT $ACS_IDL_IRFEED_FILE"
+    IRFEED_CMD="$ACE_ROOT/bin/tao_ifr -I../idl $IDL_PATH -ORBInitRef InterfaceRepository=corbaloc:iiop:$HOST:$ACS_IR_PORT/InterfaceRepository $ACS_IDL_IRFEED_FILE"
 fi
 
 $IRFEED_CMD
