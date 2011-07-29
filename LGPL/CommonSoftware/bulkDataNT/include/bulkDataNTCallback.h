@@ -58,11 +58,16 @@ class BulkDataCallback
     virtual int receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &);
 
 */
-    virtual void setFlowName (const char* name) { flowName_m =name; }
+    void setFlowName (const char* name) { flowName_m =name; }
 
-    virtual void setStreamName (const char* name) { streamName_m =name; }
+    const char* getFlowName () { return flowName_m.c_str(); }
 
-    virtual void setReceiverName(ACE_CString &name) { recvName_m=name; }
+    void setStreamName (const char* name) { streamName_m =name; }
+
+    const char* getStreamName () { return streamName_m.c_str(); }
+
+    //??? do we need it ?
+    void setReceiverName(ACE_CString &name) { recvName_m=name; }
 /*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
