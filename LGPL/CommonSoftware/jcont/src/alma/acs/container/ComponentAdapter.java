@@ -390,7 +390,7 @@ public class ComponentAdapter
 		if (deactivationUncleanEx != null) {
 			if (m_containerLogger.isLoggable(Level.FINER)) {
 				m_containerLogger.log(Level.FINER, "Deactivation of component " + m_compInstanceName + " finished with problems. "
-						+ "Will throw AcsJComponentDeactivationUncleanEx", deactivationFailedEx);
+						+ "Will throw AcsJComponentDeactivationUncleanEx", deactivationUncleanEx);
 			}
 			throw deactivationUncleanEx;
 		}
