@@ -745,7 +745,7 @@ public class ContainerServicesImpl implements ContainerServices
         String errMsg = "Failed to get the reference to the CDB component/service.";
         try
         {
-            // manager's get_service contains get_component, so even if the CDB becomes a real component, we can leave this 
+        	// @TODO: Cache the CDB reference!
             org.omg.CORBA.Object dalObj = m_acsManagerProxy.get_service("CDB", true);
             dal = DALHelper.narrow(dalObj);
 		} catch (AcsJmaciErrTypeEx ex) {
@@ -772,15 +772,21 @@ public class ContainerServicesImpl implements ContainerServices
 	 * Note that <i>references</i> to other components are released by this method, 
 	 * where the components hosted inside this container act as clients.
 	 * These referenced components may run inside this or some other container/container.
-	 * 
+	 * <p>
+	 * Since ACS 9.1 this method is implemented by delegating to 
+	 * {@link #releaseComponent(String, alma.acs.container.ContainerServices.ComponentReleaseCallback)}, 
+	 * keeping the old synchronous behavior by blocking on a callback object, with a timeout of 60 seconds.
+	 * Since ACS 10.0, errors are logged at level DEBUG.
+	 *  
 	 * @see alma.acs.container.ContainerServices#releaseComponent(java.lang.String)
 	 */
 	public void releaseComponent(String curl) {
-		ComponentReleaseCallback callback = new ComponentReleaseCallback();
+		ComponentReleaseCallback callback = new ComponentReleaseCallbackWithLogging(m_logger, AcsLogLevel.DEBUG);
 		releaseComponent(curl, callback);
 		try {
 			callback.awaitComponentRelease(60, TimeUnit.SECONDS);
 		} catch (InterruptedException ex) {
+			m_logger.log(AcsLogLevel.DEBUG, "Interrupted while waiting for release of component " + curl);
 		}
 	}
 

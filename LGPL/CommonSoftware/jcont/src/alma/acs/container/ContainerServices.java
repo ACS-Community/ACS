@@ -24,6 +24,8 @@ package alma.acs.container;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
 
@@ -263,9 +265,13 @@ public interface ContainerServices extends ContainerServicesBase
 	 * <p>
 	 * This method will return only when the component has actually been released,
 	 * which may take some time in case there are still active requests being processed.
+	 * <p>
+	 * This method is kept for convenience, providing a specific subset of the functionality that
+	 * the more flexible {@link #releaseComponent(String, ComponentReleaseCallback)} offers.
+	 * It blocks the client until the component is released or a timeout of 60 seconds has 
+	 * occurred, and logs all errors of component release at level DEBUG.
 	 * 
 	 * @param componentUrl  the name/curl of the component instance as used by the manager
-	 * @deprecated since ACS 9.1.0. Use <code>releaseComponent(componentUrl, null)</code> instead.
 	 */
 	public void releaseComponent(String componentUrl);
 
@@ -328,6 +334,30 @@ public interface ContainerServices extends ContainerServicesBase
 		 */
 		public final boolean awaitComponentRelease(long timeout, TimeUnit unit) throws InterruptedException {
 			return sync.await(timeout, unit);
+		}
+	}
+	
+	/**
+	 * Variant of {@link ComponentReleaseCallback} which logs all errors.
+	 */
+	public static class ComponentReleaseCallbackWithLogging extends ComponentReleaseCallback {
+		private final Logger logger;
+		private Level level;
+		public ComponentReleaseCallbackWithLogging(Logger logger, Level level) {
+			this.logger = logger;
+			this.level = level;
+		}
+		public void errorCommunicationFailure(Throwable thr) {
+			logger.log(level, "errorCommunicationFailure: ", thr);
+		}
+		public void errorNoPermission(String reason) {
+			logger.log(level, "errorNoPermission: " + reason);
+		}
+		public void componentReleased(AcsJComponentDeactivationUncleanEx deactivationUncleanEx) {
+			logger.log(level, "componentReleased: ", deactivationUncleanEx);
+		}
+		public void errorComponentReleaseFailed(AcsJComponentDeactivationFailedEx deactivationFailureEx) {
+			logger.log(level, "errorComponentReleaseFailed: ", deactivationFailureEx);
 		}
 	}
 	
