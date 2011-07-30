@@ -109,7 +109,7 @@ public class AcsContainer extends ContainerPOA
      * It's a singleton, but not with a static getAcsContainer() method to restrict access;
      * <code>s_instance</code> is needed to enforce single instantiation.
      */
-    private static AcsContainer s_instance;
+    private static volatile AcsContainer s_instance;
 
     /**
      * Start time, used during login to the manager.
