@@ -1,3 +1,21 @@
+/*
+ * ALMA - Atacama Large Millimiter Array
+ * Copyright (c) European Southern Observatory, 2011 
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ */
 package alma.acs.monitoring.controller;
 
 import java.util.ArrayList;
@@ -201,6 +219,7 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
      * @param collectorCompName Name of collector component.
      * @return Name of blobber component to which the collector was added, or <code>null</code> if none of the blobbers could add the collector.
      * @throws IllegalStateException if no blobber components are available.
+     *         @TODO: This case should perhaps be treated together with having only blobbers that no longer accept collectors.
      * @throws AcsJContainerServicesEx if a blobber component reference cannot be retrieved.
      */
     protected String addCollector(String collectorCompName) throws Exception {
@@ -208,15 +227,15 @@ public class ControllerImpl extends ComponentImplBase implements ControllerOpera
     	synchronized (myBlobberList) {
 	        int startIndex = myBlobberListIndex;
 	        if (myBlobberList.size() == 0) {
-	            throw new IllegalStateException(
-	                    "Attempt to add a collector but the list of blobbers is empty.");
+	            throw new IllegalStateException("Attempt to add a collector but the list of blobbers is empty.");
 	        }
 	        while (true) {
                     String blobberName = null;
                     if (collector2BlobberName.containsKey(collectorCompName)) {
                         blobberName = collector2BlobberName.get(collectorCompName);
-                        m_logger.info(collectorCompName + " will be re-registered to blobber "
-                                + blobberName);
+                        m_logger.info(collectorCompName + " will be re-registered to blobber " + blobberName);
+                        // @TODO: Change log message. We just try the blobber first which served or still serves this collector.
+                        //        In the end the collector could end up with a different blobber if the first choice is full.
                     } else {
                         blobberName = myBlobberList.get(myBlobberListIndex);
                     }
