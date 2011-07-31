@@ -1,8 +1,28 @@
+/*
+ * ALMA - Atacama Large Millimiter Array
+ * Copyright (c) European Southern Observatory, 2011 
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ */
 package alma.acs.monitoring.blobber;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
+import alma.acs.container.ContainerServices;
 import alma.acs.monitoring.DAO.MonitorDAO;
 
 /**
@@ -10,10 +30,12 @@ import alma.acs.monitoring.DAO.MonitorDAO;
  */
 public abstract class BlobberPlugin
 {
+	protected final ContainerServices containerServices;
 	protected final Logger logger;
 
-	public BlobberPlugin(Logger logger) {
-		this.logger = logger;
+	public BlobberPlugin(ContainerServices containerServices) {
+		this.containerServices = containerServices;
+		this.logger = containerServices.getLogger();
 	}
 	
 	/**
@@ -37,6 +59,13 @@ public abstract class BlobberPlugin
      * The entire DAO implementation is in <code>ARCHIVE/TMCDB/DAO/</code>
      * which is why we defer creation of <code>alma.archive.tmcdb.DAO.MonitorDAOImpl</code>
      * or some mock implementation of the <code>MonitorDAO</code> interface to this plugin. 
+     * <p>
+     * Normally only one DAO object should be returned, but for exceptional cases we support running
+     * several DAOs in parallel. This allows the Alma OSF to independently write the monitor data to the TMCDB
+     * and also stream it via activeMQ to files on a web server (a workaround which will be removed in the future). 
+     * <p>
+     * The DAO object(s) must handle buffering and throwing away of data internally, so that the blobber
+     * component does not get stuck when calling the DAO layer.
      */
-	public abstract MonitorDAO createMonitorDAO() throws AcsJCouldntCreateObjectEx;
+	public abstract List<MonitorDAO> createMonitorDAOs() throws AcsJCouldntCreateObjectEx;
 }
