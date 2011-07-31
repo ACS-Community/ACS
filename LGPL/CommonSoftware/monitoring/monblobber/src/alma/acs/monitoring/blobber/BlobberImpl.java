@@ -1,17 +1,35 @@
+/*
+ * ALMA - Atacama Large Millimiter Array
+ * Copyright (c) European Southern Observatory, 2011 
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ */
+
 /**
  * 
  */
 package alma.acs.monitoring.blobber;
 import java.lang.reflect.Constructor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.MonitorArchiver.ControllerOperations;
-import alma.MonitorArchiver.ControllerHelper;
 import alma.MonitorArchiver.BlobberOperations;
 import alma.MonitorArchiver.CollectorListStatus;
+import alma.MonitorArchiver.ControllerHelper;
+import alma.MonitorArchiver.ControllerOperations;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.concurrent.ThreadLoopRunner;
@@ -114,10 +132,10 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 *        to avoid having to subclass BlobberImpl to get an alternative plugin impl.
 	 */
 	protected BlobberPlugin createBlobberPlugin() throws AcsJCouldntCreateObjectEx {
-        try {
+		try {
 			Class<? extends BlobberPlugin> pluginClass = Class.forName("alma.acs.monitoring.blobber.BlobberPluginAlmaImpl").asSubclass(BlobberPlugin.class);
-			Constructor<? extends BlobberPlugin> ctor = pluginClass.getConstructor(Logger.class);
-			return ctor.newInstance(m_logger);
+			Constructor<? extends BlobberPlugin> ctor = pluginClass.getConstructor(ContainerServices.class);
+			return ctor.newInstance(m_containerServices);
 		} catch (Exception ex) {
 			AcsJCouldntCreateObjectEx ex2 = new AcsJCouldntCreateObjectEx(ex);
 			throw ex2;

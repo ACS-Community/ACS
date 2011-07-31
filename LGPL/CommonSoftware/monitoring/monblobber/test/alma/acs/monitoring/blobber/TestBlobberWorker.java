@@ -1,6 +1,7 @@
 package alma.acs.monitoring.blobber;
 
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntCreateObjectEx;
 import alma.TMCDB.MonitorCollectorOperations;
@@ -35,7 +36,7 @@ public class TestBlobberWorker extends BlobberWorker {
 	 */
 	public TestBlobberWorker(ContainerServices inContainerServices, MonitorDAO monitorDAO, DataLock<ComponentData> myBlobDataLock) 
 			throws AcsJCouldntCreateObjectEx {
-		super(inContainerServices, new TestBlobberPlugin(inContainerServices.getLogger(), monitorDAO));
+		super(inContainerServices, new TestBlobberPlugin(inContainerServices, monitorDAO));
 		this.myBlobDataLock = myBlobDataLock;
 	}
 
@@ -83,13 +84,15 @@ public class TestBlobberWorker extends BlobberWorker {
 
 	public static class TestBlobberPlugin extends BlobberPlugin {
 		private final MonitorDAO monitorDAO;
-		public TestBlobberPlugin(Logger logger, MonitorDAO monitorDAO) {
-			super(logger);
+		public TestBlobberPlugin(ContainerServices containerServices, MonitorDAO monitorDAO) {
+			super(containerServices);
 			this.monitorDAO = monitorDAO;
 		}
 		@Override
-		public MonitorDAO createMonitorDAO() {
-			return monitorDAO;
+		public List<MonitorDAO> createMonitorDAOs() {
+			List<MonitorDAO> ret = new ArrayList<MonitorDAO>();
+			ret.add(monitorDAO);
+			return ret;
 		}
 		@Override
 		public int getCollectorIntervalSec() {

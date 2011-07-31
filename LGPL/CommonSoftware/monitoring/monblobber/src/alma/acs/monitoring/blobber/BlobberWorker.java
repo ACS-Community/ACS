@@ -1,3 +1,21 @@
+/*
+ * ALMA - Atacama Large Millimiter Array
+ * Copyright (c) European Southern Observatory, 2011 
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ */
 package alma.acs.monitoring.blobber;
 
 import java.math.BigDecimal;
@@ -6,7 +24,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -77,7 +94,7 @@ public class BlobberWorker extends CancelableRunnable {
 	/**
 	 * Stores the data in the DB, inside proper transaction(s), and performing auto-completion of hardware tables if necessary.
 	 */
-	protected MonitorDAO myMonitorDAO;
+	protected List<MonitorDAO> myMonitorDAOList;
 
 	/**
 	 * List of monitor collectors that this blobber serves.
@@ -140,7 +157,7 @@ public class BlobberWorker extends CancelableRunnable {
         this.isProfilingEnabled = blobberPlugin.isProfilingEnabled();
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
-        this.myMonitorDAO = blobberPlugin.createMonitorDAO();
+        this.myMonitorDAOList = blobberPlugin.createMonitorDAOs();
     }
 
     protected void initWorker() {
@@ -657,7 +674,9 @@ public class BlobberWorker extends CancelableRunnable {
 				debugDataSender.sendUDPPacket("Total memory: " + Long.toString(runtime.totalMemory()), cycleCount);
 			}
 			
-			this.myMonitorDAO.openTransactionStore();
+			for (MonitorDAO monitorDAO : myMonitorDAOList) {
+				monitorDAO.openTransactionStore(); // @TODO: Should we catch / log the possible Exception, or just let it fly?
+			}
 
 			// iterate over devices
 			for (MonitorDataBlock block : dataBlocks) {
@@ -757,20 +776,17 @@ public class BlobberWorker extends CancelableRunnable {
 				} // end loop over properties of a single device
 			} // end loop over devices of a single container
 
-		    // close the transaction
-		    try {
-		    	// @TODO (HSO): We do not log the matching openTransactionStore at INFO level. Shouldn't this be symmetric?
-		        myLogger.info("myMonitorDAO.closeTransactionStore() for: "
-		                        + dataBlocks.length
-		                        + " MonitorDataBlocks from collector "
-		                        + collector.name());
-		        this.myMonitorDAO.closeTransactionStore();
-		    } catch (BatchUpdateException ex) {
-		        myLogger.log(
-		                        Level.WARNING,
-		                        "Exception caught. Some monitoring data couldn't be archived",
-		                        ex);
-		    }
+			// close the transaction
+			for (MonitorDAO monitorDAO : myMonitorDAOList) {
+				try {
+					// @TODO (HSO): We do not log the matching openTransactionStore at INFO level. Shouldn't this be symmetric?
+					myLogger.info("myMonitorDAO.closeTransactionStore() for: " + dataBlocks.length
+							+ " MonitorDataBlocks from collector " + collector.name());
+					monitorDAO.closeTransactionStore();
+				} catch (Exception ex) {
+					myLogger.log(Level.WARNING, "Exception caught. Some monitoring data couldn't be archived", ex);
+				}
+			}
 		}
 		return insertCount;
 	}
@@ -786,9 +802,23 @@ public class BlobberWorker extends CancelableRunnable {
     		// which will not log clob data.
     		myLogger.finest("Storing property data for " + inBlobData.componentName + ": " + inBlobData.toString());
     	}
-        inBlobData.sampleSize = inBlobData.dataList.size();
-        this.myMonitorDAO.store(inBlobData);
-    }
+    	inBlobData.sampleSize = inBlobData.dataList.size();
+
+    	Exception firstExInDAOStore = null;
+		for (MonitorDAO monitorDAO : myMonitorDAOList) {
+			try {
+				monitorDAO.store(inBlobData);
+			} catch (Exception ex) {
+				if (firstExInDAOStore == null) {
+					// throw this later, but first store in the other DAOs
+					firstExInDAOStore = ex;
+				}
+			}
+		}
+		if (firstExInDAOStore != null) {
+			throw firstExInDAOStore;
+		}
+	}
 
     private ComponentStatistics calculateStatistics(List<Object> inDataList) {
         ComponentStatistics outStatistics = new ComponentStatistics();

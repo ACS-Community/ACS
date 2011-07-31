@@ -21,6 +21,12 @@ import alma.acs.monitoring.blobber.TestBlobberWorker.TestBlobberPlugin;
  */
 public class TestBlobber extends BlobberImpl {
 
+	private final ContainerServices containerServices;
+
+	public TestBlobber(ContainerServices containerServices) {
+		this.containerServices = containerServices;
+	}
+	
 	private boolean useDatabase;
 	
 	/**
@@ -66,7 +72,7 @@ public class TestBlobber extends BlobberImpl {
 		} else {
 			monitorDAO = new TestMonitorDAO(m_logger, myBlobDataLock);
 		}
-		return new TestBlobberWorker.TestBlobberPlugin(m_logger, monitorDAO);
+		return new TestBlobberWorker.TestBlobberPlugin(containerServices, monitorDAO);
 	}
 
 	/**
@@ -84,8 +90,8 @@ public class TestBlobber extends BlobberImpl {
 			try {
 				Class<? extends MonitorDAO> daoClass = Class.forName("alma.archive.tmcdb.DAO.MonitorDAOImpl")
 						.asSubclass(MonitorDAO.class);
-				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(Logger.class);
-				monitorDAO = ctor.newInstance(m_logger);
+				Constructor<? extends MonitorDAO> ctor = daoClass.getConstructor(ContainerServices.class);
+				monitorDAO = ctor.newInstance(containerServices);
 			} catch (Exception ex) {
 				// @TODO refactor to throw a checked exception
 				m_logger.log(Level.SEVERE, "Failed to create instance of alma.archive.tmcdb.DAO.MonitorDAOImpl", ex);
