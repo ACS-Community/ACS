@@ -32,6 +32,7 @@ import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
@@ -78,6 +79,7 @@ public class HibernateServer {
 		try {
 		Properties properties = System.getProperties();
 			boolean useJacORB = false; // default is JDK ORB
+			boolean profiler = false;
 			int portNumber = Integer.parseInt(ACSPorts.getCDBPort());
 			for (int i = 0; i < args.length; i++) {
 				if (args[i].equals("-OAport") || args[i].equals("-OAPort")) {
@@ -100,6 +102,9 @@ public class HibernateServer {
 				}
 				if (args[i].equals("-jacorb")) {
 					useJacORB = true;
+				}
+				if (args[i].equals("-profiler")) {
+					profiler = true;
 				}
 				if (args[i].equals("-o")) {
 					if (i < args.length - 1) {
@@ -145,7 +150,11 @@ public class HibernateServer {
 
 			// create and initialize the ORB
 			ORB orb = ORB.init(args, properties);
-
+			
+			// activate profiling
+			if (profiler && orb instanceof AcsProfilingORB)
+				((AcsProfilingORB)orb).registerAcsORBProfiler(new ORBRequestTimer(sharedLogger));
+			
 			// get reference to rootpoa & activate the POAManager
 			POA rootpoa =
 				POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
