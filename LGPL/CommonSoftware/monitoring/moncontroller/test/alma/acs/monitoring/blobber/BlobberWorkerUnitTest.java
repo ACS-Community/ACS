@@ -73,7 +73,7 @@ public class BlobberWorkerUnitTest extends ComponentClientTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		m_logger.info("------------- BEGIN " + getClass().getSimpleName() + "#" + getName() + " -------------------------------");
-		blobber = new TestBlobber();
+		blobber = new TestBlobber(getContainerServices());
 		m_logger.fine("setUp - about to call blobber.initialize");
 		blobber.initialize(getContainerServices(), "TEST_BLOBBER_WORKER", USE_DATABASE);
 		m_logger.fine("setUp - about to call blobber.execute");

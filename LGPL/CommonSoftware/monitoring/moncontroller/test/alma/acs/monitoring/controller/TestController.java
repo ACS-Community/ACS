@@ -21,12 +21,12 @@ public class TestController extends ControllerImpl {
     public void initialize(ContainerServices inContainerServices) throws ComponentLifecycleException {
         String name = "BLOBBER_1";
         this.myBlobberList.add(name);
-        TestBlobber testBlobber1 = new TestBlobber();
+        TestBlobber testBlobber1 = new TestBlobber(inContainerServices);
         this.myBlobberMap.put(name, testBlobber1);
         testBlobber1.initialize(inContainerServices, name, this.myUseDatabase);
         name = "BLOBBER_2";
         this.myBlobberList.add(name);
-        TestBlobber testBlobber2 = new TestBlobber();
+        TestBlobber testBlobber2 = new TestBlobber(inContainerServices);
         testBlobber2.initialize(inContainerServices, name, this.myUseDatabase);
         this.myBlobberMap.put(name, testBlobber2);
     }
