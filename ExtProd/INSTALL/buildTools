@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.36 2011/07/31 20:40:13 hsommer Exp $"
+# "@(#) $Id: buildTools,v 1.37 2011/08/01 19:51:16 hsommer Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -190,10 +190,10 @@ echo -n "buildPyModules"
 ./buildPyModules && echo_success || echo_failure
 echo -n "buildOmniORB"
 ./buildOmniORB && echo_success || echo_failure
-#TODO remove these mico lines and also the mico files from cvs,
-# once we are sure that TAO IFR will supersede mico
-#echo -n "buildMico"
-#./buildMico && echo_success || echo_failure
+#TODO remove mico build and also the mico files from cvs,
+# once we are sure that TAO IFR will supersede mico even for acsMakefile checks.
+echo -n "buildMico"
+./buildMico && echo_success || echo_failure
 echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
 
