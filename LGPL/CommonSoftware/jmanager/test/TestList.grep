@@ -12,3 +12,4 @@ Logging configuration has been initialized, but not from CDB settings.
 Bound ID: InterfaceRepository
 jacorb@CDB
 ACS.log.minlevel.namedloggers
+processing /tmp/acsIrfeedDyn.[0-9]*\.idl
