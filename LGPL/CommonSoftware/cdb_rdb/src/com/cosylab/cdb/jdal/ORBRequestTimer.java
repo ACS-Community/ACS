@@ -99,14 +99,15 @@ public class ORBRequestTimer implements AcsORBProfiler
 
 	@Override
 	public void requestFinished(int requestId, String poaName, String operation) {
-		logger.log(AcsLogLevel.INFO, "requestFinished(" + requestId + ", " + poaName + ", " + operation + ")");
 		synchronized (requestTimeMap) {
 			Long startTime = requestTimeMap.remove(new ThreadRequestId(Thread.currentThread().getId(), requestId));
 			if (startTime != null)
 			{
 				long timeSpent = System.currentTimeMillis() - startTime.longValue();
-				logger.log(AcsLogLevel.INFO, "Operation '" + operation + "' with ID " + requestId + " took " + timeSpent + "ms to complete.");
+				logger.log(AcsLogLevel.INFO, "requestFinished(" + requestId + ", " + poaName + ", " + operation + ") in " + timeSpent + " ms");
 			}
+			else
+				logger.log(AcsLogLevel.INFO, "requestFinished(" + requestId + ", " + poaName + ", " + operation + ")");
 		}
 	}
 }
