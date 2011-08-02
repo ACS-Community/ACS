@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.7 2011/07/29 06:45:04 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.8 2011/08/02 15:28:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,8 +30,8 @@ using namespace ACS_DDS_Errors;
 
 using namespace AcsBulkdata;
 
-BulkDataNTStream::BulkDataNTStream(const char* name) :
-	streamName_m(name), factory_m(0), participant_m(0)
+BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
+	streamName_m(name), configuration_m(cfg), factory_m(0), participant_m(0)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
@@ -89,7 +89,7 @@ void BulkDataNTStream::createDDSFactory()
 	//RTI logging
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			NDDS_CONFIG_LOG_CATEGORY_API,
-			NDDS_CONFIG_LOG_VERBOSITY_WARNING);
+			configuration_m.DDSLogVerbosity);
 }//createDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
@@ -122,13 +122,6 @@ void BulkDataNTStream::createDDSParticipant()
 
 
 	// Configure built in IPv4 transport to handle large messages
-	/*TBD::  we have to configure those things from XML
-	DDS_DomainParticipantQos qos;
-	  DDS_ReturnCode_t retcode = DDSTheParticipantFactory->
-	    get_participant_qos_from_profile(qos,
-					     args.qosLibrary.c_str(),
-					     args.qosProfile.c_str());
-	 */
 	// RTI specific
 	participant_qos.transport_builtin.mask = 0; // clear all xport first
 	participant_qos.transport_builtin.mask |= DDS_TRANSPORTBUILTIN_UDPv4;
@@ -137,13 +130,17 @@ void BulkDataNTStream::createDDSParticipant()
 
 //TBD: where to get domain ID
 	int domainID=0;
-	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
+	participant_m =factory_m->create_participant_with_profile(domainID,
+				configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str(),
+				NULL, DDS::STATUS_MASK_NONE );
+	//participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 	if (participant_m==NULL)
 	{
 		DDSParticipantCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDomainID(domainID);
 		throw ex;
 	}
+	factory_m->get_default_library();
 
 	//TBS should be completly replace by QoS configuration (?)
 // TRANSPORT

@@ -58,6 +58,8 @@ class BulkDataCallback
     virtual int receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &);
 
 */
+
+    // flow and stream names are set in REceiverFlow ctor, should we keep them public ?
     void setFlowName (const char* name) { flowName_m =name; }
 
     const char* getFlowName () { return flowName_m.c_str(); }

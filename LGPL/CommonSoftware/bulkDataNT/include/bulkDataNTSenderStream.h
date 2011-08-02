@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.4 2011/07/28 10:28:57 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.5 2011/08/02 15:28:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -59,7 +59,8 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTSenderStream(const char* name);
+	//TBD should we allow to create a stream w/o configuration ?
+	BulkDataNTSenderStream(const char* name, const SenderStreamConfiguration &cfg=SenderStreamConfiguration());
 
 	/**
 	 * Destructor

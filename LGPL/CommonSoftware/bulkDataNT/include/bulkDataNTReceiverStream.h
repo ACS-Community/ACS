@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.5 2011/07/29 11:59:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.6 2011/08/02 15:28:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,14 +41,6 @@
 namespace AcsBulkdata
 {
 
-struct ReceiverFlowData : public FlowData
-{
-	DDS::Subscriber* subscriber;
-	BulkDataNTReaderListener *dataReaderListener;  // we can keep it in  CB ?
-	ACSBulkData::BulkDataNTFrameDataReader* dataReader;
-	BulkDataCallback *callback_m; //we can keep it in "Subscriber" ?
-};
-
 
 template<class TReceiverCallback>
 class BulkDataNTReceiverStream : public BulkDataNTStream
@@ -60,7 +52,7 @@ class BulkDataNTReceiverStream : public BulkDataNTStream
 /**
  * Constructor
  */
-	BulkDataNTReceiverStream(const char* streamName);
+	BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
 
 /**
  * Destructor

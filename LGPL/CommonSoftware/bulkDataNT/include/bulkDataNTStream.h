@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.4 2011/07/28 15:28:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.5 2011/08/02 15:28:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -40,21 +40,12 @@
 #include <Message_Block.h>
 #include "bulkDataNTDDS.h"
 #include "ACS_BD_Errors.h"
+#include "bulkDataNTConfiguration.h"
 
 namespace AcsBulkdata
 {
 
 typedef unsigned long FlowNumberType;
-
-/**
- * structure for keeping flow related data
- */
-struct FlowData
-{
-	std::string topicName; // = flow name = stream name + flow number
-	DDS::Topic *topic;
-
-};
 
 
 /**
@@ -69,7 +60,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTStream(const char* name);
+	BulkDataNTStream(const char* name, const StreamConfiguration &cfg);
 
 	/**
 	 * Destructor
@@ -88,6 +79,7 @@ protected:
 
 	std::string streamName_m;
 
+	const StreamConfiguration  &configuration_m; //configuration
 	// those two methods and members should probably go to another class  ??
 	void createDDSFactory();
 	void createDDSParticipant();

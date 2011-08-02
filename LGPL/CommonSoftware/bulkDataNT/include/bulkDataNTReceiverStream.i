@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.7 2011/07/29 12:29:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.8 2011/08/02 15:28:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,8 +35,8 @@ using namespace AcsBulkdata;
 using namespace ACS_BD_Errors;
 
 template<class TReceiverCallback>
-BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* name)
-: BulkDataNTStream(name), notRemoveFromMap_m(false)
+BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char* name, const ReceiverStreamConfiguration &cfg)
+: BulkDataNTStream(name, cfg), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 }

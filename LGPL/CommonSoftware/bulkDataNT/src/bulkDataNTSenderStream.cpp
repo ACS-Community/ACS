@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.7 2011/07/29 12:29:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.8 2011/08/02 15:28:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.7 2011/07/29 12:29:17 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.8 2011/08/02 15:28:43 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -37,8 +37,8 @@ using namespace std;
 using namespace ACS_BD_Errors;
 using namespace ACSErrTypeCommon;
 
-BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name)
-: BulkDataNTStream(name), notRemoveFromMap_m(false)
+BulkDataNTSenderStream::BulkDataNTSenderStream(const char* name, const SenderStreamConfiguration &cfg)
+: BulkDataNTStream(name, cfg), notRemoveFromMap_m(false)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 }//BulkDataNTSenderStream
