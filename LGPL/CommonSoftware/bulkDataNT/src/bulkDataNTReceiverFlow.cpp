@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.5 2011/07/29 12:00:39 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.6 2011/08/03 15:31:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.5 2011/07/29 12:00:39 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.6 2011/08/03 15:31:48 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -42,6 +42,9 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream,
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	std::string topicName;
 
+	callback_m->setStreamName(receiverStream_m->getName().c_str());
+	callback_m->setFlowName(flowName);
+
 	// should be refactor to have just one object for comunication !! DDSDataWriter or similar
 	ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant());
 
@@ -51,9 +54,6 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream,
 	dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
 
 	ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
-
-	callback_m->setStreamName(receiverStream_m->getName().c_str());
-	callback_m->setFlowName(topicName.c_str());
 }//BulkDataNTReceiverFlow
 
 
