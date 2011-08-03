@@ -68,7 +68,6 @@ class BulkDataCallback
 
     const char* getStreamName () { return streamName_m.c_str(); }
 
-    //??? do we need it ?
     void setReceiverName(ACE_CString &name) { recvName_m=name; }
 /*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
@@ -109,12 +108,12 @@ class BulkDataCallback
     /********************* methods to be implemented by the user *****************/
 
     //Depreciated !!
-    virtual int cbStart(ACE_Message_Block * userParam_p = 0){return 0;}
-    virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0);//=0;
+    //virtual int cbStart(ACE_Message_Block * userParam_p = 0){return 0;}
+    virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0)=0;
 
     //Depreciated !!
-    virtual int cbReceive(ACE_Message_Block * frame_p) {return 0;}
-    virtual int cbReceive(unsigned char * frame_p, unsigned  int size);//=0;
+    //virtual int cbReceive(ACE_Message_Block * frame_p) {return 0;}
+    virtual int cbReceive(unsigned char * frame_p, unsigned  int size)=0;
 
     virtual int cbStop() = 0;
 

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.11 2011/08/02 15:33:31 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.12 2011/08/03 14:54:46 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -98,7 +98,7 @@ bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
 bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
-bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener bulkDataNTCallback 
+bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener 
 bulkDataNTReceiver_LIBS = bulkDataNT  
 
 #
