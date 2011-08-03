@@ -12,7 +12,7 @@ int main()
     ACS_CHECK_LOGGER;
 
 
-	BulkDataNTSenderStream senderStream1("TestFlow");
+	BulkDataNTSenderStream senderStream1("DefaultStream");
 
 	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
 	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
