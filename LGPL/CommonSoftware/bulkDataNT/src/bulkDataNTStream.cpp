@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.9 2011/08/03 14:27:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.10 2011/08/03 15:06:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ void BulkDataNTStream::createDDSFactory()
 	//RTI logging
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			NDDS_CONFIG_LOG_CATEGORY_API,
-			configuration_m.DDSLogVerbosity);
+			(NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity));
 }//createDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
