@@ -29,28 +29,28 @@ public:
 
   virtual void on_requested_deadline_missed (
     DDS::DataReader* reader,
-    DDS::RequestedDeadlineMissedStatus status);
+    const DDS::RequestedDeadlineMissedStatus& status);
     
 
   virtual void on_requested_incompatible_qos (
     DDS::DataReader* reader,
-    DDS::RequestedIncompatibleQosStatus status);
+    const DDS::RequestedIncompatibleQosStatus& status);
   
 
   virtual void on_liveliness_changed (
     DDS::DataReader* reader,
-    DDS::LivelinessChangedStatus status);
+    const DDS::LivelinessChangedStatus& status);
   
 
   virtual void on_subscription_matched (
     DDS::DataReader* reader,
-    DDS::SubscriptionMatchedStatus status
+    const DDS::SubscriptionMatchedStatus& status
   );
   
 
   virtual void on_sample_rejected(
     DDS::DataReader* reader,
-    DDS::SampleRejectedStatus status
+    const DDS::SampleRejectedStatus& status
   );
   
 
@@ -61,7 +61,7 @@ public:
 
   virtual void on_sample_lost(
     DDS::DataReader* reader,
-    DDS::SampleLostStatus status
+    const DDS::SampleLostStatus& status
   );
   
 

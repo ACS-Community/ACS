@@ -149,21 +149,21 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 void BulkDataNTReaderListener::on_requested_deadline_missed (
 		DDS::DataReader*,
-		DDS::RequestedDeadlineMissedStatus )
+		const DDS::RequestedDeadlineMissedStatus& )
 {
 	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_deadline_missed" << endl;
 }
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos (
 		DDS::DataReader*,
-		DDS::RequestedIncompatibleQosStatus)
+		const DDS::RequestedIncompatibleQosStatus&)
 {
 	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_incompatible_qos" << endl;
 }
 
 void BulkDataNTReaderListener::on_liveliness_changed (
 		DDS::DataReader*,
-		DDS::LivelinessChangedStatus lcs)
+		const DDS::LivelinessChangedStatus& lcs)
 {
 	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
 	cerr << "    alive_count: " << lcs.alive_count << endl;
@@ -177,7 +177,7 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 
 void BulkDataNTReaderListener::on_subscription_matched (
 		DDS::DataReader*,
-		DDS::SubscriptionMatchedStatus )
+		const DDS::SubscriptionMatchedStatus& )
 {
 	cerr << "BulkDataNTReaderListener(" << listName << ")::on_subscription_match" << endl;
 	num_reads_ = -1;
@@ -186,7 +186,7 @@ void BulkDataNTReaderListener::on_subscription_matched (
 
 void BulkDataNTReaderListener::on_sample_rejected(
 		DDS::DataReader*,
-		DDS::SampleRejectedStatus srs)
+		const DDS::SampleRejectedStatus& srs)
 {
 	cerr << "BulkDataNTReaderListener(" << listName << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
 	cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
@@ -195,7 +195,7 @@ void BulkDataNTReaderListener::on_sample_rejected(
 
 void BulkDataNTReaderListener::on_sample_lost(
 		DDS::DataReader*,
-		DDS::SampleLostStatus s)
+		const DDS::SampleLostStatus& s)
 {
 	cerr << endl << endl << "BulkDataNTReaderListener(" << listName << "::on_sample_lost: ";
 	cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
