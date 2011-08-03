@@ -10,20 +10,20 @@ using namespace std;
 class  TestCB:  public BulkDataCallback
 {
 public:
-	int cbStart(ACE_Message_Block * userParam_p = 0)
+	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "cbStart: got " << userParam_p->length() << " :";
-		for(unsigned int i=0; i<userParam_p->length(); i++)
+		std::cout << "cbStart: got " << size << " :";
+		for(unsigned int i=0; i<size; i++)
 		{
-			std::cout <<  *(char*)(userParam_p->base()+i);
+			std::cout <<  *(char*)(userParam_p+i);
 		}
 		std::cout << std::endl;
 		return 0;
 	}
 
-	int cbReceive(ACE_Message_Block * frame_p)
+	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		std::cout << "cbReceive: got " << frame_p->length() << " :";
+		std::cout << "cbReceive: got " << size << " :";
 /*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);

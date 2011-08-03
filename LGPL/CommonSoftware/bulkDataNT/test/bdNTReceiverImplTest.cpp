@@ -5,20 +5,20 @@
 class  TestCB:  public BulkDataCallback
 {
 public:
-	int cbStart(ACE_Message_Block * userParam_p = 0)
+	int cbStart(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "=>cbStart[" << recvName_m << "/" << flowName_m << "]: got " << userParam_p->length() << " :";
-		for(unsigned int i=0; i<userParam_p->length(); i++)
+		std::cout << "=>cbStart[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
+		for(unsigned int i=0; i<size; i++)
 		{
-			std::cout <<  *(char*)(userParam_p->base()+i);
+			std::cout <<  *(char*)(userParam_p+i);
 		}
 		std::cout << std::endl;
 		return 0;
 	}
 
-	int cbReceive(ACE_Message_Block * frame_p)
+	int cbReceive(unsigned char* userParam_p, unsigned  int size)
 	{
-		std::cout << "=>cbReceive[" << recvName_m << "/" << flowName_m << "]: got " << frame_p->length() << " :";
+		std::cout << "=>cbReceive[" << recvName_m << "/" << flowName_m << "]: got " << size << " :";
 /*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
