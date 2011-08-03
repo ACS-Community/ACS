@@ -165,14 +165,23 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 		DDS::DataReader*,
 		const DDS::LivelinessChangedStatus& lcs)
 {
-	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
-	cerr << "    alive_count: " << lcs.alive_count << endl;
-	cerr << "    not_alive_count: " << lcs.not_alive_count << endl;
-	cerr << "    alive_count_change: " << lcs.alive_count_change << endl;
-	cerr << "    not_alive_count_change: " << lcs.not_alive_count_change << endl;
+if (lcs.alive_count_change>0)
+{
+	cout << "A new sender has connected to flow: " << callback_m->getFlowName();
+	cout << " on stream: " << callback_m->getStreamName() << endl;
+}else
+{
+	cout << "A sender has disconnected from flow: " << callback_m->getFlowName();
+	cout << " on stream: " << callback_m->getStreamName() << endl;
+}
 
-
-	cout << "Received:"  << data_length << endl;
+//	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
+//	cerr << "    alive_count: " << lcs.alive_count << endl;
+//	cerr << "    not_alive_count: " << lcs.not_alive_count << endl;
+//	cerr << "    alive_count_change: " << lcs.alive_count_change << endl;
+//	cerr << "    not_alive_count_change: " << lcs.not_alive_count_change << endl;
+//
+//	cout << "Received:"  << data_length << endl;
 }
 
 void BulkDataNTReaderListener::on_subscription_matched (
