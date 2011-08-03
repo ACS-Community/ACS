@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.12 2011/08/03 14:27:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.13 2011/08/03 15:09:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -46,7 +46,7 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 	{
 		destroyDDSPublisher();
 	}
-	catch(const ACSErr::ACSbaseExImpl &ex)
+	catch(ACSErr::ACSbaseExImpl &ex)
 	{
 		ex.log();
 	}
@@ -101,7 +101,7 @@ void  BulkDataNTDDSPublisher::destroyDDSPublisher()
 ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic *topic)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	DDS::ReturnCode_t ret;
+//	DDS::ReturnCode_t ret;
 	DDS::DataWriterQos dw_qos;
 
 	if (publisher_m==NULL || topic==NULL)
