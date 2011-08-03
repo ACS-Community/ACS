@@ -35,6 +35,7 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 		printf("BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber participant NULL\n");
 		return NULL;
 	}
+/*
 	//Setup Publisher QoS, add the partition QoS policy
 	DDS::SubscriberQos sub_qos;
 	ret = participant_m->get_default_subscriber_qos(sub_qos);
@@ -47,6 +48,10 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 	}//if
 
 	DDS::Subscriber *sub = participant_m->create_subscriber(sub_qos, 0, DDS::STATUS_MASK_NONE);
+	*/
+	DDS::Subscriber *sub = participant_m->create_subscriber_with_profile(
+			participant_m->get_default_library(), participant_m->get_default_profile(),
+			0, DDS::STATUS_MASK_NONE);
 	if(sub==NULL)
 	{
 		DDSSubscriberCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -79,7 +84,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 		ex.setVariable("publisher_m, topic or listener");
 		throw ex;
 	}
-
+/*
 	//Apply Qos Policies, in this case the partition
 	DDS::DataReaderQos dr_qos;
 	ret = subscriber_m ->get_default_datareader_qos (dr_qos);
@@ -92,23 +97,18 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	}//if
 
 	dr_qos.reliability.kind = ::DDS::RELIABLE_RELIABILITY_QOS;
-	/*
-			dr_qos.resource_limits.max_samples_per_instance = 1;//queue size
-			dr_qos.resource_limits.max_samples = 10;
-			dr_qos.resource_limits.max_instances = 50;
-	 */
+
+//			dr_qos.resource_limits.max_samples_per_instance = 1;//queue size
+//			dr_qos.resource_limits.max_samples = 10;
+//			dr_qos.resource_limits.max_instances = 50;
 	dr_qos.history.kind  = ::DDS::KEEP_ALL_HISTORY_QOS;
 	dr_qos.history.depth  = 100;
 
-	/*
-			dr_qos.liveliness.lease_duration.sec=5;
-			dr_qos.liveliness.lease_duration.nanosec=0;
-	 */
+//			dr_qos.liveliness.lease_duration.sec=5;
+//			dr_qos.liveliness.lease_duration.nanosec=0;
 
-	/*
-			dr_qos.deadline.period.sec=1;
-			dr_qos.deadline.period.nanosec=0;
-	 */
+//			dr_qos.deadline.period.sec=1;
+//			dr_qos.deadline.period.nanosec=0;
 
 	//we can have just one writer & we have no keyed topic
 	// RTI specific
@@ -155,14 +155,18 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	//unicast				dr_qos.unicast.value.ensure_length(1,1);
 
 	// deadline
-	/*		dr_qos.deadline.period.sec = 1;
-			dr_qos.deadline.period.nanosec = 0;
-	 */
+//			dr_qos.deadline.period.sec = 1;
+//			dr_qos.deadline.period.nanosec = 0;
+//
 
-	// READERs
-	//			if (noOfReaders>1) dr_qos.unicast.value[0].receive_port = 24000+readerIndex; // we get a thread per reader !
+
 	DDS::DataReader *dr = subscriber_m->create_datareader(topic,
 			dr_qos,
+			listener,
+			DDS::STATUS_MASK_ALL);
+*/
+	DDS::DataReader *dr = subscriber_m->create_datareader_with_profile(topic,
+			participant_m->get_default_library(), participant_m->get_default_profile(),
 			listener,
 			DDS::STATUS_MASK_ALL/*ALL_STATUS*/);
 	if(dr==NULL)

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.8 2011/08/02 15:28:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.9 2011/08/03 14:27:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,6 +67,9 @@ void BulkDataNTStream::createDDSFactory()
 
 	factory_m = DDS::DomainParticipantFactory::get_instance();
 
+	factory_m->set_default_library(configuration_m.libraryQos.c_str());
+	factory_m->set_default_profile(configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str());
+
 	// needed by RTI only
 	ret = factory_m->get_qos(factory_qos);
 	if (ret!=DDS::RETCODE_OK)
@@ -97,6 +100,7 @@ void BulkDataNTStream::createDDSParticipant()
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	DDS::ReturnCode_t ret;
 	DDS::DomainParticipantQos participant_qos;
+	int domainID=0; //TBD: where to get domain ID
 
 	if (factory_m==NULL)
 	{
@@ -110,7 +114,7 @@ void BulkDataNTStream::createDDSParticipant()
 		printf("participant already created\n");
 		return;
 	}
-
+/* is now read from XML
 	ret = factory_m->get_default_participant_qos(participant_qos);
 	if (ret!=DDS::RETCODE_OK)
 	{
@@ -128,21 +132,21 @@ void BulkDataNTStream::createDDSParticipant()
 	participant_qos.receiver_pool.buffer_size = 65536;
 	participant_qos.event.max_count = 1024*16;
 
-//TBD: where to get domain ID
-	int domainID=0;
+	//participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
+*/
+
 	participant_m =factory_m->create_participant_with_profile(domainID,
 				configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str(),
 				NULL, DDS::STATUS_MASK_NONE );
-	//participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
+
 	if (participant_m==NULL)
 	{
 		DDSParticipantCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDomainID(domainID);
 		throw ex;
 	}
-	factory_m->get_default_library();
 
-	//TBS should be completly replace by QoS configuration (?)
+/*
 // TRANSPORT
 // RTI
 	struct NDDS_Transport_UDPv4_Property_t udpv4TransportProperty = NDDS_TRANSPORT_UDPV4_PROPERTY_DEFAULT;
@@ -163,7 +167,7 @@ void BulkDataNTStream::createDDSParticipant()
 	}
 
 	int max_gather_send_buffers = udpv4TransportProperty.parent.gather_send_buffer_count_max;
-
+*/
 	ret = participant_m->enable();
 }//createDDSParticipant
 

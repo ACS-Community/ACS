@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.11 2011/07/28 15:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.12 2011/08/03 14:27:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,7 +70,9 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 	}//if
 
 	//pub_qos.asynchronous_publisher.thread.priority =    RTI_OSAPI_THREAD_PRIORITY_HIGH;
-	DDS::Publisher *pub = participant_m->create_publisher(pub_qos, 0, DDS::STATUS_MASK_NONE);
+	//DDS::Publisher *pub = participant_m->create_publisher(pub_qos, 0, DDS::STATUS_MASK_NONE);
+	DDS::Publisher *pub = participant_m->create_publisher_with_profile(participant_m->get_default_library(),
+			participant_m->get_default_profile(), 0, DDS::STATUS_MASK_NONE);
 	if(pub==0)
 	{
 		DDSPublisherCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -108,6 +110,8 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 		ex.setVariable("publisher_m or topic");
 		throw ex;
 	}
+
+/* read from XML
 
 	ret = publisher_m->get_default_datawriter_qos (dw_qos);
 	if (ret!=DDS::RETCODE_OK)
@@ -152,16 +156,13 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec = 0;
 
-	/*			dw_qos.liveliness.lease_duration.sec=5;
-			dw_qos.liveliness.lease_duration.nanosec=0;//500000000;
-	 */
 
-	/*
-	  		// multicast ???
-	  		// commenting out this helps that pub does not blocks, but sample rejected on writer side and reported by reader
-	  		// it seems it has to be 64k - max size of the message
-			dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 32*1024;
-	 */
+
+	// multicast ???
+	// commenting out this helps that pub does not blocks, but sample rejected on writer side and reported by reader
+	// it seems it has to be 64k - max size of the message
+	//dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 32*1024;
+
 
 // RTI
 	dw_qos.protocol.rtps_reliable_writer.max_bytes_per_nack_response = 2*32*1024; //works it does not block
@@ -171,7 +172,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.sec = 0;
 	dw_qos.protocol.rtps_reliable_writer.max_nack_response_delay.nanosec =
 			1 * 1000000;//NANOSEC_PER_MILLISEC;
-
+*/
 	//Create the data writer listener
 	//BDDDSWriterListenerImpl* writer_listener_servant =	new BDDDSWriterListenerImpl();
 	DDS::DataWriterListener* writerListener =  NULL; //writer_listener_servant;
@@ -181,11 +182,18 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 //TBD error handling
 	}
 
-	DDS::DataWriter* temp_dw = publisher_m->create_datawriter(topic,
-														dw_qos,
-														writerListener,
-														/*ALL_STATUS*/DDS::STATUS_MASK_ALL
-														);
+	DDS::DataWriter* temp_dw = publisher_m->create_datawriter_with_profile(
+															topic,
+															participant_m->get_default_library(),
+															participant_m->get_default_profile(),
+															writerListener,
+															DDS::STATUS_MASK_ALL
+															);
+
+//	DDS::DataWriter* temp_dw = publisher_m->create_datawriter(topic,
+//			dw_qos,
+//			writerListener,
+//			/*ALL_STATUS*/DDS::STATUS_MASK_ALL);
 	if(temp_dw==0)
 	{
 		DDSDWCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
