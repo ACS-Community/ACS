@@ -140,7 +140,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
      *  @throw ACSBulkDataError::AVSetReceiverNameErrorEx
      */
     //get rid of
-    virtual void setRecvName(const char *recvName){}
+    virtual void setRecvName(const char *recvName);
 
     /**
      *  @throw ACSBulkDataError::AVNotificationMechanismErrorEx

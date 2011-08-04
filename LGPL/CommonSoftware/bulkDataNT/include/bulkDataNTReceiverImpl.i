@@ -115,4 +115,10 @@ bulkdata::BulkDataReceiverConfig * BulkDataNTReceiverImpl<TCallback>::getReceive
 	return NULL;
 }//getReceiverConfig
 
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::setRecvName(const char *recvName)
+{
+	//TBD later when we will have more streams we have to loop all over them
+	this->getReceiverStream()->setReceiverName(recvName);
+}
 
