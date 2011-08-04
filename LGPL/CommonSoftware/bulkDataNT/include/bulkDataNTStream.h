@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.7 2011/08/04 11:22:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.8 2011/08/04 11:22:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,18 +70,6 @@ public:
 	std::string getName() { return streamName_m; }
 
 	//void destroyFlow(const  char* flowName);
-
-	/** Set receiver name in receiver callback
-	 *  @param ACE_CString
-	 *  @return void
-	 *  @htmlonly
-	 <br><hr>
-	 @endhtmlonly
-	*/
-	void setReceiverName(char * recvName);
-
-	const char* getReceiverName() { return receiverName_m.c_str(); }
-
 protected:
 
 	DDS::DomainParticipant* getDDSParticipant(){ return participant_m; }
@@ -89,7 +77,6 @@ protected:
 	virtual void removeFlowFromMap(const char* flow)=0;
 
 	std::string streamName_m;
-	std::string receiverName_m;
 
 	const StreamConfiguration  &configuration_m; //configuration
 	// those two methods and members should probably go to another class  ??
