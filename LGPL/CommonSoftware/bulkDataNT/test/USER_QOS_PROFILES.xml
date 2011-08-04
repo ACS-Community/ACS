@@ -80,6 +80,13 @@ RTI Data Distribution Service user manual.
                     <depth>10</depth>
                 </history>
                 
+                <liveliness>
+                    <lease_duration>
+                        <sec>9</sec>
+                        <nanosec>0</nanosec>
+                    </lease_duration>
+                </liveliness>
+                
                 <resource_limits>
                     <max_samples>200</max_samples>
                     <initial_samples>1</initial_samples>
@@ -125,6 +132,13 @@ RTI Data Distribution Service user manual.
                     <kind>KEEP_ALL_HISTORY_QOS</kind>
                     <depth>100</depth>
                 </history>
+                
+                <liveliness>
+                    <lease_duration>
+                        <sec>5</sec>
+                        <nanosec>0</nanosec>
+                    </lease_duration>
+                </liveliness>
                 
                 <reader_resource_limits>
                     <initial_remote_writers>1</initial_remote_writers>
