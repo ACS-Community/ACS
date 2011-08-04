@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.8 2011/08/04 11:22:19 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.9 2011/08/04 11:22:23 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -43,12 +43,15 @@ namespace AcsBulkdata
 
 
 
-//TBD: actaully we can move lots of stuff from BulkDataNTReceiverStream template class which do not depend on template parameter
+//TBD: actually we can move lots of stuff from BulkDataNTReceiverStream template class which do not depend on template parameter
 class BulkDataNTReceiverStreamBase : public BulkDataNTStream
 {
 public:
 	BulkDataNTReceiverStreamBase(const char* streamName, const ReceiverStreamConfiguration &cfg):
-		BulkDataNTStream(streamName, cfg){}
+		BulkDataNTStream(streamName, cfg), receiverName_m("DefaultReceiver") {}
+
+	BulkDataNTReceiverStreamBase( const char* receiverName, const char* streamName, const ReceiverStreamConfiguration &cfg):
+			BulkDataNTStream(streamName, cfg), receiverName_m(receiverName){}
 
 	/** Set receiver name in receiver callback
 	 *  @param ACE_CString
@@ -80,6 +83,11 @@ public:
 	 * Constructor
 	 */
 	BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
+
+	BulkDataNTReceiverStream(
+			const char* receiverName,
+			const char* streamName,
+			const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
 
 	/**
 	 * Destructor
