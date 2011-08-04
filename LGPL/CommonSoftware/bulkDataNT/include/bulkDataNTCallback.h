@@ -70,6 +70,7 @@ class BulkDataCallback
 
     void setReceiverName(ACE_CString &name) { recvName_m=name; }
     void setReceiverName(const char *name) { recvName_m=name; }
+    const char* getReceiverName () { return recvName_m.c_str(); }
 /*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
