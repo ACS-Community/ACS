@@ -135,7 +135,7 @@ RTI Data Distribution Service user manual.
                 
                 <liveliness>
                     <lease_duration>
-                        <sec>5</sec>
+                        <sec>10</sec>
                         <nanosec>0</nanosec>
                     </lease_duration>
                 </liveliness>
