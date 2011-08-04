@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.6 2011/08/03 15:31:48 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.7 2011/08/04 11:22:15 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.6 2011/08/03 15:31:48 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.7 2011/08/04 11:22:15 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -44,6 +44,7 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTStream *receiverStream,
 
 	callback_m->setStreamName(receiverStream_m->getName().c_str());
 	callback_m->setFlowName(flowName);
+	callback_m->setReceiverName(receiverStream_m->getReceiverName());
 
 	// should be refactor to have just one object for comunication !! DDSDataWriter or similar
 	ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant());
@@ -78,5 +79,9 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 	if (releaseCB_m) delete callback_m;
 }//~BulkDataNTReceiverFlow
 
+void BulkDataNTReceiverFlow::setReceiverName(char* recvName)
+{
+
+}//setReceiverName
 
 /*___oOo___*/
