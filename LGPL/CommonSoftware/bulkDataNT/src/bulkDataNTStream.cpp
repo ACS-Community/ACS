@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.10 2011/08/03 15:06:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.11 2011/08/04 11:22:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -114,8 +114,8 @@ void BulkDataNTStream::createDDSParticipant()
 		printf("participant already created\n");
 		return;
 	}
-/* is now read from XML
-	ret = factory_m->get_default_participant_qos(participant_qos);
+
+	ret = factory_m->get_participant_qos_from_profile(participant_qos, configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str());
 	if (ret!=DDS::RETCODE_OK)
 	{
 		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -124,21 +124,15 @@ void BulkDataNTStream::createDDSParticipant()
 		throw ex;
 	}//if
 
-
+/* is now read from XML
 	// Configure built in IPv4 transport to handle large messages
 	// RTI specific
 	participant_qos.transport_builtin.mask = 0; // clear all xport first
 	participant_qos.transport_builtin.mask |= DDS_TRANSPORTBUILTIN_UDPv4;
 	participant_qos.receiver_pool.buffer_size = 65536;
 	participant_qos.event.max_count = 1024*16;
-
-	//participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 */
-
-	participant_m =factory_m->create_participant_with_profile(domainID,
-				configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str(),
-				NULL, DDS::STATUS_MASK_NONE );
-
+	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 	if (participant_m==NULL)
 	{
 		DDSParticipantCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
