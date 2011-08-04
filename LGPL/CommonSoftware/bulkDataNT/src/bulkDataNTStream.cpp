@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.11 2011/08/04 11:22:08 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.12 2011/08/04 11:22:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -124,14 +124,6 @@ void BulkDataNTStream::createDDSParticipant()
 		throw ex;
 	}//if
 
-/* is now read from XML
-	// Configure built in IPv4 transport to handle large messages
-	// RTI specific
-	participant_qos.transport_builtin.mask = 0; // clear all xport first
-	participant_qos.transport_builtin.mask |= DDS_TRANSPORTBUILTIN_UDPv4;
-	participant_qos.receiver_pool.buffer_size = 65536;
-	participant_qos.event.max_count = 1024*16;
-*/
 	participant_m =factory_m->create_participant(domainID, participant_qos, NULL, DDS::STATUS_MASK_NONE );
 	if (participant_m==NULL)
 	{
@@ -140,28 +132,6 @@ void BulkDataNTStream::createDDSParticipant()
 		throw ex;
 	}
 
-/*
-// TRANSPORT
-// RTI
-	struct NDDS_Transport_UDPv4_Property_t udpv4TransportProperty = NDDS_TRANSPORT_UDPV4_PROPERTY_DEFAULT;
-	ret = NDDSTransportSupport::get_builtin_transport_property(participant_m, DDS_TRANSPORTBUILTIN_UDPv4,
-			(struct NDDS_Transport_Property_t&)udpv4TransportProperty);
-
-	udpv4TransportProperty.parent.message_size_max = 65536; //UDP_SIZE_MAX;
-	udpv4TransportProperty.send_socket_buffer_size = 65536; //UDP_SOCKET_SEND_BUFFER_SIZE;
-	udpv4TransportProperty.recv_socket_buffer_size = 65536*2; //UDP_SOCKET_RECV_BUFFER_SIZE;
-
-	udpv4TransportProperty.multicast_ttl = 1;
-
-	ret = NDDSTransportSupport::set_builtin_transport_property(participant_m, DDS_TRANSPORTBUILTIN_UDPv4,
-			(struct NDDS_Transport_Property_t&)udpv4TransportProperty);
-	if (ret != DDS_RETCODE_OK) {
-		printf("Error in setting built-in transport UDPv4 "
-				"property\n");
-	}
-
-	int max_gather_send_buffers = udpv4TransportProperty.parent.gather_send_buffer_count_max;
-*/
 	ret = participant_m->enable();
 }//createDDSParticipant
 
