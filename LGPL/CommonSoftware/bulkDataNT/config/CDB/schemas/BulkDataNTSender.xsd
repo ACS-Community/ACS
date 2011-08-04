@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTSender:1.0"
+  xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
+
+  <xs:complexType name="SenderFlowType">
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="DDSSenderFlowConfig" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="SenderStreamType">
+    <xs:sequence minOccurs="1" maxOccurs="unbounded">
+      <xs:element name="SenderFlow" type="SenderFlowType"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="DDSSenderStreamConfig" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <xs:complexType name="BulkDataNTSenderType">
+    <xs:complexContent>
+      <xs:extension base="baci:CharacteristicComponent">
+        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+               <xs:element name="SenderStream" type="SenderStreamType"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:element name="BulkDataNTSender" type="BulkDataNTSenderType"/>
+</xs:schema>
