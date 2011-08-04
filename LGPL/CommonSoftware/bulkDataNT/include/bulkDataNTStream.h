@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.6 2011/08/04 11:22:13 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.7 2011/08/04 11:22:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,7 +78,9 @@ public:
 	 <br><hr>
 	 @endhtmlonly
 	*/
-	void setReceiverName(ACE_CString recvName);
+	void setReceiverName(char * recvName);
+
+	const char* getReceiverName() { return receiverName_m.c_str(); }
 
 protected:
 
