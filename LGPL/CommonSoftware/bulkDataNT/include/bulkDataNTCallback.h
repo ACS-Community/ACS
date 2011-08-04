@@ -69,6 +69,7 @@ class BulkDataCallback
     const char* getStreamName () { return streamName_m.c_str(); }
 
     void setReceiverName(ACE_CString &name) { recvName_m=name; }
+    void setReceiverName(const char *name) { recvName_m=name; }
 /*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
