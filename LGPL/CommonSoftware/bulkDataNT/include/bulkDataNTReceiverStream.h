@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.6 2011/08/02 15:28:27 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.h,v 1.7 2011/08/04 11:22:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -137,14 +137,6 @@ void closeReceiver();
 */
 /// std::vector<std::string> getFlowNames();
 
-/** Set receiver name in receiver callback
- *  @param ACE_CString
- *  @return void
- *  @htmlonly
- <br><hr>
- @endhtmlonly
-*/
-void setReceiverName(ACE_CString recvName);
 
 /** Subscribe to the Notification Mechanism
  *  @throw ACSBulkDataError::AVNotificationMechanismErrorExImpl

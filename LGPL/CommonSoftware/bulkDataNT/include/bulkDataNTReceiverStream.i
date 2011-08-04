@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.8 2011/08/02 15:28:27 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.9 2011/08/04 11:22:12 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -174,9 +174,3 @@ void BulkDataNTReceiverStream<TReceiverCallback>::createMultipleFlowsFromConfig(
 	}//try-catch
 }
 
-
-template<class TReceiverCallback>
-void BulkDataNTReceiverStream<TReceiverCallback>::setReceiverName(ACE_CString recvName)
-{
-	printf("setReceiverName not implemented yest\n");
-}//setReceiverName

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.12 2011/08/04 11:22:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.13 2011/08/04 11:22:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -146,3 +146,9 @@ void BulkDataNTStream::destroyDDSParticipant()
 		ex.log();
 	}//if
 }//destroyDDSParticipant
+
+
+void BulkDataNTStream::setReceiverName(ACE_CString recvName)
+{
+	receiverName_m = recvName.c_str();
+}//setReceiverName
