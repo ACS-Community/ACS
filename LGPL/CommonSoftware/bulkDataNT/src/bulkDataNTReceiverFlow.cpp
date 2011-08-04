@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.7 2011/08/04 11:22:15 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.8 2011/08/04 11:22:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.7 2011/08/04 11:22:15 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.8 2011/08/04 11:22:18 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -81,7 +81,13 @@ BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()
 
 void BulkDataNTReceiverFlow::setReceiverName(char* recvName)
 {
-
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	std::string oldReceiverName = callback_m->getReceiverName();
+	callback_m->setReceiverName(receiverStream_m->getReceiverName());
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "Receiver name on callback for flow: %s on steam: %s has been changed from: %s to %s",
+			flowName_m.c_str(), receiverStream_m->getName().c_str(),
+			oldReceiverName.c_str(), recvName
+		));
 }//setReceiverName
 
 /*___oOo___*/
