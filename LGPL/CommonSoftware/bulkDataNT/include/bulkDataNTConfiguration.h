@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.2 2011/08/02 15:28:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.3 2011/08/05 13:28:13 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -44,6 +44,7 @@ public:
 	StreamConfiguration();
 
 protected:
+	std::string urlProfileQoS;  // here we can specify RTI DDS QoS as a URL/string str://
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used
 	unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
@@ -58,6 +59,8 @@ protected:
 /** A Sender flow configuration */
 class  SenderFlowConfiguration
 {
+public:
+	SenderFlowConfiguration();
 };
 
 /** A Sender stream configuration. It consists in a seres
@@ -88,6 +91,8 @@ enum ReceiverType {
 /** A Receiver flow configuration */
 class ReceiverFlowConfiguration
 {
+public:
+	ReceiverFlowConfiguration();
 };
 
 /** A Receiver stream configuration. It consists in a seres

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.2 2011/08/03 15:06:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.3 2011/08/05 13:28:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,5 +45,15 @@ ReceiverStreamConfiguration::ReceiverStreamConfiguration()
 	profileQos="ReceiverDefaultQosProfile";
 }//ReceiverStreamConfiguration
 
+
+ReceiverFlowConfiguration::ReceiverFlowConfiguration()
+{
+
+}//ReceiverFlowConfiguration
+
+SenderFlowConfiguration::SenderFlowConfiguration()
+{
+
+}//SenderFlowConfiguration
 
 
