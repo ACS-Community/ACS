@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.3 2011/08/05 13:28:13 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.4 2011/08/05 13:58:43 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -81,11 +81,10 @@ public:
 /** Specifies the kind of a receiver. This information is propagated
  *  to the senders so they can take desition based on the importance
  *  of the receiver, in case of any problem. */
-//TBD should we put this definition in the IDL as constants ???
 enum ReceiverType {
-	NORMAL    = 0,
-	IMPORTANT = 1,
-	CRITICAL  = 2
+	NORMAL    = 0x1,
+	IMPORTANT = 0x2,
+	CRITICAL  = 0x4
 };
 
 /** A Receiver flow configuration */
