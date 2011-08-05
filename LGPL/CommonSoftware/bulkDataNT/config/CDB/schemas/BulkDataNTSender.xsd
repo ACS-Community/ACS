@@ -1,33 +1,65 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTSender:1.0"
-  xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
 
+  <xs:include schemaLocation="rti_dds_qos_profiles.xsd"/>
+
+  <xs:complexType name="DDSSenderStreamQoSType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="participant_qos"
+          type="domainparticipantQosProfileChild"/>
+      </xs:sequence>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="DDSSenderFlowQoSType">
+    <xs:choice>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="publisher_qos" type="publisherQosProfileChild"
+        />
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="topic_qos" type="topicQosProfileChild"/>
+      </xs:sequence>
+      <xs:sequence>
+        <xs:element maxOccurs="1" minOccurs="0" name="datawriter_qos"
+          type="datawriterQosProfileChild"/>
+      </xs:sequence>
+    </xs:choice>
+  </xs:complexType>
+
   <xs:complexType name="SenderFlowType">
+    <xs:sequence minOccurs="0">
+      <xs:element name="DDSSenderFlowQoS" type="DDSSenderFlowQoSType"/>
+    </xs:sequence>
     <xs:attribute name="Name" type="xs:string" use="required"/>
     <xs:attribute name="DDSSenderFlowConfig" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="SenderStreamType">
-    <xs:sequence minOccurs="1" maxOccurs="unbounded">
-      <xs:element name="SenderFlow" type="SenderFlowType"/>
-    </xs:sequence>
+    <xs:choice>
+      <xs:sequence>
+        <xs:element name="Flow" type="SenderFlowType" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:element minOccurs="0" name="DDSSenderStreamQos" type="DDSSenderStreamQoSType"/>
+    </xs:choice>
     <xs:attribute name="Name" type="xs:string" use="required"/>
-    <xs:attribute name="DDSSenderStreamConfig" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="BulkDataNTSenderType">
     <xs:complexContent>
       <xs:extension base="baci:CharacteristicComponent">
         <xs:sequence minOccurs="1" maxOccurs="unbounded">
-               <xs:element name="SenderStream" type="SenderStreamType"/>
+          <xs:element name="SenderStream" type="SenderStreamType"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:element name="BulkDataNTSender" type="BulkDataNTSenderType"/>
 </xs:schema>
