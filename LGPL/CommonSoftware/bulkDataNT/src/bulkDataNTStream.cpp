@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.15 2011/08/04 11:22:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.16 2011/08/05 13:50:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -80,6 +80,11 @@ void BulkDataNTStream::createDDSFactory()
 		throw ex;
 	}//if
 	factory_qos.entity_factory.autoenable_created_entities = DDS_BOOLEAN_FALSE;
+	if (configuration_m.urlProfileQoS.length()>0)
+	{
+		factory_qos.profile.url_profile.length(1);
+		factory_qos.profile.url_profile[0] = configuration_m.urlProfileQoS.c_str();
+	}//if
 	ret = factory_m->set_qos(factory_qos);
 	if (ret!=DDS::RETCODE_OK)
 	{
