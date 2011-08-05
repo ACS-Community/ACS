@@ -2,14 +2,13 @@
 
 <xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTReceiver:1.0"
   xmlns="urn:schemas-eso-org:BulkDataNTReceiver:1.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="rti_dds_qos_profiles.xsd"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
-  attributeFormDefault="unqualified" xmlns:ns1="urn:schemas-eso-org:BulkDataNTSender:1.0">
+  attributeFormDefault="unqualified">
+  
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
-
   <xs:include schemaLocation="rti_dds_qos_profiles.xsd"/>
+  
   <xs:complexType name="DDSReceiverStreamQoSType">
     <xs:choice>
       <xs:sequence>
