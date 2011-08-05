@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 {
 
 	char c;
+	ReceiverFlowConfiguration cfg; //just
 	char *streamName = "DefaultStream";
 	list<char *> flows;
 
@@ -86,7 +87,8 @@ int main(int argc, char *argv[])
 
 	list<char *>::iterator it;
 	for(it = flows.begin(); it != flows.end(); it++) {
-		receiverStream.createFlow((*it));
+		ReceiverFlowConfiguration cfg;
+		receiverStream.createFlow((*it), cfg);
 	}
 
 	std::cout << "press a key to end.." << std::endl;

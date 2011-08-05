@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.11 2011/08/04 11:22:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.12 2011/08/05 13:48:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +63,7 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 
 
 template<class TReceiverCallback>
-BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, BulkDataCallback *cb, bool releaseCB)
+BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, ReceiverFlowConfiguration &cfg, BulkDataCallback *cb, bool releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	BulkDataCallback *callback=0;
@@ -155,7 +155,8 @@ void BulkDataNTReceiverStream<TReceiverCallback>::createMultipleFlowsFromConfig(
 	{
 		if(ACE_OS::strcmp(config, "") == 0)
 		{
-			createFlow("00");
+			ReceiverFlowConfiguration cfg; //just temporary
+			createFlow("00", cfg);
 			return;
 		}
 
@@ -171,8 +172,9 @@ void BulkDataNTReceiverStream<TReceiverCallback>::createMultipleFlowsFromConfig(
 		char strFlowNumber[2];
 		for (int i=0; i<numOtherFeps; i++)
 		{
+			ReceiverFlowConfiguration cfg; //just temporary
 			sprintf(strFlowNumber,"%d",i);
-			this->createFlow(strFlowNumber);
+			this->createFlow(strFlowNumber, cfg);
 		}//for
 
 	}catch(...)
