@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.24 2011/08/09 20:55:13 javarias Exp $"
+# "@(#) $Id: buildPython,v 1.25 2011/08/09 21:06:50 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -183,9 +183,6 @@ fi
 ./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
 make
 make install
-popd $ACSROOT/lib
-ln -s python python2.6
-pushd 
 
 cd $CWD
 echo Python installation done!

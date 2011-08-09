@@ -368,7 +368,7 @@ else
   echo "== Installing dbus-python"
   tar -xvzf dbus-python-0.82.4.tar.gz
   pushd dbus-python-0.82.4
-  ./configure --prefix=$ACSROOT
+  ./configure --prefix=$PYTHON_ROOT
   make
   make install
   popd
