@@ -155,13 +155,13 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/matplotlib-0.99.1.2.tar.gz ]
+if [ ! -e ../PRODUCTS/matplotlib-0.99.3.tar.gz ]
 then
   echo Error: matplotlib sources are missing
 else
   echo "== Building matplotlib"
-  tar -zxf matplotlib-0.99.1.2.tar.gz;
-  pushd matplotlib-0.99.1.1
+  tar -zxf matplotlib-0.99.3.tar.gz;
+  pushd matplotlib-0.99.3
 
   cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
   mv setupext.py.tmp setupext.py
@@ -288,7 +288,7 @@ else
 fi
 
 if [ ! -e ../PRODUCTS/ipython-0.10.tar.gz \
-     -o ! -e ../PRODUCTS/Twisted-10.0.0.tar.bz2 \
+     -o ! -e ../PRODUCTS/Twisted-10.1.0.tar.bz2 \
      -o ! -e ../PRODUCTS/zope.interface-3.6.1.tar.gz \
      -o ! -e ../PRODUCTS/Sphinx-0.6.5.tar.gz \
      -o ! -e ../PRODUCTS/pyOpenSSL-0.10.tar.gz \
@@ -321,8 +321,8 @@ else
   pushd zope.interface-3.6.1
   $PYTHON_INTR setup.py install 
   popd
-  tar -jxf Twisted-10.0.0.tar.bz2
-  pushd Twisted-10.0.0
+  tar -jxf Twisted-10.1.0.tar.bz2
+  pushd Twisted-10.1.0
   $PYTHON_INTR setup.py install 
   popd
   tar -zxf pyOpenSSL-0.10.tar.gz
@@ -350,6 +350,51 @@ else
   popd
 fi
 
+if [ ! -e ../PRODUCTS/pytz-2010h.tar.gz ]
+then
+  echo Error: pytz sources are missing
+else
+  echo "== Installing pytz"
+  tar -xvzf pytz-2010h.tar.gz
+  pushd pytz-2010h
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/dbus-python-0.82.4.tar.gz ]
+then
+  echo Error: dbus-python sources are missing
+else
+  echo "== Installing dbus-python"
+  tar -xvzf dbus-python-0.82.4.tar.gz
+  pushd dbus-python-0.82.4
+  ./configure --prefix=$ACSROOT
+  make
+  make install
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/Numeric-23.8.2.tar.gz ]
+then
+  echo Error: Numeric sources are missing
+else
+  echo "== Installing Numeric"
+  tar  -xvzf Numeric-23.8.2.tar.gz
+  pushd  Numeric-23.8.2
+  python setup.py install 
+  popd
+fi
+
+if [ ! -e ../PRODUCTS/ScientificPython-2.8.tar.gz ]
+then
+  echo Error: Scientific Python sources are missing
+else
+  echo "== Installing Scientific Python"
+  tar -xvzf ScientificPython-2.8.tar.gz
+  pushd ScientificPython-2.8
+  python setup.py install 
+  popd
+fi
 
 cd $CWD
 echo Python Module installation done!
