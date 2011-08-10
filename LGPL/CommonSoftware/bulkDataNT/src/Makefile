@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.12 2011/08/03 14:54:46 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.13 2011/08/10 15:16:53 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -70,7 +70,7 @@ INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h 
 				bulkDataNT.h bulkDataNTPlugin.h bulkDataNTReaderListener.h bulkDataNTReceiverFlow.h \
 				bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i \
 				bulkDataNTSenderFlow.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h bulkDataNTSupport.h \
-				bulkDataNTConfiguration.h
+				bulkDataNTConfiguration.h bulkDataNTConfigurationParser.h
 
 
 #
@@ -83,23 +83,23 @@ LIBRARIES_L     =
 # <brief description of lllll library>
 # bulkDataNTSender_OBJECTS   = bulkDataNTDDS bulkDataNTDDSPublisher bulkDataNTBase bulkDataNTSender bulkDataNT bulkDataNTSupport bulkDataNTPlugin
 
-bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration \
+bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bulkDataNTConfigurationParser \
 						bulkDataNT bulkDataNTSupport bulkDataNTPlugin	
 #					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
-bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors 
+bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c
 bulkDataNT_LDFLAGS = -lnddscpp -lnddsc -lnddscore  -lrt -l	dl -lnsl -lm -lpthread -lstdc++ -lACE -lTAO_AV
 #-ldds_cpp -ldds -lACE -lTAO_AV
 
 
 #bulkDataNTSender_OBJECTS   = bulkDataNTDDSPublisher bulkDataNTSender bulkDataNTSenderImpl
-bulkDataNTSender_OBJECTS    = bulkDataNTSenderStream bulkDataNTSenderFlow bulkDataNTDDSPublisher 
+bulkDataNTSender_OBJECTS    = bulkDataNTSenderStream bulkDataNTSenderFlow bulkDataNTDDSPublisher
 bulkDataNTSender_LIBS = bulkDataNT bulkDataSenderStubs baci
 
 bulkDataNTSenderImpl_OBJECTS = bulkDataNTSenderImpl
 bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
-bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener 
-bulkDataNTReceiver_LIBS = bulkDataNT  
+bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener
+bulkDataNTReceiver_LIBS = bulkDataNT
 
 #
 # Scripts (public and local)

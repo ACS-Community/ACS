@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.4 2011/07/26 15:20:48 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.5 2011/08/10 15:16:53 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -54,7 +54,7 @@ USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
 # C programs (public and local)
 # -----------------------------
 EXECUTABLES     =
-EXECUTABLES_L   = bdNTSenderTest bdNTReceiverTest bdNTTEST1
+EXECUTABLES_L   = bdNTSenderTest bdNTReceiverTest bdNTTEST1 bdNTConfigurationParserTest
 
 #
 # <brief description of xxxxx program>
@@ -63,6 +63,9 @@ bdNTSenderTest_LIBS= bulkDataNTSender
 
 bdNTReceiverTest_OBJECTS=  bdNTReceiverTest
 bdNTReceiverTest_LIBS= bulkDataNTReceiver
+
+bdNTConfigurationParserTest_OBJECTS=bdNTConfigurationParserTest
+bdNTConfigurationParserTest_LIBS=bulkDataNT
 
 bdNTTEST1_OBJECTS = bdNTTEST1
 bdNTTEST1_LIBS = bulkDataReceiverStubs bulkDataSenderStubs
