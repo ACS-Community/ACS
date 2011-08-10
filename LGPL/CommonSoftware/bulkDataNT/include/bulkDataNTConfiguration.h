@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.4 2011/08/05 13:58:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.5 2011/08/10 13:56:54 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -79,7 +79,7 @@ public:
 /******************************************/
 
 /** Specifies the kind of a receiver. This information is propagated
- *  to the senders so they can take desition based on the importance
+ *  to the senders so they can take decision based on the importance
  *  of the receiver, in case of any problem. */
 enum ReceiverType {
 	NORMAL    = 0x1,
