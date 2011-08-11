@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.10 2011/07/29 08:16:50 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.11 2011/08/11 09:26:34 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.10 2011/07/29 08:16:50 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.11 2011/08/11 09:26:34 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -230,7 +230,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data"));
 		}else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %d failed with error: %d", flowName_m.c_str(), ret));
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %s failed with error: %d", flowName_m.c_str(), ret));
 		}//if-else
 
 		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count)); //RTI
