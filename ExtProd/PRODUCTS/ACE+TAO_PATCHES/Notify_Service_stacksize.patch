@@ -1,0 +1,23 @@
+diff -Naur /export/home/griffin/alma/ACS-9.1/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/Object.cpp ACS-current/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/Object.cpp
+--- TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/Object.cpp	2007-08-13 05:20:01.000000000 -0600
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/Object.cpp	2011-08-11 17:38:56.000000000 -0600
+@@ -252,6 +252,7 @@
+     throw CORBA::INTERNAL ();
+ 
+   // Apply the appropriate concurrency QoS
++  const_cast<NotifyExt::ThreadPoolParams*>(&new_qos_properties.thread_pool().value())->stacksize = 256 * 1024;
+   if (new_qos_properties.thread_pool ().is_valid ())
+   {
+     if (new_qos_properties.thread_pool ().value ().static_threads == 0)
+diff -Naur e/griffin/alma/ACS-9.1/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/ThreadPool_Task.cpp ACS-current/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/ThreadPool_Task.cpp
+--- TAO.orig/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/ThreadPool_Task.cpp	2009-03-02 15:49:17.000000000 -0700
++++ TAO/ACE_wrappers/TAO/orbsvcs/orbsvcs/Notify/ThreadPool_Task.cpp	2011-08-11 17:51:32.000000000 -0600
+@@ -79,7 +79,7 @@
+   if (this->ACE_Task <ACE_NULL_SYNCH>::activate (flags,
+     tp_params.static_threads,
+     0,
+-    ACE_THR_PRI_OTHER_DEF) == -1)
++    ACE_THR_PRI_OTHER_DEF, -1, 0, 0, 0, (size_t*)&tp_params.stacksize) == -1)
+   {
+     // Undo the ref counts on error
+     for ( CORBA::ULong i = 0; i < tp_params.static_threads; ++i )
