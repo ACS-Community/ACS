@@ -32,7 +32,10 @@ import java.io.File;
 public class CompHelperClass
 {
 	private char sep = File.separatorChar;
-	private static final String m_helperSuffix = "Helper";
+	//private static final String m_helperSuffix = "Helper";
+	//http://jira.alma.cl/browse/COMP-4783
+	//bhola.panta@naoj 2011/08/05
+	private static final String m_helperSuffix = "ComponentHelper";
 
 	// external component info 
 	private String m_outputRootDir;
@@ -210,8 +213,11 @@ public class CompHelperClass
 	private String getClassName()
 	{
 		StringBuffer stringBuffer = new StringBuffer();
+        //http://jira.alma.cl/browse/COMP-4783
+		//stringBuffer.append(
+		//	"public class " + m_componentClassName + m_helperSuffix + " extends Component" + m_helperSuffix + "\n");
 		stringBuffer.append(
-			"public class " + m_componentClassName + m_helperSuffix + " extends Component" + m_helperSuffix + "\n");
+			"public class " + m_componentClassName + m_helperSuffix + " extends " + m_helperSuffix + "\n");
 		return stringBuffer.toString();
 	}
 
