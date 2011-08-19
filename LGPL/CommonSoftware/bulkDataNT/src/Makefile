@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.13 2011/08/10 15:16:53 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.14 2011/08/19 15:23:32 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -39,7 +39,7 @@ USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX
 #
 # additional include and library search paths
 USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
-USER_LIB = -L$(NDDSHOME)/lib/i86Linux2.6gcc4.1.1  
+USER_LIB = -L$(NDDSHOME)/lib/i86Linux2.6gcc4.1.2  
 
 #
 # MODULE CODE DESCRIPTION:
