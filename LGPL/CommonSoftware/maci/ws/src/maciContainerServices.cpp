@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.40 2011/06/14 17:01:22 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.41 2011/08/19 21:27:19 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -37,6 +37,7 @@ using namespace maciErrType;
 //
 // ContainerServices Constructor
 //
+
 MACIContainerServices::MACIContainerServices(
     const maci::Handle componentHandle,
     ACE_CString& name,
@@ -552,11 +553,11 @@ MACIContainerServices::releaseComponent(const char *name)
     	if (found == -1)
     	{
     		maciErrType::ComponentNotInUseExImpl ex1(__FILE__, __LINE__,
-    				"MACIContainerServices::releaseComponent");
+    		        __PRETTY_FUNCTION__);
     		ex1.setCURL(name);
 
     		maciErrType::CannotReleaseComponentExImpl ex(ex1, __FILE__, __LINE__,
-    				"MACIContainerServices::releaseComponent");
+    		        __PRETTY_FUNCTION__);
     		ex.setCURL(name);
 
     		throw ex;
@@ -568,7 +569,7 @@ MACIContainerServices::releaseComponent(const char *name)
     catch (maciErrType::NoPermissionEx &_ex)
 	{
 	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
-						     "MACIContainerServices::releaseComponent");
+	        __PRETTY_FUNCTION__);
 	ex.setCURL(name);
 	throw ex;
 	}
@@ -577,7 +578,7 @@ MACIContainerServices::releaseComponent(const char *name)
 	// failed to release, bind back
 	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
 	maciErrType::CannotReleaseComponentExImpl ex(_ex, __FILE__, __LINE__,
-						     "MACIContainerServices::releaseComponent");
+	        __PRETTY_FUNCTION__);
 	ex.setCURL(name);
 	throw ex;
 	}
@@ -586,12 +587,12 @@ MACIContainerServices::releaseComponent(const char *name)
 	// failed to release, bind back
 	m_usedComponents.bind(name, m_componentHandle);
 	ACSErrTypeCommon::CORBAProblemExImpl corbaProblemEx(__FILE__, __LINE__,
-							  "MACIContainerServices::releaseComponent");
+	        __PRETTY_FUNCTION__);
 	corbaProblemEx.setMinor(ex.minor());
 	corbaProblemEx.setCompletionStatus(ex.completed());
 	corbaProblemEx.setInfo(ex._info().c_str());
       	maciErrType::CannotReleaseComponentExImpl ex(corbaProblemEx,  __FILE__, __LINE__,
-						     "MACIContainerServices::releaseComponent");
+      	      __PRETTY_FUNCTION__);
 	ex.setCURL(name);
 	throw ex;
 	}
@@ -600,13 +601,77 @@ MACIContainerServices::releaseComponent(const char *name)
 	// failed to release, bind back
 	if (found != -1) m_usedComponents.bind(name, m_componentHandle);
 	ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
-							"MACIContainerServices::releaseComponent");
+	        __PRETTY_FUNCTION__);
 	maciErrType::CannotReleaseComponentExImpl ex(uex,  __FILE__, __LINE__,
-						     "MACIContainerServices::releaseComponent");
+	        __PRETTY_FUNCTION__);
 	ex.setCURL(name);
 	throw ex;
 	}//try-catch
 }//releaseComponent
+
+void MACIContainerServices::releaseComponent(std::string &name,
+        ComponentReleaseCallback *callback) {
+
+    int found = m_usedComponents.unbind(name.c_str());
+
+    // Check if the component is used and unbind
+    if (found == -1) {
+        std::string message = "ignoring request to release component " + name;
+        message +=
+                "because the reference is non-sticky and does not need to be released.";
+        callback->errorNoPermission(message);
+        callback->callOver();
+        return;
+    }
+
+    ACS::CBDescIn myDescIn;
+    if (callback != NULL) {
+        try {
+            m_manager->release_component_async(m_componentHandle, name.c_str(),
+                    callback->myCBlong._this(), myDescIn);
+        } catch (ACSErr::ACSbaseExImpl &ex) {
+            m_usedComponents.bind(name.c_str(), m_componentHandle);
+            ComponentDeactivationUncleanExImpl e(ex.getErrorTrace());
+            callback->errorComponentReleaseFailed(e.getComponentDeactivationUncleanEx());
+            callback->callOver();
+        } catch (maciErrType::NoPermissionEx &ex) {
+            m_usedComponents.bind(name.c_str(), m_componentHandle);
+            callback->errorNoPermission(ex.errorTrace.shortDescription.out());
+            callback->callOver();
+        } catch (CORBA::SystemException &ex) {
+            m_usedComponents.bind(name.c_str(), m_componentHandle);
+            ComponentDeactivationUncleanExImpl e(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+            e.addData("info", ex._info());
+            e.addData("name", ex._name());
+            callback->errorComponentReleaseFailed(e.getComponentDeactivationUncleanEx());
+            callback->callOver();
+        } catch (...) {
+            m_usedComponents.bind(name.c_str(), m_componentHandle);
+            ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+                    __PRETTY_FUNCTION__);
+            maciErrType::CannotReleaseComponentExImpl ex(uex, __FILE__,
+                    __LINE__, __PRETTY_FUNCTION__);
+            ex.setCURL(name.c_str());
+            ComponentDeactivationUncleanExImpl e(ex, __FILE__,
+                    __LINE__, __PRETTY_FUNCTION__);
+            callback->errorComponentReleaseFailed(e.getComponentDeactivationUncleanEx());
+            callback->callOver();
+        }
+    } else {
+        MyCBlongImpl myCBlong(NULL);
+        try {
+            m_manager->release_component_async(m_componentHandle, name.c_str(),
+                    myCBlong._this(), myDescIn);
+        } catch (...) {
+            //We don't care about what happens here
+            ACS_LOG(
+                    LM_FULL_INFO,
+                    __PRETTY_FUNCTION__,
+                    (LM_WARNING, "Problem trying to release component. Check manager logs for more details"));
+            m_usedComponents.bind(name.c_str(), m_componentHandle);
+        }
+    }
+}
 
 void MACIContainerServices::releaseAllComponents()
 {
@@ -827,3 +892,75 @@ MACIContainerServices::getComponentStateManager()
 {
   return componentStateManager_mp;
 }
+
+MyCBlongImpl::MyCBlongImpl(ComponentReleaseCallback *cb):
+    callback(cb){
+
+}
+
+MyCBlongImpl::~MyCBlongImpl() {
+}
+
+void MyCBlongImpl::working(::CORBA::Long value, const ::ACSErr::Completion & c,
+        const ::ACS::CBDescOut & desc) {
+}
+void MyCBlongImpl::done(::CORBA::Long value, const ::ACSErr::Completion & c,
+        const ::ACS::CBDescOut & desc) {
+    if (callback == NULL)
+        return;
+    if (c.previousError.length() > 0) {
+        ComponentDeactivationUncleanExImpl ex(c, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+        callback->componentReleased(ex.getComponentDeactivationUncleanEx());
+    }
+    else {
+        callback->componentReleased();
+    }
+    callback->callOver();
+}
+::CORBA::Boolean MyCBlongImpl::negotiate(::ACS::TimeInterval time_to_transmit,
+        const ::ACS::CBDescOut & desc) {
+    return true;
+}
+
+ComponentReleaseCallback::ComponentReleaseCallback():
+   myCBlong(this) {
+   mutex.acquire();
+}
+
+ComponentReleaseCallback::~ComponentReleaseCallback() {
+    mutex.release();
+}
+
+void ComponentReleaseCallback::errorNoPermission(std::string message) {
+
+}
+
+void ComponentReleaseCallback::componentReleased(
+        maciErrType::ComponentDeactivationUncleanEx deactivationUncleanEx) {
+
+}
+
+void ComponentReleaseCallback::componentReleased() {
+
+}
+
+void ComponentReleaseCallback::errorComponentReleaseFailed(
+        maciErrType::ComponentDeactivationUncleanEx deactivationFailureEx) {
+
+}
+
+bool ComponentReleaseCallback::awaitComponentRelease(unsigned long timeout /*in ms*/) {
+    ACE_Time_Value max_wait = ACE_OS::gettimeofday();
+    max_wait.set(max_wait.sec() + timeout / 1000000,
+            max_wait.usec() + (timeout % 1000000)); //absolute time
+    int retVal = mutex.acquire(max_wait);
+    if (retVal == -1)
+        return false;
+    mutex.release();
+    return true;
+}
+
+void ComponentReleaseCallback::callOver() {
+    mutex.release();
+}
+

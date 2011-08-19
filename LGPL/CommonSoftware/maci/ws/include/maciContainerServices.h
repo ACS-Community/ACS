@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.32 2011/02/17 18:25:38 rtobar Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.33 2011/08/19 21:27:19 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -36,6 +36,7 @@
 #include <maciContainerImpl.h>
 #include <cdbDALS.h>
 #include <acscomponentS.h>
+#include <acscommonS.h>
 #include <acsErrTypeContainerServices.h>
 #include <acsErrTypeLifeCycle.h>
 #include <vector>
@@ -48,6 +49,71 @@
 namespace maci {
 	
 class ContainerImpl;
+class MACIContainerServices;
+class ComponentReleaseCallback;
+
+//Dummy CBlong Callback implementation
+class MyCBlongImpl: public POA_ACS::CBlong {
+public:
+    MyCBlongImpl(ComponentReleaseCallback *cb);
+    virtual ~MyCBlongImpl();
+    void working(::CORBA::Long value, const ::ACSErr::Completion & c,
+            const ::ACS::CBDescOut & desc);
+    void done(::CORBA::Long value, const ::ACSErr::Completion & c,
+            const ::ACS::CBDescOut & desc);
+    ::CORBA::Boolean negotiate(::ACS::TimeInterval time_to_transmit,
+            const ::ACS::CBDescOut & desc);
+private:
+    ComponentReleaseCallback *callback;
+};
+
+class ComponentReleaseCallback {
+    friend class MACIContainerServices;
+    friend class MyCBlongImpl;
+
+public:
+    ComponentReleaseCallback();
+    virtual ~ComponentReleaseCallback();
+    /**
+     * Called when the client cannot legally release the component, e.g. because it no longer holds a reference to it.
+     */
+    virtual void errorNoPermission(std::string message);
+    /**
+     * Called when the component reference has been successfully released.
+     * @param deactivationUncleanEx If the component was de-activated with problems, this exception will be forwarded; otherwise <code>null</code> for clean deactivation.
+     */
+    virtual void componentReleased(maciErrType::ComponentDeactivationUncleanEx deactivationUncleanEx);
+    virtual void componentReleased();
+    /**
+     * Called when the target component deactivation failed.
+     * @param deactivationFailureEx to provide details about the failure.
+     */
+    virtual void errorComponentReleaseFailed(maciErrType::ComponentDeactivationUncleanEx deactivationFailureEx);
+
+    /**
+     * This is not a callback method but a convenience method to "park" the calling thread
+     * until
+     * <ul>
+     *   <li>The component has been released, or
+     *   <li>the given timeout has struck, or
+     *   <li>component release failed with an exception.
+     * </ul>
+     * A client that only wants to wait for component release without caring about the details
+     * does not have to subclass <code>ComponentReleaseCallback</code>,
+     * but can simply call <code>awaitComponentRelease</code>.
+     * The client may in addition override the callback methods though.
+     *
+     * @param timeout The maximum time to wait for the component release to succeed in microseconds (us).
+     * @return <code>true</code> if the component was released properly, <code>false</code> if the call returns because of a timeout.
+     * */
+    bool awaitComponentRelease(unsigned long timeout);
+
+private:
+    MyCBlongImpl myCBlong;
+    ACE_Mutex mutex;
+
+    void callOver();
+};
 
 /**
  * The default implementation of the ContainerServices abstract class.
@@ -162,12 +228,25 @@ class MACIContainerServices: public ContainerServices
    */
     void releaseComponent(const char *name);
     
+    /**
+     * Releases the specified component.
+     *
+     * @param name The name of the component instance to be released
+     * @param callback
+     * @throw maciErrType::CannotReleaseComponentExImpl
+     * @return void
+     * @htmlonly
+     * <br><hr>
+     * @endhtmlonly
+     */
+    void releaseComponent(std::string &name, ComponentReleaseCallback *callback);
+
   /**
    * Release all the components
    * 
    * @return void
    */
-  void releaseAllComponents();
+    void releaseAllComponents();
 
   /**
    * Get a reference to the DAL object
