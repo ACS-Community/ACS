@@ -86,12 +86,14 @@ list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(c
 			delete senders->back();
 			senders->pop_back();
 		}
+		throw ex;
 	} catch(FlowCreateProblemExImpl &ex) {
 		// delete all senders that we could possibly created
 		while(senders->size() > 0) {
 			delete senders->back();
 			senders->pop_back();
 		}
+		throw ex;
 	}
 
 	return senders;
