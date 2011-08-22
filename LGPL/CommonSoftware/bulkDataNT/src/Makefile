@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.14 2011/08/19 15:23:32 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.15 2011/08/22 09:51:16 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -76,14 +76,14 @@ INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h 
 #
 # Libraries (public and local)
 # ----------------------------
-LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver bulkDataNTSenderImpl
+LIBRARIES       = bulkDataNT bulkDataNTSender bulkDataNTReceiver bulkDataNTSenderImpl bulkDataNTConfigParser
 LIBRARIES_L     =
 
 #
 # <brief description of lllll library>
 # bulkDataNTSender_OBJECTS   = bulkDataNTDDS bulkDataNTDDSPublisher bulkDataNTBase bulkDataNTSender bulkDataNT bulkDataNTSupport bulkDataNTPlugin
 
-bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bulkDataNTConfigurationParser \
+bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration \
 						bulkDataNT bulkDataNTSupport bulkDataNTPlugin	
 #					   bulkDataNT bulkDataNTTypeSupport bulkDataNTDataWriter bulkDataNTDataReader 
 bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c
@@ -100,6 +100,9 @@ bulkDataNTSenderImpl_LIBS = bulkDataNTSender
 
 bulkDataNTReceiver_OBJECTS   = bulkDataNTReceiverFlow bulkDataNTDDSSubscriber bulkDataNTReaderListener
 bulkDataNTReceiver_LIBS = bulkDataNT
+
+bulkDataNTConfigParser_OBJECTS = bulkDataNTConfigurationParser
+bulkDataNTConfigParser_LIBS = bulkDataNTSender bulkDataNTReceiver
 
 #
 # Scripts (public and local)
