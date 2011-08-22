@@ -30,4 +30,9 @@
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
+    
+    <ErrorCode name="CDBProblem" shortDescription="Problem when parsing the CDB configuration" description="A problem was found while parsing the CDB configuration for the given entity">
+    	<Member name="Detail" type="string" description="Details of the underlying error" />
+    </ErrorCode>
+
 </Type>
