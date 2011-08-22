@@ -4,7 +4,6 @@
 #include <xercesc/framework/MemBufFormatTarget.hpp>
 #include <xercesc/parsers/XercesDOMParser.hpp>
 #include <stdio.h>
-#include <list>
 
 #include "ACS_BD_Errors.h"
 #include "bulkDataNTConfigurationParser.h"
@@ -23,6 +22,7 @@ const char* const BulkDataConfigurationParser::RECEIVER_FLOW_QOS_NODENAME   = "D
 
 BulkDataConfigurationParser::BulkDataConfigurationParser() :
    m_profiles(),
+   m_entities(),
    m_writer(0),
    m_parser(0)
 {
@@ -42,31 +42,70 @@ BulkDataConfigurationParser::BulkDataConfigurationParser() :
 }
 
 BulkDataConfigurationParser::~BulkDataConfigurationParser() {
-
-	list<const char*> l;
-	map<const char*, string>::iterator mit;
-	list<const char*>::iterator lit;
-
-	// collect keys, then free them -- maybe there's an easier way?
-	for(mit = m_profiles.begin(); mit!=m_profiles.end(); mit++)
-		l.push_back((*mit).first);
-	for(lit = l.begin(); lit!=l.end(); lit++)
-		free((void*)*lit); // counterpart for strdup()
-	l.clear();
-
-	m_profiles.clear();
+	clearCollections();
 	m_writer->release();
 
 	delete m_parser;
 	XMLPlatformUtils::Terminate();
 }
 
-void BulkDataConfigurationParser::parseSenderConfig(const char *config) {
+list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(const char *config) {
+
+	// Collect the information
 	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME);
+
+	// Create the senders from the collected information
+	list<BulkDataNTSenderStream *>* senders = new list<BulkDataNTSenderStream *>();
+
+	map<char*, set<char *> >::iterator mit;
+	set<char *>::iterator sit;
+	for(mit = m_entities.begin(); mit != m_entities.end(); mit++) {
+
+		SenderStreamConfiguration streamCfg;
+		streamCfg.urlProfileQoS = m_profiles[(*mit).first];
+		//BulkDataNTSenderStream *senderStream = new BulkDataNTSenderStream((*mit).first, streamCfg);
+		for(sit = (*mit).second.begin(); sit != (*mit).second.end(); sit++) {
+			SenderFlowConfiguration *flowCfg = new SenderFlowConfiguration();
+			// how do we set the profile URL here_
+			//senderStream->createFlow((*sit), *flowCfg);
+		}
+//		senders->push_back(senderStream);
+	}
+
+	return senders;
 }
 
 void BulkDataConfigurationParser::parseReceiverConfig(const char *config) {
 	parseConfig(config, RECEIVER_STREAM_NODENAME, RECEIVER_FLOW_NODENAME, RECEIVER_STREAM_QOS_NODENAME, RECEIVER_FLOW_QOS_NODENAME);
+	printEntities();
+}
+
+void BulkDataConfigurationParser::clearCollections() {
+
+	map<char*, set<char *> >::iterator mit2;
+	set<char*>::iterator sit;
+
+	m_profiles.clear();
+
+	for(mit2 = m_entities.begin(); mit2 != m_entities.end(); mit2++) {
+		for(sit = (*mit2).second.begin(); sit != (*mit2).second.end(); sit++)
+			XMLString::release((char **)&(*sit));
+		(*mit2).second.clear();
+		XMLString::release((char **)&mit2->first);
+	}
+	m_entities.clear();
+}
+
+void BulkDataConfigurationParser::printEntities() {
+	map<char *, set<char*> >::iterator it;
+	set<char *>::iterator it2;
+
+	for(it = m_entities.begin(); it != m_entities.end(); it++) {
+		printf("Stream '%s'\n", it->first);
+		for(it2 = (*it).second.begin(); it2 != (*it).second.end(); it2++) {
+			printf("  Flow '%s'\n", (*it2));
+		}
+	}
 }
 
 void BulkDataConfigurationParser::parseConfig(const char *config,
@@ -76,30 +115,42 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 	const char* const reqFlowQoSNodeName)
 {
 
+	clearCollections();
+
 	// Parse the XML string and get the DOM Document
 	m_parser->reset();
 	try {
 		MemBufInputSource is((const XMLByte *)config, strlen(config), "id");
 		m_parser->parse(is);
 	} catch(const XMLException& toCatch) {
+
 		char *m = XMLString::transcode(toCatch.getMessage());
+
 		CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		cdbProblemEx.setDetail(m);
+
 		XMLString::release(&m);
+
 		throw cdbProblemEx;
 	} catch(const DOMException& toCatch) {
+
 		char *m = XMLString::transcode(toCatch.getMessage());
+
 		CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		cdbProblemEx.setDetail(m);
+
 		XMLString::release(&m);
+
 		throw cdbProblemEx;
 	}
 
 	DOMDocument* doc = m_parser->getDocument();
 	DOMNode *bdSenderNode = doc->getFirstChild();
 	if( bdSenderNode == 0 ) {
+
 		CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		cdbProblemEx.setDetail("Configuration XML string seems to be empty, no children from the root element");
+
 		throw cdbProblemEx;
 	}
 
@@ -113,29 +164,51 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 
 		char *nodeName = XMLString::transcode(streamNode->getNodeName());
 		if( strcmp(nodeName,reqStreamNodeName) != 0 ) {
+
 			string s("Node name is different from '");
 			s.append(reqStreamNodeName);
 			s.append("': ");
 			s.append(nodeName);
+
 			CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			cdbProblemEx.setDetail(s.c_str());
+
 			XMLString::release(&nodeName);
+
 			throw cdbProblemEx;
 		}
 		XMLString::release(&nodeName);
 
 		char* streamName = getAttrValue(streamNode, "Name");
 		if( streamName == 0 ) {
+
 			string s("Node '");
 			s.append(reqStreamNodeName);
 			s.append("' doesn't have attribute 'Name'");
+
 			CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			cdbProblemEx.setDetail(s.c_str());
+
 			XMLString::release(&streamName);
+
 			throw cdbProblemEx;
 		}
 
-		printf("Processing %s '%s'\n", reqStreamNodeName, streamName);
+		// Check for repeated streams
+		if( m_entities.find(streamName) != m_entities.end() ) {
+
+			string s("Repeated stream: '");
+			s.append(streamName);
+			s.append("'");
+
+			CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			cdbProblemEx.setDetail(s.c_str());
+
+			XMLString::release(&streamName);
+
+			throw cdbProblemEx;
+		}
+		m_entities[streamName] = set<char*>();
 
 		// For each sender stream, check the QoS and the underlying flow nodes
 		DOMNodeList *streamChildrenNodesList = streamNode->getChildNodes();
@@ -149,7 +222,6 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 
 			// The Sender/ReceiverStreamQoS is appended to the str:// URI
 			if( strcmp(childNodeName, reqStreamQoSNodeName) == 0 ) {
-				printf("  Processing %s\n", reqStreamQoSNodeName);
 				addQoSToProfile(streamName, streamChildNode);
 			}
 
@@ -158,17 +230,36 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 
 				char* flowName = getAttrValue(streamChildNode, "Name");
 				if( flowName == 0 ) {
+
 					string s("Node '");
 					s.append(reqFlowNodeName);
 					s.append("' doesn't have attribute 'Name'");
+
 					CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 					cdbProblemEx.setDetail(s.c_str());
+
 					XMLString::release(&childNodeName);
-					XMLString::release(&streamName);
-					XMLString::release(&flowName);
+
 					throw cdbProblemEx;
 				}
-				printf("  Processing %s '%s'\n", reqFlowNodeName, flowName);
+
+				// Check for repeated flows inside the stream
+				if( m_entities[streamName].find(flowName) != m_entities[streamName].end() ) {
+
+					string s("Repeated flow in stream '");
+					s.append(streamName);
+					s.append("': '");
+					s.append(flowName);
+					s.append("'");
+
+					CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+					cdbProblemEx.setDetail(s.c_str());
+
+					XMLString::release(&childNodeName);
+
+					throw cdbProblemEx;
+				}
+				m_entities[streamName].insert(flowName);
 
 				// Flow nodes contain Sender/ReceiverFlowQoS
 				DOMNodeList *flowNodesList = streamChildNode->getChildNodes();
@@ -180,16 +271,19 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 
 					char *childFlowNodeName = XMLString::transcode(childFlowNode->getNodeName());
 					if( strcmp(childFlowNodeName,reqFlowQoSNodeName) != 0 ) {
+
 						string s("Node name is different from '");
+
 						s.append(reqFlowQoSNodeName);
 						s.append("': ");
 						s.append(childFlowNodeName);
+
 						CDBProblemExImpl cdbProblemEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 						cdbProblemEx.setDetail(s.c_str());
-						XMLString::release(&flowName);
+
 						XMLString::release(&childNodeName);
-						XMLString::release(&streamName);
 						XMLString::release(&childFlowNodeName);
+
 						throw cdbProblemEx;
 					}
 					XMLString::release(&childFlowNodeName);
@@ -199,14 +293,10 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 					profileName.append(flowName);
 					addQoSToProfile(profileName.c_str(), childFlowNode);
 				}
-
-				XMLString::release(&flowName);
 			}
 
 			XMLString::release(&childNodeName);
 		}
-
-		XMLString::release(&streamName);
 	}
 
 }
@@ -230,13 +320,14 @@ char* BulkDataConfigurationParser::getAttrValue(DOMNode *node, const char* name)
 }
 
 void BulkDataConfigurationParser::addQoSToProfile(const char *profile, DOMNode *node) {
-	if( m_profiles.find(profile) == m_profiles.end() )
-		profile = strdup(profile);
-	string s = m_profiles[profile];
-	getSerializedElement(node, s);
-}
 
-void BulkDataConfigurationParser::getSerializedElement(DOMNode *node, std::string &s) {
+	if( m_profiles.find(profile) == m_profiles.end() ) {
+		string s("str://<dds><qos_library><qos_profile name=\"");
+		s.append(profile);
+		s.append("\">");
+		m_profiles[profile] = s;
+	}
+	string profileString = m_profiles[profile];
 
 	DOMNodeList *children = node->getChildNodes();
 	for(unsigned int i=0; i!= children->getLength(); i++) {
@@ -244,7 +335,8 @@ void BulkDataConfigurationParser::getSerializedElement(DOMNode *node, std::strin
 		if( child->getNodeType() == DOMNode::ELEMENT_NODE ) {
 			MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
 			m_writer->writeNode(formatTarget, *child);
-			s.append((const char*)formatTarget->getRawBuffer());
+			profileString.append((char*)formatTarget->getRawBuffer());
+			profileString.append("</qos_profile></qos_library></dds>");
 			delete formatTarget;
 		}
 	}

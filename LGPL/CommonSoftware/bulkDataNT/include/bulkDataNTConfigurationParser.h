@@ -5,12 +5,16 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <string>
 #include <map>
+#include <string>
+#include <set>
 
 #include <xercesc/dom/DOMNode.hpp>
 #include <xercesc/dom/DOMWriter.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
+
+#include "bulkDataNTSenderStream.h"
+#include "bulkDataNTReceiverStream.h"
 
 using namespace std;
 using namespace xercesc;
@@ -23,7 +27,7 @@ namespace AcsBulkdata
 	public:
 		BulkDataConfigurationParser();
 		~BulkDataConfigurationParser();
-		void parseSenderConfig(char const *config);
+		list<BulkDataNTSenderStream *>* parseSenderConfig(char const *config);
 		void parseReceiverConfig(char const *config);
 
 	private:
@@ -35,8 +39,11 @@ namespace AcsBulkdata
 			const char* const reqFlowNodeName,
 			const char* const reqStreamQoSNodeName,
 			const char* const reqFlowQoSNodeName);
+		void clearCollections();
+		void printEntities();
 
-		map<const char *, string> m_profiles;
+		map<string, string> m_profiles;
+		map<char *, set<char*> > m_entities;
 		DOMWriter *m_writer;
 		AbstractDOMParser *m_parser;
 
