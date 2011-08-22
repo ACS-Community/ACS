@@ -15,6 +15,7 @@ const char* const BulkDataConfigurationParser::SENDER_STREAM_NODENAME       = "S
 const char* const BulkDataConfigurationParser::SENDER_STREAM_QOS_NODENAME   = "DDSSenderStreamQoS";
 const char* const BulkDataConfigurationParser::SENDER_FLOW_NODENAME         = "Flow";
 const char* const BulkDataConfigurationParser::SENDER_FLOW_QOS_NODENAME     = "DDSSenderFlowQoS";
+
 const char* const BulkDataConfigurationParser::RECEIVER_STREAM_NODENAME     = "ReceiverStream";
 const char* const BulkDataConfigurationParser::RECEIVER_STREAM_QOS_NODENAME = "DDSReceiverStreamQoS";
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_NODENAME       = "ReceiverFlow";
@@ -56,20 +57,41 @@ list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(c
 
 	// Create the senders from the collected information
 	list<BulkDataNTSenderStream *>* senders = new list<BulkDataNTSenderStream *>();
+	try {
+		map<char*, set<char *> >::iterator mit;
+		set<char *>::iterator sit;
+		for(mit = m_entities.begin(); mit != m_entities.end(); mit++) {
 
-	map<char*, set<char *> >::iterator mit;
-	set<char *>::iterator sit;
-	for(mit = m_entities.begin(); mit != m_entities.end(); mit++) {
-
-		SenderStreamConfiguration streamCfg;
-		streamCfg.urlProfileQoS = m_profiles[(*mit).first];
-		//BulkDataNTSenderStream *senderStream = new BulkDataNTSenderStream((*mit).first, streamCfg);
-		for(sit = (*mit).second.begin(); sit != (*mit).second.end(); sit++) {
-			SenderFlowConfiguration *flowCfg = new SenderFlowConfiguration();
-			// how do we set the profile URL here_
-			//senderStream->createFlow((*sit), *flowCfg);
+			SenderStreamConfiguration *streamCfg = new SenderStreamConfiguration();
+			if( m_profiles.find(mit->first) != m_profiles.end() ) {
+				streamCfg->libraryQos    = "DynamicLib";
+				streamCfg->profileQos    = mit->first;
+				streamCfg->urlProfileQoS = m_profiles[mit->first];
+				printf("Profile %s is: ==== %s ====\n", mit->first, m_profiles[mit->first].c_str());
+			}
+			else {
+				printf("Entity %s has no profile\n", mit->first);
+			}
+			BulkDataNTSenderStream *senderStream = new BulkDataNTSenderStream(mit->first, *streamCfg);
+			for(sit = mit->second.begin(); sit != mit->second.end(); sit++) {
+				SenderFlowConfiguration *flowCfg = new SenderFlowConfiguration();
+				// TODO: how do we set the profile URL here? I think we don't...
+				senderStream->createFlow(*sit, *flowCfg);
+			}
+			senders->push_back(senderStream);
 		}
-//		senders->push_back(senderStream);
+	} catch(StreamCreateProblemExImpl &ex) {
+		// delete all senders that we could possibly created
+		while(senders->size() > 0) {
+			delete senders->back();
+			senders->pop_back();
+		}
+	} catch(FlowCreateProblemExImpl &ex) {
+		// delete all senders that we could possibly created
+		while(senders->size() > 0) {
+			delete senders->back();
+			senders->pop_back();
+		}
 	}
 
 	return senders;
@@ -322,7 +344,7 @@ char* BulkDataConfigurationParser::getAttrValue(DOMNode *node, const char* name)
 void BulkDataConfigurationParser::addQoSToProfile(const char *profile, DOMNode *node) {
 
 	if( m_profiles.find(profile) == m_profiles.end() ) {
-		string s("str://<dds><qos_library><qos_profile name=\"");
+		string s("str://\"<dds><qos_library name=\"DynamicLib\"><qos_profile name=\"");
 		s.append(profile);
 		s.append("\">");
 		m_profiles[profile] = s;
@@ -336,9 +358,10 @@ void BulkDataConfigurationParser::addQoSToProfile(const char *profile, DOMNode *
 			MemBufFormatTarget *formatTarget = new MemBufFormatTarget();
 			m_writer->writeNode(formatTarget, *child);
 			profileString.append((char*)formatTarget->getRawBuffer());
-			profileString.append("</qos_profile></qos_library></dds>");
 			delete formatTarget;
 		}
 	}
 
+	profileString.append("</qos_profile></qos_library></dds>\"");
+	m_profiles[profile] = profileString;
 }
