@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.5 2011/08/10 13:56:54 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.6 2011/08/22 09:48:41 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -40,6 +40,7 @@ namespace AcsBulkdata
 class StreamConfiguration
 {
 	friend class BulkDataNTStream;
+	friend class BulkDataConfigurationParser;
 public:
 	StreamConfiguration();
 
