@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.5 2011/07/29 08:16:50 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.6 2011/08/23 15:42:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -55,7 +55,10 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream, const char* flowName/*cb*/);
+	BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
+						const char* flowName,
+						const SenderFlowConfiguration &sndCfg
+						/*cb*/);
 
 	/**
 	 * Destructor
