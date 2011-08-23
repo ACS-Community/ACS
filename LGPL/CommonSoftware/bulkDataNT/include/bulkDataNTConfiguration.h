@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.6 2011/08/22 09:48:41 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.7 2011/08/23 14:42:18 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -36,8 +36,18 @@
 namespace AcsBulkdata
 {
 
+///common class for all configuration
+class ConfigurationBase
+{
+	//friend class BulkDataConfigurationParser;
+protected:
+	std::string libraryQos;  /// QoS configuration library
+	std::string profileQos;  /// QoS configuration profile in the library that should be used
+};
+
+
 /// common class for Sender and Receiver configuration
-class StreamConfiguration
+class StreamConfiguration : public ConfigurationBase
 {
 	friend class BulkDataNTStream;
 	friend class BulkDataConfigurationParser;
@@ -46,10 +56,8 @@ public:
 
 protected:
 	std::string urlProfileQoS;  // here we can specify RTI DDS QoS as a URL/string str://
-	std::string libraryQos;  /// QoS configuration library
-	std::string profileQos;  /// QoS configuration profile in the library that should be used
+	// ... it is read just when we create stream, but it contains profiles for all flows
 	unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
-
 };
 
 
@@ -58,7 +66,7 @@ protected:
 /****************************************/
 
 /** A Sender flow configuration */
-class  SenderFlowConfiguration
+class  SenderFlowConfiguration : public ConfigurationBase
 {
 public:
 	SenderFlowConfiguration();
@@ -89,7 +97,7 @@ enum ReceiverType {
 };
 
 /** A Receiver flow configuration */
-class ReceiverFlowConfiguration
+class ReceiverFlowConfiguration : public ConfigurationBase
 {
 public:
 	ReceiverFlowConfiguration();
