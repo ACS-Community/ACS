@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.15 2011/08/23 15:41:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.16 2011/08/23 18:08:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,8 +58,7 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
 	DDS::Publisher *pub = participant_m->create_publisher_with_profile(
-			participant_m->get_default_library(),
-			participant_m->get_default_profile(),
+			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 			0, DDS::STATUS_MASK_NONE);
 	if(pub==0)
 	{
@@ -107,8 +106,7 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter_with_profile(
 															topic,
-															participant_m->get_default_library(),
-															participant_m->get_default_profile(),
+															ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 															writerListener,
 															DDS::STATUS_MASK_ALL
 															);

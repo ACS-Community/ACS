@@ -37,7 +37,7 @@ DDS::Subscriber* BulkDataNTDDSSubscriber::createDDSSubscriber()
 	}
 
 	DDS::Subscriber *sub = participant_m->create_subscriber_with_profile(
-			participant_m->get_default_library(), participant_m->get_default_profile(),
+			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 			0, DDS::STATUS_MASK_NONE);
 	if(sub==NULL)
 	{
@@ -73,7 +73,7 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	}
 
 	DDS::DataReader *dr = subscriber_m->create_datareader_with_profile(topic,
-			participant_m->get_default_library(), participant_m->get_default_profile(),
+			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 			listener,
 			DDS::STATUS_MASK_ALL/*ALL_STATUS*/);
 	if(dr==NULL)
