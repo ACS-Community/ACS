@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.13 2011/08/05 14:12:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.14 2011/08/23 15:09:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -78,7 +78,7 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(
 	}//if
 	try{
 		callback = (cb==0) ? new TReceiverCallback() : cb;
-		flow = new BulkDataNTReceiverFlow(this, flowName, callback, (cb==0)||releaseCB);
+		flow = new BulkDataNTReceiverFlow(this, flowName, cfg, callback, (cb==0)||releaseCB);
 		receiverFlows_m.insert(std::pair<std::string, BulkDataNTReceiverFlow*>(flowName, flow));
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
