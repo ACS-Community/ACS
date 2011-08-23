@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.7 2011/08/23 14:42:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.8 2011/08/23 15:25:21 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -36,10 +36,10 @@
 namespace AcsBulkdata
 {
 
-///common class for all configuration
-class ConfigurationBase
+///DDS configuration class at this moment ii is commm for all classe but can be later split
+// ... if needed
+class DDSConfiguration
 {
-	//friend class BulkDataConfigurationParser;
 protected:
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used
@@ -47,7 +47,7 @@ protected:
 
 
 /// common class for Sender and Receiver configuration
-class StreamConfiguration : public ConfigurationBase
+class StreamConfiguration : public DDSConfiguration
 {
 	friend class BulkDataNTStream;
 	friend class BulkDataConfigurationParser;
@@ -66,7 +66,7 @@ protected:
 /****************************************/
 
 /** A Sender flow configuration */
-class  SenderFlowConfiguration : public ConfigurationBase
+class  SenderFlowConfiguration : public DDSConfiguration
 {
 public:
 	SenderFlowConfiguration();
@@ -97,7 +97,7 @@ enum ReceiverType {
 };
 
 /** A Receiver flow configuration */
-class ReceiverFlowConfiguration : public ConfigurationBase
+class ReceiverFlowConfiguration : public DDSConfiguration
 {
 public:
 	ReceiverFlowConfiguration();
