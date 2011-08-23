@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.3 2011/08/05 13:28:13 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.4 2011/08/23 18:07:08 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,32 +28,36 @@
 
 using namespace AcsBulkdata;
 
-StreamConfiguration::StreamConfiguration()
+DDSConfiguration::DDSConfiguration()
 {
 	libraryQos="BulkDataQoSLibrary";
+}
+
+StreamConfiguration::StreamConfiguration()
+{
 	DDSLogVerbosity = (unsigned int)(NDDS_CONFIG_LOG_VERBOSITY_WARNING);
 }//StreamConfiguration
 
 SenderStreamConfiguration::SenderStreamConfiguration()
 {
-	profileQos="SenderDefaultQosProfile";
+	profileQos="SenderStreamDefaultQosProfile";
 }//StreamConfiguration
 
 
 ReceiverStreamConfiguration::ReceiverStreamConfiguration()
 {
-	profileQos="ReceiverDefaultQosProfile";
+	profileQos="ReceiverStreamDefaultQosProfile";
 }//ReceiverStreamConfiguration
 
 
 ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 {
-
+	profileQos="ReceiverFlowDefaultQosProfile";
 }//ReceiverFlowConfiguration
 
 SenderFlowConfiguration::SenderFlowConfiguration()
 {
-
+	profileQos="SenderFlowDefaultQosProfile";
 }//SenderFlowConfiguration
 
 
