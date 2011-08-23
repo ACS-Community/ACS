@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.9 2011/08/04 11:22:21 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.10 2011/08/23 15:04:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,15 +29,21 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.9 2011/08/04 11:22:21 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.10 2011/08/23 15:04:34 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
 
-BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream, const char* flowName, BulkDataCallback *cb, bool releaseCB) :
+BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream,
+												const char* flowName,
+												const ReceiverFlowConfiguration &rcvCfg,
+												BulkDataCallback *cb,
+												bool releaseCB) :
 		receiverStream_m(receiverStream),
-		flowName_m(flowName), callback_m(cb), releaseCB_m(releaseCB)
+		flowName_m(flowName),
+		receiverCfg_m(rcvCfg),
+		callback_m(cb), releaseCB_m(releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	std::string topicName;
