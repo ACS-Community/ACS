@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.14 2011/08/04 11:22:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.15 2011/08/23 15:41:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,8 +33,8 @@ using namespace ACS_DDS_Errors;
 
 
 
-BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p) :
-		BulkDataNTDDS(p)
+BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg) :
+		BulkDataNTDDS(p, ddsCfg)
 {
 	publisher_m = createDDSPublisher();
 }

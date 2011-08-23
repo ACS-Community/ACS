@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.h,v 1.8 2011/07/28 15:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.h,v 1.9 2011/08/23 15:41:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,6 +57,7 @@
 #include <logging.h>
 #include <ACSErrTypeCommon.h>
 #include "ACS_DDS_Errors.h"
+#include "bulkDataNTConfiguration.h"
 
 namespace AcsBulkdata
 {
@@ -72,7 +73,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTDDS(DDS::DomainParticipant*);
+	BulkDataNTDDS(DDS::DomainParticipant*, const DDSConfiguration &ddsCfg);
 
 	/**
 	 * Destructor
@@ -95,6 +96,8 @@ protected:
 
 //	DDS::DomainParticipantFactory *factory;
 	DDS::DomainParticipant* participant_m;
+
+	const DDSConfiguration ddsCfg_m;
 
 //	DDS::Publisher* pub;
 //	DDS::Topic* topic; // should be  an array just temporary

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDS.cpp,v 1.10 2011/07/28 15:11:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDS.cpp,v 1.11 2011/08/23 15:41:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,8 +32,9 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 
-BulkDataNTDDS::BulkDataNTDDS(DDS::DomainParticipant* participant) :
-	participant_m(participant)
+BulkDataNTDDS::BulkDataNTDDS(DDS::DomainParticipant* participant, const DDSConfiguration &ddsCfg) :
+	participant_m(participant),
+	ddsCfg_m(ddsCfg)
 {
 	AUTO_TRACE("BulkDataNTDDS::BulkDataNTDDS");
 	if (participant==0)

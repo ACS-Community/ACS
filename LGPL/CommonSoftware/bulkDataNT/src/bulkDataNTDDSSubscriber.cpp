@@ -8,8 +8,8 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 
-BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p) :
-		BulkDataNTDDS(p)
+BulkDataNTDDSSubscriber::BulkDataNTDDSSubscriber(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg) :
+		BulkDataNTDDS(p, ddsCfg)
 {
 	subscriber_m = createDDSSubscriber();
 }
