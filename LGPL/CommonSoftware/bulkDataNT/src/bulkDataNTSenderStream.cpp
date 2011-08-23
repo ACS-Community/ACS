@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.9 2011/08/05 14:09:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.10 2011/08/23 15:43:33 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.9 2011/08/05 14:09:12 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.10 2011/08/23 15:43:33 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -66,7 +66,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, c
 	}
 
 	try{
-		flow = new BulkDataNTSenderFlow(this, flowName);
+		flow = new BulkDataNTSenderFlow(this, flowName, cfg);
 		flows_m.insert(std::pair<std::string, BulkDataNTSenderFlow*>(flowName, flow));
 		return flow;
 	}catch(const ACSErr::ACSbaseExImpl &acsEx)
