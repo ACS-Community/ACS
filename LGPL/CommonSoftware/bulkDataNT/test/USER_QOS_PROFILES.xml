@@ -28,7 +28,7 @@ RTI Data Distribution Service user manual.
              A QoS profile groups a set of related QoS.
         -->
         
-        <qos_profile name="DefaultQosProfile" >
+        <qos_profile name="DefaultStreamQosProfile" >
             
             <participant_qos>
                 <transport_builtin>
@@ -65,7 +65,14 @@ RTI Data Distribution Service user manual.
             
         </qos_profile>
         
-        <qos_profile name="SenderDefaultQosProfile" base_name="DefaultQosProfile">
+        <qos_profile name="SenderStreamDefaultQosProfile" base_name="DefaultStreamQosProfile">
+        </qos_profile>
+        
+        <qos_profile name="ReceiverStreamDefaultQosProfile" base_name="DefaultStreamQosProfile">
+        </qos_profile>
+        
+        
+        <qos_profile name="SenderFlowDefaultQosProfile">
             <datawriter_qos>
                 <reliability>
                     <kind>RELIABLE_RELIABILITY_QOS</kind>
@@ -122,7 +129,7 @@ RTI Data Distribution Service user manual.
             
         </qos_profile>
         
-        <qos_profile name="ReceiverDefaultQosProfile" base_name="DefaultQosProfile">
+        <qos_profile name="ReceiverFlowDefaultQosProfile">
             <datareader_qos>
                 <reliability>
                     <kind>RELIABLE_RELIABILITY_QOS</kind>
