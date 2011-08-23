@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.11 2011/08/11 09:26:34 rtobar Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.12 2011/08/23 15:42:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,14 +28,16 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.11 2011/08/11 09:26:34 rtobar Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.12 2011/08/23 15:42:20 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
 using namespace ACS_DDS_Errors;
 
-BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream, const char* flowName/*, cb*/) :
+BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
+											const char* flowName,
+											const SenderFlowConfiguration &sndCfg/*, cb*/) :
 		senderStream_m(senderStream), flowName_m(flowName),
 		ddsPublisher_m(0), ddsTopic_m(0), ddsDataWriter_m(0), frame_m(0)
 {
@@ -43,7 +45,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	std::string topicName;
 
 	// should be reactor to have just one object for comunication !! DDSDataWriter or similar
-	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant());
+	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
 
 	topicName = senderStream_m->getName() + "#" + flowName_m;
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
