@@ -62,6 +62,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				if (data_length==0)
 				{
 					std::cout << " *************************   New sendData @ " << listName << " *******************************" << std::endl;
+					start_time = ACE_OS::gettimeofday();
 				}
 
 				cout << listName << " got " << message.data.length() << " data on " << endl;
