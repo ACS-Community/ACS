@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.111 2011/04/18 09:51:06 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.112 2011/08/24 18:03:31 bjeram Exp $"
 #
 #
 #
@@ -526,6 +526,14 @@ then
 fi
 
 ##################
+# RTI DDS #
+##################
+if [ -d $ALMASW_INSTDIR/RTI/ndds.4.5d ]
+then
+    export NDDSHOME=$ALMASW_INSTDIR/RTI/ndds.4.5d
+fi
+
+##################
 # OpenSplice DDS #
 ##################
 ARCH=`uname -m`
@@ -860,6 +868,16 @@ then
    then
 	LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
    fi
+
+   if  [ X"$NDDSHOME" != X ]
+   then
+      if [ "$ARCH" != "x86_64" ]
+      then
+        LD_LIBRARY_PATH=$NDDSHOME/lib/i86Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+      else
+        LD_LIBRARY_PATH=$NDDSHOME/lib/x64Linux2.6gcc4.1.2:$LD_LIBRARY_PATH
+      fi
+   fi   
 
    if [ X"$VLTROOT" != X ] && [ X"$VLTROOT" != X"$intlist_first_dir" ]
    then
