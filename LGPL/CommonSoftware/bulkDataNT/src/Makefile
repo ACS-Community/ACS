@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.15 2011/08/22 09:51:16 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.16 2011/08/24 09:29:19 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -230,15 +230,28 @@ ifneq ($(MAKEDIRTMP),\#error\#)
    include $(MAKEDIR)/acsMakefile
 endif
 
+
 #
 # TARGETS
 # -------
+
+ifdef NDDSHOME
+	
 all: do_dds_gen	do_all
 	@echo " . . . 'all' done" 
 
 clean : clean_all dds_clean
 	@echo " . . . clean done"
+else
 
+.DEFAULT_GOAL := all	
+all: 
+	@echo " NDDSHOME not defined nothing to be done for target all!" 
+
+clean : clean_all
+	@echo " . . . clean done"
+	
+endif
 clean_dist : clean_all clean_dist_all 
 	@echo " . . . clean_dist done"
 
