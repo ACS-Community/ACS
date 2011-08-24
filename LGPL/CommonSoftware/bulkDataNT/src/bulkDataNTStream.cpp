@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.17 2011/08/22 13:52:10 rtobar Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.18 2011/08/24 13:48:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -127,7 +127,7 @@ void BulkDataNTStream::createDDSParticipant()
 	{
 		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
-		ex.setQoS("get_default_participant_qos");
+		ex.setQoS("get_participant_qos_from_profile");
 		throw ex;
 	}//if
 
