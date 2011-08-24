@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.12 2011/08/23 15:42:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.13 2011/08/24 16:08:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.12 2011/08/23 15:42:20 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.13 2011/08/24 16:08:35 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -134,8 +134,8 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	frame_m->dataType = ACSBulkData::BD_DATA;  //we are going to send data
 	frame_m->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
 
-	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d",
-			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize));
+	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d to flow: %s",
+			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str()));
 
 //	start_time = ACE_OS::gettimeofday();
 
@@ -169,7 +169,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Failed to send @ %d (%d)", i));
 			}//if-else
 
-			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count)); //RTI
+			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) for flow: %s", status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
 			// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 			ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
 			if( ret != DDS::RETCODE_OK)
