@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.9 2011/08/23 18:05:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.10 2011/08/24 14:13:59 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -40,6 +40,7 @@ namespace AcsBulkdata
 // ... if needed
 class DDSConfiguration
 {
+	friend class BulkDataNTDDS;
 	friend class BulkDataNTDDSSubscriber;
 	friend class BulkDataNTDDSPublisher;
 public:
