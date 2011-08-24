@@ -23,12 +23,13 @@ public:
 
 	int cbReceive(unsigned char* data, unsigned  int size)
 	{
-		std::cout << "cbReceive: got " << size << " :";
+		// std::cout << "cbReceive: got " << size << " :";
 /*		for(unsigned int i=0; i<frame_p->length(); i++)
 		{
 			std::cout <<  *(char*)(frame_p->base()+i);
 		}
-	*/	std::cout << std::endl;
+	*/
+		//std::cout << std::endl;
 		return 0;
 	}
 
@@ -49,17 +50,22 @@ int main(int argc, char *argv[])
 {
 
 	char c;
+	unsigned int sleepPeriod=0;
 	ReceiverFlowConfiguration cfg; //just
 	char *streamName = "DefaultStream";
 	list<char *> flows;
 
 	// Parse the args
-	ACE_Get_Opt get_opts (argc, argv, "s:f:");
+	ACE_Get_Opt get_opts (argc, argv, "s:f:w:");
 	while(( c = get_opts()) != -1 ) {
 
 		switch(c) {
 			case 's':
 				streamName = get_opts.opt_arg();
+				break;
+
+			case 'w':
+				sleepPeriod = atoi(get_opts.opt_arg());
 				break;
 
 			case 'f':
@@ -91,8 +97,14 @@ int main(int argc, char *argv[])
 		receiverStream.createFlow((*it), cfg);
 	}
 
-	//std::cout << "press a key to end.." << std::endl;
-	//getchar();
-	sleep(5);
+	if (sleepPeriod>0)
+	{
+		sleep(sleepPeriod);
+	}
+	else
+	{
+		std::cout << "press a key to exit.." << std::endl;
+		getchar();
+	}
 
 }
