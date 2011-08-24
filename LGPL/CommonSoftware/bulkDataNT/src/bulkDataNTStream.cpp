@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.18 2011/08/24 13:48:31 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.19 2011/08/24 13:49:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,11 +66,6 @@ void BulkDataNTStream::createDDSFactory()
 	DDS::DomainParticipantFactoryQos factory_qos;
 
 	factory_m = DDS::DomainParticipantFactory::get_instance();
-
-	// rtobar: commented out since we already provide default values in our configuration objects,
-	//         which anyway are taken into acount when calling factory_m->get_participant_qos_from_profile
-//	factory_m->set_default_library(configuration_m.libraryQos.c_str());
-//	factory_m->set_default_profile(configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str());
 
 	// needed by RTI only
 	ret = factory_m->get_qos(factory_qos);
