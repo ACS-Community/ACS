@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.7 2011/08/24 09:31:50 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.8 2011/08/24 09:33:46 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -227,6 +227,9 @@ endif
 ifdef NDDSHOME
 all:	do_all
 	@echo " . . . 'all' done" 
+
+test: 
+	@echo " Not yet integrated!" 
 else
 .DEFAULT_GOAL := all	
 all: 
