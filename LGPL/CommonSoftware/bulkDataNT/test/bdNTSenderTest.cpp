@@ -17,8 +17,8 @@ int main()
 	BulkDataNTSenderFlow* flow0 = senderStream1.createFlow("00");
 	BulkDataNTSenderFlow* flow1 = senderStream1.createFlow("01");
 
-	std::cout << "press a key to start.." << std::endl;
-	getchar();
+	//std::cout << "press a key to start.." << std::endl;
+	//getchar();
 
 	unsigned char parm[]="123";
 
@@ -36,12 +36,14 @@ int main()
 	flow0->sendData(data, 65000);
 	flow1->sendData(data, 65000);
 
-	std::cout << "press a key to send stop.." << std::endl;
-	getchar();
+	sleep(2);
+	//std::cout << "press a key to send stop.." << std::endl;
+	//getchar();
 	flow0->stopSend();
 	flow1->stopSend();
-	std::cout << "press a key to exit.." << std::endl;
-	getchar();
+	sleep(2);
+	//std::cout << "press a key to exit.." << std::endl;
+	//getchar();
 
 	delete flow0;
 // flow1 will be deleted when senderStream1 is deleted

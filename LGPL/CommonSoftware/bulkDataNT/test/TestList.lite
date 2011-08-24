@@ -1,0 +1,13 @@
+#*******************************************************************************
+# ALMA - Atacama Large Millimiter Array
+#
+# "@(#) $Id: TestList.lite,v 1.1 2011/08/24 10:44:39 bjeram Exp $"
+#
+# TestList
+#
+# who       when      what
+# --------  --------  ----------------------------------------------
+
+SOURCE bulkDataNTTATEnv
+
+1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01" "bdNTSenderTest"

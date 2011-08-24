@@ -91,7 +91,8 @@ int main(int argc, char *argv[])
 		receiverStream.createFlow((*it), cfg);
 	}
 
-	std::cout << "press a key to end.." << std::endl;
-	getchar();
+	//std::cout << "press a key to end.." << std::endl;
+	//getchar();
+	sleep(5);
 
 }
