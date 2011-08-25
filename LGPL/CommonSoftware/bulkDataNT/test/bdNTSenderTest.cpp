@@ -46,6 +46,10 @@ int main(int argc, char *argv[])
 
 	flow0->startSend(parm, 3);
 
+// for test purpose we do not invoke startSend
+//	strcpy(parm, "abc");
+//	flow1->startSend(parm, 3);
+
 	//unsigned char data[]="Hello wrold !!!!";
 	unsigned char *data= new unsigned char[dataSize];
 	for (unsigned int i=0; i<dataSize; i++)
