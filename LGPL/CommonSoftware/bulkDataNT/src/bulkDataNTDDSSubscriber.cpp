@@ -64,7 +64,7 @@ void BulkDataNTDDSSubscriber::destroyDDSSubscriber()
 ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic *topic, DDS::DataReaderListener *listener)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	DDS::ReturnCode_t ret;
+
 	if (subscriber_m==NULL || topic==NULL || listener==NULL)
 	{
 		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
