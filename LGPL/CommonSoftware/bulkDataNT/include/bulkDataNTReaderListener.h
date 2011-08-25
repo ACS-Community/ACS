@@ -64,11 +64,6 @@ public:
     const DDS::SampleLostStatus& status
   );
   
-
-  long num_reads() const {
-    return num_reads_;
-  }
-
   unsigned long get_lost_packs() const {
       return lost_packs;
     }
@@ -77,7 +72,6 @@ public:
 private:
 
   DDS::DataReader* reader_;
-  long                  num_reads_;
   unsigned long lost_packs;
   std::string flowName_m;
 

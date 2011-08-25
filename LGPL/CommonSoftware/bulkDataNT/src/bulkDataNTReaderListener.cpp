@@ -6,10 +6,10 @@
 int BulkDataNTReaderListener::sleep_period=0;
 
 // Implementation skeleton constructor
-BulkDataNTReaderListener::BulkDataNTReaderListener(const char* n, BulkDataCallback* cb)
-: num_reads_(-1),
+BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCallback* cb)
+:
   lost_packs(0),
-  flowName_m(n),
+  flowName_m(name),
   data_length(0),
   callback_m (cb)
 {
@@ -29,7 +29,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	ACSBulkData::BulkDataNTFrame message;
 	unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
 
-	num_reads_ ++;
 
 	if (message_dr==NULL)	message_dr = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
 
@@ -170,7 +169,6 @@ void BulkDataNTReaderListener::on_subscription_matched (
 		const DDS::SubscriptionMatchedStatus& )
 {
 	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_subscription_match" << endl;
-	num_reads_ = -1;
 	lost_packs = 0;
 }
 
