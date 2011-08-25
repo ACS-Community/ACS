@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.13 2011/08/24 16:08:35 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.14 2011/08/25 12:30:39 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.13 2011/08/24 16:08:35 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.14 2011/08/25 12:30:39 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -99,6 +99,14 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 }//~BulkDataNTSenderFlow
 
 
+unsigned int BulkDataNTSenderFlow::getNumberOfReceivers()
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	DDS::ReliableReaderActivityChangedStatus status;
+
+	ddsDataWriter_m->get_reliable_reader_activity_changed_status(status);
+	return status.active_count;
+}//getNumberOfReceivers
 
 void BulkDataNTSenderFlow::startSend(ACE_Message_Block *param)
 {

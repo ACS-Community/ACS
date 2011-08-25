@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	for (unsigned int i=0; i<dataSize; i++)
 			data[i]=i;
 
-	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes", dataSize));
+	ACS_SHORT_LOG((LM_INFO, "Going to send: %d Bytes to %d receivers", dataSize, flow0->getNumberOfReceivers()));
 	start_time = ACE_OS::gettimeofday();
 	flow0->sendData(data, dataSize);
 	elapsed_time = ACE_OS::gettimeofday() - start_time;

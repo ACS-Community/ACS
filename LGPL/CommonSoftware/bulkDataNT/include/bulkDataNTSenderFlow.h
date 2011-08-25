@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.6 2011/08/23 15:42:56 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.7 2011/08/25 12:30:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -65,6 +65,8 @@ public:
 	 */
 	virtual ~BulkDataNTSenderFlow();
 
+
+	unsigned int getNumberOfReceivers();
 
 	// why do we have default parameter for msg block
 	void startSend(ACE_Message_Block *param = 0);
