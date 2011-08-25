@@ -59,7 +59,8 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}
 				else
 				{
-					std::cerr << "Parameter arrived (BD_PARAM) in state: " << currentState_m << std::endl;
+					std::cerr << "ERROR: Parameter of length " << message.data.length();
+					std::cerr << " has arrived (BD_PARAM) in state: " << currentState_m << " on flow: " << flowName_m << std::endl;
 				}
 				break;
 			}//	case ACSBulkData::BD_PARAM:
@@ -79,7 +80,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					{
 						if (next_sample!=0 && next_sample!=message.restDataLength)
 						{
-							cerr << flowName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << flowName_m << endl;
+							cerr << "ERROR: " << flowName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << flowName_m << endl;
 						}
 						next_sample=message.restDataLength-1;
 					}
@@ -102,7 +103,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}
 				else
 				{
-					std::cerr << "Data of length " << message.data.length();
+					std::cerr << "ERROR: Data of length " << message.data.length();
 					std::cerr << " arrived (BD_DATA) in state: " << currentState_m << " on flow: " << flowName_m << std::endl;
 				}
 				break;
@@ -117,11 +118,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}else
 					if (currentState_m==StopState)
 					{
-						std::cerr << "Stop (BD_STOP) arrived in stop state - ignored!" << std::endl;
+						std::cerr << "WARNING: Stop (BD_STOP) arrived in stop state - ignored!" << std::endl;
 					}
 					else //StartState
 					{
-						std::cerr << "Stop (BD_STOP) arrived in start state: no data has been sent after start!" << std::endl;
+						std::cerr << "WARNING: Stop (BD_STOP) arrived in start state: no data has been sent after start!" << std::endl;
 					}
 				break;
 			}//case ACSBulkData::BD_STOP
