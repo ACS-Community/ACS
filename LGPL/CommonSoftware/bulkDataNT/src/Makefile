@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.16 2011/08/24 09:29:19 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.17 2011/08/25 15:07:38 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -265,7 +265,7 @@ install : install_all
 do_dds_gen: bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp bulkDataNT.h  bulkDataNTSupport.h bulkDataNTPlugin.h
 	
 bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp bulkDataNT.h  bulkDataNTSupport.h bulkDataNTPlugin.h : ../idl/bulkDataNT.idl
-	$(NDDSHOME)/scripts/rtiddsgen -namespace -replace -d ../src ../idl/bulkDataNT.idl; \
+	$(NDDSHOME)/scripts/rtiddsgen -ppDisable -namespace -replace -d ../src ../idl/bulkDataNT.idl; \
 	rename .cxx .cpp *.cxx; \
 	mv *.h ../include
 
