@@ -65,7 +65,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					start_time = ACE_OS::gettimeofday();
 				}
 
-				cout << listName << " got " << message.data.length() << " data on " << endl;
+				//cout << listName << " got " << message.data.length() << " data on " << endl;
 				//	std::cout << message.data[0];
 				//    			std::copy(message.data.begin(), message.data.end(), out_it);
 				// std::cout << std::endl;
@@ -74,25 +74,8 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					sum+=message.data[j];
 				// std::cout << "Sum: " << sum << " " << message.data.size() << std::endl;
 
-				if (sleep_period!=0)
-				{
-					cout << listName << " Rest:" << message.restDataLength << " Going sleep for: " << sleep_period << endl;
-					//cout <<  message.data.length() << endl;
-					//cout <<  message.restDataLength << endl;
-					usleep(sleep_period);
-				}
 				data_length += message.data.length();
-				/* simulate seg fault
-    			if (data_length>100000) {
-    			char *tt=0;
-    			printf("XXX %s\n", tt);
-    			printf("crash\n");
-    			ACE_Time_Value *t=0;
-    			t->sec();
-    			DDS::DataReaderQos *ddr_qos=0;
-    			ddr_qos->reliability.kind = 0;
-    			printf("after crash\n");
-    			} */
+
 				if ( message.restDataLength>0)
 				{
 					if (next_sample!=0 && next_sample!=message.restDataLength)
