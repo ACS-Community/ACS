@@ -70,7 +70,9 @@ public:
 
   static int sleep_period;
 private:
+  typedef enum {StartState, DataRcvState, StopState} ReaderListenerStates;
 
+  ReaderListenerStates currentState_m; //current state of ReaderListener
   DDS::DataReader* reader_;
   unsigned long lost_packs;
   std::string flowName_m;
