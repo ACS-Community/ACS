@@ -79,12 +79,11 @@ private:
   DDS::DataReader* reader_;
   long                  num_reads_;
   unsigned long lost_packs;
-  std::string listName;
+  std::string flowName_m;
 
   unsigned long next_sample;
-  unsigned int itera;
 
-  // for performance tesat
+  // for performance test
   ACE_Time_Value start_time;
   unsigned long data_length;
 

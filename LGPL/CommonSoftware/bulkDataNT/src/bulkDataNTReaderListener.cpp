@@ -9,12 +9,11 @@ int BulkDataNTReaderListener::sleep_period=0;
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* n, BulkDataCallback* cb)
 : num_reads_(-1),
   lost_packs(0),
-  listName(n),
+  flowName_m(n),
   data_length(0),
   callback_m (cb)
 {
 	next_sample=0;
-	itera = 0;
 	message_dr=0;
 }
 
@@ -50,7 +49,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			{
 			case ACSBulkData::BD_PARAM:
 			{
-				cout << listName << " startSend: parameter size: " << message.data.length() << endl;
+				cout << flowName_m << " startSend: parameter size: " << message.data.length() << endl;
 				data_length = 0;
 				start_time = ACE_OS::gettimeofday();
 				message.data.to_array(tmpArray, message.data.length());
@@ -61,7 +60,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			{
 				if (data_length==0)
 				{
-					std::cout << " *************************   New sendData @ " << listName << " *******************************" << std::endl;
+					std::cout << " *************************   New sendData @ " << flowName_m << " *******************************" << std::endl;
 					start_time = ACE_OS::gettimeofday();
 				}
 
@@ -80,22 +79,21 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				{
 					if (next_sample!=0 && next_sample!=message.restDataLength)
 					{
-						cerr << "#" << itera << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << listName << endl;
+						cerr << flowName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << flowName_m << endl;
 					}
 					next_sample=message.restDataLength-1;
 				}
 				else //message.restDataLength==0
 				{
 					ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
-					cout <<	listName << " Received all data from sendData: " << data_length << " Bytes in ";
+					cout <<	flowName_m << " Received all data from sendData: " << data_length << " Bytes in ";
 					cout <<(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
 					cout << "secs. => Rate: ";
 					cout << ((data_length/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
 
 					DDS::SampleLostStatus s;
 					reader->get_sample_lost_status(s);
-					cerr << listName << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
-					itera++;
+					cerr << flowName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
 					data_length = 0;
 				}
 
@@ -105,7 +103,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			}//case ACSBulkData::BD_DATA
 			case ACSBulkData::BD_STOP:
 			{	cout << "===============================================================" << endl;
-				itera =0;
 				callback_m->cbStop();
 				break;
 			}//case ACSBulkData::BD_STOP
@@ -125,7 +122,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	}
 	else
 	{
-		cout << "BulkDataNTReaderListener(" << listName << ")::on_data_available:";
+		cout << "BulkDataNTReaderListener(" << flowName_m << ")::on_data_available:";
 		cout << " received unknown instance state " << si.instance_state;
 		cout << endl;
 	}
@@ -135,14 +132,14 @@ void BulkDataNTReaderListener::on_requested_deadline_missed (
 		DDS::DataReader*,
 		const DDS::RequestedDeadlineMissedStatus& )
 {
-	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_deadline_missed" << endl;
+	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_requested_deadline_missed" << endl;
 }
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos (
 		DDS::DataReader*,
 		const DDS::RequestedIncompatibleQosStatus&)
 {
-	cerr << "BulkDataNTReaderListener(" << listName << ")::on_requested_incompatible_qos" << endl;
+	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_requested_incompatible_qos" << endl;
 }
 
 void BulkDataNTReaderListener::on_liveliness_changed (
@@ -172,7 +169,7 @@ void BulkDataNTReaderListener::on_subscription_matched (
 		DDS::DataReader*,
 		const DDS::SubscriptionMatchedStatus& )
 {
-	cerr << "BulkDataNTReaderListener(" << listName << ")::on_subscription_match" << endl;
+	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_subscription_match" << endl;
 	num_reads_ = -1;
 	lost_packs = 0;
 }
@@ -181,7 +178,7 @@ void BulkDataNTReaderListener::on_sample_rejected(
 		DDS::DataReader*,
 		const DDS::SampleRejectedStatus& srs)
 {
-	cerr << "BulkDataNTReaderListener(" << listName << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
+	cerr << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
 	cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
 	cerr << " SampleRejectedStatus.total_count: " << srs.total_count << endl;
 }
@@ -190,6 +187,6 @@ void BulkDataNTReaderListener::on_sample_lost(
 		DDS::DataReader*,
 		const DDS::SampleLostStatus& s)
 {
-	cerr << endl << endl << "BulkDataNTReaderListener(" << listName << "::on_sample_lost: ";
+	cerr << endl << endl << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_lost: ";
 	cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
 }
