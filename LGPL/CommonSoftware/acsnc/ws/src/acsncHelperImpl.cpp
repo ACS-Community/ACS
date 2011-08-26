@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncHelperImpl.cpp,v 1.83 2011/03/28 11:28:10 rtobar Exp $"
+* "@(#) $Id: acsncHelperImpl.cpp,v 1.84 2011/08/26 22:04:59 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,6 +30,7 @@
 #include <maciContainerImpl.h>
 #include <baciCORBA.h>
 #include <acscommonC.h>
+#include <AcsNCTraceLog.h>
 #include "acsncCDBProperties.h"
 //-----------------------------------------------------------------------------
  using namespace baci;
@@ -232,85 +233,86 @@ Helper::resolveNotificationFactory()
 	}
 }
 //-----------------------------------------------------------------------------
-void
-Helper::createNotificationChannel()
-{
+void Helper::createNotificationChannel() {
     ACS_TRACE("Helper::resolveNotificationChannel");
+    ACE_Time_Value start_time = ACE_OS::gettimeofday();
+    ACE_Time_Value end_time;
+    unsigned long msec = 0;
+    try {
+        //double-check the notification service reference
+        if (CORBA::is_nil(notifyFactory_m.in()) == true) {
+            //it means that the extended notify factory failed to be created.
+            //we will try with the standard implementation
+            if (CORBA::is_nil(notifyFactoryOld_m.in()) == true) {
+                ACS_SHORT_LOG(
+                        (LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Default Notify factory is nil!", channelName_mp));
+                CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__, __LINE__,
+                        "nc::Helper::createNotificationChannel");
+                throw err.getCORBAProblemEx();
+            }
 
-    try{
-    //double-check the notification service reference
-    if(CORBA::is_nil(notifyFactory_m.in()) == true)
-	{
-        //it means that the extended notify factory failed to be created.
-        //we will try with the standard implementation
-        if(CORBA::is_nil(notifyFactoryOld_m.in()) == true)
-        {
-	        ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Default Notify factory is nil!",
-		       channelName_mp));
-	        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-	        throw err.getCORBAProblemEx();
-	    }
-        
-        //here is where the channel is actually created
-        notifyChannel_m = notifyFactoryOld_m->create_channel(getQoSProps(),
-                                  getAdminProps(),
-                                  channelID_m);
-    }else{
-        //here is where the channel is actually created
-        notifyChannel_m = notifyFactory_m->create_named_channel(getQoSProps(),
-                                  getAdminProps(),
-                                  channelID_m, channelName_mp);
-    }
-	//ensure it's a valid reference
-	if(CORBA::is_nil(notifyChannel_m.in()) == true)
-	{
-	    ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Notify Channel is nil!",
-			   channelName_mp));
-	    CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-	    throw err.getCORBAProblemEx();
-	}
+            //here is where the channel is actually created
+            notifyChannel_m = notifyFactoryOld_m->create_channel(getQoSProps(),
+                    getAdminProps(), channelID_m);
+            end_time = ACE_OS::gettimeofday();
+        } else {
+            //here is where the channel is actually created
+            notifyChannel_m = notifyFactory_m->create_named_channel(
+                    getQoSProps(), getAdminProps(), channelID_m,
+                    channelName_mp);
+            end_time = ACE_OS::gettimeofday();
+        }
+        msec = (end_time.sec() - start_time.sec()) * 1000 + (end_time.usec() - start_time.usec()) / 1000;
+        AcsNCTraceLog::LOG_NC_ChannelCreatedRaw_OK TS_RawOK_Log(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+        TS_RawOK_Log.setTimeMillis(msec);
+        TS_RawOK_Log.setChannelName(channelName_mp);
+        TS_RawOK_Log.setChannelId(channelID_m);
+        TS_RawOK_Log.log();
+        //ensure it's a valid reference
+        if (CORBA::is_nil(notifyChannel_m.in()) == true) {
+            ACS_SHORT_LOG(
+                    (LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Notify Channel is nil!", channelName_mp));
+            CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__, __LINE__,
+                    "nc::Helper::createNotificationChannel");
+            throw err.getCORBAProblemEx();
+        }
 
-   // Bind notification channel to Naming service
-   CosNaming::Name name(1);
-   name.length(1);
-   name[0].id = CORBA::string_dup(channelName_mp);
-   name[0].kind = acscommon::NC_KIND;
-   //sanity check to make sure the naming service is really there
-   if(CORBA::is_nil(namingContext_m.in()) == true)
-       {
-       ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Naming Context is nil!",
-           channelName_mp));
-       CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-       throw err.getCORBAProblemEx();
-       }
-   //really bind the reference here
-   namingContext_m->rebind(name, notifyChannel_m.in());
-	}
-    catch(NotifyMonitoringExt::NameAlreadyUsed e){
-	    ACS_SHORT_LOG((LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, the name is already used!",
-		       channelName_mp));
+        // Bind notification channel to Naming service
+        CosNaming::Name name(1);
+        name.length(1);
+        name[0].id = CORBA::string_dup(channelName_mp);
+        name[0].kind = acscommon::NC_KIND;
+        //sanity check to make sure the naming service is really there
+        if (CORBA::is_nil(namingContext_m.in()) == true) {
+            ACS_SHORT_LOG(
+                    (LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, Naming Context is nil!", channelName_mp));
+            CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__, __LINE__,
+                    "nc::Helper::createNotificationChannel");
+            throw err.getCORBAProblemEx();
+        }
+        //really bind the reference here
+        namingContext_m->rebind(name, notifyChannel_m.in());
+    } catch (NotifyMonitoringExt::NameAlreadyUsed e) {
+        ACS_SHORT_LOG(
+                (LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, the name is already used!", channelName_mp));
         throw e;
-    }
-    catch(NotifyMonitoringExt::NameMapError e){
-	    ACS_SHORT_LOG((LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, Name Map Error!",
-		       channelName_mp));
+    } catch (NotifyMonitoringExt::NameMapError e) {
+        ACS_SHORT_LOG(
+                (LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel, Name Map Error!", channelName_mp));
         throw e;
+    } catch (CORBAProblemEx) {
+        //exception thrown by us...OK to rethrow
+        ACS_SHORT_LOG(
+                (LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel with a nil pointer!", channelName_mp));
+        throw;
+    } catch (...) {
+        //lots of things could have caused this (bad QoS props, admin props, etc.)
+        ACS_SHORT_LOG(
+                (LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, unknown error on createNotificationChannel!", channelName_mp));
+        CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__, __LINE__,
+                "nc::Helper::createNotificationChannel");
+        throw err.getCORBAProblemEx();
     }
-    catch(CORBAProblemEx)
-	{
-	//exception thrown by us...OK to rethrow
-	ACS_SHORT_LOG((LM_TRACE, "Helper::createNotificationChannel() failed for the '%s' channel with a nil pointer!",
-		       channelName_mp));
-	throw;
-	}
-    catch(...)
-	{
-	//lots of things could have caused this (bad QoS props, admin props, etc.)
-	ACS_SHORT_LOG((LM_ERROR, "Helper::createNotificationChannel() error occured for the '%s' channel, unknown error on createNotificationChannel!",
-			   channelName_mp));
-	CORBAProblemExImpl err = CORBAProblemExImpl(__FILE__,__LINE__,"nc::Helper::createNotificationChannel");
-	throw err.getCORBAProblemEx();
-	}
 }
 //-----------------------------------------------------------------------------
 const char*
@@ -346,7 +348,11 @@ Helper::getAdminProps()
 bool Helper::resolveInternalNotificationChannel(){
 
     ACS_TRACE("Helper::resolveInternalNotificationChannel");
-
+    AcsNCTraceLog::LOG_NC_ChannelCreated_ATTEMPT TS_NC_Attempt(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+    TS_NC_Attempt.log();
+    ACE_Time_Value start_time = ACE_OS::gettimeofday();
+    ACE_Time_Value end_time;
+    unsigned long msec = 0;
     int retryNumberAttempts = 20;
     int retrySleepSec = 2;
     bool existNotifyChannel = resolveNotifyChannel();
@@ -356,6 +362,12 @@ bool Helper::resolveInternalNotificationChannel(){
     while(!existNotifyChannel && retryNumberAttempts >= 0){
         try{
             createNotificationChannel();
+            end_time = ACE_OS::gettimeofday();
+            msec = (end_time.sec() - start_time.sec()) * 1000 + (end_time.usec() - start_time.usec()) / 1000;
+            AcsNCTraceLog::LOG_NC_ChannelCreated_OK TS_NC_OK(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+            TS_NC_OK.setChannelId(channelID_m);
+            TS_NC_OK.setChannelName(channelName_mp);
+            TS_NC_OK.setTimeMillis(msec);
         }catch(NotifyMonitoringExt::NameAlreadyUsed){
             ACS_SHORT_LOG((LM_INFO,"NC '%s' seems to be getting created. Will wait and try again in %d seconds.", channelName_mp, retrySleepSec));
         }catch(NotifyMonitoringExt::NameMapError){

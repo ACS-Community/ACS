@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.87 2011/03/14 18:43:00 rtobar Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.88 2011/08/26 22:04:59 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -26,6 +26,7 @@
 #include <baciCORBA.h>
 #include <acscommonC.h>
 #include <acsncErrType.h>
+#include <AcsNCTraceLog.h>
 
 using namespace ACSErrTypeCommon;
 
