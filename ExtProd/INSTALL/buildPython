@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.25 2011/08/09 21:06:50 javarias Exp $"
+# "@(#) $Id: buildPython,v 1.26 2011/08/29 15:56:34 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -180,7 +180,8 @@ then
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 fi
 
-./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
+#./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared --enable-unicode=ucs4
+./configure --prefix $PYTHON_ROOT --exec-prefix $PYTHON_ROOT --enable-shared 
 make
 make install
 
