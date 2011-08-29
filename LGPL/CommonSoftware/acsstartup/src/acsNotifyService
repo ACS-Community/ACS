@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.13 2011/07/14 14:52:17 tstaig Exp $"
+# "@(#) $Id: acsNotifyService,v 1.14 2011/08/29 10:08:36 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -314,7 +314,7 @@ then
   # in order to get the correct svc.conf service configuration file.
   STARTUP_DIR=$PWD
   cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-  $ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot &> $NOTIFY_OUT &
+  $ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 | tee $NOTIFY_OUT &
   cd $STARTUP_DIR
 
   NOTIFY_SERVICE_PID=$!
