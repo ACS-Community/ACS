@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.88 2011/03/15 18:06:48 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.89 2011/08/30 16:49:42 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -97,7 +97,7 @@ acserrHandlersErrStubs_LIBS := acserrStubs
 #
 # Scripts (public and local)
 # ----------------------------
-SCRIPTS         = acserrGenCpp acserrGenJava acserrGenIDL acserrGenPython updateErrDefs.sh
+SCRIPTS         = acserrGenCpp acserrGenJava acserrGenIDL acserrGenPython updateErrDefs.sh acserrGenCheckXML
 SCRIPTS_L       =
 
 #
@@ -124,8 +124,9 @@ XSDBIND_INCLUDE = commontypes
 #
 # Jarfiles and their directories
 #
-JARFILES = acserrj
-acserrj_DIRS = alma/acs
+JARFILES = acserrj xmlvalidator
+acserrj_DIRS = alma/acs/exceptions
+xmlvalidator_DIRS = alma/acs/xml/validator
 
 # Here we have to generate the code for errors by hand because the acserr library is not available yet
 # and because we want to make err system more compact (w/o too much err type libraries)
