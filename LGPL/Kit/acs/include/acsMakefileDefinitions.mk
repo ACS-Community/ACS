@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.25 2011/03/31 21:21:16 jagonzal Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.26 2011/08/30 16:51:54 tstaig Exp $
 #
 #(info Entering definitions.mk)
 
@@ -405,8 +405,12 @@ endef
 # $(call acsMakeXMLErrDependencies,xml)
 define acsMakeXMLErrDependencies
 
+.PHONY: check_xmlerr_$1
+check_xmlerr_$1:
+	$(AT)acserrGenCheckXML ../idl/$1.xml
+
 .PHONY: do_xmlerr_$1
-do_xmlerr_$1: $(do_xmlerr_$1_prereq)
+do_xmlerr_$1: check_xmlerr_$1 $(do_xmlerr_$1_prereq)
 
 $(CURDIR)/../idl/$1.idl: ../idl/$1.xml
 	$(AT)echo "=== Generating IDL from XMLERR definitions $1"
