@@ -715,6 +715,7 @@ public class BlobberWorker extends CancelableRunnable {
 							}
 
 							// Update blob data.
+							blobData.dataList.clear();
 							blobData.dataList.addAll(container.dataList);
 							// TODO: The following change by Victor in 1.5 is kept in spite of the general rollback, until we clarify it:
 							blobData.clob = container.clobBuilder.toString();
