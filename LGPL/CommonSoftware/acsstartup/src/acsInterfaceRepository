@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.5 2011/07/29 16:52:12 tstaig Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.6 2011/08/31 16:33:53 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -262,7 +262,37 @@ then
   ACS_LOG_INFO "$COMMAND" "Starting Interface Repository${LOGPOSTFIX}"
 
   # This is TAO Interface Repository
-  $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT -o $IR_IOR $ORBOPTS &
+  PERSISTENCE_FILE=$ACS_TMP/ifr_cache
+  if [ -e $PERSISTENCE_FILE ]
+  then
+      #We check for idl files time and compare it with persistence file time
+      IDL_FILES=
+      X=0
+      t1=$(stat -c %Y $PERSISTENCE_FILE)
+      for i in $IDL_PATH $USER_IDL
+      do
+          j=$(echo $i |sed "s/-I//")
+          for k in $(find $j -name "*.idl")
+          do
+              t2=$(stat -c %Y $k)
+              if [ $t2 -ge $t1 ]
+              then
+                  IDL_FILES="$IDL_FILES$k "
+              fi
+              X=$(($X + 1))
+          done
+      done
+      echo $X
+      if [ "$IDL_FILES" = "" ]
+      then
+          #If all files are older than the persistence file we skip loading them.
+          ACS_LOG_INFO "acsInterfaceRepository" "Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file"
+          CL_LOADIFR=false
+      else
+          rm -f $PERSISTENCE_FILE
+      fi
+  fi
+  $ACE_ROOT/TAO/orbsvcs/IFR_Service/IFR_Service -ORBEndpoint iiop://$HOST:$IR_PORT -p -b $PERSISTENCE_FILE -o $IR_IOR $ORBOPTS &
 
   #This is MICO Interface Repository
   LD_LIBRARY_PATH=$MICO_HOME/lib:$LD_LIBRARY_PATH
