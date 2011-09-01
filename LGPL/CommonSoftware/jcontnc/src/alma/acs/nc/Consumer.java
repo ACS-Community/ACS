@@ -24,11 +24,13 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,15 +51,20 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
+import alma.AcsNCTraceLog.LOG_NC_ReceiverTooSlow;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.container.ContainerServicesImpl;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.RepeatGuard;
+import alma.acs.logging.RepeatGuard.Logic;
 import alma.acs.util.StopWatch;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
@@ -99,6 +106,11 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	/** Provides access to the ACS logging system. */
 	protected final Logger m_logger;
 
+	/**
+	 * Used only as logging parameter.
+	 */
+	private final String m_clientName;
+
 	/** Provides access to the naming service among other things. */
 	protected final Helper m_helper;
 
@@ -118,6 +130,34 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	/** The channel notification service domain name, can be <code>null</code>. */
 	protected final String m_channelNotifyServiceDomainName;
 
+	/**
+	 * Event queue should hold at least two events to avoid unnecessary scary logs about slow receivers,
+	 * but must be short enough to get receivers to actually implement their own queue and discard mechanism
+	 * instead of relying on this ACS queue.
+	 * @see #eventHandlingExecutor
+	 */
+	public static final int EVENT_QUEUE_CAPACITY = 8;
+	
+	/**
+	 * Single-thread executor with a small queue (size given in {@link #EVENT_QUEUE_CAPACITY}, 
+	 * used to stay responsive toward the NC even if receivers are slow. 
+	 * The purpose is only to track down receivers that don't keep up with the event rate, and not to provide reliable event buffering, 
+	 * see http://jira.alma.cl/browse/COMP-5767.
+	 * <p>
+	 * Errors are logged using type-safe {@link LOG_NC_ReceiverTooSlow}, using also fields {@link #numEventsDiscarded} and {@link #receiverTooSlowLogRepeatGuard}.
+	 */
+	private final ThreadPoolExecutor eventHandlingExecutor;
+
+	/**
+	 * @see #eventHandlingExecutor
+	 */
+	private long numEventsDiscarded;
+
+	/**
+	 * Throttles {@link LOG_NC_ReceiverTooSlow} logs, see {@link #eventHandlingExecutor}.
+	 */
+	private final RepeatGuard receiverTooSlowLogRepeatGuard;
+	
 	/**
 	 * Contains a list of handler/receiver objects whose "receive" method (see {@link #RECEIVE_METHOD_NAME}) 
 	 * will be invoked when an event of a particular type is received.
@@ -153,6 +193,9 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	private AcsNcReconnectionCallback m_callback;
 
 	private final ReentrantLock disconnectLock = new ReentrantLock();
+
+
+	
 	
 	/**
 	 * Creates a new instance of Consumer
@@ -200,12 +243,19 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		m_channelName = channelName;
 		m_channelNotifyServiceDomainName = channelNotifyServiceDomainName;
 		m_logger = services.getLogger();
+		m_clientName = services.getName();
 
 		// naming service, POA, and Any generator
 		m_helper = new Helper(services);
 
 		m_notifyServiceName = getNotificationFactoryName();
 
+		// log slow receiver error only every 30 seconds or every 100 times, whatever comes first
+		receiverTooSlowLogRepeatGuard = new RepeatGuard(30, TimeUnit.SECONDS, 100, Logic.OR);
+		
+		eventHandlingExecutor = new ThreadPoolExecutor(0, 1, 1L, TimeUnit.MINUTES,
+				new ArrayBlockingQueue<Runnable>(EVENT_QUEUE_CAPACITY), services.getThreadFactory(), new ThreadPoolExecutor.AbortPolicy() );
+		
 		profiler = new StopWatch();
 
 		m_anyAide = new AnyAide(services);
@@ -643,10 +693,10 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	public void push_structured_event(StructuredEvent structuredEvent)
 		throws org.omg.CosEventComm.Disconnected {
 		// time to get the event description
-		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
+		final EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
 		Object convertedAny = m_anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
-		IDLEntity struct = null; 
+		IDLEntity struct = null;
 		try {
 			struct = (IDLEntity) convertedAny;
 			if (isTraceEventsEnabled) {
@@ -662,8 +712,33 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		}
 
 		if (struct != null) {
-			// process the extracted data
-			processEvent(struct, eDescrip);
+			// process the extracted data in a separate thread
+			final IDLEntity structToProcess = struct;
+			
+			// to avoid unnecessary scary logs, we tolerate previous events up to half the queue size
+			boolean isReceiverBusyWithPreviousEvent = ( eventHandlingExecutor.getQueue().size() > EVENT_QUEUE_CAPACITY / 2 );
+			
+//			m_logger.info("Queue size: " + eventHandlingExecutor.getQueue().size());
+			
+			boolean thisEventDiscarded = false;
+			try {
+				eventHandlingExecutor.execute(
+						new Runnable() {
+							public void run() {
+								// here we call processEvent from the worker thread
+								processEvent(structToProcess, eDescrip);
+							}
+						});
+			} catch (RejectedExecutionException ex) {
+				// receivers have been too slow, queue is full, will drop data.
+				thisEventDiscarded = true;
+				numEventsDiscarded++;
+			}
+			if ( (thisEventDiscarded || isReceiverBusyWithPreviousEvent) && receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
+				LOG_NC_ReceiverTooSlow.log(m_logger, m_clientName, numEventsDiscarded, struct.getClass().getName(), m_channelName,
+						getNotificationFactoryName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
+				numEventsDiscarded = 0;
+			}
 		}
 		else {
 			// @todo (HSO) unclear why we ignore events w/o data attached. At least now we log it so people can complain.
@@ -836,6 +911,10 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 			m_proxySupplier.disconnect_structured_push_supplier();
 			m_consumerAdmin.destroy();
 
+			// shut down the event queue
+			eventHandlingExecutor.shutdown();
+			eventHandlingExecutor.awaitTermination(2, TimeUnit.SECONDS);
+			
 			// clean-up CORBA stuff
 			m_callback.disconnect();
 			if (m_corbaRef != null) {
