@@ -37,6 +37,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.nc.SimpleSupplier;
 import alma.acsnc.EventDescription;
 import alma.demo.SupplierCompOperations;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /** Class designed for testing event suppliers.
  * @TODO: consolidate with similar class in jcontexmpl
@@ -70,12 +71,13 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 	 * @param param number of events to send
 	 */
 	public void sendEvents(short param) {
-		System.out.println("Now sending simplesupplier events...");
+		m_logger.info("Now sending simplesupplier events...");
 		try {
 			//first send out some number of events.
 			EventDescription t_block = new EventDescription("no name", 32L, 64L);
 			for (short i = 0; i < param; i++) {
 				m_supplier.publishEvent(t_block);
+				Thread.sleep(1);
 			}
 
 			//fake a subscription change
@@ -100,16 +102,18 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
 	}
 
 	/** Disconnects the supplier. */
-	public void cleanUp() {
+	public void cleanUp() throws AcsJComponentCleanUpEx {
 		m_logger.info("cleanUp() called...");
 
 		try {
-
 			//fake a consumer disconnecting...
 			m_supplier.disconnect_structured_push_supplier();
+			
 			m_supplier.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		super.cleanUp();
 	}
 }

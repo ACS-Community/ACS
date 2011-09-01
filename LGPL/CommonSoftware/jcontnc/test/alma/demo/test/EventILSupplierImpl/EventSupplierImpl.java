@@ -26,17 +26,14 @@
  */
 package alma.demo.test.EventILSupplierImpl;
 
-import java.util.logging.Logger;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.FRIDGE.FridgeControlPackage.NestedFridgeEvent;
 import alma.acs.component.ComponentImplBase;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.nc.SimpleSupplier;
-import alma.demo.SupplierCompOperations;
-
 import alma.acsnc.EventDescription;
+import alma.demo.SupplierCompOperations;
 
 /** Class designed for testing event suppliers.
  * @author dfugate
@@ -58,6 +55,7 @@ public class EventSupplierImpl extends ComponentImplBase implements SupplierComp
          for(short i=0; i<param; i++)
          {
             m_supplier.publishEvent(t_block);
+            Thread.sleep(1);
          }         
          
 	 //fake a subscription change

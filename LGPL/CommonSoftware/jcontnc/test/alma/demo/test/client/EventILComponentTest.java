@@ -19,13 +19,11 @@
  */
 package alma.demo.test.client;
 
-import java.util.logging.Logger;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.component.client.ComponentClient;
-import alma.demo.SupplierComp;
 import alma.demo.ConsumerComp;
+import alma.demo.SupplierComp;
 
 /**
  */

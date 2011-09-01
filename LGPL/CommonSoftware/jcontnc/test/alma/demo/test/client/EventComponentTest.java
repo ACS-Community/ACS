@@ -50,7 +50,8 @@ public class EventComponentTest extends ComponentClient
 	 */
 	public void doSomeStuff() throws AcsJCouldntPerformActionEx {
 		try {
-			// get the supplier component to create 10 default events
+			// get the supplier component to create 10 default events.
+			// The consumer will unsubscribe after having received 5 of these events.
 			m_supplierComp.sendEvents((short)10);
 
 			// Now give the supplier component a bunch of event structs to publish on the fridge channel

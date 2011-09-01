@@ -35,6 +35,7 @@ import alma.acs.container.ContainerServices;
 import alma.acs.nc.Consumer;
 import alma.acsnc.EventDescription;
 import alma.demo.ConsumerCompOperations;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /**
  *
@@ -61,17 +62,19 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 			m_consumer = new Consumer("blar", m_containerServices);
 			
 			m_consumer.addSubscription(EventDescription.class, this);
-//			m_consumer.addSubscription(NestedFridgeEventSeqHolder.class, this);		
-			m_logger.info("Subscribed to 'EventDescription' and 'NestedFridgeEventSeqHolder' types of events on channel 'blar'");
-					
+//			m_consumer.addSubscription(NestedFridgeEventSeqHolder.class, this);
+			m_logger.info("Subscribed to 'EventDescription' " + /*and 'NestedFridgeEventSeqHolder'*/ " types of events on channel 'blar'");
 			
 			//NOW FOR SOME TESTS!!!
 			//try to add a subscription to the same type
 			try {
 				m_consumer.addSubscription(EventDescription.class, this);
-				// @TODO fail
+				throw new ComponentLifecycleException("subscription to the same type should fail!");
+			} catch (ComponentLifecycleException e) {
+				throw e;
 			} catch (Exception e) {
 				//good, expected this.
+				m_logger.info("Good... attempt to subscribe twice to the same event type failed with " + e.getClass().getName());
 			}
 
 			//add a subscription to something that exists but we will never actually receive
@@ -115,7 +118,11 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 			m_consumer.suspend();
 			//test resume
 			m_consumer.resume();
-			System.out.println("Waiting for events...consumer");
+			
+			m_logger.info("Waiting for events...");
+			
+		} catch (ComponentLifecycleException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ComponentLifecycleException(e);
 		}
@@ -126,7 +133,7 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 	public void receive(EventDescription joe) {
 		//normal case
 		if (m_count < 5) {
-			System.out.println("The component responsible for the supplier is:" + joe.name);
+			m_logger.info("The component acting as EventDescription supplier is: " + joe.name);
 		} else if (m_count == 5) {
 			try {
 				m_consumer.suspend();
@@ -158,8 +165,10 @@ public class EventConsumerImpl extends ComponentImplBase implements ConsumerComp
 	 * Disconnects the Consumer
 	 * {@inheritDoc}
 	 */
-	public void cleanUp() {
+	public void cleanUp() throws AcsJComponentCleanUpEx {
 		m_logger.info("cleanUp() called...");
 		m_consumer.disconnect();
+		
+		super.cleanUp();
 	}
 }
