@@ -1,4 +1,4 @@
-# @(#) $Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $
+# @(#) $Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $"
+# "@(#) $Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -41,7 +41,7 @@ developer. For now, we can depend on Manager to keep track of whats going on
 but this solution is less than ideal.
 '''
 
-__revision__ = "$Id: ContainerServices.py,v 1.30 2010/02/12 22:15:19 agrimstrup Exp $"
+__revision__ = "$Id: ContainerServices.py,v 1.31 2011/09/02 16:09:07 javarias Exp $"
 
 #--GLOBALS---------------------------------------------------------------------
 
@@ -50,11 +50,15 @@ import threading
 #--CORBA STUBS-----------------------------------------------------------------
 import CORBA
 import maci
-from maciErrTypeImpl          import CannotGetComponentExImpl
+from maciErrTypeImpl          import CannotGetComponentExImpl, ComponentDeactivationFailedExImpl, ComponentDeactivationUncleanExImpl
+import maciErrType
+import ACSErr
 #--ACS Imports-----------------------------------------------------------------
 from Acspy.Util.ACSCorba      import getORB, getManager
 from Acspy.Common.Log         import getLogger, acsPrintExcDebug
 from Acspy.Common.CDBAccess   import CDBaccess
+from ACS__POA                 import CBlong
+from ACS                      import CBDescIn 
 #------------------------------------------------------------------------------
 class ContainerServices:
     '''
@@ -165,12 +169,12 @@ class ContainerServices:
         return self.__logger
     #--------------------------------------------------------------------------
     def getComponent(self,
-                     comp_name = None,  
-                     activate = CORBA.TRUE, 
-                     comp_idl_type = None, 
-                     comp_code = None,    
-                     container_name = None, 
-                     is_dynamic = 0):
+                     comp_name=None,
+                     activate=CORBA.TRUE,
+                     comp_idl_type=None,
+                     comp_code=None,
+                     container_name=None,
+                     is_dynamic=0):
         '''
         NOTE: all keyword parameters with the exception of comp_name are
         deprecated!
@@ -242,13 +246,13 @@ class ContainerServices:
         #user must be trying to get a dynamic component
         else:
             return self.getDynamicComponent(comp_name,
-                                            comp_idl_type, 
-                                            comp_code, 
+                                            comp_idl_type,
+                                            comp_code,
                                             container_name)
                                             
     #--------------------------------------------------------------------------
-    def __importComponentStubs(self, 
-                               comp_name=None, 
+    def __importComponentStubs(self,
+                               comp_name=None,
                                comp_type=None):
         '''
         Helper method tries to automatically import the CORBA stubs for a 
@@ -284,7 +288,7 @@ class ContainerServices:
             #found
             ex = CannotGetComponentExImpl()
             ex.setReason("Component type unavailable!")
-            self.__logger.logWarning("Unable to import '" + str(comp_name) +
+            self.__logger.logWarning("Unable to import '" + str(comp_name) + 
                                    "' component's module: " + ex.getReason())
             raise ex
 
@@ -308,7 +312,7 @@ class ContainerServices:
         except Exception, e:
             #for some reason or another, the module could not be imported.
             #this is not a total failure so it's just logged.
-            self.__logger.logWarning("Unable to import '" + str(comp_name) +
+            self.__logger.logWarning("Unable to import '" + str(comp_name) + 
                                    "' component's module: " + str(e))
             acsPrintExcDebug()
             raise CannotGetComponentExImpl(e)
@@ -392,10 +396,10 @@ class ContainerServices:
         return self.__narrowComponentReference(corba_obj, comp_class)
     #--------------------------------------------------------------------------
     def getDynamicComponent(self,
-                            name,       #name of the component    
-                            comp_type,       #IR IDL location
-                            code,       #shared library implementing comp
-                            container,  #container to activate component
+                            name, #name of the component    
+                            comp_type, #IR IDL location
+                            code, #shared library implementing comp
+                            container, #container to activate component
                             ): # pragma: NO COVER
         '''
         Gets a component whose instance is not registered in the CDB 
@@ -421,7 +425,7 @@ class ContainerServices:
             name = maci.COMPONENT_SPEC_ANY
                 
         if comp_type is None:
-            comp_type=maci.COMPONENT_SPEC_ANY
+            comp_type = maci.COMPONENT_SPEC_ANY
                 
         if code is None:
             code = maci.COMPONENT_SPEC_ANY
@@ -453,6 +457,48 @@ class ContainerServices:
         '''
         return getManager().release_component(self.__handle, comp_name)
     
+    def releaseComponentAsync(self, comp_name, callback=None):
+        '''
+        Release the component defined by comp_name in asynchronous way.
+
+        Parameters: 
+         - comp_name is the name of the component to be released.
+         - callback by default is None or it must be a subclass of relaseCallback
+
+        Returns: The number of objects still attached to the released component
+
+        Raises: TypeError if callback is not instance of ComponentReleaseCallback
+        '''
+        myCBDescIn = CBDescIn(0, 0, "")
+        
+        if callback is None:
+            myCBlong = MyCBlongImpl(None)
+            try:
+                getManager().release_component_async(self.__handle, comp_name, myCBlong._this(), myCBDescIn)
+            except:
+                self.getLogger().warning('Problem trying to release component ' + str(comp_name) + '. Check manager logs for more details')
+        
+        else:
+            try:
+                getManager().release_component_async(self.__handle, comp_name, callback.myCBlong, myCBDescIn)
+            except maciErrType.NoPermissionEx, ex:
+                callback.errorNoPermission(ex.message)
+                callback.callOver()
+            except ACSErr.ACSbaseEx, ex:
+                e = ComponentDeactivationUncleanExImpl(exception = ex)
+                callback.errorComponentReleaseFailed(e)
+                callback.callOver()
+            except CORBA.SystemException, ex:
+                e = ComponentDeactivationUncleanExImpl(exception = ex)
+                callback.errorComponentReleaseFailed(e)
+                callback.callOver()
+            except:
+                callback.callOver()
+                
+            
+                
+                
+    
     #--------------------------------------------------------------------------
     def forceReleaseComponent(self, comp_name): # pragma: NO COVER
         '''
@@ -464,12 +510,12 @@ class ContainerServices:
 
         Raises: Nothing
         '''
-        return getManager().force_release_component(self.__handle, 
+        return getManager().force_release_component(self.__handle,
                                                     comp_name)
     
     #--------------------------------------------------------------------------
-    def findComponents(self, 
-                       curl_wildcard="*", 
+    def findComponents(self,
+                       curl_wildcard="*",
                        type_wildcard="*",
                        activated=CORBA.FALSE): # pragma: NO COVER
         '''
@@ -699,10 +745,10 @@ class ContainerServices:
         return new_thread
     #--------------------------------------------------------------------------
     def setAll(self,
-               name,  #string-name of component
-               token,  #Security token from manager
+               name, #string-name of component
+               token, #Security token from manager
                handle, #Security handle from manager
-               activate_offshoot_method,  #Container's method
+               activate_offshoot_method, #Container's method
                contname=None # Container's name
                ): # pragma: NO COVER
         '''
@@ -724,3 +770,56 @@ class ContainerServices:
         return
     #--------------------------------------------------------------------------
 
+class ComponentReleaseCallback:
+    def __init__(self):
+        self.__condition = threading.Condition()
+        self.__condition.acquire()
+        self.myCBlong = MyCBlongImpl(self)
+    
+    def errorNoPermission(self, message):
+        pass
+    
+    def componentReleased(self, deactivationUncleanEx=None):
+        pass
+    
+    def errorComponentReleaseFailed(self, deactivationFailureEx):
+        pass
+    
+    def awaitComponentRelease (self, timeout):
+        '''
+        This method must be called by the same thread who created the instance of this object
+        Parameters:
+        - timeout in msecs
+        '''
+        self.__condition.wait(timeout / 1000.0)
+        self.__condition.release()
+        
+    def callOver(self):
+        self.__condition.acquire()
+        self.__condition.notify_all()
+        self.__condition.release()
+    
+class MyCBlongImpl(CBlong): 
+    def __init__(self, callback):
+        self.__callback = callback
+        if (self.__callback is None):
+            return
+        if (not isinstance(self.__callback, ComponentReleaseCallback)):
+            raise TypeError, 'callback must be instance of ComponentReleaseCallback'
+    
+    def working(self, value, c, desc):
+        pass
+    
+    def done(self, value, c, desc):
+        if (self.__callback is None):
+            return
+        if (len (c.previousError) > 0):
+            ex = ComponentDeactivationFailedExImpl()
+            self.__callback.componentReleased(ex)
+        else:
+            self.__callback.componentReleased()
+        self.__callback.callOver()
+    
+    def negotiate(self, time_to_transmit, desc):
+        return True
+    
