@@ -34,7 +34,7 @@ int main(int args, char *argv[]) {
 		std::cout << "Error while creating stream '" << ex.getStreamName() << "', flow '" << ex.getFlowName() << "': " << ex.getDescription() << std::endl;
 	}
 
-	std::cout << std::endl << std::endl << "Now let's check the Receiver configuration!" << std::endl << std::endl;
+//	std::cout << std::endl << std::endl << "Now let's check the Receiver configuration!" << std::endl << std::endl;
 
 	char *correctReceiverConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><BulkDataNTReceiver xmlns:baci=\"urn:schemas-cosylab-com:BACI:1.0\" xmlns=\"urn:schemas-eso-org:BulkDataNTSender:1.0\" xmlns:cdb=\"urn:schemas-cosylab-com:CDB:1.0\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:schemas-eso-org:BulkDataNTSender:1.0 file:/D:/eclipseWorkshop/bulkDataNT/config/CDB/schemas/BulkDataNTSender.xsd\" recentCommand=\"\" recentTimeStamp=\"\" actionThreadStackSize=\"1024\" monitoringThreadStackSize=\"2048\">    <ReceiverStream Name=\"Name1\">        <ReceiverFlow Name=\"Name3\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name1\">                </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>        <ReceiverFlow Name=\"Name5\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name3\">                 </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>    </ReceiverStream>    <ReceiverStream Name=\"Name7\">        <DDSReceiverStreamQoS>            <participant_qos name=\"name5\">            </participant_qos>        </DDSReceiverStreamQoS>    </ReceiverStream></BulkDataNTSender>";
 	try {

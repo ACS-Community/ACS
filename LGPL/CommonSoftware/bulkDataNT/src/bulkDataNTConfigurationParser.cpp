@@ -51,72 +51,15 @@ BulkDataConfigurationParser::~BulkDataConfigurationParser() {
 }
 
 list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(const char *config) {
-
-	// Collect the information
 	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME);
 	return createBulkDataEntities<BulkDataNTSenderStream, SenderStreamConfiguration, SenderFlowConfiguration>();
-
-//	// Create the senders from the collected information
-//	list<BulkDataNTSenderStream *>* senders = new list<BulkDataNTSenderStream *>();
-//	try {
-//		map<char*, set<char *> >::iterator mit;
-//		set<char *>::iterator sit;
-//		for(mit = m_entities.begin(); mit != m_entities.end(); mit++) {
-//
-//			SenderStreamConfiguration *streamCfg = new SenderStreamConfiguration();
-//			if( m_profiles.find(mit->first) != m_profiles.end() ) {
-//
-//				map<string, string> profiles = m_profiles[mit->first];
-//				if( profiles.find(mit->first) != profiles.end() ) {
-//					streamCfg->libraryQos    = "DynamicLib";
-//					streamCfg->profileQos    = mit->first;
-//				}
-//				else
-//					printf("Stream '%s' doesn't have it's own QoS setting, will use the default lib/profile\n", mit->first);
-//
-//				streamCfg->urlProfileQoS = getStrURIforStream(mit->first);
-//
-//				printf("Profile %s is: ==== %s ====\n", mit->first, streamCfg->urlProfileQoS.c_str());
-//			}
-//			else {
-//				printf("Entity %s has no profile, we'll use the default configuration\n", mit->first);
-//			}
-//			BulkDataNTSenderStream *senderStream = new BulkDataNTSenderStream(mit->first, *streamCfg);
-//			for(sit = mit->second.begin(); sit != mit->second.end(); sit++) {
-//				SenderFlowConfiguration *flowCfg = new SenderFlowConfiguration();
-//				// TODO: how do we set the profile URL here? I think we don't...
-//				senderStream->createFlow(*sit, *flowCfg);
-//			}
-//			senders->push_back(senderStream);
-//		}
-//	} catch(StreamCreateProblemExImpl &ex) {
-//		// delete all senders that we could possibly created
-//		while(senders->size() > 0) {
-//			delete senders->back();
-//			senders->pop_back();
-//		}
-//		throw ex;
-//	} catch(FlowCreateProblemExImpl &ex) {
-//		// delete all senders that we could possibly created
-//		while(senders->size() > 0) {
-//			delete senders->back();
-//			senders->pop_back();
-//		}
-//		throw ex;
-//	}
-//
-//	return senders;
 }
 
 void BulkDataConfigurationParser::clearCollections() {
 
 	map<char*, set<char *> >::iterator mit2;
 	set<char*>::iterator sit;
-//
-//	map<string, map<string, string> >::iterator it;
-//	for(it = m_profiles.begin(); it != m_profiles.end(); it++) {
-//		it->second.clear();
-//	}
+
 	m_profiles.clear();
 
 	for(mit2 = m_entities.begin(); mit2 != m_entities.end(); mit2++) {
@@ -320,7 +263,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 					XMLString::release(&childFlowNodeName);
 
 					string profileName(streamName);
-					profileName.append("-");
+					profileName.append("#");
 					profileName.append(flowName);
 					addQoSToProfile(streamName, profileName.c_str(), childFlowNode);
 				}
