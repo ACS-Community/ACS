@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.33 2011/08/19 21:27:19 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.34 2011/09/02 11:00:18 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -330,6 +330,7 @@ class MACIContainerServices: public ContainerServices
 
   /// The component state manager
   maci::ComponentStateManager* componentStateManager_mp;
+    ACE_CString m_componentType;
 };
 
 } // end namespace maci

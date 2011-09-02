@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.128 2011/04/26 16:53:11 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.129 2011/09/02 11:00:18 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -81,7 +81,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.128 2011/04/26 16:53:11 javarias Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.129 2011/09/02 11:00:18 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -2609,7 +2609,7 @@ ContainerImpl::get_object(const char *name,
    * First creates the CURL, if not already a CURL,
    * and query the Manager for the component
    */
-  char *curl_str = "curl://";
+  const char* curl_str = "curl://";
 
   ACE_CString curl = "";
   if(strncmp(name, curl_str, strlen(curl_str)) != 0 )

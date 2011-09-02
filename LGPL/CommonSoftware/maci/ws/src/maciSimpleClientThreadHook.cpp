@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciSimpleClientThreadHook.cpp,v 1.3 2005/04/05 21:02:30 dfugate Exp $"
+* "@(#) $Id: maciSimpleClientThreadHook.cpp,v 1.4 2011/09/02 11:00:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include "maciSimpleClient.h"
 #include "maciSimpleClientThreadHook.h"
 
-static char *rcsId="@(#) $Id: maciSimpleClientThreadHook.cpp,v 1.3 2005/04/05 21:02:30 dfugate Exp $"; 
+static const char* rcsId="@(#) $Id: maciSimpleClientThreadHook.cpp,v 1.4 2011/09/02 11:00:19 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;

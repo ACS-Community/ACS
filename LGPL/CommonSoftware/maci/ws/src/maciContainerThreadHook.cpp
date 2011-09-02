@@ -16,7 +16,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: maciContainerThreadHook.cpp,v 1.6 2007/10/10 08:22:31 bjeram Exp $"
+* "@(#) $Id: maciContainerThreadHook.cpp,v 1.7 2011/09/02 11:00:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include "maciContainerImpl.h"
 #include "maciContainerThreadHook.h"
 
-static char *rcsId="@(#) $Id: maciContainerThreadHook.cpp,v 1.6 2007/10/10 08:22:31 bjeram Exp $"; 
+static const char* rcsId="@(#) $Id: maciContainerThreadHook.cpp,v 1.7 2011/09/02 11:00:19 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace maci;

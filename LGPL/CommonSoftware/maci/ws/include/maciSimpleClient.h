@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciSimpleClient.h,v 1.110 2010/01/21 00:02:56 javarias Exp $"
+* "@(#) $Id: maciSimpleClient.h,v 1.111 2011/09/02 11:00:18 bjeram Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -607,7 +607,7 @@ T* SimpleClient::getComponent(const char *name, const char *domain, bool activat
 	 * First creates the CURL, if not already a CURL,
 	 * and query the Manager for the component
 	 */
-	char *curl_str = "curl://";
+	const char* curl_str = "curl://";
 
 	ACE_CString curl = "";
 	if(strncmp(name, curl_str, strlen(curl_str)) != 0 )
