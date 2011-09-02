@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.10 2011/08/24 14:13:59 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.11 2011/09/02 15:37:37 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -43,6 +43,7 @@ class DDSConfiguration
 	friend class BulkDataNTDDS;
 	friend class BulkDataNTDDSSubscriber;
 	friend class BulkDataNTDDSPublisher;
+	friend class BulkDataConfigurationParser;
 public:
 	DDSConfiguration();
 protected:
