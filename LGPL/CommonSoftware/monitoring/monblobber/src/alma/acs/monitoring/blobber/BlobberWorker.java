@@ -717,9 +717,7 @@ public class BlobberWorker extends CancelableRunnable {
 							// Update blob data.
 							blobData.dataList.clear();
 							blobData.dataList.addAll(container.dataList);
-							// TODO: The following change by Victor in 1.5 is kept in spite of the general rollback, until we clarify it:
 							blobData.clob = container.clobBuilder.toString();
-							// was: blobData.clob += container.clobBuilder;
 							blobData.index = container.index;
 							blobData.stopTime = block.stopTime;
 							if (blobData.startTime == 0) {
@@ -737,9 +735,6 @@ public class BlobberWorker extends CancelableRunnable {
 
 								insertCount++;
 								storeData(blobData);
-								// TODO: The following change by Victor in 1.5 is kept in spite of the general rollback, until we clarify it:
-								// blobData.reset();
-								// (was not commented out)
 							}
 						}
 					} catch (Exception e) {
