@@ -9,8 +9,8 @@ else
     less -E ../PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.txt 
 fi
 
-echo -n "-------------------------------------------------------------------------------"
-echo -n "Press Y or y if you have read and you agree with RTI Software License Agreement" 
+echo "-------------------------------------------------------------------------------"
+echo "Press Y or y if you have read and you agree with RTI Software License Agreement" 
 
 read -n1 AGREE
 if [ $AGREE != y -a $AGREE != Y ]
@@ -20,7 +20,7 @@ then
     exit 1
 fi
 
-echo -n ""
+echo ""
 
 ARCH=`uname -m`
 if [ $ARCH == x64_64 ]
@@ -53,7 +53,7 @@ fi
 TMP_DIR=$PWD
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
 
-echo "Please give the passphrase for $HOST_TAR  : "
+echo "Please give the passphrase (will not bee seen on the screen) for $HOST_TAR & $TARGET_TAR: "
 read -sp ">" PASS
 
 gpg -d --passphrase $PASS $TMP_DIR/../PROPRIETARY/RTIDDS/$HOST_TAR | tar xvz
@@ -63,9 +63,6 @@ then
     echo "ERROR: failed to decrypte/unpack $HOST_TAR "
     exit 4
 fi
-
-echo "Please give the passphrase for $TARGET_TAR : "
-read -sp ">"  PASS
 
 gpg -d --passphrase $PASS $TMP_DIR/../PROPRIETARY/RTIDDS/$TARGET_TAR | tar xvz
 if [ $? != 0 ]
