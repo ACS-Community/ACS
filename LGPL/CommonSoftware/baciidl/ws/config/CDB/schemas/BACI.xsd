@@ -5,7 +5,7 @@
 	<xs:annotation>
 		<xs:documentation>
 This schema describes the Configuration Database types for the Component/Property/Characteristic design patterns (BACI).
-It contains the definitions fo the Characteristic Component types and for all defined Property types.
+It contains the definitions for the Characteristic Component types and for all defined Property types.
 
 To keep the documentation easier to maintain and avoiding replication of documentation, the schemas for the Long Property are fully documented.
 The other Properties only document their differences with respect to the Long Property.
