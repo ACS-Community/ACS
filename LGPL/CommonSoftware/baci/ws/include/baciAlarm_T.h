@@ -18,7 +18,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciAlarm_T.h,v 1.17 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciAlarm_T.h,v 1.18 2011/09/02 11:39:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -169,7 +169,7 @@ class baci_EXPORT AlarmEventStrategy : public EventStrategy
     
     virtual const char* getName(void);
     
-    virtual char* getObjectState(void);
+    virtual const char* getObjectState(void);
     
     virtual void setObjectState(const char * state);
     

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.105 2011/03/30 17:57:23 tstaig Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.106 2011/09/02 11:39:00 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -211,7 +211,7 @@ public:
 
   virtual int getId(void);
   virtual const char* getName(void);
-  virtual char* getObjectState(void);
+  virtual const char* getObjectState(void);
   virtual void setObjectState(const char * state);
 
   virtual void setObjectState(const char * state,
@@ -318,7 +318,7 @@ public:
 
   virtual int getId(void);
   virtual const char* getName(void);
-  virtual char* getObjectState(void);
+  virtual const char* getObjectState(void);
   virtual void setObjectState(const char * state);
 
   virtual void setObjectState(const char * state,

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecoverableObject.h,v 1.94 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRecoverableObject.h,v 1.95 2011/09/02 11:39:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -84,7 +84,7 @@ public:
    * Get object's state represented as string 
    * @return pointer to stringified object's state
    */
-  virtual char* getObjectState(void) = 0;
+  virtual const char* getObjectState(void) = 0;
 
   /**
    * Set object's state stored in given string

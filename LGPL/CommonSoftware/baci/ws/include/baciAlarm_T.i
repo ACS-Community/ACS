@@ -295,7 +295,7 @@ const char* baci::AlarmEventStrategy<T, TPROP, TALARM>::getName(void)
 }
 
 template<class T, class TPROP, class TALARM>
-char* baci::AlarmEventStrategy<T, TPROP, TALARM>::getObjectState(void)
+const char* baci::AlarmEventStrategy<T, TPROP, TALARM>::getObjectState(void)
 {
   ACE_TCHAR *buffer_p = 0;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);

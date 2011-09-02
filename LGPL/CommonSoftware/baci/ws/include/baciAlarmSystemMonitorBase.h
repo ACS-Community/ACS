@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.3 2009/10/09 10:57:33 acaproni Exp $"
+ * "@(#) $Id: baciAlarmSystemMonitorBase.h,v 1.4 2011/09/02 11:39:00 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -62,7 +62,7 @@ public:
 
 	virtual const char* getName(void){ return ""; }
 
-	virtual char* getObjectState(void){ return ""; }
+	virtual const char* getObjectState(void){ return ""; }
 
 	virtual void setObjectState(const char * state){}
 	// ... and also implementation of  POA_ACS::Subscription can be empty

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciEvent.h,v 1.99 2008/10/01 02:26:45 cparedes Exp $"
+* "@(#) $Id: baciEvent.h,v 1.100 2011/09/02 11:39:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -194,7 +194,7 @@ public:
 
   virtual int getId(void) = 0;
   virtual const char* getName(void) = 0;
-  virtual char* getObjectState(void) = 0;
+  virtual const char* getObjectState(void) = 0;
   virtual void setObjectState(const char * state) = 0;
 
   /* ------------------ [ Subscription interface ] -------------------- */ 

@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecovery.h,v 1.100 2008/07/25 07:29:52 cparedes Exp $"
+* "@(#) $Id: baciRecovery.h,v 1.101 2011/09/02 11:39:00 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -139,7 +139,7 @@ public:
    * Get object's stringified state
    * @param name object name
    */
-  char* getObjectState(const char* name);
+  const char* getObjectState(const char* name);
 
   /**
    * Generates first free name starting with given prefix <br>

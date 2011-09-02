@@ -25,7 +25,7 @@ baci::Monitor<ACS_MONITOR_T>::Monitor(ACE_CString name,
   initialization_m(1), monitor_mp(0), reference_mp(CORBA::Object::_nil())
 {
   ACS_TRACE("baci::Monitor&lt;&gt;::Monitor");
-  char* state = BACIRecoveryManager::getInstance()->getObjectState(name.c_str());
+  const char* state = BACIRecoveryManager::getInstance()->getObjectState(name.c_str());
   setObjectState(state, minTriggerTime, minTriggerValue, property);
   delete[] state;
   initialization_m = CORBA::is_nil(reference_mp);
@@ -103,7 +103,7 @@ baci::Monitor<ACS_MONITOR_T>::getName(void)
 }
 
 template<ACS_MONITOR_C>
-char* baci::Monitor<ACS_MONITOR_T>::getObjectState(void) {
+const char* baci::Monitor<ACS_MONITOR_T>::getObjectState(void) {
     ACS_TRACE("baci::Monitor&lt;&gt;::getObjectState");
   ACE_TCHAR *buffer_p;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);
@@ -357,7 +357,7 @@ baci::MonitorBasic<ACS_MONITOR_BASIC_T>::MonitorBasic(ACE_CString name,
 {
     ACE_UNUSED_ARG(minTriggerValue);
     ACS_TRACE("baci::MonitorBasic&lt;&gt;::MonitorBasic");
-  char* state_p = BACIRecoveryManager::getInstance()->getObjectState(name.c_str());
+  const char* state_p = BACIRecoveryManager::getInstance()->getObjectState(name.c_str());
   setObjectState(state_p, minTriggerTime, property);
   delete[] state_p;
   initialization_m = CORBA::is_nil(reference_mp);
@@ -442,7 +442,7 @@ ACS_TRACE("baci::MonitorBasic&lt;&gt;::getName");
 }
 
 template<ACS_MONITOR_BASIC_C>
-char* baci::MonitorBasic<ACS_MONITOR_BASIC_T>::getObjectState(void) {
+const char* baci::MonitorBasic<ACS_MONITOR_BASIC_T>::getObjectState(void) {
 ACS_TRACE("baci::MonitorBasic&lt;&gt;::getObjectState");
   ACE_TCHAR *buffer_p = 0;
   ACE_NEW_RETURN (buffer_p, ACE_TCHAR[MAX_RECORD_SIZE], 0);

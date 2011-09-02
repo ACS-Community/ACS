@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciRecovery.cpp,v 1.96 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: baciRecovery.cpp,v 1.97 2011/09/02 11:38:54 bjeram Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -32,7 +32,7 @@
 
 #include "acsutilTempFile.h"
 
-ACE_RCSID(baci, baciRecovery, "$Id: baciRecovery.cpp,v 1.96 2006/09/01 02:20:54 cparedes Exp $")
+ACE_RCSID(baci, baciRecovery, "$Id: baciRecovery.cpp,v 1.97 2011/09/02 11:38:54 bjeram Exp $")
 
  using namespace recovery;
 namespace baci {
@@ -126,7 +126,7 @@ BACIRecoveryManager::destroyInstance(void) {
 
 void
 BACIRecoveryManager::addRecoverableObject(RecoverableObject *object) {
-  char *state_p = object->getObjectState();
+  const char *state_p = object->getObjectState();
   store_mp->log(ACE_CString(object->getName()), ACE_CString(state_p));
   delete[] state_p;
 }
@@ -134,7 +134,7 @@ BACIRecoveryManager::addRecoverableObject(RecoverableObject *object) {
 
 void
 BACIRecoveryManager::updateRecoverableObject(RecoverableObject *object) {
-  char *state_p = object->getObjectState();
+  const char *state_p = object->getObjectState();
   store_mp->update(ACE_CString(object->getName()), ACE_CString(state_p));
   delete[] state_p;
 }
@@ -163,7 +163,7 @@ BACIRecoveryManager::getObjectsStartingWith(const char* namePrefix) {
   return objects;
 }
 
-char*
+const char*
 BACIRecoveryManager::getObjectState(const char* name) {
   ACE_CString data;
   store_mp->retrieve(ACE_CString(name), data);
@@ -198,6 +198,9 @@ BACIRecoveryManager::generateObjectName(const char* namePrefix) {
 // REVISION HISTORY:
 //
 // $Log: baciRecovery.cpp,v $
+// Revision 1.97  2011/09/02 11:38:54  bjeram
+// modified signature of getObjectState to return const char* instead char*  to get rid of warning: deprecated conversion from string constant to 'char*'.
+//
 // Revision 1.96  2006/09/01 02:20:54  cparedes
 // small change, NAMESPACE_BEGIN / NAMESPACE_END / NAMESPACE_USE macross to clean up a little the cpp code
 //
