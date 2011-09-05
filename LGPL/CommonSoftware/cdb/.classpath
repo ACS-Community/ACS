@@ -21,5 +21,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/ACSErrTypeCommon.jar" sourcepath="/ACSROOT/lib/ACSErrTypeCommon.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/logkit-1.2.jar"/>
 	<classpathentry kind="var" path="JACORB_HOME/lib/avalon-framework-4.1.5.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
