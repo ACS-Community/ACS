@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.19 2011/08/25 17:39:18 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.20 2011/09/05 09:57:50 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -247,14 +247,21 @@ all: do_dds_gen	do_all
 
 clean : clean_all dds_clean
 	@echo " . . . clean done"
+
+install : install_all
+	@echo " . . . installation done"
+
 else
 
 .DEFAULT_GOAL := all	
 all: 
-	@echo " NDDSHOME not defined nothing to be done for target all!" 
+	@echo " NDDSHOME is not defined, and thus nothing to be done for target all!" 
 
 clean : clean_all
 	@echo " . . . clean done"
+
+install :
+	@echo " NDDSHOME is not defined, and thus nothing to be installed!"
 	
 endif
 clean_dist : clean_all clean_dist_all 
@@ -263,8 +270,6 @@ clean_dist : clean_all clean_dist_all
 man   : do_man 
 	@echo " . . . man page(s) done"
 
-install : install_all
-	@echo " . . . installation done"
 	
 	
 do_dds_gen: bulkDataNT.cpp bulkDataNTSupport.cpp bulkDataNTPlugin.cpp bulkDataNT.h  bulkDataNTSupport.h bulkDataNTPlugin.h
