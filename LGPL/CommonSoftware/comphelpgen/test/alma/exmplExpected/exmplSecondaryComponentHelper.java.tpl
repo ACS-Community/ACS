@@ -39,13 +39,13 @@ import alma.exmplCompHelpGen.SecondaryComponentImpl.SecondaryComponentImpl;
  * <p>
  * @author alma-component-helper-generator-tool
  */
-public class SecondaryComponentHelper extends ComponentHelper
+public class SecondaryComponentComponentHelper extends ComponentHelper
 {
 	/**
     * Constructor
 	* @param containerLogger logger used only by the parent class.
 	*/
-	public SecondaryComponentHelper(Logger containerLogger)
+	public SecondaryComponentComponentHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}

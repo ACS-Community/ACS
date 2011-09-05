@@ -39,13 +39,13 @@ import alma.exmplCompHelpGen.PrimaryComponentImpl.PrimaryComponentImpl;
  * <p>
  * @author alma-component-helper-generator-tool
  */
-public class PrimaryComponentHelper extends ComponentHelper
+public class PrimaryComponentComponentHelper extends ComponentHelper
 {
 	/**
 	 * Constructor
 	 * @param containerLogger logger used only by the parent class.
 	 */
-	public PrimaryComponentHelper(Logger containerLogger)
+	public PrimaryComponentComponentHelper(Logger containerLogger)
 	{
 		super(containerLogger);
 	}
