@@ -27,16 +27,14 @@ import java.io.File;
  * @author rgeorgie
  * This class generates helper classes that are specified by the parameters componentClassName, internalInterface, 
  * idlPackage, outputRootDir.
+ * Update http://jira.alma.cl/browse/COMP-4783 bhola.panta@naoj 2011/08/05
  */
 
 public class CompHelperClass
 {
 	private char sep = File.separatorChar;
-	//private static final String m_helperSuffix = "Helper";
-	//http://jira.alma.cl/browse/COMP-4783
-	//bhola.panta@naoj 2011/08/05
-	private static final String m_helperSuffix = "ComponentHelper";
-
+	private static final String m_helperSuffix = "Helper";
+	
 	// external component info 
 	private String m_outputRootDir;
 	private String m_idlPackage;
@@ -121,7 +119,8 @@ public class CompHelperClass
 	 */
 	private String getJavaComponentClass()
 	{
-		return m_componentClassName.trim() + m_helperSuffix + ".java.tpl";
+		//return m_componentClassName.trim() + m_helperSuffix + ".java.tpl";
+		return m_componentClassName.trim() + "Component" + m_helperSuffix + ".java.tpl";
 	}
 
 	/**
@@ -213,11 +212,9 @@ public class CompHelperClass
 	private String getClassName()
 	{
 		StringBuffer stringBuffer = new StringBuffer();
-        //http://jira.alma.cl/browse/COMP-4783
-		//stringBuffer.append(
-		//	"public class " + m_componentClassName + m_helperSuffix + " extends Component" + m_helperSuffix + "\n");
 		stringBuffer.append(
-			"public class " + m_componentClassName + m_helperSuffix + " extends " + m_helperSuffix + "\n");
+			//"public class " + m_componentClassName + m_helperSuffix + " extends Component" + m_helperSuffix + "\n");
+			"public class " + m_componentClassName + "Component" + m_helperSuffix + " extends Component" + m_helperSuffix + "\n");
 		return stringBuffer.toString();
 	}
 
@@ -237,7 +234,7 @@ public class CompHelperClass
 		if (m_repositoryId != null)
 		{
 			String cdbEntryAttrs = "Name=\"" + m_componentClassName.toUpperCase() + "_1\" " +
-							"Code=\"" + m_implPackage + "." + m_componentClassName + m_helperSuffix + "\" " +
+							"Code=\"" + m_implPackage + "." + m_componentClassName + "Component" + m_helperSuffix + "\" " +
 							"Type=\"" + m_repositoryId + "\" " +
 							"Container=\"frodoContainer\" ImplLang=\"java\"";
 			stringBuffer.append(" * To create an entry for your component in the Configuration Database, \n");
@@ -290,7 +287,8 @@ public class CompHelperClass
 		stringBuffer.append("\t * Constructor\n");
 		stringBuffer.append("\t * @param containerLogger logger used only by the parent class.\n");
 		stringBuffer.append("\t */\n");
-		stringBuffer.append("\tpublic ").append(m_componentClassName).append(m_helperSuffix);
+		//stringBuffer.append("\tpublic ").append(m_componentClassName).append(m_helperSuffix);
+		stringBuffer.append("\tpublic ").append(m_componentClassName).append("Component").append(m_helperSuffix);
 		stringBuffer.append("(Logger containerLogger)\n");
 		stringBuffer.append("\t{\n");
 		stringBuffer.append("\t\tsuper(containerLogger);\n");
