@@ -25,6 +25,7 @@ package alma.acs.tools.comphelpergen;
  * @author rgeorgie
  *
  * Test for CompHelperGenerator. Uses samples of xml to generate helper classes for xmlcomponent, component and both.
+ * Update: http://jira.alma.cl/browse/COMP-4783 bhola.panta@naoj 2011/09/05 
  */
 
 public class CompHelperGeneratorTest extends junit.framework.TestCase
@@ -67,8 +68,10 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		compHelperClass.initCompHelper(null, "PrimaryComponent", null, "alma.exmplCompHelpGen", outputRootDir);
 
 		// read produced file
+		//String producedFile =
+		//	ioSpecification.getOutputRootDir() + "PrimaryComponentImpl" + sep + "PrimaryComponentHelper.java.tpl";
 		String producedFile =
-			ioSpecification.getOutputRootDir() + "PrimaryComponentImpl" + sep + "PrimaryComponentHelper.java.tpl";
+			ioSpecification.getOutputRootDir() + "PrimaryComponentImpl" + sep + "PrimaryComponentComponentHelper.java.tpl";
 		String producedConts = "", sampleConts = "";
 		String sampleFile = null;
 		try
@@ -102,8 +105,10 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		compHelperClass.initCompHelper(null, "PrimaryXmlComponent", "XmlComponentJ", "alma.exmplCompHelpGen", outputRootDir);
 
 		// read produced file
+		//String producedXmlFile =
+		//	ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentHelper.java.tpl";
 		String producedXmlFile =
-			ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentHelper.java.tpl";
+			ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentComponentHelper.java.tpl";
 		String producedXmlConts = "", sampleXmlConts = "";
 		String sampleXmlFile = null;
 		try
@@ -136,8 +141,10 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		compHelperClass.initCompHelper(null, "PrimaryXmlComponent", "XmlComponentJ", "alma.exmplCompHelpGen", outputRootDir);
 
 		// read produced file
+		//String producedXmlFile =
+			//ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentHelper.java.tpl";
 		String producedXmlFile =
-			ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentHelper.java.tpl";
+			ioSpecification.getOutputRootDir() + "PrimaryXmlComponentImpl" + sep + "PrimaryXmlComponentComponentHelper.java.tpl";
 		String producedXmlConts = "", sampleXmlConts = "";
 		try
 		{
@@ -170,7 +177,8 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 		compHelperClass.initCompHelper(null, "SecondaryComponent", null, "alma.exmplCompHelpGen", outputRootDir);
 
 		String producedFile1 =
-			ioSpecification.getOutputRootDir() + "SecondaryComponentImpl" + sep + "SecondaryComponentHelper.java.tpl";
+			//ioSpecification.getOutputRootDir() + "SecondaryComponentImpl" + sep + "SecondaryComponentHelper.java.tpl";
+			ioSpecification.getOutputRootDir() + "SecondaryComponentImpl" + sep + "SecondaryComponentComponentHelper.java.tpl";
 
 		compHelperClass.initCompHelper(
 			null,
@@ -183,7 +191,8 @@ public class CompHelperGeneratorTest extends junit.framework.TestCase
 			ioSpecification.getOutputRootDir()
 				+ "SecondaryXmlComponentImpl"
 				+ sep
-				+ "SecondaryXmlComponentHelper.java.tpl";
+				//+ "SecondaryXmlComponentHelper.java.tpl";
+				+ "SecondaryXmlComponentComponentHelper.java.tpl";
 		String sampleConts1 = "", producedConts1 = "", sampleConts2 = "", producedConts2 = "";
 		try
 		{
