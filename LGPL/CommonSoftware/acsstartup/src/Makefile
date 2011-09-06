@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.56 2011/03/16 14:55:43 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.57 2011/09/06 14:20:59 tstaig Exp $"
 #
 # Makefile of ........
 #
@@ -56,7 +56,8 @@ SCRIPTS         = \
 		acsAlarmService \
 		acsStartContainerWithCASA \
 		acsstartupNotifyPortViaErrorCode \
-		acsLogProcessMem
+		acsLogProcessMem \
+		ifrCacheInvalidate
 
 SCRIPTS_L       =
 
