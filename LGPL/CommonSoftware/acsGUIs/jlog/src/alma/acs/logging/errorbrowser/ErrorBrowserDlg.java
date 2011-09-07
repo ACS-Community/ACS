@@ -150,7 +150,7 @@ public class ErrorBrowserDlg extends JDialog implements ContainerListener {
 				public void run() {
 					ErrorTab newTab;
 					try {
-						newTab = new ErrorTab(sourceModel,stackId);
+						newTab = new ErrorTab(sourceModel,stackId,loggingClient);
 					} catch (Exception e) {
 						System.err.println("Error creating an error tab: "+e.getMessage());
 						e.printStackTrace();

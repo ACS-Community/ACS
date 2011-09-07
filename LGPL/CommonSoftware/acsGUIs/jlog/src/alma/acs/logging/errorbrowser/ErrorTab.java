@@ -39,6 +39,7 @@ import alma.acs.logging.table.renderer.DateRenderer;
 import alma.acs.logging.table.renderer.EntryTypeRenderer;
 import alma.acs.logging.table.renderer.InfoRenderer;
 
+import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.DetailedLogTable;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
@@ -95,10 +96,10 @@ public class ErrorTab extends JSplitPane implements ActionListener {
 	 * @param sourceModel The model used by the engine to look for logs
 	 * @param stackID The <code>STACKID</code> of the logs in this error trace
 	 */
-	public ErrorTab(LogEntryTableModelBase sourceModel, String stackID) throws Exception {
+	public ErrorTab(LogEntryTableModelBase sourceModel, String stackID, LoggingClient client) throws Exception {
 		super(JSplitPane.HORIZONTAL_SPLIT);
 		
-		model = new LogEntryTableModelBase();
+		model = new LogEntryTableModelBase(client);
 		table.setModel(model);
 		initialize();
 		
