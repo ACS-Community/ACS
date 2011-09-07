@@ -28,8 +28,13 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
+import alma.acs.logging.table.reduction.LogProcessor;
+
+import com.cosylab.logging.LoggingClient;
 import com.cosylab.logging.client.cache.LogCache;
 import com.cosylab.logging.client.cache.LogCacheException;
+import com.cosylab.logging.engine.audience.Audience;
+import com.cosylab.logging.engine.audience.Audience.AudienceInfo;
 import com.cosylab.logging.engine.log.ILogEntry;
 import com.cosylab.logging.engine.log.LogField;
 
@@ -123,12 +128,18 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * Newly arrived logs are added to this vector and flushed into 
 	 * <code>rows</code> by the <code>TableUpdater</code> thread.
 	 */
-	protected Vector<Integer> rowsToAdd = new Vector<Integer>();
+	protected Vector<ILogEntry> rowsToAdd = new Vector<ILogEntry>();
 	
 	/**
 	 * The thread to refresh the content of the table
 	 */
 	protected TableUpdater tableUpdater;
+	
+	/** 
+     * The LoggingClient that owns this table model
+     */
+    protected final LoggingClient loggingClient;
+	
 	
 	/**
 	 * <code>true</code> if the model has been closed
@@ -136,9 +147,18 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	private boolean closed=false;
 	
 	/**
+	 * The processor to reduce the logs
+	 */
+	private final LogProcessor logProcessor = new LogProcessor();
+	
+	/**
 	 * Constructor
 	 */
-	public LogEntryTableModelBase() throws Exception {
+	public LogEntryTableModelBase(LoggingClient client) throws Exception {
+		if (client==null) {
+			throw new IllegalArgumentException("Invalid null LoggingClient");
+		}
+		this.loggingClient=client;
 		try {
 			allLogs = new LogCache();
 		} catch (LogCacheException lce) {
@@ -390,16 +410,9 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 		if (closed) {
 			return;
 		}
-		try {
-			//checkLogNumber();
-			Integer key=Integer.valueOf(allLogs.add(log));
-			synchronized (rowsToAdd) {
-				rowsToAdd.insertElementAt(key,0);
-			}
-		} catch (LogCacheException lce) {
-			System.err.println("Exception caught while inserting a new log entry in cache:");
-			System.err.println(lce.getLocalizedMessage());
-			lce.printStackTrace(System.err);
+		//checkLogNumber();
+		synchronized (rowsToAdd) {
+			rowsToAdd.insertElementAt(log,0);
 		}
 	}
 	
@@ -423,12 +436,25 @@ public class LogEntryTableModelBase extends AbstractTableModel {
 	 * @return <code>true</code> if at least one log has been added to the model
 	 */
 	private void flushLogs() {
-		int added=0;
 		synchronized (rowsToAdd) {
-			added=rowsToAdd.size();
-			if (added>0) {
+			if (!rowsToAdd.isEmpty()) {
+				// try to apply reduction rules only in OPERATOR mode
+				if (loggingClient.getEngine().getAudience().getInfo()==AudienceInfo.OPERATOR) {
+					logProcessor.reduce(rowsToAdd);
+				}
 				synchronized (rows) {
-					rows.addAll(0,rowsToAdd);
+					for (ILogEntry log: rowsToAdd) {
+						Integer key;
+						try {
+							key=Integer.valueOf(allLogs.add(log));
+						} catch (LogCacheException lce) {
+							System.err.println("Exception caught while inserting a new log entry in cache:");
+							System.err.println(lce.getLocalizedMessage());
+							lce.printStackTrace(System.err);
+							continue;
+						}
+						rows.add(0,key);
+					}
 				}
 				rowsToAdd.clear();
 			} else {
