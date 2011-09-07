@@ -46,10 +46,7 @@ import com.cosylab.logging.client.cache.LogCacheException;
  */
 public class LogTableDataModel extends LogEntryTableModelBase {
     
-    /** 
-     * The LoggingClient that owns this table model
-     */
-    private LoggingClient loggingClient=null;
+    
     
 	/**
 	 * Contains references to the filters that are currently applied to logs.
@@ -116,11 +113,7 @@ public class LogTableDataModel extends LogEntryTableModelBase {
 	 * LCLogTableDataModel constructor comment. Gets updated logs.
 	 */
 	public LogTableDataModel(LoggingClient client) throws Exception {
-		super();
-		if (client==null) {
-			throw new IllegalArgumentException("Invalid null LoggingClient");
-		}
-		this.loggingClient=client;
+		super(client);
 	}
 	
 	/**
