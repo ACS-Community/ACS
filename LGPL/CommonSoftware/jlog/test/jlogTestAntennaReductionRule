@@ -1,7 +1,8 @@
+#! /bin/bash
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 # (c) European Southern Observatory, 2002
-# Copyright by ESO (in the framework of the ALMA collaboration)
+# Copyright by ESO (in the framework of the ALMA collaboration),
 # and Cosylab 2002, All rights reserved
 #
 # This library is free software; you can redistribute it and/or
@@ -19,25 +20,5 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.38 2011/09/07 23:03:35 acaproni Exp $"
-#
-# TestList
-#
-# who       when      what
-# --------  --------  ----------------------------------------------
-# david 2002-10-04 commented out ENVIRONMENT
-# almamgr 2000-09-13 created
-SOURCE jlogTATEnvironment
-PROLOGUE jlogTATPrologue
-
-1  jlogTestCache "jlogTestCache"
-2  jlogTestDelete "jlogTestDelete"
-3  jlogTestIterator "jlogTestIterator"
-4  jlogMultiFileCacheTest "jlogMultiFileCacheTest"
-5  jlogTestZooming	"jlogTestZooming"
-6  jlogTestErrorLogFile	"jlogTestErrorLogFile"
-7  jlogTestConverters "jlogTestConverters"
-8  jlogTestAntennaReductionRule "jlogTestAntennaReductionRule"
-9  jlogTestLogProcessor "jlogTestLogProcessor" 
-
-EPILOGUE acsutilTATEpilogue
+export ACS_TMP=../test/tmp
+acsutilTATTestRunner acsStartJava -Duser.dir=$PWD alma.acs.jlog.test.AntennaReductionTest
