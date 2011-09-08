@@ -120,6 +120,16 @@ public class CacheFile {
 	private static final String timestampStrTag="TIMESTAMP=\"";
 	
 	/**
+	 * The header for XML 
+	 */
+	private static final String xmlHeader= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Log>\n<Header Name=\"Logs written by jlogEngine\" Type=\"LOGFILE\" />\n";
+	
+	/**
+	 * The footer for XML 
+	 */
+	private static final String xmlFooter = "</Log>";
+	
+	/**
 	 * Constructor 
 	 * 
 	 * @param fName The name of the file
@@ -129,9 +139,11 @@ public class CacheFile {
 	 * @param binary if the string of logs are in binary format
 	 *               and false if XML strings
 	 * 
+	 * @throws IOException In case of error writing in the file
+	 * 
 	 * @see {@link CacheFile(String fName, Integer key)}
 	 */
-	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f, boolean binary) {
+	public CacheFile(String fName, Integer key, RandomAccessFile rf, File f, boolean binary) throws IOException {
 		if (fName==null || fName.isEmpty()) {
 			throw new IllegalArgumentException("The file name can't be null not empty");
 		}
@@ -146,6 +158,11 @@ public class CacheFile {
 		raFile=rf;
 		file=f;
 		this.binary=binary;
+		if (!binary) {
+			synchronized (raFile) {
+				raFile.writeBytes(xmlHeader);
+			}
+		}
 	}
 	
 	/**
@@ -193,8 +210,15 @@ public class CacheFile {
 	 */
 	public void close() {
 		if (raFile!=null) {
+			
 			try {
-				raFile.close();
+				synchronized (raFile) {
+					if (!binary) {
+						raFile.seek(file.length());
+						raFile.writeBytes(xmlFooter);
+					}
+					raFile.close();
+				}
 			} catch (Throwable t) {
 				// Nothing to do here: print a message and go ahead.
 				System.err.println("Error closing the file "+fileName+": "+t.getMessage());
@@ -305,7 +329,7 @@ public class CacheFile {
 	/**
 	 * Set the writing mode of the file.
 	 * 
-	 * @param reading <code>true</code> if the file is used for writing
+	 * @param writing <code>true</code> if the file is used for writing
 	 */
 	public synchronized void setWritingMode(boolean writing) {
 		this.writing=writing;
