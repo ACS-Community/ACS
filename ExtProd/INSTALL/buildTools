@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.37 2011/08/01 19:51:16 hsommer Exp $"
+# "@(#) $Id: buildTools,v 1.38 2011/09/08 21:40:54 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -196,6 +196,8 @@ echo -n "buildMico"
 ./buildMico && echo_success || echo_failure
 echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
+echo -n "buildBoost"
+./buildBoost && echo_success || echo_failure
 
 # if the user wants RTOS he/she has to build it by hand using buildRTOS
 # from the directory ../RTOS.
