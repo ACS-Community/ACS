@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTReceiver
+   xmlns="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTReceiver:1.0 BulkDataNTReceiver.xsd">
+
+	<ReceiverStream Name="Name7">
+		<ReceiverFlow Name="Name3">
+			<DDSReceiverFlowQoS>
+				<datareader_qos name="name1">
+				</datareader_qos>
+			</DDSReceiverFlowQoS>
+		</ReceiverFlow>
+		<ReceiverFlow Name="Name5">
+			<DDSReceiverFlowQoS>
+				<datareader_qos name="name3">
+				</datareader_qos>
+			</DDSReceiverFlowQoS>
+		</ReceiverFlow>
+		<DDSReceiverStreamQoS>
+			<participant_qos name="name5">
+			</participant_qos>
+		</DDSReceiverStreamQoS>
+	</ReceiverStream>
+	<ReceiverStream Name="Name1">
+		<ReceiverFlow Name="Name3">
+			<DDSReceiverFlowQoS>
+				<datareader_qos name="name1">
+				</datareader_qos>
+			</DDSReceiverFlowQoS>
+		</ReceiverFlow>
+		<ReceiverFlow Name="Name5">
+			<DDSReceiverFlowQoS>
+				<datareader_qos name="name3">
+				</datareader_qos>
+			</DDSReceiverFlowQoS>
+		</ReceiverFlow>
+	</ReceiverStream>
+
+</BulkDataNTReceiver>

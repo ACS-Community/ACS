@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Start ACS using this CDB and tmp directory
+export ACS_CDB=$PWD
+export ACS_TMP=$PWD/tmp
+
+rm -rf tmp && mkdir tmp
+
+acsStart --noloadifr
+
+# Start the receiver container
+acsutilAwaitContainerStart -cpp newConfigRecvContainer
+
+sleep 1000;
+
+# Shutdown everything
+acsStopContainer newConfigRecvContainer
+acsStop
