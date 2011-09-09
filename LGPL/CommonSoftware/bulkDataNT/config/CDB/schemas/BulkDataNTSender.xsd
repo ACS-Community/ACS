@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTSender:1.0"
   xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0" 
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
   attributeFormDefault="unqualified">
-  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0" schemaLocation="BACI.xsd"/>
-  <xs:include schemaLocation="rti_dds_qos_profiles.xsd"/>
+  <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0"/>
+  <xs:include schemaLocation="acs_rti_dds_qos_profiles.xsd"/>
 
   <xs:complexType name="DDSSenderStreamQoSType">
     <xs:choice>
@@ -20,8 +20,7 @@
   <xs:complexType name="DDSSenderFlowQoSType">
     <xs:choice>
       <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="0" name="publisher_qos" type="publisherQosProfileChild"
-        />
+        <xs:element maxOccurs="1" minOccurs="0" name="publisher_qos" type="publisherQosProfileChild"/>
       </xs:sequence>
       <xs:sequence>
         <xs:element maxOccurs="1" minOccurs="0" name="topic_qos" type="topicQosProfileChild"/>
@@ -41,12 +40,12 @@
   </xs:complexType>
 
   <xs:complexType name="SenderStreamType">
-    <xs:choice>
+    <xs:sequence>
       <xs:sequence>
         <xs:element name="Flow" type="SenderFlowType" maxOccurs="unbounded"/>
       </xs:sequence>
-      <xs:element minOccurs="0" name="DDSSenderStreamQoS" type="DDSSenderStreamQoSType"/>
-    </xs:choice>
+      <xs:element minOccurs="0" maxOccurs="1" name="DDSSenderStreamQoS" type="DDSSenderStreamQoSType"/>
+    </xs:sequence>
     <xs:attribute name="Name" type="xs:string" use="required"/>
   </xs:complexType>
 

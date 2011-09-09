@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.20 2011/09/05 09:57:50 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.21 2011/09/09 15:00:29 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -153,7 +153,7 @@ tttlll_OBJECTS  =
 #
 # Configuration Database Files
 # ----------------------------
-CDB_SCHEMAS = 
+CDB_SCHEMAS = BulkDataNTReceiver BulkDataNTSender acs_rti_dds_qos_profiles
 
 # 
 # IDL Files and flags

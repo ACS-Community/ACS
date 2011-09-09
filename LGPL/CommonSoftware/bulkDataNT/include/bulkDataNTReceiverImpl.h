@@ -96,7 +96,11 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     // getReceiverForStrem or better getReceiverStream(name)
     virtual AcsBulkdata::BulkDataNTReceiverStream<TCallback> * getReceiverStream(/*const char *stream name*/)
 	{
-	    return receiverStream_m;
+    	// Implementation should change when IDL changes. It currently returns the first stream, whatever it is
+	    if( receiverStreams_m.size() == 0 )
+	    	return NULL;
+	    else
+	    	return receiverStreams_m.begin()->second;
 	}
 
     /**
@@ -162,7 +166,9 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     
   private:
 
-    AcsBulkdata::BulkDataNTReceiverStream<TCallback> *receiverStream_m; //TBD latter we have to have map of streams
+    // map<name, stream>
+    typedef map<string, AcsBulkdata::BulkDataNTReceiverStream<TCallback> *> StreamMap;
+    StreamMap receiverStreams_m;
 
     maci::ContainerServices *containerServices_p;
 };

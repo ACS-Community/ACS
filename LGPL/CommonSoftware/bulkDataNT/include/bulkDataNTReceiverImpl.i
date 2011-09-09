@@ -1,4 +1,5 @@
 
+#include "bulkDataNTConfigurationParser.h"
 
 template<class TCallback>
 BulkDataNTReceiverImpl<TCallback>::BulkDataNTReceiverImpl(const ACE_CString& name,maci::ContainerServices* containerServices) :
@@ -19,7 +20,6 @@ template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::initialize()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::initialize");
-	receiverStream_m = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
 }//cleanUp
 
 
@@ -29,7 +29,12 @@ template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::cleanUp()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::cleanUp");
-	delete receiverStream_m;
+
+	typename StreamMap::iterator it = receiverStreams_m.begin();
+	for(; it != receiverStreams_m.end(); it++)
+		delete it->second;
+	receiverStreams_m.clear();
+
 }//cleanUp
 
 template<class TCallback>
@@ -59,28 +64,82 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 		throw err.getAVOpenReceiverErrorEx();
 	}
 
-	ACE_OS::strcpy(buf,dao_p->get_string("recv_protocols"));
-
-	try
-	{
-		//receiverStream_m->initialize();
-
-		receiverStream_m->createMultipleFlowsFromConfig(buf); // actaully here we need just number of flows !!!
-		receiverStream_m->setReceiverName(name());
-
+	// See first if we have an old configuration. If so, we use that to create the 1 stream with its flows
+	char *recv_protocols = 0;
+	bool createNew = false;
+	try {
+		recv_protocols = dao_p->get_string("recv_protocols");
+		ACE_OS::strcpy(buf,recv_protocols);
+		// TODO: put log about old config mechanism
+	} catch(cdbErrType::CDBFieldDoesNotExistEx &ex) {
+		createNew = true;
 	}
-	catch(ACSErr::ACSbaseExImpl &ex)
-	{
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
-		err.log(LM_DEBUG);
-		throw err.getAVOpenReceiverErrorEx();
+
+	if( createNew ) {
+
+		// Use the new mechanism to parse the XML document and create the streams/flows
+		char *xmlNode = dal_p->get_DAO(CDBpath.c_str());
+		BulkDataConfigurationParser parser;
+
+		try {
+
+			// Get the streams and put them on the map
+			list<AcsBulkdata::BulkDataNTReceiverStream<TCallback> *> *recvStreams = parser.parseReceiverConfig<TCallback>(xmlNode);
+			if( recvStreams->size() == 0 ) {
+				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::openReceiver No Receiver Streams configured, no streams will be created"));
+			}
+			else {
+				typename list<AcsBulkdata::BulkDataNTReceiverStream<TCallback> *>::iterator it = recvStreams->begin();
+				for(; it != recvStreams->end(); it++)
+					receiverStreams_m[(*it)->getName()] = (*it);
+			}
+			recvStreams->clear();
+			delete recvStreams;
+
+		} catch(CDBProblemExImpl &ex) {
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			err.log(LM_DEBUG);
+			throw err.getAVOpenReceiverErrorEx();
+		} catch(StreamCreateProblemExImpl &ex) {
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			err.log(LM_DEBUG);
+			throw err.getAVOpenReceiverErrorEx();
+		} catch(FlowCreateProblemExImpl &ex) {
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			err.log(LM_DEBUG);
+			throw err.getAVOpenReceiverErrorEx();
+		} catch(...) {
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			err.log(LM_DEBUG);
+			throw err.getAVOpenReceiverErrorEx();
+		}
 	}
-	catch(...)
-	{
-		ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
-		throw err.getAVOpenReceiverErrorEx();
-	}
+	else {
+
+		// Use the old mechanism to create the 1 stream with its flows
+		try
+		{
+			//receiverStream_m->initialize();
+			AcsBulkdata::BulkDataNTReceiverStream<TCallback> *recvStream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>("DefaultStream");
+			recvStream->createMultipleFlowsFromConfig(buf); // actually here we need just number of flows !!!
+			recvStream->setReceiverName(name());
+
+			receiverStreams_m["DefaultStream"] = recvStream;
+		}
+		catch(ACSErr::ACSbaseExImpl &ex)
+		{
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			err.log(LM_DEBUG);
+			throw err.getAVOpenReceiverErrorEx();
+		}
+		catch(...)
+		{
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			throw err.getAVOpenReceiverErrorEx();
+		}
+	} // if (createNew)
 
 }//openReceiver
 
@@ -119,6 +178,8 @@ template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::setRecvName(const char *recvName)
 {
 	//TBD later when we will have more streams we have to loop all over them
-	this->getReceiverStream()->setReceiverName(recvName);
+	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *recv = this->getReceiverStream();
+	if( recv != NULL )
+		recv->setReceiverName(recvName);
 }
 
