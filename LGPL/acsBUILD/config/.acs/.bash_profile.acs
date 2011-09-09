@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.112 2011/08/24 18:03:31 bjeram Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.113 2011/09/09 22:02:52 javarias Exp $"
 #
 #
 #
@@ -161,7 +161,7 @@ then
 fi
 if [ X"$ALMASW_RELEASE" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-   ALMASW_RELEASE=ACS-10.0
+   ALMASW_RELEASE=ACS-HEAD
 fi
 
 # Combined absolute path where ACS software and tools are installed.
@@ -862,7 +862,7 @@ then
       LD_LIBRARY_PATH=$TCLTK_ROOT/lib:$LD_LIBRARY_PATH
    fi
 
-   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$LD_LIBRARY_PATH
+   LD_LIBRARY_PATH=$ACE_ROOT/lib:$PYTHON_ROOT/lib:$OMNI_ROOT/lib:$ALMASW_INSTDIR/boost/lib:$LD_LIBRARY_PATH
 
    if  [ X"$DDS_ROOT" != X ]
    then
