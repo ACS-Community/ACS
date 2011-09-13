@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.11 2011/09/02 15:37:37 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.12 2011/09/13 14:23:38 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -36,7 +36,7 @@
 namespace AcsBulkdata
 {
 
-///DDS configuration class at this moment ii is commm for all classe but can be later split
+///DDS configuration class at this moment it is common for all configuration classes but can be later split
 // ... if needed
 class DDSConfiguration
 {
@@ -61,7 +61,8 @@ public:
 	StreamConfiguration();
 
 protected:
-	std::string urlProfileQoS;  // here we can specify RTI DDS QoS as a URL/string str://
+	std::string urlProfileQoS;   // here we specify where it should be looked for default values = USER_QOS_PROFILES.xml
+	std::string stringProfileQoS; // here we can specify RTI DDS QoS as a string
 	// ... it is read just when we create stream, but it contains profiles for all flows
 	unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
 };
