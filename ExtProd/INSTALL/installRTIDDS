@@ -23,7 +23,7 @@ fi
 echo ""
 
 ARCH=`uname -m`
-if [ $ARCH == x64_64 ]
+if [ $ARCH == x86_64 ]
 then
     HOST_TAR=rtidds45d-host-x64Linux.tar.gz.gpg
     TARGET_TAR=rtidds45d-target-x64Linux2.6gcc4.1.2.tar.gz.gpg
