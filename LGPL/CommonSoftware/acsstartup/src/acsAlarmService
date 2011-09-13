@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsAlarmService,v 1.6 2011/07/14 14:52:16 tstaig Exp $"
+# "@(#) $Id: acsAlarmService,v 1.7 2011/09/13 08:55:19 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -256,11 +256,9 @@ then
     exit $EC_FAILURE;
   fi
   
-  alarmService -OAIAddr $HOST -OAport $ALARM_SERVICE_PORT 2>&1 | tee $ALARM_SERVICE_OUT &
-  
+  (alarmService -OAIAddr $HOST -OAport $ALARM_SERVICE_PORT 2>&1 & echo $! >&3) 3>pid | tee $ALARM_SERVICE_OUT &
+  ALARM_SERVICE_SERVICE_PID=$(<pid)
   cd $STARTUP_DIR
-
-  ALARM_SERVICE_SERVICE_PID=$!
   echo $ALARM_SERVICE_SERVICE_PID  > $INSTANCE_DIR/$ACS_ALARM_SERVICE_PIDFILE
 fi
 
