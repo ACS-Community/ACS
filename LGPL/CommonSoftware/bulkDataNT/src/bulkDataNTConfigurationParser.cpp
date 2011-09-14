@@ -331,12 +331,12 @@ string BulkDataConfigurationParser::getStrURIforStream(char * streamName) {
 	map<string, string> profiles = m_profiles[streamName];
 	map<string, string>::iterator it = profiles.begin();
 
-	string s("str://\"<dds><qos_library name=\"");
+	string s("<dds><qos_library name=\"");
 	s.append(DYNAMIC_LIBRARY_NAME);
 	s.append("\">");
 	for(; it != profiles.end(); it++)
 		s.append(it->second);
-	s.append("</qos_library></dds>\"");
+	s.append("</qos_library></dds>");
 
 	return s;
 }

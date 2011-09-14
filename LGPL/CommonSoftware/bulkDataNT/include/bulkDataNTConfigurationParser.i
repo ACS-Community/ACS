@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.3 2011/09/14 08:23:39 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.4 2011/09/14 10:03:44 rtobar Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -58,7 +58,7 @@ list<StreamT *>* BulkDataConfigurationParser::createBulkDataEntities() {
 					printf("Stream '%s' doesn't have it's own QoS setting, will use the default lib/profile\n", mit->first);
 
 				// Regardless, create the str:// URI so the DDS participant factory gets it
-				streamCfg.urlProfileQoS = getStrURIforStream(mit->first);
+				streamCfg.stringProfileQoS = getStrURIforStream(mit->first);
 
 //				printf("Profile %s is: ==== %s ====\n", mit->first, streamCfg.urlProfileQoS.c_str());
 			}
