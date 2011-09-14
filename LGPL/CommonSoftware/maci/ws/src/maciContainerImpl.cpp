@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.129 2011/09/02 11:00:18 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.130 2011/09/14 13:46:49 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -57,7 +57,9 @@
 
 #include <cdbDALaccess.h>
 #include <loggingLogLevelDefinition.h>
-#include <loggingLog4cpp.h>
+#ifndef MAKE_VXWORKS
+ #include <loggingLog4cpp.h
+#endif
 /*
 #ifdef MAKE_VXWORKS
 #include <err.h>
@@ -81,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.129 2011/09/02 11:00:18 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.130 2011/09/14 13:46:49 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1154,10 +1156,12 @@ ContainerImpl::connect()
 		  if (logger.ptr() != Logging::AcsLogService::_nil())
 		    {
 		      m_loggerProxy->setCentralizedLogger(logger.in());
+#ifndef MAKE_VXWORKS
 		      //Log4cpp remote logging initialization
 			  char * log4cpp_disabled = getenv("ACS_DISABLE_LOG4CPP");
 			  if (log4cpp_disabled == NULL)
 		      	LOGGER_FACTORY->enableRemoteAppender(cacheSize, flushPeriodSeconds, logger, NULL, maxLogsPerSecond);
+#endif
 		      ACS_LOG(LM_RUNTIME_CONTEXT, "maci::ContainerImpl::init", (LM_INFO, "Connected to the Centralized Logger."));
 		    }
 		  else
@@ -2869,12 +2873,13 @@ void ContainerImpl::refresh_logging_config()
 
 void ContainerImpl::configureLogger(const std::string& loggerName)
 {
+#ifndef MAKE_VXWORKS
 	//Log4cpp Log creation
 
 	char * log4cpp_disabled = getenv("ACS_DISABLE_LOG4CPP");
 	if (log4cpp_disabled == NULL)
 		LOGGER_FACTORY->getLogger(loggerName);
-
+#endif
 
 	maci::LoggingConfigurable::LogLevels logLevels;
 	if (getContainer()->m_logLevels.find(loggerName) != getContainer()->m_logLevels.end())
@@ -2887,21 +2892,25 @@ void ContainerImpl::configureLogger(const std::string& loggerName)
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
+#ifndef MAKE_VXWORKS
 		//Log4cpp: set levels
 		if (log4cpp_disabled == NULL)
 			LOGGER_FACTORY->setLogLevels(loggerName,
 					logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevel),
 					logging::convertPriority(getContainer()->m_defaultLogLevels.minLogLevelLocal));
+#endif
 	}else{
 		Logging::Logger::getGlobalLogger()->setLevels(loggerName,
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevel)),
 			static_cast<Logging::BaseLog::Priority>(LogLevelDefinition::getACELogPriority(logLevels.minLogLevelLocal)),
 		m_logLevelConfigure);
+#ifndef MAKE_VXWORKS
 		//Log4cpp: set levels
 		if (log4cpp_disabled == NULL)
 			LOGGER_FACTORY->setLogLevels(loggerName,
 					logging::convertPriority(logLevels.minLogLevel),
 					logging::convertPriority(logLevels.minLogLevelLocal));
+#endif
 	}
 
 }
