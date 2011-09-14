@@ -45,6 +45,7 @@ import com.cosylab.CDB.DAL;
 import com.cosylab.CDB.DALHelper;
 
 import si.ijs.maci.AuthenticationData;
+import si.ijs.maci.CBComponentInfo;
 import si.ijs.maci.ClientOperations;
 import si.ijs.maci.ClientType;
 import si.ijs.maci.ComponentInfo;
@@ -56,10 +57,13 @@ import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACS.ACSComponentOperations;
+import alma.ACS.CBDescIn;
+import alma.ACS.CBDescOut;
 import alma.ACS.ComponentStates;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJUnknownEx;
 import alma.AcsContainerLog.LOG_CompAct_Corba_OK;
 import alma.AcsContainerLog.LOG_CompAct_Init_OK;
 import alma.AcsContainerLog.LOG_CompAct_Instance_OK;
@@ -72,6 +76,8 @@ import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -631,7 +637,33 @@ public class AcsContainer extends ContainerPOA
     }
 
 
-    /**
+    /* (non-Javadoc)
+	 * @see si.ijs.maci.ContainerOperations#activate_component_async(int, long, java.lang.String, java.lang.String, java.lang.String, si.ijs.maci.CBComponentInfo, alma.ACS.CBDescIn)
+	 */
+	public void activate_component_async(int h, long execution_id, String name,
+			String exe, String type, CBComponentInfo callback, CBDescIn desc)
+	{
+		// TODO make this async
+		
+		CBDescOut descOut = new CBDescOut(0, descOut.id_tag);
+		try
+		{
+			ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
+			callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+		}
+		catch (AcsJException ae)
+		{
+			callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+		}
+		catch (Throwable th)
+		{
+			AcsJException ae = new AcsJUnknownEx(th);
+			callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+		}
+
+	}
+
+	/**
      * Checks if there is an existing component that matches the spec.
      * This can happen if the Manager went down and back up.
      * Strategy:
