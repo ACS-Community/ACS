@@ -501,6 +501,53 @@ module maci {
 	}; /* 	struct ClientInfo */
 
 	/** 
+	 * CBComponentInfo objects are used to asynchronously execute an action which takes a large amount of
+	 * time to complete and returns ComponentInfo value.
+	 * 
+	 * When the callback is used for asynchronous notification in response to some action, the 
+	 * done method will be invoked when the action terminates, either with error condition or 
+	 * success (discovered by examining the Completion parameter). When the client processes the done 
+	 * invocation, it may discard the callback. The completion condition and the timestamp are reported 
+	 * through the Completion structure as a part of the callback notification. If the action is time 
+	 * consuming, i.e. it cannot be completed before the normal_timeout parameter found in the CBDescIn
+	 * structure, the server must issue a working notification periodically (the server works under 
+	 * presupposition that each invocation resets the client's timeout timer to the 
+	 * normal_timeout period). The client must not discard the callback before done notification is 
+	 * called or one of the notifications timeouts on the client side.
+	 * 
+	 * See the BACI specifications for a detailed discussion on timeouts. 
+	 */
+	interface CBComponentInfo : ACS::Callback {
+		/**
+		 * The working method can be invoked by the servant any number of times provided it sets
+		 * the appropriate timeout fields in the CBDescOut structure to inform the client. This is a 
+		 * oneway method so the developer need not be worried about how long it takes their implementation
+		 * of the method to complete.
+		 * @param value Current status of the activation.
+		 * @param c A completion structure containing a description of current operation status and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void working (in ComponentInfo value,
+					in ACSErr::Completion c,
+					in ACS::CBDescOut desc);
+		
+		/** 
+		 * The done method is invoked only one time by the servant and signifies the end of future method
+		 * invocations on this particular callback instance. Once this method has been invoked, the instance
+		 * can be discarded.
+		 * @param value Result of the activation.
+		 * @param c A completion structure containing a description of how the operation completed (success
+		 *          or failure) and a timestamp.
+		 * @param desc A structure used to inform the client how long it will take the callback to finish
+		 *             (i.e., invoke done) or invoke this method again.
+		 */
+		oneway void done (in ComponentInfo value,
+					in ACSErr::Completion c,
+					in ACS::CBDescOut desc);
+	};
+	
+	/** 
 	    Convenience typedef for sequences of ClientInfo 
 	*/
 	typedef sequence <ClientInfo> ClientInfoSeq;
@@ -619,6 +666,52 @@ module maci {
 		)
 		raises (maciErrType::CannotActivateComponentEx);
 
+
+  	    /** 
+		Asynchronously activate a component.
+		See activate_component. 
+	    */
+	    void activate_component_async (
+		in Handle h,	///< Handle of the component that is
+				///being activated. This handle is
+				///used by the component when it will
+				///present itself to the Manager. The
+				///component is expected to remember
+				///this handle for its entire
+				///life-time.
+				
+		in ExecutionId execution_id, ///< Execution ID of the component
+				///that is being activated.
+
+		in string name,	///< Name of the component to
+				///instantiate.
+
+		in string exe,	///< Path to the executable file (a
+				///DLL or a shared library) in which
+				///the component's code resides. The
+				///path is relative to the root
+				///directory in which all executable
+				///code is stored. The path must not
+				///contain dots, and uses slashes (not
+				///backslashes) to separate components
+				///of the path. The path must not
+				///include the extension, or any
+				///prefixes, so that it is platform
+				///independent.
+
+		in string type,	///< The type of the component to
+				///instantiate. The interpretation of
+				///this field depends on the
+				///executable. Type should uniquely
+				///identify the code-base which the
+				///component will be
+				///executing. <B>Note:</B> Type name
+				///is <B>NOT</B> CORBA repository id. 
+				
+		in CBComponentInfo callback,
+		in ACS::CBDescIn desc
+		)
+		;
 
 	    /** 
 		Deactivate a components whose handle is given. Deactivation is the
