@@ -8,7 +8,10 @@ package com.cosylab.acs.maci.test;
 
 import org.omg.CORBA.Object;
 
+import alma.ACS.CBDescIn;
+
 import si.ijs.maci.AuthenticationData;
+import si.ijs.maci.CBComponentInfo;
 import si.ijs.maci.ClientType;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ComponentInfo;
@@ -123,9 +126,16 @@ public class ContainerProxyImpl extends ContainerPOA {
 	public void set_component_shutdown_order(int[] h) {
 	}
 
-        /************************** LoggingConfigurable *************************/
+	/* (non-Javadoc)
+	 * @see si.ijs.maci.ContainerOperations#activate_component_async(int, long, java.lang.String, java.lang.String, java.lang.String, si.ijs.maci.CBComponentInfo, alma.ACS.CBDescIn)
+	 */
+	public void activate_component_async(int h, long execution_id, String name,
+			String exe, String type, CBComponentInfo callback, CBDescIn desc) {
+	}
 
-        /**
+	/************************** LoggingConfigurable *************************/
+
+		/**
 	 * Gets the log levels of the default logging configuration.
 	 * These levels are used by all loggers that have not been configured individually.
 	 */

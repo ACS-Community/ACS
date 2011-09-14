@@ -64,6 +64,19 @@ public interface Container extends Client
 	 */
 	public ComponentInfo activate_component(int handle, long executionId, String name, String exe, String type)
 		throws AcsJCannotActivateComponentEx;
+
+	public interface ComponentInfoCompletionCallback {
+		void done(ComponentInfo result);
+		void failed(ComponentInfo result, Throwable exception);
+	}
+	
+
+	/**
+	 * Asynchronous version of activate_component.
+	 * @see #activate_component(int, long, String, String, String)
+	 */
+	public void activate_component_async(int handle, long executionId, String name, String exe, String type,
+			ComponentInfoCompletionCallback callback);
 	
 	/**
 	 * Deactivate a component whose handles is given.

@@ -80,6 +80,7 @@ import com.cosylab.acs.maci.ComponentInfo;
 import com.cosylab.acs.maci.ComponentSpec;
 import com.cosylab.acs.maci.ComponentStatus;
 import com.cosylab.acs.maci.Container;
+import com.cosylab.acs.maci.Container.ComponentInfoCompletionCallback;
 import com.cosylab.acs.maci.ContainerInfo;
 import com.cosylab.acs.maci.CoreException;
 import com.cosylab.acs.maci.Daemon;
@@ -6410,6 +6411,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// log info
 			logger.log(Level.INFO,"Activating component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") on container '" + containerInfo.getName() + "'.");
 
+			// sync
 			try
 			{
 				executionId = generateExecutionId();
@@ -6422,8 +6424,160 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
 				timeoutError = (ex instanceof TimeoutRemoteException);
 			}
+/*			
+			// async
+			try
+			{
+				executionId = generateExecutionId();
+				activationTime = System.currentTimeMillis();
+				
+				ComponentInfoCompletionCallbackImpl callback = new ComponentInfoCompletionCallbackImpl(
+						requestor, name, type,
+						code, containerName, keepAliveTime, status,
+						isOtherDomainComponent, isDynamicComponent, h, reactivate,
+						container, containerInfo, executionId,
+						activationTime);
+				container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
+				
+				return callback.waitUntilActivated();
+			}
+			catch (Throwable ex)
+			{
+				bcex = new AcsJCannotGetComponentEx(ex);
+				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+				throw bcex;
+			}
+			*/
+		}
+		
+			
+		// call this immediately if bcex != null or sync call
+		return internalNoSyncRequestComponentPhase2(requestor, name, type,
+				code, containerName, keepAliveTime, status, bcex,
+				isOtherDomainComponent, isDynamicComponent, h, reactivate,
+				componentInfo, container, containerInfo, executionId,
+				activationTime, timeoutError);
+	
+	}
+	
+	private class ComponentInfoCompletionCallbackImpl implements ComponentInfoCompletionCallback
+	{
+		int requestor;
+		String name; String type; String code; String containerName;
+		int keepAliveTime; StatusHolder status;
+		boolean isOtherDomainComponent; boolean isDynamicComponent;
+		int h; boolean reactivate;
+		ComponentInfo componentInfo; Container container;
+		ContainerInfo containerInfo;
+		long executionId; long activationTime;
+		boolean timeoutError;
+		
+		Throwable exception = null;
+		boolean done = false;
+		
+		public ComponentInfoCompletionCallbackImpl(int requestor, String name,
+				String type, String code, String containerName,
+				int keepAliveTime, StatusHolder status,
+				boolean isOtherDomainComponent, boolean isDynamicComponent,
+				int h, boolean reactivate,
+				Container container, ContainerInfo containerInfo,
+				long executionId, long activationTime) {
+
+			this.requestor = requestor;
+			this.name = name;
+			this.type = type;
+			this.code = code;
+			this.containerName = containerName;
+			this.keepAliveTime = keepAliveTime;
+			this.status = status;
+			this.isOtherDomainComponent = isOtherDomainComponent;
+			this.isDynamicComponent = isDynamicComponent;
+			this.h = h;
+			this.reactivate = reactivate;
+			this.container = container;
+			this.containerInfo = containerInfo;
+			this.executionId = executionId;
+			this.activationTime = activationTime;
 		}
 
+		public synchronized ComponentInfo waitUntilActivated() throws Throwable
+		{
+			while (!done)
+			{
+				try {
+				this.wait();
+				} catch (InterruptedException ex) {
+					exception = ex;
+					break;
+				}
+			}
+			
+			if (exception != null)
+				throw exception;
+			return componentInfo;
+		}
+		
+		@Override
+		public synchronized void done(ComponentInfo result) {
+			try
+			{
+				componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
+						code, containerName, keepAliveTime, status, null,
+						isOtherDomainComponent, isDynamicComponent, h, reactivate,
+						result, container, containerInfo, executionId,
+						activationTime, timeoutError);
+			} catch (Throwable th) {
+				exception = th;
+			}
+			finally {
+				done = true;
+				this.notifyAll();
+			}
+		}
+
+		@Override
+		public synchronized void failed(ComponentInfo result, Throwable exception) {
+			try
+			{
+				boolean timeoutError = (exception instanceof TimeoutRemoteException);
+				
+				AcsJCannotGetComponentEx bcex;
+				if (exception instanceof AcsJCannotGetComponentEx)
+					bcex = (AcsJCannotGetComponentEx)exception;
+				else
+					bcex = new AcsJCannotGetComponentEx(exception);
+				
+				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+				
+				componentInfo = internalNoSyncRequestComponentPhase2(requestor, name, type,
+						code, containerName, keepAliveTime, status, bcex,
+						isOtherDomainComponent, isDynamicComponent, h, reactivate,
+						result, container, containerInfo, executionId,
+						activationTime, timeoutError);
+			} catch (Throwable th) {
+				exception = th;
+			}
+			finally {
+				done = true;
+				this.notifyAll();
+			}
+		}
+		
+		
+	}
+
+	private ComponentInfo internalNoSyncRequestComponentPhase2(
+			int requestor,
+			String name, String type, String code, String containerName,
+			int keepAliveTime, StatusHolder status,
+			AcsJCannotGetComponentEx bcex,
+			boolean isOtherDomainComponent, boolean isDynamicComponent,
+			int h, boolean reactivate,
+			ComponentInfo componentInfo, Container container,
+			ContainerInfo containerInfo,
+			long executionId, long activationTime,
+			boolean timeoutError) throws AcsJCannotGetComponentEx
+	{
 		// remove component from client component list, will be added later (first lots of checks has to be done)
 		if ((requestor & TYPE_MASK) == COMPONENT_MASK)
 			removeComponentOwner(h | COMPONENT_MASK, requestor);

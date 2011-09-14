@@ -8,9 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cosylab.acs.maci.ClientType;
-import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.Component;
 import com.cosylab.acs.maci.ComponentInfo;
+import com.cosylab.acs.maci.Container;
 import com.cosylab.acs.maci.RemoteException;
 
 /**
@@ -96,6 +96,32 @@ public class TestContainer extends TestClient implements Container {
 		}
 		else
 			return null;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see com.cosylab.acs.maci.Container#activate_component_async(int, long, java.lang.String, java.lang.String, java.lang.String, si.ijs.maci.CBComponentInfo, alma.ACS.CBDescIn)
+	 */
+	@Override
+	public void activate_component_async(final int handle, final long executionId,
+			final String name, final String exe, final String type, final ComponentInfoCompletionCallback callback) {
+		// creating a new thread for each request is OK for tests
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				ComponentInfo ci = null;
+				try
+				{
+					ci = activate_component(handle, executionId, name, exe, type);
+					callback.done(ci);
+				}
+				catch (Throwable th) {
+					callback.failed(ci, th);
+				}
+				
+			}
+		}, "activate_component_async").start();
 	}
 
 	/**

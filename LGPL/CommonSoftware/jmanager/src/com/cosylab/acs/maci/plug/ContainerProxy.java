@@ -7,9 +7,19 @@ package com.cosylab.acs.maci.plug;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.omg.CORBA.TIMEOUT;
 
+import si.ijs.maci.CBComponentInfo;
+import si.ijs.maci.CBComponentInfoPOA;
+
+import alma.ACS.CBDescIn;
+import alma.ACS.CBDescOut;
+import alma.ACSErr.Completion;
+import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.exceptions.AcsJException;
 import alma.maciErrType.CannotActivateComponentEx;
 import alma.maciErrType.CannotDeactivateComponentEx;
 import alma.maciErrType.ComponentDeactivationFailedEx;
@@ -58,6 +68,8 @@ public class ContainerProxy extends ClientProxy implements Container
 		this.container = container;
 		
 		this.ior = serialize(container);
+		
+		activateCallback();
 	}
 
 
@@ -104,6 +116,106 @@ public class ContainerProxy extends ClientProxy implements Container
 		}
 		catch (Exception ex)
 		{
+			RemoteException re = new RemoteException("Failed to invoke 'activate_component()' method.", ex);
+			throw re;
+		}
+	}
+
+	private CBComponentInfoImpl componentInfoCBServant = new CBComponentInfoImpl();
+	private CBComponentInfo componentInfoCB;
+	
+	void activateCallback()
+	{
+		componentInfoCB = componentInfoCBServant._this(getOrb());
+	}
+	
+	// TODO timeout
+	
+	class CBComponentInfoImpl extends CBComponentInfoPOA {
+		private Map<Integer, ComponentInfoCompletionCallback> lookupTable = new HashMap<Integer, ComponentInfoCompletionCallback>();
+		private int id = 0;
+
+		public CBDescIn register(ComponentInfoCompletionCallback cb) {
+			synchronized (lookupTable) {
+				// possible endless loop
+				while (lookupTable.containsKey(++id));
+				lookupTable.put(id, cb);
+				return new CBDescIn(0, 0, id);
+			}
+		}
+
+		public ComponentInfoCompletionCallback unregister(int id) {
+			synchronized (lookupTable) {
+				return lookupTable.remove(id);
+			}
+		}
+
+		@Override
+		public void working(si.ijs.maci.ComponentInfo value, Completion c,
+				CBDescOut desc) {
+			// noop
+		}
+
+		@Override
+		public void done(si.ijs.maci.ComponentInfo info, Completion c,
+				CBDescOut desc) {
+			ComponentInfoCompletionCallback cb = unregister(desc.id_tag);;
+			if (cb != null)
+			{
+				ComponentInfo retVal = null;
+				if (info != null)
+				{
+					retVal = new ComponentInfo(info.h, info.name, info.type, info.code,
+							info.reference != null ? new ComponentProxy(info.name, info.reference) : null);
+					retVal.setContainer(info.container);
+					retVal.setContainerName(info.container_name);
+					retVal.setAccessRights(inverseMapAccessRights(info.access));
+					retVal.setClients(new IntArray(info.clients));
+					retVal.setInterfaces(info.interfaces);
+				}
+				AcsJException ex = AcsJCompletion.fromCorbaCompletion(c).getAcsJException();
+				if (ex == null)
+					cb.done(retVal);
+				else
+					cb.failed(retVal, ex);
+			}
+			
+		}
+
+		@Override
+		public boolean negotiate(long time_to_transmit, CBDescOut desc) {
+			// not used
+			return false;
+		}
+
+	}
+	
+	public void activate_component_async(int handle, long executionId, String name, String exe, String type,
+			ComponentInfoCompletionCallback callback)
+	{
+		CBDescIn cbIn = componentInfoCBServant.register(callback);
+		try
+		{
+			container.activate_component_async(handle, executionId, name, exe, type,
+					componentInfoCB, cbIn
+					);
+		}
+		catch (TIMEOUT tex)
+		{
+			componentInfoCBServant.unregister(cbIn.id_tag);
+			TimeoutRemoteException re = new TimeoutRemoteException("Timout occured while invoking 'activate_component()' method.", tex);
+			throw re;
+		}
+		catch (org.omg.CORBA.MARSHAL marshalEx) {
+			componentInfoCBServant.unregister(cbIn.id_tag);
+			// see http://jira.alma.cl/browse/COMP-4371. Unclear if a parameter was null, or the returned struct was invalid.
+			RemoteException re = new RemoteException("Failed to transform the paramters or return value of the container's 'activate_component' method " + 
+					"to/from the corba call, using parameters name=" + name + ", exe=" + exe + ", type=" + type, marshalEx);
+			throw re;
+		}
+		catch (Exception ex)
+		{
+			componentInfoCBServant.unregister(cbIn.id_tag);
 			RemoteException re = new RemoteException("Failed to invoke 'activate_component()' method.", ex);
 			throw re;
 		}
