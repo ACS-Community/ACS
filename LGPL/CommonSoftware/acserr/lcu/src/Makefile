@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.56 2005/09/23 07:59:47 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.57 2011/09/14 13:19:10 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -40,7 +40,6 @@
 #------------------------------------------------------------------------
 # List of files to be linked
 LINK_FILES = $(foreach exe, $(acserr_COMMON), $(exe).cpp) \
-		../idl/acserr.idl \
 		../idl/acserrHandlersErr.xml ../idl/ErrorSystemErrType.xml \
 		../config/AES2IDL.xslt ../config/AES2CPP.xslt ../config/AES2H.xslt
 #
@@ -69,7 +68,7 @@ EXECUTABLES_L   =
 #
 # <brief description of xxxxx program>
 acserr_COMMON = acserr acserrLegacy acserrACSbaseExImpl   acserrHandlers 
-acserr_GENERATED =  	acserrC acserrS  acserrHandlersErrC acserrHandlersErrS acserrHandlersErr \
+acserr_GENERATED =  	acserrHandlersErrC acserrHandlersErrS acserrHandlersErr \
 			ErrorSystemErrTypeC ErrorSystemErrTypeS ErrorSystemErrType
 
 acserr_OBJECTS   =  $(acserr_COMMON) $(acserr_GENERATED)
@@ -134,7 +133,7 @@ PANELS_L =
 #
 # IDL Files and flags
 #
-IDL_FILES = acserr acserrHandlersErr
+IDL_FILES = acserrHandlersErr
 IDL_TAO_FLAGS =
 USER_IDL =
 
