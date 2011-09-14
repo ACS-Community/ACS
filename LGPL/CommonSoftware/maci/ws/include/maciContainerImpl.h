@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.60 2011/04/08 14:34:15 javarias Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.61 2011/09/14 19:18:00 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -97,7 +97,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.60 2011/04/08 14:34:15 javarias Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.61 2011/09/14 19:18:00 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -247,6 +247,9 @@ public:
 					const char * type
 					);
 
+  // TODO
+  virtual void activate_component_async(maci::Handle, maci::ExecutionId, const char*, const char*, const char*, maci::CBComponentInfo*, const ACS::CBDescIn&);
+  
   /**
    * Deactivate a component whose handle is given.
    *
