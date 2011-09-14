@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsNotifyService,v 1.17 2011/09/13 08:55:19 msekoran Exp $"
+# "@(#) $Id: acsNotifyService,v 1.18 2011/09/14 13:56:50 msekoran Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -314,10 +314,8 @@ then
   # in order to get the correct svc.conf service configuration file.
   STARTUP_DIR=$PWD
   cd $ACE_ROOT/TAO/orbsvcs/Notify_Service
-  ($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! >&3) 3>pid | tee $NOTIFY_OUT &
-  NOTIFY_SERVICE_PID=$(<pid)
+  ($ACE_ROOT/TAO/orbsvcs/Notify_Service/Notify_Service -ORBEndpoint iiop://$HOST:$NOTIFY_SERVICE_PORT -ORBInitRef NameService=corbaloc::$HOST:$NAMING_SERVICE_PORT/NameService -IORoutput $NOTIFY_IOR $ORBOPTS -Boot 2>&1 & echo $! > $NOTIFY_SERVICE_PIDFILE) | tee $NOTIFY_OUT &
   cd $STARTUP_DIR
-  echo $NOTIFY_SERVICE_PID  > $NOTIFY_SERVICE_PIDFILE
 fi
 
 if [ -e $NOTIFY_SERVICE_PIDFILE -a "$CL_WAIT" = "true" ]
