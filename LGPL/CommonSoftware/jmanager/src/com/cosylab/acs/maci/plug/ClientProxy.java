@@ -196,7 +196,7 @@ public class ClientProxy extends CORBAReferenceSerializator implements Client, S
 		}
 		catch (TRANSIENT tre)
 		{
-			throw new RemoteTransientException("Failed to invoke 'uncomponents_available()' method due to transient exception.", tre);
+			throw new RemoteTransientException("Failed to invoke 'components_unavailable()' method due to transient exception.", tre);
 		}
 		catch (Throwable ex)
 		{
