@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.4 2011/08/23 18:07:08 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.5 2011/09/14 08:23:38 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,6 +27,15 @@
 #include <ndds_config_c.h>
 
 using namespace AcsBulkdata;
+
+const char* const DDSConfiguration::DEFAULT_LIBRARY = "BulkDataQoSLibrary";
+
+const char* const DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE = "SenderStreamDefaultQosProfile";
+const char* const DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE= "SenderFlowDefaultQosProfile";
+
+const char* const DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE = "ReceiverStreamDefaultQosProfile";
+const char* const DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE = "ReceiverFlowDefaultQosProfile";
+
 
 DDSConfiguration::DDSConfiguration()
 {
@@ -40,24 +49,24 @@ StreamConfiguration::StreamConfiguration()
 
 SenderStreamConfiguration::SenderStreamConfiguration()
 {
-	profileQos="SenderStreamDefaultQosProfile";
+	profileQos=DEFAULT_SENDER_STREAM_PROFILE;
 }//StreamConfiguration
 
 
 ReceiverStreamConfiguration::ReceiverStreamConfiguration()
 {
-	profileQos="ReceiverStreamDefaultQosProfile";
+	profileQos=DEFAULT_RECEIVER_STREAM_PROFILE;
 }//ReceiverStreamConfiguration
 
 
 ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 {
-	profileQos="ReceiverFlowDefaultQosProfile";
+	profileQos=DEFAULT_RECEIVER_FLOW_PROFILE;
 }//ReceiverFlowConfiguration
 
 SenderFlowConfiguration::SenderFlowConfiguration()
 {
-	profileQos="SenderFlowDefaultQosProfile";
+	profileQos=DEFAULT_SENDER_FLOW_PROFILE;
 }//SenderFlowConfiguration
 
 

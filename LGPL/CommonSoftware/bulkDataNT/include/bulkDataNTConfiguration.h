@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.12 2011/09/13 14:23:38 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.13 2011/09/14 08:23:39 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -46,6 +46,32 @@ class DDSConfiguration
 	friend class BulkDataConfigurationParser;
 public:
 	DDSConfiguration();
+
+	/**
+	 * Default qos_library to use
+	 */
+	static const char* const DEFAULT_LIBRARY;
+
+	/**
+	 * Default qos_profile to use for sender streams
+	 */
+	static const char* const DEFAULT_SENDER_STREAM_PROFILE;
+
+	/**
+	 * Default qos_profile to use for sender flows
+	 */
+	static const char* const DEFAULT_SENDER_FLOW_PROFILE;
+
+	/**
+	 * Default qos_profile to use for receiver streams
+	 */
+	static const char* const DEFAULT_RECEIVER_STREAM_PROFILE;
+
+	/**
+	 * Default qos_profile to use for receiver flows
+	 */
+	static const char* const DEFAULT_RECEIVER_FLOW_PROFILE;
+
 protected:
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used

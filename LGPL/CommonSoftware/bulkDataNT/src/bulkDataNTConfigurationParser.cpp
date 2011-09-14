@@ -21,6 +21,8 @@ const char* const BulkDataConfigurationParser::RECEIVER_STREAM_QOS_NODENAME = "D
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_NODENAME       = "ReceiverFlow";
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_QOS_NODENAME   = "DDSReceiverFlowQoS";
 
+const char* const BulkDataConfigurationParser::DYNAMIC_LIBRARY_NAME         = "DynamicLib";
+
 BulkDataConfigurationParser::BulkDataConfigurationParser() :
    m_profiles(),
    m_entities(),
@@ -51,7 +53,8 @@ BulkDataConfigurationParser::~BulkDataConfigurationParser() {
 }
 
 list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(const char *config) {
-	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME);
+	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME,
+			DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
 	return createBulkDataEntities<BulkDataNTSenderStream, SenderStreamConfiguration, SenderFlowConfiguration>();
 }
 
@@ -87,7 +90,9 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 	const char* const reqStreamNodeName,
 	const char* const reqFlowNodeName,
 	const char* const reqStreamQoSNodeName,
-	const char* const reqFlowQoSNodeName)
+	const char* const reqFlowQoSNodeName,
+	const char* const defaultStreamProfileName,
+	const char* const defaultFlowProfileName)
 {
 
 	clearCollections();
@@ -197,7 +202,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 
 			// The Sender/ReceiverStreamQoS is appended to the str:// URI
 			if( strcmp(childNodeName, reqStreamQoSNodeName) == 0 )
-				addQoSToProfile(streamName, streamName, streamChildNode);
+				addQoSToProfile(streamName, streamName, defaultStreamProfileName, streamChildNode);
 
 			// Process the Flow nodes
 			else if( strcmp(childNodeName, reqFlowNodeName) == 0 ) {
@@ -265,7 +270,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config,
 					string profileName(streamName);
 					profileName.append("#");
 					profileName.append(flowName);
-					addQoSToProfile(streamName, profileName.c_str(), childFlowNode);
+					addQoSToProfile(streamName, profileName.c_str(), defaultFlowProfileName,childFlowNode);
 				}
 			}
 
@@ -293,12 +298,16 @@ char* BulkDataConfigurationParser::getAttrValue(DOMNode *node, const char* name)
 
 }
 
-void BulkDataConfigurationParser::addQoSToProfile(const char *stream, const char *profileName, DOMNode *node) {
+void BulkDataConfigurationParser::addQoSToProfile(const char *stream, const char *profileName, const char *baseProfile, DOMNode *node) {
 
 	map<string, string> streamProfileMap = m_profiles[stream];
 
 	string profileStr("<qos_profile name=\"");
 	profileStr.append(profileName);
+	profileStr.append("\" base_name=\"");
+	profileStr.append(DDSConfiguration::DEFAULT_LIBRARY);
+	profileStr.append("::");
+	profileStr.append(baseProfile);
 	profileStr.append("\">");
 
 	DOMNodeList *children = node->getChildNodes();
@@ -322,7 +331,9 @@ string BulkDataConfigurationParser::getStrURIforStream(char * streamName) {
 	map<string, string> profiles = m_profiles[streamName];
 	map<string, string>::iterator it = profiles.begin();
 
-	string s("str://\"<dds><qos_library name=\"DynamicLib\">");
+	string s("str://\"<dds><qos_library name=\"");
+	s.append(DYNAMIC_LIBRARY_NAME);
+	s.append("\">");
 	for(; it != profiles.end(); it++)
 		s.append(it->second);
 	s.append("</qos_library></dds>\"");

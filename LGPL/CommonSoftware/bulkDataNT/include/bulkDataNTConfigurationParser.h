@@ -57,13 +57,15 @@ namespace AcsBulkdata
 
 		void getSerializedElement(DOMNode *node, string &s);
 
-		void addQoSToProfile(const char *stream, const char *profileName, DOMNode *node);
+		void addQoSToProfile(const char *stream, const char *profileName, const char* baseProfile, DOMNode *node);
 
 		void parseConfig(const char *config,
 			const char* const reqStreamNodeName,
 			const char* const reqFlowNodeName,
 			const char* const reqStreamQoSNodeName,
-			const char* const reqFlowQoSNodeName);
+			const char* const reqFlowQoSNodeName,
+			const char* const defaultStreamProfile,
+			const char* const defaultFlowProfile);
 
 		template<class StreamT, class StreamConfigT, class FlowConfigT>
 		list<StreamT *>* createBulkDataEntities();
@@ -88,6 +90,8 @@ namespace AcsBulkdata
 		static const char* const RECEIVER_STREAM_QOS_NODENAME;
 		static const char* const RECEIVER_FLOW_NODENAME;
 		static const char* const RECEIVER_FLOW_QOS_NODENAME;
+
+		static const char* const DYNAMIC_LIBRARY_NAME;
 	};
 
 };
