@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.1 2005/02/17 18:25:14 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/09/14 11:35:25 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -20,6 +20,7 @@
 LINK_FILES = $(addprefix ../idl/, $(addsuffix .idl, $(IDL_FILES)))
 #
 
+MAKE_NOIFR_CHECK = on 
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
