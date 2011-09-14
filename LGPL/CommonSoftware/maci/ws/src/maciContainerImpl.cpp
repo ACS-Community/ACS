@@ -1,7 +1,7 @@
 /*******************************************************************************
-* E.S.O. - ACS project
+* e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.130 2011/09/14 13:46:49 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.131 2011/09/14 13:50:56 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -58,7 +58,7 @@
 #include <cdbDALaccess.h>
 #include <loggingLogLevelDefinition.h>
 #ifndef MAKE_VXWORKS
- #include <loggingLog4cpp.h
+ #include <loggingLog4cpp.h>
 #endif
 /*
 #ifdef MAKE_VXWORKS
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.130 2011/09/14 13:46:49 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.131 2011/09/14 13:50:56 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
