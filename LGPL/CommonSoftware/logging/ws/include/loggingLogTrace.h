@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogTrace.h,v 1.4 2011/06/24 17:59:30 javarias Exp $"
+* "@(#) $Id: loggingLogTrace.h,v 1.5 2011/09/14 11:31:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,8 +35,7 @@
 
 #include <string>
 #include "loggingLogger.h"
-#include <sys/time.h>
-
+#include <OS_NS_time.h>
 
 namespace Logging 
 {
@@ -108,8 +107,8 @@ namespace Logging
 	//line number saved for destructor use
 	unsigned long lineNumber_m;
 
-	struct timeval start_time;
-	struct timeval end_time;
+	ACE_Time_Value start_time;
+	ACE_Time_Value end_time;
     };
     //------------------------------------------------------------------------------
 };

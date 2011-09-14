@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: loggingLogTrace.cpp,v 1.7 2011/06/24 17:59:30 javarias Exp $"
+* "@(#) $Id: loggingLogTrace.cpp,v 1.8 2011/09/14 11:30:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -27,7 +27,7 @@
 #include <iostream>
 
 
-static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.7 2011/06/24 17:59:30 javarias Exp $"; 
+static char *rcsId="@(#) $Id: loggingLogTrace.cpp,v 1.8 2011/09/14 11:30:23 bjeram Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 namespace Logging {
@@ -41,7 +41,7 @@ namespace Logging {
 	fileName_m(file),
 	lineNumber_m(line)
     {
-        gettimeofday(&start_time, NULL);
+        start_time = ACE_OS::gettimeofday();
 	//just delegate to helper method.
 	entryLog(logger_m,
 		 methodName_m,
@@ -88,10 +88,10 @@ namespace Logging {
     {
 	    //It appears that the logger_m has been release when the container is shutting down. This causes a very ugly sigsev
         //I'm putting this protection to avoid this. ntroncos 2010-08-16.
-        gettimeofday(&end_time, NULL);
+	end_time = ACE_OS::gettimeofday();
         double elapsed_time = 0;
-        elapsed_time = (end_time.tv_usec - start_time.tv_usec) / 1000000;
-        elapsed_time = end_time.tv_sec - start_time.tv_sec + elapsed_time;
+        elapsed_time = (end_time.usec() - start_time.usec()) / 1000000;
+        elapsed_time = end_time.sec() - start_time.sec() + elapsed_time;
         char time_str[1024];
         sprintf(time_str, "Exiting... Function took %f sec", elapsed_time);
     	if (logger_m!=0)
