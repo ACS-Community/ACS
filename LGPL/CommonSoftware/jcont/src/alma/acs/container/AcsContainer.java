@@ -645,15 +645,16 @@ public class AcsContainer extends ContainerPOA
 	{
 		// TODO make this async
 		
-		CBDescOut descOut = new CBDescOut(0, descOut.id_tag);
+		CBDescOut descOut = new CBDescOut(0, desc.id_tag);
 		try
 		{
 			ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
 			callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
 		}
-		catch (AcsJException ae)
+		catch (CannotActivateComponentEx ae)
 		{
-			callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+			AcsJCannotActivateComponentEx aae = AcsJCannotActivateComponentEx.fromCannotActivateComponentEx(ae);
+			callback.done(null, aae.toAcsJCompletion().toCorbaCompletion(), descOut);
 		}
 		catch (Throwable th)
 		{
