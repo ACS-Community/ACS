@@ -13,6 +13,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.corbaservice.AlarmSystemCorbaServer;
 import alma.acs.container.AdvancedContainerServices;
+import alma.acs.container.CleaningDaemonThreadFactory;
 import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogger;
 
@@ -32,13 +33,18 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	private final AcsLogger logger;
 	
 	/**
-	 * The CORBA server fro the alarm system
+	 * Thread factory.
+	 * @TODO: During service shutdown, {@link CleaningDaemonThreadFactory#cleanUp()} should be called.
+	 */
+	private final CleaningDaemonThreadFactory threadFactory;
+	
+	/**
+	 * The CORBA server for the alarm system
 	 */
 	private AlarmSystemCorbaServer alSysCorbaServer;
 	
 	/**
 	 * The name returned by <code>getName()</code>.
-	 * 
 	 */
 	private static final String name = "AlarmService";
 	
@@ -60,6 +66,7 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		if (theLogger==null) {
 			throw new IllegalArgumentException("The logger can't be null");
 		}
+		threadFactory = new CleaningDaemonThreadFactory(name, theLogger);
 		this.alSysCorbaServer=alSysCorbaServer;
 		this.orb=alSysCorbaServer.getORB();
 		logger=theLogger;
@@ -95,8 +102,7 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 
 	@Override
 	public ThreadFactory getThreadFactory() {
-		// TODO Auto-generated method stub
-		return null;
+		return threadFactory;
 	}
 	
 	@Override
