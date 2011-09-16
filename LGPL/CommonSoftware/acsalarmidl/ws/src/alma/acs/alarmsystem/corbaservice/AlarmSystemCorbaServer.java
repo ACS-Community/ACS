@@ -23,6 +23,7 @@ package alma.acs.alarmsystem.corbaservice;
 
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.util.ConcurrentModificationException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -629,8 +630,13 @@ public class AlarmSystemCorbaServer implements Runnable {
 			laserComponent=null;
 		}
 		m_logger.log(AcsLogLevel.DEBUG,"Shutting down ORB");
-		orb.shutdown(true);
-		m_logger.log(AcsLogLevel.DEBUG,"ORB shut down");
+		try {
+			orb.shutdown(true);
+			m_logger.log(AcsLogLevel.DEBUG,"ORB shut down");
+		} catch (ConcurrentModificationException ex) {
+			System.out.println("ORB shutdown produced a ConcurrentModificationException (see also known JacORB bug http://www.jacorb.org/cgi-bin/bugzilla/show_bug.cgi?id=537)" + 
+					" which may be related to surviving AlarmService instances we see in modular tests.");
+		}
 		poaManager=null;
 		rootPOA=null;
 		orb=null;
