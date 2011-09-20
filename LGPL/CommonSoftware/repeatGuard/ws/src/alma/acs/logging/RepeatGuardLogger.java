@@ -24,8 +24,11 @@
  */
 
 // $Author: hsommer $
-// $Date: 2008/12/16 16:39:31 $
+// $Date: 2011/09/20 16:21:39 $
 // $Log: RepeatGuardLogger.java,v $
+// Revision 1.5  2011/09/20 16:21:39  hsommer
+// Removed the deprecated (since ACS 8.0) variant of methods "log", "logAndIncrement" which takes a logger as parameter. Now the logger must be passed in the constructor.
+//
 // Revision 1.4  2008/12/16 16:39:31  hsommer
 // - renamed logAndIncrement(Level, String, Throwable) to "log(..)" to be consistent with the other methods that also don't mention the incrementing in their name
 // - improved javadoc
@@ -59,14 +62,6 @@ import java.util.logging.Logger;
  * (which could mean that one kind of log may always be suppressed while another type may always be logged) then you should reuse one instance 
  * of this class for different lines of logging in your code.
  * <p>
- * Note about deprecated methods:
- * In order to get correct file and line-of-code information in the logs, we need to configure the Logger so that it skips 
- * the methods of this class when going upward on the call stack to determine the real method name where the log originates from. 
- * The normal JDK {@link Logger} cannot do this, which is why we changed the API to use {@link AcsLogger} in ACS 8.0.0.
- * It will be more performant to instruct the AcsLogger only once about which class's methods to skip on the call stack, 
- * which is why we now pass that logger in the constructor
- * instead of passing it for every invocation of the log methods of this class.
- * <p>
  * There seems to be no real use case for passing different loggers to one repeat guard, even though this was described in the original design.
  * Therefore we plan to remove {@link #log(Logger, Level, String)} and {@link #logAndIncrement(Logger, Level, String)} in the future. 
  * If you feel they are useful (because you have a case where the logger cannot or should not be passed in the constructor) then 
@@ -75,23 +70,8 @@ import java.util.logging.Logger;
 public class RepeatGuardLogger {
 	
 	protected final RepeatGuard guard;
-	
-	/**
-	 * @TODO make this logger final once the deprecated ctor without AcsLogger has been removed. Then remove checks for logger == null.
-	 */
-	private AcsLogger logger;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param interval Time interval (in <code>timeUnit</code> units).
-	 * @param timeUnit Time unit of <code>interval</code> parameter.
-	 * @param maxRepetitions Maximum number of skipped repetitions.
-	 * @deprecated since ACS 8.0.0. Use {@link #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)} instead.
-	 */
-	public RepeatGuardLogger(long interval, TimeUnit timeUnit, int maxRepetitions) {
-		guard = new RepeatGuard(interval, timeUnit, maxRepetitions);
-	}
+	private final AcsLogger logger;
 
 	/**
 	 * Constructor for a time and counter based repeat guard logger.
@@ -134,56 +114,15 @@ public class RepeatGuardLogger {
 	
 
 	/**
-	 * Logs a message without incrementing the repeat counter.
-	 * This method is only useful if this repeat guard is based only on the timer but not the counter
-	 * (i.e. if <code>maxRepetitions</code> <= 0),
-	 * or if you want to cheat and log something without advancing the counter which does not really
-	 * make sense as you could just as well use the logger directly.
-	 * @deprecated since ACS 8.0.0. Use {@link #log(Level, String)} instead, 
-	 *             or {@link #isLoggingEnabled()} if you need to log a batch of messages together controlled by one repeat guard. 
-	 */
-	public void log(Logger logger, Level priority, String message) {
-		if (guard.check()) {
-			if (logger instanceof AcsLogger) {
-				((AcsLogger)logger).addLoggerClass(getClass());
-			}
-			logger.log(priority, message);
-		}
-	}
-
-	
-	/**
-	 * @param logger
-	 * @param priority
-	 * @param message
-	 * @deprecated since ACS 8.0.0. Use {@link #log(Level, String)} or {@link #log(Logger, Level, String, Throwable)} instead.
-	 */
-	public void logAndIncrement(Logger logger, Level priority, String message) {
-		if (guard.checkAndIncrement()) {
-			if (logger instanceof AcsLogger) {
-				((AcsLogger)logger).addLoggerClass(getClass());
-			}
-			logger.log(priority, message);
-		}
-	}
-	
-	/**
 	 * Logs the message at the given level, unless the internal <code>RepeatGuard</code> prevents this based on the timer and/or log record counter.
 	 * If a log record counter is active, it will be advanced, which corresponds to {@link RepeatGuard#checkAndIncrement()}.
 	 * (Note that following the same terminology as {@link RepeatGuard}, this method would have to be called <code>logAndIncrement</code>;
 	 * it is simply called <code>log</code> though because here we don't support the variant of having a counter enabled without using it.)
-	 * <p>
-	 * Requires the logger to be set in the ctor {@link #RepeatGuardLogger(AcsLogger, long, TimeUnit, int)}
-	 * or in one of the static factory methods, 
-	 * which will become the only choice once the deprecated methods are removed.
 	 * 
 	 * @see Logger#log(Level, String)
 	 * @since ACS 8.0.0
 	 */
 	public void log(Level level, String message) {
-		if (logger == null) {
-			throw new IllegalStateException("logger must not be null. Use ctor that accepts an AcsLogger!");
-		}
 		if (guard.checkAndIncrement()) {
 			logger.log(level, message);
 		}
@@ -195,9 +134,6 @@ public class RepeatGuardLogger {
 	 * @since ACS 8.0.0
 	 */
 	public void log(Level level, String message, Throwable thr) {
-		if (logger == null) {
-			throw new IllegalStateException("logger must not be null. Use ctor that accepts an AcsLogger!");
-		}
 		if (guard.checkAndIncrement()) {
 			logger.log(level, message, thr);
 		}
