@@ -42,6 +42,8 @@ import alma.acs.container.ContainerServices;
  */
 public class BlobberImpl extends ComponentImplBase implements BlobberOperations {
 
+	private static final String MONITOR_BLOBBER_PLUGIN = System.getProperty("alma.acs.monitoring.blobber.plugin", "alma.acs.monitoring.blobber.BlobberPluginAlmaImpl");
+
 	/**
 	 * The code that gets run at fixed time intervals.
 	 */
@@ -127,13 +129,10 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 * <p>
 	 * Overriding this method allows other projects or unit tests that should run without alma archive code 
 	 * to create a different implementation of <code>BlobberPlugin</code>.
-	 * <p>
-	 * @TODO: Perhaps also allow specifying the plugin impl class through a property 
-	 *        to avoid having to subclass BlobberImpl to get an alternative plugin impl.
 	 */
 	protected BlobberPlugin createBlobberPlugin() throws AcsJCouldntCreateObjectEx {
 		try {
-			Class<? extends BlobberPlugin> pluginClass = Class.forName("alma.acs.monitoring.blobber.BlobberPluginAlmaImpl").asSubclass(BlobberPlugin.class);
+			Class<? extends BlobberPlugin> pluginClass = Class.forName(MONITOR_BLOBBER_PLUGIN).asSubclass(BlobberPlugin.class);
 			Constructor<? extends BlobberPlugin> ctor = pluginClass.getConstructor(ContainerServices.class);
 			return ctor.newInstance(m_containerServices);
 		} catch (Exception ex) {
