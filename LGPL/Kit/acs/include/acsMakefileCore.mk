@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.7 2011/06/30 15:35:39 jagonzal Exp $
+# $Id: acsMakefileCore.mk,v 1.8 2011/09/21 10:06:02 bjeram Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -129,7 +129,7 @@ endif
 
 ifdef MAKE_VXWORKS
 $(foreach xml,$(ACSERRDEF),\
-	$(eval $(call acsMakeExecutableDependencies,/vw,$(xml),$(xml)S $(xml)C,,,)) \
+	$(eval $(call acsMakeExecutableDependencies,/vw,$(xml),$(xml) $(xml)S $(xml)C,,,)) \
 )
 else
 $(foreach xml,$(ACSERRDEF),\
