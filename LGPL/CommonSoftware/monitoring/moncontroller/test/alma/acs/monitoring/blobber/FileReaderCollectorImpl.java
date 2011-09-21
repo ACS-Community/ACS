@@ -35,11 +35,25 @@ import alma.acs.container.ContainerServices;
 
 public class FileReaderCollectorImpl extends ComponentImplBase implements MonitorCollectorOperations {
 
-	private static final String PREFIX = System.getProperty("alma.tmcdb.monitoring.filesDir") + File.separatorChar;
+	private static final String PREFIX = System.getProperty("alma.acs.monitoring.filesDir") + File.separatorChar;
 
 	public static final String[] monitoredComponents = {
 		"CONTROL/CentralLO/ML",
-		"CONTROL/CentralLO/MLD"
+		"CONTROL/CentralLO/MLD",
+		"CONTROL/CentralLO/PSLLC1",
+		"CONTROL/CentralLO/PSLLC2",
+		"CONTROL/CentralLO/PSSAS1",
+		"CONTROL/CentralLO/PSSAS2",
+		"CONTROL/PM03/IFProc0",
+		"CONTROL/PM03/IFProc1",
+		"CONTROL/PM03/LORR",
+		"CONTROL/PM03/PSA",
+		"CONTROL/PM03/PSD",
+		"CONTROL/PM04/IFProc0",
+		"CONTROL/PM04/IFProc1",
+		"CONTROL/PM04/LORR",
+		"CONTROL/PM04/PSA",
+		"CONTROL/PM04/PSD",
 	};
 	private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 

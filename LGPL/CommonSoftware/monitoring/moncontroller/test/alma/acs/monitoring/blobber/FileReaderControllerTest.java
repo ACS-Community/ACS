@@ -10,7 +10,7 @@ public class FileReaderControllerTest extends ComponentClientTestCase {
 	private static final String COLLECTOR_URL  = "ARCHIVE/TMCDB/FILEBASED_MONITOR_COLLECTOR";
 	private static final String CONTROLLER_URL = "ARCHIVE/TMCDB/MONITOR_CONTROL";
 
-	private static final int SECS = 3*60 + 10; // 3 blobber rounds at least
+	private static final int SECS = 10*60;
 
 	private MonitorCollector m_collector;
 

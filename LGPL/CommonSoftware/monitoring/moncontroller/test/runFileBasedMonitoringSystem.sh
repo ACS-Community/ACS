@@ -18,13 +18,14 @@ for i in swconfig{core,ext} hwconfigmonitoring; do
 done
 $SQLTOOL basic-insertions.sql
 
-export JAVA_OPTIONS="-Darchive.configFile=archiveConfig.properties.blobberTest"
+export JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.monitoring.blobber.plugin=alma.acs.monitoring.blobber.TestingBlobberPlugin"
+export JAVA_OPTIONS="$JAVA_OPTIONS -Dalma.acs.monitoring.blobber.checkmemory=true"
 acsutilAwaitContainerStart -java ARCHIVE/TMCDB/BLOBBER1/javaContainer
 
 # The file-based collector reads the values for monitor points from these text files
 rm -rf monitoringFiles
 tar xf monitoringFiles.tar.gz
-export JAVA_OPTIONS="-Dalma.tmcdb.monitoring.filesDir=$PWD/monitoringFiles"
+export JAVA_OPTIONS="-Dalma.acs.monitoring.filesDir=$PWD/monitoringFiles"
 acsutilAwaitContainerStart -java ARCHIVE/TMCDB/MONITOR_COLLECTOR/javaContainer
 unset JAVA_OPTIONS
 
