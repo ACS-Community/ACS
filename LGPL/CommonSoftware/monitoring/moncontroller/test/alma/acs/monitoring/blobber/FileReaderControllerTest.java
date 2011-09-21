@@ -36,7 +36,7 @@ public class FileReaderControllerTest extends ComponentClientTestCase {
 	}
 
 	public void tearDown() throws Exception {
-		getContainerServices().releaseComponent(COLLECTOR_URL);
+		getContainerServices().releaseComponent(COLLECTOR_URL, null);
 		super.tearDown();
 	}
 
