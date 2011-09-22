@@ -691,7 +691,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				else if (link.getAction().equals("REMOVE"))
 					toLink = redDefs.getLinksToRemove();
 				else
-					throw new RuntimeException("unsupported reduction link action");
+					throw new RuntimeException("unsupported reduction link action '" + link.getAction() + "' for ReductionLink with id: " + link.getReductionLinkId());
 					
 				toLink._.put("link" + (linkCount++),
 						new ReductionLink(link.getType().toString(),
