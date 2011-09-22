@@ -157,107 +157,109 @@ public class DOMJavaClassIntrospector {
 
 	public static Object getChild(String name, Object node)
 	{
-         //System.out.println("Getting child '"+name+"' for node "+node.getClass().getName());
-
-        if (node instanceof DAOImpl)
-        {
-        	return (XMLTreeNode)(((DAOImpl)node).getRootNode().getNodesMap().get(name));
-        }
-        if (node instanceof XMLTreeNode)
-        {
-       		Object n = (XMLTreeNode)(((XMLTreeNode)node).getNodesMap().get(name));
-		if (n != null)
-			return n;
-		else
- 			return ((XMLTreeNode)node).getFieldMap().get(name);
-        }
-        else if (node instanceof Map)
+		synchronized (node)
 		{
-			Map map = (Map)node;
-			if (map.containsKey(name))
-				return map.get(name);
-			
-			// not found
-			return null;
-		}
-		else if (node instanceof Element)
-		{
-			// check attribute
-			Element element = (Element)node;
-			if (element.hasAttribute(name))
-				return element.getAttribute(name);
-			
-			// check element
-			NodeList nodeList = element.getElementsByTagName(name);
-			if (nodeList.getLength() > 0)
-				return (Element)nodeList.item(0);
-				
-			return null;
-		}
-		else
-		{
-			Field field = null;
-			final Class nodeType = node.getClass();
-			Class type = nodeType;
-			while (field == null && type != null)
-			{
-				try {
-					field = type.getDeclaredField(name);
-				} catch (NoSuchFieldException e) { /* noop */ }
-				type = type.getSuperclass();
-			}
-			
-			if (field != null)
-			{
-
-				if (name.equals(SUBNODES_MAP_NAME))
-				{
-					// this will work only on public fields
-					try {
-						return field.get(node);
-					} catch (IllegalAccessException e) {
-						// failed to access the field
-						return null;
-					}
-				}
+	        //System.out.println("Getting child '"+name+"' for node "+node.getClass().getName());
+	
+	        if (node instanceof DAOImpl)
+	        {
+	        	return (XMLTreeNode)(((DAOImpl)node).getRootNode().getNodesMap().get(name));
+	        }
+	        if (node instanceof XMLTreeNode)
+	        {
+	       		Object n = (XMLTreeNode)(((XMLTreeNode)node).getNodesMap().get(name));
+				if (n != null)
+					return n;
 				else
-				{
-					// using accessor
-					try {
-						Method accessorMethod = getAccessorMethod(nodeType, name);
-						Object retVal = accessorMethod.invoke(node, (Object[])null);
-						// @todo TODO now we consider null retVal as non-existant field
-						return retVal;
-					} catch (Throwable th) {
-						// failed to access the field
-						return null;
-					}
-				}
-			}
-			else if (!name.equals(SUBNODES_MAP_NAME))
+		 			return ((XMLTreeNode)node).getFieldMap().get(name);
+	        }
+	        else if (node instanceof Map)
 			{
-				// check extra data
-				if (node instanceof ExtraDataFeature)
+				Map map = (Map)node;
+				if (map.containsKey(name))
+					return map.get(name);
+				
+				// not found
+				return null;
+			}
+			else if (node instanceof Element)
+			{
+				// check attribute
+				Element element = (Element)node;
+				if (element.hasAttribute(name))
+					return element.getAttribute(name);
+				
+				// check element
+				NodeList nodeList = element.getElementsByTagName(name);
+				if (nodeList.getLength() > 0)
+					return (Element)nodeList.item(0);
+					
+				return null;
+			}
+			else
+			{
+				Field field = null;
+				final Class nodeType = node.getClass();
+				Class type = nodeType;
+				while (field == null && type != null)
 				{
-					Element extraData = ((ExtraDataFeature)node).getExtraData();
-					if (extraData != null)
-					{
-						Object viaExtra = getChild(name, extraData);
-						if (viaExtra != null)
-							return viaExtra;
-					}
+					try {
+						field = type.getDeclaredField(name);
+					} catch (NoSuchFieldException e) { /* noop */ }
+					type = type.getSuperclass();
 				}
 				
-				// check for subnodesMap map
-				Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
-				if (subnodesMap instanceof Map)
-					return ((Map)subnodesMap).get(name);
+				if (field != null)
+				{
+	
+					if (name.equals(SUBNODES_MAP_NAME))
+					{
+						// this will work only on public fields
+						try {
+							return field.get(node);
+						} catch (IllegalAccessException e) {
+							// failed to access the field
+							return null;
+						}
+					}
+					else
+					{
+						// using accessor
+						try {
+							Method accessorMethod = getAccessorMethod(nodeType, name);
+							Object retVal = accessorMethod.invoke(node, (Object[])null);
+							// @todo TODO now we consider null retVal as non-existant field
+							return retVal;
+						} catch (Throwable th) {
+							// failed to access the field
+							return null;
+						}
+					}
+				}
+				else if (!name.equals(SUBNODES_MAP_NAME))
+				{
+					// check extra data
+					if (node instanceof ExtraDataFeature)
+					{
+						Element extraData = ((ExtraDataFeature)node).getExtraData();
+						if (extraData != null)
+						{
+							Object viaExtra = getChild(name, extraData);
+							if (viaExtra != null)
+								return viaExtra;
+						}
+					}
+					
+					// check for subnodesMap map
+					Object subnodesMap = getChild(SUBNODES_MAP_NAME, node);
+					if (subnodesMap instanceof Map)
+						return ((Map)subnodesMap).get(name);
+				}
+				
+				// not found
+				return null;
 			}
-			
-			// not found
-			return null;
 		}
-		
 	}
 	
 	public interface XMLSaver

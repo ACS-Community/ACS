@@ -226,6 +226,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 	
 	private String m_root = "CDB";
 	
+	private final Object xmlNodeMonitor = new Object();
+	
 	/**
 	 * ctor that takes all command line args given to OracleServer
 	 * @param args
@@ -1751,7 +1753,10 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 			// use CDB XML handler which does not creates strings...
 			XMLHandler xmlSolver = new XMLHandler(false, m_logger);
 			try {
-				saxParser.parse(new InputSource(new StringReader(component.XMLDoc)), xmlSolver);
+				synchronized (xmlNodeMonitor)
+				{
+					saxParser.parse(new InputSource(new StringReader(component.XMLDoc)), xmlSolver);
+				}
 			} catch (Exception e) {
 				m_logger.log(AcsLogLevel.ERROR, "Failed to add component '" +  component.Path + "/" + component.getName(), e);
 				return;
@@ -2907,8 +2912,11 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
-			saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
-	
+			synchronized (xmlNodeMonitor)
+			{
+				saxParser.parse(new InputSource(new StringReader(xml)), xmlSolver);
+			}
+			
 			if(xmlSolver.m_errorString != null) {
 				String info = "XML parser error: " + xmlSolver.m_errorString;
 				CDBXMLErrorEx xmlErr = new CDBXMLErrorEx();
