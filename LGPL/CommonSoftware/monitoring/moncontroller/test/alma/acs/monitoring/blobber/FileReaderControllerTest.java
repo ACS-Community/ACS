@@ -33,6 +33,9 @@ public class FileReaderControllerTest extends ComponentClientTestCase {
 		ControllerHelper.narrow(getContainerServices().getComponent(CONTROLLER_URL)).deregisterCollector(COLLECTOR_URL);
 		for(String component: FileReaderCollectorImpl.monitoredComponents)
 			m_collector.stopMonitoring(component);
+
+		// And let the blobber container run a bit more, so it GCs well
+		Thread.sleep(10*1000);
 	}
 
 	public void tearDown() throws Exception {

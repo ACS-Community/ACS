@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.3 2011/02/21 17:16:51 hsommer Exp $"
+# "@(#) $Id: Makefile,v 1.4 2011/09/23 13:54:28 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -82,7 +82,7 @@ lllll_OBJECTS   =
 # Scripts (public and local)
 # ----------------------------
 SCRIPTS         =
-SCRIPTS_L       = MonitorArchiverTATPrologue
+SCRIPTS_L       = MonitorArchiverTATPrologue runFileBasedMonitoringSystem.sh
 
 #
 # TCL scripts (public and local)
