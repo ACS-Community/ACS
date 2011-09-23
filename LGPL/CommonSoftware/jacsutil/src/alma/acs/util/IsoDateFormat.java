@@ -1,6 +1,7 @@
 package alma.acs.util;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,6 +10,11 @@ import java.util.Date;
  * <p>
  * http://jira.alma.cl/browse/COMP-1929 made it clear that we use the same format string all over ACS,
  * and that there should be this class to encapsulate it.
+ * <p>
+ * No trailing 'Z' is assumed or used to define a reference to UTC time, which means that all timestamps 
+ * are interpreted as referencing local time. 
+ * In Alma for example all computers are set to UTC so that local time is always UTC.
+ * 
  * @author hsommer
  */
 public class IsoDateFormat extends SimpleDateFormat
@@ -19,6 +25,8 @@ public class IsoDateFormat extends SimpleDateFormat
 
 	public IsoDateFormat() {
 		super(pattern);
+		// Uncomment this when testing on a machine that is not set to UTC.
+		// setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
 	/**
@@ -27,7 +35,7 @@ public class IsoDateFormat extends SimpleDateFormat
 	 */
 	public static String formatDate(Date date) {
 		synchronized (instance) {  // see sync comment for java.text.DataFormat
-			return instance.format(date);			
+			return instance.format(date);
 		}
 	}
 	
@@ -36,5 +44,11 @@ public class IsoDateFormat extends SimpleDateFormat
 	 */
 	public static String formatCurrentDate() {
 		return formatDate(new Date());
+	}
+	
+	public static Date parseIsoTimestamp(String isoTimestamp) throws ParseException {
+		synchronized (instance) {  // see sync comment for java.text.DataFormat
+			return instance.parse(isoTimestamp);
+		}
 	}
 }
