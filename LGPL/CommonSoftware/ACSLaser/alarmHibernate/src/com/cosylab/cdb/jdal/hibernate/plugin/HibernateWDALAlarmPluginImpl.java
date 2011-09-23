@@ -319,9 +319,9 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 			if (redDefs != null)
 			{
 				if (redDefs.getLinksToCreate() != null)
-					saveReductionLinks(session, config, redDefs.getLinksToCreate().getReductionLink(), "CREATE");
+					saveReductionLinks(session, config, redDefs.getLinksToCreate().getReductionLink(), ReductionLinkAction.CREATE);
 				if (redDefs.getLinksToRemove() != null)
-					saveReductionLinks(session, config, redDefs.getLinksToRemove().getReductionLink(), "REMOVE");
+					saveReductionLinks(session, config, redDefs.getLinksToRemove().getReductionLink(), ReductionLinkAction.REMOVE);
 				
 				 int count = 0;
 				 if (redDefs.getThresholds() != null)
@@ -369,7 +369,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 		return s.trim();
 	}
 
-	private static void saveReductionLinks(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] links, String action)
+	private static void saveReductionLinks(Session session, Configuration config, alma.alarmsystem.alarmmessage.generated.ReductionLinkType[] links, ReductionLinkAction action)
 	{
 		int count = 0;
 		
@@ -402,7 +402,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				remoteLink.setConfiguration(config);
 
 			}
-			remoteLink.setAction(ReductionLinkAction.valueOf(action));
+			remoteLink.setAction(action);
 			remoteLink.setType(ReductionLinkType.valueOf(link.getType().toString()));
 			session.saveOrUpdate(remoteLink);
 		}
@@ -686,9 +686,9 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 				alma.acs.tmcdb.AlarmDefinition parent = link.getAlarmDefinitionByParentalarmdefid();
 				alma.acs.tmcdb.AlarmDefinition child = link.getAlarmDefinitionByChildalarmdefid();
 				ReductionLinks toLink;
-				if (link.getAction().equals("CREATE"))
+				if (link.getAction() == ReductionLinkAction.CREATE)
 					toLink = redDefs.getLinksToCreate();
-				else if (link.getAction().equals("REMOVE"))
+				else if (link.getAction() == ReductionLinkAction.REMOVE)
 					toLink = redDefs.getLinksToRemove();
 				else
 					throw new RuntimeException("unsupported reduction link action '" + link.getAction() + "' for ReductionLink with id: " + link.getReductionLinkId());
