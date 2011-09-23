@@ -48,9 +48,4 @@ public class DateConversionTest extends TestCase
 		assertEquals("1970-01-01T00:00:00.005", date1);
 	}
 	
-	public static void main(String[] args)
-	{
-		junit.textui.TestRunner.run(DateConversionTest.class);
-	}
-
 }
