@@ -1,4 +1,4 @@
-# $Id: acsMakefileCore.mk,v 1.8 2011/09/21 10:06:02 bjeram Exp $
+# $Id: acsMakefileCore.mk,v 1.9 2011/09/23 12:49:50 bjeram Exp $
 #
 ##################################################################
 ## DEFINITIONS
@@ -86,8 +86,13 @@ ifneq "$(strip $(ACSLOGTSDEF))" ""
 tl-java-prereq +=do_logtss 
 $(eval $(call top-level,logts,$(ACSLOGTSDEF),$(ACSLOGTSDEF)))
 
+ifdef MAKE_VXWORKS
+$(foreach logts,$(ACSLOGTSDEF), \
+	$(eval $(call acsMakeExecutableDependencies,/vw,$(logts)LTS,$(logts),,,)) )
+else
 $(foreach logts,$(ACSLOGTSDEF), \
 	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,)) )
+endif
 
 $(foreach logts,$(ACSLOGTSDEF), \
 	$(eval $(call acsMakeLogTSDependencies,$(logts)) ) )

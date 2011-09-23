@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.26 2011/08/30 16:51:54 tstaig Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.27 2011/09/23 12:49:51 bjeram Exp $
 #
 #(info Entering definitions.mk)
 
@@ -967,7 +967,11 @@ ifeq ($(call mustBuild,Java),true)
     ALL_LOGTS += ../lib/$1LTS.jar 
 endif
 ifeq ($(call mustBuild,C++),true)
-    ALL_LOGTS += $(CURDIR)/../lib/lib$1LTS.a $(CURDIR)/../lib/lib$1LTS.so 
+ifdef MAKE_VXWORKS
+    ALL_LOGTS += ../bin/$1LTS
+else
+    ALL_LOGTS += $(CURDIR)/../lib/lib$1LTS.a $(CURDIR)/../lib/lib$1LTS.so
+endif 
 endif
 ifeq ($(call mustBuild,Python),true) 
     ALL_LOGTS += ../lib/python/site-packages/$1LTS.py 
@@ -1015,8 +1019,13 @@ endif
 # CLEAN TARGET
 #
 .PHONY: clean_logts_$1
-clean_logts_$1: clean_lib_$1LTS
+ifdef MAKE_VXWORKS
+clean_logts_$1: clean_exe_$1LTS
 	-$(AT)$(RM)  ../lib/$1LTS.jar ../object/$1 ../object/$1.cpp ../object/$1.o ../object/$1.h  ../object/$1LTS.py  ../lib/python/site-packages/$1LTS.py  ../object/$1.d 
+else
+clean_logts_$1: clean_lib_$1LTS
+	-$(AT)$(RM) ../bin/$1LTS ../object/$1.cpp ../object/$1.o ../object/$1.h ../object/$1.d
+endif
 
 .PHONY: clean_dist_logts_$1
 clean_dist_logts_$1: clean_logts_$1;
@@ -1026,7 +1035,11 @@ clean_dist_logts_$1: clean_logts_$1;
 # INSTALL TARGET
 #
 .PHONY: install_logts_$1
+ifdef MAKE_VXWORKS
+install_logts_$1: ../bin/$1LTS
+else
 install_logts_$1: $(PRJTOP)/include/$1.h $(LIB)/lib$1LTS.a $(LIB)/lib$1LTS.so $(PRJTOP)/idl/$1.xml $(LIB)/python/site-packages/$1LTS.py $(LIB)/$1LTS.jar
+endif
 
 $(LIB)/python/site-packages/$1LTS.py: ../idl/$1.xml
 	-$(AT)echo "== installing LOGTS Python ($1) " 
