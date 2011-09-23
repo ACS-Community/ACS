@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id$"
+# "@(#) $Id: Makefile,v 1.1 2011/09/23 13:33:33 bjeram Exp $"
 #
 # Makefile of ........
 #
