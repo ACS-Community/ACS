@@ -56,9 +56,14 @@ JACSUTIL=`getJarFile jACSUtil.jar`
 PROPS_CLASSLOADER="-Djava.system.class.loader=alma.acs.classloading.AcsSystemClassLoader -Dacs.system.classpath.jardirs=../lib${PATH_SEP}$INTROOT/lib${PATH_SEP}$ACSROOT/lib"
 
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.classloading.TestMain myRunArg1
+
+# AcsComponentClassLoaderEnduranceTest currently only run by hand
+#java -cp $JACSUTIL $PROPS_CLASSLOADER org.junit.runners.JUnit4 alma.acs.classloading.AcsComponentClassLoaderEnduranceTest
+
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.algorithms.TopologicalSortTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.jhelpgen.GenTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.DateConversionTest
+java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.IsoDateFormatTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.util.XmlNormalizerTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.concurrent.ThreadBurstExecutorServiceTest
 java -cp $JACSUTIL $PROPS_CLASSLOADER alma.acs.testsupport.tat.TATJUnitRunner alma.acs.concurrent.ThreadLoopRunnerTest
