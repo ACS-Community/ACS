@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.7 2011/07/29 16:52:12 tstaig Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.8 2011/09/27 13:20:39 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -119,6 +119,7 @@ fi
 
 # Build a unique file name
 ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
+PERSISTENCE_FILE=$ACS_TMP/ifr_cache
 
 # Build the file
 acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$ $files
@@ -152,6 +153,10 @@ then
     ACS_LOG_INFO "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository completed OK"
 else
     ACS_LOG_ERROR "acsstartupLoadIFR" "$FUNCTION_STRING of IDL interfaces in Interface Repository FAILED"
+    if [ "$CHECK" != "on" ]
+    then
+        rm -f $PERSISTENCE_FILE
+    fi
 fi
 
 exit $RET_CODE
