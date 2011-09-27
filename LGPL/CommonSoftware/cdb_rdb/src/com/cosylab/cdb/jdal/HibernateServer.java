@@ -30,7 +30,6 @@ package com.cosylab.cdb.jdal;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
@@ -41,16 +40,13 @@ import org.omg.PortableServer.IdAssignmentPolicyValue;
 import org.omg.PortableServer.LifespanPolicyValue;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
-import org.slf4j.impl.ACSLoggerFactory;
 
 import com.cosylab.CDB.WDAL;
 import com.cosylab.CDB.WDALHelper;
 import com.cosylab.cdb.jdal.logging.AcsLoggerHelper;
 
 import alma.acs.logging.AcsLogLevel;
-import alma.acs.logging.ClientLogManager;
-import alma.acs.logging.config.LogConfig;
-import alma.acs.logging.level.AcsLogLevelDefinition;
+import alma.acs.logging.AcsLogger;
 import alma.acs.util.ACSPorts;
 
 /**
@@ -72,7 +68,7 @@ public class HibernateServer {
 	public void run(String args[]) {
 		String iorFileName = null;
 		
-		final Logger sharedLogger = AcsLoggerHelper.getInstance().getSharedLogger();
+		final AcsLogger sharedLogger = AcsLoggerHelper.getInstance().getSharedLogger();
 
 		// set up the ORB
 		

@@ -1,10 +1,9 @@
 package com.cosylab.cdb.jdal.logging;
 
-import java.util.logging.Logger;
-
 import org.slf4j.impl.ACSLoggerFactory;
 import org.slf4j.impl.StaticLoggerBinder;
 
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.logging.config.LogConfig;
 import alma.acs.logging.level.AcsLogLevelDefinition;
@@ -45,7 +44,7 @@ public class AcsLoggerHelper {
 	/**
 	 * The instance's logger, to be shared by the whole application using {@link #getSharedLogger()};
 	 */
-	private Logger sharedLogger;
+	private AcsLogger sharedLogger;
 	
 	
 	/**
@@ -87,7 +86,7 @@ public class AcsLoggerHelper {
 	 * The logger name will be {@link #loggerNameDefault} or the name given in {@link #setLoggerName(String)} 
 	 * prior to the first call to this method.
 	 */
-	public Logger getSharedLogger() {
+	public AcsLogger getSharedLogger() {
 		if (sharedLogger == null) {
 			sharedLogger = ClientLogManager.getAcsLogManager().getLoggerForApplication(loggerName, true);
 		}
