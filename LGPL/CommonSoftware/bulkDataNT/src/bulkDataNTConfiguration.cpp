@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.5 2011/09/14 08:23:38 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.6 2011/09/28 13:49:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,7 +39,7 @@ const char* const DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE = "ReceiverFlo
 
 DDSConfiguration::DDSConfiguration()
 {
-	libraryQos="BulkDataQoSLibrary";
+	libraryQos=DDSConfiguration::DEFAULT_LIBRARY;
 }
 
 StreamConfiguration::StreamConfiguration()
