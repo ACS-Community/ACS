@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.13 2011/09/14 08:23:39 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.14 2011/09/28 16:42:18 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -75,6 +75,9 @@ public:
 protected:
 	std::string libraryQos;  /// QoS configuration library
 	std::string profileQos;  /// QoS configuration profile in the library that should be used
+	// QoS that follow can be hardcoded, but is more flexible in this way.
+	bool ignoreUserProfileQoS; //when true USER_QOS_PROFILES.xml in current folder would not be loaded
+	bool ignoreEnvironmentProfileQoS; //when true NDDS_QOS_PROFILES will be ignored
 };
 
 
@@ -86,8 +89,12 @@ class StreamConfiguration : public DDSConfiguration
 public:
 	StreamConfiguration();
 
+	static const char* const DEFAULT_QoS_FILE;
+
 protected:
-	std::string urlProfileQoS;   // here we specify where it should be looked for default values = USER_QOS_PROFILES.xml
+	void fillUrlProfileQoS(const char* envVar, const char *dilim="");
+
+	std::string urlProfileQoS;   // here we specify where it should be looked for default values = DEFAULT_QoS_FILE
 	std::string stringProfileQoS; // here we can specify RTI DDS QoS as a string
 	// ... it is read just when we create stream, but it contains profiles for all flows
 	unsigned int DDSLogVerbosity; // log level for RTI DDS, the type should be NDDS_Config_LogVerbosity
