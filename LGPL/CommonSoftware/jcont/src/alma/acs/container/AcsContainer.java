@@ -31,7 +31,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -141,7 +143,9 @@ public class AcsContainer extends ContainerPOA
 
     private final ThreadFactory containerThreadFactory;
     
-    private final ComponentMap m_activeComponentMap;
+	final ThreadPoolExecutor threadPoolExecutor;
+
+	private final ComponentMap m_activeComponentMap;
 
     private ContainerServicesImpl m_alarmContainerServices;
 
@@ -202,6 +206,10 @@ public class AcsContainer extends ContainerPOA
 			this.isEmbedded = isEmbedded;
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
 			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger, "Container");
+			threadPoolExecutor = new ThreadPoolExecutor(1, 1, 3, TimeUnit.MINUTES, 
+					new LinkedBlockingQueue<Runnable>(), containerThreadFactory, 
+					new ThreadPoolExecutor.AbortPolicy());
+
 			m_activeComponentMap = new ComponentMap(m_logger);
 			m_acsCorba = acsCorba;
 
@@ -636,32 +644,34 @@ public class AcsContainer extends ContainerPOA
         return componentInfo;
     }
 
-
     /* (non-Javadoc)
 	 * @see si.ijs.maci.ContainerOperations#activate_component_async(int, long, java.lang.String, java.lang.String, java.lang.String, si.ijs.maci.CBComponentInfo, alma.ACS.CBDescIn)
 	 */
-	public void activate_component_async(int h, long execution_id, String name,
-			String exe, String type, CBComponentInfo callback, CBDescIn desc)
+	public void activate_component_async(final int h, final long execution_id, final String name,
+			final String exe, final String type, final CBComponentInfo callback, final CBDescIn desc)
 	{
-		// TODO make this async
-		
-		CBDescOut descOut = new CBDescOut(0, desc.id_tag);
-		try
-		{
-			ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
-			callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
-		}
-		catch (CannotActivateComponentEx ae)
-		{
-			AcsJCannotActivateComponentEx aae = AcsJCannotActivateComponentEx.fromCannotActivateComponentEx(ae);
-			callback.done(null, aae.toAcsJCompletion().toCorbaCompletion(), descOut);
-		}
-		catch (Throwable th)
-		{
-			AcsJException ae = new AcsJUnknownEx(th);
-			callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
-		}
-
+		threadPoolExecutor.execute(new Runnable() {
+			
+			@Override
+			public void run() {
+				CBDescOut descOut = new CBDescOut(0, desc.id_tag);
+				try
+				{
+					ComponentInfo componentInfo = activate_component(h, execution_id, name, exe, type);
+					callback.done(componentInfo, new alma.ACSErrTypeOK.wrappers.ACSErrOKAcsJCompletion().toCorbaCompletion(), descOut);
+				}
+				catch (CannotActivateComponentEx ae)
+				{
+					AcsJCannotActivateComponentEx aae = AcsJCannotActivateComponentEx.fromCannotActivateComponentEx(ae);
+					callback.done(null, aae.toAcsJCompletion().toCorbaCompletion(), descOut);
+				}
+				catch (Throwable th)
+				{
+					AcsJException ae = new AcsJUnknownEx(th);
+					callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+				}
+			}
+		});
 	}
 
 	/**
@@ -1088,6 +1098,8 @@ public class AcsContainer extends ContainerPOA
 		}
 		
 		m_managerProxy.shutdownNotify();
+		
+		threadPoolExecutor.shutdown();
 
 		// shut down all active components
 		if (gracefully) {
