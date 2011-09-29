@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.61 2011/09/14 19:18:00 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.62 2011/09/29 09:33:27 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,6 +36,12 @@
 #include "maciContainerThreadHook.h"
 
 #include <map>
+
+#include <ace/Activation_Queue.h>
+#include <ace/Method_Request.h>
+#include <ace/Task.h>
+#include <ace/Auto_Ptr.h>
+#include <ACSErrTypeOK.h>
 
 // #include <maciContainerServices.h> commented out: forward decl
 
@@ -73,6 +79,35 @@ class ContainerServices; // This is defined in maciContainerServics.h
 class MACIServantManager;
 class LibraryManager;
 
+    
+    
+class MethodRequestThreadPool : public ACE_Task_Base
+{
+public:
+    MethodRequestThreadPool (int n_threads = 1);
+        
+    virtual int svc (void);
+        
+    int enqueue (ACE_Method_Request *request);
+        
+    void shutdown();
+        
+protected:
+    /**
+     * Returns an ACS Logger created for this container.
+     * @return an ACS Logger
+     */
+    Logging::Logger::LoggerSmartPtr
+    getLogger() {return m_logger;}
+
+private:
+    ACE_Activation_Queue activation_queue_;
+
+    /// Logger for this container;
+    Logging::Logger::LoggerSmartPtr m_logger;
+};
+
+    
 /**
  * Container is an agent of MACI that is installed on every computer of the control system.
  * There can be more than one Container living on the same computer, but there can be only one Container per process.
@@ -97,7 +132,7 @@ class LibraryManager;
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.61 2011/09/14 19:18:00 msekoran Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.62 2011/09/29 09:33:27 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
@@ -642,8 +677,8 @@ public:
   /// threads' standard start-up hook 
   maci::ContainerThreadHook m_containerThreadHook;
 
-    /// Logger for this container;
-    Logging::Logger::LoggerSmartPtr m_logger;
+  /// Logger for this container;
+  Logging::Logger::LoggerSmartPtr m_logger;
 
   // default logging levels
   maci::LoggingConfigurable::LogLevels m_defaultLogLevels;
@@ -663,6 +698,9 @@ public:
   unsigned long maxCachePriority;
   unsigned int flushPeriodSeconds;
   int maxLogsPerSecond;
+    
+  // activation thread-pool
+  MethodRequestThreadPool* m_methodRequestThreadPool;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

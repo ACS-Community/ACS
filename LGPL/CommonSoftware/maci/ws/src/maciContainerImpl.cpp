@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.132 2011/09/14 19:18:00 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.133 2011/09/29 09:33:27 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.132 2011/09/14 19:18:00 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.133 2011/09/29 09:33:27 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -95,6 +95,142 @@ LibraryManager * ContainerImpl::m_dllmgr = 0;
 int ContainerImpl::m_logLevelRefresh = CDB_LOG_LEVEL;
 int ContainerImpl::m_logLevelConfigure = CDB_LOG_LEVEL;
 CORBA::ULong ContainerImpl::m_invocationTimeout = 15000;		// in milliseconds; 15s
+
+// ************************************************************************
+
+class ActivationMethod : public ACE_Method_Request
+{
+public:
+    ActivationMethod (
+                      ContainerImpl* container,
+                      maci::Handle h,
+                      maci::ExecutionId execution_id,
+                      const char * name,
+                      const char * exe,
+                      const char * type,
+                      maci::CBComponentInfo_ptr cb,
+                      const ACS::CBDescIn& descIn) :
+    container_(container),
+    h_(h),
+    execution_id_(execution_id),
+    name_(name),
+    exe_(exe),
+    type_(type),
+    cb_(maci::CBComponentInfo::_duplicate(cb)),
+    descOut_()
+    {
+        ACS_TRACE ("maci::ActivationMethod::ActivationMethod");
+        descOut_.id_tag = descIn.id_tag;
+    }
+    
+    virtual int call (void)
+    {
+        ACS_TRACE ("maci::ActivationMethod::call");
+        
+        maci::ComponentInfo_var componentInfo;
+        ACSErr::Completion completion = ACSErrTypeOK::ACSErrOKCompletion();
+        
+        try
+        {
+            componentInfo = container_->activate_component(h_, execution_id_, name_.c_str(), exe_.c_str(), type_.c_str());
+        }
+        catch (ACSErr::ACSbaseExImpl &_ex)
+        {
+            completion = maciErrType::CannotActivateComponentCompletion(_ex, __FILE__, __LINE__,
+                                                            "maci::ActivationMethod::call");
+        }
+        catch (...)
+        {
+            ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+                                                            "maci::ActivationMethod::call");
+            completion = maciErrType::CannotActivateComponentCompletion(uex, __FILE__, __LINE__,
+                                                            "maci::ActivationMethod::call");
+        }
+        
+        try
+        {
+            cb_->done(*componentInfo, completion, descOut_);
+        }
+        catch(...)
+        {
+            ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+                                                            "maci::ActivationMethod::call");
+            uex.log();
+        }    
+        
+        return 0;
+    }
+    
+private:
+    ContainerImpl* container_;
+    maci::Handle h_;
+    maci::ExecutionId execution_id_;
+    ACE_CString name_;
+    ACE_CString exe_;
+    ACE_CString type_;
+    maci::CBComponentInfo_var cb_;
+    ACS::CBDescOut descOut_;
+};
+
+
+
+class ExitMethod : public ACE_Method_Request
+{
+public:
+    virtual int call (void)
+    {
+        // Cause exit.
+        return -1;
+    }
+};
+
+
+
+
+MethodRequestThreadPool::MethodRequestThreadPool (int n_threads)
+{
+    ACS_TRACE ("maci::MethodRequestThreadPool::MethodRequestThreadPool");
+    this->activate (THR_NEW_LWP|THR_JOINABLE|THR_INHERIT_SCHED, n_threads);
+}
+    
+int
+MethodRequestThreadPool::svc (void)
+{
+    ACS_CHECK_LOGGER;
+    m_logger = getNamedLogger("maci::MethodRequestThreadPool");
+    
+    ACS_TRACE ("maci::MethodRequestThreadPool::svc");
+    
+    while (1)
+    {
+        // Dequeue the next method object
+        auto_ptr<ACE_Method_Request>
+        request (this->activation_queue_.dequeue ());
+        
+        // Invoke the method request.
+        if (request->call () == -1)
+            break;
+    }
+    
+    return 0;
+}
+    
+int
+MethodRequestThreadPool::enqueue (ACE_Method_Request *request)
+{
+    ACS_TRACE ("maci::MethodRequestThreadPool::enqueue");
+    return this->activation_queue_.enqueue (request);
+}
+    
+void MethodRequestThreadPool::shutdown()
+{
+    this->enqueue (new ExitMethod ());
+    
+    // might do better implementation
+    while (!this->activation_queue_.is_empty()) {
+        ACE_OS::sleep(1);
+    }
+}
 
 // ************************************************************************
 
@@ -120,8 +256,8 @@ ContainerImpl::ContainerImpl() :
   minCachePriority(0),
   maxCachePriority (LM_MAX_PRIORITY),
   flushPeriodSeconds(10),
-  maxLogsPerSecond(-1)
-
+  maxLogsPerSecond(-1),
+  m_methodRequestThreadPool(0)
 {
 
   orb = CORBA::ORB::_nil();
@@ -170,6 +306,9 @@ ContainerImpl::~ContainerImpl()
 	}
   m_container = 0;
 
+    if (m_methodRequestThreadPool)
+    delete m_methodRequestThreadPool;
+    
   if (m_dllmgr){
       m_dllmgr->closeAllLibraries();
       delete m_dllmgr;
@@ -933,6 +1072,8 @@ ContainerImpl::init(int argc, char *argv[])
 
 
 
+      m_methodRequestThreadPool = new MethodRequestThreadPool(1);        
+        
       //
       // activate the Container as a CORBA object.
       //
@@ -2043,9 +2184,11 @@ ContainerImpl::activate_component (
 
 
 void
-ContainerImpl::activate_component_async(maci::Handle, maci::ExecutionId, const char*, const char*, const char*, maci::CBComponentInfo*, const ACS::CBDescIn&)
+ContainerImpl::activate_component_async(maci::Handle h, maci::ExecutionId id,
+                                        const char* name, const char* exe, const char* type,
+                                        maci::CBComponentInfo_ptr ci, const ACS::CBDescIn& descIn)
 {
-    // TODO
+    m_methodRequestThreadPool->enqueue(new ActivationMethod (this, h, id, name, exe, type, ci, descIn));
 }
 
 // ************************************************************************
@@ -2249,6 +2392,8 @@ ContainerImpl::shutdown (
   setShutdownAction((action & 0xFF00) >> 8);
 
   logout();
+    
+  m_methodRequestThreadPool->shutdown();
 
   //
   // cleanup components
