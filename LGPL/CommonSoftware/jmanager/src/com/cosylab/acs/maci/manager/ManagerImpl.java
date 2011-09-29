@@ -6411,6 +6411,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// log info
 			logger.log(Level.INFO,"Activating component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") on container '" + containerInfo.getName() + "'.");
 
+			/*
 			// sync
 			try
 			{
@@ -6424,7 +6425,8 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
 				timeoutError = (ex instanceof TimeoutRemoteException);
 			}
-/*			
+			*/
+			
 			// async
 			try
 			{
@@ -6447,7 +6449,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
 				throw bcex;
 			}
-			*/
+			
 		}
 		
 			
