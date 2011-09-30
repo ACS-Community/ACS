@@ -43,15 +43,20 @@ import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.nc.ArchiveConsumer;
 import alma.acs.nc.Helper;
 import alma.acs.util.StopWatch;
+import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
+import alma.maciErrType.wrappers.AcsJComponentConfigurationNotFoundEx;
+import alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx;
+import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.26 2010/12/29 16:48:37 jschwarz Exp $
+ * $Id: EventModel.java,v 1.27 2011/09/30 12:41:07 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -81,9 +86,37 @@ public class EventModel {
 	private AdvancedComponentClient acc;
 
 	private EventModel() throws Exception {
+		
+		m_logger = setupAcsConnections();
+		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
+		lastConsumerAndSupplierCount = new HashMap<String, int[]>(MAX_NUMBER_OF_CHANNELS);
+		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
+		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
+		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
+		compClient = acc;
+		mproxy = compClient.getAcsManagerProxy();
+
+		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
+		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
+		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
+		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
+		cs = compClient.getContainerServices();
+		orb = compClient.getAcsCorba().getORB();
+		
+		dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
+		
+		h = new Helper(cs);
+		nctx = h.getNamingService();
+		nsmc = getMonitorControl();
+//		getServiceTotals(); // temporarily, for testing
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	private AcsLogger setupAcsConnections() throws Exception {
 		String connectionString;
 		String managerHost;
-		
 		int acsInstance = 0;
 		managerHost = "localhost";
 		try {
@@ -100,7 +133,7 @@ public class EventModel {
 				connectionString = getConnectionString(managerHost, acsInstance);
 			}
 		}
-		m_logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
+		AcsLogger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
 		acc = null;
 		try {
@@ -125,27 +158,7 @@ public class EventModel {
 			}
 			throw(e);
 		}
-		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
-		lastConsumerAndSupplierCount = new HashMap<String, int[]>(MAX_NUMBER_OF_CHANNELS);
-		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
-		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
-		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
-		compClient = acc;
-		mproxy = compClient.getAcsManagerProxy();
-
-		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
-		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
-		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
-		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
-		cs = compClient.getContainerServices();
-		orb = compClient.getAcsCorba().getORB();
-		
-		dynAnyFactory = DynAnyFactoryHelper.narrow(orb.resolve_initial_references("DynAnyFactory"));
-		
-		h = new Helper(cs);
-		nctx = h.getNamingService();
-		nsmc = getMonitorControl();
-//		getServiceTotals(); // temporarily, for testing
+		return logger;
 	}
 
 	/**
@@ -205,23 +218,56 @@ public class EventModel {
 		return m_logger;
 	}
 	
-	public ArrayList<ChannelData> getServiceTotals() {
+	public ArrayList<ChannelData> getServiceTotals() throws AcsJException {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		final EventChannelFactory[] efacts = {nsvc, lsvc, alsvc, arsvc};
-		final String[] efactNames = {"Notification", "Logging", "Alarm", "Property Archiving"};
+		ArrayList<EventChannelFactory> efacts = new ArrayList<EventChannelFactory>(10);
+		ArrayList<String> efactNames = new ArrayList<String>(10);
 
-		int nconsumers;
-		int nsuppliers;
-		for (int i = 0; i < efacts.length; i++) {
+		Helper h = new Helper(cs);
+		NamingContext nctx = h.getNamingService();BindingListHolder bl = new BindingListHolder();
+		BindingIteratorHolder bi = new BindingIteratorHolder();
+		
+		nctx.list(-1, bl, bi);
+		for (Binding binding : bl.value) {
+			String serviceKind = alma.acscommon.NC_KIND.value;
+			if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
+
+			String id = binding.binding_name[0].id;
+			org.omg.CORBA.Object obj = null;
+			try {
+				obj = mproxy.get_service(id, false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
+				//System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+				//System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
+				String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
+				
+				if (displayName.equals("")) {					
+					displayName = "DefaultNotifyService";
+				}
+				efacts.add(EventChannelFactoryHelper.narrow(mproxy.get_service(id, false)));
+				efactNames.add(displayName);
+			} 
+		}
+
+		System.out.println("efacts.size = "+efacts.size());
+		for (int i = 0; i < efacts.size(); i++) {
+			int nconsumers;
+			int nsuppliers;
 			int[] chans;
-			chans = efacts[i].get_all_channels();
+			
+			EventChannelFactory efact = efacts.get(i);
+			String efactName = efactNames.get(i);
+			chans = efact.get_all_channels();
 			nconsumers = 0;
 			nsuppliers = 0;
 			for (int j = 0; j < chans.length; j++) {
 				try {
-					nconsumers += efacts[i].get_event_channel(chans[j]) // TODO: These calculations depend on assumption that 1 consumer admin ==> 1 consumer
+					nconsumers += efact.get_event_channel(chans[j]) // TODO: These calculations depend on assumption that 1 consumer admin ==> 1 consumer
 							.get_all_consumeradmins().length;
-					nsuppliers += efacts[i].get_event_channel(chans[j])
+					nsuppliers += efact.get_event_channel(chans[j])
 							.get_all_supplieradmins().length;
 				} catch (ChannelNotFound e) {
 					// TODO Auto-generated catch block
@@ -233,8 +279,8 @@ public class EventModel {
 //			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
 //			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
 //					chans.length);
-			clist.add(new ChannelData(efactNames[i], new int[]{nconsumers, nsuppliers},new int[]{0,0}));
-			lastConsumerAndSupplierCount.put(efactNames[i], new int[]{0,0});
+			clist.add(new ChannelData(efactName, new int[]{nconsumers, nsuppliers},new int[]{0,0}));
+			lastConsumerAndSupplierCount.put(efactName, new int[]{0,0});
 		}
 
 		return clist;

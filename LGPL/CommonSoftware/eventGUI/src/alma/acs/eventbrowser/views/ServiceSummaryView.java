@@ -37,6 +37,7 @@ import org.eclipse.ui.part.ViewPart;
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.exceptions.AcsJException;
 
 
 /**
@@ -88,7 +89,13 @@ public class ServiceSummaryView extends ViewPart {
 		}
 		public Object[] getElements(Object parent) {
 			ChannelData[] a = new ChannelData[4];
-			ArrayList<ChannelData> cdlist = em.getServiceTotals();
+			ArrayList<ChannelData> cdlist = null;
+			try {
+				cdlist = em.getServiceTotals();
+			} catch (AcsJException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ChannelData[] l;
 			if (cdlist != null)
 				l = cdlist.toArray(a);
@@ -185,7 +192,7 @@ public class ServiceSummaryView extends ViewPart {
 		TableViewerColumn tvcol = new TableViewerColumn(viewer,SWT.NONE, 0);
 		tvcol.setLabelProvider(new ServiceNameLabelProvider());
 		TableColumn col = tvcol.getColumn();
-		col.setText("Service");
+		col.setText("Notify Service");
 		col.setWidth(110);
 		col.setAlignment(SWT.LEFT);
 
@@ -296,7 +303,7 @@ public class ServiceSummaryView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Service Summary",
+			"Notify Service Summary",
 			message);
 	}
 
