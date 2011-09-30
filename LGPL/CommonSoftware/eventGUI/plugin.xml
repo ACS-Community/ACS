@@ -34,7 +34,7 @@
             class="alma.acs.eventbrowser.views.ServiceSummaryView"
             icon="icons/sample.gif"
             id="alma.acs.eventbrowser.views.servicesummary"
-            name="Service Summary">
+            name="Notify Service Summary">
       </view>
       <view
             allowMultiple="false"

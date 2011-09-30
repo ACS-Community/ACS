@@ -26,9 +26,11 @@ This hierarchical view displays high-level information concerning each of the in
 the CORBA Notify Service that are currently running under ACS. At the time
 of writing, these are:
 <ol>
-<li><b>Default Notify Service</b>: used by subsystems for event communication</li>
+<li><b>Default Notify Service</b>: the first (default) instance to be used by subsystems for event communication; 
+any non-preconfigured additional instances are shown as well if they are running</li>
 <li><b>Logging Notify Service</b>: currently carries logs across the network</li>
 <li><b>Archiving Notify Service</b>: carries those BACI properties for which it is enabled in the (TM)CDB</li>
+<li><b>Archiving Notify Service</b>: carries alarms across the network</li>
 </ol>
 The leaves of the explorer-like tree show the number of consumers and the number of
 suppliers for each of these Services. When monitoring is enabled (right-click
