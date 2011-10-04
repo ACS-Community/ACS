@@ -4,12 +4,12 @@
 package alma.acs.commandcenter.engine;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import alma.acs.commandcenter.util.MiscUtils;
 import alma.acs.container.AcsContainer;
 import alma.acs.container.AcsEmbeddedContainerRunner;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.util.AcsLocations;
 import alma.entity.xmlbinding.acscommandcentertools.Tool;
 
@@ -18,8 +18,8 @@ import alma.entity.xmlbinding.acscommandcentertools.Tool;
  */
 public class ExecuteContainer {
 
-	protected Logger log;
-	protected Logger acsCorbaLogger;
+	protected AcsLogger log;
+	protected AcsLogger acsCorbaLogger;
 	
     
     /**
@@ -32,7 +32,7 @@ public class ExecuteContainer {
      * @param acsCorbaLogger
      * @since ACS 5.0
      */
-    public ExecuteContainer(Logger acsCorbaLogger) {
+    public ExecuteContainer(AcsLogger acsCorbaLogger) {
        this.acsCorbaLogger = acsCorbaLogger;
    }
 

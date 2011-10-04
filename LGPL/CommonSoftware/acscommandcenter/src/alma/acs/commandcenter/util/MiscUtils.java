@@ -4,8 +4,9 @@
 package alma.acs.commandcenter.util;
 
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
 
@@ -23,7 +24,7 @@ public class MiscUtils {
 	 * @param requester object which needs a package-wide logger
 	 * @return a logger
 	 */
-	public static Logger getPackageLogger(Object requester) {
+	public static AcsLogger getPackageLogger(Object requester) {
 		return getPackageLogger(requester.getClass());
 	}
 
@@ -35,9 +36,9 @@ public class MiscUtils {
 	 * @param requester class which needs a package-wide logger
 	 * @return a logger
 	 */
-	public static Logger getPackageLogger(Class<?> requester) {
+	public static AcsLogger getPackageLogger(Class<?> requester) {
 		String pkg = requester.getPackage().getName();
-		Logger ret = Logger.getLogger(pkg);
+		AcsLogger ret = ClientLogManager.getAcsLogManager().getLoggerForApplication(pkg, false);
 		return ret;
 	}
 	

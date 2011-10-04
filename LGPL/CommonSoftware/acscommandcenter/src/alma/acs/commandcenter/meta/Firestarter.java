@@ -4,10 +4,11 @@
 package alma.acs.commandcenter.meta;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
+import alma.acs.logging.ClientLogManager;
 import alma.acs.util.AcsLocations;
 
 
@@ -20,7 +21,7 @@ public class Firestarter {
 	// ==========================================================
 
 	protected String clientName;
-	protected Logger logger = null;
+	protected AcsLogger logger = null;
 
 	protected Firestarter(String clientName) {
 		this(clientName, null, null);
@@ -33,14 +34,14 @@ public class Firestarter {
 	 * @param logger - logger which will be passed to delegates
 	 * @param managerLoc - the corbaloc of the manager
 	 */
-	public Firestarter(String clientName, Logger logger, String managerLoc) {
+	public Firestarter(String clientName, AcsLogger logger, String managerLoc) {
 
 		if (clientName == null)
 			throw new NullPointerException("clientName should not be null");
 		this.clientName = clientName;
 
 		if (logger == null)
-			logger = Logger.getLogger(clientName + ".Firestarter");
+			logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(clientName + ".Firestarter", false);
 		this.logger = logger;
 
 		if (managerLoc == null)

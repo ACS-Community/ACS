@@ -23,7 +23,6 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.logging.Logger;
 
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
@@ -47,6 +46,7 @@ import alma.acs.commandcenter.meta.GuiMaciSupervisor;
 import alma.acs.commandcenter.meta.IMaciSupervisor;
 import alma.acs.commandcenter.meta.Firestarter.OrbInitException;
 import alma.acs.commandcenter.util.MiscUtils;
+import alma.acs.logging.AcsLogger;
 import alma.acs.util.ACSPorts;
 import alma.entity.xmlbinding.acscommandcenterproject.AcsCommandCenterProject;
 import alma.entity.xmlbinding.acscommandcenterproject.ContainerT;
@@ -87,7 +87,7 @@ public class CommandCenterLogic {
 
 	protected ProjectMaker projectMaker;
 	
-	protected Logger log;
+	protected AcsLogger log;
 	
 
 	//
