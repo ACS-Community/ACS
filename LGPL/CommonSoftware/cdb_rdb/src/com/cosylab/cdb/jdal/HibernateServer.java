@@ -31,6 +31,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Properties;
 
+import org.jacorb.orb.acs.AcsORBProfiler;
 import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NameComponent;
@@ -47,6 +48,7 @@ import com.cosylab.cdb.jdal.logging.AcsLoggerHelper;
 
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
+import alma.acs.profiling.orb.AcsORBProfilerImplBase;
 import alma.acs.util.ACSPorts;
 
 /**
@@ -148,8 +150,20 @@ public class HibernateServer {
 			ORB orb = ORB.init(args, properties);
 			
 			// activate profiling
-			if (profiler && orb instanceof AcsProfilingORB)
-				((AcsProfilingORB)orb).registerAcsORBProfiler(new ORBRequestTimer(sharedLogger));
+			if (orb instanceof AcsProfilingORB) {
+				// This profiler will log ORB resource statistics every 10 seconds,
+				// and will print every callback to requestStarted / requestFinished to stdout if the "-profiler" option is set (see above) 
+				final boolean printIndividualCalls = profiler;
+				AcsORBProfiler orbProfiler = new AcsORBProfilerImplBase(sharedLogger) {
+					{
+						if (printIndividualCalls) {
+							debugRequestStarted = true;
+							debugRequestFinished = true;
+						}
+					}
+				};
+				((AcsProfilingORB)orb).registerAcsORBProfiler(orbProfiler);
+			}
 			
 			// get reference to rootpoa & activate the POAManager
 			POA rootpoa =
