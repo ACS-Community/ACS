@@ -22,53 +22,47 @@
 
 package alma.acs.container.corba;
 
-import java.util.logging.Logger;
-
-import org.jacorb.orb.acs.AcsORBProfiler;
+import alma.acs.logging.AcsLogger;
+import alma.acs.profiling.orb.AcsORBProfilerImplBase;
 
 /**
- * Currently just a dummy impl.
- * <p>
- * @TODO: Check with manager, CDB etc about reusing some common base class.
  * @author hsommer
  */
-public class ContainerOrbProfiler implements AcsORBProfiler
+public class ContainerOrbProfiler extends AcsORBProfilerImplBase
 {
-	private final Logger logger;
-
-	public ContainerOrbProfiler(Logger logger) {
-		this.logger = logger;
+	public ContainerOrbProfiler(AcsLogger logger) {
+		super(logger);
 	}
 	
-	@Override
-	public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, int maxThreads) {
-		// TODO Auto-generated method stub
-//		int freeThreadsPrecentage = (int) (((totalThreads - idleThreads) / (double) maxThreads) * 100);
-//		manager.setThreadUsage(freeThreadsPrecentage);
-	}
-	
-	@Override
-	public void undeliveredRequest(int messageSize, String poaName, String operation, boolean causedByQueueFull) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void requestQueueSizeChanged(int requestId, String poaName, int queueSize, int maxQueueLength) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void threadPoolSizeChanged(String poaName, int idleThreads, int totalThreads, int maxThreads) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void requestStarted(int requestId, String poaName, String operation) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void requestFinished(int requestId, String poaName, String operation) {
-		// TODO Auto-generated method stub
-	}
+//	@Override
+//	public void connectionThreadPoolSizeChanged(int idleThreads, int totalThreads, int maxThreads) {
+//		// TODO Auto-generated method stub
+////		int freeThreadsPrecentage = (int) (((totalThreads - idleThreads) / (double) maxThreads) * 100);
+////		manager.setThreadUsage(freeThreadsPrecentage);
+//	}
+//	
+//	@Override
+//	public void undeliveredRequest(int messageSize, String poaName, String operation, boolean causedByQueueFull) {
+//		// TODO Auto-generated method stub
+//	}
+//
+//	@Override
+//	public void requestQueueSizeChanged(int requestId, String poaName, int queueSize, int maxQueueLength) {
+//		// TODO Auto-generated method stub
+//	}
+//
+//	@Override
+//	public void threadPoolSizeChanged(String poaName, int idleThreads, int totalThreads, int maxThreads) {
+//		// TODO Auto-generated method stub
+//	}
+//
+//	@Override
+//	public void requestStarted(int requestId, String poaName, String operation) {
+//		// TODO Auto-generated method stub
+//	}
+//
+//	@Override
+//	public void requestFinished(int requestId, String poaName, String operation) {
+//		// TODO Auto-generated method stub
+//	}
 }
