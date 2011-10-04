@@ -40,8 +40,8 @@ import java.util.concurrent.TimeUnit;
  * It can be used directly to manage decisions about skipping or executing some code.
  * For example, the application can instantiate a <code>RepeatGuard</code> with the timer set to one second. 
  * Then whenever the repetitive action would be called, the application first calls {@link #check()};
- * within one second of the last <code>true</code> returned from <code>check()</code>, the subsequent calls will return <code>false</code>,
- * and the application should skip the repeated block of code.
+ * for every timer interval, only the first call to <code>check()</code> will return <code>true</code>, 
+ * while the subsequent calls will return <code>false</code>, and the application should skip the repeated block of code.
  * Alternatively this class can be extended or wrapped to become easier to use for specific purposes.
  * Then typically the code to be executed (e.g. logging a message) becomes part of the specialized repeat guard class, 
  * as in {@link RepeatGuardLogger}.
@@ -51,11 +51,12 @@ import java.util.concurrent.TimeUnit;
  * Repetitions can be reduced using
  * <ol>
  *   <li>the number of times that code execution should be skipped before the code can be executed again
- *   <li>the time that must have passed since the last actual execution, 
+ *   <li>a timer which allows only one execution per time interval,
  *       no matter how many execution attempts have been made in the meantime,
  *   <li><code>OR</code> combination of the above: either enough attempts were made or enough time has passed, whatever happens first
  *   <li><code>AND</code> combination: enough skipped execution attempts, and enough time passed. 
  * </ol>
+ * see also the {@link Logic} enum.
  */
 public class RepeatGuard {
 
@@ -153,7 +154,9 @@ public class RepeatGuard {
 				if (now >= endTimeNs) {
 					counterAtLastExecution = counter;
 					counter = 0;
-					endTimeNs = endTimeNs + intervalNs; //endTime + interval instead of now + interval to prevent drift
+					while (endTimeNs <= now) { // we may have to "catch up" several timer intervals during which nothing was logged
+						endTimeNs += intervalNs; //endTime + interval instead of now + interval to prevent drift
+					}
 					return true;
 				}
 				return false;
