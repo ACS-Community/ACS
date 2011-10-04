@@ -63,6 +63,7 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 		public BufferedReader reader;
 		public long lastTimestamp;
 		public String propertyname;
+		public long readBytes;
 	}
 
     @Override
@@ -110,7 +111,8 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 				mp.reader = new BufferedReader(new FileReader(new File(componentDirPath + File.separator + fileName)));
 				mp.reader.mark(80);
 				mp.lastTimestamp = parseLine(mp.reader.readLine()).time;
-				mp.reader.reset();
+				mp.reader.close();
+				mp.readBytes = 0;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -165,8 +167,11 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 			for(FileBasedMonitorPoint mp: m_files.get(componentName)) {
 
 				try {
+					String componentDirPath = PREFIX + componentName.replaceAll("/", "_");
+					mp.reader = new BufferedReader(new FileReader(new File(componentDirPath + File.separator + mp.propertyname + ".txt")));
 					if( !mp.reader.ready() )
 						break;
+					mp.reader.skip(mp.readBytes);
 				} catch (IOException e1) {
 					break;
 				}
@@ -189,6 +194,7 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 						if( line == null )
 							break;
 
+						mp.readBytes += line.length() + 1; // +1 = '\n'
 						doubleBlobData data = parseLine(line);
 
 						// We suppose we're being called every 1 minute here
@@ -197,6 +203,7 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 							m_logger.fine("Changing last timestamp from: " + mp.lastTimestamp + " for " + componentName + "/" + mp.propertyname);
 							mp.lastTimestamp = mp.lastTimestamp + 60*1000;
 							mp.reader.reset();
+							mp.readBytes -= (line.length() + 1);
 							break;
 						}
 
@@ -209,6 +216,12 @@ public class FileReaderCollectorImpl extends ComponentImplBase implements Monito
 					}
 
 				} while(line!=null);
+
+				try {
+					mp.reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
 				doubleBlobDataSeqHelper.insert(blob.blobDataSeq, dataList.toArray(new doubleBlobData[0]));
 				blobList.add(blob);
