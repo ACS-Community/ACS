@@ -5,59 +5,12 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-#include <Message_Block.h>
-
-/*
-#include "orbsvcs/AV/AVStreams_i.h"
-#include "orbsvcs/AV/Endpoint_Strategy.h"
-#include "orbsvcs/AV/Protocol_Factory.h"
-#include "orbsvcs/AV/Flows_T.h"
-#include "orbsvcs/AV/Transport.h"
-#include "orbsvcs/AV/Policy.h"
-
-#include <baci.h>
-
-#include "ACSBulkDataError.h"
-#include "ACSBulkDataStatus.h"
-
-#include "bulkDataReceiver.h"
-*/
-
 #include <SString.h>
 
 class BulkDataCallback
-//: public TAO_AV_Callback
 {
-
   public:
-/*
-    enum Cb_State
-    {
-	CB_UNS,
-	CB_SEND_PARAM,
-	CB_SEND_DATA
-    };
-
-    enum Cb_SubState
-    {
-	CB_SUB_UNS,
-	CB_SUB_INIT
-    };
-
-
-    BulkDataCallback();
-*/
     virtual ~BulkDataCallback(){};
-/*
-    virtual int handle_start(void);
-
-    virtual int handle_stop (void);
-
-    virtual int handle_destroy (void);
-
-    virtual int receive_frame (ACE_Message_Block *frame, TAO_AV_frame_info *frame_info, const ACE_Addr &);
-
-*/
 
     // flow and stream names are set in REceiverFlow ctor, should we keep them public ?
     void setFlowName (const char* name) { flowName_m =name; }
