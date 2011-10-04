@@ -5,6 +5,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include <acserr.h>
 #include <SString.h>
 
 class BulkDataCallback
@@ -14,11 +15,9 @@ class BulkDataCallback
 
     // flow and stream names are set in REceiverFlow ctor, should we keep them public ?
     void setFlowName (const char* name) { flowName_m =name; }
-
     const char* getFlowName () { return flowName_m.c_str(); }
 
     void setStreamName (const char* name) { streamName_m =name; }
-
     const char* getStreamName () { return streamName_m.c_str(); }
 
     void setReceiverName(ACE_CString &name) { recvName_m=name; }
@@ -60,17 +59,24 @@ class BulkDataCallback
 
     void fwdData2UserCB(CORBA::Boolean enable);
 */
-    /********************* methods to be implemented by the user *****************/
+    /********************* methods that have to be implemented by the user *****************/
 
-    //Depreciated !!
-    //virtual int cbStart(ACE_Message_Block * userParam_p = 0){return 0;}
     virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0)=0;
 
-    //Depreciated !!
-    //virtual int cbReceive(ACE_Message_Block * frame_p) {return 0;}
     virtual int cbReceive(unsigned char * frame_p, unsigned  int size)=0;
 
     virtual int cbStop() = 0;
+
+    /*********************  methods that can/should be  implemented by the user */
+
+    /// This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop)
+    virtual void onError(ACSErr::CompletionImpl &error);
+
+    /// The method is called when a new sender is connected to the flow
+    virtual void onSenderConnect();
+
+    /// The method is called when a sender is disconnected for a flow
+    virtual void onSenderDisconnect();
 
   protected:
 

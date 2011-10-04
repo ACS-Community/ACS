@@ -1,23 +1,20 @@
 // should be removed !!!!
 
 #include "bulkDataNTCallback.h"
-#include <iostream>
 
-
-int BulkDataCallback::cbStart(unsigned char* param, unsigned  int size)
+void BulkDataCallback::onError(ACSErr::CompletionImpl &error)
 {
-	std::cerr << "Depreciated call BulkDataCallback::cbStart (ACE_Message_Block)" << std::endl;
-	ACE_Message_Block mb((char*)param, size); // dirty ????
-	mb.length(size);
-	this->cbStart(&mb);
-	return 0;
+	error.log();
+}//onError
+
+void BulkDataCallback::onSenderConnect()
+{
+	std::string longName = streamName_m + "#" + flowName_m;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "New sender connected to: %s", longName.c_str()));
 }
 
-int BulkDataCallback::cbReceive(unsigned char * frame, unsigned  int size)
+void BulkDataCallback::onSenderDisconnect()
 {
-	std::cerr << "Depreciated call BulkDataCallback::cbReceive (ACE_Message_Block)" << std::endl;
-	ACE_Message_Block mb((char*)frame, size); // dirty ????
-	mb.length(size);
-	this->cbReceive(&mb);
-	return 0;
+	std::string longName = streamName_m + "#" + flowName_m;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "New sender connected to: %s", longName.c_str()));
 }
