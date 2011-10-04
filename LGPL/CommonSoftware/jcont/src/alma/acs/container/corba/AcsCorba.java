@@ -60,6 +60,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.AcsContainer;
 import alma.acs.container.ComponentServantManager;
+import alma.acs.logging.AcsLogger;
 import alma.acs.util.StopWatch;
 import alma.acs.util.UTCUtility;
 
@@ -110,7 +111,7 @@ public class AcsCorba
 
 //	private boolean m_useRecoveryMode = false;
     
-	private Logger m_logger;
+	private AcsLogger m_logger;
     
 	private boolean m_isInitialized = false;
 
@@ -127,7 +128,7 @@ public class AcsCorba
 	/**
 	 * ctor
 	 */
-	public AcsCorba(Logger logger) {
+	public AcsCorba(AcsLogger logger) {
 		m_logger = logger;
 	}
 
@@ -177,7 +178,7 @@ public class AcsCorba
 	
 	
     
-    public synchronized void setLogger(Logger logger) {
+    public synchronized void setLogger(AcsLogger logger) {
         m_logger = logger;
     }
     
@@ -255,7 +256,12 @@ public class AcsCorba
 			if (orbProfilerClassname != null) {
 				if (m_orb instanceof AcsProfilingORB) {
 					Class<? extends AcsORBProfiler> orbProfilerClass = Class.forName(orbProfilerClassname).asSubclass(AcsORBProfiler.class);
-					Constructor<? extends AcsORBProfiler> ctor = orbProfilerClass.getConstructor(Logger.class);
+					Constructor<? extends AcsORBProfiler> ctor = null;
+					try {
+						ctor = orbProfilerClass.getConstructor(AcsLogger.class);
+					} catch (NoSuchMethodException ex) {
+						ctor = orbProfilerClass.getConstructor(Logger.class);
+					}
 					AcsORBProfiler profiler = ctor.newInstance(m_logger);
 					((AcsProfilingORB) m_orb).registerAcsORBProfiler(profiler);
 					m_logger.finer("Orb profiling set up, using " + orbProfilerClassname);
