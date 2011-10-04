@@ -16,12 +16,12 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 {
 	next_sample=0;
 	message_dr=0;
-}
+}//BulkDataNTReaderListener
 
 
 BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 {
-}
+}//~BulkDataNTReaderListener
 
 void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 {
@@ -161,7 +161,7 @@ void BulkDataNTReaderListener::on_requested_deadline_missed (
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos (
 		DDS::DataReader*,
-		const DDS::RequestedIncompatibleQosStatus&)
+	const DDS::RequestedIncompatibleQosStatus&)
 {
 	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_requested_incompatible_qos" << endl;
 }
@@ -172,13 +172,29 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 {
 	if (lcs.alive_count_change>0)
 	{
-		cout << "A new sender has connected to flow: " << callback_m->getFlowName();
-		cout << " on stream: " << callback_m->getStreamName() << endl;
+		for(int i=0; i<lcs.alive_count_change; i++)
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__,
+					(LM_INFO, "A new sender has connected to flow: %s of stream: %s",
+							callback_m->getFlowName(), callback_m->getStreamName()));
+			//until we fix logging in DDS callback
+			printf("A new sender has connected to flow: %s of stream: %s\n",
+					callback_m->getFlowName(), callback_m->getStreamName());
+			callback_m->onSenderConnect();
+		}//for
 	}else
 	{
-		cout << "A sender has disconnected from flow: " << callback_m->getFlowName();
-		cout << " on stream: " << callback_m->getStreamName() << endl;
-	}
+		for(int i=lcs.alive_count_change; i>0; i--)
+		{
+			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__,
+					(LM_INFO, "A sender has disconnected to flow: %s of stream: %s",
+							callback_m->getFlowName(), callback_m->getStreamName()));
+			//until we fix logging in DDS callback
+			printf("A sender has disconnected to flow: %s on stream: %s\n",
+										callback_m->getFlowName(), callback_m->getStreamName());
+			callback_m->onSenderDisconnect();
+		}//for
+	}//if-else
 
 	//	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
 	//	cerr << "    alive_count: " << lcs.alive_count << endl;
