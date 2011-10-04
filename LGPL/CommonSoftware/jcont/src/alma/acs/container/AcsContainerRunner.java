@@ -26,13 +26,13 @@ import java.io.StringWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.container.corba.OrbConfigurator;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.CmdLineArgs;
 import alma.acs.util.CmdLineRegisteredOption;
@@ -76,7 +76,7 @@ public class AcsContainerRunner
 
     protected AcsEmbeddedContainerRunner embeddedRunner;
 
-    protected Logger m_logger;
+    protected AcsLogger m_logger;
     protected AcsCorba m_acsCorba;
 
     protected int m_containerPort = -1;

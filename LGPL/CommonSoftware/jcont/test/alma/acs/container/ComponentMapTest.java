@@ -89,7 +89,7 @@ public class ComponentMapTest extends TestCase {
 	
 	private static class DummyAcsCorba extends AcsCorba {
 
-		public DummyAcsCorba(Logger logger) {
+		public DummyAcsCorba(AcsLogger logger) {
 			super(logger);
 		}
 		public POA createPOAForComponent(String compName) throws AcsJContainerEx {

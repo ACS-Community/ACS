@@ -21,12 +21,12 @@
  */
 package alma.acs.container;
 
-import java.util.logging.Logger;
-
 import si.ijs.maci.ContainerOperations;
 
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.container.corba.AcsCorba;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 
 /**
@@ -41,7 +41,7 @@ import alma.acs.logging.ClientLogManager;
  */
 public class AcsEmbeddedContainerRunner {
 
-    protected Logger m_logger;
+    protected AcsLogger m_logger;
     protected AcsCorba m_acsCorba;
 
     protected AcsContainer m_container;
@@ -118,7 +118,7 @@ public class AcsEmbeddedContainerRunner {
      * Gets the logger used by the container. If necessary, creates and initializes the logger. 
      * @return container logger
      */
-    public Logger getContainerLogger() {
+    public AcsLogger getContainerLogger() {
         if (m_logger == null) {
             m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(m_containerName);
         }

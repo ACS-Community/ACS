@@ -2,7 +2,6 @@ package alma.acs.container.corba;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -10,6 +9,7 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.Servant;
 
 import alma.acs.container.ComponentServantManager;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.jconttest.DummyComponent;
 import alma.jconttest.DummyComponentHelper;
@@ -24,7 +24,7 @@ import alma.jconttest.DummyComponentImpl.DummyComponentImpl;
  */
 public class AcsCorbaTest extends TestCase {
 
-	private Logger m_logger;
+	private AcsLogger m_logger;
 	private AcsCorba acsCorba;
 	
 	// simple otherthread-to-mainthread exception passing
