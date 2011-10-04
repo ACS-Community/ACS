@@ -13,7 +13,7 @@ class BulkDataCallback
   public:
     virtual ~BulkDataCallback(){};
 
-    // flow and stream names are set in REceiverFlow ctor, should we keep them public ?
+    // flow and stream names are set in ReceiverFlow ctor, should we keep them public ?
     void setFlowName (const char* name) { flowName_m =name; }
     const char* getFlowName () { return flowName_m.c_str(); }
 
@@ -23,6 +23,7 @@ class BulkDataCallback
     void setReceiverName(ACE_CString &name) { recvName_m=name; }
     void setReceiverName(const char *name) { recvName_m=name; }
     const char* getReceiverName () { return recvName_m.c_str(); }
+
 /*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
@@ -73,10 +74,10 @@ class BulkDataCallback
     virtual void onError(ACSErr::CompletionImpl &error);
 
     /// The method is called when a new sender is connected to the flow
-    virtual void onSenderConnect();
+    virtual void onSenderConnect(){};
 
     /// The method is called when a sender is disconnected for a flow
-    virtual void onSenderDisconnect();
+    virtual void onSenderDisconnect(){};
 
   protected:
 
