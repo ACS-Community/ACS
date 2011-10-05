@@ -130,6 +130,46 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
+		
+		System.out.println("testMultiplicity with regexp and default FM");
+		// Send the alarms to trigger the reduction
+		sendAlarm("NODE_DEFAULT", "DA41", 1, true);
+		sendAlarm("NODE_DEFAULT", "DA42", 1, true);
+		sendAlarm("NODE_DEFAULT", "DA43", 1, true);
+		sendAlarm("NODE_DEFAULT", "DA44", 1, true);
+		// Give time for the reduced alarm to arrive
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException i) {}
+		// Clear the alarms
+		sendAlarm("NODE_DEFAULT", "DA41",  1, false);
+		sendAlarm("NODE_DEFAULT", "DA42", 1, false);
+		sendAlarm("NODE_DEFAULT", "DA43", 1, false);
+		sendAlarm("NODE_DEFAULT", "DA44", 1, false);
+		// Give time for the alarms to arrive
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException i) {}
+		
+		System.out.println("testMultiplicity with hierarchical FM, regexp and default FM");
+		// Send the alarms to trigger the reduction
+		sendAlarm("HIERARCHICAL", "CONTROL/DA41/HIER", 1, true);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA42/HIER", 1, true);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA43/HIER", 1, true);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA44/HIER", 1, true);
+		// Give time for the reduced alarm to arrive
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException i) {}
+		// Clear the alarms
+		sendAlarm("HIERARCHICAL", "CONTROL/DA41/HIER",  1, false);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA42/HIER", 1, false);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA43/HIER", 1, false);
+		sendAlarm("HIERARCHICAL", "CONTROL/DA44/HIER", 1, false);
+		// Give time for the alarms to arrive
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException i) {}
 	}
 
 	/**
