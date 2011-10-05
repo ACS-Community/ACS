@@ -59,8 +59,8 @@ public class AlarmRefMatcher
 			throw new IllegalArgumentException();
 
 		if( _reduction_rule_patter.equals("wildcard") ) {
-			_familyPattern = slahedWildcardToPattern(familySpec);
-			_memberPattern = slahedWildcardToPattern(memberSpec);
+			_familyPattern = Pattern.compile(wildcardToRegex(familySpec));
+			_memberPattern = Pattern.compile(wildcardToRegex(memberSpec));
 		}
 		else {
 			_familyPattern = Pattern.compile(familySpec);
@@ -90,32 +90,6 @@ public class AlarmRefMatcher
 //		} catch (NumberFormatException e) {
 //			throw new IllegalArgumentException("Invalid code spec");
 //		}
-	}
-
-	private Pattern slahedWildcardToPattern(String wildcardWithSlashes) throws PatternSyntaxException
-	{
-
-		String[] singleWildcards;
-
-		// The important thing here is that slashes are preserved, while each
-		// substring is treated as an individual wildcard, and replaced by the corresponding
-		// regexp.
-		if (wildcardWithSlashes.startsWith("/"))
-			singleWildcards = wildcardWithSlashes.substring(1).split("/");
-		else
-			singleWildcards = wildcardWithSlashes.split("/");
-
-		StringBuffer sb=new StringBuffer();
-		sb.append('^');
-		for(int i=0; i!=singleWildcards.length; i++) {
-			if( i!=0 || wildcardWithSlashes.startsWith("/") )
-				sb.append('/');
-			sb.append(wildcardToRegex(singleWildcards[i]));
-		}
-		sb.append('$');
-
-		return Pattern.compile(sb.toString());
-
 	}
 
 	/* Code taken from http://www.rgagnon.com/javadetails/java-0515.html */
@@ -160,12 +134,29 @@ public class AlarmRefMatcher
 		Triplet t=a.getTriplet();
 		
 		int code=t.getFaultCode().intValue();
+		boolean ret;
 		if ( code != _code ||
 		    !_familyPattern.matcher(t.getFaultFamily()).matches() ||
-		    !_memberPattern.matcher(t.getFaultMember()).matches() )
-			return false;
-
-		return true;
+		    !_memberPattern.matcher(t.getFaultMember()).matches() ) {
+			ret= false;
+		} else {
+			ret= true;
+		}
+		
+		//System.out.println("Match "+a.getAlarmId()+" with ["+_familyPattern.toString()+","+_memberPattern.toString()+", "+_code+"] retuned "+ret);
+		return ret;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder ret = new StringBuilder("AlarmRefMatcher [FF=");
+		ret.append(_familyPattern.toString());
+		ret.append(", ");
+		ret.append(_memberPattern.toString());
+		ret.append(", ");
+		ret.append(_code);
+		ret.append(']');
+		return ret.toString();
 	}
 
 }
