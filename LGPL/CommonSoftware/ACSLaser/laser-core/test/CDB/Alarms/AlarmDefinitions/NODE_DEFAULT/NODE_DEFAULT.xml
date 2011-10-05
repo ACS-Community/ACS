@@ -7,10 +7,16 @@
     <priority>2</priority>
     <problem-description>NODE test</problem-description>
   </fault-code>
+  <fault-code value="2">
+    <priority>2</priority>
+    <problem-description>NODE test</problem-description>
+  </fault-code>
   <fault-member-default>
   </fault-member-default>
   <fault-member name="NODE1">
   </fault-member>
   <fault-member name="NODE4">
+  </fault-member>
+  <fault-member name="MULTIPLICITY_REG">
   </fault-member>
 </fault-family>
