@@ -10,5 +10,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate3.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/hibernate-annotations.jar"/>
 	<classpathentry kind="lib" path="lib/jhall-2.0_05.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="output" path="object"/>
 </classpath>
