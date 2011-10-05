@@ -87,15 +87,41 @@
 		</child>
 		</reduction-link>
 		
+		<!--  The childs are defined by the default fault member -->
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="NODE_DEFAULT" fault-member="MULTIPLICITY_REG" fault-code="2"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="NODE_DEFAULT" fault-member="*" fault-code="1"/>
+			</child>
+		</reduction-link>
+		
+		<!--  HIERARCHICAL -->
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="HIERARCHICAL" fault-member="MULTIPLICITY_HIER" fault-code="2"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="HIERARCHICAL" fault-member="CONTROL/????/HIER" fault-code="1"/>
+			</child>
+		</reduction-link>
+		
 	</links-to-create>
 	
 
-		<thresholds>
+	<thresholds>
 		<threshold value="3">
 			<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
 		</threshold>
 		<threshold value="3">
 			<alarm-definition fault-family="MF_REGEXP" fault-member="MULTIPLE_MF_REGEXP" fault-code="5"/>
+		</threshold>
+		<threshold value="3">
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="MULTIPLICITY_REG" fault-code="2"/>
+		</threshold>
+		<threshold value="3">
+			<alarm-definition fault-family="HIERARCHICAL" fault-member="MULTIPLICITY_HIER" fault-code="2"/>
 		</threshold>
 	</thresholds>
 </reduction-definitions>
