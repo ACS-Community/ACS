@@ -1,5 +1,6 @@
 
 #include "bulkDataNTReaderListener.h"
+#include "ACS_BD_Errors.h"
 #include <iostream>
 #include <iterator>
 
@@ -10,22 +11,29 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 : Logging::Loggable("BulkDataNT:"+string(name)),
 				currentState_m(StartState),
 				lost_packs(0),
-				flowName_m(name),
-				data_length(0),
+				topicName_m(name),
+				dataLength_m(0),
+				frameCounter_m(0),
+				totalFrames_m(0),
 				logger_mp(0),
-				callback_m (cb)
+				loggerInitCount_m(0),
+				callback_mp (cb)
 {
-	next_sample=0;
-	message_dr=0;
+	ACS_TRACE(__FUNCTION__);
+	nestSample_m=0;
+	frameDataReader_mp=0;
 }//BulkDataNTReaderListener
 
 
 BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 {
+	ACS_TRACE(__FUNCTION__);
 	if(logger_mp)
 	{
-		LoggingProxy::done();
-		delete logger_mp;
+		// we have to call doen as many times as we call init !!
+		for(unsigned int i=0; i<loggerInitCount_m; i++)
+			LoggingProxy::done();
+		delete logger_mp; // ...  but we have just one proxy object for all DDS reader threads
 	}
 }//~BulkDataNTReaderListener
 
@@ -36,37 +44,46 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	ACSBulkData::BulkDataNTFrame message;
 	unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
 
-
-	if (message_dr==NULL)	message_dr = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
-
-	if  (  message_dr==NULL) {
-		cerr << "read: _narrow failed." << endl;
-		exit(1);
-	}
+	if (frameDataReader_mp==NULL)
+	{
+		frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
+		if  (  frameDataReader_mp==NULL) {
+			cerr << "read: _narrow failed." << endl;
+			exit(1);
+		}//if
+	}//if
 
 	message.data.maximum(ACSBulkData::FRAME_MAX_LEN); //TBD constant from
-	status = message_dr->take_next_sample(message, si) ;
+	status = frameDataReader_mp->take_next_sample(message, si) ;
 
 	if (status == DDS::RETCODE_OK)
 	{
-		if (si.valid_data == 1)
+		if (si.valid_data == true)
 		{
 			switch(message.dataType)
 			{
 			case ACSBulkData::BD_PARAM:
 			{
-				cout << flowName_m << " startSend: parameter size: " << message.data.length() << endl;
+				cout << topicName_m << " startSend: parameter size: " << message.data.length() << endl;
 				if (currentState_m==StartState || currentState_m==StopState)
 				{
-					data_length = 0;
+					dataLength_m = 0;
+					frameCounter_m = 0;
 					currentState_m = DataRcvState;
 					message.data.to_array(tmpArray, message.data.length());
-					callback_m->cbStart(tmpArray, message.data.length());
+					callback_mp->cbStart(tmpArray, message.data.length());
 				}
-				else
+				else //error
 				{
-					std::cerr << "ERROR: Parameter of length " << message.data.length();
-					std::cerr << " has arrived (BD_PARAM) in state: " << currentState_m << " on flow: " << flowName_m << std::endl;
+					ACS_BD_Errors::WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
+					wfo.setDataType("BD_PARAM");
+					wfo.setState(currentState_m);
+					wfo.setFlow(topicName_m.c_str());
+					wfo.setFrameCount(frameCounter_m);
+					wfo.setTotalFrameCount(totalFrames_m);
+					wfo.setFrameLength(message.data.length());
+					getLogger(); //force initalization of logging sys TBD changed
+					callback_mp->onError(wfo);
 				}
 				break;
 			}//	case ACSBulkData::BD_PARAM:
@@ -74,43 +91,53 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			{
 				if (currentState_m==DataRcvState)
 				{
-					if (data_length==0)
+					if (dataLength_m==0) // we get first data frame
 					{
-						std::cout << " *************************   New sendData @ " << flowName_m << " *******************************" << std::endl;
+						std::cout << " *************************   New sendData @ " << topicName_m << " *******************************" << std::endl;
 						start_time = ACE_OS::gettimeofday();
+						totalFrames_m = message.restDataLength+1;
+						frameCounter_m = 0;
 					}
 
-					data_length += message.data.length();
+					dataLength_m += message.data.length();
+					frameCounter_m ++;
 
 					if ( message.restDataLength>0)
 					{
-						if (next_sample!=0 && next_sample!=message.restDataLength)
+						if (nestSample_m!=0 && nestSample_m!=message.restDataLength)
 						{
-							cerr << "ERROR: " << flowName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << flowName_m << endl;
+							cerr << "ERROR: " << topicName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << topicName_m << endl;
 						}
-						next_sample=message.restDataLength-1;
+						nestSample_m=message.restDataLength-1;
 					}
-					else //message.restDataLength==0
+					else //message.restDataLength==0 what means the last frame
 					{
 						ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
-						cout <<	flowName_m << " Received all data from sendData: " << data_length << " Bytes in ";
+						cout <<	topicName_m << " Received all data from sendData: " << dataLength_m << " Bytes in ";
 						cout <<(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ));
 						cout << "secs. => Rate: ";
-						cout << ((data_length/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
+						cout << ((dataLength_m/(1024.0*1024.0))/(elapsed_time.sec()+( elapsed_time.usec() / 1000000.0 ))) << "MBytes/sec" << endl;
 
 						DDS::SampleLostStatus s;
 						reader->get_sample_lost_status(s);
-						cerr << flowName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
-						data_length = 0;
+						cerr << topicName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
+						dataLength_m = 0;
 					}
 
 					message.data.to_array(tmpArray, message.data.length());
-					callback_m->cbReceive(tmpArray, message.data.length());
+					callback_mp->cbReceive(tmpArray, message.data.length());
 				}
-				else
+				else //error
 				{
-					std::cerr << "ERROR: Data of length " << message.data.length();
-					std::cerr << " arrived (BD_DATA) in state: " << currentState_m << " on flow: " << flowName_m << std::endl;
+					ACS_BD_Errors::WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
+					wfo.setDataType("BD_DATA");
+					wfo.setState(currentState_m);
+					wfo.setFlow(topicName_m.c_str());
+					wfo.setFrameCount(frameCounter_m);
+					wfo.setTotalFrameCount(totalFrames_m);
+					wfo.setFrameLength(message.data.length());
+					getLogger(); //force initalization of logging sys TBD changed
+					callback_mp->onError(wfo);
 				}
 				break;
 			}//case ACSBulkData::BD_DATA
@@ -120,20 +147,43 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				{
 					currentState_m = StopState;
 					cout << "===============================================================" << endl;
-					callback_m->cbStop();
+					if (dataLength_m==0)
+					{
+						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+								(LM_WARNING, "Got stop (BD_STOP) before any data (sendData)!"));
+					}else
+					{
+						if (frameCounter_m != totalFrames_m)
+						{
+							std::cerr << "Not all data frames arrived: " << frameCounter_m << "/" << totalFrames_m << endl;
+						}
+					}
+//					std::cout << "Arrived: " << frameCounter_m << "/" << totalFrames_m << endl;
+					callback_mp->cbStop();
 				}else
+				{
 					if (currentState_m==StopState)
 					{
-						std::cerr << "WARNING: Stop (BD_STOP) arrived in stop state - ignored!" << std::endl;
+						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+								(LM_WARNING, "Stop (BD_STOP) arrived in stop state - will be ignored!"));
+						//std::cerr << "WARNING: Stop (BD_STOP) arrived in stop state - ignored!" << std::endl;
 					}
 					else //StartState
 					{
-						std::cerr << "WARNING: Stop (BD_STOP) arrived in start state: no data has been sent after start!" << std::endl;
-					}
+						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+								(LM_WARNING, "Stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!"));
+						//std::cerr << "WARNING: Stop (BD_STOP) arrived in start state: no data has been sent after start!" << std::endl;
+					}//if-else
+				}
 				break;
 			}//case ACSBulkData::BD_STOP
 			default:
-				cerr << "Unknown message.dataType: " << message.dataType << endl;
+				ACS_BD_Errors::UnknownDataTypeCompletion udt(__FILE__, __LINE__, __FUNCTION__);
+				udt.setDataType(message.dataType);
+				udt.setFrameCount(frameCounter_m);
+				udt.setTotalFrameCount(totalFrames_m);
+				getLogger(); //force initalization of logging sys TBD
+				callback_mp->onError(udt);
 			}//switch
 		}else if (si.instance_state == DDS::NOT_ALIVE_DISPOSED_INSTANCE_STATE)
 		{
@@ -145,7 +195,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 		}
 		else
 		{
-			cout << "BulkDataNTReaderListener(" << flowName_m << ")::on_data_available:";
+			cout << "BulkDataNTReaderListener(" << topicName_m << ")::on_data_available:";
 			cout << " received unknown instance state " << si.instance_state;
 			cout << endl;
 		}
@@ -162,14 +212,14 @@ void BulkDataNTReaderListener::on_requested_deadline_missed (
 		DDS::DataReader*,
 		const DDS::RequestedDeadlineMissedStatus& )
 {
-	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_requested_deadline_missed" << endl;
+	cerr << "BulkDataNTReaderListener(" << topicName_m << ")::on_requested_deadline_missed" << endl;
 }
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos (
 		DDS::DataReader*,
 	const DDS::RequestedIncompatibleQosStatus&)
 {
-	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_requested_incompatible_qos" << endl;
+	cerr << "BulkDataNTReaderListener(" << topicName_m << ")::on_requested_incompatible_qos" << endl;
 }
 
 void BulkDataNTReaderListener::on_liveliness_changed (
@@ -181,9 +231,9 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 		{
 			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 					(LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
-							callback_m->getFlowName(), callback_m->getStreamName(),
+							callback_mp->getFlowName(), callback_mp->getStreamName(),
 							lcs.alive_count));
-			callback_m->onSenderConnect();
+			callback_mp->onSenderConnect();
 		}//for
 	}else
 	{
@@ -191,9 +241,9 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 		{
 			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 					(LM_INFO, "A sender has disconnected to flow: %s of the stream: %s. Total alive connection(s): %d",
-							callback_m->getFlowName(), callback_m->getStreamName(),
+							callback_mp->getFlowName(), callback_mp->getStreamName(),
 							lcs.alive_count));
-			callback_m->onSenderDisconnect();
+			callback_mp->onSenderDisconnect();
 		}//for
 	}//if-else
 }//on_liveliness_changed
@@ -207,7 +257,7 @@ void BulkDataNTReaderListener::on_subscription_matched (
 void BulkDataNTReaderListener::on_sample_rejected(
 		DDS::DataReader*, const DDS::SampleRejectedStatus& srs)
 {
-	cerr << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
+	cerr << "BulkDataNTReaderListener(" << topicName_m << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
 	cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
 	cerr << " SampleRejectedStatus.total_count: " << srs.total_count << endl;
 }//on_sample_rejected
@@ -215,18 +265,22 @@ void BulkDataNTReaderListener::on_sample_rejected(
 void BulkDataNTReaderListener::on_sample_lost(
 		DDS::DataReader*, const DDS::SampleLostStatus& s)
 {
-	cerr << endl << endl << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_lost: ";
+	cerr << endl << endl << "BulkDataNTReaderListener(" << topicName_m << "::on_sample_lost: ";
 	cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
 }//on_sample_lost
 
 
 Logging::Logger::LoggerSmartPtr BulkDataNTReaderListener::getLogger ()
 {
-	if (logger_mp==0)
+	// this code is a bit dirty, but wee need to initialize loggerproxy per thread
+	//isThreadInit return 0 if it is initialized !!!
+	if (LoggingProxy::isInitThread() )
 	{
 		//TBD here we have to set centralized loggger as well, but we need some support from logging
-		logger_mp = new LoggingProxy(0, 0, 31);
+		if (logger_mp==0) //if we do not have a logger we create one for all DDS threads
+			logger_mp = new LoggingProxy(0, 0, 31);
 		LoggingProxy::init(logger_mp);
+		loggerInitCount_m++; // we initialized Proxy another time
 	}
 	return Logging::Loggable::getLogger();
 }//getLogger
