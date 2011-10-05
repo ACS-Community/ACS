@@ -72,26 +72,29 @@ public:
   static int sleep_period;
 private:
   typedef enum {StartState, DataRcvState, StopState} ReaderListenerStates;
+  ReaderListenerStates currentState_m; /// current state of ReaderListener
 
-  ReaderListenerStates currentState_m; //current state of ReaderListener
-  DDS::DataReader* reader_;
   unsigned long lost_packs;
-  std::string flowName_m;
+  std::string topicName_m;
 
-  unsigned long next_sample;
+  unsigned long nestSample_m;
 
   // for performance test
   ACE_Time_Value start_time;
-  unsigned long data_length;
+  unsigned long dataLength_m; /// length of data arrived so far
+  unsigned long frameCounter_m; /// number of *data* frame arrived so far
+  unsigned long totalFrames_m; /// total number of frames that we should get
 
-  ACSBulkData::BulkDataNTFrameDataReader *message_dr;
+  ACSBulkData::BulkDataNTFrameDataReader *frameDataReader_mp;
 
-  /// we override getLogger, so that we can initalize logging system if needed
+  /// we override getLogger, so that we can initialize logging system if needed
   virtual Logging::Logger::LoggerSmartPtr getLogger ();
-  LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread
+  LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread  ...
+  // ... other is one logger for all DDS reader thread
+  unsigned int loggerInitCount_m; // we need to count how many time we call LoggerProxy::init
 
-   // pointer to
-  BulkDataCallback* callback_m;
+   // pointer to user defined callback
+  BulkDataCallback* callback_mp;
 };
 
 #endif
