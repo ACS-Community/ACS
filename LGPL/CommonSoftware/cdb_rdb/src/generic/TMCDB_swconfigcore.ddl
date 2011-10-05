@@ -285,7 +285,7 @@ TABLE ContainerStartupOption
     OptionName              LONGNAME                NOT NULL
     OptionValue             LONGNAME                NOT NULL
     KEY ContStartOptId GENERATED
-    CONSTRAINT ContStartOptContainer FOREIGN KEY (ContainerId) REFERENCES Container CASCADING INVERSE AGGREGATION
+    CONSTRAINT ContStartOptContainer FOREIGN KEY (ContainerId) REFERENCES Container CASCADING INVERSE COMPOSITION
     CONSTRAINT ContStartOptType CHECK (OptionType IN ('ENV_VAR', 'EXEC_ARG', 'EXEC_ARG_LANG', 'CONT_ARG'))
 ENDTABLE
 
