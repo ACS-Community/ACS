@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.41 2011/08/19 21:27:19 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.42 2011/10/05 15:52:40 javarias Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -949,7 +949,7 @@ void ComponentReleaseCallback::errorComponentReleaseFailed(
 
 }
 
-bool ComponentReleaseCallback::awaitComponentRelease(unsigned long timeout /*in ms*/) {
+bool ComponentReleaseCallback::awaitComponentRelease(unsigned long timeout /*in us*/) {
     ACE_Time_Value max_wait = ACE_OS::gettimeofday();
     max_wait.set(max_wait.sec() + timeout / 1000000,
             max_wait.usec() + (timeout % 1000000)); //absolute time
