@@ -10,7 +10,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -24,6 +23,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.concurrent.DaemonThreadFactory;
 import alma.acs.container.corba.AcsCorba;
 import alma.acs.exceptions.AcsJCompletion;
+import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
 import alma.acs.util.ACSPorts;
 import alma.acs.util.AcsLocations;
@@ -55,7 +55,7 @@ public class ServicesDaemonTest extends TestCase
 {
 	private static final String namePrefix = "ServicesDaemonTest";
 	private AcsCorba acsCorba;
-	protected Logger logger;
+	protected AcsLogger logger;
 	
 	private ServicesDaemon daemon;
 	private String host;
