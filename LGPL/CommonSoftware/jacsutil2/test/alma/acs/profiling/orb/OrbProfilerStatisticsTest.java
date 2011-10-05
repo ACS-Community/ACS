@@ -15,9 +15,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import alma.acs.algorithms.DataBinner;
+import alma.acs.algorithms.DataBinner.BinnedTimeValues;
+import alma.acs.algorithms.DataBinner.TimeValue;
 import alma.acs.logging.ClientLogManager;
-import alma.acs.profiling.orb.OrbProfilerStatistics.BinnedTimeValues;
-import alma.acs.profiling.orb.OrbProfilerStatistics.TimeValue;
 import alma.acs.util.IsoDateFormat;
 
 
@@ -65,7 +66,7 @@ public class OrbProfilerStatisticsTest
 		List<ProfilerMessage> messages = parser.parse(new File("hibernateCdbJDal-2011-09-12T153856.txt"));
 		OrbProfilerStatistics stat = new OrbProfilerStatistics(messages, logger);
 		
-		List<TimeValue> callsGetDao = stat.getFinishedRequests("get_DAO");
+		List<TimeValue<Integer>> callsGetDao = stat.getFinishedRequests("get_DAO");
 		assertEquals(8415, callsGetDao.size());
 //		System.out.println("*** Last 10 get_DAO calls with response times in ms ***");
 //		for (int i = callsGetDao.size()-11; i < callsGetDao.size(); i++) {
@@ -74,7 +75,8 @@ public class OrbProfilerStatisticsTest
 //		}
 		
 		final int binIntervalMillis = 1000;
-		List<BinnedTimeValues> binnedData = stat.binTimedData(callsGetDao, binIntervalMillis);
+		DataBinner binner = new DataBinner();
+		List<BinnedTimeValues<Integer>> binnedData = binner.binTimedData(callsGetDao, binIntervalMillis);
 //		System.out.println("*** Binned get_DAO calls per " + binIntervalMillis + " ms ***");
 //		for (BinnedTimeValues binnedTimeValues : binnedData) {
 //			// todo Calculate max or average
@@ -102,7 +104,7 @@ public class OrbProfilerStatisticsTest
 //		}
 		
 		OrbProfilerStatistics stat = new OrbProfilerStatistics(messages, logger);
-		List<TimeValue> concCalls = stat.getConcurrentCalls();
+		List<TimeValue<Integer>> concCalls = stat.getConcurrentCalls();
 		
 		// todo: evaluate, output etc
 	}
@@ -110,4 +112,6 @@ public class OrbProfilerStatisticsTest
 	private String timeString(long timeMillis) {
 		return IsoDateFormat.formatDate(new Date(timeMillis));
 	}
+	
+	
 }
