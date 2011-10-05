@@ -92,4 +92,14 @@ public class LinkSpec
 	{
 		return _isMultiplicity;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder ret = new StringBuilder("LinkSpec (ReductionRule): ");
+		ret.append("parent=");
+		ret.append(_parent.toString());
+		ret.append(", child=");
+		ret.append(_child.toString());
+		return ret.toString();
+	}
 }
