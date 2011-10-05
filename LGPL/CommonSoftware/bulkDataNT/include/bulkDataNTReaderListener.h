@@ -10,15 +10,16 @@
 #include "bulkDataNTSupport.h"
 #include <ndds/ndds_namespace_cpp.h>
 
-
 #include "bulkDataNTCallback.h"
+#include <loggingLoggable.h>
 #include <string>
 #include <ACE.h>
 
 using namespace std;
 
 class BulkDataNTReaderListener
-  : public virtual DDS::DataReaderListener
+  : public virtual DDS::DataReaderListener,
+    public Logging::Loggable
 {
 public:
   //Constructor
@@ -84,6 +85,10 @@ private:
   unsigned long data_length;
 
   ACSBulkData::BulkDataNTFrameDataReader *message_dr;
+
+  /// we override getLogger, so that we can initalize logging system if needed
+  virtual Logging::Logger::LoggerSmartPtr getLogger ();
+  LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread
 
    // pointer to
   BulkDataCallback* callback_m;

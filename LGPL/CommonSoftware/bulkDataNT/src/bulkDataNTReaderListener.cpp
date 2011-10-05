@@ -7,11 +7,12 @@ int BulkDataNTReaderListener::sleep_period=0;
 
 
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCallback* cb)
-:
+: Logging::Loggable("BulkDataNT:"+string(name)),
 				currentState_m(StartState),
 				lost_packs(0),
 				flowName_m(name),
 				data_length(0),
+				logger_mp(0),
 				callback_m (cb)
 {
 	next_sample=0;
@@ -21,6 +22,11 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 
 BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 {
+	if(logger_mp)
+	{
+		LoggingProxy::done();
+		delete logger_mp;
+	}
 }//~BulkDataNTReaderListener
 
 void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
@@ -167,65 +173,60 @@ void BulkDataNTReaderListener::on_requested_incompatible_qos (
 }
 
 void BulkDataNTReaderListener::on_liveliness_changed (
-		DDS::DataReader*,
-		const DDS::LivelinessChangedStatus& lcs)
+		DDS::DataReader*, const DDS::LivelinessChangedStatus& lcs)
 {
 	if (lcs.alive_count_change>0)
 	{
 		for(int i=0; i<lcs.alive_count_change; i++)
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__,
-					(LM_INFO, "A new sender has connected to flow: %s of stream: %s",
-							callback_m->getFlowName(), callback_m->getStreamName()));
-			//until we fix logging in DDS callback
-			printf("A new sender has connected to flow: %s of stream: %s\n",
-					callback_m->getFlowName(), callback_m->getStreamName());
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+					(LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
+							callback_m->getFlowName(), callback_m->getStreamName(),
+							lcs.alive_count));
 			callback_m->onSenderConnect();
 		}//for
 	}else
 	{
-		for(int i=lcs.alive_count_change; i>0; i--)
+		for(int i=lcs.alive_count_change; i<0; i++)
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__,
-					(LM_INFO, "A sender has disconnected to flow: %s of stream: %s",
-							callback_m->getFlowName(), callback_m->getStreamName()));
-			//until we fix logging in DDS callback
-			printf("A sender has disconnected to flow: %s on stream: %s\n",
-										callback_m->getFlowName(), callback_m->getStreamName());
+			ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+					(LM_INFO, "A sender has disconnected to flow: %s of the stream: %s. Total alive connection(s): %d",
+							callback_m->getFlowName(), callback_m->getStreamName(),
+							lcs.alive_count));
 			callback_m->onSenderDisconnect();
 		}//for
 	}//if-else
-
-	//	cerr << "BulkDataNTReaderListener(" << listName << ")::on_liveliness_changed:" << endl;
-	//	cerr << "    alive_count: " << lcs.alive_count << endl;
-	//	cerr << "    not_alive_count: " << lcs.not_alive_count << endl;
-	//	cerr << "    alive_count_change: " << lcs.alive_count_change << endl;
-	//	cerr << "    not_alive_count_change: " << lcs.not_alive_count_change << endl;
-	//
-	//	cout << "Received:"  << data_length << endl;
-}
+}//on_liveliness_changed
 
 void BulkDataNTReaderListener::on_subscription_matched (
-		DDS::DataReader*,
-		const DDS::SubscriptionMatchedStatus& )
+		DDS::DataReader*, const DDS::SubscriptionMatchedStatus& )
 {
-	cerr << "BulkDataNTReaderListener(" << flowName_m << ")::on_subscription_match" << endl;
-	lost_packs = 0;
-}
+	ACS_TRACE(__FUNCTION__);
+}//on_subscription_matched
 
 void BulkDataNTReaderListener::on_sample_rejected(
-		DDS::DataReader*,
-		const DDS::SampleRejectedStatus& srs)
+		DDS::DataReader*, const DDS::SampleRejectedStatus& srs)
 {
 	cerr << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_rejected SampleRejectedStatus.last_reason: ";
 	cerr << srs.last_reason << " SampleRejectedStatus.total_count_change: " << srs.total_count_change;
 	cerr << " SampleRejectedStatus.total_count: " << srs.total_count << endl;
-}
+}//on_sample_rejected
 
 void BulkDataNTReaderListener::on_sample_lost(
-		DDS::DataReader*,
-		const DDS::SampleLostStatus& s)
+		DDS::DataReader*, const DDS::SampleLostStatus& s)
 {
 	cerr << endl << endl << "BulkDataNTReaderListener(" << flowName_m << "::on_sample_lost: ";
 	cerr << "total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl << endl;
-}
+}//on_sample_lost
+
+
+Logging::Logger::LoggerSmartPtr BulkDataNTReaderListener::getLogger ()
+{
+	if (logger_mp==0)
+	{
+		//TBD here we have to set centralized loggger as well, but we need some support from logging
+		logger_mp = new LoggingProxy(0, 0, 31);
+		LoggingProxy::init(logger_mp);
+	}
+	return Logging::Loggable::getLogger();
+}//getLogger
