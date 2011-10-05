@@ -56,5 +56,9 @@
     <ErrorCode name="DDSDeleteDataProblem" shortDescription="Problem to delete Data" description="">
         <Member name="DataType" type="string" description="Domain ID" />
     </ErrorCode>
+    
+    <ErrorCode name="DDSReturnError" shortDescription="DDS Return Error" description="Mapping for DDS return code error">
+        <Member name="RetCode" type="long" description="Return (erro) code" />
+    </ErrorCode>
    
 </Type>
