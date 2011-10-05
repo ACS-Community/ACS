@@ -61,9 +61,14 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		TEST_DEF_2("TEST:*:2",3,"Test alarm 2",null,null,null),
 		PS_PSM_1("PS:PS_MEMBER:1",2,"PS test alarm","A terrible mistake",null,null),
 		IDL("IDLFamily:IDLMember:1",0,"This alarm has been sent through an IDL method","Sent an IDL alarm",null,null),
-		NODE_DEFAULT("NODE_DEFAULT:*:1", 2, "NODE test", null, null, null),
-		NODE_DEFAULT1("NODE_DEFAULT:NODE1:1", 2, "NODE test", null, null, null),
-		NODE_DEFAULT4("NODE_DEFAULT:NODE4:1", 2, "NODE test", null, null, null),
+		NODE_DEFAULT1("NODE_DEFAULT:*:1", 2, "NODE test", null, null, null),
+		NODE_DEFAULT2("NODE_DEFAULT:*:2", 2, "NODE test", null, null, null),
+		NODE_NODE1_1("NODE_DEFAULT:NODE1:1", 2, "NODE test", null, null, null),
+		NODE_NODE1_2("NODE_DEFAULT:NODE1:2", 2, "NODE test", null, null, null),
+		NODE_NODE4_1("NODE_DEFAULT:NODE4:1", 2, "NODE test", null, null, null),
+		NODE_NODE4_2("NODE_DEFAULT:NODE4:2", 2, "NODE test", null, null, null),
+		NODE_MULTI1("NODE_DEFAULT:MULTIPLICITY_REG:1", 2, "NODE test", null, null, null),
+		NODE_MULTI2("NODE_DEFAULT:MULTIPLICITY_REG:2", 2, "NODE test", null, null, null),
 		REGEXP_NODE1("NODE_REGEXP:REGEXP_NODE1:1", 2, "NODE test", null, null, null),
 		REGEXP_NODE2("NODE_REGEXP:REGEXP_NODE_2:1", 2, "NODE test", null, null, null),
 		REGEXP_NODE3("NODE_REGEXP:REGEXP_NODE_3:1", 2, "NODE test", null, null, null),
@@ -121,7 +126,14 @@ public class TestAlarmDAO extends ComponentClientTestCase {
 		MF_REGEXP2_DFM("MF_REGEXP:*:2", 0, "Regexp for 2",null, null, null),
 		MF_REGEXP3_DFM("MF_REGEXP:*:3", 0, "Regexp for 3",null, null, null),
 		MF_REGEXP4_DFM("MF_REGEXP:*:4", 0, "Regexp for 4",null, null, null),
-		MF_REGEXP5_DFM("MF_REGEXP:*:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null);
+		MF_REGEXP5_DFM("MF_REGEXP:*:5", 1, "MR alarm with regexp","Multiplicity reduction generated", null, null),
+		HIER_DEF1("HIERARCHICAL:*:1",2,"Generic FS",null,null,null),
+		HIER_DEF2("HIERARCHICAL:*:2",2,"MULTI FS",null,null,null),
+		HIER_DA41_1("HIERARCHICAL:CONTROL/DA41/HIER:1",2,"Generic FS",null,null,null),
+		HIER_DA41_2("HIERARCHICAL:CONTROL/DA41/HIER:2",2,"MULTI FS",null,null,null),
+		HIER_MULTI_1("HIERARCHICAL:MULTIPLICITY_HIER:1",2,"Generic FS",null,null,null),
+		HIER_MULTI_2("HIERARCHICAL:MULTIPLICITY_HIER:2",2,"MULTI FS",null,null,null);
+		
 
 		public final String ID;
 		public final int priority;
