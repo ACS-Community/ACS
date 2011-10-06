@@ -1,4 +1,4 @@
-# @(#) $Id: Container.py,v 1.53 2011/10/06 20:22:31 javarias Exp $
+# @(#) $Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $
 #
 # Copyright (C) 2001
 # Associated Universities, Inc. Washington DC, USA.
@@ -21,7 +21,7 @@
 # ALMA should be addressed as follows:
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: Container.py,v 1.53 2011/10/06 20:22:31 javarias Exp $"
+# "@(#) $Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -38,7 +38,7 @@ TODO LIST:
 - a ComponentLifecycleException has been defined in IDL now...
 '''
 
-__revision__ = "$Id: Container.py,v 1.53 2011/10/06 20:22:31 javarias Exp $"
+__revision__ = "$Id: Container.py,v 1.54 2011/10/06 20:57:07 javarias Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
 from time      import sleep
@@ -462,7 +462,7 @@ class Container(maci__POA.Container, maci__POA.LoggingConfigurable, BaseClient):
         return self.components[name][COMPONENTINFO]
 
     def activate_component_async(self, h, execution_id, name, exe, type, callback, desc):
-        pass 
+        self.activate_component(h, execution_id, name, exe, type)
     
     #--------------------------------------------------------------------------
     def failedActivation(self, comp_entry): # pragma: NO COVER
