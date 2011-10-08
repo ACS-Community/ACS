@@ -2,7 +2,7 @@
 <fault-family name="MF_REGEXP" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
   <help-url>http://tempuri.org</help-url>
-  <contact email="acaproni@eso.org" name="Alessandro Caproni"/>
+  <contact name="Alessandro Caproni"/>
   <fault-code value="0">
   	<priority>0</priority>
   	<problem-description>Regexp for 0</problem-description>
