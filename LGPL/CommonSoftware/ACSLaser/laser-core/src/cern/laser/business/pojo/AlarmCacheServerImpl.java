@@ -116,7 +116,13 @@ public class AlarmCacheServerImpl {
       LOGGER.info("notifying piquet email : " + currentAlarm.getPiquetEmail());
       if (LOGGER.isDebugEnabled())
           LogTimeStamp.logMsg("notifying piquet email : " + currentAlarm.getPiquetEmail(), true);
-      mailAndSmsServer.sendEmail(currentAlarm.getPiquetEmail(), "LASER NOTIFICATION", currentAlarm.toString());
+      String subject="Alarm server notification: "+currentAlarm.getAlarmId();
+      if (currentAlarm.getStatus().getActive()) {
+    	  subject=subject+" ACTIVE";
+      } else {
+    	  subject=subject+" TERMINATE";
+      }
+      mailAndSmsServer.sendEmail(currentAlarm.getPiquetEmail(), subject, currentAlarm.toString());
       LOGGER.info("notified");
       if (LOGGER.isDebugEnabled()) LogTimeStamp.logMsg("notified piquet email");
     } catch (Exception e) {
