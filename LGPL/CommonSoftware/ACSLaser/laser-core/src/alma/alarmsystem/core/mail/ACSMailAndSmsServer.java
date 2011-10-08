@@ -22,11 +22,22 @@
  */
 package alma.alarmsystem.core.mail;
 
+import java.util.Date;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Logger;
 
-import alma.acs.logging.AcsLogLevel;
+import javax.mail.Address;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import cern.laser.business.pojo.MailAndSmsServerImpl;
+
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * ACS class to send SMS and mail.
@@ -34,7 +45,7 @@ import cern.laser.business.pojo.MailAndSmsServerImpl;
  * The class extends MailAndSmsServerImpl CERN pojo class because in such a class there are 
  * several hard-coded fields that are different from what we use in ACS/ALMA.
  * 
- * At the present the alarm system does not send emails neither SMS so this class defines
+ * At the present the alarm system does not send SMS so this class defines
  * stub routines to be filled in when we'll decide we need them.
  * 
  * @see cern.laser.business.pojo.MailAndSmsServerImpl
@@ -47,6 +58,8 @@ public class ACSMailAndSmsServer extends MailAndSmsServerImpl {
 	// ACS loger
 	private Logger logger;
 	
+	private final Session session;
+	
 	/**
 	 * Constructor
 	 */
@@ -56,6 +69,15 @@ public class ACSMailAndSmsServer extends MailAndSmsServerImpl {
 			throw new IllegalArgumentException("The logger can't be null");
 		}
 		logger=log;
+		
+		Properties props=System.getProperties();
+		if (!props.containsKey("mail.smtp.host")) {
+			props.put("mail.smtp.host", "smtp.alma.cl");
+		}
+		if (!props.containsKey("mail.from")) {
+			props.put("mail.from", "acaproni@alma.cl");
+		}
+	    session = Session.getInstance(props, null);
 	}
 	
 	/**
@@ -67,8 +89,42 @@ public class ACSMailAndSmsServer extends MailAndSmsServerImpl {
 	 * 
 	 * @see cern.laser.business.pojo.MailAndSmsServerImpl
 	 */
-	public void sendEmail(String address, String subject, String text) {
-		logger.log(AcsLogLevel.WARNING, "Sending od EMAILS disabled: no email will be sent to "+address);
+	public void sendEmail(final String address, final String subject, final String text) {
+		if (address==null || address.isEmpty()) {
+			logger.log(AcsLogLevel.WARNING, "Sending EMAIL aborted: no valid dest. address");
+		}
+		logger.log(AcsLogLevel.DEBUG, "Sending EMAIL to "+address+", subject="+subject);
+		Thread MailerThread = new Thread(new Runnable() {
+			public void run() {
+				try {
+			        MimeMessage msg = new MimeMessage(session);
+			        msg.setFrom();
+			        if (address.contains(";")) {
+			        	String[] addresses=address.split(";");
+			        	Vector<Address> addressesVector = new Vector<Address>();
+			        	for (String toAddress: addresses) {
+			        		if (!toAddress.trim().isEmpty()) {
+			        			addressesVector.add(new InternetAddress(toAddress.trim()));
+			        		}
+			        	}
+			        	Address[] addrrs = new Address[addressesVector.size()];
+			        	addressesVector.toArray(addrrs);
+			        	msg.setRecipients(Message.RecipientType.TO,addrrs);
+			        } else {
+			        	msg.setRecipients(Message.RecipientType.TO,address);
+			        }
+			        msg.setSubject(subject);
+			        msg.setSentDate(new Date());
+			        msg.setText(text);
+			        Transport.send(msg);
+			        logger.log(AcsLogLevel.DEBUG, "Email sent");
+			    } catch (MessagingException mex) {
+			        logger.log(AcsLogLevel.ERROR,"Error sending email "+mex.toString());
+			    }
+			}
+		},"MailerThread_"+System.currentTimeMillis());
+		MailerThread.setDaemon(true);
+		MailerThread.start();
 	}
 	
 	/**
