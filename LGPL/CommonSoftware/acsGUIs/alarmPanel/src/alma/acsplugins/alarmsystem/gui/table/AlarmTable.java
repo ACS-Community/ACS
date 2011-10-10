@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni
- * @version $Id: AlarmTable.java,v 1.21 2011/03/25 20:29:41 acaproni Exp $
+ * @version $Id: AlarmTable.java,v 1.22 2011/10/10 21:31:15 acaproni Exp $
  * @since    
  */
 
@@ -73,6 +73,7 @@ import alma.acsplugins.alarmsystem.gui.CernSysPanel;
 import alma.acsplugins.alarmsystem.gui.reduced.ReducedChainDlg;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.AlarmTableColumn;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel.PriorityLabel;
+import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.alarmsystem.clients.CategoryClient;
 
 import cern.laser.client.data.Alarm;
@@ -445,16 +446,25 @@ public class AlarmTable extends JTable implements ActionListener {
 			JLabel.CENTER);
 	
 	/**
+	 * The undocumented table model
+	 */
+	private final UndocAlarmTableModel undocModel;
+	
+	/**
 	 * Constructor 
 	 * @param model The model for this table
 	 * @param panel The panel showing this table
 	 */
-	public AlarmTable(AlarmTableModel model, CernSysPanel panel) {
+	public AlarmTable(AlarmTableModel model, CernSysPanel panel, UndocAlarmTableModel undocModel) {
 		super(model);
 		if (model==null) {
 			throw new IllegalArgumentException("Invalid null model in constructor");
 		}
 		this.model=model;
+		if (undocModel==null) {
+			throw new IllegalArgumentException("Invalid null undocumented model in constructor");
+		}
+		this.undocModel=undocModel;
 		if (panel==null) {
 			throw new IllegalArgumentException("Invalid null panel in constructor");
 		}
@@ -674,7 +684,7 @@ public class AlarmTable extends JTable implements ActionListener {
 		}
 		CategoryClient client = model.getCategoryClient();
 		if (reducedDlg==null) {
-			reducedDlg = new ReducedChainDlg(client,alarm,panel);
+			reducedDlg = new ReducedChainDlg(client,alarm,panel,undocModel);
 		} else {
 			reducedDlg.setRootAlarm(alarm);
 			reducedDlg.setVisible(true);
