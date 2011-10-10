@@ -55,7 +55,15 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	private final AtomicInteger undeliveredRequests = new AtomicInteger(0);
 	
 	/**
-	 * Maximum request queue usage in percent, for the queue owned by the POA given in  
+	 * Maximum request queue usage in percent, for the queue owned by the POA given in {@link #requestQueueMaxUsePOA}.
+	 * <p>
+	 * Note about usage of AtomicInteger: What we really would like to use is an AtomicReference class
+	 * whose value is a custom class that bundles together an "int requestQueueMaxUsePercent"
+	 * and "String requestQueueMaxUsePOA" while offering a method "compareGreaterEqualsAndSet"
+	 * that can swap a new "usepercent / poa" pair if the new integer is greater or equal than the old one. 
+	 * In this way we could get rid of the synchronized blocks in methods requestQueueSizeChanged and logStatus.
+	 * Since such an "enhanced AtomicReference" is not available and I don't dare to write one, we do use
+	 * synchronized blocks, and "abuse" this AtomicInteger as a monitor which otherwise would have to be a separate field.
 	 */
 	private final AtomicInteger requestQueueMaxUsePercent = new AtomicInteger(0);
 
@@ -63,7 +71,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 	 * Name of the POA who got the longest request queue (see {@link #requestQueueMaxUsePercent}) 
 	 * since the last ORB profiler status log.
 	 */
-	private volatile String requestQueueMaxUsePOA;
+	private volatile String requestQueueMaxUsePOA = "---";
 	
 	/**
 	 * Used to trace a request from {@link #requestStarted(int, String, String)} 
@@ -240,6 +248,7 @@ public class AcsORBProfilerImplBase implements AcsORBProfiler
 				msg = "ORB status: connectionThreadsUsed=" + connectionPoolUsePercent +
 					"%, lost calls=" + undeliveredRequests.getAndSet(0) + 
 					", requestQueueMaxUsePercent=" + requestQueueMaxUsePercent.getAndSet(0) + "% (in POA '" + requestQueueMaxUsePOA + "').";
+				requestQueueMaxUsePOA = "---";
 			}
 			logger.info(msg);
 		}
