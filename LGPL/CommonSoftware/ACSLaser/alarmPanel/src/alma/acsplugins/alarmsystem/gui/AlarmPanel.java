@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmPanel.java,v 1.29 2011/04/13 16:14:03 acaproni Exp $
+ * @version $Id: AlarmPanel.java,v 1.30 2011/10/10 21:20:15 acaproni Exp $
  * @since    
  */
 
@@ -79,7 +79,7 @@ public class AlarmPanel extends JPanel {
      * The panel shown when the CERN alarm system is in use
      * and the client is connected to the AS
      */
-    private final CernSysPanel cernSysPnl;
+    private final CernAlSysTabbedPane cernPnl;
     
     /**
      * The panel shown when the ACS alarm system is in use.
@@ -134,7 +134,7 @@ public class AlarmPanel extends JPanel {
 	 */
 	public AlarmPanel() {
 		super(true);
-		cernSysPnl=new CernSysPanel(this,alSysNotAvailPnl);
+		cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -150,7 +150,7 @@ public class AlarmPanel extends JPanel {
 		}
 		this.frame=frame;
 		this.frame.setIconImage(new ImageIcon(AlarmGUIType.class.getResource(AlarmGUIType.iconFolder+"flag_red.png")).getImage());
-		cernSysPnl=new CernSysPanel(this,alSysNotAvailPnl);
+		cernPnl=new CernAlSysTabbedPane(this,alSysNotAvailPnl);
 		initialize();
 	}
 	
@@ -161,7 +161,7 @@ public class AlarmPanel extends JPanel {
 	private void initialize() {
 		panel.setLayout(layout);
 		panel.add(alSysNotAvailPnl, alSysNotAvailName);
-		panel.add(cernSysPnl, cernSysName);
+		panel.add(cernPnl, cernSysName);
 		panel.add(acsASPnl, acsASName);
 
 		// At this stage the alarm system is unavailable  but we do not know yet
@@ -191,15 +191,16 @@ public class AlarmPanel extends JPanel {
 		if (orb==null || logger==null) {
 			throw new Exception("Services not set!");
 		}
-		cernSysPnl.setServices(orb, logger);
-		cernSysPnl.start();
+		cernPnl.setServices(orb, logger);
+		cernPnl.start();
 	}
 	
 	/**
 	 * @see SubsystemPlugin
 	 */
 	public void stop() throws Exception {
-		cernSysPnl.stop();
+		System.out.println("AlarmPanel.stop");
+		cernPnl.stop();
 	}
 	/**
 	 * Set the services
@@ -225,7 +226,7 @@ public class AlarmPanel extends JPanel {
 	 * @return <code>true</code> if an attempt to connect is running
 	 */
 	public boolean isConnecting() {
-		return cernSysPnl.isConnecting();
+		return cernPnl.isConnecting();
 	}
 
 	/**
@@ -234,7 +235,7 @@ public class AlarmPanel extends JPanel {
 	 * @see StatusLine
 	 */
 	public void showMessage(String mesg, boolean red) {
-		cernSysPnl.showMessage(mesg, red);
+		cernPnl.showMessage(mesg, red);
 	}
 	
 	/**
@@ -244,7 +245,7 @@ public class AlarmPanel extends JPanel {
 	 * 				if <code>null</code> the details table is cleared.
 	 */
 	public void showAlarmDetails(Alarm alarm) {
-		cernSysPnl.showAlarmDetails(alarm);
+		cernPnl.showAlarmDetails(alarm);
 	}
 	
 	/**
