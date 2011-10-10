@@ -1,12 +1,54 @@
 #! /bin/bash
 
-echo "Please read RTI Software License Agreement carefully!"
-which acroread 2&>1 /dev/null
-if [ $? == 0 ]
+ARCH=`uname -m`
+DDS_DIR=$PWD/../PROPRIETARY/RTIDDS/
+
+if [ $ARCH == x86_64 ]
 then
-    acroread ../PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.pdf
+    HOST_TAR=rtidds45d-host-x64Linux.tar.gz.gpg
+    TARGET_TAR=rtidds45d-target-x64Linux2.6gcc4.1.2.tar.gz.gpg
 else
-    less -E ../PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.txt 
+    if [ $ARCH == i386 -o $ARCH == i686 ]
+    then
+    HOST_TAR=rtidds45d-host-i86Linux.tar.gz.gpg
+    TARGET_TAR=rtidds45d-target-i86Linux2.6gcc4.1.2.tar.gz.gpg
+    else
+    echo "ERROR: not supported platform: $ARCH"
+    exit 2
+    fi
+fi
+
+# do we have acrobatreader on the machine ?
+which acroread 2&>1 /dev/null
+ACRO_READER=$?
+
+
+# if option -c is specified we check out all neccessary files
+if [ "$1" == "-c" ]
+then
+    echo "Checking out: " $HOST_TAR
+    cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/$HOST_TAR
+    
+    echo "Checking out: " $TARGET_TAR
+    cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/$TARGET_TAR
+    
+    if [ $ACRO_READER == 0 ]
+    then
+        cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.pdf
+    else
+        cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.txt
+    fi
+    DDS_DIR=$PWD/RTIDDS
+fi
+
+
+echo "Please read RTI Software License Agreement carefully!"
+
+if [ $ACRO_READER == 0 ]
+then
+    acroread $DDS_DIR/RTISoftwareLicenseAgreement20101217.pdf
+else
+    less -E $DDS_DIR/RTISoftwareLicenseAgreement20101217.txt 
 fi
 
 echo "-------------------------------------------------------------------------------"
@@ -22,21 +64,6 @@ fi
 
 echo ""
 
-ARCH=`uname -m`
-if [ $ARCH == x86_64 ]
-then
-    HOST_TAR=rtidds45d-host-x64Linux.tar.gz.gpg
-    TARGET_TAR=rtidds45d-target-x64Linux2.6gcc4.1.2.tar.gz.gpg
-else
-    if [ $ARCH == i386 -o $ARCH == i686 ]
-    then
-	HOST_TAR=rtidds45d-host-i86Linux.tar.gz.gpg
-	TARGET_TAR=rtidds45d-target-i86Linux2.6gcc4.1.2.tar.gz.gpg
-    else
-	echo "ERROR: not supported platform: $ARCH"
-	exit 2
-    fi
-fi
 
 if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI ]
 then
@@ -50,13 +77,12 @@ then
     exit 3
 fi
 
-TMP_DIR=$PWD
 cd $ALMASW_ROOTDIR/$ALMASW_RELEASE/RTI
 
 echo "Please give the passphrase (will not bee seen on the screen) for $HOST_TAR & $TARGET_TAR: "
 read -sp ">" PASS
 
-gpg -d --passphrase $PASS $TMP_DIR/../PROPRIETARY/RTIDDS/$HOST_TAR | tar xvz
+gpg -d --passphrase $PASS $DDS_DIR/$HOST_TAR | tar xvz
 if [ $? != 0 ]
 then
     cd $TMP_DIR
@@ -64,7 +90,7 @@ then
     exit 4
 fi
 
-gpg -d --passphrase $PASS $TMP_DIR/../PROPRIETARY/RTIDDS/$TARGET_TAR | tar xvz
+gpg -d --passphrase $PASS $DDS_DIR/$TARGET_TAR | tar xvz
 if [ $? != 0 ]
 then
     cd $TMP_DIR
