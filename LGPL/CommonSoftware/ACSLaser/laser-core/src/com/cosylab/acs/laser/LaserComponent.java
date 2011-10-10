@@ -315,7 +315,7 @@ public class LaserComponent extends CERNAlarmServicePOA implements MessageListen
 		mailAndSmsServer = new ACSMailAndSmsServer(logger);
 		sourceDefinitionService = new SourceDefinitionServiceImpl();
 		alarmCacheListener = new AlarmCacheListenerImpl(alarmCacheServer);
-		alarmCache = new ACSAlarmCacheImpl(alarmDAO, alarmCacheListener);
+		alarmCache = new ACSAlarmCacheImpl(alarmDAO, categoryDAO,alarmCacheListener,logger);
 		
 		alarmDAO.setSurveillanceAlarmId("SURVEILLANCE:SOURCE:1");
 		alarmDAO.setResponsiblePersonDAO(responsiblePersonDAO);
