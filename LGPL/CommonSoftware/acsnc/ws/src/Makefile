@@ -21,7 +21,7 @@
 # MA 02111-1307  USA
 #
 #*******************************************************************************
-# "@(#) $Id: Makefile,v 1.68 2011/08/26 22:04:59 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.69 2011/10/10 22:45:01 javarias Exp $"
 #------------------------------------------------------------------------
 #
 # Makefile for acsnc/ws/src
@@ -52,7 +52,7 @@ INCLUDES = 	acsncHelper.h acsncSupplier.h acsncConsumer.h \
             acsncArchiveConsumer.h \
             acsncCDBProperties.h acsncServiceChecker.h \
             acsncReconnectionCallback.h \
-            acsncCircularQueue.h
+            acsncCircularQueue.h acsncBlockingQueue.h acsncBlockingQueue.i
 
 INCLUDES_L	= 
 
@@ -69,7 +69,7 @@ acsnc_OBJECTS  = acsncCDBProperties \
                  acsncServiceChecker acsncReconnectionCallback \
                  acsncCircularQueue
 
-acsnc_LIBS     = ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS
+acsnc_LIBS     = pthread rt ACSErrTypeCommon acsncStubs acsncErrType AcsNCTraceLogLTS logging
 
 acsncServiceChecker_OBJECTS = acsncServiceCheckerExec
 acsncServiceChecker_LIBS = acsnc maciClient
