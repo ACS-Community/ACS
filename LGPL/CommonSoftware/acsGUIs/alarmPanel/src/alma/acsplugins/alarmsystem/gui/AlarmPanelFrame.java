@@ -78,8 +78,17 @@ public class AlarmPanelFrame extends JFrame {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				super.windowClosed(e);
+				System.out.println("Window closed");
+				try {
+					System.out.println("Stopping panel");
+					alarmPanel.stop();
+				} catch (Throwable t) {
+					System.err.println("Error stopping the alarmPanel: "+t.getMessage());
+				}
 				if (acsHelper!=null) {
+					System.out.println("Stopping acsHelper");
 					acsHelper.done();
+					
 				}
 			}
 		});
