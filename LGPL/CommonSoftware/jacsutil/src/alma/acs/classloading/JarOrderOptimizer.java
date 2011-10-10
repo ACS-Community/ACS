@@ -57,6 +57,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"jcont.jar",
 		"JavaContainerError.jar",
 		"jACSUtil.jar",
+		"jacsutil2.jar",
 		"logging_idl.jar",
 		"acsjlog.jar",
 		"maci.jar",
