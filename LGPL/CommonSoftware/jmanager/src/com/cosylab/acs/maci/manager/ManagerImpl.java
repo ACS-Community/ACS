@@ -921,6 +921,11 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 	 */
 	private transient AtomicInteger threadsUsedPrecentage;
 	
+	/**
+	 * Use sync. instead of async. activation of components.
+	 */
+	private static final String NAME_SYNC_ACTIVATE = "manager.sync_activate";
+
 	public void setThreadUsage(int precentage)
 	{
 		threadsUsedPrecentage.set(precentage);
@@ -6411,45 +6416,51 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			// log info
 			logger.log(Level.INFO,"Activating component '"+name+"' (" + HandleHelper.toString(h | COMPONENT_MASK) + ") on container '" + containerInfo.getName() + "'.");
 
-			/*
-			// sync
-			try
-			{
-				executionId = generateExecutionId();
-				activationTime = System.currentTimeMillis();
-				componentInfo = container.activate_component(h | COMPONENT_MASK, executionId, name, code, type);
-			}
-			catch (Throwable ex)
-			{
-				bcex = new AcsJCannotGetComponentEx(ex);
-				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
-				timeoutError = (ex instanceof TimeoutRemoteException);
-			}
-			*/
+			boolean callSyncActivate = System.getProperties().containsKey(NAME_SYNC_ACTIVATE);
+			if (containerInfo.getImplLang() == ImplLang.py)
+				callSyncActivate = true;
 			
-			// async
-			try
-			{
-				executionId = generateExecutionId();
-				activationTime = System.currentTimeMillis();
-				
-				ComponentInfoCompletionCallbackImpl callback = new ComponentInfoCompletionCallbackImpl(
-						requestor, name, type,
-						code, containerName, keepAliveTime, status,
-						isOtherDomainComponent, isDynamicComponent, h, reactivate,
-						container, containerInfo, executionId,
-						activationTime);
-				container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
-				
-				return callback.waitUntilActivated();
+			if (callSyncActivate)
+				{
+				// sync
+				try
+				{
+					executionId = generateExecutionId();
+					activationTime = System.currentTimeMillis();
+					componentInfo = container.activate_component(h | COMPONENT_MASK, executionId, name, code, type);
+				}
+				catch (Throwable ex)
+				{
+					bcex = new AcsJCannotGetComponentEx(ex);
+					logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+					timeoutError = (ex instanceof TimeoutRemoteException);
+				}
 			}
-			catch (Throwable ex)
+			else
 			{
-				bcex = new AcsJCannotGetComponentEx(ex);
-				logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
-				throw bcex;
+				// async
+				try
+				{
+					executionId = generateExecutionId();
+					activationTime = System.currentTimeMillis();
+					
+					ComponentInfoCompletionCallbackImpl callback = new ComponentInfoCompletionCallbackImpl(
+							requestor, name, type,
+							code, containerName, keepAliveTime, status,
+							isOtherDomainComponent, isDynamicComponent, h, reactivate,
+							container, containerInfo, executionId,
+							activationTime);
+					container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
+					
+					return callback.waitUntilActivated();
+				}
+				catch (Throwable ex)
+				{
+					bcex = new AcsJCannotGetComponentEx(ex);
+					logger.log(Level.SEVERE, "Failed to activate component '"+name+"' on container '"+containerName+"'.", bcex);
+					throw bcex;
+				}
 			}
-			
 		}
 		
 			
