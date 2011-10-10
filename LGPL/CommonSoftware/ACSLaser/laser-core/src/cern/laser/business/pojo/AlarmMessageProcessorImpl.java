@@ -93,7 +93,7 @@ public class AlarmMessageProcessorImpl {
       throws Exception {
 	alarmCache.acquire();
 	try {
-	    LOGGER.info("processing fault state:" + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
+	    LOGGER.info("processing fault state: " + faultState.getFamily()+":"+faultState.getMember()+":"+faultState.getCode()+", Descriptor="+faultState.getDescriptor()+"\n");
 	    Timestamp system_timestamp = new Timestamp(System.currentTimeMillis());
 	    Alarm alarm = alarmCache.getCopy(Triplet.toIdentifier(faultState.getFamily(), faultState.getMember(), new Integer(
 	        faultState.getCode())));
@@ -219,7 +219,11 @@ public class AlarmMessageProcessorImpl {
     currentStatus.setSourceTimestamp(sourceTimestamp);
     currentStatus.setUserTimestamp(faultState.getUserTimestamp());
     currentStatus.setSystemTimestamp(system_timestamp);
-    currentStatus.setProperties(faultState.getUserProperties());
+    String alarmServerProp = currentStatus.getProperties().getProperty(ACSAlarmCacheImpl.alarmServerPropkey);
+   	currentStatus.setProperties(faultState.getUserProperties());
+   	if (alarmServerProp!=null) {
+   		currentStatus.getProperties().put(ACSAlarmCacheImpl.alarmServerPropkey, alarmServerProp);
+   	}
   }
 
   public void updateMultiplicityNode(Alarm alarm) {
