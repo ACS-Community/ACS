@@ -18,7 +18,6 @@ import org.omg.CORBA.ORB;
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 
-import alma.acs.container.ContainerServices;
 import alma.acs.logging.AcsLogger;
 import alma.acsplugins.alarmsystem.gui.detail.AlarmDetailTable;
 import alma.acsplugins.alarmsystem.gui.sound.AlarmSound;
@@ -26,6 +25,8 @@ import alma.acsplugins.alarmsystem.gui.statusline.StatusLine;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTable;
 import alma.acsplugins.alarmsystem.gui.table.AlarmTableModel;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar;
+import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
+import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocumentedAlarmTable;
 import alma.alarmsystem.clients.CategoryClient;
 import alma.maciErrType.wrappers.AcsJCannotGetComponentEx;
 
@@ -142,32 +143,33 @@ public class CernSysPanel extends JPanel {
      * The panel to show messages while connecting
      */
     private final AlSysNotAvailPanel notAvaiPnl;
-    
+       
     /**
      * Constructor
      * 
      * @param owner The panel showing this container
+     * @param notAvaiPnl The panel when the AS is not available
      */
-    public CernSysPanel(AlarmPanel owner, AlSysNotAvailPanel notAvaiPnl) {
+    public CernSysPanel(AlarmPanel owner, AlSysNotAvailPanel notAvaiPnl, UndocAlarmTableModel undocModel) {
     	if (notAvaiPnl==null) {
     		throw new IllegalArgumentException("AlSysNotAvailPanel can't be null");
     	}
     	alarmPanel=owner;
     	this.notAvaiPnl=notAvaiPnl;
-    	initialize();
+    	initialize(undocModel);
     }
     
 	/**
 	 * Init the GUI
 	 *
 	 */
-	private void initialize() {
+	private void initialize(UndocAlarmTableModel undocModel) {
 		setLayout(new BorderLayout());
 		
 		// Build GUI objects
-		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES,false);
+		model = new AlarmTableModel(this,ACTIVATE_RDUCTION_RULES,false,undocModel);
 		alarmSound= new AlarmSound(model);
-		alarmTable = new AlarmTable(model,this);
+		alarmTable = new AlarmTable(model,this,undocModel);
 		statusLine = new StatusLine(model,this);
 		connectionListener=statusLine;
 		model.setConnectionListener(statusLine);
