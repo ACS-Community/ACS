@@ -19,7 +19,7 @@
 
 /** 
  * @author  acaproni   
- * @version $Id: AlarmTableModel.java,v 1.30 2011/03/25 20:28:59 acaproni Exp $
+ * @version $Id: AlarmTableModel.java,v 1.31 2011/10/10 21:32:44 acaproni Exp $
  * @since    
  */
 
@@ -29,9 +29,12 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
+import com.cosylab.acs.laser.dao.ACSAlarmCacheImpl;
+
 import alma.acs.util.IsoDateFormat;
 import alma.acsplugins.alarmsystem.gui.ConnectionListener;
 import alma.acsplugins.alarmsystem.gui.toolbar.Toolbar.ComboBoxValues;
+import alma.acsplugins.alarmsystem.gui.undocumented.table.UndocAlarmTableModel;
 import alma.alarmsystem.clients.CategoryClient;
 
 import cern.laser.client.data.Alarm;
@@ -281,19 +284,29 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	private final Thread thread;
 	
 	/**
+	 * The model of the table of undocumented alarms
+	 */
+	private final UndocAlarmTableModel undocModel;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param owner The component that owns the table
 	 * @param reduce <code>true</code> if the reduction rules must be applied
 	 * @param panel The <code>AlarmPanel</code>
+	 * @param undocModel) The model of the undocumented table
 	 */
-	public AlarmTableModel(JComponent owner, boolean reduce, boolean addInactiveAlarms) {
+	public AlarmTableModel(JComponent owner, boolean reduce, boolean addInactiveAlarms,UndocAlarmTableModel undocModel) {
 		if (owner==null) {
 			throw new IllegalArgumentException("The owner component can't be null");
+		}
+		if (undocModel==null) {
+			throw new IllegalArgumentException("The model of undocumented alarms can't be null");
 		}
 		this.owner=owner;
 		this.applyReductionRules=reduce;
 		this.addInactiveAlarms=addInactiveAlarms;
+		this.undocModel=undocModel;
 		this.items = new AlarmsReductionContainer(MAX_ALARMS);
 		// Put each alarm type in the has map of the counters
 		for (AlarmGUIType alarmType: AlarmGUIType.values()) {
@@ -313,6 +326,12 @@ public class AlarmTableModel extends AbstractTableModel implements AlarmSelectio
 	 * @see AlarmSelectionListener
 	 */
 	public synchronized void onAlarm(Alarm alarm) {
+		// Check if the alarm is not documented
+		String undoc=alarm.getStatus().getUserProperties().getProperty(ACSAlarmCacheImpl.alarmServerPropkey);
+		if (ACSAlarmCacheImpl.undocumentedAlarmProp.equals(undoc)) {
+			undocModel.onAlarm(alarm);
+			return;
+		}
 		AlarmTableEntry tableEntry = new AlarmTableEntry(alarm);
 		// Add the alarm to the queue
 		if (waitIfQueueFull) {
