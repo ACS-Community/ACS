@@ -60,7 +60,12 @@ public class EbeDocumentManager {
         		
                 EbeDocument myDoc=new EbeDocument();
                 myDoc.setPath(path);
-                myDoc.load();
+                try {
+                	myDoc.load();
+                } catch (RuntimeException e) {
+                	ErrorBrowserEditor.log("Failed to load document " + path);
+                	throw e;
+                }
                 documents.put(myDoc.getValue(),myDoc);
                 ErrorBrowserEditor.log("[Document "+path+" loaded]");
                 ErrorBrowserEditor.log("   * "+myDoc.getNodes().size()+" definitions loaded");
