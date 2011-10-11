@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.134 2011/10/05 09:24:44 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.135 2011/10/11 20:59:36 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.134 2011/10/05 09:24:44 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.135 2011/10/11 20:59:36 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -149,6 +149,20 @@ public:
         
         try
         {
+            // in case of an error, we need to create valid ComponentInfo
+            if (!componentInfo.ptr())
+            {
+                componentInfo = new maci::ComponentInfo();
+                componentInfo->h = h_;
+                componentInfo->reference = CORBA::Object::_nil();
+                componentInfo->name = CORBA::string_dup(name_.c_str());
+                componentInfo->type = CORBA::string_dup(type_.c_str());
+                componentInfo->code = CORBA::string_dup(exe_.c_str());
+                componentInfo->container_name = CORBA::string_dup("unspecified");
+                componentInfo->container = 0;
+                componentInfo->access = 0;
+                componentInfo->interfaces.length(0);                
+            }
             cb_->done(*componentInfo, completion, descOut_);
         }
         catch(...)
