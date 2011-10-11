@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatMakeLCUEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatMakeLCUEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -18,6 +18,8 @@
 #                     are printed to the standard output (SPR 20030324)
 # psivera 2003-07-31  SPR 990447: handling of configuration files for logManager
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2009-02-05 added catch when trying the cat reboot.log 
+# sfeyrin  2010-11-02 SVN support: changed check of empty ENVIRONMENTS/$envName 
 #
 
 #************************************************************************
@@ -90,7 +92,10 @@ tatPuts "Creating target directory for $envName."
 # vccEnvCreate fails if user directory is empty ([r]cp -r needs to
 # use <dir>/* because target directory already exists): do not give
 # use directory -s option if source directory is empty
-set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+# set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+# For SVN case, the directory should be considered as empty if only directory .svn is present
+# On Linux,a "." at the beginning of a file's name doesn't match the pattern "*", so .svn excluded
+set fdir [glob -nocomplain -directory [pwd]/ENVIRONMENTS/$envName *] 
 if { [lempty $fdir] } {
     tatPuts "Executing vccEnvCreate -e $LCUEnvName  -m minimum -w $WSEnv -h $HOST"
     if {[ catch { exec vccEnvCreate -e $LCUEnvName  -m minimum -w $WSEnv -h $HOST } out ]} {
@@ -153,7 +158,8 @@ tatPuts "Executing vccEnvStart -v -e $LCUEnvName -w $WSEnv"
 
 if {[ catch { exec vccEnvStart -v -e $LCUEnvName -w $WSEnv} out ]} {
   set oldOut $out
-  set newOut [exec cat $VLTDATA/ENVIRONMENTS/$LCUEnvName/.reboot.log]
+  set newOut ""
+  catch {set newOut [exec cat $VLTDATA/ENVIRONMENTS/$LCUEnvName/.reboot.log]}
   set out "$oldOut $newOut"
   error "tatMakeLCUEnv failed vccEnvStart -v -e $LCUEnvName: $out"
 }

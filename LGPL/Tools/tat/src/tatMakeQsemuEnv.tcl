@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatMakeQsemuEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatMakeQsemuEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -18,6 +18,7 @@
 #                     from tat.tcl; the file is created/parsed just after vccEnvCreate.
 # psivera 2003-09-10  added check on size of logLCU.config and on existence of LCU envs
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2010-11-02 SVN support: changed check of empty ENVIRONMENTS/$envName 
 #
 
 #************************************************************************
@@ -72,7 +73,10 @@ proc tatMakeQsemuEnv { envName LOGNAME HOST } {
 # use <dir>/* because target directory already exists): do not give
 # use directory -s option if source directory is empty.
     tatPuts "Creating target directory for $envName."
-    set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+    #set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+    # For SVN case, the directory should be considered as empty if only directory .svn is present
+    # On Linux,a "." at the beginning of a file's name doesn't match the pattern "*", so .svn excluded
+    set fdir [glob -nocomplain -directory [pwd]/ENVIRONMENTS/$envName *] 
     if { [lempty $fdir] } {
        tatPuts "Executing vccEnvCreate -e $envId -t QSEMU -h $HOST"
        if {[ catch { exec vccEnvCreate -e $envId -t QSEMU -h $HOST } out ]} {

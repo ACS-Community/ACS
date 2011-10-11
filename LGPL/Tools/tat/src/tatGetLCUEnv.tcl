@@ -1,13 +1,15 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatGetLCUEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatGetLCUEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # pforstma  11/07/95  created
 # eallaert 2003-06-11 replaced several exec file-operations by Tcl "file" cmds
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2006-27-11 SPR 20060231 added rlogin check before LCU allocation
+# sfeyrin  2009-02-01 use of vccCheckLcuIsAlive to check if LCU is alive
 #
 
 #************************************************************************
@@ -30,6 +32,7 @@
 #
 #------------------------------------------------------------------------
 #
+package require Expect
 
 proc tatGetLCUEnv { envName sessionFile LCUROOT VLTDATA HOST } {
 
@@ -43,6 +46,12 @@ while {![lempty $envList]} {
     set arg [lvarpop envList]
     set lcu [file tail $arg]
     set lockFile $LCUROOT/LOCK.$lcu
+    
+    set timeout 5
+    set prompt ->
+    set ReturnCode 0
+
+    
     if { ![file exists $lockFile] } {
 	close [open $lockFile w]; chmod og+w $lockFile
         # skip non writable directories
@@ -62,11 +71,20 @@ while {![lempty $envList]} {
 	    catch { file delete -force -- $lockFile }
 	    error "tatGetLCUEnv.tcl: $out"
 	}
-	if { [catch { vccRemPing $lcuHost } ] } {
+	
+	# Trying to connect to $lcuHost 
+	if {[ catch { exec vccCheckLcuIsAlive $lcuHost } out ]} {
+		# check boot completion on LCU $lcuHost failed. 
+		set ReturnCode 1
+	} 
+	
+	if { $ReturnCode } {
 	       tatPuts "LCU $lcuHost not available. Trying next one."
 	       catch { file delete -force -- $lockFile }
-	       continue
+	       continue	
 	}
+	
+		
 	set envFound 1
 	# LCU pool is available on the network : host info. needed
         exec echo "$HOST $sessionFile" >> $lockFile

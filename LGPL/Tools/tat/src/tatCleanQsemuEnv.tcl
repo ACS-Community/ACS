@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatCleanQsemuEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatCleanQsemuEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -11,6 +11,7 @@
 # fcarbogn  23/08/99  make use of -f option of vccEnvStop to wait for 
 #		      complete environment shutdown 
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2006-11-20 SPR 20050148: Check lockFile owner before env stop
 #
 #************************************************************************
 #   NAME
@@ -52,10 +53,20 @@ if {[catch {set envId $env($envName)}]} {
     set EnvId undefined 
 }
 
+set lockFile /tmp/$envId.lock
+set owner [file attributes $lockFile -owner]
+set user [exec whoami]
+
 # Because an uncaught error aborts the script, catch need to be used with
 # vccEnvStop that can be failing because tatCleanQsemuEnv can be called
 # also when the environment has not been jet started
 tatPuts "Stopping environment $envName"
+
+# check the owner of the lockfile before doing the vccEnvStop (SPR 20050148)
+if { $owner != $user } {
+   error "$user is not the owner of $lockFile"
+}
+
 tatPuts "Executing vccEnvStop -e $envId -h $HOST -f 300"
 catch {exec vccEnvStop -e $envId -h $HOST -f 300 }
 
@@ -71,7 +82,7 @@ if {[ catch { set envHost [vccInfo GetByEnv $envId hostName] } out ]} {
     error "tatCleanQsemuEnv: $out"
 }
 tatPuts "Unlocking environment $envName"
-set lockFile /tmp/$envId.lock
+
 if { $envHost == $env(HOST) } {
     file delete -force -- $lockFile
 }  else {

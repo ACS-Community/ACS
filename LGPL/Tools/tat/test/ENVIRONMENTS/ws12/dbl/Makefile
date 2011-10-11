@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.77 2004/09/22 07:15:35 mpasquat Exp $"
+# "@(#) $Id: Makefile,v 1.78 2011/10/11 13:21:16 psivera Exp $"
 #
 # Makefile of ws (tat12) environment
 #
@@ -33,11 +33,8 @@ xxxx_DBL_FLAGS =
 #
 # INCLUDE STANDARDS
 # -----------------
-MAKEDIRTMP := $(shell searchFile include/vltMakefile)
-ifneq ($(MAKEDIRTMP),\#error\#)
-   MAKEDIR := $(MAKEDIRTMP)/include
-   include $(MAKEDIR)/vltMakefile
-endif
+MAKEDIR = $(VLTROOT)/include
+include $(MAKEDIR)/vltMakefile
 
 #
 # TARGETS

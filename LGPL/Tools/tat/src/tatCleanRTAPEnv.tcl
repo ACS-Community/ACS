@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatCleanRTAPEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatCleanRTAPEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -10,6 +10,7 @@
 # fcarbogn  23/08/99  make use of -f option of vccEnvStop to wait for
 #                     complete environment shutdown
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2006-11-20 SPR 20050148: Check lockFile owner before env stop
 #
 
 #************************************************************************
@@ -50,6 +51,10 @@ proc tatCleanRTAPEnv { envName HOST VLTDATA } {
 
 global env 
 
+set lockFile /tmp/$RtapEnvName.lock
+set owner [file attributes $lockFile -owner]
+set user [exec whoami]
+
 #
 # Do not call always error, otherwise allocated environments not released.
 #
@@ -63,6 +68,12 @@ if {[catch {set RtapEnvName $env($envName)}]} {
 # vccEnvStop that can be failing because tatCleanRTAPEnv can be called
 # also when the environment has not been jet started
 tatPuts "Stopping environment $envName"
+
+# check the owner of the lockfile before doing the vccEnvStop (SPR 20050148)
+if { $owner != $user } {
+   error "$user is not the owner of $lockFile"
+}
+
 tatPuts "Executing vccEnvStop -e $RtapEnvName -f 300"
 catch { exec vccEnvStop -e $RtapEnvName -f 300 }
 
@@ -84,7 +95,6 @@ if {[ catch { set envHost [vccInfo GetByEnv $RtapEnvName hostName] } out ]} {
 # unlock environment
 
 tatPuts "Unlocking environment $envName"
-set lockFile /tmp/$RtapEnvName.lock
 if { $envHost == $HOST } {
     file delete -force -- $lockFile 
 }  else {

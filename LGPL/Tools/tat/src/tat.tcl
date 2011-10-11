@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tat.tcl,v 1.111 2009/12/07 22:28:55 psivera Exp $"
+# "@(#) $Id: tat.tcl,v 1.112 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -31,17 +31,26 @@
 # psivera  2004-02-16 corrected bug when parsing the keyword "all" (& C.)
 #                     passed from command line
 # psivera  2004-03-16 ALMASW2003086 solved: ../bin and ../lib are created if not existing
-# psivera  2004-06-22 SPR 20040140: the outputFile is saved in .orig before
-#		      being processed with sed and grep
+# psivera  2004-06-22 SPR 20040140: the outputFile is saved in .orig before 
+#                     being processed with sed and grep
 # eallaert 2005-02-08 SPR 200500442: include sleep while waiting for test termination
 # sfeyrin  2005-08-12 SPR 20050196: take into account .TestList.sed in sedFilterx
-# psivera  2005-12-09 ALMASW2005120: the source script is sourced before running doCleanEnv
-# psivera  2006-02-13 ALMASW2005119 and ALMASW2006007 implemented
-# psivera  2006-02-15 ALMASW200$075 implemented: test lines in TestList(.lite) can be 
-#                     splitted across multiple lines
-# psivera  2006-02-17 SPR ALMASW2003069: removed the "child process" message from the diff file
-# psivera  2006-04-07 SPR ALMASW2006015: implemented option -f NewTestList
-# psivera  2008-08-22 egrep exits only if return code is 2
+# sfeyrin  2008-11-06 Copying ENVIRONMENTS directories to tatlog directory (VLTSW20080252)
+# sfeyrin  2009-02-04 fixed bug when using -r option
+# sfeyrin  2009-04-28 added catch in copyEnv when copying ENVIRONMENTS
+# sfeyrin  2010-09-16 - Merge with ALMA tat 1.111:
+#                     Added ../idl to IDL_PATH; Inserted INTLIST
+#                     egrep exits only if return code is 2
+# 		      ALMASW2005120: the source script is sourced before running doCleanEnv
+#                     ALMASW2005119 and ALMASW2006007 implemented
+#                     ALMASW2004075 implemented: test lines in TestList(.lite) can be 
+#                         splitted across multiple lines
+#                     ALMASW2005086: epilogue script is always executed after a failure of prologue 
+#                     ALMASW2003069: removed the "child process" message from the diff file
+#                     ALMASW2006015: implemented option -f NewTestList
+#                     - Added check SessionFile empty in copyEnv
+# sfeyrin  2010-10-20 time added for each test step
+# sfeyrin  2011-01-26 VLTSW20090238: move allocEnv before sourceScript
 #
 #
 #************************************************************************
@@ -379,9 +388,7 @@
 #               in case of failure, the test(s) is always repeated r times
 #               the output files before and after the parsing with 
 #               TestList.grep and TestList.sed and the .diff files are saved 
-#               at each iteration in output.n where n runs from 1 to r-1. 
-#               At the last iteration, all files are saved with the normal 
-#               names without the iteration number r. 
+#               at each iteration in output_n.ext where n runs from 1 to r. 
 #
 #   -w        : number of seconds to wait at the end of a test before
 #               killing the processes still alive.
@@ -636,8 +643,6 @@ proc buildLists {} {
 	}
 
 	# Save in longLine a line with continuation character
-	set nrbline [string trimright $line]
-
 	if {[string equal [string index $line end] \\]} {
 	    append longLine " [string range $line 0 end-1]"
 	    continue
@@ -672,20 +677,20 @@ proc buildLists {} {
 		set word2 [lindex $ll 1]
 		set word3 [lindex $ll 2]
 		if { $word3 != "LCU" && $word3 !="WS" && $word3 != "RWS" && $word3 != "QS" && $word3 != "RQS"} {
-		    puts "$tlfn: $line: invalid environment type"
-		    set lineOK 0
-		    break
+		   puts "$tlfn: $line: invalid environment type"
+		   set lineOK 0
+		   break
 		}
 		if { $gv(withRtap) == 1} {
-		    if { $word3 == "QS" } {
-			puts "$tlfn: $line: invalid QS environment type with RTAP"
-			set lineOK 0
-			break
-		    }
+		   if { $word3 == "QS" } {
+		     puts "$tlfn: $line: invalid QS environment type with RTAP"
+		     set lineOK 0
+	             break
+		   }
 	        } elseif { $word3 == "WS" } {
-		    puts "$tlfn: $line: invalid (R)WS environment with no RTAP"
-		    set lineOK 0
-		    break
+		   puts "$tlfn: $line: invalid (R)WS environment with no RTAP"
+	           set lineOK 0
+	           break
 	        }
 		set gv(envNameList) [concat $gv(envNameList) $word2 $word3]
 		break
@@ -943,7 +948,7 @@ proc setEnv {} {
 ###############################################################################
 # proc replaceScanEnv
 #
-# Replace every occurence of <envName> in ./ENVIRONMENTS/<envName>dbl/USER.db 
+# Replace every occurrence of <envName> in ./ENVIRONMENTS/<envName>dbl/USER.db 
 # files with the allocated environments name for the scan system configuration
 ###############################################################################
 
@@ -1249,6 +1254,33 @@ proc makeEnv {} {
 }
 
 ###############################################################################
+# proc copyEnv
+#
+#  save the environments into the tatlog/run$PID directory
+###############################################################################
+
+proc copyEnv {} {
+
+    global gv
+    global PID
+
+    # Copying the ENVIRONMENT directories
+    if { $gv(generate) == 0 } {
+       # search the allocated name in sessionFile when not empty       
+       if {[file exists $gv(sessionFile)] && [file size $gv(sessionFile)] != 0} {
+	  tatPuts "Copying ENVIRONMENTS directories to tatlog directory"
+          set fd [open $gv(sessionFile) r]
+    	  while { [gets $fd line] >= 0 } {
+    	     set sline [split $line " "]
+    	     set envId [lindex $sline 2]
+    	     catch {file copy $gv(VLTDATA)/ENVIRONMENTS/$envId ./tatlogs/run$PID/$envId}
+    	  }
+    	  close $fd	 
+       }
+    }
+
+}
+###############################################################################
 # proc cleanEnv
 #
 # deletes the environments created by makeEnv
@@ -1384,7 +1416,7 @@ proc cleanEnv {} {
 }
 
 ###############################################################################
-# runTest (testList, generate, repeat)
+# runTest (testList, generate, occurrence)
 #
 #  runs the test programs as listed in in testList
 #
@@ -1393,21 +1425,26 @@ proc cleanEnv {} {
 #
 ###############################################################################
 
-proc runTest { testList generate rep } {
+proc runTest { testList generate occurrence} {
 
     global gv
     global env
     global PID
-    global noorder waitAtEnd verbose repeat
+    global noorder waitAtEnd verbose
+    global repeat
 
     set retFlag   0
-    set iter      0
     set FLAG_TESTDRIVER 1
 
     set sourceTestId {}
     set prologueTestId {}
     set epilogueTestId {}
     set numEl 0
+        
+    set extension ""
+    if { $repeat > 1 } {
+       set extension _[expr {$repeat - $occurrence +1}]    
+    }
 
     # Loop over the tests
     # Each line correspond to a test
@@ -1415,6 +1452,7 @@ proc runTest { testList generate rep } {
 
 	# testid will contain the number which identifies the test; in case the old tat syntax is used, the testid will simply be the test itself
 	set testid [lvarpop testList]
+	set startingTime [clock seconds] 
 
 	# Parse the test command line
 	if { [llength $testid ] > 1 } {
@@ -1459,11 +1497,8 @@ proc runTest { testList generate rep } {
 	    #set thisTest [lindex $testid 0]
 	    set testName [lindex $testid 0]
 	    set testid [concat $thisTest $testid]
-	    set outputFile   ./tatlogs/run$PID/$testName.out
+	    set outputFile   ./tatlogs/run$PID/$testName$extension.out
 	    set refFile      ./ref/$testName.ref
-	    #if { $generate == 1 } {
-	#	file delete -force -- $refFile
-	#    }
 #	    The following line is a debug printing, not necessarily needed
 #	    puts "thisTest=$thisTest"
 	    if { $gv(testAll) == 0 && [lsearch $gv(toTest) $thisTest] == -1 } {
@@ -1492,12 +1527,12 @@ proc runTest { testList generate rep } {
 
 	} else {
 	    set FLAG_TESTDRIVER 0
-	    set outputFile   ./tatlogs/run$PID/$testid.out
+#	    The following line is a debug printing, not necessarily needed
+#	    puts "testid = $testid"
+
+	    set outputFile   ./tatlogs/run$PID/$testid$extension.out
 	    set refFile      ./ref/$testid.ref
 	    catch {file delete -force -- $outputFile}
- 	    #if { $generate == 1 } {
-            #    file delete -force -- $refFile
- 	    #}
 	    # make test script executable for cmmCopied dir:
 	    # only test scripts should be in the current dir.
 	    # not the binary generated under bin.
@@ -1509,22 +1544,13 @@ proc runTest { testList generate rep } {
 	    
 	}
 
-        # Prepares the file names for the otput
-        # and execute the processes
-        #set outputFile   ./tatlogs/run$PID/$testid.out
-	#set refFile      ./ref/$testid.ref
- 	#catch {file delete -force -- $outputFile}
- 	#if { $generate == 1 } {
-        #    file delete -force -- $refFile
- 	#}
-
         set userId [id user]
         set file /tmp/${userId}_test[pid]
 
         set fileList {}
 
 	# execute the test
-	
+
 
 	if { $FLAG_TESTDRIVER == 0 } {
 
@@ -1555,37 +1581,42 @@ proc runTest { testList generate rep } {
 	    set startTime [getclock]
 	    set waitTime 0
 
-
-            # Test if the "wait" command is available under this opsys.
-            # On HP-UX 11.00, Solaris 2.8 and Linux it should be.
-            set have_waitpid [infox have_waitpid]
-            while {[expr {$waitTime < $time_out}]} {
-                if {$have_waitpid} {
-                    set testExitStatus [wait -nohang $testPid]
-                } else {
-                    # use 'exec ps' to create a similar return value as 'wait'does.
-                    if {[catch {exec ps -p $testPid}]} {
-                        # ps -p <pid> returns 1 if the process <pid> does not exist
-                        set testExitStatus "$testPid EXIT 0"
-                    } else {
-                        set testExitStatus ""
-                    }
-                }
-                if {[llength $testExitStatus] == 3} {
-                    set testHasEnded 1
-                    # We can actually see how this test has ended, as the wait cmd
-                    # returns 3 list elements:
-                    # 1. the pid
-                    # 2. 'EXIT' if exited normally or 'SIG' if ended by signal
-                    # 3. exit code (2 = 'EXIT') or signal name (2 = 'SIG')
-                    break
-                } else {
-                    # $testPid still in the process list
-                    set currentTime [getclock]
-                    set waitTime [expr {$currentTime - $startTime}]
-                    after 1000; # sleep one second before trying again
-                }
-            }
+	    # Test if the "wait" command is available under this opsys.
+	    # On HP-UX 11.00, Solaris 2.8 and Linux it should be.
+            set have_waitpid [infox have_waitpid] 
+	    while {[expr {$waitTime < $time_out}]} {
+		if {$have_waitpid} {
+		    set testExitStatus [wait -nohang $testPid]
+		} else {
+		    # use 'exec ps' to create a similar return value as 'wait'does.
+		    if {[catch {exec ps -p $testPid}]} {
+			# ps -p <pid> returns 1 if the process <pid> does not exist
+			set testExitStatus "$testPid EXIT 0"
+		    } else {
+			set testExitStatus ""
+		    }
+		}
+		if {[llength $testExitStatus] == 3} {
+		    set testHasEnded 1
+		    # We can actually see how this test has ended, as the wait cmd
+		    # returns 3 list elements:
+		    # 1. the pid
+		    # 2. 'EXIT' if exited normally or 'SIG' if ended by signal
+		    # 3. exit code (2 = 'EXIT') or signal name (2 = 'SIG')
+		    break
+		} else {
+		    # $testPid still in the process list
+		    set currentTime [getclock]
+		    set waitTime [expr {$currentTime - $startTime}]
+		    after 1000;	# sleep one second before trying again
+		}
+	    }
+	    if { $testHasEnded == 0 } {
+		# test is still running after $time_out minutes:
+		# kill it
+		kill SIGKILL $testPid
+		puts "TEST $testcmd KILLED."
+	    }
 
 	} else {
 	    # no time out specified
@@ -1623,8 +1654,8 @@ proc runTest { testList generate rep } {
 
 # SPR 20040140: the outputFile is saved in .orig before being processed with sed and grep
 	catch {file copy -force $outputFile $outputFile.orig}
-
-        egrepFilter $outputFile $testid $refFile $generate
+	
+	egrepFilter $outputFile $testid $refFile $generate
 
         sedFilter $outputFile $testid
 
@@ -1634,8 +1665,10 @@ proc runTest { testList generate rep } {
         # if the option was run
 	if {$generate == 0} {
 
+	    set runningTime [clock format [expr {[clock seconds] - $startingTime}] -format %T]
+
 	    set err [catch {exec diff $outputFile $refFile} diffErr]
-	    set diffFile ./tatlogs/run$PID/$testid.diff
+	    set diffFile ./tatlogs/run$PID/$testid$extension.diff
 	    if {$err > 0} {
 		# SPR ALMASW2003069: remove the "child process" message below from the diff file
 		catch { regsub "child process exited abnormally$" $diffErr "" newDiffErr }
@@ -1643,16 +1676,10 @@ proc runTest { testList generate rep } {
 		puts $dfd $newDiffErr
 		close $dfd
 		puts "Differences found in [pwd]/$diffFile"
-		puts "TEST $testid FAILED."
+		puts "TEST $testid FAILED.\t$runningTime"
 		set retFlag 1
-		if {$rep > 1} {
-		    set iter [expr $repeat - $rep + 1]
-		    catch {file copy -force $diffFile $diffFile.$iter}
-		    catch {file copy -force $outputFile $outputFile.$iter}
-		    catch {file copy -force $outputFile.orig $outputFile.orig.$iter}
-		}
 	    } else {
-		puts "TEST $testid PASSED."
+		puts "TEST $testid PASSED.\t$runningTime"
 
 	    }
 
@@ -1783,6 +1810,11 @@ proc runTest { testList generate rep } {
                 set err [catch {exec diff ./ref/$testProc.ref ./tatlogs/run$PID/$testProc.out} diffErr]
 
             }
+	    # rename output files
+	    if { $repeat > 1 } {
+	    	catch {file rename -force -- ./tatlogs/run$PID/$testProc.out ./tatlogs/run$PID/$testProc$extension.out}
+	    	catch {file rename -force -- ./tatlogs/run$PID/$testProc.out.orig ./tatlogs/run$PID/$testProc$extension.out.orig}
+	    }
             # Check if differences have been found and log proper messages
             if {$err > 0} {
 		# SPR ALMASW2003069: remove the "child process" message below from the diff file
@@ -1791,15 +1823,13 @@ proc runTest { testList generate rep } {
                 puts $dfd $newDiffErr
                 close $dfd
 
-                puts "Differences found in [pwd]/tatlogs/run$PID/$testProc.diff"
+                puts "Differences found in [pwd]/tatlogs/run$PID/$testProc$extension.diff"
                 printLog "TEST$thisTest $testProc FAILED."
                 set retFlag 1
-		if {$rep > 1} {
-		    set iter [expr $repeat - $rep + 1]
-		    catch {file copy -force ./tatlogs/run$PID/$testProc.diff ./tatlogs/run$PID/$testProc.diff.$iter}
-		    catch {file copy -force ./tatlogs/run$PID/$testProc.out ./tatlogs/run$PID/$testProc.out.$iter}
-		    catch {file copy -force ./tatlogs/run$PID/$testProc.orig ./tatlogs/run$PID/$testProc.orig.$iter}
-		}
+	        # rename diff file
+	        if { $repeat > 1 } {
+	    	   catch {file rename -force -- ./tatlogs/run$PID/$testProc.diff ./tatlogs/run$PID/$testProc$extension.diff}
+	        }
             } else {
                 printLog "TEST$thisTest $testProc PASSED."
             }
@@ -1830,11 +1860,15 @@ proc runTest { testList generate rep } {
 	} else {
 	    puts "PASSED."
 	    # if test PASSED and no -nc option cancel logs Files
-            if { ($gv(noClean) == 0) && ($rep == 1) } {
-	    	tatPuts "Removing current log directory ./tatlogs/run$PID"
-	    	file delete -force -- ./tatlogs/run$PID
-	    } else {
-		tatPuts "current log directory ./tatlogs/run$PID not removed"
+	    # and if no diff files are already in tatlog (for case -r option)
+	    set df [exec find ./tatlogs/run$PID -type f -name "*.diff" -print]
+	    if { $occurrence == 1 } {
+               if { $gv(noClean) == 0 && $df == "" } {
+		   tatPuts "Removing current log directory ./tatlogs/run$PID"
+	    	   file delete -force -- ./tatlogs/run$PID
+	       } else {
+		   tatPuts "current log directory ./tatlogs/run$PID not removed"
+	       }
 	    }
 	    return 0
 	}
@@ -1856,7 +1890,6 @@ proc egrepFilter {fileName testName refName generate} {
     set userId [id user]
     set tmpGrep /tmp/${userId}_test[pid]
 
-
     # process tat .TestList.grep (for VxWorks tests only)
 
     if {[file exists $gv(grepFileBis)] && [file size $gv(grepFileBis)] != 0} {
@@ -1877,10 +1910,11 @@ proc egrepFilter {fileName testName refName generate} {
 	}
     } else {
         printLogVerbose "VxWorks (ignore this message if you do not use VxWorks): no filter applied: $gv(grepFileBis) does not exist"
+
+
     } 
 
     # process user TestList.grep or testName.grep
-
     if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).grep]) } {
 	printLogVerbose "Cleaning with $gv(testListFiles).grep: $fileName"
 	catch {file copy -force  $gv(testListFiles).grep $tmpGrep$gv(grepFile).tmp }
@@ -2066,7 +2100,7 @@ proc egrepFilterx {fileName testName refName generate} {
 
 
 ###############################################################################
-# procedure sedFilter (fileName) 
+# procedure sedFilter (fileName testName) 
 #
 # Executes the sed commands stored in the file $sedFileBis
 # Executes the sed commands stored in the file $sedFile (if it exist)
@@ -2122,6 +2156,7 @@ proc sedFilter {fileName testName} {
 #
 # procedure sedFilterx (fileName testName)
 # Executes the sed commands stored in the file $sedFile (if it exist)
+# SPR VLTSW20050196:Executes the sed commands stored in the file $sedFileBis too
 ##############################################################################
 
 proc sedFilterx {fileName testName} {
@@ -2129,31 +2164,6 @@ proc sedFilterx {fileName testName} {
     global gv
     set userId [id user]
     set tmpSed /tmp/${userId}_test[pid]
-
-# The following commented lines should be removed once the merge 
-# tat (VLT) tat(ALMA) is finished.
-#    if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
-#        printLogVerbose "Cleaning with $gv(testListFiles).sed: $fileName"
-#        catch {file copy -force  $gv(testListFiles).sed $tmpSed$gv(sedFile).tmp }
-#    } elseif {[file exists $testName.sed] && [file exists $gv(sedFile)]} {
-#        printLogVerbose "Cleaning with $gv(sedFile) and $testName.sed: $fileName"
-#        catch {exec cat $gv(sedFile) $testName.sed > $tmpSed$gv(sedFile).tmp}
-#    } elseif {[file exists $testName.sed]} {
-#        printLogVerbose "Cleaning with $testName.sed: $fileName"
-#        catch {file copy -force $testName.sed $tmpSed$gv(sedFile).tmp}
-#    } elseif {[file exists $gv(sedFile)]} {
-#        printLogVerbose "Cleaning with $gv(sedFile): $fileName"
-#        catch {file copy -force $gv(sedFile) $tmpSed$gv(sedFile).tmp}
-#    }
-#
-#    # Clean the output file.
-#    if {[file exists $tmpSed$gv(sedFile).tmp]} {
-#        catch {exec sed -f $tmpSed$gv(sedFile).tmp $fileName > $fileName.tmp}
-#        catch {file rename -force -- $fileName.tmp $fileName}
-#        catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
-#    } else {
-#	printLogVerbose "No filter applied: sedFile does not exist"
-#    }
 
     if { ($gv(commandLineTestLists) == 1) && ([file exists $gv(testListFiles).sed]) } {
         append sedScript [read_file $gv(testListFiles).sed]
@@ -2165,9 +2175,8 @@ proc sedFilterx {fileName testName} {
                 append msg "$scriptFile + "
             }
         }
-   }
-
-
+    }
+    
     if {[info exists sedScript]} {
         printLogVerbose "Cleaning with [string range $msg 0 end-3]: $fileName"
         write_file $tmpSed$gv(sedFile).tmp $sedScript
@@ -2178,7 +2187,7 @@ proc sedFilterx {fileName testName} {
         catch {file rename -force -- $fileName.tmp $fileName}
         catch {file delete -force -- $tmpSed$gv(sedFile).tmp}
     } else {
-        printLogVerbose "Nothing to clean: sedFile does not exist"
+        printLogVerbose "No filter applied: sedFile does not exist"
     }
 
     return 0
@@ -2202,12 +2211,6 @@ proc addTimeStamp {fileName pnum} {
     set fd [open $fileName r]
     set rfd [open $fileName.tmp w]
     while { [gets $fd line] >= 0} {
-# The following commented lines should be removed once the merge 
-# tat (VLT) tat(ALMA) is finished.
-#        if {[regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line] != 0} {
-#            regexp {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]} $line stamp
-#            regexp {[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9]* *} $line fulltime
-# } remove this line
         if {[regexp {^[0-9]{4}-[0-9]{2}-[0-9]{2}} $line] != 0} {
             regexp {^[0-9]{4}-[0-9]{2}-[0-9]{2}} $line stamp
             # Probably "." should be replaced by "\." and "*" by "+", but
@@ -2224,7 +2227,6 @@ proc addTimeStamp {fileName pnum} {
             scan $msec "%d" msec
             if {$msec < 0 || $msec > 999999} { set msec 0 }
             set  nmsec [format "%6.6d" $msec]
-#            regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
             regsub {^[0-9]{4}-[0-9]{2}-[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6} *} $line "" newLine
             puts $rfd "$stamp  $time$nmsec $pnum $newLine"
         } else {
@@ -2252,7 +2254,6 @@ proc rmTimeStamp {fileName} {
     set fd [open $fileName r]
     set rfd [open $fileName.tmp w]
     while { [gets $fd line] >= 0} {
-#        regsub {^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] *[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9] *} $line "" newLine
         regsub {^[0-9]{4}-[0-9]{2}-[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6} *} $line "" newLine
         puts $rfd $newLine
     }
@@ -2327,7 +2328,7 @@ proc doMakeEnv {} {
 	puts "Test session already active"
     } else {
 	execMakeAll $gv(noClean) $gv(TAT_MAKE_ARGS)
-        # JIRA COMP-3949: allocEnv is executed before sourcing the source script
+        # VLTSW20090238 (JIRA COMP-3949): allocEnv is executed before sourcing the source script
 	allocEnv
 	# source script handling
 	if { $gv(sourceScript) != "" } {
@@ -2398,116 +2399,124 @@ proc doRunTest  {} {
 
     execMakeAll $gv(noClean) $gv(TAT_MAKE_ARGS)
 
-     if { $gv(testAll) == 1 } {
-	 #if { [llength $gv(userTestList) ] == 0 || $gv(testAll) == 1 } 
+    if { $gv(testAll) == 1 } {
+       #if { [llength $gv(userTestList) ] == 0 || $gv(testAll) == 1 } 
 
-	 #  no test. id on the command line: 
-	 #  if no test session, option "all" by default
-	 #  if test session active, run all the tests
+       #  no test. id on the command line: 
+       #  if no test session, option "all" by default
+       #  if test session active, run all the tests
 
-	 if { ![file exists $gv(sessionFile)] } {
+       if { ![file exists $gv(sessionFile)] } {
 
-             # JIRA COMP-3949: allocEnv is executed before sourcing the source script
-	     allocEnv
-	     # source script handling
-	     if { $gv(sourceScript) != "" } {
-		 tatPuts "Sourcing script..."
-		 source $gv(sourceScript) 
-	     }
-	     # prologue script handling
-	     if { $gv(prologueScript) != "" } {
-		 tatPuts "Executing prologue script..."
-		 set gv(execEpilogue) "ON"
-		 if {[ catch {eval exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
-		     error "The prologue script fails: $out"
-		 }
-		 tatPuts "End of prologue script"
-	     }
+           # VLTSW20090238 (JIRA COMP-3949): allocEnv is executed before sourcing the source script
+	   allocEnv
+	   # source script handling
+	   if { $gv(sourceScript) != "" } {
+	       tatPuts "Sourcing script..."
+	       source $gv(sourceScript) 
+  	   }
+	   # prologue script handling
+	   if { $gv(prologueScript) != "" } {
+		tatPuts "Executing prologue script..."
+	       set gv(execEpilogue) "ON"
+	       if {[ catch {eval exec $gv(prologueScript) $gv(prologueArgs)} out ]} {
+	    	    error "The prologue script fails: $out"
+	        }
+	        tatPuts "End of prologue script"
+	   }
 
-	     replaceScanEnv
-	     makeEnv
-	     # cannot be done any more in allocEnv (vcc conflict)
-	     setEnv
-	     for { set i $repeat } { $i > 0 } {incr i -1 } {
-		 runTest $gv(testListToRun) $gv(generate) $i
-	     }
-	     cleanEnv
+	   replaceScanEnv
+	   makeEnv
+	   # save the environment into tatlog directory
+	   copyEnv	   	   
+	   # cannot be done any more in allocEnv (vcc conflict)
+           setEnv
+	   for { set i $repeat } { $i > 0 } {incr i -1 } {
+	       runTest $gv(testListToRun) $gv(generate) $i
+	   }
+	   cleanEnv
 
-	     # epilogue script handling
-	     if { $gv(epilogueScript) != "" } {
-		 tatPuts "Executing epilogue script..."
-		 if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
-		     error "The epilogue script fails: $out"
-		 }
-		 set gv(execEpilogue) "OFF"
-		 tatPuts "End of epilogue script"
-	     }
+	   # epilogue script handling
+	   if { $gv(epilogueScript) != "" } {
+	        tatPuts "Executing epilogue script..."
+	        if {[ catch {eval exec $gv(epilogueScript) $gv(epilogueArgs)} out ]} {
+	    	    error "The epilogue script fails: $out"
+	        }
+	        set gv(execEpilogue) "OFF"
+	        tatPuts "End of epilogue script"
+	   }
 
-	     # SPR 960020 (EAL request)
-	     execMakeClean $gv(noClean)
-	 } else {
-	     # source script handling
-	     if { $gv(sourceScript) != "" } {
-		 tatPuts "Sourcing script..."
-		 source $gv(sourceScript) 
-	     }
-	     # and environment variables need to be set	
-	     setEnv
-	     for { set i $repeat } { $i > 0 } {incr i -1 } {
-		 runTest $gv(testListToRun) $gv(generate) $i
-	     }
-	 }
+	   # SPR 960020 (EAL request)
+	   execMakeClean $gv(noClean)
+       } else {
 
-     } else {
+	   # save the environment into tatlog directory
+	   copyEnv	   	   
+	   # source script handling
+	   if { $gv(sourceScript) != "" } {
+	       tatPuts "Sourcing script..."
+	       source $gv(sourceScript) 
+  	   }
+           # and environment variables need to be set	
+	   setEnv
+	   for { set i $repeat } { $i > 0 } {incr i -1 } {
+	     runTest $gv(testListToRun) $gv(generate) $i
+	   }
+	}
 
-	 #  if testid is specified, run only that test
+    } else {
 
-	 # To BE INVESTIGATED: why is buildLists here repeated?
-	 #buildLists
+	   # save the environment into tatlog directory
+	   copyEnv	
+	      	   
+    #  if testid is specified, run only that test
 
-	 # it has been explictely asked not to stop in case the
-	 # specififed test id. is wrong (SPR 960586).
-	 # check that the specified testid are defined in TestList ...
-	 if { [llength $gv(userTestList) ] != 0 } {
-	     set concList {}
-	     foreach item $gv(testList) {
-		 set concList [concat $concList $item]
-	     }
-	     foreach userTest $gv(userTestList) {
-		 if {[lsearch $concList $userTest] == -1 } {
-		     puts "$userTest not found in $gv(testListFileName)."
-		 }
-	     }
-	 }
+# To BE INVESTIGATED: why is buildLists here repeated?
+	#buildLists
 
-	 if { ![llength $gv(envNameList)] } {
-	     # TestList has no LCU/WS env.
-	     # source script handling
-	     if { $gv(sourceScript) != "" } {
-		 tatPuts "Sourcing script..."
-		 source $gv(sourceScript) 
-	     }
-	     for { set i $repeat } { $i > 0 } {incr i -1 } {
-		 runTest $gv(testListToRun) $gv(generate) $i
-	     }
-	 } else {
-	     # TestList has LCU/WS env.
-	     if { ![file exists $gv(sessionFile)] } {
-		 error "No test session active"
-	     } else {
-		 # source script handling
-		 if { $gv(sourceScript) != "" } {
-		     tatPuts "Sourcing script..."
-		     source $gv(sourceScript) 
-		 }
-		 setEnv
-	     }
-	     for { set i $repeat } { $i > 0 } {incr i -1 } {
-		 runTest $gv(testListToRun) $gv(generate) $i
-	     }
-	 }
-     }
- }
+	# it has been explictely asked not to stop in case the
+	# specififed test id. is wrong (SPR 960586).
+	# check that the specified testid are defined in TestList ...
+	if { [llength $gv(userTestList) ] != 0 } {
+	    set concList {}
+	    foreach item $gv(testList) {
+	        set concList [concat $concList $item]
+	    }
+	    foreach userTest $gv(userTestList) {
+		if {[lsearch $concList $userTest] == -1 } {
+		    puts "$userTest not found in $gv(testListFileName)."
+	        }
+	    }
+	}
+	
+	if { ![llength $gv(envNameList)] } {
+	    # TestList has no LCU/WS env.
+	    # source script handling
+	    if { $gv(sourceScript) != "" } {
+	       tatPuts "Sourcing script..."
+	       source $gv(sourceScript) 
+  	    }
+	    for { set i $repeat } { $i > 0 } {incr i -1 } {
+	      runTest $gv(testListToRun) $gv(generate) $i
+	    }
+	} else {
+	    # TestList has LCU/WS env.
+	    if { ![file exists $gv(sessionFile)] } {
+		error "No test session active"
+	    } else {
+	        # source script handling
+	        if { $gv(sourceScript) != "" } {
+	           tatPuts "Sourcing script..."
+	           source $gv(sourceScript) 
+  	        }
+		setEnv
+	    }
+	    for { set i $repeat } { $i > 0 } {incr i -1 } {
+	      runTest $gv(testListToRun) $gv(generate) $i
+	    }
+	}
+    }
+}
 
 ############################################################################
 #
@@ -2697,51 +2706,51 @@ if { $gv(commandLineTestLists) == 1 } {
     }
     set gv(testListFileName) $gv(testListFiles)
 } else {
-if {[ catch { set gv(NOCCS) $env(NOCCS) } ] || ("$env(VLTSW_CCSTYPE)" != "no" && "$env(VLTSW_CCSTYPE)" != "noccs") } {
-    set gv(NOCCS) 0
-    if {[ catch { set gv(withRtap) $env(RTAPROOT) } ]} {
-        set gv(withRtap) 0
-        if {[file exists "TestList.lite"]} {
-            set gv(testListFileName) "TestList.lite"
-	} elseif {[file exists "TestList"]} {
-	    set gv(testListFileName) "TestList"
-        } elseif {[file exists "TESTLIST"]} {
-            # Here for backward compatibility
-            puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
-            set gv(testListFileName) "TESTLIST"
-	} else {
-	    puts "TestList or TestList.lite does not exist!"
-	    exit 1
-	}
-    } else {
-        set gv(withRtap) 1
-	if {[file exists "TestList"]} {
-            set gv(testListFileName) "TestList"
-	} elseif {[file exists "TESTLIST"]} {
-	    # Here for backward compatibility
-            puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
-            set gv(testListFileName) "TESTLIST"
-        } else {
-            puts "TestList or TESTLIST does not exist!"
-            exit 1
+   if {[ catch { set gv(NOCCS) $env(NOCCS) } ] || ("$env(VLTSW_CCSTYPE)" != "no" && "$env(VLTSW_CCSTYPE)" != "noccs") } {
+       set gv(NOCCS) 0
+       if {[ catch { set gv(withRtap) $env(RTAPROOT) } ]} {
+           set gv(withRtap) 0
+           if {[file exists "TestList.lite"]} {
+               set gv(testListFileName) "TestList.lite"
+      	   } elseif {[file exists "TestList"]} {
+	       set gv(testListFileName) "TestList"
+           } elseif {[file exists "TESTLIST"]} {
+               # Here for backward compatibility
+               puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
+               set gv(testListFileName) "TESTLIST"
+	   } else {
+	       puts "TestList or TestList.lite does not exist!"
+	       exit 1
+	   }
+       } else {
+            set gv(withRtap) 1
+	    if {[file exists "TestList"]} {
+                set gv(testListFileName) "TestList"
+	    } elseif {[file exists "TESTLIST"]} {
+	        # Here for backward compatibility
+                puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
+                set gv(testListFileName) "TESTLIST"
+            } else {
+                puts "TestList or TESTLIST does not exist!"
+                exit 1
+            }
         }
-    }
-} else {
-    set gv(NOCCS) 1
-    set gv(withRtap) 0
-    if {[file exists "TestList.NOCCS"]} {
-        set gv(testListFileName) "TestList.NOCCS"
-    } elseif {[file exists "TestList"]} {
-        set gv(testListFileName) "TestList"
-    } elseif {[file exists "TESTLIST"]} {
-        # Here for backward compatibility
-        puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
-        set gv(testListFileName) "TESTLIST"
-    } else {
-        puts "TestList or TestList.NOCCS does not exist!"
-        exit 1
-    }
-}
+   } else {
+       set gv(NOCCS) 1
+       set gv(withRtap) 0
+       if {[file exists "TestList.NOCCS"]} {
+           set gv(testListFileName) "TestList.NOCCS"
+       } elseif {[file exists "TestList"]} {
+           set gv(testListFileName) "TestList"
+       } elseif {[file exists "TESTLIST"]} {
+           # Here for backward compatibility
+           puts "WARNING!: Using old config file TESTLIST. Rename it TestList"
+           set gv(testListFileName) "TESTLIST"
+       } else {
+           puts "TestList or TestList.NOCCS does not exist!"
+           exit 1
+       }
+   }
 }
 
 #
@@ -3057,7 +3066,7 @@ while {! [lempty $argv]} {
 		"^makeEnv$"  { set gv(makeEnvOn) 1 }
 		"^cleanEnv$" { set gv(cleanEnvOn) 1 }
                 "^[0-9]+"     { set gv(testAll) 0; lappend gv(toTest) $arg }
-		default	   { set gv(userTestList)  [concat $gv(userTestList) $arg] ; 
+		default	   { set gv(userTestList) [concat $gv(userTestList) $arg] ; 
 			     set gv(testAll) 0
 			   }
 	    }
@@ -3173,26 +3182,26 @@ if { [catch { tatBody } result] } {
 	    tatPuts "End of epilogue script"
 	}
     }
-    #   remove logs directory if empty
-    if { [file isdirectory ./tatlogs/run$PID] } {
-	if { [readdir ./tatlogs/run$PID] == "" } {
-	    file delete -force -- ./tatlogs/run$PID
-	    tatPuts "Removing empty log directory ./tatlogs/run$PID"
-	}
-    }
-    #   result contains an error message
-    exit 1
+   #   remove logs directory if empty
+   if { [file isdirectory ./tatlogs/run$PID] } {
+       if { [readdir ./tatlogs/run$PID] == "" } {
+    	   file delete -force -- ./tatlogs/run$PID
+	   tatPuts "Removing empty log directory ./tatlogs/run$PID"
+       }
+   }
+   #   result contains an error message
+   exit 1
 
 } else {
 
-    #   remove logs directory if empty
-    if { [file isdirectory ./tatlogs/run$PID] } {
-	if { [readdir ./tatlogs/run$PID] == "" } {
-	    file delete -force -- ./tatlogs/run$PID
-	    tatPuts "Removing empty log directory ./tatlogs/run$PID"
-	}
-    }
-    # result contains the value returned by tatBody (i.e. nothing)
+   #   remove logs directory if empty
+   if { [file isdirectory ./tatlogs/run$PID] } {
+       if { [readdir ./tatlogs/run$PID] == "" } {
+    	   file delete -force -- ./tatlogs/run$PID
+	   tatPuts "Removing empty log directory ./tatlogs/run$PID"
+       }
+   }
+   # result contains the value returned by tatBody (i.e. nothing)
     exit 0
 }
 

@@ -1,12 +1,16 @@
 #*******************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.83 2006/06/08 15:05:30 psivera Exp $"
+# "@(#) $Id: Makefile,v 1.84 2011/10/11 13:21:16 psivera Exp $"
 #
 # Makefile of tat: tools for automated testing
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
+# sfeyrin  2010-09-16 Removed eccsTestDriver, eccsTestSpawner;
+#                     Added include acsMakefile when ACS_ROOT define
+# sfeyrin  2008-12-19 Removed "-f" from expect in *_TCLSH
+# eallaert 2003-06-11 Removed "-f" from *_TCLSH (if seqSh or tcl)
 # gchiozzi 2002-12-10 Added eccsTestDriver and eccsTestSpawner tools
 # pforstma  07/07/95  created
 # gfilippi  07/05/98  do not use vcc for NOCCS (VLTSW980249)
@@ -42,7 +46,7 @@ tat_LIBS = tatlib $(VCC_LIB)
 tat_TCLSH = seqSh
 
 tatRemExec_OBJECTS  = tatRemExec
-tatRemExec_TCLSH = expect -f
+tatRemExec_TCLSH = expect
 
 tatCleanShm_OBJECTS  = tatCleanShm
 tatCleanShm_LIBS = tatlib
@@ -55,9 +59,6 @@ tatGetClock_TCLSH = tcl
 tatEnvStatus_OBJECTS  = tatEnvStatus
 tatEnvStatus_LIBS = tatlib $(VCC_LIB)
 tatEnvStatus_TCLSH = seqSh
-
-tatTestSpawner_OBJECTS  =    tatTestSpawner
-tatTestSpawner_TCLSH    =    seqSh
 
 tatTestSpawner_OBJECTS  =    tatTestSpawner
 tatTestSpawner_TCLSH    =    seqSh

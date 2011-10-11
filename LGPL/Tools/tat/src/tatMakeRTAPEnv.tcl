@@ -1,7 +1,7 @@
 #************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatMakeRTAPEnv.tcl,v 1.79 2004/03/16 08:29:41 psivera Exp $"
+# "@(#) $Id: tatMakeRTAPEnv.tcl,v 1.80 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -11,6 +11,7 @@
 # psivera   09/01/03  SPR 20020703: for the host where the templates are, 
 #                     the local host is used
 # psivera  2004-02-13 fixed tcl procheck warnings
+# sfeyrin  2010-11-02 SVN support: changed check of empty ENVIRONMENTS/$envName 
 #
 
 #************************************************************************
@@ -81,7 +82,10 @@ catch { exec vccEnvDelete -e $RtapEnvName }
 # use <dir>/* because target directory already exists): do not give
 # use directory -s option if source directory is empty.
 tatPuts "Creating target directory for $envName."
-set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+#set fdir [readdir [pwd]/ENVIRONMENTS/$envName]
+# For SVN case, the directory should be considered as empty if only directory .svn is present
+# On Linux,a "." at the beginning of a file's name doesn't match the pattern "*", so .svn excluded
+set fdir [glob -nocomplain -directory [pwd]/ENVIRONMENTS/$envName *] 
 if { [lempty $fdir] } {
     tatPuts "Executing vccEnvCreate -e $RtapEnvName"
     if {[ catch { exec vccEnvCreate -e $RtapEnvName } out ]} {

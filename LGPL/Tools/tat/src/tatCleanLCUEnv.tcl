@@ -1,13 +1,14 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: tatCleanLCUEnv.tcl,v 1.80 2006/06/08 15:05:30 psivera Exp $"
+# "@(#) $Id: tatCleanLCUEnv.tcl,v 1.81 2011/10/11 13:21:16 psivera Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
 # pforstma  11/07/95  created
 # fcarbogn  22/07/98  Added  WSEnv to tatCleanLCUEnv parameters
-# sfeyrin  2005-08-17 SPR 20050148: Check file owner before LOCK.lcu file deletion
+# sfeyrin  2006-08-17 SPR 20050148: Check file owner before LOCK.lcu file deletion
+# sfeyrin  2006-11-20 SPR 20050148: Check lockFile owner before deleting target directory
 #
 
 #************************************************************************
@@ -42,6 +43,10 @@ global env
 
 set LCUEnv $env($envName)
 
+set lockFile $LCUROOT/LOCK.$LCUEnv
+set owner [file attributes $lockFile -owner]
+set user [exec whoami]
+
 # delete directory
 # It is mandatory to specify the -w <wsEnv> switch to vccEnvDelete
 # working for a given LCU in order to avoid vcc to connect to the
@@ -50,24 +55,19 @@ set LCUEnv $env($envName)
 # -w <wsEnv> is defined.
 
 tatPuts "Deleting target directory for $envName."
+#check the owner of the lockfile before deleting (SPR 20050148)
+if { $owner != $user } {
+   error "$user is not the owner of $lockFile"
+}
+
 tatPuts "Executing vccEnvDelete -e $LCUEnv -w $WSEnv"
 catch { exec vccEnvDelete -e $LCUEnv -w $WSEnv} 
 
 # give LCU back in the pool
 
-set lockFile $LCUROOT/LOCK.$LCUEnv
-
-set user [exec whoami]
-
 tatPuts "Unlocking environment $envName"
 if { [file exists $lockFile] } {
-#check the owner of the file before deleting (SPR 20050148)
-    set owner [file attributes $lockFile -owner]
-    if { $owner == $user } {
-       catch { file delete -force -- $lockFile }
-    } else {
-       error "$lockFile can't be deleted: $user is not the owner"
-    }
+    catch { file delete -force -- $lockFile }
 } else {
     error "$envName is not a 'tat' LCU environment"
 }
