@@ -20,3 +20,6 @@ acserr.idl: No such file or directory
 Starting ACS version
 Using ALMA Base Software tag
 processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+XML_TopologyFactory
+TAO_MonitorManager
+TAO ([0-9]*|[0-9]*)
