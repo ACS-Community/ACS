@@ -60,6 +60,7 @@ public class JarOrderOptimizer implements Comparator<File>
 		"jacsutil2.jar",
 		"logging_idl.jar",
 		"acsjlog.jar",
+		"repeatGuard.jar",
 		"maci.jar",
 		"maciErrType.jar",
 		"maciSchemaBindings.jar", 
