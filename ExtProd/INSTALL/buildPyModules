@@ -350,51 +350,51 @@ else
   popd
 fi
 
-if [ ! -e ../PRODUCTS/pytz-2010h.tar.gz ]
-then
-  echo Error: pytz sources are missing
-else
-  echo "== Installing pytz"
-  tar -xvzf pytz-2010h.tar.gz
-  pushd pytz-2010h
-  python setup.py install 
-  popd
-fi
+#if [ ! -e ../PRODUCTS/pytz-2010h.tar.gz ]
+#then
+#  echo Error: pytz sources are missing
+#else
+#  echo "== Installing pytz"
+#  tar -xvzf pytz-2010h.tar.gz
+#  pushd pytz-2010h
+#  python setup.py install 
+#  popd
+#fi
 
-if [ ! -e ../PRODUCTS/dbus-python-0.82.4.tar.gz ]
-then
-  echo Error: dbus-python sources are missing
-else
-  echo "== Installing dbus-python"
-  tar -xvzf dbus-python-0.82.4.tar.gz
-  pushd dbus-python-0.82.4
-  ./configure --prefix=$PYTHON_ROOT
-  make
-  make install
-  popd
-fi
+#if [ ! -e ../PRODUCTS/dbus-python-0.82.4.tar.gz ]
+#then
+#  echo Error: dbus-python sources are missing
+#else
+#  echo "== Installing dbus-python"
+#  tar -xvzf dbus-python-0.82.4.tar.gz
+#  pushd dbus-python-0.82.4
+#  ./configure --prefix=$PYTHON_ROOT
+#  make
+#  make install
+#  popd
+#fi
 
-if [ ! -e ../PRODUCTS/Numeric-23.8.2.tar.gz ]
-then
-  echo Error: Numeric sources are missing
-else
-  echo "== Installing Numeric"
-  tar  -xvzf Numeric-23.8.2.tar.gz
-  pushd  Numeric-23.8.2
-  python setup.py install 
-  popd
-fi
+#if [ ! -e ../PRODUCTS/Numeric-23.8.2.tar.gz ]
+#then
+#  echo Error: Numeric sources are missing
+#else
+#  echo "== Installing Numeric"
+#  tar  -xvzf Numeric-23.8.2.tar.gz
+#  pushd  Numeric-23.8.2
+#  python setup.py install 
+#  popd
+#fi
 
-if [ ! -e ../PRODUCTS/ScientificPython-2.8.tar.gz ]
-then
-  echo Error: Scientific Python sources are missing
-else
-  echo "== Installing Scientific Python"
-  tar -xvzf ScientificPython-2.8.tar.gz
-  pushd ScientificPython-2.8
-  python setup.py install 
-  popd
-fi
+#if [ ! -e ../PRODUCTS/ScientificPython-2.8.tar.gz ]
+#then
+#  echo Error: Scientific Python sources are missing
+#else
+#  echo "== Installing Scientific Python"
+#  tar -xvzf ScientificPython-2.8.tar.gz
+#  pushd ScientificPython-2.8
+#  python setup.py install 
+#  popd
+#fi
 
 cd $CWD
 echo Python Module installation done!
