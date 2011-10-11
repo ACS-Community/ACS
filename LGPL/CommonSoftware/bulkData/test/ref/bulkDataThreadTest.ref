@@ -98,7 +98,7 @@
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] flow 2 total length: 20000000
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] flow 3 total length: 30000000
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] flow 4 total length: 40000000
-1 - ----------T--:--:--.--- [BulkDataThreadDistributer - ] ContainerServices::getComponent(BulkDataThreadReceiver)
+1 - ----------T--:--:--.--- [BulkDataThreadDistributer - ] ContainerServices::getComponentNonSticky(BulkDataThreadReceiver)
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadSender: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [ContainerThreadTest-GL - ] Switched state of component BulkDataThreadSender: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [ContainerThreadTest - maci::ContainerImpl::deactivate_component] Component 'BulkDataThreadSender' deactivated.

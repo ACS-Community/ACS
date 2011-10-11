@@ -89,7 +89,7 @@
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataReceiverCbNotif::cbStop] Flow Endpoint error (type=53, code=0)
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataReceiverCbNotif::cbStop] Flow Endpoint error (type=53, code=0)
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataReceiverCbNotif - data on flow 2 total length: 1000
-1 - ----------T--:--:--.--- [BulkDataNotifDistributer - ] ContainerServices::getComponent(BulkDataNotifReceiver)
+1 - ----------T--:--:--.--- [BulkDataNotifDistributer - ] ContainerServices::getComponentNonSticky(BulkDataNotifReceiver)
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow1
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataSender<>::addFepToSep Added flowendpoint named: Flow2
 1 - ----------T--:--:--.--- [ContainerNotifTest-GL - ] BulkDataReceiver<>::addFepToSep Added flowendpoint named: Flow1

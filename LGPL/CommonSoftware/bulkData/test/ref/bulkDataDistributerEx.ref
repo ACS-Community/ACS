@@ -97,9 +97,9 @@
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 1 flow 1 total length: 140000
 1 - ----------T--:--:--.--- [Container1-GL - ] RECEIVER 2 successfully saved file!
 1 - ----------T--:--:--.--- [Container1-GL - ] flow 2 file bulkDataInput.txt sent
-1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponent(BulkDataReceiverDistr1)
+1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr1)
 1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr2)
-1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponent(BulkDataReceiverDistr2)
+1 - ----------T--:--:--.--- [BulkDataDistributer - ] ContainerServices::getComponentNonSticky(BulkDataReceiverDistr2)
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container1-GL - ] Switched state of component BulkDataDistributer: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container1 - maci::ContainerImpl::deactivate_component] Component 'BulkDataDistributer' deactivated.
