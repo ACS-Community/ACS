@@ -22,3 +22,4 @@ Waiting for the container to really shutdown
 ^. - $
 ACS.log.minlevel.namedloggers not defined.
 Thread shut down
+ORB status:
