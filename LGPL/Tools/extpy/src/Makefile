@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.40 2011/06/30 20:06:38 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.41 2011/10/11 17:20:46 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -28,7 +28,7 @@ PY_PACKAGES_L      =
 pppppp_MODULES	   =
 
 PY_EXT_DOC_L	   = pexpect-doc
-PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-23.1 numarray-1.3.3 numpy-1.0.1 matplotlib-0.73.1 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
+PY_DISUTIL	   = pexpect-0.999 PyXML-0.8.4 pychecker-0.8.14 Pmw Numeric-24.2 numarray-1.3.3 numpy-1.0.1 matplotlib-0.73.1 python-ldap-2.0.1 gnuplot-py-1.7 pysnmp-2.0.9
 
 
 PEXPECT: pexpect-0.999.tgz
@@ -92,10 +92,10 @@ PYCHECKER: pychecker-0.8.14.tar.gz
 	@patch pychecker-0.8.14/setup.py pychecker-0.8.14.setup.py.patch
 	@cd pychecker-0.8.14; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
-NUMERIC: Numeric-23.1.tar.gz
+NUMERIC: Numeric-24.2.tar.gz
 	@echo "== Building Numeric"
-	@gtar -zxvf Numeric-23.1.tar.gz;
-	@cd Numeric-23.1; python setup.py install; 
+	@gtar -zxvf Numeric-24.2.tar.gz;
+	@cd Numeric-24.2; python setup.py install; 
 
 NUMARRAY: numarray-1.3.3.tar.gz
 	@echo "== Building numarray"
