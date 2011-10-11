@@ -133,10 +133,10 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 	/**
 	 * Event queue should hold at least two events to avoid unnecessary scary logs about slow receivers,
 	 * but must be short enough to get receivers to actually implement their own queue and discard mechanism
-	 * instead of relying on this ACS queue.
+	 * instead of relying on this ACS queue which may buffer events for a limited time and thus obscure the problem.
 	 * @see #eventHandlingExecutor
 	 */
-	public static final int EVENT_QUEUE_CAPACITY = 8;
+	public static final int EVENT_QUEUE_CAPACITY = 50;
 	
 	/**
 	 * Single-thread executor with a small queue (size given in {@link #EVENT_QUEUE_CAPACITY}, 
