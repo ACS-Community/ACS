@@ -23,3 +23,5 @@ loaded DLL
 ACS.log.minlevel.namedloggers not defined
 Changed processName
 processing /tmp/acsIrfeedDyn.[0-9]*\.idl
+XML_TopologyFactory
+ TAO ([0-9]*|[0-9]*)
