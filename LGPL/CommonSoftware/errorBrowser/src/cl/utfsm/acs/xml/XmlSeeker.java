@@ -5,8 +5,6 @@
 
 package cl.utfsm.acs.xml;
 
-import alma.acs.makesupport.AcsFileFinder;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -15,6 +13,8 @@ import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import alma.acs.makesupport.AcsFileFinder;
 
 
 /** This class is an ACS specific filter and seeker for XML files.

@@ -1,14 +1,7 @@
 package cl.utfsm.acs.ebe;
 
 import junit.framework.TestCase;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-
-import cl.utfsm.acs.xml.*;
-import cl.utfsm.acs.types.*;
-import cl.utfsm.acs.ebe.*;
+import cl.utfsm.acs.types.AcsComplexType;
 
 public class ErrorSchemaTEST extends TestCase {
 	ErrorSchema test;
@@ -31,5 +24,4 @@ public class ErrorSchemaTEST extends TestCase {
 		assertEquals("Wrong value, ",t.name,"Code");
 	}
 	
-						
 }

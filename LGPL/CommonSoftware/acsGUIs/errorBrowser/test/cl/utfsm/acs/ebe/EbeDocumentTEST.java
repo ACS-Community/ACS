@@ -1,16 +1,10 @@
 package cl.utfsm.acs.ebe;
 
-import junit.framework.TestCase;
-
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.FileReader;
-import java.util.ArrayList;
 
-import cl.utfsm.acs.xml.*;
-import cl.utfsm.acs.types.*;
-import cl.utfsm.acs.ebe.*;
-import java.util.TreeMap;
+import junit.framework.TestCase;
+import cl.utfsm.acs.types.AcsComplexType;
 
 
 public class EbeDocumentTEST extends TestCase {
@@ -38,9 +32,9 @@ public class EbeDocumentTEST extends TestCase {
 		Error e1=(Error)doc.getNode("Error1");
 		assertEquals("Wrong value, ",e1.getAttributeValue("shortDescription"),"The Error 1");
 		Error e2=(Error)doc.getNode("Error2");
-		Member m1=(Member)e2.getMember("member1");
+		Member m1 = e2.getMember("member1");
 		assertEquals("Wrong value, ",m1.getAttributeValue("description"),"The member number 1");
-		Member m2=(Member)e2.getMember("member2");
+		Member m2 = e2.getMember("member2");
 		assertEquals("Wrong value, ",m2.getAttributeValue("type"),"string");
 	}
 	public void testSave(){

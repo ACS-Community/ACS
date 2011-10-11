@@ -2,16 +2,6 @@ package cl.utfsm.acs.ebe;
 
 import junit.framework.TestCase;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.FileReader;
-import java.util.ArrayList;
-
-import cl.utfsm.acs.xml.*;
-import cl.utfsm.acs.types.*;
-import cl.utfsm.acs.ebe.*;
-import java.util.TreeMap;
-
 
 public class EbeDocumentManagerTEST extends TestCase {
 	EbeDocumentManager manager;
