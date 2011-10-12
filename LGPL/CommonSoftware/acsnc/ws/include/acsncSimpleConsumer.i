@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_I
 #define SIMPLE_CONSUMER_I
-/*    @(#) $Id: acsncSimpleConsumer.i,v 1.25 2011/10/10 22:44:52 javarias Exp $
+/*    @(#) $Id: acsncSimpleConsumer.i,v 1.26 2011/10/12 21:31:13 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -33,7 +33,8 @@ namespace nc {
 //---------------------------------------------------------------
 template<class T>
 SimpleConsumer<T>::SimpleConsumer(const char* channelName) :
-        Consumer(channelName), templateFunction_mp(0), stop_thread(false) {
+        Consumer(channelName), templateFunction_mp(0), stop_thread(false), receiverTooSlowLogRepeatGuard(
+                300000000, 100), numEventsDiscarded(0) {
     // Always call init() in the constructors 
     // of concrete Consumer() classes.
     init();
@@ -102,9 +103,14 @@ void SimpleConsumer<T>::push_structured_event(
         TSLog.setClientName("Unknown");
         if (buffer.size() > ACS_NC_CONSUMER_MAX_BUFFER_SIZE) {
             buffer.pop();
-            TSLog.setNumEventsDiscarded(1);
+            ++numEventsDiscarded;
         }
-        TSLog.log();
+        if (receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
+            if (numEventsDiscarded > 0)
+                TSLog.setNumEventsDiscarded(numEventsDiscarded);
+            TSLog.log();
+            numEventsDiscarded = 0;
+        }
     }
 //    //now that we have it, hope and pray the user-defined
 //    //function doesn't segfault when it gets it...
@@ -217,7 +223,7 @@ void SimpleConsumer<T>::disconnect() {
 template<class T>
 void* SimpleConsumer<T>::dispatchEvent(void * args) {
     SimpleConsumer<T> *c = reinterpret_cast<SimpleConsumer<T>*>(args);
-    //LoggingInitialization for the thread
+    //Logging Initialization for the thread
     CosNaming::Name name;
     name.length(1);
     name[0].id = CORBA::string_dup("Log");
