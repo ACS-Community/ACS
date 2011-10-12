@@ -1,6 +1,7 @@
 
 #include "bulkDataNTReaderListener.h"
 #include "ACS_BD_Errors.h"
+#include <ACS_DDS_Errors.h>
 #include <iostream>
 #include <iterator>
 
@@ -20,7 +21,7 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 				callback_mp (cb)
 {
 	ACS_TRACE(__FUNCTION__);
-	nestSample_m=0;
+	nextFrame_m=0;
 	frameDataReader_mp=0;
 }//BulkDataNTReaderListener
 
@@ -48,8 +49,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	{
 		frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
 		if  (  frameDataReader_mp==NULL) {
-			cerr << "read: _narrow failed." << endl;
-			exit(1);
+			ACS_DDS_Errors::DDSNarrowFailedCompletion nerr(__FILE__, __LINE__, __FUNCTION__);
+			nerr.setVariable("frameDataReader_mp");
+			nerr.setNarrowType("ACSBulkData::BulkDataNTFrameDataReader");
+			getLogger(); //force initialization of logging sys TBD changed
+			callback_mp->onError(nerr);
 		}//if
 	}//if
 
@@ -76,13 +80,10 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				else //error
 				{
 					ACS_BD_Errors::WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
-					wfo.setDataType("BD_PARAM");
-					wfo.setState(currentState_m);
-					wfo.setFlow(topicName_m.c_str());
-					wfo.setFrameCount(frameCounter_m);
-					wfo.setTotalFrameCount(totalFrames_m);
-					wfo.setFrameLength(message.data.length());
-					getLogger(); //force initalization of logging sys TBD changed
+					wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
+					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
+					wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
+					getLogger(); //force initialization of logging sys TBD changed
 					callback_mp->onError(wfo);
 				}
 				break;
@@ -91,7 +92,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			{
 				if (currentState_m==DataRcvState)
 				{
-					if (dataLength_m==0) // we get first data frame
+					if (dataLength_m==0) // we get the first data frame
 					{
 						std::cout << " *************************   New sendData @ " << topicName_m << " *******************************" << std::endl;
 						start_time = ACE_OS::gettimeofday();
@@ -104,11 +105,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 					if ( message.restDataLength>0)
 					{
-						if (nestSample_m!=0 && nestSample_m!=message.restDataLength)
+						if (nextFrame_m!=0 && nextFrame_m!=message.restDataLength)
 						{
-							cerr << "ERROR: " << topicName_m << "    " << ">>>> missed sample #: " << message.restDataLength << " for " << topicName_m << endl;
+							cerr << "ERROR: " << topicName_m << "    " << ">>>> missed frame  #: " << message.restDataLength << " for " << topicName_m << endl;
 						}
-						nestSample_m=message.restDataLength-1;
+						nextFrame_m = message.restDataLength-1;
 					}
 					else //message.restDataLength==0 what means the last frame
 					{
@@ -130,12 +131,9 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				else //error
 				{
 					ACS_BD_Errors::WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
-					wfo.setDataType("BD_DATA");
-					wfo.setState(currentState_m);
-					wfo.setFlow(topicName_m.c_str());
-					wfo.setFrameCount(frameCounter_m);
-					wfo.setTotalFrameCount(totalFrames_m);
-					wfo.setFrameLength(message.data.length());
+					wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
+					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
+					wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
 					getLogger(); //force initalization of logging sys TBD changed
 					callback_mp->onError(wfo);
 				}
