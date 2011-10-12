@@ -6452,7 +6452,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 							activationTime);
 					container.activate_component_async(h | COMPONENT_MASK, executionId, name, code, type, callback);
 					
-					return callback.waitUntilActivated();
+					return callback.waitUntilActivated(getLockTimeout());
 				}
 				catch (Throwable ex)
 				{
@@ -6513,12 +6513,14 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 			this.activationTime = activationTime;
 		}
 
-		public synchronized ComponentInfo waitUntilActivated() throws Throwable
+		public synchronized ComponentInfo waitUntilActivated(long timeToWait) throws Throwable
 		{
 			while (!done)
 			{
 				try {
-				this.wait();
+				this.wait(timeToWait);
+				if (!done)
+					throw new TimeoutRemoteException("Activation did not finish in time.");
 				} catch (InterruptedException ex) {
 					exception = ex;
 					break;
