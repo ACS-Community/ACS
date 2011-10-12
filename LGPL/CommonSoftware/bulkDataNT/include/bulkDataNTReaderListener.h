@@ -77,7 +77,7 @@ private:
   unsigned long lost_packs;
   std::string topicName_m;
 
-  unsigned long nestSample_m;
+  unsigned long nextFrame_m;
 
   // for performance test
   ACE_Time_Value start_time;
