@@ -60,5 +60,10 @@
     <ErrorCode name="DDSReturnError" shortDescription="DDS Return Error" description="Mapping for DDS return code error">
         <Member name="RetCode" type="long" description="Return (erro) code" />
     </ErrorCode>
+    <ErrorCode name="DDSNarrowFailed" shortDescription="DDS Narrow failed" description="DDS failed to narrow an object">
+        <Member name="Variable" type="string" description="Variable name" />
+        <Member name="NarrowType" type="string" description="Narrow Type" />
+    </ErrorCode>
+    
    
 </Type>
