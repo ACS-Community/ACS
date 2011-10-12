@@ -46,7 +46,13 @@
         <Member name="State" type="long" description="State: StartState, DataRcvState, StopState" />
         <Member name="FrameLength" type="long" description="Length of the frame"/>
         <Member name="FrameCount" type="long" description="Actual frame count" />
-        <Member name="TotalFrameCount" type="long" description="Total frame count" />
+        <Member name="TotalFrameCount" type="long" description="Number of all frames" />
+        <Member name="Flow" type="string" description="Flow name" />
+    </ErrorCode>
+    <ErrorCode name="DataLost" shortDescription="Data Lost" description="Some data (frame(s)) did not arrive during sendData">
+        <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
+        <Member name="FrameLength" type="long" deescription="Length of the frame"/>
+        <Member name="FrameCount" type="long" description="Arrived frame" />
         <Member name="Flow" type="string" description="Flow name" />
     </ErrorCode>
 </Type>
