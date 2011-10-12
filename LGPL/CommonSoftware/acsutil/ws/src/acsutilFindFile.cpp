@@ -32,7 +32,7 @@
 //#define _ALL_SOURCE 1
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: acsutilFindFile.cpp,v 1.4 2005/12/30 07:38:53 bjeram Exp $"; 
+static char *rcsId="@(#) $Id: acsutilFindFile.cpp,v 1.5 2011/10/12 08:37:06 bjeram Exp $"; 
 static void *use_rcsId = ((void)(void)&use_rcsId,(void *) &rcsId);
 
 /* 
@@ -58,7 +58,7 @@ int acsFindFile (const   char *fileName,
                            int    *size,
                            char      *dirFlag)
 {
-    char myFile[128];
+    char myFile[1024];
     char cwd[1024];
     struct stat stbuf;
     char *pchar,*tok,*intRoot,*intList,*acsRoot;/*,*acsData;*/
