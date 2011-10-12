@@ -6,7 +6,7 @@
 1 - ----------T--:--:--.--- cdb_channelIL-Consumer removeSubscription - EventDescription
 2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
 2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
-1 - ----------T--:--:--.--- cdb_channelIL-Consumer push_structured_event - Maximum time to process an event is: 1.25 seconds.
+1 - ----------T--:--:--.--- cdb_channelIL-Consumer __process_event - Maximum time to process an event is: 1.25 seconds.
 2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
 1 - Test passed!
 2 - ----------T--:--:--.--- cdb_channelIL-Supplier publishEvent - Publisher:Unknown, Event Type:EventDescription
