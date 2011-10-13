@@ -2,11 +2,32 @@
 #include "bulkDataNTReaderListener.h"
 #include "ACS_BD_Errors.h"
 #include <ACS_DDS_Errors.h>
+#include <ACSErrTypeCommon.h>
 #include <iostream>
 #include <iterator>
 
 using namespace ACS_BD_Errors;
 using namespace ACS_DDS_Errors;
+
+#define BDNT_READER_LISTENER_USER_ERR(call)		 								\
+try { call; 																	\
+}catch(const ACSErr::ACSbaseExImpl &ex){										\
+	UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+	ucb.setCall("#call");														\
+	callback_mp->onError(ucb);													\
+}catch(const std::exception &stdex){											\
+	ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);  \
+    ex.setWhat(stdex.what());													\
+	UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+	ucb.setCall("#call");														\
+	callback_mp->onError(ucb);													\
+}catch(...){																	\
+	ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);   	\
+	UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
+	ucb.setCall("#call");														\
+	callback_mp->onError(ucb);													\
+}
+
 
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCallback* cb)
 : Logging::Loggable("BulkDataNT:"+string(name)),
@@ -77,7 +98,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					frameCounter_m = 0;
 					currentState_m = DataRcvState;
 					message.data.to_array(tmpArray, message.data.length());
-					callback_mp->cbStart(tmpArray, message.data.length());
+					BDNT_READER_LISTENER_USER_ERR( callback_mp->cbStart(tmpArray, message.data.length()) )
 					conseqErrorCount_m=0;
 				}
 				else //error
@@ -138,7 +159,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						dataLength_m = 0;
 					}
 					message.data.to_array(tmpArray, message.data.length());
-					callback_mp->cbReceive(tmpArray, message.data.length());
+					BDNT_READER_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) )
 					conseqErrorCount_m=0;
 				}
 				else //error
@@ -195,7 +216,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					}//if-else
 				}
 				// in all above warning/error case we call  user's cbStop()
-				callback_mp->cbStop();
+				BDNT_READER_LISTENER_USER_ERR( callback_mp->cbStop() )
 				conseqErrorCount_m=0;
 				break;
 			}//case ACSBulkData::BD_STOP
@@ -252,7 +273,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
 					(LM_INFO, "A new sender has connected to flow: %s of the stream: %s. Total alive connection(s): %d",
 							callback_mp->getFlowName(), callback_mp->getStreamName(),
 							lcs.alive_count));
-			callback_mp->onSenderConnect();
+			BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderConnect() )
 		}//for
 	}else
 	{
@@ -262,7 +283,7 @@ void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS
 					(LM_INFO, "A sender has disconnected to flow: %s of the stream: %s. Total alive connection(s): %d",
 							callback_mp->getFlowName(), callback_mp->getStreamName(),
 							lcs.alive_count));
-			callback_mp->onSenderDisconnect();
+			BDNT_READER_LISTENER_USER_ERR( callback_mp->onSenderDisconnect() )
 		}//for
 	}//if-else
 }//on_liveliness_changed
