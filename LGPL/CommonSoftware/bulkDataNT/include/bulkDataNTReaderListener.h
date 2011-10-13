@@ -48,6 +48,9 @@ private:
 
   std::string topicName_m;  /// name of DDS topic
 
+  unsigned long conseqErroCount_m;  //consequence error count
+  unsigned long maxConseqErroCount_m;  //maximal consequence error count
+
   unsigned long nextFrame_m;
 
   ACE_Time_Value start_time;  /// for performance test

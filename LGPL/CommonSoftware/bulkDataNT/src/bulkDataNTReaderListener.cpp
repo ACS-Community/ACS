@@ -22,6 +22,7 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 	ACS_TRACE(__FUNCTION__);
 	nextFrame_m=0;
 	frameDataReader_mp=0;
+	conseqErroCount_m=0;
 }//BulkDataNTReaderListener
 
 
@@ -76,16 +77,18 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					currentState_m = DataRcvState;
 					message.data.to_array(tmpArray, message.data.length());
 					callback_mp->cbStart(tmpArray, message.data.length());
+					conseqErroCount_m=0;
 				}
 				else //error
 				{
+					conseqErroCount_m++;
 					WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
 					wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
 					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
 					wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
 					getLogger(); //force initialization of logging sys TBD changed
 					callback_mp->onError(wfo);
-				}
+				}//if-else
 				break;
 			}//	case ACSBulkData::BD_PARAM:
 			case ACSBulkData::BD_DATA:
@@ -108,6 +111,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						// do we miss a frame ?
 						if (nextFrame_m!=0 && nextFrame_m!=message.restDataLength)
 						{
+							conseqErroCount_m++;
 							FrameLostCompletion lde(__FILE__, __LINE__, __FUNCTION__);
 							lde.setNextDataFrame(nextFrame_m);
 							lde.setFrameCount(frameCounter_m);
@@ -116,6 +120,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 							lde.setFlow(topicName_m.c_str());
 							getLogger(); //force initialization of logging sys TBD changed
 							callback_mp->onError(lde);
+							return; // ??
 						}
 						nextFrame_m = message.restDataLength-1;
 					}
@@ -134,9 +139,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					}
 					message.data.to_array(tmpArray, message.data.length());
 					callback_mp->cbReceive(tmpArray, message.data.length());
+					conseqErroCount_m=0;
 				}
 				else //error
 				{
+					conseqErroCount_m++;
 					WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
 					wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
 					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
@@ -160,6 +167,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					{
 						if (frameCounter_m != totalFrames_m)
 						{
+							conseqErroCount_m++;
 							ACS_BD_Errors::FrameLostCompletion lde(__FILE__, __LINE__, __FUNCTION__);
 							lde.setNextDataFrame(nextFrame_m);
 							lde.setFrameCount(frameCounter_m);
@@ -185,9 +193,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}
 				// in all above warning/error case we call  user's cbStop()
 				callback_mp->cbStop();
+				conseqErroCount_m=0;
 				break;
 			}//case ACSBulkData::BD_STOP
 			default:
+				conseqErroCount_m++;
 				UnknownDataTypeCompletion udt(__FILE__, __LINE__, __FUNCTION__);
 				udt.setDataType(message.dataType);
 				udt.setFrameCount(frameCounter_m);
@@ -196,6 +206,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				callback_mp->onError(udt);
 			}//switch
 		}else { //si.valie_data == false
+			conseqErroCount_m++;
 			DDSSampleStateErrorCompletion ssErr(__FILE__, __LINE__, __FUNCTION__);
 			ssErr.setInstanceState(si.instance_state);  //would be good if we can give also string value
 			ssErr.setViewState(si.view_state);  //would be good if we can give also string value
@@ -206,6 +217,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	}
 	else
 	{
+		conseqErroCount_m++;
 		DDSReturnErrorCompletion retErr(__FILE__, __LINE__, __FUNCTION__);
 		retErr.setRetCode(retCode);  //would be good if we can give also string value
 		getLogger(); //force initialization of logging sys TBD
@@ -213,24 +225,21 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	}//if(status)
 }//on_data_available
 
-void BulkDataNTReaderListener::on_requested_deadline_missed (
-		DDS::DataReader*, const DDS::RequestedDeadlineMissedStatus& )
+void BulkDataNTReaderListener::on_requested_deadline_missed(DDS::DataReader*, const DDS::RequestedDeadlineMissedStatus& )
 {
 	ACS_DDS_Errors::DDSDeadlineMissedCompletion dmerr(__FILE__, __LINE__, __FUNCTION__);
 	getLogger(); //force initialization of logging sys TBD changed
 	callback_mp->onError(dmerr);
 }//on_requested_deadline_missed
 
-void BulkDataNTReaderListener::on_requested_incompatible_qos (
-		DDS::DataReader*, const DDS::RequestedIncompatibleQosStatus&)
+void BulkDataNTReaderListener::on_requested_incompatible_qos(DDS::DataReader*, const DDS::RequestedIncompatibleQosStatus&)
 {
 	ACS_DDS_Errors::DDSIncompatibleQoSCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
 	getLogger(); //force initialization of logging sys TBD changed
 	callback_mp->onError(iqerr);
 }//on_requested_incompatible_qos
 
-void BulkDataNTReaderListener::on_liveliness_changed (
-		DDS::DataReader*, const DDS::LivelinessChangedStatus& lcs)
+void BulkDataNTReaderListener::on_liveliness_changed(DDS::DataReader*, const DDS::LivelinessChangedStatus& lcs)
 {
 	if (lcs.alive_count_change>0)
 	{
@@ -255,22 +264,19 @@ void BulkDataNTReaderListener::on_liveliness_changed (
 	}//if-else
 }//on_liveliness_changed
 
-void BulkDataNTReaderListener::on_subscription_matched (
-		DDS::DataReader*, const DDS::SubscriptionMatchedStatus& )
+void BulkDataNTReaderListener::on_subscription_matched(DDS::DataReader*, const DDS::SubscriptionMatchedStatus&)
 {
 	ACS_TRACE(__FUNCTION__);
 }//on_subscription_matched
 
-void BulkDataNTReaderListener::on_sample_rejected(
-		DDS::DataReader*, const DDS::SampleRejectedStatus& srs)
+void BulkDataNTReaderListener::on_sample_rejected( DDS::DataReader*, const DDS::SampleRejectedStatus& srs)
 {
 	ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
 			(LM_WARNING, "Sample Rejected: reason %d, change: %d, total: %d!",
 			srs.last_reason, srs.total_count_change, srs.total_count));
 }//on_sample_rejected
 
-void BulkDataNTReaderListener::on_sample_lost(
-		DDS::DataReader*, const DDS::SampleLostStatus& s)
+void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::SampleLostStatus& s)
 {
 	ACS_BD_Errors::SampleLostCompletion sle(__FILE__, __LINE__, __FUNCTION__);
 	sle.setLostSamples(s.total_count_change);
