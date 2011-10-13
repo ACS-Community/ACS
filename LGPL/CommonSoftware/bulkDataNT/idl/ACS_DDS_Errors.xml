@@ -58,7 +58,7 @@
     </ErrorCode>
     
     <ErrorCode name="DDSReturnError" shortDescription="DDS Return Error" description="Mapping for DDS return code error">
-        <Member name="RetCode" type="long" description="Return (erro) code" />
+        <Member name="RetCode" type="long" description="Return (error) code" />
     </ErrorCode>
     
     <ErrorCode name="DDSNarrowFailed" shortDescription="DDS Narrow failed" description="DDS failed to narrow an object">
