@@ -22,7 +22,8 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCal
 	ACS_TRACE(__FUNCTION__);
 	nextFrame_m=0;
 	frameDataReader_mp=0;
-	conseqErroCount_m=0;
+	conseqErrorCount_m=0;
+	maxConseqErrorCount_m = 4; //TBD now hardcoded, to be get from somewhere else
 }//BulkDataNTReaderListener
 
 
@@ -31,7 +32,7 @@ BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 	ACS_TRACE(__FUNCTION__);
 	if(logger_mp)
 	{
-		// we have to call doen as many times as we call init !!
+		// we have to call "done" as many times as we call "init" !!
 		for(unsigned int i=0; i<loggerInitCount_m; i++)
 			LoggingProxy::done();
 		delete logger_mp; // ...  but we have just one proxy object for all DDS reader threads
@@ -77,17 +78,17 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					currentState_m = DataRcvState;
 					message.data.to_array(tmpArray, message.data.length());
 					callback_mp->cbStart(tmpArray, message.data.length());
-					conseqErroCount_m=0;
+					conseqErrorCount_m=0;
 				}
 				else //error
 				{
-					conseqErroCount_m++;
 					WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
 					wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
 					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
 					wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
 					getLogger(); //force initialization of logging sys TBD changed
 					callback_mp->onError(wfo);
+					increasConseqErrorCount();
 				}//if-else
 				break;
 			}//	case ACSBulkData::BD_PARAM:
@@ -111,7 +112,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						// do we miss a frame ?
 						if (nextFrame_m!=0 && nextFrame_m!=message.restDataLength)
 						{
-							conseqErroCount_m++;
 							FrameLostCompletion lde(__FILE__, __LINE__, __FUNCTION__);
 							lde.setNextDataFrame(nextFrame_m);
 							lde.setFrameCount(frameCounter_m);
@@ -120,6 +120,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 							lde.setFlow(topicName_m.c_str());
 							getLogger(); //force initialization of logging sys TBD changed
 							callback_mp->onError(lde);
+							increasConseqErrorCount();
 							return; // ??
 						}
 						nextFrame_m = message.restDataLength-1;
@@ -139,17 +140,17 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					}
 					message.data.to_array(tmpArray, message.data.length());
 					callback_mp->cbReceive(tmpArray, message.data.length());
-					conseqErroCount_m=0;
+					conseqErrorCount_m=0;
 				}
 				else //error
 				{
-					conseqErroCount_m++;
 					WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
 					wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
 					wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
 					wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
 					getLogger(); //force initialization of logging sys TBD changed
 					callback_mp->onError(wfo);
+					increasConseqErrorCount();
 				}
 				break;
 			}//case ACSBulkData::BD_DATA
@@ -167,7 +168,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					{
 						if (frameCounter_m != totalFrames_m)
 						{
-							conseqErroCount_m++;
 							ACS_BD_Errors::FrameLostCompletion lde(__FILE__, __LINE__, __FUNCTION__);
 							lde.setNextDataFrame(nextFrame_m);
 							lde.setFrameCount(frameCounter_m);
@@ -176,6 +176,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 							lde.setFlow(topicName_m.c_str());
 							getLogger(); //force initialization of logging sys TBD changed
 							callback_mp->onError(lde);
+							increasConseqErrorCount();
 						}//if
 					}//if-else
 				}else
@@ -193,11 +194,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				}
 				// in all above warning/error case we call  user's cbStop()
 				callback_mp->cbStop();
-				conseqErroCount_m=0;
+				conseqErrorCount_m=0;
 				break;
 			}//case ACSBulkData::BD_STOP
 			default:
-				conseqErroCount_m++;
+				conseqErrorCount_m++;
 				UnknownDataTypeCompletion udt(__FILE__, __LINE__, __FUNCTION__);
 				udt.setDataType(message.dataType);
 				udt.setFrameCount(frameCounter_m);
@@ -206,7 +207,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				callback_mp->onError(udt);
 			}//switch
 		}else { //si.valie_data == false
-			conseqErroCount_m++;
+			conseqErrorCount_m++;
 			DDSSampleStateErrorCompletion ssErr(__FILE__, __LINE__, __FUNCTION__);
 			ssErr.setInstanceState(si.instance_state);  //would be good if we can give also string value
 			ssErr.setViewState(si.view_state);  //would be good if we can give also string value
@@ -217,7 +218,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	}
 	else
 	{
-		conseqErroCount_m++;
+		conseqErrorCount_m++;
 		DDSReturnErrorCompletion retErr(__FILE__, __LINE__, __FUNCTION__);
 		retErr.setRetCode(retCode);  //would be good if we can give also string value
 		getLogger(); //force initialization of logging sys TBD
@@ -287,6 +288,17 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
 	callback_mp->onError(sle);
 }//on_sample_lost
 
+void BulkDataNTReaderListener::increasConseqErrorCount()
+{
+	conseqErrorCount_m++;
+	if (conseqErrorCount_m>=maxConseqErrorCount_m)
+	{
+
+		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
+			(LM_ALERT, "Too many consequente errors: %d/%d", conseqErrorCount_m, maxConseqErrorCount_m));
+		//TBD: disconnect
+	}
+}//increasConseqErroCount
 
 Logging::Logger::LoggerSmartPtr BulkDataNTReaderListener::getLogger ()
 {

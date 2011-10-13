@@ -48,16 +48,16 @@ private:
 
   std::string topicName_m;  /// name of DDS topic
 
-  unsigned long conseqErroCount_m;  //consequence error count
-  unsigned long maxConseqErroCount_m;  //maximal consequence error count
-
-  unsigned long nextFrame_m;
+  unsigned int conseqErrorCount_m;  //consequence error count
+  unsigned int maxConseqErrorCount_m;  //maximal consequence error count
+  void increasConseqErrorCount(); // increases conseqErroCount_m and check if it is more than max and reacts
 
   ACE_Time_Value start_time;  /// for performance test
 
   unsigned long dataLength_m; /// length of data arrived so far after startSend/paramter
   unsigned long frameCounter_m; /// number of *data* frame arrived so far for sendData
   unsigned long totalFrames_m; /// total number of frames that we should get for current sendData
+  unsigned long nextFrame_m;   /// the count of next frame that should be received
 
   ACSBulkData::BulkDataNTFrameDataReader *frameDataReader_mp; /// pointer to DDS reader
 
