@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.24 2011/10/04 14:56:39 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.25 2011/10/13 16:23:01 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -31,6 +31,9 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
+
+# at this moment we use bulk data (NT) just in C++, and there is just C++ implementation
+MAKE_ONLY=C++
 
 ARCH = $(shell uname -m)
 

@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.11 2011/09/09 15:04:11 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.12 2011/10/13 16:23:27 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -31,6 +31,8 @@
 # REMARKS
 #    None
 #------------------------------------------------------------------------
+
+MAKE_ONLY=C++ # impl is only for C++, and the same is with tests
 
 #
 # user definable C-compilation flags
