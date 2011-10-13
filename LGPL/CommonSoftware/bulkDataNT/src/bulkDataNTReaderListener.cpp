@@ -8,13 +8,9 @@
 using namespace ACS_BD_Errors;
 using namespace ACS_DDS_Errors;
 
-int BulkDataNTReaderListener::sleep_period=0;
-
-
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCallback* cb)
 : Logging::Loggable("BulkDataNT:"+string(name)),
 				currentState_m(StartState),
-				lost_packs(0),
 				topicName_m(name),
 				dataLength_m(0),
 				frameCounter_m(0),
@@ -102,7 +98,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						start_time = ACE_OS::gettimeofday();
 						totalFrames_m = message.restDataLength+1;
 						frameCounter_m = 0;
-					}
+					}//if
 
 					dataLength_m += message.data.length();
 					frameCounter_m ++;
@@ -118,7 +114,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 							lde.setRestFrames(message.restDataLength);
 							lde.setFrameLength(message.data.length());
 							lde.setFlow(topicName_m.c_str());
-							getLogger(); //force initalization of logging sys TBD changed
+							getLogger(); //force initialization of logging sys TBD changed
 							callback_mp->onError(lde);
 						}
 						nextFrame_m = message.restDataLength-1;
