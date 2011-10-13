@@ -109,8 +109,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 					if ( message.restDataLength>0)
 					{
-						// do we miss a frame ?
-						if (nextFrame_m!=0 && nextFrame_m!=message.restDataLength)
+						if (nextFrame_m!=0 && nextFrame_m!=message.restDataLength) // do we miss a frame ?
 						{
 							FrameLostCompletion lde(__FILE__, __LINE__, __FUNCTION__);
 							lde.setNextDataFrame(nextFrame_m);
@@ -125,7 +124,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						}
 						nextFrame_m = message.restDataLength-1;
 					}
-					else //message.restDataLength==0 what means the last frame
+					else //message.restDataLength==0 what means we got the last frame
 					{
 						ACE_Time_Value elapsed_time = ACE_OS::gettimeofday() - start_time;
 						cout <<	topicName_m << " Received all data from sendData: " << dataLength_m << " Bytes in ";
@@ -160,10 +159,11 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				{
 					currentState_m = StopState;
 					cout << "===============================================================" << endl;
-					if (dataLength_m==0)
+					if (frameCounter_m==0)
 					{
 						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-								(LM_WARNING, "Got stop (BD_STOP) before any data (sendData)!"));
+								(LM_WARNING, "On %s got stop (BD_STOP) before any data (sendData)!",
+										topicName_m.c_str()));
 					}else
 					{
 						if (frameCounter_m != totalFrames_m)
@@ -184,12 +184,14 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					if (currentState_m==StopState)
 					{
 						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-								(LM_WARNING, "Stop (BD_STOP) arrived in stop state - will be ignored!"));
+								(LM_WARNING, "On %s stop (BD_STOP) arrived in stop state - will be ignored!",
+										topicName_m.c_str()));
 					}
 					else //StartState
 					{
 						ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-								(LM_WARNING, "Stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!"));
+								(LM_WARNING, "On %s stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!",
+										topicName_m.c_str()));
 					}//if-else
 				}
 				// in all above warning/error case we call  user's cbStop()
@@ -295,7 +297,8 @@ void BulkDataNTReaderListener::increasConseqErrorCount()
 	{
 
 		ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__,
-			(LM_ALERT, "Too many consequente errors: %d/%d", conseqErrorCount_m, maxConseqErrorCount_m));
+			(LM_ALERT, "Too many consequent errors: %d/%d on %s",
+					conseqErrorCount_m, maxConseqErrorCount_m, topicName_m.c_str()));
 		//TBD: disconnect
 	}
 }//increasConseqErroCount
