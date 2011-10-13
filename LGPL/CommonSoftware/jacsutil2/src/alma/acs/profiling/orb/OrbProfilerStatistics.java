@@ -57,24 +57,31 @@ public class OrbProfilerStatistics
 	
 	public List<TimeValue<Integer>> getConcurrentCalls() {
 		int startedCount = 0;
+		TimeValue<Integer> last = null;
 		List<TimeValue<Integer>> ret = new ArrayList<TimeValue<Integer>>();
 		
 		for (ProfilerMessage msg : messages) {
 			if (msg.type == ProfilerMessage.Type.REQUEST_STARTED ||
-					msg.type == ProfilerMessage.Type.REQUEST_FINISHED) {
+				msg.type == ProfilerMessage.Type.REQUEST_FINISHED) {
+				
 				if (msg.type == ProfilerMessage.Type.REQUEST_STARTED) {
 					startedCount++;
 				}
 				else {
-					if (startedCount > 0) {
-						startedCount--;
-					}
-					else {
+					startedCount--;
+					if (startedCount < 0) {
 						logger.warning("Bad input data at '" + IsoDateFormat.formatDate(new Date(msg.timestamp)) + "': more calls finished than started.");
 					}
 				}
-				TimeValue<Integer> tv = new TimeValue<Integer>(msg.timestamp, startedCount);
-				ret.add(tv);
+				// replot the last value, but with current time, to get a straight line in the diagram for times without any calls.
+				if (last != null) {
+					ret.add(new TimeValue<Integer>(msg.timestamp, last.value));
+				}
+				// add current data
+				TimeValue<Integer> current = new TimeValue<Integer>(msg.timestamp, startedCount);
+				ret.add(current); 
+				
+				last = current;
 			}
 		}
 		return ret;
