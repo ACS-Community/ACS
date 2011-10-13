@@ -79,12 +79,11 @@ class BulkDataCallback
     /// The method is called when a sender is disconnected for a flow
     virtual void onSenderDisconnect(){};
 
+    //TBD: to be implemented now those error goes to onError
+    virtual void onDataLost(unsigned long frmaeCount, unsigned long totalFrames, ACSErr::CompletionImpl &error){};
   protected:
-
     std::string flowName_m;
     std::string streamName_m;
-
-    //unsigned int flowNumber_m;
 
     ACE_CString recvName_m;
 /*
