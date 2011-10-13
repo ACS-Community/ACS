@@ -52,13 +52,15 @@
     <ErrorCode name="FrameLost" shortDescription="Frame Lost" description="Some data frame(s)has not arrived during sendData">
         <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
         <Member name="FrameLength" type="long" description="Length of the frame"/>
-        <Member name="FrameCount" type="long" description="Arrived frame number" />
+        <Member name="RestFrames" type="long" description="Rest frame number" />
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
         <Member name="Flow" type="string" description="Flow name" />
     </ErrorCode>
     
     <ErrorCode name="SampleLost" shortDescription="Sample Lost" description="Sample lost is reported in DDS on_data_lost">
         <Member name="LostSamples" type="long" description="Number of lost samples" />
         <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
+        <Member name="FrameCount" type="long" description="Number of arrived frames" />
         <Member name="Flow" type="string" description="Flow name" />
     </ErrorCode>
 </Type>
