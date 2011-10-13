@@ -71,4 +71,10 @@
     
     <ErrorCode name="DDSDeadlineMissed" shortDescription="Deadline missed." description="(Requested) deadline missed">
     </ErrorCode>
+    
+    <ErrorCode name="DDSSampleStateError" shortDescription="DDS Sample State  Error" description="Sample state error">
+        <Member name="SampleState" type="long" description="Sample state" />
+        <Member name="ViewState" type="long" description="View state" />
+        <Member name="InstanceState" type="long" description="Instance state" />
+    </ErrorCode>
 </Type>
