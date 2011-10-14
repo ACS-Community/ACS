@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.9 2011/08/23 15:41:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.10 2011/10/14 17:03:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,7 +63,7 @@ public:
 
 
 	//should return generic writer and have another method in Base class that narrows
-	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Topic *topic);
+	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Topic *topic, DDS::DataWriterListener *listener);
 
 
 	void destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter* dw);

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.15 2011/08/25 16:39:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.16 2011/10/14 17:03:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,7 +28,7 @@
 
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.15 2011/08/25 16:39:23 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.16 2011/10/14 17:03:43 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -50,7 +50,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	topicName = senderStream_m->getName() + "#" + flowName_m;
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
-	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m);
+	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, NULL);
 
 	//RTI probably is enough to create frame once
 	frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
