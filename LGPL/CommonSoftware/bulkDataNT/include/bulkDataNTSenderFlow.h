@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.7 2011/08/25 12:30:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.8 2011/10/14 17:17:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@
 //#include "bulkDataNTBase.h"
 #include "bulkDataNTDDSPublisher.h"
 #include "bulkDataNTSenderStream.h"
-//#include "bulkDataNTSenderFlow.h"
+#include "bulkDataNTWriterListener.h"
 
 
 namespace AcsBulkdata
@@ -86,6 +86,7 @@ protected:
 
 	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;
 	DDS::Topic *ddsTopic_m;
+	BulkDataNTWriterListener *writerReaderListener_m;
 	ACSBulkData::BulkDataNTFrameDataWriter *ddsDataWriter_m;
 
 	// common method for writing/sending data  from startSend and stopSend (could be also used for sendData ?)

@@ -16,16 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.19 2011/10/14 17:07:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.20 2011/10/14 17:17:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 #include "bulkDataNTDDSPublisher.h"
-#include "bulkDataNTWriterListener.h"
 #include <iostream>
-
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -33,13 +31,11 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 
-
 BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg) :
 		BulkDataNTDDS(p, ddsCfg)
 {
 	publisher_m = createDDSPublisher();
 }
-
 
 BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 {
@@ -52,7 +48,6 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 		ex.log();
 	}
 }//~BulkDataNTDDSPublisher
-
 
 DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 {
@@ -70,7 +65,6 @@ DDS::Publisher* BulkDataNTDDSPublisher::createDDSPublisher()
 	return pub;
 }//createDDSParticipant
 
-
 void  BulkDataNTDDSPublisher::destroyDDSPublisher()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
@@ -84,7 +78,6 @@ void  BulkDataNTDDSPublisher::destroyDDSPublisher()
 		throw ex;
 	}//if
 }//destroyDDSPublisher
-
 
 ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic *topic, DDS::DataWriterListener *listener)
 {
@@ -114,7 +107,6 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	return ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
 }//createDDSWriter
 
-
 void BulkDataNTDDSPublisher::destroyDDSWriter (ACSBulkData::BulkDataNTFrameDataWriter* dw)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
@@ -128,4 +120,3 @@ void BulkDataNTDDSPublisher::destroyDDSWriter (ACSBulkData::BulkDataNTFrameDataW
 }//destroyDDSWriter
 
 /*___oOo___*/
-

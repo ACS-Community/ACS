@@ -16,20 +16,19 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.16 2011/10/14 17:03:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.17 2011/10/14 17:17:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.17 2011/10/14 17:17:18 bjeram Exp $";
+static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
+
 #include "bulkDataNTSenderFlow.h"
 #include <iostream>
-
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
-
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.16 2011/10/14 17:03:43 bjeram Exp $";
-static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
@@ -39,7 +38,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 											const char* flowName,
 											const SenderFlowConfiguration &sndCfg/*, cb*/) :
 		senderStream_m(senderStream), flowName_m(flowName),
-		ddsPublisher_m(0), ddsTopic_m(0), ddsDataWriter_m(0), frame_m(0)
+		ddsPublisher_m(0), ddsTopic_m(0), writerReaderListener_m(0), ddsDataWriter_m(0), frame_m(0)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	std::string topicName;
@@ -50,7 +49,8 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	topicName = senderStream_m->getName() + "#" + flowName_m;
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
-	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, NULL);
+	writerReaderListener_m = new BulkDataNTWriterListener();
+	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, writerReaderListener_m);
 
 	//RTI probably is enough to create frame once
 	frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
@@ -83,6 +83,8 @@ BulkDataNTSenderFlow::~BulkDataNTSenderFlow()
 	{
 		ddsPublisher_m->destroyDDSWriter(ddsDataWriter_m);
 		ddsDataWriter_m = 0;
+		delete writerReaderListener_m;
+		writerReaderListener_m = 0;
 		ret = participant->delete_topic(ddsTopic_m);
 		if (ret!=DDS::RETCODE_OK)
 		{
