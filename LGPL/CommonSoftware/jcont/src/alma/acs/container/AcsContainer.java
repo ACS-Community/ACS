@@ -206,7 +206,7 @@ public class AcsContainer extends ContainerPOA
 			this.isEmbedded = isEmbedded;
 			m_logger = ClientLogManager.getAcsLogManager().getLoggerForContainer(containerName);
 			containerThreadFactory = new CleaningDaemonThreadFactory(m_containerName, m_logger, "Container");
-			threadPoolExecutor = new ThreadPoolExecutor(1, 1, 3, TimeUnit.MINUTES, 
+			threadPoolExecutor = new ThreadPoolExecutor(1, 5, 3, TimeUnit.MINUTES, 
 					new LinkedBlockingQueue<Runnable>(), containerThreadFactory, 
 					new ThreadPoolExecutor.AbortPolicy());
 

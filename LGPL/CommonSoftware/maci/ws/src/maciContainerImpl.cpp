@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.135 2011/10/11 20:59:36 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.136 2011/10/14 11:05:41 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.135 2011/10/11 20:59:36 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.136 2011/10/14 11:05:41 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -1086,7 +1086,7 @@ ContainerImpl::init(int argc, char *argv[])
 
 
 
-      m_methodRequestThreadPool = new MethodRequestThreadPool(1);        
+      m_methodRequestThreadPool = new MethodRequestThreadPool(5);        
         
       //
       // activate the Container as a CORBA object.
