@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.h,v 1.1 2011/10/14 16:32:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.h,v 1.2 2011/10/14 16:51:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -79,7 +79,7 @@ public:
 
 private:
 	unsigned long sum_unacknowledged_sample;
-	unsigned long max_unacknowledged_sample;
+	long max_unacknowledged_sample;
 	unsigned long iter;
 };
 
