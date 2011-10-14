@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.1 2011/10/14 16:32:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.2 2011/10/14 16:59:07 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -24,12 +24,15 @@
 */
 
 #include "bulkDataNTWriterListener.h"
+
+#include <ACS_DDS_Errors.h>
 #include <iostream>
 
 using namespace std;
 
 BulkDataNTWriterListener::BulkDataNTWriterListener()
 {
+	ACS_TRACE(__PRETTY_FUNCTION__);
 	sum_unacknowledged_sample = 0;
 	max_unacknowledged_sample =0;
 	iter=0;
@@ -38,6 +41,7 @@ BulkDataNTWriterListener::BulkDataNTWriterListener()
 // Implementation skeleton destructor
 BulkDataNTWriterListener::~BulkDataNTWriterListener ()
 {
+	ACS_TRACE(__PRETTY_FUNCTION__);
 }
 
 void BulkDataNTWriterListener::on_offered_deadline_missed (
