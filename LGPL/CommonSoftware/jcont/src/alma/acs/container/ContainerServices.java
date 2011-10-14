@@ -33,6 +33,7 @@ import si.ijs.maci.ComponentSpec;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
@@ -648,6 +649,9 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @param faultMember The alarm's fault member
 	 * @param faultCode The alarm's fault code
 	 * @throws AcsJContainerServicesEx if anything goes wrong while raising the alarm
+	 *
+	 * @deprecated The new {@link #getAlarmSource()} method should be used instead,
+	 *  calling {@link AlarmSource#raiseAlarm(String, String, int)} on the returned object
 	 */
 	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
 
@@ -672,8 +676,21 @@ public interface ContainerServices extends ContainerServicesBase
 	 * @param faultMember The alarm's fault member
 	 * @param faultCode The alarm's fault code
 	 * @throws AcsJContainerServicesEx if anything goes wrong while clearing the alarm
+	 * 
+	 * @deprecated The new {@link #getAlarmSource()} method should be used instead,
+	 *  calling {@link AlarmSource#clearAlarm(String, String, int)} on the returned object
 	 */
 	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx;
+
+
+	/**
+	 * Returns the {@link AlarmSource} owned by this object. The {@link AlarmSource} object
+	 * allows to raise and clear alarms, among other advanced operations
+	 *
+	 * @return The {@link AlarmSource} owned by this object
+	 * @throws AcsJContainerServicesEx if anything goes wrong
+	 */
+	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx;
 
     /////////////////////////////////////////////////////////////
     // other

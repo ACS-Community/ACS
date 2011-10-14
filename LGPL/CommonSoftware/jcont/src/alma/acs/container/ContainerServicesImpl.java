@@ -1398,17 +1398,26 @@ public class ContainerServicesImpl implements ContainerServices
 	}
 
 	/**
-	 * @see ContainerServices#raiseAlarm(String, String, int)
+	 * {@inheritDoc}
+	 * @deprecated
 	 */
+	@Override
 	public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
 		submitAlarm(faultFamily, faultMember, faultCode, true);
 	}
 
 	/**
-	 * @see ContainerServices#clearAlarm(String, String, int)
+	 * {@inheritDoc}
+	 * @deprecated
 	 */
+	@Override
 	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
 		submitAlarm(faultFamily, faultMember, faultCode, false);
+	}
+
+	@Override
+	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+		return m_alarmSource;
 	}
 
 }

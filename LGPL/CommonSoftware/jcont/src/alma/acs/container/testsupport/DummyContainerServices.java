@@ -13,6 +13,7 @@ import si.ijs.maci.ComponentSpec;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
@@ -292,6 +293,11 @@ public class DummyContainerServices implements ContainerServices
 
 	@Override
 	public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJContainerServicesEx {
+		throw new AcsJContainerServicesEx();
+	}
+
+	@Override
+	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
 		throw new AcsJContainerServicesEx();
 	}
 

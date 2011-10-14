@@ -33,7 +33,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -42,9 +41,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.omg.PortableServer.Servant;
-
-import com.cosylab.CDB.DAL;
-import com.cosylab.CDB.DALHelper;
 
 import si.ijs.maci.AuthenticationData;
 import si.ijs.maci.CBComponentInfo;
@@ -57,7 +53,6 @@ import si.ijs.maci.ContainerOperations;
 import si.ijs.maci.ContainerPOA;
 import si.ijs.maci.ImplLangType;
 import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
-
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.CBDescIn;
 import alma.ACS.CBDescOut;
@@ -72,13 +67,10 @@ import alma.AcsContainerLog.LOG_CompAct_Instance_OK;
 import alma.AcsContainerLog.LOG_CompAct_Loading_OK;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.alarmsystem.source.AlarmSource;
-import alma.acs.alarmsystem.source.AlarmSourceImpl;
 import alma.acs.classloading.AcsComponentClassLoader;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.container.corba.AcsCorba;
-import alma.acs.exceptions.AcsJCompletion;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
@@ -100,6 +92,9 @@ import alma.maciErrType.wrappers.AcsJCannotActivateComponentEx;
 import alma.maciErrType.wrappers.AcsJCannotRestartComponentEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationFailedEx;
 import alma.maciErrType.wrappers.AcsJComponentDeactivationUncleanEx;
+
+import com.cosylab.CDB.DAL;
+import com.cosylab.CDB.DALHelper;
 
 /**
  * The main container class that interfaces with the maci manager.
@@ -148,8 +143,6 @@ public class AcsContainer extends ContainerPOA
 	private final ComponentMap m_activeComponentMap;
 
     private ContainerServicesImpl m_alarmContainerServices;
-
-    private AlarmSource m_alarmSource;
 
 	/**
 	 * Gate that blocks some (currently: only activate_component) incoming calls while the container is 
@@ -288,8 +281,6 @@ public class AcsContainer extends ContainerPOA
                 return alarmLogger;
         	}
 		};
-		m_alarmSource = new AlarmSourceImpl(m_alarmContainerServices);
-		m_alarmSource.start();
 
 		try {
 			ACSAlarmSystemInterfaceFactory.init(m_alarmContainerServices);
@@ -303,11 +294,19 @@ public class AcsContainer extends ContainerPOA
 		ClientLogManager.LogAlarmHandler logAlarmHandler = new ClientLogManager.LogAlarmHandler() {
 			@Override
 			public void raiseAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-				m_alarmSource.raiseAlarm(faultFamily, faultMember, faultCode);
+				try {
+					m_alarmContainerServices.getAlarmSource().raiseAlarm(faultFamily, faultMember, faultCode);
+				} catch (AcsJContainerServicesEx e) {
+					throw new AcsJCouldntPerformActionEx(e);
+				}
 			}
 			@Override
 			public void clearAlarm(String faultFamily, String faultMember, int faultCode) throws AcsJCouldntPerformActionEx {
-				m_alarmSource.clearAlarm(faultFamily, faultMember, faultCode);
+				try {
+					m_alarmContainerServices.getAlarmSource().clearAlarm(faultFamily, faultMember, faultCode);
+				} catch (AcsJContainerServicesEx e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		ClientLogManager.getAcsLogManager().enableLoggingAlarms(logAlarmHandler);
@@ -1134,7 +1133,6 @@ public class AcsContainer extends ContainerPOA
 			m_acsCorba.shutdownORB(gracefully, isOrbThread);
 		}
 
-		m_alarmSource.tearDown(); // we tear it down here because it's used by the logging classes
 		m_alarmContainerServices.cleanUp();
 
 		// to allow creation of a new container in the same VM

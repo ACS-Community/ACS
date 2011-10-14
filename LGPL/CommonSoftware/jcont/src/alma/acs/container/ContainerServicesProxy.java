@@ -12,6 +12,7 @@ import si.ijs.maci.ComponentSpec;
 import alma.ACS.OffShoot;
 import alma.ACS.OffShootOperations;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+import alma.acs.alarmsystem.source.AlarmSource;
 import alma.acs.component.ComponentDescriptor;
 import alma.acs.component.ComponentQueryDescriptor;
 import alma.acs.component.ComponentStateManager;
@@ -306,5 +307,10 @@ public class ContainerServicesProxy implements ContainerServices
 	 */
 	protected void check() throws AcsJContainerServicesEx {
 		// overload if you need the checks
+	}
+
+	@Override
+	public AlarmSource getAlarmSource() throws AcsJContainerServicesEx {
+		return delegate.getAlarmSource();
 	}
 }
