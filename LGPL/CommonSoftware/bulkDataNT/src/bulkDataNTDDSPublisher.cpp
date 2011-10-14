@@ -16,13 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.16 2011/08/23 18:08:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.17 2011/10/14 16:59:31 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 #include "bulkDataNTDDSPublisher.h"
+#include "bulkDataNTWriterListener.h"
 #include <iostream>
 
 
@@ -96,9 +97,8 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 		throw ex;
 	}
 	//Create the data writer listener
-	//BDDDSWriterListenerImpl* writer_listener_servant =	new BDDDSWriterListenerImpl();
-	DDS::DataWriterListener* writerListener =  NULL; //writer_listener_servant;
-	//BDDDSWriterListenerImpl* writer_listener_servant =	dynamic_cast<BDDDSWriterListenerImpl*>(writerListener.in());
+	BulkDataNTWriterListener *writerListenerServant = new BulkDataNTWriterListener();
+	DDS::DataWriterListener* writerListener =  writerListenerServant;
 	if(writerListener==NULL){
 		std::cerr << "writer listener is nil" << std::endl;
 //TBD error handling
