@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.23 2011/02/17 18:25:40 rtobar Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.24 2011/10/14 16:57:57 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -44,6 +44,7 @@
 #include <maciErrType.h>
 #include <acsComponentListener.h>
 #include <acsComponentSmartPtr.h>
+#include <AlarmSource.h>
 
 namespace maci {
 
@@ -428,6 +429,15 @@ namespace maci {
          * @see alma.ACS.ComponentStates
          */
         virtual ComponentStateManager* getComponentStateManager()=0;
+
+        /**
+         * Returns a pointer to the <code>AlarmSource</code>
+         * object used to send alarms in a smart way.
+         *
+         * @return the alarm source object owned by this Container Services
+         * @see alma.ACS.ComponentStates
+         */
+        virtual acsalarm::AlarmSource* getAlarmSource()=0;
 
        /**
 	* Returns a pointer to the <code>ThreadManager</code>

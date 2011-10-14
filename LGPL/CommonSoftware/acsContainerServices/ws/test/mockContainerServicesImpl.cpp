@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: mockContainerServicesImpl.cpp,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
+* "@(#) $Id: mockContainerServicesImpl.cpp,v 1.3 2011/10/14 16:57:57 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -76,7 +76,7 @@
 #include "vltPort.h"
 #include "mockContainerServicesImpl.h"
 
-static char *rcsId="@(#) $Id: mockContainerServicesImpl.cpp,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"; 
+static char *rcsId="@(#) $Id: mockContainerServicesImpl.cpp,v 1.3 2011/10/14 16:57:57 rtobar Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 //using namespace maci;
@@ -170,6 +170,11 @@ PortableServer::POA_var maci::MockContainerServices::createOffShootPOA()
 }
 
 maci::ComponentStateManager* maci::MockContainerServices::getComponentStateManager()
+{
+  return 0;
+}
+
+acsalarm::AlarmSource* maci::MockContainerServices::getAlarmSource()
 {
   return 0;
 }

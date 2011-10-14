@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: mockContainerServicesImpl.h,v 1.2 2009/11/04 20:44:29 agrimstrup Exp $"
+* "@(#) $Id: mockContainerServicesImpl.h,v 1.3 2011/10/14 16:57:57 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -61,7 +61,8 @@ namespace maci {
     void deactivateOffShoot(PortableServer::ServantBase*);
     PortableServer::POA_var createOffShootPOA();
     maci::ComponentStateManager* getComponentStateManager();
-    template<class T> T* getComponent(const char *name);	    
+    template<class T> T* getComponent(const char *name);
+    acsalarm::AlarmSource* getAlarmSource();
 
   private:
     ACE_Map_Manager<ACE_CString, MockComponent* ,ACE_SYNCH_RW_MUTEX> *map;

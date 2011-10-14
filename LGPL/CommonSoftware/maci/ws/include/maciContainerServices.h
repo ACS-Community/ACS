@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.35 2011/09/20 17:54:20 rtobar Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.36 2011/10/14 16:57:58 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -303,6 +303,15 @@ class MACIContainerServices: public ContainerServices
    */
    maci::ComponentStateManager* getComponentStateManager();
 
+   /**
+    * Returns a pointer to the <code>AlarmSource</code>
+    * object used to send alarms in a smart way.
+    *
+    * @return the alarm source object owned by this Container Services
+    * @see alma.ACS.ComponentStates
+    */
+   acsalarm::AlarmSource* getAlarmSource() { return m_alarmSource; }
+
     void fireComponentsUnavailable(ACE_CString_Vector& compNames);
     void fireComponentsAvailable(ACE_CString_Vector& compNames);
 
@@ -330,6 +339,9 @@ class MACIContainerServices: public ContainerServices
 
   /// The component state manager
   maci::ComponentStateManager* componentStateManager_mp;
+
+  /// The alarm source
+  acsalarm::AlarmSource* m_alarmSource;
 
 };
 

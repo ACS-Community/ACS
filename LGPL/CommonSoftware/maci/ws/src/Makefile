@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.127 2011/03/31 13:17:33 rtobar Exp $" 
+# "@(#) $Id: Makefile,v 1.128 2011/10/14 16:57:58 rtobar Exp $" 
 #
 # Makefile of ........
 #
@@ -94,7 +94,7 @@ LIBRARIES_L     =
 maci_OBJECTS   = maciLibraryManager maciORBTask  maciContainerThreadHook \
 		 maciServantManager maciContainerServices maciContainerImpl \
 		 maciHelper maciComponentStateManager 
-maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS
+maci_LIBS = acsContainerServices maciErrType acsErrTypeContainerServices maciStubs acsAlSysSource acsErrTypeAlarmSourceFactory AcsContainerLogLTS alarmSource
 maci_LDFLAGS = -ggdb
 
 maciClient_OBJECTS =  maciSimpleClient maciSimpleClientThreadHook

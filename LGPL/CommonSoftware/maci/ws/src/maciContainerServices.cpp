@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.42 2011/10/05 15:52:40 javarias Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.43 2011/10/14 16:57:58 rtobar Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -29,6 +29,7 @@
 #include <maciContainerServices.h>
 #include <iostream>
 #include <ACSErrTypeCORBA.h>
+#include <AlarmSourceImpl.h>
 
 using namespace maci;
 using namespace acsErrTypeContainerServices;
@@ -50,6 +51,8 @@ MACIContainerServices::MACIContainerServices(
   m_manager = maci::Manager::_duplicate(m_containerImpl->getManager());
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
+  m_alarmSource = new acsalarm::AlarmSourceImpl();
+  m_alarmSource->start();
   m_poa = PortableServer::POA::_duplicate(m_containerImpl->getContainerPOA().in());
   m_componentType = ACE_CString(type);
 }
@@ -76,6 +79,8 @@ MACIContainerServices::~MACIContainerServices()
   ACS_TRACE("maci::MACIContainerServices::~MACIContainerServices");
   delete componentStateManager_mp;
   m_usedComponents.unbind_all();
+  m_alarmSource->tearDown();
+  delete m_alarmSource;
 }
 
 ACE_CString_Vector
@@ -963,4 +968,3 @@ bool ComponentReleaseCallback::awaitComponentRelease(unsigned long timeout /*in 
 void ComponentReleaseCallback::callOver() {
     mutex.release();
 }
-
