@@ -28,6 +28,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jacorb.orb.acs.AcsORBProfiler;
+import org.jacorb.orb.acs.AcsProfilingORB;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.Policy;
@@ -63,6 +65,7 @@ import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
+import alma.acs.profiling.orb.AcsORBProfilerImplBase;
 import alma.acs.util.ACSPorts;
 import alma.alarmsystem.AlarmServiceOperations;
 import alma.alarmsystem.alarmmessage.generated.AlarmSystemConfiguration;
@@ -285,6 +288,19 @@ public class AlarmSystemCorbaServer implements Runnable {
 		}
 		
 		orb = ORB.init(args, properties);
+		
+		// ORB profiler
+		if (orb instanceof AcsProfilingORB) {
+			// This profiler will log ORB resource statistics every 10 seconds,
+			AcsORBProfiler orbProfiler = new AcsORBProfilerImplBase(m_logger) {
+				{
+//	currently no additional call logging, could be added though via a new property
+//					debugRequestStarted = true;
+//					debugRequestFinished = true;
+				}
+			};
+			((AcsProfilingORB)orb).registerAcsORBProfiler(orbProfiler);
+		}
 			
 		// POA stanza, use rootPOA
 
