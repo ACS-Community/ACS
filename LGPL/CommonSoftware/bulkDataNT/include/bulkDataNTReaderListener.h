@@ -18,7 +18,7 @@ class BulkDataNTReaderListener
 {
 public:
   //Constructor
-	  BulkDataNTReaderListener (const char*name, BulkDataCallback* cb);
+  BulkDataNTReaderListener (const char*name, BulkDataCallback* cb);
 
   //destructor
   virtual ~BulkDataNTReaderListener (void);
