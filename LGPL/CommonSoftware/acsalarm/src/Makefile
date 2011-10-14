@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.15 2011/06/27 20:26:35 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.16 2011/10/14 16:19:23 rtobar Exp $"
 #
 # Makefile of ........
 #
@@ -57,7 +57,7 @@ INCLUDES        = 	ACSAlarmSystemInterfaceFactory.h \
 					faultStateConstants.h \
 			      AlarmSystemInterfaceFactory.h Properties.h Timestamp.h utilConstants.h \
 					AlarmSystemInterface.h ASIMessage.h ASIConfiguration.h asiConfigurationConstants.h \
-					AlarmSource.h AlarmSourceImpl.h AlarmToQueue AlarmsMap
+					AlarmSource.h AlarmSourceImpl.h AlarmToQueue.h AlarmsMap.h
 
 #
 # Libraries (public and local)
