@@ -4,10 +4,21 @@ import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.Policy;
+import org.omg.PortableServer.IdAssignmentPolicyValue;
+import org.omg.PortableServer.LifespanPolicyValue;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.RequestProcessingPolicyValue;
 import org.omg.PortableServer.Servant;
+import org.omg.PortableServer.ServantRetentionPolicyValue;
+import org.omg.PortableServer.POAPackage.AdapterAlreadyExists;
+import org.omg.PortableServer.POAPackage.AdapterNonExistent;
+import org.omg.PortableServer.POAPackage.InvalidPolicy;
 
 import alma.ACS.OffShoot;
+import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
@@ -76,15 +87,89 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 	@Override
 	public <T extends Servant & OffShootOperations> OffShoot activateOffShoot(T cbServant)
 			throws AcsJContainerServicesEx {
-		try {
-			return alSysCorbaServer.activateOffShoot(cbServant);
-		} catch (AcsJContainerEx ex) {
-			throw new AcsJContainerServicesEx(ex);
-		} catch (AcsJUnexpectedExceptionEx uex) {
-			throw new AcsJContainerServicesEx(uex);
+
+		if (cbServant == null) {
+			String msg = "activateOffShoot called with missing parameter.";
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
+			throw ex;
 		}
+
+		POA offshootPoa;
+		try {
+			offshootPoa = getPOAForOffshoots(alSysCorbaServer.getRootPOA());
+		} catch (Exception e) {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(e);
+			throw ex;
+		}
+
+		org.omg.CORBA.Object actObj = null;
+		try {
+			offshootPoa.activate_object(cbServant);
+			actObj = offshootPoa.servant_to_reference(cbServant);
+			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if
+												// something is wrong with our
+												// new object
+			logger.finer("offshoot of type '" + cbServant.getClass().getName()
+					+ "' activated as a CORBA object.");
+		} catch (Throwable thr) {
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx(thr);
+			ex.setContextInfo("failed to activate offshoot of type '"
+					+ cbServant.getClass().getName());
+			throw ex;
+		}
+
+		return OffShootHelper.narrow(actObj);
 	}
 
+	private Policy[] m_offshootPolicies;
+
+	public POA getPOAForOffshoots(POA componentPOA) throws AcsJContainerEx,
+	AcsJUnexpectedExceptionEx {
+		final String offshootPoaName = "offshootPoa";
+		POA offshootPoa = null;
+
+		synchronized (componentPOA) {
+			try {
+				// can we reuse it?
+				offshootPoa = componentPOA.find_POA(offshootPoaName, false);
+			} catch (AdapterNonExistent e) {
+				logger.finest("will have to create offshoot POA");
+
+				if (m_offshootPolicies == null) {
+					m_offshootPolicies = new Policy[4];
+
+					m_offshootPolicies[0] = componentPOA
+					.create_id_assignment_policy(IdAssignmentPolicyValue.SYSTEM_ID);
+
+					m_offshootPolicies[1] = componentPOA
+					.create_lifespan_policy(LifespanPolicyValue.TRANSIENT);
+
+					m_offshootPolicies[2] = componentPOA
+					.create_request_processing_policy(RequestProcessingPolicyValue.USE_ACTIVE_OBJECT_MAP_ONLY);
+
+					m_offshootPolicies[3] = componentPOA
+					.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
+				}
+
+				try {
+					offshootPoa = componentPOA.create_POA(offshootPoaName,
+							alSysCorbaServer.getRootPOA().the_POAManager(), m_offshootPolicies);
+
+					logger.finest("successfully created offshoot POA");
+				} catch (InvalidPolicy ex) {
+					AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+					ex2
+					.setContextInfo("Attempted to create offshoot POA with invalid policies.");
+					throw ex2;
+				} catch (AdapterAlreadyExists ex) {
+					// we sync on componentPOA, so this should never happen
+					throw new AcsJUnexpectedExceptionEx(ex);
+				}
+			}
+		}
+		return offshootPoa;
+	}
 	@Override
 	public AdvancedContainerServices getAdvancedContainerServices() {
 		return advancedContainerServices;
@@ -135,7 +220,32 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		if( offshootImpl instanceof Servant ) {
 			Servant cbServant = (Servant)offshootImpl;
 			try {
-				alSysCorbaServer.deactivateOffShoot(cbServant);
+				checkOffShootServant(cbServant);
+				POA rootPOA = alSysCorbaServer.getRootPOA();
+				if (cbServant == null || rootPOA == null) {
+					String msg = "deactivateOffShoot called with missing parameter.";
+					AcsJContainerEx ex = new AcsJContainerEx();
+					ex.setContextInfo(msg);
+					throw ex;
+				}
+
+				byte[] id = null;
+				try {
+					POA offshootPoa = getPOAForOffshoots(rootPOA);
+					id = offshootPoa.servant_to_id(cbServant);
+					offshootPoa.deactivate_object(id);
+				}
+				catch (AcsJContainerEx e) {
+					throw e;
+				}
+				catch (Throwable thr) {
+					String msg = "failed to deactivate offshoot of type '" + cbServant.getClass().getName() +
+									"' (ID=" + String.valueOf(id) + ")";
+					logger.log(Level.WARNING, msg, thr);
+					AcsJContainerEx ex = new AcsJContainerEx(thr);
+					ex.setContextInfo(msg);
+					throw ex;
+				}
 			} catch (AcsJContainerEx ex) {
 				throw new AcsJContainerServicesEx(ex);
 			}
@@ -143,6 +253,23 @@ public class AlarmSystemContainerServices implements ContainerServicesBase {
 		else {
 			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
 			ex.setContextInfo("Not yet implemented");
+			throw ex;
+		}
+	}
+
+	private void checkOffShootServant(Servant servant) throws AcsJContainerServicesEx {
+		if (servant == null) {
+			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+			cause.setParameter("servant");
+			cause.setParameterValue("null");
+			throw new AcsJContainerServicesEx(cause);
+		}		
+
+		if (!(servant instanceof OffShootOperations)) {
+			String msg = "invalid offshoot servant provided. Must implement " + OffShootOperations.class.getName();
+			logger.fine(msg);
+			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+			ex.setContextInfo(msg);
 			throw ex;
 		}
 	}

@@ -21,23 +21,12 @@
  */
 package alma.alarmsystem.corbaservice;
 
-import org.omg.PortableServer.POAManager;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.CosNaming.NameComponent;
-import org.omg.CosNaming.NamingContext;
-import org.omg.CosNaming.NamingContextExtHelper;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAHelper;
 
 import alma.acs.alarmsystem.corbaservice.AlarmServiceUtils;
 import alma.acs.container.ContainerServicesBase;
-import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
-import alma.acs.logging.ClientLogManager;
 import alma.alarmsystem.AlarmService;
-import alma.alarmsystem.AlarmServiceHelper;
 import alma.alarmsystem.CERNAlarmService;
 import alma.alarmsystem.CERNAlarmServiceHelper;
 
@@ -72,7 +61,7 @@ public class CernAlarmServiceUtils extends AlarmServiceUtils {
 	 * @param containerServices The container services
 	 */
 	public CernAlarmServiceUtils(ContainerServicesBase containerServices) {
-		super(containerServices);
+		super(containerServices.getAdvancedContainerServices().getORB(), containerServices.getLogger());
 	}
 	
 	/**

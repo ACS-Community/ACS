@@ -31,7 +31,7 @@ import org.omg.CosNaming.NamingContextExtHelper;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 
-import alma.acs.container.ContainerServicesBase;
+//import alma.acs.container.ContainerServicesBase;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
 import alma.acs.logging.ClientLogManager;
@@ -130,18 +130,18 @@ public class AlarmServiceUtils {
 		this.logger=theLogger;
 	}
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param containerServices The container services
-	 */
-	public AlarmServiceUtils(ContainerServicesBase containerServices) {
-		if (containerServices==null) {
-			throw new IllegalArgumentException("ContainerServices can't be null");
-		}
-		orb=containerServices.getAdvancedContainerServices().getORB();
-		logger=containerServices.getLogger();
-	}
+//	/**
+//	 * Constructor
+//	 * 
+//	 * @param containerServices The container services
+//	 */
+//	public AlarmServiceUtils(ContainerServicesBase containerServices) {
+//		if (containerServices==null) {
+//			throw new IllegalArgumentException("ContainerServices can't be null");
+//		}
+//		orb=containerServices.getAdvancedContainerServices().getORB();
+//		logger=containerServices.getLogger();
+//	}
 	
 	/**
 	 * Constructor

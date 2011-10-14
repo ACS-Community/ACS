@@ -59,8 +59,8 @@ import alma.ACS.OffShootHelper;
 import alma.ACS.OffShootOperations;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
-import alma.JavaContainerError.wrappers.AcsJContainerEx;
-import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
+//import alma.JavaContainerError.wrappers.AcsJContainerEx;
+//import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.alarmsystem.acsimpl.AcsAlarmSystem;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.AcsLogger;
@@ -488,131 +488,132 @@ public class AlarmSystemCorbaServer implements Runnable {
 		return m_logger;
 	}
 
-	/**
-	 * @param cbServant
-	 * @throws ContainerException
-	 */
-	private void checkOffShootServant(Servant servant) throws AcsJContainerServicesEx {
-		if (servant == null) {
-			AcsJBadParameterEx cause = new AcsJBadParameterEx();
-			cause.setParameter("servant");
-			cause.setParameterValue("null");
-			throw new AcsJContainerServicesEx(cause);
-		}		
-		
-		if (!(servant instanceof OffShootOperations)) {
-			String msg = "invalid offshoot servant provided. Must implement " + OffShootOperations.class.getName();
-			m_logger.fine(msg);
-			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-	}
-	
-	public OffShoot activateOffShoot(Servant servant)
-			throws AcsJContainerEx, AcsJUnexpectedExceptionEx {
-		if (servant == null) {
-			String msg = "activateOffShoot called with missing parameter.";
-			AcsJContainerEx ex = new AcsJContainerEx();
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-
-		POA offshootPoa = getPOAForOffshoots(rootPOA);
-
-		org.omg.CORBA.Object actObj = null;
-		try {
-			offshootPoa.activate_object(servant);
-			actObj = offshootPoa.servant_to_reference(servant);
-			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if
-												// something is wrong with our
-												// new object
-			m_logger.finer("offshoot of type '" + servant.getClass().getName()
-					+ "' activated as a CORBA object.");
-		} catch (Throwable thr) {
-			AcsJContainerEx ex = new AcsJContainerEx(thr);
-			ex.setContextInfo("failed to activate offshoot of type '"
-					+ servant.getClass().getName());
-			throw ex;
-		}
-
-		return OffShootHelper.narrow(actObj);
-	}
-	
-	public void deactivateOffShoot(Servant cbServant) throws AcsJContainerServicesEx, AcsJContainerEx  {
-		checkOffShootServant(cbServant);
-		if (cbServant == null || rootPOA == null) {
-			String msg = "deactivateOffShoot called with missing parameter.";
-			AcsJContainerEx ex = new AcsJContainerEx();
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-		
-		byte[] id = null;
-		try {
-			POA offshootPoa = getPOAForOffshoots(rootPOA);
-			id = offshootPoa.servant_to_id(cbServant);
-			offshootPoa.deactivate_object(id);
-		}
-		catch (AcsJContainerEx e) {
-			throw e;
-		}
-		catch (Throwable thr) {
-			String msg = "failed to deactivate offshoot of type '" + cbServant.getClass().getName() +
-							"' (ID=" + String.valueOf(id) + ")";
-			m_logger.log(Level.WARNING, msg, thr);
-			AcsJContainerEx ex = new AcsJContainerEx(thr);
-			ex.setContextInfo(msg);
-			throw ex;
-		}
-	}
-	
-	public POA getPOAForOffshoots(POA componentPOA) throws AcsJContainerEx,
-			AcsJUnexpectedExceptionEx {
-		final String offshootPoaName = "offshootPoa";
-		POA offshootPoa = null;
-
-		synchronized (componentPOA) {
-			try {
-				// can we reuse it?
-				offshootPoa = componentPOA.find_POA(offshootPoaName, false);
-			} catch (AdapterNonExistent e) {
-				m_logger.finest("will have to create offshoot POA");
-
-				if (m_offshootPolicies == null) {
-					m_offshootPolicies = new Policy[4];
-
-					m_offshootPolicies[0] = componentPOA
-							.create_id_assignment_policy(IdAssignmentPolicyValue.SYSTEM_ID);
-
-					m_offshootPolicies[1] = componentPOA
-							.create_lifespan_policy(LifespanPolicyValue.TRANSIENT);
-
-					m_offshootPolicies[2] = componentPOA
-							.create_request_processing_policy(RequestProcessingPolicyValue.USE_ACTIVE_OBJECT_MAP_ONLY);
-
-					m_offshootPolicies[3] = componentPOA
-							.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
-				}
-
-				try {
-					offshootPoa = componentPOA.create_POA(offshootPoaName,
-							poaManager, m_offshootPolicies);
-
-					m_logger.finest("successfully created offshoot POA");
-				} catch (InvalidPolicy ex) {
-					AcsJContainerEx ex2 = new AcsJContainerEx(ex);
-					ex2
-							.setContextInfo("Attempted to create offshoot POA with invalid policies.");
-					throw ex2;
-				} catch (AdapterAlreadyExists ex) {
-					// we sync on componentPOA, so this should never happen
-					throw new AcsJUnexpectedExceptionEx(ex);
-				}
-			}
-		}
-		return offshootPoa;
-	}
+//
+//	/**
+//	 * @param cbServant
+//	 * @throws ContainerException
+//	 */
+//	private void checkOffShootServant(Servant servant) throws AcsJContainerServicesEx {
+//		if (servant == null) {
+//			AcsJBadParameterEx cause = new AcsJBadParameterEx();
+//			cause.setParameter("servant");
+//			cause.setParameterValue("null");
+//			throw new AcsJContainerServicesEx(cause);
+//		}		
+//		
+//		if (!(servant instanceof OffShootOperations)) {
+//			String msg = "invalid offshoot servant provided. Must implement " + OffShootOperations.class.getName();
+//			m_logger.fine(msg);
+//			AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+//			ex.setContextInfo(msg);
+//			throw ex;
+//		}
+//	}
+//	
+//	public OffShoot activateOffShoot(Servant servant)
+//			throws AcsJContainerEx, AcsJUnexpectedExceptionEx {
+//		if (servant == null) {
+//			String msg = "activateOffShoot called with missing parameter.";
+//			AcsJContainerEx ex = new AcsJContainerEx();
+//			ex.setContextInfo(msg);
+//			throw ex;
+//		}
+//
+//		POA offshootPoa = getPOAForOffshoots(rootPOA);
+//
+//		org.omg.CORBA.Object actObj = null;
+//		try {
+//			offshootPoa.activate_object(servant);
+//			actObj = offshootPoa.servant_to_reference(servant);
+//			actObj._hash(Integer.MAX_VALUE); // just to provoke an exc. if
+//												// something is wrong with our
+//												// new object
+//			m_logger.finer("offshoot of type '" + servant.getClass().getName()
+//					+ "' activated as a CORBA object.");
+//		} catch (Throwable thr) {
+//			AcsJContainerEx ex = new AcsJContainerEx(thr);
+//			ex.setContextInfo("failed to activate offshoot of type '"
+//					+ servant.getClass().getName());
+//			throw ex;
+//		}
+//
+//		return OffShootHelper.narrow(actObj);
+//	}
+//	
+//	public void deactivateOffShoot(Servant cbServant) throws AcsJContainerServicesEx, AcsJContainerEx  {
+//		checkOffShootServant(cbServant);
+//		if (cbServant == null || rootPOA == null) {
+//			String msg = "deactivateOffShoot called with missing parameter.";
+//			AcsJContainerEx ex = new AcsJContainerEx();
+//			ex.setContextInfo(msg);
+//			throw ex;
+//		}
+//		
+//		byte[] id = null;
+//		try {
+//			POA offshootPoa = getPOAForOffshoots(rootPOA);
+//			id = offshootPoa.servant_to_id(cbServant);
+//			offshootPoa.deactivate_object(id);
+//		}
+//		catch (AcsJContainerEx e) {
+//			throw e;
+//		}
+//		catch (Throwable thr) {
+//			String msg = "failed to deactivate offshoot of type '" + cbServant.getClass().getName() +
+//							"' (ID=" + String.valueOf(id) + ")";
+//			m_logger.log(Level.WARNING, msg, thr);
+//			AcsJContainerEx ex = new AcsJContainerEx(thr);
+//			ex.setContextInfo(msg);
+//			throw ex;
+//		}
+//	}
+//	
+//	public POA getPOAForOffshoots(POA componentPOA) throws AcsJContainerEx,
+//			AcsJUnexpectedExceptionEx {
+//		final String offshootPoaName = "offshootPoa";
+//		POA offshootPoa = null;
+//
+//		synchronized (componentPOA) {
+//			try {
+//				// can we reuse it?
+//				offshootPoa = componentPOA.find_POA(offshootPoaName, false);
+//			} catch (AdapterNonExistent e) {
+//				m_logger.finest("will have to create offshoot POA");
+//
+//				if (m_offshootPolicies == null) {
+//					m_offshootPolicies = new Policy[4];
+//
+//					m_offshootPolicies[0] = componentPOA
+//							.create_id_assignment_policy(IdAssignmentPolicyValue.SYSTEM_ID);
+//
+//					m_offshootPolicies[1] = componentPOA
+//							.create_lifespan_policy(LifespanPolicyValue.TRANSIENT);
+//
+//					m_offshootPolicies[2] = componentPOA
+//							.create_request_processing_policy(RequestProcessingPolicyValue.USE_ACTIVE_OBJECT_MAP_ONLY);
+//
+//					m_offshootPolicies[3] = componentPOA
+//							.create_servant_retention_policy(ServantRetentionPolicyValue.RETAIN);
+//				}
+//
+//				try {
+//					offshootPoa = componentPOA.create_POA(offshootPoaName,
+//							poaManager, m_offshootPolicies);
+//
+//					m_logger.finest("successfully created offshoot POA");
+//				} catch (InvalidPolicy ex) {
+//					AcsJContainerEx ex2 = new AcsJContainerEx(ex);
+//					ex2
+//							.setContextInfo("Attempted to create offshoot POA with invalid policies.");
+//					throw ex2;
+//				} catch (AdapterAlreadyExists ex) {
+//					// we sync on componentPOA, so this should never happen
+//					throw new AcsJUnexpectedExceptionEx(ex);
+//				}
+//			}
+//		}
+//		return offshootPoa;
+//	}
 	
 	/**
 	 * Shuts down the CORBA services.
