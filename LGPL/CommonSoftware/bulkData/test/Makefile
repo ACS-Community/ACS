@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.33 2010/09/08 12:59:03 rcirami Exp $"
+# "@(#) $Id: Makefile,v 1.34 2011/10/14 17:58:17 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -21,6 +21,7 @@
 # user definable C-compilation flags
 #USER_CFLAGS = 
 
+MAKE_ONLY="C++"
 # 
 # additional include and library search paths
 USER_INC = -I$(TAO_ROOT)/orbsvcs/orbsvcs/AV
