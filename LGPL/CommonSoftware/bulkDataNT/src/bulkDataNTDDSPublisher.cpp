@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.18 2011/10/14 17:03:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.19 2011/10/14 17:07:05 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -90,24 +90,17 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
-	if (publisher_m==NULL || topic==NULL)
+	if (publisher_m==NULL || topic==NULL || listener==NULL)
 	{
 		NullPointerExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setVariable("publisher_m or topic");
+		ex.setVariable("publisher_m, topic or listener");
 		throw ex;
-	}
-	//Create the data writer listener
-	BulkDataNTWriterListener *writerListenerServant = new BulkDataNTWriterListener();
-	DDS::DataWriterListener* writerListener =  writerListenerServant;
-	if(writerListener==NULL){
-		std::cerr << "writer listener is nil" << std::endl;
-//TBD error handling
 	}
 
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter_with_profile(
 															topic,
 															ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
-															writerListener,
+															listener,
 															DDS::STATUS_MASK_ALL
 															);
 	if(temp_dw==0)
