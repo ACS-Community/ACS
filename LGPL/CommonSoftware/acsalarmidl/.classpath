@@ -20,5 +20,6 @@
 	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar" sourcepath="/JACORB_HOME/src"/>
 	<classpathentry kind="var" path="ACSROOT/lib/castor.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/jacsutil2.jar"/>
 	<classpathentry kind="output" path="lib"/>
 </classpath>
