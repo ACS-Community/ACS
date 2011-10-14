@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.h,v 1.2 2011/10/14 16:51:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.h,v 1.3 2011/10/14 17:30:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -39,10 +39,10 @@ class BulkDataNTWriterListener :
 {
 public:
 	//Constructor
-	BulkDataNTWriterListener ();
+	BulkDataNTWriterListener(const char *name);
 
 	//Destructor
-	virtual ~BulkDataNTWriterListener (void);
+	virtual ~BulkDataNTWriterListener ();
 
 	virtual void on_offered_deadline_missed (
 			::DDS::DataWriter* writer,
@@ -78,6 +78,8 @@ public:
 			const DDS_Locator_t& destination);
 
 private:
+	std::string topicName_m;  /// name of DDS topic
+
 	unsigned long sum_unacknowledged_sample;
 	long max_unacknowledged_sample;
 	unsigned long iter;

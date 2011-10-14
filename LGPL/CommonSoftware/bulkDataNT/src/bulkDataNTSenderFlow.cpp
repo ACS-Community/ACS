@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.17 2011/10/14 17:17:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.18 2011/10/14 17:30:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.17 2011/10/14 17:17:18 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.18 2011/10/14 17:30:28 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -49,7 +49,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	topicName = senderStream_m->getName() + "#" + flowName_m;
 	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
-	writerReaderListener_m = new BulkDataNTWriterListener();
+	writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str());
 	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, writerReaderListener_m);
 
 	//RTI probably is enough to create frame once

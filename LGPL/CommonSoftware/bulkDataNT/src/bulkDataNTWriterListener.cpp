@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.2 2011/10/14 16:59:07 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.3 2011/10/14 17:30:28 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,8 @@
 
 using namespace std;
 
-BulkDataNTWriterListener::BulkDataNTWriterListener()
+BulkDataNTWriterListener::BulkDataNTWriterListener(const char *name) :
+		topicName_m(name)
 {
 	ACS_TRACE(__PRETTY_FUNCTION__);
 	sum_unacknowledged_sample = 0;
@@ -48,14 +49,14 @@ void BulkDataNTWriterListener::on_offered_deadline_missed (
 		::DDS::DataWriter* writer,
 		const ::DDS::OfferedDeadlineMissedStatus & status)
 {
-	cerr << "BDDDSWriterListenerImpl::on_offered_deadline_missed" << endl;
+	cerr << topicName_m << " BulkDataNTWriterListener::on_offered_deadline_missed" << endl;
 }
 
 void BulkDataNTWriterListener::on_offered_incompatible_qos (
 		::DDS::DataWriter* writer,
 		const ::DDS::OfferedIncompatibleQosStatus & status)
 {
-	cerr << "BDDDSWriterListenerImpl::on_offered_incompatible_qos" << endl;
+	cerr << topicName_m << " BulkDataNTWriterListener::on_offered_incompatible_qos" << endl;
 }
 
 
@@ -63,7 +64,7 @@ void BulkDataNTWriterListener::on_liveliness_lost (
 		::DDS::DataWriter* writer,
 		const ::DDS::LivelinessLostStatus & status)
 {
-	cerr << "BDDDSWriterListenerImpl::on_liveliness_lost" << endl;
+	cerr << topicName_m << " BulkDataNTWriterListener::on_liveliness_lost" << endl;
 }
 
 
@@ -71,7 +72,7 @@ void BulkDataNTWriterListener::on_publication_matched (
 		::DDS::DataWriter* writer,
 		const ::DDS::PublicationMatchedStatus & status)
 {
-	cerr << "==========> BDDDSWriterListenerImpl::on_publication_match" << endl;
+	cerr << topicName_m << " BulkDataNTWriterListener::on_publication_match" << endl;
 }
 
 void BulkDataNTWriterListener::on_reliable_writer_cache_changed(DDSDataWriter* writer,
@@ -88,24 +89,21 @@ void BulkDataNTWriterListener::on_reliable_writer_cache_changed(DDSDataWriter* w
 */
 }
 
-
 void BulkDataNTWriterListener::on_reliable_reader_activity_changed(DDSDataWriter* writer,
 		const DDS::ReliableReaderActivityChangedStatus& status)
 {
-	cerr << "==========> BDDDSWriterListenerImpl::on_reliable_reader_activity_changed:" << endl;
-	cerr << "==========> 			status.active_count:" << status.active_count << endl;
-	cerr << "==========> 			status.active_count_change:" << status.active_count_change << endl;
-	cerr << "==========> 			status.inactive_count:" << status.inactive_count << endl;
-	cerr << "==========> 			status.inactive_count_change:" << status.inactive_count_change << endl;
-
+	cerr <<  topicName_m << " ==========> BulkDataNTWriterListener::on_reliable_reader_activity_changed:" << endl;
+	cerr <<  topicName_m << "   ==========>	status.active_count:" << status.active_count << endl;
+	cerr <<  topicName_m << "   ==========>	status.active_count_change:" << status.active_count_change << endl;
+	cerr <<  topicName_m << "   ==========>	status.inactive_count:" << status.inactive_count << endl;
+	cerr <<  topicName_m << "   ==========>	status.inactive_count_change:" << status.inactive_count_change << endl;
 }
 
 void BulkDataNTWriterListener::on_destination_unreachable(DDSDataWriter* writer,
 		const DDS_InstanceHandle_t& handle,
 		const DDS_Locator_t& destination)
 {
-	cerr << "==========> BDDDSWriterListenerImpl::on_destination_unreachable" << endl;
+	cerr <<  topicName_m << " BulkDataNTWriterListener::on_destination_unreachable" << endl;
 }
-
 
 /*___oOo___*/
