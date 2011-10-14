@@ -1,14 +1,14 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.cpp,v 1.7 2011/03/02 17:23:42 rtobar Exp $"
+* "@(#) $Id: taskStaticContainerServices.cpp,v 1.8 2011/10/14 21:05:01 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
 * bjeram  yyyy-mm-dd  created 
 */
 
-static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.7 2011/03/02 17:23:42 rtobar Exp $"; 
+static char *rcsId="@(#) $Id: taskStaticContainerServices.cpp,v 1.8 2011/10/14 21:05:01 javarias Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #define _POSIX_SOURCE 1
@@ -86,5 +86,7 @@ CDB::DAL_ptr StaticContainerServices::getCDB()
     return dalObj._retn();
 }//getCDB
 
-
+acsalarm::AlarmSource* StaticContainerServices::getAlarmSource() {
+    return NULL;
+}
 /*___oOo___*/

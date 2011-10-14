@@ -3,7 +3,7 @@
 /*******************************************************************************
 * E.S.O. - VLT project
 *
-* "@(#) $Id: taskStaticContainerServices.h,v 1.11 2011/03/02 17:23:42 rtobar Exp $"
+* "@(#) $Id: taskStaticContainerServices.h,v 1.12 2011/10/14 21:05:01 javarias Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -204,6 +204,8 @@ class StaticContainerServices: public maci::ContainerServices
 	{
 	    return CORBA::Object::_nil();
 	}
+
+	virtual acsalarm::AlarmSource* getAlarmSource();
 	
  private:
     CORBA::ORB_var orb_m;
