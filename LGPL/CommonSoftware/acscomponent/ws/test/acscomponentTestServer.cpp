@@ -18,14 +18,14 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acscomponentTestServer.cpp,v 1.19 2008/07/25 09:40:47 cparedes Exp $"
+* "@(#) $Id: acscomponentTestServer.cpp,v 1.20 2011/10/16 08:53:49 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * rcirami 2002-09-24  created
 */
  
-static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.19 2008/07/25 09:40:47 cparedes Exp $";
+static char *rcsId="@(#) $Id: acscomponentTestServer.cpp,v 1.20 2011/10/16 08:53:49 hsommer Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <vltPort.h>
@@ -154,6 +154,10 @@ class TestContainerServices : public maci::ContainerServices {
           return NULL;
         }
         
+        acsalarm::AlarmSource* getAlarmSource()
+        {
+          return NULL;
+        }
 };
 
 CORBA::ORB_var orb;
