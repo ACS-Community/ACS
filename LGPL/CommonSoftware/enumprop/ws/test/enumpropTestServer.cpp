@@ -19,7 +19,7 @@
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 *    MA 02111-1307  USA
 *
-* "@(#) $Id: enumpropTestServer.cpp,v 1.55 2011/03/10 18:52:28 rtobar Exp $"
+* "@(#) $Id: enumpropTestServer.cpp,v 1.56 2011/10/16 08:43:58 hsommer Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,7 +30,7 @@
 
 #include "vltPort.h"
 
-static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.55 2011/03/10 18:52:28 rtobar Exp $"; 
+static char *rcsId="@(#) $Id: enumpropTestServer.cpp,v 1.56 2011/10/16 08:43:58 hsommer Exp $"; 
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include <iostream>
@@ -197,6 +197,10 @@ class TestContainerServices : public maci::ContainerServices {
         }
         
         maci::ComponentStateManager* getComponentStateManager()
+        {
+          return NULL;
+        }
+        acsalarm::AlarmSource* getAlarmSource()
         {
           return NULL;
         }
