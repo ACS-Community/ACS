@@ -109,7 +109,7 @@ namespace acsalarm
 		/**
 		 * Destructor
 		 */
-		virtual ~AlarmSourceImpl() {}
+		virtual ~AlarmSourceImpl();
 
 		/**
 		 * @see AlarmSource

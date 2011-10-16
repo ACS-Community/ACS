@@ -38,6 +38,10 @@ AlarmSourceImpl::AlarmSourceImpl():
 
 }
 
+AlarmSourceImpl::~AlarmSourceImpl() {
+	m_alarmSource_ap.release();
+}
+
 void AlarmSourceImpl::raiseAlarm(
 		std::string faultFamily,
 		std::string faultMember,
