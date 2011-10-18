@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.29 2011/10/14 17:58:17 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.30 2011/10/18 08:37:07 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -22,7 +22,7 @@
 # user definable C-compilation flags
 #USER_CFLAGS = 
 
-MAKE_ONLY="C++"
+#MAKE_ONLY="C++"
 
 #
 # Additional include and library search paths
