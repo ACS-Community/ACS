@@ -6570,7 +6570,7 @@ public class ManagerImpl extends AbstractPrevalentSystem implements Manager, Han
 						result, container, containerInfo, executionId,
 						activationTime, timeoutError);
 			} catch (Throwable th) {
-				exception = th;
+				this.exception = th;
 			}
 			finally {
 				done = true;
