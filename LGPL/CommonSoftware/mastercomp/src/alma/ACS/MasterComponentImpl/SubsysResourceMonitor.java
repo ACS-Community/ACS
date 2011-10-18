@@ -40,6 +40,7 @@ import alma.ACS.ACSComponent;
 import alma.ACS.ACSComponentOperations;
 import alma.ACS.ComponentStates;
 import alma.ACS.PingableResourceOperations;
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * Monitor for any kind of resource whose state a subsystem master component 
@@ -274,7 +275,7 @@ public class SubsysResourceMonitor {
 	 */
 	static class ResourceCheckRunner<T> implements Runnable {
 		
-		private volatile int callTimeoutSeconds = 10;		
+		private volatile int callTimeoutSeconds = 10;
 		private final ResourceChecker<T> resourceChecker;
 		private final ResourceErrorHandler<T> err;
         private final Logger logger;
@@ -347,19 +348,23 @@ public class SubsysResourceMonitor {
 			long timeBeforeCall = System.currentTimeMillis();
 			Throwable callError = null;
 			boolean wasTimedOut = false;
+			String timedOutDescription = null; // introduced to debug http://jira.alma.cl/browse/AIV-5983
 			try {
 				future.get(callTimeoutSeconds, TimeUnit.SECONDS);
 			} catch (TimeoutException e) {
 				wasTimedOut = true;
+				timedOutDescription = "TimeoutException after " + (System.currentTimeMillis() - timeBeforeCall) + " ms.";
 			} catch (InterruptedException e) {
 				if (System.currentTimeMillis() - callTimeoutSeconds >= timeBeforeCall) {
-					// most likely a timeout occured. 
+					// most likely a timeout occurred. 
 					// TODO: check why we did not get a TimeoutException
 					wasTimedOut = true;
+					timedOutDescription = "InterruptedException after " + (System.currentTimeMillis() - timeBeforeCall) + " ms; interpreting as timeout.";
 				}
 				else {
 					// some other strange InterruptedException. 
 					callError = e;
+					timedOutDescription = "InterruptedException after " + (System.currentTimeMillis() - timeBeforeCall) + " ms.";
 				}
 // TODO: check how CORBA timeout behaves, and whether a corba exception would be wrapped as an ExecutionException
 //			} catch (???CORBATimeoutEx??? e) {
@@ -370,6 +375,7 @@ public class SubsysResourceMonitor {
 				if (callError instanceof org.omg.CORBA.TRANSIENT) {
 					// Corba failed to connect to the server, for example because a container process has disappeared
 					wasTimedOut = true;
+					timedOutDescription = "TRANSIENT after " + (System.currentTimeMillis() - timeBeforeCall) + " ms.";
 				}
 			} catch (Throwable thr) { // unexpected
 				callError = thr;
@@ -391,13 +397,14 @@ public class SubsysResourceMonitor {
 			if (wasTimedOut) {
 				lastCheckSucceeded = false;
 				try {
+					logger.log(AcsLogLevel.DEBUG, "About to call error handler " + err.getClass().getName() + "#resourceUnreachable. Timeout detail: " + timedOutDescription);
 					// notify the error handler
 					// TODO: call in separate thread with timeout. Decide about value of "beyondRepair" if method 'resourceUnreachable' times out
 					beyondRepair = err.resourceUnreachable(resourceChecker.getResource()); 
 				} catch (Throwable thr) {
 					logger.log(Level.WARNING, "Failed to propagate unavailability of resource '" + resourceChecker.getResourceName() + "' to the error handler!", thr);
 				}
-			}			
+			}
 			else if (callError != null) {
 				// the asynchronous call "resourceChecker.checkState()" failed, but not because of a timeout.
 				// This is not expected, and we must log the exception.
