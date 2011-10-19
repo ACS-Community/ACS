@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.8 2011/10/14 17:17:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.9 2011/10/19 17:30:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -92,7 +92,7 @@ protected:
 	// common method for writing/sending data  from startSend and stopSend (could be also used for sendData ?)
 	// should we add also timeout parameter ?
 	// should it go to upper class Publisher ?
-	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0);
+	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0, unsigned int restFrameCount=0);
 
 	// frame
 	ACSBulkData::BulkDataNTFrame *frame_m;
