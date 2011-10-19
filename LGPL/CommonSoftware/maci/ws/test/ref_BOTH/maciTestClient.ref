@@ -1243,7 +1243,6 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::done()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::cleanUpDLL()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::shutdown] Shutting down ORB
@@ -1319,7 +1318,6 @@
 3 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()] 
 3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::done()] 
-3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()] 
 3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::cleanUpDLL()] 
 3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::cleanUpManagerReference()] 
 3 - ----------T--:--:--.--- [Container03-GL - ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()] 
@@ -1372,7 +1370,6 @@
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::shutdown] 0 components left unactivated (using reverse activation order).
 2 - ----------T--:--:--.--- [Container02-GL - ACSAlarmSystemInterfaceFactory::cleanUpAlarmSystemInterfacePtr()] 
 2 - ----------T--:--:--.--- [Container02-GL - ACSAlarmSystemInterfaceFactory::done()] 
-2 - ----------T--:--:--.--- [Container02-GL - ACSAlarmSystemInterfaceFactory::cleanUpBooleanPtr()] 
 2 - ----------T--:--:--.--- [Container02-GL - ACSAlarmSystemInterfaceFactory::cleanUpDLL()] 
 2 - ----------T--:--:--.--- [Container02-GL - ACSAlarmSystemInterfaceFactory::cleanUpSharedSource()] 
 2 - ----------T--:--:--.--- [Container02 - maci::ContainerImpl::shutdown] Done
