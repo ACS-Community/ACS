@@ -28,9 +28,19 @@ if [ "$1" == "-c" ]
 then
     echo "Checking out: " $HOST_TAR
     cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/$HOST_TAR
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Cold not cvs co: ACS/ExtProd/PROPRIETARY/RTIDDS/"$HOST_TAR
+        exit 4
+    fi
     
     echo "Checking out: " $TARGET_TAR
     cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/$TARGET_TAR
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Cold not cvs co: ACS/ExtProd/PROPRIETARY/RTIDDS/"$TARGET_TAR
+        exit 5
+    fi
     
     if [ $ACRO_READER == 0 ]
     then
@@ -38,6 +48,12 @@ then
     else
         cvs co -P -dRTIDDS ACS/ExtProd/PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217.txt
     fi
+    if [ $? != 0 ]
+    then
+        echo "ERROR: Cold not cvs co: ACS/ExtProd/PROPRIETARY/RTIDDS/RTISoftwareLicenseAgreement20101217*"
+        exit 6
+    fi
+    
     DDS_DIR=$PWD/RTIDDS
 fi
 
