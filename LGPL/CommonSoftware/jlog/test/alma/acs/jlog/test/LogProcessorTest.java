@@ -60,14 +60,15 @@ public class LogProcessorTest {
 	 */
 	public LogProcessorTest() {
 		processor = new LogProcessor();
-		
+	}
+	
+	public void test() {
 		createLogsVector();
 		System.out.println("Logs in vector BEFORE reductions");
 		dumpLogs();
 		processor.reduce(logs);
 		System.out.println("Logs in vector AFTER reductions");
 		dumpLogs();
-		
 	}
 	
 	private ILogEntry createLog(String logMsg) throws Exception {
@@ -179,5 +180,6 @@ public class LogProcessorTest {
 	public static void main(String[] args) {
 		System.out.println("test started");
 		LogProcessorTest test = new LogProcessorTest();
+		test.test();
 	}
 }
