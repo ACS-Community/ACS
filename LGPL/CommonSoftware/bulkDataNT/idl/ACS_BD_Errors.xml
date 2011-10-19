@@ -68,8 +68,33 @@
         <Member name="Call" type="string" description="Call" />
     </ErrorCode>
 
-    <ErrorCode name="SendFrameTimeout" shortDescription="Send Frame Timeout" description="Timeout during sending a frame.">
+    <ErrorCode name="SendFrameError" shortDescription="Error to send BD frame" description="Error while sending a BD frame.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameCount" type="long" description="Frame counter" />
+        <Member name="TotalFrameCount" type="long" description="Total number of frames" />
+        <Member name="RetCode" type="long" description="Return (error) code" />        
+    </ErrorCode>
+    
+    <ErrorCode name="SendFrameTimeout" shortDescription="Send BD Frame Timeout" description="Timeout during sending a BD frame.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
         <Member name="Timeout" type="double" description="set timeout in sec" />
         <Member name="FrameCount" type="long" description="Frame counter" />
+        <Member name="TotalFrameCount" type="long" description="Total number of frames" />
     </ErrorCode>
+    
+    <ErrorCode name="FrameAckTimeout" shortDescription="BD Frame Ack Timeout" description="Timeout waiting for acknowledgments">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="Timeout" type="double" description="set timeout in sec" />
+    </ErrorCode>
+    
+    <ErrorCode name="FrameTooLong" shortDescription="BD Frame too long" description="Size of frame is too long.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameLength" type="long" description="Frame length" />
+        <Member name="MaxFrameLength" type="long" description="Max Frame length" />
+    </ErrorCode>
+    
 </Type>
