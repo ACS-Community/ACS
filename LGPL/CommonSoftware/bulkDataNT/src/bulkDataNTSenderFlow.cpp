@@ -16,23 +16,25 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.18 2011/10/14 17:30:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.19 2011/10/19 17:32:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.18 2011/10/14 17:30:28 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.19 2011/10/19 17:32:17 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
 #include <iostream>
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
+#include "ACS_BD_Errors.h"
 
 using namespace AcsBulkdata;
 using namespace std;
 using namespace ACS_DDS_Errors;
+using namespace ACS_BD_Errors;
 
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 											const char* flowName,
@@ -128,18 +130,10 @@ void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
-	DDS::ReturnCode_t ret;
-	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
-	DDS_ReliableWriterCacheChangedStatus status; //RTI
-
-	//ACSBulkData::BulkDataNTFrame *frame;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: tmp should be configurable
 
 	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfDataChunk do we have to send
 	unsigned int restFrameSize = len % sizeOfFrame; // what rests ?
-
-	// should we wait for all ACKs? timeout should be configurable
-	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
 	frame_m->dataType = ACSBulkData::BD_DATA;  //we are going to send data
 	frame_m->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
@@ -156,54 +150,13 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 		if (i==(numOfIter-1) && restFrameSize>0)
 		{
 			// last frame
-			frame_m->data.length(sizeOfFrame); //frame.data.resize(restFrameSize);
-			frame_m->data.from_array((buffer+(i*sizeOfFrame)), restFrameSize);
-			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+restFrameSize), frame.data.begin() );
+			 writeFrame(ACSBulkData::BD_DATA, (buffer+(i*sizeOfFrame)), restFrameSize, numOfIter-1-i);
 		}else
 		{
-			frame_m->data.from_array((buffer+(i*sizeOfFrame)), sizeOfFrame);
-			//std::copy ((buffer+(i*sizeOfFrame)), (buffer+(i*sizeOfFrame)+sizeOfFrame), frame.data.begin() );
+			 writeFrame(ACSBulkData::BD_DATA, (buffer+(i*sizeOfFrame)), sizeOfFrame, numOfIter-1-i);
 		}
-
-		frame_m->restDataLength = numOfIter-1-i;
-
-		ret = ddsDataWriter_m->write(*frame_m, handle); //Should we here just call writeFrame ??
-		if( ret != DDS::RETCODE_OK)
-		{
-			ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-			if (ret==DDS::RETCODE_TIMEOUT)
-			{
-				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data @ %d", i));
-			}else
-			{
-				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Failed to send @ %d (%d)", i, ret));
-			}//if-else
-
-			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) for flow: %s", status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
-			// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-			ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-			if( ret != DDS::RETCODE_OK)
-			{
-				ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
-			}//if
-
-			ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count after waiting: (%d)", status.unacknowledged_sample_count)); //RTI
-			//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		}//if
 	}//for
-
-	ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
-	ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count));
-
-	//we have sent all frames
-	// do we need to wait for ACK after each frame is sent or at the end or not at all, configurable ?
-	ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-	if( ret != DDS::RETCODE_OK)
-	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments time-outed"));
-	}//if
-
-
+ // at this point we have sent all frames, we coudl wait fro ACK, but it is done in writeFrame
 }//sendData
 
 void BulkDataNTSenderFlow::stopSend()
@@ -211,51 +164,83 @@ void BulkDataNTSenderFlow::stopSend()
 	writeFrame(ACSBulkData::BD_STOP);
 }//stopSend
 
-void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len)
+void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount)
 {
-
 	DDS::ReturnCode_t ret;
-	DDS_ReliableWriterCacheChangedStatus status; //RTI
-	DDS::InstanceHandle_t handle = DDS::HANDLE_NIL;
-	//ACSBulkData::BulkDataNTFrame *frame;
+	DDS::ReliableWriterCacheChangedStatus status; //RTI
+	// should we wait for all ACKs? timeout should be configurable
+	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
 	if (len>ACSBulkData::FRAME_MAX_LEN){
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "parameter too long"));
-		// delete
-		//TBD:: error handling
-	}
-
-
+		FrameTooLongExImpl ftlEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ftlEx.setFrameLength(len);
+		ftlEx.setMaxFrameLength(ACSBulkData::FRAME_MAX_LEN);
+		throw ftlEx;
+	}//if
 
 	//frame
 	frame_m->dataType = dataType;
 	frame_m->data./*resize*/length(len);
+	frame_m->restDataLength = restFrameCount; //we need it just in soem cases, but we can always set to 0
 	if (param!=0 && len!=0)
 		frame_m->data.from_array(param, len); //frame.data.assign(len, *param);   //1st parameter  is of type const unsigned char !!
 
-	ret = ddsDataWriter_m->write(*frame_m, handle);
+	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
 	if( ret != DDS::RETCODE_OK)
 	{
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		if (ret==DDS::RETCODE_TIMEOUT)
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data"));
+			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
+			toEx.setTimeout(0.0); //TBD: put value from QoS
+			//toEx.setFrameCount(i); toEx.setTotalFrameCount(numOfIter);
+			throw toEx;
+			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data @ %d", i));
 		}else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "write on flow %s failed with error: %d", flowName_m.c_str(), ret));
+			SendFrameErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
+			//sfEx.setFrameCount(i); sfEx.setTotalFrameCount(numOfIter);
+			sfEx.setRetCode(ret);
+			throw sfEx;
+			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Failed to send @ %d (%d)", i, ret));
 		}//if-else
 
-		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count: (%d)", status.unacknowledged_sample_count)); //RTI
-	}//if
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) for flow: %s", status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
+		// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
+		if( ret != DDS::RETCODE_OK)
+		{
+			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
+			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
+			//ackToEx.setFrameCount(i); ackToEx.setTotalFrameCount(numOfIter);
+			ackToEx.log(LM_WARNING); //TBD should be an error ?
+			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
+		}//if
 
-	// should we wait for all ACKs? timeout should be configurable
-	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
-	ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
-	if( ret != DDS::RETCODE_OK)
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count after waiting: (%d)", status.unacknowledged_sample_count)); //RTI
+		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
+	}//if (ret != DDS::RETCODE_OK)
+
+	if (restFrameCount==0) //we wait for ACKs just if it was the only frame, or the last frame
 	{
-		ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
-	}//if
-
+		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
+		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) before waiting: %d", dataType, status.unacknowledged_sample_count)); //RTI
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
+		if( ret != DDS::RETCODE_OK)
+		{
+			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
+			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
+			//ackToEx.setFrameCount(i); ackToEx.setTotalFrameCount(numOfIter);
+			ackToEx.log(LM_WARNING); //TBD should be an error ?
+			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
+		}//if
+	}//if (restFrameCount==0)
 }//writeFrame
 
 /*___oOo___*/
