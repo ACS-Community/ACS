@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.19 2011/10/19 17:32:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.20 2011/10/19 17:42:22 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.19 2011/10/19 17:32:17 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.20 2011/10/19 17:42:22 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -45,7 +45,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	std::string topicName;
 
-	// should be reactor to have just one object for comunication !! DDSDataWriter or similar
+	// should be reactor to have just one object for communication !! DDSDataWriter or similar
 	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
 
 	topicName = senderStream_m->getName() + "#" + flowName_m;
@@ -130,19 +130,15 @@ void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
-	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: tmp should be configurable
+	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: should be configurable ?
 
-	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfDataChunk do we have to send
-	unsigned int restFrameSize = len % sizeOfFrame; // what rests ?
-
-	frame_m->dataType = ACSBulkData::BD_DATA;  //we are going to send data
-	frame_m->data.length(sizeOfFrame); // frame.data.resize(sizeOfFrame);; // do we actually need resize ?
+	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfFrame do we have to send
+	unsigned int restFrameSize = len % sizeOfFrame; // what is the rest
 
 	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d to flow: %s",
 			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str()));
 
 //	start_time = ACE_OS::gettimeofday();
-
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
 	for(unsigned int i=0; i<numOfIter; i++)
@@ -156,7 +152,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 			 writeFrame(ACSBulkData::BD_DATA, (buffer+(i*sizeOfFrame)), sizeOfFrame, numOfIter-1-i);
 		}
 	}//for
- // at this point we have sent all frames, we coudl wait fro ACK, but it is done in writeFrame
+ // at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
 }//sendData
 
 void BulkDataNTSenderFlow::stopSend()
@@ -180,10 +176,10 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 
 	//frame
 	frame_m->dataType = dataType;
-	frame_m->data./*resize*/length(len);
-	frame_m->restDataLength = restFrameCount; //we need it just in soem cases, but we can always set to 0
+	frame_m->data.length(len);
+	frame_m->restDataLength = restFrameCount; //we need it just in some cases, but we can always set to 0
 	if (param!=0 && len!=0)
-		frame_m->data.from_array(param, len); //frame.data.assign(len, *param);   //1st parameter  is of type const unsigned char !!
+		frame_m->data.from_array(param, len);
 
 	ret = ddsDataWriter_m->write(*frame_m, DDS::HANDLE_NIL);
 	if( ret != DDS::RETCODE_OK)
@@ -196,7 +192,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			toEx.setTimeout(0.0); //TBD: put value from QoS
 			//toEx.setFrameCount(i); toEx.setTotalFrameCount(numOfIter);
 			throw toEx;
-			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Timeout while sending data @ %d", i));
 		}else
 		{
 			SendFrameErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -204,7 +199,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			//sfEx.setFrameCount(i); sfEx.setTotalFrameCount(numOfIter);
 			sfEx.setRetCode(ret);
 			throw sfEx;
-			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_ERROR, "Failed to send @ %d (%d)", i, ret));
 		}//if-else
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
