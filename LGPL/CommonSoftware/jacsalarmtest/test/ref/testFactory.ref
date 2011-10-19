@@ -13,6 +13,7 @@
 1 - ----------T--:--:----- DEBUG [FactoryTest#testNoALarmBranch] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testNoALarmBranch] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testNoALarmBranch] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testACSAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testACSAS] -------------------------------
@@ -27,6 +28,7 @@
 1 - ----------T--:--:----- DEBUG [FactoryTest#testACSAS] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testACSAS] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testACSAS] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testCERNAS' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testCERNAS] -------------------------------
@@ -42,6 +44,7 @@
 1 - ----------T--:--:----- DEBUG [FactoryTest#testCERNAS] cmw-mom/acs-jms initialized
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testCERNAS] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testCERNAS] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testWrongImplementationProp' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testWrongImplementationProp] -------------------------------
@@ -57,6 +60,7 @@
 1 - ----------T--:--:----- DEBUG [FactoryTest#testWrongImplementationProp] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testWrongImplementationProp] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testWrongImplementationProp] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testFaultStateCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testFaultStateCreation] -------------------------------
@@ -71,6 +75,7 @@
 1 - ----------T--:--:----- DEBUG [FactoryTest#testFaultStateCreation] Alarm system type: ACS
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testFaultStateCreation] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testFaultStateCreation] Thread shut down
 1 - ----------T--:--:----- DELOUSE [almaacsloggingconfigLogConfig] Logging configuration has been initialized, but not from CDB settings
 1 - ----------T--:--:----- FINER [almaacslogging] Changed processName='null' to 'FactoryTest#testAlarmSourceCreation' and updated logger names
 1 - ----------T--:--:----- INFO [FactoryTest#testAlarmSourceCreation] -------------------------------
@@ -86,6 +91,7 @@
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] about to log out from manager
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] Alarm source of SourceName connected to the logging
 1 - ----------T--:--:----- FINE [FactoryTest#testAlarmSourceCreation] logged out from manager
+1 - ----------T--:--:----- FINEST [FactoryTest#testAlarmSourceCreation] Thread shut down
 1 - 
 1 - 
 1 - OK (6 tests)
