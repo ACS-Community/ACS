@@ -104,29 +104,32 @@
 1 -  *************************   New sendData @ DefaultStream#00 *******************************
 1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
 1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (0) before waiting: 1
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes to 1 receivers
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count: (2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: 0.000000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count: (2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=8) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=8) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="1000"
 1 -  *************************   New sendData @ DefaultStream#00 *******************************
 1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
 1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count: (2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count: (2)
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=8) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=8) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="1000"
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - increasConseqErrorCount] Too many consequent errors: 4/4 on DefaultStream#01
 1 - ===============================================================
 1 - cbStop
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (2) before waiting: 1
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_data_available] On DefaultStream#01 stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (2) before waiting: 1
 1 - cbStop
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - virtual void AcsBulkdata::BulkDataNTSenderStream::removeFlowFromMap(const char*)] Entering...
@@ -134,21 +137,21 @@
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] DDS Sample State  Error (type=56, code=17) SampleState="2" ViewState="2" InstanceState="4"
-1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_liveliness_changed] A sender has disconnected to flow: 00 of the stream: DefaultStream. Total alive connection(s): 0
 2 - ----------T--:--:--.--- [GlobalLogger - virtual BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
-1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_subscription_matched] 
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_liveliness_changed] A sender has disconnected to flow: 00 of the stream: DefaultStream. Total alive connection(s): 0
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_subscription_matched] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
-1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] DDS Sample State  Error (type=56, code=17) SampleState="2" ViewState="2" InstanceState="4"
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] DDS Sample State  Error (type=56, code=17) SampleState="2" ViewState="2" InstanceState="4"
 2 - ----------T--:--:--.--- [GlobalLogger - virtual BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_liveliness_changed] A sender has disconnected to flow: 01 of the stream: DefaultStream. Total alive connection(s): 0
-1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_subscription_matched] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_subscription_matched] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Exiting... Function took XYZ.ASD sec
