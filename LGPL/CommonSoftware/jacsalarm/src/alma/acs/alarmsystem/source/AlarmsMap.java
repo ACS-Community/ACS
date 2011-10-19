@@ -199,17 +199,15 @@ public class AlarmsMap {
 	 * Shutdown the thread a frees the resources
 	 */
 	public void shutdown() {
-		if (loopRunner.isLoopRunning()) {
-			try {
-				if (loopRunner.shutdown(ALARM_ACTIVITY_TIME+1, TimeUnit.SECONDS)) {
-					logger.finest("Thread shut down");
-				} else {
-					logger.warning("Failed to cleanly shut down the AlarmsMap thread");
-				}
-			} catch (InterruptedException ie) {
-				logger.warning("AlarmsMap thread interrupetd while shutting down");
-				Thread.currentThread().interrupt();
+		try {
+			if (loopRunner.shutdown(ALARM_ACTIVITY_TIME+1, TimeUnit.SECONDS)) {
+				logger.finest("Thread shut down");
+			} else {
+				logger.warning("Failed to cleanly shut down the AlarmsMap thread");
 			}
+		} catch (InterruptedException ie) {
+			logger.warning("AlarmsMap thread interrupetd while shutting down");
+			Thread.currentThread().interrupt();
 		}
 		alarms.clear();
 	}
