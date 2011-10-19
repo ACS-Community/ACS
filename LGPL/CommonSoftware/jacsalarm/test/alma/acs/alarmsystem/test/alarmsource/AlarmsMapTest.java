@@ -140,9 +140,7 @@ public class AlarmsMapTest extends ComponentClientTestCase {
 			alarmsMap.raise(keyBase+t);
 		}
 		assertEquals(alarmsMap.dump().toString(),20, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000/2+1000);
-		assertEquals(alarmsMap.dump().toString(),10, alarmsMap.size());
-		Thread.sleep(AlarmsMap.ALARM_ACTIVITY_TIME*1000+1000);
+		Thread.sleep(2*AlarmsMap.ALARM_ACTIVITY_TIME*1000+3000);
 		assertEquals(alarmsMap.dump().toString(),0, alarmsMap.size());
 	}
 	
