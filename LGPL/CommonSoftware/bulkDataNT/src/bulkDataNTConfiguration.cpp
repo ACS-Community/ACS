@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.7 2011/09/28 16:42:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.8 2011/10/19 12:25:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,11 +58,11 @@ StreamConfiguration::StreamConfiguration()
 	{
 		urlProfileQoS += "file://..";
 		urlProfileQoS += DEFAULT_QoS_FILE;
-		urlProfileQoS += " | ";
+		urlProfileQoS += "|";
 	}
 
-	fillUrlProfileQoS("MODROOT", " | ");
-	fillUrlProfileQoS("INTROOT", " | ");
+	fillUrlProfileQoS("MODROOT", "|");
+	fillUrlProfileQoS("INTROOT", "|");
 
 	envVarValue = getenv("INTLIST");
 	if (envVarValue != NULL) {
@@ -73,7 +73,7 @@ StreamConfiguration::StreamConfiguration()
 			urlProfileQoS += "file://";
 			urlProfileQoS += tok;
 			urlProfileQoS += DEFAULT_QoS_FILE;
-			urlProfileQoS += " | ";
+			urlProfileQoS += "|";
 			tok = strtok(NULL, ":");
 		}//while
 		free(tmpEnvVarValue);
