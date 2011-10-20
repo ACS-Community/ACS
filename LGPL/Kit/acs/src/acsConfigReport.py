@@ -603,7 +603,7 @@ if ((rpmcheck == True) and (standardRedHat ==  True)):
 	# Special case : could have two versions of the same package installed
 	status = commands.getstatusoutput('rpm -q ' + pack_name )[0]
 	package_nr = commands.getoutput('rpm -q ' + pack_name + ' | wc -l')
-	print "STATUS = " + str(status)
+	#print "STATUS = " + str(status)
 	if status: 
 		# Package is not installed
       	   	commands.getoutput('echo "<font color=#ff0000>===> Package '+pack_name+ ' IS NOT INSTALLED</font><br>"  >>  ./report.html')
