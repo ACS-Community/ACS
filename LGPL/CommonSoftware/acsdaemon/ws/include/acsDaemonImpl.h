@@ -21,7 +21,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsDaemonImpl.h,v 1.9 2011/07/14 06:52:52 msekoran Exp $"
+* "@(#) $Id: acsDaemonImpl.h,v 1.10 2011/10/21 13:20:39 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -432,7 +432,9 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     // and for ORBEndpoint creation
     const char* hostName = ACSPorts::getIP();
 
-    // disable logging to local file cache
+    // store env. var. value and disable logging to local file cache
+    char * acsLogFileEnv = ACE_OS::getenv("ACS_LOG_FILE");
+    ACE_CString acsLogFileValue(acsLogFileEnv);
     ACE_OS::setenv("ACS_LOG_FILE", "/dev/null", 1);
 
     // create logging proxy
@@ -442,6 +444,12 @@ acsDaemonImpl<T>::acsDaemonImpl(int argc, char *argv[])
     m_logger = new LoggingProxy (0, 0, 31, 0);
     
     LoggingProxy::init (m_logger);  
+
+    // reset ACS_LOG_FILE back
+    if (acsLogFileEnv)
+        ACE_OS::setenv("ACS_LOG_FILE", acsLogFileValue.c_str(), 1);
+    else
+        ACE_OS::unsetenv("ACS_LOG_FILE");
 
     // Ready the service manager
     service = new ACSDaemonServiceImpl<T>(*m_logger, !unprotected);
