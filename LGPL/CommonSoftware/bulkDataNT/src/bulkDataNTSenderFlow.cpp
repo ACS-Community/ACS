@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.20 2011/10/19 17:42:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.21 2011/10/21 14:20:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.20 2011/10/19 17:42:22 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.21 2011/10/21 14:20:51 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -114,7 +114,7 @@ unsigned int BulkDataNTSenderFlow::getNumberOfReceivers()
 
 void BulkDataNTSenderFlow::startSend(ACE_Message_Block *param)
 {
- startSend((unsigned char*)(param->rd_ptr()), param->length());
+	startSend((unsigned char*)(param->rd_ptr()), param->length());
 }
 
 void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
@@ -130,6 +130,7 @@ void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
+	unsigned int iteration;
 	unsigned int sizeOfFrame = ACSBulkData::FRAME_MAX_LEN;  //TBD: should be configurable ?
 
 	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfFrame do we have to send
@@ -137,27 +138,42 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 
 	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d to flow: %s",
 			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str()));
-
-//	start_time = ACE_OS::gettimeofday();
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
-	for(unsigned int i=0; i<numOfIter; i++)
+	try{
+		//	start_time = ACE_OS::gettimeofday();
+		for(iteration=0; iteration<numOfIter; iteration++)
+		{
+			if (iteration==(numOfIter-1) && restFrameSize>0)
+			{
+				// last frame
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), restFrameSize, numOfIter-1-iteration);
+			}else
+			{
+				writeFrame(ACSBulkData::BD_DATA, (buffer+(iteration*sizeOfFrame)), sizeOfFrame, numOfIter-1-iteration);
+			}
+		}//for
+		// at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
+	}catch(const ACSErr::ACSbaseExImpl &ex)
 	{
-		if (i==(numOfIter-1) && restFrameSize>0)
-		{
-			// last frame
-			 writeFrame(ACSBulkData::BD_DATA, (buffer+(i*sizeOfFrame)), restFrameSize, numOfIter-1-i);
-		}else
-		{
-			 writeFrame(ACSBulkData::BD_DATA, (buffer+(i*sizeOfFrame)), sizeOfFrame, numOfIter-1-i);
-		}
-	}//for
- // at this point we have sent all frames, we could wait for ACKs, but it is done in writeFrame
+		SendDataErrorExImpl sfEx(ex, __FILE__, __LINE__, __FUNCTION__);
+		sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
+		sfEx.setFrameCount(iteration); sfEx.setTotalFrameCount(numOfIter);
+		throw sfEx;
+	}//try-catch
 }//sendData
 
 void BulkDataNTSenderFlow::stopSend()
 {
-	writeFrame(ACSBulkData::BD_STOP);
+	try
+	{
+		writeFrame(ACSBulkData::BD_STOP);
+	}catch(const ACSErr::ACSbaseExImpl &ex)
+	{
+		SendStopErrorExImpl ssEx(ex, __FILE__, __LINE__, __FUNCTION__);
+		ssEx.setSenderName(senderStream_m->getName().c_str()); ssEx.setFlowName(flowName_m.c_str());
+		throw ssEx;
+	}
 }//stopSend
 
 void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param, size_t len, unsigned int restFrameCount)
@@ -190,13 +206,13 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			SendFrameTimeoutExImpl toEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			toEx.setSenderName(senderStream_m->getName().c_str()); toEx.setFlowName(flowName_m.c_str());
 			toEx.setTimeout(0.0); //TBD: put value from QoS
-			//toEx.setFrameCount(i); toEx.setTotalFrameCount(numOfIter);
+			toEx.setFrameCount(restFrameCount);
 			throw toEx;
 		}else
 		{
-			SendFrameErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+			SendFrameGenericErrorExImpl sfEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			sfEx.setSenderName(senderStream_m->getName().c_str()); sfEx.setFlowName(flowName_m.c_str());
-			//sfEx.setFrameCount(i); sfEx.setTotalFrameCount(numOfIter);
+			sfEx.setFrameCount(restFrameCount);
 			sfEx.setRetCode(ret);
 			throw sfEx;
 		}//if-else
@@ -210,9 +226,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
-			//ackToEx.setFrameCount(i); ackToEx.setTotalFrameCount(numOfIter);
 			ackToEx.log(LM_WARNING); //TBD should be an error ?
-			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
 		}//if
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
@@ -230,9 +244,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
-			//ackToEx.setFrameCount(i); ackToEx.setTotalFrameCount(numOfIter);
 			ackToEx.log(LM_WARNING); //TBD should be an error ?
-			//ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_WARNING, "wait_for_acknowledgments at frame level time-outed"));
 		}//if
 	}//if (restFrameCount==0)
 }//writeFrame
