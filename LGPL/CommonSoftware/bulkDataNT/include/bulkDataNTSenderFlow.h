@@ -18,24 +18,17 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.9 2011/10/19 17:30:52 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.10 2011/10/21 14:36:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-/************************************************************************
- *
- *----------------------------------------------------------------------
- */
-
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-
-//#include "bulkDataNTBase.h"
 #include "bulkDataNTDDSPublisher.h"
 #include "bulkDataNTSenderStream.h"
 #include "bulkDataNTWriterListener.h"
@@ -45,10 +38,8 @@ namespace AcsBulkdata
 {
 
 class BulkDataNTSenderStream;
-// TBD: default class for TSenderCallback
-//template<class TSenderCallback>
+
 class BulkDataNTSenderFlow
-//: public AcsBulkdata::BulkDataNTBase, public AcsBulkdata::BulkDataNTDDSPublisher
 {
 public:
 
@@ -74,8 +65,6 @@ public:
 	/* in old BD was const char now it is unsigned char !!!*/
 	void startSend(const unsigned char *param, size_t len);
 
-
-	void sendData(ACE_Message_Block *buffer);
 	// const char* -> const unsigned char* (should we add a new method with const char*)
 	void sendData(const unsigned char *buffer, size_t len);
 
