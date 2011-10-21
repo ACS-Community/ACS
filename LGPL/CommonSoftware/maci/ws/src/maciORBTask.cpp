@@ -1,7 +1,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciORBTask.cpp,v 1.5 2007/07/16 09:33:14 bjeram Exp $"
+* "@(#) $Id: maciORBTask.cpp,v 1.6 2011/10/21 21:56:49 msekoran Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -13,10 +13,11 @@
 #include <maciORBTask.h>
 #include <ACSErrTypeCommon.h>
 
- using namespace maci;
+using namespace maci;
 
+// TODO delete ACE_Thread_Manager
 ORBTask::ORBTask (CORBA::ORB_ptr orb, LoggingProxy * logger, unsigned int timeToRun)
-    :  m_orb(CORBA::ORB::_duplicate(orb)), m_logger(logger), m_timeToRun(timeToRun)
+    : ACE_Task_Base(new ACE_Thread_Manager()), m_orb(CORBA::ORB::_duplicate(orb)), m_logger(logger), m_timeToRun(timeToRun)
 {
 }
 
@@ -95,6 +96,9 @@ ORBTask::svc (void)
 // REVISION HISTORY:
 //
 // $Log: maciORBTask.cpp,v $
+// Revision 1.6  2011/10/21 21:56:49  msekoran
+// Container ORBTask has its own instance of ACE_Thread_Manager
+//
 // Revision 1.5  2007/07/16 09:33:14  bjeram
 // improved error handling
 //
