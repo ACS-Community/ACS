@@ -16,19 +16,18 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.23 2011/10/21 14:36:54 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.24 2011/10/21 14:38:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.23 2011/10/21 14:36:54 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.24 2011/10/21 14:38:24 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
 #include <iostream>
-#include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 #include "ACS_BD_Errors.h"
 
 using namespace AcsBulkdata;
