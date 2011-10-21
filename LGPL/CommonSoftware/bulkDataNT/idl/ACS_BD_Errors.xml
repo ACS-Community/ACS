@@ -68,11 +68,22 @@
         <Member name="Call" type="string" description="Call" />
     </ErrorCode>
 
-    <ErrorCode name="SendFrameError" shortDescription="Error to send BD frame" description="Error while sending a BD frame.">
+    <ErrorCode name="SendDataError" shortDescription="Error to send BD data" description="Error while sending BD data.">
         <Member name="SenderName" type="string" description="Sender name" />
         <Member name="FlowName" type="string" description="Flow name" />
         <Member name="FrameCount" type="long" description="Frame counter" />
-        <Member name="TotalFrameCount" type="long" description="Total number of frames" />
+        <Member name="TotalFrameCount" type="long" description="Total number of frames" />        
+    </ErrorCode>
+    
+    <ErrorCode name="SendStopError" shortDescription="Send Stop error" description="Error in calling stopSend">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />        
+    </ErrorCode>
+
+    <ErrorCode name="SendFrameGenericError" shortDescription="Error to send BD frame" description="Error while sending a BD frame.">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="FrameCount" type="long" description="Frame counter" />
         <Member name="RetCode" type="long" description="Return (error) code" />        
     </ErrorCode>
     
@@ -81,7 +92,6 @@
         <Member name="FlowName" type="string" description="Flow name" />
         <Member name="Timeout" type="double" description="set timeout in sec" />
         <Member name="FrameCount" type="long" description="Frame counter" />
-        <Member name="TotalFrameCount" type="long" description="Total number of frames" />
     </ErrorCode>
     
     <ErrorCode name="FrameAckTimeout" shortDescription="BD Frame Ack Timeout" description="Timeout waiting for acknowledgments">
