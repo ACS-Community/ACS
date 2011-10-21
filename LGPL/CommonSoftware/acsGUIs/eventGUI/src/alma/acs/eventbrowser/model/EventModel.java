@@ -56,7 +56,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.27 2011/09/30 12:41:07 jschwarz Exp $
+ * $Id: EventModel.java,v 1.28 2011/10/21 16:12:38 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -68,11 +68,11 @@ public class EventModel {
 	private final Helper h;
 	private final NamingContext nctx;
 	private final AcsManagerProxy mproxy;
-	private final EventChannelFactory nsvc;
-	private final EventChannelFactory lsvc;	// For logging service
+//	private final EventChannelFactory nsvc;
+//	private final EventChannelFactory lsvc;	// For logging service
 	private final static String eventGuiId = "eventGUI";
-	private final EventChannelFactory alsvc;
-	private final EventChannelFactory arsvc;
+//	private final EventChannelFactory alsvc;
+//	private final EventChannelFactory arsvc;
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private HashMap<String, int[]> lastConsumerAndSupplierCount;
 	private static EventModel modelInstance;
@@ -84,6 +84,9 @@ public class EventModel {
 	private NotificationServiceMonitorControl[] nsmc;
 	private ArchiveConsumer archiveConsumer;
 	private AdvancedComponentClient acc;
+	private ArrayList<EventChannelFactory> efacts;
+	private ArrayList<String> efactNames;
+	private ArrayList<String> notifyBindingNames;
 
 	private EventModel() throws Exception {
 		
@@ -96,10 +99,10 @@ public class EventModel {
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
-		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
-		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
-		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
-		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
+//		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
+//		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
+//		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
+//		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
 		cs = compClient.getContainerServices();
 		orb = compClient.getAcsCorba().getORB();
 		
@@ -107,6 +110,7 @@ public class EventModel {
 		
 		h = new Helper(cs);
 		nctx = h.getNamingService();
+		getAllNotifyServices();
 		nsmc = getMonitorControl();
 //		getServiceTotals(); // temporarily, for testing
 	}
@@ -171,35 +175,44 @@ public class EventModel {
 	 */
 	private NotificationServiceMonitorControl[] getMonitorControl() throws NotFound, CannotProceed,
 			org.omg.CosNaming.NamingContextPackage.InvalidName {
-		final String[] MC_IORS = {"NotifyMCIOR" };
-		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
-		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[MC_IORS.length];
-		String iorbase = System.getProperty("ACS.tmp");
-		System.out.println("ACS_TMP:"+iorbase);
-		String instdir = System.getenv("ACS_INSTANCE");
-		if (instdir == null)
-			instdir = "ACS_INSTANCE.0";
-		else
-			instdir = "ACS_INSTANCE."+instdir;
-		iorbase += File.separator+instdir+File.separator+"iors"+File.separator;
-		for (int i = 0; i < MC_IORS.length; i++) {
-			String iorpath = iorbase + MC_IORS[i]; // NS_MC_IOR;
-			System.out.println("IORPATH: " + iorpath);
-			File iorFile = new File(iorpath);
-			try {
-				BufferedReader input = new BufferedReader(new FileReader(
-						iorFile));
-				String iorString = input.readLine();
-				if (iorString != null)
-					nsmc[i] = NotificationServiceMonitorControlHelper.narrow(orb
-							.string_to_object(iorString));
-				input.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		
+		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[efactNames.size()];
+		NameComponent[] ncomp = new NameComponent[1];
+		for (int i = 0; i < notifyBindingNames.size(); i++) {
+			String name = "MC_"+notifyBindingNames.get(i);
+			ncomp[0] = new NameComponent(name,"");
+			//nctx.resolve(ncomp);
+			nsmc[i] = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
 		}
+//		final String[] MC_IORS = {"NotifyMCIOR" }; // TODO: Dynamically get and parse these things
+//		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
+//		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[MC_IORS.length];
+//		String iorbase = System.getProperty("ACS.tmp");
+//		System.out.println("ACS_TMP:"+iorbase);
+//		String instdir = System.getenv("ACS_INSTANCE");
+//		if (instdir == null)
+//			instdir = "ACS_INSTANCE.0";
+//		else
+//			instdir = "ACS_INSTANCE."+instdir;
+//		iorbase += File.separator+instdir+File.separator+"iors"+File.separator;
+//		for (int i = 0; i < MC_IORS.length; i++) {
+//			String iorpath = iorbase + MC_IORS[i]; // NS_MC_IOR;
+//			System.out.println("IORPATH: " + iorpath);
+//			File iorFile = new File(iorpath);
+//			try {
+//				BufferedReader input = new BufferedReader(new FileReader(
+//						iorFile));
+//				String iorString = input.readLine();
+//				if (iorString != null)
+//					nsmc[i] = NotificationServiceMonitorControlHelper.narrow(orb
+//							.string_to_object(iorString));
+//				input.close();
+//			} catch (FileNotFoundException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 		return nsmc;
 	}
 	
@@ -220,39 +233,7 @@ public class EventModel {
 	
 	public ArrayList<ChannelData> getServiceTotals() throws AcsJException {
 		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		ArrayList<EventChannelFactory> efacts = new ArrayList<EventChannelFactory>(10);
-		ArrayList<String> efactNames = new ArrayList<String>(10);
-
-		Helper h = new Helper(cs);
-		NamingContext nctx = h.getNamingService();BindingListHolder bl = new BindingListHolder();
-		BindingIteratorHolder bi = new BindingIteratorHolder();
-		
-		nctx.list(-1, bl, bi);
-		for (Binding binding : bl.value) {
-			String serviceKind = alma.acscommon.NC_KIND.value;
-			if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
-
-			String id = binding.binding_name[0].id;
-			org.omg.CORBA.Object obj = null;
-			try {
-				obj = mproxy.get_service(id, false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
-				//System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
-				//System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
-				String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
-				
-				if (displayName.equals("")) {					
-					displayName = "DefaultNotifyService";
-				}
-				efacts.add(EventChannelFactoryHelper.narrow(mproxy.get_service(id, false)));
-				efactNames.add(displayName);
-			} 
-		}
-
-		System.out.println("efacts.size = "+efacts.size());
+		getAllNotifyServices();
 		for (int i = 0; i < efacts.size(); i++) {
 			int nconsumers;
 			int nsuppliers;
@@ -284,6 +265,54 @@ public class EventModel {
 		}
 
 		return clist;
+	}
+
+	/**
+	 * @throws AcsJException
+	 * @throws AcsJComponentNotAlreadyActivatedEx
+	 * @throws AcsJCannotGetComponentEx
+	 * @throws AcsJComponentConfigurationNotFoundEx
+	 * @throws AcsJNoPermissionEx
+	 */
+	private void getAllNotifyServices() throws AcsJException,
+			AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx,
+			AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx {
+		efacts = new ArrayList<EventChannelFactory>(10);
+		efactNames = new ArrayList<String>(10);
+		notifyBindingNames = new ArrayList<String>(10);
+
+		Helper h = new Helper(cs);
+		NamingContext nctx = h.getNamingService();BindingListHolder bl = new BindingListHolder();
+		BindingIteratorHolder bi = new BindingIteratorHolder();
+		
+		nctx.list(-1, bl, bi);
+		for (Binding binding : bl.value) {
+			String serviceKind = alma.acscommon.NC_KIND.value;
+			if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
+
+			String id = binding.binding_name[0].id;
+			System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+			org.omg.CORBA.Object obj = null;
+			try {
+				obj = mproxy.get_service(id, false);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
+//				System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+//				System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
+				String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
+				
+				if (displayName.equals("")) {					
+					displayName = "DefaultNotifyService";
+				}
+				efacts.add(EventChannelFactoryHelper.narrow(mproxy.get_service(id, false)));
+				efactNames.add(displayName);
+				notifyBindingNames.add(id);
+			} 
+		}
+
+		System.out.println("efacts.size = "+efacts.size());
 	}
 	
 	public ArrayList<ChannelData> getChannelStatistics() {
@@ -341,12 +370,12 @@ public class EventModel {
 				}
 
 			}
-//			try {
-//				printMonitoringResults(nsmc);
-//			} catch (InvalidName e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			try {
+				printMonitoringResults(nsmc);
+			} catch (InvalidName e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return clist;	
 	}
@@ -486,7 +515,8 @@ public class EventModel {
 		for (int i = 0; i < mc.length; i++) {
 			String[] names = mc[i].get_statistic_names();
 			for (int j = 0; j < names.length; j++) {
-				//m_logger.info("NC Statistic name[" + j + "] : " + names[j]);
+				m_logger.info("NC Statistic name[" + j + "] : " + names[j]);
+				if (true) continue;
 				if (!names[j].contains("/"))  // the max index can be zero!!!
 					break;
 				String channel = names[j].split("/")[1];
