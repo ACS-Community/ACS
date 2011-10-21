@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.22 2011/10/21 14:29:02 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.23 2011/10/21 14:36:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.22 2011/10/21 14:29:02 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.23 2011/10/21 14:36:54 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -129,12 +129,6 @@ void BulkDataNTSenderFlow::startSend(const unsigned char *param, size_t len)
 		throw ssEx;
 	}
 }//startSend
-
-
-void BulkDataNTSenderFlow::sendData(ACE_Message_Block *buffer)
-{
-	 sendData((unsigned char*)(buffer->rd_ptr()), buffer->length());
-}//sendData
 
 void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 {
