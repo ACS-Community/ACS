@@ -75,11 +75,16 @@
         <Member name="TotalFrameCount" type="long" description="Total number of frames" />        
     </ErrorCode>
     
-    <ErrorCode name="SendStopError" shortDescription="Send Stop error" description="Error in calling stopSend">
+    <ErrorCode name="StopSendError" shortDescription="stopSend error" description="Error in calling stopSend">
         <Member name="SenderName" type="string" description="Sender name" />
         <Member name="FlowName" type="string" description="Flow name" />        
     </ErrorCode>
 
+    <ErrorCode name="StartSendError" shortDescription="startSend error" description="Error in calling startSend">
+        <Member name="SenderName" type="string" description="Sender name" />
+        <Member name="FlowName" type="string" description="Flow name" />        
+    </ErrorCode>
+    
     <ErrorCode name="SendFrameGenericError" shortDescription="Error to send BD frame" description="Error while sending a BD frame.">
         <Member name="SenderName" type="string" description="Sender name" />
         <Member name="FlowName" type="string" description="Flow name" />
