@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.136 2011/10/14 11:05:41 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.137 2011/10/21 21:14:57 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.136 2011/10/14 11:05:41 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.137 2011/10/21 21:14:57 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -201,7 +201,7 @@ public:
 
 
 
-MethodRequestThreadPool::MethodRequestThreadPool (int n_threads)
+MethodRequestThreadPool::MethodRequestThreadPool (int n_threads) : m_threads(n_threads)
 {
     //ACS_TRACE ("maci::MethodRequestThreadPool::MethodRequestThreadPool");
     this->activate (THR_NEW_LWP|THR_JOINABLE|THR_INHERIT_SCHED, n_threads);
@@ -238,7 +238,8 @@ MethodRequestThreadPool::enqueue (ACE_Method_Request *request)
     
 void MethodRequestThreadPool::shutdown()
 {
-    this->enqueue (new ExitMethod ());
+	for (int i = 0; i < m_threads; i++)
+    	this->enqueue (new ExitMethod ());
     
     // might do better implementation
     while (!this->activation_queue_.is_empty()) {

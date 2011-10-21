@@ -4,7 +4,7 @@
 /*******************************************************************************
 * E.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.h,v 1.62 2011/09/29 09:33:27 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.h,v 1.63 2011/10/21 21:14:57 msekoran Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -103,6 +103,8 @@ protected:
 private:
     ACE_Activation_Queue activation_queue_;
 
+	int m_threads;
+	
     /// Logger for this container;
     Logging::Logger::LoggerSmartPtr m_logger;
 };
@@ -132,7 +134,7 @@ private:
  *
  * @author <a href=mailto:matej.sekoranja@ijs.si>Matej Sekoranja</a>,
  * Jozef Stefan Institute, Slovenia<br>
- * @version "@(#) $Id: maciContainerImpl.h,v 1.62 2011/09/29 09:33:27 msekoran Exp $"
+ * @version "@(#) $Id: maciContainerImpl.h,v 1.63 2011/10/21 21:14:57 msekoran Exp $"
  */
 
 class maci_EXPORT ContainerImpl :
