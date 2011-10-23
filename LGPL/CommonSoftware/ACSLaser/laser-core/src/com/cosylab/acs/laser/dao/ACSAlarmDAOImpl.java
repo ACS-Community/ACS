@@ -168,7 +168,15 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	/**
 	 * The thresholds from the CDB
 	 */
-	private Thresholds thresholds;
+	//private Thresholds thresholds;
+	
+	/**
+	 * The threshold read from the CDB.
+	 * 
+	 * The key is the alarm ID (FF:FM:FC) of the alarm.
+	 * The value is the value of the threshold 
+	 */
+	private final ConcurrentHashMap<String, Integer>theThreshods = new ConcurrentHashMap<String, Integer>();
 	
 	/**
 	 * The alarm cache used to notify on alarm changes
@@ -507,8 +515,24 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 
 		// Read the links to create from the CDB
 		ReductionLinkDefinitionListType ltc=rds.getLinksToCreate();
+		
 		//	Read the thresholds from the CDB
-		thresholds = rds.getThresholds();
+		Thresholds thresholds = rds.getThresholds();
+		if (thresholds!=null) {
+			// Store the thresholds in the HashMap
+			Threshold[] threshold = thresholds.getThreshold();
+			for (Threshold t: threshold) {
+				StringBuilder alarmID= new StringBuilder();
+				alarmID.append(t.getAlarmDefinition().getFaultFamily());
+				alarmID.append(':');
+				alarmID.append(t.getAlarmDefinition().getFaultMember());
+				alarmID.append(':');
+				alarmID.append(t.getAlarmDefinition().getFaultCode());
+				Integer thresholdValue = Integer.valueOf(t.getValue());
+				theThreshods.put(alarmID.toString(), thresholdValue);
+			}
+		}
+		
 		if (ltc!=null) { 
 			ReductionLinkType[] rls=ltc.getReductionLink();
 			for (ReductionLinkType link: rls) {
@@ -554,59 +578,106 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 */
 	private void updateReductionRules() {
 		logger.log(AcsLogLevel.DEBUG,"Updating the reduction rules");
+		
+		for (Alarm parent: alarmDefs.values()) {
+			updateAlarmReductionRule((AlarmImpl)parent);
+			updateAlarmThreshold(parent);
+		}
+		
+		System.out.println("reduction rules updated:");
+		dumpReductionRules();
+	}
+	
+	/**
+	 * Update the threshold for the passed alarm
+	 * 
+	 * @param alarm The alarm to update the threshold
+	 */
+	private void updateAlarmThreshold(Alarm alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The passed alarm can't be null");
+		}
+		System.out.println("Updating threshold for "+alarm.getAlarmId());
+		if (theThreshods.size()==0) {
+			// No multiplicity reduction rules defined
+			return;
+		}
+		Integer thresholdValue=theThreshods.get(alarm.getAlarmId());
+		if (thresholdValue!=null) {
+			alarm.setMultiplicityThreshold(thresholdValue);
+		}
+	}
+	
+	/**
+	 * Update the reduction rules involving the passed alarm
+	 * 
+	 * @param alarm The parent alarm whose reduction rule has to be
+	 *  			updated
+	 */
+	private void updateAlarmReductionRule(AlarmImpl alarm) {
+		if (alarm==null) {
+			throw new IllegalArgumentException("The passed alarm can't be null");
+		}
+		System.out.println("Updating RR for "+alarm.getAlarmId());
 		Collection<Alarm> cc=alarmDefs.values();
 		AlarmImpl[] allAlarms=new AlarmImpl[cc.size()];
 		cc.toArray(allAlarms);
-		
+		int num=allAlarms.length;
 		LinkSpec[] ls=new LinkSpec[reductionRules.size()];
 		reductionRules.toArray(ls);
-		
-		int num=allAlarms.length;
-		
-		for (int a=0; a<num; a++) {
-			AlarmImpl parent=allAlarms[a];
-			for (LinkSpec lsb: ls) {
-				if (lsb.matchParent(parent)) {
-					AlarmRefMatcher childMatcher=lsb._child;
-					boolean isMulti=lsb.isMultiplicity();
-					for (int c=0; c<num; c++) {
-						if (a==c) {
-							continue;
-						}
-						AlarmImpl aic=allAlarms[c];
-						if (childMatcher.isMatch(aic)) {
-							if (isMulti) {
-								addMultiplicityChild(parent, aic);
-							} else {
-								addNodeChild(parent, aic);
-							}
-						} 
+		System.out.println("\tRRs="+ls.length+", alarms="+allAlarms.length);
+		for (LinkSpec lsb: ls) {
+			System.out.println("Cheching RR "+lsb);
+			if (lsb.matchChild(alarm)) {
+				System.out.println(lsb+" match CHILD "+alarm.getAlarmId());
+				AlarmRefMatcher parentMatcher=lsb._parent;
+				boolean isMulti=lsb.isMultiplicity();
+				for (int c=0; c<num; c++) {
+					if (alarm.getAlarmId().equals(allAlarms[c].getAlarmId())) {
+						System.out.println("parent is alarm! at position c="+c);
+						continue;
 					}
-				}  
-			}
-		}
-		
-		if (thresholds!=null && thresholds.getThresholdCount()>0) {
-			Threshold[] ta = thresholds.getThreshold();
-			for (AlarmImpl alarm: allAlarms) {
-				String alarmFF = alarm.getTriplet().getFaultFamily();
-				String alarmFM = alarm.getTriplet().getFaultMember();
-				Integer alarmFC= alarm.getTriplet().getFaultCode();
-				for (Threshold threshold: ta) {
-					String thresholdFF=threshold.getAlarmDefinition().getFaultFamily();
-					String thresholdFM=threshold.getAlarmDefinition().getFaultMember();
-					int thresholdFC=threshold.getAlarmDefinition().getFaultCode();
-					int thresholdVal = threshold.getValue();
-					if (alarmFF.equals(thresholdFF) && alarmFM.equals(thresholdFM) && alarmFC==thresholdFC) {
-						alarm.setMultiplicityThreshold(thresholdVal);
-						logger.log(AcsLogLevel.DEBUG,"Threshold = "+thresholdVal+" set in alarm "+alarm.getAlarmId());
+					AlarmImpl aic=allAlarms[c];
+					System.out.println("Checking "+alarm.getAlarmId()+" against "+aic.getAlarmId());
+					if (parentMatcher.isMatch(aic)) {
+						if (isMulti) {
+							addMultiplicityChild(aic,alarm);
+							System.out.println("\tMatch MULTI child");
+						} else {
+							addNodeChild(aic,alarm);
+							System.out.println("\tMatch NODE child");
+						}
+					} else {
+						System.out.println("\tDid NOT match");
 					}
 				}
+			} else if (lsb.matchParent(alarm)) {
+				System.out.println(lsb+" match PARENT "+alarm.getAlarmId());
+				AlarmRefMatcher childMatcher=lsb._child;
+				boolean isMulti=lsb.isMultiplicity();
+				for (int c=0; c<num; c++) {
+					if (alarm.getAlarmId().equals(allAlarms[c].getAlarmId())) {
+						System.out.println("parent is alarm! at position c="+c);
+						continue;
+					}
+					AlarmImpl aic=allAlarms[c];
+					System.out.println("Checking "+alarm.getAlarmId()+" against "+aic.getAlarmId());
+					if (childMatcher.isMatch(aic)) {
+						if (isMulti) {
+							addMultiplicityChild(alarm, aic);
+							System.out.println("\tMatch MULTI child");
+						} else {
+							addNodeChild(alarm, aic);
+							System.out.println("\tMatch NODE child");
+						}
+					} else {
+						System.out.println("\tDid NOT match");
+					}
+				}
+			} else {
+				System.out.println(lsb+" does NOT match "+alarm.getAlarmId());
 			}
 		}
-		
-		System.out.println("reduction rules updated");
-		//dumpReductionRules();
 	}
 	
 	/**
@@ -796,7 +867,10 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			// i.e. a default alarm is sent to the client twice
 			addAlarmToCache(alarm);
 			// Refresh the reduction rules with the newly added alarm
-			updateReductionRules();
+			updateAlarmReductionRule(alarm);
+			updateAlarmThreshold(alarm);
+			System.out.println("Reduction rules updated after creatiing alarm "+alarm.getAlarmId()+":");
+			dumpReductionRules();
 		}
 		return alarm;
 		
