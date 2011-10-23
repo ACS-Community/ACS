@@ -583,9 +583,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			updateAlarmReductionRule((AlarmImpl)parent);
 			updateAlarmThreshold(parent);
 		}
-		
-		System.out.println("reduction rules updated:");
-		dumpReductionRules();
+		// dumpReductionRules();
 	}
 	
 	/**
@@ -597,7 +595,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		if (alarm==null) {
 			throw new IllegalArgumentException("The passed alarm can't be null");
 		}
-		System.out.println("Updating threshold for "+alarm.getAlarmId());
 		if (theThreshods.size()==0) {
 			// No multiplicity reduction rules defined
 			return;
@@ -618,64 +615,46 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		if (alarm==null) {
 			throw new IllegalArgumentException("The passed alarm can't be null");
 		}
-		System.out.println("Updating RR for "+alarm.getAlarmId());
 		Collection<Alarm> cc=alarmDefs.values();
 		AlarmImpl[] allAlarms=new AlarmImpl[cc.size()];
 		cc.toArray(allAlarms);
 		int num=allAlarms.length;
 		LinkSpec[] ls=new LinkSpec[reductionRules.size()];
 		reductionRules.toArray(ls);
-		System.out.println("\tRRs="+ls.length+", alarms="+allAlarms.length);
 		for (LinkSpec lsb: ls) {
 			System.out.println("Cheching RR "+lsb);
 			if (lsb.matchChild(alarm)) {
-				System.out.println(lsb+" match CHILD "+alarm.getAlarmId());
 				AlarmRefMatcher parentMatcher=lsb._parent;
 				boolean isMulti=lsb.isMultiplicity();
 				for (int c=0; c<num; c++) {
 					if (alarm.getAlarmId().equals(allAlarms[c].getAlarmId())) {
-						System.out.println("parent is alarm! at position c="+c);
 						continue;
 					}
 					AlarmImpl aic=allAlarms[c];
-					System.out.println("Checking "+alarm.getAlarmId()+" against "+aic.getAlarmId());
 					if (parentMatcher.isMatch(aic)) {
 						if (isMulti) {
 							addMultiplicityChild(aic,alarm);
-							System.out.println("\tMatch MULTI child");
 						} else {
 							addNodeChild(aic,alarm);
-							System.out.println("\tMatch NODE child");
 						}
-					} else {
-						System.out.println("\tDid NOT match");
 					}
 				}
 			} else if (lsb.matchParent(alarm)) {
-				System.out.println(lsb+" match PARENT "+alarm.getAlarmId());
 				AlarmRefMatcher childMatcher=lsb._child;
 				boolean isMulti=lsb.isMultiplicity();
 				for (int c=0; c<num; c++) {
 					if (alarm.getAlarmId().equals(allAlarms[c].getAlarmId())) {
-						System.out.println("parent is alarm! at position c="+c);
 						continue;
 					}
 					AlarmImpl aic=allAlarms[c];
-					System.out.println("Checking "+alarm.getAlarmId()+" against "+aic.getAlarmId());
 					if (childMatcher.isMatch(aic)) {
 						if (isMulti) {
 							addMultiplicityChild(alarm, aic);
-							System.out.println("\tMatch MULTI child");
 						} else {
 							addNodeChild(alarm, aic);
-							System.out.println("\tMatch NODE child");
 						}
-					} else {
-						System.out.println("\tDid NOT match");
 					}
 				}
-			} else {
-				System.out.println(lsb+" does NOT match "+alarm.getAlarmId());
 			}
 		}
 	}
