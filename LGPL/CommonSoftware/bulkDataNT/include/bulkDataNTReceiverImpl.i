@@ -144,6 +144,12 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 }//openReceiver
 
 template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_name)
+{
+	//TBD implemented
+}
+
+template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 {
 	ACS_TRACE("BulkDataNTReceiverImpl<>::closeReceiver");
@@ -165,6 +171,12 @@ void BulkDataNTReceiverImpl<TCallback>::closeReceiver()
 		throw err.getAVCloseReceiverErrorEx();
 	}
 }//closeReceiver
+
+template<class TCallback>
+void BulkDataNTReceiverImpl<TCallback>::closeReceiverStream(const char *stream_name)
+{
+	//TBD implemented
+}
 
 
 template<class TCallback>

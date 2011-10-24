@@ -105,6 +105,11 @@ class BulkDataSendRecvImpl : public virtual baci::CharacteristicComponentImpl,
     */
     virtual void connect(bulkdata::BulkDataReceiver_ptr receiverObj_p);
 
+    void openReceiverStream(const char * stream_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataSendRecvImpl<>::openReceiverStream NOT implemented"));
+    }
+
     /**
      * @throw ACSBulkDataError::AVDisconnectErrorEx
      */
@@ -118,6 +123,12 @@ class BulkDataSendRecvImpl : public virtual baci::CharacteristicComponentImpl,
      <br><hr>
      @endhtmlonly
     */
+
+    void closeReceiverStream(const char * stream_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataSendRecvImpl<>::closeReceiverStream NOT implemented"));
+    }
+
     virtual void startSend();
 
     /**

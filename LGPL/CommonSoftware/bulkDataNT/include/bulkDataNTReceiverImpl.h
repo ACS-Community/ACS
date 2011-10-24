@@ -116,6 +116,8 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void openReceiver() ;
 
+    virtual void openReceiverStream(const char *stream_name);
+
     /**
      *  @throw ACSBulkDataError::AVReceiverConfigErrorEx
      */
@@ -125,6 +127,8 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
      *  @throw ACSBulkDataError::AVCloseReceiverErrorEx
      */
     virtual void closeReceiver();
+
+    virtual void closeReceiverStream(const char *stream_name);
 
     /**
      *  @throw ACSBulkDataError::AVInvalidFlowNumberEx

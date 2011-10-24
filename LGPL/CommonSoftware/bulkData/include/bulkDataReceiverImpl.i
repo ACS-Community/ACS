@@ -71,6 +71,11 @@ void BulkDataReceiverImpl<TCallback>::openReceiver()
 	}
 }
 
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::openReceiverStream(const char * stream_name)
+{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::openReceiverStream NOT implemented"));
+}
 
 
 template<class TCallback>
@@ -123,6 +128,11 @@ void BulkDataReceiverImpl<TCallback>::closeReceiver()
 	}
 }
 
+template<class TCallback>
+void BulkDataReceiverImpl<TCallback>::closeReceiverStream(const char * stream_name)
+{
+	ACS_SHORT_LOG((LM_ERROR,"BulkDataReceiverImpl<>::closeReceiverStream NOT implemented"));
+}
 
 template<class TCallback>
 ACSErr::Completion *BulkDataReceiverImpl<TCallback>::getCbStatus(CORBA::ULong flowNumber) 

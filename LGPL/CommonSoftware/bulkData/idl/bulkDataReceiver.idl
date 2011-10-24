@@ -63,6 +63,10 @@ module bulkdata
 	*/
 	void openReceiver()
 	    raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	    
+	void openReceiverStream(in string stream_name)
+        raises (ACSBulkDataError::AVOpenReceiverErrorEx);
+	    
 
 	/** This property is the Receiver Steam End Point.
 	 */
@@ -78,6 +82,9 @@ module bulkdata
 	*/
 	void closeReceiver()
 	    raises (ACSBulkDataError::AVCloseReceiverErrorEx);
+
+    void closeReceiverStream(in string stream_name)
+        raises (ACSBulkDataError::AVCloseReceiverErrorEx);
 
 	/**
 	 *  Get callback status

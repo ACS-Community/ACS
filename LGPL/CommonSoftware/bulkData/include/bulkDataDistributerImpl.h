@@ -210,6 +210,11 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void openReceiver();
 
+    void openReceiverStream(const char * stream_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::openReceiverStream NOT implemented"));
+    }
+
     /*
      *  @throw ACSBulkDataError::AVReceiverConfigErrorEx 
      */
@@ -219,6 +224,12 @@ class BulkDataDistributerImpl : public baci::CharacteristicComponentImpl,
      *  @throw ACSBulkDataError::AVCloseReceiverErrorEx
      */
     virtual void closeReceiver(); 
+
+
+    void closeReceiverStream(const char * stream_name)
+    {
+    	ACS_SHORT_LOG((LM_ERROR,"BulkDataDistributerImpl::closeReceiverStream NOT implemented"));
+    }
 
     /*
      *  @throw ACSBulkDataError::AVSetReceiverErrorEx
