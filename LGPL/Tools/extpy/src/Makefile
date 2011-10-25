@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.42 2011/10/19 16:49:00 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.43 2011/10/25 17:04:19 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -95,7 +95,7 @@ PYCHECKER: pychecker-0.8.14.tar.gz
 NUMERIC: Numeric-24.2.tar.gz
 	@echo "== Building Numeric"
 	@gtar -zxvf Numeric-24.2.tar.gz;
-	@cd Numeric-24.2; python setup.py install; 
+	@cd Numeric-24.2; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages; 
 
 NUMARRAY: numarray-1.3.3.tar.gz
 	@echo "== Building numarray"
@@ -127,7 +127,7 @@ SNMP: pysnmp-2.0.9.tar.gz
 SUDS: suds-0.4.tar.gz
 	@echo "== Building suds"
 	@gtar -zxvf suds-0.4.tar.gz;
-	@cd suds-0.4; python setup.py install;
+	@cd suds-0.4; python setup.py install --home=$(INSTALL_ROOT) --install-purelib=$(INSTALL_ROOT)/lib/python/site-packages --install-platlib=$(INSTALL_ROOT)/lib/python/site-packages;
 
 #
 # list all python tarballs
