@@ -512,13 +512,11 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	 * </UL>
 	 */
 	private void updateReductionRules() {
-		System.out.println("newLoadRR()");
 		for (LinkSpec ls: reductionRules) {
 			for (Alarm parent: alarmDefs.values()) {
 				// A parent never contains regular expression
 				// neither wildcards
 				if (ls._parent.getMatcherAlarmID().equals(parent.getAlarmId())) {
-					System.out.println("\tparent found "+parent.getAlarmId()+" for RR "+ls.toString());
 					// This is a parent in a reduction rule so we update 
 					// the alarms for this reduction rule
 					updateAlarmParentReductionRule((AlarmImpl)parent,ls);
@@ -668,7 +666,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		LinkSpec[] ls=new LinkSpec[reductionRules.size()];
 		reductionRules.toArray(ls);
 		for (LinkSpec lsb: ls) {
-			System.out.println("Cheching RR "+lsb);
 			if (lsb.matchChild(alarm)) {
 				AlarmRefMatcher parentMatcher=lsb._parent;
 				boolean isMulti=lsb.isMultiplicity();
