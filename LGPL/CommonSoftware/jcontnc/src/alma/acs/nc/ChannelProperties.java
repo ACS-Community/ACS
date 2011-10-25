@@ -1,5 +1,5 @@
 /**
- * ALMA - Atacama Large Millimiter Array (c) UNSPECIFIED - FILL IN, 2005
+ * ALMA - Atacama Large Millimiter Array Copyright (c) ESO - European Southern Observatory, 2005
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,7 +18,7 @@
 
 /**
  * @author dfugate
- * @version $Id: ChannelProperties.java,v 1.13 2010/12/10 17:38:58 rtobar Exp $
+ * @version $Id: ChannelProperties.java,v 1.14 2011/10/25 14:17:26 hsommer Exp $
  * @since
  */
 
