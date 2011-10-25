@@ -503,6 +503,65 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 	}
 	
 	/**
+	 * Update the reduction rules.
+	 * <P> 
+	 * Reduction rules have the property that the parent is:
+	 * <UL>
+	 * 	<LI>always one single node 
+	 *  <LI>is never a wildcard neither a regular expression
+	 * </UL>
+	 */
+	private void updateReductionRules() {
+		System.out.println("newLoadRR()");
+		for (LinkSpec ls: reductionRules) {
+			for (Alarm parent: alarmDefs.values()) {
+				// A parent never contains regular expression
+				// neither wildcards
+				if (ls._parent.getMatcherAlarmID().equals(parent.getAlarmId())) {
+					System.out.println("\tparent found "+parent.getAlarmId()+" for RR "+ls.toString());
+					// This is a parent in a reduction rule so we update 
+					// the alarms for this reduction rule
+					updateAlarmParentReductionRule((AlarmImpl)parent,ls);
+					updateAlarmThreshold(parent);
+				}
+			}
+		}
+		//dumpReductionRules();
+	}
+	
+	/**
+	 * Update the reduction rules involving the passed alarm as parent
+	 * <P>Note that the passed parent does not contain regular expression
+	 * neither wildcards.
+	 * 
+	 * @param parent The parent alarm whose reduction rule has to be
+	 *  			updated
+	 *  @param ls The reduction rule having this alarm as parent
+	 */
+	private void updateAlarmParentReductionRule(AlarmImpl parent, LinkSpec ls) {
+		if (parent==null) {
+			throw new IllegalArgumentException("The passed alarm can't be null");
+		}
+		if (ls==null) {
+			throw new IllegalArgumentException("The passed LinkSpec can't be null");
+		}
+		for (Alarm child: alarmDefs.values()) {
+			if (child.getAlarmId().equals(parent.getAlarmId())) {
+				// A node can't be parent and child in a RR!
+				continue;
+			}
+			if (ls.matchChild(child)) {
+				// child is a child node in the RR
+				if (ls.isMultiplicity()) {
+					addMultiplicityChild(parent, child);
+				} else {
+					addNodeChild(parent, child);
+				}
+			} 
+		}
+	}
+	
+	/**
 	 * Load the reduction rules from the CDB.
 	 * 
 	 * Read the reduction rules from the CDB and set up the alarms accordingly
@@ -571,19 +630,6 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 		logger.log(AcsLogLevel.DEBUG,reductionRules.size()+" reduction rules read from CDB");
 		
 		updateReductionRules();
-	}
-	
-	/**
-	 * Update the reduction rules in all the alarms in cache
-	 */
-	private void updateReductionRules() {
-		logger.log(AcsLogLevel.DEBUG,"Updating the reduction rules");
-		
-		for (Alarm parent: alarmDefs.values()) {
-			updateAlarmReductionRule((AlarmImpl)parent);
-			updateAlarmThreshold(parent);
-		}
-		// dumpReductionRules();
 	}
 	
 	/**
@@ -848,8 +894,7 @@ public class ACSAlarmDAOImpl implements AlarmDAO
 			// Refresh the reduction rules with the newly added alarm
 			updateAlarmReductionRule(alarm);
 			updateAlarmThreshold(alarm);
-			System.out.println("Reduction rules updated after creatiing alarm "+alarm.getAlarmId()+":");
-			dumpReductionRules();
+			//dumpReductionRules();
 		}
 		return alarm;
 		
