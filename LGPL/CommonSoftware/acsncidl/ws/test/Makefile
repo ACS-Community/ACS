@@ -1,6 +1,6 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) UNSPECIFIED - FILL IN, 2005 
+# Copyright (c) ESO - European Southern Observatory, 2005 
 # 
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.1 2005/02/14 20:41:08 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.2 2011/10/25 15:16:29 hsommer Exp $"
 #
 # Makefile of ........
 #
