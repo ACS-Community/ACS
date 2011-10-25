@@ -1,11 +1,32 @@
-<!-- created by Nicolas Barriga-->
+<!-- ***************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ ******************************************************************************* -->
+
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:loggingts="Alma/ACSLogTS">
         <xsl:output method="text" version="1.0" encoding="ASCII"/>
         <xsl:template match="/loggingts:LogDefinitionType">
 <xsl:text>#! /usr/bin/env python
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
-# (c) Associated Universities Inc., 2007
+# Copyright (c) ESO - European Southern Observatory, 2011
+# (in the framework of the ALMA collaboration).
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,7 +42,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: LTS2Py.xslt,v 1.3 2007/07/12 11:29:53 nbarriga Exp $"
+# "@(#) $Id: LTS2Py.xslt,v 1.4 2011/10/25 14:49:48 hsommer Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
