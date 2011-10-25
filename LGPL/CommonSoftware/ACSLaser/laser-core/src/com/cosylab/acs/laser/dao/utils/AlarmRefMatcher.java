@@ -46,11 +46,13 @@ public class AlarmRefMatcher
 	private final Pattern _familyPattern;
 	private final Pattern _memberPattern;
 	private final int _code;
+	
+	private final String matcherAlarmID;
 	/*public final int minCode, maxCode;*/
 
 	public AlarmRefMatcher(String familySpec, String memberSpec, int code, boolean interpretStringsAsPatterns) throws IllegalArgumentException
 	{
-
+		matcherAlarmID=familySpec+":"+memberSpec+":"+code;
 		// TODO: only compile patterns when adequate, check:
 		// http://almasw.hq.eso.org/almasw/bin/view/Main/RodrigoTobarDailyWorklog#08_02_11
 		// for details
@@ -143,8 +145,21 @@ public class AlarmRefMatcher
 			ret= true;
 		}
 		
-		//System.out.println("Match "+a.getAlarmId()+" with ["+_familyPattern.toString()+","+_memberPattern.toString()+", "+_code+"] retuned "+ret);
+		//System.out.println("\t\t\tMatch "+a.getAlarmId()+" with ["+_familyPattern.toString()+","+_memberPattern.toString()+", "+_code+"] retuned "+ret);
 		return ret;
+	}
+	
+	/**
+	 * Return the ID of the alarm. Note that this
+	 * ID could contains wildcards and regular expression.
+	 * <P>
+	 * Parent alarms in reduction rules do not contain regular
+	 * expression neither wildcards. 
+	 *  
+	 * @return The ID of the alarm
+	 */
+	public String getMatcherAlarmID() {
+		return matcherAlarmID;
 	}
 	
 	@Override
