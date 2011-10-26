@@ -206,7 +206,7 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 		it = receiverStreams_m.find(streamName);
 		if (it!=receiverStreams_m.end())
 		{
-			return it->second();
+			return it->second;
 		}
 	}//if
 	//here we come just in case of an error
