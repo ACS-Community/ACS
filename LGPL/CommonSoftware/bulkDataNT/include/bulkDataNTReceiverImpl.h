@@ -93,15 +93,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
 
     virtual void cleanUp();
 
-    // getReceiverForStrem or better getReceiverStream(name)
-    virtual AcsBulkdata::BulkDataNTReceiverStream<TCallback> * getReceiverStream(/*const char *stream name*/)
-	{
-    	// Implementation should change when IDL changes. It currently returns the first stream, whatever it is
-	    if( receiverStreams_m.size() == 0 )
-	    	return NULL;
-	    else
-	    	return receiverStreams_m.begin()->second;
-	}
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback> * getReceiverStream(const char *streamName);
 
     /**
      *  Opens connection creating an out-of-bound channel using TAO A/V services.

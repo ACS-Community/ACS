@@ -189,9 +189,29 @@ bulkdata::BulkDataReceiverConfig * BulkDataNTReceiverImpl<TCallback>::getReceive
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::setRecvName(const char *recvName)
 {
-	//TBD later when we will have more streams we have to loop all over them
-	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *recv = this->getReceiverStream();
-	if( recv != NULL )
-		recv->setReceiverName(recvName);
-}
+	ACS_TRACE("BulkDataNTReceiverImpl<>::setRecvName");
+
+	typename StreamMap::iterator it = receiverStreams_m.begin();
+	for(; it != receiverStreams_m.end(); it++)
+		(it->second)->setReceiverName(recvName);
+}//setRecvName
+
+template<class TCallback>
+AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::getReceiverStream(const char *streamName)
+{
+	// Implementation should change when IDL changes. It currently returns the first stream, whatever it is
+	if( receiverStreams_m.size() != 0 )
+	{
+		typename StreamMap::iterator it;
+		it = receiverStreams_m.find(streamName);
+		if (it!=receiverStreams_m.end())
+			return it->second();
+		else
+			return NULL; //TBD should be replaced with an exception
+	}
+	else
+	{
+		return NULL; //TBD should be replaced with an exception
+	}//if-else
+}//getReceiverStream
 
