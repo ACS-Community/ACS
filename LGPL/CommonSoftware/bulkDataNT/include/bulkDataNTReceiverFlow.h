@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.9 2011/10/26 10:26:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.10 2011/10/26 20:12:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -67,7 +67,10 @@ public:
 
 	void setReceiverName(char* recvName);
 
-	BulkDataCallback* getCallback() { return callback_m; }
+	BulkDataCallback* getCallbackObject() { return callback_m; }
+
+	template<class T>
+	T* getCallback() { dynamic_cast<T>(callback_m); }
 
 	//TBD:: setCB();
 protected:
