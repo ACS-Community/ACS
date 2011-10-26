@@ -205,13 +205,13 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 		typename StreamMap::iterator it;
 		it = receiverStreams_m.find(streamName);
 		if (it!=receiverStreams_m.end())
+		{
 			return it->second();
-		else
-			return NULL; //TBD should be replaced with an exception
-	}
-	else
-	{
-		return NULL; //TBD should be replaced with an exception
-	}//if-else
+		}
+	}//if
+	//here we come just in case of an error
+	StreamNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+	ex.setStreamName(streamName);
+	throw ex;
 }//getReceiverStream
 
