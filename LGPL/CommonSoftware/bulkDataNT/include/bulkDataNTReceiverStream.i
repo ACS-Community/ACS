@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.14 2011/08/23 15:09:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.15 2011/10/26 11:04:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -121,8 +121,6 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::getFlow(con
 	}
 	else
 	{
-		return 0;
-		//TBD exception or 0, or flag that indicates, or ...
 		FlowNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(streamName_m.c_str());
 		ex.setFlowName(flowName);
