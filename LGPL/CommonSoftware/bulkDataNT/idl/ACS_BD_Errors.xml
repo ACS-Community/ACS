@@ -7,6 +7,14 @@
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
+    <ErrorCode name="StreamAlreadyExists" shortDescription="Stream alread exists" description="">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
+    <ErrorCode name="StreamNotExist" shortDescription="Stream does not exist" description="">
+        <Member name="StreamName" type="string" description="Name of stream" />
+    </ErrorCode>
+    
     <ErrorCode name="FlowCreateProblem" shortDescription="Problem to create BD flow" description="">
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
