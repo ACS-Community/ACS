@@ -83,6 +83,7 @@ import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.CannotAddSubscriptionException;
 import alma.acs.nc.CannotStartReceivingEventsException;
+import alma.acs.nc.Consumer;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
 import alma.acs.nc.SubscriptionNotFoundException;
@@ -139,7 +140,10 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 */
 	private final String clientName;
 
-	/** Used to time the execution of receive methods */
+	/** 
+	 * Used to time the execution of receive methods 
+	 * @TODO HSO: Is it thread-safe to share a profiler?
+	 */
 	private final StopWatch profiler;
 
 	/** Provides access to the ACS logging system. */
@@ -921,8 +925,11 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * It is declared <code>final</code> because it is crucial for the functioning of the NC library
 	 * and thus cannot be overwritten by a subclass. 
 	 * If for special purposes a notification of raw event reception is needed, 
-	 * a subclass can implement {@link #push_structured_event_called()}, which gets called from this
-	 * method as the first thing it does.
+	 * a subclass can implement {@link #push_structured_event_called(StructuredEvent)}, which gets called from this
+	 * method as the first thing it does. 
+	 * <p>
+	 * @TODO: Add queue and worker thread for http://jira.alma.cl/browse/COMP-5767, 
+	 * see also changes done in {@link Consumer#push_structured_event(StructuredEvent)}.
 	 * 
 	 * @param structuredEvent
 	 *            The structured event sent by a supplier.
@@ -979,6 +986,12 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		}
 	}
 
+	/**
+	 * Users can override this method to get notified of raw events, for additional statistics etc.
+	 * Dealing with events in this method is only in addition to the normal processing of that event,
+	 * and should generally be avoided by simply not overriding this method. 
+	 * @param structuredEvent
+	 */
 	protected void push_structured_event_called(StructuredEvent structuredEvent) {
 		//System.out.println("********** got a call to push_structured_event **********");
 	}
