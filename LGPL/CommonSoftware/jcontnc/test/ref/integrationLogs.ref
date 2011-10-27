@@ -25,7 +25,6 @@
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
-1 - ----------T--:--:--.--- ERROR [IL_CONSUMERCOMP1] More events came in from the NC than the receiver processed. [ logName='LOG_NC_ReceiverTooSlow' ClientName='IL_CONSUMERCOMP1' NumEventsDiscarded='0' EventName='alma.acsnc.EventDescription' ChannelName='blarIL' Service='NotifyEventChannelFactory' LogOcurrencesNumber='1' ]
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
 1 - ----------T--:--:--.--- INFO [IL_SUPPLIERCOMP1] Channel:blarIL, Event Type:EventDescription
