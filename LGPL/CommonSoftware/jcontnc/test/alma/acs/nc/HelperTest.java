@@ -64,7 +64,7 @@ public class HelperTest extends ComponentClientTestCase
 		helper = new HelperWithChannelCreationSynch(getContainerServices());
 
 		nsmc = NotificationServiceMonitorControlHelper.narrow(
-				helper.getNamingService().resolve(new NameComponent[]{new NameComponent("TAO_MonitorAndControl", "")}));
+				helper.getNamingService().resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
 		assertNotNull(nsmc);
 	}
 
@@ -82,7 +82,7 @@ public class HelperTest extends ComponentClientTestCase
 //	}
 	
 	/**
-	 * @TODO: Check why we only get statistics about the alarm channel factory here!!
+	 * 
 	 */
 	public void testTaoMonitorAndControlService() throws Exception {
 		
@@ -93,11 +93,11 @@ public class HelperTest extends ComponentClientTestCase
 		}
 		m_logger.info("The following strings can be used as args to getStatistics: " + nsmcNamesMsg);
 		m_logger.info("EventChannelFactoryNames: " + getStatistic(EventChannelFactoryNames.value));
-		m_logger.info("ActiveEventChannelCount: " + getStatistic("AlarmNotifyEventChannelFactory/" + ActiveEventChannelCount.value));
-		m_logger.info("ActiveEventChannelNames: " + getStatistic("AlarmNotifyEventChannelFactory/" + ActiveEventChannelNames.value));
+		m_logger.info("ActiveEventChannelCount: " + getStatistic("NotifyEventChannelFactory/" + ActiveEventChannelCount.value));
+		m_logger.info("ActiveEventChannelNames: " + getStatistic("NotifyEventChannelFactory/" + ActiveEventChannelNames.value));
 		
-		Date t1 = getStatisticTime("AlarmNotifyEventChannelFactory/" + EventChannelCreationTime.value);
-		m_logger.info("AlarmNotifyEventChannelFactory/EventChannelCreationTime: " + IsoDateFormat.formatDate(t1));		
+		Date t1 = getStatisticTime("NotifyEventChannelFactory/" + EventChannelCreationTime.value);
+		m_logger.info("NotifyEventChannelFactory/EventChannelCreationTime: " + IsoDateFormat.formatDate(t1));		
 	}
 	
 	/**
