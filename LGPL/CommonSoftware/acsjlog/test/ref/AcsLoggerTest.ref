@@ -22,7 +22,7 @@
 1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
 1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
 1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testAntennaContextLog --------------
@@ -44,7 +44,7 @@
 1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
 1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
 1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testAntennaContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="7" Array="Array01" Antenna="Antenna01"><![CDATA[Log exception with array and antenna]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
 1 - 	at alma.acs.logging.AcsLoggerTest.testAntennaContextLog(AcsLoggerTest.java:48)
@@ -62,7 +62,7 @@
 1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
 1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
 1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testArrayContextLog --------------
@@ -84,7 +84,7 @@
 1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
 1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
 1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
 1 - ]]></Data></Warning>
 1 - <Warning TimeStamp="xxx" File="alma.acs.logging.AcsLoggerTest"  Line="xxx" Routine="testArrayContextLog" Host="xxx" Process="alma.acs.logging.AcsLoggerTest" SourceObject="alma.acs.logging.AcsLoggerTest" Thread="main" StackId="unknown" StackLevel="0" LogId="11" Array="Array01"><![CDATA[Log exception with array]]><Data Name="LoggedException"><![CDATA[java.lang.Exception: My dummy exception
 1 - 	at alma.acs.logging.AcsLoggerTest.testArrayContextLog(AcsLoggerTest.java:59)
@@ -102,7 +102,7 @@
 1 - 	at junit.framework.TestSuite.run(TestSuite.java:238)
 1 - 	at junit.textui.TestRunner.doRun(TestRunner.java:116)
 1 - 	at junit.textui.TestRunner.start(TestRunner.java:180)
-1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:41)
+1 - 	at alma.acs.testsupport.tat.NoDotJUnitRunner.main(NoDotJUnitRunner.java:61)
 1 - ]]></Data></Warning>
 1 - 
 1 - ------------ testWrapJdkLogger --------------
