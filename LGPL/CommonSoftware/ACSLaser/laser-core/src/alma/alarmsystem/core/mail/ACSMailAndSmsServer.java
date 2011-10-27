@@ -75,11 +75,11 @@ public class ACSMailAndSmsServer extends MailAndSmsServerImpl {
 			props.put("mail.smtp.host", "smtp.alma.cl");
 		}
 		if (!props.containsKey("mail.from")) {
-			props.put("mail.from", "acaproni@alma.cl");
+			props.put("mail.from", "software@alma.cl");
 		}
 	    session = Session.getInstance(props, null);
 	}
-	
+
 	/**
 	 * Send and email.
 	 * 
