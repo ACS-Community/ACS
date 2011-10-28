@@ -1,16 +1,33 @@
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControl;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlHelper;
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
@@ -38,7 +55,6 @@ import Monitor.Data;
 import Monitor.Numeric;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
-import alma.acs.component.client.ComponentClient;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
@@ -56,7 +72,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.28 2011/10/21 16:12:38 jschwarz Exp $
+ * $Id: EventModel.java,v 1.29 2011/10/28 11:56:21 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -139,8 +155,10 @@ public class EventModel {
 		}
 		AcsLogger logger = ClientLogManager.getAcsLogManager().getLoggerForApplication(eventGuiId, false);
 		ClientLogManager.getAcsLogManager().suppressRemoteLogging();
+
 		acc = null;
 		try {
+
 			acc = new AdvancedComponentClient(m_logger, connectionString, eventGuiId) {
               @Override
                protected void initAlarmSystem() {
@@ -149,16 +167,15 @@ public class EventModel {
 };
 		} catch (Exception e) {
 			if (PlatformUI.isWorkbenchRunning()) {
-			MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
-					"ACS instance used: "+acsInstance+"; Looked for manager on host: "+managerHost,
-			MessageDialog.ERROR, new String[]{"OK"}, 0);
-			dialog.open();
-			IStatus status = new Status(IStatus.ERROR, eventGuiId,0, "Couldn't create component client", e);
-			Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
+				MessageDialog dialog = new MessageDialog(null,"Can't create client",null,"The eventGUI client cannot be created. You might want to check the ACS host and instance.\n"+
+						"ACS instance used: "+acsInstance+"; Looked for manager on host: "+managerHost,
+						MessageDialog.ERROR, new String[]{"OK"}, 0);
+				dialog.open();
+				IStatus status = new Status(IStatus.ERROR, eventGuiId,0, "Couldn't create component client", e);
+				Platform.getLog(Platform.getBundle(eventGuiId)).log(status);
 			}
 			else {
-				System.out.println("Can't create advanced component client.");
-				e.printStackTrace();
+				m_logger.log(Level.SEVERE,"Can't create advanced component client.",e);
 			}
 			throw(e);
 		}
@@ -169,20 +186,24 @@ public class EventModel {
 	 * This routine returns an array of NotificationServiceMonitorControl objects (provided by the
 	 * ACE/TAO Monitoring extensions) by resolving the IORs for these objects that are stored in
 	 * the $ACS_TMP/ACS_INSTANCE.x/iors/ directory. 
-	 * @throws NotFound
+	 * @throws org.omg.CosNaming.NamingContextPackage.InvalidName 
 	 * @throws CannotProceed
 	 * @throws InvalidName
 	 */
-	private NotificationServiceMonitorControl[] getMonitorControl() throws NotFound, CannotProceed,
-			org.omg.CosNaming.NamingContextPackage.InvalidName {
+	private NotificationServiceMonitorControl[] getMonitorControl() throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName  {
 		
 		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[efactNames.size()];
 		NameComponent[] ncomp = new NameComponent[1];
 		for (int i = 0; i < notifyBindingNames.size(); i++) {
 			String name = "MC_"+notifyBindingNames.get(i);
 			ncomp[0] = new NameComponent(name,"");
-			//nctx.resolve(ncomp);
-			nsmc[i] = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
+
+			try {
+				nsmc[i] = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
+			} catch (NotFound e) {
+				m_logger.info("Can't find an Monitor & Control instance corresponding to: "+notifyBindingNames.get(i));
+				nsmc[i] = null;
+			} 
 		}
 //		final String[] MC_IORS = {"NotifyMCIOR" }; // TODO: Dynamically get and parse these things
 //		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
@@ -291,7 +312,7 @@ public class EventModel {
 			if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
 
 			String id = binding.binding_name[0].id;
-			System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+			//System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
 			org.omg.CORBA.Object obj = null;
 			try {
 				obj = mproxy.get_service(id, false);
@@ -312,7 +333,7 @@ public class EventModel {
 			} 
 		}
 
-		System.out.println("efacts.size = "+efacts.size());
+		m_logger.info("Number of notify service instances found = "+efacts.size());
 	}
 	
 	public ArrayList<ChannelData> getChannelStatistics() {
@@ -371,7 +392,7 @@ public class EventModel {
 
 			}
 			try {
-				printMonitoringResults(nsmc);
+				if (false) printMonitoringResults(nsmc); // Disabled for check-in to CVS
 			} catch (InvalidName e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -472,7 +493,7 @@ public class EventModel {
 			String serviceKind = alma.acscommon.NC_KIND.value;
 			if (binding.binding_name[0].kind.equals(serviceKind)) {
 				String channelName = binding.binding_name[0].id;
-				System.out.println("Channel: "+channelName);
+				//System.out.println("Channel: "+channelName);
 				EventChannel ec;
 				try {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
@@ -513,12 +534,13 @@ public class EventModel {
 	
 	private void printMonitoringResults(NotificationServiceMonitorControl[] mc) throws InvalidName { // /alma/ACS-9.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
 		for (int i = 0; i < mc.length; i++) {
+			if (mc[i] == null) continue;
 			String[] names = mc[i].get_statistic_names();
 			for (int j = 0; j < names.length; j++) {
 				m_logger.info("NC Statistic name[" + j + "] : " + names[j]);
-				if (true) continue;
+//				if (true) continue;
 				if (!names[j].contains("/"))  // the max index can be zero!!!
-					break;
+					continue;
 				String channel = names[j].split("/")[1];
 				Data stats = mc[i].get_statistic(names[j]);
 
@@ -533,11 +555,11 @@ public class EventModel {
 					System.out.println("QueueElementCount for "+channel);
 					Numeric numbers = stats.data_union.num();
 					System.out.println("\tCount " + numbers.count);
-					System.out.println("\tAverage " + numbers.average);
-					System.out.println("\tSum of squares " + numbers.sum_of_squares);
-					System.out.println("\tMinimum " + numbers.minimum);
-					System.out.println("\tMaximum " + numbers.maximum);
-					System.out.println("\tLast " + numbers.last);
+//					System.out.println("\tAverage " + numbers.average);
+//					System.out.println("\tSum of squares " + numbers.sum_of_squares);
+//					System.out.println("\tMinimum " + numbers.minimum);
+//					System.out.println("\tMaximum " + numbers.maximum);
+					System.out.println("\tCurrent number of messages in queue: " + numbers.last);
 				}
 
 			}
