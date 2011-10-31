@@ -22,28 +22,20 @@
 package alma.COUNTER.CounterTestImpl;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import si.ijs.maci.LoggingConfigurable;
-
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.acs.component.client.ComponentClientTestCase;
-import alma.acs.logging.engine.LogReceiver;
-import alma.acs.logging.level.AcsLogLevelDefinition;
 import alma.COUNTER.CounterConsumer;
 import alma.COUNTER.CounterSupplier;
+import alma.acs.component.client.ComponentClientTestCase;
 
 /**
  * Requires Java component "CONSUMER_JAVA" of type <code>alma.COUNTER.CounterConsumer</code> to be running.

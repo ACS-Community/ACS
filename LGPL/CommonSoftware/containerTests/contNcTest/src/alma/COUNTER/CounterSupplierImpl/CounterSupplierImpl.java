@@ -25,19 +25,16 @@ package alma.COUNTER.CounterSupplierImpl;
 
 import java.util.logging.Logger;
 
+import alma.ACS.ComponentStates;
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.COUNTER.CounterSupplierOperations;
+import alma.COUNTER.OnOffStates;
+import alma.COUNTER.statusBlockEvent;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.acs.nc.Consumer;
 import alma.acs.nc.SimpleSupplier;
-import alma.ACS.ComponentStates;
-import alma.ACSErrTypeCommon.CouldntPerformActionEx;
-import alma.ACSErrTypeCommon.IllegalArgumentEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.COUNTER.CounterSupplierOperations;
-import alma.COUNTER.statusBlockEvent;
-import alma.COUNTER.OnOffStates;
 
 /** 
  * CounterSupplier is a simple class that creates the "counter" notification channel,
