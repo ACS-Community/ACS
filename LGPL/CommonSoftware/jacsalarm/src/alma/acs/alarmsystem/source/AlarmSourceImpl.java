@@ -96,11 +96,10 @@ public class AlarmSourceImpl implements AlarmSource {
 
 		@Override
 		public void run() {
-			if (shouldTerminate || alarmsToClean.isEmpty()) {
-				return;
-			}
-			Set<String> keys= alarmsToClean.keySet();
-			for (String key: keys) {
+			for (String key : alarmsToClean.keySet()) {
+				if (shouldTerminate) {
+					return;
+				}
 				Long timestamp=alarmsToClean.get(key);
 				if (timestamp==null) {
 					// The entry has been removed by another task
@@ -380,11 +379,17 @@ public class AlarmSourceImpl implements AlarmSource {
 		enabled=false;
 		scheduledExecutor.shutdownNow();
 		alarmsToClean.clear();
+		
+		boolean oscillationLoopShutdownOK;
 		try {
-			oscillationLoop.shutdown(2, TimeUnit.SECONDS);
+			oscillationLoopShutdownOK = oscillationLoop.shutdown(2, TimeUnit.SECONDS);
 		} catch (InterruptedException ie) {
-			System.err.println("Error shutting down the oscillation timer task");
+			oscillationLoopShutdownOK = false;
 		}
+		if (!oscillationLoopShutdownOK) {
+			System.err.println("Error shutting down the oscillation timer task with a 2 s timeout.");
+		}
+		
 		alarmSender.close();
 		alarms.shutdown();
 		queue.clear();
