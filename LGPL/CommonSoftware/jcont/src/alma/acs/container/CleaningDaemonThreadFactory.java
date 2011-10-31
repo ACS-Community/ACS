@@ -21,12 +21,15 @@
  */
 package alma.acs.container;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import alma.acs.logging.AcsLogLevel;
 
 /**
  * Thread factory that remembers all threads it creates.
@@ -42,6 +45,17 @@ import java.util.logging.Logger;
  */
 public class CleaningDaemonThreadFactory implements ThreadFactory
 {
+	/**
+	 * If this property is set to <code>true</code>, the creators of new threads will be identified through a INFO log showing the calling stack trace, 
+	 * which helps for example in finding out who created a thread but later fails to clean it up 
+	 * (see logs "Forcibly terminating surviving thread ...").
+	 */
+	public static final String LOG_THREAD_CREATION_CALLSTACK_PROPERTYNAME = "alma.acs.threadfactory.trace_creators";
+	
+	/**
+	 * Cache for value of {@link #LOG_THREAD_CREATION_CALLSTACK_PROPERTYNAME}.
+	 */
+	protected boolean logThreadCreationCallstack = Boolean.getBoolean(LOG_THREAD_CREATION_CALLSTACK_PROPERTYNAME);
 	/**
 	 * We keep track of our threads also outside of the thread group.
 	 */
@@ -101,6 +115,22 @@ public class CleaningDaemonThreadFactory implements ThreadFactory
 		}
 		synchronized (threadList) {
 			threadList.add(t);
+		}
+		if (logThreadCreationCallstack) {
+			try {
+				throw new Exception();
+			} catch (Exception ex) {
+				StackTraceElement[] stack = ex.getStackTrace();
+				StringBuilder str = new StringBuilder();
+				for (int i = 1; i < stack.length; i++) { // skip 0-th element which represents this class itself
+					str.append(stack[i].toString());
+					if (i < stack.length - 1) {
+						str.append(" <- ");
+					}
+				}
+				String msg = "Created thread '" + threadName + "'. Call stack: " + str;
+				logger.log(AcsLogLevel.INFO, msg);
+			}
 		}
 		return t;
 	}

@@ -159,38 +159,56 @@ public class CleaningThreadFactoryTest extends TestCase {
 			assertEquals("Forcibly terminating surviving thread " + factoryName + "-3", logs[2].getMessage());
 		}
 	}
-    
-    /**
-     * Verifies that a warning is logged when a user thread throws an otherwise uncaught exception.
-     */
-    public void testUserThreadException() {
-        String factoryName = "StupidUserApplication";
-        CleaningDaemonThreadFactory threadFactory = new CleaningDaemonThreadFactory(factoryName, logger);
 
-        final String exMsg = "intended NPE from test application thread.";
-        Runnable errorCmd = new Runnable() {
-            public void run() {
-                sleep(500);
-                logger.info("Stupid user thread will now throw a NPE...");
-                throw new NullPointerException(exMsg);
-            }            
-        };
-        Thread t = threadFactory.newThread(errorCmd);
-        logger.clearLogRecords();
-        t.start();
-        sleep(2000);
-        
-        // verify that a warning was logged for the user thread exception
-        LogRecord[] logs = logger.getCollectedLogRecords();
-        assertEquals(2, logs.length);
-        LogRecord userExLogRecord = logs[1];
-        assertEquals(Level.WARNING, userExLogRecord.getLevel());
-        assertEquals("User thread '" + factoryName + "-1' terminated with error ", userExLogRecord.getMessage());
-        assertNotNull(userExLogRecord.getThrown());
-        assertEquals(exMsg, userExLogRecord.getThrown().getMessage());
-    }
-    
-    
+	/**
+	 * Verifies that a warning is logged when a user thread throws an otherwise uncaught exception.
+	 */
+	public void testUserThreadException() {
+		String factoryName = "StupidUserApplication";
+		CleaningDaemonThreadFactory threadFactory = new CleaningDaemonThreadFactory(factoryName, logger);
+
+		final String exMsg = "intended NPE from test application thread.";
+		Runnable errorCmd = new Runnable() {
+			public void run() {
+				sleep(500);
+				logger.info("Stupid user thread will now throw a NPE...");
+				throw new NullPointerException(exMsg);
+			}
+		};
+		Thread t = threadFactory.newThread(errorCmd);
+		logger.clearLogRecords();
+		t.start();
+		sleep(2000);
+
+		// verify that a warning was logged for the user thread exception
+		LogRecord[] logs = logger.getCollectedLogRecords();
+		assertEquals(2, logs.length);
+		LogRecord userExLogRecord = logs[1];
+		assertEquals(Level.WARNING, userExLogRecord.getLevel());
+		assertEquals("User thread '" + factoryName + "-1' terminated with error ", userExLogRecord.getMessage());
+		assertNotNull(userExLogRecord.getThrown());
+		assertEquals(exMsg, userExLogRecord.getThrown().getMessage());
+	}
+
+	public void testThreadStackDebugMessages() {
+		LogRecordCollectingLogger collectingLogger = LogRecordCollectingLogger.getCollectingLogger("testThreadStackDebugMessages_CollectingLogger");
+		System.setProperty(CleaningDaemonThreadFactory.LOG_THREAD_CREATION_CALLSTACK_PROPERTYNAME, "true");
+		CleaningDaemonThreadFactory tf = new CleaningDaemonThreadFactory("factoryWithStackTrace", collectingLogger);
+
+		Runnable dummyRunnable = new Runnable() {
+			public void run() {
+			}
+		};
+		tf.newThread(dummyRunnable);
+		
+		LogRecord[] records = collectingLogger.getCollectedLogRecords();
+		assertEquals(1, records.length);
+		assertTrue(records[0].getMessage().startsWith("Created thread 'factoryWithStackTrace-1'. Call stack: alma.acs.container.CleaningThreadFactoryTest.testThreadStackDebugMessages(CleaningThreadFactoryTest.java:202) <- "));
+		
+		System.setProperty(CleaningDaemonThreadFactory.LOG_THREAD_CREATION_CALLSTACK_PROPERTYNAME, "false");
+	}
+	
+	
 	private void sleep(int millis) {
 		try {
 			Thread.sleep(millis);
