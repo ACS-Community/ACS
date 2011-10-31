@@ -22,7 +22,6 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acstime.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/EventComponent.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsexmplFridge.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsASsources.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lc.jar"/>
@@ -40,13 +39,12 @@
 	<classpathentry kind="var" path="ACSROOT/lib/repeatGuard.jar"/>
 	<classpathentry kind="lib" path="lib/adminTest1.jar"/>
 	<classpathentry kind="lib" path="lib/adminTest2.jar"/>
-	<classpathentry kind="lib" path="lib/adminTest3.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/Monitor_Types.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/lcEngine.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/logging_idl.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsErrTypeAlarmSourceFactory.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsncSchemaBindings.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/logkit.jar"/>
-	<classpathentry kind="var" path="ACSROOT/lib/acsCallbacksSupport.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ACS_acsContainerServices"/>
+	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
