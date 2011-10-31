@@ -19,5 +19,8 @@
 	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
+	<classpathentry kind="var" path="JACORB_HOME/lib/jacorb.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acscommon.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/acserr.jar"/>
 	<classpathentry kind="output" path="object/eclipseOut"/>
 </classpath>
