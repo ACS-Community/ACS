@@ -895,7 +895,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		try {
 			// do better than NPE if someone actually calls this twice
 			if (m_proxySupplier == null) {
-				throw new IllegalStateException("Consumer already disconnected");
+				throw new IllegalStateException("Consumer already disconnected.");
 			}
 			// stop receiving events
 			suspend();
@@ -913,7 +913,13 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 			// shut down the event queue
 			eventHandlingExecutor.shutdown();
-			eventHandlingExecutor.awaitTermination(2, TimeUnit.SECONDS);
+			boolean queueOK = eventHandlingExecutor.awaitTermination(2, TimeUnit.SECONDS);
+			if (!queueOK) {
+				// timeout occured, may still have events in the queue. Terminate with error message
+				int remainingEvents = eventHandlingExecutor.getQueue().size();
+				m_logger.info("Disconnecting from NC '" + m_channelName + "' before all events have been processed, in spite of 2 s timeout grace period. " +
+						remainingEvents+ " events are still in the queue and may continue to be processed by the receiver.");
+			}
 			
 			// clean-up CORBA stuff
 			m_callback.disconnect();
