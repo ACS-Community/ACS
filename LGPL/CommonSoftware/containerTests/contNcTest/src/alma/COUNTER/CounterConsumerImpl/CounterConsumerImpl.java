@@ -25,18 +25,18 @@ package alma.COUNTER.CounterConsumerImpl;
 
 import java.util.logging.Logger;
 
+import alma.ACS.ComponentStates;
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.COUNTER.CounterConsumerOperations;
+import alma.COUNTER.OnOffStates;
+import alma.COUNTER.statusBlockEvent;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
-import alma.acs.logging.AcsLogLevel;
-import alma.ACSErrTypeCommon.CouldntPerformActionEx;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.acs.nc.Consumer;
-import alma.ACS.ComponentStates;
-import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
-import alma.COUNTER.CounterConsumerOperations;
-import alma.COUNTER.statusBlockEvent;
-import alma.COUNTER.OnOffStates;
+import alma.acs.util.StopWatch;
+import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
 /** 
  * CounterConsumer is a simple class that connects to the "counter"
@@ -50,50 +50,67 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 
 	private ContainerServices m_containerServices;
 	private Logger m_logger;
-	private Consumer m_consumer = null;
+	private volatile Consumer m_consumer = null;
    /** 
      * Total number of events that have been consumed.
      */    
-    int eventCount = 0;
+	private volatile int eventCount = 0;
     volatile boolean contFlag = true;
 
 	/////////////////////////////////////////////////////////////
 	// Implementation of ComponentLifecycle
 	/////////////////////////////////////////////////////////////
-
+	@Override
     public void initialize(ContainerServices containerServices) throws ComponentLifecycleException
     {
     	m_containerServices = containerServices;
     	m_logger = m_containerServices.getLogger();
     	m_logger.info("initialize() called...");
-
 	}
 
+	@Override
 	public void execute() {
 		m_logger.info("execute() called...");
 	}
 
-	public void cleanUp() {
-		if (contFlag && m_consumer != null) {
+	@Override
+	public void cleanUp() throws AcsJComponentCleanUpEx {
+		if (m_consumer != null) {
 			m_logger.info("cleanUp() called, disconnecting from channel " + alma.COUNTER.CHANNELNAME_COUNTER.value);
-			m_consumer.disconnect();
+			StopWatch sw = new StopWatch();
+			try {
+				m_consumer.disconnect();
+				m_consumer = null;
+			} catch (Exception ex) {
+				// could be IllegalStateException if the consumer is already disconnected.
+				throw new AcsJComponentCleanUpEx(ex);
+			}
+			long disconnectTimeMillis = sw.getLapTimeMillis();
+			if (disconnectTimeMillis > 600) {
+				m_logger.info("Suspiciously slow NC disconnect in " + disconnectTimeMillis + " ms.");
+			}
 		}
 		else {
 			m_logger.info("cleanUp() called..., nothing to clean up.");
 		}
 	}
 
+	@Override
 	public void aboutToAbort() {
-		cleanUp();
+		try {
+			cleanUp();
+		} catch (AcsJComponentCleanUpEx ex) {
+			ex.printStackTrace();
+		}
 	//	m_logger.info("managed to abort...");
 		System.out.println("CounterConsumer component managed to abort... you should know this even if the logger did not flush correctly!");
 	}
+	
+	
     ////////////////////////////////////////////////////////////////////////////
     /** 
-     * <code>receive</code> <B>must</B> be overriden in Consumer subclasses to
-     * do something useful.
-     * 
-     */    
+     * NC receiver method.
+     */
     public void receive(statusBlockEvent someParam) {
     	// Know how many events this instance has received.
     	eventCount++;
@@ -114,9 +131,8 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
     		else {	
     			m_logger.info(myString + " received, counter is now " + counter1);
     			System.out.println(myString + " received, counter is now " + counter1);
+    			// allow waitTillDone() to return so that this component can be released by the client.
     			contFlag = false;
-            	//now disconnect from channel everything
-            	m_consumer.disconnect();
     		}	
     	} 
     }
@@ -125,9 +141,11 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	// Implementation of ACSComponent
 	/////////////////////////////////////////////////////////////
 	
+	@Override
 	public ComponentStates componentState() {
 		return m_containerServices.getComponentStateManager().getCurrentState();
 	}
+	@Override
 	public String name() {
 		return m_containerServices.getName();
 	}
@@ -139,6 +157,7 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	 * @throws CouldntPerformActionEx 
 	 * @see alma.COUNTER.CounterConsumerOperations#getBlocks()
 	 */
+	@Override
 	public void getBlocks() throws CouldntPerformActionEx {
     	try
     	{
@@ -155,7 +174,7 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
      	}
     	catch (Exception e)
     	{
-    		if (m_consumer != null) {				
+    		if (m_consumer != null) {
     			m_consumer.disconnect();
     		}
 			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx();
@@ -170,6 +189,7 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 	 * @throws CouldntPerformActionEx 
 	 * @see alma.COUNTER.CounterConsumerOperations#waitTillDone()
 	 */
+	@Override
 	public int waitTillDone() throws CouldntPerformActionEx {
 		if (m_consumer == null) {
 			AcsJCouldntPerformActionEx ex = new AcsJCouldntPerformActionEx();
@@ -178,7 +198,7 @@ public class CounterConsumerImpl implements ComponentLifecycle, CounterConsumerO
 		}
 		while (contFlag) {
 			try {
-	    		m_logger.info("CounterConsumer received " + eventCount + " blocks so far ...");
+	    		m_logger.info("CounterConsumer received " + eventCount + " blocks so far ... will sleep 1000 ms more.");
 				Thread.sleep(1000);
 			}
 	    	catch (Exception e) {
