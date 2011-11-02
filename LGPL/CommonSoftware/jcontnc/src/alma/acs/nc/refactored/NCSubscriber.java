@@ -19,13 +19,11 @@
 
 package alma.acs.nc.refactored;
 
-import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
-import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
@@ -56,6 +54,11 @@ import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 import org.omg.CosNotifyFilter.FilterNotFound;
 
+import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
@@ -67,6 +70,7 @@ import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_NoHandler;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_OK;
 import alma.AcsNCTraceLog.LOG_NC_ProcessingTimeExceeded;
+import alma.AcsNCTraceLog.LOG_NC_ReceiverTooSlow;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_FAIL;
 import alma.AcsNCTraceLog.LOG_NC_SubscriptionConnect_OK;
 import alma.AcsNCTraceLog.LOG_NC_SupplierProxyCreation_FAIL;
@@ -77,6 +81,7 @@ import alma.acs.container.ContainerServicesBase;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.logging.MultipleRepeatGuard;
+import alma.acs.logging.RepeatGuard;
 import alma.acs.logging.RepeatGuard.Logic;
 import alma.acs.nc.AcsEventSubscriber;
 import alma.acs.nc.AcsNcReconnectionCallback;
@@ -97,7 +102,7 @@ import alma.acsnc.OSPushConsumerPOA;
 
 /**
  * NCSubscriber is the Java implementation of the Notification Channel subscriber,
- * while following the {@link AcsEventSubscriber} interface.
+ * while following the more generic {@link AcsEventSubscriber} interface.
  * <p>
  * This class is used to receive events asynchronously from notification channel suppliers. 
  * It is the replacement of {@link alma.acs.nc.Consumer}, and to keep things simple it no longer
@@ -117,10 +122,11 @@ import alma.acsnc.OSPushConsumerPOA;
  *       and/or for all events ({@link #addGenericSubscription(alma.acs.nc.AcsEventSubscriber.GenericCallback)}) can be registered.
  *   <li>Once {@link #startReceivingEvents()} is called, Corba NCs push events to this class, which delegates 
  *       the events to the registered handlers.
- *   <li>The connection can then be suspended or resumed
+ *   <li>The connection can then be suspended or resumed.
  * </ul> 
- * The NCSubscriber is intended to be created (and cleaned up if needed) through the container services, 
- * for which we still need some refactoring. At the moment it is still under development and not used in operational code.
+ * The NCSubscriber will be created (and cleaned up if needed) through the container services, 
+ * At the moment it is still under development and not used in operational code, 
+ * see the currently deprecated method {@link alma.acs.container.ContainerServicesImpl#createNotificationChannelSubscriber(String, String)}.
  * 
  * @author jslopez, hsommer, rtobar
  */
@@ -191,9 +197,42 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	/** Helper class used to manipulate CORBA anys. */
 	protected AnyAide anyAide;
 
-	/** Whether sending of events should be logged. */
+	/** Whether receiving events should be logged. */
 	private final boolean isTraceNCEventsEnabled;
 
+	/**
+	 * Event queue should hold at least two events to avoid unnecessary scary logs about slow receivers,
+	 * but must be short enough to get receivers to actually implement their own queue and discard mechanism
+	 * instead of relying on this ACS queue which may buffer events for a limited time and thus obscure the problem.
+	 * @see #eventHandlingExecutor
+	 */
+	public static final int EVENT_QUEUE_CAPACITY = 50;
+	
+	/**
+	 * Single-thread executor with a small queue (size given in {@link #EVENT_QUEUE_CAPACITY}, 
+	 * used to stay responsive toward the NC even if receivers are slow. 
+	 * The purpose is only to track down receivers that don't keep up with the event rate, and not to provide reliable event buffering, 
+	 * see http://jira.alma.cl/browse/COMP-5767.
+	 * <p>
+	 * Errors are logged using type-safe {@link LOG_NC_ReceiverTooSlow}, using also fields {@link #numEventsDiscarded} and {@link #receiverTooSlowLogRepeatGuard}.
+	 * <p>
+	 * The difference of this mechanism compared to the logs controlled by {@link #processTimeLogRepeatGuard} is that
+	 * here we take into account the actual event rate and check whether the receiver can handle it, 
+	 * whereas {@link #processTimeLogRepeatGuard} logs only compare the actual process times against pre-configured values.
+	 */
+	private final ThreadPoolExecutor eventHandlingExecutor;
+
+	/**
+	 * @see #eventHandlingExecutor
+	 */
+	private long numEventsDiscarded;
+
+	/**
+	 * Throttles {@link LOG_NC_ReceiverTooSlow} logs, see {@link #eventHandlingExecutor}.
+	 */
+	private final RepeatGuard receiverTooSlowLogRepeatGuard;
+
+	
 	/**
 	 * Maps event names to the maximum amount of time allowed for receiver
 	 * methods to complete. Time is given in floating point seconds.
@@ -308,7 +347,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		// get the proxy Supplier
 		proxySupplier = createProxySupplier();
 
-		// Just check if our shared consumer admin is handling more proxies that it should, and log it
+		// Just check if our shared consumer admin is handling more proxies than it should, and log it
 		// (11) goes for the dummy proxy that we're using the transition between old and new NC classes
 		int currentProxies = sharedConsumerAdmin.push_suppliers().length - 1;
 		if( currentProxies > PROXIES_PER_ADMIN )
@@ -325,6 +364,13 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		// @TODO Set more realistic guarding parameters, e.g. max 1 identical log in 10 seconds
 		processTimeLogRepeatGuard = new MultipleRepeatGuard(0, TimeUnit.SECONDS, 1, Logic.COUNTER, 100);
 
+		// log slow receiver error only every 30 seconds or every 100 times, whatever comes first
+		receiverTooSlowLogRepeatGuard = new RepeatGuard(30, TimeUnit.SECONDS, 100, Logic.OR);
+		
+		eventHandlingExecutor = new ThreadPoolExecutor(0, 1, 1L, TimeUnit.MINUTES,
+				new ArrayBlockingQueue<Runnable>(EVENT_QUEUE_CAPACITY), services.getThreadFactory(), new ThreadPoolExecutor.AbortPolicy() );
+		
+
 		// if the factory is null, the reconnection callback is not registered
 		channelReconnectionCallback = new AcsNcReconnectionCallback(this);
 		channelReconnectionCallback.init(services, helper.getNotifyFactory());
@@ -335,7 +381,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * 
 	 * @throws AcsJException
 	 */
-	private ConsumerAdmin getSharedAdmin() throws AcsJCORBAProblemEx, AcsJCORBAReferenceNilEx, AcsJNarrowFailedEx {
+	private ConsumerAdmin getSharedAdmin() throws AcsJCORBAProblemEx, AcsJNarrowFailedEx {
 		
 		ConsumerAdmin ret = null;
 		org.omg.CosNotifyChannelAdmin.ConsumerAdmin retBase = null;
@@ -741,7 +787,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	public void disconnect() throws IllegalStateException {
 
 		/*
-		 * TODO: (rtobar) Maybe this code can be wrote more nicely,
+		 * TODO: (rtobar) Maybe this code can be written more nicely,
 		 *  but always taking care that, if not in an illegal state,
 		 *  then we should destroy the remove proxySupplier object
 		 */
@@ -759,13 +805,30 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			// remove all filters and destroy the proxy supplier
 			proxySupplier.remove_all_filters();
 
+			// Shut down the event queue.
+			// Queued events may still be processed by the receivers afterwards, but here we wait for up to 500 ms 
+			// to log it if it is the case.
+			eventHandlingExecutor.shutdown();
+			boolean queueOK = false;
+			try {
+				queueOK = eventHandlingExecutor.awaitTermination(500, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException ex) {
+				// just leave queueOK == false
+			}
+			if (!queueOK) {
+				// timeout occurred, may still have events in the queue. Terminate with error message
+				int remainingEvents = eventHandlingExecutor.getQueue().size();
+				logger.info("Disconnecting from NC '" + channelName + "' before all events have been processed, in spite of 500 ms timeout grace period. " +
+						remainingEvents+ " events are now still in the queue and may continue to be processed by the receiver.");
+			}
+
 			try{
 				// clean-up CORBA stuff
 				if (corbaRef != null) { // this check avoids ugly "offshoot was not activated" messages in certain scenarios
 					helper.getContainerServices().deactivateOffShoot(this);
 				}
 			} catch (AcsJContainerServicesEx e) {
-				e.printStackTrace();
+				logger.log(Level.INFO, "Failed to Corba-deactivate NCSubscriber " + clientName, e);
 			}
 
 			logger.finer("Disconnected from NC '" + channelName + "'.");
@@ -794,7 +857,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 				sharedConsumerAdmin = null;
 				channel = null;
 			}
-
+			
 			disconnectLock.unlock();
 		}
 	}
@@ -927,10 +990,6 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * If for special purposes a notification of raw event reception is needed, 
 	 * a subclass can implement {@link #push_structured_event_called(StructuredEvent)}, which gets called from this
 	 * method as the first thing it does. 
-	 * <p>
-	 * @TODO: Add queue and worker thread for http://jira.alma.cl/browse/COMP-5767, 
-	 * see also changes done in {@link Consumer#push_structured_event(StructuredEvent)}.
-	 * 
 	 * @param structuredEvent
 	 *            The structured event sent by a supplier.
 	 * @throws Disconnected If this subscriber is disconnected from the NC.
@@ -952,7 +1011,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			throw new Disconnected();
 		}
 
-		EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
+		final EventDescription eDescrip = EventDescriptionHelper.extract(structuredEvent.remainder_of_body);
 
 		Object convertedAny = anyAide.complexAnyToObject(structuredEvent.filterable_data[0].value);
 
@@ -981,8 +1040,33 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 						structuredEvent.header.fixed_header.event_type.type_name);
 			}
 
-			// process the extracted data
-			processEvent(struct, eDescrip);
+			// process the extracted data in a separate thread
+			final IDLEntity structToProcess = struct;
+			
+			// to avoid unnecessary scary logs, we tolerate previous events up to half the queue size
+			boolean isReceiverBusyWithPreviousEvent = ( eventHandlingExecutor.getQueue().size() > EVENT_QUEUE_CAPACITY / 2 );
+			
+//			logger.info("Queue size: " + eventHandlingExecutor.getQueue().size());
+			
+			boolean thisEventDiscarded = false;
+			try {
+				eventHandlingExecutor.execute(
+						new Runnable() {
+							public void run() {
+								// here we call processEvent from the worker thread
+								processEvent(structToProcess, eDescrip);
+							}
+						});
+			} catch (RejectedExecutionException ex) {
+				// receivers have been too slow, queue is full, will drop data.
+				thisEventDiscarded = true;
+				numEventsDiscarded++;
+			}
+			if ( (thisEventDiscarded || isReceiverBusyWithPreviousEvent) && receiverTooSlowLogRepeatGuard.checkAndIncrement()) {
+				LOG_NC_ReceiverTooSlow.log(logger, clientName, numEventsDiscarded, struct.getClass().getName(), channelName,
+						getNotificationFactoryName(), receiverTooSlowLogRepeatGuard.counterAtLastExecution());
+				numEventsDiscarded = 0;
+			}
 		}
 	}
 
