@@ -1,0 +1,403 @@
+1 - ----------T--:--:--.--- INFO [acsStartContainer] Running the container with these arguments: 'maciContainer newConfigRecvContainer -ORBEndpoint iiop://xxx.xxx.xxx.xxx:4000 -m corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - Starting Container...
+1 - Retrieving CDB reference from Manager using bootstrap ORB
+1 - Bootstrap ORB parms: maciContainer newConfigRecvContainer -m corbaloc::xxx.xxx.xxx.xxx:3000/Manager
+1 - 
+1 - ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - 
+1 - Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - Manager reference narrowed.
+1 - Failed to retrieve CDB referece.
+1 - DALReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:3012/CDB'
+1 - DAO:'MACI/Containers' Unable to return field: 'newConfigRecvContainer/LoggingConfig/dispatchPacketSize'
+1 - Configuration information for container 'newConfigRecvContainer' not available.
+1 - Starting as dynamic container.
+1 - 
+1 - 
+1 - Manager hostname obtained via command line: 'xxx.xxx.xxx.xxx'
+1 - 
+1 - ContainerStatusMsg: Startup begins
+1 - ContainerStatusMsg: ORB initialization begins
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Generated CommandLine: maciContainer newConfigRecvContainer -ORBEndpoint iiop://xxx.xxx.xxx.xxx:4000 -m corbaloc::xxx.xxx.xxx.xxx:3000/Manager  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::xxx.xxx.xxx.xxx:3004/InterfaceRepository
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Destroy bootstrap ORB
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::initializeCORBA] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALaccess::resolveDALserverIOR] DALReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:3012/CDB'
+1 - ContainerStatusMsg: ORB initialization ends
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] Resolving manager...
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::init()] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::initImplementationType(maci::Manager_ptr)] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Using ACS alarm system
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Using DLL path: /diska/alma_tmp/TRUNK/ACS/LGPL/CommonSoftware/bulkDataNT/lib:../lib:../lib:/home/rtobar/introots/trunk/lib:/alma/ACS-10.0/ACSSW/lib:/diska/software/RTI/ndds.4.5d/lib/i86Linux2.6gcc4.1.2:/alma/ACS-10.0/DDS/build/linux/lib:/alma/ACS-10.0/TAO/ACE_wrappers/build/linux/lib:/alma/ACS-10.0/Python/lib:/alma/ACS-10.0/Python/omni/lib:/alma/ACS-10.0/boost/lib:/alma/ACS-10.0/tcltk/lib:/alma/ACS-10.0/rtai/lib:/alma/ACS-10.0/OpenSplice/HDE/x86.linux2.6/lib::/diska/software/RTI/ndds.4.5d/lib/i86Linux2.6gcc4.1.2
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Container 'newConfigRecvContainer' activated.
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Autoloading 'baci'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'baci'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/alma/ACS-10.0/ACSSW/lib/libbaci.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/alma/ACS-10.0/ACSSW/lib/libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIRecoveryManager::BACIRecoveryManager] Recovery filename: '/diska/alma_tmp/TRUNK/ACS/LGPL/CommonSoftware/bulkDataNT/test/tmp/ACS_INSTANCE.0/baci_recovery_newConfigRecvContainer.'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/alma/ACS-10.0/ACSSW/lib/libbaci.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Executing DLLSetupCORBA
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] Trying to call setup CORBA in '/alma/ACS-10.0/ACSSW/lib/libbaci.so'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CDBPropertySet::CDBPropertySet] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setupCORBAinDLL] DLLSetupCORBA executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] DLLInitThreads executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Executing DLLInitThreads
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::initThreadsInDLL] Trying to init threads in '/alma/ACS-10.0/ACSSW/lib/libbaci.so'
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Container 'newConfigRecvContainer' initialized successfuly
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Usage of an InterfaceRepository disabled.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::resolveManager] 
+1 - ContainerStatusMsg: Manager access initialization begins
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] ManagerReference obtained via command line: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Connected to the Manager.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Connecting to the Archiving Channel.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Connecting to the Centralized Logger...
+1 - ----------T--:--:--.--- (XXX|XXX) EXCEPTION, maci::ContainerImpl::init
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Failed to connect to the Centralized Logger.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Failed to connect to the Centralized Logger.
+1 - user exception, ID 'IDL:alma/maciErrType/NoPermissionEx:1.0'
+1 - 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl:::authenticate] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::run] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ContainerStatusMsg: Manager access initialization ends
+1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Startup ends
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
+1 - ContainerStatusMsg: Automatic component loading ends
+1 - ContainerStatusMsg: Ready
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging proxy successfully created.
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::xxx.xxx.xxx.xxx:3000/Manager'
+2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Simple client are not going to use Centralized Logger (exception occured).
+2 - ----------T--:--:--.--- (XXX|XXX) EXCEPTION, maciSimpleClient::init
+2 - user exception, ID 'IDL:alma/maciErrType/NoPermissionEx:1.0'
+2 - 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Obtaining reference to NEWCONFIG_RECEIVER
+2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///NEWCONFIG_RECEIVER'. Creating it...
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'bdNTReceiverLibTest'.
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::loadDLL] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/diska/alma_tmp/TRUNK/ACS/LGPL/CommonSoftware/bulkDataNT/lib/libbdNTReceiverLibTest.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/diska/alma_tmp/TRUNK/ACS/LGPL/CommonSoftware/bulkDataNT/lib/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/diska/alma_tmp/TRUNK/ACS/LGPL/CommonSoftware/bulkDataNT/lib/libbdNTReceiverLibTest.so'.
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CharacteristicModelImpl::CharacteristicModelImpl] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::DAONode] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::DALChangeListenerImplementation] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::readConfiguration] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DALChangeListenerImplementation::registerNode] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAONode::connect] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - cdb::DAOProxy::DAOProxy] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::BACIComponent] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::BACIComponent] Creating Component 'NEWCONFIG_RECEIVER'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setRTResponseTime] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setMTResponseTime] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setRTSleepTime] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::BulkDataNTReceiverImpl] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::setMTSleepTime] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::CDBPropertySet::getPropertySet] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::initialize] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - MACIContainerServices::getCDB] 
+1 - Stream 'Name1' doesn't have it's own QoS setting, will use the default lib/profile
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::startAllThreads] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::create] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activate_component] Component 'NEWCONFIG_RECEIVER' activated.
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::initThread] Thread name: 'NEWCONFIG_RECEIVER::actionThread'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::actionThreadWorker] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::initThread] Thread name: 'NEWCONFIG_RECEIVER::monitorThread'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::monitorThreadWorker] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::monitorThreadWorker] NEWCONFIG_RECEIVER
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::actionThreadWorker] NEWCONFIG_RECEIVER
+2 - ----------T--:--:--.--- [GlobalLogger - ] Opening stream 'no_existing_stream' (not in CDB)
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream 'no_existing_stream' with default configuration
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Opening stream 'Name1' (in CDB)
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream 'Name1' with configuration from CDB
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name1#Name3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name1#Name5
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Opening all remaining streams (namely, Name7)
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::openReceiver Opening receiver stream 'Name7' with configuration from CDB
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - void BulkDataNTReceiverImpl<TCallback>::openReceiver() [with TCallback = TestCB]] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
+1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name3
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Subscriber* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Created DDS topic: Name7#Name5
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, BulkDataCallback*, bool)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Sleeping 10 seconds
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'name12'
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Receiver stream 'name12' is not opened, won't try to close it
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'Name1'
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Closing receiver stream 'Name1'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name3 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:Name1#Name5 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - DDS_DomainParticipantFactory_deleteI:!delete factory instance: outstanding participant(s)
+1 - DDSDomainParticipantFactory::delete_instanceI:!delete participant factory
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing stream 'no_existing_stream' (but now it does exist)
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiverStream Closing receiver stream 'no_existing_stream'
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
+1 - DDSDomainParticipantFactory::finalize_instance:!delete participant factory
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Closing remaining streams
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - BulkDataNTReceiverImpl<>::closeReceiver] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - ] BulkDataNTReceiverImpl<>::closeReceiver Closing receiver stream 'Name7'
+1 - DDS_DomainParticipantFactory_deleteI:!delete factory instance: outstanding participant(s)
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - DDSDomainParticipantFactory::delete_instanceI:!delete participant factory
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - DDSDomainParticipantFactory::finalize_instance:!delete participant factory
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name3 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
+1 - ----------T--:--:--.--- [BulkDataNT:Name7#Name5 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle 16777217 (NEWCONFIG_RECEIVER of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelActionThread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Component 'NEWCONFIG_RECEIVER': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::cancel] 
+1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
+1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::cancel] Thread stopped:NEWCONFIG_RECEIVER::actionThread

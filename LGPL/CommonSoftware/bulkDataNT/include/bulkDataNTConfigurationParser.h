@@ -26,6 +26,16 @@ namespace AcsBulkdata
 
 	public:
 
+		typedef struct {
+			SenderStreamConfiguration streamCfg;
+			map<string, SenderFlowConfiguration> flowsCfgMap;
+		} SenderCfg;
+
+		typedef struct {
+			ReceiverStreamConfiguration streamCfg;
+			map<string, ReceiverFlowConfiguration> flowsCfgMap;
+		} ReceiverCfg;
+
 		/**
 		 * Constructor
 		 */
@@ -41,15 +51,14 @@ namespace AcsBulkdata
 		 * that can be found. Each stream, and its corresponding flows, are properly
 		 * configured depending on the QoS settings coming from the XML document
 		 */
-		list<BulkDataNTSenderStream *>*   parseSenderConfig(char const *config);
+		void parseSenderConfig(char const *configXML, map<string, SenderCfg> &configMap);
 
 		/**
 		 * Given an XML document, parses it an retrieves the list of receiver streams
 		 * that can be found. Each stream, and its corresponding flows, are properly
 		 * configured depending on the QoS settings coming from the XML document
 		 */
-		template<class TReceiverCallback>
-		list<BulkDataNTReceiverStream<TReceiverCallback> *>* parseReceiverConfig(char const *config);
+		void parseReceiverConfig(char const *configXML, map<string, ReceiverCfg> &configMap);
 
 	private:
 
@@ -67,8 +76,8 @@ namespace AcsBulkdata
 			const char* const defaultStreamProfile,
 			const char* const defaultFlowProfile);
 
-		template<class StreamT, class StreamConfigT, class FlowConfigT>
-		list<StreamT *>* createBulkDataEntities();
+		template<class CfgS, class StreamConfigT, class FlowConfigT>
+		void populateConfiguration(map<string, CfgS> &configMap);
 
 		void clearCollections();
 

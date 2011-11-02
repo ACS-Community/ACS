@@ -52,12 +52,6 @@ BulkDataConfigurationParser::~BulkDataConfigurationParser() {
 	XMLPlatformUtils::Terminate();
 }
 
-list<BulkDataNTSenderStream *>* BulkDataConfigurationParser::parseSenderConfig(const char *config) {
-	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME,
-			DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
-	return createBulkDataEntities<BulkDataNTSenderStream, SenderStreamConfiguration, SenderFlowConfiguration>();
-}
-
 void BulkDataConfigurationParser::clearCollections() {
 
 	map<char*, set<char *> >::iterator mit2;
@@ -84,6 +78,18 @@ void BulkDataConfigurationParser::printEntities() {
 			printf("  Flow '%s'\n", (*it2));
 		}
 	}
+}
+
+void BulkDataConfigurationParser::parseSenderConfig(const char *config, map<string, SenderCfg> &configMap) {
+	parseConfig(config, SENDER_STREAM_NODENAME, SENDER_FLOW_NODENAME, SENDER_STREAM_QOS_NODENAME, SENDER_FLOW_QOS_NODENAME,
+			DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE, DDSConfiguration::DEFAULT_SENDER_FLOW_PROFILE);
+	populateConfiguration<SenderCfg, SenderStreamConfiguration, SenderFlowConfiguration>(configMap);
+}
+
+void BulkDataConfigurationParser::parseReceiverConfig(const char *config, map<string, ReceiverCfg> &configMap) {
+	parseConfig(config, RECEIVER_STREAM_NODENAME, RECEIVER_FLOW_NODENAME, RECEIVER_STREAM_QOS_NODENAME, RECEIVER_FLOW_QOS_NODENAME,
+			DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
+	populateConfiguration<ReceiverCfg, ReceiverStreamConfiguration, ReceiverFlowConfiguration>(configMap);
 }
 
 void BulkDataConfigurationParser::parseConfig(const char *config,

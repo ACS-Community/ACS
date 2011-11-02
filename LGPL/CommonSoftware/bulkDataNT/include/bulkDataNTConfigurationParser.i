@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.4 2011/09/14 10:03:44 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.5 2011/11/02 18:07:21 rtobar Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -25,19 +25,10 @@
 
 #include "ACS_BD_Errors.h"
 
-template<class TReceiverCallback>
-list<BulkDataNTReceiverStream<TReceiverCallback> *>* BulkDataConfigurationParser::parseReceiverConfig(const char *config) {
-	parseConfig(config, RECEIVER_STREAM_NODENAME, RECEIVER_FLOW_NODENAME, RECEIVER_STREAM_QOS_NODENAME, RECEIVER_FLOW_QOS_NODENAME,
-			DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE, DDSConfiguration::DEFAULT_RECEIVER_FLOW_PROFILE);
-	return createBulkDataEntities<BulkDataNTReceiverStream<TReceiverCallback>, ReceiverStreamConfiguration, ReceiverFlowConfiguration>();
-}
+template<class CfgS, class StreamConfigT, class FlowConfigT>
+void BulkDataConfigurationParser::populateConfiguration(map<string, CfgS> &configMap) {
 
-template<class StreamT, class StreamConfigT, class FlowConfigT>
-list<StreamT *>* BulkDataConfigurationParser::createBulkDataEntities() {
-
-	list<StreamT *>* streams = new list<StreamT *>();
-
-	// Create the streams from the collected information
+	// Create the stream configuration objects from the collected information
 	try {
 		map<char*, set<char *> >::iterator mit;
 		set<char *>::iterator sit;
@@ -65,9 +56,8 @@ list<StreamT *>* BulkDataConfigurationParser::createBulkDataEntities() {
 			else
 				printf("Stream '%s' has no QoS settings, will use the default lib/profile\n", mit->first);
 
-			StreamT *stream = new StreamT(mit->first, streamCfg);
-
-			// Create flows for this stream
+			// Create flow configuration objects for this stream
+			map<string, FlowConfigT> flowConfigs;
 			for(sit = mit->second.begin(); sit != mit->second.end(); sit++) {
 
 				FlowConfigT flowCfg;
@@ -84,25 +74,18 @@ list<StreamT *>* BulkDataConfigurationParser::createBulkDataEntities() {
 				else
 					printf("Flow '%s' doesn't have it's own QoS setting, will use the default lib/profile\n", profileName.c_str());
 
-				stream->createFlow(*sit, flowCfg);
+				flowConfigs[*sit] = flowCfg;
 			}
-			streams->push_back(stream);
+
+			CfgS streamConfigStruct;
+			streamConfigStruct.streamCfg = streamCfg;
+			streamConfigStruct.flowsCfgMap = flowConfigs;
+			configMap[mit->first] = streamConfigStruct;
 		}
 	} catch(StreamCreateProblemExImpl &ex) {
-		// delete all streams we could possibly have created
-		while(streams->size() > 0) {
-			delete streams->back();
-			streams->pop_back();
-		}
 		throw ex;
 	} catch(FlowCreateProblemExImpl &ex) {
-		// delete all streams we could possibly have created
-		while(streams->size() > 0) {
-			delete streams->back();
-			streams->pop_back();
-		}
 		throw ex;
 	}
 
-	return streams;
 }

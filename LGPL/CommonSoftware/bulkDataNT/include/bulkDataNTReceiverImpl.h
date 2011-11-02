@@ -46,6 +46,7 @@
 
 #include "bulkDataReceiverS.h"
 
+#include "bulkDataNTConfigurationParser.h"
 #include "bulkDataNTReceiverStream.h"
 
 
@@ -164,9 +165,18 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
 
     // map<name, stream>
     typedef map<string, AcsBulkdata::BulkDataNTReceiverStream<TCallback> *> StreamMap;
+
+    // Map that stores the actualy stream objects that are actually created
     StreamMap receiverStreams_m;
 
+    // Map that stores the configuration read from the CDB
+    map<string, BulkDataConfigurationParser::ReceiverCfg> recvConfigMap_m;
+
     maci::ContainerServices *containerServices_p;
+
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name, map<string, BulkDataConfigurationParser::ReceiverCfg>::iterator &it);
+
+    void closeStream(typename StreamMap::iterator &it);
 };
 
 #include "bulkDataNTReceiverImpl.i"
