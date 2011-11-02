@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: getTemplateForCoding,v 1.31 2011/07/11 07:47:32 mpasquat Exp $" 
+# "@(#) $Id: getTemplateForCoding,v 1.32 2011/11/02 15:17:18 mpasquat Exp $" 
 # who       when      what
 # --------- --------  ----------------------------------------------
 # gchiozzi  27/06/95  Added c++ and various templates
@@ -259,7 +259,7 @@ abcd
                 ;;
 
 	    ATC)
-                COPYRIGHT="Copyright (c) Astronomy Technology Center - Royal Observatory Edingburgh"
+                COPYRIGHT="Copyright (c) UK Astronomy Technology Centre, Science and Technology Facilities Council"
                 ;;
 
 	    NAOJ)
