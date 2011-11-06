@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.137 2011/10/21 21:14:57 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.138 2011/11/06 10:09:11 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.137 2011/10/21 21:14:57 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.138 2011/11/06 10:09:11 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -133,6 +133,12 @@ public:
         try
         {
             componentInfo = container_->activate_component(h_, execution_id_, name_.c_str(), exe_.c_str(), type_.c_str());
+        }
+        catch (maciErrType::CannotActivateComponentEx &_ex)
+        {
+            maciErrType::CannotActivateComponentExImpl exImpl(_ex);
+			completion = maciErrType::CannotActivateComponentCompletion(exImpl, __FILE__, __LINE__,
+                                                            "maci::ActivationMethod::call");
         }
         catch (ACSErr::ACSbaseExImpl &_ex)
         {
