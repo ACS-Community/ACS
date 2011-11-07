@@ -84,11 +84,6 @@ lllll_OBJECTS   =
 SCRIPTS         =
 SCRIPTS_L       =
 
-#
-# TCL scripts (public and local)
-# ------------------------------
-TCL_SCRIPTS     =
-TCL_SCRIPTS_L   =
 
 #
 # Python stuff (public and local)
@@ -127,14 +122,14 @@ CDB_SCHEMAS =
 # 
 # IDL Files and flags
 # 
-IDL_FILES = corbaNotifyTest_if
+IDL_FILES = 
 TAO_IDLFLAGS =
 USER_IDL =
 #
 # Jarfiles and their directories
 #
-JARFILES=corbaNotifyTest
-corbaNotifyTest_DIRS=acs
+#JARFILES=corbaNotifyTest
+#corbaNotifyTest_DIRS=acs
 jjj_EXTRAS=
 
 # For expressing dependencies between jarfiles (parallel builds)

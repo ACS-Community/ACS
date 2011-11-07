@@ -8,6 +8,18 @@ import alma.benchmark.NcEventSpec;
 
 public class CorbaNotifyConsumerImpl extends CorbaNotifyBaseImpl implements CorbaNotifyConsumerOperations
 {
+	@Override
+	public void ncConnect(String[] ncNames) throws CouldntPerformActionEx {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ncDisconnect() throws CouldntPerformActionEx {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public void receiveEvents(NcEventSpec[] ncEventSpec, int processingDelayMillis, int numberOfEvents)

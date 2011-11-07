@@ -87,7 +87,7 @@ module benchmark
     };
 
     /** 
-     *  Small struct, to check how much the struct size affects throughput. 
+     *  Small struct, to check how much the struct size affects throughput, and to use as an additional event type. 
      */
     struct LightweightMountStatusData {
         string    antennaName;
@@ -97,13 +97,24 @@ module benchmark
      * Describes one NC and the event types that should be sent or received on this NC.
      */
     struct NcEventSpec {
+        /** 
+         * Name of the NC
+         */
         string          ncName;
+        
         /** 
          * eventNames must be recognized names of event types, e.g. "MountStatusData", "LightweightMountStatusData".
          * The idea is to fire either only one type of event per NC, or different types alternatingly.
          */
         maci::stringSeq eventNames;
+        
+        /** 
+         * Only applicable to events "MountStatusData" and "LightweightMountStatusData".
+         * Used to send events of the same type but with different data, on which we may filter the events.
+         */
+        string          antennaName;
     };
+    
     
     typedef sequence <NcEventSpec> NcEventSpecSeq;
     
@@ -114,14 +125,32 @@ module benchmark
     interface CorbaNotifyCompBase : ACS::ACSComponent
     {
         /** 
-         *  Connect to the given NCs, for later use
+         * Connect to the given NCs, for later use.
+         * This method should normally be called for all NCs before sending or receiving events. 
+         * For special tests it should also allow to be called later.
+         * 
+         * If connection to any one of the given NCs fails, this method attempts to disconnect from all NCs previously connected
+         * as part of this call (while NCs that were already connected from previous calls to this method will not be disconnected).
          */
         void ncConnect(in maci::stringSeq ncNames) raises (ACSErrTypeCommon::CouldntPerformActionEx);
+        
         /** 
-         *  Disconnect from all NCs.
+         * Interrupt a running series of sending/receiving NC events. 
+         * If nothing is running, returns silently.
+	 */
+        void interrupt();
+
+        /** 
+         * Disconnect from all NCs. Internally calls interrupt() before disconnecting the NC lib classes from the NC.
+         * 
+         * If a problem occurs with one of the NCs, the other NCs still get disconnected from. The returned exception 
+         * represents the last problem from the loop over all connected NCs.
 	 */
         void ncDisconnect() raises (ACSErrTypeCommon::CouldntPerformActionEx);
+        
+        
     };
+
 
     /** 
      *  Performance tests will use multiple dynamic supplier components in one or many containers and hosts.
@@ -131,19 +160,20 @@ module benchmark
         /** 
          * Start sending events.
          * If a fixed number of events are specified in "numberOfEvents" then the call will return only when these events have been fired.
-         * TODO: Introduce callback notification back to client if we have corba timeout problems.)
+         * TODO: Introduce callback notification back to client if we have corba timeout problems.
          * 
          * Without defined number of events, this call will return immediately.
+         * @return The time it took (in ms) to send the specified number of events. This may be a bit shorter than the time experienced by the client for the call.
+         *         Undefined if numberOfEvents is not specified.
          */
-    	void sendEvents(
+    	long sendEvents(
     	        // Sends events filled with dummy data on the specified NCs.
     	        // If more than one event type is given for any NC, then these event types will be used alternatingly.
     	        // A prior call to "ncConnect" is required for any of the NCs referenced in "ncEventSpec". Otherwise CouldntPerformActionEx.
-    	        in NcEventSpecSeq ncEventSpec,
-    	        // optional delay between events. If <=0 then the supplier will fire as fast as possible. 
-    	        // @TODO Perhaps use fixed time intervals instead of delays, to be even closer to the Control events coming every 48 ms?
-    	        in long delayBetweenEvents, 
-    	        // optional number of events to fire. If <=0 then fire continously.
+    	        in NcEventSpecSeq ncEventSpecs,
+    	        // Optional period for sending events, e.g. every 48 ms. If eventPeriodMillis<=0 then the supplier will fire as fast as possible.
+    	        in long eventPeriodMillis, 
+    	        // Optional number of events to fire. If <=0 then fire continously.
     	        in long numberOfEvents
             ) raises (ACSErrTypeCommon::CouldntPerformActionEx);
     	

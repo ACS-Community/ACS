@@ -108,24 +108,32 @@ tttlll_OBJECTS  =
 # Configuration Database Files
 # ----------------------------
 CDB_SCHEMAS = 
-
 # 
 # IDL Files and flags
 # 
-IDL_FILES =
+IDL_FILES = corbaNotifyTest_if
 TAO_IDLFLAGS =
 USER_IDL =
+
+
+COMPONENTS_JARFILES = corbaNotifyTestComp
+corbaNotifyTestComp_DIRS = acs/benchmark/nc
+
+
 #
 # Jarfiles and their directories
 #
-JARFILES= 
-jjj_DIRS=
+#JARFILES=corbaNotifyTest
+#corbaNotifyTest_DIRS=acs
 jjj_EXTRAS=
+
 # For expressing dependencies between jarfiles (parallel builds)
-jjj_JLIBS= 
+corbaNotifyTestComp_JLIBS = corbaNotifyTest_if
+
 #
 # java sources in Jarfile on/off
-DEBUG= 
+DEBUG=on 
+
 #
 # ACS XmlIdl generation on/off
 #
