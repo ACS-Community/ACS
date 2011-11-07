@@ -3,38 +3,38 @@
     type="57" _prefix="alma"
     xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
 >
-    <ErrorCode name="StreamCreateProblem" shortDescription="Problem to create BD stream" description="">
+    <ErrorCode name="StreamCreateProblem" shortDescription="Problem to create BD stream" description="Problem to create BD stream">
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="StreamAlreadyExists" shortDescription="Stream alread exists" description="">
+    <ErrorCode name="StreamAlreadyExists" shortDescription="Stream alread exists" description="Stream alread exists">
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="StreamNotExist" shortDescription="Stream does not exist" description="">
+    <ErrorCode name="StreamNotExist" shortDescription="Stream does not exist" description="Stream does not exist">
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="FlowCreateProblem" shortDescription="Problem to create BD flow" description="">
+    <ErrorCode name="FlowCreateProblem" shortDescription="Problem to create BD flow" description="Problem to create BD flow">
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="FlowAlreadyExists" shortDescription="Flow alread exists" description="">
+    <ErrorCode name="FlowAlreadyExists" shortDescription="Flow alread exists" description="Flow alread exists">
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="FlowNotExist" shortDescription="Flow does not exist" description="">
+    <ErrorCode name="FlowNotExist" shortDescription="Flow does not exist" description="Flow does not exist">
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="StreamDestroyProblem" shortDescription="Problem to destroy BD stream" description="">
+    <ErrorCode name="StreamDestroyProblem" shortDescription="Problem to destroy BD stream" description="Problem to destroy BD stream">
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>
     
-    <ErrorCode name="FlowDestroyProblem" shortDescription="Problem to destroy BD flow" description="">
+    <ErrorCode name="FlowDestroyProblem" shortDescription="Problem to destroy BD flow" description="Problem to destroy BD flow">
         <Member name="FlowName" type="string" description="Name of flow" />
         <Member name="StreamName" type="string" description="Name of stream" />
     </ErrorCode>

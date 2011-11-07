@@ -3,57 +3,57 @@
     type="56" _prefix="alma"
     xmlns="Alma/ACSError" xsi:schemaLocation="Alma/ACSError ACSError.xsd"
 >
-    <ErrorCode name="DDSQoSSetProblem" shortDescription="Problem to set DDS QoS" description="">
+    <ErrorCode name="DDSQoSSetProblem" shortDescription="Problem to set DDS QoS" description="Problem to set DDS QoS">
         <Member name="QoS" type="string" description="QoS name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSTopicCreateProblem" shortDescription="Problem to create DDS topic" description="">
+    <ErrorCode name="DDSTopicCreateProblem" shortDescription="Problem to create DDS topic" description="Problem to create DDS topic">
         <Member name="Topic" type="string" description="Topic name" />
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="">
+    <ErrorCode name="DDSPublisherCreateProblem" shortDescription="Problem to create DDS publisher" description="Problem to create DDS publisher">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSPublisherDestroyProblem" shortDescription="Problem to destroy  DDS publisher" description="">
+    <ErrorCode name="DDSPublisherDestroyProblem" shortDescription="Problem to destroy  DDS publisher" description="Problem to destroy  DDS publisher">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSDWCreateProblem" shortDescription="Problem to create DDS data writer" description="">
+    <ErrorCode name="DDSDWCreateProblem" shortDescription="Problem to create DDS data writer" description="Problem to create DDS data writer">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="">
+    <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="Problem to register type">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
         <Member name="TypeName" type="string" description="Type name" />
     </ErrorCode>
     
     
-    <ErrorCode name="DDSSubscriberCreateProblem" shortDescription="Problem to create DDS subscriber" description="">
+    <ErrorCode name="DDSSubscriberCreateProblem" shortDescription="Problem to create DDS subscriber" description="Problem to create DDS subscriber">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSSubscriberDestroyProblem" shortDescription="Problem to destroy  DDS subscriber" description="">
+    <ErrorCode name="DDSSubscriberDestroyProblem" shortDescription="Problem to destroy  DDS subscriber" description="Problem to destroy  DDS subscriber">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSDRCreateProblem" shortDescription="Problem to create DDS data reader" description="">
+    <ErrorCode name="DDSDRCreateProblem" shortDescription="Problem to create DDS data reader" description="Problem to create DDS data reader">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
-    <ErrorCode name="DDSParticipantCreateProblem" shortDescription="Problem to create DDS participant" description="">
+    <ErrorCode name="DDSParticipantCreateProblem" shortDescription="Problem to create DDS participant" description="Problem to create DDS participant">
         <Member name="DomainID" type="long" description="Domain ID" />
     </ErrorCode>
-    <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="">
+    <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="Problem to destroy DDS participant">
     </ErrorCode>
     
-    <ErrorCode name="DDSCreateDataProblem" shortDescription="Problem to create Data" description="">
+    <ErrorCode name="DDSCreateDataProblem" shortDescription="Problem to create Data" description="Problem to create Data">
         <Member name="DataType" type="string" description="Domain ID" />
     </ErrorCode>
     
-    <ErrorCode name="DDSDeleteDataProblem" shortDescription="Problem to delete Data" description="">
+    <ErrorCode name="DDSDeleteDataProblem" shortDescription="Problem to delete Data" description="Problem to delete Data">
         <Member name="DataType" type="string" description="Domain ID" />
     </ErrorCode>
     
