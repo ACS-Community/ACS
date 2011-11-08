@@ -310,6 +310,9 @@ public class ContainerUtil
 		if (host == null || host.isEmpty()) {
 			host = ACSPorts.getIP();
 		}
+		if (flags == null) {
+			flags = "";
+		}
 		ContainerDaemonOperations daemon = getContainerDaemon(host);
 		String containerTypeName = containerType.toString(); // TODO check that string is as expected by daemon, e.g. "py" vs. "python"
 		short instanceNumber = (short) ACSPorts.getBasePort();
