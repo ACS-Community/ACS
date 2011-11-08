@@ -25,13 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.omg.CORBA.ORB;
-
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
-import com.cosylab.acs.maci.Daemon;
-import com.cosylab.acs.maci.plug.CORBATransport;
+import org.omg.CORBA.ORB;
 
 import si.ijs.maci.Administrator;
 import si.ijs.maci.AdministratorPOATie;
@@ -55,8 +52,6 @@ import alma.acsdaemon.ContainerDaemonOperations;
 import alma.acsdaemonErrType.FailedToStartContainerEx;
 import alma.acsdaemonErrType.FailedToStopContainerEx;
 import alma.maci.containerconfig.types.ContainerImplLangType;
-import alma.maci.loggingconfig.NamedLogger;
-import alma.maci.loggingconfig.UnnamedLogger;
 import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.NoPermissionEx;
 
