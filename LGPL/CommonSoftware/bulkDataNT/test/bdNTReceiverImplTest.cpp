@@ -2,7 +2,7 @@
 #include "bulkDataNTCallback.h"
 #include <iostream>
 
-class  TestCB:  public BulkDataCallback
+class  TestCB:  public BulkDataNTCallback
 {
 public:
 	int cbStart(unsigned char* userParam_p, unsigned  int size)

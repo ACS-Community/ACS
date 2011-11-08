@@ -8,23 +8,27 @@
 #include <acserr.h>
 #include <SString.h>
 
-class BulkDataCallback
+namespace AcsBulkdata
 {
-  public:
-    virtual ~BulkDataCallback(){};
 
-    // flow and stream names are set in ReceiverFlow ctor, should we keep them public ?
-    void setFlowName (const char* name) { flowName_m =name; }
-    const char* getFlowName () { return flowName_m.c_str(); }
 
-    void setStreamName (const char* name) { streamName_m =name; }
-    const char* getStreamName () { return streamName_m.c_str(); }
+class BulkDataNTCallback
+{
+public:
+	virtual ~BulkDataNTCallback(){};
 
-    void setReceiverName(ACE_CString &name) { recvName_m=name; }
-    void setReceiverName(const char *name) { recvName_m=name; }
-    const char* getReceiverName () { return recvName_m.c_str(); }
+	// flow and stream names are set in ReceiverFlow ctor, should we keep them public ?
+	void setFlowName (const char* name) { flowName_m =name; }
+	const char* getFlowName () { return flowName_m.c_str(); }
 
-/*
+	void setStreamName (const char* name) { streamName_m =name; }
+	const char* getStreamName () { return streamName_m.c_str(); }
+
+	void setReceiverName(ACE_CString &name) { recvName_m=name; }
+	void setReceiverName(const char *name) { recvName_m=name; }
+	const char* getReceiverName () { return recvName_m.c_str(); }
+
+	/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
 
     virtual void setSafeTimeout(CORBA::ULong locLoop);
@@ -37,8 +41,6 @@ class BulkDataCallback
 
     virtual void setFlowTimeout(CORBA::ULong timeout);
 
-    virtual void closePeer();
-
     template<class TCallback>
     void setReceiver(AcsBulkdata::BulkDataReceiver<TCallback> *recv)
 	{
@@ -46,12 +48,6 @@ class BulkDataCallback
 	    //to be defined by the user
 	}
 
-    ACE_HANDLE getHandle();
-
-    CORBA::Boolean isFepAlive()
-	{
-	    return isFepAlive_m;
-	}
 
     virtual void setCbTimeout(ACE_Time_Value cbTimeout)
 	{
@@ -59,34 +55,34 @@ class BulkDataCallback
 	}
 
     void fwdData2UserCB(CORBA::Boolean enable);
-*/
-    /********************* methods that have to be implemented by the user *****************/
+	 */
+	/********************* methods that have to be implemented by the user *****************/
 
-    virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0)=0;
+	virtual int cbStart(unsigned char* userParam_p = 0, unsigned  int size=0)=0;
 
-    virtual int cbReceive(unsigned char * frame_p, unsigned  int size)=0;
+	virtual int cbReceive(unsigned char * frame_p, unsigned  int size)=0;
 
-    virtual int cbStop() = 0;
+	virtual int cbStop() = 0;
 
-    /*********************  methods that can/should be  implemented by the user */
+	/*********************  methods that can/should be  implemented by the user */
 
-    /// This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop)
-    virtual void onError(ACSErr::CompletionImpl &error);
+	/// This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop)
+	virtual void onError(ACSErr::CompletionImpl &error);
 
-    /// The method is called when a new sender is connected to the flow
-    virtual void onSenderConnect(){};
+	/// The method is called when a new sender is connected to the flow
+	virtual void onSenderConnect(){};
 
-    /// The method is called when a sender is disconnected for a flow
-    virtual void onSenderDisconnect(){};
+	/// The method is called when a sender is disconnected for a flow
+	virtual void onSenderDisconnect(){};
 
-    //TBD: to be implemented now those error goes to onError
-    virtual void onDataLost(unsigned long frmaeCount, unsigned long totalFrames, ACSErr::CompletionImpl &error){};
-  protected:
-    std::string flowName_m;
-    std::string streamName_m;
+	//TBD: to be implemented now those error goes to onError
+	virtual void onDataLost(unsigned long frmaeCount, unsigned long totalFrames, ACSErr::CompletionImpl &error){};
+protected:
+	std::string flowName_m;
+	std::string streamName_m;
 
-    ACE_CString recvName_m;
-/*
+	ACE_CString recvName_m;
+	/*
     bool fwdData2UserCB_m;
 
   private:
@@ -121,8 +117,10 @@ class BulkDataCallback
     ACE_Time_Value startTime_m;    
 
     CORBA::Boolean isFepAlive_m;
-    */
-};
+	 */
+};//class BulkDataNTCallback
+
+};//namespace AcsBulkdata
 
 
 #endif /*!_BULKDATA_CALLBACK_H*/

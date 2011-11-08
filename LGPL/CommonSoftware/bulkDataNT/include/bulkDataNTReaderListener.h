@@ -18,7 +18,7 @@ class BulkDataNTReaderListener
 {
 public:
   //Constructor
-  BulkDataNTReaderListener (const char*name, BulkDataCallback* cb);
+  BulkDataNTReaderListener (const char*name, AcsBulkdata::BulkDataNTCallback* cb);
 
   //destructor
   virtual ~BulkDataNTReaderListener (void);
@@ -63,7 +63,7 @@ private:
   unsigned int loggerInitCount_m; // we need to count how many time we call LoggerProxy::init
 
    // pointer to user defined callback
-  BulkDataCallback* callback_mp;
+  AcsBulkdata::BulkDataNTCallback* callback_mp;
 };
 
 #endif

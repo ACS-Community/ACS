@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.11 2011/11/07 13:02:06 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.12 2011/11/08 11:12:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -57,7 +57,7 @@ public:
 	BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream,
 							const char* flowName,
 							const ReceiverFlowConfiguration &rcvCfg,
-							BulkDataCallback *cb,
+							BulkDataNTCallback *cb,
 							bool releaseCB);
 
 	/**
@@ -67,7 +67,7 @@ public:
 
 	void setReceiverName(char* recvName);
 
-	BulkDataCallback* getCallbackObject() { return callback_m; }
+	BulkDataNTCallback* getCallbackObject() { return callback_m; }
 
 	template<class T>
 	T* getCallback() { return dynamic_cast<T>(callback_m); }
@@ -81,7 +81,7 @@ protected:
 	ACSBulkData::BulkDataNTFrameDataReader *ddsDataReader_m;
 	DDS::Topic *ddsTopic_m;
 	BulkDataNTReaderListener *dataReaderListener_m;  // we can keep it in  CB ?
-	BulkDataCallback *callback_m; //we can keep it in "Subscriber" ?
+	BulkDataNTCallback *callback_m; //we can keep it in "Subscriber" ?
 	bool releaseCB_m;
 
 	/// disable default - empty constructor

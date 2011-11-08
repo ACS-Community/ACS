@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.16 2011/10/27 15:56:41 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.17 2011/11/08 11:12:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -63,10 +63,10 @@ BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream()
 
 
 template<class TReceiverCallback>
-BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, const ReceiverFlowConfiguration &cfg, BulkDataCallback *cb, bool releaseCB)
+BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char *flowName, const ReceiverFlowConfiguration &cfg, BulkDataNTCallback *cb, bool releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
-	BulkDataCallback *callback=0;
+	BulkDataNTCallback *callback=0;
 	BulkDataNTReceiverFlow* flow;
 
 	if (this->getFlow(flowName)!=0)

@@ -8,6 +8,7 @@
 
 using namespace ACS_BD_Errors;
 using namespace ACS_DDS_Errors;
+using namespace AcsBulkdata;
 
 #define BDNT_READER_LISTENER_USER_ERR(call)		 								\
 try { call; 																	\
@@ -29,7 +30,7 @@ try { call; 																	\
 }
 
 
-BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataCallback* cb)
+BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTCallback* cb)
 : Logging::Loggable("BulkDataNT:"+string(name)),
 				currentState_m(StartState),
 				topicName_m(name),

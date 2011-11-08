@@ -1,6 +1,6 @@
 #include "bulkDataNTCallback.h"
 
-void BulkDataCallback::onError(ACSErr::CompletionImpl &error)
+void AcsBulkdata::BulkDataNTCallback::onError(ACSErr::CompletionImpl &error)
 {
 	error.log();
 }//onError
