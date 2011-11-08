@@ -145,8 +145,8 @@ public class AcsContainer extends ContainerPOA
     private ContainerServicesImpl m_alarmContainerServices;
 
 	/**
-	 * Gate that blocks some (currently: only activate_component) incoming calls while the container is 
-	 * initializing itself and therefore not fully ready.
+	 * Gate that blocks some (currently: only activate_component and LoggingConfigurable methods) 
+	 * incoming calls while the container is initializing itself and therefore not fully ready.
 	 * In particular, this will be used to hold component activation requests for autostart components,
 	 * which the manager sends right after the container has logged in to the manager.
 	 */
@@ -1133,7 +1133,9 @@ public class AcsContainer extends ContainerPOA
 			m_acsCorba.shutdownORB(gracefully, isOrbThread);
 		}
 
-		m_alarmContainerServices.cleanUp();
+		if (m_alarmContainerServices != null) {
+			m_alarmContainerServices.cleanUp();
+		}
 
 		// to allow creation of a new container in the same VM
 		s_instance = null;
@@ -1570,6 +1572,7 @@ public class AcsContainer extends ContainerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public LogLevels get_default_logLevels() {
+		tryToWaitForContainerStart();
 		LogLevels logLevels = new LogLevels();
 		logLevels.useDefault = false;
 		logLevels.minLogLevel = (short) logConfig.getDefaultMinLogLevel().value;
@@ -1582,6 +1585,7 @@ public class AcsContainer extends ContainerPOA
 	 * are used by all loggers that have not been configured individually.
 	 */
 	public void set_default_logLevels(LogLevels levels) throws IllegalArgumentEx {
+		tryToWaitForContainerStart();
 		try {
 			logConfig.setDefaultMinLogLevel(AcsLogLevelDefinition.fromInteger(levels.minLogLevel));
 			logConfig.setDefaultMinLogLevelLocal(AcsLogLevelDefinition.fromInteger(levels.minLogLevelLocal));
@@ -1599,6 +1603,7 @@ public class AcsContainer extends ContainerPOA
 	 * The returned logger names are randomly ordered.
 	 */
 	public String[] get_logger_names() {
+		tryToWaitForContainerStart();
 		Set<String> loggerNames = logConfig.getLoggerNames();
 		return loggerNames.toArray(new String[loggerNames.size()]);
 	}
@@ -1613,6 +1618,7 @@ public class AcsContainer extends ContainerPOA
 	 * setting {@link LogLevels#useDefault} to <code>true</code>.
 	 */
 	public LogLevels get_logLevels(String logger_name) throws LoggerDoesNotExistEx {
+		tryToWaitForContainerStart();
 		UnnamedLogger xsdLevels = logConfig.getNamedLoggerConfig(logger_name);
 		boolean useDefault = !logConfig.hasCustomConfig(logger_name); 
 		LogLevels ret = AcsLogLevelDefinition.createIdlLogLevelsFromXsd(useDefault, xsdLevels);
@@ -1625,6 +1631,7 @@ public class AcsContainer extends ContainerPOA
 	 * will use the supplied local and remote levels.
 	 */
 	public void set_logLevels(String logger_name, LogLevels levels) throws LoggerDoesNotExistEx, IllegalArgumentEx {
+		tryToWaitForContainerStart();
 		if (levels.useDefault) {
 			logConfig.clearNamedLoggerConfig(logger_name);
 		}
@@ -1648,6 +1655,7 @@ public class AcsContainer extends ContainerPOA
 	 * now we give precedence to the CDB values over any previous settings.
 	 */
 	public void refresh_logging_config() {
+		tryToWaitForContainerStart();
 		try {
 			logConfig.initialize(true);
 		} catch (LogConfigException ex) {
@@ -1660,4 +1668,18 @@ public class AcsContainer extends ContainerPOA
 		
 	/** ************************ END LoggingConfigurable ************************ */
 
+	
+	/**
+	 * Waits for the container to finish startup, see {@link #containerStartOrbThreadGate}.
+	 * Does not expose InterruptedException, so that in case of such an exception 
+	 * this method will return without the container having finished its startup. 
+	 */
+	protected void tryToWaitForContainerStart() {
+		try {
+			containerStartOrbThreadGate.await(30, TimeUnit.SECONDS);
+		} catch (InterruptedException ex1) {
+			// ignore
+		}
+	}
+	
 }
