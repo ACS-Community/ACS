@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList.lite,v 1.3 2011/11/02 18:07:21 rtobar Exp $"
+# "@(#) $Id: TestList.lite,v 1.4 2011/11/08 11:20:50 bjeram Exp $"
 #
 # TestList
 #
@@ -9,7 +9,7 @@
 # --------  --------  ----------------------------------------------
 
 SOURCE bulkDataNTTATEnv
-PROLOGUE acsutilTATPrologue
+PROLOGUE acsutilTATPrologue -noloadifr
 
 1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01 -w 10" "bdNTSenderTest -w 2"
 2 ConfigurationParser "bdNTConfigurationParserTest"
