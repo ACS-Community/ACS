@@ -54,13 +54,11 @@ public class LocalSupplierTest extends ComponentClientTestCase
 		try {
 			// run a local container
 			containerUtil = new ContainerUtil(getContainerServices(), m_acsManagerProxy);
-			containerUtil.startContainer(null, ContainerImplLangType.JAVA, containerName, null);
-			// @TODO sync on container start
-			Thread.sleep(4000);
+			containerUtil.loginToManager();
+			containerUtil.startContainer(null, ContainerImplLangType.JAVA, containerName, null, true);
 			m_logger.info("Assuming that container " + containerName + " is ready.");
 			
 			// configure container log levels
-			containerUtil.loginToManager();
 			ContainerLogLevelSpec contLogLevelSpec = new ContainerLogLevelSpec(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.DEBUG);
 			contLogLevelSpec.addNamedLoggerSpec("jacorb@"+containerName, AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.WARNING);
 			containerUtil.setContainerLogLevels(containerName, contLogLevelSpec);
@@ -81,8 +79,8 @@ public class LocalSupplierTest extends ComponentClientTestCase
 					new String[] {"MountStatusData"}, 
 					"") }; // don't care about antenna name here
 			
-			int callTimeInternalMillis = supplierComp.sendEvents(ncEventSpecs, -1, 10);
-			m_logger.info("Single supplier comp '" + compSpec.component_name + "' sent 10 MountStatusData events at max speed to '" 
+			int callTimeInternalMillis = supplierComp.sendEvents(ncEventSpecs, -1, 10000);
+			m_logger.info("Single supplier comp '" + compSpec.component_name + "' sent 10000 MountStatusData events at max speed to '" 
 					+ ncNames[0] + "' in " + callTimeInternalMillis + " ms.");
 		} catch (Exception ex) {
 			throw ex;
