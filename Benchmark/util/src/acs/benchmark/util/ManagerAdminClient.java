@@ -123,6 +123,7 @@ public class ManagerAdminClient implements AdministratorOperations
 			CountDownLatch sync = containerLoggedInSyncMap.get(containerName);
 			if (sync != null) {
 				sync.countDown();
+				containerLoggedInSyncMap.remove(sync);
 			}
 		}
 	}
