@@ -41,7 +41,7 @@ import alma.benchmark.CorbaNotifySupplierPOATie;
  * copy the line below into a new entry in the file $ACS_CDB/MACI/Components/Components.xml 
  * and modify the instance name of the component and the container: 
  * <p>
- * Name="blabla" Code="alma.demo.CorbaNotifySupplierImpl.CorbaNotifySupplierComponentHelper" Type="IDL:alma/demo/CorbaNotifySupplier:1.0" Container="frodoContainer" ImplLang="java"
+ * Name="blabla" Code="acs.benchmark.nc.supplier.CorbaNotifySupplierComponentHelper" Type="IDL:alma/benchmark/CorbaNotifySupplier:1.0" Container="frodoContainer" ImplLang="java"
  * <p>
  * @author alma-component-helper-generator-tool
  */
