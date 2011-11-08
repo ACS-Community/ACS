@@ -19,6 +19,7 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
+import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventPublisher;
 import alma.acs.util.StopWatch;
 import alma.benchmark.CorbaNotifySupplierOperations;
@@ -198,11 +199,12 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl implements Corb
 				}
 				else {
 					// run continuously 
-					future = runner.scheduleWithFixedDelay(runnable, 0, 0, TimeUnit.MILLISECONDS);
+					future = runner.scheduleWithFixedDelay(runnable, 0, 1, TimeUnit.NANOSECONDS); // delay must be > 0, otherwise IllegalArgumentException
 				}
 				runnable.setScheduledFuture(future);
 			}
 		} catch (Exception ex) {
+			m_logger.log(AcsLogLevel.SEVERE, "sendEvents call failed", ex);
 			throw new AcsJCouldntPerformActionEx(ex).toCouldntPerformActionEx();
 		}
 		
