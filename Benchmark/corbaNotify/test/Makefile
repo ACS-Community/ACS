@@ -128,9 +128,9 @@ USER_IDL =
 #
 # Jarfiles and their directories
 #
-#JARFILES=corbaNotifyTest
-#corbaNotifyTest_DIRS=acs
-jjj_EXTRAS=
+JARFILES=corbaNotifyTest
+corbaNotifyTest_DIRS=acs
+corbaNotifyTest_EXTRAS=
 
 # For expressing dependencies between jarfiles (parallel builds)
 jjj_JLIBS= 
