@@ -94,7 +94,8 @@ int main(int argc, char *argv[])
 	list<char *>::iterator it;
 	for(it = flows.begin(); it != flows.end(); it++) {
 		ReceiverFlowConfiguration cfg;
-		receiverStream.createFlow((*it), cfg);
+		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), cfg);
+		flow->getCallback<TestCB>();
 	}
 
 	if (sleepPeriod>0)
