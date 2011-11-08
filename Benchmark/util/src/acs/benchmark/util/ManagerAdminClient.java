@@ -20,6 +20,10 @@
  *******************************************************************************/
 package acs.benchmark.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import si.ijs.maci.AdministratorOperations;
@@ -43,10 +47,33 @@ public class ManagerAdminClient implements AdministratorOperations
 	private final String name;
 	private final Logger logger;
 
+	private final Map<String, CountDownLatch> containerLoggedInSyncMap = new HashMap<String, CountDownLatch>();
+	
 	public ManagerAdminClient(String name, Logger logger) {
 		this.name = name;
 		this.logger = logger;
 	}
+
+	/**
+	 * Allows clients to wait for given container login.
+	 * This method is thread-safe.
+	 * @throws InterruptedException
+	 * @see {@link CountDownLatch#await(long, TimeUnit)}
+	 */
+	public boolean awaitContainerLogin(String containerName, long timeout, TimeUnit unit) throws InterruptedException {
+		boolean ret = false;
+		CountDownLatch sync = null;
+		synchronized (containerLoggedInSyncMap) {
+			sync = containerLoggedInSyncMap.get(containerName);
+			if (sync == null) {
+				sync = new CountDownLatch(1);
+				containerLoggedInSyncMap.put(containerName, sync);
+			}
+		}
+		ret = sync.await(timeout, unit);
+		return ret;
+	}
+	
 	
 	@Override
 	public void client_logged_in(ClientInfo info, long timestamp, long execution_id) {
@@ -84,10 +111,20 @@ public class ManagerAdminClient implements AdministratorOperations
 
 	}
 
+	/** 
+	 * Releases all clients that wait for a given container to log in, see {@link #awaitContainerLogin(String, long, TimeUnit)}.
+	 *  
+	 * @see si.ijs.maci.AdministratorOperations#container_logged_in(si.ijs.maci.ContainerInfo, long, long)
+	 */
 	@Override
 	public void container_logged_in(ContainerInfo info, long timestamp, long execution_id) {
-		// TODO Auto-generated method stub
-
+		String containerName = info.name;
+		synchronized (containerLoggedInSyncMap) {
+			CountDownLatch sync = containerLoggedInSyncMap.get(containerName);
+			if (sync != null) {
+				sync.countDown();
+			}
+		}
 	}
 
 	@Override
@@ -144,6 +181,5 @@ public class ManagerAdminClient implements AdministratorOperations
 	public boolean ping() {
 		return true;
 	}
-
 
 }
