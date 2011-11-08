@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
@@ -40,6 +41,7 @@ import si.ijs.maci.LoggingConfigurablePackage.LogLevels;
 
 import alma.ACSErrTypeCommon.BadParameterEx;
 import alma.ACSErrTypeCommon.IllegalArgumentEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
 import alma.JavaContainerError.wrappers.AcsJContainerEx;
 import alma.acs.container.AcsManagerProxy;
 import alma.acs.container.ContainerServices;
@@ -51,6 +53,7 @@ import alma.acsdaemon.ContainerDaemonHelper;
 import alma.acsdaemon.ContainerDaemonOperations;
 import alma.acsdaemonErrType.FailedToStartContainerEx;
 import alma.acsdaemonErrType.FailedToStopContainerEx;
+import alma.acsdaemonErrType.wrappers.AcsJFailedToStartContainerEx;
 import alma.maci.containerconfig.types.ContainerImplLangType;
 import alma.maciErrType.LoggerDoesNotExistEx;
 import alma.maciErrType.NoPermissionEx;
@@ -77,6 +80,7 @@ public class ContainerUtil
 	protected AcsManagerProxy adminProxy;
 	protected boolean loggedInToManager;
 	protected ORB orb;
+	protected ManagerAdminClient managerAdminClient;
 
 	
 	/////////////////////////////////////////////////////////////////////
@@ -132,7 +136,8 @@ public class ContainerUtil
 	
 	public void loginToManager() throws AcsJContainerEx {
 		if (!loggedInToManager) {
-			AdministratorPOATie adminpoa = new AdministratorPOATie(new ManagerAdminClient(containerServices.getName(), logger));
+			managerAdminClient = new ManagerAdminClient(containerServices.getName(), logger);
+			AdministratorPOATie adminpoa = new AdministratorPOATie(managerAdminClient);
 			Administrator adminCorbaObj = adminpoa._this(orb);
 			adminProxy.loginToManager(adminCorbaObj, false);
 			int adminManagerHandle = adminProxy.getManagerHandle();
@@ -294,14 +299,23 @@ public class ContainerUtil
 	 * Note that outside of performance tests it is required to start containers either through the OMC
 	 * or by the manager in case of CDB-configured autostart containers. 
 	 * Here we do it from application code in order to run flexible tests that don't require a CDB setup.
+	 * <p>
+	 * Similar code from module acscommandcenter (Executor#remoteDaemonForContainers) does not seem to implement
+	 * synchronization on the container becoming available. 
+	 * 
 	 * @param host
 	 * @param containerType
 	 * @param containerName
 	 * @param flags
+	 * @param waitContainerReady  If true, waits for the container to be ready, as indicated by a callback from the manager (requires prior login to the manager).
 	 * @throws FailedToStartContainerEx 
 	 * @throws BadParameterEx 
 	 */
-	public void startContainer(String host, ContainerImplLangType containerType, String containerName, String flags) throws BadParameterEx, FailedToStartContainerEx {
+	public void startContainer(String host, ContainerImplLangType containerType, String containerName, String flags, boolean waitContainerReady) 
+			throws AcsJBadParameterEx, AcsJFailedToStartContainerEx {
+		if (!loggedInToManager && waitContainerReady ) {
+			throw new IllegalStateException("must be logged in to the manager if waitContainerReady==true");
+		}
 		if (host == null || host.isEmpty()) {
 			host = ACSPorts.getIP();
 		}
@@ -311,7 +325,27 @@ public class ContainerUtil
 		ContainerDaemonOperations daemon = getContainerDaemon(host);
 		String containerTypeName = containerType.toString(); // TODO check that string is as expected by daemon, e.g. "py" vs. "python"
 		short instanceNumber = (short) ACSPorts.getBasePort();
-		daemon.start_container(containerTypeName, containerName, instanceNumber, new String[0], flags);
+		try {
+			daemon.start_container(containerTypeName, containerName, instanceNumber, new String[0], flags);
+		} catch (BadParameterEx ex) {
+			throw new AcsJBadParameterEx();
+		}
+		catch (FailedToStartContainerEx ex) {
+			throw new AcsJFailedToStartContainerEx();
+		}
+		
+		if (waitContainerReady) {
+			boolean containerOK = false;
+			try {
+				containerOK = managerAdminClient.awaitContainerLogin(containerName, 30, TimeUnit.SECONDS);
+			} catch (InterruptedException ex) {
+				// just leave containerOK = false
+			}
+			if (!containerOK) {
+				throw new AcsJFailedToStartContainerEx("Did not receive manager notification about container '" + 
+						containerName + "' having logged in.");
+			}
+		}
 	}
 
 	public void stopContainer(String host, String containerName) throws BadParameterEx, FailedToStopContainerEx {
