@@ -116,15 +116,17 @@ TAO_IDLFLAGS =
 USER_IDL =
 
 
+#
+# Component jarfiles
+#
 COMPONENTS_JARFILES = corbaNotifyTestComp
 corbaNotifyTestComp_DIRS = acs/benchmark/nc
-
 
 #
 # Jarfiles and their directories
 #
-#JARFILES=corbaNotifyTest
-#corbaNotifyTest_DIRS=acs
+JARFILES=
+jjj_DIRS=
 jjj_EXTRAS=
 
 # For expressing dependencies between jarfiles (parallel builds)
