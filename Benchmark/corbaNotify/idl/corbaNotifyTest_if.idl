@@ -38,9 +38,9 @@
 
 module benchmark 
 {
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////// zzz ///////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////// Event Types and NC names ////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
 
     /** 
      *  Snapshot from CONTROL/Device/HardwareDevice/MOUNT/Mount/idl/Mount.idl
@@ -94,6 +94,21 @@ module benchmark
     };
     
     /** 
+     *  Event type not related to mount status
+     */
+    struct SomeOtherEventType {
+        double    someData;
+    };
+
+    
+    const string CHANNELNAME_CONTROL_REALTIME = "CONTROL_REALTIME";
+        
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////// Test comp API /////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    
+    /** 
      * Describes one NC and the event types that should be sent or received on this NC.
      */
     struct NcEventSpec {
@@ -119,15 +134,13 @@ module benchmark
     typedef sequence <NcEventSpec> NcEventSpecSeq;
     
     
-    const string CHANNELNAME_CONTROL_REALTIME = "CONTROL_REALTIME";
-    
     
     interface CorbaNotifyCompBase : ACS::ACSComponent
     {
         /** 
          * Connect to the given NCs, for later use.
          * This method should normally be called for all NCs before sending or receiving events. 
-         * For special tests it should also allow to be called later.
+         * For special tests it should also allow to be called again later, adding more NCs.
          * 
          * If connection to any one of the given NCs fails, this method attempts to disconnect from all NCs previously connected
          * as part of this call (while NCs that were already connected from previous calls to this method will not be disconnected).
@@ -160,9 +173,9 @@ module benchmark
         /** 
          * Start sending events.
          * If a fixed number of events are specified in "numberOfEvents" then the call will return only when these events have been fired.
-         * TODO: Introduce callback notification back to client if we have corba timeout problems.
-         * 
+         * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
          * Without defined number of events, this call will return immediately.
+         * 
          * @return The time it took (in ms) to send the specified number of events. This may be a bit shorter than the time experienced by the client for the call.
          *         Undefined if numberOfEvents is not specified.
          */
@@ -185,15 +198,19 @@ module benchmark
     interface CorbaNotifyConsumer : CorbaNotifyCompBase
     {
         /** 
-         * Start receiving events.
+         * Subscribe to the given events and start receiving events.
          * If a fixed number of events are specified in "numberOfEvents" then the call will return only when all of these events have been received.
          * (TODO: Introduce callback notification back to client if we have corba timeout problems.)
          * Without defined number of events, this call will return immediately.
+         * 
+         * @return The time it took (in ms) to receive the specified number of events, starting to count when the first event arrives. 
+         *         This time may be shorter than the time experienced by the client for the call.
+         *         Undefined if numberOfEvents is not specified.
          */
-    	void receiveEvents(
+    	long receiveEvents(
     	        // Subscribes to the specified NCs / events.
     	        // A prior call to "ncConnect" is required for any of the NCs referenced in "ncEventSpec". Otherwise CouldntPerformActionEx.
-    	        in NcEventSpecSeq ncEventSpec,
+    	        in NcEventSpecSeq ncEventSpecs,
     	        // optional delay in ms for processing an event, to simulate slow receivers.
     	        in long processingDelayMillis, 
     	        // optional number of expected events. This refers to the total count over all subscribed NCs and event types.
