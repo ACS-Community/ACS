@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.189 2011/10/14 15:40:39 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.190 2011/11/09 15:18:52 hsommer Exp $"
 #
 #
 
@@ -39,7 +39,7 @@ endef
 #
 HAS_BENCHMARK = $(shell if [ -d Benchmark ]; then echo "TRUE"; else echo "FALSE"; fi)
 ifeq ($(HAS_BENCHMARK),TRUE)
-   MODULES_BENCHMARK = analyzer
+   MODULES_BENCHMARK = util analyzer
    ifeq ($(os),Linux)
 	MODULES_BENCHMARK += valgrind
    endif
