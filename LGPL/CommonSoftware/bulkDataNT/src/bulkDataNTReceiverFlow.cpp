@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.12 2011/11/08 11:12:04 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.13 2011/11/09 16:23:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.12 2011/11/08 11:12:04 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.13 2011/11/09 16:23:40 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -40,8 +40,8 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
 												const ReceiverFlowConfiguration &rcvCfg,
 												BulkDataNTCallback *cb,
 												bool releaseCB) :
+												BulkDataNTFlow(flowName),
 		receiverStream_m(receiverStream),
-		flowName_m(flowName),
 		callback_m(cb), releaseCB_m(releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);

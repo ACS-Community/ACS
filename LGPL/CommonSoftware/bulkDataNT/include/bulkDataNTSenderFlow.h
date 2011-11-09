@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.10 2011/10/21 14:36:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.11 2011/11/09 16:23:40 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,6 +29,7 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
+#include "bulkDataNTFlow.h"
 #include "bulkDataNTDDSPublisher.h"
 #include "bulkDataNTSenderStream.h"
 #include "bulkDataNTWriterListener.h"
@@ -39,7 +40,7 @@ namespace AcsBulkdata
 
 class BulkDataNTSenderStream;
 
-class BulkDataNTSenderFlow
+class BulkDataNTSenderFlow : public BulkDataNTFlow
 {
 public:
 
@@ -71,7 +72,6 @@ public:
 	void stopSend();
 protected:
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m;
-	std::string flowName_m;
 
 	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;
 	DDS::Topic *ddsTopic_m;
