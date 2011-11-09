@@ -1,7 +1,7 @@
 #*******************************************************************************
 # ALMA - Atacama Large Millimiter Array
 #
-# "@(#) $Id: TestList.lite,v 1.5 2011/11/09 14:19:52 bjeram Exp $"
+# "@(#) $Id: TestList.lite,v 1.6 2011/11/09 14:54:50 bjeram Exp $"
 #
 # TestList
 #
@@ -11,7 +11,7 @@
 SOURCE bulkDataNTTATEnv
 PROLOGUE acsutilTATPrologue -noloadifr
 
-1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01 -w 10" "bdNTSenderTest -w 2"
+1 SenderReceiverTest "bdNTReceiverTest -f 00 -f 01 -w 10" "bdNTSenderTest -w 4"
 2 ConfigurationParser "bdNTConfigurationParserTest"
 3 ReceiverCompOpenCloseStream "acsutilTATTestRunner acsStartContainer -cpp newConfigRecvContainer" "@SLEEP 10" "acsutilTATTestRunner bdNTReceiverImplClient"
 
