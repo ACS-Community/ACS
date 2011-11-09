@@ -75,14 +75,14 @@ ACSBulkData::BulkDataNTFrameDataReader* BulkDataNTDDSSubscriber::createDDSReader
 	DDS::DataReader *dr = subscriber_m->create_datareader_with_profile(topic,
 			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
 			listener,
-			DDS::STATUS_MASK_ALL/*ALL_STATUS*/);
+			DDS::STATUS_MASK_ALL);
 	if(dr==NULL)
 	{
 		DDSDRCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
 
-	return dr;
+	return ACSBulkData::BulkDataNTFrameDataReader::narrow(dr);
 }
 
 
