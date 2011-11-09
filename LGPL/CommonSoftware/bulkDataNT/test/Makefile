@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.14 2011/11/08 15:26:46 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.15 2011/11/09 15:00:31 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -37,12 +37,10 @@ MAKE_ONLY=C++ # impl is only for C++, and the same is with tests
 #
 # user definable C-compilation flags
 #USER_CFLAGS = 
-#USER_CFLAGS = -DRTI_UNIX -DRTI_LINUX 
 
 
 #
 # additional include and library search paths
-#USER_INC = -I$(COREDX_TOP)/target/include 
 USER_INC = -I$(NDDSHOME)/include -I$(NDDSHOME)/include/ndds
 #USER_LIB = 
 
@@ -209,7 +207,6 @@ INSTALL_FILES =
 # ------------------------------
 CSOURCENAMES = \
 	$(foreach exe, $(EXECUTABLES) $(EXECUTABLES_L), $($(exe)_OBJECTS)) \
-	$(foreach rtos, $(RTAI_MODULES) , $($(rtos)_OBJECTS)) \
 	$(foreach lib, $(LIBRARIES) $(LIBRARIES_L), $($(lib)_OBJECTS))
 
 #
