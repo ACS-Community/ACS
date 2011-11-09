@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: TestList_WS.lite,v 1.98 2010/03/18 23:03:42 javarias Exp $"
+# "@(#) $Id: TestList_WS.lite,v 1.99 2011/11/09 19:02:16 msekoran Exp $"
 #
 # TestList
 #
@@ -19,7 +19,7 @@ PROLOGUE acsutilTATPrologue -l
 5 maciTestCheckException "maciStartStopWrongCDB.sh"
 6 maciTestLogConfig "startContainerWS.sh ContainerTestLog 3064" "@SLEEP 20" "acsutilTATTestRunner maciTestLogConfig.sh"
 7 maciTestSimpleClient "startContainerWS.sh Container01 3065" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
-8 maciTestSimpleClientContainerServices "startContainerWS.sh Container01 3065" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
-8 maciTestComponentSmartPtr "@SLEEP 10" "startContainerWS.sh Container01 3066" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
+8 maciTestSimpleClientContainerServices "startContainerWS.sh Container01 3066" "@SLEEP 20" "acsutilTATTestRunner maciTestSimpleClient" "@SLEEP 20" 
+8 maciTestComponentSmartPtr "@SLEEP 10" "startContainerWS.sh Container01 3067" "@SLEEP 20" "acsutilTATTestRunner maciTestComponentSmartPtr"
 9 maciTestSimpleClientMulti "acsutilTATTestRunner maciTestSimpleClientMulti"
 EPILOGUE acsutilTATEpilogue
