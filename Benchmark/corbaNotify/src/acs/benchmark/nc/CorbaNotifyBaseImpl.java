@@ -20,29 +20,96 @@
  *******************************************************************************/
 package acs.benchmark.nc;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import alma.ACSErrTypeCommon.CouldntPerformActionEx;
+import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
+import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentImplBase;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
 import alma.benchmark.CorbaNotifyCompBaseOperations;
-import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
 
-public abstract class CorbaNotifyBaseImpl extends ComponentImplBase implements CorbaNotifyCompBaseOperations
+
+/**
+ * @author hsommer
+ *
+ * @param <T> AcsEventSubscriber or AcsEventPublisher. Allows sharing code between the two subclasses.
+ */
+public abstract class CorbaNotifyBaseImpl<T> extends ComponentImplBase implements CorbaNotifyCompBaseOperations
 {
-
+	/**
+	 * The component stores here all NCs it is connected to, together with the publisher or subscriber object it uses.
+	 * key = NC name, value = publisher or subscriber object
+	 */
+	protected final Map<String, T> subsOrPubs = new HashMap<String, T>();
+	
 	/**
 	 * Flag set by interrupt method
 	 */
 	protected volatile boolean cancel;
 
+//	@Override
+//	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+//		super.initialize(containerServices);
+//	}
+//
+//	@Override
+//	public void cleanUp() throws AcsJComponentCleanUpEx {
+//	}
+
+	/**
+	 * Encapsulates difference between AcsEventSubscriber and AcsEventPublisher.
+	 */
+	protected abstract T createNcParticipant(String ncName) throws AcsJContainerServicesEx;
+	
+	/**
+	 * Encapsulates difference between AcsEventSubscriber and AcsEventPublisher.
+	 */
+	protected abstract void disconnectNcParticipant(T subOrPub);
+
+	
+	/**
+	 * Subscriber or publisher connection.
+	 */
 	@Override
-	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
-		super.initialize(containerServices);
+	public void ncConnect(String[] ncNames) throws CouldntPerformActionEx {
+		Map<String, T> newSubsOrPubs = new HashMap<String, T>();
+		try {
+			for (String ncName : ncNames) {
+				T subOrPub = createNcParticipant(ncName);
+				newSubsOrPubs.put(ncName, subOrPub);
+			}
+			subsOrPubs.putAll(newSubsOrPubs);
+		} catch (AcsJContainerServicesEx ex) {
+			// disconnect those NCs that were just getting connected
+			for (T subOrPub : newSubsOrPubs.values()) {
+				try {
+					disconnectNcParticipant(subOrPub);
+				} catch (Exception ex2) {
+					// ignore, since the original NC connection ex is more interesting and will be thrown
+				}
+			}
+			throw new AcsJCouldntPerformActionEx(ex).toCouldntPerformActionEx();
+		}
 	}
 
 	@Override
-	public void cleanUp() throws AcsJComponentCleanUpEx {
+	public void ncDisconnect() throws CouldntPerformActionEx {
+		interrupt();
+		Exception lastEx = null;
+		for (T subOrPub : subsOrPubs.values()) {
+			try {
+				disconnectNcParticipant(subOrPub);
+			} catch (Exception ex) {
+				lastEx = ex;
+			}
+		}
+		if (lastEx != null) {
+			throw new AcsJCouldntPerformActionEx(lastEx).toCouldntPerformActionEx();
+		}
 	}
-
+	
+	
 	@Override
 	public void interrupt() {
 		cancel = true;

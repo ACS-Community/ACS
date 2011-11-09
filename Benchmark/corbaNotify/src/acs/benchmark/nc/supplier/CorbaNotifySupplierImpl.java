@@ -21,9 +21,7 @@
 package acs.benchmark.nc.supplier;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +34,6 @@ import acs.benchmark.nc.CorbaNotifyBaseImpl;
 import alma.ACSErrTypeCommon.CouldntPerformActionEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJCouldntPerformActionEx;
 import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
-import alma.acs.component.ComponentLifecycleException;
-import alma.acs.container.ContainerServices;
 import alma.acs.exceptions.AcsJException;
 import alma.acs.logging.AcsLogLevel;
 import alma.acs.nc.AcsEventPublisher;
@@ -46,47 +42,30 @@ import alma.benchmark.CorbaNotifySupplierOperations;
 import alma.benchmark.LightweightMountStatusData;
 import alma.benchmark.MountStatusData;
 import alma.benchmark.NcEventSpec;
-import alma.maciErrType.wrappers.AcsJComponentCleanUpEx;
+import alma.benchmark.SomeOtherEventType;
 
-public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl implements CorbaNotifySupplierOperations
+public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl<AcsEventPublisher> implements CorbaNotifySupplierOperations
 {
-	/**
-	 * key = NC name, value = publisher object
-	 */
-	private final Map<String, AcsEventPublisher> publishers = new HashMap<String, AcsEventPublisher>();
-	
 	private final List<PublishEventRunnable> runnables = new ArrayList<PublishEventRunnable>();
 
+//	@Override
+//	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
+//		super.initialize(containerServices);
+//	}
+//
+//	@Override
+//	public void cleanUp() throws AcsJComponentCleanUpEx {
+//		super.cleanUp();
+//	}
+
 	@Override
-	public void initialize(ContainerServices containerServices) throws ComponentLifecycleException {
-		super.initialize(containerServices);
+	protected AcsEventPublisher createNcParticipant(String ncName) throws AcsJContainerServicesEx {
+		return m_containerServices.createNotificationChannelPublisher(ncName);
 	}
 
 	@Override
-	public void cleanUp() throws AcsJComponentCleanUpEx {
-		super.cleanUp();
-	}
-
-	@Override
-	public void ncConnect(String[] ncNames) throws CouldntPerformActionEx {
-		Map<String, AcsEventPublisher> newPublishers = new HashMap<String, AcsEventPublisher>();
-		try {
-			for (String ncName : ncNames) {
-				AcsEventPublisher pub = m_containerServices.createNotificationChannelPublisher(ncName);
-				newPublishers.put(ncName, pub);
-			}
-			publishers.putAll(newPublishers);
-		} catch (AcsJContainerServicesEx ex) {
-			// disconnect those NCs that were just getting connected
-			for (AcsEventPublisher pub : newPublishers.values()) {
-				try {
-					pub.disconnect();
-				} catch (Exception ex2) {
-					// ignore, since the original NC connection ex is more interesting and will be thrown
-				}
-			}
-			throw new AcsJCouldntPerformActionEx(ex).toCouldntPerformActionEx();
-		}
+	protected void disconnectNcParticipant(AcsEventPublisher pub) {
+		pub.disconnect();
 	}
 
 	protected class PublishEventRunnable implements Runnable {
@@ -178,6 +157,10 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl implements Corb
 			data.antennaName = antennaNameToSet;
 			ret = data;
 		}
+		else if (eventName.equals("SomeOtherEventType")) {
+			SomeOtherEventType data = new SomeOtherEventType();
+			ret = data;
+		}
 		// @TODO Add support for more events types as needed
 		else {
 			throw new IllegalArgumentException("Unsupported event type '" + eventName + "'.");
@@ -198,7 +181,7 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl implements Corb
 			for (NcEventSpec ncEventSpec : ncEventSpecs) {
 				PublishEventRunnable runnable = new PublishEventRunnable(
 						ncEventSpec, 
-						this.publishers.get(ncEventSpec.ncName),
+						this.subsOrPubs.get(ncEventSpec.ncName),
 						numberOfEvents );
 				runnables.add(runnable);
 			}
@@ -257,22 +240,6 @@ public class CorbaNotifySupplierImpl extends CorbaNotifyBaseImpl implements Corb
 
 		for (PublishEventRunnable runnable : runnables) {
 			runnable.cancelPeriodicRuns();
-		}
-	}
-
-	@Override
-	public void ncDisconnect() throws CouldntPerformActionEx {
-		interrupt();
-		Exception lastEx = null;
-		for (AcsEventPublisher pub : publishers.values()) {
-			try {
-				pub.disconnect();
-			} catch (Exception ex) {
-				lastEx = ex;
-			}
-		}
-		if (lastEx != null) {
-			throw new AcsJCouldntPerformActionEx(lastEx).toCouldntPerformActionEx();
 		}
 	}
 
