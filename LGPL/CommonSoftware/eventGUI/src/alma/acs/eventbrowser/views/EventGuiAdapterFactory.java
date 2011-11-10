@@ -1,0 +1,161 @@
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
+package alma.acs.eventbrowser.views;
+
+import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+
+import alma.acs.eventbrowser.Application;
+import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
+import alma.acs.eventbrowser.model.NotifyServices;
+import alma.acs.eventbrowser.model.ChannelData;
+import alma.acs.eventbrowser.model.MCStatistics;
+import alma.acs.eventbrowser.model.NotifyServiceData;
+
+public class EventGuiAdapterFactory implements IAdapterFactory {
+
+	public EventGuiAdapterFactory() {
+
+	}
+	private IWorkbenchAdapter channelAdapter = new IWorkbenchAdapter() {
+		public Object getParent(Object o) {
+			return ((AbstractNotifyServiceElement)o).getParent();
+		}
+		public String getLabel(Object o) {
+			return ((AbstractNotifyServiceElement)o).getName();
+		}
+		public ImageDescriptor getImageDescriptor(Object object) {
+			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			return AbstractUIPlugin.imageDescriptorFromPlugin(
+					Application.PLUGIN_ID, imageKey);
+		}
+		public Object[] getChildren(Object o) {
+			ChannelData cd = (ChannelData)o;
+			return cd.getStatistics().toArray();
+		}
+	};
+	private IWorkbenchAdapter notifyServiceAdapter = new IWorkbenchAdapter() {
+
+		@Override
+		public Object[] getChildren(Object o) {
+			return ((NotifyServiceData)o).getChannels().toArray();
+		}
+
+		@Override
+		public ImageDescriptor getImageDescriptor(Object object) {
+			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			return AbstractUIPlugin.imageDescriptorFromPlugin(
+					Application.PLUGIN_ID, imageKey);
+		}
+
+		@Override
+		public String getLabel(Object o) {
+			return ((AbstractNotifyServiceElement)o).getName();
+		}
+
+		@Override
+		public Object getParent(Object o) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	};
+	
+	private IWorkbenchAdapter rootOfNotifyServicesAdapter = new IWorkbenchAdapter() {
+		
+		@Override
+		public Object getParent(Object o) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public String getLabel(Object o) {
+			// TODO Auto-generated method stub
+			return "Notify Services";
+		}
+		
+		@Override
+		public ImageDescriptor getImageDescriptor(Object object) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		@Override
+		public Object[] getChildren(Object o) {
+			// TODO Auto-generated method stub
+			return ((NotifyServices)o).getServices().toArray();
+		}
+	};
+	
+	private IWorkbenchAdapter statisticsAdapter = new IWorkbenchAdapter() {
+
+		@Override
+		public Object[] getChildren(Object o) {
+			// TODO Auto-generated method stub
+			return new Object[0];
+		}
+
+		@Override
+		public ImageDescriptor getImageDescriptor(Object object) {
+			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			return AbstractUIPlugin.imageDescriptorFromPlugin(
+					Application.PLUGIN_ID, imageKey);
+		}
+
+		@Override
+		public String getLabel(Object o) {
+			// TODO Auto-generated method stub
+			return ((MCStatistics)o).getStatistics();
+		}
+
+		@Override
+		public Object getParent(Object o) {
+			// TODO Auto-generated method stub
+			return ((MCStatistics)o).getParent();
+		}
+		
+	};
+
+
+	@Override
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if (adaptableObject instanceof ChannelData && adapterType == IWorkbenchAdapter.class)
+			return channelAdapter;
+		if (adaptableObject instanceof NotifyServiceData && adapterType == IWorkbenchAdapter.class)
+			return notifyServiceAdapter;
+		if (adaptableObject instanceof NotifyServices && adapterType == IWorkbenchAdapter.class)
+			return rootOfNotifyServicesAdapter;
+		if (adaptableObject instanceof MCStatistics && adapterType == IWorkbenchAdapter.class)
+			return statisticsAdapter;		
+		return null;
+	}
+
+	@Override
+	public Class[] getAdapterList() {
+		return new Class[] {IWorkbenchAdapter.class};
+	}
+
+}

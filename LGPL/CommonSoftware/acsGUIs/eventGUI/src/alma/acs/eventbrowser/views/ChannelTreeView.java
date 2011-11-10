@@ -20,10 +20,8 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.views;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -31,19 +29,10 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -51,12 +40,17 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.model.BaseWorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.eventbrowser.model.MCStatistics;
+import alma.acs.eventbrowser.model.NotifyServiceData;
+import alma.acs.eventbrowser.model.NotifyServices;
 
 
 /**
@@ -82,14 +76,15 @@ public class ChannelTreeView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
 	private Action startMonitoringAction;
-	private Action doubleClickAction;
-	private ViewContentProvider vcp;
+	
+	private IAdapterFactory adapterFactory = new EventGuiAdapterFactory();
 		
 	private EventModel em;
 	private long howOften = 10000l; // Default is every 10 seconds
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
 	private Thread channelTreeThread;
+	private SubscribeToChannelAction subscribeAction;
 
 	/*
 	 * The content provider class is responsible for
@@ -101,133 +96,7 @@ public class ChannelTreeView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
-	class TreeObject implements IAdaptable {
-		private String name;
-		private TreeParent parent;
-		
-		public TreeObject(String name) {
-			this.name = name;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setParent(TreeParent parent) {
-			this.parent = parent;
-		}
-		public TreeParent getParent() {
-			return parent;
-		}
-		public String toString() {
-			return getName();
-		}
-		public Object getAdapter(Class key) {
-			return null;
-		}
-	}
-	
-	class TreeParent extends TreeObject {
-		private ArrayList<TreeObject> children;
-		public TreeParent(String name) {
-			super(name);
-			children = new ArrayList<TreeObject>();
-		}
-		public void addChild(TreeObject child) {
-			children.add(child);
-			child.setParent(this);
-		}
-		public void removeChild(TreeObject child) {
-			children.remove(child);
-			child.setParent(null);
-		}
-		public TreeObject [] getChildren() {
-			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
-		}
-		public boolean hasChildren() {
-			return children.size()>0;
-		}
-	}
 
-	class ViewContentProvider implements IStructuredContentProvider, 
-										   ITreeContentProvider {
-		private TreeParent invisibleRoot;
-
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			viewer = (TreeViewer)v;
-		}
-		public void dispose() {
-		}
-		
-		public Object[] getElements(Object parent) {
-			if (parent.equals(getViewSite())) {
-				if (invisibleRoot==null) initialize();
-				return getChildren(invisibleRoot);
-			}
-			return getChildren(parent);
-		}
-		public Object getParent(Object child) {
-			if (child instanceof TreeObject) {
-				return ((TreeObject)child).getParent();
-			}
-			return null;
-		}
-		public Object [] getChildren(Object parent) {
-			if (parent instanceof TreeParent) {
-				return ((TreeParent)parent).getChildren();
-			}
-			return new Object[0];
-		}
-		public boolean hasChildren(Object parent) {
-			if (parent instanceof TreeParent)
-				return ((TreeParent)parent).hasChildren();
-			return false;
-		}
-/*
- * We will set up a dummy model to initialize tree hierarchy.
- * In a real code, you will connect to a real model and
- * expose its hierarchy.
- */
-		public void initialize() {
-			ArrayList<ChannelData> clist = null;
-			try {
-				em = EventModel.getInstance();
-				clist = em.getChannelStatistics();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			TreeParent root = new TreeParent("Notify Service");
-
-			if (clist != null) {
-				for (Iterator<ChannelData> iterator = clist.iterator(); iterator
-						.hasNext();) {
-					ChannelData cd = iterator.next();
-					TreeParent tp = new TreeParent(cd.getName());
-					TreeObject tcon = new TreeObject(cd
-							.getNumConsumersAndDelta());
-					TreeObject tsup = new TreeObject(cd
-							.getNumSuppliersAndDelta());
-					tp.addChild(tcon);
-					tp.addChild(tsup);
-					root.addChild(tp);
-				}
-			}
-			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(root);
-//			System.out.println("Root has following children: "+root.children);
-		}
-	}
-	static class ViewLabelProvider extends LabelProvider {
-
-		public String getText(Object obj) {
-			return obj.toString();
-		}
-		public Image getImage(Object obj) {
-			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent)
-			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-	}
 	static class NameSorter extends ViewerSorter {
 	}
 
@@ -243,18 +112,28 @@ public class ChannelTreeView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
-		vcp = new ViewContentProvider();
-		viewer.setContentProvider(vcp);
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
+		Platform.getAdapterManager().registerAdapters(adapterFactory,ChannelData.class);
+		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServiceData.class);
+		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServices.class);
+		Platform.getAdapterManager().registerAdapters(adapterFactory,MCStatistics.class);
 
+		drillDownAdapter = new DrillDownAdapter(viewer);
+		viewer.setContentProvider(new BaseWorkbenchContentProvider());
+		//viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setLabelProvider(new WorkbenchLabelProvider());
+		viewer.setSorter(new NameSorter());
+		try {
+			em = EventModel.getInstance();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		viewer.setInput(NotifyServices.getInstance()); // TODO: Complete the hierarchy and add an adapter for the NotifyServiceData
+		getSite().setSelectionProvider(viewer);
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "alma.acs.eventbrowser.viewer");
 		makeActions();
 		hookContextMenu();
-		hookDoubleClickAction();
 		contributeToActionBars();
 		if (Application.isMonitoring()) {
 			startMonitoringAction.setEnabled(false);
@@ -295,6 +174,7 @@ public class ChannelTreeView extends ViewPart {
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(refreshAction);
 		manager.add(startMonitoringAction);
+		manager.add(subscribeAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute their actions here
@@ -311,7 +191,7 @@ public class ChannelTreeView extends ViewPart {
 	private void makeActions() {
 		refreshAction = new Action() {
 			public void run() {
-				vcp.initialize();
+				//vcp.initialize();
 				viewer.refresh();
 			}
 		};
@@ -330,22 +210,24 @@ public class ChannelTreeView extends ViewPart {
 		startMonitoringAction.setToolTipText("Begin periodic updating of channel data");
 		startMonitoringAction.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
-		doubleClickAction = new Action() {
-			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
-			}
-		};
+		
+		
+		try {
+			subscribeAction = new SubscribeToChannelAction(getSite().getWorkbenchWindow());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+//		MenuManager menuMgr = new MenuManager("#contactsPopup");
+//		menuMgr.add(subscribeAction);
+//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+//		viewer.getControl().setMenu(menu);
+//		getSite().registerContextMenu(menuMgr, viewer);
 	}
 
-	private void hookDoubleClickAction() {
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-			}
-		});
-	}
+
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
@@ -380,8 +262,9 @@ public class ChannelTreeView extends ViewPart {
 				final Display display = viewer.getControl().getDisplay();
 
 				while (Application.isMonitoring() && !Thread.currentThread().isInterrupted()) {
-					vcp.initialize();
+
 					try {
+						EventModel.getInstance().getChannelStatistics();
 						if (!display.isDisposed())
 							display.asyncExec(r);
 
@@ -393,6 +276,9 @@ public class ChannelTreeView extends ViewPart {
 					} catch (SWTException e) {
 						// eat it
 						break;
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 				Application.setMonitoring(false);
@@ -401,6 +287,11 @@ public class ChannelTreeView extends ViewPart {
 		};
 		channelTreeThread = new Thread(t,"Channel Tree");
 		channelTreeThread.start();
+	}
+	
+	public void dispose() {
+		Platform.getAdapterManager().unregisterAdapters(adapterFactory);
+		super.dispose();
 	}
 
 }

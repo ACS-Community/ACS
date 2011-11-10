@@ -20,56 +20,23 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
-public class ChannelData implements Comparable<ChannelData> {
-	private final String name;
-	private int numberConsumers;
-	private int numberSuppliers;
-	private int deltaConsumers;	// change since last update
-	private int deltaSuppliers; 
-	
-	public String getName() {
-		return name;
-	}
+import java.util.ArrayList;
 
-	public int getNumberConsumers() {
-		return numberConsumers;
-	}
-	public void setNumberConsumers(int numberConsumers) {
-		this.numberConsumers = numberConsumers;
-	}
-	public void setDeltaConsumers(int deltaConsumers) {
-		this.deltaConsumers = deltaConsumers;
-	}
-	public int getDeltaConsumers() {
-		return deltaConsumers;
-	}
-	public int getNumberSuppliers() {
-		return numberSuppliers;
-	}
-	public void setNumberSuppliers(int numberSuppliers) {
-		this.numberSuppliers = numberSuppliers;
-	}
-	public void setDeltaSuppliers(int deltaSuppliers) {
-		this.deltaSuppliers = deltaSuppliers;
-	}
-	public int getDeltaSuppliers() {
-		return deltaSuppliers;
+public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
+	
+	private ArrayList<MCStatistics> statistics;
+	
+	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
+		super(name, parent, adminCounts, adminDeltas);
+		statistics = new ArrayList<MCStatistics>(2); // Consumers and suppliers for now; TODO: Add TAO M&C
 	}
 	
-	public String getNumConsumersAndDelta() {
-		return ""+numberConsumers+(deltaConsumers !=0 ? " ("+(deltaConsumers > 0 ? "+" : "")+deltaConsumers+")":"")+" consumers.";
+	public void addStatistics(MCStatistics stat) {
+		statistics.add(stat);
 	}
 	
-	public String getNumSuppliersAndDelta() {
-		return ""+numberSuppliers+(deltaSuppliers !=0 ? " ("+(deltaSuppliers > 0 ? "+" : "")+deltaSuppliers+")":"")+" suppliers.";
-	}
-	public ChannelData(String name, int[] adminCounts, int[] adminDeltas) {
-		super();
-		this.name = name;
-		this.numberConsumers = adminCounts[0];
-		this.numberSuppliers = adminCounts[1];
-		this.deltaConsumers = adminDeltas[0];
-		this.deltaSuppliers = adminDeltas[1];
+	public ArrayList<MCStatistics> getStatistics() {
+		return statistics;
 	}
 
 	@Override
@@ -82,7 +49,7 @@ public class ChannelData implements Comparable<ChannelData> {
 		if (o == null || !(o instanceof ChannelData)) {
 			return false;
 		}
-		return getName().equals(((ChannelData)o).getName());
+		return getName().equals(((AbstractNotifyServiceElement)o).getName());
 	}
 	
 	@Override

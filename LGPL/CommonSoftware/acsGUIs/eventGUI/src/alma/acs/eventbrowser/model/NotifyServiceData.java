@@ -21,35 +21,57 @@
 package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
+import org.omg.CosNotifyChannelAdmin.EventChannelFactory;
+
+public class NotifyServiceData extends AbstractNotifyServiceElement implements Comparable<NotifyServiceData> {
+
+	private HashMap<String, ChannelData> channels;
+	private EventChannelFactory efact;
 	
-	private ArrayList<MCStatistics> statistics;
-	
-	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
-		super(name, parent, adminCounts, adminDeltas);
-		statistics = new ArrayList<MCStatistics>(2); // Consumers and suppliers for now; TODO: Add TAO M&C
+	public NotifyServiceData(String name, EventChannelFactory ecf, int[] adminCounts, int[] adminDeltas) {
+		super(name, null, adminCounts, adminDeltas);
+		channels = new HashMap<String, ChannelData>(10);
+		efact = ecf;
 	}
 	
-	public void addStatistics(MCStatistics stat) {
-		statistics.add(stat);
+	public EventChannelFactory getEventChannelFactory() {
+		return efact;
 	}
 	
-	public ArrayList<MCStatistics> getStatistics() {
-		return statistics;
+	public ArrayList<ChannelData> getChannels() {
+		return new ArrayList<ChannelData>(channels.values());
+	}
+	
+	public ChannelData getChannel(String channelName) {
+		return channels.get(channelName);
+	}
+	
+	public boolean addChannelAndConfirm(String channelName, ChannelData cdata) {
+		if (!channels.containsKey(channelName)) {
+			channels.put(channelName, cdata);
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public void removeChannel(String channelName) {
+		if (channels.containsKey(channelName))
+			channels.remove(channelName);
 	}
 
-	@Override
-	public int compareTo(ChannelData o) {
+	public int compareTo(NotifyServiceData o) {
 		return getName().compareTo(o.getName());
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o == null || !(o instanceof ChannelData)) {
+		if (o == null || !(o instanceof NotifyServiceData)) {
 			return false;
 		}
-		return getName().equals(((AbstractNotifyServiceElement)o).getName());
+		return getName().equals(((NotifyServiceData)o).getName());
 	}
 	
 	@Override
@@ -57,4 +79,3 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 		return getName().hashCode();
 	}
 }
-

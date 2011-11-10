@@ -1,0 +1,84 @@
+/*******************************************************************************
+ * ALMA - Atacama Large Millimeter Array
+ * Copyright (c) ESO - European Southern Observatory, 2011
+ * (in the framework of the ALMA collaboration).
+ * All rights reserved.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
+ *******************************************************************************/
+package alma.acs.eventbrowser.views;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+
+import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
+import alma.acs.eventbrowser.model.ChannelData;
+import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.exceptions.AcsJException;
+
+public class SubscribeToChannelAction extends Action implements
+		ISelectionListener, IWorkbenchAction {
+	
+	private final IWorkbenchWindow window;
+	private String channelName; // from selection
+	private final EventModel em;
+	
+	public final static String ID = "alma.acs.eventbrowser.eventgui.subscribetochannel";
+
+	public SubscribeToChannelAction(IWorkbenchWindow window) throws Exception {
+		this.window = window;
+		setId(ID);
+		setText("Subscribe to channel");
+		setToolTipText("Subscribe to all events on this channel.");
+		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
+				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		this.window.getSelectionService().addSelectionListener(this);
+		em = EventModel.getInstance();
+	}
+	
+	public void run() {
+			em.addChannelSubscription(channelName);
+	}
+	
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection incoming) {
+		IStructuredSelection selection;
+		
+		if (incoming instanceof IStructuredSelection) {
+			selection = (IStructuredSelection) incoming;
+			boolean enabled = selection.size() == 1 && selection.getFirstElement() instanceof ChannelData;
+			setEnabled(enabled);
+			if (enabled)
+				channelName = ((ChannelData)(selection.getFirstElement())).getName();
+		} else {
+			setEnabled(false);
+		}
+
+	}
+
+}

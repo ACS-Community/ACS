@@ -45,6 +45,7 @@ public class AdminConsumer extends Consumer {
 	private static final EventType et = new EventType("*","*");
 	private static final EventType[] eta = {et};
 	private static final EventType[] etNone = {};
+	private static long totalEventCount = 0;
 	private int channelEventCount;
 	private HashMap<String, Integer> evtCounter;
 	private static boolean printDetails;
@@ -68,6 +69,12 @@ public class AdminConsumer extends Consumer {
 	}
 
 	@Override
+	protected String getNotificationFactoryName() {
+		// TODO Auto-generated method stub
+		return super.getNotificationFactoryName();
+	}
+
+	@Override
 	public void push_structured_event(StructuredEvent evt) throws Disconnected {
 //		super.push_structured_event(evt);
 		channelEventCount++;
@@ -88,10 +95,16 @@ public class AdminConsumer extends Consumer {
 		boolean oresult = Application.equeue.offer(new EventData(eDescrip.timestamp,eDescrip.name,eDescrip.count,evt.header.fixed_header.event_type.type_name,evtCounter.get(evtTypeName),m_channelName, eventAny));
 		if (!oresult)
 			m_logger.severe("Couldn't queue event # "+channelEventCount);
-//		m_logger.fine("Time "+eDescrip.timestamp+" "+m_channelName+" "+eDescrip.name+" "+eDescrip.count+" "+channelEventCount+" "
-//				+" "+evtTypeName+" "+evtCounter.get(evtTypeName));
-		// Uncomment following line only for stress testing.
-		//try { Thread.sleep(5000); } catch(InterruptedException e) {}// EVIL!!!!!!!!!!
+		if (++totalEventCount % 100 == 0) { // Maybe this is redundant with the "Total rows processed" log
+			m_logger.info("A total of "+totalEventCount+" events have been received.");
+			m_logger.info("Event queue size is now: "
+					+ Application.equeue.size() + " elements.");
+		}
+			//		m_logger.fine("Time "+eDescrip.timestamp+" "+m_channelName+" "+eDescrip.name+" "+eDescrip.count+" "+channelEventCount+" "
+			//				+" "+evtTypeName+" "+evtCounter.get(evtTypeName));
+			// Uncomment following line only for stress testing.
+			//try { Thread.sleep(5000); } catch(InterruptedException e) {}// EVIL!!!!!!!!!!
+
 	}
 
 	public static boolean getPrintDetails() {

@@ -22,39 +22,27 @@ package alma.acs.eventbrowser.model;
 
 import java.util.ArrayList;
 
-public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
+public class NotifyServices {
+	private static NotifyServices instance = null;
+	private ArrayList<NotifyServiceData> services;
 	
-	private ArrayList<MCStatistics> statistics;
-	
-	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
-		super(name, parent, adminCounts, adminDeltas);
-		statistics = new ArrayList<MCStatistics>(2); // Consumers and suppliers for now; TODO: Add TAO M&C
+	private NotifyServices() {
+		services = new ArrayList<NotifyServiceData>(10);
 	}
 	
-	public void addStatistics(MCStatistics stat) {
-		statistics.add(stat);
-	}
-	
-	public ArrayList<MCStatistics> getStatistics() {
-		return statistics;
-	}
-
-	@Override
-	public int compareTo(ChannelData o) {
-		return getName().compareTo(o.getName());
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o == null || !(o instanceof ChannelData)) {
-			return false;
+	public static NotifyServices getInstance() {
+		if (instance == null) {
+			instance = new NotifyServices();
 		}
-		return getName().equals(((AbstractNotifyServiceElement)o).getName());
+		return instance;
 	}
 	
-	@Override
-	public int hashCode() {
-		return getName().hashCode();
+	public ArrayList<NotifyServiceData> getServices() {
+		return services;
 	}
-}
+	
+	public void addService(NotifyServiceData data) {
+		services.add(data);
+	}
 
+}

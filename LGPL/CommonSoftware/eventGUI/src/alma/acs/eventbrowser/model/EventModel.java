@@ -26,8 +26,8 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.Inval
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IStatus;
@@ -72,7 +72,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.29 2011/10/28 11:56:21 jschwarz Exp $
+ * $Id: EventModel.java,v 1.30 2011/11/10 12:58:08 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -91,6 +91,7 @@ public class EventModel {
 //	private final EventChannelFactory arsvc;
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private HashMap<String, int[]> lastConsumerAndSupplierCount;
+	private ArrayList<String> subscribedChannels; // all channels whose events the user wishes to monitor/display
 	private static EventModel modelInstance;
 	private ArrayList<AdminConsumer> consumers;
 	private ArrayList<AdminConsumer> readyConsumers;
@@ -103,6 +104,8 @@ public class EventModel {
 	private ArrayList<EventChannelFactory> efacts;
 	private ArrayList<String> efactNames;
 	private ArrayList<String> notifyBindingNames;
+	private ArrayList<NotifyServiceData> clist;
+	private NotifyServices notifyServices;
 
 	private EventModel() throws Exception {
 		
@@ -112,13 +115,10 @@ public class EventModel {
 		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
 		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
 		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
+		subscribedChannels = new ArrayList<String>(MAX_NUMBER_OF_CHANNELS*5);
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
-//		nsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.NOTIFICATION_FACTORY_NAME.value, true));
-//		lsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.LOGGING_NOTIFICATION_FACTORY_NAME.value, true));
-//		alsvc = EventChannelFactoryHelper.narrow(mproxy.get_service("AlarmNotifyEventChannelFactory", true));
-//		arsvc = EventChannelFactoryHelper.narrow(mproxy.get_service(alma.acscommon.ARCHIVE_NOTIFICATION_FACTORY_NAME.value, true));
 		cs = compClient.getContainerServices();
 		orb = compClient.getAcsCorba().getORB();
 		
@@ -128,7 +128,7 @@ public class EventModel {
 		nctx = h.getNamingService();
 		getAllNotifyServices();
 		nsmc = getMonitorControl();
-//		getServiceTotals(); // temporarily, for testing
+		clist = new ArrayList<NotifyServiceData>(10);
 	}
 
 	/**
@@ -205,35 +205,7 @@ public class EventModel {
 				nsmc[i] = null;
 			} 
 		}
-//		final String[] MC_IORS = {"NotifyMCIOR" }; // TODO: Dynamically get and parse these things
-//		// final String[] MC_IORS = {"AlarmNotifyMCIOR", "ArchiveNotifyMCIOR", "LoggingNotifyMCIOR", "NotifyMCIOR" };
-//		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[MC_IORS.length];
-//		String iorbase = System.getProperty("ACS.tmp");
-//		System.out.println("ACS_TMP:"+iorbase);
-//		String instdir = System.getenv("ACS_INSTANCE");
-//		if (instdir == null)
-//			instdir = "ACS_INSTANCE.0";
-//		else
-//			instdir = "ACS_INSTANCE."+instdir;
-//		iorbase += File.separator+instdir+File.separator+"iors"+File.separator;
-//		for (int i = 0; i < MC_IORS.length; i++) {
-//			String iorpath = iorbase + MC_IORS[i]; // NS_MC_IOR;
-//			System.out.println("IORPATH: " + iorpath);
-//			File iorFile = new File(iorpath);
-//			try {
-//				BufferedReader input = new BufferedReader(new FileReader(
-//						iorFile));
-//				String iorString = input.readLine();
-//				if (iorString != null)
-//					nsmc[i] = NotificationServiceMonitorControlHelper.narrow(orb
-//							.string_to_object(iorString));
-//				input.close();
-//			} catch (FileNotFoundException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
+
 		return nsmc;
 	}
 	
@@ -252,16 +224,95 @@ public class EventModel {
 		return m_logger;
 	}
 	
-	public ArrayList<ChannelData> getServiceTotals() throws AcsJException {
-		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
-		getAllNotifyServices();
-		for (int i = 0; i < efacts.size(); i++) {
+	/**
+		 * @throws AcsJException
+		 * @throws AcsJComponentNotAlreadyActivatedEx
+		 * @throws AcsJCannotGetComponentEx
+		 * @throws AcsJComponentConfigurationNotFoundEx
+		 * @throws AcsJNoPermissionEx
+		 */
+		private NotifyServices getAllNotifyServices() throws AcsJException,
+				AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx,
+				AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx {
+			efacts = new ArrayList<EventChannelFactory>(10);
+			efactNames = new ArrayList<String>(10);
+			notifyBindingNames = new ArrayList<String>(10);
+			
+			notifyServices = NotifyServices.getInstance();
+	
+			Helper h = new Helper(cs);
+			NamingContext nctx = h.getNamingService();BindingListHolder bl = new BindingListHolder();
+			BindingIteratorHolder bi = new BindingIteratorHolder();
+			
+			nctx.list(-1, bl, bi);
+			for (Binding binding : bl.value) {
+				String serviceKind = alma.acscommon.NC_KIND.value;
+				if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
+	
+				String id = binding.binding_name[0].id;
+				//System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+				org.omg.CORBA.Object obj = null;
+				try {
+					obj = mproxy.get_service(id, false);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
+	//				System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
+	//				System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
+					String displayName = simplifyNotifyServiceName(id);
+					EventChannelFactory efact = EventChannelFactoryHelper.narrow(mproxy.get_service(id, false));
+					efacts.add(efact);
+					efactNames.add(displayName);
+					notifyBindingNames.add(id);
+					notifyServices.addService(new NotifyServiceData(displayName,efact, new int[2], new int[2]));
+				}
+			}
+	
+			m_logger.info("Number of notify service instances found = "+efacts.size());
+			return notifyServices;
+		}
+
+	/**
+	 * @param id
+	 * @return
+	 */
+	private String simplifyNotifyServiceName(String id) {
+		String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
+		
+		if (displayName.equals("")) {					
+			displayName = "DefaultNotifyService";
+		}
+		return displayName;
+	}
+
+	public ArrayList<NotifyServiceData> getNotifyServiceTotals() throws AcsJException {
+		if (clist.isEmpty())
+			calculateNotifyServiceTotals();
+		return clist;
+	}
+
+	/**
+	 * 
+	 * @throws AcsJException
+	 * @throws AcsJComponentNotAlreadyActivatedEx
+	 * @throws AcsJCannotGetComponentEx
+	 * @throws AcsJComponentConfigurationNotFoundEx
+	 * @throws AcsJNoPermissionEx
+	 */
+	private void calculateNotifyServiceTotals() throws AcsJException,
+			AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx,
+			AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx {
+
+		clist = notifyServices.getServices();
+		for (int i = 0; i < clist.size(); i++) {
 			int nconsumers;
 			int nsuppliers;
 			int[] chans;
 			
-			EventChannelFactory efact = efacts.get(i);
-			String efactName = efactNames.get(i);
+			NotifyServiceData nsData = clist.get(i);
+			EventChannelFactory efact = nsData.getEventChannelFactory();
+			String efactName = nsData.getName();
 			chans = efact.get_all_channels();
 			nconsumers = 0;
 			nsuppliers = 0;
@@ -277,75 +328,34 @@ public class EventModel {
 				}
 
 			}
-//			System.out.printf("%s consumers: %d\n", efactNames[i], nconsumers);
-//			System.out.printf("%s suppliers: %d\n", efactNames[i], nsuppliers);
-//			System.out.printf("Number of channels for: %s %d \n", efactNames[i],
+//			System.out.printf("%s consumers: %d\n", efactName, nconsumers);
+//			System.out.printf("%s suppliers: %d\n", efactName, nsuppliers);
+//			System.out.printf("Number of channels for: %s %d \n", efactName,
 //					chans.length);
-			clist.add(new ChannelData(efactName, new int[]{nconsumers, nsuppliers},new int[]{0,0}));
+			nsData.setNumberConsumers(nconsumers);
+			nsData.setNumberSuppliers(nsuppliers);
 			lastConsumerAndSupplierCount.put(efactName, new int[]{0,0});
 		}
-
-		return clist;
 	}
 
-	/**
-	 * @throws AcsJException
-	 * @throws AcsJComponentNotAlreadyActivatedEx
-	 * @throws AcsJCannotGetComponentEx
-	 * @throws AcsJComponentConfigurationNotFoundEx
-	 * @throws AcsJNoPermissionEx
-	 */
-	private void getAllNotifyServices() throws AcsJException,
-			AcsJComponentNotAlreadyActivatedEx, AcsJCannotGetComponentEx,
-			AcsJComponentConfigurationNotFoundEx, AcsJNoPermissionEx {
-		efacts = new ArrayList<EventChannelFactory>(10);
-		efactNames = new ArrayList<String>(10);
-		notifyBindingNames = new ArrayList<String>(10);
-
-		Helper h = new Helper(cs);
-		NamingContext nctx = h.getNamingService();BindingListHolder bl = new BindingListHolder();
-		BindingIteratorHolder bi = new BindingIteratorHolder();
-		
-		nctx.list(-1, bl, bi);
-		for (Binding binding : bl.value) {
-			String serviceKind = alma.acscommon.NC_KIND.value;
-			if (binding.binding_name[0].kind.equals(serviceKind)) continue; // Channels are not services! Let's avoid unnecessary exceptions.
-
-			String id = binding.binding_name[0].id;
-			//System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
-			org.omg.CORBA.Object obj = null;
-			try {
-				obj = mproxy.get_service(id, false);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			if (obj != null && obj._is_a("IDL:omg.org/CosNotifyChannelAdmin/EventChannelFactory:1.0")) {
-//				System.out.println("Binding name[0].id: "+binding.binding_name[0].id);
-//				System.out.println("Binding name[0].kind: "+binding.binding_name[0].kind);
-				String displayName = id.substring(0,id.indexOf("NotifyEventChannelFactory"));
-				
-				if (displayName.equals("")) {					
-					displayName = "DefaultNotifyService";
-				}
-				efacts.add(EventChannelFactoryHelper.narrow(mproxy.get_service(id, false)));
-				efactNames.add(displayName);
-				notifyBindingNames.add(id);
-			} 
-		}
-
-		m_logger.info("Number of notify service instances found = "+efacts.size());
-	}
-	
 	public ArrayList<ChannelData> getChannelStatistics() {
-		ArrayList<ChannelData> clist = new ArrayList<ChannelData>();
+		
+		try {
+			calculateNotifyServiceTotals();
+		} catch (AcsJException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ArrayList<ChannelData> chdatList = new ArrayList<ChannelData>();
 		BindingListHolder bl = new BindingListHolder();
 		BindingIteratorHolder bi = new BindingIteratorHolder();
 		final String[] roleNames = {"consumer","supplier"};
 		
 		nctx.list(-1, bl, bi);
 		for (Binding binding : bl.value) {
-			String serviceKind = alma.acscommon.NC_KIND.value;
-			if (binding.binding_name[0].kind.equals(serviceKind)) {
+			String serviceIsChannelKind = alma.acscommon.NC_KIND.value;
+			if (binding.binding_name[0].kind.equals(serviceIsChannelKind)) {
 				String channelName = binding.binding_name[0].id;
 				EventChannel ec;
 				try {
@@ -355,9 +365,12 @@ public class EventModel {
 					int[] consAndSupp = {0,0};
 					if (!channelMap.containsKey(channelName)) {
 						channelMap.put(channelName, ec);
-						consumer = getAdminConsumer(channelName);
-						consumers.add(consumer);
-						lastConsumerAndSupplierCount.put(channelName,consAndSupp);
+						if (subscribedChannels.contains(channelName)) {
+							consumer = getAdminConsumer(channelName);
+							consumers.add(consumer);
+						}
+						lastConsumerAndSupplierCount.put(channelName,
+								consAndSupp);
 					} else {
 						if (lastConsumerAndSupplierCount.containsKey(channelName))
 							consAndSupp = lastConsumerAndSupplierCount.get(channelName);
@@ -384,8 +397,26 @@ public class EventModel {
 						adminDeltas[i] = cdiff;
 					}
 					lastConsumerAndSupplierCount.put(channelName,adminCounts);
-					m_logger.info("Channel: "+channelName+" has "+adminCounts[0]+" consumers and "+adminCounts[1]+" suppliers.");
-					clist.add(new ChannelData(channelName, adminCounts, adminDeltas));
+					//m_logger.info("Channel: "+channelName+" has "+adminCounts[0]+" consumers and "+adminCounts[1]+" suppliers.");
+					String notifyServiceName = simplifyNotifyServiceName(h.getNotificationFactoryNameForChannel(channelName));
+					ChannelData cdata = new ChannelData(channelName, null, adminCounts, adminDeltas);
+					cdata.addStatistics(new ConsumerCounts(cdata,cdata.getNumConsumersAndDelta()));
+					cdata.addStatistics(new SupplierCounts(cdata,cdata.getNumSuppliersAndDelta()));
+					for (Iterator<NotifyServiceData> iterator = clist.iterator(); iterator
+							.hasNext();) {
+						NotifyServiceData nsData = (NotifyServiceData) iterator.next();
+						if (nsData.getName().equals(notifyServiceName)) {
+							cdata.setParent(nsData);
+							if (!nsData.addChannelAndConfirm(channelName, cdata)) {
+								ChannelData cd = nsData.getChannel(channelName);
+								cd.setNumberConsumers(adminCounts[0]);
+								cd.setNumberSuppliers(adminCounts[1]);
+								cd.setDeltaConsumers(adminDeltas[0]);
+								cd.setDeltaSuppliers(adminDeltas[1]);								
+							}
+							break;
+						}						
+					}
 				} catch (AcsJException e) {
 					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
 				}
@@ -398,7 +429,7 @@ public class EventModel {
 				e.printStackTrace();
 			}
 		}
-		return clist;	
+		return chdatList;	
 	}
 	
 	/**
@@ -446,7 +477,7 @@ public class EventModel {
 		return retValue;
 	}
 	
-	public String[] getServices() {
+	public String[] getCorbaServices() {
 
 		return orb.list_initial_services();
 	}
@@ -456,7 +487,7 @@ public class EventModel {
 	}
 	
 	public void refreshChannelSubscriptions() {
-		consumers = getAllConsumers();
+		consumers = getAllSelectedConsumers();
 
 		if (consumers != null) {
 			for (AdminConsumer consumer : consumers) {
@@ -478,12 +509,19 @@ public class EventModel {
 		if (!consumerMap.containsKey(channelName)) {
 			AdminConsumer adm = new AdminConsumer(channelName,cs);
 			consumerMap.put(channelName, adm);
+			subscribedChannels.add(channelName);
 			return adm;
 		}
 		return consumerMap.get(channelName);
 	}
 
-	public ArrayList<AdminConsumer> getAllConsumers() {
+	/**
+	 * The intention here is to return an array list of all consumers whose events the user
+	 * wants to monitor in the EventListView. "channelMap" indicates what channels are live;
+	 * "subscribedChannels" lists all channel that are to be (are being) monitored.
+	 * @return all consumers so selected
+	 */
+	public ArrayList<AdminConsumer> getAllSelectedConsumers() {
 		int channelsProcessed = 0;
 		StopWatch sw = new StopWatch(m_logger);
 		BindingListHolder bl = new BindingListHolder();
@@ -499,11 +537,13 @@ public class EventModel {
 					ec = getNotificationChannel(channelName, alma.acscommon.NC_KIND.value);
 
 					AdminConsumer consumer = null;
-					if (!channelMap.containsKey(channelName)) {
+					if (!channelMap.containsKey(channelName) ) {
 						channelMap.put(channelName, ec);
-						consumer = getAdminConsumer(channelName);
-						consumers.add(consumer);
-						channelsProcessed++;
+					}
+					if (subscribedChannels.contains(channelName) && !consumerMap.containsKey(channelName)) {
+							consumer = getAdminConsumer(channelName);
+							consumers.add(consumer);
+							channelsProcessed++;
 					}
 				} catch (AcsJException e) {
 					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
@@ -513,6 +553,10 @@ public class EventModel {
 		sw.logLapTime(" to create "+channelsProcessed+" channels ");
 		getArchiveConsumer();
 		return consumers;
+	}
+	
+	public void addChannelSubscription(String channelName) {
+		subscribedChannels.add(channelName);
 	}
 
 	public void getArchiveConsumer() {
@@ -567,18 +611,21 @@ public class EventModel {
 
 	}
 
-	public void closeAllConsumers() {
+	public synchronized void closeAllConsumers() {
 		//ArrayList<AdminConsumer>consumers = getAllConsumers();
 		for (AdminConsumer consumer : consumers) {
 			if (consumer != null) {
 				consumer.disconnect();
+				consumers.remove(consumers.indexOf(consumer));
 			}
 		}
 	}
 	
 	public void closeArchiveConsumer() {
-		if (archiveConsumer != null)
+		if (archiveConsumer != null) {
 			archiveConsumer.disconnect();
+			archiveConsumer = null;
+		}
 	}
 
 	public void tearDown() {

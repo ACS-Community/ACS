@@ -55,8 +55,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
+import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
+import alma.acs.eventbrowser.model.NotifyServiceData;
 import alma.acs.exceptions.AcsJException;
 
 
@@ -108,19 +110,19 @@ public class ServiceSummaryView extends ViewPart {
 			if (serviceMonitoringThread != null) serviceMonitoringThread.interrupt();
 		}
 		public Object[] getElements(Object parent) {
-			ChannelData[] a = new ChannelData[4];
-			ArrayList<ChannelData> cdlist = null;
+			NotifyServiceData[] a = new NotifyServiceData[4];
+			ArrayList<NotifyServiceData> cdlist = null;
 			try {
-				cdlist = em.getServiceTotals();
+				cdlist = em.getNotifyServiceTotals();
 			} catch (AcsJException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ChannelData[] l;
+			NotifyServiceData[] l;
 			if (cdlist != null)
 				l = cdlist.toArray(a);
 			else
-				return new ChannelData[]{};
+				return new NotifyServiceData[]{};
 			Arrays.sort(l);
 			return l;
 		}
@@ -130,8 +132,8 @@ public class ServiceSummaryView extends ViewPart {
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof ChannelData)
-				return ((ChannelData)element).getName();
+			if (element instanceof NotifyServiceData)
+				return ((NotifyServiceData)element).getName();
 			return "";
 		}
 
@@ -146,8 +148,8 @@ public class ServiceSummaryView extends ViewPart {
 		
 		@Override
 		public String getText(Object element) {
-			if (element instanceof ChannelData) 
-				return ""+((ChannelData)element).getNumberConsumers();
+			if (element instanceof NotifyServiceData) 
+				return ""+((NotifyServiceData)element).getNumberConsumers();
 			else
 				return "";
 		}
@@ -163,8 +165,8 @@ public class ServiceSummaryView extends ViewPart {
 		
 		@Override
 		public String getText(Object element) {
-			if (element instanceof ChannelData) 
-				return ""+((ChannelData)element).getNumberSuppliers();
+			if (element instanceof NotifyServiceData) 
+				return ""+((NotifyServiceData)element).getNumberSuppliers();
 			else
 				return "";
 		}
@@ -179,8 +181,8 @@ public class ServiceSummaryView extends ViewPart {
 
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			String s1 = ((ChannelData)e1).getName();
-			String s2 = ((ChannelData)e2).getName();
+			String s1 = ((NotifyServiceData)e1).getName();
+			String s2 = ((NotifyServiceData)e2).getName();
 			return s1.compareTo(s2);
 		}
 		
