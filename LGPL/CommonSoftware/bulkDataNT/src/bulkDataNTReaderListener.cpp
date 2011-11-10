@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.29 2011/11/10 12:01:35 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.30 2011/11/10 14:21:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -196,6 +196,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				if (currentState_m==DataRcvState)
 				{
 					currentState_m = StopState;
+					cout <<	topicName_m << " Received sendStop" << endl;
 					cout << "===============================================================" << endl;
 					if (frameCounter_m==0)
 					{
