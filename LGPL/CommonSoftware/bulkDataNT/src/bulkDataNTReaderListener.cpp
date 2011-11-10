@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.27 2011/11/10 10:38:44 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.28 2011/11/10 11:19:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,14 +56,12 @@ try { call; 																	\
 
 
 BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTCallback* cb)
-: Logging::Loggable("BulkDataNT:"+string(name)),
+: BulkDataNTDDSLoggable("BulkDataNT:"+string(name)),
 				currentState_m(StartState),
 				topicName_m(name),
 				dataLength_m(0),
 				frameCounter_m(0),
 				totalFrames_m(0),
-				logger_mp(0),
-				loggerInitCount_m(0),
 				callback_mp (cb)
 {
 	ACS_TRACE(__FUNCTION__);
@@ -77,13 +75,6 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
 BulkDataNTReaderListener::~BulkDataNTReaderListener ()
 {
 	ACS_TRACE(__FUNCTION__);
-	if(logger_mp)
-	{
-		// we have to call "done" as many times as we call "init" !!
-		for(unsigned int i=0; i<loggerInitCount_m; i++)
-			LoggingProxy::done();
-		delete logger_mp; // ...  but we have just one proxy object for all DDS reader threads
-	}
 }//~BulkDataNTReaderListener
 
 void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
@@ -350,17 +341,3 @@ void BulkDataNTReaderListener::increasConseqErrorCount()
 	}
 }//increasConseqErroCount
 
-Logging::Logger::LoggerSmartPtr BulkDataNTReaderListener::getLogger ()
-{
-	// this code is a bit dirty, but wee need to initialize loggerproxy per thread
-	//isThreadInit return 0 if it is initialized !!!
-	if (LoggingProxy::isInitThread() )
-	{
-		//TBD here we have to set centralized loggger as well, but we need some support from logging
-		if (logger_mp==0) //if we do not have a logger we create one for all DDS threads
-			logger_mp = new LoggingProxy(0, 0, 31);
-		LoggingProxy::init(logger_mp);
-		loggerInitCount_m++; // we initialized Proxy another time
-	}
-	return Logging::Loggable::getLogger();
-}//getLogger

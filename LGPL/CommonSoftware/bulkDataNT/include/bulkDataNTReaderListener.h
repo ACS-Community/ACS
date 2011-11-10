@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.17 2011/11/10 10:38:44 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.18 2011/11/10 11:19:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,13 +31,14 @@
 #include <ndds/ndds_namespace_cpp.h>
 
 #include "bulkDataNTCallback.h"
-#include <loggingLoggable.h>
+#include "bulkDataNTDDSLoggable.h"
+
 #include <string>
 #include <ACE.h>
 
 class BulkDataNTReaderListener
   : public virtual DDS::DataReaderListener,
-    public Logging::Loggable
+    public BulkDataNTDDSLoggable
 {
 public:
   //Constructor
@@ -78,12 +79,6 @@ private:
   unsigned long nextFrame_m;   /// the count of next frame that should be received
 
   ACSBulkData::BulkDataNTFrameDataReader *frameDataReader_mp; /// pointer to DDS reader
-
-  /// we override getLogger, so that we can initialize logging system if needed
-  virtual Logging::Logger::LoggerSmartPtr getLogger ();
-  LoggingProxy *logger_mp; //we need separate logger, because we are in separate thread  ...
-  // ... other is one logger for all DDS reader thread
-  unsigned int loggerInitCount_m; // we need to count how many time we call LoggerProxy::init
 
    // pointer to user defined callback
   AcsBulkdata::BulkDataNTCallback* callback_mp;
