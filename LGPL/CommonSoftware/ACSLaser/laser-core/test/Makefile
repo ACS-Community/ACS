@@ -138,7 +138,7 @@ USER_IDL =
 # Jarfiles and their directories
 #
 JARFILES= lasercoretest
-lasercoretest_DIRS=alma com
+lasercoretest_DIRS=alma com cern
 #
 # java sources in Jarfile on/off
 DEBUG= 
