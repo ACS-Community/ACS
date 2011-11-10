@@ -93,7 +93,7 @@
 				<alarm-definition fault-family="NODE_DEFAULT" fault-member="MULTIPLICITY_REG" fault-code="2"/>
 			</parent>
 			<child>
-				<alarm-definition fault-family="NODE_DEFAULT" fault-member="*" fault-code="1"/>
+				<alarm-definition fault-family="NODE_DEFAULT" fault-member="*" fault-code="3"/>
 			</child>
 		</reduction-link>
 		
