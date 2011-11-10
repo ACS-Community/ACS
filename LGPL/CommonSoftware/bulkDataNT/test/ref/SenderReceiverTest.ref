@@ -79,8 +79,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTWriterListener::BulkDataNTWriterListener(const char*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - DefaultStream#00 BulkDataNTWriterListener::on_publication_match
@@ -119,12 +119,13 @@
 1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
 1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
-1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="1000"
+2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
+1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="1000"
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - increasConseqErrorCount] Too many consequent errors: 4/4 on DefaultStream#01
+1 - DefaultStream#00 Received sendStop
 1 - ===============================================================
 1 - cbStop
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (2) before waiting: 1
@@ -135,8 +136,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - virtual void AcsBulkdata::BulkDataNTSenderStream::removeFlowFromMap(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - virtual void AcsBulkdata::BulkDataNTSenderStream::removeFlowFromMap(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Entering...
-1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_liveliness_changed] A sender has disconnected to flow: 00 of the stream: DefaultStream. Total alive connection(s): 0
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_liveliness_changed] A sender has disconnected to flow: 00 of the stream: DefaultStream. Total alive connection(s): 0
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_subscription_matched] 
 2 - ----------T--:--:--.--- [GlobalLogger - virtual BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
