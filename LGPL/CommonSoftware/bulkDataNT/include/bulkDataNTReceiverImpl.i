@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.12 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.13 2011/11/10 11:10:33 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -119,7 +119,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 				}
 
 				// For each "TCP" create a default flow configuration object
-				map<string, ReceiverFlowConfiguration> flowsCfgMap;
+				std::map<std::string, ReceiverFlowConfiguration> flowsCfgMap;
 				for (int i=0; i<numOtherFeps; i++)
 				{
 					ReceiverFlowConfiguration flowConfig;
@@ -165,7 +165,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 	ACS_TRACE(__PRETTY_FUNCTION__);
 
 	try {
-		map<string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
+		std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
 		for(it = recvConfigMap_m.begin(); it != recvConfigMap_m.end(); it++) {
 
 			// Double check that we don't re-create existing streams
@@ -195,7 +195,7 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiver()
 template<class TCallback>
 void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_name)
 {
-	map<string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
+	std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator it;
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = 0;
 
 	// double-check that the stream is already opened
@@ -240,13 +240,13 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 }
 
 template<class TCallback>
-AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createReceiverStream(const char *stream_name, map<string, BulkDataConfigurationParser::ReceiverCfg>::iterator &it) {
+AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallback>::createReceiverStream(const char *stream_name, std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator &it) {
 
 	// Create the stream with the configuration pointed out by the iterator
 	AcsBulkdata::BulkDataNTReceiverStream<TCallback> *stream = new AcsBulkdata::BulkDataNTReceiverStream<TCallback>(stream_name, it->second.streamCfg);
 
 	// Create also all the necessary flows that have been configured in the CDB
-	map<string, ReceiverFlowConfiguration>::iterator it2;
+	std::map<std::string, ReceiverFlowConfiguration>::iterator it2;
 	for(it2 = it->second.flowsCfgMap.begin(); it2 != it->second.flowsCfgMap.end(); it2++) {
 		stream->createFlow(it2->first.c_str(), it2->second);
 	}

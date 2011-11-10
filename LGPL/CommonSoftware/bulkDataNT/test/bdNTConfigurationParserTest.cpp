@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.10 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.11 2011/11/10 11:10:33 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,6 +29,8 @@
 #include "ACS_BD_Errors.h"
 #include <iostream>
 
+using namespace std;
+using namespace xercesc;
 using namespace AcsBulkdata;
 using namespace ACS_BD_Errors;
 

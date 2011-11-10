@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.5 2011/11/02 18:07:21 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.i,v 1.6 2011/11/10 11:10:33 rtobar Exp $"
 *
 * who       when        what
 * --------  --------    ----------------------------------------------
@@ -26,12 +26,12 @@
 #include "ACS_BD_Errors.h"
 
 template<class CfgS, class StreamConfigT, class FlowConfigT>
-void BulkDataConfigurationParser::populateConfiguration(map<string, CfgS> &configMap) {
+void BulkDataConfigurationParser::populateConfiguration(std::map<std::string, CfgS> &configMap) {
 
 	// Create the stream configuration objects from the collected information
 	try {
-		map<char*, set<char *> >::iterator mit;
-		set<char *>::iterator sit;
+		std::map<char*, std::set<char *> >::iterator mit;
+		std::set<char *>::iterator sit;
 		for(mit = m_entities.begin(); mit != m_entities.end(); mit++) {
 
 			StreamConfigT streamCfg;
@@ -40,7 +40,7 @@ void BulkDataConfigurationParser::populateConfiguration(map<string, CfgS> &confi
 			if( m_profiles.find(mit->first) != m_profiles.end() ) {
 
 				// Check if there is a profile particularly for this stream
-				map<string, string> profiles = m_profiles[mit->first];
+				std::map<std::string, std::string> profiles = m_profiles[mit->first];
 				if( profiles.find(mit->first) != profiles.end() ) {
 					streamCfg.libraryQos    = DYNAMIC_LIBRARY_NAME;
 					streamCfg.profileQos    = mit->first;
@@ -57,13 +57,13 @@ void BulkDataConfigurationParser::populateConfiguration(map<string, CfgS> &confi
 				printf("Stream '%s' has no QoS settings, will use the default lib/profile\n", mit->first);
 
 			// Create flow configuration objects for this stream
-			map<string, FlowConfigT> flowConfigs;
+			std::map<std::string, FlowConfigT> flowConfigs;
 			for(sit = mit->second.begin(); sit != mit->second.end(); sit++) {
 
 				FlowConfigT flowCfg;
 
 				// Check if we have a profile for this stream/flow combination
-				string profileName(mit->first);
+				std::string profileName(mit->first);
 				profileName.append("#");
 				profileName.append(*sit);
 				if( m_profiles.find(mit->first)              != m_profiles.end() &&
