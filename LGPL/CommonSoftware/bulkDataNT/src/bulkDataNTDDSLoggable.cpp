@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.2 2011/11/10 14:00:17 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.3 2011/11/10 16:14:56 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,8 +30,8 @@ BulkDataNTDDSLoggable::~BulkDataNTDDSLoggable ()
 	ACS_TRACE(__FUNCTION__);
 	if(logger_mp)
 	{
-		// we have to call "done" as many times as we call "init" !!
-		for(unsigned int i=0; i<loggerInitCount_m; i++)
+		// we have to call "done" as many times as we call "init" -1, because the done it is called another time in Proxy dtor !!
+		for(unsigned int i=1; i<loggerInitCount_m; i++)
 			LoggingProxy::done();
 		delete logger_mp; // ...  but we have just one proxy object for all DDS reader threads
 	}
