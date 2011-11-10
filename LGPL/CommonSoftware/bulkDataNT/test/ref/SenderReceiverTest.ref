@@ -112,14 +112,14 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
 2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: 0.000000
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
-1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
+1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="1000"
 1 -  *************************   New sendData @ DefaultStream#00 *******************************
-1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
-1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
+1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
+1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) Flow="DefaultStream#01" State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" FrameLength="64000"
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (1) before waiting: 2
@@ -139,8 +139,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_liveliness_changed] A sender has disconnected to flow: 00 of the stream: DefaultStream. Total alive connection(s): 0
 2 - ----------T--:--:--.--- [GlobalLogger - virtual BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - on_subscription_matched] 
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Entering...
@@ -150,8 +150,8 @@
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_liveliness_changed] A sender has disconnected to flow: 01 of the stream: DefaultStream. Total alive connection(s): 0
 2 - ----------T--:--:--.--- [GlobalLogger - virtual BulkDataNTWriterListener::~BulkDataNTWriterListener()] 
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_subscription_matched] 
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::destroyDDSPublisher()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderStream::~BulkDataNTSenderStream()] Exiting... Function took XYZ.ASD sec
@@ -162,6 +162,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - ~BulkDataNTDDSLoggable] 
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSSubscriber()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTReceiverFlow::~BulkDataNTReceiverFlow()] Exiting... Function took XYZ.ASD sec
@@ -169,6 +170,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSSubscriber::destroyDDSReader(ACSBulkData::BulkDataNTFrameDataReader*)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTReaderListener] 
+1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - ~BulkDataNTDDSLoggable] 
 1 - Entering...
 1 - Exiting... Function took XYZ.ASD sec
 1 - Exiting... Function took XYZ.ASD sec
