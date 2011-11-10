@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.28 2011/11/10 11:19:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.29 2011/11/10 12:01:35 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -246,7 +246,8 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 				getLogger(); //force initialization of logging sys TBD
 				callback_mp->onError(udt);
 			}//switch
-		}else { //si.valie_data == false
+		}else { //si.valid_data == false
+/* si.valie_data == false means no error, but that we got not data but just  a state has changed
 			conseqErrorCount_m++;
 			DDSSampleStateErrorCompletion ssErr(__FILE__, __LINE__, __FUNCTION__);
 			ssErr.setInstanceState(si.instance_state);  //would be good if we can give also string value
@@ -254,6 +255,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			ssErr.setSampleState(si.sample_state);  //would be good if we can give also string value
 			getLogger(); //force initialization of logging sys TBD
 			callback_mp->onError(ssErr);
+*/
 		}//if-else (si.valid_data)
 	}
 	else
