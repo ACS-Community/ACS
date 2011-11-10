@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.30 2011/11/09 16:24:12 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.31 2011/11/10 11:16:53 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -77,7 +77,7 @@ INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h 
 				bulkDataNT.h bulkDataNTPlugin.h bulkDataNTReaderListener.h bulkDataNTReceiverFlow.h \
 				bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i \
 				bulkDataNTSenderFlow.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h bulkDataNTSupport.h \
-				bulkDataNTFlow.h bulkDataNTWriterListener.h \
+				bulkDataNTFlow.h bulkDataNTWriterListener.h bulkDataNTDDSLoggable.h \
 				bulkDataNTConfiguration.h bulkDataNTConfigurationParser.h bulkDataNTConfigurationParser.i
 
 
@@ -90,7 +90,7 @@ LIBRARIES_L     =
 #
 # <brief description of lllll library>
 bulkDataNT_OBJECTS   = bulkDataNTDDS bulkDataNTStream bulkDataNTConfiguration bulkDataNTConfigurationParser \
-						bulkDataNT bulkDataNTSupport bulkDataNTPlugin
+						bulkDataNT bulkDataNTSupport bulkDataNTPlugin bulkDataNTDDSLoggable
  
 bulkDataNT_LIBS = ACSErrTypeCommon ACS_BD_Errors ACS_DDS_Errors xerces-c  nddscpp nddsc nddscore
 
