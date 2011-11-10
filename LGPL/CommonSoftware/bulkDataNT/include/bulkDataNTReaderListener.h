@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.16 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.17 2011/11/10 10:38:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,8 +34,6 @@
 #include <loggingLoggable.h>
 #include <string>
 #include <ACE.h>
-
-using namespace std;
 
 class BulkDataNTReaderListener
   : public virtual DDS::DataReaderListener,

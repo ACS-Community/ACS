@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.26 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.27 2011/11/10 10:38:44 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -33,6 +33,7 @@
 using namespace ACS_BD_Errors;
 using namespace ACS_DDS_Errors;
 using namespace AcsBulkdata;
+using namespace std;
 
 #define BDNT_READER_LISTENER_USER_ERR(call)		 								\
 try { call; 																	\
