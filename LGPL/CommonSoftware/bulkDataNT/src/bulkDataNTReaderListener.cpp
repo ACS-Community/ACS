@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.31 2011/11/10 15:23:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.32 2011/11/10 16:26:18 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,6 +84,8 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 	ACSBulkData::BulkDataNTFrame message;
 	unsigned char tmpArray[ACSBulkData::FRAME_MAX_LEN];
 
+	initalizeLogging(); //force initialization of logging sys TBD changed
+
 	if (frameDataReader_mp==NULL)
 	{
 		frameDataReader_mp = ACSBulkData::BulkDataNTFrameDataReader::narrow(reader);
@@ -91,7 +93,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			ACS_DDS_Errors::DDSNarrowFailedCompletion nerr(__FILE__, __LINE__, __FUNCTION__);
 			nerr.setVariable("frameDataReader_mp");
 			nerr.setNarrowType("ACSBulkData::BulkDataNTFrameDataReader");
-			getLogger(); //force initialization of logging sys TBD changed
 			callback_mp->onError(nerr);
 			return;
 		}//if
@@ -124,7 +125,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
 						wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
 						wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
-						getLogger(); //force initialization of logging sys TBD changed
 						callback_mp->onError(wfo);
 						increasConseqErrorCount();
 					}//if-else
@@ -155,7 +155,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 								lde.setRestFrames(message.restDataLength);
 								lde.setFrameLength(message.data.length());
 								lde.setFlow(topicName_m.c_str());
-								getLogger(); //force initialization of logging sys TBD changed
 								callback_mp->onError(lde);
 								increasConseqErrorCount();
 								return; // ??
@@ -185,7 +184,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 						wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
 						wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
 						wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
-						getLogger(); //force initialization of logging sys TBD changed
 						callback_mp->onError(wfo);
 						increasConseqErrorCount();
 					}
@@ -213,7 +211,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 								lde.setRestFrames(message.restDataLength); // should be ??
 								lde.setFrameLength(message.data.length()); // should be 0
 								lde.setFlow(topicName_m.c_str());
-								getLogger(); //force initialization of logging sys TBD changed
 								callback_mp->onError(lde);
 								increasConseqErrorCount();
 							}//if
@@ -244,7 +241,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 					udt.setDataType(message.dataType);
 					udt.setFrameCount(frameCounter_m);
 					udt.setTotalFrameCount(totalFrames_m);
-					getLogger(); //force initialization of logging sys TBD
 					callback_mp->onError(udt);
 				}//switch
 			}else { //si.valid_data == false
@@ -254,7 +250,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			ssErr.setInstanceState(si.instance_state);  //would be good if we can give also string value
 			ssErr.setViewState(si.view_state);  //would be good if we can give also string value
 			ssErr.setSampleState(si.sample_state);  //would be good if we can give also string value
-			getLogger(); //force initialization of logging sys TBD
 			callback_mp->onError(ssErr);
 				 */
 			}//if-else (si.valid_data)
@@ -264,7 +259,6 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 			conseqErrorCount_m++;
 			DDSReturnErrorCompletion retErr(__FILE__, __LINE__, __FUNCTION__);
 			retErr.setRetCode(retCode);  //would be good if we can give also string value
-			getLogger(); //force initialization of logging sys TBD
 			callback_mp->onError(retErr);
 		}//if(retCode)
 	}//while
@@ -273,14 +267,14 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 void BulkDataNTReaderListener::on_requested_deadline_missed(DDS::DataReader*, const DDS::RequestedDeadlineMissedStatus& )
 {
 	ACS_DDS_Errors::DDSDeadlineMissedCompletion dmerr(__FILE__, __LINE__, __FUNCTION__);
-	getLogger(); //force initialization of logging sys TBD changed
+	initalizeLogging(); //force initialization of logging sys TBD changed
 	callback_mp->onError(dmerr);
 }//on_requested_deadline_missed
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos(DDS::DataReader*, const DDS::RequestedIncompatibleQosStatus&)
 {
 	ACS_DDS_Errors::DDSIncompatibleQoSCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
-	getLogger(); //force initialization of logging sys TBD changed
+	initalizeLogging(); //force initialization of logging sys TBD changed
 	callback_mp->onError(iqerr);
 }//on_requested_incompatible_qos
 
@@ -328,7 +322,7 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
 	sle.setNextDataFrame(nextFrame_m);
 	sle.setFrameCount(frameCounter_m);
 	sle.setFlow(topicName_m.c_str());
-	getLogger(); //force initialization of logging sys TBD changed
+	initalizeLogging(); //force initialization of logging sys TBD changed
 	callback_mp->onError(sle);
 }//on_sample_lost
 
