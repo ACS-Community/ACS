@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.1 2011/11/10 11:16:53 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSLoggable.cpp,v 1.2 2011/11/10 14:00:17 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,7 @@ BulkDataNTDDSLoggable::~BulkDataNTDDSLoggable ()
 }//~BulkDataNTDDSLoggable
 
 
-Logging::Logger::LoggerSmartPtr BulkDataNTDDSLoggable::getLogger ()
+void BulkDataNTDDSLoggable::initalizeLogging()
 {
 	// this code is a bit dirty, but wee need to initialize loggerproxy per thread
 	//isThreadInit return 0 if it is initialized !!!
@@ -50,5 +50,10 @@ Logging::Logger::LoggerSmartPtr BulkDataNTDDSLoggable::getLogger ()
 		LoggingProxy::init(logger_mp);
 		loggerInitCount_m++; // we initialized Proxy another time
 	}
+}//initalizeLogging
+
+Logging::Logger::LoggerSmartPtr BulkDataNTDDSLoggable::getLogger ()
+{
+	initalizeLogging();
 	return Logging::Loggable::getLogger();
 }//getLogger
