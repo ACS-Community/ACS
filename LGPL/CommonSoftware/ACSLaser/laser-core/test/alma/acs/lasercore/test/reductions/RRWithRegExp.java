@@ -133,19 +133,19 @@ public class RRWithRegExp extends ComponentClientTestCase implements CategoryLis
 		
 		System.out.println("testMultiplicity with regexp and default FM");
 		// Send the alarms to trigger the reduction
-		sendAlarm("NODE_DEFAULT", "DA41", 1, true);
-		sendAlarm("NODE_DEFAULT", "DA42", 1, true);
-		sendAlarm("NODE_DEFAULT", "DA43", 1, true);
-		sendAlarm("NODE_DEFAULT", "DA44", 1, true);
+		sendAlarm("NODE_DEFAULT", "DA41", 3, true);
+		sendAlarm("NODE_DEFAULT", "DA42", 3, true);
+		sendAlarm("NODE_DEFAULT", "DA43", 3, true);
+		sendAlarm("NODE_DEFAULT", "DA44", 3, true);
 		// Give time for the reduced alarm to arrive
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException i) {}
 		// Clear the alarms
-		sendAlarm("NODE_DEFAULT", "DA41",  1, false);
-		sendAlarm("NODE_DEFAULT", "DA42", 1, false);
-		sendAlarm("NODE_DEFAULT", "DA43", 1, false);
-		sendAlarm("NODE_DEFAULT", "DA44", 1, false);
+		sendAlarm("NODE_DEFAULT", "DA41",  3, false);
+		sendAlarm("NODE_DEFAULT", "DA42", 3, false);
+		sendAlarm("NODE_DEFAULT", "DA43", 3, false);
+		sendAlarm("NODE_DEFAULT", "DA44", 3, false);
 		// Give time for the alarms to arrive
 		try {
 			Thread.sleep(10000);
