@@ -21,6 +21,7 @@ package cern.laser.business.pojo;
 import java.net.InetAddress;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -70,6 +71,7 @@ public class TestAlarmMessageProcessor extends TestCase {
 	private static ORB m_orb;
 	private static DAL theDAL;
 	private static AlarmMessageProcessorImpl processor;
+	private static Calendar loadingTime;
 
 	static {
 		org.apache.log4j.Logger root = org.apache.log4j.Logger.getRootLogger();
@@ -163,7 +165,12 @@ public class TestAlarmMessageProcessor extends TestCase {
 			ACSCategoryDAOImpl categoryDAO = new ACSCategoryDAOImpl(m_logger, alarmDAO);
 			alarmDAO.setConfAccessor(configAccessor);
 			categoryDAO.setConfAccessor(configAccessor);
+			long startTime = System.currentTimeMillis();
 			alarmDAO.loadAlarms();
+			long endTime = System.currentTimeMillis();
+			loadingTime = Calendar.getInstance();
+			loadingTime.setTimeInMillis(endTime-startTime);
+			System.out.println("Loading alarm execution time: "+loadingTime.get(Calendar.MINUTE)+" mins and "+loadingTime.get(Calendar.SECOND)+" secs");
 			categoryDAO.loadCategories();
 
 			AlarmCacheServerImpl server = new AlarmCacheServerImpl() {
@@ -256,6 +263,13 @@ public class TestAlarmMessageProcessor extends TestCase {
 		String text = XMLMessageHelper.marshal(asiMessage);
 		message.setText(text);
 		return message;
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		// TODO Auto-generated method stub
+		super.tearDown();
+		System.out.println("Loading alarm execution time: "+loadingTime.get(Calendar.MINUTE)+" mins and "+loadingTime.get(Calendar.SECOND)+" secs");
 	}
 
 }
