@@ -23,11 +23,15 @@ package alma.acs.logging.table.reduction;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.cosylab.logging.engine.log.ILogEntry;
+import com.cosylab.logging.engine.log.LogEntry;
 import com.cosylab.logging.engine.log.LogField;
+import com.cosylab.logging.engine.log.LogTypeHelper;
+import com.cosylab.logging.engine.log.ILogEntry.AdditionalData;
 
 /**
  * The reduction rule for the antenna.
@@ -53,83 +57,6 @@ import com.cosylab.logging.engine.log.LogField;
  *
  */
 public class AntennaRule extends ReductionRule {
-
-	/**
-	 * The antennae whose pattern has to be searched in the log messages.
-	 * 
-	 * @author acaproni
-	 *
-	 */
-	private enum Antennae {
-		NO_ANTENNA(null),
-		DV("DV\\d\\d"),
-		DA("DA\\d\\d"),
-		PM("PM\\d\\d"),
-		CM("CM\\d\\d");
-		
-		/**
-		 * The pattern of an antenna to match in a message
-		 */
-		private final Pattern pattern;
-	
-		/**
-		 * Constructor
-		 */
-		private Antennae(String pattern) {
-			if (pattern!=null) {
-				this.pattern=Pattern.compile(pattern);
-			} else {
-				this.pattern=null;
-			}
-		}
-		
-		/**
-		 * Check if the message contains a reference to an antenna
-		 * 
-		 * @param messageToMatch The message to check against an antenna name
-		 * @return The antenna that matches with the message
-		 */
-		public static Antennae matchAntenna(String messageToMatch) {
-			for (Antennae ant: Antennae.values()) {
-				if (ant==NO_ANTENNA) {
-					continue;
-				}
-				Matcher m = ant.pattern.matcher(messageToMatch);
-				if (m.find()) {
-					return ant;
-				}
-			}
-			return NO_ANTENNA;
-		}
-		
-		/**
-		 * Check if the message contains a reference to an antenna and replace
-		 * the antenna name with a place holder. The method returns the antenna
-		 * name that matched.
-		 * 
-		 * @param messageToMatch The message to check against an antenna name
-		 * @param placeHolder The place holder for the matched pattern
-		 * @return The antenna name that matches with the message
-		 * 		   or <code>null</code> if the string does not match with any antenna name
-		 */
-		public static String matchAndReplaceAntenna(StringBuilder messageToMatch, String placeHolder) {
-			for (Antennae ant: Antennae.values()) {
-				if (ant==NO_ANTENNA) {
-					continue;
-				}
-				Matcher m = ant.pattern.matcher(messageToMatch);
-				if (m.find()) {
-					int start = m.start();
-					int end = m.end();
-					String ret=messageToMatch.substring(start, end);
-					messageToMatch.replace(start, end, placeHolder);
-					return ret;
-				}
-			}
-			return null;
-		}
-	}	
-	
 	/**
 	 * This is the initial message with the antenna name replaced by 
 	 * a place holder.
@@ -149,9 +76,16 @@ public class AntennaRule extends ReductionRule {
 	private final Set<String> antennaNames=new HashSet<String>();
 	
 	/**
-	 * The place holder for comparison
+	 * The message of the log used as a base for reducing
 	 */
-	public static final String placeHolder="\0";
+	private final String initialMessage;
+	
+	/**
+	 * <code>reducible</code> is <code>true</code> if the initial message
+	 * contains an antenna name and therefore can reduce other log
+	 * messages. 
+	 */
+	protected final boolean reducible;
 	
 	/**
 	 * Constructor
@@ -159,8 +93,10 @@ public class AntennaRule extends ReductionRule {
 	 * @param initialMessage The message to be compared with other logs for reduction
 	 * 
 	 */
-	public AntennaRule(String initialMessage) {
-		super(initialMessage);
+	public AntennaRule(ILogEntry logEntry) {
+		super(logEntry);
+		initialMessage=(String)logEntry.getField(LogField.LOGMESSAGE);
+		reducible=Antennae.matchAntenna(initialMessage)!=Antennae.NO_ANTENNA;
 		if (reducible) {
 			StringBuilder temp= new StringBuilder(initialMessage);
 			initialAntenna=Antennae.matchAndReplaceAntenna(temp, placeHolder);
@@ -174,20 +110,13 @@ public class AntennaRule extends ReductionRule {
 	/**
 	 * @Override
 	 */
-	protected boolean checkReducibility() {
-		return Antennae.matchAntenna(initialMessage)!=Antennae.NO_ANTENNA;
-	}
-	
-	/**
-	 * @Override
-	 */
 	public boolean applyRule(final ILogEntry logToReduce) {
 		if (!reducible) {
 			return false;
 		}
 		StringBuilder msg = new StringBuilder(logToReduce.getField(LogField.LOGMESSAGE).toString());
 		
-		String antName=Antennae.matchAndReplaceAntenna(msg, "\0");
+		String antName=Antennae.matchAndReplaceAntenna(msg, placeHolder);
 
 		if (antName==null) { // No antenna in the string
 			return false;
@@ -206,7 +135,7 @@ public class AntennaRule extends ReductionRule {
 	 * Format and return the names of all the antenna names matched
 	 * by this reduction rule
 	 * 
-	 * @return A string with all the antenna mames
+	 * @return A string with all the antenna names
 	 */
 	public String getReducedItems() {
 		StringBuilder ret = new StringBuilder();
@@ -222,5 +151,70 @@ public class AntennaRule extends ReductionRule {
 		}
 		return ret.toString();
 	}
+
+	@Override
+	public ILogEntry getReducedLog() {
+		String reducedItems = getReducedItems();
+		if (reducedItems==null || reducedItems.isEmpty()) {
+			return initialLog;
+		}
+		Long milliseconds=(Long)initialLog.getField(LogField.TIMESTAMP);
+		Integer entrytype=((LogTypeHelper)initialLog.getField(LogField.ENTRYTYPE)).ordinal();
+		String file=(String)initialLog.getField(LogField.FILE);
+		Integer line=(Integer)initialLog.getField(LogField.LINE);
+		String routine=(String)initialLog.getField(LogField.ROUTINE);
+		String host=(String)initialLog.getField(LogField.HOST);
+		String process=(String)initialLog.getField(LogField.PROCESS);
+		String context=(String)initialLog.getField(LogField.CONTEXT);
+		String thread=(String)initialLog.getField(LogField.THREAD);
+		String logid=(String)initialLog.getField(LogField.LOGID);
+		Integer priority=(Integer)initialLog.getField(LogField.PRIORITY);
+		String uri=(String)initialLog.getField(LogField.URI);
+		String stackid=(String)initialLog.getField(LogField.STACKID);
+		Integer stacklevel=(Integer)initialLog.getField(LogField.STACKLEVEL);
+		String logmessage=(String)initialLog.getField(LogField.LOGMESSAGE)+" and also "+reducedItems;
+        String srcObject=(String)initialLog.getField(LogField.SOURCEOBJECT);
+        String audience=(String)initialLog.getField(LogField.AUDIENCE);
+        String array=(String)initialLog.getField(LogField.ARRAY);
+        String antenna=(String)initialLog.getField(LogField.ANTENNA);
+        Vector<AdditionalData> addDatas=initialLog.getAdditionalData();
+		
+		LogEntry ret = new LogEntry(
+				milliseconds, 
+				entrytype, 
+				file, 
+				line, 
+				routine, 
+				host, 
+				process, 
+				context, 
+				thread, 
+				logid, 
+				priority, 
+				uri, 
+				stackid, 
+				stacklevel, 
+				logmessage, 
+				srcObject, 
+				audience, 
+				array, 
+				antenna, 
+				addDatas);
+		
+		return ret;
+	}
+
+	@Override
+	public boolean isReducingLogs() {
+		return !antennaNames.isEmpty();
+	}
 	
+	/**
+	 * @return the reducible
+	 * 
+	 */
+	@Override
+	public boolean isReducible() {
+		return reducible;
+	}
 }
