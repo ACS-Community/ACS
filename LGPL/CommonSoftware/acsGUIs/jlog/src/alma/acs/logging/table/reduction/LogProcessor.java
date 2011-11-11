@@ -51,10 +51,12 @@ public class LogProcessor {
 		for (int t=0; t<logs.size(); t++) {
 			// This is the log that "could" reduce other logs
 			ILogEntry log = logs.get(t);
-			String message = log.getField(LogField.LOGMESSAGE).toString();
-			AntennaRule rule = new AntennaRule(message);
+			ReductionRule rule = new SourceAntennaRule(log);
 			if (!rule.isReducible()) {
-				continue;
+				rule = new AntennaRule(log);
+				if (!rule.isReducible()) {
+					continue;
+				}	
 			}
 			// Now scan the remaining logs in the vector, apply the rule
 			// and if it is the case remove the reduced log.
@@ -69,63 +71,12 @@ public class LogProcessor {
 				j++;
 			}
 			// All the logs have been checked against the rule
-			String reducedItems = rule.getReducedItems();
-			if (reducedItems!=null && !reducedItems.isEmpty()) {
+			
+			if (rule.isReducingLogs()) {
 				// Create the new log with the message
-				ILogEntry newLog = createReducedLog(log, reducedItems);
+				ILogEntry newLog = rule.getReducedLog();
 				logs.set(t, newLog);
 			}
 		}
-	}
-	
-	private ILogEntry createReducedLog(ILogEntry log, String msg) {
-		if (log==null) {
-			throw new NullPointerException("The log can' t be null");
-		}
-		
-		Long milliseconds=(Long)log.getField(LogField.TIMESTAMP);
-		Integer entrytype=((LogTypeHelper)log.getField(LogField.ENTRYTYPE)).ordinal();
-		String file=(String)log.getField(LogField.FILE);
-		Integer line=(Integer)log.getField(LogField.LINE);
-		String routine=(String)log.getField(LogField.ROUTINE);
-		String host=(String)log.getField(LogField.HOST);
-		String process=(String)log.getField(LogField.PROCESS);
-		String context=(String)log.getField(LogField.CONTEXT);
-		String thread=(String)log.getField(LogField.THREAD);
-		String logid=(String)log.getField(LogField.LOGID);
-		Integer priority=(Integer)log.getField(LogField.PRIORITY);
-		String uri=(String)log.getField(LogField.URI);
-		String stackid=(String)log.getField(LogField.STACKID);
-		Integer stacklevel=(Integer)log.getField(LogField.STACKLEVEL);
-		String logmessage=(String)log.getField(LogField.LOGMESSAGE)+" and also "+msg;
-        String srcObject=(String)log.getField(LogField.SOURCEOBJECT);
-        String audience=(String)log.getField(LogField.AUDIENCE);
-        String array=(String)log.getField(LogField.ARRAY);
-        String antenna=(String)log.getField(LogField.ANTENNA);
-        Vector<AdditionalData> addDatas=log.getAdditionalData();
-		
-		LogEntry ret = new LogEntry(
-				milliseconds, 
-				entrytype, 
-				file, 
-				line, 
-				routine, 
-				host, 
-				process, 
-				context, 
-				thread, 
-				logid, 
-				priority, 
-				uri, 
-				stackid, 
-				stacklevel, 
-				logmessage, 
-				srcObject, 
-				audience, 
-				array, 
-				antenna, 
-				addDatas);
-		
-		return ret;
 	}
 }
