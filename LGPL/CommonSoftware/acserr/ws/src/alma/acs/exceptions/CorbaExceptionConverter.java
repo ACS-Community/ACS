@@ -73,16 +73,19 @@ public class CorbaExceptionConverter
 			// try if that class is available to be reconstructed
 			try
 			{
-				Class exClass = Class.forName(classname);
-				if (AcsJException.class.isAssignableFrom(exClass)) {
-					Constructor msgCtor = exClass.getConstructor(new Class[] {String.class});
-					thr = (Throwable) msgCtor.newInstance(new Object[]{message});
+				Class<? extends Throwable> exClass = Class.forName(classname).asSubclass(Throwable.class);
+				if (AcsJException.class.isAssignableFrom(exClass)) 
+				{
+					if (exClass != DefaultAcsJException.class) { // DefaultAcsJException has a non-standard constructor and will be constructed below.
+						Constructor<? extends Throwable> msgCtor = exClass.getConstructor(String.class);
+						thr = msgCtor.newInstance(new Object[]{message});
+					}
 				}
 				else {
 					// non-ACS Java exceptions we don't reconstruct directly
-					// because we'd loose the additional information
-					// like line number etc. that ErrorTrace has.
-					thr = new DefaultAcsJException(message, 0, 0, et.shortDescription);
+					// because we'd lose the additional information like line number etc. that ErrorTrace has
+					// and that will be copied below.
+					thr = new DefaultAcsJException(message, 0, 0, et.shortDescription, classname);
 				}
 			}
 			catch (Exception e)
@@ -95,7 +98,7 @@ public class CorbaExceptionConverter
 		if (thr == null)
 		{
 			// default ex represents ErrorTrace that comes from other languages than Java,
-            // or when reconstruction of the same Java exception failed for whatever reason. 
+			// or when reconstruction of the same Java exception failed for whatever reason. 
 			thr = new DefaultAcsJException(message, et.errorType, et.errorCode, et.shortDescription);
 		}
 		
@@ -133,8 +136,16 @@ public class CorbaExceptionConverter
 			acsJEx.m_severity = et.severity; 
 			acsJEx.m_threadName = et.thread;
 			acsJEx.m_timeMilli = UTCUtility.utcOmgToJava(et.timeStamp);
-			acsJEx.m_properties = ErrorTraceManipulator.getProperties(et);			
+			acsJEx.m_properties = ErrorTraceManipulator.getProperties(et);
 		}
+
+		// We redundantly put source information also into a fake StackTrace,
+		// which then looks better when logging such an AcsJException directly,
+		// even though the rest of a single java exception's stack trace did not get 
+		// forwarded over corba/ErrorTrace.
+		StackTraceElement[] stackTrace = new StackTraceElement[1];
+		stackTrace[0] = new StackTraceElement("---", et.routine, et.file, et.lineNum);
+		thr.setStackTrace(stackTrace);
 
 		if (et.previousError != null && et.previousError.length > 0 && 
 			et.previousError[0] != null)
@@ -181,7 +192,7 @@ public class CorbaExceptionConverter
 			try {
 				Field errorTraceField = thr.getClass().getField("errorTrace");
 				ErrorTrace etCause = (ErrorTrace) errorTraceField.get(thr);
-				thr = recursiveGetThrowable(etCause);		
+				thr = recursiveGetThrowable(etCause);
 			}
 			catch (Exception ex) {
 				// ignore: we assume that thr is not an ACS-style exception
