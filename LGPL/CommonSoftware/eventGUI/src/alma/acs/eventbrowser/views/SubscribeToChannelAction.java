@@ -41,14 +41,20 @@ public class SubscribeToChannelAction extends Action implements
 	private final IWorkbenchWindow window;
 	private String channelName; // from selection
 	private final EventModel em;
+	private boolean add; // If true, subscribe; if false, unsubscribe
+	private static final String addText = "Subscribe to channel";
+	private static final String addTooltip = "Subscribe to all events on this channel.";
+
+	private static final String removeText = "Unsubscribe from channel";
+	private static final String removeTooltip = "Stop subscribing to events on this channel.";
 	
 	public final static String ID = "alma.acs.eventbrowser.eventgui.subscribetochannel";
 
 	public SubscribeToChannelAction(IWorkbenchWindow window) throws Exception {
 		this.window = window;
 		setId(ID);
-		setText("Subscribe to channel");
-		setToolTipText("Subscribe to all events on this channel.");
+		setText(addText);
+		setToolTipText(addTooltip);
 		setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		this.window.getSelectionService().addSelectionListener(this);
@@ -56,7 +62,11 @@ public class SubscribeToChannelAction extends Action implements
 	}
 	
 	public void run() {
+		if (add) {
 			em.addChannelSubscription(channelName);
+		} else {
+			em.closeSelectedConsumer(channelName, true);
+		}
 	}
 	
 	@Override
@@ -72,9 +82,21 @@ public class SubscribeToChannelAction extends Action implements
 		if (incoming instanceof IStructuredSelection) {
 			selection = (IStructuredSelection) incoming;
 			boolean enabled = selection.size() == 1 && selection.getFirstElement() instanceof ChannelData;
+			if (enabled) {
+				ChannelData channelData = (ChannelData)(selection.getFirstElement());
+				channelName = channelData.getName();
+				if (em.isSubscribed(channelName)) {
+					add = false;
+					setText(removeText);
+					setText(removeTooltip);
+					//enabled = false;
+				} else {
+					add = true;
+					setText(addText);
+					setText(addTooltip);
+				}
+			}
 			setEnabled(enabled);
-			if (enabled)
-				channelName = ((ChannelData)(selection.getFirstElement())).getName();
 		} else {
 			setEnabled(false);
 		}

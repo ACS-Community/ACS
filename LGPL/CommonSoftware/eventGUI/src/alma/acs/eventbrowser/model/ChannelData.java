@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
 	
 	private ArrayList<MCStatistics> statistics;
+	private boolean subscribed = false;
 	
 	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
 		super(name, parent, adminCounts, adminDeltas);
@@ -37,6 +38,20 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	
 	public ArrayList<MCStatistics> getStatistics() {
 		return statistics;
+	}
+	
+	// TODO: The following three methods are not used yet. They should make the model more Object-oriented
+	
+	public void subscribe() {
+		subscribed = true;
+	}
+	
+	public void unsubscribe() {
+		subscribed = false;
+	}
+	
+	public boolean isSubscribed() {
+		return subscribed;
 	}
 
 	@Override

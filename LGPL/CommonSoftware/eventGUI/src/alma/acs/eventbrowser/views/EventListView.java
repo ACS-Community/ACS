@@ -261,6 +261,7 @@ public class EventListView extends ViewPart {
 		channelRefreshThread.interrupt();
 		eventListThread.interrupt();
 		em.closeAllConsumers();
+		em.closeArchiveConsumer();
 		logger.info("Average event rate: "+EventData.getAverageRate()+" events/s");
 		super.dispose();
 	}

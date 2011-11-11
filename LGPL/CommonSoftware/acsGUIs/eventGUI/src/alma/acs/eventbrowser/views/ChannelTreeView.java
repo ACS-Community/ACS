@@ -172,8 +172,6 @@ public class ChannelTreeView extends ViewPart {
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
-		manager.add(refreshAction);
-		manager.add(startMonitoringAction);
 		manager.add(subscribeAction);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
@@ -249,7 +247,7 @@ public class ChannelTreeView extends ViewPart {
 		Runnable t = new Runnable()  {
 			int i = 0;
 			public Runnable r = new Runnable() {
-				public void run() {
+				public void run() { // TODO: Should this method be synchronized
 					final Display display = viewer.getControl().getDisplay();
 					if (!display.isDisposed()) {
 						viewer.refresh();

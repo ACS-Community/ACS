@@ -26,6 +26,7 @@ import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.Inval
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -72,7 +73,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.30 2011/11/10 12:58:08 jschwarz Exp $
+ * $Id: EventModel.java,v 1.31 2011/11/11 17:13:20 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -91,9 +92,8 @@ public class EventModel {
 //	private final EventChannelFactory arsvc;
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private HashMap<String, int[]> lastConsumerAndSupplierCount;
-	private ArrayList<String> subscribedChannels; // all channels whose events the user wishes to monitor/display
+	private HashSet<String> subscribedChannels; // all channels whose events the user wishes to monitor/display
 	private static EventModel modelInstance;
-	private ArrayList<AdminConsumer> consumers;
 	private ArrayList<AdminConsumer> readyConsumers;
 	private HashMap<String, AdminConsumer> consumerMap;
 	private static DynAnyFactory dynAnyFactory = null;
@@ -113,9 +113,8 @@ public class EventModel {
 		channelMap = new HashMap<String, EventChannel>(MAX_NUMBER_OF_CHANNELS);
 		lastConsumerAndSupplierCount = new HashMap<String, int[]>(MAX_NUMBER_OF_CHANNELS);
 		consumerMap = new HashMap<String, AdminConsumer>(MAX_NUMBER_OF_CHANNELS);
-		consumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5); // a guess at the possible limit to the number of consumers
 		readyConsumers = new ArrayList<AdminConsumer>(MAX_NUMBER_OF_CHANNELS*5);
-		subscribedChannels = new ArrayList<String>(MAX_NUMBER_OF_CHANNELS*5);
+		subscribedChannels = new HashSet<String>(MAX_NUMBER_OF_CHANNELS*5);
 		compClient = acc;
 		mproxy = compClient.getAcsManagerProxy();
 
@@ -367,7 +366,7 @@ public class EventModel {
 						channelMap.put(channelName, ec);
 						if (subscribedChannels.contains(channelName)) {
 							consumer = getAdminConsumer(channelName);
-							consumers.add(consumer);
+							consumerMap.put(channelName, consumer);
 						}
 						lastConsumerAndSupplierCount.put(channelName,
 								consAndSupp);
@@ -487,10 +486,10 @@ public class EventModel {
 	}
 	
 	public void refreshChannelSubscriptions() {
-		consumers = getAllSelectedConsumers();
+		HashMap<String, AdminConsumer> consumers = getAllSelectedConsumers();
 
 		if (consumers != null) {
-			for (AdminConsumer consumer : consumers) {
+			for (AdminConsumer consumer : consumers.values()) {
 				try {
 					if (!readyConsumers.contains(consumer)) {
 						consumer.consumerReady();
@@ -521,7 +520,7 @@ public class EventModel {
 	 * "subscribedChannels" lists all channel that are to be (are being) monitored.
 	 * @return all consumers so selected
 	 */
-	public ArrayList<AdminConsumer> getAllSelectedConsumers() {
+	public HashMap<String,AdminConsumer> getAllSelectedConsumers() {
 		int channelsProcessed = 0;
 		StopWatch sw = new StopWatch(m_logger);
 		BindingListHolder bl = new BindingListHolder();
@@ -542,7 +541,7 @@ public class EventModel {
 					}
 					if (subscribedChannels.contains(channelName) && !consumerMap.containsKey(channelName)) {
 							consumer = getAdminConsumer(channelName);
-							consumers.add(consumer);
+							consumerMap.put(channelName, consumer);
 							channelsProcessed++;
 					}
 				} catch (AcsJException e) {
@@ -550,9 +549,9 @@ public class EventModel {
 				}
 			}
 		}
-		sw.logLapTime(" to create "+channelsProcessed+" channels ");
+		sw.logLapTime(" create "+channelsProcessed+" channels ");
 		getArchiveConsumer();
-		return consumers;
+		return consumerMap;
 	}
 	
 	public void addChannelSubscription(String channelName) {
@@ -610,15 +609,22 @@ public class EventModel {
 		}
 
 	}
+	
+	public synchronized void closeSelectedConsumer(String channelName, boolean deselect) {
+		if (consumerMap.containsKey(channelName)) {
+			AdminConsumer consumer = consumerMap.get(channelName);
+			consumer.disconnect();
+			consumerMap.remove(channelName);
+		}
+		if (deselect && !subscribedChannels.remove(channelName))
+			m_logger.log(Level.WARNING,"Couldn't remove "+channelName+" from list of selected subscribers.");
+	}
 
 	public synchronized void closeAllConsumers() {
-		//ArrayList<AdminConsumer>consumers = getAllConsumers();
-		for (AdminConsumer consumer : consumers) {
-			if (consumer != null) {
-				consumer.disconnect();
-				consumers.remove(consumers.indexOf(consumer));
-			}
+		for (String channelName : subscribedChannels) {
+			closeSelectedConsumer(channelName, false);
 		}
+		subscribedChannels = new HashSet<String>(MAX_NUMBER_OF_CHANNELS*5); // reset the list
 	}
 	
 	public void closeArchiveConsumer() {
@@ -637,6 +643,10 @@ public class EventModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isSubscribed(String channelName) { // TODO: Is this going to work for purposes of disabling the "Subscribe to channel" option?
+		return subscribedChannels.contains(channelName);
 	}
 	
 }
