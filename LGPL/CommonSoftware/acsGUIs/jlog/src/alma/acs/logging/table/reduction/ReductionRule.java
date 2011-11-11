@@ -27,37 +27,32 @@ import com.cosylab.logging.engine.log.ILogEntry;
  * The objects that implement this interface are those that
  * reduces the logs.
  * <P>
- * The idea is that the message of a log entry is compared
- * with a base message and <code>true</code> is returned if the log entry can be reduced.  
+ * The log passed in the constructor is compared with other logs 
+ * with {@link ReductionRule#applyRule(ILogEntry)}.
+ * The log in the constructor is the base for the
+ * reduction that depends on the criteria implemented in a 
+ * specific reduction rule.
  * <P>
- * For example suppose that we want to reduce the log entries that
- * differ only for the name of an antenna.
- * <code>baseMsg</code> should be something like "Antenna xxxx in position" 
- * where xxxx is a place holder.
- * Then if <code>logToReduce</code> message is "Antenna DA41 in position",
- * the value returned by <code>applyRule</code> <code>true</code>.
- * <P>
- * The reduction rule is applied to a set of logs. It says if ech log 
- * can be reduced and finally a string of reduced strings is produced.
- * <BR>
- * At the end of the process only one log has to be preserved by adding
- * the reduced string. The reduced logs can be removed from the table.
+ * If the rule is able to reduce logs (for example the message
+ * contains an antenna name) then other logs are passed to it
+ * through {@link ReductionRule#applyRule(ILogEntry)}: the rule keeps
+ * track of the logs it reduces in order to generate a new log replacing 
+ * the log passed in the constructor and all the other logs.
+ * Such a log is returned by {@link ReductionRule#getReducedLog()}.
  * 
  * @author acaproni
  */
 public abstract class ReductionRule {
 	
 	/**
-	 * The message to be compared with other logs for reduction
+	 * The log to be compared with other logs for reduction.
 	 */
-	protected final String initialMessage;
+	protected final ILogEntry initialLog;
 	
 	/**
-	 * <code>reducible</code> is <code>true</code> if the initial message
-	 * contains an antenna name and therefore can reduce other log
-	 * messages. 
+	 * The place holder for comparison
 	 */
-	protected final boolean reducible;
+	protected static final String placeHolder="\0\0\0\0";
 	
 	/**
 	 * Constructor
@@ -65,27 +60,17 @@ public abstract class ReductionRule {
 	 * @param initialMessage The message to be compared with other logs for reduction
 	 * 
 	 */
-	public ReductionRule(String initialMessage) {
-		if (initialMessage==null || initialMessage.isEmpty()) {
-			throw new IllegalArgumentException("The message can't be null nor empty");
+	public ReductionRule(ILogEntry initialLog) {
+		if (initialLog==null) {
+			throw new IllegalArgumentException("The log can't be null");
 		}
-		this.initialMessage=initialMessage;
-		reducible=checkReducibility();
+		this.initialLog=initialLog;
 	}
-	
-	/**
-	 * 
-	 * @return <code>true</code> if the initial message is suitable 
-	 *         for reducing other log messages
-	 */
-	protected abstract boolean checkReducibility();
 	
 	/**
 	 * @return the reducible
 	 */
-	public boolean isReducible() {
-		return reducible;
-	}
+	public abstract boolean isReducible();
 	
 	/**
 	 * applyRule compares the log and the message and check if the log can be reduced.
@@ -104,5 +89,11 @@ public abstract class ReductionRule {
 	 * 
 	 * @return A formatted String with all the reduced items
 	 */
-	public abstract String getReducedItems();
+	public abstract ILogEntry getReducedLog();
+	
+	/**
+	 * 
+	 * @return <code>true</code> if this rule is actually reducing logs
+	 */
+	public abstract boolean isReducingLogs();
 }
