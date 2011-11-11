@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: TestList.lite,v 1.38 2011/09/07 23:03:35 acaproni Exp $"
+# "@(#) $Id: TestList.lite,v 1.39 2011/11/11 16:47:23 acaproni Exp $"
 #
 # TestList
 #
@@ -38,6 +38,7 @@ PROLOGUE jlogTATPrologue
 6  jlogTestErrorLogFile	"jlogTestErrorLogFile"
 7  jlogTestConverters "jlogTestConverters"
 8  jlogTestAntennaReductionRule "jlogTestAntennaReductionRule"
-9  jlogTestLogProcessor "jlogTestLogProcessor" 
+9  jlogTestSourceAntennaReductionRule "jlogTestSourceAntennaReductionRule"
+10 jlogTestLogProcessor "jlogTestLogProcessor" 
 
 EPILOGUE acsutilTATEpilogue

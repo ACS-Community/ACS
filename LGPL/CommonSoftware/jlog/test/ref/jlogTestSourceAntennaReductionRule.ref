@@ -1,0 +1,12 @@
+1 - Reduced log: --- LogEntry ---
+1 - TimeStamp: ----------T--:--:--.---
+1 - Entry Type: Info
+1 - Source Object: Several sources (see log details)
+1 - Routine: CacheTest::testGet
+1 - Host: hostname
+1 - Process: test
+1 - Context: 
+1 - Thread: NNN
+1 - Log Message: In position
+1 - Datas: 
+1 - 	Source : CONTROL/DV13/WVR	Source : CONTROL/DA41/WVR	Source : CONTROL/DA44/WVR	Source : CONTROL/CM04/WVR	Source : CONTROL/PM02/WVR

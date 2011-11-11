@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.41 2011/10/19 15:54:16 acaproni Exp $" 
+# "@(#) $Id: Makefile,v 1.42 2011/11/11 16:47:23 acaproni Exp $" 
 #
 # Makefile of lcTest for jlog.
 #
@@ -87,7 +87,8 @@ SCRIPTS_L       = 	jlogTestCache \
 					jlogTestErrorLogFile \
 					jlogTestConverters \
 					jlogTestAntennaReductionRule \
-					jlogTestLogProcessor
+					jlogTestLogProcessor \
+					jlogTestSourceAntennaReductionRule
 
 #>>>>> END OF standard rules
   
