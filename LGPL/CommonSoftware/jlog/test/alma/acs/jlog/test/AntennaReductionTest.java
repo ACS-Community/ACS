@@ -51,10 +51,13 @@ public class AntennaReductionTest {
 	 */
 	public AntennaRule reduction;
 	
-	public AntennaReductionTest() {
-		reduction=new AntennaRule("Antenna DA41 in position");
+	public AntennaReductionTest() throws Exception {
+		ILogEntry firstLog=createLog("Antenna DA41 in position");
+		reduction=new AntennaRule(firstLog);
 		
-		
+		if (!reduction.isReducible()) {
+			System.out.println("This rule SHOULD be reducible!");
+		}
 	}
 	
 	public void checkReductions() {
@@ -68,6 +71,10 @@ public class AntennaReductionTest {
 			System.exit(-1);
 		}
 		reduction.applyRule(log);
+		
+		if (!reduction.isReducingLogs()) {
+			System.out.println("This rule SHOULD have reduced logs!");
+		}
 		
 		// Create a log that does not match
 		// It has an antenna but in a wrong position
@@ -105,7 +112,14 @@ public class AntennaReductionTest {
 	}
 	
 	public static void main(String[] args) {
-		AntennaReductionTest test=new AntennaReductionTest();
+		AntennaReductionTest test=null;
+		try {
+			test=new AntennaReductionTest();
+		} catch (Throwable t) {
+			System.err.println("Error building the AntennaReductionTest ");
+			t.printStackTrace();
+			System.exit(-1);
+		}
 		
 		// Start the test
 		test.checkReductions();
