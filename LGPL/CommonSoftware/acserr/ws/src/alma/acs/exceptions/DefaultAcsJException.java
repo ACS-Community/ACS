@@ -51,9 +51,13 @@ public class DefaultAcsJException extends AcsJException
 	private int errType;
 	private int errCode;
 	private String shortDescription;
-	
+	private String javaNativeExName;
 
 	public DefaultAcsJException(String message, int errType, int errCode, String shortDescription) {
+		this(message, errType, errCode, shortDescription, null);
+	}
+
+	public DefaultAcsJException(String message, int errType, int errCode, String shortDescription, String javaNativeExName) {
 		super(message);
 		this.errType = errType;
 		this.errCode = errCode;
@@ -63,6 +67,7 @@ public class DefaultAcsJException extends AcsJException
 		else {
 			this.shortDescription = "";
 		}
+		this.javaNativeExName = javaNativeExName;
 	}
 
 	
@@ -109,6 +114,29 @@ public class DefaultAcsJException extends AcsJException
 	 */
 	public String getShortDescription() {
 		return shortDescription;
+	}
+
+	/**
+	 * Overwrites the java class name in the ErrorTrace obtained from 
+	 * {@link AcsJException#createSingleErrorTraceLogRecord()},
+	 * to keep the information about the original exception if possible.
+	 * @see alma.acs.exceptions.AcsJException#createSingleErrorTrace()
+	 */
+	protected ErrorTrace createSingleErrorTrace() {
+		ErrorTrace et = super.createSingleErrorTrace();
+		if (javaNativeExName != null && !javaNativeExName.isEmpty()) {
+			ErrorTraceManipulator.setProperty(et, CorbaExceptionConverter.PROPERTY_JAVAEXCEPTION_CLASS, javaNativeExName);
+		}
+		return et;
+	}
+
+	public String toString() {
+		String s = getClass().getName();
+		if (javaNativeExName != null) {
+			s += " (" + javaNativeExName +")";
+		}
+		String message = getLocalizedMessage();
+		return (message != null && message.length() > 0) ? (s + ": " + message) : s;
 	}
 
 }
