@@ -3,8 +3,7 @@
 1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9) [ Curl='MACI/Components/CONTROL/MASTER' ]
 1 - ----------T--:--:--.--- NOTICE [DALRead] Record does not exist 	CURL='MACI/Components/CONTROL/MASTER'
 1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components/CONTROL/MASTER' ] 
-1 - 	at alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(AcsJCDBRecordDoesNotExistEx.java:xx)
-1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:xx)
+1 - 	at ---.loadRecords(DALImpl.java:xx)
 1 -  --clientVM -- com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [acsStartJava] Starting Java application: com.cosylab.cdb.jdal.ClearCache -d corbaloc::xxxxxxx:yyyy/CDB
 1 - ----------T--:--:--.--- INFO [cdbjDALClearCache] clear_cache is invoked for all curls

@@ -1231,5 +1231,4 @@
 1 - ----------T--:--:--.--- ERROR [] CDB record does not exist (type=51, code=9) [ Curl='MACI/Components/NotExist' ]
 1 - ----------T--:--:--.--- NOTICE [DALRead] Record does not exist 	CURL='MACI/Components/NotExist'
 1 - alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx [ Curl='MACI/Components/NotExist' ] 
-1 - 	at alma.cdbErrType.wrappers.AcsJCDBRecordDoesNotExistEx.fromCDBRecordDoesNotExistEx(AcsJCDBRecordDoesNotExistEx.java:xx)
-1 - 	at com.cosylab.cdb.DALRead.main(DALRead.java:xx)
+1 - 	at ---.getChild(XMLHandler.java:xx)
