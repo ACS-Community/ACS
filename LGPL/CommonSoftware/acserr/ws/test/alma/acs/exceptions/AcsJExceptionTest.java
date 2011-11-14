@@ -368,15 +368,21 @@ public class AcsJExceptionTest extends TestCase
 		try {
 			exSystem.throwConvertedAcsJACSErrTest0Ex();
 		} catch (AcsJACSErrTest0Ex jex) {
-			StringWriter stringWriter = new StringWriter();
-			jex.printStackTrace(new PrintWriter(stringWriter));
+			// This jex has already gone from AcsJ to Corba to AcsJ. 
+			// Just to be sure we catch all possible issues, we do another round of conversion here
+			AcsJACSErrTest0Ex jex2 = AcsJACSErrTest0Ex.fromACSErrTest0Ex(
+					jex.toACSErrTest0Ex()
+				);
 			
+			// Check the stack (should be the original location)
+			StringWriter wr = new StringWriter();
+			jex2.printStackTrace(new PrintWriter(wr));
 			String linesep = System.getProperty("line.separator");
 			String expectedTrace = "alma.ACSErrTypeTest.wrappers.AcsJACSErrTest0Ex: low level ex [ MyStupidProperty='Poverty' ] " + linesep
 				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:48)" + linesep
 				+ "Caused by: alma.acs.exceptions.DefaultAcsJException (java.lang.NullPointerException): mean NPE" + linesep
 				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:47)" + linesep;
-			assertEquals(expectedTrace, stringWriter.toString());
+			assertEquals(expectedTrace, wr.toString());
 		}
 	}
 }
