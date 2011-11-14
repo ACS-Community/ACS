@@ -662,12 +662,38 @@ public class AcsContainer extends ContainerPOA
 				catch (CannotActivateComponentEx ae)
 				{
 					AcsJCannotActivateComponentEx aae = AcsJCannotActivateComponentEx.fromCannotActivateComponentEx(ae);
-					callback.done(null, aae.toAcsJCompletion().toCorbaCompletion(), descOut);
+					ComponentInfo dummyComponentInfo = 
+						new ComponentInfo(
+								type,
+								exe,
+								null,
+								name,
+								new int[0],
+								0,
+								m_containerName,
+								h,
+								0,
+								new String[0]
+								);
+					callback.done(dummyComponentInfo, aae.toAcsJCompletion().toCorbaCompletion(), descOut);
 				}
 				catch (Throwable th)
 				{
 					AcsJException ae = new AcsJUnknownEx(th);
-					callback.done(null, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
+					ComponentInfo dummyComponentInfo = 
+						new ComponentInfo(
+								type,
+								exe,
+								null,
+								name,
+								new int[0],
+								0,
+								m_containerName,
+								h,
+								0,
+								new String[0]
+								);
+					callback.done(dummyComponentInfo, ae.toAcsJCompletion().toCorbaCompletion(), descOut);
 				}
 			}
 		});
