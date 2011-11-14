@@ -85,6 +85,7 @@ public class ChannelTreeView extends ViewPart {
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
 	private Thread channelTreeThread;
 	private SubscribeToChannelAction subscribeAction;
+	private SubscribeToAllChannelsAction subscribeToAllAction;
 
 	/*
 	 * The content provider class is responsible for
@@ -169,6 +170,7 @@ public class ChannelTreeView extends ViewPart {
 		manager.add(refreshAction);
 		manager.add(new Separator());
 		manager.add(startMonitoringAction);
+		manager.add(subscribeToAllAction);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
@@ -212,6 +214,13 @@ public class ChannelTreeView extends ViewPart {
 		
 		try {
 			subscribeAction = new SubscribeToChannelAction(getSite().getWorkbenchWindow());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			subscribeToAllAction = new SubscribeToAllChannelsAction();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

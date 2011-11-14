@@ -73,7 +73,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.31 2011/11/11 17:13:20 jschwarz Exp $
+ * $Id: EventModel.java,v 1.32 2011/11/14 11:59:22 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -556,6 +556,12 @@ public class EventModel {
 	
 	public void addChannelSubscription(String channelName) {
 		subscribedChannels.add(channelName);
+	}
+	
+	public void subscribeToAllChannels() {
+		for (String channelName : channelMap.keySet()) {
+			subscribedChannels.add(channelName);
+		}
 	}
 
 	public void getArchiveConsumer() {
