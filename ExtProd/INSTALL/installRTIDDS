@@ -22,7 +22,6 @@ fi
 which acroread 2&>1 /dev/null
 ACRO_READER=$?
 
-
 # if option -c is specified we check out all neccessary files
 if [ "$1" == "-c" ]
 then
