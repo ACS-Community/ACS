@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- (c) Copyright, Real-Time Innovations, $Date: 2011/09/09 15:00:29 $.
+ (c) Copyright, Real-Time Innovations, $Date: 2011/11/14 09:48:44 $.
  All rights reserved.
  No duplications, whole or partial, manual or electronic, may be made
  without express written permission.  Any such copies, or
@@ -153,6 +153,20 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="roleName">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;xs:string&gt;
+            </xs:documentation>
+            <xs:documentation>
+                It can only be 255 characters in length.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="255"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="propertyName">
         <xs:annotation>
             <xs:documentation>
@@ -180,7 +194,7 @@
         </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:whiteSpace value="collapse"/>
-            <xs:pattern value="([a-zA-Z0-9_])+"/>
+            <xs:pattern value="([a-zA-Z0-9/*_])+"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -194,6 +208,19 @@
             <xs:whiteSpace value="collapse"/>
             <xs:enumeration value="BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS"/>
             <xs:enumeration value="BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+        <xs:simpleType name="transportMulticastQosPolicyKind">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;AUTOMATIC_TRANSPORT_MULTICAST_QOS|UNICAST_ONLY_TRANSPORT_MULTICAST_QOS&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:whiteSpace value="collapse"/>
+            <xs:enumeration value="AUTOMATIC_TRANSPORT_MULTICAST_QOS"/>
+            <xs:enumeration value="UNICAST_ONLY_TRANSPORT_MULTICAST_QOS"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -249,7 +276,22 @@
             <xs:whiteSpace value="collapse"/>
             <xs:enumeration value="INSTANCE_PRESENTATION_QOS"/>
             <xs:enumeration value="TOPIC_PRESENTATION_QOS"/>
+            <xs:enumeration value="GROUP_PRESENTATION_QOS"/>            
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="subscriberPresentationAccessScopeKind">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;INSTANCE_PRESENTATION_QOS|TOPIC_PRESENTATION_QOS|GROUP_PRESENTATION_QOS|HIGHEST_OFFERED_PRESENTATION_QOS&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:whiteSpace value="collapse"/>
+            <xs:enumeration value="INSTANCE_PRESENTATION_QOS"/>
+            <xs:enumeration value="TOPIC_PRESENTATION_QOS"/>
             <xs:enumeration value="GROUP_PRESENTATION_QOS"/>
+            <xs:enumeration value="HIGHEST_OFFERED_PRESENTATION_QOS"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -539,6 +581,32 @@
         </xs:restriction>
     </xs:simpleType>
 
+    <xs:simpleType name="nonNegativeInteger_DurationAuto_SEC">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;DURATION_INFINITE_SEC|DURATION_ZERO_SEC|DURATION_AUTO_SEC|xs:nonNegativeInteger&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <!-- RTI extension DURATION_ZERO_SEC -->
+            <xs:whiteSpace value="collapse"/>
+            <xs:pattern value="(\+?[0-9]+)|DURATION_INFINITE_SEC|DURATION_ZERO_SEC|DURATION_AUTO_SEC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="nonNegativeInteger_DurationAuto_NSEC">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;DURATION_INFINITE_NSEC|DURATION_ZERO_NSEC|DURATION_AUTO_NSEC|xs:nonNegativeInteger&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <!-- RTI extension DURATION_ZERO_NSEC -->
+            <xs:whiteSpace value="collapse"/>
+            <xs:pattern value="(\+?[0-9]+)|DURATION_INFINITE_NSEC|DURATION_ZERO_NSEC|DURATION_AUTO_NSEC"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:simpleType name="positiveInteger_UNLIMITED">
         <xs:annotation>
             <xs:documentation>
@@ -626,6 +694,74 @@
         </xs:restriction>
     </xs:simpleType>
 
+	<!-- RTI extension -->
+	<xs:simpleType name="integer_SEQUENCE_NUMBER">
+		<xs:annotation>
+			<xs:documentation>
+				TODO
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:pattern value="(AUTO_SEQUENCE_NUMBER|[1-9]([0-9])*)"/>
+		</xs:restriction>
+	</xs:simpleType>
+        
+      <!-- RTI extension -->
+       <xs:simpleType name="loggingVerbosity">
+           <xs:annotation>
+               <xs:documentation>
+                   &lt;SILENT|ERROR|WARNING|LOCAL|REMOTE|ALL&gt;
+               </xs:documentation>
+           </xs:annotation>
+           <xs:restriction base="xs:string">
+               <xs:whiteSpace value="collapse"/>
+               <xs:enumeration value="SILENT"/>
+               <xs:enumeration value="ERROR"/>
+               <xs:enumeration value="WARNING"/>
+               <xs:enumeration value="LOCAL"/>
+               <xs:enumeration value="REMOTE"/>
+               <xs:enumeration value="ALL"/>
+           </xs:restriction>
+       </xs:simpleType>
+
+       <!-- RTI extension -->
+        <xs:simpleType name="loggingCategory">
+            <xs:annotation>
+                <xs:documentation>
+                    &lt;PLATFORM|COMMUNICATION|DATABASE|ENTITIES|API|ALL&gt;
+                </xs:documentation>
+            </xs:annotation>
+            <xs:restriction base="xs:string">
+                <xs:whiteSpace value="collapse"/>
+                <xs:enumeration value="PLATFORM"/>
+                <xs:enumeration value="COMMUNICATION"/>
+                <xs:enumeration value="DATABASE"/>
+                <xs:enumeration value="ENTITIES"/>
+                <xs:enumeration value="API"/>
+                <xs:enumeration value="ALL"/>
+            </xs:restriction>
+        </xs:simpleType>
+
+        <!-- RTI extension -->
+         <xs:simpleType name="loggingPrintFormat">
+             <xs:annotation>
+                 <xs:documentation>
+                     &lt;DEFAULT|TIMESTAMPED|VERBOSE|VERBOSE_TIMESTAMPED|DEBUG|MINIMAL|MAXIMAL&gt;
+                 </xs:documentation>
+             </xs:annotation>
+             <xs:restriction base="xs:string">
+                 <xs:whiteSpace value="collapse"/>
+                 <xs:enumeration value="DEFAULT"/>
+                 <xs:enumeration value="TIMESTAMPED"/>
+                 <xs:enumeration value="VERBOSE"/>
+                 <xs:enumeration value="VERBOSE_TIMESTAMPED"/>
+                 <xs:enumeration value="DEBUG"/>
+                 <xs:enumeration value="MINIMAL"/>
+                 <xs:enumeration value="MAXIMAL"/>
+             </xs:restriction>
+         </xs:simpleType>
+
     <!-- ================================================================= -->
     <!-- Complex Types                                                     -->
     <!-- ================================================================= -->
@@ -648,6 +784,24 @@
         </xs:all>
     </xs:complexType>
 
+    <xs:complexType name="durationAuto">
+        <xs:annotation>
+            <xs:documentation>
+                Time specified in seconds and nanoseconds
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="sec"
+                        type="nonNegativeInteger_DurationAuto_SEC"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="nanosec"
+                        type="nonNegativeInteger_DurationAuto_NSEC"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
     <xs:complexType name="stringSeq">
         <xs:annotation>
             <xs:documentation>
@@ -657,7 +811,32 @@
         <xs:sequence>
             <xs:element name="element" type="string" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-    </xs:complexType>
+    </xs:complexType>	
+
+	<!-- RTI extension -->
+	<xs:complexType name="sequenceNumber">
+		<xs:annotation>
+			<xs:documentation>
+				Sequence number specified in high and low, or as a 64-bit decimal value
+			</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:sequence>
+				<xs:element name="high"
+							type="integer"
+							minOccurs="0"
+							maxOccurs="1"/>
+				<xs:element name="low"
+							type="positiveInteger"
+							minOccurs="0"
+							maxOccurs="1"/>
+			</xs:sequence>
+			<xs:element name ="value"
+						type="integer_SEQUENCE_NUMBER"
+						minOccurs="0"
+						maxOccurs="1"/>
+		</xs:choice>
+	</xs:complexType>    
 
     <!-- RTI extension -->
     <xs:complexType name="allocationSettings">
@@ -769,6 +948,14 @@
                         type="duration"
                         minOccurs="0"
                         maxOccurs="1"/>
+            <xs:element name="receive_window_size"
+                        type="positiveInteger"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="round_trip_time"
+                        type="duration"
+                        minOccurs="0"
+                        maxOccurs="1"/>
         </xs:all>
     </xs:complexType>
 
@@ -800,6 +987,14 @@
                         maxOccurs="1"/>
             <xs:element name="late_joiner_heartbeat_period"
                         type="duration"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="virtual_heartbeat_period"
+                        type="durationAuto"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="samples_per_virtual_heartbeat"
+                        type="positiveInteger_UNLIMITED"
                         minOccurs="0"
                         maxOccurs="1"/>
             <xs:element name="max_heartbeat_retries"
@@ -867,6 +1062,14 @@
                         minOccurs="0"
                         maxOccurs="1"/>
              <xs:element name="send_window_decrease_factor"
+                        type="positiveInteger_UNLIMITED"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+             <xs:element name="enable_multicast_periodic_heartbeat"
+                        type="boolean"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+             <xs:element name="multicast_resend_threshold"
                         type="positiveInteger_UNLIMITED"
                         minOccurs="0"
                         maxOccurs="1"/>
@@ -963,6 +1166,47 @@
         </xs:all>
     </xs:complexType>
 
+    <xs:complexType name="transportMulticastMappingFunction">
+        <xs:annotation>
+            <xs:documentation>
+                Type representing a function defined into an external library.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="dll"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="function_name"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
+    <!-- RTI extension -->
+    <xs:complexType name="transportMulticastMapping">
+        <xs:annotation>
+            <xs:documentation>
+                Type representing a list of addresses associeted with a topic expression.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="addresses"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="topic_expression"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="mapping_function"
+                        type="transportMulticastMappingFunction"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
     <!-- RTI extension -->
     <xs:complexType name="transportUnicastSettingsSeq">
         <xs:annotation>
@@ -973,6 +1217,19 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="element" type="transportUnicastSettings" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- RTI extension -->
+    <xs:complexType name="transportMulticastMappingSeq">
+        <xs:annotation>
+            <xs:documentation>
+                Declares a sequence of elements, which correspond to different TransportMulticast_t
+                entities.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="element" type="transportMulticastMapping" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1027,6 +1284,10 @@
                         maxOccurs="1"/>
             <xs:element name="filter_expression"
                         type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="priority"
+                        type="integer"
                         minOccurs="0"
                         maxOccurs="1"/>
         </xs:all>
@@ -1122,6 +1383,38 @@
         </xs:annotation>
         <xs:sequence>
             <xs:element name="element" type="transportEncapsulationSettings" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- RTI extension -->
+    <xs:complexType name="endpointGroup">
+        <xs:annotation>
+            <xs:documentation>
+                Endpoint groups are identified by a role_name and a quorum_count.                
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="role_name"
+                        type="string"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="quorum_count"
+                        type="positiveInteger_UNLIMITED"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- RTI extension -->
+    <xs:complexType name="endpointGroupSeq">
+        <xs:annotation>
+            <xs:documentation>
+                Declares a sequence of elements, which correspond to different EndpointGroup_t
+                entities.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="element" type="endpointGroup" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -1410,6 +1703,34 @@
         </xs:all>
     </xs:complexType>
 
+    <xs:complexType name="subscriberPresentationQosPolicy">
+        <xs:annotation>
+            <xs:documentation>
+                Since data samples are sent independently over networks that may deliver packets out
+                of order, the PRESENTATION QoS policy allows you to control
+                how a Subscriber sorts
+                and orders the received samples in the DataReader's queue.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="access_scope"
+                        type="subscriberPresentationAccessScopeKind"
+                        default="INSTANCE_PRESENTATION_QOS"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="coherent_access"
+                        type="boolean"
+                        default="false"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+            <xs:element name="ordered_access"
+                        type="boolean"
+                        default="false"
+                        minOccurs="0"
+                        maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
     <xs:complexType name="readerDataLifecycleQosPolicy">
         <xs:annotation>
             <xs:documentation>
@@ -1458,6 +1779,7 @@
         <xs:all>
             <xs:element maxOccurs="1" minOccurs="0" name="kind" type="publishModeKind" default="SYNCHRONOUS_PUBLISH_MODE_QOS" />
             <xs:element maxOccurs="1" minOccurs="0" name="flow_controller_name" type="string_FLOW_CONTROLLER_NAME" default="DEFAULT_FLOW_CONTROLLER_NAME" />
+            <xs:element maxOccurs="1" minOccurs="0" name="priority" type="integer" />
         </xs:all>
     </xs:complexType>
 
@@ -1572,6 +1894,7 @@
         </xs:annotation>
         <xs:all>
             <xs:element name="autodispose_unregistered_instances" type="boolean" default="true" minOccurs="0"/>
+            <xs:element name="autopurge_unregistered_instances_delay" type="duration" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 
@@ -1600,12 +1923,15 @@
             <!-- RTI extensions -->
             <xs:element name="max_remote_writers" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
             <xs:element name="max_remote_writers_per_instance" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_remote_writers_per_sample" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_remote_virtual_writers" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
             <xs:element name="max_remote_virtual_writers_per_instance" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
             <xs:element name="max_samples_per_remote_writer" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
             <xs:element name="max_samples_per_read" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="max_infos" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
             <xs:element name="initial_remote_writers" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="initial_remote_writers_per_instance" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="initial_remote_virtual_writers" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="initial_remote_virtual_writers_per_instance" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="initial_infos" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="disable_fragmentation_support" type="boolean" minOccurs="0" maxOccurs="1"/>
@@ -1640,6 +1966,8 @@
             <xs:element name="instance_replacement" type="dataWriterResourceLimitsInstanceReplacementKind" minOccurs="0" maxOccurs="1"/>
             <xs:element name="replace_empty_instances" type="boolean" minOccurs="0" maxOccurs="1"/>
             <xs:element name="autoregister_instances" type="boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="initial_virtual_writers" type="positiveInteger" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_virtual_writers" type="positiveInteger_UNLIMITED" minOccurs="0" maxOccurs="1"/>
         </xs:all>
     </xs:complexType>
 
@@ -1690,6 +2018,7 @@
         </xs:annotation>
         <xs:all>
             <xs:element name="name" type="entityName" minOccurs="0"/>
+            <xs:element name="role_name" type="roleName" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 
@@ -1711,6 +2040,20 @@
     </xs:complexType>
 
     <!-- RTI extension -->
+    <xs:complexType name="availabilityQosPolicy">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;&lt;RTI Extension&gt;&gt;
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="max_data_availability_waiting_time" type="durationAuto" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_endpoint_availability_waiting_time" type="durationAuto" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="required_matched_endpoint_groups" type="endpointGroupSeq" minOccurs="0" maxOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
+    <!-- RTI extension -->
     <xs:complexType name="dataWriterProtocolQosPolicy">
         <xs:annotation>
             <xs:documentation>
@@ -1726,6 +2069,7 @@
             <xs:element name="serialize_key_with_dispose" type="boolean" minOccurs="0" maxOccurs="1"/>
             <xs:element name="push_on_write" type="boolean" default="true" minOccurs="0" maxOccurs="1"/>
             <xs:element name="rtps_reliable_writer" type="rtpsReliableWriterProtocol" minOccurs="0" maxOccurs="1"/>
+            <!--<xs:element name="initial_virtual_sequence_number" type="sequenceNumber" minOccurs="0" maxOccurs="1"/>-->
         </xs:all>
     </xs:complexType>
 
@@ -1794,7 +2138,9 @@
             <xs:element name="subscription_reader" type="rtpsReliableReaderProtocol" minOccurs="0" maxOccurs="1"/>
             <xs:element name="subscription_reader_resource_limits" type="builtinTopicReaderResourceLimits" minOccurs="0" maxOccurs="1"/>
             <xs:element name="publication_writer" type="rtpsReliableWriterProtocol" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="publication_writer_data_lifecycle" type="writerDataLifecycleQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="subscription_writer" type="rtpsReliableWriterProtocol" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="subscription_writer_data_lifecycle" type="writerDataLifecycleQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="builtin_discovery_plugins" type="discoveryPluginKindMask" minOccurs="0" maxOccurs="1"/>
             <xs:element name="participant_message_reader" type="rtpsReliableReaderProtocol" minOccurs="0" maxOccurs="1"/>
             <xs:element name="participant_message_writer" type="rtpsReliableWriterProtocol" minOccurs="0" maxOccurs="1"/>
@@ -1866,6 +2212,8 @@
             <xs:element name="reader_property_string_max_length" type="nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="channel_seq_max_length" type="nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
             <xs:element name="channel_filter_expression_max_length" type="nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_endpoint_groups" type="nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="max_endpoint_group_cumulative_characters" type="nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
         </xs:all>
     </xs:complexType>
 
@@ -2064,6 +2412,23 @@
     </xs:complexType>
 
     <!-- RTI extension -->
+    <xs:complexType name="transportMulticastMappingQosPolicy">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;&lt;RTI Extension&gt;&gt;
+                The MULTICAST_MAPPING QoS policy allows you to specify
+                a list of multicast addresses
+                to be used by DataReaders for receiving
+                messages. The address is choosed using the topicname.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="value" type="transportMulticastMappingSeq" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+
+
+    <!-- RTI extension -->
     <xs:complexType name="transportMulticastQosPolicy">
         <xs:annotation>
             <xs:documentation>
@@ -2075,6 +2440,7 @@
         </xs:annotation>
         <xs:all>
             <xs:element name="value" type="transportMulticastSettingsSeq" minOccurs="0"/>
+            <xs:element name="kind" type="transportMulticastQosPolicyKind" minOccurs="0"/>
         </xs:all>
     </xs:complexType>
 
@@ -2089,6 +2455,22 @@
         </xs:annotation>
         <xs:all>
             <xs:element name="value" type="transportEncapsulationSettingsSeq" minOccurs="0"/>
+        </xs:all>
+    </xs:complexType>
+
+    <!-- RTI extension -->
+    <xs:complexType name="loggingQosPolicy">
+        <xs:annotation>
+            <xs:documentation>
+                &lt;&lt;RTI Extension&gt;&gt;
+                The Logging QoS policy configures the NDDS Config Logger.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="verbosity" type="loggingVerbosity" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="category" type="loggingCategory" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="print_format" type="loggingPrintFormat" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="output_file" type="string" minOccurs="0" maxOccurs="1"/>
         </xs:all>
     </xs:complexType>
 
@@ -2109,6 +2491,7 @@
             <!-- RTI extensions -->
             <xs:element name="transport_builtin" type="transportBuiltinQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="default_unicast" type="transportUnicastQosPolicy" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="multicast_mapping" type="transportMulticastMappingQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="discovery" type="discoveryQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="property" type="propertyQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="participant_name" type="entityNameQosPolicy" minOccurs="0" maxOccurs="1"/>
@@ -2119,6 +2502,20 @@
             <xs:element name="receiver_pool" type="receiverPoolQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="database" type="databaseQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="discovery_config" type="discoveryConfigQosPolicy" minOccurs="0" maxOccurs="1"/>
+        </xs:all>
+
+        <xs:attribute name="base_name" type="elementBaseName"/>
+    </xs:complexType>
+
+    <xs:complexType name="domainparticipantfactoryQos">
+        <xs:annotation>
+            <xs:documentation>
+                QoS policies related to DomainParticipantFactory.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <!-- RTI extensions -->
+            <xs:element name="logging" type="loggingQosPolicy" minOccurs="0" maxOccurs="1"/>
         </xs:all>
 
         <xs:attribute name="base_name" type="elementBaseName"/>
@@ -2151,7 +2548,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:all>
-            <xs:element name="presentation" type="presentationQosPolicy" minOccurs="0"/>
+            <xs:element name="presentation" type="subscriberPresentationQosPolicy" minOccurs="0"/>
             <xs:element name="partition" type="partitionQosPolicy" minOccurs="0"/>
             <xs:element name="group_data" type="groupDataQosPolicy" minOccurs="0"/>
             <xs:element name="entity_factory" type="entityFactoryQosPolicy" minOccurs="0"/>
@@ -2218,6 +2615,8 @@
             <xs:element name="property" type="propertyQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="multi_channel" type="multiChannelQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="encapsulation" type="transportEncapsulationQosPolicy" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="availability" type="availabilityQosPolicy" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="subscription_name" type="entityNameQosPolicy" minOccurs="0" maxOccurs="1"/>
             <!--<xs:element name="type_support" type="typeSupportQosPolicy" minOccurs="0" maxOccurs="1"/>            -->
         </xs:all>
 
@@ -2258,6 +2657,7 @@
             <xs:element name="property" type="propertyQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="batch" type="dataWriterBatchQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="multi_channel" type="multiChannelQosPolicy" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="publication_name" type="entityNameQosPolicy" minOccurs="0" maxOccurs="1"/>
             <xs:element name="encapsulation" type="transportEncapsulationQosPolicy" minOccurs="0" maxOccurs="1"/>
         </xs:all>
 
@@ -2280,6 +2680,19 @@
             <xs:extension base="domainparticipantQos">
                 <xs:attribute name="name" type="elementName"/>
             </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="domainparticipantfactoryQosProfileChild">
+        <xs:annotation>
+            <xs:documentation>
+                This profile groups the QoS policies related to DomainParticipantFactory.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="domainparticipantfactoryQos">
+                <xs:attribute name="name" type="elementName"/>
+             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
@@ -2366,6 +2779,19 @@
         </xs:complexContent>
     </xs:complexType>
 
+    <xs:complexType name="domainparticipantfactoryQosProfile">
+        <xs:annotation>
+            <xs:documentation>
+                This profile groups the QoS policies related to DomainParticipantFactory.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="domainparticipantfactoryQos">
+                <xs:attribute name="name" type="elementName" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
     <xs:complexType name="topicQosProfile">
         <xs:annotation>
             <xs:documentation>
@@ -2443,6 +2869,7 @@
                 <xs:element name="datawriter_qos" type="datawriterQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="topic_qos" type="topicQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="participant_qos" type="domainparticipantQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="participant_factory_qos" type="domainparticipantfactoryQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="publisher_qos" type="publisherQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="subscriber_qos" type="subscriberQosProfileChild" minOccurs="0" maxOccurs="unbounded"/>
             </xs:choice>
@@ -2450,6 +2877,7 @@
         <xs:attribute name="name" type="elementName" use="required"/>
         <xs:attribute name="base_name" type="elementBaseName"/>
         <xs:attribute name="is_default_qos" type="boolean"/>
+        <xs:attribute name="is_default_factory_profile" type="boolean"/>
     </xs:complexType>
 
     <xs:complexType name="qosLibrary">
@@ -2466,6 +2894,7 @@
                 <xs:element name="datawriter_qos" type="datawriterQosProfile" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="topic_qos" type="topicQosProfile" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="participant_qos" type="domainparticipantQosProfile" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="participant_factory_qos" type="domainparticipantfactoryQosProfile" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="publisher_qos" type="publisherQosProfile" minOccurs="0" maxOccurs="unbounded"/>
                 <xs:element name="subscriber_qos" type="subscriberQosProfile" minOccurs="0" maxOccurs="unbounded"/>
                 <!-- RTI extensions -->
@@ -2484,7 +2913,7 @@
                     <xs:element name="qos_library" type="qosLibrary" minOccurs="0" maxOccurs="unbounded"/>
                 </xs:choice>
             </xs:sequence>
-            <xs:attribute name="version" type="xs:string" fixed="4.5d"/>
+            <xs:attribute name="version" type="xs:string" fixed="4.5e"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
