@@ -63,10 +63,17 @@ public class SubscribeToChannelAction extends Action implements
 	
 	public void run() {
 		if (add) {
+			setEnabled(false);
 			em.addChannelSubscription(channelName);
+			setText(removeText);
+			setText(removeTooltip);
 		} else {
+			setEnabled(false);
 			em.closeSelectedConsumer(channelName, true);
+			setText(addText);
+			setText(addTooltip);
 		}
+		setEnabled(true);
 	}
 	
 	@Override
