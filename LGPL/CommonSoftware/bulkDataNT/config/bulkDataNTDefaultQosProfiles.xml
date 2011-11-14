@@ -3,8 +3,8 @@
 Default QoS Profile for BulkDataNT.
 -->
 <dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="D:/DDS/RTI/ndds.4.5d/resource/qos_profiles_4.5d/schema/rti_dds_qos_profiles.xsd"
-     version="4.5d">
+    xsi:noNamespaceSchemaLocation="/alma/ACS-10.0/RTI/ndds.4.5e/resource/qos_profiles_4.5e/schema/rti_dds_qos_profiles.xsd"
+     version="4.5e">
     <!-- QoS Library containing the QoS profile used in the generated example.
 
         A QoS library is a named set of QoS profiles.
@@ -139,6 +139,7 @@ Default QoS Profile for BulkDataNT.
                 <reader_resource_limits>
                     <initial_remote_writers>1</initial_remote_writers>
                     <max_remote_writers>1</max_remote_writers>
+                    <max_remote_writers_per_sample>1</max_remote_writers_per_sample>
                     <initial_remote_writers_per_instance>1</initial_remote_writers_per_instance>
                     <max_remote_writers_per_instance>1</max_remote_writers_per_instance>
                     <max_samples_per_remote_writer>100</max_samples_per_remote_writer>
