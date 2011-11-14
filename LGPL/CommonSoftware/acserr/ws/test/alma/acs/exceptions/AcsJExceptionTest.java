@@ -21,9 +21,13 @@
  */
 package alma.acs.exceptions;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.InetAddress;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import junit.framework.TestCase;
 
@@ -54,16 +58,14 @@ import alma.acs.util.UTCUtility;
  */
 public class AcsJExceptionTest extends TestCase
 {
-    private ClientServerExceptionExample exSystem;
-    private String hostName;
-    
-	public AcsJExceptionTest() throws Exception
-	{
-		super("AcsJExceptionTest");
-        exSystem = new ClientServerExceptionExample();
-        hostName = InetAddress.getLocalHost().getHostName();
-	}
+	private ClientServerExceptionExample exSystem;
+	private String hostName;
 
+	public AcsJExceptionTest() throws Exception {
+		super("AcsJExceptionTest");
+		exSystem = new ClientServerExceptionExample();
+		hostName = InetAddress.getLocalHost().getHostName();
+	}
 	
 	/**
 	 * Uses {@link ClientServerExceptionExample#throwOriginalAcsJACSErrTest0Ex} to verify the output 
@@ -283,7 +285,10 @@ public class AcsJExceptionTest extends TestCase
     
 	/**
 	 * Checks if logging of ACS exceptions (including caused-by exceptions) works.
-     * See also <code>alma.demo.client.XmlComponentClient#testException()</code> in module jcontexmpl.
+	 * Here "logging" refers to special logging via
+	 * {@link AcsJException#log(java.util.logging.Logger)}.
+	 * <p>
+	 * See also <code>alma.demo.client.XmlComponentClient#testException()</code> in module jcontexmpl.
 	 */
 	public void testLogAcsJException() {
         LogRecordCollectingLogger logger = LogRecordCollectingLogger.getCollectingLogger("AcsJExceptionTest-Logger");
@@ -296,12 +301,12 @@ public class AcsJExceptionTest extends TestCase
             assertEquals(3, e.getTraceDepth());
             String firstLogMsg = "Will log exception coming from throwWrapperAcsJACSErrTest0Ex";
             logger.info(firstLogMsg);
-            e.log(logger);            
+            e.log(logger);
             LogRecord[] logRecords = logger.getCollectedLogRecords();
             
             assertNotNull(logRecords);
             assertEquals(4, logRecords.length);
-            assertEquals(firstLogMsg, logRecords[0].getMessage());            
+            assertEquals(firstLogMsg, logRecords[0].getMessage());
             
             // The top-level exception is logged first, with stack level = 2
             LogRecord lr2 = logRecords[1];
@@ -350,7 +355,28 @@ public class AcsJExceptionTest extends TestCase
             Map userProps0 = (Map) lr0.getParameters()[1];
             assertEquals(0, userProps0.size());
             
-        }        
-    }	
+        }
+    }
 
+	/**
+	 * Tests how an exception is logged via the standard method {@link Logger#log(Level, String, Throwable)}.
+	 * In particular, this test verifies that also JDK (= non-AcsJ) exceptions are correctly transformed 
+	 * into Corba-style ACS exceptions and back.
+	 */
+	public void testStackTraceLog() {
+		
+		try {
+			exSystem.throwConvertedAcsJACSErrTest0Ex();
+		} catch (AcsJACSErrTest0Ex jex) {
+			StringWriter stringWriter = new StringWriter();
+			jex.printStackTrace(new PrintWriter(stringWriter));
+			
+			String linesep = System.getProperty("line.separator");
+			String expectedTrace = "alma.ACSErrTypeTest.wrappers.AcsJACSErrTest0Ex: low level ex [ MyStupidProperty='Poverty' ] " + linesep
+				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:48)" + linesep
+				+ "Caused by: alma.acs.exceptions.DefaultAcsJException (java.lang.NullPointerException): mean NPE" + linesep
+				+ "	at ---.throwOriginalAcsJACSErrTest0Ex(ClientServerExceptionExample.java:47)" + linesep;
+			assertEquals(expectedTrace, stringWriter.toString());
+		}
+	}
 }
