@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.6 2011/08/05 14:09:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.7 2011/11/15 16:13:47 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@
 
 #include "bulkDataNTStream.h"
 #include "bulkDataNTSenderFlow.h"
-
+#include "bulkDataNTSenderFlowStatusCallback.h"
 
 #include <map>
 
@@ -73,7 +73,8 @@ public:
 	// if we decide for name then we have to change send methods as well.
 	// here we should connect to the DDS topic
 	// TBD: here we can also send the callback?
-	BulkDataNTSenderFlow* createFlow(const char* flowName, const SenderFlowConfiguration &cfg=SenderFlowConfiguration());
+	BulkDataNTSenderFlow* createFlow(const char* flowName, const SenderFlowConfiguration &cfg=SenderFlowConfiguration(),
+			BulkDataNTSenderFlowStatusCallback *cb=0, bool releaseCB=false);
 
 
 

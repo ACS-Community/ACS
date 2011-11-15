@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.10 2011/08/23 15:43:33 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.11 2011/11/15 16:14:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.10 2011/08/23 15:43:33 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.11 2011/11/15 16:14:21 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -53,7 +53,8 @@ BulkDataNTSenderStream::~BulkDataNTSenderStream()
 	flows_m.clear();
  }//~BulkDataNTSenderStream
 
-BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, const SenderFlowConfiguration &cfg /*, cb*/)
+BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, const SenderFlowConfiguration &cfg,
+															BulkDataNTSenderFlowStatusCallback *cb, bool releaseCB)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	BulkDataNTSenderFlow *flow = 0;
