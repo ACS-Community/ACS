@@ -52,8 +52,6 @@ import org.omg.CosNotifyChannelAdmin.EventChannelHelper;
 import org.omg.DynamicAny.DynAnyFactory;
 import org.omg.DynamicAny.DynAnyFactoryHelper;
 
-import Monitor.Data;
-import Monitor.Numeric;
 import alma.ACSErrTypeCommon.wrappers.AcsJUnexpectedExceptionEx;
 import alma.acs.component.client.AdvancedComponentClient;
 import alma.acs.container.AcsManagerProxy;
@@ -73,7 +71,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.32 2011/11/14 11:59:22 jschwarz Exp $
+ * $Id: EventModel.java,v 1.33 2011/11/15 16:13:55 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -85,11 +83,7 @@ public class EventModel {
 	private final Helper h;
 	private final NamingContext nctx;
 	private final AcsManagerProxy mproxy;
-//	private final EventChannelFactory nsvc;
-//	private final EventChannelFactory lsvc;	// For logging service
 	private final static String eventGuiId = "eventGUI";
-//	private final EventChannelFactory alsvc;
-//	private final EventChannelFactory arsvc;
 	private HashMap<String, EventChannel> channelMap; // maps each event channel name to the event channel
 	private HashMap<String, int[]> lastConsumerAndSupplierCount;
 	private HashSet<String> subscribedChannels; // all channels whose events the user wishes to monitor/display
@@ -98,7 +92,7 @@ public class EventModel {
 	private HashMap<String, AdminConsumer> consumerMap;
 	private static DynAnyFactory dynAnyFactory = null;
 	public static final int MAX_NUMBER_OF_CHANNELS = 100;
-	private NotificationServiceMonitorControl[] nsmc;
+	private NotificationServiceMonitorControl nsmc;
 	private ArchiveConsumer archiveConsumer;
 	private AdvancedComponentClient acc;
 	private ArrayList<EventChannelFactory> efacts;
@@ -126,7 +120,6 @@ public class EventModel {
 		h = new Helper(cs);
 		nctx = h.getNamingService();
 		getAllNotifyServices();
-		nsmc = getMonitorControl();
 		clist = new ArrayList<NotifyServiceData>(10);
 	}
 
@@ -189,21 +182,20 @@ public class EventModel {
 	 * @throws CannotProceed
 	 * @throws InvalidName
 	 */
-	private NotificationServiceMonitorControl[] getMonitorControl() throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName  {
-		
-		NotificationServiceMonitorControl[] nsmc = new NotificationServiceMonitorControl[efactNames.size()];
-		NameComponent[] ncomp = new NameComponent[1];
-		for (int i = 0; i < notifyBindingNames.size(); i++) {
-			String name = "MC_"+notifyBindingNames.get(i);
-			ncomp[0] = new NameComponent(name,"");
+	private NotificationServiceMonitorControl getMonitorControl(String notifyBindingName) throws CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName  {
 
-			try {
-				nsmc[i] = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
-			} catch (NotFound e) {
-				m_logger.info("Can't find an Monitor & Control instance corresponding to: "+notifyBindingNames.get(i));
-				nsmc[i] = null;
-			} 
-		}
+		NotificationServiceMonitorControl nsmc;
+		NameComponent[] ncomp = new NameComponent[1];
+
+		String name = "MC_"+notifyBindingName;
+		ncomp[0] = new NameComponent(name,"");
+
+		try {
+			nsmc = NotificationServiceMonitorControlHelper.narrow(nctx.resolve(ncomp));
+		} catch (NotFound e) {
+			m_logger.info("Can't find an Monitor & Control instance corresponding to: "+notifyBindingName);
+			nsmc = null;
+		} 
 
 		return nsmc;
 	}
@@ -264,7 +256,16 @@ public class EventModel {
 					efacts.add(efact);
 					efactNames.add(displayName);
 					notifyBindingNames.add(id);
-					notifyServices.addService(new NotifyServiceData(displayName,efact, new int[2], new int[2]));
+					try {
+						nsmc = getMonitorControl(id);
+					} catch (CannotProceed e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (org.omg.CosNaming.NamingContextPackage.InvalidName e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					notifyServices.addService(new NotifyServiceData(displayName,id, efact, nsmc, new int[2], new int[2]));
 				}
 			}
 	
@@ -398,21 +399,12 @@ public class EventModel {
 					lastConsumerAndSupplierCount.put(channelName,adminCounts);
 					//m_logger.info("Channel: "+channelName+" has "+adminCounts[0]+" consumers and "+adminCounts[1]+" suppliers.");
 					String notifyServiceName = simplifyNotifyServiceName(h.getNotificationFactoryNameForChannel(channelName));
-					ChannelData cdata = new ChannelData(channelName, null, adminCounts, adminDeltas);
-					cdata.addStatistics(new ConsumerCounts(cdata,cdata.getNumConsumersAndDelta()));
-					cdata.addStatistics(new SupplierCounts(cdata,cdata.getNumSuppliersAndDelta()));
 					for (Iterator<NotifyServiceData> iterator = clist.iterator(); iterator
 							.hasNext();) {
 						NotifyServiceData nsData = (NotifyServiceData) iterator.next();
 						if (nsData.getName().equals(notifyServiceName)) {
-							cdata.setParent(nsData);
-							if (!nsData.addChannelAndConfirm(channelName, cdata)) {
-								ChannelData cd = nsData.getChannel(channelName);
-								cd.setNumberConsumers(adminCounts[0]);
-								cd.setNumberSuppliers(adminCounts[1]);
-								cd.setDeltaConsumers(adminDeltas[0]);
-								cd.setDeltaSuppliers(adminDeltas[1]);								
-							}
+							ChannelData cdata = new ChannelData(channelName, nsData, adminCounts, adminDeltas);
+							nsData.addChannelAndConfirm(channelName, cdata);
 							break;
 						}						
 					}
@@ -420,12 +412,6 @@ public class EventModel {
 					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
 				}
 
-			}
-			try {
-				if (false) printMonitoringResults(nsmc); // Disabled for check-in to CVS
-			} catch (InvalidName e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 		}
 		return chdatList;	
@@ -579,41 +565,6 @@ public class EventModel {
 	
 	public static DynAnyFactory getDynAnyFactory() {
 		return dynAnyFactory;
-	}
-	
-	private void printMonitoringResults(NotificationServiceMonitorControl[] mc) throws InvalidName { // /alma/ACS-9.0/TAO/ACE_wrappers/build/linux/TAO/orbsvcs/orbsvcs/Notify/MonitorControlExt/NotifyMonitoringExt.idl
-		for (int i = 0; i < mc.length; i++) {
-			if (mc[i] == null) continue;
-			String[] names = mc[i].get_statistic_names();
-			for (int j = 0; j < names.length; j++) {
-				m_logger.info("NC Statistic name[" + j + "] : " + names[j]);
-//				if (true) continue;
-				if (!names[j].contains("/"))  // the max index can be zero!!!
-					continue;
-				String channel = names[j].split("/")[1];
-				Data stats = mc[i].get_statistic(names[j]);
-
-				if (names[j].endsWith("ConsumerNames")) {
-					String[] consumers = stats.data_union.list();
-					System.out.println("Consumers for "+channel);
-					for (int k = 0; k < consumers.length; k++) {
-						System.out.println("\t"+consumers[k]);
-					}
-				}
-				else if (names[j].endsWith("QueueElementCount")) {
-					System.out.println("QueueElementCount for "+channel);
-					Numeric numbers = stats.data_union.num();
-					System.out.println("\tCount " + numbers.count);
-//					System.out.println("\tAverage " + numbers.average);
-//					System.out.println("\tSum of squares " + numbers.sum_of_squares);
-//					System.out.println("\tMinimum " + numbers.minimum);
-//					System.out.println("\tMaximum " + numbers.maximum);
-					System.out.println("\tCurrent number of messages in queue: " + numbers.last);
-				}
-
-			}
-		}
-
 	}
 	
 	public synchronized void closeSelectedConsumer(String channelName, boolean deselect) {

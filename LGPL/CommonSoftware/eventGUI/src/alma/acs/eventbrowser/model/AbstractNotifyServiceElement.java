@@ -20,8 +20,11 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+
 public abstract class AbstractNotifyServiceElement {
 	protected AbstractNotifyServiceElement parent;
+	protected NotificationServiceMonitorControl mc;
 	protected String name;
 	
 	private int numberConsumers;
@@ -29,7 +32,8 @@ public abstract class AbstractNotifyServiceElement {
 	private int deltaConsumers;
 	private int deltaSuppliers;
 
-	public AbstractNotifyServiceElement(String name, AbstractNotifyServiceElement parent, 
+	public AbstractNotifyServiceElement(String name, AbstractNotifyServiceElement parent,
+			NotificationServiceMonitorControl mc,
 			int[] adminCounts, int[] adminDeltas) {
 		this.name = name;
 		this.parent = parent;
@@ -37,6 +41,7 @@ public abstract class AbstractNotifyServiceElement {
 		this.numberSuppliers = adminCounts[1];
 		this.deltaConsumers = adminDeltas[0];
 		this.deltaSuppliers = adminDeltas[1];
+		this.mc = mc;
 	}
 	
 	public AbstractNotifyServiceElement getParent() {
@@ -49,6 +54,10 @@ public abstract class AbstractNotifyServiceElement {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public NotificationServiceMonitorControl getMc() {
+		return mc;
 	}
 
 	public int getNumberConsumers() {

@@ -20,14 +20,22 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+
 public abstract class MCStatistics {
 	
 	protected AbstractNotifyServiceElement parent;
 	protected String statistic;
+	protected String channelPrefix;
+	protected String factoryName;
+	protected String statName;
+	protected NotificationServiceMonitorControl mc;
 	
-	public MCStatistics(AbstractNotifyServiceElement parent, String statistic) {
+	public MCStatistics(AbstractNotifyServiceElement parent) {
 		this.parent = parent;
-		this.statistic = statistic;
+		factoryName = ((NotifyServiceData) ((ChannelData)getParent()).getParent()).getFactoryName();
+		channelPrefix = factoryName+"/"+((ChannelData)getParent()).getName()+"/";
+		mc = parent.getMc();
 	}
 	
 	public abstract String getStatistics();

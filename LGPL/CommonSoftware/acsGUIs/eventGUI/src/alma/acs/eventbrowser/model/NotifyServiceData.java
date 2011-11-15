@@ -20,6 +20,8 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -29,11 +31,13 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 
 	private HashMap<String, ChannelData> channels;
 	private EventChannelFactory efact;
+	private String factoryName;
 	
-	public NotifyServiceData(String name, EventChannelFactory ecf, int[] adminCounts, int[] adminDeltas) {
-		super(name, null, adminCounts, adminDeltas);
+	public NotifyServiceData(String name, String factoryName, EventChannelFactory ecf, NotificationServiceMonitorControl mc, int[] adminCounts, int[] adminDeltas) {
+		super(name, null, mc, adminCounts, adminDeltas);
 		channels = new HashMap<String, ChannelData>(10);
 		efact = ecf;
+		this.factoryName = factoryName;
 	}
 	
 	public EventChannelFactory getEventChannelFactory() {
@@ -48,13 +52,9 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 		return channels.get(channelName);
 	}
 	
-	public boolean addChannelAndConfirm(String channelName, ChannelData cdata) {
-		if (!channels.containsKey(channelName)) {
+	public void addChannelAndConfirm(String channelName, ChannelData cdata) {
 			channels.put(channelName, cdata);
-			return true;
-		}
-		else
-			return false;
+			return;
 	}
 	
 	public void removeChannel(String channelName) {
@@ -77,5 +77,9 @@ public class NotifyServiceData extends AbstractNotifyServiceElement implements C
 	@Override
 	public int hashCode() {
 		return getName().hashCode();
+	}
+
+	public String getFactoryName() {
+		return factoryName;
 	}
 }

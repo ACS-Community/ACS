@@ -20,16 +20,29 @@
  *******************************************************************************/
 package alma.acs.eventbrowser.model;
 
+import gov.sandia.CosNotification.NotificationServiceMonitorControl;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ChannelData extends AbstractNotifyServiceElement implements Comparable<ChannelData> {
 	
-	private ArrayList<MCStatistics> statistics;
+	private ArrayList<MCStatistics> statistics= new ArrayList<MCStatistics>(10);
 	private boolean subscribed = false;
+	private static HashMap<String,ChannelData> map = new HashMap<String,ChannelData>();
 	
 	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
-		super(name, parent, adminCounts, adminDeltas);
+		super(name, parent, ((NotifyServiceData)parent).getMc(), adminCounts, adminDeltas);
 		statistics = new ArrayList<MCStatistics>(2); // Consumers and suppliers for now; TODO: Add TAO M&C
+		statistics.add(new SupplierCounts(this));
+		statistics.add(new ConsumerCounts(this));
+		MCStatistics cqs = new ChannelQueueSize(this);
+		statistics.add(cqs);
+		map.put(name, this);
+	}
+	
+	public static ChannelData returnInstanceForChannel(String channelName) {
+		return map.get(channelName);
 	}
 	
 	public void addStatistics(MCStatistics stat) {

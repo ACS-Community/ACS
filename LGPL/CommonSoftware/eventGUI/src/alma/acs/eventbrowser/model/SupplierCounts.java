@@ -22,8 +22,8 @@ package alma.acs.eventbrowser.model;
 
 public class SupplierCounts extends MCStatistics {
 
-	public SupplierCounts(AbstractNotifyServiceElement parent, String statistic) {
-		super(parent,statistic);
+	public SupplierCounts(AbstractNotifyServiceElement parent) {
+		super(parent);
 	}
 	
 	public String getStatistics() {

@@ -22,8 +22,8 @@ package alma.acs.eventbrowser.model;
 
 public class ConsumerCounts extends MCStatistics {
 
-	public ConsumerCounts(AbstractNotifyServiceElement parent, String statistic) {
-		super(parent,statistic);
+	public ConsumerCounts(AbstractNotifyServiceElement parent) {
+		super(parent);
 	}
 	
 	public String getStatistics() {
