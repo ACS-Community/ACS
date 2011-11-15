@@ -286,10 +286,10 @@ public class BlobberWorker extends CancelableRunnable {
         // Data coming from simple property
         // For this case, the index, i.e., the position inside the sequence is 0
         if (inSequence.type().equal(doubleBlobDataSeqHelper.type())) {
-			doubleBlobData[] blobDataArray = doubleBlobDataSeqHelper.extract(inSequence);
+            doubleBlobData[] blobDataArray = doubleBlobDataSeqHelper.extract(inSequence);
             AnyDataContainer container = new AnyDataContainer();
             for (doubleBlobData blobData : blobDataArray) {
-				populateContainerNumeric(container, blobData.time, blobData.value, 0);
+                populateContainerNumeric(container, blobData.time, blobData.value, 0);
             }
             outList.add(container);
             // doubleSeqBlobDataSeq
@@ -469,16 +469,16 @@ public class BlobberWorker extends CancelableRunnable {
         }
         // As the final step we remove the last vertical bar and add end of line
         // to the clob.
-		for (java.util.Iterator<AnyDataContainer> i = outList.iterator(); i.hasNext();) {
+        for (java.util.Iterator<AnyDataContainer> i = outList.iterator(); i.hasNext();) {
             AnyDataContainer container = i.next();
             if (container.clobBuilder.length() == 0) {
                 /*
-                     * If the container is of zero length we remove it from the
-                     * returned list.
-                     */
+                 * If the container is of zero length we remove it from the
+                 * returned list.
+                 */
                 i.remove();
             } else {
-				container.clobBuilder.setLength(container.clobBuilder.length() - 1);
+                container.clobBuilder.setLength(container.clobBuilder.length() - 1);
                 container.clobBuilder.append("\n");
             }
         }
@@ -491,10 +491,13 @@ public class BlobberWorker extends CancelableRunnable {
         // the BigDecimal but we want to keep
         // the format of the original data.
         String numberString = inData.toString();
+        if (numberString.equalsIgnoreCase("nan"))
+            return; //Skip NaN values (COMP-5564)
+
         try {
             inContainer.dataList.add(new BigDecimal(numberString));
         } catch (NumberFormatException e) {
-			myLogger.warning("Unexpected number format. Time: " + inTime + " Data: " + inData);
+            myLogger.warning("Unexpected number format. Time: " + inTime + " Data: " + inData);
             throw e;
         }
 
@@ -503,7 +506,6 @@ public class BlobberWorker extends CancelableRunnable {
         inContainer.clobBuilder.append(numberString);
         inContainer.clobBuilder.append("|");
         inContainer.index = inIndex;
-
     }
 
     private void populateContainerObject(AnyDataContainer inContainer,
