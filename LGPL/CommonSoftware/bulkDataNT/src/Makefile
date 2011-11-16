@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.31 2011/11/10 11:16:53 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.32 2011/11/16 15:16:00 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -34,6 +34,7 @@
 
 # at this moment we use bulk data (NT) just in C++, and there is just C++ implementation
 MAKE_ONLY=C++
+MAKE_NOIFR_CHECK = on # it is DDS IDL, and we do not need to check it
 
 ARCH = $(shell uname -m)
 
