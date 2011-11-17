@@ -114,34 +114,35 @@ public class DataBinner
 		}
 		List<BinnedTimeValues<T>> ret = new ArrayList<BinnedTimeValues<T>>();
 
-		long t0 = floor(data.get(0).timeMillis, binningIntervalMillis);
-		long tBinFloor = t0; // floor time in ms is included in the bin interval. 
-		long tCurrent = t0; 
-		List<TimeValue<T>> currentBinData = new ArrayList<TimeValue<T>>();
-		for (Iterator<TimeValue<T>> dataIter = data.iterator(); dataIter.hasNext();) {
-			TimeValue<T> timeValue = dataIter.next();
-			// assert time ordered list
-			if (timeValue.timeMillis < tCurrent) {
-				throw new IllegalArgumentException("Expecting time-ordered list! Error at time " + IsoDateFormat.formatDate(new Date(timeValue.timeMillis)) );
+		if (data != null && data.size() > 0) {
+			long t0 = floor(data.get(0).timeMillis, binningIntervalMillis);
+			long tBinFloor = t0; // floor time in ms is included in the bin interval. 
+			long tCurrent = t0; 
+			List<TimeValue<T>> currentBinData = new ArrayList<TimeValue<T>>();
+			for (Iterator<TimeValue<T>> dataIter = data.iterator(); dataIter.hasNext();) {
+				TimeValue<T> timeValue = dataIter.next();
+				// assert time ordered list
+				if (timeValue.timeMillis < tCurrent) {
+					throw new IllegalArgumentException("Expecting time-ordered list! Error at time " + IsoDateFormat.formatDate(new Date(timeValue.timeMillis)) );
+				}
+				tCurrent = timeValue.timeMillis;
+				// Leaving the current bin?
+				while (tCurrent >= tBinFloor + binningIntervalMillis) {
+					// store old bin data
+					BinnedTimeValues<T> binnedTimeValue = new BinnedTimeValues<T>(tBinFloor + binningIntervalMillis/2, currentBinData);
+					ret.add(binnedTimeValue);
+					// prepare next bin (possibly empty)
+					currentBinData = new ArrayList<TimeValue<T>>();
+					tBinFloor += binningIntervalMillis;
+				}
+				currentBinData.add(timeValue);
+				// last bin?
+				if (!dataIter.hasNext() && !currentBinData.isEmpty()) {
+					BinnedTimeValues<T> binnedTimeValue = new BinnedTimeValues<T>(tBinFloor + binningIntervalMillis/2, currentBinData);
+					ret.add(binnedTimeValue);
+				}
 			}
-			tCurrent = timeValue.timeMillis;
-			// Leaving the current bin?
-			while (tCurrent >= tBinFloor + binningIntervalMillis) {
-				// store old bin data
-				BinnedTimeValues<T> binnedTimeValue = new BinnedTimeValues<T>(tBinFloor + binningIntervalMillis/2, currentBinData);
-				ret.add(binnedTimeValue);
-				// prepare next bin (possibly empty)
-				currentBinData = new ArrayList<TimeValue<T>>();
-				tBinFloor += binningIntervalMillis;
-			}
-			currentBinData.add(timeValue);
-			// last bin?
-			if (!dataIter.hasNext() && !currentBinData.isEmpty()) {
-				BinnedTimeValues<T> binnedTimeValue = new BinnedTimeValues<T>(tBinFloor + binningIntervalMillis/2, currentBinData);
-				ret.add(binnedTimeValue);
-			}
-		}
-		
+		}		
 		return ret;
 	}
 
