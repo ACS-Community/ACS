@@ -19,7 +19,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: acsncSimpleSupplierImpl.cpp,v 1.4 2006/09/01 02:20:54 cparedes Exp $"
+* "@(#) $Id: acsncSimpleSupplierImpl.cpp,v 1.5 2011/11/17 23:31:54 javarias Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,8 +31,8 @@
 namespace nc {
 //----------------------------------------------------------------------
 SimpleSupplier::SimpleSupplier(const char* channelName, 
-			       acscomponent::ACSComponentImpl* component) : 
-    Supplier(channelName, component) 
+			       acscomponent::ACSComponentImpl* component) :
+    Supplier(channelName, component)
 {
 }
 //----------------------------------------------------------------------

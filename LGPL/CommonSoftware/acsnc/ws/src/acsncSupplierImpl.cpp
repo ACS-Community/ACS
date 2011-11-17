@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncSupplierImpl.cpp,v 1.88 2011/08/26 22:04:59 javarias Exp $
+/* @(#) $Id: acsncSupplierImpl.cpp,v 1.89 2011/11/17 23:31:54 javarias Exp $
  *
  *    Structured event push supplier implementation.
  *    ALMA - Atacama Large Millimiter Array
@@ -40,7 +40,8 @@ Supplier::Supplier(const char* channelName, acscomponent::ACSComponentImpl* comp
     component_mp(component),
     typeName_mp(0),
     count_m(0),
-    guardbl(10000000,50)
+    guardbl(10000000,50),
+    antennaName("")
 {
     ACS_TRACE("Supplier::Supplier");
     init(static_cast<CORBA::ORB_ptr>(0));
@@ -442,6 +443,19 @@ void Supplier::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
       proxyConsumer_m = 
          CosNotifyChannelAdmin::StructuredProxyPushConsumer::_narrow(
                SupplierAdmin_m->get_proxy_consumer(proxyConsumerID));
+}
+
+void Supplier::setAntennaName(std::string antennaName) {
+    //If the antenna name is already set, do nothing
+    if (this->antennaName.compare("") != 0)
+        return;
+    this->antennaName = antennaName;
+    if (antennaName.compare("") != 0) {
+        std::cout << "Adding filter field antenna_name" << std::endl;
+        event_m.filterable_data.length(2);
+        event_m.filterable_data[1].name = CORBA::string_dup("antenna_name");
+        event_m.filterable_data[1].value <<= antennaName.c_str();
+    }
 }
 
 //-----------------------------------------------------------------------------

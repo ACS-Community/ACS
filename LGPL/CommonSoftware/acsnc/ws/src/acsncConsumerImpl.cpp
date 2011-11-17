@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.75 2009/09/09 21:18:06 javarias Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.76 2011/11/17 23:32:17 javarias Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -32,13 +32,14 @@ namespace nc {
 //-----------------------------------------------------------------------------
 double Consumer::DEFAULT_MAX_PROCESS_TIME = 2.0;
 //-----------------------------------------------------------------------------
-Consumer::Consumer(const char* channelName) : 
+Consumer::Consumer(const char* channelName) :
     Helper(channelName),
     consumerAdmin_m(0),
     proxySupplier_m(0),
     numEvents_m(0),
     reference_m(0),
     profiler_mp(0),
+    antennaName(""),
     orb_mp(0)
 {
     ACS_TRACE("Consumer::Consumer");
@@ -503,6 +504,33 @@ void Consumer::reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf)
          CosNotifyChannelAdmin::StructuredProxyPushSupplier::_narrow(
                consumerAdmin_m->get_proxy_supplier(proxySupplierID));
 
+}
+
+void Consumer::setAntennaName(std::string antennaName) {
+    //If the antenna name is already set, do nothing
+    if (this->antennaName.compare("") != 0)
+        return;
+    this->antennaName = antennaName;
+    if (antennaName.compare("") != 0) {
+        std::cout << "Adding filter" << std::endl;
+        CosNotifyFilter::FilterFactory_var filter_factory =
+                notifyChannel_m->default_filter_factory();
+        CosNotifyFilter::Filter_var filter = filter_factory->create_filter(
+                "ETCL");
+        if (CORBA::is_nil(filter)) {
+            ACS_SHORT_LOG(
+                    (LM_ERROR,"Consumer::createConsumer failed for the '%s' channel due the filter cannot be created!", channelName_mp));
+        }
+        CosNotifyFilter::ConstraintExpSeq constraint_list;
+        constraint_list.length(1);
+        constraint_list[0].event_types.length(0);
+        std::string filter_expr = "$antenna_name == '" + antennaName + "'";
+        std::cout << filter_expr << std::endl;
+        constraint_list[0].constraint_expr = CORBA::string_dup(
+                filter_expr.c_str());
+        filter->add_constraints(constraint_list);
+        proxySupplier_m->add_filter(filter.in());
+    }
 }
 
 //-----------------------------------------------------------------------------

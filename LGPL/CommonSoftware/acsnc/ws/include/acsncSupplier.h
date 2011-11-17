@@ -1,7 +1,7 @@
 #ifndef SUPPLIER_H
 #define SUPPLIER_H
 
-/* @(#) $Id: acsncSupplier.h,v 1.66 2009/09/24 23:08:03 javarias Exp $
+/* @(#) $Id: acsncSupplier.h,v 1.67 2011/11/17 23:31:54 javarias Exp $
  *
  *    Supplier Abstract base class for notification channel push structured event
  *    supplier.
@@ -182,6 +182,8 @@ class Supplier :
       */
     void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
 
+    void setAntennaName(std::string antennaName);
+
   protected:
     /**
      * Destructor is protected.
@@ -312,6 +314,8 @@ class Supplier :
      */
     CosNotification::StructuredEvent event_m;
     
+    std::string antennaName;
+
   private:
     
 
