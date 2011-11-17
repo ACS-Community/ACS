@@ -37,7 +37,7 @@ public class Container extends ContainerNode {
     
     private String ImplLang;
     private Double Timeout;
-    private Boolean UseIFR = true;
+    private Boolean UseIFR = false;
     private Integer ManagerRetry;
     private Integer ServerThreads;
     private Boolean Recovery;
