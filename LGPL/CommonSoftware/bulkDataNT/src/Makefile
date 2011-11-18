@@ -16,7 +16,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
-# "@(#) $Id: Makefile,v 1.33 2011/11/18 13:59:53 bjeram Exp $"
+# "@(#) $Id: Makefile,v 1.34 2011/11/18 21:10:57 bjeram Exp $"
 #
 # Makefile of ........
 #
@@ -78,7 +78,7 @@ INCLUDES        = bulkDataNTCallback.h bulkDataNTDDS.h bulkDataNTDDSPublisher.h 
 				bulkDataNT.h bulkDataNTPlugin.h bulkDataNTReaderListener.h bulkDataNTReceiverFlow.h \
 				bulkDataNTReceiverImpl.h bulkDataNTReceiverImpl.i bulkDataNTReceiverStream.h bulkDataNTReceiverStream.i \
 				bulkDataNTSenderFlow.h bulkDataNTSenderImpl.h bulkDataNTSenderStream.h bulkDataNTStream.h bulkDataNTSupport.h \
-				bulkDataNTFlow.h bulkDataNTWriterListener.h bulkDataNTDDSLoggable.h \
+				bulkDataNTFlow.h bulkDataNTWriterListener.h bulkDataNTDDSLoggable.h bulkDataNTSenderFlowStatusCallback.h \
 				bulkDataNTConfiguration.h bulkDataNTConfigurationParser.h bulkDataNTConfigurationParser.i
 
 
