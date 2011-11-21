@@ -359,7 +359,7 @@ public class ServiceSummaryView extends ViewPart {
 						display.asyncExec(r);
 					try {
 						Thread.sleep(howOften);
-						System.out.println("Iteration "+ ++i);
+						System.out.println("Service monitoring iteration "+ ++i);
 					} catch (InterruptedException e) {
 						System.out.println("Monitoring was interrupted!");
 						Application.setMonitoring(false);

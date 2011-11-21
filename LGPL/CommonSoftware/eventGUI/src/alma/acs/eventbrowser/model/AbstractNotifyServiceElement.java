@@ -93,11 +93,11 @@ public abstract class AbstractNotifyServiceElement {
 	}
 
 	public String getNumConsumersAndDelta() {
-		return ""+numberConsumers+(deltaConsumers !=0 ? " ("+(deltaConsumers > 0 ? "+" : "")+deltaConsumers+")":"")+" consumers.";
+		return ""+numberConsumers+(deltaConsumers !=0 ? " ("+(deltaConsumers > 0 ? "+" : "")+deltaConsumers+")":"");
 	}
 
 	public String getNumSuppliersAndDelta() {
-		return ""+numberSuppliers+(deltaSuppliers !=0 ? " ("+(deltaSuppliers > 0 ? "+" : "")+deltaSuppliers+")":"")+" suppliers.";
+		return ""+numberSuppliers+(deltaSuppliers !=0 ? " ("+(deltaSuppliers > 0 ? "+" : "")+deltaSuppliers+")":"");
 	}
 
 }

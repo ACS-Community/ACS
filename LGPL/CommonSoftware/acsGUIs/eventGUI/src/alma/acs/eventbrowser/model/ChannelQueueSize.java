@@ -16,7 +16,6 @@ public class ChannelQueueSize extends MCStatistics {
 			sc = (long) mc.get_statistic(channelPrefix+statName).data_union.num().last;
 		} catch (InvalidName e) {
 			System.out.println("Invalid name: "+channelPrefix+statName);
-			//e.printStackTrace();
 		}
 		return statName+": "+String.valueOf(sc);
 	}

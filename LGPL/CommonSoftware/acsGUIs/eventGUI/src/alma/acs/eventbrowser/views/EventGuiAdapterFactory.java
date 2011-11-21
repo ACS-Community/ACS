@@ -23,12 +23,14 @@ package alma.acs.eventbrowser.views;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import alma.acs.eventbrowser.Application;
 import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
+import alma.acs.eventbrowser.model.ChannelParticipantName;
+import alma.acs.eventbrowser.model.ChannelConsumers;
+import alma.acs.eventbrowser.model.ChannelSuppliers;
 import alma.acs.eventbrowser.model.NotifyServices;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.MCStatistics;
@@ -87,13 +89,11 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 		
 		@Override
 		public Object getParent(Object o) {
-			// TODO Auto-generated method stub
-			return null;
+			return null; // No parent, we're at the top of the tree
 		}
 		
 		@Override
 		public String getLabel(Object o) {
-			// TODO Auto-generated method stub
 			return "Notify Services";
 		}
 		
@@ -105,7 +105,6 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 		
 		@Override
 		public Object[] getChildren(Object o) {
-			// TODO Auto-generated method stub
 			return ((NotifyServices)o).getServices().toArray();
 		}
 	};
@@ -114,7 +113,11 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 
 		@Override
 		public Object[] getChildren(Object o) {
-			// TODO Auto-generated method stub
+			if (o instanceof ChannelConsumers) {
+				return ((ChannelConsumers)o).getNames();
+			} else if (o instanceof ChannelSuppliers) {
+				return ((ChannelSuppliers)o).getNames();
+			}
 			return new Object[0];
 		}
 
@@ -127,21 +130,48 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 
 		@Override
 		public String getLabel(Object o) {
-			// TODO Auto-generated method stub
 			return ((MCStatistics)o).getStatistics();
 		}
 
 		@Override
 		public Object getParent(Object o) {
-			// TODO Auto-generated method stub
 			return ((MCStatistics)o).getParent();
+		}
+		
+	};
+	
+	private IWorkbenchAdapter nameAdapter = new IWorkbenchAdapter() {
+
+		@Override
+		public Object[] getChildren(Object o) {
+			// TODO Auto-generated method stub
+			return new Object[0];
+		}
+
+		@Override
+		public ImageDescriptor getImageDescriptor(Object object) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getLabel(Object o) {
+			// TODO Auto-generated method stub
+			return ((ChannelParticipantName)o).getName();
+		}
+
+		@Override
+		public Object getParent(Object o) {
+			// TODO Auto-generated method stub
+			return ((ChannelParticipantName)o).getParent();
 		}
 		
 	};
 
 
 	@Override
-	public Object getAdapter(Object adaptableObject, Class adapterType) {
+	public Object getAdapter(Object adaptableObject, Class
+			adapterType) {
 		if (adaptableObject instanceof ChannelData && adapterType == IWorkbenchAdapter.class)
 			return channelAdapter;
 		if (adaptableObject instanceof NotifyServiceData && adapterType == IWorkbenchAdapter.class)
@@ -149,7 +179,9 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 		if (adaptableObject instanceof NotifyServices && adapterType == IWorkbenchAdapter.class)
 			return rootOfNotifyServicesAdapter;
 		if (adaptableObject instanceof MCStatistics && adapterType == IWorkbenchAdapter.class)
-			return statisticsAdapter;		
+			return statisticsAdapter;
+		if (adaptableObject instanceof ChannelParticipantName && adapterType == IWorkbenchAdapter.class)
+			return nameAdapter;	
 		return null;
 	}
 

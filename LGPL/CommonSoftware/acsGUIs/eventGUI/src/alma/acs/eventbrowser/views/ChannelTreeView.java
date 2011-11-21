@@ -46,6 +46,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import alma.acs.eventbrowser.Application;
+import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.eventbrowser.model.MCStatistics;
@@ -117,6 +118,7 @@ public class ChannelTreeView extends ViewPart {
 		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServiceData.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServices.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,MCStatistics.class);
+		Platform.getAdapterManager().registerAdapters(adapterFactory,ChannelParticipantName.class);
 
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new BaseWorkbenchContentProvider());
@@ -276,7 +278,7 @@ public class ChannelTreeView extends ViewPart {
 							display.asyncExec(r);
 
 						Thread.sleep(howOften);
-						System.out.println("Iteration "+ ++i);
+						System.out.println("Channel monitoring iteration "+ ++i);
 					} catch (InterruptedException e) {
 						System.out.println("Channel monitoring was interrupted!");
 						break;
