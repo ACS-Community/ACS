@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.NO_IMPLEMENT;
+import org.omg.CORBA.TIMEOUT;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosEventChannelAdmin.AlreadyConnected;
 import org.omg.CosNotification.EventHeader;
@@ -174,12 +175,11 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 
 		anyAide = new AnyAide(this.services);
 		helper = new Helper(this.services);
-		isTraceEventsEnabled = helper.getChannelProperties()
-				.isTraceEventsEnabled(this.channelName);
+		isTraceEventsEnabled = helper.getChannelProperties().isTraceEventsEnabled(this.channelName);
 
 		// get the channel
-		channel = helper.getNotificationChannel(this.channelName,
-				getChannelKind(), getNotificationFactoryName());
+		// @TODO: handle Corba TIMEOUT 
+		channel = helper.getNotificationChannel(this.channelName, getChannelKind(), getNotificationFactoryName());
 		if (channel == null) {
 			Throwable cause = new Throwable(
 					"Null reference obtained for the notification channel "
@@ -189,12 +189,14 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 		
 		// get the Supplier admin
 		supplierAdminID = new IntHolder();
-		supplierAdmin = channel.new_for_suppliers(
-				InterFilterGroupOperator.AND_OP, supplierAdminID);
+		try {
+			supplierAdmin = channel.new_for_suppliers(InterFilterGroupOperator.AND_OP, supplierAdminID);
+		} catch (TIMEOUT ex) { // found in http://jira.alma.cl/browse/COMP-6312
+			throw new AcsJCORBAProblemEx(ex);
+		}
 		if (supplierAdmin == null) {
 			Throwable cause = new Throwable(
-					"Null reference obtained for the supplier admin for channel "
-							+ this.channelName);
+					"Null reference obtained for the supplier admin for channel " + this.channelName);
 			throw new AcsJCORBAReferenceNilEx(cause);
 		}
 
