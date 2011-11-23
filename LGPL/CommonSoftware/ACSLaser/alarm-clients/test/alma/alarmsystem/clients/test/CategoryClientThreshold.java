@@ -1,4 +1,3 @@
-package alma.alarmsystem.clients.test;
 /*
  * ALMA - Atacama Large Millimiter Array (c) European Southern Observatory, 2007
  * 
@@ -17,6 +16,8 @@ package alma.alarmsystem.clients.test;
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  * 
  */
+package alma.alarmsystem.clients.test;
+
 import cern.laser.client.data.Alarm;
 import cern.laser.client.services.selection.AlarmSelectionListener;
 import cern.laser.client.services.selection.LaserSelectionException;
