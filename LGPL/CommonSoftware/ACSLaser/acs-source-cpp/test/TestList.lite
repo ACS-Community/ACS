@@ -1,4 +1,0 @@
-SOURCE alarmTATEnv
-PROLOGUE alarmTestPrologue
-1 AlarmTestAcs "runAcsTest.sh 10"
-EPILOGUE alarmTestEpilogue
