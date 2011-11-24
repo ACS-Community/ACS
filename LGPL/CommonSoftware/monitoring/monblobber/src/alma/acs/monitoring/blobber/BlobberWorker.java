@@ -89,17 +89,23 @@ import alma.acs.util.StopWatch;
  */
 public class BlobberWorker extends CancelableRunnable {
 
-	public static final String BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME = "alma.acs.monitoring.blobber.checkmemory";
+    public static final String BLOBBER_CHECK_JVM_MEMORY_PROPERTYNAME = "alma.acs.monitoring.blobber.checkmemory";
 	
-	/**
-	 * Stores the data in the DB, inside proper transaction(s), and performing auto-completion of hardware tables if necessary.
-	 */
-	protected List<MonitorDAO> myMonitorDAOList;
+    /**
+     * Stores the data in the DB, inside proper transaction(s), and performing auto-completion of hardware tables if necessary.
+     */
+    protected List<MonitorDAO> myMonitorDAOList;
 
-	/**
-	 * List of monitor collectors that this blobber serves.
-	 */
-	private final CollectorList myCollectorList = new CollectorList();
+    /**
+     * WatchDog to get blobber queues statistics.
+     */
+    protected BlobberWatchDog myWatchDog;
+    protected Thread myWatchDogThread = null;
+
+    /**
+     * List of monitor collectors that this blobber serves.
+     */
+    private final CollectorList myCollectorList = new CollectorList();
 
     protected ContainerServices myContainerServices;
     protected Logger myLogger;
@@ -158,6 +164,7 @@ public class BlobberWorker extends CancelableRunnable {
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
         this.myMonitorDAOList = blobberPlugin.createMonitorDAOs();
+	this.myWatchDog = blobberPlugin.getBlobberWatchDog();
     }
 
     protected void initWorker() {
@@ -912,6 +919,20 @@ public class BlobberWorker extends CancelableRunnable {
 		
 		public String toString() {
 			return "location=" + location + " address=" + address + " blobberName=" + blobberName;
+		}
+	}
+
+	public void startWatchDog() {
+		if (this.myWatchDogThread == null) {
+			this.myWatchDogThread = this.myContainerServices.getThreadFactory().newThread(myWatchDog);
+			this.myWatchDogThread.start();
+		}
+	}
+
+	public void stopWatchDog() {
+		if (this.myWatchDogThread != null) {
+			this.myWatchDogThread.interrupt();
+			this.myWatchDogThread = null;
 		}
 	}
 

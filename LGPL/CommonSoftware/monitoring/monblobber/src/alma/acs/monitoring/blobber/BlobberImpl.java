@@ -156,6 +156,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	@Override
 	public void execute() {
+		this.myWorker.startWatchDog();
 		blobberLoopRunner = new ThreadLoopRunner(this.myWorker, collectorIntervalSec, TimeUnit.SECONDS, m_containerServices.getThreadFactory(), m_logger);
 		blobberLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 		blobberLoopRunner.runLoop();
@@ -197,6 +198,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 				m_logger.warning("Thread interrupted while shutting down the blobber loop");
 			}
 		}
+		this.myWorker.stopWatchDog();
 	}
 
 
