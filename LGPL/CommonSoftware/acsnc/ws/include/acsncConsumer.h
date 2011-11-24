@@ -1,7 +1,7 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
-/* @(#) $Id: acsncConsumer.h,v 1.71 2009/08/07 17:55:03 javarias Exp $
+/* @(#) $Id: acsncConsumer.h,v 1.72 2011/11/24 14:18:52 rtobar Exp $
 *
 *    Consumer Abstract base class for notification channel push structured event
 *    consumers.
@@ -316,6 +316,8 @@ class Consumer :
       */
     virtual void reconnect(::NotifyMonitoringExt::EventChannelFactory *ecf);
     
+    void setAntennaName(std::string antennaName);
+
   protected:
     /**
      * Utility method.
@@ -403,6 +405,8 @@ class Consumer :
      * Used to profile handler times.
      */
     Profiler *profiler_mp;
+
+    std::string antennaName;
   private:
 
     /**
