@@ -68,4 +68,9 @@ public abstract class BlobberPlugin
      * component does not get stuck when calling the DAO layer.
      */
 	public abstract List<MonitorDAO> createMonitorDAOs() throws AcsJCouldntCreateObjectEx;
+	
+	/**
+	 * @return The watchdog object that also gets used by the DAO object(s).
+	 */
+	public abstract BlobberWatchDog getBlobberWatchDog();
 }
