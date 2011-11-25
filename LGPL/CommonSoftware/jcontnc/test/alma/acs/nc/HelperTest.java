@@ -63,8 +63,13 @@ public class HelperTest extends ComponentClientTestCase
 		super.setUp();
 		helper = new HelperWithChannelCreationSynch(getContainerServices());
 
-		nsmc = NotificationServiceMonitorControlHelper.narrow(
-				helper.getNamingService().resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
+		String factoryMonitorRegName = "MC_NotifyEventChannelFactory";
+		try {
+			nsmc = NotificationServiceMonitorControlHelper.narrow(
+					helper.getNamingService().resolve(new NameComponent[]{new NameComponent("MC_NotifyEventChannelFactory", "")}));
+		} catch (NotFound ex) {
+			fail("Failed to resolve factory's MC extension object in the naming service: " + factoryMonitorRegName);
+		}
 		assertNotNull(nsmc);
 	}
 
