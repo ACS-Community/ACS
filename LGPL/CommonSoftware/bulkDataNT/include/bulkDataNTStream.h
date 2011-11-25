@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.8 2011/08/04 11:22:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.9 2011/11/25 15:51:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,6 +84,7 @@ protected:
 	void createDDSParticipant();
 	void destroyDDSParticipant();
 	DDS::DomainParticipantFactory *factory_m;
+	static unsigned int factoryCount_m; /// how many do we call get_instance on factory
 	DDS::DomainParticipant* participant_m;
 
 };//class BulkDataNTStream

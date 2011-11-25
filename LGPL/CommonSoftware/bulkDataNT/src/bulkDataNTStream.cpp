@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.23 2011/11/25 11:11:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.24 2011/11/25 15:51:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,6 +29,8 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 using namespace AcsBulkdata;
+
+unsigned int BulkDataNTStream::factoryCount_m = 0;
 
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
 	streamName_m(name), configuration_m(cfg), factory_m(0), participant_m(0)
@@ -55,7 +57,8 @@ BulkDataNTStream::~BulkDataNTStream()
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
 	destroyDDSParticipant();
-	DDS::DomainParticipantFactory::finalize_instance();
+	factoryCount_m--;
+	if (factoryCount_m==0)   DDS::DomainParticipantFactory::finalize_instance();
 }//~BulkDataNTStream
 
 
@@ -107,6 +110,8 @@ void BulkDataNTStream::createDDSFactory()
 	NDDSConfigLogger::get_instance()->set_verbosity_by_category(
 			NDDS_CONFIG_LOG_CATEGORY_API,
 			(NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity));
+
+	factoryCount_m++;
 }//createDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
