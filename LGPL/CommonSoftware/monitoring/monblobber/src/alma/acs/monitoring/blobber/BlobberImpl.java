@@ -60,6 +60,8 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	protected ThreadLoopRunner blobberLoopRunner;
 
+	protected BlobberPlugin blobberPlugin;
+
 	
     //////////////////////////////////////
     ///////// ComponentLifecycle /////////
@@ -86,10 +88,10 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 			throw new ComponentLifecycleException("Failed to clear alarm", ex);
 		}
 
-		// create data-model-specific plugin and the blobber worker object
-		BlobberPlugin blobberPlugin = null;
 		try {
 			blobberPlugin = createBlobberPlugin();
+			blobberPlugin.init();
+
 			collectorIntervalSec = blobberPlugin.getCollectorIntervalSec();
 			m_logger.finer("Instantiated blobber plugin object.");
 			// Create the blobber runnable (worker)
@@ -156,7 +158,6 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 	 */
 	@Override
 	public void execute() {
-		this.myWorker.startWatchDog();
 		blobberLoopRunner = new ThreadLoopRunner(this.myWorker, collectorIntervalSec, TimeUnit.SECONDS, m_containerServices.getThreadFactory(), m_logger);
 		blobberLoopRunner.setDelayMode(ScheduleDelayMode.FIXED_RATE);
 		blobberLoopRunner.runLoop();
@@ -198,7 +199,7 @@ public class BlobberImpl extends ComponentImplBase implements BlobberOperations 
 				m_logger.warning("Thread interrupted while shutting down the blobber loop");
 			}
 		}
-		this.myWorker.stopWatchDog();
+		blobberPlugin.cleanUp();
 	}
 
 

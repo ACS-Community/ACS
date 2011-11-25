@@ -55,6 +55,21 @@ public abstract class BlobberPlugin
 	 */
 	public abstract int getCollectorIntervalSec();
 	
+	/**
+	 * Will be called by the blobber component layer before calling {@link #getMonitorDAOs()}
+	 * or {@link #getBlobberWatchDog(), so that the plugin can create and install the DAOs and watchdog 
+	 * or do other initialization tasks.
+	 * @see #cleanUp()
+	 */
+	public abstract void init() throws AcsJCouldntCreateObjectEx;
+
+	/**
+	 * Will be called by the blobber component as part of component cleanUp. 
+	 * The plugin should stop the DAOs, watchdog, and do other cleanup tasks.
+	 * @see #init()
+	 */
+	public abstract void cleanUp();
+	
     /**
      * The entire DAO implementation is in <code>ARCHIVE/TMCDB/DAO/</code>
      * which is why we defer creation of <code>alma.archive.tmcdb.DAO.MonitorDAOImpl</code>
@@ -67,7 +82,8 @@ public abstract class BlobberPlugin
      * The DAO object(s) must handle buffering and throwing away of data internally, so that the blobber
      * component does not get stuck when calling the DAO layer.
      */
-	public abstract List<MonitorDAO> createMonitorDAOs() throws AcsJCouldntCreateObjectEx;
+	public abstract List<MonitorDAO> getMonitorDAOs();
+	
 	
 	/**
 	 * @return The watchdog object that also gets used by the DAO object(s).

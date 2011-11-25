@@ -163,7 +163,7 @@ public class BlobberWorker extends CancelableRunnable {
         this.isProfilingEnabled = blobberPlugin.isProfilingEnabled();
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
-        this.myMonitorDAOList = blobberPlugin.createMonitorDAOs();
+        this.myMonitorDAOList = blobberPlugin.getMonitorDAOs();
 	this.myWatchDog = blobberPlugin.getBlobberWatchDog();
     }
 
@@ -919,20 +919,6 @@ public class BlobberWorker extends CancelableRunnable {
 		
 		public String toString() {
 			return "location=" + location + " address=" + address + " blobberName=" + blobberName;
-		}
-	}
-
-	public void startWatchDog() {
-		if (this.myWatchDogThread == null) {
-			this.myWatchDogThread = this.myContainerServices.getThreadFactory().newThread(myWatchDog);
-			this.myWatchDogThread.start();
-		}
-	}
-
-	public void stopWatchDog() {
-		if (this.myWatchDogThread != null) {
-			this.myWatchDogThread.interrupt();
-			this.myWatchDogThread = null;
 		}
 	}
 

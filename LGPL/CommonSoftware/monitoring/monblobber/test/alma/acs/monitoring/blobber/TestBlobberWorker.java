@@ -89,7 +89,13 @@ public class TestBlobberWorker extends BlobberWorker {
 			this.monitorDAO = monitorDAO;
 		}
 		@Override
-		public List<MonitorDAO> createMonitorDAOs() {
+		public void init() {
+		}
+		@Override
+		public void cleanUp() {
+		}
+		@Override
+		public List<MonitorDAO> getMonitorDAOs() {
 			List<MonitorDAO> ret = new ArrayList<MonitorDAO>();
 			ret.add(monitorDAO);
 			return ret;
