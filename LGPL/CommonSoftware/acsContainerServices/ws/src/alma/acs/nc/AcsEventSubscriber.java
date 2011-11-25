@@ -19,8 +19,6 @@
 
 package alma.acs.nc;
 
-import org.omg.CORBA.portable.IDLEntity;
-
 import alma.acsnc.EventDescription;
 
 /**
@@ -59,7 +57,7 @@ public interface AcsEventSubscriber {
 	 * @throws CannotAddSubscriptionException If there is a problem and the receiver cannot
 	 *  be added
 	 */
-	public void addSubscription(Callback<? extends IDLEntity> receiver) 
+	public void addSubscription(Callback<?> receiver) 
 		throws CannotAddSubscriptionException;
 
 	/**
@@ -73,7 +71,7 @@ public interface AcsEventSubscriber {
 	 * @throws SubscriptionNotFoundException if the specified event type has not been
 	 *  previously subscribed.
 	 */
-	public void removeSubscription(Class<? extends IDLEntity> structClass) 
+	public void removeSubscription(Class<?> structClass) 
 		throws SubscriptionNotFoundException;
 
 	/**
@@ -166,7 +164,7 @@ public interface AcsEventSubscriber {
 	 * This ACS-defined interface replaces the runtime search for the
 	 * "receive(...)" method that works with Java introspection.
 	 */
-	public static interface Callback<T extends IDLEntity> {
+	public static interface Callback<T> {
 		
 		public void receive(T event, EventDescription eventDescrip);
 		
@@ -188,7 +186,7 @@ public interface AcsEventSubscriber {
 	 * "receive(...)" method that works with Java introspection.
 	 */
 	public static interface GenericCallback {
-		public void receive(IDLEntity event, EventDescription eventDescrip);
+		public void receive(Object event, EventDescription eventDescrip);
 	}
 
 }

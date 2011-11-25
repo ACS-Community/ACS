@@ -62,6 +62,7 @@ import alma.acs.nc.ReconnectableSubscriber;
 import alma.acsnc.EventDescription;
 import alma.acsnc.EventDescriptionHelper;
 import alma.acsnc.OSPushSupplierPOA;
+import alma.acsncErrType.wrappers.AcsJPublishEventFailureEx;
 
 /**
  * NCPublisher is the Notificaction Channel implementation to be used with the
@@ -427,9 +428,14 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 	 *             There are an enormous amount of possibilities pertaining to
 	 *             why an AcsJException would be thrown by publishEvent.
 	 */
-	public void publishEvent(IDLEntity customStruct) throws AcsJException {
+	public void publishEvent(Object customStruct) throws AcsJException {
+
+		if( !(customStruct instanceof IDLEntity) ) {
+			throw new AcsJPublishEventFailureEx(new ClassCastException("'" + customStruct.getClass().getName() + "' doesn't inherit from org.omg.CORBA.portable.IDLEntity"));
+		}
+
+		IDLEntity customStructEntity = (IDLEntity)customStruct;
 		String typeName = customStruct.getClass().getSimpleName();
-		
 		// event to send
 		StructuredEvent event = getCORBAEvent(typeName, "");
 
@@ -449,7 +455,7 @@ public class NCPublisher extends OSPushSupplierPOA implements AcsEventPublisher,
 		event.filterable_data = new Property[1];
 		event.filterable_data[0] = new Property(
 				alma.acscommon.DEFAULTDATANAME.value, anyAide
-						.complexObjectToCorbaAny(customStruct));
+						.complexObjectToCorbaAny(customStructEntity));
 
 		if (isTraceEventsEnabled) {
 			logger.log(Level.INFO, "Channel:" + channelName + ", Event Type:"

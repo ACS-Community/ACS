@@ -87,7 +87,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		// Invalid receiver (returns String.class)
 		try {
 			m_subscriber.addSubscription(new Callback() {
-				public void receive(IDLEntity event,
+				public void receive(Object event,
 						EventDescription eventDescrip) {
 				}
 				public Class getEventType() {
@@ -428,7 +428,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 		}
 	}
 
-	private class EventReceiver1 extends EventReceiverWithCounter implements Callback<statusBlockEvent1> {
+	private class EventReceiver1 extends EventReceiverWithCounter implements Callback {
 
 		public EventReceiver1() {
 			super(null);
@@ -438,7 +438,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(statusBlockEvent1 event, EventDescription eventDescrip) {
+		public void receive(Object event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 
@@ -448,7 +448,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 
 	}
 
-	private class EventReceiver2 extends EventReceiverWithCounter implements Callback<statusBlockEvent2> {
+	private class EventReceiver2 extends EventReceiverWithCounter implements Callback {
 
 		public EventReceiver2() {
 			super(null);
@@ -458,7 +458,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(statusBlockEvent2 event, EventDescription eventDescrip) {
+		public void receive(Object event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 
@@ -478,7 +478,7 @@ public class NCSubscriberTest extends ComponentClientTestCase {
 			super(c);
 		}
 
-		public void receive(IDLEntity event, EventDescription eventDescrip) {
+		public void receive(Object event, EventDescription eventDescrip) {
 			super.receive(eventDescrip);
 		}
 		

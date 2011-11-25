@@ -19,6 +19,11 @@
 
 package alma.acs.nc.refactored;
 
+import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
+import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -54,11 +59,6 @@ import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 import org.omg.CosNotifyFilter.FilterNotFound;
 
-import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
-import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
-import gov.sandia.NotifyMonitoringExt.EventChannel;
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
 import alma.ACSErrTypeCORBA.wrappers.AcsJCORBAReferenceNilEx;
 import alma.ACSErrTypeCORBA.wrappers.AcsJNarrowFailedEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJBadParameterEx;
@@ -88,7 +88,6 @@ import alma.acs.nc.AcsNcReconnectionCallback;
 import alma.acs.nc.AnyAide;
 import alma.acs.nc.CannotAddSubscriptionException;
 import alma.acs.nc.CannotStartReceivingEventsException;
-import alma.acs.nc.Consumer;
 import alma.acs.nc.Helper;
 import alma.acs.nc.ReconnectableSubscriber;
 import alma.acs.nc.SubscriptionNotFoundException;
@@ -617,7 +616,7 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	 * "Generic helper method" to enforce type argument inference by the compiler,
 	 * see http://www.angelikalanger.com/GenericsFAQ/FAQSections/ProgrammingIdioms.html#FAQ207
 	 */
-	private <T extends IDLEntity> void _process(AcsEventSubscriber.Callback<T> receiver, IDLEntity corbaData, EventDescription eventDescrip) {
+	private <T extends IDLEntity> void _process(AcsEventSubscriber.Callback<T> receiver, Object corbaData, EventDescription eventDescrip) {
 		T castCorbaData = null;
 		try {
 			castCorbaData = receiver.getEventType().cast(corbaData);
@@ -689,13 +688,19 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 	}
 
 	@Override
-	public void addSubscription(AcsEventSubscriber.Callback<? extends IDLEntity> receiver) 
+	@SuppressWarnings("unchecked")
+	public void addSubscription(AcsEventSubscriber.Callback<?> receiver) 
 			throws CannotAddSubscriptionException {
 
-		Class<? extends IDLEntity> structClass = receiver.getEventType();
+		Class<?> structClass = receiver.getEventType();
+
 		if( structClass == null || !(IDLEntity.class.isAssignableFrom(structClass)) )
 			throw new CannotAddSubscriptionException("Receiver is returning a null or invalid event type. " +
 					"Check the getEventType() method implementation and try again");
+
+		// These casts are already safe now
+		Callback<? extends IDLEntity> typedReceiver = (Callback<? extends IDLEntity>)receiver;
+		Class<? extends IDLEntity> typedStructClass = (Class<? extends IDLEntity>)structClass;
 
 		// First time we create the filter and set the receiver
 		// After the filter is created, we just replace the corresponding receivers
@@ -703,18 +708,17 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 			try {
 				int filterId = addFilter(structClass.getSimpleName());
 				subscriptionsFilters.put(structClass.getName(), filterId);
-				receivers.put(structClass, receiver);
+				receivers.put(typedStructClass, typedReceiver);
 			} catch (AcsJCORBAProblemEx e) {
 				throw new CannotAddSubscriptionException(e);
 			}
 		}
 		else
-			receivers.put(structClass, receiver);
+			receivers.put(typedStructClass, typedReceiver);
 	}
 
 	@Override
-	public void removeSubscription(Class<? extends IDLEntity> structClass)
-			throws SubscriptionNotFoundException {
+	public void removeSubscription(Class<?> structClass) throws SubscriptionNotFoundException {
 
 		// Removing subscription from receivers list
 		if (structClass != null) {

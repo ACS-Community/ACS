@@ -19,8 +19,6 @@
 
 package alma.acs.nc;
 
-import org.omg.CORBA.portable.IDLEntity;
-
 import alma.acs.exceptions.AcsJException;
 
 /**
@@ -41,7 +39,7 @@ public interface AcsEventPublisher {
 	 * @throws AcsJException In case of any failure, including if the publisher
 	 *   is not yet connected (or has been disconnected) to the Notification Channel.
 	 */
-	public void publishEvent(IDLEntity customStruct) throws AcsJException;
+	public void publishEvent(Object customStruct) throws AcsJException;
 
 	/**
 	 * Disconnect this Publisher from the Notification Channel.
