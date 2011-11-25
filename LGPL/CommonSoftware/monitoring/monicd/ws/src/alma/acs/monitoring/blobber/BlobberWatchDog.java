@@ -1,7 +1,7 @@
 package alma.acs.monitoring.blobber;
 
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Queue;
 
 import alma.acs.monitoring.DAO.ComponentData;
 
@@ -13,7 +13,7 @@ import alma.acs.monitoring.DAO.ComponentData;
  */
 public interface BlobberWatchDog
 {
-	public void addQueueToWatch(LinkedBlockingQueue<ComponentData> queue, String queueName);
+	public void addQueueToWatch(Queue<ComponentData> queue, String queueName);
 	public void removeQueueToWatch(String queueName);
 
 	public long getQueueSize(String queueName);
