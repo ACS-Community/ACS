@@ -24,6 +24,11 @@
 // ----------------------------------------------------------------------////
 package alma.acs.nc;
 
+import gov.sandia.NotifyMonitoringExt.EventChannel;
+import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -35,15 +40,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.IntHolder;
 import org.omg.CORBA.portable.IDLEntity;
 import org.omg.CosNotification.EventType;
 import org.omg.CosNotification.StructuredEvent;
 import org.omg.CosNotification.UnsupportedAdmin;
 import org.omg.CosNotification.UnsupportedQoS;
+import org.omg.CosNotifyChannelAdmin.AdminLimitExceeded;
 import org.omg.CosNotifyChannelAdmin.ClientType;
 import org.omg.CosNotifyChannelAdmin.ConsumerAdmin;
-import org.omg.CosNotifyChannelAdmin.EventChannel;
 import org.omg.CosNotifyChannelAdmin.InterFilterGroupOperator;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplier;
 import org.omg.CosNotifyChannelAdmin.StructuredProxyPushSupplierHelper;
@@ -51,8 +57,7 @@ import org.omg.CosNotifyFilter.ConstraintExp;
 import org.omg.CosNotifyFilter.Filter;
 import org.omg.CosNotifyFilter.FilterFactory;
 
-import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
-
+import alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx;
 import alma.ACSErrTypeCommon.wrappers.AcsJIllegalArgumentEx;
 import alma.ACSErrTypeJavaNative.wrappers.AcsJJavaAnyEx;
 import alma.AcsNCTraceLog.LOG_NC_EventReceive_HandlerException;
@@ -368,8 +373,23 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		IntHolder consumerAdminIDHolder = new IntHolder();
 
 		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class)
-		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
-		
+		StringBuffer clientNameSB = new StringBuffer(m_clientName);
+		int tries = 1;
+		while( m_consumerAdmin == null ) {
+			try {
+				m_consumerAdmin = m_channel.named_new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder, clientNameSB.toString());
+			} catch (NameAlreadyUsed e1) {
+				// If the original name is already in use, append "-<tries>" and try again
+				// until we find a free name
+				clientNameSB.delete(m_clientName.length(), clientNameSB.length());
+				clientNameSB.insert(m_clientName.length(),     '-');
+				clientNameSB.insert(m_clientName.length() + 1, tries++);
+			} catch (NameMapError e1) {
+				// Use unnamed version instead, buuu :(
+				m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
+			}
+		}
+
 		// sanity check
 		if (m_consumerAdmin == null) {
 			String reason = "The '" + m_channelName + "' channel: null consumer admin";
@@ -378,13 +398,55 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 		// get the Supplier proxy
 		proxyID = new IntHolder();
+
+		gov.sandia.NotifyMonitoringExt.ConsumerAdmin consumerAdminExt = null;
 		try {
-			m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
-				m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID));
-		} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
-			// convert it into an exception developers care about
-			throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
+			consumerAdminExt = gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper.narrow(m_consumerAdmin);
+		} catch (BAD_PARAM ex) {
+			// Don't care, we won't be able to create the proxy with a name, but that's it
 		}
+
+		if( consumerAdminExt != null ) {
+
+			// Create the push supplier with a name
+			clientNameSB = new StringBuffer(m_clientName);
+			tries = 1;
+			while( m_proxySupplier == null ) {
+				try {
+					m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
+							consumerAdminExt.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID, clientNameSB.toString()));
+					m_logger.fine("Created named proxy supplier '" + clientNameSB.toString() + "'");
+				} catch (NameAlreadyUsed e) {
+					// If the original name is already in use, append "-<tries>" and try again
+					// until we find a free name
+					clientNameSB.delete(m_clientName.length(), clientNameSB.length());
+					clientNameSB.insert(m_clientName.length(),     '-');
+					clientNameSB.insert(m_clientName.length() + 1, tries++);
+				} catch (NameMapError e) {
+					// Default to the unnamed version
+					try {
+						m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID));
+					} catch (AdminLimitExceeded e1) {
+						throw new AcsJCORBAProblemEx(e1);
+					}
+				} catch (AdminLimitExceeded e) {
+					throw new AcsJCORBAProblemEx(e);
+				}
+			}
+
+		}
+		else {
+
+			// Create the push supplier without a name
+			try {
+				m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
+						m_consumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID));
+			} catch (org.omg.CosNotifyChannelAdmin.AdminLimitExceeded e) {
+				// convert it into an exception developers care about
+				throw new alma.ACSErrTypeCommon.wrappers.AcsJCORBAProblemEx(e);
+			}
+		}
+
 		// sanity check
 		if (m_proxySupplier == null) {
 			String reason = "The '" + m_channelName + "' channel: null proxy supplier";

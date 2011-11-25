@@ -30,7 +30,11 @@ namespace nc{
          bool id_is_valid_;
          PortableServer::POA_var root_poa_;
          PortableServer::ObjectId_var callback_obj_id_;
+
+		protected:
          maci::ContainerServices *services_;
+
+		friend class Consumer;
    };
 };
 #endif

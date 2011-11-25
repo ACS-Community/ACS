@@ -13,6 +13,8 @@ ReconnectionCallback::ReconnectionCallback(nc::Helper *sub):
    id_is_valid_(false),
    root_poa_(0)
 {
+   if (::maci::ContainerImpl::getContainer() != NULL)
+      services_ = ::maci::ContainerImpl::getContainer()->getContainerServices();
 }
 
 bool ReconnectionCallback::is_alive()
@@ -47,8 +49,7 @@ void ReconnectionCallback::init( CORBA::ORB_ptr orb_mp,
         root_poa_->id_to_reference(callback_obj_id_.in());
         callback = NotifyExt::ReconnectionCallback::_narrow(obj);
    }
-   else if (::maci::ContainerImpl::getContainer() != NULL){
-      services_ = ::maci::ContainerImpl::getContainer()->getContainerServices();
+   else if (services_ != NULL){
       callback = NotifyExt::ReconnectionCallback::_narrow(
             services_->activateOffShoot(this));
    }
