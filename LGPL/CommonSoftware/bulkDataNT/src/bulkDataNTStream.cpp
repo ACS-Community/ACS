@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.21 2011/09/28 16:43:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.22 2011/11/25 09:07:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -146,6 +146,13 @@ void BulkDataNTStream::createDDSParticipant()
 	}
 
 	ret = participant_m->enable();
+	if (ret!=DDS::RETCODE_OK)
+	  {
+	    DDSParticipantEnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+	    ex.setDDSTypeCode(ret);
+	    ex.setDomainID(domainID);
+	    throw ex;
+	  }//if
 }//createDDSParticipant
 
 void BulkDataNTStream::destroyDDSParticipant()
