@@ -102,5 +102,9 @@ public class TestBlobberWorker extends BlobberWorker {
 		public boolean isProfilingEnabled() {
 			return false;
 		}
+		@Override
+		public BlobberWatchDog getBlobberWatchDog() {
+			return null;
+		}
 	}
 }
