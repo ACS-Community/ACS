@@ -49,6 +49,11 @@
     <ErrorCode name="DDSParticipantDestroyProblem" shortDescription="Problem to destroy DDS participant" description="Problem to destroy DDS participant">
     </ErrorCode>
     
+    <ErrorCode name="DDSParticipantEnableProblem" shortDescription="Problem to enable DDS participant" description="Problem to enable DDS participant">
+        <Member name="DomainID" type="long" description="Domain ID" />
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSCreateDataProblem" shortDescription="Problem to create Data" description="Problem to create Data">
         <Member name="DataType" type="string" description="Domain ID" />
     </ErrorCode>
