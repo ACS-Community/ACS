@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.201 2011/09/14 15:42:09 hsommer Exp $" 
+# "@(#) $Id: acsMakefile,v 1.202 2011/11/28 13:58:50 jagonzal Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -1147,7 +1147,7 @@ ifdef ACSROOT
     ifdef MAKE_VXWORKS
         VLTINC := -I$(ACSROOT)$(VW)/include $(VLTINC)
     endif
-    VLTLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR)
+    VLTLIB  = -L$(ACSROOT)$(VW)/$(LIBDIR) -L$(ALMASW_INSTDIR)/boost/lib
     PRJTOP  = $(ACSROOT)$(VW)
     INSTALL_ROOT = $(ACSROOT)
     ALARMS  = $(ACSROOT)/ALARMS
