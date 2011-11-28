@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.6 2011/08/31 16:33:53 tstaig Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.7 2011/11/28 12:48:41 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -262,7 +262,7 @@ then
   ACS_LOG_INFO "$COMMAND" "Starting Interface Repository${LOGPOSTFIX}"
 
   # This is TAO Interface Repository
-  PERSISTENCE_FILE=$ACS_TMP/ifr_cache
+  PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
   if [ -e $PERSISTENCE_FILE ]
   then
       #We check for idl files time and compare it with persistence file time
@@ -320,6 +320,9 @@ then
   # Once Interface Repository is up and running, it is safe to feed it with IDL Interfaces.
   if [ ! -e $IRFEED_PIDFILE -a "$CL_START" = "true" ]
   then
+    #If we enter here it means we are creating the IFR_Service cache file, so we
+    #set appropriate permissions for it.
+    chmod 664 $PERSISTENCE_FILE
     # Loading ACS IDL Interfaces in Interface Repository, as a background job, so processing can continue in parallel.
     acsstartupLoadIFR & #this C++ based script is a couple of seconds faster than acsIrFeed.
     #acsIrfeed  -IRcorbaloc corbaloc::$HOST:$ACS_IR_PORT/InterfaceRepository &

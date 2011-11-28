@@ -22,7 +22,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
 # MA 02111-1307  USA
 #
-# "@(#) $Id: acsstartupLoadIFR,v 1.8 2011/09/27 13:20:39 tstaig Exp $"
+# "@(#) $Id: acsstartupLoadIFR,v 1.9 2011/11/28 12:48:41 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -119,7 +119,7 @@ fi
 
 # Build a unique file name
 ACS_IDL_IRFEED_FILE=/tmp/acsIrfeedDyn.$$.idl
-PERSISTENCE_FILE=$ACS_TMP/ifr_cache
+PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
 
 # Build the file
 acsstartupIrFeed $ACS_IDL_IRFEED_FILE $$ $files

@@ -34,7 +34,7 @@ function printUsage {
    echo ""
 	echo "Usage: `basename $0` [OPTIONS]  "
 	echo "Options: "
-	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to get status of"
+	echo "   -b | -baseport INSTANCE        the acs instance (0-9) you want to invalidate cache for"
         echo "   -h | -help                     prints this help and exits"
 }
 
@@ -83,7 +83,7 @@ fi
 
 export ACS_INSTANCE=$CL_BASEPORT
 
-PERSISTENCE_FILE=$ACS_TMP/ifr_cache
+PERSISTENCE_FILE=$ACS_TMP/ifr_cache.$ACS_INSTANCE
 if [ ! -e $PERSISTENCE_FILE ]; then
   ACS_LOG_INFO "$COMMAND" "There is no IFR persistence file available"
 else
