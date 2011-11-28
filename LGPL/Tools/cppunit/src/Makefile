@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.16 2011/03/03 18:34:33 javarias Exp $"
+# "@(#) $Id: Makefile,v 1.17 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -100,5 +100,5 @@ configure : unpack
 
 build : configure
 	@echo ". . . building . . . "
-	@cd cppunit-$(CPPUNIT_VER); $(MAKE) all
+	@cd cppunit-$(CPPUNIT_VER); $(MAKE) $(MAKE_PARS) all
 #___oOo___

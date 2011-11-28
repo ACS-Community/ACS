@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.2 2011/03/10 13:59:06 jagonzal Exp $"
+# "@(#) $Id: Makefile,v 1.3 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -69,6 +69,6 @@ unpack:
 
 build:
 	@echo ". . . building . . . "
-	@cd shunit2-$(SHUNIT_VER); make build
+	@cd shunit2-$(SHUNIT_VER); $(MAKE) $(MAKE_PARS) build
 
 #___oOo___

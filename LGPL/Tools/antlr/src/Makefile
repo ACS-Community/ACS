@@ -21,7 +21,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: Makefile,v 1.6 2011/11/18 15:34:53 rtobar Exp $"
+# "@(#) $Id: Makefile,v 1.7 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -125,6 +125,6 @@ configure : unpack
 .PHONY: build_antlr
 build_antlr: configure
 	@echo " . . . building antlr . . . "
-	@cd antlr-${ANTLR_VER_2}; $(MAKE) SUBDIRS="antlr lib"
+	@cd antlr-${ANTLR_VER_2}; $(MAKE) $(MAKE_PARS) SUBDIRS="antlr lib"
 
 #___oOo___

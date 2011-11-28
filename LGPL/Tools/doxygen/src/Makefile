@@ -1,7 +1,7 @@
 #*************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.26 2011/01/20 08:26:18 rbourtem Exp $"
+# "@(#) $Id: Makefile,v 1.27 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -33,7 +33,7 @@ MODULES=graphviz-$(GRAPH_VER) doxygen-$(DOX_VER)
 all:    unpack patch all_first
 	chmod -fR +x doxygen-$(DOX_VER)/addon/doxywizard
 	@for member in  $(foreach name, $(MODULES), $(name) ) ; do \
-		$(MAKE) -C $${member} all ;\
+		$(MAKE) $(MAKE_PARS) -C $${member} all ;\
 	done;
 	@echo " . . . 'all' done"
 

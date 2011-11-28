@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.29 2005/01/31 21:45:25 dfugate Exp $"
+# "@(#) $Id: Makefile,v 1.30 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of emacs VLT customizations
 #
@@ -231,7 +231,7 @@ do_emacs: $(foreach name, $(EMACS_LISP_CMP), ../bin/$(name).elc) \
            $(foreach name, $(EMACS_LISP), ../bin/$(name).el)
 
 do_w3:
-	(cd $(W3); chmod u+x ./configure; ./configure --with-emacs --prefix=$(LIB)/emacs; make); cp $(W3)/lisp/*.elc $(W3)/lisp/*.el ../bin
+	(cd $(W3); chmod u+x ./configure; ./configure --with-emacs --prefix=$(LIB)/emacs; make $(MAKE_PARS)); cp $(W3)/lisp/*.elc $(W3)/lisp/*.el ../bin
 
 clean : clean_all clean_links
 	$(RM) ../*~ *~ \#* *.aux *.cp *.dvi *.fn *.ky *.log *.pg *.toc *.tp *.vr *.o TAGS

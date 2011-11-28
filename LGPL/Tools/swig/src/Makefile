@@ -1,7 +1,7 @@
 #*******************************************************************************
 # PPPPPPPP
 #
-# "@(#) $Id: Makefile,v 1.5 2007/05/03 16:29:15 agrimstrup Exp $"
+# "@(#) $Id: Makefile,v 1.6 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of ........
 #
@@ -190,7 +190,7 @@ LIBS = -lstdc++
 SWIG: swig-1.3.31.tar.gz
 	@echo "== Building swig"
 	@gtar -zxvf swig-1.3.31.tar.gz
-	@cd swig-1.3.31; ./configure --prefix=$(INSTALL_ROOT); make; make install
+	@cd swig-1.3.31; ./configure --prefix=$(INSTALL_ROOT); $(MAKE) $(MAKE_PARS); $(MAKE) $(MAKE_PARS) install
 
 #
 # TARGETS

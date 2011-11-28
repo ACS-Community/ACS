@@ -35,7 +35,7 @@ LD=
 GMP_VER = 4.1.3
 
 all: unpack config
-	$(MAKE) -C gmp-$(GMP_VER) all
+	$(MAKE) $(MAKE_PARS) -C gmp-$(GMP_VER) all
 
 install:
 	$(MAKE) -C gmp-$(GMP_VER) install

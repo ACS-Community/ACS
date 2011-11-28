@@ -1,6 +1,6 @@
 #*******************************************************************************
 #
-# "@(#) $Id: Makefile,v 1.8 2011/02/21 11:26:21 htischer Exp $"
+# "@(#) $Id: Makefile,v 1.9 2011/11/28 16:22:27 javarias Exp $"
 #
 # Makefile of log4cpp
 #
@@ -103,7 +103,7 @@ SCRIPTS_L       =
 .PHONY : all
 all: configure
 	@echo ". . . building . . ."
-	$(MAKE) -C log4cpp-$(LOG4CPP_VER) all
+	$(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER) all
 	$(MAKE) -f tests.Makefile all
 	@echo " . . . 'all' done" 
 
@@ -114,8 +114,8 @@ all: configure
 .PHONY : clean_build 
 clean_build : 
 	@if [ -r log4cpp-$(LOG4CPP_VER)/Makefile ]; then \
-		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
-		$(MAKE) -C log4cpp-$(LOG4CPP_VER) clean; \
+		echo $(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER) clean; \
+		$(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER) clean; \
 	fi
 	@echo " . . . clean_build done"
 
@@ -132,8 +132,8 @@ clean_build :
 clean :
 	@echo ". . . clean . . ."
 	@if [ -r log4cpp-$(LOG4CPP_VER)/Makefile ]; then \
-		echo $(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
-		$(MAKE) -C log4cpp-$(LOG4CPP_VER) distclean; \
+		echo $(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER) distclean; \
+		$(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER) distclean; \
 	fi
 	@echo " . . . clean done"
 
@@ -218,7 +218,7 @@ clean_dist : clean
 
 .PHONY : man
 man :
-	$(MAKE) -C log4cpp-$(LOG4CPP_VER)/doc all install
+	$(MAKE) $(MAKE_PARS) -C log4cpp-$(LOG4CPP_VER)/doc all install
 	@echo " . . . man page(s) done"
 
 # Do Nothing, for compatibility
@@ -230,7 +230,7 @@ db :
 .PHONY : install 
 install : 
 	@echo ". . . installing log4cpp . . ."
-	$(MAKE) -C log4cpp-$(LOG4CPP_VER) install
+	$(MAKE) $(MAKE_PARS)  -C log4cpp-$(LOG4CPP_VER) install
 	$(MAKE) -f tests.Makefile install
 	@echo " . . . installation done"
 
