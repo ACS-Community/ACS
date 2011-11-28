@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+   - Example Configuration Database Entry for a LAMPWHEEL
+   -
+   - Author: Alessandro Caproni
+   -
+   - History:
+   -   2004-11-24  AC  Created
+  -->
+<LAMPWHEEL xmlns="urn:schemas-cosylab-com:LAMPWHEEL:1.0"
+             xmlns:baci="urn:schemas-cosylab-com:BACI:1.0"
+			 xmlns:cdb="urn:schemas-cosylab-com:CDB:1.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	LampWheelDescription="Example of a dumb lamp wheel"
+	AvailableSlots="8">
+ <position />
+ <desc />
+ <slots />
+
+<Slot SlotNumber="0">
+	<Lamp LampType="Neon">
+		<WarmUpTime>3</WarmUpTime>
+		<Watt>20</Watt>
+	</Lamp>
+	<Position>14521</Position>
+ </Slot>
+
+ <Slot SlotNumber="1">
+	<Lamp LampType="Argon">
+		<WarmUpTime>5</WarmUpTime>
+	</Lamp>
+	<Position>1033</Position>
+ </Slot>
+ <Slot  SlotNumber="3">
+	<Lamp LampType="Helium">
+		<WarmUpTime>11</WarmUpTime>
+		<Watt>34</Watt>
+	 </Lamp>
+	<Position>45312</Position>
+ </Slot>
+
+ <Slot SlotNumber="2">
+	<Lamp>
+	 </Lamp>
+	<Position>8192</Position>
+ </Slot>
+ <Slot SlotNumber="4">
+	<Lamp>
+	 </Lamp>
+	<Position>32908</Position>
+</Slot> 
+
+</LAMPWHEEL>
+
