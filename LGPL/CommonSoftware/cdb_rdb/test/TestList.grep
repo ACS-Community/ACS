@@ -1,2 +1,5 @@
 INFO \[acsStartJava\] Starting Java application:
 -- alma.acs.testsupport.tat.TATJUnitRunner
+-- com.cosylab.cdb.DALRead
+INFO \[acsStartJava\] Using endorsed jar files in:
+INFO \[DALRead\] Curl data:
