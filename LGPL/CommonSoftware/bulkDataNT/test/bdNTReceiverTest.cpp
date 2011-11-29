@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverTest.cpp,v 1.14 2011/11/29 14:59:46 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverTest.cpp,v 1.15 2011/11/29 15:13:16 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 		BulkDataNTReceiverFlow *flow = receiverStream.createFlow((*it), cfg);
 		flow->getCallback<TestCB>();
 		std::vector<string> flowNames = receiverStream.getFlowNames();
-		std::cout << "[ ";
+		std::cout << receiverStream.getFlowNumber() << ":[ ";
 		for(unsigned int i=0;i<flowNames.size(); i++)
 		  std::cout << flowNames[i] << " ";
 		std::cout << "]" << std::endl;
