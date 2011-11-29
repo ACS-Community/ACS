@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.17 2011/11/08 11:12:04 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.18 2011/11/29 14:59:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -188,3 +188,14 @@ void BulkDataNTReceiverStream<TReceiverCallback>::createMultipleFlowsFromConfig(
 	}//try-catch
 }
 
+template<class TReceiverCallback>
+std::vector<std::string> BulkDataNTReceiverStream<TReceiverCallback>::getFlowNames()
+{
+  std::vector<std::string> flowNames;
+
+  ReceiverFlowMap::iterator i = receiverFlows_m.begin();
+  for(;i!=receiverFlows_m.end(); i++)
+    flowNames.push_back(i->first);
+
+  return flowNames;
+}

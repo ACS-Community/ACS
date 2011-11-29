@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.12 2011/11/08 11:12:04 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.13 2011/11/29 14:59:23 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -167,11 +167,8 @@ public:
 
 	/** Get the names of the connected flows
 	 *  @return vector<string>
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
 	 */
-	/// std::vector<std::string> getFlowNames();
+	std::vector<std::string> getFlowNames();
 
 
 	/** Subscribe to the Notification Mechanism
