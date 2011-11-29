@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.13 2011/11/29 14:59:23 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.14 2011/11/29 15:07:27 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -128,42 +128,7 @@ public:
 	 */
 
 
-
-	/// bulkdata::BulkDataReceiverConfig * getReceiverConfig();
-
-	/** Accessor to allocated receiver callback
-	 * @param ACE_CString
-	 * @param TReceiverCallback
-	 *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
-	 *  @return void
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
-	 */
-
-
-	/// void getFlowCallback(ACE_CString &flowName, TReceiverCallback *&cb_p);
-
-	/** Accessor to allocated receiver callback
-	 * @param CORBA::ULong
-	 * @param TReceiverCallback
-	 *  @throw ACSBulkDataError::AVInvalidFlowNumberExImpl
-	 *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
-	 *  @return void
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
-	 */
-	/// void getFlowCallback(CORBA::ULong flowNumber, TReceiverCallback *&cb_p);
-
-	/** Close the Receiver
-	 *  @throw ACSBulkDataError::AVCloseReceiverErrorExImpl
-	 *  @return void
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
-	 */
-	void closeReceiver();
+//	void closeReceiver();
 
 	/** Get the names of the connected flows
 	 *  @return vector<string>
