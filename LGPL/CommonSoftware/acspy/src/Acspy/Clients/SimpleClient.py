@@ -1,4 +1,4 @@
-# @(#) $Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $
+# @(#) $Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA,  2001
@@ -21,7 +21,7 @@
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Internet email: alma-sw-admin@nrao.edu
-# "@(#) $Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $"
+# "@(#) $Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -39,9 +39,11 @@ TODO:
 - integrate with the ACS Error System
 '''
 
-__revision__ = "$Id: SimpleClient.py,v 1.13 2010/06/23 23:34:43 agrimstrup Exp $"
+__revision__ = "$Id: SimpleClient.py,v 1.14 2011/11/29 18:43:17 nsaez Exp $"
 
 #--REGULAR IMPORTS-------------------------------------------------------------
+import os
+import socket
 from traceback import print_exc
 from atexit import register
 #--CORBA STUBS-----------------------------------------------------------------
@@ -80,6 +82,10 @@ class PySimpleClient(BaseClient, ContainerServices):
         _myInstanceCount = _myInstanceCount + 1
         
         #just to be sure
+        try:
+            name = name + ": initialized by " + os.getlogin() + "@" + socket.gethostname()
+        except:
+            name = name
         name = str(name)
         
         #call superclass constructors
