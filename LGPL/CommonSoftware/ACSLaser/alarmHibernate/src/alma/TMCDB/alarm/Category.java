@@ -88,6 +88,7 @@ public class Category implements ExtraDataFeature, NameOverrideFeature {
 		}
 		
 		// alarms
+		java.util.Arrays.sort(faultFamilies);	// deterministic order
 		StringBuffer alarms = new StringBuffer();
 		for (String faultFamily : faultFamilies)
 			alarms.append("<FaultFamily>").append(faultFamily).append("</FaultFamily>");
