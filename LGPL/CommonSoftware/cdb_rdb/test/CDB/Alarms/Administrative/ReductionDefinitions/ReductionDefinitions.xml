@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+  - Sample configuration of alarm reduction links.
+  -
+  - Author:
+  -    Klemen Zagar (Cosylab)
+  -
+  - History:
+  -   2005-06-13  KZ  Created
+ -->
+<reduction-definitions 
+   xmlns="urn:schemas-cosylab-com:AcsAlarmSystem:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<links-to-create>
+
+		
+		<!--  RR for testing with default FMs  -->
+		
+		<reduction-link type="NODE">
+		<parent>
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="NODE1" fault-code="1"/>
+		</parent>
+		<child>
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="NODE2" fault-code="1"/>
+		</child>
+		</reduction-link>
+		<reduction-link type="NODE">
+		<parent>
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="NODE3" fault-code="1"/>
+		</parent>
+		<child>
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="NODE4" fault-code="1"/>
+		</child>
+		</reduction-link>
+		
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MF1" fault-code="0"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MF2" fault-code="0"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MF3" fault-code="0"/>
+			</child>
+		</reduction-link>
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF_DEFAULT" fault-member="MF4" fault-code="0"/>
+			</child>
+		</reduction-link>
+		
+		<!--  RR for testing with default Regular expressions/wildcards  -->
+		
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="MF_REGEXP" fault-member="MULTIPLE_MF_REGEXP" fault-code="5"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="MF_REGEXP" fault-member="REGEXP?" fault-code="0"/>
+			</child>
+		</reduction-link>
+		
+		<reduction-link type="NODE">
+		<parent>
+			<alarm-definition fault-family="NODE_REGEXP" fault-member="REGEXP_NODE1" fault-code="1"/>
+		</parent>
+		<child>
+			<alarm-definition fault-family="NODE_REGEXP" fault-member="REGEXP_NODE_*" fault-code="1"/>
+		</child>
+		</reduction-link>
+		
+		<!--  The childs are defined by the default fault member -->
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="NODE_DEFAULT" fault-member="MULTIPLICITY_REG" fault-code="2"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="NODE_DEFAULT" fault-member="*" fault-code="3"/>
+			</child>
+		</reduction-link>
+		
+		<!--  HIERARCHICAL -->
+		<reduction-link type="MULTIPLICITY">
+			<parent>
+				<alarm-definition fault-family="HIERARCHICAL" fault-member="MULTIPLICITY_HIER" fault-code="2"/>
+			</parent>
+			<child>
+				<alarm-definition fault-family="HIERARCHICAL" fault-member="CONTROL/????/HIER" fault-code="1"/>
+			</child>
+		</reduction-link>
+		
+	</links-to-create>
+	
+
+	<thresholds>
+		<threshold value="3">
+			<alarm-definition fault-family="MF_DEFAULT" fault-member="MULTIPLE_MF_FAILURES" fault-code="5"/>
+		</threshold>
+		<threshold value="3">
+			<alarm-definition fault-family="MF_REGEXP" fault-member="MULTIPLE_MF_REGEXP" fault-code="5"/>
+		</threshold>
+		<threshold value="3">
+			<alarm-definition fault-family="NODE_DEFAULT" fault-member="MULTIPLICITY_REG" fault-code="2"/>
+		</threshold>
+		<threshold value="3">
+			<alarm-definition fault-family="HIERARCHICAL" fault-member="MULTIPLICITY_HIER" fault-code="2"/>
+		</threshold>
+	</thresholds>
+</reduction-definitions>
+
+

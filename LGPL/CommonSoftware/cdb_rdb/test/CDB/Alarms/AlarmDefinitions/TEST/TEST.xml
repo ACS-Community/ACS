@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="TEST" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alex" />
+  <fault-code value="1">
+    <priority>2</priority>
+    <cause>The cause</cause>
+    <action>Run and fix quickly</action>
+    <consequence>A disaster</consequence>
+    <problem-description>Test alarm 1</problem-description>
+  </fault-code>
+  <fault-code value="2">
+    <priority>3</priority>
+    <problem-description>Test alarm 2</problem-description>
+  </fault-code>
+  <fault-member-default>
+  </fault-member-default>
+  <fault-member name="TEST_MEMBER1">
+  </fault-member>
+  <fault-member name="TEST_MEMBER2">
+  </fault-member>
+</fault-family>
+

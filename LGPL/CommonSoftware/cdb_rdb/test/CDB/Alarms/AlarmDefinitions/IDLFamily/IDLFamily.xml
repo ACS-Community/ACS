@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fault-family name="IDLFamily" xmlns="urn:schemas-cosylab-com:acsalarm-fault-family:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <alarm-source>ALARM_SYSTEM_SOURCES</alarm-source>
+  <help-url>http://tempuri.org</help-url>
+  <contact name="Alessandro" gsm="123456"/>
+  <fault-code value="1">
+    <priority>0</priority>
+    <cause>Sent an IDL alarm</cause>
+    <problem-description>This alarm has been sent through an IDL method</problem-description>
+  </fault-code>
+  <fault-member name="IDLMember">
+  </fault-member>
+</fault-family>
