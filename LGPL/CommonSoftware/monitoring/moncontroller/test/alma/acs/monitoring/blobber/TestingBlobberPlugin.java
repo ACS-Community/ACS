@@ -18,7 +18,7 @@
 
 /** 
  * @author  rtobar   
- * @version $Id: TestingBlobberPlugin.java,v 1.1 2011/09/21 17:02:37 rtobar Exp $
+ * @version $Id: TestingBlobberPlugin.java,v 1.2 2011/12/01 15:51:24 hsommer Exp $
  * @since    
  */
 
@@ -51,8 +51,12 @@ public class TestingBlobberPlugin extends BlobberPlugin {
 	}
 
 	@Override
-	public List<MonitorDAO> createMonitorDAOs()
-			throws AcsJCouldntCreateObjectEx {
+	public void init() throws AcsJCouldntCreateObjectEx {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public List<MonitorDAO> getMonitorDAOs() {
 		return new ArrayList<MonitorDAO>(Arrays.asList(new MonitorDAO[] { new MonitorDAO() {
 			@Override
 			public void store(ComponentData inData) throws Exception {
@@ -71,6 +75,17 @@ public class TestingBlobberPlugin extends BlobberPlugin {
 			public void close() {
 			}
 		}}));
+	}
+
+	@Override
+	public void cleanUp() {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public BlobberWatchDog getBlobberWatchDog() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
