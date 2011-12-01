@@ -96,11 +96,10 @@ public class BlobberWorker extends CancelableRunnable {
      */
     protected List<MonitorDAO> myMonitorDAOList;
 
-    /**
-     * WatchDog to get blobber queues statistics.
-     */
-    protected BlobberWatchDog myWatchDog;
-    protected Thread myWatchDogThread = null;
+//    /**
+//     * WatchDog to get blobber queues statistics. Currently not used in the ACS layers of blobber comp.
+//     */
+//    protected BlobberWatchDog myWatchDog;
 
     /**
      * List of monitor collectors that this blobber serves.
@@ -164,7 +163,7 @@ public class BlobberWorker extends CancelableRunnable {
         notifyCollectorIntervalChange(blobberPlugin.getCollectorIntervalSec());
         initWorker();
         this.myMonitorDAOList = blobberPlugin.getMonitorDAOs();
-	this.myWatchDog = blobberPlugin.getBlobberWatchDog();
+//        this.myWatchDog = blobberPlugin.getBlobberWatchDog();
     }
 
     protected void initWorker() {
