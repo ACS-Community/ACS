@@ -2490,7 +2490,8 @@ public class HibernateWDALImpl extends WJDALPOA implements Recoverer {
 		{
 			AcsJCDBRecordDoesNotExistEx ex = new AcsJCDBRecordDoesNotExistEx();
 			ex.setCurl(curl);
-			m_logger.log(AcsLogLevel.NOTICE, "get_DAO " + ex.getShortDescription());
+			String detailMsg = ( node == null ? "node is null." : "node is primitive (" + node.getClass().getName() + ").");
+			m_logger.log(AcsLogLevel.NOTICE, detailMsg, ex);
 			throw ex.toCDBRecordDoesNotExistEx();
 		}
 		else if (node instanceof DAOImpl) {
