@@ -250,6 +250,11 @@ public class ContainerStartupOptionHelper {
 	 *                                  (all refs null is OK though)
 	 */
 	public String convertContainerStartupOptions(Collection<ContainerStartupOption> options) {
+		if (options == null || options.isEmpty()) {
+			logger.finer("convertContainerStartupOptions called without options.");
+			return "";
+		}
+		
 		String execArgs = "";
 		String execArgsLang = "";
 		String contArgs = "";
@@ -287,6 +292,9 @@ public class ContainerStartupOptionHelper {
 			ret += " " + CONT_ARG_WRAPPER_OPTION + "=\"" + contArgs.trim() + "\"";
 		}
 		
+		if (commonContainer != null && logger.isLoggable(Level.FINER)) {
+			logger.finer(options.size() + " options for container " + commonContainer + " flattened: " + ret.trim());
+		}
 		return ret.trim();
 	}
 }
