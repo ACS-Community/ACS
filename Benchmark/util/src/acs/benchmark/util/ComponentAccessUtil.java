@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,14 +61,43 @@ public class ComponentAccessUtil {
 	protected final ContainerServices contSrv;
 
 	/**
-	 * key = component instance name, value = component reference
+	 * Component reference plus synchronization support for other threads
+	 * that request the same component reference but must wait until the shared component
+	 * has been activated.
 	 */
-	protected final Map<String, ACSComponentOperations> compName2Comp;
+	protected static class CompRefHelper {
+		ACSComponentOperations compRef;
+		final CountDownLatch sync;
+		
+		CompRefHelper() {
+			this.sync = new CountDownLatch(1);
+		}
+		
+		/**
+		 * Should be called by the first thread that requested the component,
+		 * to unblock the other threads.
+		 */
+		void setCompRef(ACSComponentOperations compRef) {
+			this.compRef = compRef;
+			sync.countDown();
+		}
+		
+		boolean awaitCompActivation(long timeout, TimeUnit unit) throws InterruptedException {
+			return sync.await(timeout, unit);
+		}
+	}
+
+
+	/**
+	 * key = component instance name, 
+	 * value = component reference + sync support for other threads that request the same component.
+	 */
+	protected final Map<String, CompRefHelper> compName2Comp;
 	
 	public ComponentAccessUtil(ContainerServices contSrv) {
 		this.contSrv = contSrv;
 		this.logger = contSrv.getLogger();
-		this.compName2Comp = new HashMap<String, ACSComponentOperations>();
+		this.compName2Comp = new HashMap<String, CompRefHelper>();
 	}
 
 	/**
@@ -82,23 +113,53 @@ public class ComponentAccessUtil {
 		
 		T comp = null;
 		boolean foundInCache = false;
+		boolean mustActivateComp = false;
+		
+		CompRefHelper compRefHelper = null;
 		
 		synchronized (compName2Comp) {
 			// try the cache first
-			comp = idlOpInterface.cast(compName2Comp.get(compSpec.component_name));
-			
-			// if not from cache, then from container services
-			if (comp == null) {
-				comp = getDynamicComponentFromContainerServices(compSpec, idlOpInterface);
-				compName2Comp.put(compSpec.component_name, comp);
+			compRefHelper = compName2Comp.get(compSpec.component_name);
+			if (compRefHelper == null) {
+				mustActivateComp = true;
+				compRefHelper = new CompRefHelper();
+				compName2Comp.put(compSpec.component_name, compRefHelper);
 			}
 			else {
-				foundInCache = true;
+				if (compRefHelper.compRef != null) {
+					foundInCache = true;
+					comp = idlOpInterface.cast(compRefHelper.compRef);
+				}
 			}
+		} // must keep this synchronized block short, to not prevent parallel activation of different components!
+
+		try {
+			if (!foundInCache) {
+				if (mustActivateComp) {
+					comp = getDynamicComponentFromContainerServices(compSpec, idlOpInterface);
+					compRefHelper.setCompRef(comp); // this will free other threads waiting for the same comp.
+				}
+				else {
+					// wait if another thread is already activating this comp
+					boolean waitOK = false;
+					try {
+						waitOK = compRefHelper.awaitCompActivation(5, TimeUnit.MINUTES);
+					} catch (InterruptedException ex) {
+						// just leave waitOK = false
+					}
+					if (!waitOK) {
+						AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+						ex.setContextInfo("Timed out or got interrupted while waiting for activation of component '" + 
+								compSpec.component_name + "'.");
+						throw ex;
+					}
+				}
+			}
+			return comp;
+		} finally {
+			logger.log(AcsLogLevel.DEBUG, "Retrieved component '" + compSpec.component_name + "' from " 
+					+ (foundInCache ? "cache." : "container services.") );
 		}
-		logger.log(AcsLogLevel.DEBUG, "Retrieved component '" + compSpec.component_name + "' from " 
-				+ (foundInCache ? "cache." : "container services.") );
-		return comp;
 	}
 	
 	
@@ -145,11 +206,15 @@ public class ComponentAccessUtil {
 	
 	
 	public List<ACSComponentOperations> getCachedComponents() {
+		List<ACSComponentOperations> ret = new ArrayList<ACSComponentOperations>();
 		synchronized (compName2Comp) {
-			return new ArrayList<ACSComponentOperations>(compName2Comp.values());
+			for (CompRefHelper compRefHelper : compName2Comp.values()) {
+				ret.add(compRefHelper.compRef);
+			}
 		}
+		return ret;
 	}
-	
+
 	/**
 	 * Should be called when a component is no longer needed. 
 	 */
@@ -177,8 +242,8 @@ public class ComponentAccessUtil {
 
 	public void logInfo()
 	{
-		int nelem = compName2Comp.size();
-		String message = "Components in the list: " + nelem + " (";
+		int nElem = compName2Comp.size();
+		String message = "Components in the list: " + nElem + " (";
 		List<String> compNames = new ArrayList<String>(compName2Comp.keySet()); // to avoid ConcurrentModificationException
 		for (String compName : compNames) {
 			message = message + compName + " ";
