@@ -37,6 +37,8 @@ import alma.JavaContainerError.wrappers.AcsJContainerServicesEx;
 import alma.acs.component.ComponentLifecycle;
 import alma.acs.component.ComponentLifecycleException;
 import alma.acs.container.ContainerServices;
+import alma.acs.container.ContainerServices.ComponentReleaseCallback;
+import alma.acs.container.ContainerServices.ComponentReleaseCallbackWithLogging;
 import alma.acs.logging.AcsLogLevel;
 
 /**
@@ -53,6 +55,8 @@ import alma.acs.logging.AcsLogLevel;
  * </ul>
  * @TODO: To identify containers/hosts, use collocated dummy target components instead of the deprecated
  *        {@link ContainerServices#getDynamicComponent(ComponentSpec, boolean)}.
+ * <p>
+ * This class is thread-safe, so that a client can activate or release several components at once.
  */
 
 public class ComponentAccessUtil {
@@ -67,10 +71,12 @@ public class ComponentAccessUtil {
 	 */
 	protected static class CompRefHelper {
 		ACSComponentOperations compRef;
-		final CountDownLatch sync;
+		final CountDownLatch activationSync;
+		boolean isReleasing;
 		
 		CompRefHelper() {
-			this.sync = new CountDownLatch(1);
+			this.activationSync = new CountDownLatch(1);
+			isReleasing = false;
 		}
 		
 		/**
@@ -79,11 +85,11 @@ public class ComponentAccessUtil {
 		 */
 		void setCompRef(ACSComponentOperations compRef) {
 			this.compRef = compRef;
-			sync.countDown();
+			activationSync.countDown();
 		}
 		
 		boolean awaitCompActivation(long timeout, TimeUnit unit) throws InterruptedException {
-			return sync.await(timeout, unit);
+			return activationSync.await(timeout, unit);
 		}
 	}
 
@@ -91,6 +97,8 @@ public class ComponentAccessUtil {
 	/**
 	 * key = component instance name, 
 	 * value = component reference + sync support for other threads that request the same component.
+	 * <p>
+	 * This map must be protected from concurrent access.
 	 */
 	protected final Map<String, CompRefHelper> compName2Comp;
 	
@@ -108,7 +116,7 @@ public class ComponentAccessUtil {
 	 * @return
 	 * @throws AcsJContainerServicesEx
 	 */
-	public synchronized <T extends ACSComponentOperations> T getDynamicComponent(ComponentSpec compSpec, Class<T> idlOpInterface) 
+	public <T extends ACSComponentOperations> T getDynamicComponent(ComponentSpec compSpec, Class<T> idlOpInterface) 
 		throws AcsJContainerServicesEx {
 		
 		T comp = null;
@@ -127,6 +135,11 @@ public class ComponentAccessUtil {
 			}
 			else {
 				if (compRefHelper.compRef != null) {
+					if (compRefHelper.isReleasing) {
+						AcsJContainerServicesEx ex = new AcsJContainerServicesEx();
+						ex.setContextInfo("Component '" + compSpec.component_name + "' is being released and thus cannot be activated.");
+						throw ex;
+					}
 					foundInCache = true;
 					comp = idlOpInterface.cast(compRefHelper.compRef);
 				}
@@ -194,7 +207,7 @@ public class ComponentAccessUtil {
 			String msg = "Failed to Corba-narrow component " + compSpec.component_name;
 			logger.log(Level.FINE, msg, ex);
 			throw new IllegalArgumentException(msg, ex); // TODO throw better ex
-		} 
+		}
 		
 		if (!idlOpInterface.isInstance(comp)) {
 			String msg = "Narrowed component " + compSpec.component_name + " is not of type " + idlOpInterface;
@@ -217,25 +230,58 @@ public class ComponentAccessUtil {
 
 	/**
 	 * Should be called when a component is no longer needed. 
+	 * <p>
+	 * This call waits for the complete component release to finish and only then returns.
+	 * 
 	 */
-	public synchronized void releaseComponent(String compName) {
-		// release the component with the container services
-		contSrv.releaseComponent(compName, null);
-		
-		// remove its reference from the cache
+	public void releaseComponent(String compName, boolean waitForCompRelease) {
+
+		// Mark this comp in the cache
+		synchronized (compName2Comp) {
+			CompRefHelper compRefHelper = compName2Comp.get(compName);
+			if (compRefHelper != null) {
+				compRefHelper.isReleasing = true;
+			}
+		}
+
+		ComponentReleaseCallback callback = new ComponentReleaseCallbackWithLogging(logger, AcsLogLevel.DEBUG);
+		contSrv.releaseComponent(compName, callback);
+		try {
+			if (waitForCompRelease) {
+				boolean waitOK = callback.awaitComponentRelease(60, TimeUnit.SECONDS);
+				if (!waitOK) {
+					logger.warning("Timed out (60s) waiting for release of component " + compName);
+				}
+			}
+		} catch (InterruptedException ex) {
+			logger.log(AcsLogLevel.DEBUG, "Interrupted while waiting for release of component " + compName);
+		}
+
+		// remove comp reference from the cache
 		synchronized (compName2Comp) {
 			compName2Comp.remove(compName);
 		}
 	}
+
 	
 	/**
 	 * Should be called when no component are needed any more. 
+	 * @TODO: Offer also "waitForCompRelease" flag. Probably best to 
+	 * move support for both parallel component activation and release
+	 * to another class such as "ConcurrentComponentAccessUtil" 
+	 * which maintains a thread pool and can 
+	 * - take a list of component names and return list of activated components
+	 *   (check if this gets more confusing than helpful!)
+	 * - release several components in parallel
+	 * - perhaps also take explicit list of components to be released "releaseComponents(list)"
 	 */
-	public synchronized void releaseAllComponents() {
+	public void releaseAllComponents() {
 		synchronized (compName2Comp) {
 			List<String> compNames = new ArrayList<String>(compName2Comp.keySet()); // to avoid ConcurrentModificationException
 			for (String compName : compNames) {
-				releaseComponent(compName);
+				// @TODO if waitForCompRelease, still we should not call releaseComponent(compName, false)
+				// because this releases components only sequentially, while they should be release in parallel
+				releaseComponent(compName, false);
 			}
 		}
 	}
