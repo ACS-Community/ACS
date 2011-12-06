@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.24 2011/11/25 15:51:21 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.25 2011/12/06 15:42:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -30,17 +30,30 @@ using namespace ACS_DDS_Errors;
 
 using namespace AcsBulkdata;
 
-unsigned int BulkDataNTStream::factoryCount_m = 0;
+unsigned int BulkDataNTStream::factoryRefCount_m = 0;
+unsigned int BulkDataNTStream::participantRefCount_m = 0;
+DDS::DomainParticipant* BulkDataNTStream::participant_m=0;
 
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
-	streamName_m(name), configuration_m(cfg), factory_m(0), participant_m(0)
+	streamName_m(name), configuration_m(cfg), factory_m(0)//, participant_m(0)
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
+
 	try
 	{
-		createDDSFactory();
-		createDDSParticipant(); //should be somewhere else in initialize or createStream
+	 //   if (factoryRefCount_m==0)
+	 //     {
+	        createDDSFactory();  //it is enough to have one factory
+	 //     }
+	        factoryRefCount_m++; //anyway we have to increase the counter that we know when to call finalize_instance
+	    if (participantRefCount_m==0)
+	    {
+	        // TBD: for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
+	        // also a participant per stream
+	        createDDSParticipant();     //should be somewhere else in initialize or createStream
+	      }
+	    participantRefCount_m++;   // but we need to know how many users of participant do we have
 	}catch(const ACSErr::ACSbaseExImpl &e)
 	{
 		if (factory_m!=0)
@@ -56,9 +69,18 @@ BulkDataNTStream::~BulkDataNTStream()
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
-	destroyDDSParticipant();
-	factoryCount_m--;
-	if (factoryCount_m==0)   DDS::DomainParticipantFactory::finalize_instance();
+	participantRefCount_m--;
+	if (participantRefCount_m==0)
+	  {
+	    cout << "destroyDDSParticipant" << endl;
+	  destroyDDSParticipant();
+	  }
+
+	factoryRefCount_m--;
+	if (factoryRefCount_m==0)   {
+	    cout << "finalize_instance" << endl;
+	    DDS::DomainParticipantFactory::finalize_instance();
+	}
 }//~BulkDataNTStream
 
 
@@ -84,18 +106,20 @@ void BulkDataNTStream::createDDSFactory()
 	// if both values are true (default) we prevent that default values are taken from default places
 	factory_qos.profile.ignore_user_profile = configuration_m.ignoreUserProfileQoS;
 	factory_qos.profile.ignore_environment_profile = configuration_m.ignoreEnvironmentProfileQoS;
-	factory_qos.resource_limits.max_objects_per_thread = 4096; //if we want to have more than 10 participants
+	//factory_qos.resource_limits.max_objects_per_thread = 4096; //if we want to have more than 10 participants
 
 	if (configuration_m.stringProfileQoS.length()>0)
 	{
 		factory_qos.profile.string_profile.ensure_length(1,1);
 		factory_qos.profile.string_profile[0] = DDS_String_dup(configuration_m.stringProfileQoS.c_str());
+		//cout << "string_profile: " << configuration_m.stringProfileQoS << endl;
 	}//if
 
 	if (configuration_m.urlProfileQoS.length()>0)
 	{
 		factory_qos.profile.url_profile.ensure_length(1,1);
 		factory_qos.profile.url_profile[0] = DDS_String_dup(configuration_m.urlProfileQoS.c_str());
+		//cout << "url_profile: " << configuration_m.urlProfileQoS << endl;
 	}//if
 	ret = factory_m->set_qos(factory_qos);
 	if (ret!=DDS::RETCODE_OK)
@@ -111,7 +135,6 @@ void BulkDataNTStream::createDDSFactory()
 			NDDS_CONFIG_LOG_CATEGORY_API,
 			(NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity));
 
-	factoryCount_m++;
 }//createDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
