@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.139 2011/12/01 08:24:46 bjeram Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.140 2011/12/06 07:38:06 msekoran Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.139 2011/12/01 08:24:46 bjeram Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.140 2011/12/06 07:38:06 msekoran Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -216,10 +216,13 @@ MethodRequestThreadPool::MethodRequestThreadPool (int n_threads) : m_threads(n_t
 int
 MethodRequestThreadPool::svc (void)
 {
+	// init logging
+	ACE_CString threadName("maci::MethodRequestThreadPool");
     ACS_CHECK_LOGGER;
-    m_logger = getNamedLogger("maci::MethodRequestThreadPool");
-    
-    // ACS_TRACE ("maci::MethodRequestThreadPool::svc");
+    m_logger = getNamedLogger(threadName.c_str());
+    ContainerImpl::getContainer()->initThread(threadName.c_str());
+     
+    ACS_TRACE ("maci::MethodRequestThreadPool::svc");
     
     while (1)
     {
