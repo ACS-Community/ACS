@@ -23,19 +23,48 @@
  *
  * @author Pablo Burgos
  * @since ACS-8_0_0-B Jun2009
- * @version "@(#) $Id: MonitorDAO.java,v 1.4 2011/07/31 04:19:24 hsommer Exp $
+ * @version "@(#) $Id: MonitorDAO.java,v 1.5 2011/12/06 10:56:27 hsommer Exp $
  */
 package alma.acs.monitoring.DAO;
 
 import alma.acs.exceptions.AcsJException;
+import alma.acs.monitoring.blobber.BlobberPlugin;
 
+/**
+ * This interface connects the upper layers of the blobber components,
+ * which belong to ACS and deal with infrastructural concerns and general data aggregation tasks,
+ * with the lower layers contributed from outside of ACS, 
+ * which may have knowledge about some special devices
+ * and store the data in DBs, files etc. 
+ */
 public interface MonitorDAO {
 
+    /**
+     * Passes data from the upper layers to this DAO.
+     */
     public void store(ComponentData inData) throws Exception;
 
-    public void close();
-
+    /**
+     * If the DAO supports transactions (e.g. for DB insertion), 
+     * it should open a transaction here.
+     * Currently a transaction contains the data from all device components from one container.
+     * @see #closeTransactionStore()
+     */
     public void openTransactionStore() throws AcsJException;
 
+    /**
+     * If the DAO supports transactions (e.g. for DB insertion), 
+     * it should close the currently open transaction here.
+     * @see #openTransactionStore()
+     */
     public void closeTransactionStore() throws AcsJException;
+    
+    /**
+     * Called when the blobber component no longer needs the DAO, 
+     * typically shortly before the component gets unloaded.
+     * The DAO should clean up resources.
+     * After this call, the DAO should no longer be used.
+     * @see BlobberPlugin#cleanUp()
+     */
+    public void close();
 }

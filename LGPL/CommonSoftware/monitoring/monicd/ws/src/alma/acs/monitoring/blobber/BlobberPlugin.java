@@ -57,7 +57,7 @@ public abstract class BlobberPlugin
 	
 	/**
 	 * Will be called by the blobber component layer before calling {@link #getMonitorDAOs()}
-	 * or {@link #getBlobberWatchDog(), so that the plugin can create and install the DAOs and watchdog 
+	 * or {@link #getBlobberWatchDog()}, so that the plugin can create and install the DAOs and watchdog 
 	 * or do other initialization tasks.
 	 * @see #cleanUp()
 	 */
