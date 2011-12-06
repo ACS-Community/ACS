@@ -66,7 +66,7 @@ public class TmcdbObject {
 	protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
 			this);
 
-	protected boolean useContentEqualsAndHashCode = false;
+	protected boolean useContentEqualsAndHashCode = true;
 	
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
