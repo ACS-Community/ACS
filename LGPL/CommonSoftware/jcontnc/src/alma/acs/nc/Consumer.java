@@ -32,6 +32,7 @@ import gov.sandia.NotifyMonitoringExt.NameMapError;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -373,22 +374,7 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 		IntHolder consumerAdminIDHolder = new IntHolder();
 
 		// get the Consumer admin object (no reuse of admin obj. This gets addressed in the new NCSubscriber class)
-		StringBuffer clientNameSB = new StringBuffer(m_clientName);
-		int tries = 1;
-		while( m_consumerAdmin == null ) {
-			try {
-				m_consumerAdmin = m_channel.named_new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder, clientNameSB.toString());
-			} catch (NameAlreadyUsed e1) {
-				// If the original name is already in use, append "-<tries>" and try again
-				// until we find a free name
-				clientNameSB.delete(m_clientName.length(), clientNameSB.length());
-				clientNameSB.insert(m_clientName.length(),     '-');
-				clientNameSB.insert(m_clientName.length() + 1, tries++);
-			} catch (NameMapError e1) {
-				// Use unnamed version instead, buuu :(
-				m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
-			}
-		}
+		m_consumerAdmin = m_channel.new_for_consumers(InterFilterGroupOperator.AND_OP, consumerAdminIDHolder);
 
 		// sanity check
 		if (m_consumerAdmin == null) {
@@ -408,20 +394,29 @@ public class Consumer extends OSPushConsumerPOA implements ReconnectableSubscrib
 
 		if( consumerAdminExt != null ) {
 
-			// Create the push supplier with a name
-			clientNameSB = new StringBuffer(m_clientName);
-			tries = 1;
+			// Add a random number to the clientName. This is due to the fact
+			// that if we use a duplicate name to create a named proxy,
+			// TAO will first create the proxy and later check for name duplication.
+			// If duplication is found TAO will throw the NameAlreadyUsed exception,
+			// (TAO scopes the proxy name to the EventChannel object, not to the consumer admin)
+			// but won't actually destroy the newly created proxy on the server side,
+			// which could lead to memory leaks
+			Random random = new Random(System.currentTimeMillis());
+			StringBuffer clientNameSB = new StringBuffer(m_clientName);
+			clientNameSB.append('-');
+			clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+
 			while( m_proxySupplier == null ) {
 				try {
+					// Create the push supplier with a name
 					m_proxySupplier = StructuredProxyPushSupplierHelper.narrow(
 							consumerAdminExt.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyID, clientNameSB.toString()));
 					m_logger.fine("Created named proxy supplier '" + clientNameSB.toString() + "'");
 				} catch (NameAlreadyUsed e) {
-					// If the original name is already in use, append "-<tries>" and try again
-					// until we find a free name
+					// Hopefully we won't run into this situation. Still, try to go on
 					clientNameSB.delete(m_clientName.length(), clientNameSB.length());
-					clientNameSB.insert(m_clientName.length(),     '-');
-					clientNameSB.insert(m_clientName.length() + 1, tries++);
+					clientNameSB.append('-');
+					clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
 				} catch (NameMapError e) {
 					// Default to the unnamed version
 					try {

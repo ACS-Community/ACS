@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.77 2011/11/25 16:40:57 rtobar Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.78 2011/12/06 13:09:09 rtobar Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -452,34 +452,7 @@ Consumer::createConsumer()
 	{
 	// Get ConsumerAdmin object
 	//CosNotifyChannelAdmin::AdminID adminid;
-
-	// Check if the notifyChannel is of the extended type, so we can create a named consumer
-	// which will show up with its name on the eventGUI (which uses the TAO M&C extensions)
-	if( CORBA::is_nil(notifyFactory_m.in()) != false && callback_m->services_ != 0 ) {
-
-		ACE_CString adminName = callback_m->services_->getName();
-		int tries = 1;
-		NotifyMonitoringExt::EventChannel_var notifyChannelExt = NotifyMonitoringExt::EventChannel::_narrow(notifyChannel_m);
-
-		while( consumerAdmin_m == 0 ) {
-			try {
-				consumerAdmin_m = notifyChannelExt->named_new_for_consumers(ifgop_m, adminid, adminName.c_str());
-			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
-				// If the original name is already in use, append "-<tries>" and try again
-				// until we find a free name
-				std::stringstream ss;
-				ss << callback_m->services_->getName() << "-" << tries;
-				adminName = ss.str().c_str();
-			} catch (...) {
-				// If any unexpected problem appears, try the unnamed version
-				consumerAdmin_m = notifyChannel_m->new_for_consumers(ifgop_m, adminid);
-			}
-		}
-	}
-	else {
-		// Just the unnamed version if we don't have the TAO extensions
-		consumerAdmin_m = notifyChannel_m->new_for_consumers(ifgop_m, adminid);
-	}
+	consumerAdmin_m = notifyChannel_m->new_for_consumers(ifgop_m, adminid);
 	
 	if(CORBA::is_nil(consumerAdmin_m.in()) == true)
 	    {
@@ -492,8 +465,10 @@ Consumer::createConsumer()
 	CosNotifyChannelAdmin::ProxySupplier_var proxySupplier = 0;
 	if( CORBA::is_nil(notifyFactory_m.in()) != false != 0 && callback_m->services_ != 0 ) {
 
-		ACE_CString proxyName = callback_m->services_->getName();
-		int tries = 1;
+		ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
+		std::stringstream ss;
+		ss << callback_m->services_->getName() << "-" << ACE_OS::rand();
+		ACE_CString proxyName = ss.str().c_str();
 		NotifyMonitoringExt::ConsumerAdmin_var consumerAdminExt = NotifyMonitoringExt::ConsumerAdmin::_narrow(consumerAdmin_m);
 
 		while( proxySupplier == 0 ) {
@@ -503,7 +478,7 @@ Consumer::createConsumer()
 				// If the original name is already in use, append "-<tries>" and try again
 				// until we find a free name
 				std::stringstream ss;
-				ss << callback_m->services_->getName() << "-" << tries;
+				ss << callback_m->services_->getName() << "-" << ACE_OS::rand();
 				proxyName = ss.str().c_str();
 			} catch (...) {
 				// If any unexpected problem appears, try the unnamed version

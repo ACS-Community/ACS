@@ -23,9 +23,12 @@ import gov.sandia.NotifyMonitoringExt.ConsumerAdmin;
 import gov.sandia.NotifyMonitoringExt.ConsumerAdminHelper;
 import gov.sandia.NotifyMonitoringExt.EventChannel;
 import gov.sandia.NotifyMonitoringExt.EventChannelFactory;
+import gov.sandia.NotifyMonitoringExt.NameAlreadyUsed;
+import gov.sandia.NotifyMonitoringExt.NameMapError;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -492,11 +495,31 @@ public class NCSubscriber extends OSPushConsumerPOA implements AcsEventSubscribe
 		StructuredProxyPushSupplier ret = null;
 		String errMsg = null;
 		IntHolder proxyIdHolder = new IntHolder(); // will get assigned "a numeric identifier [...] that is unique among all proxy suppliers [the admin object] has created"
+
 		try {
-			ret = StructuredProxyPushSupplierHelper.narrow(
-						// Providing a name is a TAO extension. Otherwise call "obtain_notification_push_supplier"
-						sharedConsumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder)
-					);
+			// See the comments on Consumer#createConsumer() for a nice explanation
+			// of why this randomness is happening here
+			Random random = new Random(System.currentTimeMillis());
+			StringBuffer clientNameSB = new StringBuffer(clientName);
+			clientNameSB.append('-');
+			clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+
+			ProxySupplier proxy = null;
+			while( proxy == null ) {
+				try {
+					proxy = sharedConsumerAdmin.obtain_named_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder, clientNameSB.toString());
+				} catch (NameAlreadyUsed e) {
+					// Hopefully we won't run into this situation. Still, try to go on
+					clientNameSB.delete(clientName.length(), clientNameSB.length());
+					clientNameSB.append('-');
+					clientNameSB.append(String.format("%05d", Math.abs(random.nextInt())));
+				} catch (NameMapError e) {
+					// Default to the unnamed version
+					proxy = sharedConsumerAdmin.obtain_notification_push_supplier(ClientType.STRUCTURED_EVENT, proxyIdHolder);
+				}
+			}
+
+			ret = StructuredProxyPushSupplierHelper.narrow(proxy);
 		} catch (AdminLimitExceeded ex) {
 			// See NC spec 3.4.15.10
 			// If the number of consumers currently connected to the channel with which the target ConsumerAdmin object is associated 
