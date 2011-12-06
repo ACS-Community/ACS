@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.25 2011/12/06 15:42:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.26 2011/12/06 15:53:21 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -70,17 +70,10 @@ BulkDataNTStream::~BulkDataNTStream()
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 
 	participantRefCount_m--;
-	if (participantRefCount_m==0)
-	  {
-	    cout << "destroyDDSParticipant" << endl;
-	  destroyDDSParticipant();
-	  }
+	if (participantRefCount_m==0)  destroyDDSParticipant();
 
 	factoryRefCount_m--;
-	if (factoryRefCount_m==0)   {
-	    cout << "finalize_instance" << endl;
-	    DDS::DomainParticipantFactory::finalize_instance();
-	}
+	if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
 }//~BulkDataNTStream
 
 
