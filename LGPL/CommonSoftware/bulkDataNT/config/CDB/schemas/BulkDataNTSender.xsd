@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTSender:1.0"
-  xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0" 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified"
-  attributeFormDefault="unqualified">
+<xs:schema targetNamespace="urn:schemas-eso-org:BulkDataNTSender:1.0" xmlns="urn:schemas-eso-org:BulkDataNTSender:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:baci="urn:schemas-cosylab-com:BACI:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:import namespace="urn:schemas-cosylab-com:BACI:1.0"/>
   <xs:include schemaLocation="acs_rti_dds_qos_profiles.xsd"/>
 
   <xs:complexType name="DDSSenderStreamQoSType">
     <xs:choice>
       <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="0" name="participant_qos"
-          type="domainparticipantQosProfileChild"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="participant_qos" type="domainparticipantQosProfileChild"/>
       </xs:sequence>
     </xs:choice>
   </xs:complexType>
@@ -26,8 +21,7 @@
         <xs:element maxOccurs="1" minOccurs="0" name="topic_qos" type="topicQosProfileChild"/>
       </xs:sequence>
       <xs:sequence>
-        <xs:element maxOccurs="1" minOccurs="0" name="datawriter_qos"
-          type="datawriterQosProfileChild"/>
+        <xs:element maxOccurs="1" minOccurs="0" name="datawriter_qos" type="datawriterQosProfileChild"/>
       </xs:sequence>
     </xs:choice>
   </xs:complexType>
@@ -37,6 +31,8 @@
       <xs:element name="DDSSenderFlowQoS" type="DDSSenderFlowQoSType"/>
     </xs:all>
     <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="SendFrameTimeout" type="xs:double" use="optional" default="5.0"/>
+    <xs:attribute name="ACKsTimeout" type="xs:double" use="optional" default="1.0"/>
   </xs:complexType>
 
   <xs:complexType name="SenderStreamType">
