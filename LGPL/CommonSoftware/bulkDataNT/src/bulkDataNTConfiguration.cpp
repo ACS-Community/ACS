@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.8 2011/10/19 12:25:19 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.9 2011/12/08 09:56:06 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -115,6 +115,8 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 SenderFlowConfiguration::SenderFlowConfiguration()
 {
 	profileQos=DEFAULT_SENDER_FLOW_PROFILE;
+	frameTimeout = 5.0;  //secs
+	ACKsTimeout = 1.0; //secs
 }//SenderFlowConfiguration
 
 
