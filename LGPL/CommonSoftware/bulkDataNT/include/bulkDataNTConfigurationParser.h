@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.7 2011/11/10 11:10:33 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.8 2011/12/09 17:11:45 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -44,19 +44,86 @@
 namespace AcsBulkdata
 {
 
-	class BulkDataConfigurationParser {
+	class XMLChSP {
 
 	public:
+		XMLChSP(char* xmlCh);
 
-		typedef struct {
+		~XMLChSP();
+
+		char * get();
+
+	private:
+		char* xmlch_m;
+
+	};
+
+	class BulkDataConfigurationParser {
+
+	private:
+
+		xercesc::DOMWriter         *m_writer;
+		xercesc::AbstractDOMParser *m_parser;
+
+		typedef struct _SenderCfg {
 			SenderStreamConfiguration streamCfg;
 			std::map<std::string, SenderFlowConfiguration> flowsCfgMap;
 		} SenderCfg;
 
-		typedef struct {
+		typedef struct _ReceiverCfg {
 			ReceiverStreamConfiguration streamCfg;
 			std::map<std::string, ReceiverFlowConfiguration> flowsCfgMap;
 		} ReceiverCfg;
+
+		typedef std::map<std::string, ReceiverCfg> ReceiverCfgMap;
+		typedef std::map<std::string, SenderCfg>   SenderCfgMap;
+
+		ReceiverCfgMap receiverConfigMap_m;
+		SenderCfgMap   senderConfigMap_m;
+
+		static const char* const SENDER_STREAM_NODENAME;
+		static const char* const SENDER_STREAM_QOS_NODENAME;
+		static const char* const SENDER_FLOW_NODENAME;
+		static const char* const SENDER_FLOW_QOS_NODENAME;
+		static const char* const RECEIVER_STREAM_NODENAME;
+		static const char* const RECEIVER_STREAM_QOS_NODENAME;
+		static const char* const RECEIVER_FLOW_NODENAME;
+		static const char* const RECEIVER_FLOW_QOS_NODENAME;
+
+		static const char* const DYNAMIC_LIBRARY_NAME;
+
+		enum ParsingType {
+			SENDER,
+			RECEIVER
+		};
+
+		struct ParsingInfo {
+			ParsingType type;
+			const char* const reqStreamNodeName;
+			const char* const reqStreamQoSNodeName;
+			const char* const reqFlowNodeName;
+			const char* const reqFlowQoSNodeName;
+			const char* const defaultStreamProfileName;
+			const char* const defaultFlowProfileName;
+		};
+
+		const static struct ParsingInfo SENDER_PARSING_INFO;
+		const static struct ParsingInfo RECEIVER_PARSING_INFO;
+
+
+		void parseConfig(const char *config, const struct ParsingInfo &parsingInfo);
+
+		const XMLCh* getAttrValue(xercesc::DOMNode *node, const char * name);
+
+		double getDoubleFromAttribute(xercesc::DOMNode *node, const char * attribute, double defaultVal);
+
+		bool getBooleanFromAttribute(xercesc::DOMNode *node, const char * attribute, bool defaultVal);
+
+		std::string getQosProfile(const char *profileName, const char *baseProfile, xercesc::DOMNode *node);
+
+		std::string getStrURIforStream(std::list<std::string> profiles);
+
+	public:
 
 		/**
 		 * Constructor
@@ -73,60 +140,82 @@ namespace AcsBulkdata
 		 * that can be found. Each stream, and its corresponding flows, are properly
 		 * configured depending on the QoS settings coming from the XML document
 		 */
-		void parseSenderConfig(char const *configXML, std::map<std::string, SenderCfg> &configMap);
-
+		void parseSenderConfig(char const *configXML);
 		/**
 		 * Given an XML document, parses it an retrieves the list of receiver streams
 		 * that can be found. Each stream, and its corresponding flows, are properly
 		 * configured depending on the QoS settings coming from the XML document
 		 */
-		void parseReceiverConfig(char const *configXML, std::map<std::string, ReceiverCfg> &configMap);
+		void parseReceiverConfig(char const *configXML);
 
-	private:
+		/**
+		 * Returns a set of strings containing all Sender Stream names found in
+		 * the parsed XML document. If none was found, an empty set is returned
+		 */
+		std::set<char const *> getAllSenderStreamNames();
 
-		char* getAttrValue(xercesc::DOMNode *node, const char * name);
+		/**
+		 * Returns a set of strings containing all Receiver Stream names found in
+		 * the parsed XML document. If none was found, an empty set is returned
+		 */
+		std::set<char const *> getAllReceiverStreamNames();
 
-		void getSerializedElement(xercesc::DOMNode *node, std::string &s);
+		/**
+		 * Returns, for the given Sender stream name, a set of strings containing all
+		 * Sender Flow names found in the parsed XML document. If none was found, an
+		 * empty set is returned
+		 *
+		 * @param streamName The name of the sender stream
+		 * @return A set containing all flow names for the given stream name
+		 */
+		std::set<char const *> getAllSenderFlowNames(char const *streamName);
 
-		void addQoSToProfile(const char *stream, const char *profileName, const char* baseProfile, xercesc::DOMNode *node);
+		/**
+		 * Returns, for the given Receiver stream name, a set of strings containing all
+		 * Receiver Flow names found in the parsed XML document. If none was found, an
+		 * empty set is returned
+		 */
+		std::set<char const *> getAllReceiverFlowNames(char const *streamName);
 
-		void parseConfig(const char *config,
-			const char* const reqStreamNodeName,
-			const char* const reqFlowNodeName,
-			const char* const reqStreamQoSNodeName,
-			const char* const reqFlowQoSNodeName,
-			const char* const defaultStreamProfile,
-			const char* const defaultFlowProfile);
+		/**
+		 * Returns, if found during parsing, the configuration object for the given
+		 * Sender stream.
+		 *
+		 * @param streamName The name of the Sender stream
+		 * @return The configuration for the given Sender stream, NULL if it doesn't exist
+		 */
+		SenderStreamConfiguration * getSenderStreamConfiguration(char const *streamName);
 
-		template<class CfgS, class StreamConfigT, class FlowConfigT>
-		void populateConfiguration(std::map<std::string, CfgS> &configMap);
+		/**
+		 * Returns, if found during parsing, the configuration object for the given
+		 * Sender flow.
+		 *
+		 * @param streamName The name of the Sender stream where the given flow resides
+		 * @param flowName The name of the Sender flow
+		 * @return The configuration for the given Sender flow, NULL if it doesn't exist
+		 */
+		SenderFlowConfiguration * getSenderFlowConfiguration(char const *streamName, char const *flowName);
 
-		void clearCollections();
+		/**
+		 * Returns, if found during parsing, the configuration object for the given
+		 * Receiver stream.
+		 *
+		 * @param streamName The name of the Receiver stream
+		 * @return The configuration for the given Receiver stream, NULL if it doesn't exist
+		 */
+		ReceiverStreamConfiguration * getReceiverStreamConfiguration(char const *streamName);
 
-		void printEntities();
-
-		std::string getStrURIforStream(char *streamName);
-
-		// map<streamName, map<flowName, strURLPiece>>
-		std::map<std::string, std::map<std::string, std::string> > m_profiles;
-		std::map<char *, std::set<char*> > m_entities;
-		xercesc::DOMWriter *m_writer;
-		xercesc::AbstractDOMParser *m_parser;
-
-		static const char* const SENDER_STREAM_NODENAME;
-		static const char* const SENDER_STREAM_QOS_NODENAME;
-		static const char* const SENDER_FLOW_NODENAME;
-		static const char* const SENDER_FLOW_QOS_NODENAME;
-		static const char* const RECEIVER_STREAM_NODENAME;
-		static const char* const RECEIVER_STREAM_QOS_NODENAME;
-		static const char* const RECEIVER_FLOW_NODENAME;
-		static const char* const RECEIVER_FLOW_QOS_NODENAME;
-
-		static const char* const DYNAMIC_LIBRARY_NAME;
+		/**
+		 * Returns, if found during parsing, the configuration object for the given
+		 * Receiver flow.
+		 *
+		 * @param streamName The name of the Receiver stream where the given flow resides
+		 * @param flowName The name of the Receiver flow
+		 * @return The configuration for the given Receiver flow, NULL if it doesn't exist
+		 */
+		ReceiverFlowConfiguration * getReceiverFlowConfiguration(char const *streamName, char const *flowName);
 	};
 
 };
-
-#include "bulkDataNTConfigurationParser.i"
 
 #endif

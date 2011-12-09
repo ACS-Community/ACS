@@ -107,7 +107,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
      <br><hr>
      @endhtmlonly
     */
-    virtual void openReceiver() ;
+    virtual void openReceiver();
 
     virtual void openReceiverStream(const char *stream_name);
 
@@ -160,6 +160,7 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
 
   protected: 
 
+    virtual bool usesOldConfigurationMechanism();
     
   private:
 
@@ -169,12 +170,15 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
     // Map that stores the actualy stream objects that are actually created
     StreamMap receiverStreams_m;
 
-    // Map that stores the configuration read from the CDB
-    std::map<std::string, BulkDataConfigurationParser::ReceiverCfg> recvConfigMap_m;
+    // The XML parser object, responsible of retrieving the configuration objects for a given XML document
+    AcsBulkdata::BulkDataConfigurationParser *parser_m;
 
-    maci::ContainerServices *containerServices_p;
+    // Used to store the number of flows to create, as specified with the old config mechanism
+    int defaultFlowsCount_m;
 
-    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name, std::map<std::string, BulkDataConfigurationParser::ReceiverCfg>::iterator &it);
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createReceiverStream(const char *stream_name);
+
+    AcsBulkdata::BulkDataNTReceiverStream<TCallback>* createDefaultReceiverStream();
 
     void closeStream(typename StreamMap::iterator &it);
 };

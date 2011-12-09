@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.11 2011/11/10 11:10:33 rtobar Exp $"
+* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.12 2011/12/09 17:11:45 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -28,28 +28,98 @@
 #include "bulkDataNTConfigurationParser.h"
 #include "ACS_BD_Errors.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace xercesc;
 using namespace AcsBulkdata;
 using namespace ACS_BD_Errors;
 
-template<class T, class F>
-void printConfigMap(map<string, T> &configMap) {
+void printConfigMap(BulkDataConfigurationParser &parser,
+		set<const char *> (BulkDataConfigurationParser::*streamNamesGetter)(void),
+		set<const char *> (BulkDataConfigurationParser::*flowNamesGetter)(const char *)) {
 
-	printf("Number of streams: %d\n", configMap.size());
-
-	typename map<string, T>::iterator it;
-	for(it = configMap.begin(); it != configMap.end(); it++) {
-		printf("   Stream name: '%s'\n", it->first.c_str());
-		printf("   Number of flows: %d\n", it->second.flowsCfgMap.size());
-
-		typename map<string, F>::iterator it2;
-		for(it2 = it->second.flowsCfgMap.begin(); it2 != it->second.flowsCfgMap.end(); it2++)
-			printf("     Flow name: %s\n", it2->first.c_str());
+	set<const char *> streamNames = (parser.*streamNamesGetter)();
+	if( streamNames.size() == 0 ) {
+		cout << "No streams found" << endl;
+		return;
 	}
 
-	printf("\n");
+	cout << "Number of streams: " << streamNames.size() << endl;
+
+	set<const char *>::iterator it;
+	for(it = streamNames.begin(); it != streamNames.end(); it++) {
+
+		set<const char *> flowNames = (parser.*flowNamesGetter)(*it);
+
+		cout << "   Stream name: '" << *it << "'" << endl;
+		cout << "   Number of flows: " << flowNames.size() << endl;
+
+		set<const char *>::iterator it2;
+		for(it2 = flowNames.begin(); it2 != flowNames.end(); it2++)
+			cout << "     Flow name: " << *it2 << endl;
+	}
+
+}
+
+void parseFiles(const char *directory, BulkDataConfigurationParser &parser,
+		void (BulkDataConfigurationParser::*parserMethod)(const char *),
+		set<const char *> (BulkDataConfigurationParser::*streamNamesGetter)(void),
+		set<const char *> (BulkDataConfigurationParser::*flowNamesGetter)(const char *)) {
+
+	ACE_DIRENT **nameList;
+	int fileCount;
+
+	// Parse all receiver configs
+	fileCount = ACE_OS::scandir(directory, &nameList, 0, 0);
+	for(int i=0; i<fileCount; i++) {
+		ACE_DIRENT *dirent = nameList[i];
+
+		if( ACE_OS::strcmp(dirent->d_name, ".") == 0 ||
+				ACE_OS::strcmp(dirent->d_name, "..") == 0 ) {
+			free(dirent);
+			continue;
+		}
+
+
+		string realFilename(directory);
+		realFilename.append("/");
+		realFilename.append(dirent->d_name);
+
+		cout << "Parsing file: " << realFilename << endl;
+
+		ifstream file(realFilename.c_str());
+		string s((std::istreambuf_iterator<char>(file)), istreambuf_iterator<char>());
+		file.close();
+
+		try {
+			BulkDataConfigurationParser parser;
+			(parser.*parserMethod)(s.c_str());
+			printConfigMap(parser, streamNamesGetter, flowNamesGetter);
+		} catch(CDBProblemExImpl &ex) {
+			ex.log(LM_ERROR);
+		}
+
+		free(dirent);
+	}
+	free(nameList);
+
+}
+
+void parseSenderFiles() {
+	BulkDataConfigurationParser parser;
+	parseFiles("bdSenderConfigs", parser,
+			&BulkDataConfigurationParser::parseSenderConfig,
+			&BulkDataConfigurationParser::getAllSenderStreamNames,
+			&BulkDataConfigurationParser::getAllSenderFlowNames);
+}
+
+void parseReceiverFiles() {
+	BulkDataConfigurationParser parser;
+	parseFiles("bdReceiverConfigs", parser,
+			&BulkDataConfigurationParser::parseReceiverConfig,
+			&BulkDataConfigurationParser::getAllReceiverStreamNames,
+			&BulkDataConfigurationParser::getAllReceiverFlowNames);
 }
 
 int main(int args, char *argv[]) {
@@ -58,26 +128,8 @@ int main(int args, char *argv[]) {
 	LoggingProxy::init (&m_logger);
     ACS_CHECK_LOGGER;
 
-	map<string, BulkDataConfigurationParser::SenderCfg> senderCfgMap;
-	map<string, BulkDataConfigurationParser::ReceiverCfg> receiverCfgMap;
-
-	char *correctSenderConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><BulkDataNTSender xmlns:baci=\"urn:schemas-cosylab-com:BACI:1.0\" xmlns=\"urn:schemas-eso-org:BulkDataNTSender:1.0\" xmlns:cdb=\"urn:schemas-cosylab-com:CDB:1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:schemas-eso-org:BulkDataNTSender:1.0 file:/D:/eclipseWorkshop/bulkDataNT/config/CDB/schemas/BulkDataNTSender.xsd\" recentCommand=\"\" recentTimeStamp=\"\" actionThreadStackSize=\"1024\" monitoringThreadStackSize=\"2048\"><SenderStream Name=\"Name7\">        <DDSSenderStreamQoS>            <participant_qos name=\"name5\">            </participant_qos>        </DDSSenderStreamQoS><Flow Name=\"Name3\">            <DDSSenderFlowQoS>                <datawriter_qos name=\"name1\">                </datawriter_qos>            </DDSSenderFlowQoS>        </Flow>        <Flow Name=\"Name5\">            <DDSSenderFlowQoS>                <datawriter_qos name=\"name3\">                 </datawriter_qos>            </DDSSenderFlowQoS>        </Flow>    </SenderStream><SenderStream Name=\"Name1\">        <Flow Name=\"Name3\">            <DDSSenderFlowQoS>                <datawriter_qos name=\"name1\">                </datawriter_qos>            </DDSSenderFlowQoS>        </Flow>        <Flow Name=\"Name5\">            <DDSSenderFlowQoS>                <datawriter_qos name=\"name3\">                 </datawriter_qos>            </DDSSenderFlowQoS>        </Flow>    </SenderStream>    </BulkDataNTSender>";
-	try {
-		BulkDataConfigurationParser parser;
-		parser.parseSenderConfig(correctSenderConfig, senderCfgMap);
-	} catch(CDBProblemExImpl &ex) {
-		std::cout << ex.getDetail() << std::endl;
-	}
-	printConfigMap<BulkDataConfigurationParser::SenderCfg, SenderFlowConfiguration>(senderCfgMap);
-
-	char *correctReceiverConfig = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><BulkDataNTReceiver xmlns:baci=\"urn:schemas-cosylab-com:BACI:1.0\" xmlns=\"urn:schemas-eso-org:BulkDataNTSender:1.0\" xmlns:cdb=\"urn:schemas-cosylab-com:CDB:1.0\"  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"urn:schemas-eso-org:BulkDataNTSender:1.0 file:/D:/eclipseWorkshop/bulkDataNT/config/CDB/schemas/BulkDataNTSender.xsd\" recentCommand=\"\" recentTimeStamp=\"\" actionThreadStackSize=\"1024\" monitoringThreadStackSize=\"2048\">    <ReceiverStream Name=\"Name1\">        <ReceiverFlow Name=\"Name3\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name1\">                </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>        <ReceiverFlow Name=\"Name5\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name3\">                 </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>    </ReceiverStream>    <ReceiverStream Name=\"Name7\">           <ReceiverFlow Name=\"Name3\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name1\">                </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>        <ReceiverFlow Name=\"Name5\">            <DDSReceiverFlowQoS>                <datawriter_qos name=\"name3\">                 </datawriter_qos>            </DDSReceiverFlowQoS>        </ReceiverFlow>      <DDSReceiverStreamQoS>            <participant_qos name=\"name5\">            </participant_qos>        </DDSReceiverStreamQoS>    </ReceiverStream></BulkDataNTSender>";
-	try {
-		BulkDataConfigurationParser parser;
-		parser.parseReceiverConfig(correctReceiverConfig, receiverCfgMap);
-	} catch(CDBProblemExImpl &ex) {
-		std::cout << ex.getDetail() << std::endl;
-	}
-	printConfigMap<BulkDataConfigurationParser::ReceiverCfg, ReceiverFlowConfiguration>(receiverCfgMap);
+    parseSenderFiles();
+    parseReceiverFiles();
 
 	m_logger.done();
 	LoggingProxy::done();
