@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsContainerHandlerImpl.cpp,v 1.19 2011/03/29 15:41:24 msekoran Exp $"
+* "@$Id: acsContainerHandlerImpl.cpp,v 1.20 2011/12/09 16:20:13 acaproni Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -122,6 +122,9 @@ ACSContainerHandlerImpl::start_container (
     std::string mkdir("mkdir -p ");
     mkdir.append(logDirectory);
     ACE_OS::system(mkdir.c_str());
+    std::string chmod("chmod 775 ");
+    chmod.append(logDirectory);
+    ACE_OS::system(chmod.c_str());
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
@@ -195,6 +198,9 @@ ACSContainerHandlerImpl::stop_container (
     std::string mkdir("mkdir -p ");
     mkdir.append(logDirectory);
     ACE_OS::system(mkdir.c_str());
+    std::string chmod("chmod 775 ");
+    chmod.append(logDirectory);
+    ACE_OS::system(chmod.c_str());
 
     std::string timeStamp(getStringifiedTimeStamp().c_str());
 
