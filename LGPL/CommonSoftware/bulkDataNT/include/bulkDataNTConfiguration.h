@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.18 2011/12/08 10:06:07 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.19 2011/12/12 14:34:39 rtobar Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -96,7 +96,7 @@ public:
 protected:
 	void fillUrlProfileQoS(const char* envVar, const char *dilim="");
 
-	bool participantPerStream;  /// TBD: not used yet - shoudl flag if we have a participant per stream or just a single particpant
+	bool participantPerStream;  /// TBD: not used yet - should flag if we have a participant per stream or just a single participant
 	std::string urlProfileQoS;   // here we specify where it should be looked for default values = DEFAULT_QoS_FILE
 	std::string stringProfileQoS; // here we can specify RTI DDS QoS as a string
 	// ... it is read just when we create stream, but it contains profiles for all flows
