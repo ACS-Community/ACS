@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
+<booleanAttribute key="append.args" value="true"/>
+<stringAttribute key="application" value="ACS_eventGUI.application"/>
+<booleanAttribute key="askclear" value="true"/>
+<booleanAttribute key="automaticAdd" value="true"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<booleanAttribute key="clearws" value="true"/>
+<booleanAttribute key="clearwslog" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/eventGUI"/>
+<booleanAttribute key="default" value="false"/>
+<stringAttribute key="deselected_workspace_plugins" value="org.eclipse.ui.ide,org.eclipse.ui.ide.application"/>
+<booleanAttribute key="includeOptional" value="true"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-eventGUI"/>
+<mapAttribute key="org.eclipse.debug.core.environmentVariables">
+<mapEntry key="ACS_TMP" value="/alma/ACS-10.1/acsdata/baez/ACS_INSTANCE.0"/>
+</mapAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DACS.repository=corbaloc::baez:3004/InterfaceRepository &#10;     -DORBInitRef.NameService=corbaloc::baez:3001/NameService -DACS.Manager=corbaloc::baez:3000/Manager   &#10;     -DACS.tmp=$ACS_TMP &#10;     -Dorg.omg.CORBA.ORBClass=org.jacorb.orb.ORB &#10;     -Dorg.omg.CORBA.ORBSingletonClass=org.jacorb.orb.ORBSingleton"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<stringAttribute key="product" value="ACS_eventGUI.product"/>
+<stringAttribute key="selected_target_plugins" value="com.ibm.icu@default:default,javax.servlet.jsp@default:default,javax.servlet@default:default,org.apache.ant@default:default,org.apache.commons.el@default:default,org.apache.commons.logging@default:default,org.apache.jasper@default:default,org.apache.lucene.analysis@default:default,org.apache.lucene@default:default,org.eclipse.ant.core@default:default,org.eclipse.core.commands@default:default,org.eclipse.core.contenttype@default:default,org.eclipse.core.databinding.observable@default:default,org.eclipse.core.databinding.property@default:default,org.eclipse.core.databinding@default:default,org.eclipse.core.expressions@default:default,org.eclipse.core.jobs@default:default,org.eclipse.core.runtime.compatibility.auth@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.core.runtime@default:true,org.eclipse.core.variables@default:default,org.eclipse.equinox.app@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.http.jetty@default:default,org.eclipse.equinox.http.registry@default:default,org.eclipse.equinox.http.servlet@default:default,org.eclipse.equinox.jsp.jasper.registry@default:default,org.eclipse.equinox.jsp.jasper@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.help.base@default:default,org.eclipse.help.ui@default:default,org.eclipse.help.webapp@default:default,org.eclipse.help@default:default,org.eclipse.jface.databinding@default:default,org.eclipse.jface@default:default,org.eclipse.osgi.services@default:default,org.eclipse.osgi@-1:true,org.eclipse.swt.gtk.linux.x86@default:false,org.eclipse.swt@default:default,org.eclipse.ui.forms@default:default,org.eclipse.ui.views@default:default,org.eclipse.ui.workbench@default:default,org.eclipse.ui@default:default,org.mortbay.jetty.server@default:default,org.mortbay.jetty.util@default:default"/>
+<stringAttribute key="selected_workspace_plugins" value="ACS_eventGUI@default:default,alma.acs.rcp.jars@default:default"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfig" value="true"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<booleanAttribute key="useProduct" value="false"/>
+</launchConfiguration>
