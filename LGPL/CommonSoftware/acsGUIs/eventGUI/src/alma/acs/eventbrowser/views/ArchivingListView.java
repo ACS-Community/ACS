@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
@@ -71,6 +72,7 @@ public class ArchivingListView extends ViewPart {
 	private Thread channelRefreshThread;
 	
 	private final ArrayBlockingQueue<ArchiveEventData> aqueue = Application.archQueue;
+	private IActionBars bars;
 
 
 	public ArchivingListView() {
@@ -152,8 +154,10 @@ public class ArchivingListView extends ViewPart {
 
 //		makeActions();
 //		hookContextMenu();
+		
+		bars = getViewSite().getActionBars();
 
-		pel = new PopulateEventList(logger, viewer, aqueue, "Monitor points");
+		pel = new PopulateEventList(logger, viewer, bars, aqueue, "Monitor points");
 		
 		channelRefreshThread = pel.getChannelRefreshThread(em);
 		channelRefreshThread.start();

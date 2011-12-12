@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
@@ -71,6 +72,7 @@ public class EventListView extends ViewPart {
 	private Thread channelRefreshThread;
 
 	private final ArrayBlockingQueue<EventData> equeue = Application.equeue;
+	private IActionBars bars;
 
 
 	public EventListView() {
@@ -152,8 +154,10 @@ public class EventListView extends ViewPart {
 
 		makeActions();
 		hookContextMenu();
+		
+		bars = getViewSite().getActionBars();
 
-		pel = new PopulateEventList(logger, viewer, equeue, "NC Events");
+		pel = new PopulateEventList(logger, viewer, bars, equeue, "NC Events");
 		
 		channelRefreshThread = pel.getChannelRefreshThread(em);
 		channelRefreshThread.start();
@@ -262,7 +266,6 @@ public class EventListView extends ViewPart {
 		eventListThread.interrupt();
 		em.closeAllConsumers();
 		em.closeArchiveConsumer();
-		logger.info("Average event rate: "+EventData.getAverageRate()+" events/s");
 		super.dispose();
 	}
 

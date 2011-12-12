@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
 
 import alma.acs.eventbrowser.model.EventModel;
 import alma.acs.util.StopWatch;
@@ -44,11 +45,13 @@ public class PopulateEventList {
 	private final Display display;
 	private ArrayBlockingQueue<?> queue;
 	private final String threadName;
+	private IActionBars bars;
 
-	public PopulateEventList(Logger logger, TableViewer viewer, ArrayBlockingQueue<?> queue, String threadName) {
+	public PopulateEventList(Logger logger, TableViewer viewer, IActionBars bars, ArrayBlockingQueue<?> queue, String threadName) {
 		super();
 		this.logger = logger;
 		this.viewer = viewer;
+		this.bars = bars;
 		this.queue = queue;
 		display = viewer.getControl().getDisplay();
 		this.threadName = threadName;
@@ -81,10 +84,12 @@ public class PopulateEventList {
 							freeMemoryIfNecessary();
 							sw.logLapTime("Check free memory");
 							logger.fine("Total rows processed so far: "+totalNumberDrained);
-							if (threadName.equals("NC Events"))
-								logger.info("Average event rate: "+EventData.getAverageRate()+" events/s");
+							String rateStr;							
+							if (threadName.equals("NC Events")) 
+								rateStr = String.format("Average event rate from all subscribed channels: %.2f events/s",EventData.getAverageRate());
 							else
-								logger.info("Average archiving rate: "+ArchiveEventData.getAverageRate()+" monitor points/s");
+								rateStr = String.format("Average archiving rate: %.2f monitor points/s",ArchiveEventData.getAverageRate());
+							bars.getStatusLineManager().setMessage(rateStr);
 						}
 					}
 				}
