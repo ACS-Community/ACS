@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.13 2011/12/12 09:48:26 rtobar Exp $"
+* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.14 2011/12/12 18:09:02 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -113,6 +113,20 @@ void parseSenderFiles() {
 			&BulkDataConfigurationParser::parseSenderConfig,
 			&BulkDataConfigurationParser::getAllSenderStreamNames,
 			&BulkDataConfigurationParser::getAllSenderFlowNames);
+
+	set<const char*> streams = parser.getAllSenderStreamNames();
+	for(set<const char*>::iterator it = streams.begin(); it != streams.end(); it++) {
+		SenderStreamConfiguration *streamConfig = parser.getSenderStreamConfiguration(*it);
+		if( streamConfig == 0 )
+			cerr << "SenderStreamConfiguration shouldn't be null!" << endl;
+
+		set<const char*> flows = parser.getAllSenderFlowNames(*it);
+		for(set<const char*>::iterator it2 = flows.begin(); it2 != flows.end(); it2++) {
+			SenderFlowConfiguration *flowConfig = parser.getSenderFlowConfiguration(*it, *it2);
+			if( flowConfig == 0 )
+				cerr << "SenderFlowConfiguration shouldn't be null!" << endl;
+		}
+	}
 }
 
 void parseReceiverFiles() {
@@ -121,6 +135,20 @@ void parseReceiverFiles() {
 			&BulkDataConfigurationParser::parseReceiverConfig,
 			&BulkDataConfigurationParser::getAllReceiverStreamNames,
 			&BulkDataConfigurationParser::getAllReceiverFlowNames);
+
+	set<const char*> streams = parser.getAllReceiverStreamNames();
+	for(set<const char*>::iterator it = streams.begin(); it != streams.end(); it++) {
+		ReceiverStreamConfiguration *streamConfig = parser.getReceiverStreamConfiguration(*it);
+		if( streamConfig == 0 )
+			cerr << "ReceiverStreamConfiguration shouldn't be null!" << endl;
+
+		set<const char*> flows = parser.getAllReceiverFlowNames(*it);
+		for(set<const char*>::iterator it2 = flows.begin(); it2 != flows.end(); it2++) {
+			ReceiverFlowConfiguration *flowConfig = parser.getReceiverFlowConfiguration(*it, *it2);
+			if( flowConfig == 0 )
+				cerr << "ReceiverFlowConfiguration shouldn't be null!" << endl;
+		}
+	}
 }
 
 int main(int args, char *argv[]) {
