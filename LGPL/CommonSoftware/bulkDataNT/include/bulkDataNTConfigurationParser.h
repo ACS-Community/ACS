@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.8 2011/12/09 17:11:45 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.9 2011/12/12 18:42:45 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -66,13 +66,13 @@ namespace AcsBulkdata
 		xercesc::AbstractDOMParser *m_parser;
 
 		typedef struct _SenderCfg {
-			SenderStreamConfiguration streamCfg;
-			std::map<std::string, SenderFlowConfiguration> flowsCfgMap;
+			SenderStreamConfiguration *streamCfg;
+			std::map<std::string, SenderFlowConfiguration *> flowsCfgMap;
 		} SenderCfg;
 
 		typedef struct _ReceiverCfg {
-			ReceiverStreamConfiguration streamCfg;
-			std::map<std::string, ReceiverFlowConfiguration> flowsCfgMap;
+			ReceiverStreamConfiguration *streamCfg;
+			std::map<std::string, ReceiverFlowConfiguration *> flowsCfgMap;
 		} ReceiverCfg;
 
 		typedef std::map<std::string, ReceiverCfg> ReceiverCfgMap;
@@ -122,6 +122,12 @@ namespace AcsBulkdata
 		std::string getQosProfile(const char *profileName, const char *baseProfile, xercesc::DOMNode *node);
 
 		std::string getStrURIforStream(std::list<std::string> profiles);
+
+		void cleanReceiverConfigs();
+
+		void cleanSenderConfigs();
+
+		void cleanConfig(ReceiverCfg *recvConfig, SenderCfg *senderConfig, ParsingType type);
 
 	public:
 

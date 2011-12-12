@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.14 2011/12/09 17:11:45 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.15 2011/12/12 18:42:45 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -233,8 +233,16 @@ void BulkDataNTReceiverImpl<TCallback>::openReceiverStream(const char *stream_na
 
 		// With the new configuration mechanism, the parser may contains a configuration for the stream
 		// If available, use it; otherwise, create a default stream
+		// We iterate instead of doing .find() because we have const char * instead of strings
 		std::set<const char*> streamNames = parser_m->getAllReceiverStreamNames();
-		if( streamNames.find(stream_name) != streamNames.end() ) {
+		bool isConfigured = false;
+		for(std::set<const char*>::iterator it = streamNames.begin(); it != streamNames.end(); it++)
+			if( ACE_OS::strcmp(stream_name, *it) == 0 ) {
+				isConfigured = true;
+				break;
+			}
+
+		if( isConfigured ) {
 			ACS_SHORT_LOG((LM_INFO, "BulkDataNTReceiverImpl<>::openReceiverStream Opening receiver stream '%s' with configuration from CDB", stream_name));
 			stream = createReceiverStream(stream_name);
 		}

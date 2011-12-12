@@ -195,7 +195,6 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="xxx" CompName="NEWCONFIG_RECEIVER"
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::activateCORBAObject] 
-1 - Stream 'Name1' doesn't have it's own QoS setting, will use the default lib/profile
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER - baci::CharacteristicComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ACS::ThreadManagerBase::create] 
