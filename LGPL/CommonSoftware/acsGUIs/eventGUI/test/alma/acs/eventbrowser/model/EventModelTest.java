@@ -47,12 +47,12 @@ public class EventModelTest extends TestCase {
 	protected void tearDown() throws Exception {
 	}
 
-	public void testGetServices() {
-		String[] serviceNames = em.getServices();
-		for (int i = 0; i < serviceNames.length; i++) {
-			System.out.println(serviceNames[i]);
-		} 
-	}
+//	public void testGetServices() {
+//		String[] serviceNames = em.getServices();
+//		for (int i = 0; i < serviceNames.length; i++) {
+//			System.out.println(serviceNames[i]);
+//		} 
+//	}
 	
 	public void testGetChannelStatistics() {
 		ArrayList<ChannelData> clist = null;
