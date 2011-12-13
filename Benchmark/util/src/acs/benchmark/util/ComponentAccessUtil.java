@@ -22,6 +22,7 @@ package acs.benchmark.util;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -230,8 +231,9 @@ public class ComponentAccessUtil {
 
 	/**
 	 * Should be called when a component is no longer needed. 
-	 * <p>
-	 * This call waits for the complete component release to finish and only then returns.
+	 * 
+	 * @param waitForCompRelease If <code>true</code> this method waits for the complete component release
+	 * 							 otherwise returns immediately
 	 * 
 	 */
 	public void releaseComponent(String compName, boolean waitForCompRelease) {
@@ -274,15 +276,34 @@ public class ComponentAccessUtil {
 	 *   (check if this gets more confusing than helpful!)
 	 * - release several components in parallel
 	 * - perhaps also take explicit list of components to be released "releaseComponents(list)"
+	 * 
+	 * @param waitForCompsRelease If <code>true</code> this method waits for the complete components release
+	 * 							 otherwise returns immediately
 	 */
-	public void releaseAllComponents() {
+	public void releaseAllComponents(boolean waitForCompsRelease) {
+		List<String> compNames;
 		synchronized (compName2Comp) {
-			List<String> compNames = new ArrayList<String>(compName2Comp.keySet()); // to avoid ConcurrentModificationException
-			for (String compName : compNames) {
-				// @TODO if waitForCompRelease, still we should not call releaseComponent(compName, false)
-				// because this releases components only sequentially, while they should be release in parallel
-				releaseComponent(compName, false);
-			}
+			compNames = new ArrayList<String>(compName2Comp.keySet()); // to avoid ConcurrentModificationException
+		}
+		releaseComponents(compNames, waitForCompsRelease);
+	}
+	
+	/**
+	 * Release a set of components.
+	 * 
+	 * @param componentNames The name of the components to release
+	 * @param waitForCompsRelease If <code>true</code> this method waits for the complete components release
+	 * 							 otherwise returns immediately
+	 */
+	public void releaseComponents(Collection<String> componentNames, boolean waitForCompsRelease) {
+		if (componentNames==null || componentNames.isEmpty()) {
+			// Nothing to do
+			return;
+		}
+		for (String compName : componentNames) {
+			// @TODO if waitForCompRelease, still we should not call releaseComponent(compName, false)
+			// because this releases components only sequentially, while they should be release in parallel
+			releaseComponent(compName, waitForCompsRelease);
 		}
 	}
 
