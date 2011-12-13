@@ -1,7 +1,7 @@
 /*******************************************************************************
 * e.S.O. - ACS project
 *
-* "@(#) $Id: maciContainerImpl.cpp,v 1.140 2011/12/06 07:38:06 msekoran Exp $"
+* "@(#) $Id: maciContainerImpl.cpp,v 1.141 2011/12/13 13:41:42 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -83,7 +83,7 @@
 #include <ACSAlarmSystemInterfaceFactory.h>
 #endif
 
-ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.140 2011/12/06 07:38:06 msekoran Exp $")
+ACE_RCSID(maci, maciContainerImpl, "$Id: maciContainerImpl.cpp,v 1.141 2011/12/13 13:41:42 bjeram Exp $")
 
  using namespace maci;
  using namespace cdb;
@@ -98,7 +98,7 @@ CORBA::ULong ContainerImpl::m_invocationTimeout = 15000;		// in milliseconds; 15
 
 // ************************************************************************
 
-class ActivationMethod : public ACE_Method_Request
+class ActivationMethod : public ACE_Method_Request, public Logging::Loggable
 {
 public:
     ActivationMethod (
@@ -110,6 +110,7 @@ public:
                       const char * type,
                       maci::CBComponentInfo_ptr cb,
                       const ACS::CBDescIn& descIn) :
+                        Logging::Loggable("Container-ActivationMethod"),
     container_(container),
     h_(h),
     execution_id_(execution_id),
@@ -173,7 +174,7 @@ public:
         }
         catch(...)
         {
-            ACSErrTypeCommon::UnexpectedExceptionExImpl uex(__FILE__, __LINE__,
+            ACSErrTypeCommon::UnknownExImpl uex(__FILE__, __LINE__,
                                                             "maci::ActivationMethod::call");
             uex.log();
         }    
@@ -190,7 +191,7 @@ private:
     ACE_CString type_;
     maci::CBComponentInfo_var cb_;
     ACS::CBDescOut descOut_;
-};
+};//class ActivationMethod
 
 
 
@@ -202,26 +203,33 @@ public:
         // Cause exit.
         return -1;
     }
-};
+};//class ExitMethod
 
 
 
 
-MethodRequestThreadPool::MethodRequestThreadPool (int n_threads) : m_threads(n_threads)
+MethodRequestThreadPool::MethodRequestThreadPool (int n_threads) :
+    Logging::Loggable("Container-MethodRequestThreadPool"),
+    m_threads(n_threads)
 {
-    //ACS_TRACE ("maci::MethodRequestThreadPool::MethodRequestThreadPool");
+    ACS_TRACE ("maci::MethodRequestThreadPool::MethodRequestThreadPool");
     this->activate (THR_NEW_LWP|THR_JOINABLE|THR_INHERIT_SCHED, n_threads);
 }
     
 int
 MethodRequestThreadPool::svc (void)
 {
-	// init logging
-	ACE_CString threadName("maci::MethodRequestThreadPool");
-    ACS_CHECK_LOGGER;
-    m_logger = getNamedLogger(threadName.c_str());
-    ContainerImpl::getContainer()->initThread(threadName.c_str());
-     
+  LoggingProxy *logger = maci::ContainerImpl::getLoggerProxy();
+  if (logger!=0)
+    {
+      char *contName = ContainerImpl::getContainer()->name();
+      // in some threads the logging will be initialized two times what is not harmful
+      LoggingProxy::init(logger);
+      LoggingProxy::ProcessName(contName);
+      CORBA::string_free(contName);
+    }
+
+ //   ContainerImpl::getContainer()->initThread("MethodRequestThreadPool");
     ACS_TRACE ("maci::MethodRequestThreadPool::svc");
     
     while (1)
