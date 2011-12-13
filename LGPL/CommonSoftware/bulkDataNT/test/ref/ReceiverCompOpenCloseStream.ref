@@ -388,3 +388,13 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - baci::BACIComponent::cancelMonitoringThread] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ThreadBase::cancel] Thread stopped:NEWCONFIG_RECEIVER::actionThread
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - maci::ContainerImpl::doneThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] 
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] Thread name: 'maci::MethodRequestThreadPool'
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] Thread name: 'maci::MethodRequestThreadPool'
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] Thread name: 'maci::MethodRequestThreadPool'
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] Thread name: 'maci::MethodRequestThreadPool'
+1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::ContainerImpl::initThread] Thread name: 'maci::MethodRequestThreadPool'
