@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.h,v 1.10 2011/12/06 15:42:32 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.h,v 1.11 2011/12/14 14:46:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,6 +69,9 @@ public:
 
 	std::string getName() { return streamName_m; }
 
+	/// adding and applying DDS QoS profile. Setting qoS from XML for a  stream or a flow
+	void addDDSQoSProfile(const DDSConfiguration &cfg);
+
 	//void destroyFlow(const  char* flowName);
 protected:
 
@@ -83,6 +86,7 @@ protected:
 	void createDDSFactory();
 	void createDDSParticipant();
 	void destroyDDSParticipant();
+
 	DDS::DomainParticipantFactory *factory_m;
 	static unsigned int factoryRefCount_m; /// how many time / streams need the factory
 	static unsigned int participantRefCount_m; /// how many streams do need the participant
