@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@$Id: acsRequest.cpp,v 1.10 2010/11/02 13:00:35 tstaig Exp $"
+* "@$Id: acsRequest.cpp,v 1.11 2011/12/14 15:08:28 tstaig Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -202,6 +202,7 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
         char * acsdata = ACE_OS::getenv("ACSDATA");
         if(acsdata != NULL)
             logDirectory = ACE_CString(acsdata) + ACE_CString("/logs/");
+        ACE_CString logs = logDirectory;
         char * host = ACE_OS::getenv("HOST");
         if(host != NULL)
             logDirectory = logDirectory + ACE_CString(host) + ACE_CString("/");
@@ -217,6 +218,8 @@ ACE_CString ACSServiceRequestDescription::prepareCommand(ACSServiceRequestType r
 
         //create the directory
         ACE_OS::system(("mkdir -p " + logDirectory).c_str());
+        ACE_OS::system(("chmod 775 " + logs).c_str());
+        ACE_OS::system(("chmod 775 " + logDirectory).c_str());
         commandline = commandline + " &> " + logDirectory + acsServices[service].script + "_" + timeStamp.c_str();
     }
     return commandline;
