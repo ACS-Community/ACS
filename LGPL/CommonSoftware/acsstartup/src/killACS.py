@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: killACS.py,v 1.29 2009/09/18 06:39:11 hyatagai Exp $
+# @(#) $Id: killACS.py,v 1.30 2011/12/14 10:31:13 acaproni Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -27,8 +27,9 @@ This script is designed to kill every ACS process in a running system.  Really i
 run as root as it will shutdown other users CDBs/Managers/etc. too.
 '''
 ################################################################################################
-from os import environ, listdir, system
+from os import environ, listdir, system, remove
 from sys import argv
+from sys import exit
 
 from fcntl   import lockf 
 from fcntl   import LOCK_EX
@@ -42,18 +43,19 @@ from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 #first thing we do is create a lock so this command cannot be run again until it
 #finishes
 ACS_INSTANCE_DIR = getAcsTmpDirectoryPath()
+lock_file_name=ACS_INSTANCE_DIR + '.killACS.lock'
 #sanity check to ensure the temp directory exists
 if exists(ACS_INSTANCE_DIR):
     #sanity check to ensure the file exists
-    if not exists(ACS_INSTANCE_DIR + '.killACS.lock'):
-        system('touch ' + ACS_INSTANCE_DIR + '.killACS.lock')
-        system('chmod 774 ' + ACS_INSTANCE_DIR + '.killACS.lock')
-        
-    lock_file = open(ACS_INSTANCE_DIR + '.killACS.lock', 'r+')
-    lockf(lock_file.fileno(), LOCK_EX)
-    
+    if not exists(lock_file_name):
+        lock_file = open(lock_file_name, 'w')
+    else:
+        print "\nAborted: lock file already exists:",lock_file_name,'\n'
+        exit(-1)
 else:
+    # Temporary folder does not exists: run with no lock_file
     lock_file = None
+    lock_file_name = None
 
 parser = OptionParser(usage="This script is used as an alternative to rebooting your machine to regain TCP ports and you should report the exact circumstances that caused you to use it to the alma-sw-common@nrao.edu mailing list! Also, this will 'decapitate' other instances of ACS run by other users of this system!\n\nFor quick performance that kills all Java clients (similar behavior killACS had with older versions of ACS)\nRun:\n     killACS -q -a\nBe forewarned this kills all Java virtual machines though.")
 
@@ -82,7 +84,7 @@ quickKill=options.quickKill
 #tells whether we should try to kill all Java processes
 killJava=options.killJava
 
-#PROCS is initially set to a list consisting of all known ACS binaries/scripts which exist
+#PROCS is initially set to a list consisting of alingl known ACS binaries/scripts which exist
 #outside of $ACSROOT/bin and $INTROOT/bin
 PROCS = ["IFR_Service",
          "ird",
@@ -164,4 +166,4 @@ if killJava==1:
 #release the lock so future invocations can be run
 if lock_file!=None:
     lock_file.close()
-    
+    remove(lock_file_name)
