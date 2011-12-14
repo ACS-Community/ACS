@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.78 2011/12/06 13:09:09 rtobar Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.79 2011/12/14 14:22:25 rtobar Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -462,8 +462,14 @@ Consumer::createConsumer()
 
 
 	// get the the proxySupplier (named if possible)
+	bool isAdminExt = false;
+	try {
+		NotifyMonitoringExt::ConsumerAdmin_var consumerAdminExt = NotifyMonitoringExt::ConsumerAdmin::_narrow(consumerAdmin_m);
+		isAdminExt = (consumerAdminExt != 0);
+	} catch(...) {}
+
 	CosNotifyChannelAdmin::ProxySupplier_var proxySupplier = 0;
-	if( CORBA::is_nil(notifyFactory_m.in()) != false != 0 && callback_m->services_ != 0 ) {
+	if( isAdminExt && callback_m->services_ != 0 ) {
 
 		ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
 		std::stringstream ss;
@@ -474,6 +480,7 @@ Consumer::createConsumer()
 		while( proxySupplier == 0 ) {
 			try {
 				proxySupplier = consumerAdminExt->obtain_named_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxySupplierID, proxyName.c_str());
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Got named proxy supplier '%s' with proxyID %d", proxyName.c_str(), proxySupplierID));
 			} catch (NotifyMonitoringExt::NameAlreadyUsed &ex) {
 				// If the original name is already in use, append "-<tries>" and try again
 				// until we find a free name
@@ -483,12 +490,14 @@ Consumer::createConsumer()
 			} catch (...) {
 				// If any unexpected problem appears, try the unnamed version
 				proxySupplier = consumerAdmin_m->obtain_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxySupplierID);
+	    		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Created unnamed proxy supplier"));
 			}
 		}
 	}
 	else {
 		// Just the unnamed version if we don't have the TAO extensions
 		proxySupplier = consumerAdmin_m->obtain_notification_push_supplier(CosNotifyChannelAdmin::STRUCTURED_EVENT, proxySupplierID);
+		//ACS_SHORT_LOG((LM_INFO,"Consumer::createConsumer Created unnamed proxy supplier"));
 	}
 
 	if(CORBA::is_nil(proxySupplier.in()) == true)
