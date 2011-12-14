@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.13 2011/12/12 18:42:45 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.14 2011/12/14 14:48:52 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -499,11 +499,11 @@ string BulkDataConfigurationParser::getStrURIforStream(list<string> profiles) {
 	list<string>::iterator it = profiles.begin();
 
 	stringstream s;
-	s << "<dds><qos_library name=\"" << DYNAMIC_LIBRARY_NAME << "\">";
+	//s << "<dds><qos_library name=\"" << DYNAMIC_LIBRARY_NAME << "\">";
 	for(; it != profiles.end(); it++)
 		s << *it;
 
-	s << "</qos_library></dds>";
+	//s << "</qos_library></dds>";
 
 	string string = s.str();
 	return string;
