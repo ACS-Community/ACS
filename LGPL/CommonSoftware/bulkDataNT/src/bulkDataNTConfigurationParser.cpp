@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.16 2011/12/14 14:50:22 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.17 2011/12/14 14:53:49 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -49,7 +49,7 @@ const char* const BulkDataConfigurationParser::RECEIVER_STREAM_QOS_NODENAME = "D
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_NODENAME       = "ReceiverFlow";
 const char* const BulkDataConfigurationParser::RECEIVER_FLOW_QOS_NODENAME   = "DDSReceiverFlowQoS";
 
-const char* const BulkDataConfigurationParser::DYNAMIC_LIBRARY_NAME         = "BulkDataQoSLibrary";
+const char* const BulkDataConfigurationParser::DYNAMIC_LIBRARY_NAME         = DDSConfiguration::DEFAULT_LIBRARY;
 
 const struct BulkDataConfigurationParser::ParsingInfo BulkDataConfigurationParser::SENDER_PARSING_INFO = {
 	SENDER,
