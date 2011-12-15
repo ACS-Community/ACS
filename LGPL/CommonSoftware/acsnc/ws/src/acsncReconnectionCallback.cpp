@@ -11,7 +11,8 @@ using namespace nc;
 ReconnectionCallback::ReconnectionCallback(nc::Helper *sub):
    sub_(sub),
    id_is_valid_(false),
-   root_poa_(0)
+   root_poa_(0),
+   services_(0)
 {
    if (::maci::ContainerImpl::getContainer() != NULL)
       services_ = ::maci::ContainerImpl::getContainer()->getContainerServices();
