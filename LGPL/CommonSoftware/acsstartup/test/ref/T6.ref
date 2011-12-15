@@ -2,12 +2,18 @@
 1 - ----------T--:--:--.--- INFO [acsNamingService] Starting Naming Service
 1 - ----------T--:--:--.--- INFO [acsStartORBSRVC]     Orb options:  -ORBDottedDecimalAddresses 1
 1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Starting Interface Repository
+1 - 115x
+1 - ----------T--:--:--.--- INFO [acsInterfaceRepository] Loading of IDL interfaces in Interface Repository is being skipped due to up-to-date persistence file
 1 - ----------T--:--:--.--- INFO [acsConfigurationDatabase] Starting ACS Configuration Database
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Notify Service
 1 - JDAL is ready and waiting
+1 - Bound ID: MC_NotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Logging Notify Service
+1 - Bound ID: MC_LoggingNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Archive Notify Service
+1 - Bound ID: MC_ArchiveNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsNotifyService] Starting Alarm Notify Service
+1 - Bound ID: MC_AlarmNotifyEventChannelFactory
 1 - ----------T--:--:--.--- INFO [acsLoggingService] Starting Logging Service
 1 - ----------T--:--:--.--- INFO [acsACSLogService] Starting ACS Log service
 1 - ----------T--:--:--.--- INFO [acsAlarmService] Starting ACS AlarmService
