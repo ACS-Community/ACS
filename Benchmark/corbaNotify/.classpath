@@ -16,7 +16,7 @@
 	<classpathentry kind="var" path="ACSROOT/lib/acsjlog.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/jACSUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/junit-4.8.2.jar"/>
-	<classpathentry kind="var" path="INTROOT/lib/benchmarkUtil.jar"/>
+	<classpathentry kind="var" path="ACSROOT/lib/benchmarkUtil.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maciSchemaBindings.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/acsdaemonErrType.jar"/>
 	<classpathentry kind="var" path="ACSROOT/lib/maci.jar"/>
