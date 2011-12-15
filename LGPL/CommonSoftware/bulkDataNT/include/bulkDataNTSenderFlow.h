@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.11 2011/11/09 16:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.12 2011/12/15 15:13:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,6 +77,8 @@ protected:
 	DDS::Topic *ddsTopic_m;
 	BulkDataNTWriterListener *writerReaderListener_m;
 	ACSBulkData::BulkDataNTFrameDataWriter *ddsDataWriter_m;
+
+	DDS::Duration_t ackTimeout_m;
 
 	// common method for writing/sending data  from startSend and stopSend (could be also used for sendData ?)
 	// should we add also timeout parameter ?
