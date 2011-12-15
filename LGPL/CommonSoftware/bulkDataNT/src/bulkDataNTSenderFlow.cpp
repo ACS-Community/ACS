@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.27 2011/12/15 15:10:09 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.28 2011/12/15 15:25:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.27 2011/12/15 15:10:09 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.28 2011/12/15 15:25:30 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -68,6 +68,8 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
       ex.setDataType("ACSBulkData::BulkDataNTFrameTypeSupport");
       throw ex;
     }//if
+
+  setACKsTimeout(sndCfg.ACKsTimeout);
 }//BulkDataNTSenderFlow
 
 
@@ -116,6 +118,19 @@ unsigned int BulkDataNTSenderFlow::getNumberOfReceivers()
 	ddsDataWriter_m->get_reliable_reader_activity_changed_status(status);
 	return status.active_count;
 }//getNumberOfReceivers
+
+void BulkDataNTSenderFlow::setACKsTimeout(double ACKsTimeout)
+{
+	DDS::Long ackTOSec = static_cast<DDS::Long>(ACKsTimeout);
+	DDS::Long ackTONanosec = 1000000 * static_cast<DDS::Long>(ACKsTimeout - ackTOSec);
+
+	ackTimeout_m.sec = ackTOSec;
+	ackTimeout_m.nanosec = ackTONanosec;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "ACKsTimeout set to: %d sec %d nanosec",
+			ackTOSec, ackTONanosec));
+}//setACKsTimeout
+
+
 
 void BulkDataNTSenderFlow::startSend(ACE_Message_Block *param)
 {
@@ -187,8 +202,6 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 {
 	DDS::ReturnCode_t ret;
 	DDS::ReliableWriterCacheChangedStatus status; //RTI
-	// should we wait for all ACKs? timeout should be configurable
-	DDS::Duration_t ack_timeout_delay = {1, 0};//1s
 
 	if (len>ACSBulkData::FRAME_MAX_LEN){
 		FrameTooLongExImpl ftlEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -227,12 +240,12 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) for flow: %s", status.unacknowledged_sample_count, flowName_m.c_str())); //RTI
 		// RTI			cout << "\t\t Int unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
-		ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
 		if( ret != DDS::RETCODE_OK)
 		{
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
-			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
+			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
 			ackToEx.log(LM_WARNING); //TBD should be an error ?
 		}//if
 
@@ -245,12 +258,12 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 	{
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
 		ACS_SHORT_LOG((LM_DEBUG, "unacknowledged_sample_count (%d) before waiting: %d", dataType, status.unacknowledged_sample_count)); //RTI
-		ret = ddsDataWriter_m->wait_for_acknowledgments(ack_timeout_delay);
+		ret = ddsDataWriter_m->wait_for_acknowledgments(ackTimeout_m);
 		if( ret != DDS::RETCODE_OK)
 		{
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
-			ackToEx.setTimeout(ack_timeout_delay.sec + ack_timeout_delay.nanosec/1000000.0);
+			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
 			ackToEx.log(LM_WARNING); //TBD should be an error ?
 		}//if
 	}//if (restFrameCount==0)
