@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.28 2011/12/15 11:15:04 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.29 2011/12/15 11:36:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -50,7 +50,6 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
       //     {
       createDDSFactory();  //it is enough to have one factory
       //     }
-      factoryRefCount_m++; //anyway we have to increase the counter that we know when to call finalize_instance
 
       addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
@@ -63,8 +62,7 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
      // participantRefCount_m++;   // but we need to know how many users of participant do we have
   }catch(const ACSErr::ACSbaseExImpl &e)
   {
-      if (factory_m!=0)
-        DDS::DomainParticipantFactory::finalize_instance();
+      destroyDDSFactory();
       StreamCreateProblemExImpl ex (e, __FILE__, __LINE__, __PRETTY_FUNCTION__);
       ex.setStreamName(name);
       throw ex;
@@ -80,8 +78,7 @@ BulkDataNTStream::~BulkDataNTStream()
   //if (participantRefCount_m==0)
   destroyDDSParticipant();
 
-  factoryRefCount_m--;
-  if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
+  destroyDDSFactory();
 }//~BulkDataNTStream
 
 
@@ -92,6 +89,8 @@ void BulkDataNTStream::createDDSFactory()
 	DDS::DomainParticipantFactoryQos factory_qos;
 
 	factory_m = DDS::DomainParticipantFactory::get_instance();
+	factoryRefCount_m++; //anyway we have to increase the counter that we know when to call finalize_instance,
+	// ... so it must be right after call get_instance call
 
 	// needed by RTI only
 	ret = factory_m->get_qos(factory_qos);
@@ -158,6 +157,17 @@ std::cout << ">>>>>>>>> " << configuration_m.libraryQos << " " << configuration_
 	}//if
 
 }//createDDSFactory
+
+
+void BulkDataNTStream::destroyDDSFactory()
+{
+  // if factory_m is not NULL means that get_instance was sucessful , and that factoryRefCount_m was also increased
+  if(factory_m!=0)
+    {
+      factoryRefCount_m--;
+      if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
+    }
+}//destroyDDSFactory
 
 void BulkDataNTStream::createDDSParticipant()
 {
