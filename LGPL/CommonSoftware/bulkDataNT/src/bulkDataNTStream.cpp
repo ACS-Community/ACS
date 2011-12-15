@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.29 2011/12/15 11:36:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.30 2011/12/15 14:27:13 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -272,7 +272,11 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
     {
       DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
       ex.setDDSTypeCode(ret);
-      ex.setQoS("factory_m->set_qos");
+      std::string com("factory_m->set_qos: ");
+      com+=cfg.libraryQos;
+      com+=" : ";
+      com+=cfg.profileQos;
+      ex.setQoS(com.c_str());
       throw ex;
     }//if
 }//addDDSQoSProfile
