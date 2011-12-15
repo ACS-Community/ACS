@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverImplClient.cpp,v 1.2 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverImplClient.cpp,v 1.3 2011/12/15 11:50:00 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -75,6 +75,10 @@ int main(int argc, char *argv[]) {
 		// close the rest
 		ACS_SHORT_LOG((LM_INFO,"Closing remaining streams"));
 		receiver->closeReceiver();
+
+		// Close receiver
+		client.releaseComponent("NEWCONFIG_RECEIVER");
+
 	} catch(maciErrType::CannotGetComponentExImpl &ex) {
 		cerr << "Cannot get component '" << ex.getCURL() << "'. Reason: " << ex.getReason() << endl;
 	} catch(...) {
