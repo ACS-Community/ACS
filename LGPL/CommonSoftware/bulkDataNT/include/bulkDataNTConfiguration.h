@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.20 2011/12/14 11:58:24 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.21 2011/12/15 15:10:47 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -114,7 +114,7 @@ class  SenderFlowConfiguration : public DDSConfiguration
 {
 public:
 	SenderFlowConfiguration();
-	double frameTimeout; ///TBD: not used
+	double frameTimeout;
 	double ACKsTimeout;  /// TBD:: not used yet
 };
 
