@@ -394,7 +394,7 @@
 1 - ----------T--:--:--.--- [newConfigRecvContainer-GL - ] Switched state of component NEWCONFIG_RECEIVER: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Component 'NEWCONFIG_RECEIVER': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle 16777218 (NEWCONFIG_RECEIVER of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
+1 - ----------T--:--:--.--- [newConfigRecvContainer - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXX (NEWCONFIG_RECEIVER of type IDL:alma/bulkdata/BulkDataReceiver:1.0)
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - ACS::ThreadBase::cancel] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::actionThread - maci::ContainerImpl::doneThread] 
 1 - ----------T--:--:--.--- [NEWCONFIG_RECEIVER::monitorThread - ACS::ThreadBase::cancel] 
