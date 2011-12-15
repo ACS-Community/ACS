@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.13 2011/11/09 16:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.14 2011/12/15 11:56:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,37 +29,39 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.13 2011/11/09 16:23:40 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.14 2011/12/15 11:56:26 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
 using namespace std;
 
 BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream,
-												const char* flowName,
-												const ReceiverFlowConfiguration &rcvCfg,
-												BulkDataNTCallback *cb,
-												bool releaseCB) :
-												BulkDataNTFlow(flowName),
-		receiverStream_m(receiverStream),
-		callback_m(cb), releaseCB_m(releaseCB)
+    const char* flowName,
+    const ReceiverFlowConfiguration &rcvCfg,
+    BulkDataNTCallback *cb,
+    bool releaseCB) :
+    BulkDataNTFlow(flowName),
+    receiverStream_m(receiverStream),
+    callback_m(cb), releaseCB_m(releaseCB)
 {
-	AUTO_TRACE(__PRETTY_FUNCTION__);
-	std::string topicName;
+  AUTO_TRACE(__PRETTY_FUNCTION__);
+  std::string topicName;
 
-	callback_m->setStreamName(receiverStream_m->getName().c_str());
-	callback_m->setFlowName(flowName);
-	callback_m->setReceiverName(receiverStream_m->getReceiverName());
+  callback_m->setStreamName(receiverStream_m->getName().c_str());
+  callback_m->setFlowName(flowName);
+  callback_m->setReceiverName(receiverStream_m->getReceiverName());
 
-	// should be refactor to have just one object for comunication !! DDSDataWriter or similar
-	ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg);
+  receiverStream->addDDSQoSProfile(rcvCfg);
 
-	topicName = receiverStream_m->getName() + "#" + flowName_m;
-	ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
+  // should be refactor to have just one object for comunication !! DDSDataWriter or similar
+  ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg);
 
-	dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
+  topicName = receiverStream_m->getName() + "#" + flowName_m;
+  ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
 
-	ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
+  dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
+
+  ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
 }//BulkDataNTReceiverFlow
 
 

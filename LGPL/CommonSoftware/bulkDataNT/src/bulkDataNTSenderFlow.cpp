@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.25 2011/11/09 16:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.26 2011/12/15 11:56:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.25 2011/11/09 16:23:40 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.26 2011/12/15 11:56:26 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -36,33 +36,35 @@ using namespace ACS_DDS_Errors;
 using namespace ACS_BD_Errors;
 
 BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
-											const char* flowName,
-											const SenderFlowConfiguration &sndCfg/*, cb*/) :
-											BulkDataNTFlow(flowName),
-		senderStream_m(senderStream),
-		ddsPublisher_m(0), ddsTopic_m(0), writerReaderListener_m(0), ddsDataWriter_m(0), frame_m(0)
+    const char* flowName,
+    const SenderFlowConfiguration &sndCfg/*, cb*/) :
+    BulkDataNTFlow(flowName),
+    senderStream_m(senderStream),
+    ddsPublisher_m(0), ddsTopic_m(0), writerReaderListener_m(0), ddsDataWriter_m(0), frame_m(0)
 {
-	AUTO_TRACE(__PRETTY_FUNCTION__);
-	std::string topicName;
+  AUTO_TRACE(__PRETTY_FUNCTION__);
+  std::string topicName;
 
-	// should be reactor to have just one object for communication !! DDSDataWriter or similar
-	ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
+  senderStream->addDDSQoSProfile(sndCfg);
 
-	topicName = senderStream_m->getName() + "#" + flowName_m;
-	ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
+  // should be reactor to have just one object for communication !! DDSDataWriter or similar
+  ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
 
-	writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str());
-	ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, writerReaderListener_m);
+  topicName = senderStream_m->getName() + "#" + flowName_m;
+  ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
-	//RTI probably is enough to create frame once
-	frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
-	if (frame_m == 0)
-	{
-		//TBD delete dw/topic/publisher
-		DDSCreateDataProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		ex.setDataType("ACSBulkData::BulkDataNTFrameTypeSupport");
-		throw ex;
-	}//if
+  writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str());
+  ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, writerReaderListener_m);
+
+  //RTI probably is enough to create frame once
+  frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
+  if (frame_m == 0)
+    {
+      //TBD delete dw/topic/publisher
+      DDSCreateDataProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+      ex.setDataType("ACSBulkData::BulkDataNTFrameTypeSupport");
+      throw ex;
+    }//if
 }//BulkDataNTSenderFlow
 
 
