@@ -20,6 +20,11 @@
  *******************************************************************************/
 package acs.benchmark.nc.client;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import si.ijs.maci.ComponentSpec;
 
 import acs.benchmark.util.ComponentAccessUtil;
@@ -45,25 +50,39 @@ public class LocalSupplierTest extends ComponentClientTestCase
 	public LocalSupplierTest() throws Exception {
 		super(LocalSupplierTest.class.getSimpleName());
 	}
+	
+	private ContainerUtil containerUtil;
+	private String containerName = "localSupplierContainer1";
 
+	@Before
+	public void startContainer() throws Exception {
+		// run a local container
+		containerUtil = new ContainerUtil(getContainerServices());
+		containerUtil.loginToManager();
+		containerUtil.startContainer(null, ContainerImplLangType.JAVA, containerName, null, true);
+		m_logger.info("Container '" + containerName + "' is ready.");
+		
+		// configure container log levels
+		ContainerLogLevelSpec contLogLevelSpec = new ContainerLogLevelSpec(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.DEBUG);
+		contLogLevelSpec.addNamedLoggerSpec("jacorb@"+containerName, AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.WARNING);
+		containerUtil.setContainerLogLevels(containerName, contLogLevelSpec);
+		Assert.assertTrue(containerUtil.isContainerLoggedIn(containerName));
+	}
+
+	@After
+	public void stopContainer() throws Exception {
+		// clean up
+		if (containerUtil != null) {
+			containerUtil.stopContainer(null, containerName);
+			containerUtil.logoutFromManager();
+		}
+	}
+
+	@Test
 	public void testOneCompOneChannelOneEventType() throws Exception {
-		ContainerUtil containerUtil = null;
-		String containerName = "localSupplierContainer1";
 		ComponentAccessUtil componentAccessUtil = null; 
 		CorbaNotifySupplierOperations supplierComp = null;
 		try {
-			// run a local container
-			containerUtil = new ContainerUtil(getContainerServices(), m_acsManagerProxy);
-			containerUtil.loginToManager();
-			containerUtil.startContainer(null, ContainerImplLangType.JAVA, containerName, null, true);
-			m_logger.info("Assuming that container " + containerName + " is ready.");
-			
-			// configure container log levels
-			ContainerLogLevelSpec contLogLevelSpec = new ContainerLogLevelSpec(AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.DEBUG);
-			contLogLevelSpec.addNamedLoggerSpec("jacorb@"+containerName, AcsLogLevelDefinition.WARNING, AcsLogLevelDefinition.WARNING);
-			containerUtil.setContainerLogLevels(containerName, contLogLevelSpec);
-			assertTrue(containerUtil.isContainerLoggedIn(containerName));
-			
 			// Create dynamic supplier component
 			componentAccessUtil = new ComponentAccessUtil(getContainerServices());
 			ComponentSpec compSpec = createJavaSupplierComponentSpec("JavaSupplier-1", containerName);
@@ -87,13 +106,19 @@ public class LocalSupplierTest extends ComponentClientTestCase
 		} finally {
 			// clean up
 			if (supplierComp != null) supplierComp.ncDisconnect();
-			if (componentAccessUtil != null) componentAccessUtil.releaseAllComponents();
-			if (containerUtil != null) {
-				containerUtil.stopContainer(null, containerName);
-				containerUtil.logoutFromManager();
-			}
+			if (componentAccessUtil != null) componentAccessUtil.releaseAllComponents(true);
 		}
 	}
+
+	/**
+	 * @TODO: This is a mean hack. Need to find a way to use ComponentClient with JUnit4 tests,
+	 * or otherwise make ComponentClientTestCase fit for Junit4.
+	 */
+	@Test
+	public void tearDownComponentClient() throws Exception {
+		tearDown();
+	}
+	
 	
 	/**
 	 * Helper for tests that create dynamic supplier components.
