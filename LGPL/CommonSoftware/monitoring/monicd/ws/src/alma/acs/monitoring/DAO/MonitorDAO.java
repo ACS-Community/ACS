@@ -23,7 +23,7 @@
  *
  * @author Pablo Burgos
  * @since ACS-8_0_0-B Jun2009
- * @version "@(#) $Id: MonitorDAO.java,v 1.5 2011/12/06 10:56:27 hsommer Exp $
+ * @version "@(#) $Id: MonitorDAO.java,v 1.6 2011/12/15 13:35:09 mmora Exp $
  */
 package alma.acs.monitoring.DAO;
 
@@ -60,7 +60,7 @@ public interface MonitorDAO {
     public void closeTransactionStore() throws AcsJException;
     
     /**
-     * Called when the blobber component no longer needs the DAO, 
+     * Called by the BlobberPlugin when the DAO is no longer needed,
      * typically shortly before the component gets unloaded.
      * The DAO should clean up resources.
      * After this call, the DAO should no longer be used.
