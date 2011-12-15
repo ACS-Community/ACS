@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.27 2011/12/14 14:46:14 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.28 2011/12/15 11:15:04 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -32,10 +32,10 @@ using namespace AcsBulkdata;
 
 unsigned int BulkDataNTStream::factoryRefCount_m = 0;
 unsigned int BulkDataNTStream::participantRefCount_m = 0;
-DDS::DomainParticipant* BulkDataNTStream::participant_m=0;
+//DDS::DomainParticipant* BulkDataNTStream::participant_m=0;
 
 BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &cfg) :
-	    streamName_m(name), configuration_m(cfg), factory_m(0)//, participant_m(0)
+	    streamName_m(name), configuration_m(cfg), factory_m(0), participant_m(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
 
@@ -54,13 +54,13 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
       addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
-      if (participantRefCount_m==0)
-        {
+  //    if (participantRefCount_m==0)
+   //     {
           // TBD: for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
           // also a participant per stream
           createDDSParticipant();     //should be somewhere else in initialize or createStream
-        }
-      participantRefCount_m++;   // but we need to know how many users of participant do we have
+     //   }
+     // participantRefCount_m++;   // but we need to know how many users of participant do we have
   }catch(const ACSErr::ACSbaseExImpl &e)
   {
       if (factory_m!=0)
@@ -76,8 +76,9 @@ BulkDataNTStream::~BulkDataNTStream()
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
 
-  participantRefCount_m--;
-  if (participantRefCount_m==0)  destroyDDSParticipant();
+  //participantRefCount_m--;
+  //if (participantRefCount_m==0)
+  destroyDDSParticipant();
 
   factoryRefCount_m--;
   if (factoryRefCount_m==0)  DDS::DomainParticipantFactory::finalize_instance();
