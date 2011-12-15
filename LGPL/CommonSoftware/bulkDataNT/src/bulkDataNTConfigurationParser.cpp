@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.17 2011/12/14 14:53:49 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.18 2011/12/15 10:46:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -246,6 +246,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		list<string> profiles;
 		SenderCfg   senderCfg;
 		ReceiverCfg receiverCfg;
+		bool streamHasProfile = false;
 		if( parsingInfo.type == SENDER )
 			senderCfg.streamCfg = new SenderStreamConfiguration();
 		else
@@ -276,6 +277,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 
 				// Now take the rest of the QoS node children and build up the profile string
 				profiles.push_back( getQosProfile(streamName.get(), parsingInfo.defaultStreamProfileName, streamChildNode) );
+				streamHasProfile = true;
 			}
 
 			// Process the Flow nodes
@@ -378,16 +380,14 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		} // for(streamChildrenNodesList)
 
 		// Now store all the profile QoS strings into the stream configuration
-		if( profiles.size() != 0 ) {
+		if( streamHasProfile ) {
 			if( parsingInfo.type == SENDER ) {
 				senderCfg.streamCfg->libraryQos = DYNAMIC_LIBRARY_NAME;
 				senderCfg.streamCfg->profileQos = streamName.get();
-				senderCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
 			}
 			else {
 				receiverCfg.streamCfg->libraryQos = DYNAMIC_LIBRARY_NAME;
 				receiverCfg.streamCfg->profileQos = streamName.get();
-				receiverCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
 			}
 		}
 		else {
@@ -395,10 +395,16 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		}
 
 		// Finally, add the sender configuration to the configuration map
-		if( parsingInfo.type == SENDER )
-			senderConfigMap_m[streamName.get()] = senderCfg;
-		else
-			receiverConfigMap_m[streamName.get()] = receiverCfg;
+		if( parsingInfo.type == SENDER ) {
+		    if( profiles.size() > 0 )
+                        senderCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
+		    senderConfigMap_m[streamName.get()] = senderCfg;
+		}
+		else {
+		    if( profiles.size() > 0 )
+                        receiverCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
+		    receiverConfigMap_m[streamName.get()] = receiverCfg;
+		}
 
 	} // for(streamNodesList)
 
