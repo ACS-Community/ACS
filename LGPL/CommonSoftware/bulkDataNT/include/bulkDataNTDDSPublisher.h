@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.10 2011/10/14 17:03:43 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.11 2011/12/15 15:09:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,6 +68,8 @@ public:
 
 	void destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter* dw);
 
+	void setWriteBlockingTime(double frameTimeout);
+
 protected:
 	DDS::Publisher *publisher_m;
 
@@ -76,6 +78,7 @@ protected:
 	///Destroys publisher_m
 	void  destroyDDSPublisher();
 
+	ACSBulkData::BulkDataNTFrameDataWriter* dataWriter_m; /// DDS data writer
 
 	/// disable default - empty constructor
 	BulkDataNTDDSPublisher();

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.20 2011/10/14 17:17:18 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.21 2011/12/15 15:09:20 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -91,20 +91,22 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 	}
 
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter_with_profile(
-															topic,
-															ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
-															listener,
-															DDS::STATUS_MASK_ALL
-															);
+			topic,
+			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
+			listener,
+			DDS::STATUS_MASK_ALL
+	);
+
 	if(temp_dw==0)
 	{
 		DDSDWCreateProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		throw ex;
 	}//if
 
+	dataWriter_m = ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
 	ACS_SHORT_LOG((LM_DEBUG, "Created DDS DataWriter"));
 	//? is it ok to narrow a local temp_dw and return it
-	return ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
+	return dataWriter_m;
 }//createDDSWriter
 
 void BulkDataNTDDSPublisher::destroyDDSWriter (ACSBulkData::BulkDataNTFrameDataWriter* dw)
@@ -119,4 +121,27 @@ void BulkDataNTDDSPublisher::destroyDDSWriter (ACSBulkData::BulkDataNTFrameDataW
 	}
 }//destroyDDSWriter
 
+
+void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
+{
+
+	DDS::ReturnCode_t ret;
+	DDS::DataWriterQos dwQoS;
+	DDS::Long frameTimeoutSec = static_cast<DDS::Long>(frameTimeout);
+	DDS::Long frameTimeoutNanosec = 1000000 * static_cast<DDS::Long>(frameTimeout - frameTimeoutSec);
+
+	ret = dataWriter_m->get_qos(dwQoS);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("temp_dw->get_qos()");
+		throw ex;
+	}//if
+
+	dwQoS.reliability.max_blocking_time.sec = frameTimeoutSec;
+	dwQoS.reliability.max_blocking_time.nanosec = frameTimeoutNanosec;
+	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "max_blocking_time set to: %d sec %d nanosec",
+			frameTimeoutSec, frameTimeoutNanosec));
+}
 /*___oOo___*/
