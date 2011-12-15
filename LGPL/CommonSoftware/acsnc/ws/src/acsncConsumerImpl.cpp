@@ -1,4 +1,4 @@
-/* @(#) $Id: acsncConsumerImpl.cpp,v 1.79 2011/12/14 14:22:25 rtobar Exp $
+/* @(#) $Id: acsncConsumerImpl.cpp,v 1.80 2011/12/15 12:54:53 rtobar Exp $
  *
  *    Implementation of abstract base class Consumer.
  *    ALMA - Atacama Large Millimiter Array
@@ -469,7 +469,7 @@ Consumer::createConsumer()
 	} catch(...) {}
 
 	CosNotifyChannelAdmin::ProxySupplier_var proxySupplier = 0;
-	if( isAdminExt && callback_m->services_ != 0 ) {
+	if( isAdminExt && (callback_m->services_ != 0) ) {
 
 		ACE_OS::srand((unsigned int)ACE_OS::gettimeofday().msec());
 		std::stringstream ss;
