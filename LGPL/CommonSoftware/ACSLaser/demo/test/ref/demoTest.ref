@@ -1,10 +1,7 @@
 1 - 
 1 - ----------T--:--:--.--- DELOUSE [alma.acs.logging.config.LogConfig] Logging configuration has been initialized, but not from CDB settings.
-1 - ----------T--:--:--.--- FINE [DemoTest] calling orb.resolve_initial_references
-1 - ----------T--:--:--.--- FINE [DemoTest] POA activated
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Alarm system type: CERN
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] cmw-mom/acs-jms initialized
-1 - ----------T--:--:--.--- FINE [DemoTest] ready to talk with components!
 1 - ----------T--:--:--.--- INFO [DemoTest] component 'TestSendLaserSources' requested AdvancedContainerServices
 1 - ----------T--:--:--.--- CONFIG [TestSendLaserSources] Connected to DAO 'MACI/Channels'.
 1 - ----------T--:--:--.--- DEBUG [TestSendLaserSources] Successfully connected to a notification channel [ logName='LOG_NC_SubscriptionConnect_OK' ChannelName='CMW.ALARM_SYSTEM.ALARMS.SOURCES.ALARM_SYSTEM_SOURCES' Service='NotifyEventChannelFactory' ]
@@ -30,6 +27,3 @@
 1 - Invoking methods on C++ components
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: ACTIVE
 1 - Alarm message received from source: <Mount,ALARM_SOURCE_MOUNTCPP,1> Status: TERMINATE
-1 - ----------T--:--:--.--- FINE [DemoTest] about to log out from manager...
-1 - ----------T--:--:--.--- FINE [DemoTest] will disconnect ACS stuff...
-1 - ----------T--:--:--.--- FINE [DemoTest] logged out from manager.
