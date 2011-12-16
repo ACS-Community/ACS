@@ -5,36 +5,36 @@
    xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
 
 	<SenderStream Name="BLA">
-		<Flow Name="BLA1">
+		<SenderFlow Name="BLA1">
 			<DDSSenderFlowQoS>
 				<datareader_qos name="BLA1">
 				</datareader_qos>
 			</DDSSenderFlowQoS>
-		</Flow>
-		<Flow Name="BLA2">
+		</SenderFlow>
+		<SenderFlow Name="BLA2">
 			<DDSSenderFlowQoS>
 				<datareader_qos name="BLA2">
 				</datareader_qos>
 			</DDSSenderFlowQoS>
-		</Flow>
+		</SenderFlow>
 		<DDSSenderStreamQoS>
 			<participant_qos name="BLA">
 			</participant_qos>
 		</DDSSenderStreamQoS>
 	</SenderStream>
 	<SenderStream Name="PIPO">
-		<Flow Name="PIPO1">
+		<SenderFlow Name="PIPO1">
 			<DDSSenderFlowQoS>
 				<datareader_qos name="PIPO1">
 				</datareader_qos>
 			</DDSSenderFlowQoS>
-		</Flow>
-		<Flow Name="PIPO3">
+		</SenderFlow>
+		<SenderFlow Name="PIPO3">
 			<DDSSenderFlowQoS>
 				<datareader_qos name="PIPO3">
 				</datareader_qos>
 			</DDSSenderFlowQoS>
-		</Flow>
+		</SenderFlow>
 		<DDSSenderStreamQoS ParticipantPerStream="superfalse"/> <!-- Incorrect boolean value -->
 	</SenderStream>
 
