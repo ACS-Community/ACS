@@ -10,3 +10,4 @@ s/([0-9]\+|[0-9]\+) EXCEPTION/(XXX|XXX) EXCEPTION/g
 s/TimeMillis="[0-9]\+"/TimeMillis="xxx"/g
 s/\/[a-z,A-Z,0-9,.,/,_,-]*\/lib\/\(lib[a-z,A-Z,0-9,.,_]*\.so\)/\/----\/\1/g
 s/component with handle [0-9]\+/component with handle XXX/g
+s/unacknowledged_sample_count ([0-9]) before waiting: [0-9]/unacknowledged_sample_count (X) before waiting: Y/g
