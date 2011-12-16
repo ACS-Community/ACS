@@ -23,7 +23,7 @@
 		</DDSSenderStreamQoS>
 	</SenderStream>
 	<SenderStream Name="PIPO">
-		<SenderFlow Name="PIPO1" ACKsTimeout="0.3a"> <!-- Incorrect ACK timeout value -->
+		<SenderFlow Name="PIPO1" ACKsTimeoutSec="0.3a"> <!-- Incorrect ACK timeout value -->
 			<DDSSenderFlowQoS>
 				<datareader_qos name="PIPO1">
 				</datareader_qos>

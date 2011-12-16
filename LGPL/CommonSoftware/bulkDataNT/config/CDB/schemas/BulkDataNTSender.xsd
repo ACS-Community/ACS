@@ -36,8 +36,8 @@
       <xs:element name="DDSSenderFlowQoS" type="DDSSenderFlowQoSType"/>
     </xs:all>
     <xs:attribute name="Name" type="xs:string" use="required"/>
-    <xs:attribute name="SendFrameTimeout" type="xs:double" use="optional" default="5.0"/>
-    <xs:attribute name="ACKsTimeout" type="xs:double" use="optional" default="1.0"/>
+    <xs:attribute name="SendFrameTimeoutSec" type="xs:double" use="optional" default="5.0"/>
+    <xs:attribute name="ACKsTimeoutSec" type="xs:double" use="optional" default="1.0"/>
   </xs:complexType>
 
   <xs:complexType name="SenderStreamType">

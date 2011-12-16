@@ -23,7 +23,7 @@
 		</DDSSenderStreamQoS>
 	</SenderStream>
 	<SenderStream Name="PIPO">
-		<SenderFlow Name="PIPO1" SendFrameTimeout="0.3a"> <!-- Incorrect frame timeout value -->
+		<SenderFlow Name="PIPO1" SendFrameTimeoutSec="0.3a"> <!-- Incorrect frame timeout value -->
 			<DDSSenderFlowQoS>
 				<datareader_qos name="PIPO1">
 				</datareader_qos>
