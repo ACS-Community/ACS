@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTSender
+   xmlns="urn:schemas-cosylab-com:BulkDataNTSender:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
+
+	<SenderStream Name="ExampleStream">
+		<SenderFlow Name="FullResolutionDataFlow">
+		</SenderFlow>
+		<SenderFlow Name="ChannelAverageDataFlow"/>		
+		<SenderFlow Name="WVRDataFlow"/>
+	</SenderStream>
+
+</BulkDataNTSender>
