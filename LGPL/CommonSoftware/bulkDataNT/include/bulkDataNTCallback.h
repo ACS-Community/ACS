@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.16 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.17 2011/12/16 15:31:37 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,8 @@ public:
 	void setReceiverName(ACE_CString &name) { recvName_m=name; }
 	void setReceiverName(const char *name) { recvName_m=name; }
 	const char* getReceiverName () { return recvName_m.c_str(); }
+
+	void setCBReceiveProcessTimeout(double to);
 
 	/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
@@ -108,6 +110,8 @@ protected:
 	std::string streamName_m;
 
 	ACE_CString recvName_m;
+
+	double cbReceiveProcessTimeout_m;
 	/*
     bool fwdData2UserCB_m;
 
