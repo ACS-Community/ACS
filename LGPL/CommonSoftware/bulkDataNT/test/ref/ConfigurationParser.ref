@@ -1,68 +1,68 @@
+1 - Parsing file: bdSenderConfigs/senderConfig-incorrectFlowChild.xml
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node name is different from 'DDSSenderFlowQoS': DDSSenderFlowQoSUnknown"
 1 - Parsing file: bdSenderConfigs/senderConfig-incorrectACKTimeout.xml
 1 - ----------T--:--:--.--- [GlobalLogger - double AcsBulkdata::BulkDataConfigurationParser::getDoubleFromAttribute(xercesc_2_8::DOMNode*, const char*, double)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'ACKsTimeout' on stream QoS configuration"
-1 - Parsing file: bdSenderConfigs/senderConfig1.xml
-1 - ----------T--:--:--.--- [GlobalLogger - bool AcsBulkdata::BulkDataConfigurationParser::getBooleanFromAttribute(xercesc_2_8::DOMNode*, const char*, bool)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'ParticipantPerStream' on stream QoS configuration"
-1 - Number of streams: 2
-1 - Parsing file: bdSenderConfigs/senderConfig-incorrectFlowChild.xml
-1 -    Stream name: 'Name7'
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node name is different from 'DDSSenderFlowQoS': DDSSenderFlowQoSUnknown"
-1 -    Number of flows: 2
-1 -      Flow name: Name3
-1 - Parsing file: bdSenderConfigs/senderConfig-repeatedStream.xml
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated stream: 'Name7'"
-1 -      Flow name: Name5
-1 - Parsing file: bdSenderConfigs/senderConfig-noStreamName.xml
-1 -    Stream name: 'Name1'
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'SenderStream' doesn't have attribute 'Name'"
-1 -    Number of flows: 2
-1 -      Flow name: Name3
+1 - Parsing file: bdSenderConfigs/senderConfig-noStreamName.xml
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated flow in stream 'BLA': 'BLA1'"
 1 - Parsing file: bdSenderConfigs/senderConfig-repeatedFlow.xml
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated flow in stream 'BLA': 'BLA1'"
-1 -      Flow name: Name5
 1 - Parsing file: bdSenderConfigs/senderConfig2.xml
-1 - Parsing file: bdSenderConfigs/senderConfig-incorrectParticipantPerStream.xml
-1 - ----------T--:--:--.--- [GlobalLogger - double AcsBulkdata::BulkDataConfigurationParser::getDoubleFromAttribute(xercesc_2_8::DOMNode*, const char*, double)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'SendFrameTimeout' on stream QoS configuration"
 1 - Number of streams: 2
-1 - Parsing file: bdSenderConfigs/senderConfig-noFlowName.xml
+1 - ----------T--:--:--.--- [GlobalLogger - bool AcsBulkdata::BulkDataConfigurationParser::getBooleanFromAttribute(xercesc_2_8::DOMNode*, const char*, bool)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'ParticipantPerStream' on stream QoS configuration"
 1 -    Stream name: 'PIPO'
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'Flow' doesn't have attribute 'Name'"
+1 - ----------T--:--:--.--- [GlobalLogger - double AcsBulkdata::BulkDataConfigurationParser::getDoubleFromAttribute(xercesc_2_8::DOMNode*, const char*, double)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'SendFrameTimeout' on stream QoS configuration"
 1 -    Number of flows: 2
-1 -      Flow name: BLA2
-1 - Parsing file: bdReceiverConfigs/receiverConfig-repeatedFlow.xml
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated flow in stream 'BLA': 'BLA1'"
-1 -      Flow name: BLA1
-1 - Parsing file: bdReceiverConfigs/receiverConfig-repeatedStream.xml
-1 -    Stream name: 'BLA'
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated stream: 'Name7'"
-1 -    Number of flows: 2
-1 -      Flow name: PIPO3
-1 - Parsing file: bdReceiverConfigs/receiverConfig-noFlowName.xml
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'ReceiverFlow' doesn't have attribute 'Name'"
-1 -      Flow name: PIPO1
-1 - Parsing file: bdReceiverConfigs/receiverConfig1.xml
 1 - Parsing file: bdSenderConfigs/senderConfig-incorrectFrameTimeout.xml
+1 -      Flow name: PIPO3
+1 - Parsing file: bdSenderConfigs/senderConfig-noFlowName.xml
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'SenderFlow' doesn't have attribute 'Name'"
+1 -      Flow name: PIPO1
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated stream: 'Name7'"
+1 - Parsing file: bdSenderConfigs/senderConfig-repeatedStream.xml
+1 -    Stream name: 'BLA'
+1 -    Number of flows: 2
+1 - Parsing file: bdSenderConfigs/senderConfig1.xml
+1 -      Flow name: BLA1
 1 - Number of streams: 2
-1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'ReceiverStream' doesn't have attribute 'Name'"
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated stream: 'Name7'"
+1 -      Flow name: BLA2
 1 -    Stream name: 'Name1'
+1 -    Number of flows: 2
+1 - Parsing file: bdReceiverConfigs/receiverConfig2.xml
+1 - Parsing file: bdSenderConfigs/senderConfig-incorrectParticipantPerStream.xml
+1 -      Flow name: Name5
+1 - Number of streams: 2
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Repeated flow in stream 'BLA': 'BLA1'"
+1 -      Flow name: Name3
+1 -    Stream name: 'BLA'
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'ReceiverStream' doesn't have attribute 'Name'"
+1 -    Number of flows: 2
+1 - Parsing file: bdReceiverConfigs/receiverConfig-noStreamName.xml
+1 -    Stream name: 'Name7'
+1 -      Flow name: BLA1
 1 -    Number of flows: 2
 1 - Parsing file: bdReceiverConfigs/receiverConfig-incorrectFlowChild.xml
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node name is different from 'DDSReceiverFlowQoS': DDSReceiverFlowQoSUnknown"
+1 -      Flow name: BLA2
 1 -      Flow name: Name3
+1 - ----------T--:--:--.--- [GlobalLogger - bool AcsBulkdata::BulkDataConfigurationParser::getBooleanFromAttribute(xercesc_2_8::DOMNode*, const char*, bool)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'ParticipantPerStream' on stream QoS configuration"
 1 -      Flow name: Name5
 1 - Parsing file: bdReceiverConfigs/receiverConfig-incorrectParticipantPerStream.xml
-1 - ----------T--:--:--.--- [GlobalLogger - bool AcsBulkdata::BulkDataConfigurationParser::getBooleanFromAttribute(xercesc_2_8::DOMNode*, const char*, bool)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Invalid value for 'ParticipantPerStream' on stream QoS configuration"
+1 -    Stream name: 'PIPO'
+1 -    Number of flows: 2
+1 - Parsing file: bdReceiverConfigs/receiverConfig-noFlowName.xml
+1 - Parsing file: bdReceiverConfigs/receiverConfig-repeatedStream.xml
+1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataConfigurationParser::parseConfig(const char*, const AcsBulkdata::BulkDataConfigurationParser::ParsingInfo&)] Problem when parsing the CDB configuration (type=57, code=8) Detail="Node 'ReceiverFlow' doesn't have attribute 'Name'"
+1 -      Flow name: PIPO3
+1 -      Flow name: PIPO1
+1 - Parsing file: bdReceiverConfigs/receiverConfig1.xml
+1 - Number of streams: 2
+1 -    Stream name: 'Name1'
+1 -    Number of flows: 2
+1 -      Flow name: Name3
+1 -      Flow name: Name5
 1 -    Stream name: 'Name7'
 1 -    Number of flows: 2
 1 -      Flow name: Name3
 1 -      Flow name: Name5
-1 - Parsing file: bdReceiverConfigs/receiverConfig2.xml
-1 - Number of streams: 2
-1 -    Stream name: 'BLA'
-1 -    Number of flows: 2
-1 -      Flow name: PIPO1
-1 -      Flow name: PIPO3
-1 -    Stream name: 'PIPO'
-1 -    Number of flows: 2
-1 -      Flow name: BLA1
-1 -      Flow name: BLA2
-1 - Parsing file: bdReceiverConfigs/receiverConfig-noStreamName.xml
+1 - Parsing file: bdReceiverConfigs/receiverConfig-repeatedFlow.xml
