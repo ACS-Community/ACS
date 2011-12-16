@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.19 2011/12/16 09:16:48 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.20 2011/12/16 13:45:50 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -41,7 +41,7 @@ using namespace ACS_BD_Errors;
 
 const char* const BulkDataConfigurationParser::SENDER_STREAM_NODENAME       = "SenderStream";
 const char* const BulkDataConfigurationParser::SENDER_STREAM_QOS_NODENAME   = "DDSSenderStreamQoS";
-const char* const BulkDataConfigurationParser::SENDER_FLOW_NODENAME         = "Flow";
+const char* const BulkDataConfigurationParser::SENDER_FLOW_NODENAME         = "SenderFlow";
 const char* const BulkDataConfigurationParser::SENDER_FLOW_QOS_NODENAME     = "DDSSenderFlowQoS";
 
 const char* const BulkDataConfigurationParser::RECEIVER_STREAM_NODENAME     = "ReceiverStream";
