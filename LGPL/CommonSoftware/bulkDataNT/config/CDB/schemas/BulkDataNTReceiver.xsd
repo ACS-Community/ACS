@@ -48,6 +48,7 @@
         type="DDSReceiverStreamQoSType"/>
     </xs:sequence>
     <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="cbReceiverProcessTimeout" type="xs:double" use="optional" default="0.010"/>
   </xs:complexType>
 
   <xs:complexType name="BulkDataNTReceiverType">

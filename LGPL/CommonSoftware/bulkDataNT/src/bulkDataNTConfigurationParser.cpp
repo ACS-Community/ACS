@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.18 2011/12/15 10:46:34 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.19 2011/12/16 09:16:48 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -331,7 +331,10 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 					if( parsingInfo.type == SENDER ) {
 						senderCfg.flowsCfgMap[flowName.get()]->frameTimeout = getDoubleFromAttribute(streamChildNode, "SendFrameTimeout", 5.0);
 						senderCfg.flowsCfgMap[flowName.get()]->ACKsTimeout  = getDoubleFromAttribute(streamChildNode, "ACKsTimeout", 1.0);
+					}else {
+						receiverCfg.flowsCfgMap[flowName.get()]->cbReceiverProcessTimeout = getDoubleFromAttribute(streamChildNode, "cbReceiverProcessTimeout", 0.010);
 					}
+
 				} catch(CDBProblemExImpl &ex) {
 					cleanConfig(&receiverCfg, &senderCfg, parsingInfo.type);
 					throw ex;
