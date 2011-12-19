@@ -31,10 +31,12 @@ import alma.acs.eventbrowser.model.AbstractNotifyServiceElement;
 import alma.acs.eventbrowser.model.ChannelParticipantName;
 import alma.acs.eventbrowser.model.ChannelConsumers;
 import alma.acs.eventbrowser.model.ChannelSuppliers;
+import alma.acs.eventbrowser.model.INames;
 import alma.acs.eventbrowser.model.NotifyServices;
 import alma.acs.eventbrowser.model.ChannelData;
 import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.model.NotifyServiceData;
+import alma.acs.eventbrowser.model.SlowestConsumers;
 
 public class EventGuiAdapterFactory implements IAdapterFactory {
 
@@ -113,11 +115,8 @@ public class EventGuiAdapterFactory implements IAdapterFactory {
 
 		@Override
 		public Object[] getChildren(Object o) {
-			if (o instanceof ChannelConsumers) {
-				return ((ChannelConsumers)o).getNames();
-			} else if (o instanceof ChannelSuppliers) {
-				return ((ChannelSuppliers)o).getNames();
-			}
+			if (o instanceof INames)
+				return ((INames)o).getNames();
 			return new Object[0];
 		}
 

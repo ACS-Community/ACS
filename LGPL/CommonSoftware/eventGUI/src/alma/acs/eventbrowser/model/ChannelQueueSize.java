@@ -31,13 +31,18 @@ public class ChannelQueueSize extends MCStatistics {
 	
 	@Override
 	public String getStatistics() {
+		long sc = getQueueSize();
+		return statName+": "+String.valueOf(sc);
+	}
+
+	public long getQueueSize() {
 		long sc = 0;
 		try {
 			sc = (long) mc.get_statistic(channelPrefix+statName).data_union.num().last;
 		} catch (InvalidName e) {
 			System.out.println("Invalid name: "+channelPrefix+statName);
 		}
-		return statName+": "+String.valueOf(sc);
+		return sc;
 	}
 	
 }

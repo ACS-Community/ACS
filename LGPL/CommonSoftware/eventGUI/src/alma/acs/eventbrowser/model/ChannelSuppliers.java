@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
-public class ChannelSuppliers extends MCStatistics {
+public class ChannelSuppliers extends MCStatistics implements INames {
 	private  ArrayList<ChannelParticipantName> supplierNames;
 
 	public ChannelSuppliers(AbstractNotifyServiceElement parent) {

@@ -24,31 +24,34 @@ import java.util.ArrayList;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
-public class ChannelConsumers extends MCStatistics implements INames {
-	private  ArrayList<ChannelParticipantName> consumerNames;
+public class SlowestConsumers extends MCStatistics implements INames {
+	private  ArrayList<ChannelParticipantName> slowConsumerNames;
 
-	public ChannelConsumers(AbstractNotifyServiceElement parent) {
+	public SlowestConsumers(AbstractNotifyServiceElement parent) {
 		super(parent);
-		statName = "ConsumerNames";
+		statName = "SlowestConsumers";
 	}
 	
 	@Override
 	public String getStatistics() {
-		String sc[];
-		consumerNames = new ArrayList<ChannelParticipantName>();
 		try {
+			if (mc.get_statistic(channelPrefix+"QueueSize").data_union.num().last  < 1.0)
+				return null; // return "";
+			String sc[];
+			slowConsumerNames = new ArrayList<ChannelParticipantName>();
+
 			sc = mc.get_statistic(channelPrefix+statName).data_union.list();
 			for (int i = 0; i < sc.length; i++) {
-				consumerNames.add(new ChannelParticipantName(sc[i], this));
+				slowConsumerNames.add(new ChannelParticipantName(sc[i], this));
 			}
 		} catch (InvalidName e) {
 			System.out.println("Invalid name: "+channelPrefix+statName);
 		}
-		return "Consumers: "+parent.getNumConsumersAndDelta();
+		return "Slowest consumers: "+slowConsumerNames.size();
 	}
 	
 	public Object[] getNames() {
-		return consumerNames.toArray();
+		return slowConsumerNames.toArray();
 	}
 	
 }
