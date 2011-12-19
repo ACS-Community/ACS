@@ -38,7 +38,7 @@
       <xs:element minOccurs="0" name="DDSReceiverFlowQoS" type="DDSReceiverFlowQoSType"/>
     </xs:all>
     <xs:attribute name="Name" type="xs:string" use="required"/>
-
+    <xs:attribute name="cbReceiverProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
   </xs:complexType>
 
   <xs:complexType name="ReceiverStreamType">
@@ -50,7 +50,6 @@
         type="DDSReceiverStreamQoSType"/>
     </xs:sequence>
     <xs:attribute name="Name" type="xs:string" use="required"/>
-    <xs:attribute name="cbReceiverProcessTimeoutSec" type="xs:double" use="optional" default="0.010"/>
   </xs:complexType>
 
   <xs:complexType name="BulkDataNTReceiverType">
