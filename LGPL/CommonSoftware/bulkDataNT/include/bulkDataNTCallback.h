@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.17 2011/12/16 15:31:37 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.18 2011/12/20 09:37:45 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -94,7 +94,15 @@ public:
 
 	/*********************  methods that can/should be  implemented by the user */
 
-	/// This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop)
+	/**
+	 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop),
+	 * and can be overriden by an user. The default implementation just logs the error completion.
+	 * @param error - at the moment possible completion errors are:
+	 * #WrongFrameOrderCompletion
+	 * #FrameLostCompletion
+	 * #UnknownDataTypeCompletion
+	 * #DDSReturnErrorCompletion
+	 */
 	virtual void onError(ACSErr::CompletionImpl &error);
 
 	/// The method is called when a new sender is connected to the flow
