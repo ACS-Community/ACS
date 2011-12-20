@@ -11,7 +11,10 @@
 The eventGUI is intended as a replacement for the Python-based acseventbrowser,
 which has shown stability problems in the past. The new, Eclipse RCP (Java)-based
 eventGUI does not include all the functionality that was offered by its
-predecessor, but should be easier to use and understand.
+predecessor, but has other functionality not in the Python-based application, namely,
+the display of pertinent statistics about the Notify Service and its channels provided by
+the TAO Monitor and Control extensions to the Notify Service. The eventGUI should also
+be easier to use and understand.
 <br>
 <table class="../images/eventGUI.png">
 <caption align="bottom"><b>The main Event GUI screen, with the Event Detail View displayed in the lower right-hand quadrant.</b></caption>
@@ -38,6 +41,23 @@ anywhere on the View and select "Start monitoring"), the recent (within the last
 10 seconds) increase or decrease in the number of suppliers/consumers will be
 shown next to the totals.
 <h2>Channel Tree View</h2>
+This hierarchical view shows, for each Notify Service instance, the channels that exist within that instance,
+the numbers and names of components (or, for C++, containers of components) that are subscribing to or consuming
+events on that channel. The current size of the event queue for each channel, which is normally zero for a
+well-behaved system, is also shown. When the queue size for a channel is &gt; 0, a list of the slowest
+consumers on that channel is displayed.
+
+For each channel, right-clicking on the channel name offers the option to subscribe or unsubscribe (if
+already subscribed) to all events on that channel. There will normally be a delay of up to 60 seconds
+before the subscription becomes effective, since that is the refresh cycle time for the monitoring thread
+in the eventGUI. Unsubscribing, on the other hand, is nearly immediate. 
+
+A shortcut which allows you to
+subscribe to all events on all channels at once (which mimics the previous default behavior of the eventGUI)
+is available in the View's drop-down menu. <b>You are advised not to do this on a full-up ALMA system, as
+the eventGUI will almost surely not be able to keep up with an influx of several hundred events/s; this, in
+turn, can impact the performance of the Notify Service itself and, if prolonged, lead to exhaustion of the
+Notify Service's memory.</b>
 <h2>Event List View</h2>
 Unless filtering (see below) is active, this View displays a scrolling list
 of events, updated roughly once per second. A handful of high-level fields are shown
@@ -52,6 +72,10 @@ for each event, namely:
 Available memory is checked periodically, and when a low-water mark is reached, the
 oldest events will be deleted from the list. Note the contrast between this behavior and
 that of <tt>jlog</tt>, which can buffer log records to disk.
+
+When this View is selected, the latest 10-second average of the arriving event rate (for those channels
+to which the eventGUI is subscribing) is displayed in the status bar at the very bottom of the eventGUI
+main window.
 <h3>Filtering</h3>
 This facility, most assuredly in a preliminary, experimental state, can select which <i>incoming</i> events
 to display based on their type. Entering any part of a regular expression into the box
