@@ -30,7 +30,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
@@ -80,7 +81,6 @@ public class ChannelTreeView extends ViewPart {
 	
 	private IAdapterFactory adapterFactory = new EventGuiAdapterFactory();
 		
-	private EventModel em;
 	private long howOften = 10000l; // Default is every 10 seconds
 	
 	public static final String ID = "alma.acs.eventbrowser.views.channeltree";
@@ -99,7 +99,13 @@ public class ChannelTreeView extends ViewPart {
 	 */
 	 
 
-	static class NameSorter extends ViewerSorter {
+	private class NameComparator extends ViewerComparator {
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			if (e1 instanceof MCStatistics && e2 instanceof MCStatistics)
+				return 0; // leave the statistics in the order I added them in ChannelData!!
+			return super.compare(viewer, e1, e2);
+		}
 	}
 
 	/**
@@ -124,9 +130,9 @@ public class ChannelTreeView extends ViewPart {
 		viewer.setContentProvider(new BaseWorkbenchContentProvider());
 		//viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
-		viewer.setSorter(new NameSorter());
+		viewer.setComparator(new NameComparator());
 		try {
-			em = EventModel.getInstance();
+			EventModel.getInstance();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

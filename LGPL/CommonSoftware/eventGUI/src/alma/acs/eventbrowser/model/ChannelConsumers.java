@@ -48,6 +48,8 @@ public class ChannelConsumers extends MCStatistics implements INames {
 	}
 	
 	public Object[] getNames() {
+		if (consumerNames == null)
+			return new Object[0];
 		return consumerNames.toArray();
 	}
 	

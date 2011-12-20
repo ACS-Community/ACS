@@ -32,10 +32,20 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	private boolean subscribed = false;
 	private static HashMap<String,ChannelData> map = new HashMap<String,ChannelData>();
 	
+	private final ChannelConsumers ccon;
+	private final ChannelSuppliers csup;
+	private final ChannelQueueSize cqs;
+	private final SlowestConsumers slcon;
+	
 	public ChannelData(String name, AbstractNotifyServiceElement parent, int[] adminCounts, int[] adminDeltas) {
 		super(name, parent, ((NotifyServiceData)parent).getMc(), adminCounts, adminDeltas);
 //		statistics.add(new SupplierCounts(this));
 //		statistics.add(new ConsumerCounts(this));
+		
+		ccon = new ChannelConsumers(this);
+		csup = new ChannelSuppliers(this);
+		cqs = new ChannelQueueSize(this);
+		slcon = new SlowestConsumers(this);
 
 		map.put(name, this); // Add this instance to the static map for easy access
 	}
@@ -51,12 +61,11 @@ public class ChannelData extends AbstractNotifyServiceElement implements Compara
 	
 	public ArrayList<MCStatistics> getStatistics() {
 		ArrayList<MCStatistics> statistics= new ArrayList<MCStatistics>(4);
-		statistics.add(new ChannelConsumers(this));
-		statistics.add(new ChannelSuppliers(this));
-		ChannelQueueSize cqs = new ChannelQueueSize(this);
+		statistics.add(ccon);
+		statistics.add(csup);
 		statistics.add(cqs);
 		if (cqs.getQueueSize() != 0) // Only display "slowest consumers" for a non-zero queue
-			statistics.add(new SlowestConsumers(this));
+			statistics.add(slcon);
 		return statistics;
 	}
 	

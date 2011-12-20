@@ -51,6 +51,8 @@ public class SlowestConsumers extends MCStatistics implements INames {
 	}
 	
 	public Object[] getNames() {
+		if (slowConsumerNames == null)
+			return new Object[0];
 		return slowConsumerNames.toArray();
 	}
 	
