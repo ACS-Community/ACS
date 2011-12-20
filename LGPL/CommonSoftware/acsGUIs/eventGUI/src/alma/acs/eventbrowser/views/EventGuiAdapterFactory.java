@@ -21,6 +21,7 @@
 package alma.acs.eventbrowser.views;
 
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -38,6 +39,15 @@ import alma.acs.eventbrowser.model.MCStatistics;
 import alma.acs.eventbrowser.model.NotifyServiceData;
 import alma.acs.eventbrowser.model.SlowestConsumers;
 
+/** This class implements the Eclipse version of the Adapter pattern, as described in pp. 75ff of
+ * "Eclipse Rich Client Platform," second edition, by McAffer, Lemieux and Aniszczik. These adapters are
+ * used to separate the hierarchical model of NotifyService / ChannelData / MCStatistics ... from the 
+ * ChannelTreeView (i.e., the GUI). Each adapter must also be (and is!) registered with
+ * Platform.getAdapterManager().registerAdapters() in order for the TreeViewer's Content and Label
+ * Providers to be able to use them.
+ * @author jschwarz
+ *
+ */
 public class EventGuiAdapterFactory implements IAdapterFactory {
 
 	public EventGuiAdapterFactory() {

@@ -75,7 +75,6 @@ import alma.acs.eventbrowser.model.NotifyServices;
 
 public class ChannelTreeView extends ViewPart {
 	private TreeViewer viewer;
-	private DrillDownAdapter drillDownAdapter;
 	private Action refreshAction;
 	private Action startMonitoringAction;
 	
@@ -87,17 +86,6 @@ public class ChannelTreeView extends ViewPart {
 	private Thread channelTreeThread;
 	private SubscribeToChannelAction subscribeAction;
 	private SubscribeToAllChannelsAction subscribeToAllAction;
-
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	 
 
 	private class NameComparator extends ViewerComparator {
 		@Override
@@ -120,13 +108,15 @@ public class ChannelTreeView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		// For the rationale behind the use of adapters here, see the comment at the beginning of
+		// EventGuiAdapterFactory and the reference within.
 		Platform.getAdapterManager().registerAdapters(adapterFactory,ChannelData.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServiceData.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,NotifyServices.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,MCStatistics.class);
 		Platform.getAdapterManager().registerAdapters(adapterFactory,ChannelParticipantName.class);
 
-		drillDownAdapter = new DrillDownAdapter(viewer);
+		new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new BaseWorkbenchContentProvider());
 		//viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
@@ -184,7 +174,6 @@ public class ChannelTreeView extends ViewPart {
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(subscribeAction);
 		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute their actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
@@ -193,13 +182,17 @@ public class ChannelTreeView extends ViewPart {
 		manager.add(refreshAction);
 		manager.add(startMonitoringAction);
 		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
 		refreshAction = new Action() {
 			public void run() {
-				//vcp.initialize();
+				try {
+					EventModel.getInstance().getChannelStatistics();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				viewer.refresh();
 			}
 		};
@@ -233,21 +226,6 @@ public class ChannelTreeView extends ViewPart {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		
-//		MenuManager menuMgr = new MenuManager("#contactsPopup");
-//		menuMgr.add(subscribeAction);
-//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-//		viewer.getControl().setMenu(menu);
-//		getSite().registerContextMenu(menuMgr, viewer);
-	}
-
-
-	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"ChannelTreeView",
-			message);
 	}
 
 	/**
@@ -264,7 +242,7 @@ public class ChannelTreeView extends ViewPart {
 		Runnable t = new Runnable()  {
 			int i = 0;
 			public Runnable r = new Runnable() {
-				public void run() { // TODO: Should this method be synchronized
+				public void run() { // TODO: Should this method be synchronized?
 					final Display display = viewer.getControl().getDisplay();
 					if (!display.isDisposed()) {
 						viewer.refresh();

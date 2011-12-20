@@ -24,6 +24,11 @@ import java.util.ArrayList;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
+/** This class encapsulates the list of all suppliers of events to a particular channel returned
+ * by the TAO M&C Extensions to the Notify Service.
+ * @author jschwarz
+ *
+ */
 public class ChannelSuppliers extends MCStatistics implements INames {
 	private  ArrayList<ChannelParticipantName> supplierNames;
 

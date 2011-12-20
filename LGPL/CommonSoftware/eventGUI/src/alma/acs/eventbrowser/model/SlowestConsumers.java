@@ -24,6 +24,12 @@ import java.util.ArrayList;
 
 import gov.sandia.CosNotification.NotificationServiceMonitorControlPackage.InvalidName;
 
+/** This class encapsulates the list of slowest consumers in a particular channel returned
+ * by the TAO M&C Extensions to the Notify Service; it is only relevant when the size of the queue
+ * in the same channel is of non-zero length.
+ * @author jschwarz
+ *
+ */
 public class SlowestConsumers extends MCStatistics implements INames {
 	private  ArrayList<ChannelParticipantName> slowConsumerNames;
 
