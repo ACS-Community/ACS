@@ -1,6 +1,6 @@
 #ifndef SIMPLE_CONSUMER_H
 #define SIMPLE_CONSUMER_H
-/*    @(#) $Id: acsncSimpleConsumer.h,v 1.13 2011/10/12 21:31:13 javarias Exp $
+/*    @(#) $Id: acsncSimpleConsumer.h,v 1.14 2011/12/21 18:45:24 javarias Exp $
  *    ALMA - Atacama Large Millimiter Array
  *    (c) Associated Universities Inc., 2002 
  *    (c) European Southern Observatory, 2002
@@ -29,11 +29,9 @@
 
 #include "acsncConsumer.h"
 #include <acsutilAnyAide.h>
-#include <RepeatGuard.h>
 #include "acsncErrType.h"
-#include "acsncBlockingQueue.h"
-
 namespace nc {
+
 
 /**
  * SimpleConsumer is used to consume data from a notification channel
@@ -130,17 +128,6 @@ template <class T> class SimpleConsumer : public Consumer
     virtual void 
     push_structured_event(const CosNotification::StructuredEvent &notification);
     ///////////////////////////////////////////////////////////////
-
-    bool stopConsumerThread();
-
-    virtual void disconnect();
-
-    /**
-     * It just invokes some function registered
-     * via the addSubscription method
-     */
-    void processEvent();
-
   protected:
     /**
      * Destructor is protected.
@@ -188,19 +175,6 @@ template <class T> class SimpleConsumer : public Consumer
      */
     void
     addSubscription(const char* type_name, eventHandlerFunction templateFunction, void *handlerParam=0);
-
-    /**
-     * Entry point for the buffer's consumer thread
-     */
-    static void * dispatchEvent(void *args);
-
-    blocking_queue<T> buffer;
-    bool stop_thread;
-    pthread_t dispatching_thread;
-
-    RepeatGuard receiverTooSlowLogRepeatGuard;
-    unsigned int numEventsDiscarded;
-
 };
  }; 
 
