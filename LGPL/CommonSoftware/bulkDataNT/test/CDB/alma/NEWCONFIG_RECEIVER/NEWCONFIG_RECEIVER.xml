@@ -8,10 +8,18 @@
 		<ReceiverFlow Name="Name3">
 			<DDSReceiverFlowQoS>
 				<datareader_qos name="name1">
+					<reliability>
+						<kind>BEST_EFFORT_RELIABILITY_QOS</kind>
+						<max_blocking_time>
+							<sec>1</sec>
+							<nanosec>0</nanosec>
+						</max_blocking_time>
+					</reliability>     
+					
 				</datareader_qos>
 			</DDSReceiverFlowQoS>
 		</ReceiverFlow>
-		<ReceiverFlow Name="Name5">
+		<ReceiverFlow Name="Name5" cbReceiveProcessTimeoutSec="0.02">
 			<DDSReceiverFlowQoS>
 				<datareader_qos name="name3">
 				</datareader_qos>
