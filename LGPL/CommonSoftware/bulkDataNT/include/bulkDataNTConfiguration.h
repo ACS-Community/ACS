@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.23 2011/12/16 09:16:48 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.24 2011/12/22 14:59:12 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -148,7 +148,7 @@ class ReceiverFlowConfiguration : public DDSConfiguration
 public:
 	ReceiverFlowConfiguration();
 
-	double cbReceiverProcessTimeout; /// how long should max take execution of cbReceive
+	double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
 };
 
 /** A Receiver stream configuration. It consists in a seres
