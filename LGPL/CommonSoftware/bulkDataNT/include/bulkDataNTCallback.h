@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.18 2011/12/20 09:37:45 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.19 2011/12/22 15:31:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -54,7 +54,15 @@ public:
 	void setReceiverName(const char *name) { recvName_m=name; }
 	const char* getReceiverName () { return recvName_m.c_str(); }
 
+	/**
+	 * setter method for cbReceiveProcessTimeout_m
+	 * @param to - maximal cbReceiver process time
+	 */
 	void setCBReceiveProcessTimeout(double to);
+	/**
+	 * getter for cbReceiveProcessTimeout_m
+	 */
+	void getCBReceiveProcessTimeout() { return cbReceiveProcessTimeout_m; }
 
 	/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
