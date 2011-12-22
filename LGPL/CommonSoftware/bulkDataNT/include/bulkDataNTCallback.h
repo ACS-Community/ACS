@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.19 2011/12/22 15:31:46 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.20 2011/12/22 15:34:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -56,13 +56,15 @@ public:
 
 	/**
 	 * setter method for cbReceiveProcessTimeout_m
-	 * @param to - maximal cbReceiver process time
+	 * @param to - maximal cbReceiver process time in sec
 	 */
 	void setCBReceiveProcessTimeout(double to);
+
 	/**
-	 * getter for cbReceiveProcessTimeout_m
+	 * * getter for cbReceiveProcessTimeout_m
+	 * @return timeout in sec
 	 */
-	void getCBReceiveProcessTimeout() { return cbReceiveProcessTimeout_m; }
+	double getCBReceiveProcessTimeout() { return cbReceiveProcessTimeout_m; }
 
 	/*
     virtual void setSleepTime(ACE_Time_Value locWaitPeriod);
