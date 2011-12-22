@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReaderListener.h,v 1.18 2011/11/10 11:19:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReaderListener.h,v 1.19 2011/12/22 15:59:57 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,6 +82,11 @@ private:
 
    // pointer to user defined callback
   AcsBulkdata::BulkDataNTCallback* callback_mp;
+
+  ACE_Time_Value cbReceiveStartTime_m;  /// time just be4 cbReceive is going to be executed
+  ACE_Time_Value cbReceiveElapsedTime_m;  /// elapsed time of cbReceive
+  double cbReceiveElapsedTimeSec_m; /// elapsed time in sec
+  double cbReceiveTimeoutSec_m; /// cbReceiver process timeout read from CDB (or default value)
 };
 
 #endif

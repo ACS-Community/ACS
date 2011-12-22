@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.33 2011/11/16 15:05:47 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.34 2011/12/22 15:59:57 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -69,6 +69,7 @@ BulkDataNTReaderListener::BulkDataNTReaderListener(const char* name, BulkDataNTC
   frameDataReader_mp=0;
   conseqErrorCount_m=0;
   maxConseqErrorCount_m = 4; //TBD now hardcoded, to be get from somewhere else
+  cbReceiveTimeoutSec_m = callback_mp->getCBReceiveProcessTimeout();
 }//BulkDataNTReaderListener
 
 
@@ -174,9 +175,21 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                           cerr << topicName_m << " LOST samples: \t\t total_count: " << s.total_count << " total_count_change: " << s.total_count_change << endl;
                           dataLength_m = 0;
                         }
+
+                      cbReceiveStartTime_m = ACE_OS::gettimeofday();
                       message.data.to_array(tmpArray, message.data.length());
                       BDNT_READER_LISTENER_USER_ERR( callback_mp->cbReceive(tmpArray, message.data.length()) )
                       conseqErrorCount_m=0;
+                      cbReceiveElapsedTime_m = ACE_OS::gettimeofday() - cbReceiveStartTime_m;
+                      cbReceiveElapsedTimeSec_m = cbReceiveElapsedTime_m.sec() + (cbReceiveElapsedTime_m.usec() / 1000000.0);
+                      if (cbReceiveElapsedTimeSec_m>cbReceiveTimeoutSec_m)
+                      {
+                    	  CBReceiveProcessTimeoutCompletion cbReceiveTO(__FILE__, __LINE__, __FUNCTION__);
+                    	  cbReceiveTO.setProcessTimeoutSec(cbReceiveTimeoutSec_m);
+                    	  cbReceiveTO.setActaullProcessTime(cbReceiveElapsedTimeSec_m);
+                    	  callback_mp->onError(cbReceiveTO);
+                    	  //TBD should we increase error counter here or not ?
+                      }//if cbReceiveTimeoutSec_m
                     }
                   else //error
                     {
