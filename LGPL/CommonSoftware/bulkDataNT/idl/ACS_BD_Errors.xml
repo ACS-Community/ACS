@@ -120,4 +120,8 @@
         <Member name="MaxFrameLength" type="long" description="Max Frame length" />
     </ErrorCode>
     
+    <ErrorCode name="CBReceiveProcessTimeout" shortDescription="cbReceive took too long" description="Processing in user's cbReceive took too long.">
+        <Member name="ProcessTimeoutSec" type="double" description="cbReceive Process Timeout in Sec" />
+        <Member name="ActaullProcessTime" type="double" description="Actaull  execution time of cbReceive" />
+    </ErrorCode>
 </Type>
