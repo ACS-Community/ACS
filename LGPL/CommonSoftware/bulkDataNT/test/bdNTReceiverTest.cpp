@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTReceiverTest.cpp,v 1.15 2011/11/29 15:13:16 bjeram Exp $"
+* "@(#) $Id: bdNTReceiverTest.cpp,v 1.16 2011/12/23 10:57:32 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -53,6 +53,8 @@ public:
 		}
 	*/
 		//std::cout << std::endl;
+
+		usleep(20000);
 		return 0;
 	}
 
