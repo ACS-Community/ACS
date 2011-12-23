@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.27 2011/09/23 12:49:51 bjeram Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.28 2011/12/23 10:22:34 bjeram Exp $
 #
 #(info Entering definitions.mk)
 
@@ -1036,7 +1036,7 @@ clean_dist_logts_$1: clean_logts_$1;
 #
 .PHONY: install_logts_$1
 ifdef MAKE_VXWORKS
-install_logts_$1: ../bin/$1LTS
+install_logts_$1: install_exe_$1LTS
 else
 install_logts_$1: $(PRJTOP)/include/$1.h $(LIB)/lib$1LTS.a $(LIB)/lib$1LTS.so $(PRJTOP)/idl/$1.xml $(LIB)/python/site-packages/$1LTS.py $(LIB)/$1LTS.jar
 endif
