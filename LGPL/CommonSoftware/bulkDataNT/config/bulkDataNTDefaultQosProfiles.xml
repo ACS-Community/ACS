@@ -2,9 +2,13 @@
 <!-- 
 Default QoS Profile for BulkDataNT.
 -->
-<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="/alma/ACS-10.0/RTI/ndds.4.5e/resource/qos_profiles_4.5e/schema/rti_dds_qos_profiles.xsd"
-     version="4.5e">
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+<!-- this line is needed just if we want to validate the document or similar, ..
+    xsi:noNamespaceSchemaLocation="/alma/ACS-X.Y/RTI/ndds.4.5e/resource/qos_profiles_4.5e/schema/rti_dds_qos_profiles.xsd"
+     version="4.5e"
+    -->
+    
     <!-- QoS Library containing the QoS profile used in the generated example.
 
         A QoS library is a named set of QoS profiles.
