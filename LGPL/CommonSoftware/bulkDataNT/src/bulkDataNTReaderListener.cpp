@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.36 2011/12/23 10:41:42 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.37 2011/12/23 13:37:59 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -40,17 +40,20 @@ using namespace std;
     }catch(const ACSErr::ACSbaseExImpl &ex){										\
         UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
         ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
         callback_mp->onError(ucb);													\
     }catch(const std::exception &stdex){											\
         ACSErrTypeCommon::StdExceptionExImpl ex(__FILE__, __LINE__, __FUNCTION__);  \
         ex.setWhat(stdex.what());													\
         UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
         ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
         callback_mp->onError(ucb);													\
     }catch(...){																	\
         ACSErrTypeCommon::UnknownExImpl ex(__FILE__, __LINE__, __FUNCTION__);   	\
         UserCallbackErrorCompletion ucb(ex, __FILE__, __LINE__, __FUNCTION__);		\
         ucb.setCall("#call");														\
+        ucb.setStreamFlowName(topicName_m.c_str());									\
         callback_mp->onError(ucb);													\
     }
 
