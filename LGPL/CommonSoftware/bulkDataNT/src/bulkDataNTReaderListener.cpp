@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.35 2011/12/22 16:05:45 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.36 2011/12/23 10:41:42 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -124,7 +124,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     {
                       WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
                       wfo.setDataType("BD_PARAM"); wfo.setState(currentState_m);
-                      wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
+                      wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
                       wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
                       callback_mp->onError(wfo);
                       increasConseqErrorCount();
@@ -155,7 +155,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                               lde.setFrameCount(frameCounter_m);
                               lde.setRestFrames(message.restDataLength);
                               lde.setFrameLength(message.data.length());
-                              lde.setFlow(topicName_m.c_str());
+                              lde.setStreamFlowName(topicName_m.c_str());
                               callback_mp->onError(lde);
                               increasConseqErrorCount();
                               return; // ??
@@ -185,7 +185,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                       if (cbReceiveElapsedTimeSec_m>cbReceiveTimeoutSec_m)
                       {
                     	  CBReceiveProcessTimeoutCompletion cbReceiveTO(__FILE__, __LINE__, __FUNCTION__);
-                    	  cbReceiveTO.setFlowName(topicName_m.c_str());
+                    	  cbReceiveTO.setStreamFlowName(topicName_m.c_str());
                     	  cbReceiveTO.setProcessTimeoutSec(cbReceiveTimeoutSec_m);
                     	  cbReceiveTO.setActaullProcessTime(cbReceiveElapsedTimeSec_m);
                     	  callback_mp->onError(cbReceiveTO);
@@ -196,7 +196,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     {
                       WrongFrameOrderCompletion wfo(__FILE__, __LINE__, __FUNCTION__);
                       wfo.setDataType("BD_DATA"); wfo.setState(currentState_m);
-                      wfo.setFlow(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
+                      wfo.setStreamFlowName(topicName_m.c_str()); wfo.setFrameCount(frameCounter_m);
                       wfo.setTotalFrameCount(totalFrames_m); wfo.setFrameLength(message.data.length());
                       callback_mp->onError(wfo);
                       increasConseqErrorCount();
@@ -224,7 +224,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                                 lde.setFrameCount(frameCounter_m);
                                 lde.setRestFrames(message.restDataLength); // should be ??
                                 lde.setFrameLength(message.data.length()); // should be 0
-                                lde.setFlow(topicName_m.c_str());
+                                lde.setStreamFlowName(topicName_m.c_str());
                                 callback_mp->onError(lde);
                                 increasConseqErrorCount();
                               }//if
@@ -326,7 +326,7 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
   sle.setLostSamples(s.total_count_change);
   sle.setNextDataFrame(nextFrame_m);
   sle.setFrameCount(frameCounter_m);
-  sle.setFlow(topicName_m.c_str());
+  sle.setStreamFlowName(topicName_m.c_str());
   initalizeLogging(); //force initialization of logging sys TBD changed
   callback_mp->onError(sle);
 }//on_sample_lost

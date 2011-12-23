@@ -47,7 +47,7 @@
         <Member name="DataType" type="long" description="Data Type" />
         <Member name="FrameCount" type="long" description="Actual frame count" />
         <Member name="TotalFrameCount" type="long" description="Total frame count" />
-        <Member name="Flow" type="string" description="Flow name" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
     </ErrorCode>
     <ErrorCode name="WrongFrameOrder" shortDescription="Wrong frame order" description="Parmeter or data frame arrived at wrong point">
         <Member name="DataType" type="string" description="Data Type" />
@@ -55,21 +55,21 @@
         <Member name="FrameLength" type="long" description="Length of the frame"/>
         <Member name="FrameCount" type="long" description="Actual frame count" />
         <Member name="TotalFrameCount" type="long" description="Number of all frames" />
-        <Member name="Flow" type="string" description="Flow name" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
     </ErrorCode>
     <ErrorCode name="FrameLost" shortDescription="Frame Lost" description="Some data frame(s)has not arrived during sendData">
         <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
         <Member name="FrameLength" type="long" description="Length of the frame"/>
         <Member name="RestFrames" type="long" description="Rest frame number" />
         <Member name="FrameCount" type="long" description="Number of arrived frames" />
-        <Member name="Flow" type="string" description="Flow name" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
     </ErrorCode>
     
     <ErrorCode name="SampleLost" shortDescription="Sample Lost" description="Sample lost is reported in DDS on_data_lost">
         <Member name="LostSamples" type="long" description="Number of lost samples" />
         <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
         <Member name="FrameCount" type="long" description="Number of arrived frames" />
-        <Member name="Flow" type="string" description="Flow name" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
     </ErrorCode>
     
     <ErrorCode name="UserCallbackError" shortDescription="Error in user's callback" description="An exception occured while calling a method of callback">
@@ -121,7 +121,7 @@
     </ErrorCode>
     
     <ErrorCode name="CBReceiveProcessTimeout" shortDescription="cbReceive took too long" description="Processing in user's cbReceive took too long.">
-        <Member name="FlowName" type="string" description="Flow name" />
+        <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
         <Member name="ProcessTimeoutSec" type="double" description="cbReceive Process Timeout in Sec" />
         <Member name="ActaullProcessTime" type="double" description="Actaull  execution time of cbReceive" />
     </ErrorCode>
