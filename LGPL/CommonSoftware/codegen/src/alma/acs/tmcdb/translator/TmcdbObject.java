@@ -66,7 +66,9 @@ public class TmcdbObject {
 	protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(
 			this);
 
-	protected boolean useContentEqualsAndHashCode = true;
+	protected static boolean USE_CONTENT_EQUALS_AND_HASHCODE_DEFAULT = false;
+	
+	protected boolean useContentEqualsAndHashCode = USE_CONTENT_EQUALS_AND_HASHCODE_DEFAULT;
 	
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
 		propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
@@ -76,10 +78,39 @@ public class TmcdbObject {
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
+	/**
+	 * Sets the default value for {@link #useContentEqualsAndHashCode}.
+	 * <p>
+	 * Applications such as the TmcdbExplorer, which prefer to use field data 
+	 * for the equals and hash code behavior, should call this method before 
+	 * creating any TmcdbObjects (once for every classloader scope, which may only be once in total).
+	 * Other applications such as rdbCDB, which prefer to use only in-memory object identity,
+	 * can either call this method or rely on the default of the default value that is <code>false</code>.
+	 * <p>
+	 * Note that the previous method {@link #setUseContentEqualsAndHashCode(boolean)} (now deprecated)
+	 * was problematic because it could only be called after constructing a TmcdbObject, 
+	 * when hibernate had already added it automatically to some of its collections, 
+	 * and then the object identity was changed too late when calling that method.
+	 * If we are not satisfied with this static variable solution, we should continue the 
+	 * discussion about using <code>UUID.randomUUID()</code> 
+	 * (http://onjava.com/pub/a/onjava/2006/09/13/dont-let-hibernate-steal-your-identity.html)
+	 * for TmcdbObject identity, as Steve Harrington suggested in June 2011.
+	 * 
+	 * @param uDefault
+	 */
+	public static void setUseContentEqualsAndHashCodeDefault(boolean uDefault) {
+		USE_CONTENT_EQUALS_AND_HASHCODE_DEFAULT = uDefault;
+	}
+	
 	public boolean getUseContentEqualsAndHashCode() {
 		return useContentEqualsAndHashCode;
 	}
 
+	/**
+	 * @param u
+	 * @deprecated Now that we have the static method {@link #setUseContentEqualsAndHashCodeDefault(boolean)},
+	 *             it seems that there is no further use for this method, so that it should be removed after ACS 10.1.
+	 */
 	public void setUseContentEqualsAndHashCode(boolean u) {
 		useContentEqualsAndHashCode = u;
 	}
