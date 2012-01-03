@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.15 2011/12/12 18:42:45 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.16 2012/01/03 16:23:49 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -77,7 +77,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 	try {
 		recv_protocols = dao_p->get_string("recv_protocols");
 		ACE_OS::strcpy(buf,recv_protocols);
-		// TODO: put log tating that old config mechanism is going to be used instead of the new one
+		// TODO: put log saying that old config mechanism is going to be used instead of the new one
 	} catch(cdbErrType::CDBFieldDoesNotExistEx &ex) {
 		useNewConfigMechanism = true;
 	}
@@ -94,7 +94,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 			if( parser_m->getAllReceiverStreamNames().size() == 0 )
 				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::initialize No Receiver Streams configured, streams created in the future will have a default configuration"));
 
-		} catch(CDBProblemExImpl &ex) {
+		} catch(ACS_BD_Errors::CDBProblemExImpl &ex) {
 			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
 			err.log(LM_DEBUG);
 			throw err.getAVOpenReceiverErrorEx();
