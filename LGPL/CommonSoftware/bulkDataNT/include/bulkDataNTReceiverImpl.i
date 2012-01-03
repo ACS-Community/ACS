@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.16 2012/01/03 16:23:49 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.17 2012/01/03 17:16:00 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -396,6 +396,7 @@ AcsBulkdata::BulkDataNTReceiverStream<TCallback>* BulkDataNTReceiverImpl<TCallba
 			return it->second;
 		}
 	}//if
+
 	//here we come just in case of an error
 	StreamNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	ex.setStreamName(streamName);

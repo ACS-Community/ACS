@@ -158,8 +158,12 @@ class BulkDataNTReceiverImpl : public baci::CharacteristicComponentImpl,
    	*/
     void fwdData2UserCB(CORBA::Boolean enable){}
 
-  protected: 
+  protected:
 
+    /**
+     * Indicates if this component's alma/ branch exposes the new or the old configuration mechanism
+     * @return Whether this component is configured using the new or the old configuration mechanism
+     */
     virtual bool usesOldConfigurationMechanism();
     
   private:
