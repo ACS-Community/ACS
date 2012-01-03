@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import alma.TMCDB.alarm.AlarmDefinition;
@@ -637,7 +638,7 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 			conf.put(FaultFamiliesMap.ALARM_CATEGORY_DEFINITION_PATH, faultFamiliesMap);
 
 			counter = 0;
-			List<FaultFamily> families = session.createCriteria(FaultFamily.class).add(Restrictions.eq("configuration", config)).list();
+			List<FaultFamily> families = session.createCriteria(FaultFamily.class).add(Restrictions.eq("configuration", config)).addOrder(Order.asc("familyName")).list();
 			for (FaultFamily family : families)
 			{
 				Contact contact = family.getContact();
@@ -764,3 +765,4 @@ public class HibernateWDALAlarmPluginImpl implements HibernateWDALPlugin {
 	}
 	
 }
+
