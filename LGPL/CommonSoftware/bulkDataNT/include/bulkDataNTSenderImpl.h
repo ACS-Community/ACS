@@ -38,9 +38,10 @@
 #include <maciHelper.h>
 #include <maciContainerServices.h>
 
-#include "bulkDataSenderS.h"
-#include "bulkDataReceiverC.h"
+#include <bulkDataSenderS.h>
+#include <bulkDataReceiverC.h>
 
+#include "bulkDataNTConfigurationParser.h"
 #include "bulkDataNTSenderStream.h"
 
 
@@ -85,11 +86,9 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
   
     virtual void initialize();
 
-    virtual void cleanUp();
-
     /**
      *  Negotiate and initialize connection with the Sender object.
-     *  @param receiver reference of the Receiver Component.
+     *  @param receiver reference of the Receiver Component (currently unused).
      *  @throw ACSBulkDataError::AVConnectErrorEx
      *  @return void
      *  @htmlonly
@@ -103,12 +102,21 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
     */
     virtual void disconnect();
 
-//getSenderStream(stream name)
-    virtual AcsBulkdata::BulkDataNTSenderStream/*<TSenderCallback>*/ *getSenderStream(/*name*/)
-	{
-	    return senderStream_m;
-	}
+    /**
+     *
+     * @param name The stream name
+     * @return The sender stream object for the given name
+     * @throw StreamNotExistExImpl
+     */
+    virtual AcsBulkdata::BulkDataNTSenderStream *getSenderStream(const char *name);
 
+    /**
+     * Gets the first sender stream stored in the internal stream map.
+     *
+     * @return The first sender stream saved in the internal map
+     * @deprecated You should use getSenderStream(const char *name) instead
+     */
+    virtual AcsBulkdata::BulkDataNTSenderStream *getSenderStream();
 
     /** 
      *  Calls the Receiver handle_start() method once the connection is established.
@@ -146,19 +154,42 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
 
   protected:
 
-    /** 
-     *  Pointer to the dataProtocol on which the send_frame(...) method
-     *  is called in order to actually send data.
+    /**
+     * Indicates if this component's alma/ branch exposes the new or the old configuration mechanism
+     * @return Whether this component is configured using the new or the old configuration mechanism
      */
- 
+    virtual bool usesOldConfigurationMechanism();
+
  
   private:
 
-    maci::ContainerServices *containerServices_p;
+    // The XML parser object, responsible of retrieving the configuration objects for a given XML document
+    AcsBulkdata::BulkDataConfigurationParser *parser_m;
 
-    AcsBulkdata::BulkDataNTSenderStream/*<TSenderCallback>*/ *senderStream_m; //TBD convert to map to hold more streams
-//TBD do we need reference to receiver ?
-    bulkdata::BulkDataReceiver_ptr receiverObj_m;
+    // Used to store the number of flows to create, as specified with the old config mechanism
+    int defaultFlowsCount_m;
+
+    // map<name, stream>
+    typedef std::map<std::string, AcsBulkdata::BulkDataNTSenderStream *> StreamMap;
+
+    // Map that stores the stream objects that are actually created
+    StreamMap senderStreams_m;
+
+    /**
+     * Opens all senders as specified on the CDB (old or new configuration mechanism).
+     * This method might be added in the future to the IDL interface
+     */
+    virtual void openSenders();
+
+    // Creates a new sender stream, given a name
+    AcsBulkdata::BulkDataNTSenderStream* createSenderStream(const char *stream_name);
+
+    // Create a new default sender stream
+    AcsBulkdata::BulkDataNTSenderStream* createDefaultSenderStream();
+
+    // Close a stream, given an iterator of the stream map
+    void closeStream(StreamMap::iterator &it);
+
 };
 /*
 typedef BulkDataSenderImpl<> BulkDataSenderDefaultImpl;
