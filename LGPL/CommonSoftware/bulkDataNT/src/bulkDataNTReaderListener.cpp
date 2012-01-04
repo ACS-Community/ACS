@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.37 2011/12/23 13:37:59 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.38 2012/01/04 16:41:34 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -190,7 +190,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                     	  CBReceiveProcessTimeoutCompletion cbReceiveTO(__FILE__, __LINE__, __FUNCTION__);
                     	  cbReceiveTO.setStreamFlowName(topicName_m.c_str());
                     	  cbReceiveTO.setProcessTimeoutSec(cbReceiveTimeoutSec_m);
-                    	  cbReceiveTO.setActaullProcessTime(cbReceiveElapsedTimeSec_m);
+                    	  cbReceiveTO.setActualProcessTime(cbReceiveElapsedTimeSec_m);
                     	  callback_mp->onError(cbReceiveTO);
                     	  //TBD should we increase error counter here or not ?
                       }//if cbReceiveTimeoutSec_m
