@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ################################################################################################
-# @(#) $Id: acsdataClean.py,v 1.7 2010/01/19 17:26:47 javarias Exp $
+# @(#) $Id: acsdataClean.py,v 1.8 2012/01/04 00:06:26 tstaig Exp $
 #
 #    ALMA - Atacama Large Millimiter Array
 #    (c) Associated Universities, Inc. Washington DC, USA, 2001
@@ -47,7 +47,7 @@ import socket
 from AcsutilPy.ACSDirectory import getAcsTmpDirectoryPath
 
 #------------------------------------------------------------------------------
-__version__ = "$Id: acsdataClean.py,v 1.7 2010/01/19 17:26:47 javarias Exp $"
+__version__ = "$Id: acsdataClean.py,v 1.8 2012/01/04 00:06:26 tstaig Exp $"
 #------------------------------------------------------------------------------
 
 ################################################################################################
@@ -70,7 +70,16 @@ def cleanDirectory(dir):
           'ACS_INSTANCE.8'       : '',
           'ACS_INSTANCE.9'       : '',
           'USED_CONTAINER_PORTS' : '',
-          '.acs_command_history' : ''
+          '.acs_command_history' : '',
+          'ifr_cache.1'         : '',
+          'ifr_cache.2'         : '',
+          'ifr_cache.3'         : '',
+          'ifr_cache.4'         : '',
+          'ifr_cache.5'         : '',
+          'ifr_cache.6'         : '',
+          'ifr_cache.7'         : '',
+          'ifr_cache.8'         : '',
+          'ifr_cache.9'         : ''
        }
       print "Safe directories (i.e., ACS_INSTANCE.*'s) and a few files used by ACS will be"
       print "preserved. To remove everything, provide the '-all' switch to this script."
