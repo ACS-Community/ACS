@@ -55,8 +55,8 @@ void BulkDataNTSenderImpl::initialize()
 	CDB::DAL_ptr dal_p = getContainerServices()->getCDB();
 	if(CORBA::is_nil(dal_p))
 	{
-		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::initialize error getting DAL reference"));
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTSenderImpl::initialize error getting DAL reference"));
+		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 		throw err.getAVOpenReceiverErrorEx();
 	}
 
@@ -66,8 +66,8 @@ void BulkDataNTSenderImpl::initialize()
 	CDB::DAO_ptr dao_p = dal_p->get_DAO_Servant(CDBpath.c_str());
 	if(CORBA::is_nil(dao_p))
 	{
-		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTReceiverImpl<>::initialize error getting DAO reference"));
-		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+		ACS_SHORT_LOG((LM_ERROR,"BulkDataNTSenderImpl::initialize error getting DAO reference"));
+		ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 		throw err.getAVOpenReceiverErrorEx();
 	}
 
@@ -92,15 +92,15 @@ void BulkDataNTSenderImpl::initialize()
 			parser_m = new AcsBulkdata::BulkDataConfigurationParser();
 			parser_m->parseSenderConfig(xmlNode);
 			if( parser_m->getAllSenderStreamNames().size() == 0 )
-				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::initialize No Receiver Streams configured, streams created in the future will have a default configuration"));
+				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTSenderImpl::initialize No Sender Streams configured, streams created in the future will have a default configuration"));
 
 		} catch(CDBProblemExImpl &ex) {
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 			err.log(LM_DEBUG);
 			throw err.getAVOpenReceiverErrorEx();
 		} catch(...) {
-			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::initialize");
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 			err.log(LM_DEBUG);
 			throw err.getAVOpenReceiverErrorEx();
 		}
@@ -120,8 +120,8 @@ void BulkDataNTSenderImpl::initialize()
 
 				// TODO: Does this "> 19" condition make any sense?
 				if( defaultFlowsCount_m < 0 || defaultFlowsCount_m > 19 ) {
-					ACS_SHORT_LOG((LM_ERROR, "BulkDataNTReceiverImpl<>::initialize too many flows specified - maximum 19"));
-					ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl<>::initialize");
+					ACS_SHORT_LOG((LM_ERROR, "BulkDataNTSenderImpl::initialize too many flows specified - maximum 19"));
+					ACSBulkDataError::AVInvalidFlowNumberExImpl err = ACSBulkDataError::AVInvalidFlowNumberExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 					throw err;
 				}
 			}
@@ -129,14 +129,14 @@ void BulkDataNTSenderImpl::initialize()
 		}
 		catch(ACSErr::ACSbaseExImpl &ex)
 		{
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 			err.log(LM_DEBUG);
 			throw err.getAVOpenReceiverErrorEx();
 		}
 		catch(...)
 		{
-			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
-			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::openReceiver");
+			ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
+			ACSBulkDataError::AVOpenReceiverErrorExImpl err = ACSBulkDataError::AVOpenReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::initialize");
 			throw err.getAVOpenReceiverErrorEx();
 		}
 	} // if (useNewConfigMechanism)
@@ -155,7 +155,7 @@ void BulkDataNTSenderImpl::connect(bulkdata::BulkDataReceiver_ptr receiverObj_p)
 {
 	ACS_TRACE("BulkDataNTSenderImpl::connect - deprecated");
 
-	// Here we currently open all senders, new methods might beadded later to the IDL interface
+	// Here we currently open all senders, new methods might be added later to the IDL interface
 	openSenders();
 }//connect
 
@@ -178,7 +178,7 @@ void BulkDataNTSenderImpl::openSenders() {
 
 		// With the new configuration mechanism check all the configured sender streams
 		// and open them all (if not already opened)
-		std::set<const char *> streamNames = parser_m->getAllReceiverStreamNames();
+		std::set<const char *> streamNames = parser_m->getAllSenderStreamNames();
 		std::set<const char *>::iterator it;
 		for(it = streamNames.begin(); it != streamNames.end(); it++) {
 
@@ -212,7 +212,7 @@ AcsBulkdata::BulkDataNTSenderStream* BulkDataNTSenderImpl::createSenderStream(co
 	stream = new AcsBulkdata::BulkDataNTSenderStream(stream_name, *parser_m->getSenderStreamConfiguration(stream_name));
 
 	// Create also all the necessary flows that have been configured in the CDB
-	std::set<const char *> flowNames = parser_m->getAllReceiverFlowNames(stream_name);
+	std::set<const char *> flowNames = parser_m->getAllSenderFlowNames(stream_name);
 	std::set<const char *>::iterator it;
 	for(it = flowNames.begin(); it != flowNames.end(); it++) {
 		const char * flowName = *it;
@@ -252,14 +252,14 @@ void BulkDataNTSenderImpl::disconnect()
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{
-		ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::closeReceiver");
+		ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::disconnect");
 		err.log(LM_DEBUG);
 		throw err.getAVCloseReceiverErrorEx();
 	}
 	catch(...)
 	{
 		ACSErrTypeCommon::UnknownExImpl ex = ACSErrTypeCommon::UnknownExImpl(__FILE__,__LINE__,"BulkDataNTSenderImpl::disconnect");
-		ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTReceiverImpl::closeReceiver");
+		ACSBulkDataError::AVCloseReceiverErrorExImpl err = ACSBulkDataError::AVCloseReceiverErrorExImpl(ex,__FILE__,__LINE__,"BulkDataNTSenderImpl::disconnect");
 		throw err.getAVCloseReceiverErrorEx();
 	}
 }
