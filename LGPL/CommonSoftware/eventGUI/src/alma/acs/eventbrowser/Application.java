@@ -43,7 +43,7 @@ import alma.acs.eventbrowser.views.EventData;
 /**
  * This class controls all aspects of the application's execution
  * 
- * $Id: Application.java,v 1.9 2011/10/28 11:56:21 jschwarz Exp $
+ * $Id: Application.java,v 1.10 2012/01/04 16:10:04 jschwarz Exp $
  * 
  */
 public class Application implements IApplication, IStartup {
@@ -71,17 +71,21 @@ public class Application implements IApplication, IStartup {
 				System.err.println("Can't create EventModel...exiting.");
 				return IApplication.EXIT_OK;
 			}
-			
-			int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
+
+			int returnCode = PlatformUI.createAndRunWorkbench(display,
+					new ApplicationWorkbenchAdvisor());
 			em.tearDown();
 			if (returnCode == PlatformUI.RETURN_RESTART)
 				return IApplication.EXIT_RESTART;
 			else
 				return IApplication.EXIT_OK;
 		} finally {
-			if (!display.isDisposed()) display.dispose();
+			synchronized (this) {
+				if (!display.isDisposed())
+					display.dispose();
+			}
 		}
-		
+
 	}
 
 	/* (non-Javadoc)

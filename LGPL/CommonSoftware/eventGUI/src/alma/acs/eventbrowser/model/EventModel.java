@@ -71,7 +71,7 @@ import alma.maciErrType.wrappers.AcsJNoPermissionEx;
 /**
  * @author jschwarz
  *
- * $Id: EventModel.java,v 1.33 2011/11/15 16:13:55 jschwarz Exp $
+ * $Id: EventModel.java,v 1.34 2012/01/04 16:10:04 jschwarz Exp $
  */
 public class EventModel {
 	private final ORB orb;
@@ -187,7 +187,11 @@ public class EventModel {
 		NotificationServiceMonitorControl nsmc;
 		NameComponent[] ncomp = new NameComponent[1];
 
-		String name = "MC_"+notifyBindingName;
+		String name;
+		if (notifyBindingName == "") 
+			name = "MC_NotifyEventChannelFactory"; // default notify service isn't named, but MC is!
+		else
+			name = "MC_"+notifyBindingName;
 		ncomp[0] = new NameComponent(name,"");
 
 		try {
@@ -338,7 +342,7 @@ public class EventModel {
 		}
 	}
 
-	public ArrayList<ChannelData> getChannelStatistics() {
+	public synchronized ArrayList<ChannelData> getChannelStatistics() {
 		
 		try {
 			calculateNotifyServiceTotals();
@@ -365,9 +369,9 @@ public class EventModel {
 					int[] consAndSupp = {0,0};
 					if (!channelMap.containsKey(channelName)) {
 						channelMap.put(channelName, ec);
-						if (subscribedChannels.contains(channelName)) {
+						if (subscribedChannels.contains(channelName)) {// user wants to subscribe
 							consumer = getAdminConsumer(channelName);
-							consumerMap.put(channelName, consumer);
+							consumerMap.put(channelName, consumer); // user *has* subscribed
 						}
 						lastConsumerAndSupplierCount.put(channelName,
 								consAndSupp);
@@ -490,7 +494,7 @@ public class EventModel {
 	}
 
 
-	public AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
+	public synchronized AdminConsumer getAdminConsumer(String channelName) throws AcsJException {
 		if (!consumerMap.containsKey(channelName)) {
 			AdminConsumer adm = new AdminConsumer(channelName,cs);
 			consumerMap.put(channelName, adm);
@@ -525,10 +529,12 @@ public class EventModel {
 					if (!channelMap.containsKey(channelName) ) {
 						channelMap.put(channelName, ec);
 					}
-					if (subscribedChannels.contains(channelName) && !consumerMap.containsKey(channelName)) {
+					synchronized (this) {
+						if (subscribedChannels.contains(channelName) && !consumerMap.containsKey(channelName)) {
 							consumer = getAdminConsumer(channelName);
 							consumerMap.put(channelName, consumer);
 							channelsProcessed++;
+						}
 					}
 				} catch (AcsJException e) {
 					m_logger.log(AcsLogLevel.SEVERE, "Can't find channel"+channelName, e);
@@ -540,11 +546,11 @@ public class EventModel {
 		return consumerMap;
 	}
 	
-	public void addChannelSubscription(String channelName) {
+	public synchronized void addChannelSubscription(String channelName) {
 		subscribedChannels.add(channelName);
 	}
 	
-	public void subscribeToAllChannels() {
+	public synchronized void subscribeToAllChannels() {
 		for (String channelName : channelMap.keySet()) {
 			subscribedChannels.add(channelName);
 		}
