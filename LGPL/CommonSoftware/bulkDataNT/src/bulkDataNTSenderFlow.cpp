@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.28 2011/12/15 15:25:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.29 2012/01/04 08:23:01 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.28 2011/12/15 15:25:30 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.29 2012/01/04 08:23:01 rtobar Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -158,7 +158,7 @@ void BulkDataNTSenderFlow::sendData(const unsigned char *buffer, size_t len)
 	unsigned int numOfFrames = len / sizeOfFrame; // how many frames of size sizeOfFrame do we have to send
 	unsigned int restFrameSize = len % sizeOfFrame; // what is the rest
 
-	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %d Bytes = %d*%d(=%d) + %d to flow: %s",
+	ACS_SHORT_LOG((LM_DEBUG, "Going to send: %zd Bytes = %d*%d(=%d) + %d to flow: %s",
 			len, numOfFrames, sizeOfFrame, numOfFrames*sizeOfFrame, restFrameSize, flowName_m.c_str()));
 	unsigned int numOfIter = (restFrameSize>0) ? numOfFrames+1 : numOfFrames;
 
