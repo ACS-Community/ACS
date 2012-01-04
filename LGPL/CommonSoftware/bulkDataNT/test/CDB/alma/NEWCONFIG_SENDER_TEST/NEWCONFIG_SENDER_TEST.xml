@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BulkDataNTSender
+   xmlns="urn:schemas-cosylab-com:BulkDataNTSender:1.0"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="urn:schemas-cosylab-com:BulkDataNTSender:1.0 BulkDataNTSender.xsd">
+
+	<SenderStream Name="Name7">
+		<SenderFlow Name="Name3">
+		</SenderFlow>
+		<SenderFlow Name="Name5"/>		
+	</SenderStream>
+	<SenderStream Name="Name1">
+		<SenderFlow Name="Name3">
+		</SenderFlow>
+		<SenderFlow Name="Name5"/>		
+	</SenderStream>
+
+</BulkDataNTSender>
