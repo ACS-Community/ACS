@@ -143,6 +143,10 @@ void BulkDataNTSenderImpl::initialize()
 
 }
 
+void BulkDataNTSenderImpl::cleanUp() {
+	disconnect();
+}
+
 bool BulkDataNTSenderImpl::usesOldConfigurationMechanism() {
 	return (parser_m == 0);
 }

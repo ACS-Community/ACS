@@ -86,6 +86,8 @@ class BulkDataNTSenderImpl : public baci::CharacteristicComponentImpl,
   
     virtual void initialize();
 
+    virtual void cleanUp();
+
     /**
      *  Negotiate and initialize connection with the Sender object.
      *  @param receiver reference of the Receiver Component (currently unused).
