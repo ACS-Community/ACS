@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.22 2011/12/22 14:59:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.23 2012/01/04 11:33:53 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -84,7 +84,8 @@ char * XMLChSP::get() {
 }
 
 
-BulkDataConfigurationParser::BulkDataConfigurationParser() :
+BulkDataConfigurationParser::BulkDataConfigurationParser(const char *baseLibraryName) :
+   m_baseLibrary(ACE_OS::strdup(baseLibraryName)),
    m_writer(0),
    m_parser(0)
 {
@@ -114,6 +115,7 @@ BulkDataConfigurationParser::~BulkDataConfigurationParser() {
 	// Terminate the XML parser objects
 	m_writer->release();
 	delete m_parser;
+	delete m_baseLibrary;
 	XMLPlatformUtils::Terminate();
 }
 
@@ -369,12 +371,12 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 					// and let the flow have it's right profile name configured
 					if( parsingInfo.type == SENDER ) {
 						SenderFlowConfiguration *flowConfig = senderCfg.flowsCfgMap[flowName.get()];
-						flowConfig->libraryQos = DYNAMIC_LIBRARY_NAME;
+						flowConfig->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 						flowConfig->profileQos = profileName;
 					}
 					else {
 						ReceiverFlowConfiguration *flowConfig = receiverCfg.flowsCfgMap[flowName.get()];
-						flowConfig->libraryQos = DYNAMIC_LIBRARY_NAME;
+						flowConfig->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 						flowConfig->profileQos = profileName;
 					}
 				}
@@ -382,31 +384,36 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 
 		} // for(streamChildrenNodesList)
 
-		// Now store all the profile QoS strings into the stream configuration
+		// If the stream has a profile, set the profileQoS into the stream configuration
+		// The library is set later, in the next step
 		if( streamHasProfile ) {
-			if( parsingInfo.type == SENDER ) {
-				senderCfg.streamCfg->libraryQos = DYNAMIC_LIBRARY_NAME;
+			if( parsingInfo.type == SENDER )
 				senderCfg.streamCfg->profileQos = streamName.get();
-			}
-			else {
-				receiverCfg.streamCfg->libraryQos = DYNAMIC_LIBRARY_NAME;
+			else
 				receiverCfg.streamCfg->profileQos = streamName.get();
-			}
 		}
 		else {
 //			ACS_SHORT_LOG((LM_INFO,"Stream '%s' has no QoS settings, will use the default lib/profile", streamName.get()));
 		}
 
-		// Finally, add the sender configuration to the configuration map
+		// if any profile was found, we need to set the libraryQoS into the *stream* configuration object
+		// (independant of whether the collected profiles correspond to streams or flows), since the
+		// *stream* configuration object is later used to fill up the DDS Factory QoS.
+		// We also need the full profile string to be set, so we construct it
+		// Finally, we add the configuration to our map
 		if( parsingInfo.type == SENDER ) {
-		    if( profiles.size() > 0 )
-                        senderCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
+			if( profiles.size() > 0 ) {
+				senderCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
+		    	senderCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
+			}
 		    senderConfigMap_m[streamName.get()] = senderCfg;
 		}
 		else {
-		    if( profiles.size() > 0 )
-                        receiverCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
-		    receiverConfigMap_m[streamName.get()] = receiverCfg;
+			if( profiles.size() > 0 ) {
+				receiverCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
+				receiverCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
+			}
+			receiverConfigMap_m[streamName.get()] = receiverCfg;
 		}
 
 	} // for(streamNodesList)
@@ -603,8 +610,10 @@ SenderFlowConfiguration * BulkDataConfigurationParser::getSenderFlowConfiguratio
 ReceiverStreamConfiguration * BulkDataConfigurationParser::getReceiverStreamConfiguration(char const *streamName) {
 	ReceiverCfgMap::iterator it;
 	for(it = receiverConfigMap_m.begin(); it != receiverConfigMap_m.end(); it++)
-		if( ACE_OS::strcmp(it->first.c_str(), streamName) == 0 )
-			return it->second.streamCfg;
+		if( ACE_OS::strcmp(it->first.c_str(), streamName) == 0 ) {
+			ReceiverStreamConfiguration *config = it->second.streamCfg;
+			return config;
+		}
 
 	return 0;
 }

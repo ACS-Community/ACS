@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.14 2011/12/12 18:09:02 rtobar Exp $"
+* "@(#) $Id: bdNTConfigurationParserTest.cpp,v 1.15 2012/01/04 11:33:53 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -82,7 +82,6 @@ void parseFiles(const char *directory, BulkDataConfigurationParser &parser,
 			continue;
 		}
 
-
 		string realFilename(directory);
 		realFilename.append("/");
 		realFilename.append(dirent->d_name);
@@ -94,7 +93,6 @@ void parseFiles(const char *directory, BulkDataConfigurationParser &parser,
 		file.close();
 
 		try {
-			BulkDataConfigurationParser parser;
 			(parser.*parserMethod)(s.c_str());
 			printConfigMap(parser, streamNamesGetter, flowNamesGetter);
 		} catch(CDBProblemExImpl &ex) {
@@ -108,7 +106,7 @@ void parseFiles(const char *directory, BulkDataConfigurationParser &parser,
 }
 
 void parseSenderFiles() {
-	BulkDataConfigurationParser parser;
+	BulkDataConfigurationParser parser("Test");
 	parseFiles("bdSenderConfigs", parser,
 			&BulkDataConfigurationParser::parseSenderConfig,
 			&BulkDataConfigurationParser::getAllSenderStreamNames,
@@ -130,7 +128,7 @@ void parseSenderFiles() {
 }
 
 void parseReceiverFiles() {
-	BulkDataConfigurationParser parser;
+	BulkDataConfigurationParser parser("Test");
 	parseFiles("bdReceiverConfigs", parser,
 			&BulkDataConfigurationParser::parseReceiverConfig,
 			&BulkDataConfigurationParser::getAllReceiverStreamNames,

@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.9 2011/12/12 18:42:45 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.h,v 1.10 2012/01/04 11:33:53 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -62,6 +62,7 @@ namespace AcsBulkdata
 
 	private:
 
+		const char                 *m_baseLibrary;
 		xercesc::DOMWriter         *m_writer;
 		xercesc::AbstractDOMParser *m_parser;
 
@@ -132,9 +133,19 @@ namespace AcsBulkdata
 	public:
 
 		/**
-		 * Constructor
+		 * Parser constructor. Its creation needs a base library as a mandatory argument, which
+		 * will prevent name duplication among configured entities. An example of potential
+		 * danger would be a process that creates the same streams/flows combinations in two
+		 * separate places. Such a process would get a failure when creating the second set
+		 * of streams/flows, since the "QoS profiles" (internal representations of the DDS
+		 * configuration entities) would belong to the same "library", and would already
+		 * exists on the RTI world.
+		 *
+		 * @param baseLibraryName The base library name to be used by all the configuration
+		 *   objects that this parser creates. An example would be the ACS component name,
+		 *   or any other particular identification string.
 		 */
-		BulkDataConfigurationParser();
+		BulkDataConfigurationParser(const char *baseLibraryName);
 
 		/**
 		 * Destructor

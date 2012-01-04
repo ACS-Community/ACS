@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.17 2012/01/03 17:16:00 rtobar Exp $"
+* "@(#) $Id: bulkDataNTReceiverImpl.i,v 1.18 2012/01/04 11:33:53 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -89,7 +89,7 @@ void BulkDataNTReceiverImpl<TCallback>::initialize()
 
 		try {
 			// Parse the XML document and check if we got any configuration object
-			parser_m = new AcsBulkdata::BulkDataConfigurationParser();
+			parser_m = new AcsBulkdata::BulkDataConfigurationParser(name());
 			parser_m->parseReceiverConfig(xmlNode);
 			if( parser_m->getAllReceiverStreamNames().size() == 0 )
 				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTReceiverImpl<>::initialize No Receiver Streams configured, streams created in the future will have a default configuration"));

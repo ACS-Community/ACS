@@ -89,7 +89,7 @@ void BulkDataNTSenderImpl::initialize()
 
 		try {
 			// Parse the XML document and check if we got any configuration object
-			parser_m = new AcsBulkdata::BulkDataConfigurationParser();
+			parser_m = new AcsBulkdata::BulkDataConfigurationParser(name());
 			parser_m->parseSenderConfig(xmlNode);
 			if( parser_m->getAllSenderStreamNames().size() == 0 )
 				ACS_SHORT_LOG((LM_NOTICE,"BulkDataNTSenderImpl::initialize No Sender Streams configured, streams created in the future will have a default configuration"));

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.30 2011/12/15 14:27:13 bjeram Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.31 2012/01/04 11:33:53 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -189,7 +189,18 @@ void BulkDataNTStream::createDDSParticipant()
 		return;
 	}
 
-	ret = factory_m->get_participant_qos_from_profile(participant_qos, configuration_m.libraryQos.c_str(), configuration_m.profileQos.c_str());
+	// If the profileQoS set on the configuration corresponds to a default stream profile,
+	// then we use the default library as the library to search for it.
+	// Otherwise, it means that the user specified it, so it must belong
+	// to the specified library too
+	char *library = 0;
+	if( configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_RECEIVER_STREAM_PROFILE) == 0 ||
+	    configuration_m.profileQos.compare((const char*)DDSConfiguration::DEFAULT_SENDER_STREAM_PROFILE) == 0 )
+		library = DDSConfiguration::DEFAULT_LIBRARY;
+	else
+		library = configuration_m.libraryQos.c_str();
+
+	ret = factory_m->get_participant_qos_from_profile(participant_qos, library, configuration_m.profileQos.c_str());
 	if (ret!=DDS::RETCODE_OK)
 	{
 		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
@@ -251,21 +262,24 @@ void BulkDataNTStream::addDDSQoSProfile(const DDSConfiguration &cfg)
 
   if (profLen!=0) // is is the first profile
     {
-      factory_qos.profile.string_profile.ensure_length(profLen+1, profLen+1);
+	  profLen += 3;
+      factory_qos.profile.string_profile.ensure_length(profLen, profLen);
     }
   else
     {
-      factory_qos.profile.string_profile.ensure_length(3,3);
-      profLen=2;
+      profLen=5;
+      factory_qos.profile.string_profile.ensure_length(profLen,profLen);
+	  factory_qos.profile.string_profile[0] = DDS_String_dup("<dds>");
     }
 
-  std::string qoSlibTag("<dds><qos_library name=\"");
+  std::string qoSlibTag("<qos_library name=\"");
   qoSlibTag+=cfg.libraryQos;
   qoSlibTag+="\">";
 
-  factory_qos.profile.string_profile[0] = DDS_String_dup(qoSlibTag.c_str());//"<dds><qos_library name=\"DynamicLib\">");
-  factory_qos.profile.string_profile[profLen-1]=DDS_String_dup(cfg.stringProfileQoS.c_str());
-  factory_qos.profile.string_profile[profLen] = DDS_String_dup("</qos_library></dds>");
+  factory_qos.profile.string_profile[profLen-4] = DDS_String_dup(qoSlibTag.c_str());
+  factory_qos.profile.string_profile[profLen-3] = DDS_String_dup(cfg.stringProfileQoS.c_str());
+  factory_qos.profile.string_profile[profLen-2] = DDS_String_dup("</qos_library>");
+  factory_qos.profile.string_profile[profLen-1] = DDS_String_dup("</dds>");
 
   ret = factory_m->set_qos(factory_qos);
   if (ret!=DDS::RETCODE_OK)
