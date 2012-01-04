@@ -19,9 +19,17 @@
 	<_ Name="NEWCONFIG_RECEIVER"  Code="bdNTReceiverLibTest"	
 	   Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
 	   Container="newConfigRecvContainer" ImplLang="cpp" />
+    
+    <_ Name="NEWCONFIG_RECEIVER_1"  Code="bdNTReceiverLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
+        Container="newConfigRecvContainer" ImplLang="cpp" />
 
 	<_ Name="OLDCONFIG_RECEIVER"  Code="bdNTReceiverLibTest"	
 	   Type="IDL:alma/bulkdata/BulkDataReceiver:1.0"
 	   Container="newConfigRecvContainer" ImplLang="cpp" />
+    
+    <_ Name="NEWCONFIG_SENDER_TEST"  Code="bdNTSenderLibTest"	
+        Type="IDL:alma/bulkdata/BulkDataSender:1.0"
+        Container="newConfigRecvContainer" ImplLang="cpp" />
 
 </Components>
