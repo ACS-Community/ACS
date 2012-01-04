@@ -17,6 +17,7 @@
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
 
+#include <Basic_Types.h> // for ACE_UINT64_FORMAT_SPECIFIER_ASCII
 #include "baciROcommonImpl_T.h"
 
 template<ACS_RO_C> 
@@ -140,7 +141,7 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultFamily(const char* ff)
 		}
 		else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily", (LM_DEBUG, "Failed to set alarm fault family for property: %s to: %s. alarmTimerTrig=%d", this->property_mp->getName(), ff, alarmTimerTrig_m));
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultFamily", (LM_DEBUG, "Failed to set alarm fault family for property: %s to: %s. alarmTimerTrig="ACE_UINT64_FORMAT_SPECIFIER_ASCII, this->property_mp->getName(), ff, alarmTimerTrig_m));
 		}//if-else
 	}//if-else
 }//setAlarmFaultFamily
@@ -167,7 +168,7 @@ void baci::ROcommonImpl<ACS_RO_TL>::setAlarmFaultMember(const char* fm)
 		}
 		else
 		{
-			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember", (LM_DEBUG, "Failed to set alarm fault member for property: %s to: %s. alarmTimerTrig=%d", this->property_mp->getName(), fm, alarmTimerTrig_m));
+			ACS_LOG(LM_RUNTIME_CONTEXT, "baci::ROcommonImpl&lt;&gt;::setAlarmFaultMember", (LM_DEBUG, "Failed to set alarm fault member for property: %s to: %s. alarmTimerTrig="ACE_UINT64_FORMAT_SPECIFIER_ASCII, this->property_mp->getName(), fm, alarmTimerTrig_m));
 		}//if-else
 	}//if-else
 

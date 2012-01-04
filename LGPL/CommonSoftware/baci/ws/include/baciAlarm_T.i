@@ -17,6 +17,7 @@
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 */
 
+#include <Basic_Types.h> // for ACE_UINT64_FORMAT_SPECIFIER_ASCII
 #include "baciAlarmSystemMonitor_T.i"
 
 /*********************************** IMPLEMENTATION MonitorEventDispatcher *************************************/
@@ -353,7 +354,7 @@ void baci::AlarmEventStrategy<T, TPROP, TALARM>::setObjectState(const char * sta
   interval_m = convString2LLU(tmpPtr);
 #else
 */
-  sscanf(state, "%s %s %lu %llu %u", 
+  sscanf(state, "%s %s %lu "ACE_UINT64_FORMAT_SPECIFIER_ASCII" %u", 
 	 cname, ior, &tag, &interval_m, &isSuspended);
 //#endif
   /*

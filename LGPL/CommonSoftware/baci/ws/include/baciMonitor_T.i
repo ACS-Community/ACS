@@ -186,7 +186,7 @@ void baci::Monitor<ACS_MONITOR_T>::setObjectState(const char* state,
 
       TCB * cb_p = TCB::_narrow(obj.in());
       
-      ACS_DEBUG_PARAM("baci::Monitor&lt;&gt;::setObjectState", "Narrow OK: '%d'", cb_p);
+      ACS_DEBUG_PARAM("baci::Monitor&lt;&gt;::setObjectState", "Narrow OK: '%p'", (void *)cb_p);
 
       if (cb_p ==TCB::_nil())
 	{

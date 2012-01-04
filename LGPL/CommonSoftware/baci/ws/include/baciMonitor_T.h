@@ -19,7 +19,7 @@
 *License along with this library; if not, write to the Free Software
 *Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciMonitor_T.h,v 1.106 2011/09/02 11:39:00 bjeram Exp $"
+* "@(#) $Id: baciMonitor_T.h,v 1.107 2012/01/04 12:51:41 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,6 +42,7 @@
 #include <logging.h>
 #include <baciRecovery.h>
 #include <baciRecoverableObject.h>
+#include <Basic_Types.h> // for ACE_UINT64_FORMAT_SPECIFIER_ASCII
 
 
 namespace baci {
@@ -116,7 +117,7 @@ char *printLLUasString(unsigned long long);
  * Helper macro used to extract info from "state" to various variables.
  */
 #define HEADER_SCAN_SET_OBJECT_STATE \
-  sscanf(state, "%s %s %lu %llu %llu %llu %s %d %u %u", \
+  sscanf(state, "%s %s %lu "ACE_UINT64_FORMAT_SPECIFIER_ASCII" "ACE_UINT64_FORMAT_SPECIFIER_ASCII" "ACE_UINT64_FORMAT_SPECIFIER_ASCII" %s %d %u %u", \
          cname, ior, &tag, &descIn.normal_timeout, \
          &transmitTime, &timeTrigger, valueTrigger, &mode, \
          &triggerOnValue, &isSuspended);
