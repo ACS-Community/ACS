@@ -20,7 +20,7 @@
  *
  *
  *
- * "@(#) $Id: bdNTTEST1.cpp,v 1.1 2011/07/21 15:14:16 bjeram Exp $"
+ * "@(#) $Id: bdNTTEST1.cpp,v 1.2 2012/01/04 10:43:44 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -67,22 +67,22 @@ int main(int argc, char *argv[])
     try
 	{
 	// Get the specific component we have requested on the command-line
-	bulkdata::BulkDataReceiver_var receiver1 = client.get_object<bulkdata::BulkDataReceiver>("BulkDataReceiverTEST_1", 0, true);
+	bulkdata::BulkDataReceiver_var receiver1 = client.get_object<bulkdata::BulkDataReceiver>(argv[2], 0, true);
 	if (CORBA::is_nil (receiver1.in ()))
 	{
 		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiverTEST_1 Component."));
 		return -1;
 	}
 
-	bulkdata::BulkDataReceiver_var receiver2 = client.get_object<bulkdata::BulkDataReceiver>("BulkDataReceiverTEST_2", 0, true);
+/*	bulkdata::BulkDataReceiver_var receiver2 = client.get_object<bulkdata::BulkDataReceiver>(argv[3], 0, true);
 	if (CORBA::is_nil (receiver2.in ()))
 	{
 		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataReceiverTEST_2 Component."));
 		return -1;
 	}
+*/
 
-
-	bulkdata::BulkDataSender_var sender = client.get_object<bulkdata::BulkDataSender>("BulkDataSenderTEST", 0, true);
+	bulkdata::BulkDataSender_var sender = client.get_object<bulkdata::BulkDataSender>(argv[1], 0, true);
 	if (CORBA::is_nil (sender.in ()))
 	{
 		ACS_SHORT_LOG((LM_INFO,"Could not retrieve BulkDataSenderTEST Component."));
@@ -90,9 +90,9 @@ int main(int argc, char *argv[])
 	}
 
 	receiver1->openReceiver();
-	receiver2->openReceiver();
+//	receiver2->openReceiver();
 
-
+printf("going to call connect\n");
 
 	sender->connect(receiver1.in()); //!! the receiver does not matter
 
@@ -113,7 +113,7 @@ getchar();
 	sender->disconnect();
 
 	receiver1->closeReceiver();
-	receiver2->closeReceiver();
+	//receiver2->closeReceiver();
 	}
 
     catch (AVConnectErrorEx & ex)
