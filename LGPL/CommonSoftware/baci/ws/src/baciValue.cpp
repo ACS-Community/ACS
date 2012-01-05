@@ -18,7 +18,7 @@
 *    License along with this library; if not, write to the Free Software
 *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: baciValue.cpp,v 1.111 2008/12/29 08:34:43 bjeram Exp $"
+* "@(#) $Id: baciValue.cpp,v 1.112 2012/01/05 14:46:55 rtobar Exp $"
 *
 * who       when        what
 * --------  ----------  ----------------------------------------------
@@ -36,7 +36,7 @@
 
 #include "logging.h"
 
-ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.111 2008/12/29 08:34:43 bjeram Exp $")
+ACE_RCSID(baci, baciValue, "$Id: baciValue.cpp,v 1.112 2012/01/05 14:46:55 rtobar Exp $")
 
  using namespace baci;
 
@@ -334,9 +334,9 @@ bool BACIValue::fromString(const ACE_CString value, bool specifyType)
 
   if (specifyType)
     {
-      int nPos0 = value.find('<');
-      int nPos1 = value.find(':');
-      int nPos2 = value.find('>');
+      ACE_CString::size_type nPos0 = value.find('<');
+      ACE_CString::size_type nPos1 = value.find(':');
+      ACE_CString::size_type nPos2 = value.find('>');
 
       if((nPos1 != ACE_CString::npos) && (nPos1 < (nPos2-1)))
 		ulBound = atoi(value.substr(nPos1+1, nPos2-nPos1-1).c_str());
@@ -525,6 +525,9 @@ std::istream& operator>>(std::istream &is, ACE_CString &data)
 // REVISION HISTORY:
 //
 // $Log: baciValue.cpp,v $
+// Revision 1.112  2012/01/05 14:46:55  rtobar
+// Final touches to let baci compiling without warnings (32/64 bits)
+//
 // Revision 1.111  2008/12/29 08:34:43  bjeram
 // aligned BACIValue::typeName and BACIValue::archiveTypeName with BACIValue::Type enum.
 //
