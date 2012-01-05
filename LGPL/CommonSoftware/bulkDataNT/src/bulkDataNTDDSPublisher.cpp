@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.21 2011/12/15 15:09:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.22 2012/01/05 08:05:27 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -135,12 +135,21 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 	{
 		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setDDSTypeCode(ret);
-		ex.setQoS("temp_dw->get_qos()");
+		ex.setQoS("dataWriter_m->get_qos()");
 		throw ex;
 	}//if
 
 	dwQoS.reliability.max_blocking_time.sec = frameTimeoutSec;
 	dwQoS.reliability.max_blocking_time.nanosec = frameTimeoutNanosec;
+
+	ret = dataWriter_m->set_qos(dwQoS);
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSQoSSetProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		ex.setQoS("dataWriter_m->set_qos()");
+		throw ex;
+	}//if
 	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "max_blocking_time set to: %d sec %d nanosec",
 			frameTimeoutSec, frameTimeoutNanosec));
 }
