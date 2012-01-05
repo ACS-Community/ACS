@@ -19,7 +19,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.cpp,v 1.43 2011/10/14 16:57:58 rtobar Exp $"
+ * "@(#) $Id: maciContainerServices.cpp,v 1.44 2012/01/05 07:56:42 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -51,8 +51,10 @@ MACIContainerServices::MACIContainerServices(
   m_manager = maci::Manager::_duplicate(m_containerImpl->getManager());
   m_offShootPOA = PortableServer::POA::_nil();
   componentStateManager_mp = new MACIComponentStateManager(name);
+#ifndef MAKE_VXWORKS
   m_alarmSource = new acsalarm::AlarmSourceImpl();
   m_alarmSource->start();
+#endif
   m_poa = PortableServer::POA::_duplicate(m_containerImpl->getContainerPOA().in());
   m_componentType = ACE_CString(type);
 }
@@ -79,8 +81,10 @@ MACIContainerServices::~MACIContainerServices()
   ACS_TRACE("maci::MACIContainerServices::~MACIContainerServices");
   delete componentStateManager_mp;
   m_usedComponents.unbind_all();
+#ifndef MAKE_VXWORKS
   m_alarmSource->tearDown();
   delete m_alarmSource;
+#endif
 }
 
 ACE_CString_Vector

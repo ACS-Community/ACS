@@ -21,7 +21,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: acsContainerServices.h,v 1.24 2011/10/14 16:57:57 rtobar Exp $"
+ * "@(#) $Id: acsContainerServices.h,v 1.25 2012/01/05 07:55:24 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -437,7 +437,9 @@ namespace maci {
          * @return the alarm source object owned by this Container Services
          * @see alma.ACS.ComponentStates
          */
-        virtual acsalarm::AlarmSource* getAlarmSource()=0;
+#ifndef MAKE_VXWORKS
+       virtual acsalarm::AlarmSource* getAlarmSource()=0;
+#endif
 
        /**
 	* Returns a pointer to the <code>ThreadManager</code>

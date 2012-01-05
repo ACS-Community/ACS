@@ -1,3 +1,4 @@
+
 #ifndef maciContainerServices_h
 #define maciContainerServices_h
 /*******************************************************************************
@@ -21,7 +22,7 @@
  *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
  *
- * "@(#) $Id: maciContainerServices.h,v 1.36 2011/10/14 16:57:58 rtobar Exp $"
+ * "@(#) $Id: maciContainerServices.h,v 1.37 2012/01/05 07:56:48 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -29,7 +30,9 @@
  */
 
 #include <acsutil.h>
+#ifndef MAKE_VXWORKS
 #include <acsContainerServices.h>
+#endif
 #include <maciComponentStateManager.h>
 #include <acscomponentImpl.h>
 #include <logging.h>
@@ -310,8 +313,9 @@ class MACIContainerServices: public ContainerServices
     * @return the alarm source object owned by this Container Services
     * @see alma.ACS.ComponentStates
     */
+#ifndef MAKE_VXWORKS
    acsalarm::AlarmSource* getAlarmSource() { return m_alarmSource; }
-
+#endif
     void fireComponentsUnavailable(ACE_CString_Vector& compNames);
     void fireComponentsAvailable(ACE_CString_Vector& compNames);
 
@@ -340,8 +344,9 @@ class MACIContainerServices: public ContainerServices
   /// The component state manager
   maci::ComponentStateManager* componentStateManager_mp;
 
-  /// The alarm source
+#ifndef MAKE_VXWORKS
   acsalarm::AlarmSource* m_alarmSource;
+#endif
 
 };
 
