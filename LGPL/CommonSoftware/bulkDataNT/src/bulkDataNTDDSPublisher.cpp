@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.22 2012/01/05 08:05:27 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.23 2012/01/05 11:51:26 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -141,7 +141,7 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 
 	dwQoS.reliability.max_blocking_time.sec = frameTimeoutSec;
 	dwQoS.reliability.max_blocking_time.nanosec = frameTimeoutNanosec;
-
+/* TBD does not work
 	ret = dataWriter_m->set_qos(dwQoS);
 	if (ret!=DDS::RETCODE_OK)
 	{
@@ -150,6 +150,7 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 		ex.setQoS("dataWriter_m->set_qos()");
 		throw ex;
 	}//if
+	*/
 	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "max_blocking_time set to: %d sec %d nanosec",
 			frameTimeoutSec, frameTimeoutNanosec));
 }
