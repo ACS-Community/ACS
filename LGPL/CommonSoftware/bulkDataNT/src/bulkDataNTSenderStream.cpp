@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.11 2011/11/15 16:14:21 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.cpp,v 1.12 2012/01/09 15:48:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <ACSBulkDataError.h>   // error definition  ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.11 2011/11/15 16:14:21 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderStream.cpp,v 1.12 2012/01/09 15:48:29 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -58,7 +58,7 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::createFlow(const char* flowName, c
 {
 	AUTO_TRACE(__PRETTY_FUNCTION__);
 	BulkDataNTSenderFlow *flow = 0;
-	if (this->getFlow(flowName)!=0)
+	if (this->existFlow(flowName))
 	{
 		FlowAlreadyExistsExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(streamName_m.c_str());
@@ -110,14 +110,19 @@ BulkDataNTSenderFlow* BulkDataNTSenderStream::getFlow(const char* flowName)
 	}
 	else
 	{
-		return 0;
-				//TBD exception or 0, or flag that indicates
 		FlowNotExistExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(streamName_m.c_str());
 		ex.setFlowName(flowName);
 		throw ex;
 	}
 }//getFlow
+
+
+bool BulkDataNTSenderStream::existFlow(const char* flowName)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	return ( flows_m.find(flowName) != flows_m.end() );
+}//existFlow
 
 void BulkDataNTSenderStream::removeFlowFromMap(const char* flowName)
 {

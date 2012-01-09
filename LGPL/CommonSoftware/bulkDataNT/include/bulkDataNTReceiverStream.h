@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.15 2011/11/29 15:13:00 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.16 2012/01/09 15:48:29 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -105,6 +105,9 @@ public:
 			BulkDataNTCallback *cb=0, bool releaseCB=false);
 
 	BulkDataNTReceiverFlow* getFlow(const char* flowName);
+
+	/// returns true if flow exists otherwise false
+	bool existFlow(const char* flowName);
 
 	/**
 	 *  Create multiple flows (user defined)

@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.19 2011/11/29 15:13:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverStream.i,v 1.20 2012/01/09 15:48:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -69,7 +69,7 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::createFlow(
 	BulkDataNTCallback *callback=0;
 	BulkDataNTReceiverFlow* flow;
 
-	if (this->getFlow(flowName)!=0)
+	if (this->existFlow(flowName))
 	{
 		FlowAlreadyExistsExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 		ex.setStreamName(streamName_m.c_str());
@@ -129,6 +129,13 @@ BulkDataNTReceiverFlow* BulkDataNTReceiverStream<TReceiverCallback>::getFlow(con
 		throw ex;
 	}
 }//getFlow
+
+template<class TReceiverCallback>
+bool BulkDataNTReceiverStream<TReceiverCallback>::existFlow(const char* flowName)
+{
+	AUTO_TRACE(__PRETTY_FUNCTION__);
+	return ( receiverFlows_m.find(flowName) != receiverFlows_m.end() );
+}//existFlow
 
 template<class TReceiverCallback>
 void BulkDataNTReceiverStream<TReceiverCallback>::removeFlowFromMap(const char* flowName)

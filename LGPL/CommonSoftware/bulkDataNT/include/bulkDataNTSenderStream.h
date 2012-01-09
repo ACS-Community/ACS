@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.7 2011/11/15 16:13:47 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.8 2012/01/09 15:48:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -85,7 +85,8 @@ public:
 
 	BulkDataNTSenderFlow* getFlow(const char* flowName);
 
-
+	/// returns true if flow exists otherwise false
+	bool existFlow(const char* flowName);
 
 protected:
 	virtual void removeFlowFromMap(const char* flow);
