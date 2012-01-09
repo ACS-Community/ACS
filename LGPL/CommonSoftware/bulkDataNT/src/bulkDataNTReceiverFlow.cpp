@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.17 2012/01/09 14:02:10 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.18 2012/01/09 14:05:53 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -29,7 +29,7 @@
 #include <AV/FlowSpec_Entry.h>  // we need it for TAO_Tokenizer ??
 
 
-static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.17 2012/01/09 14:02:10 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTReceiverFlow.cpp,v 1.18 2012/01/09 14:05:53 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 using namespace AcsBulkdata;
@@ -46,6 +46,8 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
   std::string streamName, topicName;
+  streamName = receiverStream_m->getName();
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to create Receiver Flow: %s @ Stream: %s ...", flowName_m.c_str(), streamName.c_str()));
 
   callback_m->setStreamName(receiverStream_m->getName().c_str());
   callback_m->setFlowName(flowName);
@@ -57,14 +59,13 @@ BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *rec
   // should be refactor to have just one object for comunication !! DDSDataWriter or similar
   ddsSubscriber_m = new BulkDataNTDDSSubscriber(receiverStream_m->getDDSParticipant(), rcvCfg);
 
-  streamName = receiverStream_m->getName();
   topicName =  streamName + "#" + flowName_m;
   ddsTopic_m = ddsSubscriber_m->createDDSTopic(topicName.c_str());
 
   dataReaderListener_m = new BulkDataNTReaderListener(topicName.c_str(), callback_m);
 
   ddsDataReader_m= ddsSubscriber_m->createDDSReader(ddsTopic_m, dataReaderListener_m);
-  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Receiver Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Receiver Flow: %s @ Stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
 }//BulkDataNTReceiverFlow
 
 
