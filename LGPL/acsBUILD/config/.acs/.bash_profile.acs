@@ -20,7 +20,7 @@
 # MA 02111-1307  USA
 #
 #
-# "@(#) $Id: .bash_profile.acs,v 1.116 2011/11/14 12:34:02 hsommer Exp $"
+# "@(#) $Id: .bash_profile.acs,v 1.117 2012/01/09 14:45:40 tstaig Exp $"
 #
 #
 #
@@ -411,7 +411,7 @@ fi
 # If you are running RedHat 7.2, 7.3 or 9 then you need to get GNU and TCL&TK from ACS
 if [ X"$TCLTK_ROOT" = X ] || [ X"$ACS_RETAIN" = X ]
 then
-	if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk -o "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" ] 
+	if [ -d $ALMASW_ROOTDIR/$ALMASW_RELEASE/tcltk -o "${DISTRO}-${REL}" = "RHLX-9" -o "${DISTRO}-${REL}" = "RHLX-7.3" -o  "${DISTRO}-${REL}" = "RHLX-7.3" -o "$OSYSTEM"="$CYGWIN_VER" ] 
 	then 
    		TCLTK_ROOT=$ALMASW_INSTDIR/tcltk
 	else
@@ -509,9 +509,10 @@ then
 elif [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
     ACE_ROOT=$ALMASW_INSTDIR/TAO/ACE_wrappers
+    DDS_ROOT=$DDS_ROOT_DIR/cygwin
     if [ X"$ACS_STARTUP_TIMEOUT_MULTIPLIER" = X ]
     then
-       ACS_STARTUP_TIMEOUT_MULTIPLIER=2
+       ACS_STARTUP_TIMEOUT_MULTIPLIER=5
     fi
 else
     ACE_ROOT=IMPOSSIBLE_TO_DETERMINE_THE_SYSTEM_NAME_OR_OS_NOT_SUPPORTED
@@ -1331,7 +1332,7 @@ MANPATH=$MANPATH:
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
-    PATH_SEP=";"
+    PATH_SEP=":"
 else
     PATH_SEP=":"
 fi
@@ -1355,7 +1356,7 @@ CLASSPATH=$JACORB_HOME/lib/jacorb.jar$PATH_SEP$JACORB_HOME/lib/idl.jar$PATH_SEP$
 PYTHONVER=`LD_LIBRARY_PATH=$PYTHON_ROOT/lib $PYTHON_ROOT/bin/python -c "import sys; print '%d.%d' % (sys.version_info[0],sys.version_info[1])"`
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
-    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
+    PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
 else
     PYTHONPATH="$OMNI_ROOT/lib/python${PATH_SEP}$OMNI_ROOT/lib${PATH_SEP}$PYTHON_ROOT/lib/python$PYTHONVER/site-packages${PATH_SEP}$OMNI_ROOT/lib/python/site-packages"
 fi
@@ -1375,7 +1376,7 @@ then
    tmp_list=""
    for item_list in $INTLIST_DIRS
    do
-      tmp_list=$tmp_list$item_list/lib/python/site-packages:
+      tmp_list=$tmp_list$item_list/lib/python/site-packages${PATH_SEP}
    done
 
    PYTHONPATH=$tmp_list$PYTHONPATH
@@ -1383,7 +1384,7 @@ fi
 
 if [ X"$INTROOT" != X ]
 then
-   PYTHONPATH=$INTROOT/lib/python/site-packages:$PYTHONPATH
+   PYTHONPATH=$INTROOT/lib/python/site-packages${PATH_SEP}$PYTHONPATH
 fi
 
 ########################################
@@ -1402,6 +1403,11 @@ then
 	PATH=../bin:$PATH
 fi
 
+if [ "$OSYSTEM" = "$CYGWIN_VER" ]
+then
+	PATH=$ALMASW_INSTDIR/CygwinWrappers${PATH_SEP}$PATH
+fi
+
 ########################################
 # Export variables.
 #
@@ -1418,7 +1424,9 @@ export ACS_TMP
 
 if [ "$OSYSTEM" = "$CYGWIN_VER" ]
 then
-    export CYGWIN_VER
+	export CYGWIN_VER
+	export LOGNAME=`logname`
+	export CYGWIN_ROOT=`cygpath -m /`
 fi
 
 unset MODPATH
