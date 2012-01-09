@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.30 2012/01/09 10:08:23 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.31 2012/01/09 14:06:43 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.30 2012/01/09 10:08:23 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.31 2012/01/09 14:06:43 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -43,14 +43,16 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     ddsPublisher_m(0), ddsTopic_m(0), writerReaderListener_m(0), ddsDataWriter_m(0), frame_m(0)
 {
   AUTO_TRACE(__PRETTY_FUNCTION__);
-  std::string topicName;
+  std::string streamName, topicName;
+  streamName = senderStream_m->getName();
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Going to create Sender Flow: %s @ stream: %s ...", flowName_m.c_str(), streamName.c_str()));
 
   senderStream->addDDSQoSProfile(sndCfg);
 
   // should be reactor to have just one object for communication !! DDSDataWriter or similar
   ddsPublisher_m = new BulkDataNTDDSPublisher(senderStream_m->getDDSParticipant(), sndCfg);
 
-  topicName = senderStream_m->getName() + "#" + flowName_m;
+  topicName =  streamName + "#" + flowName_m;
   ddsTopic_m = ddsPublisher_m->createDDSTopic(topicName.c_str());
 
   writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str());
@@ -67,6 +69,7 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
     }//if
 
   setACKsTimeout(sndCfg.ACKsTimeout);
+  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Sender Flow: %s @ stream: %s has been created.", flowName_m.c_str(), streamName.c_str()));
 }//BulkDataNTSenderFlow
 
 
