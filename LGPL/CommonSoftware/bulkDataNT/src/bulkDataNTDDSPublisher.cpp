@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.23 2012/01/05 11:51:26 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.24 2012/01/09 10:07:46 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -31,10 +31,11 @@ using namespace ACSErrTypeCommon;
 using namespace ACS_DDS_Errors;
 
 
-BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg) :
-		BulkDataNTDDS(p, ddsCfg)
+BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const SenderFlowConfiguration &sfCfg) :
+		BulkDataNTDDS(p, sfCfg), publisher_m(0), dataWriter_m(0)
 {
 	publisher_m = createDDSPublisher();
+	frameTimeout_m = sfCfg.frameTimeout;
 }
 
 BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
@@ -42,6 +43,8 @@ BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
 	try
 	{
 		destroyDDSPublisher();
+		publisher_m=0;
+		//TBD what should we do about dataWriter_m ?
 	}
 	catch(ACSErr::ACSbaseExImpl &ex)
 	{
@@ -90,6 +93,8 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 		throw ex;
 	}
 
+	// DW must be created disabled, that is achieved by setting  autoenable_created_entities QoS of publisher to false
+	// which is set as default value in bulkDataNTDefaultQosProfiles.xml
 	DDS::DataWriter* temp_dw = publisher_m->create_datawriter_with_profile(
 			topic,
 			ddsCfg_m.libraryQos.c_str(), ddsCfg_m.profileQos.c_str(),
@@ -103,7 +108,19 @@ ACSBulkData::BulkDataNTFrameDataWriter* BulkDataNTDDSPublisher::createDDSWriter(
 		throw ex;
 	}//if
 
+	// we need dataWriter_m before setting the timeout
 	dataWriter_m = ACSBulkData::BulkDataNTFrameDataWriter::narrow(temp_dw);
+
+	setWriteBlockingTime(frameTimeout_m);
+
+	DDS::ReturnCode_t ret = dataWriter_m->enable(); // we can enable DW after we set blocking time
+	if (ret!=DDS::RETCODE_OK)
+	{
+		DDSDWEnableProblemExImpl ex(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+		ex.setDDSTypeCode(ret);
+		throw ex;
+	}//if
+
 	ACS_SHORT_LOG((LM_DEBUG, "Created DDS DataWriter"));
 	//? is it ok to narrow a local temp_dw and return it
 	return dataWriter_m;
@@ -141,7 +158,7 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 
 	dwQoS.reliability.max_blocking_time.sec = frameTimeoutSec;
 	dwQoS.reliability.max_blocking_time.nanosec = frameTimeoutNanosec;
-/* TBD does not work
+
 	ret = dataWriter_m->set_qos(dwQoS);
 	if (ret!=DDS::RETCODE_OK)
 	{
@@ -150,7 +167,6 @@ void BulkDataNTDDSPublisher::setWriteBlockingTime(double frameTimeout)
 		ex.setQoS("dataWriter_m->set_qos()");
 		throw ex;
 	}//if
-	*/
 	ACS_LOG(LM_RUNTIME_CONTEXT, __PRETTY_FUNCTION__, (LM_DEBUG, "max_blocking_time set to: %d sec %d nanosec",
 			frameTimeoutSec, frameTimeoutNanosec));
 }
