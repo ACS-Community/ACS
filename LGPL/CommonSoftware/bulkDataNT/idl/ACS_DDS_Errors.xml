@@ -25,6 +25,10 @@
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
     </ErrorCode>
     
+    <ErrorCode name="DDSDWEnableProblem" shortDescription="Problem to enable DDS DW" description="Problem to enable DDS data writer">
+        <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
+    </ErrorCode>
+    
     <ErrorCode name="DDSRegisterTypeProblem" shortDescription="Problem to register type" description="Problem to register type">
         <Member name="DDSTypeCode" type="long" description="Returned DDS type code" />
         <Member name="TypeName" type="string" description="Type name" />
