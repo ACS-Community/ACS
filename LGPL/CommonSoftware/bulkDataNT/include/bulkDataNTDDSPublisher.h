@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.11 2011/12/15 15:09:20 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.h,v 1.12 2012/01/09 10:06:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -52,7 +52,7 @@ public:
 	/**
 	 * Constructor
 	 */
-	BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const DDSConfiguration &ddsCfg);
+	BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const SenderFlowConfiguration &sfCfg);
 
 
 	/**
@@ -61,14 +61,10 @@ public:
 	virtual ~BulkDataNTDDSPublisher();
 
 
-
 	//should return generic writer and have another method in Base class that narrows
 	ACSBulkData::BulkDataNTFrameDataWriter* createDDSWriter(DDS::Topic *topic, DDS::DataWriterListener *listener);
 
-
 	void destroyDDSWriter(ACSBulkData::BulkDataNTFrameDataWriter* dw);
-
-	void setWriteBlockingTime(double frameTimeout);
 
 protected:
 	DDS::Publisher *publisher_m;
@@ -79,6 +75,9 @@ protected:
 	void  destroyDDSPublisher();
 
 	ACSBulkData::BulkDataNTFrameDataWriter* dataWriter_m; /// DDS data writer
+
+	void setWriteBlockingTime(double frameTimeout); /// set writing block time QoS
+	double frameTimeout_m; ///frame timeout read from #SenderFlowConfiguration
 
 	/// disable default - empty constructor
 	BulkDataNTDDSPublisher();
