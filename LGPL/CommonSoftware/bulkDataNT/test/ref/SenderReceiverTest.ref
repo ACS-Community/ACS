@@ -6,14 +6,16 @@
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
 1 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
-1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::BulkDataNTReceiverStream(const char*, const AcsBulkdata::ReceiverStreamConfiguration&) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTReceiverFlow] Going to create Receiver Flow: 00 @ Stream: DefaultStream ...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
 1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
@@ -25,6 +27,7 @@
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#00 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTReceiverFlow] Receiver Flow: 00 @ Stream: DefaultStream has been created.
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - 1:[ 00 ]
@@ -32,6 +35,7 @@
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::getFlow(const char*) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Entering...
+1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTReceiverFlow] Going to create Receiver Flow: 01 @ Stream: DefaultStream ...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTCallback::setCBReceiveProcessTimeout(double)] cbReceiveProcessTimeout set to: 0.010000 sec
 1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
@@ -43,6 +47,7 @@
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - BulkDataNTReaderListener] 
 1 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataReader* AcsBulkdata::BulkDataNTDDSSubscriber::createDDSReader(DDS::Topic*, DDS::DataReaderListener*)] Exiting... Function took XYZ.ASD sec
+1 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTReceiverFlow] Receiver Flow: 01 @ Stream: DefaultStream has been created.
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow::BulkDataNTReceiverFlow(AcsBulkdata::BulkDataNTReceiverStreamBase*, const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool)] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverFlow* AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::createFlow(const char*, const AcsBulkdata::ReceiverFlowConfiguration&, AcsBulkdata::BulkDataNTCallback*, bool) [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - 2:[ 00 01 ]
@@ -53,14 +58,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSFactory()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Entering...
 2 - [D0000|ENABLE]DDS_DomainParticipantDiscovery_add_peer:no peer locators for: peer descriptor(s) = "builtin.shmem://", transports = "", enabled_transports = ""
-2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTStream] Stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::createDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTStream::BulkDataNTStream(const char*, const AcsBulkdata::StreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderStream::BulkDataNTSenderStream(const char*, const AcsBulkdata::SenderStreamConfiguration&)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderStream::BulkDataNTSenderStream(const char*, const AcsBulkdata::SenderStreamConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowStatusCallback*, bool)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::getFlow(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::getFlow(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Going to create Sender Flow: 00 @ stream: DefaultStream ...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
@@ -70,30 +77,33 @@
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTWriterListener::BulkDataNTWriterListener(const char*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 00 @ stream: DefaultStream has been created.
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowStatusCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowStatusCallback*, bool)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::getFlow(const char*)] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::getFlow(const char*)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Going to create Sender Flow: 01 @ stream: DefaultStream ...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTDDS::BulkDataNTDDS] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Entering...
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Publisher* AcsBulkdata::BulkDataNTDDSPublisher::createDDSPublisher()] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTWriterListener::BulkDataNTWriterListener(const char*)] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS topic: DefaultStream#01
 2 - ----------T--:--:--.--- [GlobalLogger - DDS::Topic* AcsBulkdata::BulkDataNTDDS::createDDSTopic(const char*)] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTWriterListener::BulkDataNTWriterListener(const char*)] 
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Entering...
+2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Created DDS DataWriter
 2 - ----------T--:--:--.--- [GlobalLogger - ACSBulkData::BulkDataNTFrameDataWriter* AcsBulkdata::BulkDataNTDDSPublisher::createDDSWriter(DDS::Topic*, DDS::DataWriterListener*)] Exiting... Function took XYZ.ASD sec
-2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTDDSPublisher::setWriteBlockingTime(double)] max_blocking_time set to: 5 sec 0 nanosec
-2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTSenderFlow::setACKsTimeout(double)] ACKsTimeout set to: 1 sec 0 nanosec
+2 - ----------T--:--:--.--- [GlobalLogger - BulkDataNTSenderFlow] Sender Flow: 01 @ stream: DefaultStream has been created.
+2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow::BulkDataNTSenderFlow(AcsBulkdata::BulkDataNTSenderStream*, const char*, const AcsBulkdata::SenderFlowConfiguration&)] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTSenderFlow* AcsBulkdata::BulkDataNTSenderStream::createFlow(const char*, const AcsBulkdata::SenderFlowConfiguration&, AcsBulkdata::BulkDataNTSenderFlowStatusCallback*, bool)] Exiting... Function took XYZ.ASD sec
 2 - DefaultStream#00 BulkDataNTWriterListener::on_publication_match
 2 - DefaultStream#00 ==========> BulkDataNTWriterListener::on_reliable_reader_activity_changed:
@@ -119,16 +129,16 @@
 2 - ----------T--:--:--.--- [GlobalLogger - unsigned int AcsBulkdata::BulkDataNTSenderFlow::getNumberOfReceivers()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes to 1 receivers
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] cbReceive took too long (type=57, code=21) ActualProcessTime="X.YZ" ProcessTimeoutSec="0.01" StreamFlowName="DefaultStream#00"
 1 - DefaultStream#00 Received all data from sendData: 65000 Bytes in XXXXsecs. => Rate: XXXMBytes/sec
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
 1 - DefaultStream#00 LOST samples: 		 total_count: 0 total_count_change: 0
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] cbReceive took too long (type=57, code=21) ActualProcessTime="X.YZ" ProcessTimeoutSec="0.01" StreamFlowName="DefaultStream#00"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
 2 - ----------T--:--:--.--- [GlobalLogger - ] Transfer rate: 0.000000
+2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 01
+1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" StreamFlowName="DefaultStream#01" FrameLength="1000"
 1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" StreamFlowName="DefaultStream#01" FrameLength="64000"
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
-1 - ----------T--:--:--.--- [GlobalLogger - on_data_available] Wrong frame order (type=57, code=10) State="0" DataType="BD_DATA" TotalFrameCount="0" FrameCount="0" StreamFlowName="DefaultStream#01" FrameLength="1000"
 1 -  *************************   New sendData @ DefaultStream#00 *******************************
 2 - ----------T--:--:--.--- [GlobalLogger - ] Going to send: 65000 Bytes = 1*64000(=64000) + 1000 to flow: 00
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
@@ -144,8 +154,8 @@
 1 - DefaultStream#00 Received sendStop
 1 - ===============================================================
 1 - cbStop
-2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
 1 - ----------T--:--:--.--- [BulkDataNT:DefaultStream#01 - on_data_available] On DefaultStream#01 stop (BD_STOP) arrived in start state: no parameter data (startSend) has arrived!
+2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
 2 - ----------T--:--:--.--- [GlobalLogger - ] unacknowledged_sample_count (X) before waiting: Y
 1 - cbStop
 2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTSenderFlow::~BulkDataNTSenderFlow()] Entering...
@@ -192,5 +202,5 @@
 1 - ----------T--:--:--.--- [GlobalLogger - AcsBulkdata::BulkDataNTReceiverStream<TReceiverCallback>::~BulkDataNTReceiverStream() [with TReceiverCallback = TestCB]] Exiting... Function took XYZ.ASD sec
 1 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Entering...
 1 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Entering...
-2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
 2 - ----------T--:--:--.--- [GlobalLogger - void AcsBulkdata::BulkDataNTStream::destroyDDSParticipant()] Exiting... Function took XYZ.ASD sec
+2 - ----------T--:--:--.--- [GlobalLogger - virtual AcsBulkdata::BulkDataNTStream::~BulkDataNTStream()] Exiting... Function took XYZ.ASD sec
