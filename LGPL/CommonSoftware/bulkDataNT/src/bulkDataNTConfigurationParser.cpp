@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.23 2012/01/04 11:33:53 rtobar Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.24 2012/01/09 10:02:49 rtobar Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -115,7 +115,7 @@ BulkDataConfigurationParser::~BulkDataConfigurationParser() {
 	// Terminate the XML parser objects
 	m_writer->release();
 	delete m_parser;
-	delete m_baseLibrary;
+	ACE_OS::free((void *)m_baseLibrary);
 	XMLPlatformUtils::Terminate();
 }
 
@@ -245,10 +245,9 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 		}
 
 		// Create the configuration structures, we fill them afterwards
-		list<string> profiles;
 		SenderCfg   senderCfg;
 		ReceiverCfg receiverCfg;
-		bool streamHasProfile = false;
+		bool anyProfileFound = false;
 		if( parsingInfo.type == SENDER )
 			senderCfg.streamCfg = new SenderStreamConfiguration();
 		else
@@ -278,8 +277,18 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 				}
 
 				// Now take the rest of the QoS node children and build up the profile string
-				profiles.push_back( getQosProfile(streamName.get(), parsingInfo.defaultStreamProfileName, streamChildNode) );
-				streamHasProfile = true;
+				string profileQoS = getQosProfile(streamName.get(), parsingInfo.defaultStreamProfileName, streamChildNode);
+				if( parsingInfo.type == SENDER ) {
+					senderCfg.streamCfg->libraryQos       = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
+					senderCfg.streamCfg->profileQos       = streamName.get();
+					senderCfg.streamCfg->stringProfileQoS = profileQoS;
+				}
+				else {
+					receiverCfg.streamCfg->libraryQos       = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
+					receiverCfg.streamCfg->profileQos       = streamName.get();
+					receiverCfg.streamCfg->stringProfileQoS = profileQoS;
+				}
+				anyProfileFound = true;
 			}
 
 			// Process the Flow nodes
@@ -366,55 +375,40 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 					string profileName(streamName.get());
 					profileName.append("#");
 					profileName.append(flowName.get());
-					profiles.push_back( getQosProfile(profileName.c_str(), parsingInfo.defaultFlowProfileName, childFlowNode) );
+					string profileQoS = getQosProfile(profileName.c_str(), parsingInfo.defaultFlowProfileName, childFlowNode);
 
 					// and let the flow have it's right profile name configured
+					// NOTE: We need to set the libraryQoS into the *stream* configuration object, since the
+					// *stream* configuration object is later used to fill up the DDS Factory QoS.
 					if( parsingInfo.type == SENDER ) {
 						SenderFlowConfiguration *flowConfig = senderCfg.flowsCfgMap[flowName.get()];
 						flowConfig->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 						flowConfig->profileQos = profileName;
+						flowConfig->stringProfileQoS = profileQoS;
+
+//						senderCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 					}
 					else {
 						ReceiverFlowConfiguration *flowConfig = receiverCfg.flowsCfgMap[flowName.get()];
 						flowConfig->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 						flowConfig->profileQos = profileName;
+						flowConfig->stringProfileQoS = profileQoS;
+
+//						receiverCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
 					}
+
+					anyProfileFound = true;
 				}
 			}
 
 		} // for(streamChildrenNodesList)
 
-		// If the stream has a profile, set the profileQoS into the stream configuration
-		// The library is set later, in the next step
-		if( streamHasProfile ) {
-			if( parsingInfo.type == SENDER )
-				senderCfg.streamCfg->profileQos = streamName.get();
-			else
-				receiverCfg.streamCfg->profileQos = streamName.get();
-		}
-		else {
-//			ACS_SHORT_LOG((LM_INFO,"Stream '%s' has no QoS settings, will use the default lib/profile", streamName.get()));
-		}
 
-		// if any profile was found, we need to set the libraryQoS into the *stream* configuration object
-		// (independant of whether the collected profiles correspond to streams or flows), since the
-		// *stream* configuration object is later used to fill up the DDS Factory QoS.
-		// We also need the full profile string to be set, so we construct it
 		// Finally, we add the configuration to our map
-		if( parsingInfo.type == SENDER ) {
-			if( profiles.size() > 0 ) {
-				senderCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
-		    	senderCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
-			}
+		if( parsingInfo.type == SENDER )
 		    senderConfigMap_m[streamName.get()] = senderCfg;
-		}
-		else {
-			if( profiles.size() > 0 ) {
-				receiverCfg.streamCfg->libraryQos = (m_baseLibrary != 0 ? m_baseLibrary : DYNAMIC_LIBRARY_NAME);
-				receiverCfg.streamCfg->stringProfileQoS = getStrURIforStream(profiles);
-			}
+		else
 			receiverConfigMap_m[streamName.get()] = receiverCfg;
-		}
 
 	} // for(streamNodesList)
 
