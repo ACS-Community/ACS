@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTStream.cpp,v 1.31 2012/01/04 11:33:53 rtobar Exp $"
+* "@(#) $Id: bulkDataNTStream.cpp,v 1.32 2012/01/09 14:11:24 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -42,30 +42,31 @@ BulkDataNTStream::BulkDataNTStream(const char* name, const StreamConfiguration &
 
   try
   {
-      //RTI logging
-      NDDSConfigLogger::get_instance()->set_verbosity_by_category(
-          NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity)); //TBD: should be done just once
+	  //RTI logging
+	  NDDSConfigLogger::get_instance()->set_verbosity_by_category(
+			  NDDS_CONFIG_LOG_CATEGORY_API,  (NDDS_Config_LogVerbosity)(configuration_m.DDSLogVerbosity)); //TBD: should be done just once
 
-      //   if (factoryRefCount_m==0)
-      //     {
-      createDDSFactory();  //it is enough to have one factory
-      //     }
+	  //   if (factoryRefCount_m==0)
+	  //     {
+	  createDDSFactory();  //it is enough to have one factory
+	  //     }
 
-      addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
+	  addDDSQoSProfile(cfg);  //add QoS profile for stream (and flows)
 
-  //    if (participantRefCount_m==0)
-   //     {
-          // TBD: for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
-          // also a participant per stream
-          createDDSParticipant();     //should be somewhere else in initialize or createStream
-     //   }
-     // participantRefCount_m++;   // but we need to know how many users of participant do we have
+	  //    if (participantRefCount_m==0)
+	  //     {
+	  // TBD: for performance reason (number of threads) is better to have just one participant, but it might be good to have possibility to create
+	  // also a participant per stream
+	  createDDSParticipant();     //should be somewhere else in initialize or createStream
+	  //   }
+	  // participantRefCount_m++;   // but we need to know how many users of participant do we have
+	  ACS_LOG(LM_RUNTIME_CONTEXT, __FUNCTION__, (LM_DEBUG, "Stream: %s has been created.", streamName_m.c_str()));
   }catch(const ACSErr::ACSbaseExImpl &e)
   {
-      destroyDDSFactory();
-      StreamCreateProblemExImpl ex (e, __FILE__, __LINE__, __PRETTY_FUNCTION__);
-      ex.setStreamName(name);
-      throw ex;
+	  destroyDDSFactory();
+	  StreamCreateProblemExImpl ex (e, __FILE__, __LINE__, __PRETTY_FUNCTION__);
+	  ex.setStreamName(name);
+	  throw ex;
   }//try-catch
 }//BulkDataNTStream
 
