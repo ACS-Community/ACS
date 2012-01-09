@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.29 2012/01/04 08:23:01 rtobar Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.30 2012/01/09 10:08:23 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.29 2012/01/04 08:23:01 rtobar Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.30 2012/01/09 10:08:23 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -55,9 +55,6 @@ BulkDataNTSenderFlow::BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 
   writerReaderListener_m = new BulkDataNTWriterListener(topicName.c_str());
   ddsDataWriter_m= ddsPublisher_m->createDDSWriter(ddsTopic_m, writerReaderListener_m);
-
-  // now we have a writer so we can set blocking time QoS
-  ddsPublisher_m->setWriteBlockingTime(sndCfg.frameTimeout);
 
   //RTI probably is enough to create frame once
   frame_m = ACSBulkData::BulkDataNTFrameTypeSupport::create_data();
