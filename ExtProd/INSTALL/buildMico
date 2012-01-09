@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ACS project
 #
-# "@(#) $Id: buildMico,v 1.14 2011/05/25 15:48:47 tstaig Exp $"
+# "@(#) $Id: buildMico,v 1.15 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -88,6 +88,9 @@ echo ""
 echo "==== Patching mico (needed for gcc >= 4.3)"
 patch -p0 < mico-2.3.13-limits.patch
 patch -p0 < mico-2.3.13-tk_recursive.patch
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  patch mico/include/mico/os-misc.h < mico-2.3.13-gettimeofday.patch
+fi
 echo "done Patching mico ===="
 echo ""
 

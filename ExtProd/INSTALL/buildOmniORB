@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildOmniORB,v 1.21 2011/07/29 20:44:10 hsommer Exp $"
+# "@(#) $Id: buildOmniORB,v 1.22 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -92,7 +92,7 @@ cd $OMNI_ROOT
 #
 # change configuration files
 #
-if [ "$OS" = "LINUX" ] || [ "$OS" = "SOLARIS" ]
+if [ "$OS" = "LINUX" ] || [ "$OS" = "SOLARIS" ] || [ "$OS" = "$CYGWIN_VER" ]
 then
     mkdir build
     cd build

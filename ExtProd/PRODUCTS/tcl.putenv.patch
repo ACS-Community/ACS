@@ -1,0 +1,10 @@
+--- tclEnv.c	2007-08-07 02:04:48.000000000 -0300
++++ tclEnv.c.fixed	2010-10-22 15:43:49.953125000 -0300
+@@ -257,6 +257,7 @@
+ #else
+     environ[index] = p;
+ #endif
++    putenv(p);
+ 
+     /*
+      * Watch out for versions of putenv that copy the string (e.g. VC++).

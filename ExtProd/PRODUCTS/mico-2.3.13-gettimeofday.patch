@@ -1,0 +1,15 @@
+--- ../PRODUCTS/os-misc.h	2010-08-24 14:25:43.218750000 -0300
++++ ../PRODUCTS/mico/include/mico/os-misc.h	2010-08-24 14:25:55.203125000 -0300
+@@ -288,9 +288,9 @@
+ #include <sys/types.h>
+ #include <sys/time.h>
+ 
+-#ifdef __CYGWIN32__
+-extern "C" int gettimeofday (struct timeval *, struct timezone *);
+-#endif
++//#ifdef __CYGWIN32__
++//extern "C" int gettimeofday (struct timeval *, struct timezone *);
++//#endif
+ 
+ struct OSMisc {
+     typedef long long longlong;

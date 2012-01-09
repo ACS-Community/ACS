@@ -4,7 +4,7 @@
 #
 # build
 #
-# "@(#) $Id: buildTools,v 1.38 2011/09/08 21:40:54 javarias Exp $"
+# "@(#) $Id: buildTools,v 1.39 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -93,7 +93,7 @@ fi
 # To be noted: if OS is not Solaris, RH9, RH 7.3 or RH 7.2 GNU tools must
 # not be compiled, but we use what is installed with the system 
 # see later on for Tcl/Tk
-if [ "$OS" != "LINUX" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
+if [ "$OS" != "LINUX" -a "$OS" != "$CYGWIN_VER" -o "${DISTRO}-${REL}" = "RHLX-7.2"  -o "${DISTRO}-${REL}" = "RHLX-7.3"  -o "${DISTRO}-${REL}" = "RHLX-9" ]
 then
 	echo "Build GNU tools only on RedHat 7.2, 7.3 and 9 and Solaris machines"
 	echo -n "buildGNU"
@@ -174,12 +174,20 @@ fi
 # I have to use the --login option, because on sun -l does not work.
 
 echo -n "buildTAO"
-bash --login ./buildTAO &>/dev/null &&  echo_success || echo_failure
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  ./buildTAO &>/dev/null &&  echo_success || echo_failure
+else
+  bash --login ./buildTAO &>/dev/null &&  echo_success || echo_failure
+fi
 
 echo -n "buildDDS"
 ./buildDDS  &&  echo_success || echo_failure
 echo -n "buildOpenSpliceDDS"
-bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+else
+  bash --login ./buildOpenSpliceDDS &>/dev/null  &&  echo_success || echo_failure
+fi
 echo -n "buildAnt"
 ./buildAnt && echo_success || echo_failure
 echo  -n "buildJacORB" 
@@ -198,6 +206,12 @@ echo -n "buildEclipse"
 ./buildEclipse && echo_success || echo_failure
 echo -n "buildBoost"
 ./buildBoost && echo_success || echo_failure
+#Install Cygwin Java Wrappers
+if [ "$OS" = "$CYGWIN_VER" ]; then
+  echo "Install Cygwin Wrappers"
+  cp -r ../PRODUCTS/CygwinWrappers $ALMASW_INSTDIR/CygwinWrappers
+  chmod +x $ALMASW_INSTDIR/CygwinWrappers/*
+fi
 
 # if the user wants RTOS he/she has to build it by hand using buildRTOS
 # from the directory ../RTOS.

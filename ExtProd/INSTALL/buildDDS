@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildDDS,v 1.6 2010/10/25 20:14:23 javarias Exp $"
+# "@(#) $Id: buildDDS,v 1.7 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -25,6 +25,9 @@ CURR_DIR=`pwd`
 if [ "$OS" = "LINUX" ]
 then 
   OSTAG=linux
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  OSTAG=cygwin
 else
   echo "OS $OS not supported"
   exit -1
@@ -56,8 +59,12 @@ echo ""
 NUM_CPU=`grep -c processor  /proc/cpuinfo`
 
 cd DDS
-$ACE_ROOT/MPC/clone_build_tree.pl -f linux
-cd build/linux
+$ACE_ROOT/MPC/clone_build_tree.pl -f $OSTAG
+cd build/$OSTAG
+if [ "$OS" = "$CYGWIN_VER" ]
+then
+  patch -p1 -d . $CURR_DIR/../PRODUCTS/OpenDDS.cygwin.patch
+fi
 export DDS_ROOT=$PWD
 LD_LIBRARY_PATH=$DDS_ROOT/lib:$LD_LIBRARY_PATH
 

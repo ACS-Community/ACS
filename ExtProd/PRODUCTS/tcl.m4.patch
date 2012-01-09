@@ -1,0 +1,27 @@
+--- unix/tcl.m4.orig	2010-10-01 11:38:48.078125000 -0300
++++ unix/tcl.m4	2010-10-01 11:38:02.781250000 -0300
+@@ -1333,6 +1333,24 @@
+ 	        fi
+ 	    fi
+ 	    ;;
++	CYGWIN*)
++	    if test "$have_dl" = "no" ; then
++	       AC_CHECK_LIB(ltdl, dlopen, have_dl=yes, have_dl=no)
++	       DL_LIBS="-lltdl"
++	    else
++	       DL_LIBS="-ldl"
++	    fi
++	    SHLIB_CFLAGS=""
++	    SHLIB_LD_LIBS='${LIBS}'
++	    SHLIB_SUFFIX=".dll"
++
++	    SHLIB_LD="${CC} -shared"
++	    DL_OBJS="tclLoadDl.o"
++	    LDFLAGS=""
++	    CC_SEARCH_FLAGS='-Wl,-rpath,${LIB_RUNTIME_DIR}'
++	    LD_SEARCH_FLAGS=${CC_SEARCH_FLAGS}
++	    AC_DEFINE(HAVE_TM_ZONE)
++	    ;;
+ 	Linux*)
+ 	    SHLIB_CFLAGS="-fPIC"
+ 	    SHLIB_LD_LIBS='${LIBS}'

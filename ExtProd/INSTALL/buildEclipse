@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildEclipse,v 1.4 2010/09/27 12:02:39 jschwarz Exp $"
+# "@(#) $Id: buildEclipse,v 1.5 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -25,6 +25,9 @@ CURR_DIR=`pwd`
 if [ "$OS" = "LINUX" ]
 then 
   OSTAG=linux
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  OSTAG=cygwin
 else
   echo "OS $OS not supported"
   exit -1

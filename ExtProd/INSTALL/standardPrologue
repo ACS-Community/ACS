@@ -4,7 +4,7 @@
 #
 # standardPrologue
 #
-# "@(#) $Id: standardPrologue,v 1.7 2005/09/09 14:58:12 sturolla Exp $"
+# "@(#) $Id: standardPrologue,v 1.8 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -66,6 +66,11 @@ case $THIS_OS in
            }
            ;;
     SunOS) alias echo=/bin/echo ;;
+    $CYGWIN_VER) echo()
+           {
+               /bin/echo "$@"
+           }
+           ;;
     *)     echo "INTERNAL ERROR: echo() doesn't know how to handle $THIS_OS" 
            exit 1 ;;
 esac

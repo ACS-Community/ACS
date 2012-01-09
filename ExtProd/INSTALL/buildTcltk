@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: buildTcltk,v 1.21 2011/06/03 13:25:35 eallaert Exp $"
+# "@(#) $Id: buildTcltk,v 1.22 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -361,7 +361,11 @@ export CC
 # create a temporary directory used to expand the tar files and 
 # to compile
 #
-SRC="$TCLTK/$build_OS-$build_OSV"
+if [ "$build_OS" = "$CYGWIN_VER" ]; then
+   SRC="$TCLTK/$build_OS"
+else
+   SRC="$TCLTK/$build_OS-$build_OSV"
+fi
 echo "set temporary build directory: $SRC . . . \c"
 if [ -d $SRC ]
 then
@@ -451,6 +455,14 @@ echo $SEPARATOR
 echo "tcltk: untarring . . . "
 cd $SRC
 gunzip -c $TCLTK/tcltk-ACS10.0.tar.gz | tar xf -
+if [ "${build_OS}" = "$CYGWIN_VER" ]; then
+  patch $SRC/tcl8.4.19/unix/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tcl.m4.patch
+  patch $SRC/tcl8.4.19/generic/tclEnv.c < ${INSTALL_ROOT}/PRODUCTS/tcl.putenv.patch
+  patch $SRC/tk8.4.19/unix/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tcl.m4.patch
+  ln -s $SRC/tk8.4.19/unix/tkUnixDefault.h $SRC/tk8.4.19/unix/tkWinDefault.h
+  patch $SRC/tclx-2008-06-29/tclconfig/tcl.m4 < ${INSTALL_ROOT}/PRODUCTS/tclx.m4.patch
+  patch $SRC/tclx-2008-06-29/configure < ${INSTALL_ROOT}/PRODUCTS/tclx.configure.patch
+fi
 
 # Make first the static libraries for Tcl/Tk and [incr Tcl]
 # then the shared version; this should come second, so tclConfig.sh 
@@ -459,6 +471,10 @@ gunzip -c $TCLTK/tcltk-ACS10.0.tar.gz | tar xf -
 # an absolute path; otherwise it uses ".", which messes up things.
 for dir in tcl8.4.19/unix tk8.4.19/unix tclx-2008-06-29 itcl-2008-08-06 ; do \
     (cd ${dir} ; \
+    if [ "${build_OS}" = "$CYGWIN_VER" ]; then \
+      rm configure; \
+      autoconf; \
+    fi; \
     ./configure --prefix=$PREFIX --disable-shared --enable-gcc --srcdir=`pwd`; \
     make ; make -k install; \
     make distclean ; \
@@ -467,6 +483,9 @@ for dir in tcl8.4.19/unix tk8.4.19/unix tclx-2008-06-29 itcl-2008-08-06 ; do \
 done;
 
 # Link the default shell names to the version specific names
+cd $PREFIX/lib
+ln -s tclConfig.sh tcl8.4/tclConfig.sh
+ln -s tkConfig.sh tk8.4/tkConfig.sh
 cd $PREFIX/bin
 rm -f tclsh wish
 ln -s tclsh8.4   tclsh

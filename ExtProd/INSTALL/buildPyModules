@@ -163,7 +163,12 @@ else
   tar -zxf matplotlib-0.99.3.tar.gz;
   pushd matplotlib-0.99.3
 
-  cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
+  if [ "$OSYSTEM" = "$CYGWIN_VER" ]; then
+    patch setupext.py < ../matplotlib-0.99.3.patch
+    cat setupext.py | sed s/\'cygwin\'\ :\ \\[/\'cygwin\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
+  else
+    cat setupext.py | sed s/\'linux2\'\ :\ \\[/\'linux2\'\ :\ \\[os.environ\\[\'PYTHON_ROOT\'\\],/g >> setupext.py.tmp
+  fi
   mv setupext.py.tmp setupext.py
 
   cat setup.py | sed s/BUILD_GTKAGG\ \ \ \ \ \ \ =\ \'auto\'/BUILD_GTKAGG=0/g >> setup.py.tmp

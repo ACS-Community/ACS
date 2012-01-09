@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: buildPython,v 1.27 2011/10/05 19:42:51 javarias Exp $"
+# "@(#) $Id: buildPython,v 1.28 2012/01/09 14:39:47 tstaig Exp $"
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -97,6 +97,9 @@ echo $SEPARATOR
 if [ ${OS} = "LINUX" ] 
 then
 	echo "Installing on $DISTRO $OS version $REL"
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+  echo "Installing on $OS"
 else
 	echo "Installing on $OS version $REL"
 fi
@@ -109,6 +112,7 @@ if [     ${DISTRO}-${REL} != "SOLARIS-5.8"       \
      -a  ${DISTRO}-${REL} != "RHEL-5"           \
      -a  ${DISTRO}-${REL} != "SL-4.1"           \
      -a  ${DISTRO}-${REL} != "SL-5.3"           \
+     -a  ${OS} != "$CYGWIN_VER"                 \
    ]
 then
     echo "OS not supported. Proceeding as for Linux RH 9"
@@ -151,6 +155,42 @@ then
 
    cp Modules/Setup.dist Modules/Setup.dist_backup
    cat Modules/Setup.dist | sed "s/\#readline readline.c -lreadline -ltermcap/readline readline.c -lreadline -ltermcap/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+ 
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/local/lib,\1$TCLTK_ROOT/lib,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/local/include,\1$TCLTK_ROOT/include,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-I\)/usr/X11R6/include,\1/usr/include/X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   if [ "$DISTRO" = "RHLX" -a \( "$REL" = "7.2" -o  "$REL" = "7.3" \) ]
+   then
+     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.3 -ltcl8.3,g" >> Modules/Setup.dist.tmp
+   else
+     cat Modules/Setup.dist | sed "s,^#\(\W*-l\)tk8.2 -ltcl8.2,\1tk8.4 -ltcl8.4,g" >> Modules/Setup.dist.tmp
+   fi
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-L\)/usr/X11R6/lib,\1/usr/lib -L/usr/lib64,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cat Modules/Setup.dist | sed "s,^#\(\W*-l\)X11,\1X11,g" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+elif [ "$OS" = "$CYGWIN_VER" ]
+then
+   patch -p1 -d . < ../Python-2.6.5.cygwin.patch
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#\*shared\*/\*shared\*/" >> Modules/Setup.dist.tmp
+   mv Modules/Setup.dist.tmp  Modules/Setup.dist
+
+   cp Modules/Setup.dist Modules/Setup.dist_backup
+   cat Modules/Setup.dist | sed "s/\#readline readline.c -lreadline -ltermcap/readline readline.c -lreadline -lncurses/" >> Modules/Setup.dist.tmp
    mv Modules/Setup.dist.tmp  Modules/Setup.dist
 
    cat Modules/Setup.dist | sed s/\#\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/\ _tkinter\ _tkinter\.c\ tkappinit\.c\ \-DWITH_APPINIT/g >> Modules/Setup.dist.tmp
