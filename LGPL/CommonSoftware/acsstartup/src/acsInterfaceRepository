@@ -7,7 +7,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: acsInterfaceRepository,v 1.7 2011/11/28 12:48:41 tstaig Exp $"
+# "@(#) $Id: acsInterfaceRepository,v 1.8 2012/01/09 10:04:11 rtobar Exp $"
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -271,7 +271,14 @@ then
       t1=$(stat -c %Y $PERSISTENCE_FILE)
       for i in $IDL_PATH $USER_IDL
       do
+
+          # Check if the path really exists; otherwise 'find' will fail
           j=$(echo $i |sed "s/-I//")
+          if [ ! -e $j ]
+          then
+              continue
+          fi
+
           for k in $(find $j -name "*.idl")
           do
               t2=$(stat -c %Y $k)
