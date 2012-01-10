@@ -355,6 +355,27 @@ module xmlstore
 		URISeq queryRecent( in string schemaname, in string timestamp)
 			raises (ArchiveInternalError);
 
+
+		/**
+		 * custom method for OT submission queries, accessing relational data.
+		 * Returns key data of projects matching the search string for the specified
+		 * field (fieldID). As fieldId, use one of the following values: PI: 0 CoI
+		 * or PI: 1 projName: 2 projCode: 3
+		 * 
+		 * caseSensitive defines whether query should be evaluated in case-sensitive
+		 * mode. If containsQuery is true, every UID containing the searchString
+		 * will be returned, otherwise only exact matches.
+		 * 
+		 * Each matching data set is one element in the returned Array and
+		 * represented again as an array in the following order: archive_uid, title,
+		 * prj_code, pi_userid, PRJ_TIME_OF_CREATION, datereceived,
+		 * domain_entity_state
+		 */
+		typedef sequence <StringSeq> stringSeqSeq;
+		stringSeqSeq querySubmissions(in short fieldID, in string searchString,
+				in boolean caseSensitive, in boolean containsQuery)
+				raises (ArchiveInternalError);
+			
 		
 		/**
 		 * Adds xmlElement as last child of the (first) element found by xPath in document uid (belonging to schema schema)
