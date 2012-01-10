@@ -28,6 +28,7 @@
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Container 'ContainerTestLog' activated.
@@ -35,19 +36,19 @@
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connected to the InterfaceRepository.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::resolveManager] 
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
@@ -64,47 +65,44 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [ContainerTestLog - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Logged into the Manager.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::run] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [ContainerTestLog - ContainerImpl::run] Container running...
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::init] Logged into the Manager.
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::run] 
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Manager access initialization ends
-1 - ContainerStatusMsg: Automatic component loading begins
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Startup ends
+1 - ContainerStatusMsg: Automatic component loading begins
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 1 components queued to be activated.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestLogConfig.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestLogConfig.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestLogConfig'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestLogConfig.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -114,29 +112,32 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestLogConfig.so'.
+1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ] Switched state of component MACI_LOG_CONFIG: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ] Switched state of component MACI_LOG_CONFIG: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - ] Switched state of component MACI_LOG_CONFIG: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
 1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_LOG_CONFIG"
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [ContainerTestLog-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::activate_component] Component 'MACI_LOG_CONFIG' activated.
 1 - ----------T--:--:--.--- [ContainerTestLog - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 1 of 1 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
@@ -147,9 +148,10 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_LOG_CONFIG'. Creating it...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test *********starting the test***********
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_TRACE
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test ===========finishing the test=============
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ALERT
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_CRITICAL
@@ -158,13 +160,12 @@
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ERROR
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_INFO
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_NOTICE
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_TRACE
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_WARNING
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI_LOG_CONFIG'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Exiting maciLogConfigTestClient...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - Test with dynamic change of log
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
@@ -189,17 +190,17 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_LOG_CONFIG'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test *********starting the test***********
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test ===========finishing the test=============
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ALERT
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_CRITICAL
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ERROR
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_NOTICE
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_WARNING
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test ===========finishing the test=============
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ALERT
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI_LOG_CONFIG'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Exiting maciLogConfigTestClient...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - Test with dynamic change of log (2)
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
@@ -224,18 +225,18 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_LOG_CONFIG'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test *********starting the test***********
+1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_CRITICAL
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ERROR
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_INFO
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_NOTICE
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_WARNING
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] LogConfigTestClass::test ===========finishing the test=============
 1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_ALERT
-1 - ----------T--:--:--.--- [MACI_LOG_CONFIG - ] [LogConfigTestClass::test] I am a message LM_CRITICAL
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI_LOG_CONFIG'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Exiting maciLogConfigTestClient...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
 2 - ***************Remote***************
 2 - <Emergency TimeStamp="----------T--:--:--.---" File="maciTestLogConfigImpl.cpp" Line="xxxxxxxxx" Routine="" Host="xxxxxxxxx" Process="ContainerTestLog" Thread="xxxxxxxxx" Context="" SourceObject="MACI_LOG_CONFIG" StackId="" StackLevel="0"><![CDATA[LogConfigTestClass::test *********starting the test***********]]></Emergency>
 2 - <Critical TimeStamp="----------T--:--:--.---" File="maciTestLogConfigImpl.cpp" Line="xxxxxxxxx" Routine="" Host="xxxxxxxxx" Process="ContainerTestLog" Thread="xxxxxxxxx" Context="" SourceObject="MACI_LOG_CONFIG" StackId="" StackLevel="0"><![CDATA[[LogConfigTestClass::test] I am a message LM_CRITICAL]]></Critical>

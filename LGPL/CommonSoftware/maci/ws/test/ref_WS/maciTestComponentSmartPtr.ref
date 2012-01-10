@@ -23,27 +23,28 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
 1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Manager...
 1 - ContainerStatusMsg: Manager access initialization begins
@@ -57,26 +58,26 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logging into the Manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl:::authenticate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [Container01 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logged into the Manager.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::run] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [Container01 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Container running...
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
@@ -84,11 +85,11 @@
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Manager access initialization ends
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ContainerStatusMsg: Startup ends
 1 - ContainerStatusMsg: Automatic component loading begins
+1 - ContainerStatusMsg: Startup ends
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
 1 - ContainerStatusMsg: Automatic component loading ends
@@ -102,20 +103,25 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Default constructor... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -126,51 +132,46 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Parameterized constructor... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
@@ -197,35 +198,35 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
@@ -234,22 +235,23 @@
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Copy constructor... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
@@ -260,7 +262,6 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
@@ -292,24 +293,22 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
@@ -317,48 +316,50 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Assignment operator... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -387,73 +388,73 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] getComponentSmartPtr... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -482,20 +483,22 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -509,32 +512,30 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component non sticky: 'MACI04'. Creating it...
-2 - ----------T--:--:--.--- [GlobalLogger - ] getComponentNonStickySmartPtr... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
+2 - ----------T--:--:--.--- [GlobalLogger - ] getComponentNonStickySmartPtr... [OK]
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
@@ -564,11 +565,11 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
@@ -578,52 +579,52 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
@@ -640,11 +641,11 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -659,90 +660,90 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
+1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 1 - ----------T--:--:--.--- [MACI04 - ] MaciTestClass::test(MACI04)
-2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Sticky SmartPtr method invocation... [OK]
+2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
@@ -756,34 +757,38 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -794,42 +799,34 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component non sticky: 'MACI04'. Creating it...
 1 - ----------T--:--:--.--- [MACI04 - ] MaciTestClass::test(MACI04)
 2 - ----------T--:--:--.--- [GlobalLogger - ] NonSticky SmartPtr method invocation... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
@@ -837,6 +834,10 @@
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
@@ -850,9 +851,9 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
@@ -866,17 +867,17 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
@@ -908,11 +909,11 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
@@ -921,20 +922,20 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
@@ -943,11 +944,11 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI04' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
@@ -961,18 +962,20 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
@@ -986,47 +989,45 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1035,9 +1036,9 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
@@ -1048,36 +1049,31 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Double release... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
@@ -1086,53 +1082,58 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
@@ -1150,63 +1151,63 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI04'. Creating it...
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI04, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::MaciTestClass(MACI04)
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI04: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI04"
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI04' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Release and re-assignment... [OK]
 2 - ----------T--:--:--.--- [GlobalLogger - ] Releasing component: 'MACI04'.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI04 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI04'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
@@ -1215,16 +1216,16 @@
 1 - ----------T--:--:--.--- [MACI04 - ] ::MaciTestClass::~MaciTestClass(MACI04)
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [MACI04 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI04 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
@@ -1238,12 +1239,12 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLClose
 1 - ----------T--:--:--.--- [MACI04 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI04' deactivated.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
 2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...

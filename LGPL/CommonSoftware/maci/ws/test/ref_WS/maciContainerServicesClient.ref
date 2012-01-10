@@ -13,9 +13,9 @@
 1 - 
 1 - ContainerStatusMsg: Startup begins
 1 - ContainerStatusMsg: ORB initialization begins
-1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Generated CommandLine: maciContainer Container01 -ORBEndpoint iiop://------:----  -ORBDottedDecimalAddresses 1 -ORBInitRef InterfaceRepository=corbaloc::---:----/InterfaceRepository
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [main - maci::ContainerImpl::initThread] Thread name: 'main'
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Destroy bootstrap ORB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::initializeCORBA] 
 1 - ContainerStatusMsg: ORB initialization ends
@@ -23,14 +23,15 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] Resolving manager...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Resolving reference: 'corbaloc::---:----/Manager'
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] Manager reference narrowed.
-1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [Container01 - maci::Container::init] Recovery enabled.
+1 - ----------T--:--:--.--- [Container01-GL - ] Using ACS alarm system
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Using DLL path: .....
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::setSearchPath] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::MethodRequestThreadPool] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' activated.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
@@ -38,15 +39,15 @@
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Container 'Container01' initialized successfuly
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::svc] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the InterfaceRepository.
-1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Manager...
+1 - ContainerStatusMsg: Manager access initialization begins
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::resolveManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
@@ -57,8 +58,8 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Archiving Channel.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connecting to the Centralized Logger...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Connected to the Centralized Logger.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logging into the Manager...
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Set Naming Context to Logger.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl:::authenticate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -71,23 +72,23 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [Container01 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
+1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [Container01 - ContainerImpl::run] Container running...
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::init] Logged into the Manager.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::run] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Manager access initialization ends
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Startup ends
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ContainerStatusMsg: Automatic component loading begins
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 1. Message: Startup statistics: 0 components queued to be activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::taggedmessage] Message from manager received. Type: 20. Tag: 2. Message: Startup statistics: 0 of 0 components activated.
@@ -101,20 +102,26 @@
 2 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] Manager reference narrowed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logged in.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Getting component: 'curl:///MACI_CS_TEST'. Creating it...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciContainerServicesTestClass.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciContainerServicesTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciContainerServicesTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciContainerServicesTestClass.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
+1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciContainerServicesTestClass.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -122,45 +129,38 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
-1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
+1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_CS_TEST"
+1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_CS_TEST' activated.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponent...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
@@ -176,39 +176,40 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - ] I am MACI_DYN_TEST1
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -216,7 +217,6 @@
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
@@ -224,6 +224,7 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
@@ -231,40 +232,40 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
@@ -274,19 +275,18 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
@@ -295,6 +295,7 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
@@ -304,13 +305,13 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
@@ -318,30 +319,28 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getComponent] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
 1 - ----------T--:--:--.--- [Container01-GL - ContainerServices::getComponent] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentNonSticky...
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getComponent] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
+2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentNonSticky...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -354,41 +353,43 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - ] I am MACI_DYN_TEST1
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -397,13 +398,13 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
@@ -411,94 +412,94 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
 1 - ----------T--:--:--.--- [Container01-GL - get_component_non_sticky] The requested Component had not been already activated at request time (type=25, code=2) javaex.class="alma.maciErrType.wrappers.AcsJComponentNotAlreadyActivatedEx"
 1 - ----------T--:--:--.--- [Container01-GL - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01-GL - MACIContainerServices::getCORBAComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
-1 - ----------T--:--:--.--- [MACI_CS_TEST - ] getComponentNonStickyTest (MACI_DYN_TEST1): Got an exception (right behaviour)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
+1 - ----------T--:--:--.--- [MACI_CS_TEST - ] getComponentNonStickyTest (MACI_DYN_TEST1): Got an exception (right behaviour)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
 1 - ----------T--:--:--.--- [Container01-GL - ContainerServices::getComponentNonSticky] Error retrieving component (type=25, code=1) CURL="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getComponentNonSticky] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
@@ -508,84 +509,84 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponent...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADefaultComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDefaultComponent] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponent...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST2' activated.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - ] I am MACI_DYN_TEST2
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST2 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST2'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST2'
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
@@ -603,20 +604,19 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADefaultComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDefaultComponent] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -630,46 +630,47 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST2' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST2 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST2'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::~ThreadBase] 
@@ -682,21 +683,21 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices::getDefaultComponent] Error retrieving component (type=25, code=1)
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getDefaultComponent] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADynamicComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDynamicComponent] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDynamicComponent...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -704,10 +705,13 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -718,47 +722,44 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] I am IDL<Dynamic Component>
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
@@ -782,10 +783,10 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADynamicComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDynamicComponent] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
@@ -794,10 +795,6 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
@@ -809,7 +806,11 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
@@ -818,16 +819,16 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
@@ -840,13 +841,13 @@
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
@@ -862,34 +863,33 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices::getDynamicComponent] Error retrieving component (type=25, code=1) CURL="*"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getDynamicComponent] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getCollocatedComponent...
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices::getDynamicComponent] Error retrieving component (type=25, code=1) CURL="*"
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBACollocatedComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getCollocatedComponent] 
+2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getCollocatedComponent...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -903,16 +903,17 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
@@ -922,22 +923,22 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] I am IDL<Dynamic Component>
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
@@ -954,53 +955,53 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBACollocatedComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getCollocatedComponent] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
@@ -1010,24 +1011,25 @@
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1039,39 +1041,35 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'IDL<Dynamic Component>' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices::getCollocatedComponent] Error retrieving component (type=25, code=1) CURL="*"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerServices<>::getCollocatedComponent] Narrow failed (type=15, code=2) NarrowType="N9MACI_TEST13MaciTestClassE"
-2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentSmartPtr...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
+2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentSmartPtr...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
@@ -1079,46 +1077,50 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - ] I am MACI_DYN_TEST1
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1130,33 +1132,28 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentNonStickySmartPtr...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
@@ -1170,6 +1167,10 @@
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
@@ -1192,10 +1193,10 @@
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - ] I am MACI_DYN_TEST1
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST1 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST1'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
@@ -1206,10 +1207,11 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1221,14 +1223,13 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST1' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponentNonSticky(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component non sticky: 'MACI_DYN_TEST1'.
@@ -1239,19 +1240,24 @@
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADefaultComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDefaultComponent] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDefaultComponentSmartPtr...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -1264,17 +1270,12 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
@@ -1287,24 +1288,25 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST2' activated.
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - ] I am MACI_DYN_TEST2
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST2 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: OPERATIONAL -> DESTROYING
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST2'
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: DESTROYING -> DEFUNCT
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1316,31 +1318,29 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_DYN_TEST2' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' deactivated.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getDynamicComponentSmartPtr...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBADynamicComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getDynamicComponent] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
@@ -1356,44 +1356,45 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__execute] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] I am IDL<Dynamic Component>
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
+1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
-1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStop] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::~Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1409,29 +1410,28 @@
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - MACIContainerServices::getCORBACollocatedComponent] 
 1 - ----------T--:--:--.--- [MACI_CS_TEST - maci::ContainerServices::getCollocatedComponent] 
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getCollocatedComponentSmartPtr...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
@@ -1445,40 +1445,41 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
-1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] Error reading Exception from the CDB
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="IDL<Dynamic Component>"
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'IDL<Dynamic Component>' activated.
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - ] I am IDL<Dynamic Component>
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (IDL<Dynamic Component> of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' reference set to nil.
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'IDL<Dynamic Component>'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component IDL<Dynamic Component>: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::MACIContainerServices::~MACIContainerServices] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
@@ -1499,104 +1500,104 @@
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [IDL<Dynamic Component> - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'IDL<Dynamic Component>' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST1)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST1'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing realeaseAllComponents...
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loading '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
+1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
+1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciDynComp.so'.
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
-1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - MACIContainerServices::getCDB] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST1: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST1"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST1' activated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_DYN_TEST2)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_DYN_TEST2'.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciDynComp.so'
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciDynComp'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - MACIContainerServices::getCDB] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: INITIALIZING -> INITIALIZED
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_DYN_TEST2: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_DYN_TEST2"
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_DYN_TEST2' activated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST1' reference set to nil.
@@ -1633,10 +1634,10 @@
 1 - ----------T--:--:--.--- [MACI_DYN_TEST1 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST2 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2': calling cleanUp Lifecycle .
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_DYN_TEST2 of type IDL:alma/MACI_TEST/DynamicTestClass:1.0)
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_DYN_TEST2'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
@@ -1665,11 +1666,11 @@
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI_DYN_TEST2 - maci::ContainerServices::~ContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciDynComp.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_DYN_TEST2' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciDynComp.so'.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Released all the components
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing getComponentDescriptor...
@@ -1679,11 +1680,11 @@
 2 - ----------T--:--:--.--- [GlobalLogger - ] Testing componentListenerTest...
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI01)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI01'.
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
@@ -1691,6 +1692,7 @@
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
 1 - ----------T--:--:--.--- [Container01-GL - ] maciTestClassImpl::DLLOpen
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI01"
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] DLLOpen executed.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Executing DLLOpen
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Loaded '/----/libmaciTestClass.so'.
@@ -1707,42 +1709,46 @@
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI01, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI01"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI01 - maci::ContainerServices::ContainerServices] 
 1 - ----------T--:--:--.--- [MACI01 - maci::MACIContainerServices::MACIContainerServices] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: NEW -> INITIALIZING
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI01"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI01"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI01 - ] ::MaciTestClass::MaciTestClass(MACI01)
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::ACSComponentImpl] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: INITIALIZED -> OPERATIONAL
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: INITIALIZING -> INITIALIZED
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI01"
-1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__initialize] 
-1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::initialize] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: INITIALIZED -> OPERATIONAL
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI01"
+1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__execute] 
+1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI01' activated.
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] ContainerServices::getComponent(MACI_SUB)
 1 - ----------T--:--:--.--- [MACI_CS_TEST - ] Getting component: 'curl:///MACI_SUB'.
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::ActivationMethod] 
+1 - ----------T--:--:--.--- [Container-MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
+1 - ----------T--:--:--.--- [Container-ActivationMethod - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::loadDLL] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::ActivationMethod] 
-1 - ----------T--:--:--.--- [Container01-GL - maci::ActivationMethod::call] 
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully loaded component code. logName="LOG_CompAct_Loading_OK" TimeMillis="nnn" CompName="MACI_SUB"
+1 - ----------T--:--:--.--- [MACI_SUB - maci::ContainerServices::ContainerServices] 
+1 - ----------T--:--:--.--- [MACI_SUB - maci::MACIContainerServices::MACIContainerServices] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::ldfind] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Full path '/----/libmaciTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::load] Request to load 'maciTestClass'.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::locateLibrary] 
-1 - ----------T--:--:--.--- [maci::MethodRequestThreadPool - maci::MethodRequestThreadPool::enqueue] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::Thread] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::resume] 
@@ -1751,30 +1757,25 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::ThreadBase] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::create] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::suspend] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::getManager] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::createSource()] 
 1 - ----------T--:--:--.--- [Container01-GL - ACSAlarmSystemInterfaceFactory::getSourceSingleton()] 
 1 - ----------T--:--:--.--- [Container01-GL - ] ConstructComponent(XXXXXXX MACI_SUB, IDL:alma/MACI_TEST/MaciTestClass:1.0)
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
-1 - ----------T--:--:--.--- [MACI_SUB - maci::ContainerServices::ContainerServices] 
-1 - ----------T--:--:--.--- [MACI_SUB - maci::MACIContainerServices::MACIContainerServices] 
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::getSymbol] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: NEW -> INITIALIZING
-1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_SUB"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully instantiated component. logName="LOG_CompAct_Instance_OK" TimeMillis="nnn" CompName="MACI_SUB"
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerThreadHook::initThread] ContainerThreadHook initiailized
 1 - ----------T--:--:--.--- [MACI_SUB - ] ::MaciTestClass::MaciTestClass(MACI_SUB)
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::ACSComponentImpl] 
+1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: INITIALIZED -> OPERATIONAL
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: INITIALIZING -> INITIALIZED
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: NEW -> INITIALIZING
+1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully activated component with Corba. logName="LOG_CompAct_Corba_OK" TimeMillis="nnn" CompName="MACI_SUB"
 1 - ----------T--:--:--.--- [Container01-GL - maci::ContainerImpl::activate_component] Successfully initialized component. logName="LOG_CompAct_Init_OK" TimeMillis="nnn" CompName="MACI_SUB"
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::__execute] 
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::__initialize] 
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::execute] 
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::initialize] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::commonStart] 
-1 - ----------T--:--:--.--- [AlarmsMap - ACS::Thread::run] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::activate_component] Component 'MACI_SUB' activated.
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] 
 1 - ----------T--:--:--.--- [GlobalLogger - maci::MACIHelper::resolveManager] ManagerReference generated using localhost address: 'corbaloc::---:----/Manager'
@@ -1785,20 +1786,20 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_SUB of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: OPERATIONAL -> DESTROYING
+1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::__cleanUp] 
+1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::cleanUp] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
+1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_SUB'
-1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_SUB: DESTROYING -> DEFUNCT
 1 - ----------T--:--:--.--- [MACI_SUB - ] ::MaciTestClass::~MaciTestClass(MACI_SUB)
-1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::__cleanUp] 
-1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [MACI_SUB - acscomponent::ACSComponentImpl::~ACSComponentImpl] 
 1 - ----------T--:--:--.--- [MACI_SUB - maci::MACIContainerServices::~MACIContainerServices] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
-1 - ----------T--:--:--.--- [AlarmsourceImpl - ThreadBase::stop] Thread AlarmsourceImpl
 1 - ----------T--:--:--.--- [AlarmsMap - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsMap - ThreadBase::stop] Thread AlarmsMap
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsourceImpl
@@ -1811,22 +1812,23 @@
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::terminate] 
 1 - ----------T--:--:--.--- [AlarmsourceImpl - ACS::ThreadBase::~ThreadBase] 
+1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB' deactivated.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Component 'MACI_SUB' etherealized.
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::terminateAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::~ThreadManagerBase] 
 1 - ----------T--:--:--.--- [Container01-GL - ThreadBase::stop] Thread stopped:AlarmsMap
 1 - ----------T--:--:--.--- [MACI_SUB - maci::ContainerServices::~ContainerServices] 
-1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_SUB' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - ] Informing Components Unavailable
-1 - ----------T--:--:--.--- [GlobalLogger - ] Component released (component has 1 clients left).
 1 - ----------T--:--:--.--- [Container01-GL - ] Informing components Unavailable n=1
 1 - ----------T--:--:--.--- [Container01-GL - ] unavailable: MACI_SUB
+1 - ----------T--:--:--.--- [GlobalLogger - ] Component released (component has 1 clients left).
 1 - ----------T--:--:--.--- [GlobalLogger - ] Logged out.
 1 - ----------T--:--:--.--- [GlobalLogger - ] Done.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI01 of type IDL:alma/MACI_TEST/MaciTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI01' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
@@ -1834,7 +1836,6 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI01'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI01: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [MACI01 - acscomponent::ACSComponentImpl::cleanUp] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
@@ -1850,6 +1851,7 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_CS_TEST': calling cleanUp Lifecycle .
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Deactivating component with handle XXXXXX (MACI_CS_TEST of type IDL:alma/MACI_TEST/ContainerServicesTestClass:1.0)
+1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivateCORBAObject] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_CS_TEST' reference set to nil.
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] 
@@ -1857,15 +1859,14 @@
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::etherealizeComponent] Etherealizing 'MACI_CS_TEST'
 1 - ----------T--:--:--.--- [Container01-GL - ACS::ThreadManagerBase::stopAll] 
 1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: DESTROYING -> DEFUNCT
-1 - ----------T--:--:--.--- [Container01-GL - ] Switched state of component MACI_CS_TEST: OPERATIONAL -> DESTROYING
 1 - ----------T--:--:--.--- [MACI_CS_TEST - acscomponent::ACSComponentImpl::__cleanUp] 
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] 
+1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloading '/----/libmaciContainerServicesTestClass.so'
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unlock] 
 1 - ----------T--:--:--.--- [Container01 - maci::ContainerImpl::deactivate_component] Component 'MACI_CS_TEST' deactivated.
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] DLLClose executed
-1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Executing DLLClose
 1 - ----------T--:--:--.--- [maci::LibraryManager - maci::LibraryManager::unload] Unloaded '/----/libmaciContainerServicesTestClass.so'.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Logging out...
-2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
 2 - ----------T--:--:--.--- [GlobalLogger - ] Destroying CORBA...
+2 - ----------T--:--:--.--- [GlobalLogger - ] Client destroyed.
