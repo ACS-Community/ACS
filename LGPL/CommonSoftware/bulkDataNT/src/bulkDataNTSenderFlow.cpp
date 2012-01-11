@@ -16,14 +16,14 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.32 2012/01/11 10:22:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.33 2012/01/11 11:50:01 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
 
-static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.32 2012/01/11 10:22:16 bjeram Exp $";
+static char *rcsId="@(#) $Id: bulkDataNTSenderFlow.cpp,v 1.33 2012/01/11 11:50:01 bjeram Exp $";
 static void *use_rcsId = ((void)&use_rcsId,(void *) &rcsId);
 
 #include "bulkDataNTSenderFlow.h"
@@ -246,7 +246,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
-			ackToEx.log(LM_WARNING); //TBD should be an error ?
+			throw ackToEx; //	ackToEx.log(LM_WARNING);
 		}//if
 
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
@@ -254,6 +254,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 		//cout << "\t\t Int1 unacknowledged_sample_count_peak: " << status.unacknowledged_sample_count_peak << endl;
 	}//if (ret != DDS::RETCODE_OK)
 
+	//TBD: is it enouggh to wait for ACSks at the very end, or should be checked also in between (depending on queue size)
 	if (restFrameCount==0) //we wait for ACKs just if it was the only frame, or the last frame
 	{
 		ddsDataWriter_m->get_reliable_writer_cache_changed_status(status); //RTI
@@ -264,7 +265,7 @@ void BulkDataNTSenderFlow::writeFrame(ACSBulkData::DataType dataType,  const uns
 			FrameAckTimeoutExImpl ackToEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 			ackToEx.setSenderName(senderStream_m->getName().c_str()); ackToEx.setFlowName(flowName_m.c_str());
 			ackToEx.setTimeout(ackTimeout_m.sec + ackTimeout_m.nanosec/1000000.0);
-			ackToEx.log(LM_WARNING); //TBD should be an error ?
+			throw ackToEx; //	ackToEx.log(LM_WARNING);
 		}//if
 	}//if (restFrameCount==0)
 }//writeFrame
