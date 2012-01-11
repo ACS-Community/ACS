@@ -23,7 +23,6 @@ package com.cosylab.cdb.jdal.hibernate;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -46,10 +45,10 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.cosylab.CDB.DAOOperations;
+
 import alma.cdbErrType.CDBFieldDoesNotExistEx;
 import alma.cdbErrType.WrongCDBDataTypeEx;
-
-import com.cosylab.CDB.DAOOperations;
 
 public class ExtraDataFeatureUtil {
 	
@@ -81,12 +80,17 @@ public class ExtraDataFeatureUtil {
 		}
 	}
 	
+	/**
+	 * We reuse XML parsers from this pool, to avoid thread issues reported in 
+	 * http://jira.alma.cl/browse/COMP-6488 .
+	 */
 	private static class DocumentBuilderObjectPool extends ObjectPool<DocumentBuilder>
 	{
+		// always thread-safe? Currently no other such calls in the rdbCDB process though.
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 		@Override
-		public DocumentBuilder createObject() {
+		public synchronized DocumentBuilder createObject() {
 			try {
 				return factory.newDocumentBuilder();
 			} catch (ParserConfigurationException e) {
