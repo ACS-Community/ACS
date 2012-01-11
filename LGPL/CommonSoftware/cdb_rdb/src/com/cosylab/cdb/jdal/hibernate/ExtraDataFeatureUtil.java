@@ -53,28 +53,36 @@ import com.cosylab.CDB.DAOOperations;
 
 public class ExtraDataFeatureUtil {
 	
-	private static abstract class ObjectPool<T> {
+	/**
+	 * Object pool used for DocumentBuilderObjectPool.
+	 * Should probably move to module jacsutil at some point, but then  
+	 * with additional features like unreferencing objects
+	 * above some minimum pool size, when they are stale for a while. 
+	 */
+	private static abstract class ObjectPool<T>
+	{
+		private final Queue<T> objects = new ConcurrentLinkedQueue<T>();
 
-	    private final Queue<T> objects = new ConcurrentLinkedQueue<T>();
+		public abstract T createObject();
 
-	    public abstract T createObject();
+		public T borrowObject() {
+			T t;
+			if ((t = objects.poll()) == null) {
+				t = createObject();
+			}
+			return t;
+		}
 
-	    public T borrowObject() {
-	        T t;
-	        if ((t = objects.poll()) == null) {
-	            t = createObject();
-	        }
-	        return t;
-	    }
-
-	    public void retrunObject(T object) {
-	        this.objects.offer(object); 
-	    }
-	}	
+		/**
+		 * @param object
+		 */
+		public void returnObject(T object) {
+			this.objects.offer(object);
+		}
+	}
 	
 	private static class DocumentBuilderObjectPool extends ObjectPool<DocumentBuilder>
 	{
-
 		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
 		@Override
@@ -123,7 +131,7 @@ public class ExtraDataFeatureUtil {
 			return xmldoc.getDocumentElement();
 		}
 		finally {
-			documentBuilderObjectPool.retrunObject(builder);
+			documentBuilderObjectPool.returnObject(builder);
 		}
 	}
 
@@ -138,7 +146,7 @@ public class ExtraDataFeatureUtil {
 			xmldoc = impl.createDocument(null, "data", null);
 		}
 		finally {
-			documentBuilderObjectPool.retrunObject(builder);
+			documentBuilderObjectPool.returnObject(builder);
 		}
 
 		Element root = xmldoc.getDocumentElement();
