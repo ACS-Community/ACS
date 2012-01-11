@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.13 2011/12/15 15:25:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.14 2012/01/11 11:48:30 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -58,18 +58,47 @@ public:
 	virtual ~BulkDataNTSenderFlow();
 
 
+	/**
+	 * Returns number of connected receivers for the flow.
+	 * @return nmumber of receivers
+	 */
 	unsigned int getNumberOfReceivers();
 
-	// why do we have default parameter for msg block
+	/**
+	 *
+	 * @param param  parameter data
+	 * @param len parameter data length
+	 * @exception #StartSendErrorExImpl
+	 */
+	/**
+	 * Deprecated method to send "START" and parameter using #ACE_Message_Block
+	 * @deprecated
+	 * @param param parameter in form of #ACE_Message_Block
+	 */
 	void startSend(ACE_Message_Block *param = 0);
 
-	/* in old BD was const char now it is unsigned char !!!*/
+	/**
+	 * Method to send "START" and parameter
+	 * @param param  parameter data
+	 * @param len parameter data length
+	 * @exception #StartSendErrorExImpl
+	 */
 	void startSend(const unsigned char *param, size_t len);
 
-	// const char* -> const unsigned char* (should we add a new method with const char*)
+	/**
+	 * Method to send data. The data length can be of any size.
+	 * @param buffer  data
+	 * @param len length of data
+	 * @exception #SendDataErrorExImpl
+	 */
 	void sendData(const unsigned char *buffer, size_t len);
 
+	/**
+	 * Method to send "stop"
+	 * @exception #StopSendErrorExImpl
+	 */
 	void stopSend();
+
 protected:
 	AcsBulkdata::BulkDataNTSenderStream *senderStream_m;
 
@@ -81,9 +110,17 @@ protected:
 	DDS::Duration_t ackTimeout_m;  /// ACKs timeout
 	void setACKsTimeout(double ACKsTimeout);  /// setter fro ackTimeout
 
-	// common method for writing/sending data  from startSend and stopSend (could be also used for sendData ?)
-	// should we add also timeout parameter ?
+
 	// should it go to upper class Publisher ?
+	/**
+	 * Common method to send frame(s) to the topic. The method it is used internally by:
+	 * #startSend, #sendData and #stopSend
+	 * @param dataType data frame type (START/DATA/STOP)
+	 * @param param   - data
+	 * @param len length of data
+	 * @param restFrameCount how many frames do we have still sent
+	 * @exception #SendFrameTimeoutExImpl, #SendFrameGenericErrorExImpl, #FrameAckTimeoutExImpl
+	 */
 	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0, unsigned int restFrameCount=0);
 
 	// frame
