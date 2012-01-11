@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.16 2012/01/09 15:48:29 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReceiverStream.h,v 1.17 2012/01/11 15:29:55 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -53,16 +53,22 @@ public:
 	BulkDataNTReceiverStreamBase( const char* receiverName, const char* streamName, const ReceiverStreamConfiguration &cfg):
 			BulkDataNTStream(streamName, cfg), receiverName_m(receiverName){}
 
-	/** Set receiver name in receiver callback
-	 *  @param ACE_CString
-	 *  @return void
-	 *  @htmlonly
-		 <br><hr>
-		 @endhtmlonly
+	/**
+	 * Set receiver name (in receiver callback). Nothing to do with stream/flow name!
+	 * @param recvName the name of receiver
 	 */
 	void setReceiverName(char * recvName) { receiverName_m = recvName; }
+
+	/**
+	 * Set receiver name (in receiver callback). Nothing to do with stream/flow name!
+	 * @param recvName
+	 */
 	void setReceiverName(const char * recvName) { receiverName_m = recvName; }
 
+	/**
+	 * Gives the name (of previously set) receiver name
+	 * @return receiver name
+	 */
 	const char* getReceiverName() { return receiverName_m.c_str(); }
 
 protected:
@@ -80,33 +86,57 @@ class BulkDataNTReceiverStream : public BulkDataNTReceiverStreamBase
 public:
 
 	/**
-	 * Constructor
+	 * Receiver stream constructor where we do not specify receiver name.
+	 * Receiver name can be specified later using #setReceiverName method
+	 * @param streamName name of the stream that will be create
+	 * @param cfg configuration (optional)
+	 * @exception #StreamCreateProblemExImpl
 	 */
 	BulkDataNTReceiverStream(const char* streamName, const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
 
+	/**
+	 * Receiver stream constructor where we specify receiver name.
+	 * @param receiverName receiver's name that it is easier to distinguish between differnet receivers in the ssytem.
+	 * @param streamName name of the stream that will be create
+	 * @param cfg configuration (optional)
+	 * @exception #StreamCreateProblemExImpl
+	 */
 	BulkDataNTReceiverStream(
 			const char* receiverName,
 			const char* streamName,
 			const ReceiverStreamConfiguration &cfg=ReceiverStreamConfiguration());
 
 	/**
-	 * Destructor
+	 * Receiver Stream destructor. It destroys also all flows belonging to the stream.
 	 */
 	virtual ~BulkDataNTReceiverStream();
 
 
-
-	// TBD: is this better than createSingleFlow and createMultipleFlows
-	// do we have to provide a name or just a number, for example we need three flows
-	// if we decide for name then we have to change send methods as well.
-	// here we should connect to the DDS topic
-	// TBD: here we can also send the callback?
+	/**
+	 * The method creates a flow an the stream
+	 * @param flowName name of flow that willb e created
+	 * @param cfg (optional) REceiver's flow configuration
+	 * @param cb callback - if no specified it is created from tempalte parameter
+	 * @param releaseCB - should be the callback relased when the flow is destroyed
+	 * @return
+	 */
 	BulkDataNTReceiverFlow* createFlow(const char *flowName, const ReceiverFlowConfiguration &cfg=ReceiverFlowConfiguration(),
 			BulkDataNTCallback *cb=0, bool releaseCB=false);
 
+	/**
+	 * It returns pointer to Receiver Flow.
+	 * @param flowName the name of the flow
+	 * @return receiver flow if present in the stream, otherwise exception
+	 * @exception #FlowNotExistExImpl
+	 */
 	BulkDataNTReceiverFlow* getFlow(const char* flowName);
 
-	/// returns true if flow exists otherwise false
+
+	/**
+	 *Method just to check if the flow exists in the stream.
+	 * @param flowName the name of the flow
+	 * @return true if the flow with name flowName exists in the stream otherwise flase
+	 */
 	bool existFlow(const char* flowName);
 
 	/**
@@ -116,28 +146,23 @@ public:
 	 *  @throw ACSBulkDataError::AVInvalidFlowNumberExImpl
 	 *  @throw ACSBulkDataError::AVFlowEndpointErrorExImpl
 	 *  @return void
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
 	 */
 	void createMultipleFlowsFromConfig(const char *config);
 
 	/** Get the receiver flow and sep configuration
 	 *  @throw ACSBulkDataError::AVReceiverConfigErrorExImpl
 	 *  @return bulkdata::BulkDataReceiverConfig *
-	 *  @htmlonly
- <br><hr>
- @endhtmlonly
 	 */
 
-
-//	void closeReceiver();
-
-	/** Get the names of the connected flows
+	/** Get the names of the all flows created by the stream
 	 *  @return vector<string>
 	 */
 	std::vector<std::string> getFlowNames();
 
+	/**
+	 * Returns number of flows in the stream.
+	 * @return number of flows
+	 */
 	unsigned int getFlowNumber();
 
 
@@ -182,7 +207,6 @@ protected:
 	ReceiverFlowMap receiverFlows_m;
 	// we need a flag that prevents elements to be removed from map when we delete flows from dtor
 	bool notRemoveFromMap_m;
-
 
 	/// disable default - empty constructor
 	BulkDataNTReceiverStream();
