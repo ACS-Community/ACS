@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.h,v 1.24 2011/12/22 14:59:12 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.h,v 1.25 2012/01/11 10:20:05 bjeram Exp $"
 *
 * who       when        what
 * --------  ---------   ----------------------------------------------
@@ -114,7 +114,12 @@ class  SenderFlowConfiguration : public DDSConfiguration
 {
 public:
 	SenderFlowConfiguration();
-	double frameTimeout;
+	double getACKsTimeout() const;
+    double getFrameTimeout() const;
+    void setACKsTimeout(double acKsTimeout);
+    void setFrameTimeout(double frameTimeout);
+protected:
+    double frameTimeout;
 	double ACKsTimeout;
 };
 
@@ -148,7 +153,10 @@ class ReceiverFlowConfiguration : public DDSConfiguration
 public:
 	ReceiverFlowConfiguration();
 
-	double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
+	double getCbReceiveProcessTimeout() const;
+    void setCbReceiveProcessTimeout(double cbReceiveProcessTimeout);
+protected:
+    double cbReceiveProcessTimeout; /// how long should max take execution of cbReceive
 };
 
 /** A Receiver stream configuration. It consists in a seres
