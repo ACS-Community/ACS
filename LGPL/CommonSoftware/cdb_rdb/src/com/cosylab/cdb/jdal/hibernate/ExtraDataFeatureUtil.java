@@ -23,8 +23,11 @@ package com.cosylab.cdb.jdal.hibernate;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -49,6 +52,43 @@ import alma.cdbErrType.WrongCDBDataTypeEx;
 import com.cosylab.CDB.DAOOperations;
 
 public class ExtraDataFeatureUtil {
+	
+	private static abstract class ObjectPool<T> {
+
+	    private final Queue<T> objects = new ConcurrentLinkedQueue<T>();
+
+	    public abstract T createObject();
+
+	    public T borrowObject() {
+	        T t;
+	        if ((t = objects.poll()) == null) {
+	            t = createObject();
+	        }
+	        return t;
+	    }
+
+	    public void retrunObject(T object) {
+	        this.objects.offer(object); 
+	    }
+	}	
+	
+	private static class DocumentBuilderObjectPool extends ObjectPool<DocumentBuilder>
+	{
+
+		final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+		@Override
+		public DocumentBuilder createObject() {
+			try {
+				return factory.newDocumentBuilder();
+			} catch (ParserConfigurationException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+	}
+	
+	public static final DocumentBuilderObjectPool documentBuilderObjectPool = new DocumentBuilderObjectPool();
 	
 	public static final Set<String> EMPTY_SET = new HashSet<String>();
 	private final Logger logger;
@@ -76,19 +116,31 @@ public class ExtraDataFeatureUtil {
 		if (xml == null || xml.isEmpty())
 			return null;
 		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document xmldoc = builder.parse(new InputSource(new StringReader(xml)));
-		return xmldoc.getDocumentElement();
+		DocumentBuilder builder = documentBuilderObjectPool.borrowObject();
+		try
+		{
+			Document xmldoc = builder.parse(new InputSource(new StringReader(xml)));
+			return xmldoc.getDocumentElement();
+		}
+		finally {
+			documentBuilderObjectPool.retrunObject(builder);
+		}
 	}
 
 	public String getExtraDataMap(DAOOperations dao, String path, Set<String> expectedAttributes, Set<String> expectedElements)
 		throws CDBFieldDoesNotExistEx, WrongCDBDataTypeEx, ParserConfigurationException, TransformerException
 	{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		DOMImplementation impl = builder.getDOMImplementation();
-		Document xmldoc = impl.createDocument(null, "data", null);
+		Document xmldoc;
+		DocumentBuilder builder = documentBuilderObjectPool.borrowObject();
+		try
+		{
+			DOMImplementation impl = builder.getDOMImplementation();
+			xmldoc = impl.createDocument(null, "data", null);
+		}
+		finally {
+			documentBuilderObjectPool.retrunObject(builder);
+		}
+
 		Element root = xmldoc.getDocumentElement();
 
 		if (getExtraDataMap(root, dao, path, expectedAttributes, expectedElements))
