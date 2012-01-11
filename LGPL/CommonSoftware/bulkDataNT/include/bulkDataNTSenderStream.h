@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.8 2012/01/09 15:48:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.9 2012/01/11 15:42:19 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -34,7 +34,6 @@
 #error This is a C++ include file and cannot be used from plain C
 #endif
 
-
 #include "bulkDataNTStream.h"
 #include "bulkDataNTSenderFlow.h"
 #include "bulkDataNTSenderFlowStatusCallback.h"
@@ -42,37 +41,38 @@
 #include <map>
 
 
-
 namespace AcsBulkdata
 {
 
 class BulkDataNTSenderFlow;
 
-
-// TBD: default class for TSenderCallback
-//template<class TSenderCallback>
 class BulkDataNTSenderStream : public BulkDataNTStream
-//, public AcsBulkdata::BulkDataNTDDSPublisher
 {
 	friend class BulkDataNTSenderFlow;
 public:
 
 	/**
-	 * Constructor
+	 * Sender Stream constructor.
+	 * @param name name of the sender stream that should be constructed
+	 * @param cfg(optional) sender stream configuration
+	 * @exception #StreamCreateProblemExImpl
 	 */
-	//TBD should we allow to create a stream w/o configuration ?
 	BulkDataNTSenderStream(const char* name, const SenderStreamConfiguration &cfg=SenderStreamConfiguration());
 
 	/**
-	 * Destructor
-	 */
+	 * Sender stream destruction which destroys also all created flows.
+	*/
 	virtual ~BulkDataNTSenderStream();
 
-	// TBD: is this better than createSingleFlow and createMultipleFlows
-	// do we have to provide a name or just a number, for example we need three flows
-	// if we decide for name then we have to change send methods as well.
-	// here we should connect to the DDS topic
-	// TBD: here we can also send the callback?
+
+	/**
+	 * The method creates a flow an the sender stream
+	 * @param flowName name of the flow that should be created
+	 * @param cfg (optional) sender flow configuration
+	 * @param cb (optional) Sender flow status callback
+	 * @param releaseCB should be the callback relased when the flow is destroyed
+	 * @return pointer to created sender flow object
+	 */
 	BulkDataNTSenderFlow* createFlow(const char* flowName, const SenderFlowConfiguration &cfg=SenderFlowConfiguration(),
 			BulkDataNTSenderFlowStatusCallback *cb=0, bool releaseCB=false);
 
@@ -83,9 +83,19 @@ public:
 	// is this method the same for Receiver and Sender ?
 	void createMultipleFlowsFromConfig(const char *config);
 
+	/**
+	 * It returns pointer to Sender Flow with the specified name
+	 * @param flowName the name of the flow
+	 * @return sender flow if present in the stream, otherwise exception
+	 * @exception #FlowNotExistExImpl
+	 */
 	BulkDataNTSenderFlow* getFlow(const char* flowName);
 
-	/// returns true if flow exists otherwise false
+	/**
+	 *Method just to check if a flow exists in the stream.
+	 * @param flowName the name of the flow
+	 * @return true if the flow with name flowName exists in the stream otherwise false
+	 */
 	bool existFlow(const char* flowName);
 
 protected:
