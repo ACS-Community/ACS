@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.14 2012/01/11 11:48:30 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlow.h,v 1.15 2012/01/11 11:53:36 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -45,7 +45,10 @@ class BulkDataNTSenderFlow : public BulkDataNTFlow
 public:
 
 	/**
-	 * Constructor
+	 * Sender Flow constructor.
+	 * @param senderStream  sender stream where the flow will be created
+	 * @param flowName the name of flow that should be created
+	 * @param sndCfg sender flow onfiguration
 	 */
 	BulkDataNTSenderFlow(BulkDataNTSenderStream *senderStream,
 						const char* flowName,
@@ -53,7 +56,7 @@ public:
 						/*cb*/);
 
 	/**
-	 * Destructor
+	 * Sender flow destructor
 	 */
 	virtual ~BulkDataNTSenderFlow();
 
@@ -100,12 +103,12 @@ public:
 	void stopSend();
 
 protected:
-	AcsBulkdata::BulkDataNTSenderStream *senderStream_m;
+	AcsBulkdata::BulkDataNTSenderStream *senderStream_m; /// pointer to the sender
 
-	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;
-	DDS::Topic *ddsTopic_m;
-	BulkDataNTWriterListener *writerReaderListener_m;
-	ACSBulkData::BulkDataNTFrameDataWriter *ddsDataWriter_m;
+	AcsBulkdata::BulkDataNTDDSPublisher *ddsPublisher_m;  /// DDS publisher
+	DDS::Topic *ddsTopic_m;  /// DDS topic where data will be write
+	BulkDataNTWriterListener *writerReaderListener_m;  /// DDS listener for status etc.
+	ACSBulkData::BulkDataNTFrameDataWriter *ddsDataWriter_m;  /// DDS writer
 
 	DDS::Duration_t ackTimeout_m;  /// ACKs timeout
 	void setACKsTimeout(double ACKsTimeout);  /// setter fro ackTimeout
@@ -123,7 +126,7 @@ protected:
 	 */
 	void writeFrame(ACSBulkData::DataType dataType,  const unsigned char *param=0, size_t len=0, unsigned int restFrameCount=0);
 
-	// frame
+	/// frame
 	ACSBulkData::BulkDataNTFrame *frame_m;
 
 	/// disable default - empty constructor
