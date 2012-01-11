@@ -18,18 +18,12 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.14 2011/11/09 16:23:40 bjeram Exp $"
+* "@(#) $Id: bulkDataNTReceiverFlow.h,v 1.15 2012/01/11 15:53:54 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
 * bjeram  2011-04-19  created
 */
-
-/************************************************************************
- *
- *----------------------------------------------------------------------
- */
-
 #ifndef __cplusplus
 #error This is a C++ include file and cannot be used from plain C
 #endif
@@ -41,7 +35,6 @@
 #include "bulkDataNTReaderListener.h"
 
 
-
 namespace AcsBulkdata
 {
 
@@ -51,8 +44,14 @@ class BulkDataNTReceiverFlow : public BulkDataNTFlow
 {
 public:
 
+
 	/**
-	 * Constructor
+	 * Receiver flow constructor. It is used by REceiverStream class.
+	 * @param receiverStream pointer to the stream where the flow should be created
+	 * @param flowName the name of the flow that we want to create
+	 * @param rcvCfg receiver flow configuration
+	 * @param cb  pointer to the receiver flow callback
+	 * @param releaseCB should the callback be relased when the flow is destroyed
 	 */
 	BulkDataNTReceiverFlow(BulkDataNTReceiverStreamBase *receiverStream,
 							const char* flowName,
@@ -61,27 +60,38 @@ public:
 							bool releaseCB);
 
 	/**
-	 * Destructor
+	 *Receiver flow destructor
 	 */
 	virtual ~BulkDataNTReceiverFlow();
 
+	/**
+	 * Sets the name of receiver, so that we can distinguish between different receivers in the system.
+	 * @param recvName name of receiver.
+	 */
 	void setReceiverName(char* recvName);
 
+	/**
+	 *If we need to get callback object, for example if CB is created using template parameter.
+	 * @return pointer to callback object.
+	 */
 	BulkDataNTCallback* getCallbackObject() { return callback_m; }
 
+	/**
+	 * template/casted version of #getCallbackObject
+	 * @return pointer to casted callback object
+	 */
 	template<class T>
 	T* getCallback() { return dynamic_cast<T*>(callback_m); }
 
-	//TBD:: setCB();
 protected:
 	AcsBulkdata::BulkDataNTReceiverStreamBase *receiverStream_m;
 
 	AcsBulkdata::BulkDataNTDDSSubscriber *ddsSubscriber_m;
 	ACSBulkData::BulkDataNTFrameDataReader *ddsDataReader_m;
-	DDS::Topic *ddsTopic_m;
-	BulkDataNTReaderListener *dataReaderListener_m;  // we can keep it in  CB ?
-	BulkDataNTCallback *callback_m; //we can keep it in "Subscriber" ?
-	bool releaseCB_m;
+	DDS::Topic *ddsTopic_m; /// DDS topic
+	BulkDataNTReaderListener *dataReaderListener_m; /// DDS reader
+	BulkDataNTCallback *callback_m; /// callback
+	bool releaseCB_m; /// should the CB be destroyed when the flow is destroyed
 
 	/// disable default - empty constructor
 	BulkDataNTReceiverFlow();
