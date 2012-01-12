@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.12 2012/01/11 10:20:05 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfiguration.cpp,v 1.13 2012/01/12 09:33:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -116,7 +116,7 @@ ReceiverFlowConfiguration::ReceiverFlowConfiguration()
 SenderFlowConfiguration::SenderFlowConfiguration()
 {
 	profileQos=DEFAULT_SENDER_FLOW_PROFILE;
-	frameTimeout = 5.0;  //secs
+	sendFrameTimeout = 5.0;  //secs
 	ACKsTimeout = 1.0; //secs
 }
 
@@ -125,9 +125,9 @@ double SenderFlowConfiguration::getACKsTimeout() const
     return ACKsTimeout;
 }
 
-double SenderFlowConfiguration::getFrameTimeout() const
+double SenderFlowConfiguration::getSendFrameTimeout() const
 {
-    return frameTimeout;
+    return sendFrameTimeout;
 }
 
 void SenderFlowConfiguration::setACKsTimeout(double acKsTimeout)
@@ -135,9 +135,9 @@ void SenderFlowConfiguration::setACKsTimeout(double acKsTimeout)
     ACKsTimeout = acKsTimeout;
 }
 
-void SenderFlowConfiguration::setFrameTimeout(double frameTimeout)
+void SenderFlowConfiguration::setSendFrameTimeout(double frameTimeout)
 {
-    this->frameTimeout = frameTimeout;
+    this->sendFrameTimeout = frameTimeout;
 }
 
 double ReceiverFlowConfiguration::getCbReceiveProcessTimeout() const

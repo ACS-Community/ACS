@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.25 2012/01/11 10:22:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTConfigurationParser.cpp,v 1.26 2012/01/12 09:33:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -340,7 +340,7 @@ void BulkDataConfigurationParser::parseConfig(const char *config, const struct P
 				// SenderFlow has two extra attributes, let's check them
 				try {
 					if( parsingInfo.type == SENDER ) {
-						senderCfg.flowsCfgMap[flowName.get()]->setFrameTimeout(getDoubleFromAttribute(streamChildNode, "SendFrameTimeoutSec", 5.0));
+						senderCfg.flowsCfgMap[flowName.get()]->setSendFrameTimeout(getDoubleFromAttribute(streamChildNode, "SendFrameTimeoutSec", 5.0));
 						senderCfg.flowsCfgMap[flowName.get()]->setACKsTimeout(getDoubleFromAttribute(streamChildNode, "ACKsTimeoutSec", 1.0));
 					}else {
 						receiverCfg.flowsCfgMap[flowName.get()]->setCbReceiveProcessTimeout(getDoubleFromAttribute(streamChildNode, "cbReceiveProcessTimeoutSec", 0.010));

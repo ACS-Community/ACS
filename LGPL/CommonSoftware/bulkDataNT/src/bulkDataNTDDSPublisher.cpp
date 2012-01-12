@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.25 2012/01/11 10:22:16 bjeram Exp $"
+* "@(#) $Id: bulkDataNTDDSPublisher.cpp,v 1.26 2012/01/12 09:33:02 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -35,7 +35,7 @@ BulkDataNTDDSPublisher::BulkDataNTDDSPublisher(DDS::DomainParticipant *p, const 
 		BulkDataNTDDS(p, sfCfg), publisher_m(0), dataWriter_m(0)
 {
 	publisher_m = createDDSPublisher();
-	frameTimeout_m = sfCfg.getFrameTimeout();
+	frameTimeout_m = sfCfg.getSendFrameTimeout();
 }
 
 BulkDataNTDDSPublisher::~BulkDataNTDDSPublisher()
