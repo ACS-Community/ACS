@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.2 2012/01/12 14:38:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.3 2012/01/12 14:49:14 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -38,7 +38,27 @@ class BulkDataNTSenderFlowCallback
 public:
 	virtual ~BulkDataNTSenderFlowCallback(){};
 
+
+	/**
+	 * The method is called when an asychronous error happen on sender flow.
+	 * @param error
+	 */
 	virtual void onError(ACSErr::CompletionImpl &error);
+
+	/**
+	 * This method is called when new receiver connects
+	 * @param newRcvs number of newly connected receivers
+	 * @param totalRcvs number of all connected receivers so far
+	 */
+	virtual void onReceiverConnect(unsigned short newRcvs, unsigned short totalRcvs);
+
+	/**
+	 * This method is called when a receiver disconnects
+	 * @param discRecvs number of disconnected receivers
+	 * @param totalRcvs total number of receivers remain after the disconnect
+	 */
+	virtual void onReceiverDisconnect(unsigned short discRcvs, unsigned short totalRcvs);
+
 };//class BulkDataNTSenderFlowCallback
 
 };//namespace
