@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.3 2011/10/14 17:30:28 bjeram Exp $"
+* "@(#) $Id: bulkDataNTWriterListener.cpp,v 1.4 2012/01/12 11:41:38 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -68,12 +68,10 @@ void BulkDataNTWriterListener::on_liveliness_lost (
 }
 
 
-void BulkDataNTWriterListener::on_publication_matched (
-		::DDS::DataWriter* writer,
-		const ::DDS::PublicationMatchedStatus & status)
+void BulkDataNTWriterListener::on_publication_matched (DDS::DataWriter* writer,	const DDS::PublicationMatchedStatus & status)
 {
-	cerr << topicName_m << " BulkDataNTWriterListener::on_publication_match" << endl;
-}
+	ACS_TRACE(__FUNCTION__);
+}//on_publication_matched
 
 void BulkDataNTWriterListener::on_reliable_writer_cache_changed(DDSDataWriter* writer,
 		const DDS_ReliableWriterCacheChangedStatus& status)
