@@ -18,7 +18,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderStream.h,v 1.9 2012/01/11 15:42:19 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderStream.h,v 1.10 2012/01/12 14:28:51 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -36,7 +36,7 @@
 
 #include "bulkDataNTStream.h"
 #include "bulkDataNTSenderFlow.h"
-#include "bulkDataNTSenderFlowStatusCallback.h"
+#include "bulkDataNTSenderFlowCallback.h"
 
 #include <map>
 
@@ -74,7 +74,7 @@ public:
 	 * @return pointer to created sender flow object
 	 */
 	BulkDataNTSenderFlow* createFlow(const char* flowName, const SenderFlowConfiguration &cfg=SenderFlowConfiguration(),
-			BulkDataNTSenderFlowStatusCallback *cb=0, bool releaseCB=false);
+			BulkDataNTSenderFlowCallback *cb=0, bool releaseCB=false);
 
 
 
