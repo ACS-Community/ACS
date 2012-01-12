@@ -395,13 +395,16 @@ public class ThreadLoopRunner
 		 * @throws InterruptedException 
 		 */
 		boolean awaitTaskFinish(long timeout, TimeUnit unit) throws InterruptedException {
-			
+			boolean gotIt = false;
 			try {
-				return runLock.tryLock(timeout, unit);
+				gotIt = runLock.tryLock(timeout, unit);
 			} 
-			finally {
-				runLock.unlock();
+			finally { 
+				if (gotIt) {
+					runLock.unlock();
+				}
 			}
+			return gotIt;
 		}
 	}
 
