@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.41 2012/01/12 11:15:02 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.42 2012/01/12 12:01:31 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -274,14 +274,14 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
 
 void BulkDataNTReaderListener::on_requested_deadline_missed(DDS::DataReader*, const DDS::RequestedDeadlineMissedStatus& )
 {
-  ACS_DDS_Errors::DDSDeadlineMissedCompletion dmerr(__FILE__, __LINE__, __FUNCTION__);
+  ACS_DDS_Errors::DDSRequestedDeadlineMissedCompletion dmerr(__FILE__, __LINE__, __FUNCTION__);
   initalizeLogging(); //force initialization of logging sys TBD changed
   callback_mp->onError(dmerr);
 }//on_requested_deadline_missed
 
 void BulkDataNTReaderListener::on_requested_incompatible_qos(DDS::DataReader*, const DDS::RequestedIncompatibleQosStatus&)
 {
-  ACS_DDS_Errors::DDSIncompatibleQoSCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
+  ACS_DDS_Errors::DDSRequestedIncompatibleQoSCompletion iqerr(__FILE__, __LINE__, __FUNCTION__);
   initalizeLogging(); //force initialization of logging sys TBD changed
   callback_mp->onError(iqerr);
 }//on_requested_incompatible_qos

@@ -75,10 +75,10 @@
         <Member name="NarrowType" type="string" description="Narrow Type" />
     </ErrorCode>
      
-    <ErrorCode name="DDSIncompatibleQoS" shortDescription="Incompatible QoS" description="(Requested) incompatible QoS">
+    <ErrorCode name="DDSRequestedIncompatibleQoS" shortDescription="Incompatible QoS" description="Requested incompatible QoS">
     </ErrorCode>
     
-    <ErrorCode name="DDSDeadlineMissed" shortDescription="Deadline missed." description="(Requested) deadline missed">
+    <ErrorCode name="DDSRequestedDeadlineMissed" shortDescription="Deadline missed." description="Requested deadline missed">
     </ErrorCode>
     
     <ErrorCode name="DDSSampleStateError" shortDescription="DDS Sample State  Error" description="Sample state error">
