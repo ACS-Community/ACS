@@ -78,7 +78,13 @@
     <ErrorCode name="DDSRequestedIncompatibleQoS" shortDescription="Incompatible QoS" description="Requested incompatible QoS">
     </ErrorCode>
     
+    <ErrorCode name="DDSOfferedIncompatibleQoS" shortDescription="Incompatible QoS" description="Requested incompatible QoS">
+    </ErrorCode>
+    
     <ErrorCode name="DDSRequestedDeadlineMissed" shortDescription="Deadline missed." description="Requested deadline missed">
+    </ErrorCode>
+    
+    <ErrorCode name="DDSOffeeredDeadlineMissed" shortDescription="Deadline missed." description="Requested deadline missed">
     </ErrorCode>
     
     <ErrorCode name="DDSSampleStateError" shortDescription="DDS Sample State  Error" description="Sample state error">
