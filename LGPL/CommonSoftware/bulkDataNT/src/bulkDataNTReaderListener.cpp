@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.38 2012/01/04 16:41:34 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.39 2012/01/12 10:52:37 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -331,7 +331,7 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
   sle.setFrameCount(frameCounter_m);
   sle.setStreamFlowName(topicName_m.c_str());
   initalizeLogging(); //force initialization of logging sys TBD changed
-  callback_mp->onError(sle);
+  callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle);
 }//on_sample_lost
 
 void BulkDataNTReaderListener::increasConseqErrorCount()
