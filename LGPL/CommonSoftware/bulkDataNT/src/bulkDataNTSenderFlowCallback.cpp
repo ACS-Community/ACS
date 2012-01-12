@@ -1,8 +1,6 @@
-#ifndef _BULKDATANT_FLOW_CALLBACK_H_
-#define _BULKDATANT_FLOW_CALLBACK_H_
 /*******************************************************************************
 * ALMA - Atacama Large Millimiter Array
-* (c) European Southern Observatory, 2011 
+* Copyright (c) European Southern Observatory, 2012 
 * 
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -18,29 +16,20 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTSenderFlowCallback.h,v 1.2 2012/01/12 14:38:29 bjeram Exp $"
+* "@(#) $Id: bulkDataNTSenderFlowCallback.cpp,v 1.1 2012/01/12 14:38:29 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
-* almadev  2011-10-18  created
+* bjeram  2012-01-12  created 
 */
 
-#ifndef __cplusplus
-#error This is a C++ include file and cannot be used from plain C
-#endif
+#include "bulkDataNTSenderFlowCallback.h"
 
-#include <acserr.h>
-
-namespace AcsBulkdata
+void AcsBulkdata::BulkDataNTSenderFlowCallback::onError(ACSErr::CompletionImpl & error)
 {
-class BulkDataNTSenderFlowCallback
-{
-public:
-	virtual ~BulkDataNTSenderFlowCallback(){};
+	error.log();
+}//onError
 
-	virtual void onError(ACSErr::CompletionImpl &error);
-};//class BulkDataNTSenderFlowCallback
 
-};//namespace
 
-#endif /*!_H*/
+/*___oOo___*/
