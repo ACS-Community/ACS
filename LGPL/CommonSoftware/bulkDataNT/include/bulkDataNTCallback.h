@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.23 2012/01/12 10:51:42 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.24 2012/01/12 11:17:34 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -109,7 +109,6 @@ public:
 	 * and can be overridden by an user. The default implementation just logs the error completion.
 	 * @param error - at the moment possible completion errors are:
 	 * #WrongFrameOrderCompletion
-	 * #FrameLostCompletion
 	 * #UnknownDataTypeCompletion
 	 * #DDSReturnErrorCompletion
 	 * #CBReceiveProcessTimeoutCompletion
@@ -133,7 +132,7 @@ public:
 	 * The default implementation just log the completion.
 	 * @param frmaeCount - missed frame number/count
 	 * @param totalFrames - total number of frames that should arrived
-	 * @param error completion: #SampleLostCompletion
+	 * @param error completion: #SampleLostCompletion, if detected by DDS or #FrameLostCompletion if detected by BD
 	 */
 	virtual void onDataLost(unsigned long frameCount, unsigned long totalFrames, ACSErr::CompletionImpl &error);
 protected:
