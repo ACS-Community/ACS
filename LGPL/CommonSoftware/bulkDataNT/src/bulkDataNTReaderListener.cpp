@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.40 2012/01/12 11:11:02 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.41 2012/01/12 11:15:02 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -228,7 +228,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                                 lde.setRestFrames(message.restDataLength); // should be ??
                                 lde.setFrameLength(message.data.length()); // should be 0
                                 lde.setStreamFlowName(topicName_m.c_str());
-                                callback_mp->onError(lde);
+                                callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde);
                                 increasConseqErrorCount();
                               }//if
                           }//if-else
