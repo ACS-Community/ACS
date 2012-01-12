@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.21 2011/12/22 16:07:00 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.22 2012/01/12 10:30:41 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -113,6 +113,8 @@ public:
 	 * #UnknownDataTypeCompletion
 	 * #DDSReturnErrorCompletion
 	 * #CBReceiveProcessTimeoutCompletion
+	 * #DDSDeadlineMissedCompletion
+	 * #DDSIncompatibleQoSCompletion
 	 */
 	virtual void onError(ACSErr::CompletionImpl &error);
 
