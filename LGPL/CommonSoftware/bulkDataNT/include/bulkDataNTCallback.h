@@ -19,7 +19,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bulkDataNTCallback.h,v 1.22 2012/01/12 10:30:41 bjeram Exp $"
+* "@(#) $Id: bulkDataNTCallback.h,v 1.23 2012/01/12 10:51:42 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -106,7 +106,7 @@ public:
 
 	/**
 	 * This method is called when an error happens in the flow's callback (cbStart/cbReceive/cbStop),
-	 * and can be overriden by an user. The default implementation just logs the error completion.
+	 * and can be overridden by an user. The default implementation just logs the error completion.
 	 * @param error - at the moment possible completion errors are:
 	 * #WrongFrameOrderCompletion
 	 * #FrameLostCompletion
@@ -118,14 +118,24 @@ public:
 	 */
 	virtual void onError(ACSErr::CompletionImpl &error);
 
-	/// The method is called when a new sender is connected to the flow
+	/**
+	 * The method is called when a new sender is connected to the flow
+	 */
 	virtual void onSenderConnect(){};
 
-	/// The method is called when a sender is disconnected for a flow
+	/**
+	 * The method is called when a sender is disconnected for a flow
+	 */
 	virtual void onSenderDisconnect(){};
 
-	//TBD: to be implemented now those error goes to onError
-	virtual void onDataLost(unsigned long frmaeCount, unsigned long totalFrames, ACSErr::CompletionImpl &error){};
+	/**
+	 * The method is called when a frame (DDS sample) did not arrive.
+	 * The default implementation just log the completion.
+	 * @param frmaeCount - missed frame number/count
+	 * @param totalFrames - total number of frames that should arrived
+	 * @param error completion: #SampleLostCompletion
+	 */
+	virtual void onDataLost(unsigned long frameCount, unsigned long totalFrames, ACSErr::CompletionImpl &error);
 protected:
 	std::string flowName_m;
 	std::string streamName_m;
