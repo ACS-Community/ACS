@@ -66,11 +66,10 @@
     </ErrorCode>
     
     <ErrorCode name="SampleLost" shortDescription="Sample Lost" description="Sample lost is reported in DDS on_data_lost">
-        <Member name="LostSamples" type="long" description="Number of lost samples" />
+        <Member name="LostSamples" type="long" description="Number of lost DDS samples" />
         <Member name="NextDataFrame" type="long" description="Data frame that should arrive" />
         <Member name="FrameCount" type="long" description="Number of arrived frames" />
         <Member name="StreamFlowName" type="string" description="Stream and Flow name" />
-        <Member name="SampleLost" type="long" description="Number of lost DDS samples" />
         <Member name="TotalSampleLost" type="long" description="Number of so far total lost DDS samples" />
         <Member name="Reason" type="long" description="DDS Reason for sample lost (SampleLostStatusKind)" />
     </ErrorCode>
