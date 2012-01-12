@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
  *
- * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.39 2012/01/12 10:52:37 bjeram Exp $"
+ * "@(#) $Id: bulkDataNTReaderListener.cpp,v 1.40 2012/01/12 11:11:02 bjeram Exp $"
  *
  * who       when      what
  * --------  --------  ----------------------------------------------
@@ -159,7 +159,7 @@ void BulkDataNTReaderListener::on_data_available(DDS::DataReader* reader)
                               lde.setRestFrames(message.restDataLength);
                               lde.setFrameLength(message.data.length());
                               lde.setStreamFlowName(topicName_m.c_str());
-                              callback_mp->onError(lde);
+                              callback_mp->onDataLost(frameCounter_m, totalFrames_m, lde);
                               increasConseqErrorCount();
                               return; // ??
                             }
@@ -330,6 +330,8 @@ void BulkDataNTReaderListener::on_sample_lost(DDS::DataReader*, const DDS::Sampl
   sle.setNextDataFrame(nextFrame_m);
   sle.setFrameCount(frameCounter_m);
   sle.setStreamFlowName(topicName_m.c_str());
+  sle.setTotalSampleLost(s.total_count);
+  sle.setReason(s.last_reason);
   initalizeLogging(); //force initialization of logging sys TBD changed
   callback_mp->onDataLost(frameCounter_m, totalFrames_m, sle);
 }//on_sample_lost
