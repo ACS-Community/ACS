@@ -16,7 +16,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 *
-* "@(#) $Id: bdNTSenderTest.cpp,v 1.11 2011/11/09 12:01:36 bjeram Exp $"
+* "@(#) $Id: bdNTSenderTest.cpp,v 1.12 2012/01/13 15:22:09 bjeram Exp $"
 *
 * who       when      what
 * --------  --------  ----------------------------------------------
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	unsigned int dataSize=65000;
 	ACE_Time_Value start_time, elapsed_time;
 
-	LoggingProxy m_logger(0, 0, 31, 0);
+	LoggingProxy m_logger(10, 0, 31, 0);
 
 	LoggingProxy::init (&m_logger);
     ACS_CHECK_LOGGER;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 	flow0->sendData(data, dataSize);
 	elapsed_time = ACE_OS::gettimeofday() - start_time;
 	send_time = (elapsed_time.sec()+( elapsed_time.usec() / 1000000. ));
-	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024*1024))/send_time));
+	ACS_SHORT_LOG((LM_INFO, "Transfer rate: %f", (dataSize/(1024.0*1024.0))/send_time));
 
 	flow1->sendData(data, dataSize);
 
@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
 	}
 
 	delete flow0;
+	m_logger.flush();
 // flow1 will be deleted when senderStream1 is deleted
 
 }
