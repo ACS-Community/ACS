@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeExecutableDependencies,v 1.7 2005/04/06 09:45:17 mzampare Exp $" 
+# "@(#) $Id: vltMakeExecutableDependencies,v 1.8 2012/01/13 18:54:47 tstaig Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -151,6 +151,9 @@ then
     # prepare the lists in the "-l<name>" format of all libraries used in linking
     # some library names can be conventional names that are expanded in a series of
     # predefined libraries or flags
+    if [ "´uname´" = "$CYGWIN_VER" ]; then
+        echo "xyz_${exeName}_DEF = \\"
+    fi
     for member in ${libList}
     do
         case $member in
@@ -209,6 +212,10 @@ then
             Linux):
                 lList="${lList} -lstdc++ "
                 ;;
+            $CYGWIN_VER):
+                MESSAGE="$MESSAGE -- error: this Operating System is not fully supported"
+                lList="${lList} -lstdc++ "
+                ;;
 
             *):
                 MESSAGE="$MESSAGE -- error: this Operating System is not supported"
@@ -230,10 +237,31 @@ then
             ;;
 
         *):
-            lList="${lList} -l${member}"
+            if [ "´uname´" = "$CYGWIN_VER" ]; then
+                echo "                 ${member} \\"
+            else
+                lList="${lList} -l${member}"
+            fi
+
             ;;
         esac
     done
+    if [ "´uname´" = "$CYGWIN_VER" ]; then
+        echo ""
+        echo "find_acsroot = \$(if \$(wildcard \$(ACSROOT)/lib/lib\$(member).dll.def), \`cat \$(ACSROOT)/lib/lib\$(member).dll.def\`,)"
+        echo "find_vlttop = \$(if \$(wildcard \$(VLTTOP)/lib/lib\$(member).dll.def), \`cat \$(VLTTOP)/lib/lib\$(member).dll.def\`, \$(find_acsroot))"
+        echo "find_lib = \$(if \$(wildcard ../lib/lib\$(member).dll.def), \`cat ../lib/lib\$(member).dll.def\`, \$(find_vlttop))"
+        echo "find_def = \$(find_lib)"
+        echo ""
+        echo "check_acsroot = \$(if \$(wildcard \$(ACSROOT)/lib/lib\$(member).dll.def), ,-l\$(member))"
+        echo "check_vlttop = \$(if \$(wildcard \$(VLTTOP)/lib/lib\$(member).dll.def), , \$(check_acsroot))"
+        echo "check_lib = \$(if \$(wildcard ../lib/lib\$(member).dll.def), , \$(check_vlttop))"
+        echo "check_dll = \$(check_lib)"
+        echo ""
+        echo "defList_${exeName} := \$(foreach member, \$(xyz_${exeName}_DEF), \$(find_def))"
+        echo "lList_${exeName} := \$(foreach member, \$(xyz_${exeName}_DEF), \$(check_dll))"
+        echo ""
+    fi
 
     # if we are on SunOS we enrich $libList with   -lstdc++
     if [ "`uname`" = "SunOS" -a "$PURIFY" != "" ] 
@@ -339,7 +367,11 @@ then
         # The target is build as a conditional statement controlled by variables
         # that can also be specified on the command line         
         echo "ifeq (\$(strip \$(MAKE_NOSHARED) \$(${exeName}_NOSHARED)),)"
-        echo "	\$(AT)\$(PURIFY) \$(PURECOV) \$(LD) \$(CFLAGS) \$(LDFLAGS) \$(L_PATH) $gccDir ${ldFlags} ${oList} ${libraryList}         -o ../bin/${exeName}"
+        if [ "´uname´" = "$CYGWIN_VER" ]; then
+            echo "	\$(AT)\$(PURIFY) \$(PURECOV) \$(LD) \$(CFLAGS) -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--whole-archive ${oList} -Wl,--no-whole-archive \$(LDFLAGS) \$(L_PATH) $gccDir ${ldFlags} ${libraryList} \$(lList_${exeName}) \$(defList_${exeName}) -o ../bin/${exeName}"
+        else
+            echo "	\$(AT)\$(PURIFY) \$(PURECOV) \$(LD) \$(CFLAGS) \$(LDFLAGS) \$(L_PATH) $gccDir ${ldFlags} ${oList} ${libraryList}         -o ../bin/${exeName}"
+        fi
         echo "else"
         echo "	\$(AT)\$(PURIFY) \$(PURECOV) \$(LD) \$(CFLAGS) \$(LDFLAGS) \$(L_PATH) $gccDir ${ldFlags} ${oList} ${libraryListNoshared} -o ../bin/${exeName}"
         echo "endif"

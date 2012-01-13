@@ -1,7 +1,7 @@
 #******************************************************************************
 # E.S.O. - ALMA project
 #
-# "@(#) $Id: acsMakefile,v 1.202 2011/11/28 13:58:50 jagonzal Exp $" 
+# "@(#) $Id: acsMakefile,v 1.203 2012/01/13 18:54:47 tstaig Exp $" 
 #
 #******************************************************************************
 #   NAME
@@ -500,6 +500,11 @@ ifeq ($(os),Linux)
    platform = Linux
    export ECHO = echo -e
    PATH_SEP=:
+else ifeq ($(os),$(CYGWIN_VER))
+   platform = Cygwin
+   osrev = 1.7.9
+   export ECHO = echo -e
+   PATH_SEP=:
 else
    export ECHO = echo 
 endif
@@ -664,6 +669,41 @@ endif
 
     endif
 
+    ifeq ($(platform),Cygwin)
+
+        # WARNING GCH: Commented out -ansi option for c,c++ and dependencies.
+        #              Problems with ACE/TAO
+        # CXX           = c++ -ansi
+        CCDEP         = gcc -MM -MG
+        CC            = gcc
+        CXX           = g++
+        LD            = g++
+        NOSHARED_ON   = -Xlinker -Bstatic
+        NOSHARED_OFF  = -Xlinker -Bdynamic
+        SHLIB_EXT     = dll
+        RANLIB        = ranlib
+        INC_DEFAULT   = -I/usr/local/include
+        LIB_DEFAULT   = -L/usr/local/lib
+        XINC_DEFAULT  = -I/usr/X11R6/include/X11
+        XLIB_DEFAULT  = -L/usr/X11R6/lib
+        CCS_LIBLIST          :=                -lCCS                 -lm
+        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm
+        CXX_FOR_VERSION_TEST := g++
+
+        ACS_CXX_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion)
+        ifeq (cmd,$(findstring cmd,$(SHELL)))
+            ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e "s/[^0-9\.]//g" | sed -e "s/\..*$$//")
+        else
+            ACS_CXX_MAJOR_VERSION := $(shell $(CXX_FOR_VERSION_TEST) -dumpversion | sed -e 's/[^0-9\.]//g' | sed -e 's/\..*$$//')
+        endif
+        ifeq ($(findstring $(ACS_CXX_MAJOR_VERSION),1 2 3),$(ACS_CXX_MAJOR_VERSION))
+               ACS_GXX_4_OR_BETTER := 0
+        else
+               ACS_GXX_4_OR_BETTER := 1
+        endif
+        .LIBPATTERNS = lib%.dll lib%.dll.a lib%.a
+        TAO_IDLFLAGS += -Gxhst -Gxhsk -Gxhsv -Gxhex -Gxhcn
+    endif
 
     BINDIR   = bin
     LIBDIR   = lib
@@ -1019,7 +1059,13 @@ endif
 RM = rm -rf
 
 # shell command to do xargs
-XARGS = env -i xargs
+ifeq ($(os),$(CYGWIN_VER))
+  XARGS = xargs
+  #XARGS = env -i PATH=$(PATH) xargs
+  #FIND = env -i PATH=$(PATH) JAVA_HOME=$(JAVA_HOME) find
+else
+  XARGS = env -i xargs
+endif
 #
 # default tcl/tk shell
 WISH = wish -f
@@ -1087,6 +1133,15 @@ endif
 ifdef TCLTK_ROOT
     TOOLS_INC := -I$(TCLTK_ROOT)/include $(TOOLS_INC)
     TOOLS_LIB := -L$(TCLTK_ROOT)/lib     $(TOOLS_LIB)
+endif
+
+ifdef PYTHON_ROOT
+    TOOLS_INC := -I$(PYTHONINC) $(TOOLS_INC)
+    ifeq ($(platform),Cygwin)
+        TOOLS_LIB := -L$(PYTHON_ROOT)/bin $(TOOLS_LIB)
+    else
+        TOOLS_LIB := -L$(PYTHON_ROOT)/lib $(TOOLS_LIB)
+    endif
 endif
 
 ifdef VLTROOT
@@ -1226,6 +1281,20 @@ endif
 #
 ifdef ACE_ROOT
 
+ifeq ($(platform),Cygwin)
+    VLTINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
+              -I$(ACE_ROOT)/TAO/tao/IORTable \
+              -I$(ACE_ROOT)/TAO/tao/IFR_Client \
+              -I$(ACE_ROOT)/TAO/tao/PortableServer \
+              -I$(ACE_ROOT)/TAO/tao/SmartProxies \
+	      -I$(ACE_ROOT)/TAO/tao/DynamicAny  \
+              -I$(ACE_ROOT)/TAO/tao/DynamicInterface \
+              -I$(ACE_ROOT)/TAO/tao/Messaging \
+	      -I$(ACE_ROOT)/TAO/tao/Valuetype \
+              -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/orbsvcs \
+              -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Log  \
+              -I$(ACE_ROOT) $(VLTINC)
+else
     VLTINC := -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/tao \
               -I$(ACE_ROOT)/ace -I$(ACE_ROOT)/TAO/tao/IORTable \
               -I$(ACE_ROOT)/TAO/tao/IFR_Client \
@@ -1238,8 +1307,29 @@ ifdef ACE_ROOT
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/orbsvcs \
               -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs/Log  \
               -I$(ACE_ROOT) $(VLTINC)
+endif
     VLTLIB := -L$(ACE_ROOT)/lib $(VLTLIB)
     TAO_MK_IDL_PATH := -I$(ACE_ROOT)/TAO/orbsvcs/orbsvcs -I$(ACE_ROOT)/TAO/tao -I$(ACE_ROOT)/TAO -I$(ACE_ROOT)/TAO/orbsvcs
+    ifeq ($(platform),Cygwin)
+    USER_LIB += -lACE -lACEXML -lACEXML_Parser -lACEXML_XML_Svc_Conf_Parser -lACE_ETCL -lACE_ETCL_Parser -lACE_Monitor_Control -lACE_gperf_lib
+    USER_LIB += -lKokyu -lTAO -lTAO_AV -lTAO_AnyTypeCode -lTAO_BiDirGIOP -lTAO_CSD_Framework -lTAO_CSD_ThreadPool -lTAO_Catior_i -lTAO_CodecFactory
+    USER_LIB += -lTAO_Codeset -lTAO_Compression -lTAO_CosConcurrency -lTAO_CosConcurrency_Serv -lTAO_CosConcurrency_Skel -lTAO_CosEvent
+    USER_LIB += -lTAO_CosEvent_Serv -lTAO_CosEvent_Skel -lTAO_CosLifeCycle -lTAO_CosLifeCycle_Skel -lTAO_CosLoadBalancing -lTAO_CosNaming
+    USER_LIB += -lTAO_CosNaming_Serv -lTAO_CosNaming_Skel -lTAO_CosNotification -lTAO_CosNotification_MC -lTAO_CosNotification_MC_Ext
+    USER_LIB += -lTAO_CosNotification_Persist -lTAO_CosNotification_Serv -lTAO_CosNotification_Skel -lTAO_CosProperty -lTAO_CosProperty_Serv
+    USER_LIB += -lTAO_CosProperty_Skel -lTAO_CosTime -lTAO_CosTime_Serv -lTAO_CosTime_Skel -lTAO_CosTrading -lTAO_CosTrading_Serv
+    USER_LIB += -lTAO_CosTrading_Skel -lTAO_DiffServPolicy -lTAO_DsEventLogAdmin -lTAO_DsEventLogAdmin_Serv -lTAO_DsEventLogAdmin_Skel
+    USER_LIB += -lTAO_DsLogAdmin -lTAO_DsLogAdmin_Serv -lTAO_DsLogAdmin_Skel -lTAO_DsNotifyLogAdmin -lTAO_DsNotifyLogAdmin_Serv
+    USER_LIB += -lTAO_DsNotifyLogAdmin_Skel -lTAO_DynamicAny -lTAO_DynamicInterface -lTAO_ETCL -lTAO_EndpointPolicy -lTAO_FTORB_Utils
+    USER_LIB += -lTAO_FTRT_ClientORB -lTAO_FTRT_EventChannel -lTAO_FT_ClientORB -lTAO_FT_ServerORB -lTAO_FaultTolerance -lTAO_FtRtEvent
+    USER_LIB += -lTAO_IDL_BE -lTAO_IDL_FE -lTAO_IFRService -lTAO_IFR_BE -lTAO_IFR_Client -lTAO_IORInterceptor -lTAO_IORManip -lTAO_IORTable
+    USER_LIB += -lTAO_ImR_Activator -lTAO_ImR_Activator_IDL -lTAO_ImR_Client -lTAO_ImR_Locator -lTAO_ImR_Locator_IDL -lTAO_Messaging
+    USER_LIB += -lTAO_Monitor -lTAO_Notify_Service -lTAO_ObjRefTemplate -lTAO_PI -lTAO_PI_Server -lTAO_PortableGroup -lTAO_PortableServer
+    USER_LIB += -lTAO_RTCORBA -lTAO_RTCORBAEvent -lTAO_RTEvent -lTAO_RTEventLogAdmin -lTAO_RTEventLogAdmin_Serv -lTAO_RTEventLogAdmin_Skel
+    USER_LIB += -lTAO_RTEvent_Serv -lTAO_RTEvent_Skel -lTAO_RTKokyuEvent -lTAO_RTPortableServer -lTAO_RTSched -lTAO_RTSchedEvent -lTAO_RTScheduler
+    USER_LIB += -lTAO_RT_Notification -lTAO_ReplicationManagerLib -lTAO_Security -lTAO_SmartProxies -lTAO_Strategies -lTAO_Svc_Utils -lTAO_TC
+    USER_LIB += -lTAO_TC_IIOP -lTAO_TypeCodeFactory -lTAO_Utils -lTAO_Valuetype -lTAO_ZIOP
+    endif
 ifdef USE_OPENDDS
     TAO_MK_IDL_PATH := $(TAO_MK_IDL_PATH) -I$(DDS_ROOT)
     TAO_IDLFLAGS += -Gdcps
@@ -1802,7 +1892,7 @@ CLEAN_DIST_TARGET += clean_dist_all
 .PHONY : clean_dist_all
 clean_dist_all:
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \*\.o -o -name \*\~ -o  -name \.\*\~ -o -name \*\.so -o -name \*\.sl -print | $(XARGS) -i $(RM) {}    $(OUTPUT)
+	-$(AT)find .. -name \*\.o -o -name \*\~ -o  -name \.\*\~ -o -name \*\.$(SHLIB_EXT) -o -name \*\.sl -print | $(XARGS) -i $(RM) {}    $(OUTPUT)
 	$(AT)echo "Cleaning empty directories..."
 	$(AT)for dir in $(foreach dir, $(CREATE_DIRS), $(dir)); \
 	do \
@@ -2035,7 +2125,7 @@ vpath  %.o  ../object
 vpath  %.h  ../object $(subst -I, ,$(I_PATH))
 #vpath  %.so $(subst -L,:,$(strip $(L_PATH)))
 vpath  %.a  $(LIB_PATH_LIST)
-vpath  %.so  $(LIB_PATH_LIST)
+vpath  %.$(SHLIB_EXT)  $(LIB_PATH_LIST)
 vpath  %.jar  $(LIB_PATH_LIST)
 
 #

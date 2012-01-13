@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: Makefile,v 1.3 2010/06/10 07:50:24 gchiozzi Exp $" 
+# "@(#) $Id: Makefile,v 1.4 2012/01/13 18:54:47 tstaig Exp $" 
 #
 # Makefile   for vlt customization of make 
 #
@@ -206,6 +206,7 @@ else
 	-$(AT) if [ `uname -r` = 5.8     ]; then cp ../include/vltPort.h.Solaris.2.lite   ../include/vltPort.h; chmod 666 ../include/vltPort.h; fi
 endif
 	-$(AT) if [ `uname` = Linux ]; then cp ../include/vltPort.h.Linux ../include/vltPort.h; chmod 666 ../include/vltPort.h; fi
+	-$(AT) if [ `uname` = $(CYGWIN_VER) ]; then cp ../include/vltPort.h.Cygwin ../include/vltPort.h; chmod 666 ../include/vltPort.h; fi
 
 clean : clean_all
 	-$(AT) cp ../include/vltPort.h.DUMMY ../include/vltPort.h

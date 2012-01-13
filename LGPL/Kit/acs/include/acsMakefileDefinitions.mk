@@ -1,5 +1,5 @@
 #
-# $Id: acsMakefileDefinitions.mk,v 1.28 2011/12/23 10:22:34 bjeram Exp $
+# $Id: acsMakefileDefinitions.mk,v 1.29 2012/01/13 18:54:47 tstaig Exp $
 #
 #(info Entering definitions.mk)
 
@@ -210,7 +210,11 @@ endif
 ifeq ($(call mustBuild,C++),true)
 ../object/$1C.cpp: $(CURDIR)/../idl/$1.idl $($1_IDLprereq)
 	-@echo "== IDL Compiling for TAO (C++): $1"
+ifeq ($(platform),Cygwin)
+	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o /tmp/ -Wb,export_macro=$1Stubs_Export -Wb,export_include=$1StubsExport.h $(TAO_IDLFLAGS) $$<
+else
 	$(AT) $(TAO_IDL) -Sg $(MK_IDL_PATH) $(TAO_MK_IDL_PATH) -o /tmp/ $(TAO_IDLFLAGS) $$< 
+endif
 	$(AT) mv -f $(foreach ext,$(IDL_EXTENSIONS),/tmp/$1$(ext)) ../object/
 
 # this is a trick which I am trying to use for parallelization
@@ -727,7 +731,9 @@ endef
 
 #############################################################
 #############################################################
-
+ifeq ($(platform),Cygwin)
+deps = $(foreach dep, $(if $(strip $($1_lList)),$(patsubst -l%,%,$($1_lList) $($1_dList)),$(if $(wildcard $(shell searchFile lib/lib$1.dll.dep)/lib/lib$1.dll.dep),$(strip $(shell cat $(shell searchFile lib/lib$1.dll.dep)/lib/lib$1.dll.dep)),)), -l$(dep))
+endif
 
 #acsMakeLibraryDependencies $(VW),$(*F),$($(*F)_OBJECTS),$($(*F)_LDFLAGS),$($(*F)_NOSHARED),$($(*F)_LIBS)
 
@@ -736,8 +742,8 @@ define acsMakeLibraryDependencies
 
 #ifeq ($(strip $(MAKE_UNIX)),TRUE)
 $(if $(filter /vw,$1),,
- $2_sharedLib=$(CURDIR)/../lib/lib$2.so
- $2_sharedLibName=-Xlinker -h -Xlinker lib$2.so)
+ $2_sharedLib=$(CURDIR)/../lib/lib$2.$(SHLIB_EXT)
+ $2_sharedLibName=-Xlinker -h -Xlinker lib$2.$(SHLIB_EXT))
 #endif
 
 $2_depList =
@@ -760,7 +766,9 @@ endif
 .PHONY: clean_dist_lib_$2
 
 $(if $(or $3,$6), \
-	xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) \
+	$(if $(findstring Cygwin, $(platform)), \
+	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o$(eval $(obj)_CFLAGS += $($2_CFLAGS))), \
+	  xyz_$2_OBJ = $(foreach obj,$3,../object/$(obj).o) ) \
 	$(foreach lib, $6, \
 	  $(if $(filter CCS,$(lib)), \
 	   $(eval ccs=yes) $(eval rtap=yes), \
@@ -772,15 +780,26 @@ $(if $(or $3,$6), \
                  $(eval MESSAGE += ecgs does not provide), \
                   $(if $(filter iostream,$(lib)), \
                    $(eval MESSAGE += please remove iostream), \
-                    $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) \
+	                 $(if $(findstring Cygwin, $(platform)), \
+	                  $(eval $2_lList += -l$(lib) $(eval $2_dList += $(call deps,$(lib)))), \
+                     $(eval $2_lList += -l$(lib)) )  ) ) ) ) ) ) \
+	  $(if $(findstring Cygwin, $(platform)), \
+	   $(eval $2_dList = $(strip $(sort $($2_dList)))) \
+	   $(eval $2_lList = $(strip $(sort $($2_lList)))) \
+	  ) \
 	)
+
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
 
 $(if $($2_lList), \
-	$(eval $2_libraryList += $($2_lList) \
-	$(eval $2_libraryListNoshared += $(NOSHARED_ON) $(NOSHARED_OFF) ) ) \
+	$(if $(findstring Cygwin, $(platform)), \
+	  $(eval $2_libraryList += $(sort $($2_lList) $($2_dList)) \
+	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $(NOSHARED_OFF) ) ), \
+	  $(eval $2_libraryList += $($2_lList) \
+	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $(NOSHARED_OFF) ) ) \
+	) \
 )
 
 $(if $(filter yes,$(ccs)), \
@@ -800,7 +819,10 @@ $(if $5, \
 	$(eval $2_lib_prereq = $(CURDIR)/../lib/lib$2.a) \
 	$(eval $2_clean_prereq = clean_lib_static_$2) \
 	$(eval $2_install_prereq = install_lib_static_$2), \
+	$(if $(findstring Cygwin, $(platform)), \
+	     $(eval $2_lib_prereq =  $(if $(MAKE_NOSTATIC),,$(CURDIR)/../lib/lib$2.a) $(CURDIR)/../lib/lib$2.$(SHLIB_EXT) $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).a $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).dep), \
         $(eval $2_lib_prereq =  $(if $(MAKE_NOSTATIC),,$(CURDIR)/../lib/lib$2.a) $(CURDIR)/../lib/lib$2.so ) \
+	) \
 	$(eval $2_clean_prereq = $(if $(MAKE_NOSTATIC),,clean_lib_static_$2) clean_lib_shared_$2) \
         $(eval $2_install_prereq = $(if $(MAKE_NOSTATIC),,install_lib_static_$2) install_lib_shared_$2 ) \
 ) \
@@ -826,19 +848,43 @@ $(CURDIR)/../lib/lib$2.a: $$(xyz_$2_OBJ)
 
 ../lib/lib$2.a: $(CURDIR)/../lib/lib$2.a
 
-$(CURDIR)/../lib/lib$2.so: $$(xyz_$2_OBJ) $$($2_lList) 
-	@echo "== Making library: ../lib/lib$2.so" 
-	-$(AT)$(RM) ../lib/lib$2.so 
-	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) $(L_PATH) $($2_libraryList) $4 -o ../lib/lib$2.so $$(xyz_$2_OBJ)
-	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.so; fi 
-	$(AT) chmod a-w ../lib/lib$2.so 
+$(CURDIR)/../lib/lib$2.$(SHLIB_EXT): $$(xyz_$2_OBJ) $$($2_lList) 
+	@echo "== Making library: ../lib/lib$2.$(SHLIB_EXT)" 
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT)
+ifeq ($(platform),Cygwin)
+	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc $(L_PATH) -Wl,--whole-archive $$(xyz_$2_OBJ) -Wl,--no-whole-archive $(sort $($2_libraryList)) $4 -o ../lib/lib$2.$(SHLIB_EXT)
+else
+	$(AT)$(CXX) -shared -fPIC $$($2_sharedLibName) $(L_PATH) $($2_libraryList) $4 -o ../lib/lib$2.$(SHLIB_EXT) $$(xyz_$2_OBJ)
+endif
+	$(AT) if [ "$$$$MAKE_NOSYMBOL_CHECK" == "" ]; then acsMakeCheckUnresolvedSymbols -w ../lib/lib$2.$(SHLIB_EXT); fi 
+	$(AT) chmod a-w+x ../lib/lib$2.$(SHLIB_EXT)
 
-../lib/lib$2.so: $(CURDIR)/../lib/lib$2.so
+../lib/lib$2.$(SHLIB_EXT): $(CURDIR)/../lib/lib$2.$(SHLIB_EXT)
+
+ifeq ($(platform),Cygwin)
+$(CURDIR)/../lib/lib$2.$(SHLIB_EXT).a: ../lib/lib$2.$(SHLIB_EXT)
+	@echo "== Making import library: ../lib/lib$2.$(SHLIB_EXT).a"
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT).a
+	ln -s ../lib/lib$2.$(SHLIB_EXT) ../lib/lib$2.$(SHLIB_EXT).a
+
+../lib/lib$2.$(SHLIB_EXT).a: $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).a
+
+$(CURDIR)/../lib/lib$2.$(SHLIB_EXT).dep: ../lib/lib$2.$(SHLIB_EXT)
+	@echo "== Making library dependencies: ../lib/lib$2.$(SHLIB_EXT).dep"
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT).dep
+	-$(AT)echo "$(strip $(filter-out -lTAO%,$(filter-out -lACE,$(sort $($2_lList) $($2_dList)))))" | sed "s/-l//g"| sed "s/ \+/\n/g" |sort -u | tr '\n' ' ' > ../lib/lib$2.$(SHLIB_EXT).dep
+
+../lib/lib$2.$(SHLIB_EXT).dep: $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).dep
+endif
 
 
 .PHONY: clean_lib_shared_$2
 clean_lib_shared_$2: 
-	-$(AT)$(RM) ../lib/lib$2.so 
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT) 
+ifeq ($(platform),Cygwin)
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT).a
+	-$(AT)$(RM) ../lib/lib$2.$(SHLIB_EXT).dep
+endif
 
 .PHONY: clean_lib_static_$2
 clean_lib_static_$2: 
@@ -852,14 +898,32 @@ $(LIB)/lib$2.a: $(CURDIR)/../lib/lib$2.a
 	$(AT)if [ -f ../lib/lib$2.a ]; then cp ../lib/lib$2.a $(LIB)/lib$2.a;  \
 	chmod $(P755) $(LIB)/lib$2.a; else echo "WARNING ../lib/lib$2.a MISSING"; fi 
 
+ifeq ($(platform),Cygwin)
+install_lib_shared_$2:$(LIB)/lib$2.$(SHLIB_EXT) $(LIB)/lib$2.$(SHLIB_EXT).a $(LIB)/lib$2.$(SHLIB_EXT).dep
+else
 install_lib_shared_$2:$(LIB)/lib$2.$(SHLIB_EXT)
+endif
 $(LIB)/lib$2.$(SHLIB_EXT): $(CURDIR)/../lib/lib$2.$(SHLIB_EXT)
 	-$(AT)rm -f $(LIB)/lib$2.$(SHLIB_EXT); 
 	$(AT)cp ../lib/lib$2.$(SHLIB_EXT) $(LIB)/lib$2.$(SHLIB_EXT);  
 	$(AT)chmod $(P755) $(LIB)/lib$2.$(SHLIB_EXT)
-	$(AT)chmod ugo-w $(LIB)/lib$2.$(SHLIB_EXT)
+	$(AT)chmod ugo-w+x $(LIB)/lib$2.$(SHLIB_EXT)
+ifeq ($(platform),Cygwin)
+$(LIB)/lib$2.$(SHLIB_EXT).a: $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).a
+	-$(AT)rm -f $(LIB)/lib$2.$(SHLIB_EXT).a;
+	$(AT)cp -P ../lib/lib$2.$(SHLIB_EXT).a $(LIB)/lib$2.$(SHLIB_EXT).a;
+	$(AT)chmod $(P755) $(LIB)/lib$2.$(SHLIB_EXT).a
+	$(AT)chmod ugo-w+x $(LIB)/lib$2.$(SHLIB_EXT).a
+
+$(LIB)/lib$2.$(SHLIB_EXT).dep: $(CURDIR)/../lib/lib$2.$(SHLIB_EXT).dep
+	-$(AT)rm -f $(LIB)/lib$2.$(SHLIB_EXT).dep;
+	$(AT)cp -P ../lib/lib$2.$(SHLIB_EXT).dep $(LIB)/lib$2.$(SHLIB_EXT).dep;
+	$(AT)chmod $(P755) $(LIB)/lib$2.$(SHLIB_EXT).dep
+	$(AT)chmod ugo-wx $(LIB)/lib$2.$(SHLIB_EXT).dep
+endif
 
 endef
+
 
 #############################################################
 #############################################################
@@ -899,15 +963,25 @@ $(if $(or $3,$6),
                    $(eval MESSAGE += please remove iostream),
                     $(if $(filter C++,$(lib)), \
                      $(eval $2_exe_lList += -lstdc++), \
-                      $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) \
+	                   $(if $(findstring Cygwin, $(platform)), \
+	                    $(eval $2_exe_lList += -l$(lib) $(eval $2_exe_dList += $(call deps,$(lib)))), \
+                       $(eval $2_exe_lList += -l$(lib)) )  ) ) ) ) ) ) ) \
+	  $(if $(findstring Cygwin, $(platform)), \
+	   $(eval $2_exe_dList = $(strip $(sort $($2_exe_dList)))) \
+	   $(eval $2_exe_lList = $(strip $(sort $($2_exe_lList)))) \
+	  ) \
 )
 
 $(eval $2_libraryList=$(GEN_LIBLIST))
 $(eval $2_libraryListNoshared=$(GEN_LIBLIST_NOSHARED))
 
 $(if $($2_exe_lList), \
-	$(eval $2_libraryList += $($2_exe_lList) \
-	$(eval $2_libraryListNoshared += $(NOSHARED_ON) $($2_exe_lList) $(NOSHARED_OFF) ) ) \
+	$(if $(findstring Cygwin, $(platform)), \
+	  $(eval $2_libraryList += $(sort $($2_exe_lList) $($2_exe_dList)) \
+	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $($2_exe_lList) $(NOSHARED_OFF) ) ), \
+	  $(eval $2_libraryList += $($2_exe_lList) \
+	  $(eval $2_libraryListNoshared += $(NOSHARED_ON) $($2_exe_lList) $(NOSHARED_OFF) ) ) \
+	) \
 )
 
 $(if $(filter yes,$(ccs)), \
@@ -933,7 +1007,11 @@ ifdef MAKE_VXWORKS
 	$(AT)$(LD) $(LDFLAGS) $(L_PATH) $4 -r $($2_exe_objList)  $($2_exe_lList)  -o ../bin/$2
 else
 ifeq ($(strip $(MAKE_NOSHARED) $($2_NOSHARED)),)
+ifeq ($(platform),Cygwin)
+	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--whole-archive $($2_exe_objList) -Wl,--no-whole-archive $(LDFLAGS) $(L_PATH) $4 $($2_libraryList)  -o ../bin/$2
+else
 	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) $(LDFLAGS) $(L_PATH) $4 $($2_exe_objList)  $($2_libraryList)  -o ../bin/$2
+endif
 else
 	$(AT)$(PURIFY) $(PURECOV) $(LD) $(CFLAGS) $(LDFLAGS) $(L_PATH) $4  $($2_exe_objList) $($2_libraryListNoshared)  -o ../bin/$2
 endif
@@ -970,7 +1048,7 @@ ifeq ($(call mustBuild,C++),true)
 ifdef MAKE_VXWORKS
     ALL_LOGTS += ../bin/$1LTS
 else
-    ALL_LOGTS += $(CURDIR)/../lib/lib$1LTS.a $(CURDIR)/../lib/lib$1LTS.so
+    ALL_LOGTS += $(CURDIR)/../lib/lib$1LTS.a $(CURDIR)/../lib/lib$1LTS.$(SHLIB_EXT)
 endif 
 endif
 ifeq ($(call mustBuild,Python),true) 
@@ -1038,7 +1116,7 @@ clean_dist_logts_$1: clean_logts_$1;
 ifdef MAKE_VXWORKS
 install_logts_$1: install_exe_$1LTS
 else
-install_logts_$1: $(PRJTOP)/include/$1.h $(LIB)/lib$1LTS.a $(LIB)/lib$1LTS.so $(PRJTOP)/idl/$1.xml $(LIB)/python/site-packages/$1LTS.py $(LIB)/$1LTS.jar
+install_logts_$1: $(PRJTOP)/include/$1.h $(LIB)/lib$1LTS.a $(LIB)/lib$1LTS.$(SHLIB_EXT) $(PRJTOP)/idl/$1.xml $(LIB)/python/site-packages/$1LTS.py $(LIB)/$1LTS.jar
 endif
 
 $(LIB)/python/site-packages/$1LTS.py: ../idl/$1.xml

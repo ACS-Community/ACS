@@ -1,9 +1,13 @@
-# $Id: acsMakefileCore.mk,v 1.9 2011/09/23 12:49:50 bjeram Exp $
+# $Id: acsMakefileCore.mk,v 1.10 2012/01/13 18:54:47 tstaig Exp $
 #
 ##################################################################
 ## DEFINITIONS
 ##################################################################
+ifeq ($(platform),Cygwin)
+IDL_EXTENSIONS=C.h C.cpp S.cpp C.inl S.h S.inl StubsExport.h
+else
 IDL_EXTENSIONS=C.h C.cpp S.cpp C.inl S.h S.inl
+endif
 CASTOR:= alma.tools.entitybuilder.CastorBuilder
 OMNI_IDL=omniidl
 TAO_IDL = $(TAO_ROOT)/TAO_IDL/tao_idl
@@ -90,8 +94,13 @@ ifdef MAKE_VXWORKS
 $(foreach logts,$(ACSLOGTSDEF), \
 	$(eval $(call acsMakeExecutableDependencies,/vw,$(logts)LTS,$(logts),,,)) )
 else
+ifeq ($(platform),Cygwin)
+$(foreach logts,$(ACSLOGTSDEF), \
+	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,logging)) )
+else
 $(foreach logts,$(ACSLOGTSDEF), \
 	$(eval $(call acsMakeLibraryDependencies,,$(logts)LTS,$(logts),,,)) )
+endif
 endif
 
 $(foreach logts,$(ACSLOGTSDEF), \
@@ -137,9 +146,15 @@ $(foreach xml,$(ACSERRDEF),\
 	$(eval $(call acsMakeExecutableDependencies,/vw,$(xml),$(xml) $(xml)S $(xml)C,,,)) \
 )
 else
+ifeq ($(platform),Cygwin)
+$(foreach xml,$(ACSERRDEF),\
+	$(eval $(call acsMakeLibraryDependencies,,$(xml),$(xml),,,acserr $(xml)Stubs )) \
+)
+else
 $(foreach xml,$(ACSERRDEF),\
 	$(eval $(call acsMakeLibraryDependencies,,$(xml),$(xml) $(xml)S $(xml)C,,,acserr )) \
 )
+endif
 endif
 
 
@@ -147,7 +162,11 @@ $(foreach xml,$(ACSERRDEF),$(eval $(call XMLPrereq,$(xml))))
 $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeXMLErrDependencies,$(xml))))
 #
 ifndef MAKE_VXWORKS
+ifeq ($(platform),Cygwin)
+$(foreach xml,$(ACSERRDEF),$(eval $(xml)Stubs_CFLAGS += -D$(xml)Stubs_BUILD_DLL)$(eval $(call acsMakeLibraryDependencies,,$(xml)Stubs,$(xml)S $(xml)C,,,$(call unique,$($(xml)Stubs_LIBS) $(TAO_LIBRARIES)) acserr acserrStubs)))
+else
 $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeLibraryDependencies,,$(xml)Stubs,$(xml)S $(xml)C,,,$(call unique,$($(xml)Stubs_LIBS) $(TAO_LIBRARIES)) acserr acserrStubs)))
+endif
 else
 $(foreach xml,$(ACSERRDEF),$(eval $(call acsMakeExecutableDependencies,/vw,$(xml)Stubs,$(xml)S $(xml)C, , , )))
 endif
@@ -175,7 +194,11 @@ ifeq ($(call mustBuild,C++),true)
 ifdef MAKE_VXWORKS
 $(foreach idl,$(IDL_LIST),$(eval $(call acsMakeExecutableDependencies,/vw,$(idl)Stubs,$(idl)S $(idl)C, , , )))
 else
+ifeq ($(platform),Cygwin)
+$(foreach idl,$(IDL_LIST),$(eval $(idl)Stubs_CFLAGS += -D$(idl)Stubs_BUILD_DLL)$(eval $(call acsMakeLibraryDependencies,,$(idl)Stubs,$(idl)S $(idl)C,,,$(call unique,$($(idl)Stubs_LIBS) $(TAO_LIBRARIES)))))
+else
 $(foreach idl,$(IDL_LIST),$(eval $(call acsMakeLibraryDependencies,,$(idl)Stubs,$(idl)S $(idl)C,,,$(call unique,$($(idl)Stubs_LIBS) $(TAO_LIBRARIES)))))
+endif
 endif
 endif
 

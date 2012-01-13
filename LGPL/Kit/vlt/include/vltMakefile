@@ -1,7 +1,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakefile,v 1.10 2010/08/05 17:52:05 javarias Exp $" 
+# "@(#) $Id: vltMakefile,v 1.11 2012/01/13 18:54:47 tstaig Exp $" 
 #
 # who       when      what
 # --------  --------  ----------------------------------------------
@@ -532,8 +532,8 @@ ifeq ($(os),Linux)
    ECHO = echo -e
 else ifeq ($(os),$(CYGWIN_VER))
    platform = Cygwin
-   osrev = 1.5
-   ECHO = echo
+   osrev = 1.7.9
+   ECHO = echo -e
 else
    ECHO = echo
 endif
@@ -804,6 +804,35 @@ ifndef MAKE_VXWORKS
         CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm 
     endif
 
+    ifeq ($(platform),Cygwin)
+        # WARNING GCH: Commented out -ansi option for c++, gcc and CCDEP. Problems with ACE/TAO
+        # CXX           = c++ -ansi
+        # remark from PSI: for the time being, the -ansi option is restored
+        # when ACSROOT is not defined.
+        ifndef ACSROOT
+            CC            = gcc -ansi
+            CCDEP         = gcc -MM -ansi
+            CXX           = g++ -ansi
+        else
+            CC            = gcc
+            CCDEP         = gcc -MM
+            CXX           = g++
+        endif
+        LD            = g++
+        NOSHARED_ON   = -Xlinker -Bstatic
+        NOSHARED_OFF  = -Xlinker -Bdynamic
+        SHLIB_EXT     = dll
+        RANLIB        = ranlib
+        RANLIB        = @/bin/true
+        # Porting to gcc 3.1: this include is obsolete
+        # INC_DEFAULT   = -I/usr/local/include
+        LIB_DEFAULT   = -L/usr/local/lib
+        XINC_DEFAULT  = -I/usr/X11R6/include/X11
+        XLIB_DEFAULT  = -L/usr/X11R6/lib
+        CCS_LIBLIST          :=                -lCCS                 -lm
+        CCS_LIBLIST_NOSHARED := $(NOSHARED_ON) -lCCS $(NOSHARED_OFF) -lm
+        .LIBPATTERNS = lib%.dll lib%.dll.a lib%.a
+    endif
 
     BINDIR   = bin
     LIBDIR   = lib
@@ -1782,7 +1811,7 @@ clean_dist_all:
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \.\*\~ -print | xargs -i $(RM) {}    $(OUTPUT)
 	-@$(ECHO) " .\c"
-	-$(AT)find .. -name \*\.so -print | xargs -i $(RM) {}    $(OUTPUT)
+	-$(AT)find .. -name \*\.$(SHLIB_EXT) -print | xargs -i $(RM) {}    $(OUTPUT)
 	-@$(ECHO) " .\c"
 	-$(AT)find .. -name \*\.sl -print | xargs -i $(RM) {}    $(OUTPUT)
 	-@$(ECHO) " .\c"
@@ -1923,6 +1952,26 @@ ifneq ($(strip $(LIBRARIES)),)
 		        $(ECHO) "	chmod $(P755) $(LIB)/lib$${member}.$(SHLIB_EXT); \\" >>$(FILE);\
 		        $(ECHO) "	chmod ugo-w $(LIB)/lib$${member}.$(SHLIB_EXT) " >>$(FILE);\
 	            fi;\
+ifeq($(os),$(CYGWIN_VER))
+		         if [ -f ../lib/lib$${member}.$(SHLIB_EXT).a ];\
+		         then \
+		             target="$$target $(LIB)/lib$${member}.$(SHLIB_EXT).a";\
+		        $(ECHO) "$(LIB)/lib$${member}.$(SHLIB_EXT).a: ../lib/lib$${member}.$(SHLIB_EXT).a" >>$(FILE);\
+		        $(ECHO) "\t-\$$(AT)rm -f $(LIB)/lib$${member}.$(SHLIB_EXT).a; \\" >>$(FILE);\
+		        $(ECHO) "\tcp -P ../lib/lib$${member}.$(SHLIB_EXT).a $(LIB)/lib$${member}.$(SHLIB_EXT).a;  \\" >>$(FILE);\
+		        $(ECHO) "\tchmod $(P755) $(LIB)/lib$${member}.$(SHLIB_EXT).a; \\" >>$(FILE);\
+		        $(ECHO) "\tchmod ugo-w $(LIB)/lib$${member}.$(SHLIB_EXT).a " >>$(FILE);\
+		         fi;\
+		         if [ -f ../lib/lib$${member}.$(SHLIB_EXT).def ];\
+		         then \
+		             target="$$target $(LIB)/lib$${member}.$(SHLIB_EXT).def";\
+		        $(ECHO) "$(LIB)/lib$${member}.$(SHLIB_EXT).def: ../lib/lib$${member}.$(SHLIB_EXT).def" >>$(FILE);\
+		        $(ECHO) "\t-\$$(AT)rm -f $(LIB)/lib$${member}.$(SHLIB_EXT).def; \\" >>$(FILE);\
+		        $(ECHO) "\tcp ../lib/lib$${member}.$(SHLIB_EXT).def $(LIB)/lib$${member}.$(SHLIB_EXT).def;  \\" >>$(FILE);\
+		        $(ECHO) "\tchmod $(P755) $(LIB)/lib$${member}.$(SHLIB_EXT).def; \\" >>$(FILE);\
+		        $(ECHO) "\tchmod ugo-w $(LIB)/lib$${member}.$(SHLIB_EXT).def " >>$(FILE);\
+		         fi;\
+endif
 	        done;\
 		$(ECHO) "$$target" >>$(FILE); $(ECHO) "	-@echo \"\"" >>$(FILE)
 endif

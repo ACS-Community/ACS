@@ -2,7 +2,7 @@
 #*******************************************************************************
 # E.S.O. - VLT project
 #
-# "@(#) $Id: vltMakeLibraryDependencies,v 1.6 2010/08/27 11:03:01 mzampare Exp $" 
+# "@(#) $Id: vltMakeLibraryDependencies,v 1.7 2012/01/13 18:54:47 tstaig Exp $" 
 #
 # who       when        what
 # --------  ----------  ----------------------------------------------
@@ -105,12 +105,12 @@ then
         # on HP, the way it works by default does not require any explicit name
         sharedLibName=""
     else
-        sharedLib=../lib/lib${libName}.so
+        sharedLib=../lib/lib${libName}.${SHLIB_EXT}
         # on SUN, by default the library is created with "../lib/lib...."
         # as internal name. This gives problems at run time in finding the 
         # the correct file (see ldd output) 
         # Here I force the name without parent directory 
-        sharedLibName="-Xlinker -h -Xlinker lib${libName}.so"
+        sharedLibName="-Xlinker -h -Xlinker lib${libName}.${SHLIB_EXT}"
     fi 
 fi
 
@@ -144,6 +144,9 @@ then
     # prepare the lists in the "-l<name>" format of all libraries used in linking
     # some library names can be conventional names that are expanded in a series of
     # predefined libraries or flags
+    if [ "´uname´" = "$CYGWIN_VER" ]; then
+        echo "xyz_${libName}_DEF = \\"
+    fi
     for member in ${libList}
     do
         case $member in
@@ -223,10 +226,35 @@ then
             ;;
 
         *):
-            lList="${lList} -l${member}"
+            if [ "´uname´" = "$CYGWIN_VER" ]; then
+                echo "                 ${member} \\"
+            else
+                lList="${lList} -l${member}"
+            fi
             ;;
         esac
     done
+    if [ "´uname´" = "$CYGWIN_VER" ]; then
+        echo ""
+        echo "find_acsroot = \$(if \$(wildcard \$(ACSROOT)/lib/lib\$(member).dll.def), \`cat \$(ACSROOT)/lib/lib\$(member).dll.def\`,)"
+        echo "find_vlttop = \$(if \$(wildcard \$(VLTTOP)/lib/lib\$(member).dll.def), \`cat \$(VLTTOP)/lib/lib\$(member).dll.def\`, \$(find_acsroot))"
+        echo "find_lib = \$(if \$(wildcard ../lib/lib\$(member).dll.def), \`cat ../lib/lib\$(member).dll.def\`, \$(find_vlttop))"
+        echo "find_def = \$(find_lib)"
+        echo ""
+        echo "check_acsroot = \$(if \$(wildcard \$(ACSROOT)/lib/lib\$(member).dll.def), ,-l\$(member))"
+        echo "check_vlttop = \$(if \$(wildcard \$(VLTTOP)/lib/lib\$(member).dll.def), , \$(check_acsroot))"
+        echo "check_lib = \$(if \$(wildcard ../lib/lib\$(member).dll.def), , \$(check_vlttop))"
+        echo "check_dll = \$(check_lib)"
+        echo ""
+        echo "defList_${libName} := \$(foreach member, \$(xyz_${libName}_DEF), \$(find_def))"
+        echo "lList_${libName} := \$(foreach member, \$(xyz_${libName}_DEF), \$(check_dll))"
+        echo ""
+        for member in ${objectList}
+        do
+            echo "${member}_BUILD_DLL = \$(${libName}_CFLAGS)"
+        done
+        echo ""
+    fi
 
     #
     # from NOV96, there is the possibility to use or to use not shared libraries.
@@ -316,7 +344,13 @@ then
         echo "${sharedLib}: \$(xyz_${libName}_OBJ) ${lList}"
         echo "	@echo \"== Making library: ${sharedLib}\" "
         echo "	-\$(AT)\$(RM) ${sharedLib} "
-        echo "	\$(AT)\$(CXX) -shared -fPIC ${sharedLibName} \$(L_PATH) $gccDir ${libraryList} ${ldFlags} -o ${sharedLib} \$(xyz_${libName}_OBJ)"
+        if [ "´uname´" = "$CYGWIN_VER" ]; then
+            echo "	\$(AT)\$(LD) -shared -fPIC ${sharedLibName} -Wl,--enable-auto-image-base -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc -Wl,--whole-archive \$(xyz_${libName}_OBJ) -Wl,--no-whole-archive \$(L_PATH) $gccDir ${libraryList} \$(lList_${libName}) \$(defList_${libName}) ${ldFlags} -o ${sharedLib}"
+            echo "	@echo \"-l${libName} ${libraryList} \$(lList_${libName}) \$(defList_${libName})\" |sed \"s/ \+/\n/g\" |sort -u | tr '\n' ' ' > ${sharedLib}.def"
+            echo "	@cd ../lib/; rm ${sharedLib}.a; ln -s ${sharedLib} ${sharedLib}.a"
+        else
+            echo "	\$(AT)\$(CXX) -shared -fPIC ${sharedLibName} \$(L_PATH) $gccDir ${libraryList} ${ldFlags} -o ${sharedLib} \$(xyz_${libName}_OBJ)"
+        fi
         # PPM 2007.01.30 - check for unresolved symbols.  
         # The -w flag means just complain, don't cause an error
         # Without -w, it should cause a fatal error
